@@ -27,18 +27,55 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 float yaw = -90.0f;
 float lastX = 400, lastY = 300;
 float pitch = 0.0f;
+
 float xoffset;
 float yoffset;
-float sensitivity = 0.1f;
+float sensitivity = 0.2f;
+int radius = 10;
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 direction;
+glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
+glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
+
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec3 cameraRight = glm::vec3(0.0f, 0.0f, 1.0f);
+glm::vec3 cameraForward = glm::vec3(1.0f, 0.0f, 0.0f);
+void scroll_callback(GLFWwindow* window, double scroll, double scrollx) {
+	if (scrollx == 1 && radius != 1) {
+		radius--;
+		cout << 1;
+	}
+	else if (scrollx == -1) {
+		radius++;
+		cout << 0;
+	}
+	cameraPos.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.x;
+	cameraPos.y = sin(glm::radians(pitch)) * -radius + originPos.y;
+	cameraPos.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.z;
+}
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 		xoffset = xpos - lastX;
 	    yoffset = lastY - ypos;
 		lastX = xpos;
 		lastY = ypos;
-	if(glfwGetMouseButton(window, 0) == GLFW_PRESS){
+	if(glfwGetMouseButton(window, 0) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
+		xoffset *= sensitivity;
+		yoffset *= sensitivity;
+
+		cameraPos.x -= sin(glm::radians(yaw)) * xoffset  * (sensitivity / 2) + cos(glm::radians(yaw))*(sin(glm::radians(pitch)) * yoffset) / 4;
+		originPos.x -= sin(glm::radians(yaw)) * xoffset  * (sensitivity / 2) + cos(glm::radians(yaw)) * (sin(glm::radians(pitch)) * yoffset) / 4;
+
+		cameraPos.z += cos(glm::radians(yaw)) * xoffset * (sensitivity / 2) - sin(glm::radians(yaw)) * (sin(glm::radians(pitch)) * yoffset) / 4;
+		originPos.z += cos(glm::radians(yaw)) * xoffset * (sensitivity / 2) - sin(glm::radians(yaw)) * (sin(glm::radians(pitch)) * yoffset) / 4;
+
+		cameraPos.y -= cos(glm::radians(pitch)) * yoffset * (sensitivity / 2);
+		originPos.y -= cos(glm::radians(pitch)) * yoffset * (sensitivity / 2);
+		cout << cos(pitch);
+
+			
+	}
+	else if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+
 		xoffset *= sensitivity;
 		yoffset *= sensitivity;
 
@@ -49,17 +86,16 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 			pitch = 89.0f;
 		if (pitch < -89.0f)
 			pitch = -89.0f;
-
-		direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-		direction.y = sin(glm::radians(pitch));
-		direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-		cameraFront = glm::normalize(direction);
+		cameraPos.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.x;
+		cameraPos.y = sin(glm::radians(pitch)) * -radius + originPos.y;
+		cameraPos.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.z;
+		cout << sin(glm::radians(yaw)) << '\n';
 	}
 }
 
 int main() 
 {
-	cout << glm::to_string(glm::vec3(glm::mat4(1.0f) * glm::vec4(1.0)));
+	cout << glm::to_string(glm::vec3(1.0f) - glm::normalize(glm::vec3(3.0f, 2.0f, 1.0f)));
 	MSHPApp MSHP;
 	MSHP_Model_Loader MSHPLoader;
 	GLFWwindow* window = MSHP.MHSPInit();
@@ -101,13 +137,13 @@ int main()
 	glEnableVertexAttribArray(2);
 
 	//Camera
-	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 	glm::vec3 cameraDirection = glm::normalize(cameraPos - glm::vec3(0.0f, 0.0f, 0.0f));
 	glm::vec3 cameraRight = glm::normalize(glm::vec3(1.0f, 0.0f, 0.0f));
 	glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
 	
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
 
 	//Light & Texture
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
@@ -120,10 +156,7 @@ int main()
 	//Loop
 	while (!glfwWindowShouldClose(window))
 	{
-		/*glm::vec3 direction;
-		direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-		direction.y = sin(glm::radians(pitch));
-		direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));*/
+
 
 		glfwPollEvents();//Get window interactions
 		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
@@ -158,7 +191,7 @@ int main()
 		#pragma endregion
 
 
-		MSHP.SetLocations(shaderProgram, cameraPos, cameraFront, cameraUp, cameraDirection);
+		MSHP.SetLocations(shaderProgram, cameraPos, cameraFront, cameraUp, originPos);
 
         #pragma region light_and_material_SetUp
 		int objectColorLoc = glGetUniformLocation(shaderProgram, "objectColor");

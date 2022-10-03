@@ -95,9 +95,11 @@ unsigned int MSHPApp::SetShadersAndProgram() {
 
 	return shaderProgram;
 }
-void MSHPApp::SetLocations(unsigned int program, glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp, glm::vec3 cameraDirection) {
+void MSHPApp::SetLocations(unsigned int program, glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp, glm::vec3 originPos) {
 	glm::mat4 view;
-	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	//view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	view = glm::lookAt(cameraPos, originPos, glm::vec3(0.0, 1.0, 0.0));
+
 	glm::mat4 model = glm::mat4(1.0f);
 	//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::mat4(1.0f);
@@ -132,12 +134,10 @@ unsigned int MSHPApp::getTexture(const char* path) {
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
-	// set the texture wrapping/filtering options (on the currently bound texture object)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// load and generate the texture
 	int width, height, nrChannels;
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
