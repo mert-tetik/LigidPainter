@@ -15,14 +15,14 @@
 #include "MSHPApp.h"
 
 using namespace std;
-GLFWwindow* MSHPApp::MHSPInit() {
+GLFWwindow* MSHPApp::init() {
 	glfwInit();
 	GLFWwindow* window = glfwCreateWindow(800, 800, "Mesh Painter", NULL, NULL);
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
 	return window;
 }
-std::string MSHPApp::READ_FILE(const char* path) {
+std::string MSHPApp::readFile(const char* path) {
 	string fullText;
 	fstream my_file;
 	my_file.open(path, ios::in);
@@ -36,17 +36,17 @@ std::string MSHPApp::READ_FILE(const char* path) {
 	my_file.close();
 	return fullText;
 }
-unsigned int MSHPApp::SetShadersAndProgram() {
-	std::string fratext = READ_FILE("fragmentShaderSource.txt");
-	fratext.pop_back();
-	const char* fragmentShaderSource = fratext.c_str();
-	std::string vertext = READ_FILE("vertexShaderSource.txt");
-	vertext.pop_back();
-	const char* vertexShaderSource = vertext.c_str();
+unsigned int MSHPApp::getProgram() {
+	std::string fshader = readFile("fragmentShaderSource.txt");
+	fshader.pop_back();
+	const char* fragmentShaderSource = fshader.c_str();
+	std::string vshader = readFile("vertexShaderSource.txt");
+	vshader.pop_back();
+	const char* vertexShaderSource = vshader.c_str();
 
 	unsigned int vertexShader;
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);//Shader, Const Char Pointer Count, Const Char Pointer
+	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
 
 #pragma region vertex_compilation_check
@@ -95,7 +95,7 @@ unsigned int MSHPApp::SetShadersAndProgram() {
 
 	return shaderProgram;
 }
-void MSHPApp::SetLocations(unsigned int program, glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp, glm::vec3 originPos) {
+void MSHPApp::transformObject(unsigned int program, glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp, glm::vec3 originPos) {
 	glm::mat4 view;
 	//view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	view = glm::lookAt(cameraPos, originPos, glm::vec3(0.0, 1.0, 0.0));
@@ -114,7 +114,7 @@ void MSHPApp::SetLocations(unsigned int program, glm::vec3 cameraPos, glm::vec3 
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
-void MSHPApp::drawLigtObject(unsigned int program, glm::vec3 lightPos) {
+void MSHPApp::drawLightObject(unsigned int program, glm::vec3 lightPos) {
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, lightPos);
@@ -151,6 +151,6 @@ unsigned int MSHPApp::getTexture(const char* path) {
 		std::cout << "Failed to load texture" << std::endl;
 	}
 	stbi_image_free(data);
-
 	return textureID;
 }
+ 

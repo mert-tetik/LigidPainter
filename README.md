@@ -1,1 +1,1 @@
-# mesh-painter
+# Mesh Painter

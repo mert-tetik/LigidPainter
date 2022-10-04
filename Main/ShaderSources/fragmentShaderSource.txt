@@ -13,15 +13,18 @@ out vec4 FragColor;
 in vec2 TexCoords;
 in vec3 Normal;
 in vec3 FragPos;  
+in vec3 Pos;
 
 uniform vec3 lightPos;  
 uniform vec3 objectColor;
 uniform vec3 lightColor;
 uniform vec3 viewPos;
 uniform int isLightSource;
+uniform int isAxisPointer;
 
 void main()
 {    
+    
     // ambient
     vec3 ambient  = vec3(0.2,0.2,0.2) * vec3(texture(material.diffuse, TexCoords));
 
@@ -41,10 +44,13 @@ void main()
     if(isLightSource == 1){
        FragColor = vec4(1.0,1.0,1.0,1.0);
     }
-    else{
+    else if (isLightSource == 0){
+       if(isAxisPointer == 0)
        FragColor = vec4(result,1.0);
+       else{
+  	   FragColor = vec4(abs(Pos.x)/20,abs(Pos.y)/20,abs(Pos.z)/20,1);
+	}
     }
-    
 }
 
 

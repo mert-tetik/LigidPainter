@@ -10,8 +10,10 @@ uniform mat4 projection;
 out vec2 TexCoords;
 out vec3 FragPos;
 out vec3 Normal;
+out vec3 Pos;
 void main()
 {
+   Pos = aPos;
    TexCoords = aTexCoords;
    FragPos = vec3(model * vec4(aPos, 1.0));
    Normal = vec3(model * vec4(aNormal,1.0));
