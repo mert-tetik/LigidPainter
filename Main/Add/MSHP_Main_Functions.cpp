@@ -12,6 +12,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <glm/gtx/string_cast.hpp>
+
 #include "MSHPApp.h"
 
 using namespace std;
@@ -95,7 +97,8 @@ unsigned int MSHPApp::getProgram() {
 
 	return shaderProgram;
 }
-void MSHPApp::transformObject(unsigned int program, glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp, glm::vec3 originPos) {
+
+projectionData MSHPApp::transformObject(unsigned int program, glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp, glm::vec3 originPos) {
 	glm::mat4 view;
 	//view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	view = glm::lookAt(cameraPos, originPos, glm::vec3(0.0, 1.0, 0.0));
@@ -110,9 +113,18 @@ void MSHPApp::transformObject(unsigned int program, glm::vec3 cameraPos, glm::ve
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 	int projectionLoc = glGetUniformLocation(program, "projection");
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	projectionData pd;
+	pd.modelMat = model;
+	pd.projMat = projection;
+	pd.viewMat = view;
+	return pd;
+}
+glm::vec3 MSHPApp::getUnprojection(glm::vec3 vPos,unsigned int program, glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp, glm::vec3 originPos) {
+	MSHPApp mshp;
+	projectionData pd = mshp.transformObject(program, cameraPos, cameraFront, cameraUp, originPos);
+	return glm::project(vPos, pd.modelMat * pd.viewMat, pd.projMat, glm::vec4(0, 0, 800, 800));
 }
 void MSHPApp::drawLightObject(unsigned int program, glm::vec3 lightPos) {
 	glm::mat4 model = glm::mat4(1.0f);
@@ -130,7 +142,7 @@ void MSHPApp::drawLightObject(unsigned int program, glm::vec3 lightPos) {
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 }
-unsigned int MSHPApp::getTexture(const char* path) {
+unsigned int MSHPApp::getTexture(const char* path, double imgX , double imgY) {
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
@@ -139,17 +151,23 @@ unsigned int MSHPApp::getTexture(const char* path) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	int width, height, nrChannels;
+
+	float pixel[] = { 1.0f,1.0f, 1.0f, 1.0f };
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
 	if (data != NULL)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, (500 / 100) * imgX, (500 / 100) * imgY, 1, 1, GL_RGBA, GL_FLOAT, &pixel);
+		//cout << '\n' <<  imgX << ' ' <<  imgY << '\n';
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
 	{
 		std::cout << "Failed to load texture" << std::endl;
 	}
+	//float pixel[] = { 1.0f,1.0f,1.0f,1.0f };
+	
 	stbi_image_free(data);
 	return textureID;
 }

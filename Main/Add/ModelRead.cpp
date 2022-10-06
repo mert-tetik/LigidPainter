@@ -6,7 +6,6 @@
 #include <glm/glm.hpp>
 
 #include "MSHPApp.h"
-#include "MSHPModelLoader.h"
 
 #include <vector>
 #include <string>
@@ -26,7 +25,6 @@ using namespace std;
 
 		while (std::getline(infile, line))
 		{
-			cout << line << '\n';
 			if (line[0] == 'f' && line[1] == ' ') {
 				for (int i = 2; i < line.length(); i++)
 				{

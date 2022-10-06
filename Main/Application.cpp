@@ -16,7 +16,6 @@
 #include <glm/gtx/string_cast.hpp>
 
 #include "MSHPApp.h"
-#include "MSHPModelLoader.h"
 
 #include <vector>
 
@@ -40,15 +39,12 @@ glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::vec3 cameraRight = glm::vec3(0.0f, 0.0f, 1.0f);
 glm::vec3 cameraForward = glm::vec3(1.0f, 0.0f, 0.0f);
 
-
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx) {
 	if (scrollx == 1 && radius != 1) {
 		radius--;
-		cout << 1;
 	}
 	else if (scrollx == -1) {
 		radius++;
-		cout << 0;
 	}
 	cameraPos.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.x;
 	cameraPos.y = sin(glm::radians(pitch)) * -radius + originPos.y;
@@ -56,11 +52,12 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx) {
 }
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+	//std::cout << '\n' << xpos << " / " << ypos;
 	xoffset = xpos - lastX;
 	yoffset = lastY - ypos;
 	lastX = xpos;
 	lastY = ypos;
-	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+	if (glfwGetMouseButton(window, 1) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
 		xoffset *= sensitivity;
 		yoffset *= sensitivity;
 
@@ -72,11 +69,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 		cameraPos.y -= cos(glm::radians(pitch)) * yoffset * (sensitivity / 2);
 		originPos.y -= cos(glm::radians(pitch)) * yoffset * (sensitivity / 2);
-		cout << cos(pitch);
-
-
 	}
-	else if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+	else if (glfwGetMouseButton(window, 1) == GLFW_PRESS) {
 
 		xoffset *= sensitivity;
 		yoffset *= sensitivity;
@@ -91,18 +85,19 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 		cameraPos.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.x;
 		cameraPos.y = sin(glm::radians(pitch)) * -radius + originPos.y;
 		cameraPos.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.z;
-		cout << sin(glm::radians(yaw)) << '\n';
 	}
 }
 
 void MSHPApp::run()
 {
 	MSHPApp MSHP;
+	MSHP_Texture_Generator txtrGen;
 	MSHP_Model_Loader MSHPLoader;
 	GLFWwindow* window = MSHP.init();
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); //Update Screen When Screen Changed
 
 	vector<float> vertices = MSHPLoader.OBJ_getVertices();
+
 	float axisPointer[] = {
 		0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
 		0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
@@ -146,20 +141,52 @@ void MSHPApp::run()
 	//Light & Texture
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, MSHP.getTexture("container.png"));
+	glBindTexture(GL_TEXTURE_2D, MSHP.getTexture("container.png",0,0));
 
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, MSHP.getTexture("container_specular.png"));
+	glBindTexture(GL_TEXTURE_2D, MSHP.getTexture("container_specular.png",0,0));
 
 	bool backfaceCulling = false;
 	bool enableCtrlAltC = true;
+	int a = 0;
+
+	glm::vec3 unprojected;
+	glm::vec2 holdDistance = glm::vec2(0,0);
+
+	double mouseXpos, mouseYpos;
+	double ax;
+	double ay;
+	double bx;
+	double by;
+	double cx;
+	double cy;
+	double w1;
+	double w2;
+
+	double originalX_p1;
+	double originalY_p1;
+	double originalZ_p1;
+
+	double originalX_p2;
+	double originalY_p2;
+	double originalZ_p2;
+
+	double originalX_p3;
+	double originalY_p3;
+	double originalZ_p3;
+
+	double cameraFaceDistance;
+
+	double imgX;
+	double imgY;
 
 	//Loop
 	while (!glfwWindowShouldClose(window))
 	{
+		a++;
 		glfwPollEvents();
 		glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT); 
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glUseProgram(shaderProgram);
@@ -198,6 +225,13 @@ void MSHPApp::run()
 
 		//Light Obj
 		//MSHP.drawLigtObject(shaderProgram,lightPos);
+#pragma region Paint
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+			if (a % 1000 == 0) {
+				txtrGen.paintTexture(window, vertices, shaderProgram, cameraPos, cameraFront, cameraUp, originPos);
+			}
+		}
+#pragma endregion
 
 		//ESC - Close The Window
 		glfwSwapBuffers(window);
@@ -233,10 +267,12 @@ void MSHPApp::run()
 			yoffset = 0;
 		}
 	}
+	glfwDestroyWindow(window);
+	glfwTerminate();
 	std::system("pause>0");
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) //Update Screen
 {
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, 800, 800);
 }
