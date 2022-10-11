@@ -5,15 +5,11 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-
 #include "stb_image.h"
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <glm/gtx/string_cast.hpp>
-
 #include "MSHPApp.h"
 
 using namespace std;
@@ -152,23 +148,25 @@ unsigned int MSHPApp::getTexture(const char* path, double imgX , double imgY) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	int width, height, nrChannels;
 
-	float pixel[] = { 1.0f,1.0f, 1.0f, 1.0f };
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
+	
 	if (data != NULL)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, (500 / 100) * imgX, (500 / 100) * imgY, 1, 1, GL_RGBA, GL_FLOAT, &pixel);
-		//cout << '\n' <<  imgX << ' ' <<  imgY << '\n';
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
 	{
 		std::cout << "Failed to load texture" << std::endl;
 	}
-	//float pixel[] = { 1.0f,1.0f,1.0f,1.0f };
 	
 	stbi_image_free(data);
 	return textureID;
 }
- 
+void MSHPApp::renderModel(std::vector<float>& vertices, unsigned int shaderProgram){
+	int isAxisPointerLoc = glGetUniformLocation(shaderProgram, "isAxisPointer");
+	glUniform1i(isAxisPointerLoc, 0);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 8);
+}

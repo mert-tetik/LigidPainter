@@ -1,6 +1,5 @@
 # Blender v3.1.2 OBJ File: ''
 # www.blender.org
-mtllib test(smooth).mtl
 o Cube.001
 v -1.000000 0.988659 0.360900
 v 0.425442 -0.417604 1.759836

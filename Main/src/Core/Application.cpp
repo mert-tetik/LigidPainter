@@ -5,19 +5,14 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <glm/gtx/string_cast.hpp>
-
 #include "MSHPApp.h"
-
 #include <vector>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 using namespace std;
 
@@ -110,18 +105,15 @@ void MSHPApp::run()
 	unsigned int shaderProgram = MSHP.getProgram();
 	//glTexSubImage2D
 
-	unsigned int VBO, VAO, EBO; //Vertex Buffer Object, Vertex Array Object***, Element Buffer Object
+	unsigned int VBO, VAO, EBO; //Vertex Buffer Object, Vertex Array Object, Element Buffer Object
 	//glGenBuffers(1, &EBO);
 	glGenBuffers(1, &VBO);
+
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-	/*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);*/
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	// set the vertex attribute 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
@@ -141,81 +133,61 @@ void MSHPApp::run()
 	//Light & Texture
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, MSHP.getTexture("container.png",0,0));
+	glBindTexture(GL_TEXTURE_2D, MSHP.getTexture("vergil2.jpg",0,0));
 
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, MSHP.getTexture("container_specular.png",0,0));
+	glBindTexture(GL_TEXTURE_2D, MSHP.getTexture("testHexa.jpg",0,0));
 
 	bool backfaceCulling = false;
 	bool enableCtrlAltC = true;
 	int a = 0;
+	glBindVertexArray(VAO);
+	glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glUseProgram(shaderProgram);
+	const float cameraSpeed = 0.01f;
+	
 
-	glm::vec3 unprojected;
-	glm::vec2 holdDistance = glm::vec2(0,0);
+	int objectColorLoc = glGetUniformLocation(shaderProgram, "objectColor");
+	glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
+	int lightColorLoc = glGetUniformLocation(shaderProgram, "lightColor");
+	glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+	glUniform3fv(glGetUniformLocation(shaderProgram, "lightPos"), 1, &lightPos[0]);
+	glUniform3fv(glGetUniformLocation(shaderProgram, "viewPos"), 1, &cameraPos[0]);
+	glUniform1i(glGetUniformLocation(shaderProgram, "material.diffuse"), 0);
+	glUniform1i(glGetUniformLocation(shaderProgram, "material.specular"), 1);
+	glUniform1f(glGetUniformLocation(shaderProgram, "material.shininess"), 32.0f);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	//vector<float> dataX;
+	unsigned int FBO;
+	glGenFramebuffers(1, &FBO);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
+
+	//Texture
+	GLubyte* pixelsTxtr = new GLubyte[1000 * 1000 * 3 * sizeof(GLubyte)];
+	glActiveTexture(GL_TEXTURE0);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixelsTxtr);
+	//Mask Texture
+	GLubyte* pixelsMask = new GLubyte[50 * 50 * 3 * sizeof(GLubyte)*2];
+	glActiveTexture(GL_TEXTURE1);
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixelsMask);
+
+	int isAxisPointerLoc;
 
 	double mouseXpos, mouseYpos;
-	double ax;
-	double ay;
-	double bx;
-	double by;
-	double cx;
-	double cy;
-	double w1;
-	double w2;
-
-	double originalX_p1;
-	double originalY_p1;
-	double originalZ_p1;
-
-	double originalX_p2;
-	double originalY_p2;
-	double originalZ_p2;
-
-	double originalX_p3;
-	double originalY_p3;
-	double originalZ_p3;
-
-	double cameraFaceDistance;
-
-	double imgX;
-	double imgY;
 
 	//Loop
 	while (!glfwWindowShouldClose(window))
 	{
-		a++;
 		glfwPollEvents();
-		glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT); 
-
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glUseProgram(shaderProgram);
-
-		const float cameraSpeed = 0.01f;
-
 		MSHP.transformObject(shaderProgram, cameraPos, cameraFront, cameraUp, originPos);
 
 #pragma region light_and_material_SetUp
-		int objectColorLoc = glGetUniformLocation(shaderProgram, "objectColor");
-		glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
-		int lightColorLoc = glGetUniformLocation(shaderProgram, "lightColor");
-		glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
-		glUniform3fv(glGetUniformLocation(shaderProgram, "lightPos"), 1, &lightPos[0]);
-		glUniform3fv(glGetUniformLocation(shaderProgram, "viewPos"), 1, &cameraPos[0]);
-		glUniform1i(glGetUniformLocation(shaderProgram, "material.diffuse"), 0);
-		glUniform1i(glGetUniformLocation(shaderProgram, "material.specular"), 1);
-		glUniform1f(glGetUniformLocation(shaderProgram, "material.shininess"), 32.0f);
+		
 #pragma endregion
 
-		int isLightSourceLoc = glGetUniformLocation(shaderProgram, "isLightSource");
-		glUniform1i(isLightSourceLoc, 0);
-
-		int isAxisPointerLoc = glGetUniformLocation(shaderProgram, "isAxisPointer");
-		glUniform1i(isAxisPointerLoc, 0);
-
-		glBindVertexArray(VAO);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 8);
+		MSHP.renderModel(vertices, shaderProgram);
 
 		isAxisPointerLoc = glGetUniformLocation(shaderProgram, "isAxisPointer");
 		glUniform1i(isAxisPointerLoc, 1);
@@ -227,9 +199,8 @@ void MSHPApp::run()
 		//MSHP.drawLigtObject(shaderProgram,lightPos);
 #pragma region Paint
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
-			if (a % 1000 == 0) {
-				txtrGen.paintTexture(window, vertices, shaderProgram, cameraPos, cameraFront, cameraUp, originPos);
-			}
+			glfwGetCursorPos(window, &mouseXpos, &mouseYpos);
+			txtrGen.paintTexture(window, vertices, shaderProgram, cameraPos, cameraFront, cameraUp, originPos,mouseXpos, mouseYpos,pixelsTxtr, pixelsMask);
 		}
 #pragma endregion
 
@@ -269,7 +240,6 @@ void MSHPApp::run()
 	}
 	glfwDestroyWindow(window);
 	glfwTerminate();
-	std::system("pause>0");
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) //Update Screen

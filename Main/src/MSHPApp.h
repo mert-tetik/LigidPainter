@@ -20,7 +20,7 @@ public:
 };
 class MSHP_Texture_Generator {
 public:
-	void paintTexture(GLFWwindow* window, std::vector<float> vertices, unsigned int shaderProgram, glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp, glm::vec3 originPos);
+	void paintTexture(GLFWwindow* window, std::vector<float> &vertices, unsigned int shaderProgram, glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp, glm::vec3 originPos,double mouseXpos, double mouseYpos, GLubyte* pixelsTxtr,GLubyte* pixelsMask);
 };
 class MSHPApp {
 public:
@@ -32,4 +32,5 @@ public:
 	glm::vec3 getUnprojection(glm::vec3 vPos,unsigned int program, glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp, glm::vec3 originPos);
 	std::string readFile(const char* path);
 	void run();
+	void renderModel(std::vector<float>& vertices, unsigned int shaderProgram);
 };

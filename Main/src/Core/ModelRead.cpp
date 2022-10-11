@@ -1,12 +1,9 @@
 #include<iostream>
 #include<GLFW/glfw3.h>
-
 #include <fstream>
 #include <sstream>
 #include <glm/glm.hpp>
-
 #include "MSHPApp.h"
-
 #include <vector>
 #include <string>
 
@@ -15,7 +12,7 @@ using namespace std;
 	struct dataOut dataReturn;
 
 	dataOut MSHP_Model_Loader::READ_OBJ_FILE() { //Not capable of processing every contents of '.obj' file format. 
-		std::ifstream infile("test.obj");
+		std::ifstream infile("untitled.obj");
 
 		string vertexInfo = "";
 		string faceInfo = "";
