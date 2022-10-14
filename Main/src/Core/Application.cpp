@@ -13,8 +13,19 @@
 #include <vector>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#define STBI_MSC_SECURE_CRT
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
 using namespace std;
+
+MSHPApp MSHP;
+MSHP_Texture_Generator txtrGen;
+MSHP_Model_Loader MSHPLoader;
+MSHP_userInterface ui;
+GLFWwindow* window = MSHP.init();
+texture txtr;
+glSet gs;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -26,13 +37,26 @@ float xoffset;
 float yoffset;
 float sensitivity = 0.2f;
 int radius = 10;
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
 glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
 
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::vec3 cameraRight = glm::vec3(0.0f, 0.0f, 1.0f);
 glm::vec3 cameraForward = glm::vec3(1.0f, 0.0f, 0.0f);
+
+//Panel
+int holdXPos = 1536;
+float panelLoc = 1.6f;
+float panelOffset;
+bool changeLoc = false;
+//Button
+int* buttonScreenCoor;
+bool buttonGetInput;
+bool buttonEnter;
+//Cursors
+GLFWcursor* cursorHResize = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
+GLFWcursor* arrowCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+GLFWcursor* pointerCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
+
 
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx) {
 	if (scrollx == 1 && radius != 1) {
@@ -47,7 +71,38 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx) {
 }
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	//std::cout << '\n' << xpos << " / " << ypos;
+	cout << xpos << ' ' << ypos << '\n';
+	if (xpos > (1920/2 * panelLoc) - 10 && xpos < (1920/2 * panelLoc) + 10) {
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+			changeLoc = true;
+		}
+		glfwSetCursor(window, cursorHResize);
+	}
+	else {
+		//Return Once
+		glfwSetCursor(window, arrowCursor);
+	}
+	panelOffset = xpos - holdXPos;
+	holdXPos = xpos;
+	if (changeLoc) {
+		panelLoc += panelOffset / 1000;
+		if (panelLoc > 1.8f)
+			panelLoc = 1.8f;
+		if (panelLoc < 1.4f)
+			panelLoc = 1.4f;
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			changeLoc = false;
+		}
+	}
+	buttonScreenCoor = ui.buttonGetScreenCoor(0.1f, panelLoc / 2, - 0.8f);
+	if (xpos < buttonScreenCoor[0] && xpos > buttonScreenCoor[4] && ypos > buttonScreenCoor[1] && ypos < buttonScreenCoor[7]) {
+		glfwSetCursor(window, pointerCursor);
+		buttonEnter = true;
+	}
+	else {
+		buttonEnter = false;
+	}
+	cout << buttonScreenCoor[7] << ' ';
 	xoffset = xpos - lastX;
 	yoffset = lastY - ypos;
 	lastX = xpos;
@@ -85,24 +140,11 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 void MSHPApp::run()
 {
-	MSHPApp MSHP;
-	MSHP_Texture_Generator txtrGen;
-	MSHP_Model_Loader MSHPLoader;
-	GLFWwindow* window = MSHP.init();
+	commonData cmnd;
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); //Update Screen When Screen Changed
 
+	MSHP.getProgram();
 	vector<float> vertices = MSHPLoader.OBJ_getVertices();
-
-	float axisPointer[] = {
-		0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
-		0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
-		-100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //X
-		100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //X
-		0.0f, 0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Z
-		0.0f, 0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Z
-	};
-	//Shaders 
-	unsigned int shaderProgram = MSHP.getProgram();
 	//glTexSubImage2D
 
 	unsigned int VBO, VAO, EBO; //Vertex Buffer Object, Vertex Array Object, Element Buffer Object
@@ -124,7 +166,6 @@ void MSHPApp::run()
 	//Camera
 	glm::vec3 cameraDirection = glm::normalize(cameraPos - glm::vec3(0.0f, 0.0f, 0.0f));
 	glm::vec3 cameraRight = glm::normalize(glm::vec3(1.0f, 0.0f, 0.0f));
-	glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
 
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, mouse_callback);
@@ -133,77 +174,69 @@ void MSHPApp::run()
 	//Light & Texture
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, MSHP.getTexture("vergil2.jpg",0,0));
+	glBindTexture(GL_TEXTURE_2D, txtr.getTexture("vergil2.jpg",0,0));
 
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, MSHP.getTexture("testHexa.jpg",0,0));
+	glBindTexture(GL_TEXTURE_2D, txtr.getTexture("testHexa.jpg",0,0));
+
+	glBindVertexArray(VAO);
+	glUseProgram(cmnd.program);
+	
+	ui.setViewportBgColor();
+
+
+	glUniform3fv(glGetUniformLocation(cmnd.program, "lightPos"), 1, &lightPos[0]);
+	glUniform3fv(glGetUniformLocation(cmnd.program, "viewPos"), 1, &cameraPos[0]);
+	glUniform1i(glGetUniformLocation(cmnd.program, "material.diffuse"), 0);
+	glUniform1i(glGetUniformLocation(cmnd.program, "material.specular"), 1);
+	glUniform1f(glGetUniformLocation(cmnd.program, "material.shininess"), 32.0f);
+
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	gs.bindFrameBuffer();
+
+	//Texture
+	GLubyte* pixelsTxtr = txtr.getTextureFromProgram(GL_TEXTURE0, 1000, 1000, 3);
+	//Mask Texture
+	GLubyte* pixelsMask = txtr.getTextureFromProgram(GL_TEXTURE1, 50, 50, 3);
 
 	bool backfaceCulling = false;
 	bool enableCtrlAltC = true;
-	int a = 0;
-	glBindVertexArray(VAO);
-	glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glUseProgram(shaderProgram);
-	const float cameraSpeed = 0.01f;
-	
-
-	int objectColorLoc = glGetUniformLocation(shaderProgram, "objectColor");
-	glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
-	int lightColorLoc = glGetUniformLocation(shaderProgram, "lightColor");
-	glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
-	glUniform3fv(glGetUniformLocation(shaderProgram, "lightPos"), 1, &lightPos[0]);
-	glUniform3fv(glGetUniformLocation(shaderProgram, "viewPos"), 1, &cameraPos[0]);
-	glUniform1i(glGetUniformLocation(shaderProgram, "material.diffuse"), 0);
-	glUniform1i(glGetUniformLocation(shaderProgram, "material.specular"), 1);
-	glUniform1f(glGetUniformLocation(shaderProgram, "material.shininess"), 32.0f);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	//vector<float> dataX;
-	unsigned int FBO;
-	glGenFramebuffers(1, &FBO);
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
-
-	//Texture
-	GLubyte* pixelsTxtr = new GLubyte[1000 * 1000 * 3 * sizeof(GLubyte)];
-	glActiveTexture(GL_TEXTURE0);
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixelsTxtr);
-	//Mask Texture
-	GLubyte* pixelsMask = new GLubyte[50 * 50 * 3 * sizeof(GLubyte)*2];
-	glActiveTexture(GL_TEXTURE1);
-    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, pixelsMask);
-
 	int isAxisPointerLoc;
-
+	int isTwoDimensionalLoc;
 	double mouseXpos, mouseYpos;
 
 	//Loop
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
-		MSHP.transformObject(shaderProgram, cameraPos, cameraFront, cameraUp, originPos);
+		MSHP.transformObject(cameraPos, originPos);
+		MSHP.renderModel(vertices,panelLoc);
 
-#pragma region light_and_material_SetUp
 		
-#pragma endregion
-
-		MSHP.renderModel(vertices, shaderProgram);
-
-		isAxisPointerLoc = glGetUniformLocation(shaderProgram, "isAxisPointer");
-		glUniform1i(isAxisPointerLoc, 1);
-
-		glBufferData(GL_ARRAY_BUFFER, sizeof(axisPointer), axisPointer, GL_STATIC_DRAW);
-		glDrawArrays(GL_LINES, 0, 6);
 
 		//Light Obj
 		//MSHP.drawLigtObject(shaderProgram,lightPos);
-#pragma region Paint
+		
+		//Paint
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
 			glfwGetCursorPos(window, &mouseXpos, &mouseYpos);
-			txtrGen.paintTexture(window, vertices, shaderProgram, cameraPos, cameraFront, cameraUp, originPos,mouseXpos, mouseYpos,pixelsTxtr, pixelsMask);
+			txtrGen.paintTexture(window, vertices,cameraPos, originPos,mouseXpos, mouseYpos,pixelsTxtr, pixelsMask, panelLoc);
 		}
-#pragma endregion
+		if (buttonEnter) {
+			if (buttonGetInput) {
+				if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+					GLubyte* dwnldImage = txtr.getTextureFromProgram(GL_TEXTURE0, 1000, 1000, 3);
 
+					txtr.drawTexture("C:\\Users\\CASPER\\Desktop\\deneyis.jpg", 1000, 1000, dwnldImage,3);
+					buttonGetInput = false;
+				}
+			}
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				buttonGetInput = true;
+			}
+		}
 		//ESC - Close The Window
 		glfwSwapBuffers(window);
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -244,5 +277,5 @@ void MSHPApp::run()
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) //Update Screen
 {
-	glViewport(0, 0, 800, 800);
+	glViewport(0, 0, 1920, 1080);
 }

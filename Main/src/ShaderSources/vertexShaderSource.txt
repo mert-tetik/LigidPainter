@@ -6,16 +6,23 @@ layout (location = 2) in vec2 aTexCoords;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform int isTwoDimensional;
 
 out vec2 TexCoords;
 out vec3 FragPos;
 out vec3 Normal;
 out vec3 Pos;
+
 void main()
 {
    Pos = aPos;
    TexCoords = aTexCoords;
    FragPos = vec3(model * vec4(aPos, 1.0));
    Normal = vec3(model * vec4(aNormal,1.0));
-   gl_Position = projection *view * model * vec4(aPos, 1.0);
+   if(isTwoDimensional == 0){
+      gl_Position = projection *view * model * vec4(aPos, 1.0);
+   }
+   else{
+      gl_Position = vec4(aPos, 1.0);
+   }
 }
