@@ -6,13 +6,19 @@
 #include "MSHPApp.h"
 #include <vector>
 #include <string>
-
+#include <glm/gtx/string_cast.hpp>
 using namespace std;
 
 	struct dataOut dataReturn;
 
 	dataOut MSHP_Model_Loader::READ_OBJ_FILE() { //Not capable of processing every contents of '.obj' file format. 
-		std::ifstream infile("untitled.obj");
+		std::ifstream infile("untriangulatedSphere.obj");
+
+		int slashCounter = 0;
+		vector<glm::vec3> hold1F;
+		glm::vec3 holdFV;
+		string holdF;
+		string holdVtoLine;
 
 		string vertexInfo = "";
 		string faceInfo = "";
@@ -23,15 +29,53 @@ using namespace std;
 		while (std::getline(infile, line))
 		{
 			if (line[0] == 'f' && line[1] == ' ') {
-				for (int i = 2; i < line.length(); i++)
+				for (size_t i = 2; i < line.length(); i++)
 				{
-					if (line[i] != '\n')
-						if (line[i] == ' ')
-							dataReturn.fInfo += '/';
-						else
-							dataReturn.fInfo.push_back(line[i]);
+					if (line[i] == '/' || line[i] == ' ' || line[i] == '\n') {
+						slashCounter++;
+						if (slashCounter == 1) {
+							holdFV.x = stoi(holdF);
+						}
+						else if (slashCounter == 2) {
+							holdFV.y = stoi(holdF);
+						}
+						else if (slashCounter == 3) {
+							holdFV.z = stoi(holdF);
+							hold1F.push_back(holdFV);
+							slashCounter = 0;
+						}
+						holdF = "";
+					}
+					else{
+						holdF += line[i];
+					}
 				}
-				dataReturn.fInfo += '/';
+				holdFV.z = stoi(holdF);
+				hold1F.push_back(holdFV);
+				slashCounter = 0;
+				holdF = "";
+				for (size_t i = 0; i < hold1F.size(); i++)
+				{
+					cout << glm::to_string(hold1F[i]) << '\n';
+				}
+				for (int x = 0; x < hold1F.size()-2; x++)
+				{
+					holdVtoLine = to_string((int)hold1F[0].x) + "/" + to_string((int)hold1F[0].y) + "/" + to_string((int)hold1F[0].z) + " " + to_string((int)hold1F[x+1].x) + "/" + to_string((int)hold1F[x+1].y) + "/" + to_string((int)hold1F[x+1].z) + " " + to_string((int)hold1F[x+2].x) + "/" + to_string((int)hold1F[x+2].y) + "/" + to_string((int)hold1F[x+2].z);
+					cout << holdVtoLine << '\n';
+					for (int i = 0; i < holdVtoLine.length(); i++)
+					{
+						if (holdVtoLine[i] != '\n')
+							if (holdVtoLine[i] == ' ')
+								dataReturn.fInfo += '/';
+							else
+								dataReturn.fInfo.push_back(holdVtoLine[i]);
+					}
+					dataReturn.fInfo += '/';
+				}
+
+				//cout << dataReturn.fInfo << '\n';
+
+				hold1F.clear();
 			}
 			else if (line[0] == 'v' && line[1] == ' ') {
 				dataReturn.vVec.push_back(line.erase(0,2));
@@ -43,6 +87,7 @@ using namespace std;
 				dataReturn.vnVec.push_back(line.erase(0, 3));
 			}
 		}
+		//cout << dataReturn.fInfo;
 		return dataReturn;
 	}
 	vector<float> MSHP_Model_Loader::OBJ_getVertices() {
