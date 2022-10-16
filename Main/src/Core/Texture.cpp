@@ -25,7 +25,7 @@ double ax, ay, bx, by, cx, cy;
 double w1, w2;
 bool outsideAreaCheck;
 bool enableDraw;
-glm::vec3 paintingColor = glm::vec3(255, 255, 255);
+glm::vec3 paintingColor = glm::vec3(0, 255, 255);
 glm::vec3 originalColor;
 glm::vec3 smallColorValues;
 glm::vec3 highColorValues;
@@ -36,16 +36,39 @@ double originalX_p3, originalY_p3, originalZ_p3;
 double cameraFaceDistance;
 double imgX;
 double imgY;
-int pixelX;
-int pixelY;
-
-int paintingQuality = 1;
+int pixelX, pixelY;
+int pixelXlastVal, pixelYlastVal;
+int pixelXDif = 0;
+vector<int> pixelYDiff;
+vector<int> pixelYDiffHold;
+int pixelYDif = 1;
+int reduceQuality = 1;
+int paintingQuality;
+bool firstTurn = true;
+int txtrSqRatioX, txtrSqRatioY;
 #pragma endregion
 
-void MSHP_Texture_Generator::paintTexture(GLFWwindow* window, std::vector<float> &vertices,glm::vec3 cameraPos, glm::vec3 originPos, double mouseXpos, double mouseYpos, GLubyte* pixelsTxtr, GLubyte* pixelsMask,float panelLoc) {
+void MSHP_Texture_Generator::paintTexture(GLFWwindow* window, std::vector<float> &vertices,glm::vec3 cameraPos, glm::vec3 originPos, double mouseXpos, double mouseYpos, GLubyte* pixelsTxtr, GLubyte* pixelsMask,float panelLoc, maskTexture mT, albedoTexture aT) {
 	MSHPApp MSHP;
 	commonData cmnd;
 	MSHP_userInterface ui;
+	maskTexture mskTxtr;
+	mskTxtr = mT;
+	albedoTexture albTxtr;
+	albTxtr = aT;
+
+	//Set painting quality
+	if (mskTxtr.width < 60) {
+		paintingQuality = 4;
+	}
+	else if (mskTxtr.width <= 150) {
+		paintingQuality = 2;
+	}
+	else {
+		paintingQuality = 1;
+	}
+
+
 	unprojectedVertices.clear();
 	glm::vec2 holdDistance = glm::vec2(0, 0);
 	for (size_t i = 0; i < vertices.size(); i++)
@@ -98,14 +121,29 @@ void MSHP_Texture_Generator::paintTexture(GLFWwindow* window, std::vector<float>
 
 		i += 2;
 	}
-	for (size_t y = 1; y < 49 * paintingQuality; y++)
+	if (mskTxtr.width < paintingSqDistance) {
+		txtrSqRatioX = paintingSqDistance / mskTxtr.width;
+	}
+	else {
+		txtrSqRatioX = 1;
+	}
+
+	if (mskTxtr.height < paintingSqDistance) {
+		txtrSqRatioY = paintingSqDistance / mskTxtr.height;
+	}
+	else {
+		txtrSqRatioY = 1;
+	}
+	for (size_t y = 0; y < (mskTxtr.height-1) * txtrSqRatioY * paintingQuality / reduceQuality; y++)
 	{
-		for (size_t x = 2; x < 49 * paintingQuality; x++)
+		for (size_t x = 0; x < (mskTxtr.width - 1) * txtrSqRatioX * paintingQuality / reduceQuality; x++)
 		{
 			if (outsideAreaCheck) {
-				paintingSqX =(mouseXpos - 25 + (double)x / paintingQuality);
-				paintingSqY = mouseYpos - 25 + (double)y / paintingQuality;
-
+				
+				paintingSqX = mouseXpos - paintingSqDistance / 2 + (double)x / paintingQuality / (mskTxtr.width * txtrSqRatioX / paintingSqDistance) * reduceQuality;
+				paintingSqY = mouseYpos - paintingSqDistance / 2 + (double)y / paintingQuality / (mskTxtr.height * txtrSqRatioY / paintingSqDistance) * reduceQuality;
+				
+				
 				ax = unprojectedVertices[holdDistance.y].x;
 				ay = unprojectedVertices[holdDistance.y].y;
 				bx = unprojectedVertices[holdDistance.y + 1].x;
@@ -130,13 +168,28 @@ void MSHP_Texture_Generator::paintTexture(GLFWwindow* window, std::vector<float>
 				imgX = uvProjectionX * 100.0;
 				imgY = uvProjectionY * 100.0;
 
-				pixelX = (1000 / 100) * imgX;
-				pixelY = (1000 / 100) * imgY;
+				pixelX = (albTxtr.width / 100) * imgX;
+				pixelY = (albTxtr.height / 100) * imgY;
+				
+				if (!firstTurn) {
+					pixelXDif = abs(pixelX - pixelXlastVal);
+				}
 
-				if(pixelY * 3000 + (pixelX * 3) > 0 && pixelY * 3000 + (pixelX * 3) < 1000*1000*3){
-					originalColor.x = pixelsTxtr[pixelY * 3000 + (pixelX * 3)];
-					originalColor.y = pixelsTxtr[(pixelY * 3000 + (pixelX * 3)) + 1];
-					originalColor.z = pixelsTxtr[(pixelY * 3000 + (pixelX * 3)) + 2];
+				//pixelYDiff.push_back(pixelY);
+				//if(y != 1)
+					//pixelYDif = pixelYDiffHold[x-2] - pixelY;
+
+				firstTurn = false;
+				pixelXlastVal = pixelX;
+				pixelYlastVal = pixelY;
+				if (pixelXDif > 10) {
+					pixelXDif = 1;
+				}
+
+				if(pixelY * (albTxtr.width*3) + (pixelX * 3) > 0 && pixelY * (albTxtr.width * 3) + (pixelX * 3) < albTxtr.width * albTxtr.height * albTxtr.channels){
+					originalColor.x = pixelsTxtr[pixelY * (albTxtr.width * 3) + (pixelX * 3)];
+					originalColor.y = pixelsTxtr[(pixelY * (albTxtr.width * 3) + (pixelX * 3)) + 1];
+					originalColor.z = pixelsTxtr[(pixelY * (albTxtr.width * 3) + (pixelX * 3)) + 2];
 					if (originalColor.x >= paintingColor.x) {
 						smallColorValues.x = paintingColor.x;
 						highColorValues.x = originalColor.x;
@@ -167,27 +220,37 @@ void MSHP_Texture_Generator::paintTexture(GLFWwindow* window, std::vector<float>
 						highColorValues.z = paintingColor.z;
 					}
 
-					maskGrayScale = ((float)pixelsMask[y/ paintingQuality * 150 + (x/ paintingQuality * 3)] / 255 + (float)pixelsMask[(y/ paintingQuality * 150 + (x/ paintingQuality * 3)) - 1] / 255 + (float)pixelsMask[(y/ paintingQuality * 150 + (x/ paintingQuality * 3)) - 2] / 255) / 3;
+					
+					maskGrayScale = ((float)pixelsMask[y/ txtrSqRatioY /paintingQuality * reduceQuality * (mskTxtr.width*3 ) + (x / txtrSqRatioX /paintingQuality * reduceQuality * 3)] / 255 + (float)pixelsMask[(y/ txtrSqRatioY/paintingQuality * reduceQuality * (mskTxtr.width * 3) + (x/ txtrSqRatioX /paintingQuality * reduceQuality * 3)) - 1] / 255 + (float)pixelsMask[(y/ txtrSqRatioY /paintingQuality * reduceQuality * (mskTxtr.width * 3) + (x/ txtrSqRatioX /paintingQuality * reduceQuality * 3)) - 2] / 255) / 3;
 
-					if (true) {
-						if (originalColor.x - paintingColor.x <= 0) {
-							pixelsTxtr[pixelY * 3000 + (pixelX * 3)] = smallColorValues.x + (abs(originalColor.x - paintingColor.x) * maskGrayScale);
-						}
-						else
+					for (size_t yy = 0; yy < 1; yy++)
+					{
+						for (size_t xx = 0; xx < 1; xx++)
 						{
-							pixelsTxtr[pixelY * 3000 + (pixelX * 3)] = highColorValues.x - (abs(originalColor.x - paintingColor.x) * maskGrayScale);
-						}
-						if (originalColor.y - paintingColor.y <= 0) {
-							pixelsTxtr[(pixelY * 3000 + (pixelX * 3)) + 1] = smallColorValues.y + (abs(originalColor.y - paintingColor.y) * maskGrayScale);
-						}
-						else {
-							pixelsTxtr[(pixelY * 3000 + (pixelX * 3)) + 1] = highColorValues.y - (abs(originalColor.y - paintingColor.y) * maskGrayScale);
-						}
-						if (originalColor.z - paintingColor.z <= 0) {
-							pixelsTxtr[(pixelY * 3000 + (pixelX * 3)) + 2] = smallColorValues.z + (abs(originalColor.z - paintingColor.z) * maskGrayScale);
-						}
-						else {
-							pixelsTxtr[(pixelY * 3000 + (pixelX * 3)) + 2] = highColorValues.z - (abs(originalColor.z - paintingColor.z) * maskGrayScale);
+							if (originalColor.x - paintingColor.x <= 0) 
+							{
+								pixelsTxtr[(pixelY-yy) * (albTxtr.width * 3) + ((pixelX - xx) * 3)] = smallColorValues.x + (abs(originalColor.x - paintingColor.x) * maskGrayScale);
+							}
+							else
+							{
+								pixelsTxtr[(pixelY - yy) * (albTxtr.width * 3) + ((pixelX - xx) * 3)] = highColorValues.x - (abs(originalColor.x - paintingColor.x) * maskGrayScale);
+							}
+							if (originalColor.y - paintingColor.y <= 0) 
+							{
+								pixelsTxtr[((pixelY - yy) * (albTxtr.width * 3) + ((pixelX - xx) * 3)) + 1] = smallColorValues.y + (abs(originalColor.y - paintingColor.y) * maskGrayScale);
+							}
+							else 
+							{
+								pixelsTxtr[((pixelY - yy) * (albTxtr.width * 3) + ((pixelX - xx) * 3)) + 1] = highColorValues.y - (abs(originalColor.y - paintingColor.y) * maskGrayScale);
+							}
+							if (originalColor.z - paintingColor.z <= 0) 
+							{
+								pixelsTxtr[((pixelY - yy) * (albTxtr.width * 3) + ((pixelX - xx) * 3)) + 2] = smallColorValues.z + (abs(originalColor.z - paintingColor.z) * maskGrayScale);
+							}
+							else 
+							{
+								pixelsTxtr[((pixelY - yy) * (albTxtr.width * 3) + ((pixelX - xx) * 3)) + 2] = highColorValues.z - (abs(originalColor.z - paintingColor.z) * maskGrayScale);
+							}
 						}
 					}
 				}
@@ -195,13 +258,18 @@ void MSHP_Texture_Generator::paintTexture(GLFWwindow* window, std::vector<float>
 			}
 		}
 	}
+	pixelYDiff.clear();
 	outsideAreaCheck = false;
 	glActiveTexture(GL_TEXTURE0);
-	glTexSubImage2D(GL_TEXTURE_2D, 0,0, 0, 1000, 1000, GL_RGB, GL_UNSIGNED_BYTE, pixelsTxtr);
+	if(albTxtr.channels == 3)
+		glTexSubImage2D(GL_TEXTURE_2D, 0,0, 0, albTxtr.width, albTxtr.height, GL_RGB, GL_UNSIGNED_BYTE, pixelsTxtr);
+	else
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, albTxtr.width, albTxtr.height, GL_RGBA, GL_UNSIGNED_BYTE, pixelsTxtr);
+
 	glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-unsigned int texture::getTexture(const char* path, double imgX, double imgY) {
+unsigned int texture::getTexture(std::string path, double imgX, double imgY) {
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
@@ -212,7 +280,7 @@ unsigned int texture::getTexture(const char* path, double imgX, double imgY) {
 	int width, height, nrChannels;
 
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 
 	if (data != NULL)
 	{
@@ -241,4 +309,13 @@ GLubyte* texture::getTextureFromProgram(int texture, int width, int height,int c
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 	}
 	return pixels;
+}
+textureData texture::getTextureData(const char* path) {
+	textureData td;
+	int width, height, channelS;
+	stbi_info(path, &width, &height, &channelS);
+	td.width = width;
+	td.height = height;
+	td.channels = channelS;
+	return td;
 }

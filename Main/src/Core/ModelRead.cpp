@@ -12,7 +12,7 @@ using namespace std;
 	struct dataOut dataReturn;
 
 	dataOut MSHP_Model_Loader::READ_OBJ_FILE() { //Not capable of processing every contents of '.obj' file format. 
-		std::ifstream infile("untriangulatedSphere.obj");
+		std::ifstream infile("untitled.obj");
 
 		int slashCounter = 0;
 		vector<glm::vec3> hold1F;
@@ -54,14 +54,9 @@ using namespace std;
 				hold1F.push_back(holdFV);
 				slashCounter = 0;
 				holdF = "";
-				for (size_t i = 0; i < hold1F.size(); i++)
-				{
-					cout << glm::to_string(hold1F[i]) << '\n';
-				}
 				for (int x = 0; x < hold1F.size()-2; x++)
 				{
 					holdVtoLine = to_string((int)hold1F[0].x) + "/" + to_string((int)hold1F[0].y) + "/" + to_string((int)hold1F[0].z) + " " + to_string((int)hold1F[x+1].x) + "/" + to_string((int)hold1F[x+1].y) + "/" + to_string((int)hold1F[x+1].z) + " " + to_string((int)hold1F[x+2].x) + "/" + to_string((int)hold1F[x+2].y) + "/" + to_string((int)hold1F[x+2].z);
-					cout << holdVtoLine << '\n';
 					for (int i = 0; i < holdVtoLine.length(); i++)
 					{
 						if (holdVtoLine[i] != '\n')
@@ -73,7 +68,6 @@ using namespace std;
 					dataReturn.fInfo += '/';
 				}
 
-				//cout << dataReturn.fInfo << '\n';
 
 				hold1F.clear();
 			}
@@ -87,7 +81,6 @@ using namespace std;
 				dataReturn.vnVec.push_back(line.erase(0, 3));
 			}
 		}
-		//cout << dataReturn.fInfo;
 		return dataReturn;
 	}
 	vector<float> MSHP_Model_Loader::OBJ_getVertices() {

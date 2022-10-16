@@ -155,8 +155,6 @@ void MSHPApp::renderModel(std::vector<float>& vertices, float panelLoc){
 	commonData cmnd;
 	colorData colorD;
 
-	gls.meshDataToShaders();
-	gls.drawArrays(vertices,false);
 
 	gls.uiDataToShaders(glm::vec3(colorD.buttonColor.x, colorD.buttonColor.y, colorD.buttonColor.z));
 	ui.button(0.1f, panelLoc/2, -0.8f);
@@ -164,4 +162,6 @@ void MSHPApp::renderModel(std::vector<float>& vertices, float panelLoc){
 	ui.panel(panelLoc);
 	gls.axisPointerDataToShaders();
 	gls.drawArrays(axisPointer, true);
+	gls.meshDataToShaders();
+	gls.drawArrays(vertices,false);
 }
