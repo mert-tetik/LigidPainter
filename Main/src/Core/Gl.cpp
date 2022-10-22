@@ -111,10 +111,10 @@ void GlSet::blendFunc(unsigned int sfactor, unsigned int dfactor) {
 void GlSet::getProgram() {
 	CommonData cmnd;
 	Utilities utilities;
-	std::string fshader = utilities.readFile("fragmentShaderSource.txt");
+	std::string fshader = utilities.readFile("fragmentShaderSource.glsl");
 	fshader.pop_back();
 	const char* fragmentShaderSource = fshader.c_str();
-	std::string vshader = utilities.readFile("vertexShaderSource.txt");
+	std::string vshader = utilities.readFile("vertexShaderSource.glsl");
 	vshader.pop_back();
 	const char* vertexShaderSource = vshader.c_str();
 	unsigned int vertexShader;
@@ -175,24 +175,37 @@ void GlSet::render(GLFWwindow* window, std::vector<float>& vertices, float panel
 	UserInterface ui;
 	CommonData commonData;
 	ColorData colorData;
+	enable(GL_BLEND);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glDepthMask(GL_FALSE);
+	glDepthFunc(GL_LESS);
 
-	ui.container(0.08f, 0.04f, panelLoc / 2, 0.4f, "Load", colorData.buttonColor, 0.022f, false);
-	ui.container(0.12f, 0.03f, panelLoc / 2, 0.6f, modelLoadFilePath, colorData.textBoxColor, 0, true);
-	ui.renderText(commonData.program, "File Path", panelLoc / 2 - 0.05f, 0.64f, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
+	blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 
+	enable(GL_DEPTH_TEST);
 
-	ui.renderMenubar(window);
-
-	ui.panel(panelLoc, 0);
 	axisPointerDataToShaders();
 
-	enable(GL_BLEND);
 	blendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
 	drawArrays(axisPointer, true);
 	blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	meshDataToShaders();
 	drawArrays(vertices, false);
+
+	ui.box(0.12f, 0.03f, panelLoc / 2, 0.6f, modelLoadFilePath, colorData.textBoxColor, 0, true);
+	ui.renderText(commonData.program, "File Path", panelLoc / 2 - 0.05f, 0.64f, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
+
+
+	ui.renderMenubar(window);
+
+	ui.panel(panelLoc, 0);
+	ui.box(0.08f, 0.04f, panelLoc / 2, 0.4f, "Load", colorData.buttonColor, 0.022f, false);
+
+
+
+
 }
 GLFWwindow* GlSet::getWindow() {
 	glfwInit();
@@ -217,8 +230,6 @@ ProjectionData GlSet::setMatrices(glm::vec3 cameraPos, glm::vec3 originPos) {
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 	int projectionLoc = glGetUniformLocation(cmnd.program, "projection");
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-	glEnable(GL_DEPTH_TEST);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	ProjectionData pd;
 	pd.modelMat = model;
 	pd.projMat = projection;

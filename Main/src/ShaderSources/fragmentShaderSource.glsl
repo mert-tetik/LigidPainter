@@ -55,23 +55,18 @@ void main()
           }
           else if (isLightSource == 0){
              if(isAxisPointer == 0)
-             FragColor = vec4(result,1.0);
+             FragColor = vec4(result,1);
              else{
   	         FragColor = vec4((abs(Pos.x)/20),(abs(Pos.y)/20) ,(abs(Pos.z)/20),1);
 	      }
           }
        }
        else{
-          FragColor = vec4(uiColor,1.0);
+          FragColor = vec4(uiColor,0.5);
        }
     }
     else{
 	vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, TextTexCoords).r);
-	if(sampled.w > 0.3){
-	   FragColor = vec4(1.0,1.0,1.0, 1.0);
-	}
-	else{
-	    FragColor = vec4(textBg, 1.0);
-	}
+	FragColor = vec4(1.0,1.0,1.0,1.0) * sampled ;
    }
 }

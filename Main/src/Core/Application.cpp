@@ -67,6 +67,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void Fadenode::run()
 {
+
 	CommonData commonData;
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
 	glfwSetKeyCallback(window, key_callback);
@@ -117,23 +118,6 @@ void Fadenode::run()
 
 	glset.uniform1i(commonData.program, "material.diffuse", 0);
 	glset.uniform1i(commonData.program, "material.specular", 1);
-
-	//*************************************************************************
-	//textureData td;
-	//td = txtr.getTextureData(albedoTexturePath.c_str());//Albedo Texture
-	//GLubyte* pixelsTxtr = txtr.getTextureFromProgram(GL_TEXTURE0, td.width, td.height, td.channels);
-	//albedoTexture albTxtr;
-	//albTxtr.channels = td.channels;
-	//albTxtr.width = td.width;
-	//albTxtr.height = td.height;
-
-	//td = txtr.getTextureData(maskTexturePath.c_str());//Mask Texture
-	//GLubyte* pixelsMask = txtr.getTextureFromProgram(GL_TEXTURE1, td.width, td.height, td.channels);
-	//maskTexture mskTxtr;
-	//mskTxtr.channels = td.channels;
-	//mskTxtr.width = td.width;
-	//mskTxtr.height = td.height;
-	//*************************************************************************
 
 	framebuffer_size_callback(window,1900,1000);
 	//Loop

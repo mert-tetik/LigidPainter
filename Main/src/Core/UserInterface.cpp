@@ -43,7 +43,7 @@ void UserInterface::panel(float panelLoc, float) {
 	glset.uiDataToShaders(colorD.panelColor);
 	glset.drawArrays(panelCoor, false);
 }
-void UserInterface::container(float width, float height, float position_x, float position_y,std::string text,glm::vec3 color, float textRatio,bool isTextBox) {
+void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec3 color, float textRatio,bool isTextBox) {
 	CommonData commonData;
 	GlSet glset;
 
@@ -123,17 +123,19 @@ void UserInterface::container(float width, float height, float position_x, float
 	};*/
 	std::vector<float> buttonCoor{
 		// first triangle
-		 width + position_x,  height + position_y, 0,0,0,0,0,0,  // top right
-		 width + position_x, -height + position_y, 0,0,0,0,0,0,  // bottom right
-		-width + position_x,  height + position_y, 0,0,0,0,0,0,  // top left 
-		// second triangle
-		 width + position_x, -height + position_y, 0,0,0,0,0,0,  // bottom right
-		-width + position_x, -height + position_y, 0,0,0,0,0,0,  // bottom left
-		-width + position_x,  height + position_y, 0,0,0,0,0,0  // top left
+		 width + position_x,  height + position_y, 0.9f,0,0,0,0,0,  // top right
+		 width + position_x, -height + position_y, 0.9f,0,0,0,0,0,  // bottom right
+		-width + position_x,  height + position_y, 0.9f,0,0,0,0,0,  // top left 
+		// second triangle						     9
+		 width + position_x, -height + position_y, 0.9f,0,0,0,0,0,  // bottom right
+		-width + position_x, -height + position_y, 0.9f,0,0,0,0,0,  // bottom left
+		-width + position_x,  height + position_y, 0.9f,0,0,0,0,0  // top left
 	};
 
 	glset.uniform3f(commonData.program, "textBg", color.x, color.y, color.z);//Set text background color to what color it's used in.
 
+	glset.uiDataToShaders(glm::vec3(color.x, color.y, color.z));
+	glset.drawArrays(buttonCoor, false);
 	if (!isTextBox) {
 		renderText(commonData.program, text, position_x -textRatio, position_y - 0.01, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
 	}
@@ -141,8 +143,7 @@ void UserInterface::container(float width, float height, float position_x, float
 		renderText(commonData.program, text, -width + position_x, position_y - 0.01, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
 	}
 	
-	glset.uiDataToShaders(glm::vec3(color.x, color.y, color.z));
-	glset.drawArrays(buttonCoor,false);
+	
 
 }
 bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height, float position_x, float position_y,int mouseXpos, int mouseYpos){
@@ -289,13 +290,13 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 		float w = ch.Size.x * scale;
 		float h = ch.Size.y * scale;
 		std::vector <float> vertices = {
-			 xpos,     ypos + h, 0  ,0.0f, 0.0f,0,0,0,
-			 xpos,     ypos,     0  ,0.0f, 1.0f,0,0,0,
-			 xpos + w, ypos,     0  ,1.0f, 1.0f,0,0,0,
-
-			 xpos,     ypos + h, 0  ,0.0f, 0.0f,0,0,0,
-			 xpos + w, ypos,     0  ,1.0f, 1.0f,0,0,0,
-			 xpos + w, ypos + h, 0  ,1.0f, 0.0f,0,0,0
+			 xpos,     ypos + h, 1.0f  ,0.0f, 0.0f,0,0,0,
+			 xpos,     ypos,     1.0f  ,0.0f, 1.0f,0,0,0,
+			 xpos + w, ypos,     1.0f  ,1.0f, 1.0f,0,0,0,
+			//					 1
+			 xpos,     ypos + h, 1.0f  ,0.0f, 0.0f,0,0,0,
+			 xpos + w, ypos,     1.0f  ,1.0f, 1.0f,0,0,0,
+			 xpos + w, ypos + h, 1.0f  ,1.0f, 0.0f,0,0,0
 		};
 		glset.bindTexture(ch.TextureID);
 		glset.drawArrays(vertices, false);
@@ -307,13 +308,13 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 }
 void UserInterface::renderMenubar(GLFWwindow* window) {
 	ColorData colorD;
-	container(0.04f, 0.02f, -0.92f, 0.98f, "Layers", colorD.menuBarColor, 0.034f, false);
-	container(0.04f, 0.02f, -0.82f, 0.98f, "Nodes", colorD.menuBarColor, 0.034f, false);
-	container(0.08f, 0.02f, -0.68f, 0.98f, "Texture Paint", colorD.menuBarColor, 0.06f, false);
-	container(0.08f, 0.02f, -0.50f, 0.98f, "Load Model", colorD.menuBarColor, 0.06f, false);
-	container(0.04f, 0.02f, -0.36f, 0.98f, "Export", colorD.menuBarColor, 0.034f, false);
-	container(0.08f, 0.02f, -0.22f, 0.98f, "Load Project", colorD.menuBarColor, 0.06f, false);
-	container(0.06f, 0.02f, -0.06f, 0.98f, "Settings", colorD.menuBarColor, 0.04f, false);
+	box(0.04f, 0.02f, -0.92f, 0.98f, "Layers", colorD.menuBarColor, 0.034f, false);
+	box(0.04f, 0.02f, -0.82f, 0.98f, "Nodes", colorD.menuBarColor, 0.034f, false);
+	box(0.08f, 0.02f, -0.68f, 0.98f, "Texture Paint", colorD.menuBarColor, 0.06f, false);
+	box(0.08f, 0.02f, -0.50f, 0.98f, "Load Model", colorD.menuBarColor, 0.06f, false);
+	box(0.04f, 0.02f, -0.36f, 0.98f, "Export", colorD.menuBarColor, 0.034f, false);
+	box(0.08f, 0.02f, -0.22f, 0.98f, "Load Project", colorD.menuBarColor, 0.06f, false);
+	box(0.06f, 0.02f, -0.06f, 0.98f, "Settings", colorD.menuBarColor, 0.04f, false);
 
-	container(1.0f, 0.08f, 0.0f, 1.03f, "", colorD.menuBarColor, 0.00f, false);
+	box(1.0f, 0.08f, 0.0f, 1.03f, "", colorD.menuBarColor, 0.00f, false);
 }
