@@ -8,7 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "Fadenode.h"
+#include "RigidPainter.h"
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -40,6 +40,9 @@ GLFWcursor* cursorHResize = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
 
 bool loadModelButtonEnter;
 bool modelFilePathTextBoxEnter;
+bool autoTriangulateCheckBoxEnter;
+bool backfaceCullingCheckBoxEnter;
+
 
 glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
@@ -114,6 +117,9 @@ CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypo
 	}
 	callbk.loadModelButtonEnter = loadModelButtonEnter;
 	callbk.modelFilePathTextBoxEnter = modelFilePathTextBoxEnter;
+	callbk.autoTriangulateCheckBoxEnter = autoTriangulateCheckBoxEnter;
+	callbk.backfaceCullingCheckBoxEnter = backfaceCullingCheckBoxEnter;
+
 	callbk.cameraPos = cameraPos;
 	callbk.originPos = originPos;
 	callbk.panelLoc = panelLoc;
@@ -151,6 +157,8 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos) {
 	GLFWcursor* pointerCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
 	loadModelButtonEnter = ui.isMouseOnButton(window, 0.08f, 0.04f, panelLoc / 2, 0.4f, mouseXPos, mouseYPos);
 	modelFilePathTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / 2, 0.6f, mouseXPos, mouseYPos);
+	autoTriangulateCheckBoxEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc / 2 - 0.08f, 0.3f, mouseXPos, mouseYPos);
+	backfaceCullingCheckBoxEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc / 2 - 0.08f, 0.2f, mouseXPos, mouseYPos);
 
 	if (modelFilePathTextBoxEnter) {
 		glfwSetCursor(window, pointerCursor);
@@ -158,10 +166,17 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos) {
 	else if (loadModelButtonEnter) {
 		glfwSetCursor(window, pointerCursor);
 	}
+	else if (autoTriangulateCheckBoxEnter) {
+		glfwSetCursor(window, pointerCursor);
+	}
+	else if (backfaceCullingCheckBoxEnter) {
+		glfwSetCursor(window, pointerCursor);
+	}
 	else {
 		GLFWcursor* arrowCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
 		glfwSetCursor(window, arrowCursor);
 	}
+	
 }
 void Callback::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {

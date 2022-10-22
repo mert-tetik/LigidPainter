@@ -10,7 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 //#include <glm/gtx/string_cast.hpp>
-#include "Fadenode.h"
+#include "RigidPainter.h"
 #include "stb_image_write.h"
 
 using namespace std;

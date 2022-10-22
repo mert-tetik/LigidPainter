@@ -8,7 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "Fadenode.h"
+#include "RigidPainter.h"
 #include <vector>
 #include <map>
 #define STB_IMAGE_IMPLEMENTATION
@@ -48,24 +48,29 @@ string modelFilePath;
 
 bool backfaceCulling = false;
 bool enableCtrlAltC = true;
+bool enableBackfaceCulling;
 int isAxisPointerLoc;
 int isTwoDimensionalLoc;
 double mouseXpos, mouseYpos;
 bool buttonGetInput = true;
 bool buttonPressed = false;
+bool autoTriangulateChecked = true;
+bool backfaceCullingChecked = true;
+
 string modelName;
 vector<float> vertices = { 0 };
 
 void ctrlAltEsc();
 void loadModelButton();
 void modelFilePathTextBoxEnter();
-
+void autoTriangulateCheckBoxEnter();
+void backfaceCullingCheckBox();
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//--
 }
 
-void Fadenode::run()
+void RigidPainter::run()
 {
 
 	CommonData commonData;
@@ -119,18 +124,24 @@ void Fadenode::run()
 	glset.uniform1i(commonData.program, "material.diffuse", 0);
 	glset.uniform1i(commonData.program, "material.specular", 1);
 
-	framebuffer_size_callback(window,1900,1000);
+
+	RenderData renderData;
+	//window,vertices, callbackData.panelLoc, modelName,callbackData.autoTriangulateCheckBoxEnter,autoTriangulateChecked,callbackData.backfaceCullingCheckBoxEnter,backfaceCullingChecked,enableBackfaceCulling
 	//Loop
 	while (!glfwWindowShouldClose(window))
 	{
-		/*int isTextLoc = glGetUniformLocation(cmnd.program, "isText");
-		glUniform1i(isTextLoc, 0);
-		int isTextFLoc = glGetUniformLocation(cmnd.program, "isTextF");
-		glUniform1i(isTextFLoc, 0);*/
+		renderData.window = window;
+		renderData.panelLoc = callbackData.panelLoc;
+		renderData.modelLoadFilePath = modelName;
+		renderData.isAutoTriangulateHover = callbackData.autoTriangulateCheckBoxEnter;
+		renderData.isAutoTriangulateChecked = autoTriangulateChecked;
+		renderData.isbackfaceCullingHover = callbackData.backfaceCullingCheckBoxEnter;
+		renderData.isbackfaceCullingChecked = backfaceCullingChecked;
+		renderData.backfaceCulling = enableBackfaceCulling;
 
 		glfwPollEvents();
 		glset.setMatrices(callbackData.cameraPos, callbackData.originPos);
-		glset.render(window,vertices, callbackData.panelLoc, modelName);
+		glset.render(renderData,vertices);
 
 		//Light Obj
 		//MSHP.drawLigtObject(shaderProgram,lightPos);
@@ -143,26 +154,11 @@ void Fadenode::run()
 		}
 		modelFilePathTextBoxEnter();
 		loadModelButton();//
+		backfaceCullingCheckBox();
+		autoTriangulateCheckBoxEnter();
 		ctrlAltEsc();//Close Window
 		glfwSwapBuffers(window);
-		/*if (enableCtrlAltC) {
-			if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
-				Sleep(100);
-				if (backfaceCulling == false) {
-					glset.enable(GL_CULL_FACE);
-					glset.cullFace(GL_BACK);
-					backfaceCulling = true;
-				}
-				else {
-					glset.disable(GL_CULL_FACE);
-					backfaceCulling = false;
-				}
 
-			}
-			enableCtrlAltC = false;
-		}
-		if (glfwGetKey(window, GLFW_KEY_C) == GLFW_RELEASE)
-			enableCtrlAltC = true;*/
 
 		//CTRL D - Get Back To Default Location
 		/*if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
@@ -195,6 +191,52 @@ void modelFilePathTextBoxEnter() {
 		}
 	}
 }
+void autoTriangulateCheckBoxEnter(){
+	if (callbackData.autoTriangulateCheckBoxEnter) {
+		if (buttonGetInput) {
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				buttonGetInput = false;
+				buttonPressed = true;
+			}
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			buttonGetInput = true;
+			if (buttonPressed) {
+				if (autoTriangulateChecked == false)
+					autoTriangulateChecked = true;
+				else
+					autoTriangulateChecked = false;
+			}
+			buttonPressed = false;
+		}
+	}
+}
+void backfaceCullingCheckBox() {
+	if (callbackData.backfaceCullingCheckBoxEnter) {
+		if (buttonGetInput) {
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				buttonGetInput = false;
+				buttonPressed = true;
+			}
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			buttonGetInput = true;
+			if (buttonPressed) {
+				if (backfaceCullingChecked == false) {
+					backfaceCullingChecked = true;
+					enableBackfaceCulling = false;
+					backfaceCulling = true;
+				}
+				else {
+					enableBackfaceCulling = true;
+					backfaceCulling = true;
+					backfaceCullingChecked = false;
+				}
+			}
+			buttonPressed = false;
+		}
+	}
+}
 void ctrlAltEsc() {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
@@ -212,7 +254,7 @@ void loadModelButton() {
 			buttonGetInput = true;
 			if (modelName != "" && modelName[modelName.size() - 1] == 'j' && modelName[modelName.size() - 2] == 'b' && modelName[modelName.size() - 3] == 'o' && modelName[modelName.size() - 4] == '.') {
 				vertices.clear();
-				vertices = modelLoader.OBJ_getVertices(modelFilePath);
+				vertices = modelLoader.OBJ_getVertices(modelFilePath,autoTriangulateChecked);
 			}
 			buttonPressed = false;
 		}

@@ -5,11 +5,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "Fadenode.h"
+#include "RigidPainter.h"
 
 int main() 
 {
-	Fadenode fadenode;
-	fadenode.run();
+	RigidPainter rigidPainter;
+	rigidPainter.run();
 	return 0;
 }

@@ -3,14 +3,14 @@
 #include <fstream>
 #include <sstream>
 #include <glm/glm.hpp>
-#include "Fadenode.h"
+#include "RigidPainter.h"
 #include <vector>
 #include <string>
 using namespace std;
 
 	struct DataOut dataReturn;
 
-	DataOut Model_Loader::READ_OBJ_FILE(string path) { //Not capable of processing every contents of '.obj' file format. 
+	DataOut Model_Loader::READ_OBJ_FILE(string path,bool autoTriangulate) { //Not capable of processing every contents of '.obj' file format. 
 		std::ifstream infile(path);
 
 		int slashCounter = 0;
@@ -28,47 +28,62 @@ using namespace std;
 		while (std::getline(infile, line))
 		{
 			if (line[0] == 'f' && line[1] == ' ') {
-				for (size_t i = 2; i < line.length(); i++)
-				{
-					if (line[i] == '/' || line[i] == ' ' || line[i] == '\n') {
-						slashCounter++;
-						if (slashCounter == 1) {
-							holdFV.x = stoi(holdF);
-						}
-						else if (slashCounter == 2) {
-							holdFV.y = stoi(holdF);
-						}
-						else if (slashCounter == 3) {
-							holdFV.z = stoi(holdF);
-							hold1F.push_back(holdFV);
-							slashCounter = 0;
-						}
-						holdF = "";
-					}
-					else{
-						holdF += line[i];
-					}
-				}
-				holdFV.z = stoi(holdF);
-				hold1F.push_back(holdFV);
-				slashCounter = 0;
-				holdF = "";
-				for (int x = 0; x < hold1F.size()-2; x++)
-				{
-					holdVtoLine = to_string((int)hold1F[0].x) + "/" + to_string((int)hold1F[0].y) + "/" + to_string((int)hold1F[0].z) + " " + to_string((int)hold1F[x+1].x) + "/" + to_string((int)hold1F[x+1].y) + "/" + to_string((int)hold1F[x+1].z) + " " + to_string((int)hold1F[x+2].x) + "/" + to_string((int)hold1F[x+2].y) + "/" + to_string((int)hold1F[x+2].z);
-					for (int i = 0; i < holdVtoLine.length(); i++)
+				if (autoTriangulate) {
+					for (size_t i = 2; i < line.length(); i++)
 					{
-						if (holdVtoLine[i] != '\n')
-							if (holdVtoLine[i] == ' ')
+						if (line[i] == '/' || line[i] == ' ' || line[i] == '\n') {
+							slashCounter++;
+							if (slashCounter == 1) {
+								holdFV.x = stoi(holdF);
+							}
+							else if (slashCounter == 2) {
+								holdFV.y = stoi(holdF);
+							}
+							else if (slashCounter == 3) {
+								holdFV.z = stoi(holdF);
+								hold1F.push_back(holdFV);
+								slashCounter = 0;
+							}
+							holdF = "";
+						}
+						else {
+							holdF += line[i];
+						}
+					}
+					holdFV.z = stoi(holdF);
+					hold1F.push_back(holdFV);
+					slashCounter = 0;
+					holdF = "";
+					for (int x = 0; x < hold1F.size() - 2; x++)
+					{
+						holdVtoLine = to_string((int)hold1F[0].x) + "/" + to_string((int)hold1F[0].y) + "/" + to_string((int)hold1F[0].z) + " " + to_string((int)hold1F[x + 1].x) + "/" + to_string((int)hold1F[x + 1].y) + "/" + to_string((int)hold1F[x + 1].z) + " " + to_string((int)hold1F[x + 2].x) + "/" + to_string((int)hold1F[x + 2].y) + "/" + to_string((int)hold1F[x + 2].z);
+						for (int i = 0; i < holdVtoLine.length(); i++)
+						{
+							if (holdVtoLine[i] != '\n')
+								if (holdVtoLine[i] == ' ')
+									dataReturn.fInfo += '/';
+								else
+									dataReturn.fInfo.push_back(holdVtoLine[i]);
+						}
+						dataReturn.fInfo += '/';
+					}
+
+
+					hold1F.clear();
+				}
+				else {
+					for (int i = 2; i < line.length(); i++)
+					{
+						if (line[i] != '\n')
+							if (line[i] == ' ')
 								dataReturn.fInfo += '/';
 							else
-								dataReturn.fInfo.push_back(holdVtoLine[i]);
+								dataReturn.fInfo.push_back(line[i]);
 					}
 					dataReturn.fInfo += '/';
+
 				}
-
-
-				hold1F.clear();
+				
 			}
 			else if (line[0] == 'v' && line[1] == ' ') {
 				dataReturn.vVec.push_back(line.erase(0,2));
@@ -82,9 +97,9 @@ using namespace std;
 		}
 		return dataReturn;
 	}
-	vector<float> Model_Loader::OBJ_getVertices(string path) {
+	vector<float> Model_Loader::OBJ_getVertices(string path, bool autoTriangulate) {
 		Model_Loader  MSHPLoader;
-		DataOut dataReturn = MSHPLoader.READ_OBJ_FILE(path);
+		DataOut dataReturn = MSHPLoader.READ_OBJ_FILE(path, autoTriangulate);
 		int phaseCounter = 0;
 		bool countDigits = false;
 		int digitCounter = 0;

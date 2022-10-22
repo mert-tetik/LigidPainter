@@ -9,6 +9,8 @@ struct CommonData {
 struct CallbckData {
 	bool loadModelButtonEnter;
 	bool modelFilePathTextBoxEnter;
+	bool autoTriangulateCheckBoxEnter;
+	bool backfaceCullingCheckBoxEnter;
 	glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
 	float panelLoc;
@@ -26,6 +28,9 @@ struct ColorData
 	glm::vec3 buttonColor = glm::vec3(0.23f, 0.23f, 0.23f);
 	glm::vec3 menuBarColor = glm::vec3(0.05f, 0.05f, 0.05f);
 	glm::vec3 textBoxColor = glm::vec3(0.05f, 0.05f, 0.05f);
+	glm::vec3 checkBoxColor = glm::vec3(0.05f, 0.05f, 0.05f);
+	glm::vec3 checkBoxCheckedColor = glm::vec3(0.17f, 0.17f, 0.17f);
+
 };
 struct ProjectionData
 {
@@ -40,10 +45,20 @@ struct DataOut
 	std::vector <std::string> vnVec;
 	std::vector <std::string> vtVec;
 };
+struct RenderData {
+	GLFWwindow* window;
+	float panelLoc; 
+	std::string modelLoadFilePath; 
+	bool isAutoTriangulateHover; 
+	bool isAutoTriangulateChecked; 
+	bool isbackfaceCullingHover; 
+	bool isbackfaceCullingChecked; 
+	bool backfaceCulling;
+};
 class Model_Loader {
 public:
-	DataOut READ_OBJ_FILE(std::string path);
-	std::vector<float> OBJ_getVertices(std::string path);
+	DataOut READ_OBJ_FILE(std::string path, bool autoTriangulate);
+	std::vector<float> OBJ_getVertices(std::string path, bool autoTriangulate);
 };
 class Texture_Generator {
 public:
@@ -64,7 +79,7 @@ public:
 	std::string openFileDialog();
 	std::string getLastWordBySeparatingWithChar(std::string s, char del);
 };
-class Fadenode {
+class RigidPainter {
 public:
 	void run();
 };
@@ -77,6 +92,7 @@ public:
 	void renderText(unsigned int program, std::string text, float x, float y, float scale, glm::vec3 color);
 	void uploadChars();
 	void renderMenubar(GLFWwindow* window);
+	void checkBox(float position_x, float position_y, std::string text, glm::vec3 color,bool mouseHover,bool checked);
 };
 class GlSet {
 public:
@@ -103,7 +119,7 @@ public:
 	void viewport(int width, int height);
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
 	void getProgram();
-	void render(GLFWwindow* window, std::vector<float>& vertices, float panelLoc, std::string modelLoadFilePath);
+	void render(RenderData renderData, std::vector<float>& vertices);
 	GLFWwindow* getWindow();
 	ProjectionData setMatrices(glm::vec3 cameraPos, glm::vec3 originPos);
 	glm::vec3 getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos);

@@ -8,7 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "Fadenode.h"
+#include "RigidPainter.h"
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -162,7 +162,7 @@ void GlSet::getProgram() {
 #pragma endregion
 }
 
-void GlSet::render(GLFWwindow* window, std::vector<float>& vertices, float panelLoc, std::string modelLoadFilePath) {
+void GlSet::render(RenderData renderData, std::vector<float>& vertices) {
 	GlSet gls;
 	std::vector<float>axisPointer{
 		0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
@@ -191,17 +191,26 @@ void GlSet::render(GLFWwindow* window, std::vector<float>& vertices, float panel
 	drawArrays(axisPointer, true);
 	blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	if (renderData.backfaceCulling) {
+		enable(GL_CULL_FACE);
+		cullFace(GL_BACK);
+	}
 	meshDataToShaders();
 	drawArrays(vertices, false);
 
-	ui.box(0.12f, 0.03f, panelLoc / 2, 0.6f, modelLoadFilePath, colorData.textBoxColor, 0, true);
-	ui.renderText(commonData.program, "File Path", panelLoc / 2 - 0.05f, 0.64f, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
+	disable(GL_CULL_FACE);
+
+	ui.box(0.12f, 0.03f, renderData.panelLoc / 2, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true);
+	ui.renderText(commonData.program, "File Path", renderData.panelLoc / 2 - 0.05f, 0.64f, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
 
 
-	ui.renderMenubar(window);
+	ui.renderMenubar(renderData.window);
 
-	ui.panel(panelLoc, 0);
-	ui.box(0.08f, 0.04f, panelLoc / 2, 0.4f, "Load", colorData.buttonColor, 0.022f, false);
+	ui.panel(renderData.panelLoc, 0);
+	ui.box(0.08f, 0.04f, renderData.panelLoc / 2, 0.4f, "Load", colorData.buttonColor, 0.022f, false);
+	ui.checkBox(renderData.panelLoc / 2 - 0.08f, 0.3f,"Auto triangulate",colorData.checkBoxColor, renderData.isAutoTriangulateHover, renderData.isAutoTriangulateChecked);
+	ui.checkBox(renderData.panelLoc / 2 - 0.08f, 0.2f, "Backface culling", colorData.checkBoxColor, renderData.isbackfaceCullingHover, renderData.isbackfaceCullingChecked);
+
 
 
 

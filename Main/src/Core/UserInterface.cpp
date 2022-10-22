@@ -8,7 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "Fadenode.h"
+#include "RigidPainter.h"
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -142,7 +142,23 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	else {
 		renderText(commonData.program, text, -width + position_x, position_y - 0.01, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
 	}
+}
+void UserInterface::checkBox(float position_x, float position_y, std::string text, glm::vec3 color,bool mouseHover,bool checked) {
+	CommonData commonData;
+	ColorData colorData;
+	if (!checked) {
+		if (!mouseHover)
+			box(0.012f, 0.02f, position_x, position_y, "", colorData.checkBoxColor, 0.034f, false);
+		else
+			box(0.012f, 0.02f, position_x, position_y, "", colorData.checkBoxCheckedColor, 0.034f, false);
+	}
+	else {
+		box(0.012f, 0.02f, position_x, position_y, "", glm::vec3(1.0f) - colorData.checkBoxColor, 0.034f, false);
+
+	}
 	
+
+	renderText(commonData.program, text, position_x+0.04f, position_y - 0.01, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
 	
 
 }
