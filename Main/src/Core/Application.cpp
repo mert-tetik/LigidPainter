@@ -65,6 +65,8 @@ void loadModelButton();
 void modelFilePathTextBoxEnter();
 void autoTriangulateCheckBoxEnter();
 void backfaceCullingCheckBox();
+void addPlaneButtonEnter();
+void addSphereButtonEnter();
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//--
@@ -141,7 +143,7 @@ void RigidPainter::run()
 
 		glfwPollEvents();
 		glset.setMatrices(callbackData.cameraPos, callbackData.originPos);
-		glset.render(renderData,vertices);
+		glset.render(renderData,vertices,callbackData.movePanel);
 
 		//Light Obj
 		//MSHP.drawLigtObject(shaderProgram,lightPos);
@@ -158,7 +160,8 @@ void RigidPainter::run()
 		autoTriangulateCheckBoxEnter();
 		ctrlAltEsc();//Close Window
 		glfwSwapBuffers(window);
-
+		addPlaneButtonEnter();
+		addSphereButtonEnter();
 
 		//CTRL D - Get Back To Default Location
 		/*if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
@@ -186,6 +189,51 @@ void modelFilePathTextBoxEnter() {
 			if (buttonPressed) {
 				modelFilePath = utilities.openFileDialog();
 				modelName = utilities.getLastWordBySeparatingWithChar(modelFilePath, '\\');
+			}
+			buttonPressed = false;
+		}
+	}
+}
+void addPlaneButtonEnter() {
+	vector<float> planeVertices = {
+		-1 , 0 , 1 , 0 , 0 , 0 , 1 , 0 ,
+		1 , 0 , 1 , 1 , 0 , 0 , 1 , 0 ,
+		1 , 0 , -1 , 1 , 1 , 0 , 1 , 0 ,
+		-1 , 0 , 1 , 0 , 0 , 0 , 1 , 0 ,
+		1 , 0 , -1 , 1 , 1 , 0 , 1 , 0 ,
+		-1 , 0 , -1 , 0 , 1 , 0 , 1 , 0 
+	};
+	if (callbackData.addPlaneButtonEnter) {
+		if (buttonGetInput) {
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				buttonGetInput = false;
+				buttonPressed = true;
+			}
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			buttonGetInput = true;
+			if (buttonPressed) {
+				modelName = "plane.rigidefault";
+				vertices = planeVertices;
+			}
+			buttonPressed = false;
+		}
+	}
+}
+void addSphereButtonEnter() {
+	Sphere sphere;
+	if (callbackData.addSphereButtonEnter) {
+		if (buttonGetInput) {
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				buttonGetInput = false;
+				buttonPressed = true;
+			}
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			buttonGetInput = true;
+			if (buttonPressed) {
+				modelName = "sphere.rigidefault";
+				vertices = sphere.getSphere();
 			}
 			buttonPressed = false;
 		}
@@ -255,6 +303,13 @@ void loadModelButton() {
 			if (modelName != "" && modelName[modelName.size() - 1] == 'j' && modelName[modelName.size() - 2] == 'b' && modelName[modelName.size() - 3] == 'o' && modelName[modelName.size() - 4] == '.') {
 				vertices.clear();
 				vertices = modelLoader.OBJ_getVertices(modelFilePath,autoTriangulateChecked);
+				// for (size_t i = 0; i < vertices.size(); i++)
+				// {
+				// 	// if (i % 8 == 0) {
+				// 	// 	cout << '\n';
+				// 	// }
+				// 	// cout << vertices[i] << " , ";
+				// }
 			}
 			buttonPressed = false;
 		}

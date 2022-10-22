@@ -2,6 +2,7 @@
 #define MSHPAPP_H
 
 #include <vector>
+
 struct CommonData {
 	unsigned int program = 3;
 };
@@ -11,9 +12,13 @@ struct CallbckData {
 	bool modelFilePathTextBoxEnter;
 	bool autoTriangulateCheckBoxEnter;
 	bool backfaceCullingCheckBoxEnter;
+	bool addPlaneButtonEnter;
+	bool addSphereButtonEnter;
 	glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
 	float panelLoc;
+
+	bool movePanel;
 };
 struct TextureData {
 	unsigned int width;
@@ -54,6 +59,10 @@ struct RenderData {
 	bool isbackfaceCullingHover; 
 	bool isbackfaceCullingChecked; 
 	bool backfaceCulling;
+};
+class Sphere {
+public:
+	std::vector<float> getSphere();
 };
 class Model_Loader {
 public:
@@ -119,7 +128,7 @@ public:
 	void viewport(int width, int height);
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
 	void getProgram();
-	void render(RenderData renderData, std::vector<float>& vertices);
+	void render(RenderData renderData, std::vector<float>& vertices, bool movePanel);
 	GLFWwindow* getWindow();
 	ProjectionData setMatrices(glm::vec3 cameraPos, glm::vec3 originPos);
 	glm::vec3 getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos);

@@ -42,6 +42,10 @@ bool loadModelButtonEnter;
 bool modelFilePathTextBoxEnter;
 bool autoTriangulateCheckBoxEnter;
 bool backfaceCullingCheckBoxEnter;
+bool addPlaneButtonEnter;
+bool addSphereButtonEnter;
+
+bool movePanel;
 
 
 glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -119,6 +123,9 @@ CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypo
 	callbk.modelFilePathTextBoxEnter = modelFilePathTextBoxEnter;
 	callbk.autoTriangulateCheckBoxEnter = autoTriangulateCheckBoxEnter;
 	callbk.backfaceCullingCheckBoxEnter = backfaceCullingCheckBoxEnter;
+	callbk.addPlaneButtonEnter = addPlaneButtonEnter;
+	callbk.addSphereButtonEnter = addSphereButtonEnter;
+	callbk.movePanel = movePanel;
 
 	callbk.cameraPos = cameraPos;
 	callbk.originPos = originPos;
@@ -131,7 +138,7 @@ void Callback::panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX) {
 	if (changeLoc) {
 		panelLoc += panelOffset / 1000;
 		if (panelLoc > 1.7f)
-			panelLoc = 1.7f;
+			movePanel = true;
 		if (panelLoc < 1.5f)
 			panelLoc = 1.5f;
 		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
@@ -159,7 +166,8 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos) {
 	modelFilePathTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / 2, 0.6f, mouseXPos, mouseYPos);
 	autoTriangulateCheckBoxEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc / 2 - 0.08f, 0.3f, mouseXPos, mouseYPos);
 	backfaceCullingCheckBoxEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc / 2 - 0.08f, 0.2f, mouseXPos, mouseYPos);
-
+	addPlaneButtonEnter = ui.isMouseOnButton(window, 0.08f, 0.04f, panelLoc / 2, 0.0f, mouseXPos, mouseYPos);
+	addSphereButtonEnter = ui.isMouseOnButton(window, 0.08f, 0.04f, panelLoc / 2, -0.1f, mouseXPos, mouseYPos);
 	if (modelFilePathTextBoxEnter) {
 		glfwSetCursor(window, pointerCursor);
 	}
@@ -170,6 +178,12 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos) {
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if (backfaceCullingCheckBoxEnter) {
+		glfwSetCursor(window, pointerCursor);
+	}
+	else if (addPlaneButtonEnter) {
+		glfwSetCursor(window, pointerCursor);
+	}
+	else if (addSphereButtonEnter) {
 		glfwSetCursor(window, pointerCursor);
 	}
 	else {
