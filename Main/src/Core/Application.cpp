@@ -1,7 +1,6 @@
 #include<iostream>
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
-#include<windows.h>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -9,8 +8,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "MSHPApp.h"
+#include "Fadenode.h"
 #include <vector>
+#include <map>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #define STBI_MSC_SECURE_CRT
@@ -19,122 +19,134 @@
 
 using namespace std;
 
-MSHPApp MSHP;
-MSHP_Texture_Generator txtrGen;
-MSHP_Model_Loader MSHPLoader;
-MSHP_userInterface ui;
-GLFWwindow* window = MSHP.init();
-texture txtr;
-glSet gs;
-callbckData callbkData;
-callback callbk;
+Utilities utilities;
+Texture_Generator txtrGen;
+Model_Loader modelLoader;
+UserInterface ui;
+Texture txtr;
+GlSet glset;
+CallbckData callbackData;
+Callback callback;
+GLFWwindow* window = glset.getWindow();
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
-
-
+unsigned int VBO, VAO; //Vertex Buffer Object, Vertex Array Object
 
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx) 
 {
-	callbkData = callbk.scroll_callback(window,scroll,scrollx);
+	callbackData = callback.scroll_callback(window,scroll,scrollx);
 }
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	callbkData = callbk.mouse_callback(window, xpos, ypos);
+	callbackData = callback.mouse_callback(window, xpos, ypos);
+}
+char currentKey;
+bool changeModelFilePathText = false;
+//bool preventPairs = false;
+//char keyCounter = 0;
+string modelFilePath;
+
+bool backfaceCulling = false;
+bool enableCtrlAltC = true;
+int isAxisPointerLoc;
+int isTwoDimensionalLoc;
+double mouseXpos, mouseYpos;
+bool buttonGetInput = true;
+bool buttonPressed = false;
+string modelName;
+vector<float> vertices = { 0 };
+
+void ctrlAltEsc();
+void loadModelButton();
+void modelFilePathTextBoxEnter();
+
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	//--
 }
 
-void MSHPApp::run()
+void Fadenode::run()
 {
-	commonData cmnd;
+	CommonData commonData;
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
+	glfwSetKeyCallback(window, key_callback);
 
-	MSHP.getProgram();
-	vector<float> vertices = MSHPLoader.OBJ_getVertices();
-	//glTexSubImage2D
+	glset.getProgram();
 
-	unsigned int VBO, VAO, EBO; //Vertex Buffer Object, Vertex Array Object, Element Buffer Object
-	//glGenBuffers(1, &EBO);
 	glGenBuffers(1, &VBO);
-
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glUseProgram(commonData.program);
 
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	glset.setVertexAtribPointer();
+	glset.bufferData(vertices);
 
-	//Camera
-	glm::vec3 cameraDirection = glm::normalize(callbkData.cameraPos - glm::vec3(0.0f, 0.0f, 0.0f));
-	glm::vec3 cameraRight = glm::normalize(glm::vec3(1.0f, 0.0f, 0.0f));
-
-	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 
-	//Light
+	glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+	glset.uniformMatrix4fv(commonData.program, "TextProjection", projection);
+	ui.setViewportBgColor();
+	ui.uploadChars();
+
+
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 	
-	glBindVertexArray(VAO);
-	glUseProgram(cmnd.program);
 
-	ui.setViewportBgColor();
-
-
-	glUniform3fv(glGetUniformLocation(cmnd.program, "lightPos"), 1, &lightPos[0]);
-	glUniform3fv(glGetUniformLocation(cmnd.program, "viewPos"), 1, &callbkData.cameraPos[0]);
-
-	glUniform1f(glGetUniformLocation(cmnd.program, "material.shininess"), 32.0f);
+	glset.uniform3fv(commonData.program, "lightPos", lightPos);
+	glset.uniform3fv(commonData.program, "viewPos", callbackData.cameraPos);
+	glset.uniform1f(commonData.program, "material.shininess", 32.0f);
 
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	gs.bindFrameBuffer();
+	glset.bindFrameBuffer();
 
 	//Texture
 	string albedoTexturePath = "vergil3.jpg";
 	string maskTexturePath = "testHexa.jpg";
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, txtr.getTexture(albedoTexturePath, 0, 0));
+	glset.activeTexture(GL_TEXTURE0);
+	glset.bindTexture(txtr.getTexture(albedoTexturePath, 0, 0));
 
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, txtr.getTexture(maskTexturePath, 0, 0));
+	glset.activeTexture(GL_TEXTURE1);
+	glset.bindTexture(txtr.getTexture(maskTexturePath, 0, 0));
 
-	glUniform1i(glGetUniformLocation(cmnd.program, "material.diffuse"), 0);
-	glUniform1i(glGetUniformLocation(cmnd.program, "material.specular"), 1);
 
-	textureData td;
-	td = txtr.getTextureData(albedoTexturePath.c_str());//Albedo Texture
-	GLubyte* pixelsTxtr = txtr.getTextureFromProgram(GL_TEXTURE0, td.width, td.height, td.channels);
-	albedoTexture albTxtr;
-	albTxtr.channels = td.channels;
-	albTxtr.width = td.width;
-	albTxtr.height = td.height;
+	glset.uniform1i(commonData.program, "material.diffuse", 0);
+	glset.uniform1i(commonData.program, "material.specular", 1);
 
-	td = txtr.getTextureData(maskTexturePath.c_str());//Mask Texture
-	GLubyte* pixelsMask = txtr.getTextureFromProgram(GL_TEXTURE1, td.width, td.height, td.channels);
-	maskTexture mskTxtr;
-	mskTxtr.channels = td.channels;
-	mskTxtr.width = td.width;
-	mskTxtr.height = td.height;
+	//*************************************************************************
+	//textureData td;
+	//td = txtr.getTextureData(albedoTexturePath.c_str());//Albedo Texture
+	//GLubyte* pixelsTxtr = txtr.getTextureFromProgram(GL_TEXTURE0, td.width, td.height, td.channels);
+	//albedoTexture albTxtr;
+	//albTxtr.channels = td.channels;
+	//albTxtr.width = td.width;
+	//albTxtr.height = td.height;
 
-	bool backfaceCulling = false;
-	bool enableCtrlAltC = true;
-	int isAxisPointerLoc;
-	int isTwoDimensionalLoc;
-	double mouseXpos, mouseYpos;
+	//td = txtr.getTextureData(maskTexturePath.c_str());//Mask Texture
+	//GLubyte* pixelsMask = txtr.getTextureFromProgram(GL_TEXTURE1, td.width, td.height, td.channels);
+	//maskTexture mskTxtr;
+	//mskTxtr.channels = td.channels;
+	//mskTxtr.width = td.width;
+	//mskTxtr.height = td.height;
+	//*************************************************************************
 
-	bool buttonGetInput = true;
+	framebuffer_size_callback(window,1900,1000);
 	//Loop
 	while (!glfwWindowShouldClose(window))
 	{
+		/*int isTextLoc = glGetUniformLocation(cmnd.program, "isText");
+		glUniform1i(isTextLoc, 0);
+		int isTextFLoc = glGetUniformLocation(cmnd.program, "isTextF");
+		glUniform1i(isTextFLoc, 0);*/
+
 		glfwPollEvents();
-		MSHP.transformObject(callbkData.cameraPos, callbkData.originPos);
-		MSHP.renderModel(vertices, callbkData.panelLoc);
+		glset.setMatrices(callbackData.cameraPos, callbackData.originPos);
+		glset.render(window,vertices, callbackData.panelLoc, modelName);
 
 		//Light Obj
 		//MSHP.drawLigtObject(shaderProgram,lightPos);
@@ -142,37 +154,23 @@ void MSHPApp::run()
 		//Paint
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
 			glfwGetCursorPos(window, &mouseXpos, &mouseYpos);
-			txtrGen.paintTexture(window, vertices, callbkData.cameraPos, callbkData.originPos,mouseXpos, mouseYpos,pixelsTxtr, pixelsMask, callbkData.panelLoc,mskTxtr,albTxtr);
+			//txtrGen.paintTexture(window, vertices, callbkData.cameraPos, callbkData.originPos,mouseXpos, mouseYpos,pixelsTxtr, pixelsMask, callbkData.panelLoc,mskTxtr,albTxtr);
+			//glGenerateMipmap(GL_TEXTURE_2D);
 		}
-		if (callbkData.buttonEnter) {
-			if (buttonGetInput) {
-				if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
-					GLubyte* dwnldImage = txtr.getTextureFromProgram(GL_TEXTURE0, albTxtr.width, albTxtr.height, albTxtr.channels);
-
-					txtr.drawTexture("downloadPath.jpg", albTxtr.width, albTxtr.height, dwnldImage,albTxtr.channels);
-					buttonGetInput = false;
-				}
-			}
-			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
-				buttonGetInput = true;
-			}
-		}
-		//ESC - Close The Window
+		modelFilePathTextBoxEnter();
+		loadModelButton();//
+		ctrlAltEsc();//Close Window
 		glfwSwapBuffers(window);
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-			glfwSetWindowShouldClose(window, true);
-		}
-		//CTRL ALT C - Enable Backface Culling
-		if (enableCtrlAltC) {
+		/*if (enableCtrlAltC) {
 			if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
 				Sleep(100);
 				if (backfaceCulling == false) {
-					glEnable(GL_CULL_FACE);
-					glCullFace(GL_BACK);
+					glset.enable(GL_CULL_FACE);
+					glset.cullFace(GL_BACK);
 					backfaceCulling = true;
 				}
 				else {
-					glDisable(GL_CULL_FACE);
+					glset.disable(GL_CULL_FACE);
 					backfaceCulling = false;
 				}
 
@@ -180,7 +178,7 @@ void MSHPApp::run()
 			enableCtrlAltC = false;
 		}
 		if (glfwGetKey(window, GLFW_KEY_C) == GLFW_RELEASE)
-			enableCtrlAltC = true;
+			enableCtrlAltC = true;*/
 
 		//CTRL D - Get Back To Default Location
 		/*if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
@@ -195,8 +193,50 @@ void MSHPApp::run()
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) //Update Screen
-{
-	glViewport(0, 0, 1920, 1080);
+void modelFilePathTextBoxEnter() {
+	if (callbackData.modelFilePathTextBoxEnter) {
+		if (buttonGetInput) {
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				buttonGetInput = false;
+				buttonPressed = true;
+			}
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			buttonGetInput = true;
+			if (buttonPressed) {
+				modelFilePath = utilities.openFileDialog();
+				modelName = utilities.getLastWordBySeparatingWithChar(modelFilePath, '\\');
+			}
+			buttonPressed = false;
+		}
+	}
 }
+void ctrlAltEsc() {
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, true);
+	}
+}
+void loadModelButton() {
+	if (callbackData.loadModelButtonEnter) {
+		if (buttonGetInput) {
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				buttonGetInput = false;
+				buttonPressed = true;
+			}
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE && buttonPressed) {
+			buttonGetInput = true;
+			if (modelName != "" && modelName[modelName.size() - 1] == 'j' && modelName[modelName.size() - 2] == 'b' && modelName[modelName.size() - 3] == 'o' && modelName[modelName.size() - 4] == '.') {
+				vertices.clear();
+				vertices = modelLoader.OBJ_getVertices(modelFilePath);
+			}
+			buttonPressed = false;
+		}
+	}
+}
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	callback.framebuffer_size_callback(window,width,height);
+}
+
+

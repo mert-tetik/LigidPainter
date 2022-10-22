@@ -1,7 +1,6 @@
 #include<iostream>
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
-#include<windows.h>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -9,7 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "MSHPApp.h"
+#include "Fadenode.h"
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -31,19 +30,22 @@ int holdXPos = 1536;
 float panelLoc = 1.6f;
 float panelOffset;
 bool changeLoc = false;
+
+bool buttonEnter = true;
 //Button
 int* buttonScreenCoor;
 //Cursors
 GLFWcursor* cursorHResize = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
-GLFWcursor* arrowCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
-GLFWcursor* pointerCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
 
-bool buttonEnter;
+
+bool loadModelButtonEnter;
+bool modelFilePathTextBoxEnter;
+
 glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
 
-callbckData callback::scroll_callback(GLFWwindow* window, double scroll, double scrollx) {
-	callbckData callbk;
+CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double scrollx) {
+	CallbckData callbk;
 
 	if (scrollx == 1 && radius != 1) {
 		radius--;
@@ -55,46 +57,28 @@ callbckData callback::scroll_callback(GLFWwindow* window, double scroll, double 
 	cameraPos.y = sin(glm::radians(pitch)) * -radius + originPos.y;
 	cameraPos.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.z;
 
-	callbk.buttonEnter = buttonEnter;
+	callbk.loadModelButtonEnter = loadModelButtonEnter;
+	callbk.modelFilePathTextBoxEnter = modelFilePathTextBoxEnter;
 	callbk.cameraPos = cameraPos;
 	callbk.originPos = originPos;
 	callbk.panelLoc = panelLoc;
 	return callbk;
 }
-callbckData callback::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	callbckData callbk;
-	MSHP_userInterface ui;
-	if (xpos > (1920 / 2 * panelLoc) - 10 && xpos < (1920 / 2 * panelLoc) + 10) {
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
-			changeLoc = true;
-		}
-		glfwSetCursor(window, cursorHResize);
-	}
-	else {
-		//Return Once
-		glfwSetCursor(window, arrowCursor);
-	}
-	panelOffset = xpos - holdXPos;
-	holdXPos = xpos;
-	if (changeLoc) {
-		panelLoc += panelOffset / 1000;
-		if (panelLoc > 1.8f)
-			panelLoc = 1.8f;
-		if (panelLoc < 1.4f)
-			panelLoc = 1.4f;
-		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
-			changeLoc = false;
-		}
-	}
-	buttonScreenCoor = ui.buttonGetScreenCoor(0.1f, panelLoc / 2, -0.8f);
-	if (xpos < buttonScreenCoor[0] && xpos > buttonScreenCoor[4] && ypos > buttonScreenCoor[1] && ypos < buttonScreenCoor[7]) {
-		glfwSetCursor(window, pointerCursor);
-		callbk.buttonEnter = true;
-	}
-	else {
-		callbk.buttonEnter = false;
-	}
+	CallbckData callbk;
+	UserInterface ui;
+	
+	//Get window size
+	int screenSizeX;
+	int screenSizeY;
+	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
+
+	panelCheck(window,xpos,screenSizeX);
+	
+	buttonCheck(window, xpos, ypos);
+	
+
 	xoffset = xpos - lastX;
 	yoffset = lastY - ypos;
 	lastX = xpos;
@@ -128,9 +112,64 @@ callbckData callback::mouse_callback(GLFWwindow* window, double xpos, double ypo
 		cameraPos.y = sin(glm::radians(pitch)) * -radius + originPos.y;
 		cameraPos.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.z;
 	}
-	callbk.buttonEnter = buttonEnter;
+	callbk.loadModelButtonEnter = loadModelButtonEnter;
+	callbk.modelFilePathTextBoxEnter = modelFilePathTextBoxEnter;
 	callbk.cameraPos = cameraPos;
 	callbk.originPos = originPos;
 	callbk.panelLoc = panelLoc;
 	return callbk;
+}
+void Callback::panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX) {
+	panelOffset = mouseXpos - holdXPos;
+	holdXPos = mouseXpos;
+	if (changeLoc) {
+		panelLoc += panelOffset / 1000;
+		if (panelLoc > 1.7f)
+			panelLoc = 1.7f;
+		if (panelLoc < 1.5f)
+			panelLoc = 1.5f;
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			changeLoc = false;
+		}
+	}
+
+	if (mouseXpos > (screenSizeX / 2 * panelLoc) - 10 && mouseXpos < (screenSizeX / 2 * panelLoc) + 40) {
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+			changeLoc = true;
+		}
+		//glfwSetCursor(window, cursorHResize);
+	}
+	else {
+		//Return Once
+		//glfwSetCursor(window, arrowCursor);
+	}
+}
+void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos) {
+	UserInterface ui;
+
+	
+	GLFWcursor* pointerCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
+	loadModelButtonEnter = ui.isMouseOnButton(window, 0.08f, 0.04f, panelLoc / 2, 0.4f, mouseXPos, mouseYPos);
+	modelFilePathTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / 2, 0.6f, mouseXPos, mouseYPos);
+
+	if (modelFilePathTextBoxEnter) {
+		glfwSetCursor(window, pointerCursor);
+	}
+	else if (loadModelButtonEnter) {
+		glfwSetCursor(window, pointerCursor);
+	}
+	else {
+		GLFWcursor* arrowCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+		glfwSetCursor(window, arrowCursor);
+	}
+}
+void Callback::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	GlSet glset;
+	int screenSizeX;
+	int screenSizeY;
+	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
+	height = width / 16 * 9;
+	glfwSetWindowSize(window, width, height);
+	glset.viewport(screenSizeX, screenSizeY);
 }

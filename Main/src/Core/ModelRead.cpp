@@ -3,16 +3,15 @@
 #include <fstream>
 #include <sstream>
 #include <glm/glm.hpp>
-#include "MSHPApp.h"
+#include "Fadenode.h"
 #include <vector>
 #include <string>
-#include <glm/gtx/string_cast.hpp>
 using namespace std;
 
-	struct dataOut dataReturn;
+	struct DataOut dataReturn;
 
-	dataOut MSHP_Model_Loader::READ_OBJ_FILE() { //Not capable of processing every contents of '.obj' file format. 
-		std::ifstream infile("untitled.obj");
+	DataOut Model_Loader::READ_OBJ_FILE(string path) { //Not capable of processing every contents of '.obj' file format. 
+		std::ifstream infile(path);
 
 		int slashCounter = 0;
 		vector<glm::vec3> hold1F;
@@ -23,7 +22,7 @@ using namespace std;
 		string vertexInfo = "";
 		string faceInfo = "";
 
-		dataOut dataReturn;
+		DataOut dataReturn;
 		string line;
 
 		while (std::getline(infile, line))
@@ -83,9 +82,9 @@ using namespace std;
 		}
 		return dataReturn;
 	}
-	vector<float> MSHP_Model_Loader::OBJ_getVertices() {
-		MSHP_Model_Loader  MSHPLoader;
-		dataOut dataReturn = MSHPLoader.READ_OBJ_FILE();
+	vector<float> Model_Loader::OBJ_getVertices(string path) {
+		Model_Loader  MSHPLoader;
+		DataOut dataReturn = MSHPLoader.READ_OBJ_FILE(path);
 		int phaseCounter = 0;
 		bool countDigits = false;
 		int digitCounter = 0;
