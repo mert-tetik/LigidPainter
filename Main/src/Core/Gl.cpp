@@ -162,7 +162,7 @@ void GlSet::getProgram() {
 #pragma endregion
 }
 
-void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool movePanel) {
+void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool movePanel, bool modelPanelActive, bool texturePanelActive) {
 	GlSet gls;
 	std::vector<float>axisPointer{
 		0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
@@ -200,26 +200,48 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool move
 
 	disable(GL_CULL_FACE);
 
-	int centerDivider;
-	if (!movePanel) {
-		centerDivider = 2;
-	}
-	else {
-		centerDivider = 1;
-	}
-	ui.box(0.12f, 0.03f, renderData.panelLoc / 2, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true);
-	ui.renderText(commonData.program, "File Path", renderData.panelLoc / 2 - 0.05f, 0.64f, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
-
-
-	ui.renderMenubar(renderData.window);
+	//ui.renderMenubar(renderData.window);
 
 	ui.panel(renderData.panelLoc, 0);
-	ui.box(0.08f, 0.04f, renderData.panelLoc / 2, 0.4f, "Load", colorData.buttonColor, 0.022f, false);
-	ui.box(0.08f, 0.04f, renderData.panelLoc / 2, 0.0f, "Add Panel", colorData.buttonColor, 0.045f, false);
-	ui.box(0.08f, 0.04f, renderData.panelLoc / 2, -0.1f, "Add Sphere", colorData.buttonColor, 0.047f, false);
+	glm::mat4 projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
+	uniformMatrix4fv(commonData.program, "TextProjection", projection);
+	ui.panelChangeButton(renderData.panelLoc,0.8f);//Model Panel
+	ui.panelChangeButton(renderData.panelLoc, 0.72f);//Texture Panel
 
-	ui.checkBox(renderData.panelLoc / 2 - 0.08f, 0.3f,"Auto triangulate",colorData.checkBoxColor, renderData.isAutoTriangulateHover, renderData.isAutoTriangulateChecked);
-	ui.checkBox(renderData.panelLoc / 2 - 0.08f, 0.2f, "Backface culling", colorData.checkBoxColor, renderData.isbackfaceCullingHover, renderData.isbackfaceCullingChecked);
+	float centerDivider;
+	float centerSum;
+	if (!movePanel) {
+		centerDivider = 2.0f;
+		centerSum = 0;
+		 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+		uniformMatrix4fv(commonData.program, "TextProjection", projection);
+	}
+	else {
+		centerDivider = 1.0f;
+		centerSum = 0.15f;
+		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
+		uniformMatrix4fv(commonData.program, "TextProjection", projection);
+	}
+	if (modelPanelActive) {
+		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider+ centerSum, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true);
+		ui.renderText(commonData.program, "File Path", renderData.panelLoc / centerDivider+ centerSum - 0.05f, 0.64f, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
+
+
+	
+		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, 0.4f, "Load", colorData.buttonColor, 0.022f, false);
+		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, 0.0f, "Add Panel", colorData.buttonColor, 0.045f, false);
+		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, -0.1f, "Add Sphere", colorData.buttonColor, 0.047f, false);
+
+		ui.checkBox(renderData.panelLoc / centerDivider+ centerSum - 0.08f, 0.3f,"Auto triangulate",colorData.checkBoxColor, renderData.isAutoTriangulateHover, renderData.isAutoTriangulateChecked);
+		ui.checkBox(renderData.panelLoc / centerDivider+ centerSum - 0.08f, 0.2f, "Backface culling", colorData.checkBoxColor, renderData.isbackfaceCullingHover, renderData.isbackfaceCullingChecked);
+	}
+	if (texturePanelActive) {
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "+ Add Image", colorData.buttonColor, 0.05f, false);
+	}
+
+
+	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+	uniformMatrix4fv(commonData.program, "TextProjection", projection);
 }
 GLFWwindow* GlSet::getWindow() {
 	glfwInit();

@@ -28,6 +28,10 @@ GlSet glset;
 CallbckData callbackData;
 Callback callback;
 GLFWwindow* window = glset.getWindow();
+
+bool modelPanelActive;
+bool texturePanelActive;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 unsigned int VBO, VAO; //Vertex Buffer Object, Vertex Array Object
@@ -38,7 +42,7 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 }
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	callbackData = callback.mouse_callback(window, xpos, ypos);
+	callbackData = callback.mouse_callback(window, xpos, ypos, modelPanelActive, texturePanelActive);
 }
 char currentKey;
 bool changeModelFilePathText = false;
@@ -67,6 +71,14 @@ void autoTriangulateCheckBoxEnter();
 void backfaceCullingCheckBox();
 void addPlaneButtonEnter();
 void addSphereButtonEnter();
+void addImageButtonEnter();
+void modelPanelButtonEnter();
+void texturePanelButtonEnter();
+
+
+//Texture
+string albedoTexturePath = "vergil3.jpg";
+string maskTexturePath = "testHexa.jpg";
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//--
@@ -94,8 +106,7 @@ void RigidPainter::run()
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 
-	glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
-	glset.uniformMatrix4fv(commonData.program, "TextProjection", projection);
+	
 	ui.setViewportBgColor();
 	ui.uploadChars();
 
@@ -112,12 +123,9 @@ void RigidPainter::run()
 
 	glset.bindFrameBuffer();
 
-	//Texture
-	string albedoTexturePath = "vergil3.jpg";
-	string maskTexturePath = "testHexa.jpg";
 
-	glset.activeTexture(GL_TEXTURE0);
-	glset.bindTexture(txtr.getTexture(albedoTexturePath, 0, 0));
+
+	
 
 	glset.activeTexture(GL_TEXTURE1);
 	glset.bindTexture(txtr.getTexture(maskTexturePath, 0, 0));
@@ -143,8 +151,8 @@ void RigidPainter::run()
 
 		glfwPollEvents();
 		glset.setMatrices(callbackData.cameraPos, callbackData.originPos);
-		glset.render(renderData,vertices,callbackData.movePanel);
-
+		glset.render(renderData,vertices,callbackData.movePanel,modelPanelActive, texturePanelActive);
+		///cout << modelPanelActive << '\n';
 		//Light Obj
 		//MSHP.drawLigtObject(shaderProgram,lightPos);
 		
@@ -162,7 +170,9 @@ void RigidPainter::run()
 		glfwSwapBuffers(window);
 		addPlaneButtonEnter();
 		addSphereButtonEnter();
-
+		addImageButtonEnter();
+		modelPanelButtonEnter();
+		texturePanelButtonEnter();
 		//CTRL D - Get Back To Default Location
 		/*if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 			cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
@@ -189,6 +199,72 @@ void modelFilePathTextBoxEnter() {
 			if (buttonPressed) {
 				modelFilePath = utilities.openFileDialog();
 				modelName = utilities.getLastWordBySeparatingWithChar(modelFilePath, '\\');
+			}
+			buttonPressed = false;
+		}
+	}
+}
+void modelPanelButtonEnter() {
+	if (callbackData.modelPanelButtonEnter) {
+		if (buttonGetInput) {
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				buttonGetInput = false;
+				buttonPressed = true;
+			}
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			buttonGetInput = true;
+			if (buttonPressed) {
+				if (modelPanelActive == false) {
+					modelPanelActive = true;
+					texturePanelActive = false;
+					
+				}
+			}
+			buttonPressed = false;
+		}
+	}
+}
+void texturePanelButtonEnter() {
+	if (callbackData.texturePanelButtonEnter) {
+		if (buttonGetInput) {
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				buttonGetInput = false;
+				buttonPressed = true;
+			}
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			buttonGetInput = true;
+
+			if (buttonPressed) {
+				if (texturePanelActive == false) {
+					modelPanelActive = false;
+					texturePanelActive = true;
+				}
+			}
+			buttonPressed = false;
+		}
+	}
+}
+string albedoPathCheck;
+void addImageButtonEnter() {
+	if (callbackData.addImageButtonEnter) {
+		if (buttonGetInput) {
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				buttonGetInput = false;
+				buttonPressed = true;
+			}
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			buttonGetInput = true;
+			if (buttonPressed) {
+				albedoPathCheck = utilities.openFileDialog();
+				if (albedoPathCheck != "") {
+					albedoTexturePath = albedoPathCheck;
+					glset.activeTexture(GL_TEXTURE0);
+					glset.bindTexture(txtr.getTexture(albedoTexturePath, 0, 0));
+				}
+				//modelName = utilities.getLastWordBySeparatingWithChar(modelFilePath, '\\');
 			}
 			buttonPressed = false;
 		}
@@ -303,13 +379,13 @@ void loadModelButton() {
 			if (modelName != "" && modelName[modelName.size() - 1] == 'j' && modelName[modelName.size() - 2] == 'b' && modelName[modelName.size() - 3] == 'o' && modelName[modelName.size() - 4] == '.') {
 				vertices.clear();
 				vertices = modelLoader.OBJ_getVertices(modelFilePath,autoTriangulateChecked);
-				// for (size_t i = 0; i < vertices.size(); i++)
-				// {
-				// 	// if (i % 8 == 0) {
-				// 	// 	cout << '\n';
-				// 	// }
-				// 	// cout << vertices[i] << " , ";
-				// }
+				/*for (size_t i = 0; i < vertices.size(); i++)
+				{
+					if (i % 8 == 0) {
+						cout << '\n';
+					}
+					cout << vertices[i] << " , ";
+				}*/
 			}
 			buttonPressed = false;
 		}

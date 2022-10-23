@@ -132,8 +132,6 @@ void UserInterface::box(float width, float height, float position_x, float posit
 		-width + position_x,  height + position_y, 0.9f,0,0,0,0,0  // top left
 	};
 
-	glset.uniform3f(commonData.program, "textBg", color.x, color.y, color.z);//Set text background color to what color it's used in.
-
 	glset.uiDataToShaders(glm::vec3(color.x, color.y, color.z));
 	glset.drawArrays(buttonCoor, false);
 	if (!isTextBox) {
@@ -142,6 +140,69 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	else {
 		renderText(commonData.program, text, -width + position_x, position_y - 0.01, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
 	}
+}
+void UserInterface::panelChangeButton(float position_x, float position_y) {
+	std::vector<float> buttonCoor{
+		// first triangle
+		 0.00f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0,  // top right
+		 0.00f + position_x, -0.05f + position_y, 0.9f,0,0,0,0,0,  // bottom right
+		-0.025f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0,  // top left 
+		// second triangle						     9
+		 0.00f + position_x, -0.05f + position_y, 0.9f,0,0,0,0,0,  // bottom right
+		-0.025f + position_x, -0.02f + position_y, 0.9f,0,0,0,0,0,  // bottom left
+		-0.025f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0  // top left
+	};
+	GlSet glset;
+	ColorData colorData;
+	glset.uiDataToShaders(colorData.panelHoldColor);
+	glset.drawArrays(buttonCoor, false);
+}
+bool UserInterface::isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, int mouseXpos, int mouseYpos) {
+	std::vector<float> buttonCoor{
+		// first triangle
+		 0.00f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0,  // top right
+		 0.00f + position_x, -0.05f + position_y, 0.9f,0,0,0,0,0,  // bottom right
+		-0.025f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0,  // top left 
+		// second triangle						     9
+		 0.00f + position_x, -0.05f + position_y, 0.9f,0,0,0,0,0,  // bottom right
+		-0.025f + position_x, -0.02f + position_y, 0.9f,0,0,0,0,0,  // bottom left
+		-0.025f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0  // top left
+	};
+	GlSet glset;
+	CommonData commonData;
+	//glfwGetWindowSize();
+	int screenSizeX;
+	int screenSizeY;
+	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
+
+	float mouseFX = ((float)mouseXpos / (screenSizeX/2));
+	float mouseFY = (((float)mouseYpos / (screenSizeY / 2)) - 1.0f) * -1.0f;
+
+	for (size_t i = 0; i < 2; i++)
+	{
+		float ax = buttonCoor[0 + (24 * i)];
+		float ay = buttonCoor[1 + (24 * i)];
+		float bx = buttonCoor[8 + (24 * i)];
+		float by = buttonCoor[9 + (24 * i)];
+		float cx = buttonCoor[16 + (24 * i)];
+		float cy = buttonCoor[17 + (24 * i)];
+
+		if (cy - ay == 0) {
+			cy += 0.0001f;
+		}
+
+		float w1 = (ax * (cy - ay) + (mouseFY - ay) * (cx - ax) - mouseFX * (cy - ay)) / ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay));
+		float w2 = (mouseFY - ay - w1 * (by - ay)) / (cy - ay);
+
+
+		if (w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1) {
+			return true;
+		}
+		else if (i == 1) {
+			return false;
+		}
+	}
+
 }
 void UserInterface::checkBox(float position_x, float position_y, std::string text, glm::vec3 color,bool mouseHover,bool checked) {
 	CommonData commonData;
@@ -162,7 +223,7 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 	
 
 }
-bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height, float position_x, float position_y,int mouseXpos, int mouseYpos){
+bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height, float position_x, float position_y,int mouseXpos, int mouseYpos,bool isPanelMoving){
 	std::vector<float> buttonCoor{
 		// first triangle
 		 width + position_x,  height + position_y, 0,0,0,0,0,0,  // top right
@@ -177,8 +238,14 @@ bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height
 	int screenSizeX;
 	int screenSizeY;
 	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
+	float mouseFX;
+	if (!isPanelMoving) {
+		mouseFX = ((float)mouseXpos / (screenSizeX / 2)) - 1.0f;
+	}
+	else {
+		mouseFX = ((float)mouseXpos / (screenSizeX / 2));
 
-	float mouseFX = ((float)mouseXpos / (screenSizeX/2))-1.0f;
+	}
 	float mouseFY = (((float)mouseYpos / (screenSizeY / 2))-1.0f)*-1.0f;
 
 
@@ -309,7 +376,7 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 			 xpos,     ypos + h, 1.0f  ,0.0f, 0.0f,0,0,0,
 			 xpos,     ypos,     1.0f  ,0.0f, 1.0f,0,0,0,
 			 xpos + w, ypos,     1.0f  ,1.0f, 1.0f,0,0,0,
-			//					 1
+			
 			 xpos,     ypos + h, 1.0f  ,0.0f, 0.0f,0,0,0,
 			 xpos + w, ypos,     1.0f  ,1.0f, 1.0f,0,0,0,
 			 xpos + w, ypos + h, 1.0f  ,1.0f, 0.0f,0,0,0

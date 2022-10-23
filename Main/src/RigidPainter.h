@@ -14,6 +14,9 @@ struct CallbckData {
 	bool backfaceCullingCheckBoxEnter;
 	bool addPlaneButtonEnter;
 	bool addSphereButtonEnter;
+	bool addImageButtonEnter;
+	bool modelPanelButtonEnter;
+	bool texturePanelButtonEnter;
 	glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
 	float panelLoc;
@@ -96,12 +99,14 @@ class UserInterface {
 public:
 	void panel(float panelLoc, float movePanel_x);
 	void box(float width, float height,float position_x, float position_y,std::string text, glm::vec3 color, float textRatio, bool isTextBox);
-	bool isMouseOnButton(GLFWwindow* window, float width, float height, float position_x, float position_y, int mouseXpos, int mouseYpos);
+	bool isMouseOnButton(GLFWwindow* window, float width, float height, float position_x, float position_y, int mouseXpos, int mouseYpos, bool isPanelMoving);
 	void setViewportBgColor();
 	void renderText(unsigned int program, std::string text, float x, float y, float scale, glm::vec3 color);
 	void uploadChars();
 	void renderMenubar(GLFWwindow* window);
 	void checkBox(float position_x, float position_y, std::string text, glm::vec3 color,bool mouseHover,bool checked);
+	void panelChangeButton(float position_x, float position_y);
+	bool isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, int mouseXpos, int mouseYpos);
 };
 class GlSet {
 public:
@@ -128,7 +133,7 @@ public:
 	void viewport(int width, int height);
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
 	void getProgram();
-	void render(RenderData renderData, std::vector<float>& vertices, bool movePanel);
+	void render(RenderData renderData, std::vector<float>& vertices, bool movePanel,bool modelPanelActive,bool texturePanelActive);
 	GLFWwindow* getWindow();
 	ProjectionData setMatrices(glm::vec3 cameraPos, glm::vec3 originPos);
 	glm::vec3 getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos);
@@ -137,9 +142,9 @@ public:
 class Callback {
 public:
 	CallbckData scroll_callback(GLFWwindow* window, double scroll, double scrollx);
-	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos);
+	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos,bool modelPanelActive, bool texturePanelActive);
 	void panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX);
-	void buttonCheck(GLFWwindow* window, int mouseXPos, int mouseYPos);
+	void buttonCheck(GLFWwindow* window, int mouseXPos, int mouseYPos, bool modelPanelActive, bool texturePanelActive);
 	void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 };
 #endif // !MSHPAPP
