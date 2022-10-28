@@ -40,9 +40,15 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 {
 	callbackData = callback.scroll_callback(window,scroll,scrollx);
 }
+bool cameraPosChanged = false;
+glm::vec3 holdCameraPos;
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	callbackData = callback.mouse_callback(window, xpos, ypos, modelPanelActive, texturePanelActive);
+	if (callbackData.cameraPos != holdCameraPos) {
+		cameraPosChanged = true;
+	}
+	holdCameraPos = callbackData.cameraPos;
 }
 char currentKey;
 bool changeModelFilePathText = false;
@@ -80,13 +86,13 @@ void texturePanelButtonEnter();
 string albedoTexturePath = "vergil3.jpg";
 string maskTexturePath = "testHexa.jpg";
 
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//--
 }
 
 void RigidPainter::run()
 {
-
 	CommonData commonData;
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
 	glfwSetKeyCallback(window, key_callback);
@@ -112,20 +118,16 @@ void RigidPainter::run()
 
 
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-	
 
 	glset.uniform3fv(commonData.program, "lightPos", lightPos);
-	glset.uniform3fv(commonData.program, "viewPos", callbackData.cameraPos);
 	glset.uniform1f(commonData.program, "material.shininess", 32.0f);
+	glset.uniform1i(commonData.program, "maskTexture", 4);
+
 
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	glset.bindFrameBuffer();
-
-
-
-	
 
 	glset.activeTexture(GL_TEXTURE1);
 	glset.bindTexture(txtr.getTexture(maskTexturePath, 0, 0));
@@ -136,8 +138,27 @@ void RigidPainter::run()
 
 
 	RenderData renderData;
-	//window,vertices, callbackData.panelLoc, modelName,callbackData.autoTriangulateCheckBoxEnter,autoTriangulateChecked,callbackData.backfaceCullingCheckBoxEnter,backfaceCullingChecked,enableBackfaceCulling
-	//Loop
+
+	TextureData textureData;
+	textureData = txtr.getTextureData("testHexa.jpg");
+	GLubyte* maskTexture = new GLubyte[textureData.width * textureData.height * textureData.channels];
+	maskTexture = txtr.getTextureFromProgram(GL_TEXTURE1, textureData.width, textureData.height, textureData.channels);
+
+	GLubyte* screenTexture = new GLubyte[1920 * 1080 * 3];
+
+	txtr.createScreenPaintTexture(screenTexture);
+
+	unsigned int FBO = glset.createScreenFrameBufferObject();
+
+	glset.enable(GL_BLEND);
+	glDepthFunc(GL_LESS);
+	glset.enable(GL_DEPTH_TEST);
+
+	glm::mat4 projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
+	glset.uniformMatrix4fv(commonData.program, "TextProjection", projection);
+
+	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.7777f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777 - 1
+	glset.uniformMatrix4fv(commonData.program, "renderTextureProjection", renderTextureProjection);
 	while (!glfwWindowShouldClose(window))
 	{
 		renderData.window = window;
@@ -151,7 +172,11 @@ void RigidPainter::run()
 
 		glfwPollEvents();
 		glset.setMatrices(callbackData.cameraPos, callbackData.originPos);
-		glset.render(renderData,vertices,callbackData.movePanel,modelPanelActive, texturePanelActive);
+
+
+		glset.render(renderData,vertices,callbackData.movePanel,modelPanelActive, texturePanelActive,FBO, cameraPosChanged);
+
+
 		///cout << modelPanelActive << '\n';
 		//Light Obj
 		//MSHP.drawLigtObject(shaderProgram,lightPos);
@@ -159,8 +184,7 @@ void RigidPainter::run()
 		//Paint
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
 			glfwGetCursorPos(window, &mouseXpos, &mouseYpos);
-			//txtrGen.paintTexture(window, vertices, callbkData.cameraPos, callbkData.originPos,mouseXpos, mouseYpos,pixelsTxtr, pixelsMask, callbkData.panelLoc,mskTxtr,albTxtr);
-			//glGenerateMipmap(GL_TEXTURE_2D);
+			txtr.drawTexture(window, maskTexture);
 		}
 		modelFilePathTextBoxEnter();
 		loadModelButton();//
@@ -173,6 +197,15 @@ void RigidPainter::run()
 		addImageButtonEnter();
 		modelPanelButtonEnter();
 		texturePanelButtonEnter();
+
+		if (cameraPosChanged) {
+			std::fill_n(screenTexture, 1920 * 1080 * 3, 0);
+			glActiveTexture(GL_TEXTURE4);
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1920, 1080, GL_RGB, GL_UNSIGNED_BYTE, screenTexture); //Refresh Screen Texture
+			glGenerateMipmap(GL_TEXTURE_2D);
+			cameraPosChanged = false;
+			glset.uniform3fv(commonData.program, "viewPos", callbackData.cameraPos);
+		}
 		//CTRL D - Get Back To Default Location
 		/*if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 			cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
@@ -203,6 +236,7 @@ void modelFilePathTextBoxEnter() {
 			buttonPressed = false;
 		}
 	}
+
 }
 void modelPanelButtonEnter() {
 	if (callbackData.modelPanelButtonEnter) {
@@ -218,7 +252,6 @@ void modelPanelButtonEnter() {
 				if (modelPanelActive == false) {
 					modelPanelActive = true;
 					texturePanelActive = false;
-					
 				}
 			}
 			buttonPressed = false;
@@ -379,14 +412,11 @@ void loadModelButton() {
 			if (modelName != "" && modelName[modelName.size() - 1] == 'j' && modelName[modelName.size() - 2] == 'b' && modelName[modelName.size() - 3] == 'o' && modelName[modelName.size() - 4] == '.') {
 				vertices.clear();
 				vertices = modelLoader.OBJ_getVertices(modelFilePath,autoTriangulateChecked);
-				/*for (size_t i = 0; i < vertices.size(); i++)
-				{
-					if (i % 8 == 0) {
-						cout << '\n';
-					}
-					cout << vertices[i] << " , ";
-				}*/
 			}
+
+			
+
+
 			buttonPressed = false;
 		}
 	}

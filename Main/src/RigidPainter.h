@@ -7,6 +7,9 @@ struct CommonData {
 	unsigned int program = 3;
 };
 
+//struct textureUpdate
+//{
+//};
 struct CallbckData {
 	bool loadModelButtonEnter;
 	bool modelFilePathTextBoxEnter;
@@ -84,6 +87,8 @@ public:
 	void drawTexture(const char* path,int width,int height, GLubyte* pixels,int channels);
 	GLubyte* getTextureFromProgram(int texture,int width,int height,int channels);
 	TextureData getTextureData(const char* path);
+	void drawTexture(GLFWwindow* window, GLubyte* maskTexture);
+	void createScreenPaintTexture(GLubyte* &screenTexture);
 };
 class Utilities {
 public:
@@ -133,11 +138,12 @@ public:
 	void viewport(int width, int height);
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
 	void getProgram();
-	void render(RenderData renderData, std::vector<float>& vertices, bool movePanel,bool modelPanelActive,bool texturePanelActive);
+	void render(RenderData renderData, std::vector<float>& vertices, bool movePanel,bool modelPanelActive,bool texturePanelActive, unsigned int FBO,bool cameraPosChanged);
 	GLFWwindow* getWindow();
 	ProjectionData setMatrices(glm::vec3 cameraPos, glm::vec3 originPos);
 	glm::vec3 getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos);
 	void drawLightObject(glm::vec3 lightPos);
+	unsigned int createScreenFrameBufferObject();
 };
 class Callback {
 public:

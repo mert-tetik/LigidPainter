@@ -64,9 +64,9 @@ void GlSet::bindFrameBuffer() {
 void GlSet::setVertexAtribPointer() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 }
 void GlSet::bufferData(std::vector<float> &vertices) {
@@ -161,8 +161,9 @@ void GlSet::getProgram() {
 	}
 #pragma endregion
 }
+int a = 0;
 
-void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool movePanel, bool modelPanelActive, bool texturePanelActive) {
+void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool movePanel, bool modelPanelActive, bool texturePanelActive,unsigned int FBO,bool cameraPosChanged) {
 	GlSet gls;
 	std::vector<float>axisPointer{
 		0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
@@ -175,18 +176,15 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool move
 	UserInterface ui;
 	CommonData commonData;
 	ColorData colorData;
-	enable(GL_BLEND);
+
+
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//glDepthMask(GL_FALSE);
-	glDepthFunc(GL_LESS);
 
-	blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 
-	enable(GL_DEPTH_TEST);
-
+	//Axis Pointer
 	axisPointerDataToShaders();
-
 	blendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
 	drawArrays(axisPointer, true);
 	blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -195,13 +193,42 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool move
 		enable(GL_CULL_FACE);
 		cullFace(GL_BACK);
 	}
-	meshDataToShaders();
-	drawArrays(vertices, false);
 
-	disable(GL_CULL_FACE);
+	//Get Screen Size
+	int screenSizeX;
+	int screenSizeY;
+	glfwGetWindowSize(renderData.window, &screenSizeX, &screenSizeY);
+	//
+
+	meshDataToShaders();
+	if (cameraPosChanged) {
+		uniform1i(commonData.program, "isRenderTextureModeV", 1);
+		uniform1i(commonData.program, "isRenderTextureMode", 1);
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		drawArrays(vertices, false);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		Texture txtr;
+		GLubyte* renderedImage = txtr.getTextureFromProgram(GL_TEXTURE5, 1080, screenSizeY, 3);
+
+		glActiveTexture(GL_TEXTURE0);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1080, screenSizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		uniform1i(commonData.program, "isRenderTextureMode", 0);
+		uniform1i(commonData.program, "isRenderTextureModeV", 0);
+	}
+
+	
+	drawArrays(vertices, false); //Render Model
+
+
+	disable(GL_CULL_FACE); 
+
+
+	//UI
 
 	//ui.renderMenubar(renderData.window);
-
 	ui.panel(renderData.panelLoc, 0);
 	glm::mat4 projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 	uniformMatrix4fv(commonData.program, "TextProjection", projection);
@@ -239,6 +266,7 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool move
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "+ Add Image", colorData.buttonColor, 0.05f, false);
 	}
 
+	//UI
 
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 	uniformMatrix4fv(commonData.program, "TextProjection", projection);
@@ -257,7 +285,7 @@ ProjectionData GlSet::setMatrices(glm::vec3 cameraPos, glm::vec3 originPos) {
 	view = glm::lookAt(cameraPos, originPos, glm::vec3(0.0, 1.0, 0.0));
 
 	glm::mat4 model = glm::mat4(1.0f);
-	//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+	//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 	int modelLoc = glGetUniformLocation(cmnd.program, "model");
@@ -293,4 +321,24 @@ void GlSet::drawLightObject(glm::vec3 lightPos) {
 	int modelLoc = glGetUniformLocation(cmnd.program, "model");
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 	glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+unsigned int GlSet::createScreenFrameBufferObject() {
+	glActiveTexture(GL_TEXTURE5);
+	unsigned int FBO;
+	glGenFramebuffers(1, &FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	unsigned int textureColorbuffer;
+	glGenTextures(1, &textureColorbuffer);
+	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1080, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+	unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1080, 1080);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	return FBO;
 }
