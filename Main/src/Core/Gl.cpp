@@ -163,7 +163,7 @@ void GlSet::getProgram() {
 }
 int a = 0;
 
-void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool movePanel, bool modelPanelActive, bool texturePanelActive,unsigned int FBO,bool cameraPosChanged) {
+void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool movePanel, bool modelPanelActive, bool texturePanelActive,unsigned int FBO,bool cameraPosChanged, bool paintingPanelActive) {
 	GlSet gls;
 	std::vector<float>axisPointer{
 		0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
@@ -234,6 +234,8 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool move
 	uniformMatrix4fv(commonData.program, "TextProjection", projection);
 	ui.panelChangeButton(renderData.panelLoc,0.8f);//Model Panel
 	ui.panelChangeButton(renderData.panelLoc, 0.72f);//Texture Panel
+	ui.panelChangeButton(renderData.panelLoc, 0.64f);//Painting Panel
+
 
 	float centerDivider;
 	float centerSum;
@@ -250,22 +252,25 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool move
 		uniformMatrix4fv(commonData.program, "TextProjection", projection);
 	}
 	if (modelPanelActive) {
-		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider+ centerSum, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true);
+		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider+ centerSum, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false);
 		ui.renderText(commonData.program, "File Path", renderData.panelLoc / centerDivider+ centerSum - 0.05f, 0.64f, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
 
 
 	
-		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, 0.4f, "Load", colorData.buttonColor, 0.022f, false);
-		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, 0.0f, "Add Panel", colorData.buttonColor, 0.045f, false);
-		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, -0.1f, "Add Sphere", colorData.buttonColor, 0.047f, false);
+		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false);
+		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, 0.0f, "Add Panel", colorData.buttonColor, 0.045f, false, false);
+		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, -0.1f, "Add Sphere", colorData.buttonColor, 0.047f, false, false);
 
 		ui.checkBox(renderData.panelLoc / centerDivider+ centerSum - 0.08f, 0.3f,"Auto triangulate",colorData.checkBoxColor, renderData.isAutoTriangulateHover, renderData.isAutoTriangulateChecked);
 		ui.checkBox(renderData.panelLoc / centerDivider+ centerSum - 0.08f, 0.2f, "Backface culling", colorData.checkBoxColor, renderData.isbackfaceCullingHover, renderData.isbackfaceCullingChecked);
 	}
 	if (texturePanelActive) {
-		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "+ Add Image", colorData.buttonColor, 0.05f, false);
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "+ Add Image", colorData.buttonColor, 0.05f, false, false);
 	}
-
+	if (paintingPanelActive) {
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "Add Mask Texture", colorData.buttonColor, 0.075f, false,false);
+		ui.box(0.14f, 0.28f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "", colorData.buttonColor, 0.075f, false,true);
+	}
 	//UI
 
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);

@@ -46,7 +46,7 @@ bool isPainted()
 
 void main()
 {    
-    vec3 drawColor = vec3(0.0,1.0,0.0);
+    vec3 drawColor = vec3(1.0,1.0,1.0);
     vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2,2,2)+ 0.5/vec3(1,1,1) ;
     float intensity = 0.0f;
     if(isPainted()){

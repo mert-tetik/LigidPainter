@@ -45,8 +45,11 @@ bool backfaceCullingCheckBoxEnter;
 bool addPlaneButtonEnter;
 bool addSphereButtonEnter;
 bool addImageButtonEnter;
+bool addMaskTextureButtonEnter;
 bool modelPanelButtonEnter;
 bool texturePanelButtonEnter;
+bool paintingPanelButtonEnter;
+
 
 
 bool movePanel;
@@ -78,13 +81,16 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 	callbk.addImageButtonEnter = addImageButtonEnter;
 	callbk.modelPanelButtonEnter = modelPanelButtonEnter;
 	callbk.texturePanelButtonEnter = texturePanelButtonEnter;
+	callbk.paintingPanelButtonEnter = paintingPanelButtonEnter;
+	callbk.addMaskTextureButtonEnter = addMaskTextureButtonEnter;
+
 
 	callbk.cameraPos = cameraPos;
 	callbk.originPos = originPos;
 	callbk.panelLoc = panelLoc;
 	return callbk;
 }
-CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, bool modelPanelActive, bool texturePanelActive)
+CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, bool modelPanelActive, bool texturePanelActive,bool paintingPanelActive)
 {
 	CallbckData callbk;
 	UserInterface ui;
@@ -96,7 +102,7 @@ CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypo
 
 	panelCheck(window,xpos,screenSizeX);
 	
-	buttonCheck(window, xpos, ypos, modelPanelActive, texturePanelActive);
+	buttonCheck(window, xpos, ypos, modelPanelActive, texturePanelActive, paintingPanelActive);
 	
 
 	xoffset = xpos - lastX;
@@ -142,6 +148,9 @@ CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypo
 	callbk.addImageButtonEnter = addImageButtonEnter;
 	callbk.modelPanelButtonEnter = modelPanelButtonEnter;
 	callbk.texturePanelButtonEnter = texturePanelButtonEnter;
+	callbk.paintingPanelButtonEnter = paintingPanelButtonEnter;
+	callbk.addMaskTextureButtonEnter = addMaskTextureButtonEnter;
+
 
 	callbk.cameraPos = cameraPos;
 	callbk.originPos = originPos;
@@ -178,7 +187,7 @@ void Callback::panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX) {
 		//glfwSetCursor(window, arrowCursor);
 	}
 }
-void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos, bool modelPanelActive, bool texturePanelActive) {
+void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos, bool modelPanelActive, bool texturePanelActive,bool paintingPanelActive) {
 	UserInterface ui;
 	GlSet glset;
 	CommonData commonData;
@@ -213,14 +222,19 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos, bool
 	}
 	if (texturePanelActive) {
 		addImageButtonEnter = ui.isMouseOnButton(window, 0.1f, 0.04f, panelLoc / centerDivider + centerSum, 0.8f, mouseXPos, mouseYPos, movePanel);
-
 	}
 	else {
 		addImageButtonEnter = false;
-
+	}
+	if (paintingPanelActive) {
+		addMaskTextureButtonEnter = ui.isMouseOnButton(window, 0.1f, 0.04f, panelLoc / centerDivider + centerSum, 0.8f, mouseXPos, mouseYPos, movePanel);
+	}
+	else {
+		addMaskTextureButtonEnter = false;
 	}
 	modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc, 0.8f, mouseXPos, mouseYPos);
 	texturePanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc, 0.72f, mouseXPos, mouseYPos);
+	paintingPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc, 0.64f, mouseXPos, mouseYPos);
 
 	if (modelFilePathTextBoxEnter) {
 		glfwSetCursor(window, pointerCursor);
@@ -247,6 +261,12 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos, bool
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if (texturePanelButtonEnter) {
+		glfwSetCursor(window, pointerCursor);
+	}
+	else if (paintingPanelButtonEnter) {
+		glfwSetCursor(window, pointerCursor);
+	}
+	else if(addMaskTextureButtonEnter){
 		glfwSetCursor(window, pointerCursor);
 	}
 	else {

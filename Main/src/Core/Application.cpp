@@ -31,6 +31,7 @@ GLFWwindow* window = glset.getWindow();
 
 bool modelPanelActive;
 bool texturePanelActive;
+bool paintingPanelActive;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -44,7 +45,7 @@ bool cameraPosChanged = false;
 glm::vec3 holdCameraPos;
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	callbackData = callback.mouse_callback(window, xpos, ypos, modelPanelActive, texturePanelActive);
+	callbackData = callback.mouse_callback(window, xpos, ypos, modelPanelActive, texturePanelActive,paintingPanelActive);
 	if (callbackData.cameraPos != holdCameraPos) {
 		cameraPosChanged = true;
 	}
@@ -80,7 +81,8 @@ void addSphereButtonEnter();
 void addImageButtonEnter();
 void modelPanelButtonEnter();
 void texturePanelButtonEnter();
-
+void paintingPanelButtonEnter();
+void addMaskTextureButtonEnter();
 
 //Texture
 string albedoTexturePath = "vergil3.jpg";
@@ -90,7 +92,8 @@ string maskTexturePath = "testHexa.jpg";
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//--
 }
-
+bool brushTextureChanged = true;
+GLubyte* maskTexture;
 void RigidPainter::run()
 {
 	CommonData commonData;
@@ -130,7 +133,7 @@ void RigidPainter::run()
 	glset.bindFrameBuffer();
 
 	glset.activeTexture(GL_TEXTURE1);
-	glset.bindTexture(txtr.getTexture(maskTexturePath, 0, 0));
+	glset.bindTexture(txtr.getTexture(maskTexturePath, 0, 0,false));
 
 
 	glset.uniform1i(commonData.program, "material.diffuse", 0);
@@ -140,13 +143,14 @@ void RigidPainter::run()
 	RenderData renderData;
 
 	TextureData textureData;
-	textureData = txtr.getTextureData("testHexa.jpg");
-	GLubyte* maskTexture = new GLubyte[textureData.width * textureData.height * textureData.channels];
+	textureData = txtr.getTextureData(maskTexturePath.c_str());
+
+	maskTexture = new GLubyte[textureData.width * textureData.height * textureData.channels];
 	maskTexture = txtr.getTextureFromProgram(GL_TEXTURE1, textureData.width, textureData.height, textureData.channels);
 
 	GLubyte* screenTexture = new GLubyte[1920 * 1080 * 3];
 
-	txtr.createScreenPaintTexture(screenTexture);
+	unsigned int screenPaintingTextureId = txtr.createScreenPaintTexture(screenTexture);
 
 	unsigned int FBO = glset.createScreenFrameBufferObject();
 
@@ -159,6 +163,10 @@ void RigidPainter::run()
 
 	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.7777f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777 - 1
 	glset.uniformMatrix4fv(commonData.program, "renderTextureProjection", renderTextureProjection);
+	int a = 0;
+
+	glset.uniform1i(commonData.program, "uiMaskTexture", 1);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		renderData.window = window;
@@ -174,7 +182,7 @@ void RigidPainter::run()
 		glset.setMatrices(callbackData.cameraPos, callbackData.originPos);
 
 
-		glset.render(renderData,vertices,callbackData.movePanel,modelPanelActive, texturePanelActive,FBO, cameraPosChanged);
+		glset.render(renderData,vertices,callbackData.movePanel,modelPanelActive, texturePanelActive,FBO, cameraPosChanged,paintingPanelActive);
 
 
 		///cout << modelPanelActive << '\n';
@@ -184,7 +192,8 @@ void RigidPainter::run()
 		//Paint
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
 			glfwGetCursorPos(window, &mouseXpos, &mouseYpos);
-			txtr.drawTexture(window, maskTexture);
+			txtr.drawTexture(window,maskTexturePath, brushTextureChanged, screenPaintingTextureId);
+			brushTextureChanged = false;
 		}
 		modelFilePathTextBoxEnter();
 		loadModelButton();//
@@ -197,7 +206,8 @@ void RigidPainter::run()
 		addImageButtonEnter();
 		modelPanelButtonEnter();
 		texturePanelButtonEnter();
-
+		paintingPanelButtonEnter();
+		addMaskTextureButtonEnter();
 		if (cameraPosChanged) {
 			std::fill_n(screenTexture, 1920 * 1080 * 3, 0);
 			glActiveTexture(GL_TEXTURE4);
@@ -219,6 +229,34 @@ void RigidPainter::run()
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }
+string maskTexturePathCheck;
+void addMaskTextureButtonEnter() {
+	if (callbackData.addMaskTextureButtonEnter) {
+		if (buttonGetInput) {
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				buttonGetInput = false;
+				buttonPressed = true;
+			}
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			buttonGetInput = true;
+			if (buttonPressed) {
+				maskTexturePathCheck = utilities.openFileDialog();
+				if (maskTexturePathCheck != "") {
+					maskTexturePath = maskTexturePathCheck;
+					brushTextureChanged = true;
+					glset.activeTexture(GL_TEXTURE1);
+					glset.bindTexture(txtr.getTexture(maskTexturePath, 0, 0, false));
+
+
+				}
+			}
+			buttonPressed = false;
+		}
+	}
+
+}
+
 void modelFilePathTextBoxEnter() {
 	if (callbackData.modelFilePathTextBoxEnter) {
 		if (buttonGetInput) {
@@ -252,6 +290,7 @@ void modelPanelButtonEnter() {
 				if (modelPanelActive == false) {
 					modelPanelActive = true;
 					texturePanelActive = false;
+					paintingPanelActive = false;
 				}
 			}
 			buttonPressed = false;
@@ -273,6 +312,29 @@ void texturePanelButtonEnter() {
 				if (texturePanelActive == false) {
 					modelPanelActive = false;
 					texturePanelActive = true;
+					paintingPanelActive = false;
+				}
+			}
+			buttonPressed = false;
+		}
+	}
+}
+void paintingPanelButtonEnter() {
+	if (callbackData.paintingPanelButtonEnter) {
+		if (buttonGetInput) {
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				buttonGetInput = false;
+				buttonPressed = true;
+			}
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			buttonGetInput = true;
+
+			if (buttonPressed) {
+				if (paintingPanelActive == false) {
+					modelPanelActive = false;
+					texturePanelActive = false;
+					paintingPanelActive = true;
 				}
 			}
 			buttonPressed = false;
@@ -295,7 +357,7 @@ void addImageButtonEnter() {
 				if (albedoPathCheck != "") {
 					albedoTexturePath = albedoPathCheck;
 					glset.activeTexture(GL_TEXTURE0);
-					glset.bindTexture(txtr.getTexture(albedoTexturePath, 0, 0));
+					glset.bindTexture(txtr.getTexture(albedoTexturePath, 0, 0,false));
 				}
 				//modelName = utilities.getLastWordBySeparatingWithChar(modelFilePath, '\\');
 			}

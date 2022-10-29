@@ -18,8 +18,11 @@ struct CallbckData {
 	bool addPlaneButtonEnter;
 	bool addSphereButtonEnter;
 	bool addImageButtonEnter;
+	bool addMaskTextureButtonEnter;
 	bool modelPanelButtonEnter;
 	bool texturePanelButtonEnter;
+	bool paintingPanelButtonEnter;
+
 	glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
 	float panelLoc;
@@ -83,12 +86,13 @@ public:
 };
 class Texture {
 public:
-	unsigned int getTexture(std::string path, double imgX, double imgY);
-	void drawTexture(const char* path,int width,int height, GLubyte* pixels,int channels);
+	unsigned int getTexture(std::string path, double imgX, double imgY, bool resize);
+	GLubyte* getTextureArray(std::string path, double imgX, double imgY, bool resize);
+	//void drawTexture(const char* path,int width,int height, GLubyte* pixels,int channels);
 	GLubyte* getTextureFromProgram(int texture,int width,int height,int channels);
 	TextureData getTextureData(const char* path);
-	void drawTexture(GLFWwindow* window, GLubyte* maskTexture);
-	void createScreenPaintTexture(GLubyte* &screenTexture);
+	void drawTexture(GLFWwindow* window, std::string path, bool brushTextureChanged, unsigned int screenPaintingTextureId);
+	unsigned int createScreenPaintTexture(GLubyte* &screenTexture);
 };
 class Utilities {
 public:
@@ -103,7 +107,7 @@ public:
 class UserInterface {
 public:
 	void panel(float panelLoc, float movePanel_x);
-	void box(float width, float height,float position_x, float position_y,std::string text, glm::vec3 color, float textRatio, bool isTextBox);
+	void box(float width, float height,float position_x, float position_y,std::string text, glm::vec3 color, float textRatio, bool isTextBox, bool isMaskImageBox);
 	bool isMouseOnButton(GLFWwindow* window, float width, float height, float position_x, float position_y, int mouseXpos, int mouseYpos, bool isPanelMoving);
 	void setViewportBgColor();
 	void renderText(unsigned int program, std::string text, float x, float y, float scale, glm::vec3 color);
@@ -138,7 +142,7 @@ public:
 	void viewport(int width, int height);
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
 	void getProgram();
-	void render(RenderData renderData, std::vector<float>& vertices, bool movePanel,bool modelPanelActive,bool texturePanelActive, unsigned int FBO,bool cameraPosChanged);
+	void render(RenderData renderData, std::vector<float>& vertices, bool movePanel,bool modelPanelActive,bool texturePanelActive, unsigned int FBO,bool cameraPosChanged,bool paintingPanelActive);
 	GLFWwindow* getWindow();
 	ProjectionData setMatrices(glm::vec3 cameraPos, glm::vec3 originPos);
 	glm::vec3 getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos);
@@ -148,9 +152,9 @@ public:
 class Callback {
 public:
 	CallbckData scroll_callback(GLFWwindow* window, double scroll, double scrollx);
-	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos,bool modelPanelActive, bool texturePanelActive);
+	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos,bool modelPanelActive, bool texturePanelActive,bool paintingPanelActive);
 	void panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX);
-	void buttonCheck(GLFWwindow* window, int mouseXPos, int mouseYPos, bool modelPanelActive, bool texturePanelActive);
+	void buttonCheck(GLFWwindow* window, int mouseXPos, int mouseYPos, bool modelPanelActive, bool texturePanelActive, bool paintingPanelActive);
 	void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 };
 #endif // !MSHPAPP

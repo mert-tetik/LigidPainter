@@ -43,94 +43,21 @@ void UserInterface::panel(float panelLoc, float) {
 	glset.uiDataToShaders(colorD.panelColor);
 	glset.drawArrays(panelCoor, false);
 }
-void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec3 color, float textRatio,bool isTextBox) {
+void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec3 color, float textRatio,bool isTextBox,bool isMaskImageBox) {
 	CommonData commonData;
 	GlSet glset;
 
-	/*std::vector<float> buttonCoor{
-	   -1.474451f/10 + width + position_x, 0.348604f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x, 0.385555f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.474451f/10 + width + position_x, 0.348604f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.537795f/10 + width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.537795f/10 + width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.537795f/10 + width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.537795f/10 + width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.487647f/10 + width + position_x,-0.338047f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.537795f/10 + width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.487647f/10 + width + position_x,-0.338047f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x,-0.385555f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -0.000000f/10         + position_x,-0.385555f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x,-0.385555f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -0.000000f/10         + position_x,-0.385555f/10 + position_y  ,0,0,0,0,0,0,
-	   -0.000000f/10         + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -0.000000f/10         + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		0.000000f/10         + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -0.000000f/10         + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x, 0.385555f/10 + position_y  ,0,0,0,0,0,0,
-		0.000000f/10         + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-       -1.379259f/10 + width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		0.000000f/10         + position_x, 0.385555f/10 + position_y  ,0,0,0,0,0,0,
-	   -1.379259f/10 + width + position_x, 0.385555f/10 + position_y  ,0,0,0,0,0,0,
-		0.000000f/10         + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		0.000000f/10         + position_x, 0.385555f/10 + position_y  ,0,0,0,0,0,0,
-		0.000000f/10         + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x, 0.385555f/10 + position_y  ,0,0,0,0,0,0,
-		0.000000f/10         + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x, 0.385555f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		0.000000f/10         + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -0.000000f/10         + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -0.000000f/10         + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -0.000000f/10         + position_x,-0.385555f/10 + position_y  ,0,0,0,0,0,0,
-       -0.000000f/10         + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-	   -0.000000f/10         + position_x,-0.385555f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x,-0.385555f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.487647f/10 - width + position_x,-0.338047f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x,-0.385555f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.487647f/10 - width + position_x,-0.338047f/10 + position_y  ,0,0,0,0,0,0,
-		1.537795f/10 - width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.537795f/10 - width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.537795f/10 - width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.537795f/10 - width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x,-0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.474451f/10 - width + position_x, 0.348604f/10 + position_y  ,0,0,0,0,0,0,
-		1.537795f/10 - width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0,
-		1.474451f/10 - width + position_x, 0.348604f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x, 0.385555f/10 + position_y  ,0,0,0,0,0,0,
-		1.379259f/10 - width + position_x, 0.253546f/10 + position_y  ,0,0,0,0,0,0
-	};*/
 	std::vector<float> buttonCoor{
 		// first triangle
-		 width + position_x,  height + position_y, 0.9f,0,0,0,0,0,  // top right
-		 width + position_x, -height + position_y, 0.9f,0,0,0,0,0,  // bottom right
-		-width + position_x,  height + position_y, 0.9f,0,0,0,0,0,  // top left 
-		// second triangle						     9
-		 width + position_x, -height + position_y, 0.9f,0,0,0,0,0,  // bottom right
+		 width + position_x,  height + position_y, 0.9f,1,1,0,0,0,  // top right
+		 width + position_x, -height + position_y, 0.9f,1,0,0,0,0,  // bottom right
+		-width + position_x,  height + position_y, 0.9f,0,1,0,0,0,  // top left 
+		// second triangle
+		 width + position_x, -height + position_y, 0.9f,1,0,0,0,0,  // bottom right
 		-width + position_x, -height + position_y, 0.9f,0,0,0,0,0,  // bottom left
-		-width + position_x,  height + position_y, 0.9f,0,0,0,0,0  // top left
+		-width + position_x,  height + position_y, 0.9f,0,1,0,0,0  // top left
 	};
+	glset.uniform1i(commonData.program,"isUiTextureUsed",isMaskImageBox);
 
 	glset.uiDataToShaders(glm::vec3(color.x, color.y, color.z));
 	glset.drawArrays(buttonCoor, false);
@@ -140,6 +67,8 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	else {
 		renderText(commonData.program, text, -width + position_x, position_y - 0.01, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
 	}
+	glset.uniform1i(commonData.program, "isUiTextureUsed", 0);
+
 }
 void UserInterface::panelChangeButton(float position_x, float position_y) {
 	std::vector<float> buttonCoor{
@@ -209,12 +138,12 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 	ColorData colorData;
 	if (!checked) {
 		if (!mouseHover)
-			box(0.012f, 0.02f, position_x, position_y, "", colorData.checkBoxColor, 0.034f, false);
+			box(0.012f, 0.02f, position_x, position_y, "", colorData.checkBoxColor, 0.034f, false, false);
 		else
-			box(0.012f, 0.02f, position_x, position_y, "", colorData.checkBoxCheckedColor, 0.034f, false);
+			box(0.012f, 0.02f, position_x, position_y, "", colorData.checkBoxCheckedColor, 0.034f, false, false);
 	}
 	else {
-		box(0.012f, 0.02f, position_x, position_y, "", glm::vec3(1.0f) - colorData.checkBoxColor, 0.034f, false);
+		box(0.012f, 0.02f, position_x, position_y, "", glm::vec3(1.0f) - colorData.checkBoxColor, 0.034f, false, false);
 
 	}
 	
@@ -226,13 +155,13 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height, float position_x, float position_y,int mouseXpos, int mouseYpos,bool isPanelMoving){
 	std::vector<float> buttonCoor{
 		// first triangle
-		 width + position_x,  height + position_y, 0,0,0,0,0,0,  // top right
-		 width + position_x, -height + position_y, 0,0,0,0,0,0,  // bottom right
-		-width + position_x,  height + position_y, 0,0,0,0,0,0,  // top left 
+		 width + position_x,  height + position_y, 1,1,0,0,0,0,  // top right
+		 width + position_x, -height + position_y, 1,0,0,0,0,0,  // bottom right
+		-width + position_x,  height + position_y, 0,1,0,0,0,0,  // top left 
 		// second triangle
-		 width + position_x, -height + position_y, 0,0,0,0,0,0,  // bottom right
+		 width + position_x, -height + position_y, 1,0,0,0,0,0,  // bottom right
 		-width + position_x, -height + position_y, 0,0,0,0,0,0,  // bottom left
-		-width + position_x,  height + position_y, 0,0,0,0,0,0  // top left
+		-width + position_x,  height + position_y, 0,1,0,0,0,0  // top left
 	};
 	//glfwGetWindowSize();
 	int screenSizeX;
@@ -391,13 +320,13 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 }
 void UserInterface::renderMenubar(GLFWwindow* window) {
 	ColorData colorD;
-	box(0.04f, 0.02f, -0.92f, 0.98f, "Layers", colorD.menuBarColor, 0.034f, false);
-	box(0.04f, 0.02f, -0.82f, 0.98f, "Nodes", colorD.menuBarColor, 0.034f, false);
-	box(0.08f, 0.02f, -0.68f, 0.98f, "Texture Paint", colorD.menuBarColor, 0.06f, false);
-	box(0.08f, 0.02f, -0.50f, 0.98f, "Load Model", colorD.menuBarColor, 0.06f, false);
-	box(0.04f, 0.02f, -0.36f, 0.98f, "Export", colorD.menuBarColor, 0.034f, false);
-	box(0.08f, 0.02f, -0.22f, 0.98f, "Load Project", colorD.menuBarColor, 0.06f, false);
-	box(0.06f, 0.02f, -0.06f, 0.98f, "Settings", colorD.menuBarColor, 0.04f, false);
+	box(0.04f, 0.02f, -0.92f, 0.98f, "Layers", colorD.menuBarColor, 0.034f, false, false);
+	box(0.04f, 0.02f, -0.82f, 0.98f, "Nodes", colorD.menuBarColor, 0.034f, false, false);
+	box(0.08f, 0.02f, -0.68f, 0.98f, "Texture Paint", colorD.menuBarColor, 0.06f, false, false);
+	box(0.08f, 0.02f, -0.50f, 0.98f, "Load Model", colorD.menuBarColor, 0.06f, false, false);
+	box(0.04f, 0.02f, -0.36f, 0.98f, "Export", colorD.menuBarColor, 0.034f, false, false);
+	box(0.08f, 0.02f, -0.22f, 0.98f, "Load Project", colorD.menuBarColor, 0.06f, false, false);
+	box(0.06f, 0.02f, -0.06f, 0.98f, "Settings", colorD.menuBarColor, 0.04f, false, false);
 
-	box(1.0f, 0.08f, 0.0f, 1.03f, "", colorD.menuBarColor, 0.00f, false);
+	box(1.0f, 0.08f, 0.0f, 1.03f, "", colorD.menuBarColor, 0.00f, false, false);
 }
