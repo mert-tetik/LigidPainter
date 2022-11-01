@@ -1,5 +1,6 @@
 #include<iostream>
 #include<glad/glad.h>
+#include <vector>
 #include<GLFW/glfw3.h>
 #include<windows.h>
 #include <string>
@@ -10,7 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 //#include <glm/gtx/string_cast.hpp>
-#include "RigidPainter.h"
+#include "Utilities.h"
 #include "stb_image_write.h"
 
 using namespace std;

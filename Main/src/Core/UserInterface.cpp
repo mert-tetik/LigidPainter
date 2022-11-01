@@ -9,6 +9,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include "RigidPainter.h"
+#include "UserInterface.h"
+#include "gl.h"
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -70,16 +72,101 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	glset.uniform1i(commonData.program, "isUiTextureUsed", 0);
 
 }
+void UserInterface::colorBox(float position_x, float position_y) {
+	glm::vec3 color = glm::vec3(1.0f,0.0f,0.0f);
+	std::vector<float> boxCoor{
+		// first triangle								    //Color - Normal Vectors Will Be Usen For Color Data Of Vertices
+		 -0.10f + position_x,  0.20f + position_y, 0.9f,1,1	,1,1,1,  // top right
+		 -0.10f + position_x, -0.20f + position_y, 0.9f,1,0	,0,0,0,  // bottom right
+		 0.10f + position_x,  0.20f + position_y, 0.9f,0,1	,color.r,color.g+0.22f,color.b + 0.22f,  // top left 
+		// second triangle
+		 -0.10f + position_x, -0.20f + position_y, 0.9f,1,0	,0,0,0,  // bottom right
+		 0.10f + position_x, -0.20f + position_y, 0.9f,0,0	,0,0,0,  // bottom left
+		 0.10f + position_x,  0.20f + position_y, 0.9f,0,1	,color.r,color.g + 0.2f,color.b + 0.2f // top left
+	};
+	GlSet glset;
+	CommonData commonData;
+	glset.uniform1i(commonData.program,"isColorBox",1);
+	glset.drawArrays(boxCoor,false);
+	glset.uniform1i(commonData.program, "isColorBox", 0);
+
+}
+void UserInterface::colorRect(float position_x, float position_y) {
+	std::vector<float> boxCoor{
+		//Color - Normal Vectors Will Be Usen For Color Data Of Vertices
+
+		 -0.01f + position_x,  0.04f + position_y + 0.16f, 0.9f ,1,1	,1,0,0,  // top right
+		 -0.01f + position_x, -0.04f + position_y + 0.16f, 0.9f ,1,0	,1,0,1,  // bottom right
+		  0.01f + position_x,  0.04f + position_y + 0.16f, 0.9f ,0,1	,1,0,0,  // top left 
+		 -0.01f + position_x, -0.04f + position_y + 0.16f, 0.9f ,1,0	,1,0,1,  // bottom right
+	 	  0.01f + position_x, -0.04f + position_y + 0.16f, 0.9f ,0,0	,1,0,1,  // bottom left
+		  0.01f + position_x,  0.04f + position_y + 0.16f, 0.9f ,0,1	,1,0,0,	 // top left
+
+		 -0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,1,1	,1,0,1,  // top right
+		 -0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,1,0	,0,0,1,  // bottom right
+		  0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,0,1	,1,0,1,  // top left 
+		 -0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,1,0	,0,0,1,  // bottom right
+		  0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,0,0	,0,0,1,  // bottom left
+		  0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,0,1	,1,0,1,	 // top left
+
+		 -0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,1,1	,0,0,1,  // top right
+		 -0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,1,0	,0,1,1,  // bottom right
+		  0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,0,1	,0,0,1,  // top left 
+		 -0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,1,0	,0,1,1,  // bottom right
+		  0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,0,0	,0,1,1,  // bottom left
+		  0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,0,1	,0,0,1,	 // top left
+
+		 -0.01f + position_x,  0.04f + position_y		 , 0.9f ,1,1	,0,1,1,  // top right
+		 -0.01f + position_x, -0.04f + position_y		 , 0.9f ,1,0	,0,1,0,  // bottom right
+		  0.01f + position_x,  0.04f + position_y		 , 0.9f ,0,1	,0,1,1,  // top left 
+		 -0.01f + position_x, -0.04f + position_y		 , 0.9f ,1,0	,0,1,0,  // bottom right
+		  0.01f + position_x, -0.04f + position_y	     , 0.9f ,0,0	,0,1,0,  // bottom left
+		  0.01f + position_x,  0.04f + position_y		 , 0.9f ,0,1	,0,1,1,	 // top left
+
+		 -0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,1,1	,1,1,0,  // top right
+		 -0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,1,0	,1,1,0,  // bottom right
+		  0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,0,1	,1,1,0,  // top left 
+		 -0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,1,0	,1,1,0,  // bottom right
+		  0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,0,0	,1,1,0,  // bottom left
+		  0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,0,1	,1,1,0,	 // top left
+												  
+		 -0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,1,1	,0,1,0,  // top right
+		 -0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,1,0	,1,1,0,  // bottom right
+		  0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,0,1	,0,1,0,  // top left 
+		 -0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,1,0	,1,1,0,  // bottom right
+		  0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,0,0	,1,1,0,  // bottom left
+		  0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,0,1	,0,1,0,	 // top left
+
+
+		 -0.01f + position_x,  0.04f + position_y - 0.16f, 0.9f ,1,1	,1,1,0,  // top right
+		 -0.01f + position_x, -0.04f + position_y - 0.16f, 0.9f ,1,0	,1,0,0,  // bottom right
+		  0.01f + position_x,  0.04f + position_y - 0.16f, 0.9f ,0,1	,1,1,0,  // top left 
+		 -0.01f + position_x, -0.04f + position_y - 0.16f, 0.9f ,1,0	,1,0,0,  // bottom right
+		  0.01f + position_x, -0.04f + position_y - 0.16f, 0.9f ,0,0	,1,0,0,  // bottom left
+		  0.01f + position_x,  0.04f + position_y - 0.16f, 0.9f ,0,1	,1,1,0,	 // top left
+	};
+	GlSet glset;
+	CommonData commonData;
+	glset.uniform1i(commonData.program, "isColorBox", 1);
+	glset.drawArrays(boxCoor, false);
+	glset.uniform1i(commonData.program, "isColorBox", 0);
+
+}
+void UserInterface::rangeBar(float position_x, float position_y,float value) {
+	ColorData colorData;
+	box(0.01f, 0.02f, position_x+value, 0.0f, "", colorData.rangeBarFront, 0.045f, false, false);
+	box(0.11f, 0.02f, position_x, 0.0f, "", colorData.rangeBarBack, 0.045f, false, false);
+}
 void UserInterface::panelChangeButton(float position_x, float position_y) {
 	std::vector<float> buttonCoor{
 		// first triangle
-		 0.00f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0,  // top right
-		 0.00f + position_x, -0.05f + position_y, 0.9f,0,0,0,0,0,  // bottom right
-		-0.025f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0,  // top left 
+		 0.00f + position_x,  0.02f + position_y, 0.0f,0,0,0,0,0,  // top right
+		 0.00f + position_x, -0.05f + position_y, 0.0f,0,0,0,0,0,  // bottom right
+		-0.025f + position_x,  0.02f + position_y, 0.0f,0,0,0,0,0,  // top left 
 		// second triangle						     9
-		 0.00f + position_x, -0.05f + position_y, 0.9f,0,0,0,0,0,  // bottom right
-		-0.025f + position_x, -0.02f + position_y, 0.9f,0,0,0,0,0,  // bottom left
-		-0.025f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0  // top left
+		 0.00f + position_x, -0.05f + position_y, 0.0f,0,0,0,0,0,  // bottom right
+		-0.025f + position_x, -0.02f + position_y, 0.0f,0,0,0,0,0,  // bottom left
+		-0.025f + position_x,  0.02f + position_y, 0.0f,0,0,0,0,0  // top left
 	};
 	GlSet glset;
 	ColorData colorData;
@@ -146,13 +233,9 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 		box(0.012f, 0.02f, position_x, position_y, "", glm::vec3(1.0f) - colorData.checkBoxColor, 0.034f, false, false);
 
 	}
-	
-
 	renderText(commonData.program, text, position_x+0.04f, position_y - 0.01, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
-	
-
 }
-bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height, float position_x, float position_y,int mouseXpos, int mouseYpos,bool isPanelMoving){
+bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height, float position_x, float position_y,int mouseXpos, int mouseYpos,bool isPanelMoving){ //Return true if mouse hover on the given coordinates
 	std::vector<float> buttonCoor{
 		// first triangle
 		 width + position_x,  height + position_y, 1,1,0,0,0,0,  // top right
@@ -176,7 +259,6 @@ bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height
 
 	}
 	float mouseFY = (((float)mouseYpos / (screenSizeY / 2))-1.0f)*-1.0f;
-
 
 	for (size_t i = 0; i < 2; i++)
 	{
@@ -204,7 +286,6 @@ bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height
 }
 void UserInterface::setViewportBgColor() {
 	glClearColor(colorD.viewportBackColor.x, colorD.viewportBackColor.y, colorD.viewportBackColor.z, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 struct character {
@@ -226,10 +307,7 @@ void UserInterface::uploadChars() {
 	}
 	else {
 		glset.activeTexture(GL_TEXTURE2);
-		// set size to load glyphs as
 		FT_Set_Pixel_Sizes(face, 0, 50);
-
-		// disable byte-alignment restriction
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 		// load first 128 characters of ASCII set
@@ -280,17 +358,12 @@ void UserInterface::uploadChars() {
 void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale, glm::vec3 color) {
 	GlSet glset;
 	glset.activeTexture(GL_TEXTURE2);
-	//glBindVertexArray(VAO);
-	int isTextLoc = glGetUniformLocation(program, "isText");
-	glUniform1i(isTextLoc, 1);
-	int isTextFLoc = glGetUniformLocation(program, "isTextF");
-	glUniform1i(isTextFLoc, 1);
-	int CharLoc = glGetUniformLocation(program, "text");
-	glUniform1i(CharLoc, 2);
+
+	glset.uniform1i(program,"isText", 1);
+	glset.uniform1i(program, "isTextF", 1);
+	glset.uniform1i(program, "text", 2);
+
 	
-
-
-	// iterate through all characters
 	std::string::const_iterator c;
 	for (c = text.begin(); c != text.end(); c++)
 	{
@@ -314,12 +387,12 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 		glset.drawArrays(vertices, false);
 		x += (ch.Advance >> 6) * scale; 
 	}
-	glBindTexture(GL_TEXTURE_2D, 2);
-	glUniform1i(isTextLoc, 0);
-	glUniform1i(isTextFLoc, 0);
+	glset.uniform1i(program, "isTextF", 0);
+	glset.uniform1i(program, "isText", 0);
+
 }
 void UserInterface::renderMenubar(GLFWwindow* window) {
-	ColorData colorD;
+	/*ColorData colorD;
 	box(0.04f, 0.02f, -0.92f, 0.98f, "Layers", colorD.menuBarColor, 0.034f, false, false);
 	box(0.04f, 0.02f, -0.82f, 0.98f, "Nodes", colorD.menuBarColor, 0.034f, false, false);
 	box(0.08f, 0.02f, -0.68f, 0.98f, "Texture Paint", colorD.menuBarColor, 0.06f, false, false);
@@ -328,5 +401,5 @@ void UserInterface::renderMenubar(GLFWwindow* window) {
 	box(0.08f, 0.02f, -0.22f, 0.98f, "Load Project", colorD.menuBarColor, 0.06f, false, false);
 	box(0.06f, 0.02f, -0.06f, 0.98f, "Settings", colorD.menuBarColor, 0.04f, false, false);
 
-	box(1.0f, 0.08f, 0.0f, 1.03f, "", colorD.menuBarColor, 0.00f, false, false);
+	box(1.0f, 0.08f, 0.0f, 1.03f, "", colorD.menuBarColor, 0.00f, false, false);*/
 }

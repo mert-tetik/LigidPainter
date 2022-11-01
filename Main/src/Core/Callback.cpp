@@ -9,6 +9,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include "RigidPainter.h"
+#include "UserInterface.h"
+#include "Callback.h"
+#include "gl.h"
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -46,17 +49,39 @@ bool addPlaneButtonEnter;
 bool addSphereButtonEnter;
 bool addImageButtonEnter;
 bool addMaskTextureButtonEnter;
+bool brushSizeRangeBarEnter;
 bool modelPanelButtonEnter;
 bool texturePanelButtonEnter;
 bool paintingPanelButtonEnter;
 
-
-
 bool movePanel;
-
 
 glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
+
+CallbckData preapareCallbackData() {
+	CallbckData callbk;
+
+	callbk.loadModelButtonEnter = loadModelButtonEnter;
+	callbk.modelFilePathTextBoxEnter = modelFilePathTextBoxEnter;
+	callbk.autoTriangulateCheckBoxEnter = autoTriangulateCheckBoxEnter;
+	callbk.backfaceCullingCheckBoxEnter = backfaceCullingCheckBoxEnter;
+	callbk.addPlaneButtonEnter = addPlaneButtonEnter;
+	callbk.addSphereButtonEnter = addSphereButtonEnter;
+	callbk.movePanel = movePanel;
+	callbk.addImageButtonEnter = addImageButtonEnter;
+	callbk.modelPanelButtonEnter = modelPanelButtonEnter;
+	callbk.texturePanelButtonEnter = texturePanelButtonEnter;
+	callbk.paintingPanelButtonEnter = paintingPanelButtonEnter;
+	callbk.addMaskTextureButtonEnter = addMaskTextureButtonEnter;
+	callbk.brushSizeRangeBarEnter = brushSizeRangeBarEnter;
+
+	callbk.cameraPos = cameraPos;
+	callbk.originPos = originPos;
+	callbk.panelLoc = panelLoc;
+
+	return callbk;
+}
 
 CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double scrollx) {
 	CallbckData callbk;
@@ -71,29 +96,12 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 	cameraPos.y = sin(glm::radians(pitch)) * -radius + originPos.y;
 	cameraPos.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.z;
 
-	callbk.loadModelButtonEnter = loadModelButtonEnter;
-	callbk.modelFilePathTextBoxEnter = modelFilePathTextBoxEnter;
-	callbk.autoTriangulateCheckBoxEnter = autoTriangulateCheckBoxEnter;
-	callbk.backfaceCullingCheckBoxEnter = backfaceCullingCheckBoxEnter;
-	callbk.addPlaneButtonEnter = addPlaneButtonEnter;
-	callbk.addSphereButtonEnter = addSphereButtonEnter;
-	callbk.movePanel = movePanel;
-	callbk.addImageButtonEnter = addImageButtonEnter;
-	callbk.modelPanelButtonEnter = modelPanelButtonEnter;
-	callbk.texturePanelButtonEnter = texturePanelButtonEnter;
-	callbk.paintingPanelButtonEnter = paintingPanelButtonEnter;
-	callbk.addMaskTextureButtonEnter = addMaskTextureButtonEnter;
-
-
-	callbk.cameraPos = cameraPos;
-	callbk.originPos = originPos;
-	callbk.panelLoc = panelLoc;
+	callbk = preapareCallbackData();
 	return callbk;
 }
-CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, bool modelPanelActive, bool texturePanelActive,bool paintingPanelActive)
+CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, bool modelPanelActive, bool texturePanelActive,bool paintingPanelActive,float brushSizeRangeBarValue)
 {
 	CallbckData callbk;
-	UserInterface ui;
 	
 	//Get window size
 	int screenSizeX;
@@ -102,7 +110,7 @@ CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypo
 
 	panelCheck(window,xpos,screenSizeX);
 	
-	buttonCheck(window, xpos, ypos, modelPanelActive, texturePanelActive, paintingPanelActive);
+	buttonCheck(window, xpos, ypos, modelPanelActive, texturePanelActive, paintingPanelActive,brushSizeRangeBarValue);
 	
 
 	xoffset = xpos - lastX;
@@ -113,6 +121,7 @@ CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypo
 		xoffset *= sensitivity;
 		yoffset *= sensitivity;
 
+		//Straight Movement
 		cameraPos.x -= sin(glm::radians(yaw)) * xoffset * (sensitivity / 2) + cos(glm::radians(yaw)) * (sin(glm::radians(pitch)) * yoffset) / 4;
 		originPos.x -= sin(glm::radians(yaw)) * xoffset * (sensitivity / 2) + cos(glm::radians(yaw)) * (sin(glm::radians(pitch)) * yoffset) / 4;
 
@@ -130,31 +139,18 @@ CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypo
 		yaw += xoffset;
 		pitch += yoffset;
 
+		//Disable 90+ degrees rotations in y axis
 		if (pitch > 89.0f)
 			pitch = 89.0f;
 		if (pitch < -89.0f)
 			pitch = -89.0f;
+
+		//Helical Movement
 		cameraPos.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.x;
 		cameraPos.y = sin(glm::radians(pitch)) * -radius + originPos.y;
 		cameraPos.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.z;
 	}
-	callbk.loadModelButtonEnter = loadModelButtonEnter;
-	callbk.modelFilePathTextBoxEnter = modelFilePathTextBoxEnter;
-	callbk.autoTriangulateCheckBoxEnter = autoTriangulateCheckBoxEnter;
-	callbk.backfaceCullingCheckBoxEnter = backfaceCullingCheckBoxEnter;
-	callbk.addPlaneButtonEnter = addPlaneButtonEnter;
-	callbk.addSphereButtonEnter = addSphereButtonEnter;
-	callbk.movePanel = movePanel;
-	callbk.addImageButtonEnter = addImageButtonEnter;
-	callbk.modelPanelButtonEnter = modelPanelButtonEnter;
-	callbk.texturePanelButtonEnter = texturePanelButtonEnter;
-	callbk.paintingPanelButtonEnter = paintingPanelButtonEnter;
-	callbk.addMaskTextureButtonEnter = addMaskTextureButtonEnter;
-
-
-	callbk.cameraPos = cameraPos;
-	callbk.originPos = originPos;
-	callbk.panelLoc = panelLoc;
+	callbk = preapareCallbackData();
 	return callbk;
 }
 void Callback::panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX) {
@@ -167,7 +163,6 @@ void Callback::panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX) {
 		}
 		else {
 			movePanel = false;
-
 		}
 		if (panelLoc < 1.5f)
 			panelLoc = 1.5f;
@@ -187,7 +182,7 @@ void Callback::panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX) {
 		//glfwSetCursor(window, arrowCursor);
 	}
 }
-void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos, bool modelPanelActive, bool texturePanelActive,bool paintingPanelActive) {
+void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos, bool modelPanelActive, bool texturePanelActive,bool paintingPanelActive, float brushSizeRangeBarValue) {
 	UserInterface ui;
 	GlSet glset;
 	CommonData commonData;
@@ -228,9 +223,11 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos, bool
 	}
 	if (paintingPanelActive) {
 		addMaskTextureButtonEnter = ui.isMouseOnButton(window, 0.1f, 0.04f, panelLoc / centerDivider + centerSum, 0.8f, mouseXPos, mouseYPos, movePanel);
+		brushSizeRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.02f, panelLoc / centerDivider + centerSum+ brushSizeRangeBarValue, 0.0f, mouseXPos, mouseYPos, movePanel);
 	}
 	else {
 		addMaskTextureButtonEnter = false;
+		brushSizeRangeBarEnter = false;
 	}
 	modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc, 0.8f, mouseXPos, mouseYPos);
 	texturePanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc, 0.72f, mouseXPos, mouseYPos);
@@ -267,6 +264,9 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos, bool
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if(addMaskTextureButtonEnter){
+		glfwSetCursor(window, pointerCursor);
+	}
+	else if (brushSizeRangeBarEnter) {
 		glfwSetCursor(window, pointerCursor);
 	}
 	else {

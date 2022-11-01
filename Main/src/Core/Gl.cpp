@@ -9,17 +9,21 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include "RigidPainter.h"
+#include "UserInterface.h"
+#include "Utilities.h"
+#include "gl.h"
+#include "Texture.h"
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
 
 void GlSet::drawArrays(std::vector<float> &vertices,bool isLine) {
 	if (!isLine) {
-		glBufferData(GL_ARRAY_BUFFER,vertices.size() * sizeof(float), &vertices[0],GL_DYNAMIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER,0,vertices.size() * sizeof(float), &vertices[0]);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 8);
 	}
 	else {
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_DYNAMIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0,vertices.size() * sizeof(float), &vertices[0]);
 		glDrawArrays(GL_LINES, 0, vertices.size() / 8);
 	}
 }
@@ -56,10 +60,14 @@ void GlSet::axisPointerDataToShaders() {
 	int isLightSourceLoc = glGetUniformLocation(cmnd.program, "isLightSource");
 	glUniform1i(isLightSourceLoc, 0);
 }
-void GlSet::bindFrameBuffer() {
-	unsigned int FBO;
+void GlSet::bindFramebuffer(unsigned int FBO) {
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+}
+void GlSet::genFramebuffers(unsigned int &FBO) {
 	glGenFramebuffers(1, &FBO);
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
+}
+void GlSet::deleteFramebuffers(unsigned int& FBO) {
+	glDeleteFramebuffers(1, &FBO);
 }
 void GlSet::setVertexAtribPointer() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
@@ -77,6 +85,9 @@ void GlSet::activeTexture(unsigned int texture) {
 }
 void GlSet::bindTexture(unsigned int texture) {
 	glBindTexture(GL_TEXTURE_2D, texture);
+}
+void GlSet::genTextures(unsigned int &texture) {
+	glGenTextures(1, &texture);
 }
 void GlSet::uniform1i(unsigned int program, const char* target, int intValue){
 	glUniform1i(glGetUniformLocation(program, target), intValue);
@@ -108,7 +119,19 @@ void GlSet::viewport(int width,int height) {
 void GlSet::blendFunc(unsigned int sfactor, unsigned int dfactor) {
 	glBlendFunc(sfactor, dfactor);
 }
-void GlSet::getProgram() {
+void GlSet::texImage(GLubyte* data,int width,int height,unsigned int channels) {
+	glTexImage2D(GL_TEXTURE_2D, 0, channels, width, height, 0, channels, GL_UNSIGNED_BYTE, data);
+}
+void GlSet::generateMipmap() {
+	glGenerateMipmap(GL_TEXTURE_2D);
+}
+void GlSet::genRenderbuffers(unsigned int &RBO) {
+	glGenRenderbuffers(1, &RBO);
+}
+void GlSet::bindRenderBuffer(unsigned int RBO) {
+	glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+}
+void GlSet::getProgram() {//Prepare shader program | Usen once
 	CommonData cmnd;
 	Utilities utilities;
 	std::string fshader = utilities.readFile("fragmentShaderSource.glsl");
@@ -163,7 +186,7 @@ void GlSet::getProgram() {
 }
 int a = 0;
 
-void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool movePanel, bool modelPanelActive, bool texturePanelActive,unsigned int FBO,bool cameraPosChanged, bool paintingPanelActive) {
+void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBO, PanelData panelData,bool cameraPosChanged) {
 	GlSet gls;
 	std::vector<float>axisPointer{
 		0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
@@ -178,9 +201,7 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool move
 	ColorData colorData;
 
 
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//glDepthMask(GL_FALSE);
 
 
 	//Axis Pointer
@@ -201,27 +222,39 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool move
 	//
 
 	meshDataToShaders();
+	std::vector<float> renderVertices = {
+		// first triangle
+		 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+		 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+		 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+		// second triangle	  ,0,0,0,
+		 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+		 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+		 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+	};
+
 	if (cameraPosChanged) {
+		viewport(1920, 1080);
 		uniform1i(commonData.program, "isRenderTextureModeV", 1);
 		uniform1i(commonData.program, "isRenderTextureMode", 1);
-		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		bindFramebuffer(FBO);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawArrays(vertices, false);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		drawArrays(renderVertices, false);
+		bindFramebuffer(0);
 		Texture txtr;
-		GLubyte* renderedImage = txtr.getTextureFromProgram(GL_TEXTURE5, 1080, screenSizeY, 3);
+		GLubyte* renderedImage = txtr.getTextureFromProgram(GL_TEXTURE5,1080, 1080, 3);
 
-		glActiveTexture(GL_TEXTURE0);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1080, screenSizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		activeTexture(GL_TEXTURE0);
+		texImage(renderedImage,1080,1080, GL_RGB);
+		generateMipmap();
 
 		uniform1i(commonData.program, "isRenderTextureMode", 0);
 		uniform1i(commonData.program, "isRenderTextureModeV", 0);
+		viewport(screenSizeX, screenSizeY);
 	}
 
-	
 	drawArrays(vertices, false); //Render Model
-
 
 	disable(GL_CULL_FACE); 
 
@@ -239,7 +272,8 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool move
 
 	float centerDivider;
 	float centerSum;
-	if (!movePanel) {
+	uniform1f(commonData.program,"uiOpacity",0.5f);
+	if (!panelData.movePanel) {
 		centerDivider = 2.0f;
 		centerSum = 0;
 		 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
@@ -251,12 +285,10 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool move
 		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 		uniformMatrix4fv(commonData.program, "TextProjection", projection);
 	}
-	if (modelPanelActive) {
+	if (panelData.modelPanelActive) {
 		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider+ centerSum, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false);
 		ui.renderText(commonData.program, "File Path", renderData.panelLoc / centerDivider+ centerSum - 0.05f, 0.64f, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
 
-
-	
 		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false);
 		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, 0.0f, "Add Panel", colorData.buttonColor, 0.045f, false, false);
 		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, -0.1f, "Add Sphere", colorData.buttonColor, 0.047f, false, false);
@@ -264,12 +296,15 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices,bool move
 		ui.checkBox(renderData.panelLoc / centerDivider+ centerSum - 0.08f, 0.3f,"Auto triangulate",colorData.checkBoxColor, renderData.isAutoTriangulateHover, renderData.isAutoTriangulateChecked);
 		ui.checkBox(renderData.panelLoc / centerDivider+ centerSum - 0.08f, 0.2f, "Backface culling", colorData.checkBoxColor, renderData.isbackfaceCullingHover, renderData.isbackfaceCullingChecked);
 	}
-	if (texturePanelActive) {
+	if (panelData.texturePanelActive) {
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "+ Add Image", colorData.buttonColor, 0.05f, false, false);
 	}
-	if (paintingPanelActive) {
+	if (panelData.paintingPanelActive) {
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "Add Mask Texture", colorData.buttonColor, 0.075f, false,false);
 		ui.box(0.14f, 0.28f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "", colorData.buttonColor, 0.075f, false,true);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.0f, renderData.brushSizeRangeBarValue);
+		ui.colorRect(renderData.panelLoc / centerDivider + centerSum + 0.1f, -0.3f);
+		ui.colorBox(renderData.panelLoc / centerDivider + centerSum - 0.02f, -0.3f);
 	}
 	//UI
 
@@ -284,36 +319,33 @@ GLFWwindow* GlSet::getWindow() {
 	gladLoadGL();
 	return window;
 }
-ProjectionData GlSet::setMatrices(glm::vec3 cameraPos, glm::vec3 originPos) {
+void GlSet::setMatrices() {
 	CommonData cmnd;
-	glm::mat4 view;
-	view = glm::lookAt(cameraPos, originPos, glm::vec3(0.0, 1.0, 0.0));
-
 	glm::mat4 model = glm::mat4(1.0f);
-	//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 0.0f));
 	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-	int modelLoc = glGetUniformLocation(cmnd.program, "model");
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-	int viewLoc = glGetUniformLocation(cmnd.program, "view");
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-	int projectionLoc = glGetUniformLocation(cmnd.program, "projection");
-	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+	uniformMatrix4fv(cmnd.program, "model", model);
+	uniformMatrix4fv(cmnd.program, "projection",projection);
 	ProjectionData pd;
 	pd.modelMat = model;
 	pd.projMat = projection;
-	pd.viewMat = view;
-	return pd;
+	//pd.viewMat = view;
 }
-glm::vec3 GlSet::getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos) {
-	GlSet glset;
+void GlSet::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos) {
+	CommonData cmnd;
+	glm::mat4 view;
+	view = glm::lookAt(cameraPos, originPos, glm::vec3(0.0, 1.0, 0.0));
+	uniformMatrix4fv(cmnd.program, "view", view);
+}
+void GlSet::getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos) { //Not used
+	/*GlSet glset;
 	CommonData cmnd;
 	ProjectionData pd = glset.setMatrices(cameraPos, originPos);
-	return glm::project(vPos, pd.modelMat * pd.viewMat, pd.projMat, glm::vec4(0, 0, 1920, 1080));
+	return glm::project(vPos, pd.modelMat * pd.viewMat, pd.projMat, glm::vec4(0, 0, 1920, 1080));*/
 }
 
 void GlSet::drawLightObject(glm::vec3 lightPos) {
-	CommonData cmnd;
+	/*CommonData cmnd;
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, lightPos);
@@ -325,25 +357,25 @@ void GlSet::drawLightObject(glm::vec3 lightPos) {
 	glUniform1i(isLightSourceLoc, 1);
 	int modelLoc = glGetUniformLocation(cmnd.program, "model");
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDrawArrays(GL_TRIANGLES, 0, 36);*/
 }
 unsigned int GlSet::createScreenFrameBufferObject() {
-	glActiveTexture(GL_TEXTURE5);
+	activeTexture(GL_TEXTURE5);
 	unsigned int FBO;
-	glGenFramebuffers(1, &FBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	genFramebuffers(FBO);
+	bindFramebuffer(FBO);
 	unsigned int textureColorbuffer;
-	glGenTextures(1, &textureColorbuffer);
-	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1080, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	genTextures(textureColorbuffer);
+	bindTexture(textureColorbuffer);
+	texImage(NULL,1080,1080,GL_RGB);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-	unsigned int rbo;
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	unsigned int RBO;
+	genRenderbuffers(RBO);
+	bindRenderBuffer(RBO);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1080, 1080);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	return FBO;
 }

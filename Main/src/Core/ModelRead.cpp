@@ -3,14 +3,15 @@
 #include <fstream>
 #include <sstream>
 #include <glm/glm.hpp>
+#include "ModelLoader.h"
 #include "RigidPainter.h"
 #include <vector>
 #include <string>
 using namespace std;
 
-	struct DataOut dataReturn;
+	struct ModelData dataReturn;
 
-	DataOut Model_Loader::READ_OBJ_FILE(string path,bool autoTriangulate) { //Not capable of processing every contents of '.obj' file format. 
+	ModelData ModelLoader::READ_OBJ_FILE(string path,bool autoTriangulate) { //Not capable of processing every contents of '.obj' file format. 
 		std::ifstream infile(path);
 
 		int slashCounter = 0;
@@ -22,7 +23,7 @@ using namespace std;
 		string vertexInfo = "";
 		string faceInfo = "";
 
-		DataOut dataReturn;
+		ModelData dataReturn;
 		string line;
 
 		while (std::getline(infile, line))
@@ -97,9 +98,9 @@ using namespace std;
 		}
 		return dataReturn;
 	}
-	vector<float> Model_Loader::OBJ_getVertices(string path, bool autoTriangulate) {
-		Model_Loader  MSHPLoader;
-		DataOut dataReturn = MSHPLoader.READ_OBJ_FILE(path, autoTriangulate);
+	vector<float> ModelLoader::OBJ_getVertices(string path, bool autoTriangulate) {
+		ModelLoader  MSHPLoader;
+		ModelData dataReturn = MSHPLoader.READ_OBJ_FILE(path, autoTriangulate);
 		int phaseCounter = 0;
 		bool countDigits = false;
 		int digitCounter = 0;
