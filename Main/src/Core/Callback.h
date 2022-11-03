@@ -23,9 +23,9 @@ struct CallbckData { //Return from callback
 class Callback {
 public:
 	CallbckData scroll_callback(GLFWwindow* window, double scroll, double scrollx);
-	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos, bool modelPanelActive, bool texturePanelActive, bool paintingPanelActive, float brushSizeRangeBarValue);
+	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float brushSizeRangeBarValue);
 	void panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX);
-	void buttonCheck(GLFWwindow* window, int mouseXPos, int mouseYPos, bool modelPanelActive, bool texturePanelActive, bool paintingPanelActive, float brushSizeRangeBarValue);
+	void buttonCheck(GLFWwindow* window, int mouseXPos, int mouseYPos, PanelData panelData, float brushSizeRangeBarValue);
 	void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 };
 #endif

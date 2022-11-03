@@ -185,23 +185,40 @@ void GlSet::getProgram() {//Prepare shader program | Usen once
 #pragma endregion
 }
 int a = 0;
+void drawBrushSizeIndicator(float distanceX,float screenWidth,float screenHeight,float mouseXpos,float mouseYpos) {
+	CommonData commonData;
+	GlSet glset;
+	std::vector<float> paintingSquare{
+		// first triangle
+		 distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // top right
+		 distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom right
+		-distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // top left 
 
-void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBO, PanelData panelData,bool cameraPosChanged) {
-	GlSet gls;
-	std::vector<float>axisPointer{
-		0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
-		0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
-		-100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //X
-		100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //X
-		0.0f, 0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Z
-		0.0f, 0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Z
+		 distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom right
+		-distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom left
+		-distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0  // top left
 	};
+	glset.uniform3f(commonData.program, "uiColor", 1.0f, 1.0f, 1.0f);
+	glset.uniform1f(commonData.program, "uiOpacity", 0.1f);
+	glset.drawArrays(paintingSquare, false);
+	glset.uniform1f(commonData.program, "uiOpacity", 0.5f);
+}
+
+void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBO, PanelData panelData,bool cameraPosChanged, std::vector<float> &axisPointer) {
+	GlSet gls;
+
 	UserInterface ui;
 	CommonData commonData;
 	ColorData colorData;
 
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	int screenSizeX;
+	int screenSizeY;
+	glfwGetWindowSize(renderData.window, &screenSizeX, &screenSizeY);
+	double mouseXpos;
+	double mouseYpos;
+	glfwGetCursorPos(renderData.window, &mouseXpos, &mouseYpos);
 
 
 	//Axis Pointer
@@ -216,9 +233,7 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 	}
 
 	//Get Screen Size
-	int screenSizeX;
-	int screenSizeY;
-	glfwGetWindowSize(renderData.window, &screenSizeX, &screenSizeY);
+
 	//
 
 	meshDataToShaders();
@@ -249,13 +264,14 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 		texImage(renderedImage,1080,1080, GL_RGB);
 		generateMipmap();
 
+		delete(renderedImage);
 		uniform1i(commonData.program, "isRenderTextureMode", 0);
 		uniform1i(commonData.program, "isRenderTextureModeV", 0);
 		viewport(screenSizeX, screenSizeY);
 	}
 
-	drawArrays(vertices, false); //Render Model
 
+	drawArrays(vertices, false); //Render Model
 	disable(GL_CULL_FACE); 
 
 
@@ -310,6 +326,7 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 	uniformMatrix4fv(commonData.program, "TextProjection", projection);
+	drawBrushSizeIndicator(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos);
 }
 GLFWwindow* GlSet::getWindow() {
 	glfwInit();
@@ -321,11 +338,19 @@ GLFWwindow* GlSet::getWindow() {
 }
 void GlSet::setMatrices() {
 	CommonData cmnd;
+
+	glm::mat4 textProjection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
+	uniformMatrix4fv(cmnd.program, "TextProjection", textProjection);
+
+	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777777778 - 1
+	uniformMatrix4fv(cmnd.program, "renderTextureProjection", renderTextureProjection);
+
 	glm::mat4 model = glm::mat4(1.0f);
-	glm::mat4 projection = glm::mat4(1.0f);
-	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 	uniformMatrix4fv(cmnd.program, "model", model);
+
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 	uniformMatrix4fv(cmnd.program, "projection",projection);
+
 	ProjectionData pd;
 	pd.modelMat = model;
 	pd.projMat = projection;

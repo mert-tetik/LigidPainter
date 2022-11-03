@@ -15,6 +15,7 @@
 #include "Callback.h"
 #include "gl.h"
 #include "Texture.h"
+#include "TextureGenerator.h"
 
 #include <vector>
 #include <map>
@@ -26,24 +27,8 @@
 
 using namespace std;
 
-Utilities utilities;
-Texture_Generator txtrGen;
-ModelLoader modelLoader;
-UserInterface ui;
-Texture txtr;
 GlSet glset;
-CallbckData callbackData;
-Callback callback;
 GLFWwindow* window = glset.getWindow();
-RenderData renderData;
-PanelData panelData;
-
-bool modelPanelActive = true;
-bool texturePanelActive;
-bool paintingPanelActive;
-
-bool brushSizeRangeBarPressed;
-float brushSizeRangeBarValue = 0.0f;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -51,11 +36,6 @@ unsigned int VBO, VAO; //Vertex Buffer Object, Vertex Array Object
 bool cameraPosChanged = true;
 bool paintingMode = false;
 glm::vec3 holdCameraPos;
-
-double xOffset;
-double lastXpos;
-
-
 
 char currentKey;
 bool changeModelFilePathText = false;
@@ -68,7 +48,6 @@ bool enableCtrlAltC = true;
 bool enableBackfaceCulling;
 int isAxisPointerLoc;
 int isTwoDimensionalLoc;
-double mouseXpos, mouseYpos;
 bool buttonGetInput = true;
 bool buttonPressed = false;
 bool autoTriangulateChecked = true;
@@ -77,40 +56,46 @@ bool backfaceCullingChecked = true;
 string modelName;
 vector<float> vertices = { 0 };
 
-void refreshScreenDrawingTexture();
 void loadModelButton();
-void modelFilePathTextBoxEnter();
-void autoTriangulateCheckBoxEnter();
+void modelFilePathTextBox();
+void autoTriangulateCheckBox();
 void backfaceCullingCheckBox();
-void addPlaneButtonEnter();
-void addSphereButtonEnter();
-void addImageButtonEnter();
-void modelPanelButtonEnter();
-void texturePanelButtonEnter();
-void paintingPanelButtonEnter();
-void addMaskTextureButtonEnter();
-void brushSizeRangeBarEnter();
+void addPlaneButton();
+void addSphereButton();
+void addImageButton();
+void modelPanelButton();
+void texturePanelButton();
+void paintingPanelButton();
+void addMaskTextureButton();
+void brushSizeRangeBar();
 void uiActions();
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void drawBrushSizeIndicator();
+RenderData updateRenderData(RenderData renderData);
 
 //Texture
 string albedoTexturePath = "";
 string maskTexturePath = "";
 
+CallbckData callbackData;
+PanelData panelData;
+
 bool noButtonClick;
-int screenWidth = 1920;
-int screenHeight = 1080;
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//--
 }
 bool brushTextureChanged = true;
 GLubyte* maskTexture;
-void RigidPainter::run()
+
+bool brushSizeRangeBarPressed;
+float brushSizeRangeBarValue = 0.0f;
+bool RigidPainter::run()
 {
 	ColorData colorData;
 	CommonData commonData;
+	UserInterface ui;
+	Texture txtr;
+
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
 	glfwSetKeyCallback(window, key_callback);
 
@@ -166,46 +151,57 @@ void RigidPainter::run()
 	glDepthFunc(GL_LESS);
 	glset.enable(GL_DEPTH_TEST);
 
-	glm::mat4 projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
-	glset.uniformMatrix4fv(commonData.program, "TextProjection", projection);
-
-	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777777778 - 1
-	glset.uniformMatrix4fv(commonData.program, "renderTextureProjection", renderTextureProjection);
-
 	glset.uniform1i(commonData.program, "uiMaskTexture", 1);
 	
 	bool clickTaken = false;
 
 	glset.setMatrices();
 
+	float brushSizeIndicatorDist;
+
+	std::vector<float>axisPointer{
+		0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
+		0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 
+
+		-100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //X
+		100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 
+
+		0.0f, 0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Z
+		0.0f, 0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 
+	};
+	RenderData renderData;
+	TextureGenerator textureGen;
 	renderData.window = window;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 		glset.updateViewMatrix(callbackData.cameraPos, callbackData.originPos);
 
-		renderData.panelLoc = callbackData.panelLoc;
-		renderData.modelLoadFilePath = modelName;
-		renderData.isAutoTriangulateHover = callbackData.autoTriangulateCheckBoxEnter;
-		renderData.isAutoTriangulateChecked = autoTriangulateChecked;
-		renderData.isbackfaceCullingHover = callbackData.backfaceCullingCheckBoxEnter;
-		renderData.isbackfaceCullingChecked = backfaceCullingChecked;
+		renderData = updateRenderData(renderData);
+
+		brushSizeIndicatorDist = double(brushSizeRangeBarValue + 0.1f) * 500.0 + 10.0 ;
+		renderData.brushSizeIndicator = brushSizeIndicatorDist;
+
 		panelData.movePanel = callbackData.movePanel;
 
-		glset.render(renderData, vertices, FBO, panelData, cameraPosChanged);
-		drawBrushSizeIndicator();
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+			textureGen.drawTexture(window, maskTexturePath, brushTextureChanged, screenPaintingTextureId, brushSizeRangeBarValue);
+			paintingMode = true;
+			brushTextureChanged = false;
+		}
+		glset.render(renderData, vertices, FBO, panelData, cameraPosChanged,axisPointer);
 		//Light Obj
 		//MSHP.drawLigtObject(shaderProgram,lightPos);
 		
 		//Paint
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
-			txtr.drawTexture(window, maskTexturePath, brushTextureChanged, screenPaintingTextureId, brushSizeRangeBarValue);
-			paintingMode = true;
-			brushTextureChanged = false;
-		}
+
 
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTaken) {
-			if (!callbackData.addImageButtonEnter && !callbackData.addMaskTextureButtonEnter && !callbackData.addPlaneButtonEnter && !callbackData.addSphereButtonEnter && !callbackData.autoTriangulateCheckBoxEnter && !callbackData.backfaceCullingCheckBoxEnter && !callbackData.brushSizeRangeBarEnter && !callbackData.loadModelButtonEnter && !callbackData.modelFilePathTextBoxEnter && !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.texturePanelButtonEnter) {
+			if (!callbackData.addImageButtonEnter && !callbackData.addMaskTextureButtonEnter && !callbackData.addPlaneButtonEnter 
+				&& !callbackData.addSphereButtonEnter && !callbackData.autoTriangulateCheckBoxEnter && !callbackData.backfaceCullingCheckBoxEnter 
+				&& !callbackData.brushSizeRangeBarEnter && !callbackData.loadModelButtonEnter && !callbackData.modelFilePathTextBoxEnter 
+				&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.texturePanelButtonEnter) {
 				noButtonClick = true;
 			}
 			else {
@@ -218,19 +214,35 @@ void RigidPainter::run()
 		}
 
 		glfwSwapBuffers(window);
-		brushSizeRangeBarEnter();
 		uiActions();
-		
+		if (cameraPosChanged) {
+			glset.uniform3fv(commonData.program, "viewPos", callbackData.cameraPos);
+		}
 		if (cameraPosChanged && paintingMode) {
-			refreshScreenDrawingTexture();
+			txtr.refreshScreenDrawingTexture();
+			cameraPosChanged = false;
 			paintingMode = false;
 		}
 	}
 	glfwDestroyWindow(window);
 	glfwTerminate();
+	return true;
 }
+RenderData updateRenderData(RenderData renderData) {
+	renderData.panelLoc = callbackData.panelLoc;
+	renderData.modelLoadFilePath = modelName;
+	renderData.isAutoTriangulateHover = callbackData.autoTriangulateCheckBoxEnter;
+	renderData.isAutoTriangulateChecked = autoTriangulateChecked;
+	renderData.isbackfaceCullingHover = callbackData.backfaceCullingCheckBoxEnter;
+	renderData.isbackfaceCullingChecked = backfaceCullingChecked;
+	renderData.backfaceCulling = enableBackfaceCulling;
+	renderData.brushSizeRangeBarValue = brushSizeRangeBarValue;
+	return renderData;
+}
+//Ui Actions
 
 void uiActions() {
+	brushSizeRangeBar();
 	if (!noButtonClick) {
 		if (buttonGetInput) {
 			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
@@ -243,23 +255,23 @@ void uiActions() {
 			if (buttonPressed) {
 				//Check mouse hover
 				if (callbackData.addMaskTextureButtonEnter)
-					addMaskTextureButtonEnter();
+					addMaskTextureButton();
 				if (callbackData.modelFilePathTextBoxEnter)
-					modelFilePathTextBoxEnter();
+					modelFilePathTextBox();
 				if (callbackData.modelPanelButtonEnter)
-					modelPanelButtonEnter();
+					modelPanelButton();
 				if (callbackData.texturePanelButtonEnter)
-					texturePanelButtonEnter();
+					texturePanelButton();
 				if (callbackData.paintingPanelButtonEnter)
-					paintingPanelButtonEnter();
+					paintingPanelButton();
 				if (callbackData.addImageButtonEnter)
-					addImageButtonEnter();
+					addImageButton();
 				if (callbackData.addPlaneButtonEnter)
-					addPlaneButtonEnter();
+					addPlaneButton();
 				if (callbackData.addSphereButtonEnter)
-					addSphereButtonEnter();
+					addSphereButton();
 				if (callbackData.autoTriangulateCheckBoxEnter)
-					autoTriangulateCheckBoxEnter();
+					autoTriangulateCheckBox();
 				if (callbackData.backfaceCullingCheckBoxEnter)
 					backfaceCullingCheckBox();
 				if (callbackData.loadModelButtonEnter)
@@ -269,19 +281,12 @@ void uiActions() {
 		}
 	}
 }
-void refreshScreenDrawingTexture(){
-	CommonData commonData;
-	GLubyte* screenTextureX = new GLubyte[1920 * 1080 * 3];//Deleted
-	std::fill_n(screenTextureX, 1920 * 1080 * 3, 0);
-	glset.activeTexture(GL_TEXTURE4);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1920, 1080, GL_RGB, GL_UNSIGNED_BYTE, screenTextureX); //Refresh Screen Texture
-	glset.generateMipmap();
-	cameraPosChanged = false;
-	glset.uniform3fv(commonData.program, "viewPos", callbackData.cameraPos);
-	delete(screenTextureX);
-}
+
 string maskTexturePathCheck;
-void addMaskTextureButtonEnter() {
+void addMaskTextureButton() {
+	Utilities utilities;
+	GlSet glset;
+	Texture txtr;
 	maskTexturePathCheck = utilities.openFileDialog();
 	if (maskTexturePathCheck != "") {
 		maskTexturePath = maskTexturePathCheck;
@@ -292,7 +297,7 @@ void addMaskTextureButtonEnter() {
 		glset.bindTexture(getTextureData.Id);
 	}
 }
-void brushSizeRangeBarEnter() {
+void brushSizeRangeBar() {
 	if (callbackData.brushSizeRangeBarEnter && !noButtonClick) {
 		if (buttonGetInput) {
 			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
@@ -311,40 +316,32 @@ void brushSizeRangeBarEnter() {
 		}
 	}
 }
-void modelFilePathTextBoxEnter() {
+void modelFilePathTextBox() {
+	Utilities utilities;
 	modelFilePath = utilities.openFileDialog();
 	modelName = utilities.getLastWordBySeparatingWithChar(modelFilePath, '\\');
 
 }
-void modelPanelButtonEnter() {
-	modelPanelActive = true;
-	texturePanelActive = false;
-	paintingPanelActive = false;
-
-	panelData.modelPanelActive = modelPanelActive;
-	panelData.texturePanelActive = texturePanelActive;
-	panelData.paintingPanelActive = paintingPanelActive;
+void modelPanelButton() {
+	panelData.modelPanelActive = true;
+	panelData.texturePanelActive = false;
+	panelData.paintingPanelActive = false;
 }
-void texturePanelButtonEnter() {
-	modelPanelActive = false;
-	texturePanelActive = true;
-	paintingPanelActive = false;
-
-	panelData.modelPanelActive = modelPanelActive;
-	panelData.texturePanelActive = texturePanelActive;
-	panelData.paintingPanelActive = paintingPanelActive;
+void texturePanelButton() {
+	panelData.modelPanelActive = false;
+	panelData.texturePanelActive = true;
+	panelData.paintingPanelActive = false;
 }
-void paintingPanelButtonEnter() {
-	modelPanelActive = false;
-	texturePanelActive = false;
-	paintingPanelActive = true;
-
-	panelData.modelPanelActive = modelPanelActive;
-	panelData.texturePanelActive = texturePanelActive;
-	panelData.paintingPanelActive = paintingPanelActive;
+void paintingPanelButton() {
+	panelData.modelPanelActive = false;
+	panelData.texturePanelActive = false;
+	panelData.paintingPanelActive = true;
 }
 string albedoPathCheck;
-void addImageButtonEnter() {
+void addImageButton() {
+	Utilities utilities;
+	GlSet glset;
+	Texture txtr;
 	albedoPathCheck = utilities.openFileDialog();
 	if (albedoPathCheck != "") {
 		albedoTexturePath = albedoPathCheck;
@@ -355,7 +352,8 @@ void addImageButtonEnter() {
 		glset.bindTexture(getTextureData.Id);
 	}
 }
-void addPlaneButtonEnter() {
+void addPlaneButton() {
+	GlSet glset;
 	vector<float> planeVertices = {
 		-1 , 0 , 1 , 0 , 0 , 0 , 1 , 0 ,
 		1 , 0 , 1 , 1 , 0 , 0 , 1 , 0 ,
@@ -368,13 +366,14 @@ void addPlaneButtonEnter() {
 	vertices = planeVertices;
 	glset.bufferData(vertices);
 }
-void addSphereButtonEnter() {
+void addSphereButton() {
+	GlSet glset;
 	Sphere sphere;
 	modelName = "sphere.rigidefault";
 	vertices = sphere.getSphere();
 	glset.bufferData(vertices);
 }
-void autoTriangulateCheckBoxEnter(){
+void autoTriangulateCheckBox(){
 	if (autoTriangulateChecked == false)
 		autoTriangulateChecked = true;
 	else
@@ -388,46 +387,32 @@ void backfaceCullingCheckBox() {
 	}
 	else {
 		enableBackfaceCulling = true;
-		renderData.backfaceCulling = enableBackfaceCulling;
 		backfaceCulling = true;
 		backfaceCullingChecked = false;
 	}
 }
-
 void loadModelButton() {
+	GlSet glset;
+	ModelLoader modelLoader;
 	if (modelName != "" && modelName[modelName.size() - 1] == 'j' && modelName[modelName.size() - 2] == 'b' && modelName[modelName.size() - 3] == 'o' && modelName[modelName.size() - 4] == '.') {
 		vertices.clear();
 		vertices = modelLoader.OBJ_getVertices(modelFilePath, autoTriangulateChecked);
 		glset.bufferData(vertices);
 	}
 }
+//Callback
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-	screenWidth = width;
-	screenHeight = height;
+	Callback callback;
 	callback.framebuffer_size_callback(window,width,height);
 }
-void drawBrushSizeIndicator() {
-	CommonData commonData;
-	float distanceX = double(brushSizeRangeBarValue + 0.1f) * 500.0 + 10.0;
-	std::vector<float> paintingSquare{
-		// first triangle
-		 distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // top right
-		 distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom right
-		-distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // top left 
 
-		 distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom right
-		-distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom left
-		-distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0  // top left
-	};
-	glset.uniform3f(commonData.program, "uiColor", 1.0f, 1.0f, 1.0f);
-	glset.uniform1f(commonData.program, "uiOpacity", 0.1f);
-	glset.drawArrays(paintingSquare, false);
-	glset.uniform1f(commonData.program, "uiOpacity", 0.5f);
-}
-
+double lastXpos;
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+	double xOffset;
+
+	Callback callback;
 	if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
 		brushSizeRangeBarPressed = false;
 	}
@@ -443,15 +428,16 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 		}
 		brushSizeRangeBarValue -= xOffset / 960;
 	}
-	renderData.brushSizeRangeBarValue = brushSizeRangeBarValue;
-	callbackData = callback.mouse_callback(window, xpos, ypos, modelPanelActive, texturePanelActive, paintingPanelActive, brushSizeRangeBarValue);
+	callbackData = callback.mouse_callback(window, xpos, ypos, panelData, brushSizeRangeBarValue);
 	if (callbackData.cameraPos != holdCameraPos) {
 		cameraPosChanged = true;
 	}
 	holdCameraPos = callbackData.cameraPos;
 }
+
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 {
+	Callback callback;
 	callbackData = callback.scroll_callback(window, scroll, scrollx);
 	if (callbackData.cameraPos != holdCameraPos) {
 		cameraPosChanged = true;

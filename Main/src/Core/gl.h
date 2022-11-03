@@ -33,7 +33,7 @@ public:
 	void viewport(int width, int height);
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
 	void getProgram();
-	void render(RenderData renderData, std::vector<float>& vertices, unsigned int FBO, PanelData panelData, bool cameraPosChanged);
+	void render(RenderData renderData, std::vector<float>& vertices, unsigned int FBO, PanelData panelData, bool cameraPosChanged, std::vector<float>& axisPointer);
 	GLFWwindow* getWindow();
 	void setMatrices();
 	void updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos);

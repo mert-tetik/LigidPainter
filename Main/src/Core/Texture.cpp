@@ -16,70 +16,6 @@
 
 using namespace std;
 
-TextureData textureData;
-GLubyte* resizedPixels  = new GLubyte[50 * 50 * 3];;
-float lastBrushSizeRangeBarValue = 0.0f;
-
-double lastMouseXPos = 0;
-double lastMouseYPos = 0;
-void Texture::drawTexture(GLFWwindow* window, string path,bool brushTextureChanged,unsigned int screenPaintingTextureId, float brushSizeRangeBarValue) {
-	double mouseXpos;
-	double mouseYpos;
-	glfwGetCursorPos(window, &mouseXpos, &mouseYpos);
-	int screenSizeX;
-	int screenSizeY;
-	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
-	if (lastMouseXPos - mouseXpos != 0 || lastMouseYPos - mouseYpos != 0) {
-		
-		bool brushSizeChanged = false;
-		if (lastBrushSizeRangeBarValue != brushSizeRangeBarValue) {
-			brushSizeChanged = true;
-		}
-		lastBrushSizeRangeBarValue = brushSizeRangeBarValue;
-
-		GlSet glset;
-		Texture txtr;
-		int distanceX = double(brushSizeRangeBarValue + 0.1f) * 500.0 + 10.0;
-		int distanceY = distanceX;
-
-		if (brushSizeChanged || brushTextureChanged) {
-			resizedPixels = new GLubyte[distanceX * distanceY * 3]; //deleted
-			glset.activeTexture(GL_TEXTURE1);
-			textureData = txtr.getTextureData(path.c_str());
-			GetTextureData getTextureData;
-
-			getTextureData = getTexture(path, 0, 0, true, brushSizeRangeBarValue);
-			resizedPixels = getTextureData.imgData;
-		}
-		GLubyte* resultSquare = new GLubyte[distanceX * distanceY * 3]; //deleted
-		GLfloat* screenTextureSquare = new GLfloat[distanceX * distanceY * 3]; //deleted
-		
-		unsigned int FBO;
-		glset.genFramebuffers(FBO);
-		glset.bindFramebuffer(FBO);
-
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenPaintingTextureId, 0);
-		if (screenTextureSquare) {
-			glReadPixels(mouseXpos + ((1920 - screenSizeX) / 2) - distanceX / 2, 1080 - mouseYpos - ((1080 - screenSizeY) / 2) - distanceY / 2, distanceX, distanceY, GL_RGB, GL_FLOAT, screenTextureSquare);
-		}
-		glset.bindFramebuffer(0);
-		for (size_t i = 0; i < distanceX * distanceY * 3; i++)
-		{
-			resultSquare[i] = min(resizedPixels[i] + (int)(screenTextureSquare[i] * 255), 255);
-		}
-		glset.activeTexture(GL_TEXTURE4);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, mouseXpos+((1920-screenSizeX)/2) - distanceX / 2, 1080 - mouseYpos - ((1080 - screenSizeY) / 2) - distanceY / 2, distanceX, distanceY, GL_RGB, GL_UNSIGNED_BYTE, resultSquare);
-		glset.generateMipmap();
-
-		delete(screenTextureSquare);
-		delete(resultSquare);
-		glset.deleteFramebuffers(FBO);
-	}
-	lastMouseXPos = mouseXpos;
-	lastMouseYPos = mouseYpos;
-	
-}
-
 GetTextureData Texture::getTexture(std::string path, double imgX, double imgY,bool resize,float brushSizeRangeBarValue) {
 	GetTextureData getTextureData;
 	unsigned int textureID;
@@ -155,12 +91,22 @@ unsigned int Texture::createScreenPaintTexture(GLubyte* &screenTexture,GLFWwindo
 	glset.genTextures(textureID);
 	glset.bindTexture(textureID);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1920, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, screenTexture);
 	glset.generateMipmap();
 	return textureID;
+}
+void Texture::refreshScreenDrawingTexture() {
+	GlSet glset;
+	CommonData commonData;
+	GLubyte* screenTextureX = new GLubyte[1920 * 1080 * 3];//Deleted
+	std::fill_n(screenTextureX, 1920 * 1080 * 3, 0);
+	glset.activeTexture(GL_TEXTURE4);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1920, 1080, GL_RGB, GL_UNSIGNED_BYTE, screenTextureX); //Refresh Screen Texture
+	glset.generateMipmap();
+	delete(screenTextureX);
 }

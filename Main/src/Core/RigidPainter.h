@@ -23,18 +23,15 @@ struct RenderData { //GlSet::render
 	bool isbackfaceCullingChecked; 
 	bool backfaceCulling;
 	float brushSizeRangeBarValue;
+	float brushSizeIndicator;
 };
 class Sphere {
 public:
 	std::vector<float> getSphere();
 };
-class Texture_Generator {
-public:
-	//
-};
 class RigidPainter {
 public:
-	void run();
+	bool run();
 };
 struct PanelData {
 	bool movePanel;

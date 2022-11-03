@@ -15,7 +15,7 @@ public:
 	//void drawTexture(const char* path,int width,int height, GLubyte* pixels,int channels); 
 	GLubyte* getTextureFromProgram(int texture, int width, int height, int channels);
 	TextureData getTextureData(const char* path);
-	void drawTexture(GLFWwindow* window, std::string path, bool brushTextureChanged, unsigned int screenPaintingTextureId, float brushSizeRangeBarValue);
 	unsigned int createScreenPaintTexture(GLubyte*& screenTexture, GLFWwindow* screen);
+	void refreshScreenDrawingTexture();
 };
 #endif
