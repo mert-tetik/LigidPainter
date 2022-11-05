@@ -31,7 +31,7 @@ public:
 	void panelChangeButton(float position_x, float position_y);
 	bool isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, int mouseXpos, int mouseYpos);
 	void rangeBar(float position_x, float position_y, float value);
-	void colorBox(float position_x, float position_y);
-	void colorRect(float position_x, float position_y);
+	void colorBox(float position_x, float position_y, float valueX, float valueY);
+	void colorRect(float position_x, float position_y,float value, unsigned int FBO,GLFWwindow* window);
 };
 #endif

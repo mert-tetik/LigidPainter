@@ -15,6 +15,7 @@ in vec3 Pos;
 
 in vec4 projectedPos;
 uniform sampler2D maskTexture;
+uniform vec3 drawColor;
 
 uniform int isRenderTextureMode;
 
@@ -37,6 +38,8 @@ uniform vec3 uiColor;
 uniform float uiOpacity;
 
 uniform int isColorBox;
+uniform int isRect;
+uniform vec3 boxColor = vec3(0.0,1.0,0.0);
 
 out vec4 color;
 
@@ -49,7 +52,6 @@ bool isPainted() {
 }
 
 void main() {
-   vec3 drawColor = vec3(1.0, 0.0, 1.0);
    vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2, 2, 2) + 0.5 / vec3(1, 1, 1);
    float intensity = 0.0f;
    if(isPainted()) {
@@ -73,6 +75,9 @@ void main() {
    vec3 reflectDir = reflect(-lightDir, norm);
    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
    vec3 specular = lightColor * spec * vec3(texture(material.specular, TexCoords));
+
+            vec3 interpretedColorWhite = ((vec3(1.0)-boxColor) * vec3(TexCoords.x)) + boxColor;
+            vec3 interpretedColorBlack = vec3(TexCoords.y)*interpretedColorWhite;
 
    vec3 result = ambient + diffuse + specular;
    if(isRenderTextureMode == 0) {
@@ -102,11 +107,26 @@ void main() {
          }
       } 
       else {
-         color = vec4(Normal,1);
+         if(isRect == 0){
+
+            color = vec4(interpretedColorBlack,1);
+         }
+         else{
+            color = vec4(norm,1);
+         }
       }
 
    } else {
-      color = vec4(diffuseDrawMix, 1);
+      if(isColorBox == 1 && isRect == 1){
+         color = vec4(Normal,1);
+      }
+      else if(isColorBox == 1 && isRect == 0){
+         color = vec4(interpretedColorBlack,1);
+
+      }
+      else{
+         color = vec4(diffuseDrawMix, 1);
+      }
    }
 
 }

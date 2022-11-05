@@ -21,6 +21,7 @@ out vec4 projectedPos;
 uniform mat4 renderTextureProjection;
 uniform int isRenderTextureModeV;
 
+
 void main() {
    Pos = aPos;
    TexCoords = aTexCoords;
@@ -40,6 +41,7 @@ void main() {
       }
    } else {
       gl_Position = renderTextureProjection * vec4(aTexCoords, 0, 1);
+
       projectedPos = projection * view * vec4(aPos, 0.5); //Caution
    }
 }

@@ -68,14 +68,16 @@ void texturePanelButton();
 void paintingPanelButton();
 void addMaskTextureButton();
 void brushSizeRangeBar();
+void colorBoxColorRangeBar();
+void colorBoxPickerButton();
 void uiActions();
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 RenderData updateRenderData(RenderData renderData);
 
 //Texture
-string albedoTexturePath = "";
-string maskTexturePath = "";
+string albedoTexturePath = "vergil3.jpg";
+string maskTexturePath = "C:\\Users\\CASPER\\source\\repos\\GLFW\\GLFW\\testHexa.jpg";
 
 CallbckData callbackData;
 PanelData panelData;
@@ -88,7 +90,13 @@ bool brushTextureChanged = true;
 GLubyte* maskTexture;
 
 bool brushSizeRangeBarPressed;
+bool colorBoxColorRangeBarPressed;
+bool colorBoxPickerPressed;
+
 float brushSizeRangeBarValue = 0.0f;
+float colorBoxColorRangeBarValue = 0.0f;
+float colorBoxPickerValue_x = 0.0f;
+float colorBoxPickerValue_y = 0.0f;
 bool RigidPainter::run()
 {
 	ColorData colorData;
@@ -109,7 +117,7 @@ bool RigidPainter::run()
 
 
 	glset.setVertexAtribPointer();
-	glBufferData(GL_ARRAY_BUFFER, 1000, NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW);
 
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
@@ -173,8 +181,26 @@ bool RigidPainter::run()
 	TextureGenerator textureGen;
 	renderData.window = window;
 
+	glset.activeTexture(GL_TEXTURE6);
+
+	unsigned int paintingSqTxtr;
+
 	while (!glfwWindowShouldClose(window))
 	{
+		if (colorBoxPickerValue_x > 0.1f) {
+			colorBoxPickerValue_x = 0.1f;
+		}
+		else if (colorBoxPickerValue_x < -0.1f) {
+			colorBoxPickerValue_x = -0.1f;
+		}
+
+		if (colorBoxPickerValue_y > 0.2f) {
+			colorBoxPickerValue_y = 0.2f;
+		}
+		else if (colorBoxPickerValue_y < -0.2f) {
+			colorBoxPickerValue_y = -0.2f;
+		}
+
 		glfwPollEvents();
 		glset.updateViewMatrix(callbackData.cameraPos, callbackData.originPos);
 
@@ -190,7 +216,7 @@ bool RigidPainter::run()
 			paintingMode = true;
 			brushTextureChanged = false;
 		}
-		glset.render(renderData, vertices, FBO, panelData, cameraPosChanged,axisPointer);
+		glset.render(renderData, vertices, FBO, panelData, cameraPosChanged,axisPointer, colorBoxPickerValue_x, colorBoxPickerValue_y, 0, colorBoxColorRangeBarValue);
 		//Light Obj
 		//MSHP.drawLigtObject(shaderProgram,lightPos);
 		
@@ -201,7 +227,8 @@ bool RigidPainter::run()
 			if (!callbackData.addImageButtonEnter && !callbackData.addMaskTextureButtonEnter && !callbackData.addPlaneButtonEnter 
 				&& !callbackData.addSphereButtonEnter && !callbackData.autoTriangulateCheckBoxEnter && !callbackData.backfaceCullingCheckBoxEnter 
 				&& !callbackData.brushSizeRangeBarEnter && !callbackData.loadModelButtonEnter && !callbackData.modelFilePathTextBoxEnter 
-				&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.texturePanelButtonEnter) {
+				&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.colorBoxPickerEnter
+				&& !callbackData.colorBoxColorRangeBarEnter) {
 				noButtonClick = true;
 			}
 			else {
@@ -220,9 +247,9 @@ bool RigidPainter::run()
 		}
 		if (cameraPosChanged && paintingMode) {
 			txtr.refreshScreenDrawingTexture();
-			cameraPosChanged = false;
 			paintingMode = false;
 		}
+		cameraPosChanged = false;
 	}
 	glfwDestroyWindow(window);
 	glfwTerminate();
@@ -242,7 +269,9 @@ RenderData updateRenderData(RenderData renderData) {
 //Ui Actions
 
 void uiActions() {
+	colorBoxPickerButton();
 	brushSizeRangeBar();
+	colorBoxColorRangeBar();
 	if (!noButtonClick) {
 		if (buttonGetInput) {
 			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
@@ -310,12 +339,50 @@ void brushSizeRangeBar() {
 			buttonGetInput = true;
 			if (buttonPressed) {
 				brushSizeRangeBarPressed = false;
-
 			}
 			buttonPressed = false;
 		}
 	}
 }
+void colorBoxColorRangeBar() {
+	if (callbackData.colorBoxColorRangeBarEnter && !noButtonClick) {
+		if (buttonGetInput) {
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				buttonGetInput = false;
+				buttonPressed = true;
+				colorBoxColorRangeBarPressed = true;
+			}
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			buttonGetInput = true;
+			if (buttonPressed) {
+				colorBoxColorRangeBarPressed = false;
+			}
+			buttonPressed = false;
+		}
+	}
+}
+void colorBoxPickerButton() {
+	if (callbackData.colorBoxPickerEnter && !noButtonClick) {
+
+		if (buttonGetInput) {
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				buttonGetInput = false;
+				buttonPressed = true;
+				colorBoxPickerPressed = true;
+
+			}
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			buttonGetInput = true;
+			if (buttonPressed) {
+				colorBoxPickerPressed = false;
+			}
+			buttonPressed = false;
+		}
+	}
+}
+
 void modelFilePathTextBox() {
 	Utilities utilities;
 	modelFilePath = utilities.openFileDialog();
@@ -408,16 +475,26 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 double lastXpos;
+double lastYpos;
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	double xOffset;
+	double yOffset;
+	
+	int width;
+	int height;
+	glfwGetWindowSize(window,&width,&height);
 
 	Callback callback;
 	if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
 		brushSizeRangeBarPressed = false;
+		colorBoxPickerPressed = false;
+		colorBoxColorRangeBarPressed = false;
 	}
-	xOffset = lastXpos - xpos;
+	xOffset = (lastXpos - xpos) / (1920 / width);
 	lastXpos = xpos;
+	yOffset = (lastYpos - ypos) / (1080 / height);
+	lastYpos = ypos;
 
 	if (brushSizeRangeBarPressed) {
 		if (brushSizeRangeBarValue > 0.1f) {
@@ -428,7 +505,24 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 		}
 		brushSizeRangeBarValue -= xOffset / 960;
 	}
-	callbackData = callback.mouse_callback(window, xpos, ypos, panelData, brushSizeRangeBarValue);
+	if (colorBoxColorRangeBarPressed) {
+		if (colorBoxColorRangeBarValue > 0.2f) {
+			colorBoxColorRangeBarValue = 0.2f;
+		}
+		else if (colorBoxColorRangeBarValue < -0.2f) {
+			colorBoxColorRangeBarValue = -0.2f;
+		}
+		colorBoxColorRangeBarValue += yOffset / 540;
+	}
+
+	//Change color box picker value-location
+	if (colorBoxPickerPressed) {
+		colorBoxPickerValue_x -= xOffset / 960;
+		colorBoxPickerValue_y += yOffset / 540;
+	}
+
+
+	callbackData = callback.mouse_callback(window, xpos, ypos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue);
 	if (callbackData.cameraPos != holdCameraPos) {
 		cameraPosChanged = true;
 	}

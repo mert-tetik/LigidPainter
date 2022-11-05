@@ -33,7 +33,7 @@ public:
 	void viewport(int width, int height);
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
 	void getProgram();
-	void render(RenderData renderData, std::vector<float>& vertices, unsigned int FBO, PanelData panelData, bool cameraPosChanged, std::vector<float>& axisPointer);
+	void render(RenderData renderData, std::vector<float>& vertices, unsigned int FBO, PanelData panelData, bool cameraPosChanged, std::vector<float>& axisPointer, float colorBoxPickerValue_x,float colorBoxPickerValue_y, unsigned int paintingSqFBO, float colorBoxColorRangeBarValue);
 	GLFWwindow* getWindow();
 	void setMatrices();
 	void updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos);

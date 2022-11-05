@@ -72,18 +72,22 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	glset.uniform1i(commonData.program, "isUiTextureUsed", 0);
 
 }
-void UserInterface::colorBox(float position_x, float position_y) {
+void UserInterface::colorBox(float position_x, float position_y,float valueX, float valueY) {
+	ColorData colorData;
 	glm::vec3 color = glm::vec3(1.0f,0.0f,0.0f);
 	std::vector<float> boxCoor{
 		// first triangle								    //Color - Normal Vectors Will Be Usen For Color Data Of Vertices
-		 -0.10f + position_x,  0.20f + position_y, 0.9f,1,1	,1,1,1,  // top right
-		 -0.10f + position_x, -0.20f + position_y, 0.9f,1,0	,0,0,0,  // bottom right
-		 0.10f + position_x,  0.20f + position_y, 0.9f,0,1	,color.r,color.g+0.22f,color.b + 0.22f,  // top left 
+		 -0.10f + position_x,  0.20f + position_y, 0.9f,1.0f,1.0f	,1,1,1,  // top right
+		 -0.10f + position_x, -0.20f + position_y, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
+		 0.10f + position_x,  0.20f + position_y, 0.9f,0.0f,1.0f	,color.r,color.g+0.22f,color.b + 0.22f,  // top left 
 		// second triangle
-		 -0.10f + position_x, -0.20f + position_y, 0.9f,1,0	,0,0,0,  // bottom right
-		 0.10f + position_x, -0.20f + position_y, 0.9f,0,0	,0,0,0,  // bottom left
-		 0.10f + position_x,  0.20f + position_y, 0.9f,0,1	,color.r,color.g + 0.2f,color.b + 0.2f // top left
+		 -0.10f + position_x, -0.20f + position_y, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
+		 0.10f + position_x, -0.20f + position_y, 0.9f,0.0f,0.0f	,0,0,0,  // bottom left
+		 0.10f + position_x,  0.20f + position_y, 0.9f,0.0f,1.0f	,color.r,color.g + 0.2f,color.b + 0.2f // top left
 	};
+
+	box(0.005f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.rangeBarFront, 0.045f, false, false);
+
 	GlSet glset;
 	CommonData commonData;
 	glset.uniform1i(commonData.program,"isColorBox",1);
@@ -91,65 +95,104 @@ void UserInterface::colorBox(float position_x, float position_y) {
 	glset.uniform1i(commonData.program, "isColorBox", 0);
 
 }
-void UserInterface::colorRect(float position_x, float position_y) {
+void UserInterface::colorRect(float position_x, float position_y,float value,unsigned int FBO,GLFWwindow* window) {
 	std::vector<float> boxCoor{
 		//Color - Normal Vectors Will Be Usen For Color Data Of Vertices
-
-		 -0.01f + position_x,  0.04f + position_y + 0.16f, 0.9f ,1,1	,1,0,0,  // top right
-		 -0.01f + position_x, -0.04f + position_y + 0.16f, 0.9f ,1,0	,1,0,1,  // bottom right
-		  0.01f + position_x,  0.04f + position_y + 0.16f, 0.9f ,0,1	,1,0,0,  // top left 
-		 -0.01f + position_x, -0.04f + position_y + 0.16f, 0.9f ,1,0	,1,0,1,  // bottom right
-	 	  0.01f + position_x, -0.04f + position_y + 0.16f, 0.9f ,0,0	,1,0,1,  // bottom left
-		  0.01f + position_x,  0.04f + position_y + 0.16f, 0.9f ,0,1	,1,0,0,	 // top left
-
-		 -0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,1,1	,1,0,1,  // top right
-		 -0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,1,0	,0,0,1,  // bottom right
-		  0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,0,1	,1,0,1,  // top left 
-		 -0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,1,0	,0,0,1,  // bottom right
-		  0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,0,0	,0,0,1,  // bottom left
-		  0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,0,1	,1,0,1,	 // top left
-
-		 -0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,1,1	,0,0,1,  // top right
-		 -0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,1,0	,0,1,1,  // bottom right
-		  0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,0,1	,0,0,1,  // top left 
-		 -0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,1,0	,0,1,1,  // bottom right
-		  0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,0,0	,0,1,1,  // bottom left
-		  0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,0,1	,0,0,1,	 // top left
-
-		 -0.01f + position_x,  0.04f + position_y		 , 0.9f ,1,1	,0,1,1,  // top right
-		 -0.01f + position_x, -0.04f + position_y		 , 0.9f ,1,0	,0,1,0,  // bottom right
-		  0.01f + position_x,  0.04f + position_y		 , 0.9f ,0,1	,0,1,1,  // top left 
-		 -0.01f + position_x, -0.04f + position_y		 , 0.9f ,1,0	,0,1,0,  // bottom right
-		  0.01f + position_x, -0.04f + position_y	     , 0.9f ,0,0	,0,1,0,  // bottom left
-		  0.01f + position_x,  0.04f + position_y		 , 0.9f ,0,1	,0,1,1,	 // top left
-
-		 -0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,1,1	,1,1,0,  // top right
-		 -0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,1,0	,1,1,0,  // bottom right
-		  0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,0,1	,1,1,0,  // top left 
-		 -0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,1,0	,1,1,0,  // bottom right
-		  0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,0,0	,1,1,0,  // bottom left
-		  0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,0,1	,1,1,0,	 // top left
-												  
-		 -0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,1,1	,0,1,0,  // top right
-		 -0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,1,0	,1,1,0,  // bottom right
-		  0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,0,1	,0,1,0,  // top left 
-		 -0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,1,0	,1,1,0,  // bottom right
-		  0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,0,0	,1,1,0,  // bottom left
-		  0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,0,1	,0,1,0,	 // top left
-
-
-		 -0.01f + position_x,  0.04f + position_y - 0.16f, 0.9f ,1,1	,1,1,0,  // top right
-		 -0.01f + position_x, -0.04f + position_y - 0.16f, 0.9f ,1,0	,1,0,0,  // bottom right
-		  0.01f + position_x,  0.04f + position_y - 0.16f, 0.9f ,0,1	,1,1,0,  // top left 
-		 -0.01f + position_x, -0.04f + position_y - 0.16f, 0.9f ,1,0	,1,0,0,  // bottom right
-		  0.01f + position_x, -0.04f + position_y - 0.16f, 0.9f ,0,0	,1,0,0,  // bottom left
-		  0.01f + position_x,  0.04f + position_y - 0.16f, 0.9f ,0,1	,1,1,0,	 // top left
+		 -0.01f + position_x,  0.04f + position_y + 0.16f, 0.9f ,1,(0.04f +0.16f)*2.5	+0.5f,1,0,0,  // top right
+		 -0.01f + position_x, -0.04f + position_y + 0.16f, 0.9f ,1,(-0.04f + 0.16f)*2.5	+0.5f,1,0,1,  // bottom right
+		  0.01f + position_x,  0.04f + position_y + 0.16f, 0.9f ,0,(0.04f +0.16f)*2.5	+0.5f,1,0,0,  // top left 
+		 -0.01f + position_x, -0.04f + position_y + 0.16f, 0.9f ,1,(-0.04f +0.16f)*2.5	+0.5f,1,0,1,  // bottom right
+	 	  0.01f + position_x, -0.04f + position_y + 0.16f, 0.9f ,0,(-0.04f +0.16f)*2.5	+0.5f,1,0,1,  // bottom left
+		  0.01f + position_x,  0.04f + position_y + 0.16f, 0.9f ,0,(0.04f +0.16f)*2.5	+0.5f,1,0,0,	 // top left
+																						
+		 -0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,1,(0.02f +0.10f)*2.5	+0.5f,1,0,1,  // top right
+		 -0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,1,(-0.02f +0.10f)*2.5	+0.5f,0,0,1,  // bottom right
+		  0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,0,(0.02f +0.10f)*2.5	+0.5f,1,0,1,  // top left 
+		 -0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,1,(-0.02f +0.10f)*2.5	+0.5f,0,0,1,  // bottom right
+		  0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,0,(-0.02f +0.10f)*2.5	+0.5f,0,0,1,  // bottom left
+		  0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,0,(0.02f +0.10f)*2.5	+0.5f,1,0,1,	 // top left
+																						
+		 -0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,1,(0.02f +0.06f)*2.5	+0.5f,0,0,1,  // top right
+		 -0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,1,(-0.02f +0.06f)*2.5	+0.5f,0,1,1,  // bottom right
+		  0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,0,(0.02f +0.06f)*2.5	+0.5f,0,0,1,  // top left 
+		 -0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,1,(-0.02f +0.06f)*2.5	+0.5f,0,1,1,  // bottom right
+		  0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,0,(-0.02f +0.06f)*2.5	+0.5f,0,1,1,  // bottom left
+		  0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,0,(0.02f +0.06f)*2.5	+0.5f,0,0,1,	 // top left
+																						
+		 -0.01f + position_x,  0.04f + position_y		 , 0.9f ,1,(0.04f +0.0f)*2.5	+0.5f,0,1,1,  // top right
+		 -0.01f + position_x, -0.04f + position_y		 , 0.9f ,1,(-0.04f +0.0f)*2.5	+0.5f,0,1,0,  // bottom right
+		  0.01f + position_x,  0.04f + position_y		 , 0.9f ,0,(0.04f +0.0f)*2.5	+0.5f,0,1,1,  // top left 
+		 -0.01f + position_x, -0.04f + position_y		 , 0.9f ,1,(-0.04f +0.0f)*2.5	+0.5f,0,1,0,  // bottom right
+		  0.01f + position_x, -0.04f + position_y	     , 0.9f ,0,(-0.04f +0.0f)*2.5	+0.5f,0,1,0,  // bottom left
+		  0.01f + position_x,  0.04f + position_y		 , 0.9f ,0,(0.04f +0.0f)*2.5	+0.5f,0,1,1,	 // top left
+																						
+		 -0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,1,(0.02f -0.10f)*2.5	+0.5f,1,1,0,  // top right
+		 -0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,1,(-0.02f -0.10f)*2.5	+0.5f,1,1,0,  // bottom right
+		  0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,0,(0.02f -0.10f)*2.5	+0.5f,1,1,0,  // top left 
+		 -0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,1,(-0.02f -0.10f)*2.5	+0.5f,1,1,0,  // bottom right
+		  0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,0,(-0.02f -0.10f)*2.5	+0.5f,1,1,0,  // bottom left
+		  0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,0,(0.02f -0.10f)*2.5	+0.5f,1,1,0,	 // top left
+												  										
+		 -0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,1,(0.02f - 0.06f)*2.5	+0.5f,0,1,0,  // top right
+		 -0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,1,(-0.02f - 0.06f)*2.5	+0.5f,1,1,0,  // bottom right
+		  0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,0,(0.02f - 0.06f)*2.5	+0.5f,0,1,0,  // top left 
+		 -0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,1,(-0.02f - 0.06f)*2.5	+0.5f,1,1,0,  // bottom right
+		  0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,0,(-0.02f - 0.06f)*2.5	+0.5f,1,1,0,  // bottom left
+		  0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,0,(0.02f - 0.06f)*2.5	+0.5f,0,1,0,	 // top left
+																						
+		 -0.01f + position_x,  0.04f + position_y - 0.16f, 0.9f ,1,(0.04f -0.16f)*2.5	+0.5f,1,1,0,  // top right
+		 -0.01f + position_x, -0.04f + position_y - 0.16f, 0.9f ,1,(-0.04f -0.16f)*2.5	+0.5f,1,0,0,  // bottom right
+		  0.01f + position_x,  0.04f + position_y - 0.16f, 0.9f ,0,(0.04f -0.16f)*2.5	+0.5f,1,1,0,  // top left 
+		 -0.01f + position_x, -0.04f + position_y - 0.16f, 0.9f ,1,(-0.04f -0.16f)*2.5	+0.5f,1,0,0,  // bottom right
+		  0.01f + position_x, -0.04f + position_y - 0.16f, 0.9f ,0,(-0.04f -0.16f)*2.5	+0.5f,1,0,0,  // bottom left
+		  0.01f + position_x,  0.04f + position_y - 0.16f, 0.9f ,0,(0.04f -0.16f)*2.5	+0.5f,1,1,0,	 // top left
 	};
+
 	GlSet glset;
 	CommonData commonData;
+	ColorData colorData;
+
+	glset.viewport(1920, 1080);
+	glset.uniform1i(commonData.program, "isRenderTextureModeV", 1);
+	glset.uniform1i(commonData.program, "isRenderTextureMode", 1);
+
+	glset.bindFramebuffer(FBO);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	GLubyte* colorRectPixel = new GLubyte[1 * 1 * 3];//Deleted
+
 	glset.uniform1i(commonData.program, "isColorBox", 1);
+	glset.uniform1i(commonData.program, "isRect", 1);
+	glset.drawArrays(boxCoor, false); //Render Model
+	glset.uniform1i(commonData.program, "isRect", 1);
+	glset.uniform1i(commonData.program, "isColorBox", 0);
+
+	glReadPixels(10, (value + 0.2f) * 2.5f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
+
+	int screenSizeX;
+	int screenSizeY;
+	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
+
+	glset.uniform1i(commonData.program, "isRenderTextureMode", 0);
+	glset.uniform1i(commonData.program, "isRenderTextureModeV", 0);
+
+	glset.bindFramebuffer(0);
+	glset.viewport(screenSizeX, screenSizeY);
+
+	glset.uniform3f(commonData.program, "boxColor", colorRectPixel[0] / 255.0f, colorRectPixel[1] / 255.0f, colorRectPixel[2] / 255.0f);
+
+	delete(colorRectPixel);
+
+
+
+	box(0.01f, 0.005f, position_x, position_y + value, "", colorData.rangeBarFront, 0.045f, false, false);
+
+	glset.uniform1i(commonData.program, "isColorBox", 1);
+	glset.uniform1i(commonData.program, "isRect", 1);
 	glset.drawArrays(boxCoor, false);
 	glset.uniform1i(commonData.program, "isColorBox", 0);
+	glset.uniform1i(commonData.program, "isRect", 0);
+
 
 }
 void UserInterface::rangeBar(float position_x, float position_y,float value) {
