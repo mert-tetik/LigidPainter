@@ -27,11 +27,12 @@ void main() {
    TexCoords = aTexCoords;
    FragPos = vec3(model * vec4(aPos, 1.0));
    Normal = aNormal;
+   projectedPos = projection * view * vec4(aPos, 0.5); //Caution
+
    if(isRenderTextureModeV == 0) {
       if(isText == 0) {
          if(isTwoDimensional == 0) {
             gl_Position = projection * view * vec4(aPos, 0.5);
-            projectedPos = projection * view * vec4(aPos, 0.5); //Caution
          } else {
             gl_Position = TextProjection * vec4(aPos, 1.0);
          }
@@ -42,6 +43,5 @@ void main() {
    } else {
       gl_Position = renderTextureProjection * vec4(aTexCoords, 0, 1);
 
-      projectedPos = projection * view * vec4(aPos, 0.5); //Caution
    }
 }

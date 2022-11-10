@@ -12,7 +12,7 @@ struct TextureData {
 class Texture {
 public:
 	GetTextureData getTexture(std::string path, double imgX, double imgY, bool resize, float brushSizeRangeBarValue);
-	//void drawTexture(const char* path,int width,int height, GLubyte* pixels,int channels); 
+	void downloadTexture(const char* path, const char* name, int format, int width, int height, GLubyte* pixels, int channels);
 	GLubyte* getTextureFromProgram(int texture, int width, int height, int channels);
 	TextureData getTextureData(const char* path);
 	unsigned int createScreenPaintTexture(GLubyte*& screenTexture, GLFWwindow* screen);

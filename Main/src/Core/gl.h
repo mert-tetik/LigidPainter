@@ -1,5 +1,11 @@
 #ifndef RGDGL_H
 #define RGDGL_H
+struct ExportData
+{
+	bool exportImage;
+	const char* path;
+};
+
 class GlSet {
 public:
 	void drawArrays(std::vector<float>& vertices, bool isLine);
@@ -33,12 +39,13 @@ public:
 	void viewport(int width, int height);
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
 	void getProgram();
-	void render(RenderData renderData, std::vector<float>& vertices, unsigned int FBO, PanelData panelData, bool cameraPosChanged, std::vector<float>& axisPointer, float colorBoxPickerValue_x,float colorBoxPickerValue_y, unsigned int paintingSqFBO, float colorBoxColorRangeBarValue);
+	void render(RenderData renderData, std::vector<float>& vertices, unsigned int FBO, PanelData panelData, bool cameraPosChanged, std::vector<float>& axisPointer, float colorBoxPickerValue_x,float colorBoxPickerValue_y, unsigned int paintingSqFBO, float colorBoxColorRangeBarValue,const char* exportFolder, bool jpgFormatChecked, bool pngFormatChecked, bool jpgCheckboxHover,bool pngCheckboxHover,bool doPainting, ExportData exportData,unsigned int depthTexture, unsigned int FBOSq);
 	GLFWwindow* getWindow();
 	void setMatrices();
 	void updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos);
 	void getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos); //Not used
 	void drawLightObject(glm::vec3 lightPos);
 	unsigned int createScreenFrameBufferObject();
+	unsigned int createScreenFrameBufferObjectSq();
 };
 #endif // !RGDGL_H

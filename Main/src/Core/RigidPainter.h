@@ -38,5 +38,6 @@ struct PanelData {
 	bool modelPanelActive;
 	bool texturePanelActive;
 	bool paintingPanelActive;
+	bool exportPanelActive;
 };
 #endif // !MSHPAPP

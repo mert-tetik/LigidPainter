@@ -25,6 +25,8 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#include "tinyfiledialogs.h"
+
 using namespace std;
 
 GlSet glset;
@@ -41,7 +43,7 @@ char currentKey;
 bool changeModelFilePathText = false;
 //bool preventPairs = false;
 //char keyCounter = 0;
-string modelFilePath;
+const char* modelFilePath;
 
 bool backfaceCulling = false;
 bool enableCtrlAltC = true;
@@ -66,6 +68,7 @@ void addImageButton();
 void modelPanelButton();
 void texturePanelButton();
 void paintingPanelButton();
+void exportPanelButton();
 void addMaskTextureButton();
 void brushSizeRangeBar();
 void colorBoxColorRangeBar();
@@ -73,11 +76,17 @@ void colorBoxPickerButton();
 void uiActions();
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+
+void exportPathTextBoxEnter();
+void exportExtJPGButtonEnter();
+void exportExtPNGButtonEnter();
+void exportDownloadButtonEnter();
+
 RenderData updateRenderData(RenderData renderData);
 
 //Texture
-string albedoTexturePath = "vergil3.jpg";
-string maskTexturePath = "C:\\Users\\CASPER\\source\\repos\\GLFW\\GLFW\\testHexa.jpg";
+string albedoTexturePath = "";
+string maskTexturePath = "";
 
 CallbckData callbackData;
 PanelData panelData;
@@ -97,6 +106,20 @@ float brushSizeRangeBarValue = 0.0f;
 float colorBoxColorRangeBarValue = 0.0f;
 float colorBoxPickerValue_x = 0.0f;
 float colorBoxPickerValue_y = 0.0f;
+
+string exportPath = "";
+string exportFolder = "Choose Destination Path";
+
+bool jpgFormatChecked;
+bool pngFormatChecked = true;
+
+bool doPainting = true;
+
+double holdScroll;
+bool doScrollAfterCallInPaintingMode;
+
+bool exportImage;
+
 bool RigidPainter::run()
 {
 	ColorData colorData;
@@ -154,6 +177,7 @@ bool RigidPainter::run()
 	delete(screenTexture);
 
 	unsigned int FBO = glset.createScreenFrameBufferObject();
+	unsigned int FBOSq = glset.createScreenFrameBufferObjectSq();
 
 	glset.enable(GL_BLEND);
 	glDepthFunc(GL_LESS);
@@ -184,22 +208,24 @@ bool RigidPainter::run()
 	glset.activeTexture(GL_TEXTURE6);
 
 	unsigned int paintingSqTxtr;
+	Callback callback;
+	ExportData exportData;
 
+	glset.activeTexture(GL_TEXTURE9);
+
+	unsigned int depthTexture;
+	glset.genTextures(depthTexture);
+	glset.bindTexture(depthTexture);
 	while (!glfwWindowShouldClose(window))
 	{
-		if (colorBoxPickerValue_x > 0.1f) {
-			colorBoxPickerValue_x = 0.1f;
+		if (callbackData.cameraPos != holdCameraPos) {
+			cameraPosChanged = true;
 		}
-		else if (colorBoxPickerValue_x < -0.1f) {
-			colorBoxPickerValue_x = -0.1f;
-		}
+		holdCameraPos = callbackData.cameraPos;
 
-		if (colorBoxPickerValue_y > 0.2f) {
-			colorBoxPickerValue_y = 0.2f;
-		}
-		else if (colorBoxPickerValue_y < -0.2f) {
-			colorBoxPickerValue_y = -0.2f;
-		}
+
+
+		uiActions();
 
 		glfwPollEvents();
 		glset.updateViewMatrix(callbackData.cameraPos, callbackData.originPos);
@@ -211,12 +237,37 @@ bool RigidPainter::run()
 
 		panelData.movePanel = callbackData.movePanel;
 
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting) {
 			textureGen.drawTexture(window, maskTexturePath, brushTextureChanged, screenPaintingTextureId, brushSizeRangeBarValue);
 			paintingMode = true;
 			brushTextureChanged = false;
 		}
-		glset.render(renderData, vertices, FBO, panelData, cameraPosChanged,axisPointer, colorBoxPickerValue_x, colorBoxPickerValue_y, 0, colorBoxColorRangeBarValue);
+
+		if (colorBoxPickerValue_x > 0.095f) {
+			colorBoxPickerValue_x = 0.095f;
+		}
+		else if (colorBoxPickerValue_x < -0.095f) {
+			colorBoxPickerValue_x = -0.095f;
+		}
+
+		if (colorBoxPickerValue_y > 0.195f) {
+			colorBoxPickerValue_y = 0.195f;
+		}
+		else if (colorBoxPickerValue_y < -0.195f) {
+			colorBoxPickerValue_y = -0.195f;
+		}
+
+		if (colorBoxColorRangeBarValue > 0.195f) {
+			colorBoxColorRangeBarValue = 0.195f;
+		}
+		else if (colorBoxColorRangeBarValue < -0.195f) {
+			colorBoxColorRangeBarValue = -0.195f;
+		}
+		exportData.exportImage = exportImage;
+		exportData.path = exportPath.c_str();
+
+		glset.render(renderData, vertices, FBO, panelData, cameraPosChanged,axisPointer, colorBoxPickerValue_x, colorBoxPickerValue_y, 0, colorBoxColorRangeBarValue,exportFolder.c_str(),jpgFormatChecked,pngFormatChecked,callbackData.exportExtJPGButtonEnter,callbackData.exportExtPNGButtonEnter,doPainting,exportData, depthTexture,FBOSq);
+		exportImage = false;
 		//Light Obj
 		//MSHP.drawLigtObject(shaderProgram,lightPos);
 		
@@ -227,8 +278,8 @@ bool RigidPainter::run()
 			if (!callbackData.addImageButtonEnter && !callbackData.addMaskTextureButtonEnter && !callbackData.addPlaneButtonEnter 
 				&& !callbackData.addSphereButtonEnter && !callbackData.autoTriangulateCheckBoxEnter && !callbackData.backfaceCullingCheckBoxEnter 
 				&& !callbackData.brushSizeRangeBarEnter && !callbackData.loadModelButtonEnter && !callbackData.modelFilePathTextBoxEnter 
-				&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.colorBoxPickerEnter
-				&& !callbackData.colorBoxColorRangeBarEnter) {
+				&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.exportPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.colorBoxPickerEnter
+				&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGButtonEnter && !callbackData.exportExtPNGButtonEnter) {
 				noButtonClick = true;
 			}
 			else {
@@ -241,13 +292,17 @@ bool RigidPainter::run()
 		}
 
 		glfwSwapBuffers(window);
-		uiActions();
 		if (cameraPosChanged) {
 			glset.uniform3fv(commonData.program, "viewPos", callbackData.cameraPos);
 		}
 		if (cameraPosChanged && paintingMode) {
 			txtr.refreshScreenDrawingTexture();
 			paintingMode = false;
+		}
+		if (doScrollAfterCallInPaintingMode)
+		{
+			callbackData = callback.scroll_callback(window, 0, holdScroll);
+			doScrollAfterCallInPaintingMode = false;
 		}
 		cameraPosChanged = false;
 	}
@@ -293,6 +348,8 @@ void uiActions() {
 					texturePanelButton();
 				if (callbackData.paintingPanelButtonEnter)
 					paintingPanelButton();
+				if (callbackData.exportPanelButtonEnter)
+					exportPanelButton();
 				if (callbackData.addImageButtonEnter)
 					addImageButton();
 				if (callbackData.addPlaneButtonEnter)
@@ -305,19 +362,26 @@ void uiActions() {
 					backfaceCullingCheckBox();
 				if (callbackData.loadModelButtonEnter)
 					loadModelButton();
+				if (callbackData.exportPathTextBoxEnter) 
+					exportPathTextBoxEnter();
+				if (callbackData.exportDownloadButtonEnter)
+					exportDownloadButtonEnter();
+				if (callbackData.exportExtJPGButtonEnter)
+					exportExtJPGButtonEnter();
+				if (callbackData.exportExtPNGButtonEnter)
+					exportExtPNGButtonEnter();
 			}
 			buttonPressed = false;
 		}
 	}
 }
 
-string maskTexturePathCheck;
 void addMaskTextureButton() {
-	Utilities utilities;
 	GlSet glset;
 	Texture txtr;
-	maskTexturePathCheck = utilities.openFileDialog();
-	if (maskTexturePathCheck != "") {
+	char const* lFilterPatterns[2] = { "*.jpg", "*.png" };
+	auto maskTexturePathCheck = tinyfd_openFileDialog("Select Mask Texture", "", 2, lFilterPatterns, "", false);
+	if (maskTexturePathCheck) {
 		maskTexturePath = maskTexturePathCheck;
 		brushTextureChanged = true;
 		glset.activeTexture(GL_TEXTURE1);
@@ -367,10 +431,11 @@ void colorBoxPickerButton() {
 
 		if (buttonGetInput) {
 			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				Texture txtr;
 				buttonGetInput = false;
 				buttonPressed = true;
 				colorBoxPickerPressed = true;
-
+				cameraPosChanged = true;
 			}
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
@@ -385,32 +450,82 @@ void colorBoxPickerButton() {
 
 void modelFilePathTextBox() {
 	Utilities utilities;
-	modelFilePath = utilities.openFileDialog();
-	modelName = utilities.getLastWordBySeparatingWithChar(modelFilePath, '\\');
-
+	char const* lFilterPatterns[1] = { "*.obj" };
+	auto modelFilePathCheck = tinyfd_openFileDialog("Select 3D Model","",1, lFilterPatterns,"",false);
+	if (modelFilePathCheck) {
+		modelFilePath = modelFilePathCheck;
+		modelName = utilities.getLastWordBySeparatingWithChar(modelFilePath,'\\');
+	}
 }
+
+void exportPathTextBoxEnter() {
+	Utilities uti;
+	string exportPathCheck = "";
+	Texture txtr;
+	TextureData txtrData;
+	exportPathCheck = tinyfd_selectFolderDialog("Save Texture","");
+	if (exportPathCheck != "") {
+		exportPath = exportPathCheck;
+		exportFolder = uti.getLastWordBySeparatingWithChar(exportPath,'\\');
+	}
+}
+void exportExtJPGButtonEnter() {
+	if (jpgFormatChecked == false) {
+		jpgFormatChecked = true;
+		pngFormatChecked = false;
+	}
+	else {
+		jpgFormatChecked = false;
+	}
+}
+void exportExtPNGButtonEnter() {
+	if (pngFormatChecked == false) {
+		pngFormatChecked = true;
+		jpgFormatChecked = false;
+	}
+	else {
+		pngFormatChecked = false;
+	}
+}
+void exportDownloadButtonEnter() {
+	exportImage = true;
+}
+
 void modelPanelButton() {
 	panelData.modelPanelActive = true;
 	panelData.texturePanelActive = false;
 	panelData.paintingPanelActive = false;
+	panelData.exportPanelActive = false;
+	doPainting = false;
 }
 void texturePanelButton() {
 	panelData.modelPanelActive = false;
 	panelData.texturePanelActive = true;
 	panelData.paintingPanelActive = false;
+	panelData.exportPanelActive = false;
+	doPainting = false;
 }
 void paintingPanelButton() {
 	panelData.modelPanelActive = false;
 	panelData.texturePanelActive = false;
 	panelData.paintingPanelActive = true;
+	panelData.exportPanelActive = false;
+	doPainting = true;
 }
-string albedoPathCheck;
+void exportPanelButton() {
+	panelData.modelPanelActive = false;
+	panelData.texturePanelActive = false;
+	panelData.paintingPanelActive = false;
+	panelData.exportPanelActive = true;
+	doPainting = false;
+}
 void addImageButton() {
 	Utilities utilities;
 	GlSet glset;
 	Texture txtr;
-	albedoPathCheck = utilities.openFileDialog();
-	if (albedoPathCheck != "") {
+	char const* lFilterPatterns[2] = { "*.jpg", "*.png" };
+	auto albedoPathCheck = tinyfd_openFileDialog("Select Image", "", 2, lFilterPatterns, "", false);
+	if (albedoPathCheck) {
 		albedoTexturePath = albedoPathCheck;
 
 		glset.activeTexture(GL_TEXTURE0);
@@ -431,7 +546,8 @@ void addPlaneButton() {
 	};
 	modelName = "plane.rigidefault";
 	vertices = planeVertices;
-	glset.bufferData(vertices);
+	glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW);
+	
 }
 void addSphereButton() {
 	GlSet glset;
@@ -459,12 +575,18 @@ void backfaceCullingCheckBox() {
 	}
 }
 void loadModelButton() {
+	Texture txtr;
+	txtr.refreshScreenDrawingTexture();
 	GlSet glset;
 	ModelLoader modelLoader;
 	if (modelName != "" && modelName[modelName.size() - 1] == 'j' && modelName[modelName.size() - 2] == 'b' && modelName[modelName.size() - 3] == 'o' && modelName[modelName.size() - 4] == '.') {
 		vertices.clear();
 		vertices = modelLoader.OBJ_getVertices(modelFilePath, autoTriangulateChecked);
-		glset.bufferData(vertices);
+		if(vertices.size() > 10000)
+			glset.bufferData(vertices);
+		else {
+			glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW);
+		}
 	}
 }
 //Callback
@@ -496,6 +618,15 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	yOffset = (lastYpos - ypos) / (1080 / height);
 	lastYpos = ypos;
 
+
+
+	if (xpos > callbackData.panelLoc * 960 && !callbackData.brushSizeRangeBarEnter && !callbackData.colorBoxColorRangeBarEnter && !callbackData.colorBoxPickerEnter)
+		doPainting = false;
+	else if(xpos < callbackData.panelLoc * 960 && panelData.paintingPanelActive)
+		doPainting = true;
+	if (callbackData.brushSizeRangeBarEnter || callbackData.colorBoxColorRangeBarEnter || callbackData.colorBoxPickerEnter)
+		doPainting = true;
+
 	if (brushSizeRangeBarPressed) {
 		if (brushSizeRangeBarValue > 0.1f) {
 			brushSizeRangeBarValue = 0.1f;
@@ -504,37 +635,32 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 			brushSizeRangeBarValue = -0.1f;
 		}
 		brushSizeRangeBarValue -= xOffset / 960;
+		doPainting = true;
 	}
 	if (colorBoxColorRangeBarPressed) {
-		if (colorBoxColorRangeBarValue > 0.2f) {
-			colorBoxColorRangeBarValue = 0.2f;
-		}
-		else if (colorBoxColorRangeBarValue < -0.2f) {
-			colorBoxColorRangeBarValue = -0.2f;
-		}
 		colorBoxColorRangeBarValue += yOffset / 540;
+		doPainting = true;
 	}
 
 	//Change color box picker value-location
 	if (colorBoxPickerPressed) {
 		colorBoxPickerValue_x -= xOffset / 960;
 		colorBoxPickerValue_y += yOffset / 540;
+		doPainting = true;
 	}
-
-
 	callbackData = callback.mouse_callback(window, xpos, ypos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue);
-	if (callbackData.cameraPos != holdCameraPos) {
-		cameraPosChanged = true;
-	}
-	holdCameraPos = callbackData.cameraPos;
 }
 
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 {
 	Callback callback;
-	callbackData = callback.scroll_callback(window, scroll, scrollx);
-	if (callbackData.cameraPos != holdCameraPos) {
-		cameraPosChanged = true;
+	if (!paintingMode) {
+		callbackData = callback.scroll_callback(window, scroll, scrollx);
 	}
-	holdCameraPos = callbackData.cameraPos;
+	else {
+		holdScroll = scrollx;
+		doScrollAfterCallInPaintingMode = true;
+	}
+	cameraPosChanged = true;
+
 }

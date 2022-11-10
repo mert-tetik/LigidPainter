@@ -21,7 +21,7 @@ struct buttonData {
 class UserInterface {
 public:
 	void panel(float panelLoc, float movePanel_x);
-	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec3 color, float textRatio, bool isTextBox, bool isMaskImageBox);
+	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec3 color, float textRatio, bool isTextBox, bool isMaskImageBox,float z);
 	bool isMouseOnButton(GLFWwindow* window, float width, float height, float position_x, float position_y, int mouseXpos, int mouseYpos, bool isPanelMoving);
 	void setViewportBgColor();
 	void renderText(unsigned int program, std::string text, float x, float y, float scale, glm::vec3 color);
@@ -33,5 +33,6 @@ public:
 	void rangeBar(float position_x, float position_y, float value);
 	void colorBox(float position_x, float position_y, float valueX, float valueY);
 	void colorRect(float position_x, float position_y,float value, unsigned int FBO,GLFWwindow* window);
+	void decorationSquare(float position_x, float position_y);
 };
 #endif

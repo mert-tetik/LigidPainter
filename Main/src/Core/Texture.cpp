@@ -29,6 +29,7 @@ GetTextureData Texture::getTexture(std::string path, double imgX, double imgY,bo
 	int width, height, nrChannels;
 	int distanceX = double(brushSizeRangeBarValue + 0.1f) * 500.0 + 10.0;
 
+	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 3);
 	GLubyte* resizedPixelsX = new GLubyte[distanceX * distanceX * 3];
 
@@ -54,10 +55,21 @@ GetTextureData Texture::getTexture(std::string path, double imgX, double imgY,bo
 	return getTextureData;
 }
 
-//void Texture::drawTexture(const char* path, int width, int height, GLubyte* pixels, int channels) {
-//	stbi_flip_vertically_on_write(true);
-//	stbi_write_jpg(path, width, height, channels, pixels, width*channels);
-//}
+void Texture::downloadTexture(const char* path, const char* name, int format, int width, int height, GLubyte* pixels, int channels) {
+	//0 -> jpg | 1 -> png
+	stbi_flip_vertically_on_write(true);
+	string stbName = name;
+	string stbPath;
+	string stbPathx = path;
+	if (format == 0) {
+		stbPath = stbPathx + "\\" + stbName + ".jpg";
+		stbi_write_jpg(stbPath.c_str(), width, height, channels, pixels, width *channels);
+	}
+	else if (format == 1) {
+		stbPath = stbPathx + "\\" + stbName + ".png";
+		stbi_write_png(stbPath.c_str(), width, height, channels, pixels, width * channels);
+	}
+}
 
 GLubyte* Texture::getTextureFromProgram(int texture, int width, int height,int channels) {
 	GLubyte* pixels = new GLubyte[width * height * channels * sizeof(GLubyte)*2];

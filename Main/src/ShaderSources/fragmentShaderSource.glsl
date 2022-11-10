@@ -18,6 +18,8 @@ uniform sampler2D maskTexture;
 uniform vec3 drawColor;
 
 uniform int isRenderTextureMode;
+uniform int renderDepth;
+uniform sampler2D depthTexture;
 
 in vec2 TextTexCoords;
 uniform int isTextF;
@@ -41,27 +43,34 @@ uniform int isColorBox;
 uniform int isRect;
 uniform vec3 boxColor = vec3(0.0,1.0,0.0);
 
+
 out vec4 color;
 
-bool isPainted() {
-   vec3 viewDir = normalize(viewPos - Pos);
-   vec3 nrml = (Pos + Normal);
-   float dotprod = max(dot(viewDir, Normal), 0.0);
 
-   return dotprod > 0;
+float far = 100.0f;
+float near = 0.1f;
+
+float linearizeDepth(float depth){
+   return (2.0 * near * far) / (far + near -(depth * 2.0 - 1.0) *(far-near));
+}
+
+bool isPainted(vec3 uv) {
+   float drawZ = texture2D(depthTexture, uv.xy).b; // looks between 0 and 1
+
+    return abs(drawZ - linearizeDepth(uv.z)/far) < 0.01;
 }
 
 void main() {
-   vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2, 2, 2) + 0.5 / vec3(1, 1, 1);
+   vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
    float intensity = 0.0f;
-   if(isPainted()) {
+   if(isPainted(screenPos)) {
       intensity = texture2D(maskTexture, screenPos.xy).r;
    }
     //vec3 paintUv = 
     // ambient
    vec3 diffuseClr = vec3(texture(material.diffuse, TexCoords));
    vec3 diffuseDrawMix = mix(diffuseClr, drawColor, intensity);
-   vec3 ambient = vec3(0.2, 0.2, 0.2) * diffuseDrawMix;
+   vec3 ambient = vec3(0.7, 0.7, 0.7) * diffuseDrawMix;
 
     // diffuse 
 
@@ -125,7 +134,12 @@ void main() {
 
       }
       else{
-         color = vec4(diffuseDrawMix, 1);
+         if(renderDepth == 1){
+            color = vec4(vec3(linearizeDepth(gl_FragCoord.z)/far), 1.0);
+         }
+         else{
+            color = vec4(diffuseDrawMix, 1);
+         }
       }
    }
 

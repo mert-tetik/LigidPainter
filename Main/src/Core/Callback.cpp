@@ -54,7 +54,13 @@ bool colorBoxColorRangeBarEnter;
 bool colorBoxPickerEnter;
 bool modelPanelButtonEnter;
 bool texturePanelButtonEnter;
+bool exportPanelButtonEnter;
 bool paintingPanelButtonEnter;
+
+bool exportPathTextBoxEnter;
+bool exportExtJPGButtonEnter;
+bool exportExtPNGButtonEnter;
+bool exportDownloadButtonEnter;
 
 bool movePanel;
 
@@ -79,6 +85,12 @@ CallbckData preapareCallbackData() {
 	callbk.brushSizeRangeBarEnter = brushSizeRangeBarEnter;
 	callbk.colorBoxColorRangeBarEnter = colorBoxColorRangeBarEnter;
 	callbk.colorBoxPickerEnter = colorBoxPickerEnter;
+	callbk.exportPanelButtonEnter = exportPanelButtonEnter;
+
+	callbk.exportPathTextBoxEnter = exportPathTextBoxEnter;
+	callbk.exportExtJPGButtonEnter = exportExtJPGButtonEnter;
+	callbk.exportExtPNGButtonEnter = exportExtPNGButtonEnter;
+	callbk.exportDownloadButtonEnter = exportDownloadButtonEnter;
 
 	callbk.cameraPos = cameraPos;
 	callbk.originPos = originPos;
@@ -162,20 +174,22 @@ void Callback::panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX) {
 	holdXPos = mouseXpos;
 	if (changeLoc) {
 		panelLoc += panelOffset / 1000;
-		if (panelLoc > 1.7f) {
+		if (panelLoc > 1.7f ) {
 			movePanel = true;
 		}
 		else {
 			movePanel = false;
 		}
-		if (panelLoc < 1.5f)
-			panelLoc = 1.5f;
+		if (panelLoc < 1.6f)
+			panelLoc = 1.6f;
+		if (panelLoc > 1.987f)
+			panelLoc = 1.987f;
 		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
 			changeLoc = false;
 		}
 	}
 
-	if (mouseXpos > (screenSizeX / 2 * panelLoc) - 10 && mouseXpos < (screenSizeX / 2 * panelLoc) + 40) {
+	if (mouseXpos > (screenSizeX / 2 * panelLoc) - 10 && mouseXpos < (screenSizeX / 2 * panelLoc) + 10) {
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
 			changeLoc = true;
 		}
@@ -227,7 +241,7 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	}
 	if (panelData.paintingPanelActive) {
 		addMaskTextureButtonEnter = ui.isMouseOnButton(window, 0.1f, 0.04f, panelLoc / centerDivider + centerSum, 0.8f, mouseXPos, mouseYPos, movePanel);
-		brushSizeRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.02f, panelLoc / centerDivider + centerSum+ brushSizeRangeBarValue, 0.0f, mouseXPos, mouseYPos, movePanel);
+		brushSizeRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.02f, panelLoc / centerDivider + centerSum+ brushSizeRangeBarValue, 0.05f, mouseXPos, mouseYPos, movePanel);
 		colorBoxPickerEnter = ui.isMouseOnButton(window,0.01f, 0.02f, panelLoc / centerDivider + centerSum - 0.02f + colorBoxPickerValue_x, -0.3f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
 		colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, panelLoc / centerDivider + centerSum + 0.1f, -0.3f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
 	}
@@ -237,9 +251,23 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		colorBoxColorRangeBarEnter = false;
 		colorBoxPickerEnter = false;
 	}
+	if (panelData.exportPanelActive) {
+		exportPathTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / centerDivider + centerSum, 0.6f, mouseXPos, mouseYPos, movePanel);
+		exportExtJPGButtonEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc / centerDivider + centerSum - 0.11f, 0.5f, mouseXPos, mouseYPos, movePanel);
+		exportExtPNGButtonEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc / centerDivider + centerSum + 0.05f, 0.5f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
+		exportDownloadButtonEnter = ui.isMouseOnButton(window, 0.1f, 0.04f, panelLoc / centerDivider + centerSum, 0.3f, mouseXPos, mouseYPos, movePanel);
+	}
+	else {
+		exportPathTextBoxEnter = false;
+		exportExtJPGButtonEnter = false;
+		exportExtPNGButtonEnter = false;
+		exportDownloadButtonEnter = false;
+	}
+
 	modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc, 0.8f, mouseXPos, mouseYPos);
 	texturePanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc, 0.72f, mouseXPos, mouseYPos);
 	paintingPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc, 0.64f, mouseXPos, mouseYPos);
+	exportPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc, 0.56f, mouseXPos, mouseYPos);
 
 	if (modelFilePathTextBoxEnter) {
 		glfwSetCursor(window, pointerCursor);
@@ -271,6 +299,9 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	else if (paintingPanelButtonEnter) {
 		glfwSetCursor(window, pointerCursor);
 	}
+	else if (exportPanelButtonEnter) {
+		glfwSetCursor(window, pointerCursor);
+	}
 	else if(addMaskTextureButtonEnter){
 		glfwSetCursor(window, pointerCursor);
 	}
@@ -282,6 +313,9 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	}
 	else if (colorBoxColorRangeBarEnter) {
 		glfwSetCursor(window,pointerCursor);
+	}
+	else if (exportDownloadButtonEnter || exportExtJPGButtonEnter || exportExtPNGButtonEnter || exportPathTextBoxEnter) {
+		glfwSetCursor(window, pointerCursor);
 	}
 	else {
 		GLFWcursor* arrowCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);

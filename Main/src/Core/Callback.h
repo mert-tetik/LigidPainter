@@ -13,8 +13,14 @@ struct CallbckData { //Return from callback
 	bool modelPanelButtonEnter;
 	bool texturePanelButtonEnter;
 	bool paintingPanelButtonEnter;
+	bool exportPanelButtonEnter;
 	bool colorBoxPickerEnter;
 	bool colorBoxColorRangeBarEnter;
+
+	bool exportPathTextBoxEnter;
+	bool exportExtJPGButtonEnter;
+	bool exportExtPNGButtonEnter;
+	bool exportDownloadButtonEnter;
 
 	glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);

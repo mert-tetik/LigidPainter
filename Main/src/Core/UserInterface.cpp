@@ -45,19 +45,19 @@ void UserInterface::panel(float panelLoc, float) {
 	glset.uiDataToShaders(colorD.panelColor);
 	glset.drawArrays(panelCoor, false);
 }
-void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec3 color, float textRatio,bool isTextBox,bool isMaskImageBox) {
+void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec3 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z) {
 	CommonData commonData;
 	GlSet glset;
 
 	std::vector<float> buttonCoor{
 		// first triangle
-		 width + position_x,  height + position_y, 0.9f,1,1,0,0,0,  // top right
-		 width + position_x, -height + position_y, 0.9f,1,0,0,0,0,  // bottom right
-		-width + position_x,  height + position_y, 0.9f,0,1,0,0,0,  // top left 
-		// second triangle
-		 width + position_x, -height + position_y, 0.9f,1,0,0,0,0,  // bottom right
-		-width + position_x, -height + position_y, 0.9f,0,0,0,0,0,  // bottom left
-		-width + position_x,  height + position_y, 0.9f,0,1,0,0,0  // top left
+		 width + position_x,  height + position_y, z,1,1,0,0,0,  // top right
+		 width + position_x, -height + position_y, z,1,0,0,0,0,  // bottom right
+		-width + position_x,  height + position_y, z,0,1,0,0,0,  // top left 
+		// second triangle						   
+		 width + position_x, -height + position_y, z,1,0,0,0,0,  // bottom right
+		-width + position_x, -height + position_y, z,0,0,0,0,0,  // bottom left
+		-width + position_x,  height + position_y, z,0,1,0,0,0  // top left
 	};
 	glset.uniform1i(commonData.program,"isUiTextureUsed",isMaskImageBox);
 
@@ -86,7 +86,7 @@ void UserInterface::colorBox(float position_x, float position_y,float valueX, fl
 		 0.10f + position_x,  0.20f + position_y, 0.9f,0.0f,1.0f	,color.r,color.g + 0.2f,color.b + 0.2f // top left
 	};
 
-	box(0.005f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.rangeBarFront, 0.045f, false, false);
+	box(0.005f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.rangeBarFront, 0.045f, false, false, 0.9f);
 
 	GlSet glset;
 	CommonData commonData;
@@ -95,7 +95,7 @@ void UserInterface::colorBox(float position_x, float position_y,float valueX, fl
 	glset.uniform1i(commonData.program, "isColorBox", 0);
 
 }
-void UserInterface::colorRect(float position_x, float position_y,float value,unsigned int FBO,GLFWwindow* window) {
+void UserInterface::colorRect(float position_x, float position_y,float value,unsigned int FBO,GLFWwindow* window) { //Changing colorBox value will be once the value changed
 	std::vector<float> boxCoor{
 		//Color - Normal Vectors Will Be Usen For Color Data Of Vertices
 		 -0.01f + position_x,  0.04f + position_y + 0.16f, 0.9f ,1,(0.04f +0.16f)*2.5	+0.5f,1,0,0,  // top right
@@ -104,42 +104,42 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 		 -0.01f + position_x, -0.04f + position_y + 0.16f, 0.9f ,1,(-0.04f +0.16f)*2.5	+0.5f,1,0,1,  // bottom right
 	 	  0.01f + position_x, -0.04f + position_y + 0.16f, 0.9f ,0,(-0.04f +0.16f)*2.5	+0.5f,1,0,1,  // bottom left
 		  0.01f + position_x,  0.04f + position_y + 0.16f, 0.9f ,0,(0.04f +0.16f)*2.5	+0.5f,1,0,0,	 // top left
-																						
+																				
 		 -0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,1,(0.02f +0.10f)*2.5	+0.5f,1,0,1,  // top right
 		 -0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,1,(-0.02f +0.10f)*2.5	+0.5f,0,0,1,  // bottom right
 		  0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,0,(0.02f +0.10f)*2.5	+0.5f,1,0,1,  // top left 
 		 -0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,1,(-0.02f +0.10f)*2.5	+0.5f,0,0,1,  // bottom right
 		  0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,0,(-0.02f +0.10f)*2.5	+0.5f,0,0,1,  // bottom left
 		  0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,0,(0.02f +0.10f)*2.5	+0.5f,1,0,1,	 // top left
-																						
+																				
 		 -0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,1,(0.02f +0.06f)*2.5	+0.5f,0,0,1,  // top right
 		 -0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,1,(-0.02f +0.06f)*2.5	+0.5f,0,1,1,  // bottom right
 		  0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,0,(0.02f +0.06f)*2.5	+0.5f,0,0,1,  // top left 
 		 -0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,1,(-0.02f +0.06f)*2.5	+0.5f,0,1,1,  // bottom right
 		  0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,0,(-0.02f +0.06f)*2.5	+0.5f,0,1,1,  // bottom left
 		  0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,0,(0.02f +0.06f)*2.5	+0.5f,0,0,1,	 // top left
-																						
+																				
 		 -0.01f + position_x,  0.04f + position_y		 , 0.9f ,1,(0.04f +0.0f)*2.5	+0.5f,0,1,1,  // top right
 		 -0.01f + position_x, -0.04f + position_y		 , 0.9f ,1,(-0.04f +0.0f)*2.5	+0.5f,0,1,0,  // bottom right
 		  0.01f + position_x,  0.04f + position_y		 , 0.9f ,0,(0.04f +0.0f)*2.5	+0.5f,0,1,1,  // top left 
 		 -0.01f + position_x, -0.04f + position_y		 , 0.9f ,1,(-0.04f +0.0f)*2.5	+0.5f,0,1,0,  // bottom right
 		  0.01f + position_x, -0.04f + position_y	     , 0.9f ,0,(-0.04f +0.0f)*2.5	+0.5f,0,1,0,  // bottom left
 		  0.01f + position_x,  0.04f + position_y		 , 0.9f ,0,(0.04f +0.0f)*2.5	+0.5f,0,1,1,	 // top left
-																						
+																				
 		 -0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,1,(0.02f -0.10f)*2.5	+0.5f,1,1,0,  // top right
 		 -0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,1,(-0.02f -0.10f)*2.5	+0.5f,1,1,0,  // bottom right
 		  0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,0,(0.02f -0.10f)*2.5	+0.5f,1,1,0,  // top left 
 		 -0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,1,(-0.02f -0.10f)*2.5	+0.5f,1,1,0,  // bottom right
 		  0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,0,(-0.02f -0.10f)*2.5	+0.5f,1,1,0,  // bottom left
 		  0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,0,(0.02f -0.10f)*2.5	+0.5f,1,1,0,	 // top left
-												  										
+												  								
 		 -0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,1,(0.02f - 0.06f)*2.5	+0.5f,0,1,0,  // top right
 		 -0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,1,(-0.02f - 0.06f)*2.5	+0.5f,1,1,0,  // bottom right
 		  0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,0,(0.02f - 0.06f)*2.5	+0.5f,0,1,0,  // top left 
 		 -0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,1,(-0.02f - 0.06f)*2.5	+0.5f,1,1,0,  // bottom right
 		  0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,0,(-0.02f - 0.06f)*2.5	+0.5f,1,1,0,  // bottom left
 		  0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,0,(0.02f - 0.06f)*2.5	+0.5f,0,1,0,	 // top left
-																						
+																				
 		 -0.01f + position_x,  0.04f + position_y - 0.16f, 0.9f ,1,(0.04f -0.16f)*2.5	+0.5f,1,1,0,  // top right
 		 -0.01f + position_x, -0.04f + position_y - 0.16f, 0.9f ,1,(-0.04f -0.16f)*2.5	+0.5f,1,0,0,  // bottom right
 		  0.01f + position_x,  0.04f + position_y - 0.16f, 0.9f ,0,(0.04f -0.16f)*2.5	+0.5f,1,1,0,  // top left 
@@ -185,7 +185,7 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 
 
 
-	box(0.01f, 0.005f, position_x, position_y + value, "", colorData.rangeBarFront, 0.045f, false, false);
+	box(0.01f, 0.005f, position_x, position_y + value, "", colorData.rangeBarFront, 0.045f, false, false, 0.9f);
 
 	glset.uniform1i(commonData.program, "isColorBox", 1);
 	glset.uniform1i(commonData.program, "isRect", 1);
@@ -197,8 +197,8 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 }
 void UserInterface::rangeBar(float position_x, float position_y,float value) {
 	ColorData colorData;
-	box(0.01f, 0.02f, position_x+value, 0.0f, "", colorData.rangeBarFront, 0.045f, false, false);
-	box(0.11f, 0.02f, position_x, 0.0f, "", colorData.rangeBarBack, 0.045f, false, false);
+	box(0.01f, 0.02f, position_x+value, position_y, "", colorData.rangeBarFront, 0.045f, false, false, 0.9f);
+	box(0.11f, 0.02f, position_x, position_y, "", colorData.rangeBarBack, 0.045f, false, false, 0.9f);
 }
 void UserInterface::panelChangeButton(float position_x, float position_y) {
 	std::vector<float> buttonCoor{
@@ -210,6 +210,22 @@ void UserInterface::panelChangeButton(float position_x, float position_y) {
 		 0.00f + position_x, -0.05f + position_y, 0.0f,0,0,0,0,0,  // bottom right
 		-0.025f + position_x, -0.02f + position_y, 0.0f,0,0,0,0,0,  // bottom left
 		-0.025f + position_x,  0.02f + position_y, 0.0f,0,0,0,0,0  // top left
+	};
+	GlSet glset;
+	ColorData colorData;
+	glset.uiDataToShaders(colorData.panelHoldColor);
+	glset.drawArrays(buttonCoor, false);
+}
+void UserInterface::decorationSquare(float position_x, float position_y) {
+	std::vector<float> buttonCoor{
+		// first triangle
+		 0.045f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0,  // top right
+		 0.02f + position_x, -0.05f + position_y, 0.9f,0,0,0,0,0,  // bottom right
+		-0.02f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0,  // top left 
+		// second triangle						     9
+		 0.02f + position_x, -0.05f + position_y, 0.9f,0,0,0,0,0,  // bottom right
+		-0.02f + position_x, -0.05f + position_y, 0.9f,0,0,0,0,0,  // bottom left
+		-0.02f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0  // top left
 	};
 	GlSet glset;
 	ColorData colorData;
@@ -268,12 +284,12 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 	ColorData colorData;
 	if (!checked) {
 		if (!mouseHover)
-			box(0.012f, 0.02f, position_x, position_y, "", colorData.checkBoxColor, 0.034f, false, false);
+			box(0.012f, 0.02f, position_x, position_y, "", colorData.checkBoxColor, 0.034f, false, false, 0.9f);
 		else
-			box(0.012f, 0.02f, position_x, position_y, "", colorData.checkBoxCheckedColor, 0.034f, false, false);
+			box(0.012f, 0.02f, position_x, position_y, "", colorData.checkBoxCheckedColor, 0.034f, false, false, 0.9f);
 	}
 	else {
-		box(0.012f, 0.02f, position_x, position_y, "", glm::vec3(1.0f) - colorData.checkBoxColor, 0.034f, false, false);
+		box(0.012f, 0.02f, position_x, position_y, "", glm::vec3(1.0f) - colorData.checkBoxColor, 0.034f, false, false, 0.9f);
 
 	}
 	renderText(commonData.program, text, position_x+0.04f, position_y - 0.01, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
@@ -405,7 +421,6 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 	glset.uniform1i(program,"isText", 1);
 	glset.uniform1i(program, "isTextF", 1);
 	glset.uniform1i(program, "text", 2);
-
 	
 	std::string::const_iterator c;
 	for (c = text.begin(); c != text.end(); c++)

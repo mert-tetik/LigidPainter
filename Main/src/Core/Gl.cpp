@@ -185,7 +185,7 @@ void GlSet::getProgram() {//Prepare shader program | Usen once
 #pragma endregion
 }
 int a = 0;
-void drawBrushSizeIndicator(float distanceX,float screenWidth,float screenHeight,float mouseXpos,float mouseYpos) {
+void drawBrushSizeIndicator(float distanceX,float screenWidth,float screenHeight,float mouseXpos,float mouseYpos,glm::vec3 color) {
 	CommonData commonData;
 	GlSet glset;
 	std::vector<float> paintingSquare{
@@ -198,21 +198,24 @@ void drawBrushSizeIndicator(float distanceX,float screenWidth,float screenHeight
 		-distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom left
 		-distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0  // top left
 	};
-	glset.uniform3f(commonData.program, "uiColor", 1.0f, 1.0f, 1.0f);
-	glset.uniform1f(commonData.program, "uiOpacity", 0.1f);
+	glset.uiDataToShaders(color/glm::vec3(255.0f));
+	glset.uniform1f(commonData.program, "uiOpacity", 0.2f);
 	glset.drawArrays(paintingSquare, false);
 	glset.uniform1f(commonData.program, "uiOpacity", 0.5f);
 }
 
 	float lastColorBoxPickerValue_x = 7;
 	float lastColorBoxPickerValue_y = 3;
+	float lastColorBoxRangeValue = 3;
+	glm::vec3 colorBoxVal = glm::vec3(0);
 
-void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBO, PanelData panelData,bool cameraPosChanged, std::vector<float> &axisPointer, float colorBoxPickerValue_x, float colorBoxPickerValue_y,unsigned int paintingSqFBO,float colorBoxColorRangeBarValue) {
+void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBO, PanelData panelData,bool cameraPosChanged, std::vector<float> &axisPointer, float colorBoxPickerValue_x, float colorBoxPickerValue_y,unsigned int paintingSqFBO,float colorBoxColorRangeBarValue, const char* exportFolder, bool jpgFormatChecked, bool pngFormatChecked, bool jpgCheckboxHover, bool pngCheckboxHover, bool doPainting,ExportData exportData, unsigned int depthTexture, unsigned int FBOSq) {
 	GlSet gls;
 
 	UserInterface ui;
 	CommonData commonData;
 	ColorData colorData;
+	Utilities util;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -226,7 +229,7 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 
 	bool colorBoxValChanged = true;
 
-	if (lastColorBoxPickerValue_x != colorBoxPickerValue_x || lastColorBoxPickerValue_y != colorBoxPickerValue_y) {
+	if (lastColorBoxPickerValue_x != colorBoxPickerValue_x || lastColorBoxPickerValue_y != colorBoxPickerValue_y || lastColorBoxRangeValue != colorBoxColorRangeBarValue) {
 		colorBoxValChanged = true;
 	}
 	else {
@@ -234,6 +237,7 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 	}
 	lastColorBoxPickerValue_x = colorBoxPickerValue_x;
 	lastColorBoxPickerValue_y = colorBoxPickerValue_y;
+	lastColorBoxRangeValue = colorBoxColorRangeBarValue;
 
 	//Axis Pointer
 	axisPointerDataToShaders();
@@ -275,26 +279,47 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 	};
 
 	int pickedColor = 0;
-	if (cameraPosChanged) {
+	if (cameraPosChanged || exportData.exportImage) {
+		Texture txtr;
 		viewport(1920, 1080);
-		uniform1i(commonData.program, "isRenderTextureModeV", 1);
 		uniform1i(commonData.program, "isRenderTextureMode", 1);
-		bindFramebuffer(FBO);
+		bindFramebuffer(FBOSq);
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		uniform1i(commonData.program, "isRenderTextureModeV", 1);
 		drawArrays(vertices, false);
-		drawArrays(renderVertices, false);
-		Texture txtr;
-		GLubyte* renderedImage = txtr.getTextureFromProgram(GL_TEXTURE5,1080, 1080, 3);
+		if(!exportData.exportImage)
+			drawArrays(renderVertices, false);
+		GLubyte* renderedImage = txtr.getTextureFromProgram(GL_TEXTURE10,1080, 1080, 3);
 
 		activeTexture(GL_TEXTURE0);
 		texImage(renderedImage,1080,1080, GL_RGB);
 		generateMipmap();
+		if (exportData.exportImage) {
+			if (jpgFormatChecked) {
+				txtr.downloadTexture(exportData.path, "rigidPainter Export", 0, 1080, 1080, renderedImage, 3);
+			}
+			else if (pngFormatChecked) {
+				txtr.downloadTexture(exportData.path, "rigidPainter Export", 1, 1080, 1080, renderedImage, 3);
+			}
+		}
 		delete(renderedImage);
+		bindFramebuffer(FBO);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		uniform1i(commonData.program, "isRenderTextureModeV", 0);
+		uniform1i(commonData.program, "depthTexture", 9);
+		uniform1i(commonData.program, "renderDepth", 1);
+		drawArrays(vertices, false);
+		GLubyte* screen = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
+		activeTexture(GL_TEXTURE9);
+		texImage(screen, 1920, 1080, GL_RGB);
+		generateMipmap();
+		uniform1i(commonData.program, "renderDepth", 0);
+		delete(screen);
 
 		uniform1i(commonData.program, "isRenderTextureMode", 0);
-		uniform1i(commonData.program, "isRenderTextureModeV", 0);
 		bindFramebuffer(0);
 		viewport(screenSizeX, screenSizeY);
 	}
@@ -314,27 +339,39 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 		uniform1i(commonData.program, "isColorBox", 0);
 		glReadPixels((colorBoxPickerValue_x * -1.0f + 0.1f) * 5.0f * 1080, (colorBoxPickerValue_y + 0.2f) * 2.5f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorBoxPixel);
 		uniform3f(commonData.program, "drawColor", colorBoxPixel[0] / 255.0f, colorBoxPixel[1] / 255.0f, colorBoxPixel[2] / 255.0f);
-		delete(colorBoxPixel);
 
 		uniform1i(commonData.program, "isRenderTextureMode", 0);
 		uniform1i(commonData.program, "isRenderTextureModeV", 0);
 		bindFramebuffer(0);
 		viewport(screenSizeX, screenSizeY);
+		colorBoxVal.r = colorBoxPixel[0];
+		colorBoxVal.g = colorBoxPixel[1];
+		colorBoxVal.b = colorBoxPixel[2];
+		delete(colorBoxPixel);
 	}
+	uniform1i(commonData.program, "isRenderTextureModeV", 1);
+	uniform1i(commonData.program, "isRenderTextureMode", 1);
+
 	drawArrays(vertices, false); //Render Model
-
-
+	uniform1i(commonData.program, "isRenderTextureModeV", 0);
+	uniform1i(commonData.program, "isRenderTextureMode", 0);
+	drawArrays(vertices, false); //Render Model
 
 	disable(GL_CULL_FACE);
 
 	//UI
 	//ui.renderMenubar(renderData.window);
 	ui.panel(renderData.panelLoc, 0);
+
 	glm::mat4 projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 	uniformMatrix4fv(commonData.program, "TextProjection", projection);
 	ui.panelChangeButton(renderData.panelLoc,0.8f);//Model Panel
 	ui.panelChangeButton(renderData.panelLoc, 0.72f);//Texture Panel
 	ui.panelChangeButton(renderData.panelLoc, 0.64f);//Painting Panel
+	ui.panelChangeButton(renderData.panelLoc, 0.56f);//Painting Panel
+	if(panelData.paintingPanelActive)
+		ui.box(0.25f, 0.22f, renderData.panelLoc+ 0.25f, -0.3f, "", colorData.textBoxColor, 0.075f, false, false,0.1f);
+
 
 
 	float centerDivider;
@@ -353,31 +390,49 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 		uniformMatrix4fv(commonData.program, "TextProjection", projection);
 	}
 	if (panelData.modelPanelActive) {
-		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider+ centerSum, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false);
+
+		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider+ centerSum, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false,0.9f);
 		ui.renderText(commonData.program, "File Path", renderData.panelLoc / centerDivider+ centerSum - 0.05f, 0.64f, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
 
-		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false);
-		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, 0.0f, "Add Panel", colorData.buttonColor, 0.045f, false, false);
-		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, -0.1f, "Add Sphere", colorData.buttonColor, 0.047f, false, false);
+		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false, 0.9f);
+		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, 0.0f, "Add Panel", colorData.buttonColor, 0.045f, false, false, 0.9f);
+		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, -0.1f, "Add Sphere", colorData.buttonColor, 0.047f, false, false, 0.9f);
 
 		ui.checkBox(renderData.panelLoc / centerDivider+ centerSum - 0.08f, 0.3f,"Auto triangulate",colorData.checkBoxColor, renderData.isAutoTriangulateHover, renderData.isAutoTriangulateChecked);
 		ui.checkBox(renderData.panelLoc / centerDivider+ centerSum - 0.08f, 0.2f, "Backface culling", colorData.checkBoxColor, renderData.isbackfaceCullingHover, renderData.isbackfaceCullingChecked);
 	}
 	if (panelData.texturePanelActive) {
-		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "+ Add Image", colorData.buttonColor, 0.05f, false, false);
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "+ Add Image", colorData.buttonColor, 0.05f, false, false, 0.9f);
 	}
+
 	if (panelData.paintingPanelActive) {
-		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "Add Mask Texture", colorData.buttonColor, 0.075f, false,false);
-		ui.box(0.14f, 0.28f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "", colorData.buttonColor, 0.075f, false,true);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.0f, renderData.brushSizeRangeBarValue);
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "Add Mask Texture", colorData.buttonColor, 0.075f, false,false, 0.9f);
+		ui.box(0.14f, 0.28f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "", colorData.buttonColor, 0.075f, false,true, 0.9f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.05f, renderData.brushSizeRangeBarValue);
+		ui.renderText(commonData.program, "Brush Size", renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.01f, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
+
+		ui.renderText(commonData.program, util.rgbToHexGenerator(colorBoxVal), renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.56f, 0.0004f, glm::vec3(0.5, 0.8f, 0.2f));
+
+		uniform1f(commonData.program, "uiOpacity", 1.0f);
+		ui.box(0.012f, 0.025f, renderData.panelLoc / centerDivider + centerSum -0.1f, -0.55f, "", colorBoxVal/glm::vec3(255), 0.075f, false, false, 0.9f);
+		uniform1f(commonData.program, "uiOpacity", 0.5f);
+		ui.decorationSquare(renderData.panelLoc / centerDivider + centerSum - 0.1f, -0.54f);
+
 		ui.colorBox(renderData.panelLoc / centerDivider + centerSum - 0.02f, -0.3f, colorBoxPickerValue_x, colorBoxPickerValue_y);
 		ui.colorRect(renderData.panelLoc / centerDivider + centerSum + 0.1f, -0.3f, colorBoxColorRangeBarValue,FBO,renderData.window);
 	}
-	//UI
 
+	if (panelData.exportPanelActive) {
+		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum, 0.6f,exportFolder, colorData.textBoxColor, 0, true, false, 0.9f); //Path
+		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.11f, 0.5f, "JPEG", colorData.checkBoxColor, jpgCheckboxHover, jpgFormatChecked);
+		ui.checkBox(renderData.panelLoc / centerDivider + centerSum + 0.05f, 0.5f, "PNG", colorData.checkBoxColor, pngCheckboxHover, pngFormatChecked);
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.3f, "Download", colorData.buttonColor, 0.045f, false, false, 0.9f);
+	}
+	//UI
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 	uniformMatrix4fv(commonData.program, "TextProjection", projection);
-	drawBrushSizeIndicator(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos);
+	if(doPainting)
+		drawBrushSizeIndicator(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorBoxVal);
 }
 GLFWwindow* GlSet::getWindow() {
 	glfwInit();
@@ -443,7 +498,27 @@ unsigned int GlSet::createScreenFrameBufferObject() {
 	unsigned int textureColorbuffer;
 	genTextures(textureColorbuffer);
 	bindTexture(textureColorbuffer);
-	texImage(NULL,1080,1080,GL_RGB);
+	texImage(NULL, 1920,1080,GL_RGB);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+	unsigned int RBO;
+	genRenderbuffers(RBO);
+	bindRenderBuffer(RBO);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1920, 1080);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	return FBO;
+}
+unsigned int GlSet::createScreenFrameBufferObjectSq() {
+	activeTexture(GL_TEXTURE10);
+	unsigned int FBO;
+	genFramebuffers(FBO);
+	bindFramebuffer(FBO);
+	unsigned int textureColorbuffer;
+	genTextures(textureColorbuffer);
+	bindTexture(textureColorbuffer);
+	texImage(NULL, 1080, 1080, GL_RGB);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
