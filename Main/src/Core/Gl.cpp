@@ -349,12 +349,7 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 		colorBoxVal.b = colorBoxPixel[2];
 		delete(colorBoxPixel);
 	}
-	uniform1i(commonData.program, "isRenderTextureModeV", 1);
-	uniform1i(commonData.program, "isRenderTextureMode", 1);
 
-	drawArrays(vertices, false); //Render Model
-	uniform1i(commonData.program, "isRenderTextureModeV", 0);
-	uniform1i(commonData.program, "isRenderTextureMode", 0);
 	drawArrays(vertices, false); //Render Model
 
 	disable(GL_CULL_FACE);
