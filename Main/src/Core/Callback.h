@@ -1,5 +1,5 @@
-#ifndef RGDCALLBACK_H
-#define RGDCALLBACK_H
+#ifndef LGDCALLBACK_H
+#define LGDCALLBACK_H
 struct CallbckData { //Return from callback
 	bool loadModelButtonEnter;
 	bool modelFilePathTextBoxEnter;
@@ -10,6 +10,8 @@ struct CallbckData { //Return from callback
 	bool addImageButtonEnter;
 	bool addMaskTextureButtonEnter;
 	bool brushSizeRangeBarEnter;
+	bool brushBlurRangeBarEnter;
+	bool brushRotationRangeBarEnter;
 	bool modelPanelButtonEnter;
 	bool texturePanelButtonEnter;
 	bool paintingPanelButtonEnter;
@@ -18,8 +20,8 @@ struct CallbckData { //Return from callback
 	bool colorBoxColorRangeBarEnter;
 
 	bool exportPathTextBoxEnter;
-	bool exportExtJPGButtonEnter;
-	bool exportExtPNGButtonEnter;
+	bool exportExtJPGCheckBoxEnter;
+	bool exportExtPNGCheckBoxEnter;
 	bool exportDownloadButtonEnter;
 
 	glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -31,9 +33,9 @@ struct CallbckData { //Return from callback
 class Callback {
 public:
 	CallbckData scroll_callback(GLFWwindow* window, double scroll, double scrollx);
-	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue);
-	void panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX);
-	void buttonCheck(GLFWwindow* window, int mouseXPos, int mouseYPos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue);
+	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, bool enablePanelMovement, float brushRotationRangeBarValue);
+	void panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX, bool enablePanelMovement);
+	void buttonCheck(GLFWwindow* window, int mouseXPos, int mouseYPos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, float brushRotationRangeBarValue);
 	void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 };
 #endif

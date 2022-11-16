@@ -4,7 +4,7 @@
 #include <sstream>
 #include <glm/glm.hpp>
 #include "ModelLoader.h"
-#include "RigidPainter.h"
+#include "LigidPainter.h"
 #include <vector>
 #include <string>
 using namespace std;
@@ -172,6 +172,13 @@ using namespace std;
 				}
 				faceIndex = "";
 			}
+		}
+		for (size_t i = 0; i < vertices.size(); i++)
+		{
+			if (i % 8 == 0) {
+				cout << '\n';
+			}
+			cout << vertices[i] << " , ";
 		}
 		return vertices;
 	}

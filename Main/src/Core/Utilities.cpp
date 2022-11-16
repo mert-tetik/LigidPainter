@@ -41,31 +41,33 @@ string Utilities::getLastWordBySeparatingWithChar(string s, char del)
 	}
 	return words[words.size() - 1];
 }
-string Utilities::openFileDialog() { //!!Using Win header!!
+string Utilities::openFileDialog() { //!!Using Win header!! 
+
+	//!!!! Not used in that project !!!!//
 	
-	//OPENFILENAME ofn;       // common dialog box structure
-	//char szFile[260];       // buffer for file name
-	//HANDLE hf;              // file handle
+	OPENFILENAME ofn;       // common dialog box structure
+	char szFile[260];       // buffer for file name
+	HANDLE hf;              // file handle
 
-	//// Initialize OPENFILENAME
-	//ZeroMemory(&ofn, sizeof(ofn));
-	//ofn.lStructSize = sizeof(ofn);
-	//ofn.lpstrFile = szFile;
-	//// Set lpstrFile[0] to '\0' so that GetOpenFileName does not 
-	//// use the contents of szFile to initialize itself.
-	//ofn.lpstrFile[0] = '\0';
-	//ofn.nMaxFile = sizeof(szFile);
-	//ofn.lpstrFilter = "All\0*.*\0Text\0*.TXT\0";
-	//ofn.nFilterIndex = 1;
-	//ofn.lpstrFileTitle = NULL;
-	//ofn.nMaxFileTitle = 0;
-	//ofn.lpstrInitialDir = NULL;
-	//ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+	// Initialize OPENFILENAME
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(ofn);
+	ofn.lpstrFile = szFile;
+	// Set lpstrFile[0] to '\0' so that GetOpenFileName does not 
+	// use the contents of szFile to initialize itself.
+	ofn.lpstrFile[0] = '\0';
+	ofn.nMaxFile = sizeof(szFile);
+	ofn.lpstrFilter = "All\0*.*\0Text\0*.TXT\0";
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = NULL;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
-	//// Display the Open dialog box. 
+	// Display the Open dialog box. 
 
-	//if (GetOpenFileName(&ofn) == TRUE)
-	//	return (string)ofn.lpstrFile;
+	if (GetOpenFileName(&ofn) == TRUE)
+		return (string)ofn.lpstrFile;
 	return "";
 }
 std::string Utilities::rgbToHexGenerator(glm::vec3 rgbData) {
@@ -90,4 +92,26 @@ std::string Utilities::rgbToHexGenerator(glm::vec3 rgbData) {
 		}
 	}
 	return hex;
+}
+
+float Utilities::restrictBetween(float value, float maxVal, float minVal) {
+	if (value > maxVal) {
+		value = maxVal;
+	}
+	else if (value < minVal) {
+		value = minVal;
+	}
+	return value;
+}
+
+double lastTime = glfwGetTime();
+int nbFrames = 0;
+void Utilities::printRenderingSpeed() {
+	double currentTime = glfwGetTime();
+	nbFrames++;
+	if (currentTime - lastTime >= 1.0) {
+		printf("%f ms/frame\n", 1000.0 / double(nbFrames));
+		nbFrames = 0;
+		lastTime += 1.0;
+	}
 }

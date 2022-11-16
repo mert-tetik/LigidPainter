@@ -1,5 +1,5 @@
-#ifndef MSHPAPP_H
-#define MSHPAPP_H
+#ifndef LSHPAPP_H
+#define LSHPAPP_H
 
 #include <vector>
 
@@ -17,19 +17,23 @@ struct RenderData { //GlSet::render
 	GLFWwindow* window;
 	float panelLoc; 
 	std::string modelLoadFilePath; 
-	bool isAutoTriangulateHover; 
-	bool isAutoTriangulateChecked; 
-	bool isbackfaceCullingHover; 
-	bool isbackfaceCullingChecked; 
 	bool backfaceCulling;
 	float brushSizeRangeBarValue;
 	float brushSizeIndicator;
+	float colorBoxPickerValue_x; 
+	float colorBoxPickerValue_y;
+	unsigned int paintingSqFBO; 
+	float colorBoxColorRangeBarValue;
+	const char* exportFolder;
+	bool doPainting; 
+	unsigned int depthTexture;
+	bool paintingMode;
 };
 class Sphere {
 public:
 	std::vector<float> getSphere();
 };
-class RigidPainter {
+class LigidPainter {
 public:
 	bool run();
 };

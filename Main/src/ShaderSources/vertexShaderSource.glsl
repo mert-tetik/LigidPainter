@@ -21,13 +21,32 @@ out vec4 projectedPos;
 uniform mat4 renderTextureProjection;
 uniform int isRenderTextureModeV;
 
+uniform int isRenderVerticalBlur;
+
+out vec2 blurTextureCoords[11];
+uniform float brushBlurVal;
+
+uniform mat4 renderTrans;
 
 void main() {
+   
    Pos = aPos;
    TexCoords = aTexCoords;
    FragPos = vec3(model * vec4(aPos, 1.0));
    Normal = aNormal;
    projectedPos = projection * view * vec4(aPos, 0.5); //Caution
+
+   vec2 centerTexCoords = aTexCoords;
+   float pixelSize = 1.0 / brushBlurVal;
+
+   for(int i=-5;i<=5;i++){
+      if(isRenderVerticalBlur == 0){
+         blurTextureCoords[i+5] = centerTexCoords + vec2(pixelSize*i,0); 
+      }
+      else{
+         blurTextureCoords[i+5] = centerTexCoords + vec2(0,pixelSize*i); 
+      }
+   }
 
    if(isRenderTextureModeV == 0) {
       if(isText == 0) {
@@ -41,7 +60,11 @@ void main() {
          TextTexCoords = aTexCoords;
       }
    } else {
-      gl_Position = renderTextureProjection * vec4(aTexCoords, 0, 1);
-
+      if(isTwoDimensional == 0){
+         gl_Position = renderTextureProjection * vec4(aTexCoords, 0, 1);
+      }
+      else{
+         gl_Position = renderTrans * renderTextureProjection * vec4(aPos, 1.0);
+      }
    }
 }

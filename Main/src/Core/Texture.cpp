@@ -5,7 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "RigidPainter.h"
+#include "LigidPainter.h"
+#include "UserInterface.h"
 #include "gl.h"
 #include "Texture.h"
 #include <vector>
@@ -16,7 +17,13 @@
 
 using namespace std;
 
-GetTextureData Texture::getTexture(std::string path, double imgX, double imgY,bool resize,float brushSizeRangeBarValue) {
+
+
+GetTextureData Texture::getTexture(std::string path, unsigned int desiredWidth, unsigned int desiredHeight) {
+	//Leave desiredWidth 0 if no resize wanted
+	bool applyResize;
+	applyResize = desiredWidth;
+
 	GetTextureData getTextureData;
 	unsigned int textureID;
 	GlSet glset;
@@ -27,15 +34,21 @@ GetTextureData Texture::getTexture(std::string path, double imgX, double imgY,bo
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	int width, height, nrChannels;
-	int distanceX = double(brushSizeRangeBarValue + 0.1f) * 500.0 + 10.0;
 
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 3);
-	GLubyte* resizedPixelsX = new GLubyte[distanceX * distanceX * 3];
+	GLubyte* resizedPixelsX = NULL;
+	if (applyResize) {
+		resizedPixelsX = new GLubyte[desiredWidth * desiredHeight * 3];
+		stbir_resize_uint8(data, width, height, 0, resizedPixelsX, desiredWidth, desiredHeight, 0, 3);
+	}
 
 	if (data != NULL)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		if(applyResize)
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, desiredWidth, desiredHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, resizedPixelsX);
+		else
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		glset.generateMipmap();
 	}
 	else
@@ -47,11 +60,10 @@ GetTextureData Texture::getTexture(std::string path, double imgX, double imgY,bo
 		}
 		std::cout << "Failed to load texture!" << " Reason : " << reason<< std::endl;
 	}
-	stbir_resize_uint8(data, width, height, 0, resizedPixelsX, distanceX, distanceX, 0, 3);
+
 
 	stbi_image_free(data);
 	getTextureData.Id = textureID;
-	getTextureData.imgData = resizedPixelsX;
 	return getTextureData;
 }
 
@@ -121,4 +133,123 @@ void Texture::refreshScreenDrawingTexture() {
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1920, 1080, GL_RGB, GL_UNSIGNED_BYTE, screenTextureX); //Refresh Screen Texture
 	glset.generateMipmap();
 	delete(screenTextureX);
+}
+GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenSize_x, unsigned int screenSize_y, float brushRotationRangeBarValue) { //rotationValue = rotationBarValue
+	CommonData commonData;
+	GlSet glset;
+	UserInterface ui;
+	glset.viewport(1080, 1080);
+
+	float rotation = ((brushRotationRangeBarValue +0.11f) * 4.54545454545) * 360; // -0.11 - 0.11 --> 0 - 360
+
+	glm::mat4 trans = glm::mat4(1.0f);
+	trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
+	trans = glm::rotate(trans, glm::radians(rotation), glm::vec3(0.0, 0.0, 1.0));
+	trans = glm::scale(trans, glm::vec3(0.8, 0.8, 0.8));
+	glset.uniformMatrix4fv(commonData.program, "renderTrans", trans);
+
+	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777777778 - 1
+	glset.uniformMatrix4fv(commonData.program, "renderTextureProjection", renderTextureProjection);
+
+	glClearColor(0, 0, 0, 1.0f);
+
+	std::vector<float> renderVertices = { 
+	// first triangle
+	 0.75f,  0.75f, 0.0f,1,1,0,0,0,  // top right
+	 0.75f,  0.25f, 0.0f,1,0,0,0,0,  // bottom right
+	 0.25f,  0.75f, 0.0f,0,1,0,0,0,  // top left 
+	// second triangle	  ,0,0,0,
+	 0.75f,  0.25f, 0.0f,1,0,0,0,0,  // bottom right
+	 0.25f,  0.25f, 0.0f,0,0,0,0,0,  // bottom left
+	 0.25f,  0.75f, 0.0f,0,1,0,0,0   // top left
+	};
+
+	std::vector<float> renderVerticesX = { 
+	// first triangle
+	 0.5f,  0.5f, 0.0f,1,1,0,0,0,  // top right
+	 0.5f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+	 0.0f,  0.5f, 0.0f,0,1,0,0,0,  // top left 
+	// second triangle	  ,0,0,0,
+	 0.5f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+	 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+	 0.0f,  0.5f, 0.0f,0,1,0,0,0   // top left
+	};
+	
+	glset.uniform1i(commonData.program, "isTwoDimensional", 1);
+	glset.uniform1i(commonData.program, "isRenderTextureMode", 1);
+	glset.uniform1i(commonData.program, "isRenderTextureModeV", 1);
+	glset.uniform1i(commonData.program, "renderMaskBrush", 1);
+	glset.uniform1i(commonData.program, "renderMaskBrushBlury", 0);
+
+	glset.bindFramebuffer(FBOScreen);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Setup
+
+	glset.uniform1i(commonData.program, "uiMaskTexture", 1);
+	
+	//Rotation
+	glset.drawArrays(renderVertices, false);
+	GLubyte* renderedImageXX = new GLubyte[540 * 540 * 3 * sizeof(GLubyte)];
+	glReadPixels(0, 0, 540, 540, GL_RGB, GL_UNSIGNED_BYTE, renderedImageXX);
+
+	glset.activeTexture(GL_TEXTURE12);
+	glset.texImage(renderedImageXX, 540, 540, GL_RGB);
+	glset.generateMipmap();
+	//Rotation
+
+	glset.uniform1i(commonData.program, "uiMaskTexture", 12);
+	glset.uniform1i(commonData.program, "renderMaskBrushBlury", 1);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glset.viewport(1920, 1080);
+	trans = glm::mat4(1.0f);
+	glset.uniformMatrix4fv(commonData.program, "renderTrans", trans);
+
+	renderTextureProjection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777777778 - 1
+	glset.uniformMatrix4fv(commonData.program, "renderTextureProjection", renderTextureProjection);
+
+
+	//Horizontal Blur
+	glset.drawArrays(renderVerticesX, false);
+	GLubyte* renderedImageX = new GLubyte[540 * 540 * 3 * sizeof(GLubyte)];
+	glReadPixels(0, 0, 540, 540, GL_RGB, GL_UNSIGNED_BYTE, renderedImageX);
+
+	glset.activeTexture(GL_TEXTURE12);
+	glset.texImage(renderedImageX, 540, 540, GL_RGB);
+	glset.generateMipmap();
+	//Horizontal Blur
+
+	//Vertical Blur setup
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glset.uniform1i(commonData.program, "isRenderVerticalBlur", 1);
+	//Vertical Blur setup
+
+	//Vertical blur
+	glset.drawArrays(renderVerticesX, false);
+	GLubyte* renderedImage = new GLubyte[540 * 540 * 3 * sizeof(GLubyte)];
+	glReadPixels(0, 0, 540, 540, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
+
+	glset.activeTexture(GL_TEXTURE12);
+	glset.texImage(renderedImage, 540, 540, GL_RGB);
+	glset.generateMipmap();
+
+	//Verical blur
+
+	//Finish
+
+
+	trans = glm::mat4(1.0f);
+	glset.uniformMatrix4fv(commonData.program, "renderTrans", trans);
+	ui.setViewportBgColor();
+	glset.uniform1i(commonData.program, "isRenderVerticalBlur", 0);
+	glset.uniform1i(commonData.program, "renderMaskBrush", 0);
+	glset.uniform1i(commonData.program, "isTwoDimensional", 0);
+	glset.uniform1i(commonData.program, "isRenderTextureModeV", 0);
+	glset.uniform1i(commonData.program, "isRenderTextureMode", 0);
+	glset.bindFramebuffer(0);
+	glset.viewport(screenSize_x, screenSize_y);
+
+	delete(renderedImageX);
+	delete(renderedImageXX);
+	return renderedImage;
 }

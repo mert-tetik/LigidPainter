@@ -1,5 +1,5 @@
-#ifndef RGDMODELLOADER_H
-#define RGDMODELLOADER_H
+#ifndef LGDMODELLOADER_H
+#define LGDMODELLOADER_H
 #include <vector>
 
 struct ModelData

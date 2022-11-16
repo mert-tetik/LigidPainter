@@ -1,8 +1,8 @@
-#ifndef RGDTEXTUREGEN_H
-#define RGDTEXTUREGEN_H
+#ifndef LGDTEXTUREGEN_H
+#define LGDTEXTUREGEN_H
 class TextureGenerator {
 public:
-	void drawTexture(GLFWwindow* window, std::string path, bool brushTextureChanged, unsigned int screenPaintingTextureId, float brushSizeRangeBarValue);
+	void drawToScreen(GLFWwindow* window, std::string path, bool brushTextureChanged, unsigned int screenPaintingTextureId, float brushSize, unsigned int FBOScreen, bool brushBlurChanged,bool brushSizeChanged, float rotationValue, bool brushRotationChanged);
 };
 
 #endif

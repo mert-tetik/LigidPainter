@@ -1,11 +1,61 @@
-#ifndef RGDGL_H
-#define RGDGL_H
+#ifndef LGDGL_H
+#define LGDGL_H
 struct ExportData
 {
 	bool exportImage;
 	const char* path;
 };
+struct FramebufferData
+{
+	unsigned int FBO;
+	unsigned int Texture;
+	unsigned int RBO;
+};
+struct UiData {
+	bool loadModelButtonEnter;
+	bool loadModelButtonPressed;
 
+	bool modelFilePathTextBoxEnter;
+
+	bool autoTriangulateCheckBoxEnter;
+	bool autoTriangulateCheckBoxPressed;
+
+	bool backfaceCullingCheckBoxEnter;
+	bool backfaceCullingCheckBoxPressed;
+
+	bool addPlaneButtonEnter;
+	bool addPlaneButtonPressed;
+
+	bool addSphereButtonEnter;
+	bool addSphereButtonPressed;
+
+	bool addImageButtonEnter;
+	bool addImageButtonPressed;
+
+	bool addMaskTextureButtonEnter;
+	bool addMaskTextureButtonPressed;
+
+	bool brushSizeRangeBarEnter;
+
+	bool brushBlurRangeBarEnter;
+
+	bool brushRotationRangeBarEnter;
+
+	bool colorBoxPickerEnter;
+
+	bool colorBoxColorRangeBarEnter;
+
+	bool exportPathTextBoxEnter;
+
+	bool exportExtJPGCheckBoxEnter;
+	bool exportExtJPGCheckBoxPressed;
+
+	bool exportExtPNGCheckBoxEnter;
+	bool exportExtPNGCheckBoxPressed;
+
+	bool exportDownloadButtonEnter;
+	bool exportDownloadButtonPressed;
+};
 class GlSet {
 public:
 	void drawArrays(std::vector<float>& vertices, bool isLine);
@@ -39,13 +89,13 @@ public:
 	void viewport(int width, int height);
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
 	void getProgram();
-	void render(RenderData renderData, std::vector<float>& vertices, unsigned int FBO, PanelData panelData, bool cameraPosChanged, std::vector<float>& axisPointer, float colorBoxPickerValue_x,float colorBoxPickerValue_y, unsigned int paintingSqFBO, float colorBoxColorRangeBarValue,const char* exportFolder, bool jpgFormatChecked, bool pngFormatChecked, bool jpgCheckboxHover,bool pngCheckboxHover,bool doPainting, ExportData exportData,unsigned int depthTexture, unsigned int FBOSq);
+	void render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, bool cameraPosChanged, std::vector<float>& axisPointer, ExportData exportData, float brushBlurRangeBarValue,UiData uidata,bool albedoTextureChanged , float brushRotationRangeBarValue);
+	void getDepthTexture(std::vector<float>& vertices);
 	GLFWwindow* getWindow();
 	void setMatrices();
 	void updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos);
 	void getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos); //Not used
 	void drawLightObject(glm::vec3 lightPos);
 	unsigned int createScreenFrameBufferObject();
-	unsigned int createScreenFrameBufferObjectSq();
 };
 #endif // !RGDGL_H

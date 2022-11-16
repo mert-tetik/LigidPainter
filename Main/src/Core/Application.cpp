@@ -8,7 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "RigidPainter.h"
+#include "LigidPainter.h"
 #include "ModelLoader.h"
 #include "UserInterface.h"
 #include "Utilities.h"
@@ -32,32 +32,128 @@ using namespace std;
 GlSet glset;
 GLFWwindow* window = glset.getWindow();
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+//GL_TEXTURE0 = Albedo texture
+//GL_TEXTURE1 = Mask texture
+//GL_TEXTURE2 = Chars
+//GL_TEXTURE3 = NULL
+//GL_TEXTURE4 = Screen Mask Painting Texture
+//GL_TEXTURE5 = 1920x1080 Screen Texture
+//GL_TEXTURE6 = NULL
+//GL_TEXTURE7 = Enlarged albedo texture (1px)
+//GL_TEXTURE8 = NULL
+//GL_TEXTURE9 = Depth texture
+//GL_TEXTURE10 = 1080x1080 Screen Texture
+//GL_TEXTURE11 = NULL
+//GL_TEXTURE12 = Modified mask texture
+//GL_TEXTURE13 = NULL
 
-unsigned int VBO, VAO; //Vertex Buffer Object, Vertex Array Object
-bool cameraPosChanged = true;
-bool paintingMode = false;
-glm::vec3 holdCameraPos;
+unsigned int VBO, VAO, FBOScreen; //Vertex Buffer Object, Vertex Array Object, Framebuffer object that I used to render the screen
 
-char currentKey;
-bool changeModelFilePathText = false;
-//bool preventPairs = false;
-//char keyCounter = 0;
+bool cameraPosChanging = true;
+bool paintingMode = false; //True if painting started, False if camera position changed after painting
+glm::vec3 holdCameraPos; //Used to detect the camera position change
+
+//Paths
 const char* modelFilePath;
-
-bool backfaceCulling = false;
-bool enableCtrlAltC = true;
-bool enableBackfaceCulling;
-int isAxisPointerLoc;
-int isTwoDimensionalLoc;
-bool buttonGetInput = true;
-bool buttonPressed = false;
-bool autoTriangulateChecked = true;
-bool backfaceCullingChecked = true;
+string albedoTexturePath = "albedoImage.png";
+string maskTexturePath = "maskImage.png";
+string exportPath = "";
+string exportFolder = "Choose Destination Path";
+//Paths
 
 string modelName;
 vector<float> vertices = { 0 };
 
+//--------Functions--------\\
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void scroll_callback(GLFWwindow* window, double scroll, double scrollx);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void updateCameraPosChanging();
+RenderData updateRenderData(RenderData renderData, unsigned int depthTexture, int brushSizeIndicatorSize);
+UiData updateUiData();
+
+//--------Functions--------\\
+
+CallbckData callbackData;
+PanelData panelData;
+
+bool doPainting = true;//Prevent painting
+
+double holdScrollVal; //Hold scroll data to call the scroll function in while loop
+bool doScrollAfterCallInPaintingMode; //Prevent painting size change after scrolling
+
+bool exportImage;//To let render function know if exporting called
+
+//Update once the mouse location value changed
+double mouseXpos; 
+double mouseYpos;
+bool mousePosChanged = false;
+//Update once the mouse location value changed
+
+//Let program know if brush needs an update
+bool brushSizeChanged = false;
+bool brushBlurChanged = false;
+bool brushRotationChanged = false;
+bool brushTextureChanged = true;
+//Let program know if brush needs an update
+
+//-----------------------      UI     -----------------------\\
+
+void uiActions(); //Associated with buttonPressed & buttonGetInput booleans
+
+void isFirstClickDoneInside(); //Associated with noButtonClick boolean
+
+//Button control
+bool noButtonClick;
+bool buttonGetInput = true;
+bool buttonPressed = false;
+//Button control
+
+bool enablePanelMovement = true; //Panel can be moved if true. Set false while dragging range bar pointers around.
+
+//----------PRESSED----------\\
+Might be transported to callback
+//(hover calculations are made in callback.cpp)
+
+//Used to let render function know if it's supposed to change colors
+void setButtonPressedFalse();
+bool loadModelButtonPressed = false;
+bool addPlaneButtonPressed = false;
+bool addSphereButtonPressed = false;
+bool addImageButtonPressed = false;
+bool addMaskTextureButtonPressed = false;
+bool exportDownloadButtonPressed = false;
+
+//Used to let mouse callback function know if it's supposed to change range bar values
+bool brushSizeRangeBarPressed;
+bool brushBlurRangeBarPressed;
+bool brushRotationRangeBarPressed;
+bool colorBoxColorRangeBarPressed;
+bool colorBoxPickerPressed;
+
+//Checkbox
+bool autoTriangulateChecked = true;
+
+bool backfaceCullingChecked = true;
+bool enableBackfaceCulling;
+
+bool jpgFormatChecked;
+bool pngFormatChecked = true;
+//Checkbox
+//----------PRESSED----------\\
+
+
+//----------RANGE VALUE----------\\.
+float brushSizeRangeBarValue = 0.0f;
+float brushBlurRangeBarValue = -0.11f;
+float brushRotationRangeBarValue = -0.11f;
+float colorBoxColorRangeBarValue = 0.0f;
+float colorBoxPickerValue_x = 0.0f;
+float colorBoxPickerValue_y = 0.0f;
+//----------RANGE VALUE----------\\.
+
+//----------ACTIONS----------\\.
 void loadModelButton();
 void modelFilePathTextBox();
 void autoTriangulateCheckBox();
@@ -70,127 +166,88 @@ void texturePanelButton();
 void paintingPanelButton();
 void exportPanelButton();
 void addMaskTextureButton();
-void brushSizeRangeBar();
-void colorBoxColorRangeBar();
-void colorBoxPickerButton();
-void uiActions();
-void scroll_callback(GLFWwindow* window, double scroll, double scrollx);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-
-void exportPathTextBoxEnter();
-void exportExtJPGButtonEnter();
-void exportExtPNGButtonEnter();
 void exportDownloadButtonEnter();
+void exportPathTextBox();
+void exportExtJPGCheckBox();
+void exportExtPNGCheckBox();
+void colorBoxColorRangeBar(float yOffset, int height);
+void colorBoxPickerButton(float xOffset, float yOffset, int width, int height);
+void brushSizeRangeBar(float xOffset, int width);
+void brushBlurRangeBar(float xOffset, int width, int height);
+void brushRotationRangeBar(float xOffset, int width, int height);
+//----------ACTIONS----------\\
+//-----------------------      UI     -----------------------\\
 
-RenderData updateRenderData(RenderData renderData);
+//bool albedoTextureChanged; use for rendering conditions
 
-//Texture
-string albedoTexturePath = "";
-string maskTexturePath = "";
-
-CallbckData callbackData;
-PanelData panelData;
-
-bool noButtonClick;
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	//--
+	//Will be used for allowing writing to a text box
+	//Can be deleted since program doesn't use it
 }
-bool brushTextureChanged = true;
-GLubyte* maskTexture;
-
-bool brushSizeRangeBarPressed;
-bool colorBoxColorRangeBarPressed;
-bool colorBoxPickerPressed;
-
-float brushSizeRangeBarValue = 0.0f;
-float colorBoxColorRangeBarValue = 0.0f;
-float colorBoxPickerValue_x = 0.0f;
-float colorBoxPickerValue_y = 0.0f;
-
-string exportPath = "";
-string exportFolder = "Choose Destination Path";
-
-bool jpgFormatChecked;
-bool pngFormatChecked = true;
-
-bool doPainting = true;
-
-double holdScroll;
-bool doScrollAfterCallInPaintingMode;
-
-bool exportImage;
-
-bool RigidPainter::run()
+bool LigidPainter::run()
 {
 	ColorData colorData;
 	CommonData commonData;
 	UserInterface ui;
 	Texture txtr;
+	RenderData renderData;
+	UiData uidata;
+	TextureGenerator textureGen;
+	Callback callback;
 
+	//Set Callbacks
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
+	//Set Callbacks
 
 	glset.getProgram();
-
 	glGenBuffers(1, &VBO);
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+	//glGenVertexArrays(1, &VAO);
+	//glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glUseProgram(commonData.program);
 
+	renderData.window = window;
 
 	glset.setVertexAtribPointer();
-	glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW);
-
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
+	glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW); 
 
 	ui.setViewportBgColor();
 	ui.uploadChars();
 
-
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-
 	glset.uniform3fv(commonData.program, "lightPos", lightPos);
 	glset.uniform1f(commonData.program, "material.shininess", 32.0f);
 	glset.uniform1i(commonData.program, "maskTexture", 4);
 	glset.uniform3fv(commonData.program,"textColor",colorData.textColor);
 	glset.uniform1i(commonData.program, "material.diffuse", 0);
 	glset.uniform1i(commonData.program, "material.specular", 1);
+	glset.uniform1i(commonData.program, "uiMaskTexture", 12);
+	glset.uniform1f(commonData.program, "brushBlurVal", 1);
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 
-	glset.activeTexture(GL_TEXTURE1);
-	GetTextureData getTextureData;
-	getTextureData = txtr.getTexture(maskTexturePath, 0, 0, false, 0);
-	glset.bindTexture(getTextureData.Id);
-
-	TextureData textureData;
-	textureData = txtr.getTextureData(maskTexturePath.c_str());
-
-	maskTexture = new GLubyte[textureData.width * textureData.height * textureData.channels];//Deleted
-	maskTexture = txtr.getTextureFromProgram(GL_TEXTURE1, textureData.width, textureData.height, textureData.channels);
-	delete(maskTexture);
-	GLubyte* screenTexture = new GLubyte[1920 * 1080 * 3];//Deleted
-
+	//Screen Texture
+	GLubyte* screenTexture = new GLubyte[1920 * 1080 * 3];
 	unsigned int screenPaintingTextureId = txtr.createScreenPaintTexture(screenTexture,window);
 	delete(screenTexture);
+	//Screen Texture
 
-	unsigned int FBO = glset.createScreenFrameBufferObject();
-	unsigned int FBOSq = glset.createScreenFrameBufferObjectSq();
+	//Create frame buffers for getting screen texture
+	FBOScreen = glset.createScreenFrameBufferObject(); //1920x1080 get all the screen
+	//(I dunno if I can change it's scale in middle of processing)
+	//Create frame buffers for getting screen texture
 
 	glset.enable(GL_BLEND);
+
 	glDepthFunc(GL_LESS);
 	glset.enable(GL_DEPTH_TEST);
 
-	glset.uniform1i(commonData.program, "uiMaskTexture", 1);
-	
-	bool clickTaken = false;
+	glset.setMatrices(); //View matrix, Projection matrix
 
-	glset.setMatrices();
-
-	float brushSizeIndicatorDist;
-
+	float brushSize;
 	std::vector<float>axisPointer{
 		0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
 		0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 
@@ -201,137 +258,204 @@ bool RigidPainter::run()
 		0.0f, 0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Z
 		0.0f, 0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 
 	};
-	RenderData renderData;
-	TextureGenerator textureGen;
-	renderData.window = window;
 
-	glset.activeTexture(GL_TEXTURE6);
-
-	unsigned int paintingSqTxtr;
-	Callback callback;
 	ExportData exportData;
 
-	glset.activeTexture(GL_TEXTURE9);
+	//------Set Textures------\\
 
+	glset.activeTexture(GL_TEXTURE9);
 	unsigned int depthTexture;
 	glset.genTextures(depthTexture);
 	glset.bindTexture(depthTexture);
+
+	glset.activeTexture(GL_TEXTURE7);//Albedo
+	unsigned int enlargedTexture;
+	glset.genTextures(enlargedTexture);
+	glset.bindTexture(enlargedTexture);
+
+	glset.activeTexture(GL_TEXTURE12);
+	unsigned int modifiedMaskTexture;
+	glset.genTextures(modifiedMaskTexture);
+	glset.bindTexture(modifiedMaskTexture);
+
+	glset.activeTexture(GL_TEXTURE1);//Raw mask
+	GetTextureData getTextureData;
+	getTextureData = txtr.getTexture(maskTexturePath,0,0);
+	glset.activeTexture(GL_TEXTURE12);//Modified mask
+	getTextureData = txtr.getTexture(maskTexturePath,0,0);
+	
+
+	int screenWidth;
+	int screenHeight;
+	glfwGetWindowSize(window, &screenWidth, &screenHeight);
+	txtr.updateMaskTexture(FBOScreen, screenWidth, screenHeight, brushRotationRangeBarValue);
+
+	//------Set Textures------\\
+
+	panelData.modelPanelActive = true; //Active panel by default
+
+	Utilities util;
 	while (!glfwWindowShouldClose(window))
 	{
-		if (callbackData.cameraPos != holdCameraPos) {
-			cameraPosChanged = true;
-		}
-		holdCameraPos = callbackData.cameraPos;
+		glfwPollEvents();
 
+		//util.printRenderingSpeed();
 
+		updateCameraPosChanging();
 
 		uiActions();
 
-		glfwPollEvents();
+
+		//Update
 		glset.updateViewMatrix(callbackData.cameraPos, callbackData.originPos);
-
-		renderData = updateRenderData(renderData);
-
-		brushSizeIndicatorDist = double(brushSizeRangeBarValue + 0.1f) * 500.0 + 10.0 ;
-		renderData.brushSizeIndicator = brushSizeIndicatorDist;
-
+		brushSize = double(brushSizeRangeBarValue + 0.1f) * 800.0 + 20.0 ;
+		renderData = updateRenderData(renderData,depthTexture, brushSize);
+		uidata = updateUiData();
 		panelData.movePanel = callbackData.movePanel;
-
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting) {
-			textureGen.drawTexture(window, maskTexturePath, brushTextureChanged, screenPaintingTextureId, brushSizeRangeBarValue);
-			paintingMode = true;
-			brushTextureChanged = false;
-		}
-
-		if (colorBoxPickerValue_x > 0.095f) {
-			colorBoxPickerValue_x = 0.095f;
-		}
-		else if (colorBoxPickerValue_x < -0.095f) {
-			colorBoxPickerValue_x = -0.095f;
-		}
-
-		if (colorBoxPickerValue_y > 0.195f) {
-			colorBoxPickerValue_y = 0.195f;
-		}
-		else if (colorBoxPickerValue_y < -0.195f) {
-			colorBoxPickerValue_y = -0.195f;
-		}
-
-		if (colorBoxColorRangeBarValue > 0.195f) {
-			colorBoxColorRangeBarValue = 0.195f;
-		}
-		else if (colorBoxColorRangeBarValue < -0.195f) {
-			colorBoxColorRangeBarValue = -0.195f;
-		}
 		exportData.exportImage = exportImage;
 		exportData.path = exportPath.c_str();
 
-		glset.render(renderData, vertices, FBO, panelData, cameraPosChanged,axisPointer, colorBoxPickerValue_x, colorBoxPickerValue_y, 0, colorBoxColorRangeBarValue,exportFolder.c_str(),jpgFormatChecked,pngFormatChecked,callbackData.exportExtJPGButtonEnter,callbackData.exportExtPNGButtonEnter,doPainting,exportData, depthTexture,FBOSq);
-		exportImage = false;
-		//Light Obj
-		//MSHP.drawLigtObject(shaderProgram,lightPos);
-		
+		if (242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 15 > 200){ //If the range bar value is low enough disable blur effect
+			glset.uniform1f(commonData.program, "brushBlurVal", 1000);
+		}
+		else {
+			glset.uniform1f(commonData.program, "brushBlurVal", 242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 15);
+		}
+		//Update
+
+		//Paint
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting){
+			textureGen.drawToScreen(window, maskTexturePath, brushTextureChanged, screenPaintingTextureId, brushSize, FBOScreen, brushBlurChanged, brushSizeChanged,brushRotationRangeBarValue, brushRotationChanged);
+			brushSizeChanged = false;
+			brushBlurChanged = false;
+			brushRotationChanged = false;
+			paintingMode = true;
+			brushTextureChanged = false;
+		}
 		//Paint
 
+		glset.render(renderData, vertices, FBOScreen, panelData, cameraPosChanging,axisPointer,exportData, brushBlurRangeBarValue,uidata,addImageButtonPressed, brushRotationRangeBarValue);
+		exportImage = false; //After exporting, set exportImage false so we won't download the texture repeatedly
 
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTaken) {
-			if (!callbackData.addImageButtonEnter && !callbackData.addMaskTextureButtonEnter && !callbackData.addPlaneButtonEnter 
-				&& !callbackData.addSphereButtonEnter && !callbackData.autoTriangulateCheckBoxEnter && !callbackData.backfaceCullingCheckBoxEnter 
-				&& !callbackData.brushSizeRangeBarEnter && !callbackData.loadModelButtonEnter && !callbackData.modelFilePathTextBoxEnter 
-				&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.exportPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.colorBoxPickerEnter
-				&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGButtonEnter && !callbackData.exportExtPNGButtonEnter) {
-				noButtonClick = true;
-			}
-			else {
-				noButtonClick = false;
-			}
-			clickTaken = true;
+		setButtonPressedFalse();
+
+		if (mousePosChanged) { //To make sure painting done before changing camera position
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue);
 		}
-		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE && clickTaken) {
-			clickTaken = false;
+
+		if (cameraPosChanging) { //Change the position of the camera in the shaders once camera position changed
+			glset.uniform3fv(commonData.program, "viewPos", callbackData.cameraPos);
+		}
+		if ((cameraPosChanging && paintingMode) || glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE) { //Changing camera position or painting a stroke ends painting, than updates painted texture
+			paintingMode = false;
+		}
+		if (doScrollAfterCallInPaintingMode) //Do a scroll after texture update using holdScroll
+		{
+			callbackData = callback.scroll_callback(window, 0, holdScrollVal);
+			doScrollAfterCallInPaintingMode = false;
+		}
+		if (glfwGetMouseButton(window, 1) == GLFW_RELEASE) { //Camera position changed
+			cameraPosChanging = false;
 		}
 
 		glfwSwapBuffers(window);
-		if (cameraPosChanged) {
-			glset.uniform3fv(commonData.program, "viewPos", callbackData.cameraPos);
-		}
-		if (cameraPosChanged && paintingMode) {
-			txtr.refreshScreenDrawingTexture();
-			paintingMode = false;
-		}
-		if (doScrollAfterCallInPaintingMode)
-		{
-			callbackData = callback.scroll_callback(window, 0, holdScroll);
-			doScrollAfterCallInPaintingMode = false;
-		}
-		cameraPosChanged = false;
 	}
+	
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	return true;
 }
-RenderData updateRenderData(RenderData renderData) {
+RenderData updateRenderData(RenderData renderData,unsigned int depthTexture,int brushSizeIndicatorSize) {
 	renderData.panelLoc = callbackData.panelLoc;
 	renderData.modelLoadFilePath = modelName;
-	renderData.isAutoTriangulateHover = callbackData.autoTriangulateCheckBoxEnter;
-	renderData.isAutoTriangulateChecked = autoTriangulateChecked;
-	renderData.isbackfaceCullingHover = callbackData.backfaceCullingCheckBoxEnter;
-	renderData.isbackfaceCullingChecked = backfaceCullingChecked;
 	renderData.backfaceCulling = enableBackfaceCulling;
 	renderData.brushSizeRangeBarValue = brushSizeRangeBarValue;
+	renderData.colorBoxPickerValue_x = colorBoxPickerValue_x;
+	renderData.colorBoxPickerValue_y = colorBoxPickerValue_y;
+	renderData.paintingSqFBO = 0;
+	renderData.colorBoxColorRangeBarValue = colorBoxColorRangeBarValue;
+	renderData.exportFolder = exportFolder.c_str();
+	renderData.doPainting = doPainting;
+	renderData.depthTexture = depthTexture;
+	renderData.paintingMode = paintingMode;
+	renderData.brushSizeIndicator = brushSizeIndicatorSize;
+
 	return renderData;
 }
-//Ui Actions
+UiData updateUiData() {
+	UiData uidata;
+	
+	uidata.loadModelButtonEnter = callbackData.loadModelButtonEnter;
+	uidata.loadModelButtonPressed;
+	
+	uidata.modelFilePathTextBoxEnter = callbackData.modelFilePathTextBoxEnter;
+	
+	uidata.autoTriangulateCheckBoxEnter = callbackData.autoTriangulateCheckBoxEnter;
+	uidata.autoTriangulateCheckBoxPressed = autoTriangulateChecked;
+	
+	uidata.backfaceCullingCheckBoxEnter = callbackData.backfaceCullingCheckBoxEnter;
+	uidata.backfaceCullingCheckBoxPressed = backfaceCullingChecked;
+	
+	uidata.addPlaneButtonEnter = callbackData.addPlaneButtonEnter;
+	uidata.addPlaneButtonPressed;
+	
+	uidata.addSphereButtonEnter = callbackData.addSphereButtonEnter;
+	uidata.addSphereButtonPressed;
+	
+	uidata.addImageButtonEnter = callbackData.addImageButtonEnter;
+	uidata.addImageButtonPressed;
+	
+	uidata.addMaskTextureButtonEnter = callbackData.addMaskTextureButtonEnter;
+	uidata.addMaskTextureButtonPressed;
+	
+	uidata.brushSizeRangeBarEnter = callbackData.brushSizeRangeBarEnter;
+	
+	uidata.brushBlurRangeBarEnter = callbackData.brushBlurRangeBarEnter;
+
+	uidata.brushRotationRangeBarEnter = callbackData.brushRotationRangeBarEnter;
+	
+	uidata.colorBoxPickerEnter = callbackData.colorBoxPickerEnter;
+	
+	uidata.colorBoxColorRangeBarEnter = callbackData.colorBoxColorRangeBarEnter;
+	
+	uidata.exportPathTextBoxEnter = callbackData.exportPathTextBoxEnter;
+	
+	uidata.exportExtJPGCheckBoxEnter = callbackData.exportExtJPGCheckBoxEnter;
+	uidata.exportExtJPGCheckBoxPressed = jpgFormatChecked;
+
+	uidata.exportExtPNGCheckBoxEnter = callbackData.exportExtPNGCheckBoxEnter;
+	uidata.exportExtPNGCheckBoxPressed = pngFormatChecked;
+
+	uidata.exportDownloadButtonEnter = callbackData.exportDownloadButtonEnter;
+	uidata.exportDownloadButtonPressed;
+
+	return uidata;
+}
+//-------------UI ACTIONS-------------\\
 
 void uiActions() {
-	colorBoxPickerButton();
-	brushSizeRangeBar();
-	colorBoxColorRangeBar();
+	isFirstClickDoneInside();
 	if (!noButtonClick) {
+
 		if (buttonGetInput) {
 			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
 				buttonGetInput = false;
 				buttonPressed = true;
+				if (callbackData.brushSizeRangeBarEnter) {
+					brushSizeRangeBarPressed = true;
+				}
+				if (callbackData.brushBlurRangeBarEnter) {
+					brushBlurRangeBarPressed = true;
+				}
+				if (callbackData.brushRotationRangeBarEnter) {
+					brushRotationRangeBarPressed = true;
+				}
+				if (callbackData.colorBoxPickerEnter) {
+					colorBoxPickerPressed = true;
+				}
+				if (callbackData.colorBoxColorRangeBarEnter) {
+					colorBoxColorRangeBarPressed= true;
+				}
 			}
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
@@ -341,7 +465,7 @@ void uiActions() {
 				if (callbackData.addMaskTextureButtonEnter)
 					addMaskTextureButton();
 				if (callbackData.modelFilePathTextBoxEnter)
-					modelFilePathTextBox();
+					modelFilePathTextBox(); 
 				if (callbackData.modelPanelButtonEnter)
 					modelPanelButton();
 				if (callbackData.texturePanelButtonEnter)
@@ -363,13 +487,13 @@ void uiActions() {
 				if (callbackData.loadModelButtonEnter)
 					loadModelButton();
 				if (callbackData.exportPathTextBoxEnter) 
-					exportPathTextBoxEnter();
+					exportPathTextBox();
 				if (callbackData.exportDownloadButtonEnter)
 					exportDownloadButtonEnter();
-				if (callbackData.exportExtJPGButtonEnter)
-					exportExtJPGButtonEnter();
-				if (callbackData.exportExtPNGButtonEnter)
-					exportExtPNGButtonEnter();
+				if (callbackData.exportExtJPGCheckBoxEnter)
+					exportExtJPGCheckBox();
+				if (callbackData.exportExtPNGCheckBoxEnter)
+					exportExtPNGCheckBox();
 			}
 			buttonPressed = false;
 		}
@@ -377,6 +501,12 @@ void uiActions() {
 }
 
 void addMaskTextureButton() {
+	//Needed for updating mask texture
+	int width;
+	int height;
+	glfwGetWindowSize(window, &width, &height);
+	//
+	addMaskTextureButtonPressed = true;
 	GlSet glset;
 	Texture txtr;
 	char const* lFilterPatterns[2] = { "*.jpg", "*.png" };
@@ -386,66 +516,43 @@ void addMaskTextureButton() {
 		brushTextureChanged = true;
 		glset.activeTexture(GL_TEXTURE1);
 		GetTextureData getTextureData;
-		getTextureData = txtr.getTexture(maskTexturePath, 0, 0, false, 0);
+		getTextureData = txtr.getTexture(maskTexturePath,0,0);
 		glset.bindTexture(getTextureData.Id);
+		txtr.updateMaskTexture(FBOScreen,width,height,brushRotationRangeBarValue);
 	}
 }
-void brushSizeRangeBar() {
-	if (callbackData.brushSizeRangeBarEnter && !noButtonClick) {
-		if (buttonGetInput) {
-			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
-				buttonGetInput = false;
-				buttonPressed = true;
-				brushSizeRangeBarPressed = true;
-			}
-		}
-		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
-			buttonGetInput = true;
-			if (buttonPressed) {
-				brushSizeRangeBarPressed = false;
-			}
-			buttonPressed = false;
-		}
-	}
+void brushSizeRangeBar(float xOffset,int width){
+	Utilities util;
+	brushSizeRangeBarValue -= xOffset / (width / 2);
+	brushSizeRangeBarValue = util.restrictBetween(brushSizeRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
 }
-void colorBoxColorRangeBar() {
-	if (callbackData.colorBoxColorRangeBarEnter && !noButtonClick) {
-		if (buttonGetInput) {
-			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
-				buttonGetInput = false;
-				buttonPressed = true;
-				colorBoxColorRangeBarPressed = true;
-			}
-		}
-		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
-			buttonGetInput = true;
-			if (buttonPressed) {
-				colorBoxColorRangeBarPressed = false;
-			}
-			buttonPressed = false;
-		}
-	}
+void brushBlurRangeBar(float xOffset,int width,int height) {
+	Utilities util;
+	Texture txtr;
+	brushBlurChanged = true;
+	brushBlurRangeBarValue -= xOffset / (width / 2);
+	brushBlurRangeBarValue = util.restrictBetween(brushBlurRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
+	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue);
 }
-void colorBoxPickerButton() {
-	if (callbackData.colorBoxPickerEnter && !noButtonClick) {
-
-		if (buttonGetInput) {
-			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
-				Texture txtr;
-				buttonGetInput = false;
-				buttonPressed = true;
-				colorBoxPickerPressed = true;
-				cameraPosChanged = true;
-			}
-		}
-		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
-			buttonGetInput = true;
-			if (buttonPressed) {
-				colorBoxPickerPressed = false;
-			}
-			buttonPressed = false;
-		}
-	}
+void brushRotationRangeBar(float xOffset, int width, int height){
+	Utilities util;
+	Texture txtr;
+	brushRotationChanged = true;
+	brushRotationRangeBarValue -= xOffset / (width / 2);
+	brushRotationRangeBarValue = util.restrictBetween(brushRotationRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
+	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue);
+}
+void colorBoxColorRangeBar(float yOffset,int height){
+	Utilities util;
+	colorBoxColorRangeBarValue += yOffset / (height / 2);
+	colorBoxColorRangeBarValue = util.restrictBetween(colorBoxColorRangeBarValue, 0.195f, -0.195f);//Keep in boundaries
+}
+void colorBoxPickerButton(float xOffset, float yOffset, int width, int height) {
+	Utilities util;
+	colorBoxPickerValue_x -= xOffset / (width / 2);
+	colorBoxPickerValue_x = util.restrictBetween(colorBoxPickerValue_x, 0.095f, -0.095f);//Keep in boundaries
+	colorBoxPickerValue_y += yOffset / (height / 2);
+	colorBoxPickerValue_y = util.restrictBetween(colorBoxPickerValue_y, 0.195f, -0.195f);//Keep in boundaries
 }
 
 void modelFilePathTextBox() {
@@ -458,18 +565,17 @@ void modelFilePathTextBox() {
 	}
 }
 
-void exportPathTextBoxEnter() {
+void exportPathTextBox() {
 	Utilities uti;
-	string exportPathCheck = "";
 	Texture txtr;
 	TextureData txtrData;
-	exportPathCheck = tinyfd_selectFolderDialog("Save Texture","");
-	if (exportPathCheck != "") {
+	auto exportPathCheck = tinyfd_selectFolderDialog("Save Texture","");
+	if (exportPathCheck) {
 		exportPath = exportPathCheck;
 		exportFolder = uti.getLastWordBySeparatingWithChar(exportPath,'\\');
 	}
 }
-void exportExtJPGButtonEnter() {
+void exportExtJPGCheckBox() {
 	if (jpgFormatChecked == false) {
 		jpgFormatChecked = true;
 		pngFormatChecked = false;
@@ -478,7 +584,7 @@ void exportExtJPGButtonEnter() {
 		jpgFormatChecked = false;
 	}
 }
-void exportExtPNGButtonEnter() {
+void exportExtPNGCheckBox() {
 	if (pngFormatChecked == false) {
 		pngFormatChecked = true;
 		jpgFormatChecked = false;
@@ -488,6 +594,7 @@ void exportExtPNGButtonEnter() {
 	}
 }
 void exportDownloadButtonEnter() {
+	exportDownloadButtonPressed = true;
 	exportImage = true;
 }
 
@@ -520,6 +627,7 @@ void exportPanelButton() {
 	doPainting = false;
 }
 void addImageButton() {
+	addImageButtonPressed = true;
 	Utilities utilities;
 	GlSet glset;
 	Texture txtr;
@@ -530,12 +638,11 @@ void addImageButton() {
 
 		glset.activeTexture(GL_TEXTURE0);
 		GetTextureData getTextureData;
-		getTextureData = txtr.getTexture(albedoTexturePath, 0, 0, false, 0);
-		glset.bindTexture(getTextureData.Id);
+		getTextureData = txtr.getTexture(albedoTexturePath,1080,1080); //Force albedo's ratio to be 1:1
 	}
 }
 void addPlaneButton() {
-	GlSet glset;
+	addPlaneButtonPressed = true;
 	vector<float> planeVertices = {
 		-1 , 0 , 1 , 0 , 0 , 0 , 1 , 0 ,
 		1 , 0 , 1 , 1 , 0 , 0 , 1 , 0 ,
@@ -544,15 +651,16 @@ void addPlaneButton() {
 		1 , 0 , -1 , 1 , 1 , 0 , 1 , 0 ,
 		-1 , 0 , -1 , 0 , 1 , 0 , 1 , 0 
 	};
-	modelName = "plane.rigidefault";
+	modelName = "plane.ligidefault";
 	vertices = planeVertices;
 	glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW);
 	
 }
 void addSphereButton() {
+	addSphereButtonPressed = true;
 	GlSet glset;
 	Sphere sphere;
-	modelName = "sphere.rigidefault";
+	modelName = "sphere.ligidefault";
 	vertices = sphere.getSphere();
 	glset.bufferData(vertices);
 }
@@ -566,15 +674,14 @@ void backfaceCullingCheckBox() {
 	if (backfaceCullingChecked == false) {
 		backfaceCullingChecked = true;
 		enableBackfaceCulling = false;
-		backfaceCulling = true;
 	}
 	else {
 		enableBackfaceCulling = true;
-		backfaceCulling = true;
 		backfaceCullingChecked = false;
 	}
 }
 void loadModelButton() {
+	loadModelButtonPressed = true;
 	Texture txtr;
 	txtr.refreshScreenDrawingTexture();
 	GlSet glset;
@@ -589,7 +696,9 @@ void loadModelButton() {
 		}
 	}
 }
-//Callback
+
+//-------------CALLBACK-------------\\
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	Callback callback;
@@ -600,6 +709,12 @@ double lastXpos;
 double lastYpos;
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+	Callback callback;
+	CommonData commonData;
+	Utilities util;
+	mousePosChanged = true;
+	mouseXpos = xpos;
+	mouseYpos = ypos;
 	double xOffset;
 	double yOffset;
 	
@@ -607,48 +722,56 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	int height;
 	glfwGetWindowSize(window,&width,&height);
 
-	Callback callback;
-	if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+	if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) { 
+		if (brushSizeRangeBarPressed){
+			brushSizeChanged = true;
+		}
 		brushSizeRangeBarPressed = false;
+		brushBlurRangeBarPressed = false;
+		brushRotationRangeBarPressed = false;
 		colorBoxPickerPressed = false;
 		colorBoxColorRangeBarPressed = false;
 	}
+
+	//Get mouse position change
 	xOffset = (lastXpos - xpos) / (1920 / width);
 	lastXpos = xpos;
 	yOffset = (lastYpos - ypos) / (1080 / height);
 	lastYpos = ypos;
-
-
-
-	if (xpos > callbackData.panelLoc * 960 && !callbackData.brushSizeRangeBarEnter && !callbackData.colorBoxColorRangeBarEnter && !callbackData.colorBoxPickerEnter)
-		doPainting = false;
-	else if(xpos < callbackData.panelLoc * 960 && panelData.paintingPanelActive)
-		doPainting = true;
-	if (callbackData.brushSizeRangeBarEnter || callbackData.colorBoxColorRangeBarEnter || callbackData.colorBoxPickerEnter)
-		doPainting = true;
+	//Get mouse position change
 
 	if (brushSizeRangeBarPressed) {
-		if (brushSizeRangeBarValue > 0.1f) {
-			brushSizeRangeBarValue = 0.1f;
-		}
-		else if (brushSizeRangeBarValue < -0.1f) {
-			brushSizeRangeBarValue = -0.1f;
-		}
-		brushSizeRangeBarValue -= xOffset / 960;
-		doPainting = true;
+		brushSizeRangeBar(xOffset,width);//Changes the global variable
+	}
+	if (brushBlurRangeBarPressed) {
+		brushBlurRangeBar(xOffset,width,height);//Changes the global variable
+	}
+	if (brushRotationRangeBarPressed) {
+		brushRotationRangeBar(xOffset, width, height);//Changes the global variable
 	}
 	if (colorBoxColorRangeBarPressed) {
-		colorBoxColorRangeBarValue += yOffset / 540;
-		doPainting = true;
+		colorBoxColorRangeBar(yOffset,height);//Changes the global variable
+	}
+	if (colorBoxPickerPressed) {
+		colorBoxPickerButton(xOffset,yOffset,width,height);//Changes the global variable
 	}
 
-	//Change color box picker value-location
-	if (colorBoxPickerPressed) {
-		colorBoxPickerValue_x -= xOffset / 960;
-		colorBoxPickerValue_y += yOffset / 540;
-		doPainting = true;
+	if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		enablePanelMovement = false;
+		doPainting = false;
 	}
-	callbackData = callback.mouse_callback(window, xpos, ypos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue);
+	else {
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		enablePanelMovement = true;
+		//Restrict painting
+		if (xpos > callbackData.panelLoc * 960 && !callbackData.brushSizeRangeBarEnter && !callbackData.colorBoxColorRangeBarEnter && !callbackData.colorBoxPickerEnter) //Inside of the panel
+			doPainting = false;
+
+		else if (xpos < callbackData.panelLoc * 960 && panelData.paintingPanelActive) //Painting panel + outside of panel
+			doPainting = true;
+		//Restrict painting
+	}
 }
 
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
@@ -658,9 +781,46 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 		callbackData = callback.scroll_callback(window, scroll, scrollx);
 	}
 	else {
-		holdScroll = scrollx;
+		holdScrollVal = scrollx;
 		doScrollAfterCallInPaintingMode = true;
 	}
-	cameraPosChanged = true;
+	cameraPosChanging = true;
+}
 
+//---------OTHER---------\\
+
+void updateCameraPosChanging(){
+	if (callbackData.cameraPos != holdCameraPos) {
+		cameraPosChanging = true;
+	}
+	holdCameraPos = callbackData.cameraPos;
+}
+bool clickTaken = false;
+void isFirstClickDoneInside() {
+	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTaken) {
+		if (!callbackData.addImageButtonEnter && !callbackData.addMaskTextureButtonEnter && !callbackData.addPlaneButtonEnter
+			//Check all the buttons
+			&& !callbackData.addSphereButtonEnter && !callbackData.autoTriangulateCheckBoxEnter && !callbackData.backfaceCullingCheckBoxEnter
+			&& !callbackData.brushSizeRangeBarEnter && !callbackData.loadModelButtonEnter && !callbackData.modelFilePathTextBoxEnter
+			&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.exportPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.colorBoxPickerEnter
+			&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGCheckBoxEnter && !callbackData.exportExtPNGCheckBoxEnter
+			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter) {
+			noButtonClick = true;
+		}
+		else {
+			noButtonClick = false;
+		}
+		clickTaken = true;
+	}
+	if (glfwGetMouseButton(window, 0) == GLFW_RELEASE && clickTaken) {
+		clickTaken = false;
+	}
+}
+void setButtonPressedFalse() {
+	loadModelButtonPressed = false;
+	addPlaneButtonPressed = false;
+	addSphereButtonPressed = false;
+	addImageButtonPressed = false;
+	addMaskTextureButtonPressed = false;
+	exportDownloadButtonPressed = false;
 }

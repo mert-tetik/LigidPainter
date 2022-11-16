@@ -36,18 +36,26 @@ uniform vec3 lightColor;
 uniform vec3 viewPos;
 uniform int isLightSource;
 uniform int isAxisPointer;
+
 uniform vec3 uiColor;
+uniform vec3 uiTransitionColor;
+uniform float uiTransitionMixVal;
+
 uniform float uiOpacity;
 
 uniform int isColorBox;
 uniform int isRect;
 uniform vec3 boxColor = vec3(0.0,1.0,0.0);
 
+uniform int drawBrushSizeIndicator;
 
 out vec4 color;
 
+in vec2 blurTextureCoords[11];
+uniform int renderMaskBrush;
+uniform int renderMaskBrushBlury;
 
-float far = 100.0f;
+float far = 10.0f;
 float near = 0.1f;
 
 float linearizeDepth(float depth){
@@ -57,7 +65,7 @@ float linearizeDepth(float depth){
 bool isPainted(vec3 uv) {
    float drawZ = texture2D(depthTexture, uv.xy).b; // looks between 0 and 1
 
-    return abs(drawZ - linearizeDepth(uv.z)/far) < 0.01;
+    return abs(drawZ - linearizeDepth(uv.z)/far) < 0.005;
 }
 
 void main() {
@@ -104,7 +112,12 @@ void main() {
                }
             } else {
                if(isUiTextureUsed == 0) {
-                  color = vec4(uiColor, uiOpacity);
+                  if(drawBrushSizeIndicator == 1){
+                     color = vec4(uiColor, max(texture(uiMaskTexture, TexCoords)-0.5,0.0));
+                  }
+                  else{
+                     color = vec4(mix(uiColor,uiTransitionColor,uiTransitionMixVal), uiOpacity);
+                  }
                } else {
                   color = texture(uiMaskTexture, TexCoords);
                }
@@ -126,11 +139,31 @@ void main() {
       }
 
    } else {
-      if(isColorBox == 1 && isRect == 1){
-         color = vec4(Normal,1);
+      if(renderMaskBrush == 1){
+         if(renderMaskBrushBlury == 1){
+            color = vec4(0.0);
+            color += texture(uiMaskTexture, blurTextureCoords[0]) * 0.0093;
+            color += texture(uiMaskTexture, blurTextureCoords[1]) * 0.028002;
+            color += texture(uiMaskTexture, blurTextureCoords[2]) * 0.065984;
+            color += texture(uiMaskTexture, blurTextureCoords[3]) * 0.121703;
+            color += texture(uiMaskTexture, blurTextureCoords[4]) * 0.175713;
+            color += texture(uiMaskTexture, blurTextureCoords[5]) * 0.198596;
+            color += texture(uiMaskTexture, blurTextureCoords[6]) * 0.175713;
+            color += texture(uiMaskTexture, blurTextureCoords[7]) * 0.121703;
+            color += texture(uiMaskTexture, blurTextureCoords[8]) * 0.065984;
+            color += texture(uiMaskTexture, blurTextureCoords[9]) * 0.028002;
+            color += texture(uiMaskTexture, blurTextureCoords[10]) * 0.0093;
+         }
+         else{
+            color = texture(uiMaskTexture, TexCoords);
+         }
       }
-      else if(isColorBox == 1 && isRect == 0){
-         color = vec4(interpretedColorBlack,1);
+      else{
+         if(isColorBox == 1 && isRect == 1){
+         color = vec4(Normal,1);
+          }
+          else if(isColorBox == 1 && isRect == 0){
+            color = vec4(interpretedColorBlack,1);
 
       }
       else{
@@ -141,6 +174,8 @@ void main() {
             color = vec4(diffuseDrawMix, 1);
          }
       }
+      }
+      
    }
 
 }
