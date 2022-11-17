@@ -187,8 +187,11 @@ void brushSpacingRangeBar(float xOffset, int width, int height);
 
 //bool albedoTextureChanged; use for texture updating conditions
 
-int drawingSpacing;
-int drawingCount = 1; // if drawingCount matches with drawingSpaces do painting
+int drawingSpacing = 1;
+int drawingCount; // if drawingCount matches with drawingSpaces do painting
+
+int lastMouseXpos = 0;
+int lastMouseYpos = 0;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//Will be used for allowing writing to a text box
@@ -324,7 +327,8 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing){
-			textureGen.drawToScreen(window, maskTexturePath, brushTextureChanged, screenPaintingTextureId, brushSize, FBOScreen, brushBlurChanged, brushSizeChanged,brushRotationRangeBarValue, brushRotationChanged,brushOpacityRangeBarValue);
+			textureGen.drawToScreen(window, maskTexturePath, brushTextureChanged, screenPaintingTextureId, brushSize, FBOScreen, brushBlurChanged, brushSizeChanged,brushRotationRangeBarValue, brushRotationChanged,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos);
+
 			drawingCount = 0;
 
 			brushSizeChanged = false;
@@ -334,6 +338,8 @@ bool LigidPainter::run()
 			paintingMode = true;
 			brushTextureChanged = false;
 		}
+					lastMouseXpos = mouseXpos;
+			lastMouseYpos = mouseYpos;
 		//Paint
 
 		glset.render(renderData, vertices, FBOScreen, panelData,exportData,uidata);
