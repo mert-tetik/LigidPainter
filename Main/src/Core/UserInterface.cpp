@@ -271,8 +271,8 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 }
 void UserInterface::rangeBar(float position_x, float position_y,float value) {
 	ColorData colorData;
-	box(0, 0.02f, position_x+value, position_y, "", colorData.rangeBarFront, 0.045f, false, false, 0.9f, 10, glm::vec3(0), 0);//Value Square
-	box(0.11f, 0.02f, position_x, position_y, "", colorData.rangeBarBack, 0.045f, false, false, 0.9f, 10, glm::vec3(0), 0);//Range Rectangle
+	box(0, 0.015f, position_x+value, position_y, "", colorData.rangeBarFront, 0.035f, false, false, 0.9f, 15, glm::vec3(0), 0);//Value Square
+	box(0.11f, 0.015f, position_x, position_y, "", colorData.rangeBarBack, 0.035f, false, false, 0.9f, 15, glm::vec3(0), 0);//Range Rectangle
 }
 void UserInterface::panelChangeButton(float position_x, float position_y) {
 	std::vector<float> buttonCoor{

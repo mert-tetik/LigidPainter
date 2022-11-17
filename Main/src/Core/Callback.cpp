@@ -47,6 +47,8 @@ bool addMaskTextureButtonEnter;
 bool brushSizeRangeBarEnter;
 bool brushBlurRangeBarEnter;
 bool brushRotationRangeBarEnter;
+bool brushOpacityRangeBarEnter;
+bool brushSpacingRangeBarEnter;
 bool colorBoxColorRangeBarEnter;
 bool colorBoxPickerEnter;
 bool modelPanelButtonEnter;
@@ -79,6 +81,8 @@ CallbckData preapareCallbackData() {
 	callbk.brushSizeRangeBarEnter = brushSizeRangeBarEnter;
 	callbk.brushBlurRangeBarEnter = brushBlurRangeBarEnter;
 	callbk.brushRotationRangeBarEnter = brushRotationRangeBarEnter;
+	callbk.brushOpacityRangeBarEnter = brushOpacityRangeBarEnter;
+	callbk.brushSpacingRangeBarEnter = brushSpacingRangeBarEnter;
 	callbk.colorBoxColorRangeBarEnter = colorBoxColorRangeBarEnter;
 	callbk.colorBoxPickerEnter = colorBoxPickerEnter;
 	callbk.exportPanelButtonEnter = exportPanelButtonEnter;
@@ -111,7 +115,7 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 	callbk = preapareCallbackData();
 	return callbk;
 }
-CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData,float brushSizeRangeBarValue,float colorBoxPickerValue_x, float colorBoxPickerValue_y,float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, bool enablePanelMovement, float brushRotationRangeBarValue)
+CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData,float brushSizeRangeBarValue,float colorBoxPickerValue_x, float colorBoxPickerValue_y,float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, bool enablePanelMovement, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue)
 {
 	CallbckData callbk;
 	
@@ -122,7 +126,7 @@ CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypo
 
 	panelCheck(window,xpos,screenSizeX,enablePanelMovement);
 	
-	buttonCheck(window, xpos, ypos, panelData ,brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, brushRotationRangeBarValue);
+	buttonCheck(window, xpos, ypos, panelData ,brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue);
 	
 
 	xoffset = xpos - lastX;
@@ -193,7 +197,7 @@ void Callback::panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX, bo
 		}
 	}
 }
-void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y,float colorBoxColorRangeBarValue,float brushBlurRangeBarValue,float brushRotationRangeBarValue) {
+void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y,float colorBoxColorRangeBarValue,float brushBlurRangeBarValue,float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue) {
 	UserInterface ui;
 	CommonData commonData;
 
@@ -236,14 +240,18 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		brushSizeRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushSizeRangeBarValue, 0.05f, mouseXPos, mouseYPos, movePanel);
 		brushBlurRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushBlurRangeBarValue, -0.05f, mouseXPos, mouseYPos, movePanel);
 		brushRotationRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushRotationRangeBarValue, -0.15f, mouseXPos, mouseYPos, movePanel);
-		colorBoxPickerEnter = ui.isMouseOnButton(window,0.01f, 0.02f, panelLoc / centerDivider + centerSum - 0.02f + colorBoxPickerValue_x, -0.4f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
-		colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, panelLoc / centerDivider + centerSum + 0.1f, -0.4f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
+		brushOpacityRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushOpacityRangeBarValue, -0.25f, mouseXPos, mouseYPos, movePanel);
+		brushSpacingRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushSpacingRangeBarValue, -0.35f, mouseXPos, mouseYPos, movePanel);
+		colorBoxPickerEnter = ui.isMouseOnButton(window,0.01f, 0.02f, panelLoc / centerDivider + centerSum - 0.02f + colorBoxPickerValue_x, -0.6f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
+		colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, panelLoc / centerDivider + centerSum + 0.1f, -0.6f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
 	}
 	else {
 		addMaskTextureButtonEnter = false;
 		brushSizeRangeBarEnter = false;
 		brushBlurRangeBarEnter = false;
 		brushRotationRangeBarEnter = false;
+		brushOpacityRangeBarEnter = false;
+		brushSpacingRangeBarEnter = false;
 		colorBoxColorRangeBarEnter = false;
 		colorBoxPickerEnter = false;
 	}
@@ -301,7 +309,7 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	else if(addMaskTextureButtonEnter){
 		glfwSetCursor(window, pointerCursor);
 	}
-	else if (brushSizeRangeBarEnter || brushBlurRangeBarEnter || brushRotationRangeBarEnter) {
+	else if (brushSizeRangeBarEnter || brushBlurRangeBarEnter || brushRotationRangeBarEnter || brushOpacityRangeBarEnter || brushSpacingRangeBarEnter) {
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if (colorBoxPickerEnter) {

@@ -185,11 +185,29 @@ void GlSet::getProgram() {//Prepare shader program | Usen once
 }
 
 std::vector<GLubyte*> previousAlbedoTextures; //Used for ctrl z
-
+bool doCtrlZ;
+void ctrlZ(GLFWwindow* window) {
+	Texture txtr;
+	GlSet glset;
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ && previousAlbedoTextures.size() != 0) { //MAX 20
+		txtr.refreshScreenDrawingTexture();
+		glset.activeTexture(GL_TEXTURE0);
+		glset.texImage(previousAlbedoTextures[previousAlbedoTextures.size() - 1], 1080, 1080, GL_RGB);
+		glset.generateMipmap();
+		previousAlbedoTextures.pop_back();
+		doCtrlZ = false;
+	}
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) {
+		doCtrlZ = true;
+	}
+}
 int a = 0;
-void drawBrushSizeIndicator(float distanceX,float screenWidth,float screenHeight,float mouseXpos,float mouseYpos,glm::vec3 color) {
+void drawBrushIndicator(float distanceX,float screenWidth,float screenHeight,float mouseXpos,float mouseYpos,glm::vec3 color) {
+
 	CommonData commonData;
 	GlSet glset;
+	glset.uniform1i(commonData.program, "drawBrushIndicator", 1);
+	glset.uniform1i(commonData.program, "uiMaskTexture", 12);
 	std::vector<float> paintingSquare{
 		// first triangle
 		 distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,1,0,0,0,  // top right
@@ -204,28 +222,203 @@ void drawBrushSizeIndicator(float distanceX,float screenWidth,float screenHeight
 	glset.uniform1f(commonData.program, "uiOpacity", 0.2f);
 	glset.drawArrays(paintingSquare, false);
 	glset.uniform1f(commonData.program, "uiOpacity", 0.5f);
+
+	glset.uniform1i(commonData.program, "uiMaskTexture", 1);
+	glset.uniform1i(commonData.program, "drawBrushIndicator", 0);
 }
 
-	float lastColorBoxPickerValue_x = 7;
-	float lastColorBoxPickerValue_y = 3;
-	float lastColorBoxRangeValue = 3;
-	glm::vec3 colorBoxVal = glm::vec3(0);
-	int renderDepthCounter = 0;
+float lastColorBoxPickerValue_x = 7;
+float lastColorBoxPickerValue_y = 3;
+float lastColorBoxRangeValue = 3;
+bool isColorBoxValueChanged(RenderData renderData){
+	bool colorBoxValChanged = true;
+	if (lastColorBoxPickerValue_x != renderData.colorBoxPickerValue_x || lastColorBoxPickerValue_y != renderData.colorBoxPickerValue_y || lastColorBoxRangeValue != renderData.colorBoxColorRangeBarValue) {
+		colorBoxValChanged = true;
+	}
+	else {
+		colorBoxValChanged = false;
+	}
+	lastColorBoxPickerValue_x = renderData.colorBoxPickerValue_x;
+	lastColorBoxPickerValue_y = renderData.colorBoxPickerValue_y;
+	lastColorBoxRangeValue = renderData.colorBoxColorRangeBarValue;
+	return colorBoxValChanged;
+}
+void drawAxisPointer() {
+	GlSet glset;
+	//Axis Pointer - start from middle of the scene
+	std::vector<float>axisPointer{
+	0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
+	0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 
-	float exportDownloadButtonMixVal = 0.0f;
-	float addMaskTextureButtonMixVal = 0.0f;
-	float loadModelButtonMixVal = 0.0f;
-	float addPanelButtonMixVal = 0.0f;
-	float addSphereButtonMixVal = 0.0f;
-	float addAlbedoTextureMixVal = 0.0f;
+	-100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //X
+	100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 
-	bool doCtrlZ;
-void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData,bool cameraPosChanged, std::vector<float> &axisPointer, ExportData exportData,float brushBlurRangeBarValue,UiData uidata,bool albedoTextureChanged, float brushRotationRangeBarValue) {
+	0.0f, 0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Z
+	0.0f, 0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+	};
+	glset.axisPointerDataToShaders();
+	glset.blendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
+	glset.drawArrays(axisPointer, true);
+	glset.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//Axis pointer
+}
+
+void GlSet::renderTexture(unsigned int FBOScreen, std::vector<float>& vertices,bool exportImage, bool JPG, bool PNG, const char* exportPath,unsigned int screenSizeX, unsigned int screenSizeY) {
+	int maxTextureHistoryHold = 20;
+
+	std::vector<float> renderVertices = { //Render backside of the uv
+	// first triangle
+	 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+	 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+	 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+	// second triangle	  ,0,0,0,
+	 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+	 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+	 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+	};
+
+	std::vector<float> enlargingVertices = { //Enlarge rendered image with 1 pixel so we wont have seams
+		// first triangle
+		 1.001f,  1.001f, 0.0f,1,1,0,0,0,  // top right
+		 1.001f,  -0.001f, 0.0f,1,0,0,0,0,  // bottom right
+		 -0.001f,  1.001f, 0.0f,0,1,0,0,0,  // top left 
+		// second triangle	  ,0,0,0,
+		 1.001f,  -0.001f, 0.0f,1,0,0,0,0,  // bottom right
+		 -0.001f,  -0.001f, 0.0f,0,0,0,0,0,  // bottom left
+		 -0.001f,  1.001f, 0.0f,0,1,0,0,0   // top left
+	};
+
+	Texture txtr;
+	CommonData commonData;
+
+	GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, 1080, 1080, 3);
+	previousAlbedoTextures.push_back(originalImage);
+
+	if (previousAlbedoTextures.size() > maxTextureHistoryHold)
+		previousAlbedoTextures.erase(previousAlbedoTextures.begin());
+
+	//Setup
+	uniform1i(commonData.program, "isTwoDimensional", 0);
+	viewport(1920, 1080);
+	uniform1i(commonData.program, "isRenderTextureMode", 1);
+	uniform1i(commonData.program, "isRenderTextureModeV", 1);
+	bindFramebuffer(FBOScreen);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Setup
+
+	//Render painted image
+	drawArrays(vertices, false);
+	if (exportImage)
+		drawArrays(renderVertices, false);
+	//GLubyte* renderedImage = txtr.getTextureFromProgram(GL_TEXTURE10,1080, 1080, 3);
+	GLubyte* renderedImage = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
+	glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
+	activeTexture(GL_TEXTURE0);
+	texImage(renderedImage, 1080, 1080, GL_RGB);
+	generateMipmap();
+	//Render painted image
+
+	txtr.refreshScreenDrawingTexture();
+
+	//Render enlarged & painter image
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	uniform1i(commonData.program, "isTwoDimensional", 1);
+	drawArrays(enlargingVertices, false); //Render Model
+	uniform1i(commonData.program, "isTwoDimensional", 0);
+	GLubyte* enlargedTxtr = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
+	glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, enlargedTxtr);
+
+	activeTexture(GL_TEXTURE7);
+	texImage(enlargedTxtr, 1080, 1080, GL_RGB);
+	generateMipmap();
+	//Render enlarged & painter image
+
+	//Download enlarged image
+	if (exportImage) {
+		if (JPG) {
+			txtr.downloadTexture(exportPath, "LigidPainter Export", 0, 1080, 1080, enlargedTxtr, 3);
+		}
+		else if (PNG) {
+			txtr.downloadTexture(exportPath, "LigidPainter Export", 1, 1080, 1080, enlargedTxtr, 3);
+		}
+	}
+	//Download enlarged image
+	//Finish rendering albedo texture
+	delete(renderedImage);
+	delete(enlargedTxtr);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Finish rendering albedo texture
+
+	//Finish
+	uniform1i(commonData.program, "isRenderTextureModeV", 0);
+	uniform1i(commonData.program, "isRenderTextureMode", 0);
+	bindFramebuffer(0);
+	viewport(screenSizeX, screenSizeY);
+	//Finish
+}
+glm::vec3 colorBoxVal = glm::vec3(0);
+void GlSet::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerValue_x, float colorBoxPickerValue_y, unsigned int screenSizeX, unsigned int screenSizeY) {
+	std::vector<float> colorBox = { //Render color box into the screen so we can get it's value
+	// first triangle
+	 0.0f,  1.0f, 0.0f,1,1,1,1,1,  // top right
+	 0.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+	 1.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+	// second triangle	  ,0,0,0,
+	 0.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right7
+	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+	 1.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+	};
+
+	CommonData commonData;
+	//Setup
+	viewport(1920, 1080);
+	uniform1i(commonData.program, "isRenderTextureModeV", 1);
+	uniform1i(commonData.program, "isRenderTextureMode", 1);
+	bindFramebuffer(FBOScreen);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Setup
+
+	//Render color box
+	GLubyte* colorBoxPixel = new GLubyte[1 * 1 * 3];//Color val
+	uniform1i(commonData.program, "isColorBox", 1);
+	drawArrays(colorBox, false); //Render Model
+	uniform1i(commonData.program, "isColorBox", 0);
+	glReadPixels((colorBoxPickerValue_x * -1.0f + 0.1f) * 5.0f * 1080, (colorBoxPickerValue_y + 0.2f) * 2.5f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorBoxPixel);
+	uniform3f(commonData.program, "drawColor", colorBoxPixel[0] / 255.0f, colorBoxPixel[1] / 255.0f, colorBoxPixel[2] / 255.0f);
+	//Render color box
+
+	//Finish
+	uniform1i(commonData.program, "isRenderTextureMode", 0);
+	uniform1i(commonData.program, "isRenderTextureModeV", 0);
+	bindFramebuffer(0);
+	viewport(screenSizeX, screenSizeY);
+
+	//Get color value to the color vec
+	colorBoxVal.r = colorBoxPixel[0];
+	colorBoxVal.g = colorBoxPixel[1];
+	colorBoxVal.b = colorBoxPixel[2];
+	delete(colorBoxPixel);
+	//Finish
+}
+
+int renderDepthCounter = 0;
+
+float exportDownloadButtonMixVal = 0.0f;
+float addMaskTextureButtonMixVal = 0.0f;
+float loadModelButtonMixVal = 0.0f;
+float addPanelButtonMixVal = 0.0f;
+float addSphereButtonMixVal = 0.0f;
+float addAlbedoTextureMixVal = 0.0f;
+
+void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata) {
 	GlSet gls;
 	UserInterface ui;
 	CommonData commonData;
 	ColorData colorData;
 	Utilities util;
+	Texture txtr;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear before rendering
 
@@ -238,66 +431,9 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 	glfwGetCursorPos(renderData.window, &mouseXpos, &mouseYpos);
 	//Get screen and mouse info
 
-	//Check if color value changed
-	bool colorBoxValChanged = true;
-	if (lastColorBoxPickerValue_x != renderData.colorBoxPickerValue_x || lastColorBoxPickerValue_y != renderData.colorBoxPickerValue_y || lastColorBoxRangeValue != renderData.colorBoxColorRangeBarValue) {
-		colorBoxValChanged = true;
-	}
-	else {
-		colorBoxValChanged = false;
-	}
-	lastColorBoxPickerValue_x = renderData.colorBoxPickerValue_x;
-	lastColorBoxPickerValue_y = renderData.colorBoxPickerValue_y;
-	lastColorBoxRangeValue = renderData.colorBoxColorRangeBarValue;
-	//Check if color value changed
+	bool colorBoxValChanged = isColorBoxValueChanged(renderData);
 
-	//Axis Pointer - start from middle of the scene
-	axisPointerDataToShaders();
-	blendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
-	drawArrays(axisPointer, true);
-	blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//Axis pointer
-
-	if (renderData.backfaceCulling) { //if backface culling checked in the model panel
-		enable(GL_CULL_FACE);
-		cullFace(GL_BACK);
-	}
-
-	meshDataToShaders();
-	std::vector<float> renderVertices = { //Render backside of the uv
-		// first triangle
-		 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
-		 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
-		 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
-		// second triangle	  ,0,0,0,
-		 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
-		 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
-		 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
-	};
-	std::vector<float> enlargingVertices = { //Enlarge rendered image with 1 pixel so we wont have seams
-		// first triangle
-		 1.001f,  1.001f, 0.0f,1,1,0,0,0,  // top right
-		 1.001f,  -0.001f, 0.0f,1,0,0,0,0,  // bottom right
-		 -0.001f,  1.001f, 0.0f,0,1,0,0,0,  // top left 
-		// second triangle	  ,0,0,0,
-		 1.001f,  -0.001f, 0.0f,1,0,0,0,0,  // bottom right
-		 -0.001f,  -0.001f, 0.0f,0,0,0,0,0,  // bottom left
-		 -0.001f,  1.001f, 0.0f,0,1,0,0,0   // top left
-	};
-
-	glm::vec3 colorBoxColor = glm::vec3(1.0f, 0.0f, 0.0f);
-
-	std::vector<float> colorBox = { //Render color box into the screen so we can get it's value
-		// first triangle
-		 0.0f,  1.0f, 0.0f,1,1,1,1,1,  // top right
-		 0.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
-		 1.0f,  1.0f, 0.0f,0,1,colorBoxColor.r,colorBoxColor.g + 0.2f,colorBoxColor.b + 0.2f,  // top left 
-		// second triangle	  ,0,0,0,
-		 0.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
-		 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
-		 1.0f,  1.0f, 0.0f,0,1,colorBoxColor.r,colorBoxColor.g + 0.2f,colorBoxColor.b + 0.2f   // top left
-	};
-	Texture txtr;
+	drawAxisPointer();
 
 	//Render depth once painting started
 	if (renderData.paintingMode) { 
@@ -306,161 +442,36 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 	else {
 		renderDepthCounter = 0;
 	}
-	//Render depth once painting started
 	if (renderDepthCounter == 1) {//Get depth texture
-	
-		viewport(1920, 1080);
-		bindFramebuffer(FBOScreen);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		getDepthTexture(vertices);
-		viewport(screenSizeX, screenSizeY);
-		bindFramebuffer(0);
+		getDepthTexture(vertices,FBOScreen,screenSizeX,screenSizeY);
 	}
-	if ((cameraPosChanged && renderData.paintingMode) || exportData.exportImage || albedoTextureChanged || (colorBoxValChanged && renderData.paintingMode) || (glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode)) { //colorboxvalchanged has to trigger paintingmode to false
-		 
-		GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0,1080,1080,3);
-		previousAlbedoTextures.push_back(originalImage);
+	//Render depth once painting started
 
-		//Setup
-		uniform1i(commonData.program, "isTwoDimensional", 0);
-		viewport(1920, 1080);
-		uniform1i(commonData.program, "isRenderTextureMode", 1);
-		uniform1i(commonData.program, "isRenderTextureModeV", 1);
-		bindFramebuffer(FBOScreen);
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//Setup
-
-		//Render painted image
-		drawArrays(vertices, false);
-		if(!exportData.exportImage)
-			drawArrays(renderVertices, false);
-		//GLubyte* renderedImage = txtr.getTextureFromProgram(GL_TEXTURE10,1080, 1080, 3);
-		GLubyte* renderedImage = new GLubyte[1080*1080*3*sizeof(GLubyte)];
-		glReadPixels(0,0,1080,1080,GL_RGB,GL_UNSIGNED_BYTE,renderedImage);
-		activeTexture(GL_TEXTURE0);
-		texImage(renderedImage,1080,1080, GL_RGB);
-		generateMipmap();
-		//Render painted image
-
-		txtr.refreshScreenDrawingTexture();
-
-		//Render enlarged & painter image
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		uniform1i(commonData.program, "isTwoDimensional", 1);
-		drawArrays(enlargingVertices, false); //Render Model
-		uniform1i(commonData.program, "isTwoDimensional", 0);
-		GLubyte* enlargedTxtr = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
-		glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, enlargedTxtr);
-
-		activeTexture(GL_TEXTURE7);
-		texImage(enlargedTxtr, 1080, 1080, GL_RGB);
-		generateMipmap();
-		//Render enlarged & painter image
-
-		//Download enlarged image
-		if (exportData.exportImage) {
-			if (uidata.exportExtJPGCheckBoxPressed) {
-				txtr.downloadTexture(exportData.path, "LigidPainter Export", 0, 1080, 1080, enlargedTxtr, 3);
-			}
-			else if (uidata.exportExtPNGCheckBoxPressed) {
-				txtr.downloadTexture(exportData.path, "LigidPainter Export", 1, 1080, 1080, enlargedTxtr, 3);
-			}
-		}
-		//Download enlarged image
-
-		//Finish rendering albedo texture
-		delete(renderedImage);
-		delete(enlargedTxtr);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//Finish rendering albedo texture
-
-		//Finish
-		uniform1i(commonData.program, "isRenderTextureModeV", 0);
-		uniform1i(commonData.program, "isRenderTextureMode", 0);
-		bindFramebuffer(0);
-		viewport(screenSizeX, screenSizeY);
-		//Finish
+	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || uidata.addImageButtonPressed || (colorBoxValChanged && renderData.paintingMode) || (glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
+	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false
+		renderTexture(FBOScreen,vertices,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY);
 	}
 	if (colorBoxValChanged) { //Get value of color box
-		//Setup
-		viewport(1920, 1080);
-		uniform1i(commonData.program, "isRenderTextureModeV", 1);
-		uniform1i(commonData.program, "isRenderTextureMode", 1);
-		bindFramebuffer(FBOScreen);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//Setup
-
-		//Render color box
-		GLubyte* colorBoxPixel = new GLubyte[1 * 1 * 3];//Color val
-		uniform1i(commonData.program, "isColorBox", 1);
-		drawArrays(colorBox, false); //Render Model
-		uniform1i(commonData.program, "isColorBox", 0);
-		glReadPixels((renderData.colorBoxPickerValue_x * -1.0f + 0.1f) * 5.0f * 1080, (renderData.colorBoxPickerValue_y + 0.2f) * 2.5f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorBoxPixel);
-		uniform3f(commonData.program, "drawColor", colorBoxPixel[0] / 255.0f, colorBoxPixel[1] / 255.0f, colorBoxPixel[2] / 255.0f);
-		//Render color box
-
-		//Finish
-		uniform1i(commonData.program, "isRenderTextureMode", 0);
-		uniform1i(commonData.program, "isRenderTextureModeV", 0);
-		bindFramebuffer(0);
-		viewport(screenSizeX, screenSizeY);
-
-		//Get color value to the color vec
-		colorBoxVal.r = colorBoxPixel[0];
-		colorBoxVal.g = colorBoxPixel[1];
-		colorBoxVal.b = colorBoxPixel[2];
-		delete(colorBoxPixel);
-		//Finish
+		getColorBoxValue(FBOScreen, lastColorBoxPickerValue_x, lastColorBoxPickerValue_y,screenSizeX, screenSizeY);
 	}
 
+	ctrlZ(renderData.window);
 
-	if (glfwGetKey(renderData.window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(renderData.window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ && previousAlbedoTextures.size() != 0) {
-		txtr.refreshScreenDrawingTexture();
-		activeTexture(GL_TEXTURE0);
-		texImage(previousAlbedoTextures[previousAlbedoTextures.size() - 1], 1080, 1080, GL_RGB);
-		generateMipmap();
-		previousAlbedoTextures.pop_back();
-		doCtrlZ = false;
-	}
-	if (glfwGetKey(renderData.window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(renderData.window, GLFW_KEY_Z) == GLFW_RELEASE) {
-		doCtrlZ = true;
-	}
+	renderModel(renderData.backfaceCulling,vertices);
 
-	//Render Model
-	uniform1i(commonData.program, "material.diffuse", 0);
-	drawArrays(vertices, false);
-	uniform1i(commonData.program, "material.diffuse", 0);
-	//Render Model
+	updateButtonColorMixValues(uidata);
 
-	disable(GL_CULL_FACE); //Disable backface culling if enabled
+	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue);
 
-	//--------------- UI ---------------//
-	uniform1i(commonData.program, "isTwoDimensional", 1);
-	uniform1i(commonData.program, "is2D", 1);
+	if(renderData.doPainting)
+		drawBrushIndicator(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorBoxVal);
+}
 
-	//Panel
-	ui.panel(renderData.panelLoc, 0);
-	glm::mat4 projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
-	uniformMatrix4fv(commonData.program, "TextProjection", projection);
-	ui.panelChangeButton(renderData.panelLoc,0.8f);//Model Panel
-	ui.panelChangeButton(renderData.panelLoc, 0.72f);//Texture Panel
-	ui.panelChangeButton(renderData.panelLoc, 0.64f);//Painting Panel
-	ui.panelChangeButton(renderData.panelLoc, 0.56f);//Export Panel
-
-	//Backside decoration
-	if(panelData.paintingPanelActive) 
-		ui.box(0.25f, 0.22f, renderData.panelLoc+ 0.25f, -0.4f, "", colorData.panelColorSnd, 0.075f, false, false,0.1f, 10000,glm::vec3(0),0);
-	//Backside decoration
-	//Panel
-
-	//--------UPDATE MIXING VALUES--------\\
-
+void GlSet::updateButtonColorMixValues(UiData uidata) {
 	if (uidata.addSphereButtonEnter && addSphereButtonMixVal <= 1.0f) {
-		addSphereButtonMixVal+= 0.05f;
+		addSphereButtonMixVal += 0.05f;
 	}
-	else if(!uidata.addSphereButtonEnter && addSphereButtonMixVal >= 0.0f) {
+	else if (!uidata.addSphereButtonEnter && addSphereButtonMixVal >= 0.0f) {
 		addSphereButtonMixVal -= 0.05f;
 	}
 
@@ -481,11 +492,11 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 	if (uidata.loadModelButtonEnter && loadModelButtonMixVal <= 1.0f) {
 		loadModelButtonMixVal += 0.05f;
 	}
-	else if (!uidata.loadModelButtonEnter&& loadModelButtonMixVal >= 0.0f) {
+	else if (!uidata.loadModelButtonEnter && loadModelButtonMixVal >= 0.0f) {
 		loadModelButtonMixVal -= 0.05f;
 	}
 
-	if (uidata.addMaskTextureButtonEnter && addMaskTextureButtonMixVal<= 1.0f) {
+	if (uidata.addMaskTextureButtonEnter && addMaskTextureButtonMixVal <= 1.0f) {
 		addMaskTextureButtonMixVal += 0.05f;
 	}
 	else if (!uidata.addMaskTextureButtonEnter && addMaskTextureButtonMixVal >= 0.0f) {
@@ -498,16 +509,52 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 	else if (!uidata.exportDownloadButtonEnter && exportDownloadButtonMixVal >= 0.0f) {
 		exportDownloadButtonMixVal -= 0.05f;
 	}
+}
+void GlSet::renderModel(bool backfaceCulling, std::vector<float>& vertices) {
+	CommonData commonData;
+	if (backfaceCulling) { //if backface culling checked in the model panel
+		enable(GL_CULL_FACE);
+		cullFace(GL_BACK);
+	}
+	meshDataToShaders();
+	uniform1i(commonData.program, "material.diffuse", 0); //GL_TEXTURE7 Doesn't fulfill it's purpose
+	drawArrays(vertices, false);
+	uniform1i(commonData.program, "material.diffuse", 0);
 
-	//--------UPDATE MIXING VALUES--------\\
+	disable(GL_CULL_FACE); //Disable backface culling if enabled
+}
+void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue) {
+	ColorData colorData;
+	CommonData commonData;
+	glm::mat4 projection;
+	UserInterface ui;
+	Utilities util;
+	uniform1i(commonData.program, "isTwoDimensional", 1);
+	uniform1i(commonData.program, "is2D", 1);
+
+	//Panel
+	ui.panel(renderData.panelLoc, 0);
+	projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
+	uniformMatrix4fv(commonData.program, "TextProjection", projection);
+	ui.renderText(commonData.program, "Brush Blur", renderData.panelLoc, 0.8f, 0.0f, glm::vec3(0.5, 0.8f, 0.2f));
+	ui.panelChangeButton(renderData.panelLoc, 0.8f);//Model Panel
+	ui.panelChangeButton(renderData.panelLoc, 0.72f);//Texture Panel
+	ui.panelChangeButton(renderData.panelLoc, 0.64f);//Painting Panel
+	ui.panelChangeButton(renderData.panelLoc, 0.56f);//Export Panel
+
+	//Backside decoration
+	if (panelData.paintingPanelActive)
+		ui.box(0.25f, 0.22f, renderData.panelLoc + 0.25f, -0.6f, "", colorData.panelColorSnd, 0.075f, false, false, 0.1f, 10000, glm::vec3(0), 0);
+	//Backside decoration
+
 
 	float centerDivider;
 	float centerSum;
-	uniform1f(commonData.program,"uiOpacity",0.5f);
+	uniform1f(commonData.program, "uiOpacity", 0.5f);
 	if (!panelData.movePanel) {
 		centerDivider = 2.0f;
 		centerSum = 0;
-		 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+		projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 		uniformMatrix4fv(commonData.program, "TextProjection", projection);
 	}
 	else {
@@ -518,26 +565,26 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 	}
 	if (panelData.modelPanelActive) {
 		//File path textbox
-		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider+ centerSum, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false,0.9f,10, glm::vec3(0), 0);
-		ui.renderText(commonData.program, "File Path", renderData.panelLoc / centerDivider+ centerSum - 0.05f, 0.64f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
+		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0);
+		ui.renderText(commonData.program, "File Path", renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.64f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
 
 
-		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false, 0.9f,10, colorData.buttonColorHover, loadModelButtonMixVal);//Load model button
-		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, 0.0f, "Add Panel", colorData.buttonColor, 0.045f, false, false, 0.9f,10, colorData.buttonColorHover, addPanelButtonMixVal);//Load a panel button
-		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider+ centerSum, -0.1f, "Add Sphere", colorData.buttonColor, 0.047f, false, false, 0.9f,10, colorData.buttonColorHover, addSphereButtonMixVal);//Load a sphere button
+		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false, 0.9f, 10, colorData.buttonColorHover, loadModelButtonMixVal);//Load model button
+		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.0f, "Add Panel", colorData.buttonColor, 0.047f, false, false, 0.9f, 10, colorData.buttonColorHover, addPanelButtonMixVal);//Load a panel button
+		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider + centerSum, -0.1f, "Add Sphere", colorData.buttonColor, 0.055f, false, false, 0.9f, 10, colorData.buttonColorHover, addSphereButtonMixVal);//Load a sphere button
 
-		ui.checkBox(renderData.panelLoc / centerDivider+ centerSum - 0.08f, 0.3f,"Auto triangulate",colorData.checkBoxColor, uidata.autoTriangulateCheckBoxEnter, uidata.autoTriangulateCheckBoxPressed); //Auto triangulate checkbox
-		ui.checkBox(renderData.panelLoc / centerDivider+ centerSum - 0.08f, 0.2f, "Backface culling", colorData.checkBoxColor, uidata.backfaceCullingCheckBoxEnter, uidata.backfaceCullingCheckBoxPressed); //Backface culling checkbox
+		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.08f, 0.3f, "Auto triangulate", colorData.checkBoxColor, uidata.autoTriangulateCheckBoxEnter, uidata.autoTriangulateCheckBoxPressed); //Auto triangulate checkbox
+		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.08f, 0.2f, "Backface culling", colorData.checkBoxColor, uidata.backfaceCullingCheckBoxEnter, uidata.backfaceCullingCheckBoxPressed); //Backface culling checkbox
 	}
 	if (panelData.texturePanelActive) {
-		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "+ Add Image", colorData.buttonColor, 0.05f, false, false, 0.9f, 10, colorData.buttonColorHover, addAlbedoTextureMixVal); //Add albedo texture button
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "+ Add Image", colorData.buttonColor, 0.06f, false, false, 0.9f, 10, colorData.buttonColorHover, addAlbedoTextureMixVal); //Add albedo texture button
 	}
 
 	if (panelData.paintingPanelActive) {
-		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "Add Mask Texture", colorData.buttonColor, 0.075f, false,false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "Add Mask Texture", colorData.buttonColor, 0.085f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
 
 		uniform1i(commonData.program, "uiMaskTexture", 12);
-		ui.box(0.14f, 0.28f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "", colorData.buttonColor, 0.075f, false,true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
+		ui.box(0.14f, 0.28f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
 		uniform1i(commonData.program, "uiMaskTexture", 1);
 
 		//Brush size rangebar
@@ -545,45 +592,41 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.05f, renderData.brushSizeRangeBarValue);
 
 		//Brush blur rangebar
-		ui.renderText(commonData.program, "Brush Blur", renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.015f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
+		ui.renderText(commonData.program, "Brush Blur", renderData.panelLoc / centerDivider + centerSum - 0.051f, -0.015f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.05f, brushBlurRangeBarValue);
 
 		//Brush rotation rangebar
-		ui.renderText(commonData.program, "Brush Rotation", renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.115f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
+		ui.renderText(commonData.program, "Brush Rotation", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.115f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.15f, brushRotationRangeBarValue);
 
+		//Brush opacity rangebar
+		ui.renderText(commonData.program, "Brush Opacity", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.215f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.25f, brushOpacityRangeBarValue);
+
+		//Brush spacing rangebar
+		ui.renderText(commonData.program, "Brush Spacing", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.315f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.35f, brushSpacingRangeBarValue);
+
 		//Color Picker
-		ui.colorBox(renderData.panelLoc / centerDivider + centerSum - 0.02f, -0.4f, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y);
-		ui.colorRect(renderData.panelLoc / centerDivider + centerSum + 0.1f, -0.4f, renderData.colorBoxColorRangeBarValue, FBOScreen, renderData.window);
+		ui.colorBox(renderData.panelLoc / centerDivider + centerSum - 0.02f, -0.6f, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y);
+		ui.colorRect(renderData.panelLoc / centerDivider + centerSum + 0.1f, -0.6f, renderData.colorBoxColorRangeBarValue, FBOScreen, renderData.window);
 
 		uniform1f(commonData.program, "uiOpacity", 1.0f);
-		ui.box(0.005f, 0.025f, renderData.panelLoc / centerDivider + centerSum -0.095f, -0.65f, "", colorBoxVal/glm::vec3(255), 0.075f, false, false, 0.9f, 10, glm::vec3(0), 0); //indicator for picken color of the color picker
+		ui.box(0.005f, 0.025f, renderData.panelLoc / centerDivider + centerSum - 0.095f, -0.85f, "", colorBoxVal / glm::vec3(255), 0.075f, false, false, 0.9f, 10, glm::vec3(0), 0); //indicator for picken color of the color picker
 		uniform1f(commonData.program, "uiOpacity", 0.5f);
-		ui.decorationSquare(renderData.panelLoc / centerDivider + centerSum - 0.1f, -0.64f); //Decoration for color indicator
+		ui.decorationSquare(renderData.panelLoc / centerDivider + centerSum - 0.1f, -0.84f); //Decoration for color indicator
 
-		ui.renderText(commonData.program, util.rgbToHexGenerator(colorBoxVal), renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.66f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f)); //Hex value of the picken color 
+		ui.renderText(commonData.program, util.rgbToHexGenerator(colorBoxVal), renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.86f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f)); //Hex value of the picken color 
 	}
 
 	if (panelData.exportPanelActive) {
-		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum, 0.6f, renderData.exportFolder, colorData.textBoxColor, 0, true, false, 0.9f, 10,glm::vec3(0),0); //Path textbox
+		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum, 0.6f, renderData.exportFolder, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0); //Path textbox
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.11f, 0.5f, "JPEG", colorData.checkBoxColor, uidata.exportExtJPGCheckBoxEnter, uidata.exportExtJPGCheckBoxPressed); //jpg checkbox
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum + 0.05f, 0.5f, "PNG", colorData.checkBoxColor, uidata.exportExtPNGCheckBoxEnter, uidata.exportExtPNGCheckBoxPressed); //png checkbox
-		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.3f, "Download", colorData.buttonColor, 0.045f, false, false, 0.9f, 10,colorData.buttonColorHover,exportDownloadButtonMixVal); //Download Button
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.3f, "Download", colorData.buttonColor, 0.045f, false, false, 0.9f, 10, colorData.buttonColorHover, exportDownloadButtonMixVal); //Download Button
 	}
-
-	//UI
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 	uniformMatrix4fv(commonData.program, "TextProjection", projection);
-
-	uniform1i(commonData.program, "drawBrushSizeIndicator", 1);
-
-	uniform1i(commonData.program, "uiMaskTexture", 12);
-	if(renderData.doPainting)
-		drawBrushSizeIndicator(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorBoxVal);
-
-	uniform1i(commonData.program, "uiMaskTexture", 1);
-
-	uniform1i(commonData.program, "drawBrushSizeIndicator", 0);
 }
 GLFWwindow* GlSet::getWindow() {
 	glfwInit();
@@ -667,9 +710,12 @@ unsigned int GlSet::createScreenFrameBufferObject() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	return FBO;
 }
-void GlSet::getDepthTexture(std::vector<float>& vertices) { //Set viewport to screen size and bind the FRAMEBUFFER_0
+void GlSet::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen, unsigned int screenSizeX, unsigned int screenSizeY) { //Set viewport to screen size and bind the FRAMEBUFFER_0
 	CommonData commonData;
 	Texture txtr;
+	viewport(1920, 1080);
+	bindFramebuffer(FBOScreen);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	uniform1i(commonData.program, "isTwoDimensional", 0);
 	uniform1i(commonData.program, "isRenderTextureMode", 1);
@@ -686,4 +732,7 @@ void GlSet::getDepthTexture(std::vector<float>& vertices) { //Set viewport to sc
 	uniform1i(commonData.program, "isRenderTextureModeV", 0);
 	uniform1i(commonData.program, "isRenderTextureMode", 0);
 	uniform1i(commonData.program, "renderDepth", 0);
+
+	viewport(screenSizeX, screenSizeY);
+	bindFramebuffer(0);
 }

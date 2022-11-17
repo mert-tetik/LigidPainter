@@ -22,12 +22,16 @@ struct RenderData { //GlSet::render
 	float brushSizeIndicator;
 	float colorBoxPickerValue_x; 
 	float colorBoxPickerValue_y;
-	unsigned int paintingSqFBO; 
 	float colorBoxColorRangeBarValue;
+	bool cameraPosChanged;
 	const char* exportFolder;
 	bool doPainting; 
 	unsigned int depthTexture;
 	bool paintingMode;
+	float brushBlurRangeBarValue;
+	float brushRotationRangeBarValue;
+	float brushOpacityRangeBarValue;
+	float brushSpacingRangeBarValue;
 };
 class Sphere {
 public:

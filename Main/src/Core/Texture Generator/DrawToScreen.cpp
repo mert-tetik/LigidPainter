@@ -22,7 +22,7 @@ double lastMouseYPos = 0;
 //Check if values changed
 
 
-void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushTextureChanged, unsigned int screenPaintingTextureId, float brushSize,unsigned int FBOScreen, bool brushBlurChanged,bool brushSizeChanged,float rotationValue,bool brushRotationChanged) {
+void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushTextureChanged, unsigned int screenPaintingTextureId, float brushSize,unsigned int FBOScreen, bool brushBlurChanged,bool brushSizeChanged,float rotationValue,bool brushRotationChanged, float opacityRangeBarValue) {
 	Texture texture;
 	
 	//Get context data
@@ -78,12 +78,13 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 		glset.bindFramebuffer(0);
 		//Get the painting area of the screen texture to the screenTextureSquare
 
+		float opacity = ((opacityRangeBarValue + 0.11f) * 4.54545454545f); //-0.11 - 0.11 --> 0 - 1
 		//Avoid writing low value onto high value
 		for (size_t i = 0; i < distanceX * distanceY * 3; i++)
 		{
 			//glm::mix();
 			//resultSquare[i] = max((int)resizedPixels[i], (int)(screenTextureSquare[i] * 255)); //take max value
-			resultSquare[i] = glm::mix(screenTextureSquare[i], 1.0f , resizedPixels[i]/255.0f) * 255; //Mix
+			resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, resizedPixels[i]/255.0f) * 255; //Mix
 			//resultSquare[i] = min(resizedPixels[i] + (int)(screenTextureSquare[i] * 255), 255); //sum up
 		}
 		//Avoid writing low value onto high value

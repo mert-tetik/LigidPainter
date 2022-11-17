@@ -63,6 +63,7 @@ GetTextureData Texture::getTexture(std::string path, unsigned int desiredWidth, 
 
 
 	stbi_image_free(data);
+	delete(resizedPixelsX);
 	getTextureData.Id = textureID;
 	return getTextureData;
 }
@@ -142,18 +143,22 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 
 	float rotation = ((brushRotationRangeBarValue +0.11f) * 4.54545454545) * 360; // -0.11 - 0.11 --> 0 - 360
 
+	//Rotate and scale
 	glm::mat4 trans = glm::mat4(1.0f);
 	trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
 	trans = glm::rotate(trans, glm::radians(rotation), glm::vec3(0.0, 0.0, 1.0));
 	trans = glm::scale(trans, glm::vec3(0.8, 0.8, 0.8));
 	glset.uniformMatrix4fv(commonData.program, "renderTrans", trans);
+	//Rotate and scale
 
-	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777777778 - 1
+	//16:9 ---> 1:1 (makes easier to get vertices into the middle)
+	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
 	glset.uniformMatrix4fv(commonData.program, "renderTextureProjection", renderTextureProjection);
+	//16:9 ---> 1:1
 
-	glClearColor(0, 0, 0, 1.0f);
+	glClearColor(0, 0, 0, 1.0f); //Back color while rendering mask texture
 
-	std::vector<float> renderVertices = { 
+	std::vector<float> centerVertices = { 
 	// first triangle
 	 0.75f,  0.75f, 0.0f,1,1,0,0,0,  // top right
 	 0.75f,  0.25f, 0.0f,1,0,0,0,0,  // bottom right
@@ -164,7 +169,7 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	 0.25f,  0.75f, 0.0f,0,1,0,0,0   // top left
 	};
 
-	std::vector<float> renderVerticesX = { 
+	std::vector<float> cornerVertices = { 
 	// first triangle
 	 0.5f,  0.5f, 0.0f,1,1,0,0,0,  // top right
 	 0.5f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
@@ -175,20 +180,20 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	 0.0f,  0.5f, 0.0f,0,1,0,0,0   // top left
 	};
 	
+	//Setup
 	glset.uniform1i(commonData.program, "isTwoDimensional", 1);
 	glset.uniform1i(commonData.program, "isRenderTextureMode", 1);
 	glset.uniform1i(commonData.program, "isRenderTextureModeV", 1);
 	glset.uniform1i(commonData.program, "renderMaskBrush", 1);
 	glset.uniform1i(commonData.program, "renderMaskBrushBlury", 0);
-
 	glset.bindFramebuffer(FBOScreen);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glset.uniform1i(commonData.program, "uiMaskTexture", 1);
 	//Setup
 
-	glset.uniform1i(commonData.program, "uiMaskTexture", 1);
 	
 	//Rotation
-	glset.drawArrays(renderVertices, false);
+	glset.drawArrays(centerVertices, false);
 	GLubyte* renderedImageXX = new GLubyte[540 * 540 * 3 * sizeof(GLubyte)];
 	glReadPixels(0, 0, 540, 540, GL_RGB, GL_UNSIGNED_BYTE, renderedImageXX);
 
@@ -197,20 +202,19 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	glset.generateMipmap();
 	//Rotation
 
+	//Get back to previous projection after rendering rotated & scaled mask texture
 	glset.uniform1i(commonData.program, "uiMaskTexture", 12);
 	glset.uniform1i(commonData.program, "renderMaskBrushBlury", 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	glset.viewport(1920, 1080);
 	trans = glm::mat4(1.0f);
 	glset.uniformMatrix4fv(commonData.program, "renderTrans", trans);
-
 	renderTextureProjection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777777778 - 1
 	glset.uniformMatrix4fv(commonData.program, "renderTextureProjection", renderTextureProjection);
-
+	//Get back to previous projection after rendering rotated & scaled mask texture
 
 	//Horizontal Blur
-	glset.drawArrays(renderVerticesX, false);
+	glset.drawArrays(cornerVertices, false);
 	GLubyte* renderedImageX = new GLubyte[540 * 540 * 3 * sizeof(GLubyte)];
 	glReadPixels(0, 0, 540, 540, GL_RGB, GL_UNSIGNED_BYTE, renderedImageX);
 
@@ -225,7 +229,7 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	//Vertical Blur setup
 
 	//Vertical blur
-	glset.drawArrays(renderVerticesX, false);
+	glset.drawArrays(cornerVertices, false);
 	GLubyte* renderedImage = new GLubyte[540 * 540 * 3 * sizeof(GLubyte)];
 	glReadPixels(0, 0, 540, 540, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
 
@@ -236,10 +240,6 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	//Verical blur
 
 	//Finish
-
-
-	trans = glm::mat4(1.0f);
-	glset.uniformMatrix4fv(commonData.program, "renderTrans", trans);
 	ui.setViewportBgColor();
 	glset.uniform1i(commonData.program, "isRenderVerticalBlur", 0);
 	glset.uniform1i(commonData.program, "renderMaskBrush", 0);

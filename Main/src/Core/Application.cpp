@@ -95,6 +95,7 @@ bool mousePosChanged = false;
 bool brushSizeChanged = false;
 bool brushBlurChanged = false;
 bool brushRotationChanged = false;
+//bool brushOpacityChanged = false; not used
 bool brushTextureChanged = true;
 //Let program know if brush needs an update
 
@@ -129,6 +130,8 @@ bool exportDownloadButtonPressed = false;
 bool brushSizeRangeBarPressed;
 bool brushBlurRangeBarPressed;
 bool brushRotationRangeBarPressed;
+bool brushOpacityRangeBarPressed;
+bool brushSpacingRangeBarPressed;
 bool colorBoxColorRangeBarPressed;
 bool colorBoxPickerPressed;
 
@@ -148,6 +151,8 @@ bool pngFormatChecked = true;
 float brushSizeRangeBarValue = 0.0f;
 float brushBlurRangeBarValue = -0.11f;
 float brushRotationRangeBarValue = -0.11f;
+float brushOpacityRangeBarValue = 0.11f;
+float brushSpacingRangeBarValue = -0.11f;
 float colorBoxColorRangeBarValue = 0.0f;
 float colorBoxPickerValue_x = 0.0f;
 float colorBoxPickerValue_y = 0.0f;
@@ -175,10 +180,15 @@ void colorBoxPickerButton(float xOffset, float yOffset, int width, int height);
 void brushSizeRangeBar(float xOffset, int width);
 void brushBlurRangeBar(float xOffset, int width, int height);
 void brushRotationRangeBar(float xOffset, int width, int height);
+void brushOpacityRangeBar(float xOffset, int width, int height);
+void brushSpacingRangeBar(float xOffset, int width, int height);
 //----------ACTIONS----------\\
 //-----------------------      UI     -----------------------\\
 
-//bool albedoTextureChanged; use for rendering conditions
+//bool albedoTextureChanged; use for texture updating conditions
+
+int drawingSpacing;
+int drawingCount = 1; // if drawingCount matches with drawingSpaces do painting
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//Will be used for allowing writing to a text box
@@ -237,7 +247,6 @@ bool LigidPainter::run()
 
 	//Create frame buffers for getting screen texture
 	FBOScreen = glset.createScreenFrameBufferObject(); //1920x1080 get all the screen
-	//(I dunno if I can change it's scale in middle of processing)
 	//Create frame buffers for getting screen texture
 
 	glset.enable(GL_BLEND);
@@ -248,17 +257,6 @@ bool LigidPainter::run()
 	glset.setMatrices(); //View matrix, Projection matrix
 
 	float brushSize;
-	std::vector<float>axisPointer{
-		0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
-		0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 
-
-		-100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //X
-		100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 
-
-		0.0f, 0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Z
-		0.0f, 0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 
-	};
-
 	ExportData exportData;
 
 	//------Set Textures------\\
@@ -284,13 +282,12 @@ bool LigidPainter::run()
 	glset.activeTexture(GL_TEXTURE12);//Modified mask
 	getTextureData = txtr.getTexture(maskTexturePath,0,0);
 	
+	//------Set Textures------\\
 
 	int screenWidth;
 	int screenHeight;
 	glfwGetWindowSize(window, &screenWidth, &screenHeight);
 	txtr.updateMaskTexture(FBOScreen, screenWidth, screenHeight, brushRotationRangeBarValue);
-
-	//------Set Textures------\\
 
 	panelData.modelPanelActive = true; //Active panel by default
 
@@ -304,7 +301,6 @@ bool LigidPainter::run()
 		updateCameraPosChanging();
 
 		uiActions();
-
 
 		//Update
 		glset.updateViewMatrix(callbackData.cameraPos, callbackData.originPos);
@@ -324,23 +320,29 @@ bool LigidPainter::run()
 		//Update
 
 		//Paint
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting){
-			textureGen.drawToScreen(window, maskTexturePath, brushTextureChanged, screenPaintingTextureId, brushSize, FBOScreen, brushBlurChanged, brushSizeChanged,brushRotationRangeBarValue, brushRotationChanged);
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting) {
+			drawingCount++;
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing){
+			textureGen.drawToScreen(window, maskTexturePath, brushTextureChanged, screenPaintingTextureId, brushSize, FBOScreen, brushBlurChanged, brushSizeChanged,brushRotationRangeBarValue, brushRotationChanged,brushOpacityRangeBarValue);
+			drawingCount = 0;
+
 			brushSizeChanged = false;
 			brushBlurChanged = false;
 			brushRotationChanged = false;
+			//brushOpacityChanged = false; not used
 			paintingMode = true;
 			brushTextureChanged = false;
 		}
 		//Paint
 
-		glset.render(renderData, vertices, FBOScreen, panelData, cameraPosChanging,axisPointer,exportData, brushBlurRangeBarValue,uidata,addImageButtonPressed, brushRotationRangeBarValue);
+		glset.render(renderData, vertices, FBOScreen, panelData,exportData,uidata);
 		exportImage = false; //After exporting, set exportImage false so we won't download the texture repeatedly
 
 		setButtonPressedFalse();
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue);
 		}
 
 		if (cameraPosChanging) { //Change the position of the camera in the shaders once camera position changed
@@ -372,13 +374,17 @@ RenderData updateRenderData(RenderData renderData,unsigned int depthTexture,int 
 	renderData.brushSizeRangeBarValue = brushSizeRangeBarValue;
 	renderData.colorBoxPickerValue_x = colorBoxPickerValue_x;
 	renderData.colorBoxPickerValue_y = colorBoxPickerValue_y;
-	renderData.paintingSqFBO = 0;
 	renderData.colorBoxColorRangeBarValue = colorBoxColorRangeBarValue;
 	renderData.exportFolder = exportFolder.c_str();
 	renderData.doPainting = doPainting;
 	renderData.depthTexture = depthTexture;
 	renderData.paintingMode = paintingMode;
 	renderData.brushSizeIndicator = brushSizeIndicatorSize;
+	renderData.cameraPosChanged = cameraPosChanging;
+	renderData.brushBlurRangeBarValue = brushBlurRangeBarValue;
+	renderData.brushRotationRangeBarValue = brushRotationRangeBarValue;
+	renderData.brushOpacityRangeBarValue = brushOpacityRangeBarValue;
+	renderData.brushSpacingRangeBarValue = brushSpacingRangeBarValue;
 
 	return renderData;
 }
@@ -403,7 +409,7 @@ UiData updateUiData() {
 	uidata.addSphereButtonPressed;
 	
 	uidata.addImageButtonEnter = callbackData.addImageButtonEnter;
-	uidata.addImageButtonPressed;
+	uidata.addImageButtonPressed = addImageButtonPressed;
 	
 	uidata.addMaskTextureButtonEnter = callbackData.addMaskTextureButtonEnter;
 	uidata.addMaskTextureButtonPressed;
@@ -413,6 +419,10 @@ UiData updateUiData() {
 	uidata.brushBlurRangeBarEnter = callbackData.brushBlurRangeBarEnter;
 
 	uidata.brushRotationRangeBarEnter = callbackData.brushRotationRangeBarEnter;
+
+	uidata.brushOpacityRangeBarEnter = callbackData.brushOpacityRangeBarEnter;
+
+	uidata.brushSpacingRangeBarEnter = callbackData.brushSpacingRangeBarEnter;
 	
 	uidata.colorBoxPickerEnter = callbackData.colorBoxPickerEnter;
 	
@@ -449,6 +459,12 @@ void uiActions() {
 				}
 				if (callbackData.brushRotationRangeBarEnter) {
 					brushRotationRangeBarPressed = true;
+				}
+				if (callbackData.brushOpacityRangeBarEnter) {
+					brushOpacityRangeBarPressed = true;
+				}
+				if (callbackData.brushSpacingRangeBarEnter) {
+					brushSpacingRangeBarPressed = true;
 				}
 				if (callbackData.colorBoxPickerEnter) {
 					colorBoxPickerPressed = true;
@@ -541,6 +557,21 @@ void brushRotationRangeBar(float xOffset, int width, int height){
 	brushRotationRangeBarValue -= xOffset / (width / 2);
 	brushRotationRangeBarValue = util.restrictBetween(brushRotationRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
 	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue);
+}
+void brushOpacityRangeBar(float xOffset, int width, int height) {
+	Utilities util;
+	Texture txtr;
+	//brushOpacityChanged = true; not used
+	brushOpacityRangeBarValue -= xOffset / (width / 2);
+	brushOpacityRangeBarValue = util.restrictBetween(brushOpacityRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
+}
+void brushSpacingRangeBar(float xOffset, int width, int height) {
+	Utilities util;
+	Texture txtr;
+	brushSpacingRangeBarValue -= xOffset / (width / 2);
+	brushSpacingRangeBarValue = util.restrictBetween(brushSpacingRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
+	drawingSpacing = ((brushSpacingRangeBarValue + 0.11f) * 454.545454545) + 1; //-0.11 - 0.11 --> 1 - 101
+	drawingCount = 0;
 }
 void colorBoxColorRangeBar(float yOffset,int height){
 	Utilities util;
@@ -635,7 +666,6 @@ void addImageButton() {
 	auto albedoPathCheck = tinyfd_openFileDialog("Select Image", "", 2, lFilterPatterns, "", false);
 	if (albedoPathCheck) {
 		albedoTexturePath = albedoPathCheck;
-
 		glset.activeTexture(GL_TEXTURE0);
 		GetTextureData getTextureData;
 		getTextureData = txtr.getTexture(albedoTexturePath,1080,1080); //Force albedo's ratio to be 1:1
@@ -729,6 +759,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 		brushSizeRangeBarPressed = false;
 		brushBlurRangeBarPressed = false;
 		brushRotationRangeBarPressed = false;
+		brushOpacityRangeBarPressed = false;
+		brushSpacingRangeBarPressed = false;
 		colorBoxPickerPressed = false;
 		colorBoxColorRangeBarPressed = false;
 	}
@@ -749,6 +781,12 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	if (brushRotationRangeBarPressed) {
 		brushRotationRangeBar(xOffset, width, height);//Changes the global variable
 	}
+	if (brushOpacityRangeBarPressed) {
+		brushOpacityRangeBar(xOffset, width, height);//Changes the global variable
+	}
+	if (brushSpacingRangeBarPressed) {
+		brushSpacingRangeBar(xOffset, width, height);//Changes the global variable
+	}
 	if (colorBoxColorRangeBarPressed) {
 		colorBoxColorRangeBar(yOffset,height);//Changes the global variable
 	}
@@ -756,7 +794,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 		colorBoxPickerButton(xOffset,yOffset,width,height);//Changes the global variable
 	}
 
-	if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
+	if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		enablePanelMovement = false;
 		doPainting = false;
@@ -804,7 +842,7 @@ void isFirstClickDoneInside() {
 			&& !callbackData.brushSizeRangeBarEnter && !callbackData.loadModelButtonEnter && !callbackData.modelFilePathTextBoxEnter
 			&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.exportPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.colorBoxPickerEnter
 			&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGCheckBoxEnter && !callbackData.exportExtPNGCheckBoxEnter
-			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter) {
+			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter) {
 			noButtonClick = true;
 		}
 		else {

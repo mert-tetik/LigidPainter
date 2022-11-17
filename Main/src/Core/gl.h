@@ -41,6 +41,10 @@ struct UiData {
 
 	bool brushRotationRangeBarEnter;
 
+	bool brushOpacityRangeBarEnter;
+
+	bool brushSpacingRangeBarEnter;
+
 	bool colorBoxPickerEnter;
 
 	bool colorBoxColorRangeBarEnter;
@@ -89,8 +93,15 @@ public:
 	void viewport(int width, int height);
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
 	void getProgram();
-	void render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, bool cameraPosChanged, std::vector<float>& axisPointer, ExportData exportData, float brushBlurRangeBarValue,UiData uidata,bool albedoTextureChanged , float brushRotationRangeBarValue);
-	void getDepthTexture(std::vector<float>& vertices);
+
+	void render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata);
+	void updateButtonColorMixValues(UiData uidata);
+	void renderModel(bool backfaceCulling, std::vector<float>& vertices);
+	void renderUi(PanelData panelData, UiData uidata, RenderData renderData, unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue);
+	void renderTexture(unsigned int FBOScreen, std::vector<float>& vertices, bool exportImage, bool JPG, bool PNG, const char* exportPath, unsigned int screenSizeX, unsigned int screenSizeY);
+	void getColorBoxValue(unsigned int FBOScreen, float colorBoxPickerValue_x, float colorBoxPickerValue_y, unsigned int screenSizeX, unsigned int screenSizeY);
+
+	void getDepthTexture(std::vector<float>& vertices, unsigned int FBOScreen, unsigned int screenSizeX, unsigned int screenSizeY);
 	GLFWwindow* getWindow();
 	void setMatrices();
 	void updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos);
