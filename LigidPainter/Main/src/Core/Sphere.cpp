@@ -1,7 +1,6 @@
 #include<iostream>
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
-#include<windows.h>
 #include <vector>
 #include "stb_image.h"
 #include <glm/glm.hpp>

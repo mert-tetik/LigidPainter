@@ -68,6 +68,7 @@ string Utilities::openFileDialog() { //!!Using Win header!!
 	//if (GetOpenFileName(&ofn) == TRUE)
 	//	return (string)ofn.lpstrFile;
 	//return "";
+	return "";
 }
 std::string Utilities::rgbToHexGenerator(glm::vec3 rgbData) {
 	const char* chars = "abcdef";

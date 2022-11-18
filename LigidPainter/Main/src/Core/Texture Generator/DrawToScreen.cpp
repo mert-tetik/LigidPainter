@@ -64,7 +64,8 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 
 		//----------------------PAINTING----------------------\\
 		
-		int differenceBetweenMousePoints = glm::distance(glm::vec2(mouseXpos, mouseYpos), glm::vec2(lastMouseXPos, lastMouseYPos))/5;
+		int differenceBetweenMousePoints = glm::distance(glm::vec2(mouseXpos, mouseYpos), glm::vec2(lastMouseXPos, lastMouseYPos))/20;
+
 		float xposDif = (mouseXpos - lastMouseXPos) / differenceBetweenMousePoints;
 		float yposDif = (mouseYpos - lastMouseYPos) / differenceBetweenMousePoints;
 		cout << lastMouseXPos << ' ' << mouseXpos << '\n';
