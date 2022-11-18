@@ -2,7 +2,6 @@
 #include<glad/glad.h>
 #include <vector>
 #include<GLFW/glfw3.h>
-#include<windows.h>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -43,32 +42,32 @@ string Utilities::getLastWordBySeparatingWithChar(string s, char del)
 }
 string Utilities::openFileDialog() { //!!Using Win header!! 
 
-	//!!!! Not used in that project !!!!//
-	
-	OPENFILENAME ofn;       // common dialog box structure
-	char szFile[260];       // buffer for file name
-	HANDLE hf;              // file handle
-
-	// Initialize OPENFILENAME
-	ZeroMemory(&ofn, sizeof(ofn));
-	ofn.lStructSize = sizeof(ofn);
-	ofn.lpstrFile = szFile;
-	// Set lpstrFile[0] to '\0' so that GetOpenFileName does not 
-	// use the contents of szFile to initialize itself.
-	ofn.lpstrFile[0] = '\0';
-	ofn.nMaxFile = sizeof(szFile);
-	ofn.lpstrFilter = "All\0*.*\0Text\0*.TXT\0";
-	ofn.nFilterIndex = 1;
-	ofn.lpstrFileTitle = NULL;
-	ofn.nMaxFileTitle = 0;
-	ofn.lpstrInitialDir = NULL;
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
-	// Display the Open dialog box. 
-
-	if (GetOpenFileName(&ofn) == TRUE)
-		return (string)ofn.lpstrFile;
-	return "";
+	////!!!! Not used in that project !!!!//
+	//
+	//OPENFILENAME ofn;       // common dialog box structure
+	//char szFile[260];       // buffer for file name
+	//HANDLE hf;              // file handle
+//
+	//// Initialize OPENFILENAME
+	//ZeroMemory(&ofn, sizeof(ofn));
+	//ofn.lStructSize = sizeof(ofn);
+	//ofn.lpstrFile = szFile;
+	//// Set lpstrFile[0] to '\0' so that GetOpenFileName does not 
+	//// use the contents of szFile to initialize itself.
+	//ofn.lpstrFile[0] = '\0';
+	//ofn.nMaxFile = sizeof(szFile);
+	//ofn.lpstrFilter = "All\0*.*\0Text\0*.TXT\0";
+	//ofn.nFilterIndex = 1;
+	//ofn.lpstrFileTitle = NULL;
+	//ofn.nMaxFileTitle = 0;
+	//ofn.lpstrInitialDir = NULL;
+	//ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+//
+	//// Display the Open dialog box. 
+//
+	//if (GetOpenFileName(&ofn) == TRUE)
+	//	return (string)ofn.lpstrFile;
+	//return "";
 }
 std::string Utilities::rgbToHexGenerator(glm::vec3 rgbData) {
 	const char* chars = "abcdef";
