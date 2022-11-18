@@ -4,10 +4,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "LigidPainter.h"
-#include "gl.h"
-#include "Texture.h"
-#include "TextureGenerator.h"
+#include "Core/LigidPainter.h"
+#include "Core/gl.h"
+#include "Core/Texture.h"
+#include "Core/Texture Generator/TextureGenerator.h"
 #include "stb_image_resize.h"
 #include "stb_image.h"
 #include <vector>

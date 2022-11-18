@@ -1,6 +1,5 @@
 #ifndef LSHPAPP_H
 #define LSHPAPP_H
-
 #include <vector>
 
 struct CommonData {

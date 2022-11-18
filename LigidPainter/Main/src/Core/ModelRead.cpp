@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <glm/glm.hpp>
-#include "ModelLoader.h"
+#include "ModelRead.h"
 #include "LigidPainter.h"
 #include <vector>
 #include <string>

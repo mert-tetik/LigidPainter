@@ -133,10 +133,10 @@ void GlSet::bindRenderBuffer(unsigned int RBO) {
 void GlSet::getProgram() {//Prepare shader program | Usen once
 	CommonData cmnd;
 	Utilities utilities;
-	std::string fshader = utilities.readFile("fragmentShaderSource.glsl");
+	std::string fshader = utilities.readFile("LigidPainter/Resources/Shaders/fragmentShaderSource.glsl");
 	fshader.pop_back();
 	const char* fragmentShaderSource = fshader.c_str();
-	std::string vshader = utilities.readFile("vertexShaderSource.glsl");
+	std::string vshader = utilities.readFile("LigidPainter/Resources/Shaders/vertexShaderSource.glsl");
 	vshader.pop_back();
 	const char* vertexShaderSource = vshader.c_str();
 	unsigned int vertexShader;
@@ -635,7 +635,7 @@ GLFWwindow* GlSet::getWindow() {
 	glfwMakeContextCurrent(window);
 
 	GLFWimage images[1];
-	images[0].pixels = stbi_load(".gh_resources\\LigidPainterLogo.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/logo-1080x.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
 	glfwSetWindowIcon(window, 1, images);
 	stbi_image_free(images[0].pixels);
 

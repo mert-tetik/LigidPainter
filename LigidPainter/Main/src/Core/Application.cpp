@@ -1,21 +1,21 @@
 #include<iostream>
-#include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "../../thirdparty/include/glad/glad.h"
+#include "../../thirdparty/include/GLFW/glfw3.h"
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/string_cast.hpp>
-#include "LigidPainter.h"
-#include "ModelLoader.h"
+#include "../../thirdparty/include/glm/glm.hpp"
+#include "../../thirdparty/include/glm/gtc/matrix_transform.hpp"
+#include "../../thirdparty/include/glm/gtc/type_ptr.hpp"
+#include "../../thirdparty/include/glm/gtx/string_cast.hpp"
+#include "Core/LigidPainter.h"
+#include "Core/ModelRead.h"
 #include "UserInterface.h"
 #include "Utilities.h"
 #include "Callback.h"
 #include "gl.h"
 #include "Texture.h"
-#include "TextureGenerator.h"
+#include "Texture Generator/TextureGenerator.h"
 
 #include <vector>
 #include <map>

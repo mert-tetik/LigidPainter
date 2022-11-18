@@ -435,7 +435,7 @@ void UserInterface::uploadChars() {
 	FT_Init_FreeType(&ft);
 	//glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
 	FT_Face face;
-	if (FT_New_Face(ft, "fonts/arial.ttf", 0, &face)) {
+	if (FT_New_Face(ft, "LigidPainter/Resources/fonts/arial.ttf", 0, &face)) {
 		std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
 	}
 	else {
