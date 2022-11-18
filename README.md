@@ -1,6 +1,6 @@
 # LigidPainter
 
-<img src="https://github.com/mert-tetik/mesh-painter/blob/main/Main/src/.gh_resources/logo-1080x.png" width="200" alt="Ligid Painter Logo"><br><br>
+<img src="https://github.com/mert-tetik/LigidPainter/tree/main/LigidPainter/Resources/Icons/logo-1080x.png" width="200" alt="Ligid Painter Logo"><br><br>
 
 **LigidPainter**  is a free 3D painting software.
 
