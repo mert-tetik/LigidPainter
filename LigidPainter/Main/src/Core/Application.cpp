@@ -143,6 +143,11 @@ bool enableBackfaceCulling;
 
 bool jpgFormatChecked;
 bool pngFormatChecked = true;
+
+bool mirrorXCheckBoxChecked = false;
+bool mirrorYCheckBoxChecked = false;
+bool mirrorZCheckBoxChecked = false;
+bool mirrorUsed = false;
 //Checkbox
 //----------PRESSED----------\\
 
@@ -175,6 +180,9 @@ void exportDownloadButtonEnter();
 void exportPathTextBox();
 void exportExtJPGCheckBox();
 void exportExtPNGCheckBox();
+void mirrorXCheckBox();
+void mirrorYCheckBox();
+void mirrorZCheckBox();
 void colorBoxColorRangeBar(float yOffset, int height);
 void colorBoxPickerButton(float xOffset, float yOffset, int width, int height);
 void brushSizeRangeBar(float xOffset, int width);
@@ -316,7 +324,7 @@ bool LigidPainter::run()
 		uiActions();
 
 		//Update
-		glset.updateViewMatrix(callbackData.cameraPos, callbackData.originPos);
+		glset.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
 		brushSize = double(brushSizeRangeBarValue + 0.1f) * 800.0 + 20.0 ;
 		renderData = updateRenderData(renderData,depthTexture, brushSize);
 		uidata = updateUiData();
@@ -337,7 +345,7 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing){
-			textureGen.drawToScreen(window, maskTexturePath, brushTextureChanged, screenPaintingReturnData, brushSize, FBOScreen, brushBlurChanged, brushSizeChanged,brushRotationRangeBarValue, brushRotationChanged,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos);
+			textureGen.drawToScreen(window, maskTexturePath, brushTextureChanged, screenPaintingReturnData, brushSize, FBOScreen, brushBlurChanged, brushSizeChanged,brushRotationRangeBarValue, brushRotationChanged,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed);
 
 			drawingCount = 0;
 
@@ -405,7 +413,7 @@ RenderData updateRenderData(RenderData renderData,unsigned int depthTexture,int 
 	return renderData;
 }
 UiData updateUiData() {
-	UiData uidata;
+	UiData uidata; //gl.h UiData structure
 	
 	uidata.loadModelButtonEnter = callbackData.loadModelButtonEnter;
 	uidata.loadModelButtonPressed;
@@ -451,6 +459,13 @@ UiData updateUiData() {
 
 	uidata.exportExtPNGCheckBoxEnter = callbackData.exportExtPNGCheckBoxEnter;
 	uidata.exportExtPNGCheckBoxPressed = pngFormatChecked;
+
+	uidata.mirrorXCheckBoxEnter = callbackData.mirrorXCheckBoxEnter;
+	uidata.mirrorXCheckBoxPressed = mirrorXCheckBoxChecked;
+	uidata.mirrorYCheckBoxEnter = callbackData.mirrorYCheckBoxEnter;
+	uidata.mirrorYCheckBoxPressed = mirrorYCheckBoxChecked;
+	uidata.mirrorZCheckBoxEnter = callbackData.mirrorZCheckBoxEnter;
+	uidata.mirrorZCheckBoxPressed = mirrorZCheckBoxChecked;
 
 	uidata.exportDownloadButtonEnter = callbackData.exportDownloadButtonEnter;
 	uidata.exportDownloadButtonPressed;
@@ -526,6 +541,12 @@ void uiActions() {
 					exportExtJPGCheckBox();
 				if (callbackData.exportExtPNGCheckBoxEnter)
 					exportExtPNGCheckBox();
+				if (callbackData.mirrorXCheckBoxEnter)
+					mirrorXCheckBox();
+				if (callbackData.mirrorYCheckBoxEnter)
+					mirrorYCheckBox();
+				if (callbackData.mirrorZCheckBoxEnter)
+					mirrorZCheckBox();
 			}
 			buttonPressed = false;
 		}
@@ -640,6 +661,54 @@ void exportExtPNGCheckBox() {
 		pngFormatChecked = false;
 	}
 }
+void mirrorXCheckBox() {
+	CommonData commonData;
+	if (mirrorXCheckBoxChecked == false) {
+		mirrorUsed = true;
+		glset.uniform1i(commonData.program, "useMirror", 1);
+		mirrorXCheckBoxChecked = true;
+		mirrorYCheckBoxChecked = false;
+		mirrorZCheckBoxChecked = false;
+		glset.uniform1i(commonData.program, "verticalMirror", 0);
+	}
+	else {
+		mirrorUsed = false;
+		glset.uniform1i(commonData.program, "useMirror", 0);
+		mirrorXCheckBoxChecked = false;
+	}
+}
+void mirrorYCheckBox() {
+	CommonData commonData;
+	if (mirrorYCheckBoxChecked == false) {
+		mirrorUsed = true;
+		glset.uniform1i(commonData.program, "useMirror", 1);
+		mirrorYCheckBoxChecked = true;
+		mirrorXCheckBoxChecked = false;
+		mirrorZCheckBoxChecked = false;
+		glset.uniform1i(commonData.program, "verticalMirror", 1);
+	}
+	else {
+		mirrorUsed = false;
+		glset.uniform1i(commonData.program, "useMirror", 0);
+		mirrorYCheckBoxChecked = false;
+	}
+}
+void mirrorZCheckBox() {
+	CommonData commonData;
+	if (mirrorZCheckBoxChecked == false) {
+		mirrorUsed = true;
+		glset.uniform1i(commonData.program, "useMirror", 1);
+		mirrorZCheckBoxChecked = true;
+		mirrorYCheckBoxChecked = false;
+		mirrorXCheckBoxChecked = false;
+		glset.uniform1i(commonData.program, "verticalMirror", 0);
+	}
+	else {
+		mirrorUsed = false;
+		glset.uniform1i(commonData.program, "useMirror", 0);
+		mirrorZCheckBoxChecked = false;
+	}
+}
 void exportDownloadButtonEnter() {
 	exportDownloadButtonPressed = true;
 	exportImage = true;
@@ -740,6 +809,11 @@ void loadModelButton() {
 		else {
 			glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW);
 		}
+	}
+	else{
+		//If model file path is inappropriate add one
+		modelFilePathTextBox();
+		loadModelButton();
 	}
 }
 
@@ -858,7 +932,8 @@ void isFirstClickDoneInside() {
 			&& !callbackData.brushSizeRangeBarEnter && !callbackData.loadModelButtonEnter && !callbackData.modelFilePathTextBoxEnter
 			&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.exportPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.colorBoxPickerEnter
 			&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGCheckBoxEnter && !callbackData.exportExtPNGCheckBoxEnter
-			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter) {
+			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter
+			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter) {
 			noButtonClick = true;
 		}
 		else {

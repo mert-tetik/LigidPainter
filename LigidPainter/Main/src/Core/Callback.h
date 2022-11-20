@@ -26,6 +26,10 @@ struct CallbckData { //Return from callback
 	bool exportExtPNGCheckBoxEnter;
 	bool exportDownloadButtonEnter;
 
+	bool mirrorXCheckBoxEnter;
+	bool mirrorYCheckBoxEnter;
+	bool mirrorZCheckBoxEnter;
+
 	glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
 	float panelLoc;

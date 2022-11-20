@@ -34,7 +34,7 @@ GLubyte* renderedImage;
 double lastMouseXPosIn = 0;
 double lastMouseYPosIn = 0;
 
-void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushTextureChanged, ScreenPaintingReturnData screenPaintingReturnData, float brushSize,unsigned int FBOScreen, bool brushBlurChanged,bool brushSizeChanged,float rotationValue,bool brushRotationChanged, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos) {
+void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushTextureChanged, ScreenPaintingReturnData screenPaintingReturnData, float brushSize,unsigned int FBOScreen, bool brushBlurChanged,bool brushSizeChanged,float rotationValue,bool brushRotationChanged, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed) {
 	Texture texture;
 	CommonData commonData;
 	
@@ -129,7 +129,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 				delete(resultSquare);
 				//finish
 			}
-
+		if(mirrorUsed){
 		//Update mirrored screen mask texture
 		//setup
 		glset.viewport(1920, 1080);
@@ -139,7 +139,6 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 		glset.uniform1i(commonData.program, "isRenderTextureMode", 1);
 		glset.uniform1i(commonData.program, "isRenderScreenMaskMode", 1);
 		glset.uniform1i(commonData.program, "isRenderTextureModeV", 1);
-		glset.uniform1i(commonData.program, "verticalMirror", 1);
 		//setup
 
 		//Get texture
@@ -156,11 +155,12 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 		glset.uniform1i(commonData.program, "isRenderTextureModeV", 0);
 		glset.uniform1i(commonData.program, "isRenderTextureMode", 0);
 		glset.uniform1i(commonData.program, "isRenderScreenMaskMode", 0);
+		//Finish
+		//Update mirrored screen mask texture
+		}
 		glset.viewport(screenSizeX, screenSizeY);
 		glset.bindFramebuffer(0);
 		glset.deleteFramebuffers(FBO);
-		//Finish
-		//Update mirrored screen mask texture
 	}
 	lastMouseXPosIn = mouseXposIn;
 	lastMouseYPosIn = mouseYposIn;

@@ -57,6 +57,13 @@ struct UiData {
 	bool exportExtPNGCheckBoxEnter;
 	bool exportExtPNGCheckBoxPressed;
 
+	bool mirrorXCheckBoxEnter;
+	bool mirrorXCheckBoxPressed;
+	bool mirrorYCheckBoxEnter;
+	bool mirrorYCheckBoxPressed;
+	bool mirrorZCheckBoxEnter;
+	bool mirrorZCheckBoxPressed;
+
 	bool exportDownloadButtonEnter;
 	bool exportDownloadButtonPressed;
 };
@@ -104,7 +111,7 @@ public:
 	void getDepthTexture(std::vector<float>& vertices, unsigned int FBOScreen, unsigned int screenSizeX, unsigned int screenSizeY);
 	GLFWwindow* getWindow();
 	void setMatrices();
-	void updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos);
+	void updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirrorX,bool mirrorY,bool mirrorZ);
 	void getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos); //Not used
 	void drawLightObject(glm::vec3 lightPos);
 	unsigned int createScreenFrameBufferObject();

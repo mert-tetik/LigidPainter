@@ -58,6 +58,9 @@ bool paintingPanelButtonEnter;
 bool exportPathTextBoxEnter;
 bool exportExtJPGCheckBoxEnter;
 bool exportExtPNGCheckBoxEnter;
+bool mirrorXCheckBoxEnter;
+bool mirrorYCheckBoxEnter;
+bool mirrorZCheckBoxEnter;
 bool exportDownloadButtonEnter;
 //Ui enter
 
@@ -91,6 +94,10 @@ CallbckData preapareCallbackData() {
 	callbk.exportExtJPGCheckBoxEnter = exportExtJPGCheckBoxEnter;
 	callbk.exportExtPNGCheckBoxEnter = exportExtPNGCheckBoxEnter;
 	callbk.exportDownloadButtonEnter = exportDownloadButtonEnter;
+
+	callbk.mirrorXCheckBoxEnter = mirrorXCheckBoxEnter;
+	callbk.mirrorYCheckBoxEnter = mirrorYCheckBoxEnter;
+	callbk.mirrorZCheckBoxEnter = mirrorZCheckBoxEnter;
 
 	callbk.cameraPos = cameraPos;
 	callbk.originPos = originPos;
@@ -244,6 +251,10 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		brushSpacingRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushSpacingRangeBarValue, -0.35f, mouseXPos, mouseYPos, movePanel);
 		colorBoxPickerEnter = ui.isMouseOnButton(window,0.01f, 0.02f, panelLoc / centerDivider + centerSum - 0.02f + colorBoxPickerValue_x, -0.6f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
 		colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, panelLoc / centerDivider + centerSum + 0.1f, -0.6f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
+
+		mirrorXCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.15f, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
+		mirrorYCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.09f, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
+		mirrorZCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.03f, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
 	}
 	else {
 		addMaskTextureButtonEnter = false;
@@ -254,6 +265,10 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		brushSpacingRangeBarEnter = false;
 		colorBoxColorRangeBarEnter = false;
 		colorBoxPickerEnter = false;
+
+		mirrorXCheckBoxEnter = false;
+		mirrorYCheckBoxEnter = false;
+		mirrorZCheckBoxEnter = false;
 	}
 	if (panelData.exportPanelActive) {
 		exportPathTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / centerDivider + centerSum, 0.6f, mouseXPos, mouseYPos, movePanel);
@@ -319,6 +334,9 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		glfwSetCursor(window,pointerCursor);
 	}
 	else if (exportDownloadButtonEnter || exportExtJPGCheckBoxEnter || exportExtPNGCheckBoxEnter || exportPathTextBoxEnter) {
+		glfwSetCursor(window, pointerCursor);
+	}
+	else if (mirrorXCheckBoxEnter || mirrorYCheckBoxEnter || mirrorZCheckBoxEnter) {
 		glfwSetCursor(window, pointerCursor);
 	}
 	else {

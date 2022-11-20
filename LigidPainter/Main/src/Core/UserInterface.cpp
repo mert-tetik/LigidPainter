@@ -145,10 +145,10 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	glset.drawArrays(buttonCoor, false);
 
 	if (!isTextBox) {
-		renderText(commonData.program, text, position_x -textRatio, position_y - 0.01, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
+		renderText(commonData.program, text, position_x -textRatio, position_y - 0.01, 0.00022f);
 	}
 	else {
-		renderText(commonData.program, text, -width + position_x, position_y - 0.01, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
+		renderText(commonData.program, text, -width + position_x, position_y - 0.01, 0.00022f);
 	}
 	glset.uniform1i(commonData.program, "isUiTextureUsed", 0);
 }
@@ -366,7 +366,7 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 		box(0.0f, 0.02f, position_x, position_y, "", glm::vec3(1.0f) - colorData.checkBoxColor, 0.00022f, false, false, 0.9f, 10, glm::vec3(0), 0);
 
 	}
-	renderText(commonData.program, text, position_x+0.04f, position_y - 0.01, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
+	renderText(commonData.program, text, position_x+0.02f, position_y - 0.01, 0.00022f);
 }
 bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height, float position_x, float position_y,int mouseXpos, int mouseYpos,bool isPanelMoving){ //Return true if mouse hover on the given coordinates
 	std::vector<float> buttonCoor{
@@ -488,7 +488,7 @@ void UserInterface::uploadChars() {
 	FT_Done_FreeType(ft);
 }
 
-void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale, glm::vec3 color) {
+void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale) {
 	GlSet glset;
 	glset.activeTexture(GL_TEXTURE2);
 

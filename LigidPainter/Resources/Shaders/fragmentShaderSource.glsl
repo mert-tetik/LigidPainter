@@ -17,6 +17,7 @@ in vec4 mirroredProjectedPos;
 
 uniform sampler2D screenMaskTexture;
 uniform sampler2D mirroredScreenMaskTexture;
+uniform int useMirror;
 uniform int isRenderScreenMaskMode;
 uniform int verticalMirror;
 uniform vec3 drawColor;
@@ -98,7 +99,13 @@ void main() {
     // ambient
    vec3 diffuseClr = vec3(texture(material.diffuse, TexCoords));
    vec3 diffuseDrawMix = mix(diffuseClr, drawColor, intensity);
-   vec3 mirroredDiffuseDrawMix = mix(diffuseDrawMix, drawColor, mirroredIntensity);
+   vec3 mirroredDiffuseDrawMix;
+   if(useMirror == 1){
+      mirroredDiffuseDrawMix = mix(diffuseDrawMix, drawColor, mirroredIntensity);
+   }
+   else{
+      mirroredDiffuseDrawMix = diffuseDrawMix;
+   }
    vec3 ambient = vec3(0.7, 0.7, 0.7) * mirroredDiffuseDrawMix;
 
     // diffuse 

@@ -534,17 +534,25 @@ void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,uns
 	ui.panel(renderData.panelLoc, 0);
 	projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 	uniformMatrix4fv(commonData.program, "TextProjection", projection);
-	ui.renderText(commonData.program, "Brush Blur", renderData.panelLoc, 0.8f, 0.0f, glm::vec3(0.5, 0.8f, 0.2f));
 	ui.panelChangeButton(renderData.panelLoc, 0.8f);//Model Panel
 	ui.panelChangeButton(renderData.panelLoc, 0.72f);//Texture Panel
 	ui.panelChangeButton(renderData.panelLoc, 0.64f);//Painting Panel
+	if(panelData.paintingPanelActive){
+		
+	}
+	
+	//Panel
+
 	ui.panelChangeButton(renderData.panelLoc, 0.56f);//Export Panel
 
-	//Backside decoration
-	if (panelData.paintingPanelActive)
-		ui.box(0.25f, 0.22f, renderData.panelLoc + 0.25f, -0.6f, "", colorData.panelColorSnd, 0.075f, false, false, 0.1f, 10000, glm::vec3(0), 0);
-	//Backside decoration
-
+	
+	if (panelData.paintingPanelActive){
+		ui.renderText(commonData.program, "Mirror", renderData.panelLoc - 0.12f, 0.94f, 0.00022f);//Mirror text
+		ui.checkBox(renderData.panelLoc- 0.16f, 0.9f, "X", colorData.checkBoxColor, uidata.mirrorXCheckBoxEnter, uidata.mirrorXCheckBoxPressed); //X mirror checkbox
+		ui.checkBox(renderData.panelLoc- 0.10f, 0.9f, "Y", colorData.checkBoxColor, uidata.mirrorYCheckBoxEnter, uidata.mirrorYCheckBoxPressed); //Z mirror checkbox
+		ui.checkBox(renderData.panelLoc- 0.04f, 0.9f, "Z", colorData.checkBoxColor, uidata.mirrorZCheckBoxEnter, uidata.mirrorZCheckBoxPressed); //Y mirror checkbox
+		ui.box(0.25f, 0.22f, renderData.panelLoc + 0.25f, -0.6f, "", colorData.panelColorSnd, 0.075f, false, false, 0.1f, 10000, glm::vec3(0), 0);//Backside decoration
+	}
 
 	float centerDivider;
 	float centerSum;
@@ -564,7 +572,7 @@ void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,uns
 	if (panelData.modelPanelActive) {
 		//File path textbox
 		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0);
-		ui.renderText(commonData.program, "File Path", renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.64f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
+		ui.renderText(commonData.program, "File Path", renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.64f, 0.00022f);
 
 
 		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false, 0.9f, 10, colorData.buttonColorHover, loadModelButtonMixVal);//Load model button
@@ -584,23 +592,23 @@ void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,uns
 		ui.box(0.14f, 0.28f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
 
 		//Brush size rangebar
-		ui.renderText(commonData.program, "Brush Size", renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.08f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
+		ui.renderText(commonData.program, "Brush Size", renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.08f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.05f, renderData.brushSizeRangeBarValue);
 
 		//Brush blur rangebar
-		ui.renderText(commonData.program, "Brush Blur", renderData.panelLoc / centerDivider + centerSum - 0.051f, -0.015f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
+		ui.renderText(commonData.program, "Brush Blur", renderData.panelLoc / centerDivider + centerSum - 0.051f, -0.015f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.05f, brushBlurRangeBarValue);
 
 		//Brush rotation rangebar
-		ui.renderText(commonData.program, "Brush Rotation", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.115f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
+		ui.renderText(commonData.program, "Brush Rotation", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.115f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.15f, brushRotationRangeBarValue);
 
 		//Brush opacity rangebar
-		ui.renderText(commonData.program, "Brush Opacity", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.215f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
+		ui.renderText(commonData.program, "Brush Opacity", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.215f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.25f, brushOpacityRangeBarValue);
 
 		//Brush spacing rangebar
-		ui.renderText(commonData.program, "Brush Spacing", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.315f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));
+		ui.renderText(commonData.program, "Brush Spacing", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.315f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.35f, brushSpacingRangeBarValue);
 
 		//Color Picker
@@ -612,7 +620,7 @@ void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,uns
 		uniform1f(commonData.program, "uiOpacity", 0.5f);
 		ui.decorationSquare(renderData.panelLoc / centerDivider + centerSum - 0.1f, -0.84f); //Decoration for color indicator
 
-		ui.renderText(commonData.program, util.rgbToHexGenerator(colorBoxVal), renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.86f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f)); //Hex value of the picken color 
+		ui.renderText(commonData.program, util.rgbToHexGenerator(colorBoxVal), renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.86f, 0.00022f); //Hex value of the picken color 
 	}
 
 	if (panelData.exportPanelActive) {
@@ -658,12 +666,12 @@ void GlSet::setMatrices() {
 	pd.projMat = projection;
 	//pd.viewMat = view;
 }
-void GlSet::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos) {
+void GlSet::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirrorX,bool mirrorY,bool mirrorZ) {
 	CommonData cmnd;
 	glm::mat4 view;
 	view = glm::lookAt(cameraPos, originPos, glm::vec3(0.0, 1.0, 0.0)); 
 
-	glm::vec3 mirrorVec = glm::vec3(1.0f,-1.0f,1.0f);
+	glm::vec3 mirrorVec = glm::vec3(1.0f - (int)mirrorX*2, 1.0f -(int)mirrorY * 2, 1.0f - (int)mirrorZ * 2);
 	glm::mat4 mirroredView;
 	mirroredView = glm::lookAt(cameraPos * mirrorVec, originPos * mirrorVec, glm::vec3(0.0, 1.0, 0.0));
 
