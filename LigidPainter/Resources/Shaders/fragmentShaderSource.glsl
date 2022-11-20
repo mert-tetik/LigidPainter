@@ -13,13 +13,21 @@ in vec3 FragPos;
 in vec3 Pos;
 
 in vec4 projectedPos;
+in vec4 mirroredProjectedPos;
+
 uniform sampler2D maskTexture;
+uniform sampler2D mirroredMaskTexture;
+uniform int isRenderMaskMode;
+uniform int verticalMirror;
 uniform vec3 drawColor;
 
+
 uniform sampler2D depthTexture; //Screen rendered with depth color
+uniform sampler2D mirroredDepthTexture; //Screen rendered with depth color
 
 uniform int isRenderTextureMode;
 uniform int renderDepth;
+uniform int renderMirroredDepth;
 uniform int renderMaskBrush;
 uniform int renderMaskBrushBlury;
 in vec2 blurTextureCoords[11];
@@ -27,14 +35,12 @@ in vec2 blurTextureCoords[11];
 
 uniform int isTextF;
 uniform sampler2D text;
-uniform vec3 textBg;
 uniform sampler2D uiMaskTexture;
 uniform int isUiTextureUsed;
 uniform vec3 textColor;
 
 uniform int is2D;
 uniform vec3 lightPos;
-uniform vec3 objectColor;
 uniform vec3 lightColor;
 uniform vec3 viewPos;
 uniform int isLightSource;
@@ -61,8 +67,14 @@ float linearizeDepth(float depth){
    return (2.0 * near * far) / (far + near -(depth * 2.0 - 1.0) *(far-near));
 }
 
-bool isPainted(vec3 uv) {
-   float drawZ = texture2D(depthTexture, uv.xy).b; // looks between 0 and 1
+bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMirrored is true
+   float drawZ;
+   if(!isMirrored){
+      drawZ = texture2D(depthTexture, uv.xy).b;
+   }
+   else{
+      drawZ = texture2D(mirroredDepthTexture, uv.xy).b; 
+   }
 
    return abs(drawZ - linearizeDepth(uv.z)/far) < 0.005;
 }
@@ -70,22 +82,30 @@ bool isPainted(vec3 uv) {
 void main() {
    //Painting
    vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
+   vec3 mirroredScreenPos = mirroredProjectedPos.xyz / mirroredProjectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
+
    float intensity = 0.0f;
-   if(isPainted(screenPos)) 
+   float mirroredIntensity = 0.0f;
+   if(isPainted(screenPos,false)) 
    {
       intensity = texture2D(maskTexture, screenPos.xy).r;
+   }
+   if(isPainted(mirroredScreenPos, true)) 
+   {
+      mirroredIntensity = texture2D((mirroredMaskTexture), mirroredScreenPos.xy).r;
    }
    
     // ambient
    vec3 diffuseClr = vec3(texture(material.diffuse, TexCoords));
    vec3 diffuseDrawMix = mix(diffuseClr, drawColor, intensity);
-   vec3 ambient = vec3(0.7, 0.7, 0.7) * diffuseDrawMix;
+   vec3 mirroredDiffuseDrawMix = mix(diffuseDrawMix, drawColor, mirroredIntensity);
+   vec3 ambient = vec3(0.7, 0.7, 0.7) * mirroredDiffuseDrawMix;
 
     // diffuse 
    vec3 norm = normalize(Normal);
    vec3 lightDir = normalize(lightPos - FragPos);
    float diff = max(dot(norm, lightDir), 0.0);
-   vec3 diffuse = vec3(1.0f, 1.0f, 1.0f) * diff * diffuseDrawMix;
+   vec3 diffuse = vec3(1.0f, 1.0f, 1.0f) * diff * mirroredDiffuseDrawMix;
 
     // specular
    vec3 viewDir = normalize(viewPos - FragPos);
@@ -137,7 +157,7 @@ void main() {
                else 
                {
                   //Mask texture box here
-                  color = texture(uiMaskTexture, TexCoords);
+                  color = texture(maskTexture, TexCoords);
                }
             }
          }
@@ -162,7 +182,8 @@ void main() {
       }
    } 
    else { //Render texture
-      if(renderMaskBrush == 1)
+      if(isRenderMaskMode == 0){
+if(renderMaskBrush == 1)
       {
          if(renderMaskBrushBlury == 1)
          {
@@ -203,15 +224,29 @@ void main() {
             if(renderDepth == 1)
             {
                //Depth here
-               color = vec4(vec3(linearizeDepth(gl_FragCoord.z)/far), 1.0);
+               if(renderMirroredDepth == 0){
+                  color = vec4(vec3(linearizeDepth(gl_FragCoord.z)/far), 1.0);
+               }
+               else{
+                  color = vec4(vec3(linearizeDepth(mirroredProjectedPos.z)/far), 1.0);
+               }
             }
             else
             {
                //Diffuse result here
-               color = vec4(diffuseDrawMix, 1);
+               color = vec4(mirroredDiffuseDrawMix, 1);
             }
          }
       }
+      }
+      else{
+         //Mirrored mask texture here
+         if(verticalMirror == 0){
+            color = texture(maskTexture, vec2(1.0 - TexCoords.x,TexCoords.y));
+         }
+         else{
+            color = texture(maskTexture, vec2(TexCoords.x , 1.0 - TexCoords.y));
+         }
+      }
    }
-
 }

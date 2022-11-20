@@ -5,6 +5,8 @@ layout(location = 2) in vec2 aTexCoords;
 
 uniform mat4 model;
 uniform mat4 view;
+uniform mat4 mirroredView;
+
 uniform mat4 projection;
 uniform int isTwoDimensional;
 
@@ -16,7 +18,9 @@ out vec2 TexCoords;
 out vec3 FragPos;
 out vec3 Normal;
 out vec3 Pos;
+
 out vec4 projectedPos;
+out vec4 mirroredProjectedPos;
 
 uniform mat4 renderTextureProjection;
 uniform int isRenderTextureModeV;
@@ -34,7 +38,8 @@ void main() {
    TexCoords = aTexCoords;
    FragPos = vec3(model * vec4(aPos, 1.0));
    Normal = aNormal;
-   projectedPos = projection * view * vec4(aPos, 0.5); //Caution
+   projectedPos = projection * view * vec4(aPos, 0.5); 
+   mirroredProjectedPos = projection * mirroredView * vec4(aPos, 0.5); 
 
    vec2 centerTexCoords = aTexCoords;
    float pixelSize = 1.0 / brushBlurVal;

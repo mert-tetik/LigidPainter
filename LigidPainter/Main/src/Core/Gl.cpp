@@ -276,7 +276,7 @@ void GlSet::renderTexture(unsigned int FBOScreen, std::vector<float>& vertices,b
 	 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
 	 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
 	};
-
+	
 	std::vector<float> enlargingVertices = { //Enlarge rendered image with 1 pixel so we wont have seams
 		// first triangle
 		 1.001f,  1.001f, 0.0f,1,1,0,0,0,  // top right
@@ -665,8 +665,14 @@ void GlSet::setMatrices() {
 void GlSet::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos) {
 	CommonData cmnd;
 	glm::mat4 view;
-	view = glm::lookAt(cameraPos, originPos, glm::vec3(0.0, 1.0, 0.0));
+	view = glm::lookAt(cameraPos, originPos, glm::vec3(0.0, 1.0, 0.0)); 
+
+	glm::vec3 mirrorVec = glm::vec3(1.0f,-1.0f,1.0f);
+	glm::mat4 mirroredView;
+	mirroredView = glm::lookAt(cameraPos * mirrorVec, originPos * mirrorVec, glm::vec3(0.0, 1.0, 0.0));
+
 	uniformMatrix4fv(cmnd.program, "view", view);
+	uniformMatrix4fv(cmnd.program, "mirroredView", mirroredView);
 }
 void GlSet::getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos) { //Not used
 	/*GlSet glset;
@@ -721,7 +727,9 @@ void GlSet::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen,
 	uniform1i(commonData.program, "isRenderTextureMode", 1);
 	uniform1i(commonData.program, "isRenderTextureModeV", 0);
 	uniform1i(commonData.program, "depthTexture", 9);
+	uniform1i(commonData.program, "mirroredDepthTexture", 8);
 	uniform1i(commonData.program, "renderDepth", 1);
+	uniform1i(commonData.program, "renderMirroredDepth", 0);
 	drawArrays(vertices, false);
 	GLubyte* screen = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
 	activeTexture(GL_TEXTURE9);
@@ -729,10 +737,18 @@ void GlSet::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen,
 	generateMipmap();
 	delete(screen);
 
+	uniform1i(commonData.program, "renderMirroredDepth", 1);
+	drawArrays(vertices, false);
+	GLubyte* screenMirrored = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
+	activeTexture(GL_TEXTURE8);
+	texImage(screenMirrored, 1920, 1080, GL_RGB);
+	generateMipmap();
+	delete(screenMirrored);
+
 	uniform1i(commonData.program, "isRenderTextureModeV", 0);
 	uniform1i(commonData.program, "isRenderTextureMode", 0);
 	uniform1i(commonData.program, "renderDepth", 0);
-
+	uniform1i(commonData.program, "renderMirroredDepth", 0);
 	viewport(screenSizeX, screenSizeY);
 	bindFramebuffer(0);
 }

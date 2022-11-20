@@ -35,12 +35,12 @@ GLFWwindow* window = glset.getWindow();
 //GL_TEXTURE0 = Albedo texture
 //GL_TEXTURE1 = Mask texture
 //GL_TEXTURE2 = Chars
-//GL_TEXTURE3 = NULL
+//GL_TEXTURE3 = Mirrored Screen Mask Painting Texture
 //GL_TEXTURE4 = Screen Mask Painting Texture
 //GL_TEXTURE5 = 1920x1080 Screen Texture
 //GL_TEXTURE6 = NULL
 //GL_TEXTURE7 = Enlarged albedo texture (1px)
-//GL_TEXTURE8 = NULL
+//GL_TEXTURE8 = Mirrored Depth texture
 //GL_TEXTURE9 = Depth texture
 //GL_TEXTURE10 = 1080x1080 Screen Texture
 //GL_TEXTURE11 = NULL
@@ -234,6 +234,7 @@ bool LigidPainter::run()
 	glset.uniform3fv(commonData.program, "lightPos", lightPos);
 	glset.uniform1f(commonData.program, "material.shininess", 32.0f);
 	glset.uniform1i(commonData.program, "maskTexture", 4);
+	glset.uniform1i(commonData.program, "mirroredMaskTexture", 3);
 	glset.uniform3fv(commonData.program,"textColor",colorData.textColor);
 	glset.uniform1i(commonData.program, "material.diffuse", 0);
 	glset.uniform1i(commonData.program, "material.specular", 1);
@@ -244,7 +245,10 @@ bool LigidPainter::run()
 
 	//Screen Texture
 	GLubyte* screenTexture = new GLubyte[1920 * 1080 * 3];
-	unsigned int screenPaintingTextureId = txtr.createScreenPaintTexture(screenTexture,window);
+	ScreenPaintingReturnData screenPaintingReturnData; 
+
+	screenPaintingReturnData = txtr.createScreenPaintTexture(screenTexture,window);
+
 	delete(screenTexture);
 	//Screen Texture
 
@@ -268,6 +272,12 @@ bool LigidPainter::run()
 	unsigned int depthTexture;
 	glset.genTextures(depthTexture);
 	glset.bindTexture(depthTexture);
+
+	glset.activeTexture(GL_TEXTURE8);
+	unsigned int mirroredDepthTexture;
+	glset.genTextures(mirroredDepthTexture);
+	glset.bindTexture(mirroredDepthTexture);
+
 
 	glset.activeTexture(GL_TEXTURE7);//Albedo
 	unsigned int enlargedTexture;
@@ -327,7 +337,7 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing){
-			textureGen.drawToScreen(window, maskTexturePath, brushTextureChanged, screenPaintingTextureId, brushSize, FBOScreen, brushBlurChanged, brushSizeChanged,brushRotationRangeBarValue, brushRotationChanged,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos);
+			textureGen.drawToScreen(window, maskTexturePath, brushTextureChanged, screenPaintingReturnData, brushSize, FBOScreen, brushBlurChanged, brushSizeChanged,brushRotationRangeBarValue, brushRotationChanged,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos);
 
 			drawingCount = 0;
 

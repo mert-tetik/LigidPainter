@@ -107,10 +107,12 @@ TextureData Texture::getTextureData(const char* path) {
 	td.channels = channelS;
 	return td;
 }
-unsigned int Texture::createScreenPaintTexture(GLubyte* &screenTexture,GLFWwindow* window) {
+ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTexture,GLFWwindow* window) {
+	ScreenPaintingReturnData screenPaintingReturnData; 
 	std::fill_n(screenTexture, 1920 * 1080* 3, 0);
 	GlSet glset;
 
+	//Normal screen painting texture
 	glset.activeTexture(GL_TEXTURE4);
 	unsigned int textureID;
 	glset.genTextures(textureID);
@@ -123,7 +125,31 @@ unsigned int Texture::createScreenPaintTexture(GLubyte* &screenTexture,GLFWwindo
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1920, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, screenTexture);
 	glset.generateMipmap();
-	return textureID;
+
+
+	//Mirrored screen painting texture
+	GLubyte* mirroredScreenTexture = new GLubyte[1920 * 1080 * 3];
+	std::fill_n(mirroredScreenTexture, 1920 * 1080* 3, 0);
+
+	glset.activeTexture(GL_TEXTURE3);
+	unsigned int textureIDMir;
+	glset.genTextures(textureIDMir);
+	glset.bindTexture(textureIDMir);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1920, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, mirroredScreenTexture);
+	glset.generateMipmap();
+
+	delete(mirroredScreenTexture);
+
+	screenPaintingReturnData.normalId = textureID;
+	screenPaintingReturnData.mirroredId = textureIDMir;
+
+	return screenPaintingReturnData;
 }
 void Texture::refreshScreenDrawingTexture() {
 	GlSet glset;
@@ -134,6 +160,14 @@ void Texture::refreshScreenDrawingTexture() {
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1920, 1080, GL_RGB, GL_UNSIGNED_BYTE, screenTextureX); //Refresh Screen Texture
 	glset.generateMipmap();
 	delete(screenTextureX);
+
+	//Mirrored
+	GLubyte* screenTextureM = new GLubyte[1080 * 1080 * 3];//Deleted
+	std::fill_n(screenTextureM, 1080 * 1080 * 3, 0);
+	glset.activeTexture(GL_TEXTURE3);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, screenTextureM); //Refresh Screen Texture
+	glset.generateMipmap();
+	delete(screenTextureM);
 }
 GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenSize_x, unsigned int screenSize_y, float brushRotationRangeBarValue) { //rotationValue = rotationBarValue
 	CommonData commonData;

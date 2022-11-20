@@ -22,8 +22,9 @@ GLubyte* renderedImage;
 double lastMouseXPosIn = 0;
 double lastMouseYPosIn = 0;
 
-void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushTextureChanged, unsigned int screenPaintingTextureId, float brushSize,unsigned int FBOScreen, bool brushBlurChanged,bool brushSizeChanged,float rotationValue,bool brushRotationChanged, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos) {
+void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushTextureChanged, ScreenPaintingReturnData screenPaintingReturnData, float brushSize,unsigned int FBOScreen, bool brushBlurChanged,bool brushSizeChanged,float rotationValue,bool brushRotationChanged, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos) {
 	Texture texture;
+	CommonData commonData;
 	
 	double mouseXposIn;
 	double mouseYposIn;
@@ -45,7 +46,6 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 	//----------------------SET BRUSH TEXTURE----------------------\\
 						  (Interpreted with blur value)
 	if ((brushSizeChanged || brushTextureChanged || brushBlurChanged || brushRotationChanged)) {
-		CommonData commonData;
 		delete(resizedPixels);
 		delete(renderedImage);
 
@@ -63,15 +63,19 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 		
 
 		//----------------------PAINTING----------------------\\
-		
-		int differenceBetweenMousePoints = glm::distance(glm::vec2(mouseXpos, mouseYpos), glm::vec2(lastMouseXPos, lastMouseYPos))/20;
+
+		int reduceTheDifference = 5;
+
+		int differenceBetweenMousePoints = glm::distance(glm::vec2(mouseXpos, mouseYpos), glm::vec2(lastMouseXPos, lastMouseYPos))/reduceTheDifference;
 
 		float xposDif = (mouseXpos - lastMouseXPos) / differenceBetweenMousePoints;
 		float yposDif = (mouseYpos - lastMouseYPos) / differenceBetweenMousePoints;
-		cout << lastMouseXPos << ' ' << mouseXpos << '\n';
 		if (differenceBetweenMousePoints <= 10) {
 			differenceBetweenMousePoints = 1;
 		}
+			unsigned int FBO;
+			glset.genFramebuffers(FBO);
+			glset.bindFramebuffer(FBO);
 			for (size_t i = 0; i < differenceBetweenMousePoints; i++)
 			{
 				if (differenceBetweenMousePoints > 10) {
@@ -83,15 +87,12 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 				GLfloat* screenTextureSquare = new GLfloat[distanceX * distanceY * 3]; //Painting area of the screen texture
 				 
 				//Get the painting area of the screen texture to the screenTextureSquare
-				unsigned int FBO;
-				glset.genFramebuffers(FBO);
-				glset.bindFramebuffer(FBO);
 
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenPaintingTextureId, 0);
+
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenPaintingReturnData.normalId, 0);
 				if (screenTextureSquare) {
 					glReadPixels(mouseXpos + ((1920 - screenSizeX) / 2) - distanceX / 2, 1080 - mouseYpos - ((1080 - screenSizeY) / 2) - distanceY / 2, distanceX, distanceY, GL_RGB, GL_FLOAT, screenTextureSquare);
 				}
-				glset.bindFramebuffer(0);
 				//Get the painting area of the screen texture to the screenTextureSquare
 
 				float opacity = ((opacityRangeBarValue + 0.11f) * 4.54545454545f); //-0.11 - 0.11 --> 0 - 1
@@ -114,10 +115,43 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 				//finish
 				delete(screenTextureSquare);
 				delete(resultSquare);
-				glset.deleteFramebuffers(FBO);
 				//finish
 			}
-		
+		std::vector<float> renderVerticesFlipped = { //Render backside of the uv
+	    	// first triangle
+	    	 1.0f,  1.0f, 0.0f,0,1,0,0,0,  // top right
+	    	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom right
+	    	 0.0f,  1.0f, 0.0f,1,1,0,0,0,  // top left 
+	    	// second triangle	  ,0,0,0,
+	    	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom right
+	    	 0.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom left
+	    	 0.0f,  1.0f, 0.0f,1,1,0,0,0   // top left
+	    };
+
+		Texture txtr;
+		glset.viewport(1920, 1080);
+		glset.bindFramebuffer(FBOScreen);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glset.uniform1i(commonData.program, "isTwoDimensional", 0);
+		glset.uniform1i(commonData.program, "isRenderTextureMode", 1);
+		glset.uniform1i(commonData.program, "isRenderMaskMode", 1);
+		glset.uniform1i(commonData.program, "isRenderTextureModeV", 1);
+		glset.uniform1i(commonData.program, "verticalMirror", 1);
+		glset.drawArrays(renderVerticesFlipped, false);
+		GLubyte* renderedScreen = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
+		glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedScreen);
+		glset.activeTexture(GL_TEXTURE3);
+		glset.texImage(renderedScreen, 1080, 1080, GL_RGB);
+		glset.generateMipmap();
+		delete(renderedScreen);
+
+		glset.uniform1i(commonData.program, "isRenderTextureModeV", 0);
+		glset.uniform1i(commonData.program, "isRenderTextureMode", 0);
+		glset.uniform1i(commonData.program, "isRenderMaskMode", 0);
+		glset.viewport(screenSizeX, screenSizeY);
+		glset.bindFramebuffer(0);
+		glset.deleteFramebuffers(FBO);
 	}
 	lastMouseXPosIn = mouseXposIn;
 	lastMouseYPosIn = mouseYposIn;
