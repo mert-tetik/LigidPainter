@@ -233,13 +233,13 @@ bool LigidPainter::run()
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 	glset.uniform3fv(commonData.program, "lightPos", lightPos);
 	glset.uniform1f(commonData.program, "material.shininess", 32.0f);
-	glset.uniform1i(commonData.program, "maskTexture", 4);
-	glset.uniform1i(commonData.program, "mirroredMaskTexture", 3);
+	glset.uniform1i(commonData.program, "screenMaskTexture", 4);
+	glset.uniform1i(commonData.program, "mirroredScreenMaskTexture", 3);
 	glset.uniform3fv(commonData.program,"textColor",colorData.textColor);
 	glset.uniform1i(commonData.program, "material.diffuse", 0);
 	glset.uniform1i(commonData.program, "material.specular", 1);
-	glset.uniform1i(commonData.program, "uiMaskTexture", 12);
 	glset.uniform1f(commonData.program, "brushBlurVal", 1);
+	glset.uniform1i(commonData.program, "modifiedMaskTexture", 12);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 

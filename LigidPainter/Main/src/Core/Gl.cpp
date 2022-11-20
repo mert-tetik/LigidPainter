@@ -207,7 +207,6 @@ void drawBrushIndicator(float distanceX,float screenWidth,float screenHeight,flo
 	CommonData commonData;
 	GlSet glset;
 	glset.uniform1i(commonData.program, "drawBrushIndicator", 1);
-	glset.uniform1i(commonData.program, "uiMaskTexture", 12);
 	std::vector<float> paintingSquare{
 		// first triangle
 		 distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,1,0,0,0,  // top right
@@ -223,7 +222,6 @@ void drawBrushIndicator(float distanceX,float screenWidth,float screenHeight,flo
 	glset.drawArrays(paintingSquare, false);
 	glset.uniform1f(commonData.program, "uiOpacity", 0.5f);
 
-	glset.uniform1i(commonData.program, "uiMaskTexture", 1);
 	glset.uniform1i(commonData.program, "drawBrushIndicator", 0);
 }
 
@@ -583,9 +581,7 @@ void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,uns
 	if (panelData.paintingPanelActive) {
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "Add Mask Texture", colorData.buttonColor, 0.085f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
 
-		uniform1i(commonData.program, "uiMaskTexture", 12);
 		ui.box(0.14f, 0.28f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
-		uniform1i(commonData.program, "uiMaskTexture", 1);
 
 		//Brush size rangebar
 		ui.renderText(commonData.program, "Brush Size", renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.08f, 0.00022f, glm::vec3(0.5, 0.8f, 0.2f));

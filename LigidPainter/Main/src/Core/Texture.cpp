@@ -222,7 +222,7 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	glset.uniform1i(commonData.program, "renderMaskBrushBlury", 0);
 	glset.bindFramebuffer(FBOScreen);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glset.uniform1i(commonData.program, "uiMaskTexture", 1);
+	glset.uniform1i(commonData.program, "modifiedMaskTexture", 1);
 	//Setup
 
 	
@@ -237,7 +237,7 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	//Rotation
 
 	//Get back to previous projection after rendering rotated & scaled mask texture
-	glset.uniform1i(commonData.program, "uiMaskTexture", 12);
+	glset.uniform1i(commonData.program, "modifiedMaskTexture", 12);
 	glset.uniform1i(commonData.program, "renderMaskBrushBlury", 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glset.viewport(1920, 1080);

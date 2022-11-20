@@ -14,6 +14,18 @@
 
 using namespace std;
 
+std::vector<float> renderVerticesFlipped = {
+	// first triangle
+	 1.0f,  1.0f, 0.0f,0,1,0,0,0,  // top right
+	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom right
+	 0.0f,  1.0f, 0.0f,1,1,0,0,0,  // top left 
+	// second triangle	  ,0,0,0,
+	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom right
+	 0.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom left
+	 0.0f,  1.0f, 0.0f,1,1,0,0,0   // top left
+};
+
+
 GLubyte* resizedPixels = new GLubyte[50 * 50 * 3]; //Resized mask texture
 GLubyte* renderedImage;
 //Check if values changed
@@ -117,27 +129,20 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 				delete(resultSquare);
 				//finish
 			}
-		std::vector<float> renderVerticesFlipped = { //Render backside of the uv
-	    	// first triangle
-	    	 1.0f,  1.0f, 0.0f,0,1,0,0,0,  // top right
-	    	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom right
-	    	 0.0f,  1.0f, 0.0f,1,1,0,0,0,  // top left 
-	    	// second triangle	  ,0,0,0,
-	    	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom right
-	    	 0.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom left
-	    	 0.0f,  1.0f, 0.0f,1,1,0,0,0   // top left
-	    };
 
-		Texture txtr;
+		//Update mirrored screen mask texture
+		//setup
 		glset.viewport(1920, 1080);
 		glset.bindFramebuffer(FBOScreen);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		glset.uniform1i(commonData.program, "isTwoDimensional", 0);
 		glset.uniform1i(commonData.program, "isRenderTextureMode", 1);
-		glset.uniform1i(commonData.program, "isRenderMaskMode", 1);
+		glset.uniform1i(commonData.program, "isRenderScreenMaskMode", 1);
 		glset.uniform1i(commonData.program, "isRenderTextureModeV", 1);
 		glset.uniform1i(commonData.program, "verticalMirror", 1);
+		//setup
+
+		//Get texture
 		glset.drawArrays(renderVerticesFlipped, false);
 		GLubyte* renderedScreen = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
 		glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedScreen);
@@ -145,13 +150,17 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 		glset.texImage(renderedScreen, 1080, 1080, GL_RGB);
 		glset.generateMipmap();
 		delete(renderedScreen);
+		//Get texture
 
+		//Finish
 		glset.uniform1i(commonData.program, "isRenderTextureModeV", 0);
 		glset.uniform1i(commonData.program, "isRenderTextureMode", 0);
-		glset.uniform1i(commonData.program, "isRenderMaskMode", 0);
+		glset.uniform1i(commonData.program, "isRenderScreenMaskMode", 0);
 		glset.viewport(screenSizeX, screenSizeY);
 		glset.bindFramebuffer(0);
 		glset.deleteFramebuffers(FBO);
+		//Finish
+		//Update mirrored screen mask texture
 	}
 	lastMouseXPosIn = mouseXposIn;
 	lastMouseYPosIn = mouseYposIn;
