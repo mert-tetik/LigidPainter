@@ -100,10 +100,9 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 				 
 				//Get the painting area of the screen texture to the screenTextureSquare
 
-
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenPaintingReturnData.normalId, 0);
 				if (screenTextureSquare) {
-					glReadPixels(mouseXpos + ((1920 - screenSizeX) / 2) - distanceX / 2, 1080 - mouseYpos - ((1080 - screenSizeY) / 2) - distanceY / 2, distanceX, distanceY, GL_RGB, GL_FLOAT, screenTextureSquare);
+					glReadPixels(mouseXpos * ((1920.0f / (float)screenSizeX)) - distanceX / 2, 1080 - mouseYpos * ((1080.0f / (float)screenSizeY)) - distanceY / 2, distanceX, distanceY, GL_RGB, GL_FLOAT, screenTextureSquare);
 				}
 				//Get the painting area of the screen texture to the screenTextureSquare
 
@@ -111,7 +110,6 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 				//Avoid writing low value onto high value
 				for (size_t i = 0; i < distanceX * distanceY * 3; i++)
 				{
-					//glm::mix();
 					//resultSquare[i] = max((int)resizedPixels[i], (int)(screenTextureSquare[i] * 255)); //take max value
 					resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, resizedPixels[i] / 255.0f) * 255; //Mix
 					//resultSquare[i] = min(resizedPixels[i] + (int)(screenTextureSquare[i] * 255), 255); //sum up
@@ -120,7 +118,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 
 				//Paint screen mask texture with resultSquare
 				glset.activeTexture(GL_TEXTURE4);
-				glTexSubImage2D(GL_TEXTURE_2D, 0, mouseXpos + ((1920 - screenSizeX) / 2) - distanceX / 2, 1080 - mouseYpos - ((1080 - screenSizeY) / 2) - distanceY / 2, distanceX, distanceY, GL_RGB, GL_UNSIGNED_BYTE, resultSquare);
+				glTexSubImage2D(GL_TEXTURE_2D, 0, mouseXpos * ((1920.0f / (float)screenSizeX)) - distanceX / 2, 1080 - mouseYpos * ((1080.0f / (float)screenSizeY)) - distanceY / 2, distanceX, distanceY, GL_RGB, GL_UNSIGNED_BYTE, resultSquare);
 				glset.generateMipmap();
 				//Paint screen mask texture with resultSquare
 

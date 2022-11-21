@@ -204,18 +204,20 @@ void ctrlZ(GLFWwindow* window) {
 int a = 0;
 void drawBrushIndicator(float distanceX,float screenWidth,float screenHeight,float mouseXpos,float mouseYpos,glm::vec3 color) {
 
+	float sizeX = distanceX / ((1920.0f / (float)screenWidth)); //Match the size of the window
+
 	CommonData commonData;
 	GlSet glset;
 	glset.uniform1i(commonData.program, "drawBrushIndicator", 1);
 	std::vector<float> paintingSquare{
 		// first triangle
-		 distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,1,0,0,0,  // top right
-		 distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,0,0,0,0,  // bottom right
-		-distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0,  // top left 
+		 sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,1,0,0,0,  // top right
+		 sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,0,0,0,0,  // bottom right
+		-sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0,  // top left 
 
-		 distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,0,0,0,0,  // bottom right
-		-distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom left
-		-distanceX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  distanceX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0  // top left
+		 sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,0,0,0,0,  // bottom right
+		-sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom left
+		-sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0  // top left
 	};
 	glset.uiDataToShaders(color/glm::vec3(255.0f));
 	glset.uniform1f(commonData.program, "uiOpacity", 0.2f);
@@ -277,13 +279,13 @@ void GlSet::renderTexture(unsigned int FBOScreen, std::vector<float>& vertices,b
 	
 	std::vector<float> enlargingVertices = { //Enlarge rendered image with 1 pixel so we wont have seams
 		// first triangle
-		 1.001f,  1.001f, 0.0f,1,1,0,0,0,  // top right
-		 1.001f,  -0.001f, 0.0f,1,0,0,0,0,  // bottom right
-		 -0.001f,  1.001f, 0.0f,0,1,0,0,0,  // top left 
+		 1.0f,  1.002f, 0.0f,1,1,0,0,0,  // top right
+		 1.0f,  -0.002f, 0.0f,1,0,0,0,0,  // bottom right
+		 -0.0f,  1.002f, 0.0f,0,1,0,0,0,  // top left 
 		// second triangle	  ,0,0,0,
-		 1.001f,  -0.001f, 0.0f,1,0,0,0,0,  // bottom right
-		 -0.001f,  -0.001f, 0.0f,0,0,0,0,0,  // bottom left
-		 -0.001f,  1.001f, 0.0f,0,1,0,0,0   // top left
+		 1.0f,  -0.002f, 0.0f,1,0,0,0,0,  // bottom right
+		 -0.0f,  -0.002f, 0.0f,0,0,0,0,0,  // bottom left
+		 -0.0f,  1.002f, 0.0f,0,1,0,0,0   // top left
 	};
 
 	Texture txtr;
@@ -515,7 +517,7 @@ void GlSet::renderModel(bool backfaceCulling, std::vector<float>& vertices) {
 		cullFace(GL_BACK);
 	}
 	meshDataToShaders();
-	uniform1i(commonData.program, "material.diffuse", 0); //GL_TEXTURE7 Doesn't fulfill it's purpose
+	uniform1i(commonData.program, "material.diffuse", 7);//use enlarged texture
 	drawArrays(vertices, false);
 	uniform1i(commonData.program, "material.diffuse", 0);
 
