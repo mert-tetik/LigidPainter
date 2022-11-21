@@ -173,12 +173,6 @@ using namespace std;
 				faceIndex = "";
 			}
 		}
-		for (size_t i = 0; i < vertices.size(); i++)
-		{
-			if (i % 8 == 0) {
-				cout << '\n';
-			}
-			cout << vertices[i] << " , ";
-		}
+
 		return vertices;
 	}

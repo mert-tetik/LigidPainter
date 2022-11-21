@@ -239,6 +239,7 @@ bool LigidPainter::run()
 	ui.uploadChars();
 
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+	glset.uniform1i(commonData.program, "uvMask", 7);//use enlarged texture
 	glset.uniform3fv(commonData.program, "lightPos", lightPos);
 	glset.uniform1f(commonData.program, "material.shininess", 32.0f);
 	glset.uniform1i(commonData.program, "screenMaskTexture", 4);

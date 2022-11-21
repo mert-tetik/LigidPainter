@@ -321,19 +321,33 @@ void GlSet::renderTexture(unsigned int FBOScreen, std::vector<float>& vertices,b
 
 	txtr.refreshScreenDrawingTexture();
 
-	//Render enlarged & painter image
+	//Render uv mask
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	uniform1i(commonData.program, "isTwoDimensional", 1);
-	drawArrays(enlargingVertices, false); //Render Model
-	uniform1i(commonData.program, "isTwoDimensional", 0);
+	uniform1i(commonData.program, "whiteRendering", 1);
+	drawArrays(vertices, false); //Render Model
+	uniform1i(commonData.program, "whiteRendering", 0);
+	GLubyte* uvMask = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
+	glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, uvMask);
+
+	activeTexture(GL_TEXTURE7);
+	texImage(uvMask, 1080, 1080, GL_RGB);
+	generateMipmap();
+	//Render uv mask
+
+	//interpret the albedo with ui mask texture
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	uniform1i(commonData.program, "interpretWithUvMask", 1);
+	drawArrays(renderVertices, false); //Render Model
+	uniform1i(commonData.program, "interpretWithUvMask", 0);
 	GLubyte* enlargedTxtr = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
 	glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, enlargedTxtr);
 
-	activeTexture(GL_TEXTURE7);
+	activeTexture(GL_TEXTURE0);
 	texImage(enlargedTxtr, 1080, 1080, GL_RGB);
 	generateMipmap();
-	//Render enlarged & painter image
+	//interpret the albedo with ui mask texture
 
 	//Download enlarged image
 	if (exportImage) {
@@ -347,6 +361,7 @@ void GlSet::renderTexture(unsigned int FBOScreen, std::vector<float>& vertices,b
 	//Download enlarged image
 	//Finish rendering albedo texture
 	delete(renderedImage);
+	delete(uvMask);
 	delete(enlargedTxtr);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//Finish rendering albedo texture
@@ -517,9 +532,7 @@ void GlSet::renderModel(bool backfaceCulling, std::vector<float>& vertices) {
 		cullFace(GL_BACK);
 	}
 	meshDataToShaders();
-	uniform1i(commonData.program, "material.diffuse", 7);//use enlarged texture
 	drawArrays(vertices, false);
-	uniform1i(commonData.program, "material.diffuse", 0);
 
 	disable(GL_CULL_FACE); //Disable backface culling if enabled
 }
