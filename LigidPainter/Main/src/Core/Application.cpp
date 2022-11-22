@@ -860,7 +860,9 @@ void loadModelButton() {
 	else{
 		//If model file path is inappropriate add one
 		modelFilePathTextBox();
-		loadModelButton();
+		if(modelFilePath){
+			loadModelButton();
+		}
 	}
 }
 
