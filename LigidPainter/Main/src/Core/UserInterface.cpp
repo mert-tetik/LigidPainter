@@ -62,6 +62,24 @@ void UserInterface::panel(float panelLoc, float) {
 	glset.drawArrays(panelCoor, false);
 }
 
+void UserInterface::textureDemonstrator(float width,float height, float position_x,float position_y,float z){ 
+	GlSet glset;
+	std::vector<float> buttonCoorSq{
+		// first triangle
+		 width + position_x,  position_y, z,1,1,0,0,0,  // top right
+		 width + position_x,  -height +position_y, z,1,0,0,0,0,  // bottom right
+		 position_x,  position_y, z,0,1,0,0,0,  // top left 
+		// second triangle						   
+		 width + position_x,   -height +position_y, z,1,0,0,0,0,  // bottom right
+		 position_x, -height +position_y, z,0,0,0,0,0,  // bottom left
+		 position_x,  position_y, z,0,1,0,0,0  // top left
+	};
+	box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"",glm::vec3(0),0,0,0,1,10,glm::vec3(0),0);
+	glset.uniform1i(3, "is2D", 0);
+	glset.drawArrays(buttonCoorSq,false);
+	glset.uniform1i(3, "is2D", 1);
+}
+
 void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec3 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec3 colorTransitionColor, float mixVal) {
 	
 	//buttonCurveReduce = 10 | normal  
@@ -509,11 +527,11 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 		std::vector <float> vertices = {
 			 xpos,     ypos + h, 1.0f  ,0.0f, 0.0f,0,0,0,
 			 xpos,     ypos,     1.0f  ,0.0f, 1.0f,0,0,0,
-			 xpos + w, ypos,     1.0f  ,1.0f, 1.0f,0,0,0,
+			 xpos-0.001f + w, ypos,     1.0f  ,1.0f, 1.0f,0,0,0,
 			
 			 xpos,     ypos + h, 1.0f  ,0.0f, 0.0f,0,0,0,
-			 xpos + w, ypos,     1.0f  ,1.0f, 1.0f,0,0,0,
-			 xpos + w, ypos + h, 1.0f  ,1.0f, 0.0f,0,0,0
+			 xpos-0.001f + w, ypos,     1.0f  ,1.0f, 1.0f,0,0,0,
+			 xpos-0.001f + w, ypos + h, 1.0f  ,1.0f, 0.0f,0,0,0
 		};
 		glset.bindTexture(ch.TextureID);
 		glset.drawArrays(vertices, false);

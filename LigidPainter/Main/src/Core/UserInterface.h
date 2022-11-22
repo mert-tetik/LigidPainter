@@ -24,6 +24,8 @@ struct buttonData {
 class UserInterface {
 public:
 	void panel(float panelLoc, float movePanel_x);
+	void textureDemonstrator(float width,float height, float position_x,float position_y,float z);
+
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec3 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec3 colorTransitionColor , float mixVal);
 	bool isMouseOnButton(GLFWwindow* window, float width, float height, float position_x, float position_y, int mouseXpos, int mouseYpos, bool isPanelMoving);
 	void setViewportBgColor();

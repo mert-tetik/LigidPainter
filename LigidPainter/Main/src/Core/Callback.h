@@ -30,6 +30,8 @@ struct CallbckData { //Return from callback
 	bool mirrorYCheckBoxEnter;
 	bool mirrorZCheckBoxEnter;
 
+	bool textureDemonstratorButtonEnter;
+
 	glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
 	float panelLoc;
@@ -39,9 +41,9 @@ struct CallbckData { //Return from callback
 class Callback {
 public:
 	CallbckData scroll_callback(GLFWwindow* window, double scroll, double scrollx);
-	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, bool enablePanelMovement, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue);
+	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, bool enablePanelMovement, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY);
 	void panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX, bool enablePanelMovement);
-	void buttonCheck(GLFWwindow* window, int mouseXPos, int mouseYPos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue);
+	void buttonCheck(GLFWwindow* window, int mouseXPos, int mouseYPos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY);
 	void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 };
 #endif

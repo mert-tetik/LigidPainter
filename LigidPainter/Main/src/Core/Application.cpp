@@ -39,7 +39,7 @@ GLFWwindow* window = glset.getWindow();
 //GL_TEXTURE4 = Screen Mask Painting Texture
 //GL_TEXTURE5 = 1920x1080 Screen Texture
 //GL_TEXTURE6 = NULL
-//GL_TEXTURE7 = Enlarged albedo texture (1px)
+//GL_TEXTURE7 = UV mask texture (used for painting over boundaries)
 //GL_TEXTURE8 = Mirrored Depth texture
 //GL_TEXTURE9 = Depth texture
 //GL_TEXTURE10 = 1080x1080 Screen Texture
@@ -135,6 +135,8 @@ bool brushSpacingRangeBarPressed;
 bool colorBoxColorRangeBarPressed;
 bool colorBoxPickerPressed;
 
+bool textureDemonstratorButtonPressed;
+
 //Checkbox
 bool autoTriangulateChecked = true;
 
@@ -161,6 +163,9 @@ float brushSpacingRangeBarValue = -0.11f;
 float colorBoxColorRangeBarValue = 0.0f;
 float colorBoxPickerValue_x = 0.0f;
 float colorBoxPickerValue_y = 0.0f;
+
+float textureDemonstratorButtonPosX = 0.0;
+float textureDemonstratorButtonPosY = 0.0;
 //----------RANGE VALUE----------\\.
 
 //----------ACTIONS----------\\.
@@ -190,6 +195,7 @@ void brushBlurRangeBar(float xOffset, int width, int height);
 void brushRotationRangeBar(float xOffset, int width, int height);
 void brushOpacityRangeBar(float xOffset, int width, int height);
 void brushSpacingRangeBar(float xOffset, int width, int height);
+void textureDemonstratorButton(float xOffset,float yOffset,int width,int height);
 //----------ACTIONS----------\\
 //-----------------------      UI     -----------------------\\
 
@@ -200,6 +206,9 @@ int drawingCount; // if drawingCount matches with drawingSpaces do painting
 
 int lastMouseXpos = 0;
 int lastMouseYpos = 0;
+
+int textureDemonstratorButtonPressCounter = 0;
+bool textureDemonstratorButtonPressClicked = false;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//Will be used for allowing writing to a text box
@@ -339,6 +348,29 @@ bool LigidPainter::run()
 		else {
 			glset.uniform1f(commonData.program, "brushBlurVal", 242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 15);
 		}
+
+		if(textureDemonstratorButtonPressed){
+			textureDemonstratorButtonPressCounter++;
+		}
+		if(textureDemonstratorButtonPressCounter < 40 && textureDemonstratorButtonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE){
+			textureDemonstratorButtonPressClicked = true;
+		}
+		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
+			textureDemonstratorButtonPressCounter = 0;
+			if (brushSizeRangeBarPressed){
+				brushSizeChanged = true;
+			}
+			brushSizeRangeBarPressed = false;
+			brushBlurRangeBarPressed = false;
+			brushRotationRangeBarPressed = false;
+			brushOpacityRangeBarPressed = false;
+			brushSpacingRangeBarPressed = false;
+			colorBoxPickerPressed = false;
+			colorBoxColorRangeBarPressed = false;
+			textureDemonstratorButtonPressed = false;
+		}
+
+
 		//Update
 
 		//Paint
@@ -361,13 +393,15 @@ bool LigidPainter::run()
 			lastMouseYpos = mouseYpos;
 		//Paint
 
-		glset.render(renderData, vertices, FBOScreen, panelData,exportData,uidata);
+		glset.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked);
 		exportImage = false; //After exporting, set exportImage false so we won't download the texture repeatedly
+
+		textureDemonstratorButtonPressClicked = false;
 
 		setButtonPressedFalse();
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY);
 		}
 
 		if (cameraPosChanging) { //Change the position of the camera in the shaders once camera position changed
@@ -410,6 +444,9 @@ RenderData updateRenderData(RenderData renderData,unsigned int depthTexture,int 
 	renderData.brushRotationRangeBarValue = brushRotationRangeBarValue;
 	renderData.brushOpacityRangeBarValue = brushOpacityRangeBarValue;
 	renderData.brushSpacingRangeBarValue = brushSpacingRangeBarValue;
+	
+	renderData.textureDemonstratorButtonPosX = textureDemonstratorButtonPosX;
+	renderData.textureDemonstratorButtonPosY = textureDemonstratorButtonPosY;
 
 	return renderData;
 }
@@ -504,6 +541,9 @@ void uiActions() {
 				if (callbackData.colorBoxColorRangeBarEnter) {
 					colorBoxColorRangeBarPressed= true;
 				}
+				if (callbackData.textureDemonstratorButtonEnter) {
+					textureDemonstratorButtonPressed = true;
+				}
 			}
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
@@ -588,6 +628,12 @@ void brushBlurRangeBar(float xOffset,int width,int height) {
 	brushBlurRangeBarValue = util.restrictBetween(brushBlurRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
 	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue);
 }
+void textureDemonstratorButton(float xOffset,float yOffset,int width,int height) {
+	Utilities util;
+	Texture txtr;
+	textureDemonstratorButtonPosX -= xOffset / (width / 2);
+	textureDemonstratorButtonPosY += yOffset / (height / 2);
+}
 void brushRotationRangeBar(float xOffset, int width, int height){
 	Utilities util;
 	Texture txtr;
@@ -619,9 +665,9 @@ void colorBoxColorRangeBar(float yOffset,int height){
 void colorBoxPickerButton(float xOffset, float yOffset, int width, int height) {
 	Utilities util;
 	colorBoxPickerValue_x -= xOffset / (width / 2);
-	colorBoxPickerValue_x = util.restrictBetween(colorBoxPickerValue_x, 0.095f, -0.095f);//Keep in boundaries
+	colorBoxPickerValue_x = util.restrictBetween(colorBoxPickerValue_x, 0.095f, -0.099f);//Keep in boundaries
 	colorBoxPickerValue_y += yOffset / (height / 2);
-	colorBoxPickerValue_y = util.restrictBetween(colorBoxPickerValue_y, 0.195f, -0.195f);//Keep in boundaries
+	colorBoxPickerValue_y = util.restrictBetween(colorBoxPickerValue_y, 0.198f, -0.195f);//Keep in boundaries
 }
 
 void modelFilePathTextBox() {
@@ -843,18 +889,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	int height;
 	glfwGetWindowSize(window,&width,&height);
 
-	if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) { 
-		if (brushSizeRangeBarPressed){
-			brushSizeChanged = true;
-		}
-		brushSizeRangeBarPressed = false;
-		brushBlurRangeBarPressed = false;
-		brushRotationRangeBarPressed = false;
-		brushOpacityRangeBarPressed = false;
-		brushSpacingRangeBarPressed = false;
-		colorBoxPickerPressed = false;
-		colorBoxColorRangeBarPressed = false;
-	}
+
 
 	//Get mouse position change
 	xOffset = (lastXpos - xpos) / (1920 / width);
@@ -884,8 +919,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	if (colorBoxPickerPressed) {
 		colorBoxPickerButton(xOffset,yOffset,width,height);//Changes the global variable
 	}
-
-	if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
+	if (textureDemonstratorButtonPressed) {
+		textureDemonstratorButton(xOffset,yOffset,width,height);//Changes the global variable
+	}
+	if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed || textureDemonstratorButtonPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		enablePanelMovement = false;
 		doPainting = false;
@@ -934,7 +971,7 @@ void isFirstClickDoneInside() {
 			&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.exportPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.colorBoxPickerEnter
 			&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGCheckBoxEnter && !callbackData.exportExtPNGCheckBoxEnter
 			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter
-			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter) {
+			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter) {
 			noButtonClick = true;
 		}
 		else {

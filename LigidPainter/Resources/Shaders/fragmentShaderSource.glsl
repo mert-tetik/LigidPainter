@@ -188,7 +188,7 @@ void main() {
          else
          {
             //Color rectangle slide bar here
-            color = vec4(norm,1);
+            color = vec4(Normal,1);
          }
       }
    } 

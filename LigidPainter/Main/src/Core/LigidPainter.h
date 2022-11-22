@@ -31,6 +31,9 @@ struct RenderData { //GlSet::render
 	float brushRotationRangeBarValue;
 	float brushOpacityRangeBarValue;
 	float brushSpacingRangeBarValue;
+
+	float textureDemonstratorButtonPosX;
+	float textureDemonstratorButtonPosY;
 };
 class Sphere {
 public:

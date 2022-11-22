@@ -309,7 +309,7 @@ void GlSet::renderTexture(unsigned int FBOScreen, std::vector<float>& vertices,b
 
 	//Render painted image
 	drawArrays(vertices, false);
-	if (exportImage)
+	if (!exportImage)
 		drawArrays(renderVertices, false);
 	//GLubyte* renderedImage = txtr.getTextureFromProgram(GL_TEXTURE10,1080, 1080, 3);
 	GLubyte* renderedImage = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
@@ -361,6 +361,7 @@ void GlSet::renderTexture(unsigned int FBOScreen, std::vector<float>& vertices,b
 	//Download enlarged image
 	//Finish rendering albedo texture
 	delete(renderedImage);
+	delete(originalImage);
 	delete(uvMask);
 	delete(enlargedTxtr);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -427,7 +428,7 @@ float addPanelButtonMixVal = 0.0f;
 float addSphereButtonMixVal = 0.0f;
 float addAlbedoTextureMixVal = 0.0f;
 
-void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata) {
+void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked) {
 	GlSet gls;
 	UserInterface ui;
 	CommonData commonData;
@@ -476,7 +477,7 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 
 	updateButtonColorMixValues(uidata);
 
-	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue);
+	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked);
 
 	if(renderData.doPainting)
 		drawBrushIndicator(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorBoxVal);
@@ -536,7 +537,10 @@ void GlSet::renderModel(bool backfaceCulling, std::vector<float>& vertices) {
 
 	disable(GL_CULL_FACE); //Disable backface culling if enabled
 }
-void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue) {
+bool changeTextureDemonstrator;
+float changeTextureDemonstratorWidth = 0.4f;
+float changeTextureDemonstratorHeight = 0.8f;
+void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked) {
 	ColorData colorData;
 	CommonData commonData;
 	glm::mat4 projection;
@@ -552,15 +556,40 @@ void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,uns
 	ui.panelChangeButton(renderData.panelLoc, 0.8f);//Model Panel
 	ui.panelChangeButton(renderData.panelLoc, 0.72f);//Texture Panel
 	ui.panelChangeButton(renderData.panelLoc, 0.64f);//Painting Panel
-	if(panelData.paintingPanelActive){
-		
-	}
 	
 	//Panel
 
 	ui.panelChangeButton(renderData.panelLoc, 0.56f);//Export Panel
 
-	
+	if(textureDemonstratorButtonPressClicked){
+		if(changeTextureDemonstrator){
+			changeTextureDemonstrator = false;
+		}
+		else{
+			changeTextureDemonstrator = true;
+		}
+	}
+
+	if(changeTextureDemonstrator){
+		changeTextureDemonstratorWidth -= 0.04f;
+		changeTextureDemonstratorHeight -= 0.08f;
+		if(changeTextureDemonstratorWidth <= 0.0f){
+			changeTextureDemonstratorWidth = 0.0f;
+			changeTextureDemonstratorHeight = 0.0f;
+		}
+	}
+	else{
+		changeTextureDemonstratorWidth += 0.04f;
+		changeTextureDemonstratorHeight += 0.08f;
+		if(changeTextureDemonstratorWidth >= 0.4f){
+			changeTextureDemonstratorWidth = 0.4f;
+			changeTextureDemonstratorHeight = 0.8f;
+		}
+	}
+
+
+	ui.textureDemonstrator(changeTextureDemonstratorWidth,changeTextureDemonstratorHeight,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,1.0f); 
+
 	if (panelData.paintingPanelActive){
 		ui.renderText(commonData.program, "Mirror", renderData.panelLoc - 0.12f, 0.94f, 0.00022f);//Mirror text
 		ui.checkBox(renderData.panelLoc- 0.16f, 0.9f, "X", colorData.checkBoxColor, uidata.mirrorXCheckBoxEnter, uidata.mirrorXCheckBoxPressed); //X mirror checkbox
@@ -602,29 +631,29 @@ void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,uns
 	}
 
 	if (panelData.paintingPanelActive) {
-		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "Add Mask Texture", colorData.buttonColor, 0.085f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.85f, "Add Mask Texture", colorData.buttonColor, 0.085f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
 
-		ui.box(0.14f, 0.28f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
+		ui.box(0.14f, 0.28f, renderData.panelLoc / centerDivider + centerSum, 0.45f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
 
 		//Brush size rangebar
-		ui.renderText(commonData.program, "Brush Size", renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.08f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.05f, renderData.brushSizeRangeBarValue);
+		ui.renderText(commonData.program, "Brush Size", renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.13f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.1f, renderData.brushSizeRangeBarValue);
 
 		//Brush blur rangebar
-		ui.renderText(commonData.program, "Brush Blur", renderData.panelLoc / centerDivider + centerSum - 0.051f, -0.015f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.05f, brushBlurRangeBarValue);
+		ui.renderText(commonData.program, "Brush Blur", renderData.panelLoc / centerDivider + centerSum - 0.051f, +0.035f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.00f, brushBlurRangeBarValue);
 
 		//Brush rotation rangebar
-		ui.renderText(commonData.program, "Brush Rotation", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.115f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.15f, brushRotationRangeBarValue);
+		ui.renderText(commonData.program, "Brush Rotation", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.065f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.10f, brushRotationRangeBarValue);
 
 		//Brush opacity rangebar
-		ui.renderText(commonData.program, "Brush Opacity", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.215f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.25f, brushOpacityRangeBarValue);
+		ui.renderText(commonData.program, "Brush Opacity", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.165f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.20f, brushOpacityRangeBarValue);
 
 		//Brush spacing rangebar
-		ui.renderText(commonData.program, "Brush Spacing", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.315f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.35f, brushSpacingRangeBarValue);
+		ui.renderText(commonData.program, "Brush Spacing", renderData.panelLoc / centerDivider + centerSum - 0.07f, -0.265f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.30f, brushSpacingRangeBarValue);
 
 		//Color Picker
 		ui.colorBox(renderData.panelLoc / centerDivider + centerSum - 0.02f, -0.6f, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y);
@@ -673,7 +702,7 @@ void GlSet::setMatrices() {
 	glm::mat4 model = glm::mat4(1.0f);
 	uniformMatrix4fv(cmnd.program, "model", model);
 
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 100.0f);
 	uniformMatrix4fv(cmnd.program, "projection",projection);
 
 	ProjectionData pd;
