@@ -37,6 +37,7 @@ struct CallbckData { //Return from callback
 	float panelLoc;
 
 	bool movePanel;
+	bool panelChangeLoc; 
 };
 class Callback {
 public:

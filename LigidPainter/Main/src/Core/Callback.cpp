@@ -66,6 +66,7 @@ bool textureDemonstratorButtonEnter;
 //Ui enter
 
 
+bool panelChangeLoc = false;
 
 CallbckData preapareCallbackData() {
 	CallbckData callbk;
@@ -103,6 +104,7 @@ CallbckData preapareCallbackData() {
 	callbk.cameraPos = cameraPos;
 	callbk.originPos = originPos;
 	callbk.panelLoc = panelLoc;
+	callbk.panelChangeLoc = panelChangeLoc; 
 
 	callbk.textureDemonstratorButtonEnter = textureDemonstratorButtonEnter;
 
@@ -179,7 +181,7 @@ CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypo
 	callbk = preapareCallbackData();
 	return callbk;
 }
-bool panelChangeLoc = false;
+bool panelChangeHover = false;
 void Callback::panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX, bool enablePanelMovement) {
 	panelOffset = mouseXpos - holdXPos;
 	holdXPos = mouseXpos;
@@ -201,9 +203,15 @@ void Callback::panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX, bo
 			}
 		}
 		if (mouseXpos > (screenSizeX / 2 * panelLoc) - 10 && mouseXpos < (screenSizeX / 2 * panelLoc) + 10) {
+			GLFWcursor* hresizeCursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
+			glfwSetCursor(window, hresizeCursor);
+			panelChangeHover = true;
 			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
 				panelChangeLoc = true;
 			}
+		}
+		else{
+			panelChangeHover = false;
 		}
 	}
 }
@@ -348,7 +356,7 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	else if (mirrorXCheckBoxEnter || mirrorYCheckBoxEnter || mirrorZCheckBoxEnter) {
 		glfwSetCursor(window, pointerCursor);
 	}
-	else {
+	else if (!panelChangeHover){
 		GLFWcursor* arrowCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
 		glfwSetCursor(window, arrowCursor);
 	}

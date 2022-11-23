@@ -76,7 +76,9 @@ void UserInterface::textureDemonstrator(float width,float height, float position
 	};
 	box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"",glm::vec3(0),0,0,0,1,10,glm::vec3(0),0);
 	glset.uniform1i(3, "is2D", 0);
+	glset.uniform1i(3, "isRenderTextureMode", 1);
 	glset.drawArrays(buttonCoorSq,false);
+	glset.uniform1i(3, "isRenderTextureMode", 0);
 	glset.uniform1i(3, "is2D", 1);
 }
 
@@ -535,7 +537,7 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 		};
 		glset.bindTexture(ch.TextureID);
 		glset.drawArrays(vertices, false);
-		x += (ch.Advance >> 6) * scale; 
+		x += (ch.Advance >> 6) * scale / 1.2; 
 	}
 	glset.uniform1i(program, "isTextF", 0);
 	glset.uniform1i(program, "isText", 0);

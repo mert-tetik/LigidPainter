@@ -194,6 +194,10 @@ void ctrlZ(GLFWwindow* window) {
 		glset.activeTexture(GL_TEXTURE0);
 		glset.texImage(previousAlbedoTextures[previousAlbedoTextures.size() - 1], 1080, 1080, GL_RGB);
 		glset.generateMipmap();
+
+		GLubyte* previousTexture  = previousAlbedoTextures[previousAlbedoTextures.size() - 1];
+		delete[] previousTexture;
+
 		previousAlbedoTextures.pop_back();
 		doCtrlZ = false;
 	}
@@ -294,8 +298,12 @@ void GlSet::renderTexture(unsigned int FBOScreen, std::vector<float>& vertices,b
 	GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, 1080, 1080, 3);
 	previousAlbedoTextures.push_back(originalImage);
 
-	if (previousAlbedoTextures.size() > maxTextureHistoryHold)
+	if (previousAlbedoTextures.size() > maxTextureHistoryHold){
+		GLubyte* previousTexture  = previousAlbedoTextures[0];
+		delete[] previousTexture;
 		previousAlbedoTextures.erase(previousAlbedoTextures.begin());
+	}
+
 
 	//Setup
 	uniform1i(commonData.program, "isTwoDimensional", 0);
@@ -360,10 +368,9 @@ void GlSet::renderTexture(unsigned int FBOScreen, std::vector<float>& vertices,b
 	}
 	//Download enlarged image
 	//Finish rendering albedo texture
-	delete(renderedImage);
-	delete(originalImage);
-	delete(uvMask);
-	delete(enlargedTxtr);
+	delete[]renderedImage;
+	delete[]uvMask;
+	delete[]enlargedTxtr;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//Finish rendering albedo texture
 
@@ -415,7 +422,7 @@ void GlSet::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerValue_x,
 	colorBoxVal.r = colorBoxPixel[0];
 	colorBoxVal.g = colorBoxPixel[1];
 	colorBoxVal.b = colorBoxPixel[2];
-	delete(colorBoxPixel);
+	delete[]colorBoxPixel;
 	//Finish
 }
 
@@ -428,13 +435,23 @@ float addPanelButtonMixVal = 0.0f;
 float addSphereButtonMixVal = 0.0f;
 float addAlbedoTextureMixVal = 0.0f;
 
-void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked) {
+float changeTextureDemonstratorWidth = 0.4f;
+float changeTextureDemonstratorHeight = 0.8f;
+
+float orgTextureDemonstratorWidth = 0.4f;
+float orgTextureDemonstratorHeight = 0.8f;
+void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed) {
 	GlSet gls;
 	UserInterface ui;
 	CommonData commonData;
 	ColorData colorData;
 	Utilities util;
 	Texture txtr;
+
+	if(textureDemonstratorBoundariesPressed){
+		orgTextureDemonstratorWidth = textureDemonstratorWidth;
+		orgTextureDemonstratorHeight = textureDemonstratorHeight;
+	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear before rendering
 
@@ -538,8 +555,7 @@ void GlSet::renderModel(bool backfaceCulling, std::vector<float>& vertices) {
 	disable(GL_CULL_FACE); //Disable backface culling if enabled
 }
 bool changeTextureDemonstrator;
-float changeTextureDemonstratorWidth = 0.4f;
-float changeTextureDemonstratorHeight = 0.8f;
+
 void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked) {
 	ColorData colorData;
 	CommonData commonData;
@@ -556,10 +572,10 @@ void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,uns
 	ui.panelChangeButton(renderData.panelLoc, 0.8f);//Model Panel
 	ui.panelChangeButton(renderData.panelLoc, 0.72f);//Texture Panel
 	ui.panelChangeButton(renderData.panelLoc, 0.64f);//Painting Panel
+	ui.panelChangeButton(renderData.panelLoc, 0.56f);//Export Panel
 	
 	//Panel
 
-	ui.panelChangeButton(renderData.panelLoc, 0.56f);//Export Panel
 
 	if(textureDemonstratorButtonPressClicked){
 		if(changeTextureDemonstrator){
@@ -571,24 +587,28 @@ void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,uns
 	}
 
 	if(changeTextureDemonstrator){
-		changeTextureDemonstratorWidth -= 0.04f;
-		changeTextureDemonstratorHeight -= 0.08f;
-		if(changeTextureDemonstratorWidth <= 0.0f){
+		changeTextureDemonstratorWidth -= 0.035f;
+		changeTextureDemonstratorHeight -= 0.07f;
+		
+		if(changeTextureDemonstratorWidth < 0.0f){
 			changeTextureDemonstratorWidth = 0.0f;
+		}
+		if(changeTextureDemonstratorHeight < 0.0f){
 			changeTextureDemonstratorHeight = 0.0f;
 		}
 	}
 	else{
-		changeTextureDemonstratorWidth += 0.04f;
-		changeTextureDemonstratorHeight += 0.08f;
-		if(changeTextureDemonstratorWidth >= 0.4f){
-			changeTextureDemonstratorWidth = 0.4f;
-			changeTextureDemonstratorHeight = 0.8f;
+		changeTextureDemonstratorWidth += 0.035f;
+		changeTextureDemonstratorHeight += 0.07f;
+		if(changeTextureDemonstratorWidth > orgTextureDemonstratorWidth){
+			changeTextureDemonstratorWidth = orgTextureDemonstratorWidth;
+		}
+		if(changeTextureDemonstratorHeight > orgTextureDemonstratorHeight){
+			changeTextureDemonstratorHeight = orgTextureDemonstratorHeight;
 		}
 	}
-
-
 	ui.textureDemonstrator(changeTextureDemonstratorWidth,changeTextureDemonstratorHeight,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,1.0f); 
+
 
 	if (panelData.paintingPanelActive){
 		ui.renderText(commonData.program, "Mirror", renderData.panelLoc - 0.12f, 0.94f, 0.00022f);//Mirror text
@@ -783,7 +803,7 @@ void GlSet::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen,
 	activeTexture(GL_TEXTURE9);
 	texImage(screen, 1920, 1080, GL_RGB);
 	generateMipmap();
-	delete(screen);
+	delete[]screen;
 
 	uniform1i(commonData.program, "renderMirroredDepth", 1);
 	drawArrays(vertices, false);
@@ -791,7 +811,7 @@ void GlSet::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen,
 	activeTexture(GL_TEXTURE8);
 	texImage(screenMirrored, 1920, 1080, GL_RGB);
 	generateMipmap();
-	delete(screenMirrored);
+	delete[] screenMirrored;
 
 	uniform1i(commonData.program, "isRenderTextureModeV", 0);
 	uniform1i(commonData.program, "isRenderTextureMode", 0);

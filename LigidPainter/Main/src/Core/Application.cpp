@@ -136,6 +136,7 @@ bool colorBoxColorRangeBarPressed;
 bool colorBoxPickerPressed;
 
 bool textureDemonstratorButtonPressed;
+bool textureDemonstratorBoundariesPressed;
 
 //Checkbox
 bool autoTriangulateChecked = true;
@@ -196,6 +197,7 @@ void brushRotationRangeBar(float xOffset, int width, int height);
 void brushOpacityRangeBar(float xOffset, int width, int height);
 void brushSpacingRangeBar(float xOffset, int width, int height);
 void textureDemonstratorButton(float xOffset,float yOffset,int width,int height);
+void textureDemonstratorBoundaries(float xOffset,float yOffset,int width,int height);
 //----------ACTIONS----------\\
 //-----------------------      UI     -----------------------\\
 
@@ -209,6 +211,11 @@ int lastMouseYpos = 0;
 
 int textureDemonstratorButtonPressCounter = 0;
 bool textureDemonstratorButtonPressClicked = false;
+float textureDemonstratorWidth = 0.4f;
+float textureDemonstratorHeight = 0.8f;
+bool textureDemonstratorBoundariesHover = false;
+//bool textureDemonstratorBoundariesHoverR = false;
+//bool textureDemonstratorBoundariesHoverB = false;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//Will be used for allowing writing to a text box
@@ -368,6 +375,7 @@ bool LigidPainter::run()
 			colorBoxPickerPressed = false;
 			colorBoxColorRangeBarPressed = false;
 			textureDemonstratorButtonPressed = false;
+			textureDemonstratorBoundariesPressed = false;
 		}
 
 
@@ -393,7 +401,7 @@ bool LigidPainter::run()
 			lastMouseYpos = mouseYpos;
 		//Paint
 
-		glset.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked);
+		glset.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,textureDemonstratorBoundariesPressed);
 		exportImage = false; //After exporting, set exportImage false so we won't download the texture repeatedly
 
 		textureDemonstratorButtonPressClicked = false;
@@ -544,6 +552,9 @@ void uiActions() {
 				if (callbackData.textureDemonstratorButtonEnter) {
 					textureDemonstratorButtonPressed = true;
 				}
+				if (textureDemonstratorBoundariesHover) {
+					textureDemonstratorBoundariesPressed = true;
+				}
 			}
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
@@ -633,6 +644,12 @@ void textureDemonstratorButton(float xOffset,float yOffset,int width,int height)
 	Texture txtr;
 	textureDemonstratorButtonPosX -= xOffset / (width / 2);
 	textureDemonstratorButtonPosY += yOffset / (height / 2);
+}
+void textureDemonstratorBoundaries(float xOffset,float yOffset,int width,int height) {
+	Utilities util;
+	Texture txtr;
+	textureDemonstratorWidth -= xOffset / 960.0f;
+	textureDemonstratorHeight -= yOffset / 540.0f;
 }
 void brushRotationRangeBar(float xOffset, int width, int height){
 	Utilities util;
@@ -890,8 +907,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	int width;
 	int height;
 	glfwGetWindowSize(window,&width,&height);
-
-
+	
 
 	//Get mouse position change
 	xOffset = (lastXpos - xpos) / (1920 / width);
@@ -899,6 +915,17 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	yOffset = (lastYpos - ypos) / (1080 / height);
 	lastYpos = ypos;
 	//Get mouse position change
+	float range = 0.025f;
+
+	if(xpos > ((textureDemonstratorButtonPosX + textureDemonstratorWidth) - range) * width/2 && xpos < ((textureDemonstratorButtonPosX + textureDemonstratorWidth) + range) * width/2){
+		textureDemonstratorBoundariesHover = true;
+	}
+	else if(height - ypos > ((textureDemonstratorButtonPosY+1.0f - textureDemonstratorHeight) - range) * height/2 && height - ypos < ((textureDemonstratorButtonPosY+1.0f - textureDemonstratorHeight) + range) * height/2 ){
+		textureDemonstratorBoundariesHover = true;
+	}
+	else{
+		textureDemonstratorBoundariesHover = false;
+	}
 
 	if (brushSizeRangeBarPressed) {
 		brushSizeRangeBar(xOffset,width);//Changes the global variable
@@ -924,7 +951,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	if (textureDemonstratorButtonPressed) {
 		textureDemonstratorButton(xOffset,yOffset,width,height);//Changes the global variable
 	}
-	if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed || textureDemonstratorButtonPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
+	if (textureDemonstratorBoundariesPressed) {
+		textureDemonstratorBoundaries(xOffset,yOffset,width,height);//Changes the global variable
+	}
+	if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed || textureDemonstratorButtonPressed ) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		enablePanelMovement = false;
 		doPainting = false;
@@ -973,7 +1003,7 @@ void isFirstClickDoneInside() {
 			&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.exportPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.colorBoxPickerEnter
 			&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGCheckBoxEnter && !callbackData.exportExtPNGCheckBoxEnter
 			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter
-			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter) {
+			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter && !textureDemonstratorBoundariesHover) {
 			noButtonClick = true;
 		}
 		else {
