@@ -56,7 +56,7 @@ glm::vec3 holdCameraPos; //Used to detect the camera position change
 //Paths
 const char* modelFilePath;
 string albedoTexturePath = "albedoImage.png";
-string maskTexturePath = "maskImage.png";
+string maskTexturePath = "./LigidPainter/Resources/Textures/PlainCircle.png";
 string exportPath = "";
 string exportFolder = "Choose Destination Path";
 //Paths
