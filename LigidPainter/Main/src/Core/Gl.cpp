@@ -653,6 +653,8 @@ void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,uns
 	if (panelData.paintingPanelActive) {
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.85f, "Add Mask Texture", colorData.buttonColor, 0.085f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
 
+		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.1f, 0.76f, "Use Negative", colorData.checkBoxColor, uidata.useNegativeForDrawingCheckboxEnter, uidata.useNegativeForDrawingCheckboxPressed); //Auto triangulate checkbox
+
 		ui.box(0.14f, 0.28f, renderData.panelLoc / centerDivider + centerSum, 0.45f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
 
 		//Brush size rangebar

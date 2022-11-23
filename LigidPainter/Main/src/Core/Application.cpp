@@ -174,6 +174,7 @@ void loadModelButton();
 void modelFilePathTextBox();
 void autoTriangulateCheckBox();
 void backfaceCullingCheckBox();
+void useNegativeForDrawingCheckbox();
 void addPlaneButton();
 void addSphereButton();
 void addImageButton();
@@ -216,6 +217,8 @@ float textureDemonstratorHeight = 0.8f;
 bool textureDemonstratorBoundariesHover = false;
 //bool textureDemonstratorBoundariesHoverR = false;
 //bool textureDemonstratorBoundariesHoverB = false;
+
+bool useNegativeForDrawing;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//Will be used for allowing writing to a text box
@@ -386,7 +389,7 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing){
-			textureGen.drawToScreen(window, maskTexturePath, brushTextureChanged, screenPaintingReturnData, brushSize, FBOScreen, brushBlurChanged, brushSizeChanged,brushRotationRangeBarValue, brushRotationChanged,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed);
+			textureGen.drawToScreen(window, maskTexturePath, brushTextureChanged, screenPaintingReturnData, brushSize, FBOScreen, brushBlurChanged, brushSizeChanged,brushRotationRangeBarValue, brushRotationChanged,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing);
 
 			drawingCount = 0;
 
@@ -471,6 +474,9 @@ UiData updateUiData() {
 	
 	uidata.backfaceCullingCheckBoxEnter = callbackData.backfaceCullingCheckBoxEnter;
 	uidata.backfaceCullingCheckBoxPressed = backfaceCullingChecked;
+
+	uidata.useNegativeForDrawingCheckboxEnter = callbackData.useNegativeForDrawingCheckboxEnter;
+	uidata.useNegativeForDrawingCheckboxPressed = useNegativeForDrawing;
 	
 	uidata.addPlaneButtonEnter = callbackData.addPlaneButtonEnter;
 	uidata.addPlaneButtonPressed;
@@ -583,6 +589,8 @@ void uiActions() {
 					autoTriangulateCheckBox();
 				if (callbackData.backfaceCullingCheckBoxEnter)
 					backfaceCullingCheckBox();
+				if (callbackData.useNegativeForDrawingCheckboxEnter)
+					useNegativeForDrawingCheckbox();
 				if (callbackData.loadModelButtonEnter)
 					loadModelButton();
 				if (callbackData.exportPathTextBoxEnter) 
@@ -859,6 +867,14 @@ void backfaceCullingCheckBox() {
 		backfaceCullingChecked = false;
 	}
 }
+void useNegativeForDrawingCheckbox(){
+	if (useNegativeForDrawing == false) {
+		useNegativeForDrawing = true;
+	}
+	else {
+		useNegativeForDrawing = false;
+	}
+}
 void loadModelButton() {
 	loadModelButtonPressed = true;
 	Texture txtr;
@@ -1003,7 +1019,7 @@ void isFirstClickDoneInside() {
 			&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.exportPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.colorBoxPickerEnter
 			&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGCheckBoxEnter && !callbackData.exportExtPNGCheckBoxEnter
 			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter
-			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter && !textureDemonstratorBoundariesHover) {
+			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter && !textureDemonstratorBoundariesHover && !callbackData.useNegativeForDrawingCheckboxEnter) {
 			noButtonClick = true;
 		}
 		else {

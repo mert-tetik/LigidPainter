@@ -66,6 +66,9 @@ struct UiData {
 
 	bool exportDownloadButtonEnter;
 	bool exportDownloadButtonPressed;
+
+	bool useNegativeForDrawingCheckboxEnter;
+	bool useNegativeForDrawingCheckboxPressed;
 };
 class GlSet {
 public:

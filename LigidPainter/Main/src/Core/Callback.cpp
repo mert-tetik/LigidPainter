@@ -63,6 +63,7 @@ bool mirrorYCheckBoxEnter;
 bool mirrorZCheckBoxEnter;
 bool exportDownloadButtonEnter;
 bool textureDemonstratorButtonEnter;
+bool useNegativeForDrawingCheckboxEnter;
 //Ui enter
 
 
@@ -107,6 +108,8 @@ CallbckData preapareCallbackData() {
 	callbk.panelChangeLoc = panelChangeLoc; 
 
 	callbk.textureDemonstratorButtonEnter = textureDemonstratorButtonEnter;
+
+	callbk.useNegativeForDrawingCheckboxEnter = useNegativeForDrawingCheckboxEnter;
 
 	return callbk;
 }
@@ -255,6 +258,7 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	}
 	if (panelData.paintingPanelActive) {
 		addMaskTextureButtonEnter = ui.isMouseOnButton(window, 0.12f, 0.04f, panelLoc / centerDivider + centerSum, 0.85f, mouseXPos, mouseYPos, movePanel);
+		useNegativeForDrawingCheckboxEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc / centerDivider + centerSum - 0.1f, 0.76f, mouseXPos, mouseYPos, movePanel);
 		brushSizeRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushSizeRangeBarValue, 0.1f, mouseXPos, mouseYPos, movePanel);
 		brushBlurRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushBlurRangeBarValue, -0.00f, mouseXPos, mouseYPos, movePanel);
 		brushRotationRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushRotationRangeBarValue, -0.10f, mouseXPos, mouseYPos, movePanel);
@@ -269,6 +273,7 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	}
 	else {
 		addMaskTextureButtonEnter = false;
+		useNegativeForDrawingCheckboxEnter = false;
 		brushSizeRangeBarEnter = false;
 		brushBlurRangeBarEnter = false;
 		brushRotationRangeBarEnter = false;
@@ -354,6 +359,9 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if (mirrorXCheckBoxEnter || mirrorYCheckBoxEnter || mirrorZCheckBoxEnter) {
+		glfwSetCursor(window, pointerCursor);
+	}
+	else if (useNegativeForDrawingCheckboxEnter) {
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if (!panelChangeHover){

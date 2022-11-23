@@ -34,7 +34,7 @@ GLubyte* renderedImage;
 double lastMouseXPosIn = 0;
 double lastMouseYPosIn = 0;
 
-void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushTextureChanged, ScreenPaintingReturnData screenPaintingReturnData, float brushSize,unsigned int FBOScreen, bool brushBlurChanged,bool brushSizeChanged,float rotationValue,bool brushRotationChanged, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed) {
+void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushTextureChanged, ScreenPaintingReturnData screenPaintingReturnData, float brushSize,unsigned int FBOScreen, bool brushBlurChanged,bool brushSizeChanged,float rotationValue,bool brushRotationChanged, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing) {
 	Texture texture;
 	CommonData commonData;
 	
@@ -75,7 +75,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 		
 
 		//----------------------PAINTING----------------------\\
-
+		
 		int reduceTheDifference = 5;
 
 		int differenceBetweenMousePoints = glm::distance(glm::vec2(mouseXpos, mouseYpos), glm::vec2(lastMouseXPos, lastMouseYPos))/reduceTheDifference;
@@ -111,7 +111,10 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 				for (size_t i = 0; i < distanceX * distanceY * 3; i++)
 				{
 					//resultSquare[i] = max((int)resizedPixels[i], (int)(screenTextureSquare[i] * 255)); //take max value
-					resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, resizedPixels[i] / 255.0f) * 255; //Mix
+					if(useNegativeForDrawing)
+						resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, 1.0f -(resizedPixels[i] / 255.0f)) * 255; //Mix
+					else
+						resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, (resizedPixels[i] / 255.0f)) * 255; //Mix
 					//resultSquare[i] = min(resizedPixels[i] + (int)(screenTextureSquare[i] * 255), 255); //sum up
 				}
 				//Avoid writing low value onto high value
