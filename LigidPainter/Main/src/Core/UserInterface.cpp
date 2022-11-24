@@ -82,6 +82,23 @@ void UserInterface::textureDemonstrator(float width,float height, float position
 	glset.uniform1i(3, "is2D", 1);
 }
 
+void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z){
+	std::vector<float> buttonCoorSq{
+		// first triangle
+		 width + position_x,  height + position_y, z,1,1,0,0,0,  // top right
+		 width + position_x, -height + position_y, z,1,0,0,0,0,  // bottom right
+		-width + position_x,  height + position_y, z,0,1,0,0,0,  // top left 
+		// second triangle						   
+		 width + position_x, -height + position_y, z,1,0,0,0,0,  // bottom right
+		-width + position_x, -height + position_y, z,0,0,0,0,0,  // bottom left
+		-width + position_x,  height + position_y, z,0,1,0,0,0  // top left
+	};
+	GlSet glset;
+	
+	glset.drawArrays(buttonCoorSq,false);
+	
+}
+
 void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec3 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec3 colorTransitionColor, float mixVal) {
 	
 	//buttonCurveReduce = 10 | normal  

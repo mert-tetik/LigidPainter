@@ -125,6 +125,7 @@ bool addSphereButtonPressed = false;
 bool addImageButtonPressed = false;
 bool addMaskTextureButtonPressed = false;
 bool exportDownloadButtonPressed = false;
+bool paintingDropperPressed = false;
 
 //Used to let mouse callback function know if it's supposed to change range bar values
 bool brushSizeRangeBarPressed;
@@ -199,6 +200,8 @@ void brushOpacityRangeBar(float xOffset, int width, int height);
 void brushSpacingRangeBar(float xOffset, int width, int height);
 void textureDemonstratorButton(float xOffset,float yOffset,int width,int height);
 void textureDemonstratorBoundaries(float xOffset,float yOffset,int width,int height);
+void paintingDropper();
+
 //----------ACTIONS----------\\
 //-----------------------      UI     -----------------------\\
 
@@ -219,6 +222,8 @@ bool textureDemonstratorBoundariesHover = false;
 //bool textureDemonstratorBoundariesHoverB = false;
 
 bool useNegativeForDrawing;
+
+glm::vec3 screenHoverPixel;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//Will be used for allowing writing to a text box
@@ -343,6 +348,114 @@ bool LigidPainter::run()
 
 		uiActions();
 
+		if(paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS){
+			int width;
+			int height;
+			glfwGetWindowSize(window,&width,&height);
+			
+			Utilities util;
+			glm::vec3 hsvVal = util.RGBToHSVGenerator(screenHoverPixel);
+			if(hsvVal.r > 247.0){
+				colorBoxColorRangeBarValue = 0.195f;	
+			}
+			else if(hsvVal.r < 247.0 && hsvVal.r > 237.0){
+				colorBoxColorRangeBarValue = 0.175f;	
+			}
+			else if(hsvVal.r < 237.0 && hsvVal.r > 232.0){
+				colorBoxColorRangeBarValue = 0.165f;	
+			}
+			else if(hsvVal.r < 232.0 && hsvVal.r > 228.0){
+				colorBoxColorRangeBarValue = 0.155f;	
+			}
+			else if(hsvVal.r < 228.0 && hsvVal.r > 224.0){
+				colorBoxColorRangeBarValue = 0.145f;	
+			}
+			else if(hsvVal.r < 224.0 && hsvVal.r > 218.0){
+				colorBoxColorRangeBarValue = 0.141f;	
+			}
+			else if(hsvVal.r < 218.0 && hsvVal.r > 210.0){
+				colorBoxColorRangeBarValue = 0.135f;	
+			}
+			else if(hsvVal.r < 210.0 && hsvVal.r > 205.0){
+				colorBoxColorRangeBarValue = 0.115f;	
+			}
+			else if(hsvVal.r < 205.0 && hsvVal.r > 200.0){
+				colorBoxColorRangeBarValue = 0.110f;	
+			}
+			else if(hsvVal.r < 200.0 && hsvVal.r > 190.0){
+				colorBoxColorRangeBarValue = 0.105f;	
+			}
+			else if(hsvVal.r < 190.0 && hsvVal.r > 185.0){
+				colorBoxColorRangeBarValue = 0.095f;	
+			}
+			else if(hsvVal.r < 185.0 && hsvVal.r > 175.0){
+				colorBoxColorRangeBarValue = 0.085f;	
+			}
+			else if(hsvVal.r < 155.0 && hsvVal.r > 145.0){
+				colorBoxColorRangeBarValue = 0.057f;	
+			}
+			else if(hsvVal.r < 145.0 && hsvVal.r > 135.0){
+				colorBoxColorRangeBarValue = 0.047f;	
+			}
+			else if(hsvVal.r < 135.0 && hsvVal.r > 125.0){
+				colorBoxColorRangeBarValue = 0.042f;	
+			}
+			else if(hsvVal.r < 125.0 && hsvVal.r > 115.0){
+				colorBoxColorRangeBarValue = 0.028f;	
+			}
+			else if(hsvVal.r < 115.0 && hsvVal.r > 107.0){
+				colorBoxColorRangeBarValue = 0.018f;	
+			}
+			else if(hsvVal.r < 107.0 && hsvVal.r > 103.0){
+				colorBoxColorRangeBarValue = 0.008f;	
+			}
+			else if(hsvVal.r < 103.0 && hsvVal.r > 97.0){
+				colorBoxColorRangeBarValue = -0.007f;	
+			}
+			else if(hsvVal.r < 97.0 && hsvVal.r > 92.0){
+				colorBoxColorRangeBarValue = -0.015f;	
+			}
+			else if(hsvVal.r < 92.0 && hsvVal.r > 85.0){
+				colorBoxColorRangeBarValue = -0.02f;	
+			}
+			else if(hsvVal.r < 85.0 && hsvVal.r > 75.0){
+				colorBoxColorRangeBarValue = -0.025f;	
+			}
+			else if(hsvVal.r < 75.0 && hsvVal.r > 65.0){
+				colorBoxColorRangeBarValue = -0.045f;	
+			}
+			else if(hsvVal.r < 65.0 && hsvVal.r > 55.0){
+				colorBoxColorRangeBarValue = -0.059f;	
+			}
+			else if(hsvVal.r < 55.0 && hsvVal.r > 45.0){
+				colorBoxColorRangeBarValue = -0.07f;	
+			}
+			else if(hsvVal.r < 42.0 && hsvVal.r > 35.0){
+				colorBoxColorRangeBarValue = -0.13f;	
+			}
+			else if(hsvVal.r < 35.0 && hsvVal.r > 30.0){
+				colorBoxColorRangeBarValue = -0.14f;	
+			}
+			else if(hsvVal.r < 30.0 && hsvVal.r > 25.0){
+				colorBoxColorRangeBarValue = -0.15f;	
+			}
+			else if(hsvVal.r < 25.0 && hsvVal.r > 15.0){
+				colorBoxColorRangeBarValue = -0.165f;	
+			}
+			else if(hsvVal.r < 15.0 && hsvVal.r > 8.0){
+				colorBoxColorRangeBarValue = -0.178f;	
+			}
+			else if(hsvVal.r < 8.0){
+				colorBoxColorRangeBarValue = -0.195f;	
+			}
+			else{
+				colorBoxColorRangeBarValue = (hsvVal.r / 653.846153846f) - 0.195f + 0.02f; //0.195
+			}
+			colorBoxPickerValue_x = (hsvVal.g / 1342.10526316f) - 0.095f; //0.095
+			colorBoxPickerValue_y = (hsvVal.b / 653.846153846f) - 0.195f; //0.195
+			paintingDropperPressed = false;
+		}
+
 		//Update
 		glset.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
 		brushSize = double(brushSizeRangeBarValue + 0.1f) * 800.0 + 20.0 ;
@@ -362,7 +475,7 @@ bool LigidPainter::run()
 		if(textureDemonstratorButtonPressed){
 			textureDemonstratorButtonPressCounter++;
 		}
-		if(textureDemonstratorButtonPressCounter < 40 && textureDemonstratorButtonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE){
+		if(textureDemonstratorButtonPressCounter < 30 && textureDemonstratorButtonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE){
 			textureDemonstratorButtonPressClicked = true;
 		}
 		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
@@ -403,13 +516,14 @@ bool LigidPainter::run()
 					lastMouseXpos = mouseXpos;
 			lastMouseYpos = mouseYpos;
 		//Paint
-
-		glset.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,textureDemonstratorBoundariesPressed);
+		
+		screenHoverPixel = glset.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,textureDemonstratorBoundariesPressed);
 		exportImage = false; //After exporting, set exportImage false so we won't download the texture repeatedly
 
 		textureDemonstratorButtonPressClicked = false;
 
 		setButtonPressedFalse();
+
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
 			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY);
@@ -593,6 +707,8 @@ void uiActions() {
 					useNegativeForDrawingCheckbox();
 				if (callbackData.loadModelButtonEnter)
 					loadModelButton();
+				if (callbackData.paintingDropperEnter)
+					paintingDropper();
 				if (callbackData.exportPathTextBoxEnter) 
 					exportPathTextBox();
 				if (callbackData.exportDownloadButtonEnter)
@@ -690,9 +806,9 @@ void colorBoxColorRangeBar(float yOffset,int height){
 void colorBoxPickerButton(float xOffset, float yOffset, int width, int height) {
 	Utilities util;
 	colorBoxPickerValue_x -= xOffset / (width / 2);
-	colorBoxPickerValue_x = util.restrictBetween(colorBoxPickerValue_x, 0.095f, -0.099f);//Keep in boundaries
+	colorBoxPickerValue_x = util.restrictBetween(colorBoxPickerValue_x, 0.095f, -0.095f);//Keep in boundaries
 	colorBoxPickerValue_y += yOffset / (height / 2);
-	colorBoxPickerValue_y = util.restrictBetween(colorBoxPickerValue_y, 0.198f, -0.195f);//Keep in boundaries
+	colorBoxPickerValue_y = util.restrictBetween(colorBoxPickerValue_y, 0.195f, -0.195f);//Keep in boundaries
 }
 
 void modelFilePathTextBox() {
@@ -899,6 +1015,10 @@ void loadModelButton() {
 	}
 }
 
+void paintingDropper(){
+	paintingDropperPressed = true;
+}
+//0.195 -0.195 = 0.390
 //-------------CALLBACK-------------\\
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -924,7 +1044,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	int height;
 	glfwGetWindowSize(window,&width,&height);
 	
-
 	//Get mouse position change
 	xOffset = (lastXpos - xpos) / (1920 / width);
 	lastXpos = xpos;
@@ -1019,7 +1138,8 @@ void isFirstClickDoneInside() {
 			&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.exportPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.colorBoxPickerEnter
 			&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGCheckBoxEnter && !callbackData.exportExtPNGCheckBoxEnter
 			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter
-			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter && !textureDemonstratorBoundariesHover && !callbackData.useNegativeForDrawingCheckboxEnter) {
+			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter && !textureDemonstratorBoundariesHover && !callbackData.useNegativeForDrawingCheckboxEnter
+			&& !callbackData.paintingDropperEnter) {
 			noButtonClick = true;
 		}
 		else {

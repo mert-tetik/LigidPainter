@@ -408,7 +408,7 @@ void GlSet::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerValue_x,
 	uniform1i(commonData.program, "isColorBox", 1);
 	drawArrays(colorBox, false); //Render Model
 	uniform1i(commonData.program, "isColorBox", 0);
-	glReadPixels((colorBoxPickerValue_x * -1.0f + 0.1f) * 5.0f * 1080, (colorBoxPickerValue_y + 0.2f) * 2.5f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorBoxPixel);
+	glReadPixels(1080 - ((colorBoxPickerValue_x * -1.0f + 0.1f) * 5.0f * 1080), (colorBoxPickerValue_y + 0.2f) * 2.5f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorBoxPixel);
 	uniform3f(commonData.program, "drawColor", colorBoxPixel[0] / 255.0f, colorBoxPixel[1] / 255.0f, colorBoxPixel[2] / 255.0f);
 	//Render color box
 
@@ -440,7 +440,7 @@ float changeTextureDemonstratorHeight = 0.8f;
 
 float orgTextureDemonstratorWidth = 0.4f;
 float orgTextureDemonstratorHeight = 0.8f;
-void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed) {
+glm::vec3 GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed) {
 	GlSet gls;
 	UserInterface ui;
 	CommonData commonData;
@@ -467,7 +467,7 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 	bool colorBoxValChanged = isColorBoxValueChanged(renderData);
 
 	drawAxisPointer();
-
+	
 	//Render depth once painting started
 	if (renderData.paintingMode) { 
 		renderDepthCounter++;
@@ -484,6 +484,8 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false
 		renderTexture(FBOScreen,vertices,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY);
 	}
+	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked);
+
 	if (colorBoxValChanged) { //Get value of color box
 		getColorBoxValue(FBOScreen, lastColorBoxPickerValue_x, lastColorBoxPickerValue_y,screenSizeX, screenSizeY);
 	}
@@ -494,10 +496,22 @@ void GlSet::render(RenderData renderData, std::vector<float>& vertices, unsigned
 
 	updateButtonColorMixValues(uidata);
 
-	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked);
+
+	
+	glm::vec3 screenHoverPixel;
+
+	GLubyte* screenPixel = new GLubyte[1 * 1 * 3];//Color val
+	glReadPixels(mouseXpos,screenSizeY - mouseYpos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, screenPixel);
+
+	screenHoverPixel.r = screenPixel[0];
+	screenHoverPixel.g = screenPixel[1];
+	screenHoverPixel.b = screenPixel[2];
+	delete[] screenPixel;  
 
 	if(renderData.doPainting)
 		drawBrushIndicator(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorBoxVal);
+
+	return screenHoverPixel;
 }
 
 void GlSet::updateButtonColorMixValues(UiData uidata) {
@@ -687,6 +701,7 @@ void GlSet::renderUi(PanelData panelData,UiData uidata,RenderData renderData,uns
 		ui.decorationSquare(renderData.panelLoc / centerDivider + centerSum - 0.1f, -0.84f); //Decoration for color indicator
 
 		ui.renderText(commonData.program, util.rgbToHexGenerator(colorBoxVal), renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.86f, 0.00022f); //Hex value of the picken color 
+		ui.iconBox(0.015f,0.03f,renderData.panelLoc / centerDivider + centerSum + 0.05f, -0.86f,1);
 	}
 
 	if (panelData.exportPanelActive) {
@@ -724,7 +739,7 @@ void GlSet::setMatrices() {
 	glm::mat4 model = glm::mat4(1.0f);
 	uniformMatrix4fv(cmnd.program, "model", model);
 
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
 	uniformMatrix4fv(cmnd.program, "projection",projection);
 
 	ProjectionData pd;

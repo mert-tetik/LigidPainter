@@ -64,6 +64,7 @@ bool mirrorZCheckBoxEnter;
 bool exportDownloadButtonEnter;
 bool textureDemonstratorButtonEnter;
 bool useNegativeForDrawingCheckboxEnter;
+bool paintingDropperEnter;
 //Ui enter
 
 
@@ -110,6 +111,8 @@ CallbckData preapareCallbackData() {
 	callbk.textureDemonstratorButtonEnter = textureDemonstratorButtonEnter;
 
 	callbk.useNegativeForDrawingCheckboxEnter = useNegativeForDrawingCheckboxEnter;
+
+	callbk.paintingDropperEnter = paintingDropperEnter;
 
 	return callbk;
 }
@@ -267,6 +270,8 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		colorBoxPickerEnter = ui.isMouseOnButton(window,0.01f, 0.02f, panelLoc / centerDivider + centerSum - 0.02f + colorBoxPickerValue_x, -0.6f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
 		colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, panelLoc / centerDivider + centerSum + 0.1f, -0.6f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
 
+		paintingDropperEnter = ui.isMouseOnButton(window, 0.015f,0.03f, panelLoc / centerDivider + centerSum + 0.05f, -0.86f, mouseXPos, mouseYPos,movePanel);
+
 		mirrorXCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.15f, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
 		mirrorYCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.09f, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
 		mirrorZCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.03f, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
@@ -281,6 +286,8 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		brushSpacingRangeBarEnter = false;
 		colorBoxColorRangeBarEnter = false;
 		colorBoxPickerEnter = false;
+
+		paintingDropperEnter = false;
 
 		mirrorXCheckBoxEnter = false;
 		mirrorYCheckBoxEnter = false;
@@ -362,6 +369,9 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if (useNegativeForDrawingCheckboxEnter) {
+		glfwSetCursor(window, pointerCursor);
+	}
+	else if (paintingDropperEnter){
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if (!panelChangeHover){

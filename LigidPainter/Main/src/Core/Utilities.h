@@ -6,6 +6,7 @@ public:
 	std::string openFileDialog();
 	std::string getLastWordBySeparatingWithChar(std::string s, char del);
 	std::string rgbToHexGenerator(glm::vec3 rgbData);
+	glm::vec3 RGBToHSVGenerator(glm::vec3 rgbData);
 	float restrictBetween(float value, float maxVal, float minVal);
 	void printRenderingSpeed();
 };

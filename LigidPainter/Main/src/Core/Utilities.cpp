@@ -115,3 +115,47 @@ void Utilities::printRenderingSpeed() {
 		lastTime += 1.0;
 	}
 }
+glm::vec3 Utilities::RGBToHSVGenerator(glm::vec3 rgbData){
+	float maxV = max(max(rgbData.r,rgbData.g),rgbData.b);
+	float minV = min(min(rgbData.r,rgbData.g),rgbData.b);
+	float hue;
+	float saturation;
+	float value;
+
+	value = maxV/255.0;
+	if(maxV > 0){
+		saturation = 1.0f - float(minV)/float(maxV);
+	}
+	else if(maxV == 0){
+		saturation = 0;
+	}
+	// if(rgbData.g >= rgbData.b){
+	// 	hue = pow(cos((rgbData.r - rgbData.g/2 - rgbData.b/2) / sqrt(pow(rgbData.r,2) + pow(rgbData.g,2) + pow(rgbData.b,2) - rgbData.r*rgbData.g - rgbData.r*rgbData.b - rgbData.b*rgbData.g)),-1);
+	// }
+	// else if(rgbData.b > rgbData.g){
+	// 	hue = 360 - pow(cos((rgbData.r - rgbData.g/2 - rgbData.b/2) / sqrt(pow(rgbData.r,2) + pow(rgbData.g,2) + pow(rgbData.b,2) - rgbData.r*rgbData.g - rgbData.r*rgbData.b - rgbData.b*rgbData.g)),-1);
+	// }
+
+
+
+    if (maxV == rgbData.r) {
+        hue = (rgbData.g - rgbData.b) / (maxV - minV);
+
+    } else if (maxV == rgbData.g) {
+        hue = 2.0f + (rgbData.b - rgbData.r) / (maxV - minV);
+
+    } else {
+        hue = 4.0f + (rgbData.r - rgbData.g) / (maxV - minV);
+    }
+
+    hue = hue * 60.0;
+    if (hue < 0){
+		hue = hue + 360.0;	
+	} 
+	
+	if (minV == maxV) {
+        hue = 0;
+    }
+	glm::vec3 hsvVal = glm::vec3(round(hue)/1.41176470588f,saturation*255.0f,value*255.0f); 
+	return hsvVal;
+}
