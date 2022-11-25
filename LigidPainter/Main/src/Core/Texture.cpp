@@ -19,20 +19,19 @@ using namespace std;
 
 
 
-GetTextureData Texture::getTexture(std::string path, unsigned int desiredWidth, unsigned int desiredHeight) {
+unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, unsigned int desiredHeight) {
 	//Leave desiredWidth 0 if no resize wanted
 	bool applyResize;
 	applyResize = desiredWidth;
 
-	GetTextureData getTextureData;
 	unsigned int textureID;
 	GlSet glset;
 	glset.genTextures(textureID);
 	glset.bindTexture(textureID);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	int width, height, nrChannels;
 
 	stbi_set_flip_vertically_on_load(true);
@@ -61,11 +60,9 @@ GetTextureData Texture::getTexture(std::string path, unsigned int desiredWidth, 
 		std::cout << "Failed to load texture!" << " Reason : " << reason<< std::endl;
 	}
 
-
 	stbi_image_free(data);
 	delete(resizedPixelsX);
-	getTextureData.Id = textureID;
-	return getTextureData;
+	return textureID;
 }
 
 void Texture::downloadTexture(const char* path, const char* name, int format, int width, int height, GLubyte* pixels, int channels) {
@@ -287,3 +284,4 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	delete(renderedImageXX);
 	return renderedImage;
 }
+//void setTexturesFrom

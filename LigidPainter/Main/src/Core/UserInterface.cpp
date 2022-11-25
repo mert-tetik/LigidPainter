@@ -82,7 +82,7 @@ void UserInterface::textureDemonstrator(float width,float height, float position
 	glset.uniform1i(3, "is2D", 1);
 }
 
-void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z){
+void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon){
 	std::vector<float> buttonCoorSq{
 		// first triangle
 		 width + position_x,  height + position_y, z,1,1,0,0,0,  // top right
@@ -95,8 +95,11 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 	};
 	GlSet glset;
 	
+	glset.uniform1i(3,"isIcon", 1);
+	glset.activeTexture(GL_TEXTURE6);
+	glset.bindTexture(icon);
 	glset.drawArrays(buttonCoorSq,false);
-	
+	glset.uniform1i(3,"isIcon", 0);
 }
 
 void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec3 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec3 colorTransitionColor, float mixVal) {
@@ -507,8 +510,8 @@ void UserInterface::uploadChars() {
 			// set texture options
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			// now store character for later use
 			character Character = {
 				texture,

@@ -66,6 +66,9 @@ uniform int whiteRendering;
 uniform sampler2D uvMask;
 uniform int interpretWithUvMask;
 
+uniform int isIcon;
+uniform sampler2D icon;
+
 float far = 10.0f;
 float near = 0.1f;
 float linearizeDepth(float depth){
@@ -129,7 +132,8 @@ void main() {
    vec3 interpretedColorBlack = vec3(TexCoords.y)*interpretedColorWhite;
 
    vec3 result = ambient + diffuse + specular;
-   if(isRenderTextureMode == 0) {
+   if(isIcon == 0){
+      if(isRenderTextureMode == 0) {
       if(isColorBox == 0) {
          if(isTextF == 0) {
             if(is2D == 0) {
@@ -285,5 +289,10 @@ void main() {
             color = texture(screenMaskTexture, vec2(TexCoords.x , 1.0 - TexCoords.y));
          }
       }
+   }
+   }
+   else{
+      //Icon here
+      color = vec4(vec3(1), 1.0 - texture2D(icon,TexCoords).r);
    }
 }

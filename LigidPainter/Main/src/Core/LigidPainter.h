@@ -5,7 +5,28 @@
 struct CommonData {
 	unsigned int program = 3;
 };
-
+struct Icons{
+	unsigned int dropperIcon;
+	unsigned int TDModel;
+	unsigned int BackfaceCulling;
+	unsigned int ColorPicker;
+	unsigned int Export;
+	unsigned int Folder;
+	unsigned int ImportMask;
+	unsigned int ImportModel;
+	unsigned int ImportTexture;
+	unsigned int JpgFile;
+	unsigned int MaskGausBlur;
+	unsigned int MaskOpacity;
+	unsigned int MaskRotation;
+	unsigned int MaskScale;
+	unsigned int MaskSpacing;
+	unsigned int Mirror;
+	unsigned int Panel;
+	unsigned int PngFile;
+	unsigned int Sphere;
+	unsigned int Triangulate;
+};
 struct ProjectionData
 {
 	glm::mat4 modelMat;

@@ -1,9 +1,5 @@
 #ifndef LGDTEXTURE_H
 #define LGDTEXTURE_H
-struct GetTextureData {
-	unsigned int Id;
-	GLubyte* imgData;
-};
 struct TextureData {
 	unsigned int width;
 	unsigned int height;
@@ -15,7 +11,7 @@ struct ScreenPaintingReturnData {
 };
 class Texture {
 public:
-	GetTextureData getTexture(std::string path, unsigned int desiredWidth, unsigned int desiredHeight);
+	unsigned int getTexture(std::string path, unsigned int desiredWidth, unsigned int desiredHeight);
 	void downloadTexture(const char* path, const char* name, int format, int width, int height, GLubyte* pixels, int channels);
 	GLubyte* getTextureFromProgram(int texture, int width, int height, int channels);
 	TextureData getTextureData(const char* path);

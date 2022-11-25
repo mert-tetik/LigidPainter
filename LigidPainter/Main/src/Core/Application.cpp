@@ -38,7 +38,7 @@ GLFWwindow* window = glset.getWindow();
 //GL_TEXTURE3 = Mirrored Screen Mask Painting Texture
 //GL_TEXTURE4 = Screen Mask Painting Texture
 //GL_TEXTURE5 = 1920x1080 Screen Texture
-//GL_TEXTURE6 = NULL
+//GL_TEXTURE6 = Icons
 //GL_TEXTURE7 = UV mask texture (used for painting over boundaries)
 //GL_TEXTURE8 = Mirrored Depth texture
 //GL_TEXTURE9 = Depth texture
@@ -72,6 +72,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void updateCameraPosChanging();
 RenderData updateRenderData(RenderData renderData, unsigned int depthTexture, int brushSizeIndicatorSize);
 UiData updateUiData();
+Icons loadIcons();
 
 //--------Functions--------\\
 
@@ -264,6 +265,7 @@ bool LigidPainter::run()
 
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 	glset.uniform1i(commonData.program, "uvMask", 7);//use enlarged texture
+	glset.uniform1i(commonData.program, "icon", 6);
 	glset.uniform3fv(commonData.program, "lightPos", lightPos);
 	glset.uniform1f(commonData.program, "material.shininess", 32.0f);
 	glset.uniform1i(commonData.program, "screenMaskTexture", 4);
@@ -299,6 +301,9 @@ bool LigidPainter::run()
 	float brushSize;
 	ExportData exportData;
 
+	Icons icons;
+	icons = loadIcons();
+
 	//------Set Textures------\\
 
 	glset.activeTexture(GL_TEXTURE9);
@@ -311,7 +316,6 @@ bool LigidPainter::run()
 	glset.genTextures(mirroredDepthTexture);
 	glset.bindTexture(mirroredDepthTexture);
 
-
 	glset.activeTexture(GL_TEXTURE7);//Albedo
 	unsigned int enlargedTexture;
 	glset.genTextures(enlargedTexture);
@@ -323,10 +327,9 @@ bool LigidPainter::run()
 	glset.bindTexture(modifiedMaskTexture);
 
 	glset.activeTexture(GL_TEXTURE1);//Raw mask
-	GetTextureData getTextureData;
-	getTextureData = txtr.getTexture(maskTexturePath,0,0);
+	txtr.getTexture(maskTexturePath,0,0);
 	glset.activeTexture(GL_TEXTURE12);//Modified mask
-	getTextureData = txtr.getTexture(maskTexturePath,0,0);
+	txtr.getTexture(maskTexturePath,0,0);
 	
 	//------Set Textures------\\
 
@@ -475,7 +478,7 @@ bool LigidPainter::run()
 		if(textureDemonstratorButtonPressed){
 			textureDemonstratorButtonPressCounter++;
 		}
-		if(textureDemonstratorButtonPressCounter < 30 && textureDemonstratorButtonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE){
+		if(textureDemonstratorButtonPressCounter < 20 && textureDemonstratorButtonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE){
 			textureDemonstratorButtonPressClicked = true;
 		}
 		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
@@ -517,7 +520,7 @@ bool LigidPainter::run()
 			lastMouseYpos = mouseYpos;
 		//Paint
 		
-		screenHoverPixel = glset.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,textureDemonstratorBoundariesPressed);
+		screenHoverPixel = glset.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,textureDemonstratorBoundariesPressed,icons);
 		exportImage = false; //After exporting, set exportImage false so we won't download the texture repeatedly
 
 		textureDemonstratorButtonPressClicked = false;
@@ -744,9 +747,7 @@ void addMaskTextureButton() {
 		maskTexturePath = maskTexturePathCheck;
 		brushTextureChanged = true;
 		glset.activeTexture(GL_TEXTURE1);
-		GetTextureData getTextureData;
-		getTextureData = txtr.getTexture(maskTexturePath,0,0);
-		glset.bindTexture(getTextureData.Id);
+		txtr.getTexture(maskTexturePath,0,0);
 		txtr.updateMaskTexture(FBOScreen,width,height,brushRotationRangeBarValue);
 	}
 }
@@ -940,8 +941,7 @@ void addImageButton() {
 	if (albedoPathCheck) {
 		albedoTexturePath = albedoPathCheck;
 		glset.activeTexture(GL_TEXTURE0);
-		GetTextureData getTextureData;
-		getTextureData = txtr.getTexture(albedoTexturePath,1080,1080); //Force albedo's ratio to be 1:1
+		txtr.getTexture(albedoTexturePath,1080,1080); //Force albedo's ratio to be 1:1
 	}
 }
 void addPlaneButton() {
@@ -1158,4 +1158,31 @@ void setButtonPressedFalse() {
 	addImageButtonPressed = false;
 	addMaskTextureButtonPressed = false;
 	exportDownloadButtonPressed = false;
+}
+Icons loadIcons(){
+	glset.activeTexture(GL_TEXTURE6);//Raw mask
+	Texture txtr;
+	Icons icons;
+	icons.dropperIcon = txtr.getTexture("LigidPainter/Resources/Icons/Dropper.png",0,0);
+	icons.TDModel = txtr.getTexture("LigidPainter/Resources/Icons/3DModel.jpg",0,0);
+	icons.BackfaceCulling = txtr.getTexture("LigidPainter/Resources/Icons/BackfaceCulling.jpg",0,0);
+	icons.ColorPicker = txtr.getTexture("LigidPainter/Resources/Icons/ColorPicker.png",0,0);
+	icons.Export = txtr.getTexture("LigidPainter/Resources/Icons/Export.jpg",0,0);
+	icons.Folder = txtr.getTexture("LigidPainter/Resources/Icons/Folder.png",0,0);
+	icons.ImportMask = txtr.getTexture("LigidPainter/Resources/Icons/ImportMask.png",0,0);
+	icons.ImportModel = txtr.getTexture("LigidPainter/Resources/Icons/ImportModel.jpg",0,0);
+	icons.ImportTexture = txtr.getTexture("LigidPainter/Resources/Icons/ImportTexture.jpg",0,0);
+	icons.JpgFile = txtr.getTexture("LigidPainter/Resources/Icons/JpgFile.png",0,0);
+	icons.MaskGausBlur = txtr.getTexture("LigidPainter/Resources/Icons/MaskGausBlur.png",0,0);
+	icons.MaskOpacity = txtr.getTexture("LigidPainter/Resources/Icons/MaskOpacity.png",0,0);
+	icons.MaskRotation = txtr.getTexture("LigidPainter/Resources/Icons/MaskRotation.png",0,0);
+	icons.MaskScale = txtr.getTexture("LigidPainter/Resources/Icons/MaskScale.png",0,0);
+	icons.MaskSpacing = txtr.getTexture("LigidPainter/Resources/Icons/MaskSpacing.png",0,0);
+	icons.Mirror = txtr.getTexture("LigidPainter/Resources/Icons/Mirror.jpg",0,0);
+	icons.Panel = txtr.getTexture("LigidPainter/Resources/Icons/Panel.png",0,0);
+	icons.PngFile = txtr.getTexture("LigidPainter/Resources/Icons/PngFile.png",0,0);
+	icons.Sphere = txtr.getTexture("LigidPainter/Resources/Icons/Sphere.png",0,0);
+	icons.Triangulate = txtr.getTexture("LigidPainter/Resources/Icons/Triangulate.jpg",0,0);
+
+	return icons;
 }
