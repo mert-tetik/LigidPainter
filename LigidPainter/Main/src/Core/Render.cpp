@@ -33,65 +33,66 @@ float fillBetweenResNumericModifiermixValP = 0.0f;
 
 float dropperMixVal = 0.0f;
 void updateButtonColorMixValues(UiData uidata) {
+	float phaseDifference = 0.05f;
 	if (uidata.addSphereButtonEnter && addSphereButtonMixVal <= 1.0f) {
-		addSphereButtonMixVal += 0.05f;
+		addSphereButtonMixVal += phaseDifference;
 	}
 	else if (!uidata.addSphereButtonEnter && addSphereButtonMixVal >= 0.0f) {
-		addSphereButtonMixVal -= 0.05f;
+		addSphereButtonMixVal -= phaseDifference;
 	}
 
 	if (uidata.addPlaneButtonEnter && addPanelButtonMixVal <= 1.0f) {
-		addPanelButtonMixVal += 0.05f;
+		addPanelButtonMixVal += phaseDifference;
 	}
 	else if (!uidata.addPlaneButtonEnter && addPanelButtonMixVal >= 0.0f) {
-		addPanelButtonMixVal -= 0.05f;
+		addPanelButtonMixVal -= phaseDifference;
 	}
 
 	if (uidata.addImageButtonEnter && addAlbedoTextureMixVal <= 1.0f) {
-		addAlbedoTextureMixVal += 0.05f;
+		addAlbedoTextureMixVal += phaseDifference;
 	}
 	else if (!uidata.addImageButtonEnter && addAlbedoTextureMixVal >= 0.0f) {
-		addAlbedoTextureMixVal -= 0.05f;
+		addAlbedoTextureMixVal -= phaseDifference;
 	}
 
 	if (uidata.loadModelButtonEnter && loadModelButtonMixVal <= 1.0f) {
-		loadModelButtonMixVal += 0.05f;
+		loadModelButtonMixVal += phaseDifference;
 	}
 	else if (!uidata.loadModelButtonEnter && loadModelButtonMixVal >= 0.0f) {
-		loadModelButtonMixVal -= 0.05f;
+		loadModelButtonMixVal -= phaseDifference;
 	}
 
 	if (uidata.addMaskTextureButtonEnter && addMaskTextureButtonMixVal <= 1.0f) {
-		addMaskTextureButtonMixVal += 0.05f;
+		addMaskTextureButtonMixVal += phaseDifference;
 	}
 	else if (!uidata.addMaskTextureButtonEnter && addMaskTextureButtonMixVal >= 0.0f) {
-		addMaskTextureButtonMixVal -= 0.05f;
+		addMaskTextureButtonMixVal -= phaseDifference;
 	}
 	
 	if (uidata.exportDownloadButtonEnter && exportDownloadButtonMixVal <= 1.0f) {
-		exportDownloadButtonMixVal += 0.05f;
+		exportDownloadButtonMixVal += phaseDifference;
 	}
 	else if (!uidata.exportDownloadButtonEnter && exportDownloadButtonMixVal >= 0.0f) {
-		exportDownloadButtonMixVal -= 0.05f;
+		exportDownloadButtonMixVal -= phaseDifference;
 	}
 
 	if (uidata.paintingFillNumericModifierNEnter && fillBetweenResNumericModifiermixValN <= 1.0f) {
-		fillBetweenResNumericModifiermixValN += 0.05f;
+		fillBetweenResNumericModifiermixValN += phaseDifference;
 	}
 	else if (!uidata.paintingFillNumericModifierNEnter && fillBetweenResNumericModifiermixValN >= 0.0f) {
-		fillBetweenResNumericModifiermixValN -= 0.05f;
+		fillBetweenResNumericModifiermixValN -= phaseDifference;
 	}
 	if (uidata.paintingFillNumericModifierPEnter && fillBetweenResNumericModifiermixValP <= 1.0f) {
-		fillBetweenResNumericModifiermixValP += 0.05f;
+		fillBetweenResNumericModifiermixValP += phaseDifference;
 	}
 	else if (!uidata.paintingFillNumericModifierPEnter && fillBetweenResNumericModifiermixValP >= 0.0f) {
-		fillBetweenResNumericModifiermixValP -= 0.05f;
+		fillBetweenResNumericModifiermixValP -= phaseDifference;
 	}
 	if (uidata.dropperEnter && dropperMixVal <= 1.0f) {
-		dropperMixVal += 0.05f;
+		dropperMixVal += phaseDifference;
 	}
 	else if (!uidata.dropperEnter && dropperMixVal >= 0.0f) {
-		dropperMixVal -= 0.05f;
+		dropperMixVal -= phaseDifference;
 	}
 }
 //Button mix val
