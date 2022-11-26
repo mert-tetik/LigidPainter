@@ -15,6 +15,7 @@ struct ColorData //LigidPainter color palette
 	glm::vec3 checkBoxCheckedColor = glm::vec3(0.17f, 0.17f, 0.17f);
 	glm::vec3 rangeBarBack = glm::vec3(0.1f, 0.1f, 0.1f);
 	glm::vec3 rangeBarFront = glm::vec3(0.6f, 0.6f, 0.6f);
+	glm::vec3 rangeBarSlide = glm::vec3(0.3f, 0.3f, 0.3f);
 	glm::vec3 textColor = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::vec3 colorBoxIndicatorColor = glm::vec3(0.05f, 0.05f, 0.05f);
 };
@@ -40,5 +41,6 @@ public:
 	void colorBox(float position_x, float position_y, float valueX, float valueY);
 	void colorRect(float position_x, float position_y,float value, unsigned int FBO,GLFWwindow* window);
 	void decorationSquare(float position_x, float position_y);
+	Icons UserInterface::loadIcons();
 };
 #endif 

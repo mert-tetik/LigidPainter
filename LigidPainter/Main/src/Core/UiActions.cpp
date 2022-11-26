@@ -170,7 +170,7 @@ bool UiActions::updateRangeValues(GLFWwindow* window, float xOffset,float yOffse
     bool hideCursor;
     LigidPainter ligid;
 
-
+    
 
     
     if (brushSizeRangeBarPressed) {
@@ -200,7 +200,7 @@ bool UiActions::updateRangeValues(GLFWwindow* window, float xOffset,float yOffse
 	if (textureDemonstratorBoundariesPressed) {
 		ligid.textureDemonstratorBoundaries(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
 	}
-    if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed || textureDemonstratorButtonPressed ) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
+    if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed || textureDemonstratorButtonPressed || textureDemonstratorBoundariesPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
         hideCursor = true;
 	}
 	else {

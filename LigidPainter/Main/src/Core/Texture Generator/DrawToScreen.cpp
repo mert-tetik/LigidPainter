@@ -7,6 +7,7 @@
 #include "Core/LigidPainter.h"
 #include "Core/gl.h"
 #include "Core/Texture.h"
+#include "Core/Render.h"
 #include "Core/Texture Generator/TextureGenerator.h"
 #include "stb_image_resize.h"
 #include "stb_image.h"
@@ -34,10 +35,11 @@ GLubyte* renderedImage;
 double lastMouseXPosIn = 0;
 double lastMouseYPosIn = 0;
 
-void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushTextureChanged, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen, bool brushBlurChanged,bool brushSizeChanged,float rotationValue,bool brushRotationChanged, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing) {
+void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged) {
 	Texture texture;
 	CommonData commonData;
-	
+	Render render;
+
 	double mouseXposIn;
 	double mouseYposIn;
 	glfwGetCursorPos(window, &mouseXposIn, &mouseYposIn);
@@ -57,14 +59,13 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 
 	//----------------------SET BRUSH TEXTURE----------------------\\
 						  (Interpreted with blur value)
-	if ((brushSizeChanged || brushTextureChanged || brushBlurChanged || brushRotationChanged)) {
+	if ((brushValChanged)) {
 		delete(resizedPixels);
 		delete(renderedImage);
-
 		//Setup
 		resizedPixels = new GLubyte[distanceX * distanceY * 3];
 
-		renderedImage = txtr.updateMaskTexture(FBOScreen, screenSizeX, screenSizeY, rotationValue);
+		renderedImage = txtr.updateMaskTexture(FBOScreen, screenSizeX, screenSizeY, rotationValue,false);
 		//Resize
 		if (true) {
 			stbir_resize_uint8(renderedImage, 540, 540, 0, resizedPixels, distanceX, distanceY, 0, 3); //Resize (causes lags)
@@ -143,13 +144,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 		//setup
 
 		//Get texture
-		glset.drawArrays(renderVerticesFlipped, false);
-		GLubyte* renderedScreen = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
-		glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedScreen);
-		glset.activeTexture(GL_TEXTURE3);
-		glset.texImage(renderedScreen, 1080, 1080, GL_RGB);
-		glset.generateMipmap();
-		delete(renderedScreen);
+		render.renderTexture(renderVerticesFlipped,1080,1080,GL_TEXTURE3);
 		//Get texture
 
 		//Finish

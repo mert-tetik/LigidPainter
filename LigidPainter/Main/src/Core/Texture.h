@@ -9,6 +9,14 @@ struct ScreenPaintingReturnData {
 	unsigned int normalId;
 	unsigned int mirroredId;
 };
+struct InitializedTextures{
+	unsigned int depthTexture;
+	unsigned int mirroredDepthTexture;
+	unsigned int enlargedTexture;
+	unsigned int modifiedMaskTexture;
+	unsigned int rawMaskTexture;
+	unsigned int albedoTxtr;
+};
 class Texture {
 public:
 	unsigned int getTexture(std::string path, unsigned int desiredWidth, unsigned int desiredHeight,bool update);
@@ -17,6 +25,7 @@ public:
 	TextureData getTextureData(const char* path);
 	ScreenPaintingReturnData createScreenPaintTexture(GLubyte*& screenTexture, GLFWwindow* screen);
 	void refreshScreenDrawingTexture();
-	GLubyte* updateMaskTexture(unsigned int FBOScreen, unsigned int screenSize_x, unsigned int screenSize_y, float brushRotationRangeBarValue);
+	GLubyte* updateMaskTexture(unsigned int FBOScreen, unsigned int screenSize_x, unsigned int screenSize_y, float brushRotationRangeBarValue,bool renderTiny);
+	InitializedTextures initTextures(const char* maskTexturePath);
 };
 #endif

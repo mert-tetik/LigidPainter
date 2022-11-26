@@ -11,6 +11,7 @@
 #include "LigidPainter.h"
 #include "UserInterface.h"
 #include "gl.h"
+#include "Texture.h"
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -312,8 +313,14 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 }
 void UserInterface::rangeBar(float position_x, float position_y,float value) {
 	ColorData colorData;
+	GlSet gl;
+
+	gl.uniform1f(3, "uiOpacity", 1.0f);
 	box(0, 0.015f, position_x+value, position_y, "", colorData.rangeBarFront, 0.035f, false, false, 0.9f, 15, glm::vec3(0), 0);//Value Square
+	box((value+0.11f) / 2, 0.015f, position_x+(value+0.11f) / 2 - 0.11f, position_y, "", colorData.rangeBarSlide, 0.035f, false, false, 0.9f, 15, glm::vec3(0), 0);//Range Rectangle
 	box(0.11f, 0.015f, position_x, position_y, "", colorData.rangeBarBack, 0.035f, false, false, 0.9f, 15, glm::vec3(0), 0);//Range Rectangle
+	gl.uniform1f(3, "uiOpacity", 0.5f);
+
 }
 void UserInterface::panelChangeButton(float position_x, float position_y) {
 	std::vector<float> buttonCoor{
@@ -548,13 +555,13 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 		float w = ch.Size.x * scale;
 		float h = ch.Size.y * scale;
 		std::vector <float> vertices = {
-			 xpos,     ypos + h, 1.0f  ,0.0f, 0.0f,0,0,0,
-			 xpos,     ypos,     1.0f  ,0.0f, 1.0f,0,0,0,
-			 xpos-0.001f + w, ypos,     1.0f  ,1.0f, 1.0f,0,0,0,
+			 xpos,     ypos + h, 0.99f  ,0.0f, 0.0f,0,0,0,
+			 xpos,     ypos,     0.99f  ,0.0f, 1.0f,0,0,0,
+			 xpos-0.001f + w, ypos,     0.99f  ,1.0f, 1.0f,0,0,0,
 			
-			 xpos,     ypos + h, 1.0f  ,0.0f, 0.0f,0,0,0,
-			 xpos-0.001f + w, ypos,     1.0f  ,1.0f, 1.0f,0,0,0,
-			 xpos-0.001f + w, ypos + h, 1.0f  ,1.0f, 0.0f,0,0,0
+			 xpos,     ypos + h, 0.99f  ,0.0f, 0.0f,0,0,0,
+			 xpos-0.001f + w, ypos,     0.99f  ,1.0f, 1.0f,0,0,0,
+			 xpos-0.001f + w, ypos + h, 0.99f  ,1.0f, 0.0f,0,0,0
 		};
 		glset.bindTexture(ch.TextureID);
 		glset.drawArrays(vertices, false);
@@ -575,4 +582,33 @@ void UserInterface::renderMenubar(GLFWwindow* window) {
 	box(0.06f, 0.02f, -0.06f, 0.98f, "Settings", colorD.menuBarColor, 0.04f, false, false);
 
 	box(1.0f, 0.08f, 0.0f, 1.03f, "", colorD.menuBarColor, 0.00f, false, false);*/
+}
+Icons UserInterface::loadIcons(){
+	GlSet glset;
+	Texture txtr;
+	Icons icons;
+
+	glset.activeTexture(GL_TEXTURE6);
+	icons.dropperIcon = txtr.getTexture("LigidPainter/Resources/Icons/Dropper.png",0,0,false);
+	icons.TDModel = txtr.getTexture("LigidPainter/Resources/Icons/3DModel.jpg",0,0,false);
+	icons.BackfaceCulling = txtr.getTexture("LigidPainter/Resources/Icons/BackfaceCulling.jpg",0,0,false);
+	icons.ColorPicker = txtr.getTexture("LigidPainter/Resources/Icons/ColorPicker.png",0,0,false);
+	icons.Export = txtr.getTexture("LigidPainter/Resources/Icons/Export.jpg",0,0,false);
+	icons.Folder = txtr.getTexture("LigidPainter/Resources/Icons/Folder.png",0,0,false);
+	icons.ImportMask = txtr.getTexture("LigidPainter/Resources/Icons/ImportMask.png",0,0,false);
+	icons.ImportModel = txtr.getTexture("LigidPainter/Resources/Icons/ImportModel.jpg",0,0,false);
+	icons.ImportTexture = txtr.getTexture("LigidPainter/Resources/Icons/ImportTexture.jpg",0,0,false);
+	icons.JpgFile = txtr.getTexture("LigidPainter/Resources/Icons/JpgFile.png",0,0,false);
+	icons.MaskGausBlur = txtr.getTexture("LigidPainter/Resources/Icons/MaskGausBlur.png",0,0,false);
+	icons.MaskOpacity = txtr.getTexture("LigidPainter/Resources/Icons/MaskOpacity.png",0,0,false);
+	icons.MaskRotation = txtr.getTexture("LigidPainter/Resources/Icons/MaskRotation.png",0,0,false);
+	icons.MaskScale = txtr.getTexture("LigidPainter/Resources/Icons/MaskScale.png",0,0,false);
+	icons.MaskSpacing = txtr.getTexture("LigidPainter/Resources/Icons/MaskSpacing.png",0,0,false);
+	icons.Mirror = txtr.getTexture("LigidPainter/Resources/Icons/Mirror.jpg",0,0,false);
+	icons.Panel = txtr.getTexture("LigidPainter/Resources/Icons/Panel.png",0,0,false);
+	icons.PngFile = txtr.getTexture("LigidPainter/Resources/Icons/PngFile.png",0,0,false);
+	icons.Sphere = txtr.getTexture("LigidPainter/Resources/Icons/Sphere.png",0,0,false);
+	icons.Triangulate = txtr.getTexture("LigidPainter/Resources/Icons/Triangulate.jpg",0,0,false);
+
+	return icons;
 }

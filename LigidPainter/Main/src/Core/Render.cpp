@@ -93,13 +93,13 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 	projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 	gl.uniformMatrix4fv(commonData.program, "TextProjection", projection);
 	ui.panelChangeButton(renderData.panelLoc, 0.8f);//Model Panel
-	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.795f,1,icons.TDModel);
+	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.795f,0.9,icons.TDModel);
 	ui.panelChangeButton(renderData.panelLoc, 0.72f);//Texture Panel
-	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.715f,1,icons.ImportTexture);
+	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.715f,0.9,icons.ImportTexture);
 	ui.panelChangeButton(renderData.panelLoc, 0.64f);//Painting Panel
 	//ui.iconBox(0.03f,0.04f,renderData.panelLoc,0.64f,1,icons.);//Dropper
 	ui.panelChangeButton(renderData.panelLoc, 0.56f);//Export Panel
-	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f, 0.555f,1,icons.Export);
+	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f, 0.555f,0.9,icons.Export);
 	
 	//Panel
 
@@ -142,7 +142,7 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 		ui.checkBox(renderData.panelLoc- 0.10f, 0.9f, "Y", colorData.checkBoxColor, uidata.mirrorYCheckBoxEnter, uidata.mirrorYCheckBoxPressed); //Z mirror checkbox
 		ui.checkBox(renderData.panelLoc- 0.04f, 0.9f, "Z", colorData.checkBoxColor, uidata.mirrorZCheckBoxEnter, uidata.mirrorZCheckBoxPressed); //Y mirror checkbox
 		ui.box(0.25f, 0.22f, renderData.panelLoc + 0.25f, -0.6f, "", colorData.panelColorSnd, 0.075f, false, false, 0.1f, 10000, glm::vec3(0), 0);//Backside decoration
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 0.09f,0.95f,1,icons.Mirror);
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 0.09f,0.95f,0.9,icons.Mirror);
 	}
 
 	float centerDivider;
@@ -170,9 +170,9 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 
 		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false, 0.9f, 10, colorData.buttonColorHover, loadModelButtonMixVal);//Load model button
 		ui.box(0.012f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.0f, "", colorData.buttonColor, 0.047f, false, false, 0.9f, 7, colorData.buttonColorHover, addPanelButtonMixVal);//Load a panel button
-		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum,0.0,1,icons.Panel);
+		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum,0.0,0.99,icons.Panel);
 		ui.box(0.012f, 0.04f, renderData.panelLoc / centerDivider + centerSum, -0.1f, "", colorData.buttonColor, 0.055f, false, false, 0.9f, 7, colorData.buttonColorHover, addSphereButtonMixVal);//Load a sphere button
-		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum,-0.1f,1,icons.Sphere);
+		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum,-0.1f,0.99,icons.Sphere);
 
 
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.08f, 0.3f, "Auto triangulate", colorData.checkBoxColor, uidata.autoTriangulateCheckBoxEnter, uidata.autoTriangulateCheckBoxPressed); //Auto triangulate checkbox
@@ -186,34 +186,34 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 	if (panelData.paintingPanelActive) {
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.85f, "Add Mask Texture", colorData.buttonColor, 0.095f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
 		
-		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.1f, 0.76f, "Use Negative", colorData.checkBoxColor, uidata.useNegativeForDrawingCheckboxEnter, uidata.useNegativeForDrawingCheckboxPressed); //Auto triangulate checkbox
-
-		ui.box(0.14f, 0.28f, renderData.panelLoc / centerDivider + centerSum, 0.45f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
+		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.03f, 0.7f, "Use Negative", colorData.checkBoxColor, uidata.useNegativeForDrawingCheckboxEnter, uidata.useNegativeForDrawingCheckboxPressed); //Auto triangulate checkbox
+		ui.renderText(commonData.program, "Default Brush", renderData.panelLoc / centerDivider + centerSum - 0.03f, 0.62f, 0.00022f);
+		ui.box(0.035f, 0.07f, renderData.panelLoc / centerDivider + centerSum - 0.1f, 0.67f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
 
 		//Brush size rangebar
-		ui.renderText(commonData.program, "Size", renderData.panelLoc / centerDivider + centerSum, 0.13f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.1f, renderData.brushSizeRangeBarValue);
-		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.145f,1,icons.MaskScale);
+		ui.renderText(commonData.program, "Size", renderData.panelLoc / centerDivider + centerSum - 0.02f, 0.25f+0.22f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.22f+0.22f, renderData.brushSizeRangeBarValue);
+		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.27f,1,icons.MaskScale);
 
 		//Brush blur rangebar
-		ui.renderText(commonData.program, "Blur", renderData.panelLoc / centerDivider + centerSum, +0.035f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.00f, brushBlurRangeBarValue);
-		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.05f,1,icons.MaskGausBlur);
+		ui.renderText(commonData.program, "Blur", renderData.panelLoc / centerDivider + centerSum - 0.02f, +0.125f+0.22f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.09f+0.22f, brushBlurRangeBarValue);
+		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.14f,1,icons.MaskGausBlur);
 
 		//Brush rotation rangebar
-		ui.renderText(commonData.program, "Rotation", renderData.panelLoc / centerDivider + centerSum, -0.065f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.10f, brushRotationRangeBarValue);
-		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.05f,1,icons.MaskRotation);
+		ui.renderText(commonData.program, "Rotation", renderData.panelLoc / centerDivider + centerSum - 0.04f, -0.005f+0.22f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.04f+0.22f, brushRotationRangeBarValue);
+		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, +0.01f,1,icons.MaskRotation);
 
 		//Brush opacity rangebar
-		ui.renderText(commonData.program, "Opacity", renderData.panelLoc / centerDivider + centerSum, -0.165f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.20f, brushOpacityRangeBarValue);
-		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.15f,1,icons.MaskOpacity);
+		ui.renderText(commonData.program, "Opacity", renderData.panelLoc / centerDivider + centerSum - 0.035f, -0.135f+0.22f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.17f+0.22f, brushOpacityRangeBarValue);
+		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.12f,1,icons.MaskOpacity);
 
 		//Brush spacing rangebar
-		ui.renderText(commonData.program, "Spacing", renderData.panelLoc / centerDivider + centerSum, -0.265f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.30f, brushSpacingRangeBarValue);
-		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.25f,1,icons.MaskSpacing);
+		ui.renderText(commonData.program, "Spacing", renderData.panelLoc / centerDivider + centerSum - 0.035f, -0.265f+0.22f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.30f+0.22f, brushSpacingRangeBarValue);
+		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.25f,1,icons.MaskSpacing);
 
 		//Color Picker
 		ui.colorBox(renderData.panelLoc / centerDivider + centerSum - 0.02f, -0.6f, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y);
@@ -225,16 +225,16 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 		ui.decorationSquare(renderData.panelLoc / centerDivider + centerSum - 0.1f, -0.84f); //Decoration for color indicator
 
 		ui.renderText(commonData.program, util.rgbToHexGenerator(colorBoxValue), renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.86f, 0.00022f); //Hex value of the picken color 
-		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum + 0.05f, -0.86f,1,icons.dropperIcon);
+		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum + 0.05f, -0.86f,0.9,icons.dropperIcon);
 	}
 
 	if (panelData.exportPanelActive) {
 		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum, 0.6f, renderData.exportFolder, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0); //Path textbox
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.11f, 0.5f, "", colorData.checkBoxColor, uidata.exportExtJPGCheckBoxEnter, uidata.exportExtJPGCheckBoxPressed); //jpg checkbox
-		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - 0.06f, 0.5f,1,icons.JpgFile);
+		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - 0.06f, 0.5f,0.9,icons.JpgFile);
 
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum + 0.05f, 0.5f, "", colorData.checkBoxColor, uidata.exportExtPNGCheckBoxEnter, uidata.exportExtPNGCheckBoxPressed); //png checkbox
-		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum + 0.1f, 0.5f,1,icons.PngFile);
+		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum + 0.1f, 0.5f,0.9,icons.PngFile);
 
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.3f, "Download", colorData.buttonColor, 0.045f, false, false, 0.9f, 10, colorData.buttonColorHover, exportDownloadButtonMixVal); //Download Button
 	}

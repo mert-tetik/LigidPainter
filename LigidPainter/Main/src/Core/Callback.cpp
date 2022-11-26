@@ -262,12 +262,12 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	}
 	if (panelData.paintingPanelActive) {
 		addMaskTextureButtonEnter = ui.isMouseOnButton(window, 0.12f, 0.04f, panelLoc / centerDivider + centerSum, 0.85f, mouseXPos, mouseYPos, movePanel);
-		useNegativeForDrawingCheckboxEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc / centerDivider + centerSum - 0.1f, 0.76f, mouseXPos, mouseYPos, movePanel);
-		brushSizeRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushSizeRangeBarValue, 0.1f, mouseXPos, mouseYPos, movePanel);
-		brushBlurRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushBlurRangeBarValue, -0.00f, mouseXPos, mouseYPos, movePanel);
-		brushRotationRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushRotationRangeBarValue, -0.10f, mouseXPos, mouseYPos, movePanel);
-		brushOpacityRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushOpacityRangeBarValue, -0.20f, mouseXPos, mouseYPos, movePanel);
-		brushSpacingRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushSpacingRangeBarValue, -0.30f, mouseXPos, mouseYPos, movePanel);
+		useNegativeForDrawingCheckboxEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc / centerDivider + centerSum - 0.3f, 0.7f, mouseXPos, mouseYPos, movePanel);
+		brushSizeRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushSizeRangeBarValue,  0.22f+0.22f, mouseXPos, mouseYPos, movePanel);
+		brushBlurRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushBlurRangeBarValue, 0.09f+0.22f, mouseXPos, mouseYPos, movePanel);
+		brushRotationRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushRotationRangeBarValue, -0.04f+0.22f, mouseXPos, mouseYPos, movePanel);
+		brushOpacityRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushOpacityRangeBarValue,  -0.17f+0.22f, mouseXPos, mouseYPos, movePanel);
+		brushSpacingRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushSpacingRangeBarValue,-0.30f+0.22f, mouseXPos, mouseYPos, movePanel);
 		colorBoxPickerEnter = ui.isMouseOnButton(window,0.01f, 0.02f, panelLoc / centerDivider + centerSum - 0.02f + colorBoxPickerValue_x, -0.6f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
 		colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, panelLoc / centerDivider + centerSum + 0.1f, -0.6f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
 
@@ -383,11 +383,12 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 }
 void Callback::framebuffer_size_callback(GLFWwindow* window, int width, int height) //Protect screen ratio
 {
+	int intrpHeight;
 	GlSet glset;
 	int screenSizeX;
 	int screenSizeY;
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
-	height = width / 16 * 9;
-	glfwSetWindowSize(window, width, height);
-	glset.viewport(screenSizeX, screenSizeY);
+	intrpHeight = width / 16 * 9;
+	glfwSetWindowSize(window, width, intrpHeight);
+	glset.viewport(screenSizeX, intrpHeight);
 }
