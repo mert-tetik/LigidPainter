@@ -23,7 +23,8 @@ std::string Utilities::readFile(const char* path) {
 		char mychar;
 		while (my_file) {
 			mychar = my_file.get();
-			fullText += mychar;
+			if((int)mychar <= 127 && (int)mychar >= 0) //extract non-ascii characters
+				fullText += mychar;
 		}
 	}
 	my_file.close();
@@ -129,15 +130,6 @@ glm::vec3 Utilities::RGBToHSVGenerator(glm::vec3 rgbData){
 	else if(maxV == 0){
 		saturation = 0;
 	}
-	// if(rgbData.g >= rgbData.b){
-	// 	hue = pow(cos((rgbData.r - rgbData.g/2 - rgbData.b/2) / sqrt(pow(rgbData.r,2) + pow(rgbData.g,2) + pow(rgbData.b,2) - rgbData.r*rgbData.g - rgbData.r*rgbData.b - rgbData.b*rgbData.g)),-1);
-	// }
-	// else if(rgbData.b > rgbData.g){
-	// 	hue = 360 - pow(cos((rgbData.r - rgbData.g/2 - rgbData.b/2) / sqrt(pow(rgbData.r,2) + pow(rgbData.g,2) + pow(rgbData.b,2) - rgbData.r*rgbData.g - rgbData.r*rgbData.b - rgbData.b*rgbData.g)),-1);
-	// }
-
-
-
     if (maxV == rgbData.r) {
         hue = (rgbData.g - rgbData.b) / (maxV - minV);
 
@@ -147,7 +139,6 @@ glm::vec3 Utilities::RGBToHSVGenerator(glm::vec3 rgbData){
     } else {
         hue = 4.0f + (rgbData.r - rgbData.g) / (maxV - minV);
     }
-
     hue = hue * 60.0;
     if (hue < 0){
 		hue = hue + 360.0;	
@@ -156,6 +147,6 @@ glm::vec3 Utilities::RGBToHSVGenerator(glm::vec3 rgbData){
 	if (minV == maxV) {
         hue = 0;
     }
-	glm::vec3 hsvVal = glm::vec3(round(hue)/1.41176470588f,saturation*255.0f,value*255.0f); 
+	glm::vec3 hsvVal = glm::vec3(round(hue)/1.41176470588f,saturation*255.0f,value*255.0f); //0 - 255 value range for each component
 	return hsvVal;
 }

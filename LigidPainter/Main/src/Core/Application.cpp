@@ -14,6 +14,7 @@
 #include "Utilities.h"
 #include "Callback.h"
 #include "gl.h"
+#include "Render.h"
 #include "Texture.h"
 #include "Texture Generator/TextureGenerator.h"
 
@@ -240,6 +241,7 @@ bool LigidPainter::run()
 	UiData uidata;
 	TextureGenerator textureGen;
 	Callback callback;
+	Render render;
 
 	//Set Callbacks
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
@@ -296,7 +298,7 @@ bool LigidPainter::run()
 	glDepthFunc(GL_LESS);
 	glset.enable(GL_DEPTH_TEST);
 
-	glset.setMatrices(); //View matrix, Projection matrix
+	render.setMatrices(); //View matrix, Projection matrix
 
 	float brushSize;
 	ExportData exportData;
@@ -460,7 +462,7 @@ bool LigidPainter::run()
 		}
 
 		//Update
-		glset.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
+		render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
 		brushSize = double(brushSizeRangeBarValue + 0.1f) * 800.0 + 20.0 ;
 		renderData = updateRenderData(renderData,depthTexture, brushSize);
 		uidata = updateUiData();
@@ -520,7 +522,7 @@ bool LigidPainter::run()
 			lastMouseYpos = mouseYpos;
 		//Paint
 		
-		screenHoverPixel = glset.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,textureDemonstratorBoundariesPressed,icons);
+		screenHoverPixel = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,textureDemonstratorBoundariesPressed,icons);
 		exportImage = false; //After exporting, set exportImage false so we won't download the texture repeatedly
 
 		textureDemonstratorButtonPressClicked = false;

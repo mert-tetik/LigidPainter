@@ -1,0 +1,671 @@
+#include<iostream>
+#include<glad/glad.h>
+#include<GLFW/glfw3.h>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include "Render.h"
+#include "LigidPainter.h"
+#include "UserInterface.h"
+#include "Utilities.h"
+#include "gl.h"
+#include "Texture.h"
+#include <vector>
+#include "stb_image.h"
+#include "stb_image_write.h"
+
+
+//--------------------RENDER UI --------------------\\
+//Button mix val
+float exportDownloadButtonMixVal = 0.0f;
+float addMaskTextureButtonMixVal = 0.0f;
+float loadModelButtonMixVal = 0.0f;
+float addPanelButtonMixVal = 0.0f;
+float addSphereButtonMixVal = 0.0f;
+float addAlbedoTextureMixVal = 0.0f;
+void updateButtonColorMixValues(UiData uidata) {
+	if (uidata.addSphereButtonEnter && addSphereButtonMixVal <= 1.0f) {
+		addSphereButtonMixVal += 0.05f;
+	}
+	else if (!uidata.addSphereButtonEnter && addSphereButtonMixVal >= 0.0f) {
+		addSphereButtonMixVal -= 0.05f;
+	}
+
+	if (uidata.addPlaneButtonEnter && addPanelButtonMixVal <= 1.0f) {
+		addPanelButtonMixVal += 0.05f;
+	}
+	else if (!uidata.addPlaneButtonEnter && addPanelButtonMixVal >= 0.0f) {
+		addPanelButtonMixVal -= 0.05f;
+	}
+
+	if (uidata.addImageButtonEnter && addAlbedoTextureMixVal <= 1.0f) {
+		addAlbedoTextureMixVal += 0.05f;
+	}
+	else if (!uidata.addImageButtonEnter && addAlbedoTextureMixVal >= 0.0f) {
+		addAlbedoTextureMixVal -= 0.05f;
+	}
+
+	if (uidata.loadModelButtonEnter && loadModelButtonMixVal <= 1.0f) {
+		loadModelButtonMixVal += 0.05f;
+	}
+	else if (!uidata.loadModelButtonEnter && loadModelButtonMixVal >= 0.0f) {
+		loadModelButtonMixVal -= 0.05f;
+	}
+
+	if (uidata.addMaskTextureButtonEnter && addMaskTextureButtonMixVal <= 1.0f) {
+		addMaskTextureButtonMixVal += 0.05f;
+	}
+	else if (!uidata.addMaskTextureButtonEnter && addMaskTextureButtonMixVal >= 0.0f) {
+		addMaskTextureButtonMixVal -= 0.05f;
+	}
+
+	if (uidata.exportDownloadButtonEnter && exportDownloadButtonMixVal <= 1.0f) {
+		exportDownloadButtonMixVal += 0.05f;
+	}
+	else if (!uidata.exportDownloadButtonEnter && exportDownloadButtonMixVal >= 0.0f) {
+		exportDownloadButtonMixVal -= 0.05f;
+	}
+}
+//Button mix val
+float changeTextureDemonstratorWidth = 0.4f;
+float changeTextureDemonstratorHeight = 0.8f;
+
+float orgTextureDemonstratorWidth = 0.4f;
+float orgTextureDemonstratorHeight = 0.8f;
+bool changeTextureDemonstrator;
+
+void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue) {
+	ColorData colorData;
+	CommonData commonData;
+	glm::mat4 projection;
+	UserInterface ui;
+	Utilities util;
+    GlSet gl; 
+	gl.uniform1i(commonData.program, "isTwoDimensional", 1);
+	gl.uniform1i(commonData.program, "is2D", 1);
+
+	//Panel
+	ui.panel(renderData.panelLoc, 0);
+	projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
+	gl.uniformMatrix4fv(commonData.program, "TextProjection", projection);
+	ui.panelChangeButton(renderData.panelLoc, 0.8f);//Model Panel
+	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.795f,1,icons.TDModel);
+	ui.panelChangeButton(renderData.panelLoc, 0.72f);//Texture Panel
+	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.715f,1,icons.ImportTexture);
+	ui.panelChangeButton(renderData.panelLoc, 0.64f);//Painting Panel
+	//ui.iconBox(0.03f,0.04f,renderData.panelLoc,0.64f,1,icons.);//Dropper
+	ui.panelChangeButton(renderData.panelLoc, 0.56f);//Export Panel
+	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f, 0.555f,1,icons.Export);
+	
+	//Panel
+
+
+	if(textureDemonstratorButtonPressClicked){
+		if(changeTextureDemonstrator){
+			changeTextureDemonstrator = false;
+		}
+		else{
+			changeTextureDemonstrator = true;
+		}
+	}
+	if(changeTextureDemonstrator){
+		changeTextureDemonstratorWidth -= 0.035f;
+		changeTextureDemonstratorHeight -= 0.07f;
+		
+		if(changeTextureDemonstratorWidth < 0.0f){
+			changeTextureDemonstratorWidth = 0.0f;
+		}
+		if(changeTextureDemonstratorHeight < 0.0f){
+			changeTextureDemonstratorHeight = 0.0f;
+		}
+	}
+	else{
+		changeTextureDemonstratorWidth += 0.035f;
+		changeTextureDemonstratorHeight += 0.07f;
+		if(changeTextureDemonstratorWidth > orgTextureDemonstratorWidth){
+			changeTextureDemonstratorWidth = orgTextureDemonstratorWidth;
+		}
+		if(changeTextureDemonstratorHeight > orgTextureDemonstratorHeight){
+			changeTextureDemonstratorHeight = orgTextureDemonstratorHeight;
+		}
+	}
+	ui.textureDemonstrator(changeTextureDemonstratorWidth,changeTextureDemonstratorHeight,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,1.0f); 
+
+
+	if (panelData.paintingPanelActive){
+
+		ui.checkBox(renderData.panelLoc- 0.16f, 0.9f, "X", colorData.checkBoxColor, uidata.mirrorXCheckBoxEnter, uidata.mirrorXCheckBoxPressed); //X mirror checkbox
+		ui.checkBox(renderData.panelLoc- 0.10f, 0.9f, "Y", colorData.checkBoxColor, uidata.mirrorYCheckBoxEnter, uidata.mirrorYCheckBoxPressed); //Z mirror checkbox
+		ui.checkBox(renderData.panelLoc- 0.04f, 0.9f, "Z", colorData.checkBoxColor, uidata.mirrorZCheckBoxEnter, uidata.mirrorZCheckBoxPressed); //Y mirror checkbox
+		ui.box(0.25f, 0.22f, renderData.panelLoc + 0.25f, -0.6f, "", colorData.panelColorSnd, 0.075f, false, false, 0.1f, 10000, glm::vec3(0), 0);//Backside decoration
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 0.09f,0.95f,1,icons.Mirror);
+	}
+
+	float centerDivider;
+	float centerSum;
+	gl.uniform1f(commonData.program, "uiOpacity", 0.5f);
+	if (!panelData.movePanel) {
+		centerDivider = 2.0f;
+		centerSum = 0;
+		projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+		gl.uniformMatrix4fv(commonData.program, "TextProjection", projection);
+	}
+	else {
+		centerDivider = 1.0f;
+		centerSum = 0.15f;
+		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
+		gl.uniformMatrix4fv(commonData.program, "TextProjection", projection);
+	}
+	if (panelData.modelPanelActive) {
+		//File path textbox
+		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0);
+		ui.renderText(commonData.program, "File Path", renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.64f, 0.00022f);
+		ui.iconBox(0.020f,0.04f,renderData.panelLoc / centerDivider + centerSum + 0.1f,0.6f,1,icons.Folder);
+		
+
+
+		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false, 0.9f, 10, colorData.buttonColorHover, loadModelButtonMixVal);//Load model button
+		ui.box(0.012f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.0f, "", colorData.buttonColor, 0.047f, false, false, 0.9f, 7, colorData.buttonColorHover, addPanelButtonMixVal);//Load a panel button
+		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum,0.0,1,icons.Panel);
+		ui.box(0.012f, 0.04f, renderData.panelLoc / centerDivider + centerSum, -0.1f, "", colorData.buttonColor, 0.055f, false, false, 0.9f, 7, colorData.buttonColorHover, addSphereButtonMixVal);//Load a sphere button
+		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum,-0.1f,1,icons.Sphere);
+
+
+		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.08f, 0.3f, "Auto triangulate", colorData.checkBoxColor, uidata.autoTriangulateCheckBoxEnter, uidata.autoTriangulateCheckBoxPressed); //Auto triangulate checkbox
+		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.08f, 0.2f, "Backface culling", colorData.checkBoxColor, uidata.backfaceCullingCheckBoxEnter, uidata.backfaceCullingCheckBoxPressed); //Backface culling checkbox
+
+	}
+	if (panelData.texturePanelActive) {
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "Add Image", colorData.buttonColor, 0.07f, false, false, 0.9f, 10, colorData.buttonColorHover, addAlbedoTextureMixVal); //Add albedo texture button
+	}
+
+	if (panelData.paintingPanelActive) {
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.85f, "Add Mask Texture", colorData.buttonColor, 0.095f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
+		
+		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.1f, 0.76f, "Use Negative", colorData.checkBoxColor, uidata.useNegativeForDrawingCheckboxEnter, uidata.useNegativeForDrawingCheckboxPressed); //Auto triangulate checkbox
+
+		ui.box(0.14f, 0.28f, renderData.panelLoc / centerDivider + centerSum, 0.45f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
+
+		//Brush size rangebar
+		ui.renderText(commonData.program, "Size", renderData.panelLoc / centerDivider + centerSum, 0.13f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.1f, renderData.brushSizeRangeBarValue);
+		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.145f,1,icons.MaskScale);
+
+		//Brush blur rangebar
+		ui.renderText(commonData.program, "Blur", renderData.panelLoc / centerDivider + centerSum, +0.035f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.00f, brushBlurRangeBarValue);
+		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.05f,1,icons.MaskGausBlur);
+
+		//Brush rotation rangebar
+		ui.renderText(commonData.program, "Rotation", renderData.panelLoc / centerDivider + centerSum, -0.065f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.10f, brushRotationRangeBarValue);
+		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.05f,1,icons.MaskRotation);
+
+		//Brush opacity rangebar
+		ui.renderText(commonData.program, "Opacity", renderData.panelLoc / centerDivider + centerSum, -0.165f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.20f, brushOpacityRangeBarValue);
+		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.15f,1,icons.MaskOpacity);
+
+		//Brush spacing rangebar
+		ui.renderText(commonData.program, "Spacing", renderData.panelLoc / centerDivider + centerSum, -0.265f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.30f, brushSpacingRangeBarValue);
+		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.25f,1,icons.MaskSpacing);
+
+		//Color Picker
+		ui.colorBox(renderData.panelLoc / centerDivider + centerSum - 0.02f, -0.6f, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y);
+		ui.colorRect(renderData.panelLoc / centerDivider + centerSum + 0.1f, -0.6f, renderData.colorBoxColorRangeBarValue, FBOScreen, renderData.window);
+
+		gl.uniform1f(commonData.program, "uiOpacity", 1.0f);
+		ui.box(0.005f, 0.025f, renderData.panelLoc / centerDivider + centerSum - 0.095f, -0.85f, "", colorBoxValue / glm::vec3(255), 0.075f, false, false, 0.9f, 10, glm::vec3(0), 0); //indicator for picken color of the color picker
+		gl.uniform1f(commonData.program, "uiOpacity", 0.5f);
+		ui.decorationSquare(renderData.panelLoc / centerDivider + centerSum - 0.1f, -0.84f); //Decoration for color indicator
+
+		ui.renderText(commonData.program, util.rgbToHexGenerator(colorBoxValue), renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.86f, 0.00022f); //Hex value of the picken color 
+		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum + 0.05f, -0.86f,1,icons.dropperIcon);
+	}
+
+	if (panelData.exportPanelActive) {
+		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum, 0.6f, renderData.exportFolder, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0); //Path textbox
+		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.11f, 0.5f, "", colorData.checkBoxColor, uidata.exportExtJPGCheckBoxEnter, uidata.exportExtJPGCheckBoxPressed); //jpg checkbox
+		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - 0.06f, 0.5f,1,icons.JpgFile);
+
+		ui.checkBox(renderData.panelLoc / centerDivider + centerSum + 0.05f, 0.5f, "", colorData.checkBoxColor, uidata.exportExtPNGCheckBoxEnter, uidata.exportExtPNGCheckBoxPressed); //png checkbox
+		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum + 0.1f, 0.5f,1,icons.PngFile);
+
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.3f, "Download", colorData.buttonColor, 0.045f, false, false, 0.9f, 10, colorData.buttonColorHover, exportDownloadButtonMixVal); //Download Button
+	}
+	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+	gl.uniformMatrix4fv(commonData.program, "TextProjection", projection);
+}
+//--------------------RENDER UI --------------------\\
+
+
+void Render::renderModel(bool backfaceCulling, std::vector<float>& vertices) {
+	CommonData commonData;
+    GlSet gl;
+	if (backfaceCulling) { //if backface culling checked in the model panel
+		gl.enable(GL_CULL_FACE);
+		gl.cullFace(GL_BACK);
+	}
+	gl.meshDataToShaders();
+	gl.drawArrays(vertices, false);
+
+	gl.disable(GL_CULL_FACE); //Disable backface culling if enabled
+}
+void Render::setMatrices() {
+	CommonData cmnd;
+    GlSet gl;
+	glm::mat4 textProjection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
+	gl.uniformMatrix4fv(cmnd.program, "TextProjection", textProjection);
+
+	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777777778 - 1
+	gl.uniformMatrix4fv(cmnd.program, "renderTextureProjection", renderTextureProjection);
+
+	glm::mat4 model = glm::mat4(1.0f);
+	gl.uniformMatrix4fv(cmnd.program, "model", model);
+
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
+	gl.uniformMatrix4fv(cmnd.program, "projection",projection);
+
+	ProjectionData pd;
+	pd.modelMat = model;
+	pd.projMat = projection;
+	//pd.viewMat = view;
+}
+void Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirrorX,bool mirrorY,bool mirrorZ) {
+	CommonData cmnd;
+	glm::mat4 view;
+    GlSet gl;
+	view = glm::lookAt(cameraPos, originPos, glm::vec3(0.0, 1.0, 0.0)); 
+
+	glm::vec3 mirrorVec = glm::vec3(1.0f - (int)mirrorX*2, 1.0f -(int)mirrorY * 2, 1.0f - (int)mirrorZ * 2);
+	glm::mat4 mirroredView;
+	mirroredView = glm::lookAt(cameraPos * mirrorVec, originPos * mirrorVec, glm::vec3(0.0, 1.0, 0.0));
+
+	gl.uniformMatrix4fv(cmnd.program, "view", view);
+	gl.uniformMatrix4fv(cmnd.program, "mirroredView", mirroredView);
+}
+void Render::getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos) { //Not used
+	/*GlSet glset;
+	CommonData cmnd;
+	ProjectionData pd = glset.setMatrices(cameraPos, originPos);
+	return glm::project(vPos, pd.modelMat * pd.viewMat, pd.projMat, glm::vec4(0, 0, 1920, 1080));*/
+}
+
+void Render::drawLightObject(glm::vec3 lightPos) {
+	/*CommonData cmnd;
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, lightPos);
+	model = glm::scale(model, glm::vec3(0.2f));
+
+	int lightColorLoc = glGetUniformLocation(cmnd.program, "lightColor");
+	glUniform3f(lightColorLoc, 10.0f, 10.0f, 10.0f);
+	int isLightSourceLoc = glGetUniformLocation(cmnd.program, "isLightSource");
+	glUniform1i(isLightSourceLoc, 1);
+	int modelLoc = glGetUniformLocation(cmnd.program, "model");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+	glDrawArrays(GL_TRIANGLES, 0, 36);*/
+}
+
+void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen, unsigned int screenSizeX, unsigned int screenSizeY) {
+	CommonData commonData;
+	Texture txtr;
+    GlSet gl;
+	gl.viewport(1920, 1080);
+	gl.bindFramebuffer(FBOScreen);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	gl.uniform1i(commonData.program, "isTwoDimensional", 0);
+	gl.uniform1i(commonData.program, "isRenderTextureMode", 1);
+	gl.uniform1i(commonData.program, "isRenderTextureModeV", 0);
+	gl.uniform1i(commonData.program, "depthTexture", 9);
+	gl.uniform1i(commonData.program, "mirroredDepthTexture", 8);
+	gl.uniform1i(commonData.program, "renderDepth", 1);
+	gl.uniform1i(commonData.program, "renderMirroredDepth", 0);
+	gl.drawArrays(vertices, false);
+	GLubyte* screen = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
+	gl.activeTexture(GL_TEXTURE9);
+	gl.texImage(screen, 1920, 1080, GL_RGB);
+	gl.generateMipmap();
+	delete[]screen;
+
+	gl.uniform1i(commonData.program, "renderMirroredDepth", 1);
+	gl.drawArrays(vertices, false);
+	GLubyte* screenMirrored = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
+	gl.activeTexture(GL_TEXTURE8);
+	gl.texImage(screenMirrored, 1920, 1080, GL_RGB);
+	gl.generateMipmap();
+	delete[] screenMirrored;
+
+	gl.uniform1i(commonData.program, "isRenderTextureModeV", 0);
+	gl.uniform1i(commonData.program, "isRenderTextureMode", 0);
+	gl.uniform1i(commonData.program, "renderDepth", 0);
+	gl.uniform1i(commonData.program, "renderMirroredDepth", 0);
+	gl.viewport(screenSizeX, screenSizeY);
+	gl.bindFramebuffer(0);
+}
+
+//------------CtrlZ------------
+std::vector<GLubyte*> undoTextures; 
+bool doCtrlZ;
+void ctrlZCheck(GLFWwindow* window) {
+	Texture txtr;
+	GlSet glset;
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ && undoTextures.size() != 0) { //MAX 20
+		txtr.refreshScreenDrawingTexture();
+		glset.activeTexture(GL_TEXTURE0);
+		glset.texImage(undoTextures[undoTextures.size() - 1], 1080, 1080, GL_RGB);
+		glset.generateMipmap();
+
+		GLubyte* previousTexture  = undoTextures[undoTextures.size() - 1];
+		delete[] previousTexture;
+
+		undoTextures.pop_back();
+		doCtrlZ = false;
+	}
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) {
+		doCtrlZ = true;
+	}
+}
+//------------CtrlZ------------
+
+void drawBrushIndicator(float distanceX,float screenWidth,float screenHeight,float mouseXpos,float mouseYpos,glm::vec3 color) {
+
+	float sizeX = distanceX / ((1920.0f / (float)screenWidth)); //Match the size of the window
+
+	CommonData commonData;
+	GlSet glset;
+	glset.uniform1i(commonData.program, "drawBrushIndicator", 1);
+	std::vector<float> paintingSquare{
+		// first triangle
+		 sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,1,0,0,0,  // top right
+		 sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,0,0,0,0,  // bottom right
+		-sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0,  // top left 
+
+		 sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,0,0,0,0,  // bottom right
+		-sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom left
+		-sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0  // top left
+	};
+	glset.uiDataToShaders(color/glm::vec3(255.0f));
+	glset.uniform1f(commonData.program, "uiOpacity", 0.2f);
+	glset.drawArrays(paintingSquare, false);
+	glset.uniform1f(commonData.program, "uiOpacity", 0.5f);
+
+	glset.uniform1i(commonData.program, "drawBrushIndicator", 0);
+}
+
+//------------isColorBoxValueChanged------------
+float lastColorBoxPickerValue_x = 7;
+float lastColorBoxPickerValue_y = 3;
+float lastColorBoxRangeValue = 3;
+bool isColorBoxValueChanged(RenderData renderData){
+	bool colorBoxValChanged = true;
+	if (lastColorBoxPickerValue_x != renderData.colorBoxPickerValue_x || lastColorBoxPickerValue_y != renderData.colorBoxPickerValue_y || lastColorBoxRangeValue != renderData.colorBoxColorRangeBarValue) {
+		colorBoxValChanged = true;
+	}
+	else {
+		colorBoxValChanged = false;
+	}
+	lastColorBoxPickerValue_x = renderData.colorBoxPickerValue_x;
+	lastColorBoxPickerValue_y = renderData.colorBoxPickerValue_y;
+	lastColorBoxRangeValue = renderData.colorBoxColorRangeBarValue;
+	return colorBoxValChanged;
+}
+//------------isColorBoxValueChanged------------
+
+void drawAxisPointer() {
+	GlSet glset;
+	//Axis Pointer - start from middle of the scene
+	std::vector<float>axisPointer{
+	0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
+	0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+
+	-100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //X
+	100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+
+	0.0f, 0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Z
+	0.0f, 0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+	};
+	glset.axisPointerDataToShaders();
+	glset.blendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
+	glset.drawArrays(axisPointer, true);
+	glset.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//Axis pointer
+}
+
+
+
+
+
+
+void Render::exportTexture(bool JPG,bool PNG,const char* exportPath){
+    Texture txtr;
+    GLubyte* exportTxtr = txtr.getTextureFromProgram(GL_TEXTURE0,1080,1080,3);
+	if (JPG) {
+		txtr.downloadTexture(exportPath, "LigidPainter Export", 0, 1080, 1080, exportTxtr, 3);
+	}
+	else if (PNG) {
+		txtr.downloadTexture(exportPath, "LigidPainter Export", 1, 1080, 1080, exportTxtr, 3);
+	}
+    delete[] exportTxtr;
+}
+void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    GlSet gl;
+
+	gl.drawArrays(vertices, false); //Render Model
+	GLubyte* renderedTexture = new GLubyte[width * 1080 * 3 * sizeof(GLubyte)];
+	glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, renderedTexture);
+
+	gl.activeTexture(texture);
+	gl.texImage(renderedTexture, width, height, GL_RGB);
+	gl.generateMipmap();
+	delete[]renderedTexture;
+}
+
+void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices,bool exportImage, bool JPG, bool PNG, const char* exportPath,unsigned int screenSizeX, unsigned int screenSizeY) {
+	int maxTextureHistoryHold = 20;
+
+	std::vector<float> renderVertices = { //Render backside of the uv
+	// first triangle
+	 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+	 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+	 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+	// second triangle	  ,0,0,0,
+	 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+	 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+	 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+	};
+
+	Texture txtr;
+	CommonData commonData;
+
+    //Send the texture to the undoTextures vector before updating the texture
+	GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, 1080, 1080, 3);
+	undoTextures.push_back(originalImage);
+
+    //Delete the first texture from undoTextures array once the size of the vector hits 20
+	if (undoTextures.size() > maxTextureHistoryHold){
+		GLubyte* previousTexture  = undoTextures[0];
+		delete[] previousTexture;
+		undoTextures.erase(undoTextures.begin());
+	}
+
+    GlSet gl;
+	//Setup
+	gl.uniform1i(commonData.program, "isTwoDimensional", 0);
+	gl.uniform1i(commonData.program, "isRenderTextureMode", 1);
+	gl.uniform1i(commonData.program, "isRenderTextureModeV", 1);
+	gl.viewport(1920, 1080);
+	gl.bindFramebuffer(FBOScreen);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Setup
+
+	//Render painted image
+	gl.drawArrays(vertices, false);
+	if (!exportImage)
+		gl.drawArrays(renderVertices, false);
+	GLubyte* renderedImage = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
+	glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
+	gl.activeTexture(GL_TEXTURE0);
+	gl.texImage(renderedImage, 1080, 1080, GL_RGB);
+	gl.generateMipmap();
+	delete[]renderedImage;
+	//Render painted image
+
+	txtr.refreshScreenDrawingTexture();
+
+	//Render uv mask
+	gl.uniform1i(commonData.program, "whiteRendering", 1);
+	renderTexture(vertices,1080, 1080,GL_TEXTURE7);
+	gl.uniform1i(commonData.program, "whiteRendering", 0);
+	//Render uv mask
+
+	//interpret the albedo with ui mask texture
+	gl.uniform1i(commonData.program, "interpretWithUvMask", 1);
+	renderTexture(renderVertices,1080, 1080,GL_TEXTURE0);//Render enlarged texture
+	gl.uniform1i(commonData.program, "interpretWithUvMask", 0);
+	//interpret the albedo with ui mask texture
+
+	//Download enlarged texture
+	if (exportImage) {
+        exportTexture(JPG,PNG,exportPath);
+	}
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	//Finish
+	gl.uniform1i(commonData.program, "isRenderTextureModeV", 0);
+	gl.uniform1i(commonData.program, "isRenderTextureMode", 0);
+	gl.bindFramebuffer(0);
+	gl.viewport(screenSizeX, screenSizeY);
+	//Finish
+}
+glm::vec3 getScreenHoverPixel(double mouseXpos,double mouseYpos,unsigned int screenSizeY){
+    glm::vec3 screenHoverPixel;
+	GLubyte* screenPixel = new GLubyte[1 * 1 * 3];//Color val
+	glReadPixels(mouseXpos,screenSizeY - mouseYpos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, screenPixel);//Read the pixel from the framebuffer
+	screenHoverPixel.r = screenPixel[0];
+	screenHoverPixel.g = screenPixel[1];
+	screenHoverPixel.b = screenPixel[2];
+	delete[] screenPixel;  
+    return screenHoverPixel;
+}
+glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerValue_x, float colorBoxPickerValue_y, unsigned int screenSizeX, unsigned int screenSizeY) {
+	std::vector<float> colorBox = { //Render color box into the screen
+	// first triangle
+	 0.0f,  1.0f, 0.0f,1,1,1,1,1,  // top right
+	 0.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+	 1.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+	// second triangle	  ,0,0,0,
+	 0.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right7
+	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+	 1.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+	};
+
+    GlSet gl;
+	CommonData commonData;
+	//Setup
+	gl.viewport(1920, 1080);
+	gl.uniform1i(commonData.program, "isRenderTextureModeV", 1);
+	gl.uniform1i(commonData.program, "isRenderTextureMode", 1);
+	gl.bindFramebuffer(FBOScreen);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Setup
+
+	//Render color box
+	GLubyte* colorBoxPixel = new GLubyte[1 * 1 * 3];//Color val
+	gl.uniform1i(commonData.program, "isColorBox", 1);
+	gl.drawArrays(colorBox, false); //Render Model
+	gl.uniform1i(commonData.program, "isColorBox", 0);
+	glReadPixels(1080 - ((colorBoxPickerValue_x * -1.0f + 0.1f) * 5.0f * 1080), (colorBoxPickerValue_y + 0.2f) * 2.5f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorBoxPixel);
+	gl.uniform3f(commonData.program, "drawColor", colorBoxPixel[0] / 255.0f, colorBoxPixel[1] / 255.0f, colorBoxPixel[2] / 255.0f);
+	//Render color box
+
+	//Finish
+	gl.uniform1i(commonData.program, "isRenderTextureMode", 0);
+	gl.uniform1i(commonData.program, "isRenderTextureModeV", 0);
+	gl.bindFramebuffer(0);
+	gl.viewport(screenSizeX, screenSizeY);
+
+	//Get color value to the color vec
+    glm::vec3 colorBoxPixelVal = glm::vec3(0);
+	colorBoxPixelVal.r = colorBoxPixel[0];
+	colorBoxPixelVal.g = colorBoxPixel[1];
+	colorBoxPixelVal.b = colorBoxPixel[2];
+	delete[]colorBoxPixel;
+    return colorBoxPixelVal;
+	//Finish
+}
+
+int renderDepthCounter = 0;
+glm::vec3 colorBoxVal = glm::vec3(0);
+glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons) {
+	GlSet gls;
+	UserInterface ui;
+	CommonData commonData;
+	ColorData colorData;
+	Utilities util;
+	Texture txtr;
+
+	if(textureDemonstratorBoundariesPressed){
+		orgTextureDemonstratorWidth = textureDemonstratorWidth;
+		orgTextureDemonstratorHeight = textureDemonstratorHeight;
+	}
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear before rendering
+
+	//Get screen and mouse info
+	int screenSizeX;
+	int screenSizeY;
+	glfwGetWindowSize(renderData.window, &screenSizeX, &screenSizeY);
+	double mouseXpos;
+	double mouseYpos;
+	glfwGetCursorPos(renderData.window, &mouseXpos, &mouseYpos);
+	//Get screen and mouse info
+
+	bool colorBoxValChanged = isColorBoxValueChanged(renderData);
+
+	drawAxisPointer();
+	
+	//Render depth once painting started
+	if (renderData.paintingMode) { 
+		renderDepthCounter++;
+	}
+	else {
+		renderDepthCounter = 0;
+	}
+	if (renderDepthCounter == 1) {//Get depth texture
+		getDepthTexture(vertices,FBOScreen,screenSizeX,screenSizeY);
+	}
+	//Render depth once painting started
+
+	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || uidata.addImageButtonPressed || (colorBoxValChanged && renderData.paintingMode) || (glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
+	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false
+		renderTextures(FBOScreen,vertices,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY);
+	}
+	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal);
+
+	if (colorBoxValChanged) { //Get value of color box
+		colorBoxVal = getColorBoxValue(FBOScreen, lastColorBoxPickerValue_x, lastColorBoxPickerValue_y,screenSizeX, screenSizeY);
+	}
+
+	ctrlZCheck(renderData.window);
+
+	renderModel(renderData.backfaceCulling,vertices);
+
+	updateButtonColorMixValues(uidata);
+
+	glm::vec3 screenHoverPixel = getScreenHoverPixel(mouseXpos,mouseYpos,screenSizeY);
+
+	if(renderData.doPainting)
+		drawBrushIndicator(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorBoxVal);
+
+	return screenHoverPixel;
+}
