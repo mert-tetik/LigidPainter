@@ -78,7 +78,7 @@ float orgTextureDemonstratorWidth = 0.4f;
 float orgTextureDemonstratorHeight = 0.8f;
 bool changeTextureDemonstrator;
 
-void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue) {
+void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile) {
 	ColorData colorData;
 	CommonData commonData;
 	glm::mat4 projection;
@@ -187,7 +187,7 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.85f, "Add Mask Texture", colorData.buttonColor, 0.095f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
 		
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.03f, 0.7f, "Use Negative", colorData.checkBoxColor, uidata.useNegativeForDrawingCheckboxEnter, uidata.useNegativeForDrawingCheckboxPressed); //Auto triangulate checkbox
-		ui.renderText(commonData.program, "Default Brush", renderData.panelLoc / centerDivider + centerSum - 0.03f, 0.62f, 0.00022f);
+		ui.renderText(commonData.program, maskTextureFile, renderData.panelLoc / centerDivider + centerSum - 0.03f, 0.62f, 0.00022f);
 		ui.box(0.035f, 0.07f, renderData.panelLoc / centerDivider + centerSum - 0.1f, 0.67f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
 
 		//Brush size rangebar
@@ -606,7 +606,7 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 
 int renderDepthCounter = 0;
 glm::vec3 colorBoxVal = glm::vec3(0);
-glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons) {
+glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile) {
 	GlSet gls;
 	UserInterface ui;
 	CommonData commonData;
@@ -650,7 +650,7 @@ glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, un
 	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false
 		renderTextures(FBOScreen,vertices,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY);
 	}
-	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal);
+	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile);
 
 	if (colorBoxValChanged) { //Get value of color box
 		colorBoxVal = getColorBoxValue(FBOScreen, lastColorBoxPickerValue_x, lastColorBoxPickerValue_y,screenSizeX, screenSizeY);

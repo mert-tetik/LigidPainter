@@ -59,6 +59,7 @@ glm::vec3 holdCameraPos; //Used to detect the camera position change
 const char* modelFilePath;
 string albedoTexturePath = "albedoImage.png";
 string maskTexturePath = "./LigidPainter/Resources/Textures/PlainCircle.png";
+string maskTextureFile = "PlainCircle.png";
 string exportPath = "";
 string exportFolder = "Choose Destination Path";
 //Paths
@@ -328,7 +329,7 @@ bool LigidPainter::run()
 		
 
 		//Render
-		screenHoverPixel = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons);
+		screenHoverPixel = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str());
 
 		exportImage = false; //After exporting, set exportImage false so we won't download the texture repeatedly
 		setButtonPressedFalse();
@@ -597,10 +598,12 @@ void LigidPainter::addMaskTextureButton() {
 	addMaskTextureButtonPressed = true;
 	GlSet glset;
 	Texture txtr;
+	Utilities util;
 	char const* lFilterPatterns[2] = { "*.jpg", "*.png" };
 	auto maskTexturePathCheck = tinyfd_openFileDialog("Select Mask Texture", "", 2, lFilterPatterns, "", false);
 	if (maskTexturePathCheck) {
 		maskTexturePath = maskTexturePathCheck;
+		maskTextureFile = util.getLastWordBySeparatingWithChar(maskTexturePath,'\\'); 
 		brushValChanged = true;
 		glset.activeTexture(GL_TEXTURE1);
 		txtr.getTexture(maskTexturePath,0,0,true);
