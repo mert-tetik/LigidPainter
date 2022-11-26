@@ -76,6 +76,11 @@ struct UiData {
 
 	bool useNegativeForDrawingCheckboxEnter;
 	bool useNegativeForDrawingCheckboxPressed;
+
+	bool paintingFillNumericModifierPEnter;
+	bool paintingFillNumericModifierNEnter;
+	
+	bool dropperEnter;
 };
 class Render {
 public:

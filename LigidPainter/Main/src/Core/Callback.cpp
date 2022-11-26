@@ -268,7 +268,7 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	}
 	if (panelData.paintingPanelActive) {
 		addMaskTextureButtonEnter = ui.isMouseOnButton(window, 0.12f, 0.04f, panelLoc / centerDivider + centerSum, 0.85f, mouseXPos, mouseYPos, movePanel);
-		useNegativeForDrawingCheckboxEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc / centerDivider + centerSum - 0.3f, 0.7f, mouseXPos, mouseYPos, movePanel);
+		useNegativeForDrawingCheckboxEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc / centerDivider + centerSum - 0.03f, 0.7f, mouseXPos, mouseYPos, movePanel);
 		brushSizeRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushSizeRangeBarValue,  0.22f+0.22f, mouseXPos, mouseYPos, movePanel);
 		brushBlurRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushBlurRangeBarValue, 0.09f+0.22f, mouseXPos, mouseYPos, movePanel);
 		brushRotationRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushRotationRangeBarValue, -0.04f+0.22f, mouseXPos, mouseYPos, movePanel);

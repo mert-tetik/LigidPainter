@@ -84,13 +84,14 @@ void UserInterface::textureDemonstrator(float width,float height, float position
 	glset.uniform1i(3, "isRenderTextureMode", 0);
 	glset.uniform1i(3, "is2D", 1);
 }
-void UserInterface::numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value){
+void UserInterface::numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN){
 	//box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"",glm::vec3(0),0,0,0,1,10,glm::vec3(0),0);
-	iconBox(0.02f,0.04f,position_x - 0.05f,position_y,z,leftArrow);
+
+	iconBox(0.02f,0.04f,position_x - 0.05f,position_y,z,leftArrow,mixValN);
 	renderText(3,std::to_string(value),position_x-0.01f,position_y-0.01f,0.00022f);
-	iconBox(0.02f,0.04f,position_x+ 0.05f,position_y,z,rightArrow);
+	iconBox(0.02f,0.04f,position_x+ 0.05f,position_y,z,rightArrow,mixValP);
 }
-void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon){
+void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon,float mixVal){
 	std::vector<float> buttonCoorSq{
 		// first triangle
 		 width + position_x,  height + position_y, z,1,1,0,0,0,  // top right
@@ -102,8 +103,12 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 		-width + position_x,  height + position_y, z,0,1,0,0,0  // top left
 	};
 	GlSet glset;
-	
+	ColorData clrData;
+
 	glset.uniform1i(3,"isIcon", 1);
+	glset.uniform3fv(3,"iconColor",clrData.iconColor);
+	glset.uniform3fv(3,"iconColorHover",clrData.iconColorHover);
+	glset.uniform1f(3,"iconMixVal",mixVal);
 	glset.activeTexture(GL_TEXTURE6);
 	glset.bindTexture(icon);
 	glset.drawArrays(buttonCoorSq,false);

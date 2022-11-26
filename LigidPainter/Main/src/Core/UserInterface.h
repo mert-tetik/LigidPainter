@@ -18,6 +18,8 @@ struct ColorData //LigidPainter color palette
 	glm::vec3 rangeBarSlide = glm::vec3(0.3f, 0.3f, 0.3f);
 	glm::vec3 textColor = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::vec3 colorBoxIndicatorColor = glm::vec3(0.05f, 0.05f, 0.05f);
+	glm::vec3 iconColor = glm::vec3(1.0f,1.0f,1.0f);
+	glm::vec3 iconColorHover = glm::vec3(0.5f,0.5f,0.5f);
 };
 struct buttonData {
 
@@ -28,7 +30,7 @@ public:
 	void textureDemonstrator(float width,float height, float position_x,float position_y,float z);
 
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec3 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec3 colorTransitionColor , float mixVal);
-	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon);
+	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal);
 	bool isMouseOnButton(GLFWwindow* window, float width, float height, float position_x, float position_y, int mouseXpos, int mouseYpos, bool isPanelMoving);
 	void setViewportBgColor();
 	void renderText(unsigned int program, std::string text, float x, float y, float scale);
@@ -42,6 +44,6 @@ public:
 	void colorRect(float position_x, float position_y,float value, unsigned int FBO,GLFWwindow* window);
 	void decorationSquare(float position_x, float position_y);
 	Icons UserInterface::loadIcons();
-	void numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value);
+	void numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN);
 };
 #endif 

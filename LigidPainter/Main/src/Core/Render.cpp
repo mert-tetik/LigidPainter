@@ -27,6 +27,11 @@ float loadModelButtonMixVal = 0.0f;
 float addPanelButtonMixVal = 0.0f;
 float addSphereButtonMixVal = 0.0f;
 float addAlbedoTextureMixVal = 0.0f;
+
+float fillBetweenResNumericModifiermixValN = 0.0f;
+float fillBetweenResNumericModifiermixValP = 0.0f;
+
+float dropperMixVal = 0.0f;
 void updateButtonColorMixValues(UiData uidata) {
 	if (uidata.addSphereButtonEnter && addSphereButtonMixVal <= 1.0f) {
 		addSphereButtonMixVal += 0.05f;
@@ -62,12 +67,31 @@ void updateButtonColorMixValues(UiData uidata) {
 	else if (!uidata.addMaskTextureButtonEnter && addMaskTextureButtonMixVal >= 0.0f) {
 		addMaskTextureButtonMixVal -= 0.05f;
 	}
-
+	
 	if (uidata.exportDownloadButtonEnter && exportDownloadButtonMixVal <= 1.0f) {
 		exportDownloadButtonMixVal += 0.05f;
 	}
 	else if (!uidata.exportDownloadButtonEnter && exportDownloadButtonMixVal >= 0.0f) {
 		exportDownloadButtonMixVal -= 0.05f;
+	}
+
+	if (uidata.paintingFillNumericModifierNEnter && fillBetweenResNumericModifiermixValN <= 1.0f) {
+		fillBetweenResNumericModifiermixValN += 0.05f;
+	}
+	else if (!uidata.paintingFillNumericModifierNEnter && fillBetweenResNumericModifiermixValN >= 0.0f) {
+		fillBetweenResNumericModifiermixValN -= 0.05f;
+	}
+	if (uidata.paintingFillNumericModifierPEnter && fillBetweenResNumericModifiermixValP <= 1.0f) {
+		fillBetweenResNumericModifiermixValP += 0.05f;
+	}
+	else if (!uidata.paintingFillNumericModifierPEnter && fillBetweenResNumericModifiermixValP >= 0.0f) {
+		fillBetweenResNumericModifiermixValP -= 0.05f;
+	}
+	if (uidata.dropperEnter && dropperMixVal <= 1.0f) {
+		dropperMixVal += 0.05f;
+	}
+	else if (!uidata.dropperEnter && dropperMixVal >= 0.0f) {
+		dropperMixVal -= 0.05f;
 	}
 }
 //Button mix val
@@ -93,13 +117,13 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 	projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 	gl.uniformMatrix4fv(commonData.program, "TextProjection", projection);
 	ui.panelChangeButton(renderData.panelLoc, 0.8f);//Model Panel
-	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.795f,0.9,icons.TDModel);
+	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.795f,0.9,icons.TDModel,0);
 	ui.panelChangeButton(renderData.panelLoc, 0.72f);//Texture Panel
-	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.715f,0.9,icons.ImportTexture);
+	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.715f,0.9,icons.ImportTexture,0);
 	ui.panelChangeButton(renderData.panelLoc, 0.64f);//Painting Panel
 	//ui.iconBox(0.03f,0.04f,renderData.panelLoc,0.64f,1,icons.);//Dropper
 	ui.panelChangeButton(renderData.panelLoc, 0.56f);//Export Panel
-	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f, 0.555f,0.9,icons.Export);
+	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f, 0.555f,0.9,icons.Export,0);
 	
 	//Panel
 
@@ -142,7 +166,7 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 		ui.checkBox(renderData.panelLoc- 0.10f, 0.9f, "Y", colorData.checkBoxColor, uidata.mirrorYCheckBoxEnter, uidata.mirrorYCheckBoxPressed); //Z mirror checkbox
 		ui.checkBox(renderData.panelLoc- 0.04f, 0.9f, "Z", colorData.checkBoxColor, uidata.mirrorZCheckBoxEnter, uidata.mirrorZCheckBoxPressed); //Y mirror checkbox
 		ui.box(0.25f, 0.22f, renderData.panelLoc + 0.25f, -0.6f, "", colorData.panelColorSnd, 0.075f, false, false, 0.1f, 10000, glm::vec3(0), 0);//Backside decoration
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 0.09f,0.95f,0.9,icons.Mirror);
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 0.09f,0.95f,0.9,icons.Mirror,0);
 	}
 
 	float centerDivider;
@@ -164,15 +188,15 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 		//File path textbox
 		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0);
 		ui.renderText(commonData.program, "File Path", renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.64f, 0.00022f);
-		ui.iconBox(0.020f,0.04f,renderData.panelLoc / centerDivider + centerSum + 0.1f,0.6f,1,icons.Folder);
+		ui.iconBox(0.020f,0.04f,renderData.panelLoc / centerDivider + centerSum + 0.1f,0.6f,1,icons.Folder,0);
 		
 
 
 		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false, 0.9f, 10, colorData.buttonColorHover, loadModelButtonMixVal);//Load model button
 		ui.box(0.012f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.0f, "", colorData.buttonColor, 0.047f, false, false, 0.9f, 7, colorData.buttonColorHover, addPanelButtonMixVal);//Load a panel button
-		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum,0.0,0.99,icons.Panel);
+		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum,0.0,0.99,icons.Panel,0);
 		ui.box(0.012f, 0.04f, renderData.panelLoc / centerDivider + centerSum, -0.1f, "", colorData.buttonColor, 0.055f, false, false, 0.9f, 7, colorData.buttonColorHover, addSphereButtonMixVal);//Load a sphere button
-		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum,-0.1f,0.99,icons.Sphere);
+		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum,-0.1f,0.99,icons.Sphere,0);
 
 
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.08f, 0.3f, "Auto triangulate", colorData.checkBoxColor, uidata.autoTriangulateCheckBoxEnter, uidata.autoTriangulateCheckBoxPressed); //Auto triangulate checkbox
@@ -215,7 +239,7 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.30f+0.22f, brushSpacingRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.25f,1,icons.MaskSpacing);
 
-        ui.numericModifier(renderData.panelLoc / centerDivider + centerSum,-0.3,icons.ArrowLeft,icons.ArrowRight,0.9f, paintingFillNumericModifierVal); //Fill quality
+        ui.numericModifier(renderData.panelLoc / centerDivider + centerSum,-0.3,icons.ArrowLeft,icons.ArrowRight,0.9f, paintingFillNumericModifierVal,fillBetweenResNumericModifiermixValP,fillBetweenResNumericModifiermixValN); //Fill quality
 
 		//Color Picker
 		ui.colorBox(renderData.panelLoc / centerDivider + centerSum - 0.02f, -0.6f, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y);
@@ -227,16 +251,16 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 		ui.decorationSquare(renderData.panelLoc / centerDivider + centerSum - 0.1f, -0.84f); //Decoration for color indicator
 
 		ui.renderText(commonData.program, util.rgbToHexGenerator(colorBoxValue), renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.86f, 0.00022f); //Hex value of the picken color 
-		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum + 0.05f, -0.86f,0.9,icons.dropperIcon);
+		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum + 0.05f, -0.86f,0.9,icons.dropperIcon,dropperMixVal);
 	}
 
 	if (panelData.exportPanelActive) {
 		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum, 0.6f, renderData.exportFolder, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0); //Path textbox
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.11f, 0.5f, "", colorData.checkBoxColor, uidata.exportExtJPGCheckBoxEnter, uidata.exportExtJPGCheckBoxPressed); //jpg checkbox
-		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - 0.06f, 0.5f,0.9,icons.JpgFile);
+		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - 0.06f, 0.5f,0.9,icons.JpgFile,0);
 
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum + 0.05f, 0.5f, "", colorData.checkBoxColor, uidata.exportExtPNGCheckBoxEnter, uidata.exportExtPNGCheckBoxPressed); //png checkbox
-		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum + 0.1f, 0.5f,0.9,icons.PngFile);
+		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum + 0.1f, 0.5f,0.9,icons.PngFile,0);
 
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.3f, "Download", colorData.buttonColor, 0.045f, false, false, 0.9f, 10, colorData.buttonColorHover, exportDownloadButtonMixVal); //Download Button
 	}

@@ -68,6 +68,9 @@ uniform int interpretWithUvMask;
 
 uniform int isIcon;
 uniform sampler2D icon;
+uniform vec3 iconColor;
+uniform vec3 iconColorHover;
+uniform float iconMixVal;
 
 float far = 10.0f;
 float near = 0.1f;
@@ -293,6 +296,6 @@ void main() {
    }
    else{
       //Icon here
-      color = vec4(vec3(1), 1.0 - texture2D(icon,TexCoords).r);
+      color = vec4(mix(iconColor,iconColorHover,iconMixVal), 1.0 - texture2D(icon,TexCoords).r);
    }
 }

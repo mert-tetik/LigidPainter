@@ -992,5 +992,10 @@ UiData updateUiData() {
 	uidata.exportDownloadButtonEnter = callbackData.exportDownloadButtonEnter;
 	uidata.exportDownloadButtonPressed;
 
+	uidata.paintingFillNumericModifierPEnter = callbackData.paintingFillNumericModifierPEnter;
+	uidata.paintingFillNumericModifierNEnter = callbackData.paintingFillNumericModifierNEnter;
+
+	uidata.dropperEnter = callbackData.paintingDropperEnter;
+
 	return uidata;
 }
