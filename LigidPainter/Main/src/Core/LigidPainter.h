@@ -26,6 +26,8 @@ struct Icons{
 	unsigned int PngFile;
 	unsigned int Sphere;
 	unsigned int Triangulate;
+	unsigned int ArrowRight;
+	unsigned int ArrowLeft;
 };
 struct ProjectionData
 {
@@ -95,6 +97,7 @@ public:
 	void textureDemonstratorButton(float xOffset,float yOffset,int width,int height);
 	void textureDemonstratorBoundaries(float xOffset,float yOffset,int width,int height);
 	void paintingDropper();
+	void paintingFillNumericModifier(bool p, bool n);
 };
 struct PanelData {
 	bool movePanel;

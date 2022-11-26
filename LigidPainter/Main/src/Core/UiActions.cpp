@@ -35,7 +35,7 @@ void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackD
 			&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGCheckBoxEnter && !callbackData.exportExtPNGCheckBoxEnter
 			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter
 			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter && !textureDemonstratorBoundariesHover && !callbackData.useNegativeForDrawingCheckboxEnter
-			&& !callbackData.paintingDropperEnter) {
+			&& !callbackData.paintingDropperEnter && !callbackData.paintingFillNumericModifierPEnter && !callbackData.paintingFillNumericModifierNEnter) {
 			noButtonClick = true;
 		}
 		else {
@@ -145,6 +145,10 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 					ligid.mirrorYCheckBox();
 				if (callbackData.mirrorZCheckBoxEnter)
 					ligid.mirrorZCheckBox();
+				if(callbackData.paintingFillNumericModifierPEnter)
+					ligid.paintingFillNumericModifier(1,0);
+				if(callbackData.paintingFillNumericModifierNEnter)
+					ligid.paintingFillNumericModifier(0,1);
 			}
 			buttonPressed = false;
 		}

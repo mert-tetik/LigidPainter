@@ -35,7 +35,7 @@ GLubyte* renderedImage;
 double lastMouseXPosIn = 0;
 double lastMouseYPosIn = 0;
 
-void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged) {
+void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal) {
 	Texture texture;
 	CommonData commonData;
 	Render render;
@@ -77,7 +77,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 
 		//----------------------PAINTING----------------------\\
 		
-		int reduceTheDifference = 5;
+		int reduceTheDifference = 21 - (paintingFillNumericModifierVal*2);
 
 		int differenceBetweenMousePoints = glm::distance(glm::vec2(mouseXpos, mouseYpos), glm::vec2(lastMouseXPos, lastMouseYPos))/reduceTheDifference;
 

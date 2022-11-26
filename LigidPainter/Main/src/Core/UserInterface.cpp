@@ -2,6 +2,7 @@
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 #include <string>
+#include <cstring>
 #include <fstream>
 #include <sstream>
 #include <glm/glm.hpp>
@@ -83,7 +84,12 @@ void UserInterface::textureDemonstrator(float width,float height, float position
 	glset.uniform1i(3, "isRenderTextureMode", 0);
 	glset.uniform1i(3, "is2D", 1);
 }
-
+void UserInterface::numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value){
+	//box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"",glm::vec3(0),0,0,0,1,10,glm::vec3(0),0);
+	iconBox(0.02f,0.04f,position_x - 0.05f,position_y,z,leftArrow);
+	renderText(3,std::to_string(value),position_x-0.01f,position_y-0.01f,0.00022f);
+	iconBox(0.02f,0.04f,position_x+ 0.05f,position_y,z,rightArrow);
+}
 void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon){
 	std::vector<float> buttonCoorSq{
 		// first triangle
@@ -609,6 +615,8 @@ Icons UserInterface::loadIcons(){
 	icons.PngFile = txtr.getTexture("LigidPainter/Resources/Icons/PngFile.png",0,0,false);
 	icons.Sphere = txtr.getTexture("LigidPainter/Resources/Icons/Sphere.png",0,0,false);
 	icons.Triangulate = txtr.getTexture("LigidPainter/Resources/Icons/Triangulate.jpg",0,0,false);
+	icons.ArrowRight = txtr.getTexture("LigidPainter/Resources/Icons/ArrowRight.jpg",0,0,false);
+	icons.ArrowLeft = txtr.getTexture("LigidPainter/Resources/Icons/ArrowLeft.jpg",0,0,false);
 
 	return icons;
 }

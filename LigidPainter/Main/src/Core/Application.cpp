@@ -173,6 +173,8 @@ bool useNegativeForDrawing;
 bool panelChanging = false; //Disable painting while changing panel sizes
 
 bool brushValChanged = true;
+
+int paintingFillNumericModifierVal = 5;
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//Will be used for allowing writing to a text box
 	//Can be deleted since program doesn't use it
@@ -315,7 +317,7 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc){
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged);
+			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal);
 			brushValChanged = false;
 			drawingCount = 0;
 			//brushOpacityChanged = false; not used
@@ -329,7 +331,7 @@ bool LigidPainter::run()
 		
 
 		//Render
-		screenHoverPixel = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str());
+		screenHoverPixel = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal);
 
 		exportImage = false; //After exporting, set exportImage false so we won't download the texture repeatedly
 		setButtonPressedFalse();
@@ -889,7 +891,12 @@ void LigidPainter::loadModelButton() {
 void LigidPainter::paintingDropper(){
 	paintingDropperPressed = true;
 }
-
+void LigidPainter::paintingFillNumericModifier(bool p, bool n){
+	if(p && paintingFillNumericModifierVal < 10)
+		paintingFillNumericModifierVal++;
+	if(n && paintingFillNumericModifierVal > 1)
+		paintingFillNumericModifierVal--;
+}
 
 
 

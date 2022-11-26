@@ -66,6 +66,8 @@ bool exportDownloadButtonEnter;
 bool textureDemonstratorButtonEnter;
 bool useNegativeForDrawingCheckboxEnter;
 bool paintingDropperEnter;
+bool paintingFillNumericModifierPEnter;
+bool paintingFillNumericModifierNEnter;
 //Ui enter
 
 
@@ -114,6 +116,10 @@ CallbckData preapareCallbackData() {
 	callbk.useNegativeForDrawingCheckboxEnter = useNegativeForDrawingCheckboxEnter;
 
 	callbk.paintingDropperEnter = paintingDropperEnter;
+
+	callbk.paintingFillNumericModifierPEnter = paintingFillNumericModifierPEnter;
+	callbk.paintingFillNumericModifierNEnter = paintingFillNumericModifierNEnter;
+
 
 	return callbk;
 }
@@ -268,6 +274,10 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		brushRotationRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushRotationRangeBarValue, -0.04f+0.22f, mouseXPos, mouseYPos, movePanel);
 		brushOpacityRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushOpacityRangeBarValue,  -0.17f+0.22f, mouseXPos, mouseYPos, movePanel);
 		brushSpacingRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum+ brushSpacingRangeBarValue,-0.30f+0.22f, mouseXPos, mouseYPos, movePanel);
+
+		paintingFillNumericModifierPEnter = ui.isMouseOnButton(window, 0.02f, 0.04f, panelLoc / centerDivider + centerSum + 0.05f,-0.3f, mouseXPos, mouseYPos, movePanel);
+		paintingFillNumericModifierNEnter = ui.isMouseOnButton(window, 0.02f, 0.04f, panelLoc / centerDivider + centerSum - 0.05f,-0.3f, mouseXPos, mouseYPos, movePanel);
+
 		colorBoxPickerEnter = ui.isMouseOnButton(window,0.01f, 0.02f, panelLoc / centerDivider + centerSum - 0.02f + colorBoxPickerValue_x, -0.6f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
 		colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, panelLoc / centerDivider + centerSum + 0.1f, -0.6f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
 
@@ -285,10 +295,15 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		brushRotationRangeBarEnter = false;
 		brushOpacityRangeBarEnter = false;
 		brushSpacingRangeBarEnter = false;
+
+		paintingFillNumericModifierPEnter = false;
+		paintingFillNumericModifierNEnter = false;
+
+
 		colorBoxColorRangeBarEnter = false;
 		colorBoxPickerEnter = false;
-
 		paintingDropperEnter = false;
+
 
 		mirrorXCheckBoxEnter = false;
 		mirrorYCheckBoxEnter = false;
@@ -373,6 +388,9 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if (paintingDropperEnter){
+		glfwSetCursor(window, pointerCursor);
+	}
+	else if (paintingFillNumericModifierPEnter || paintingFillNumericModifierNEnter){
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if (!panelChangeHover){

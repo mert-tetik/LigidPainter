@@ -78,7 +78,7 @@ float orgTextureDemonstratorWidth = 0.4f;
 float orgTextureDemonstratorHeight = 0.8f;
 bool changeTextureDemonstrator;
 
-void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile) {
+void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal) {
 	ColorData colorData;
 	CommonData commonData;
 	glm::mat4 projection;
@@ -214,6 +214,8 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 		ui.renderText(commonData.program, "Spacing", renderData.panelLoc / centerDivider + centerSum - 0.035f, -0.265f+0.22f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.30f+0.22f, brushSpacingRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.25f,1,icons.MaskSpacing);
+
+        ui.numericModifier(renderData.panelLoc / centerDivider + centerSum,-0.3,icons.ArrowLeft,icons.ArrowRight,0.9f, paintingFillNumericModifierVal); //Fill quality
 
 		//Color Picker
 		ui.colorBox(renderData.panelLoc / centerDivider + centerSum - 0.02f, -0.6f, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y);
@@ -606,7 +608,7 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 
 int renderDepthCounter = 0;
 glm::vec3 colorBoxVal = glm::vec3(0);
-glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile) {
+glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal) {
 	GlSet gls;
 	UserInterface ui;
 	CommonData commonData;
@@ -650,7 +652,7 @@ glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, un
 	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false
 		renderTextures(FBOScreen,vertices,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY);
 	}
-	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile);
+	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal);
 
 	if (colorBoxValChanged) { //Get value of color box
 		colorBoxVal = getColorBoxValue(FBOScreen, lastColorBoxPickerValue_x, lastColorBoxPickerValue_y,screenSizeX, screenSizeY);

@@ -42,5 +42,6 @@ public:
 	void colorRect(float position_x, float position_y,float value, unsigned int FBO,GLFWwindow* window);
 	void decorationSquare(float position_x, float position_y);
 	Icons UserInterface::loadIcons();
+	void numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value);
 };
 #endif 
