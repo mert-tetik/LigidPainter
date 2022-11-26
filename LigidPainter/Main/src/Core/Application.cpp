@@ -16,6 +16,7 @@
 #include "gl.h"
 #include "Render.h"
 #include "Texture.h"
+#include "UiActions.h"
 #include "Texture Generator/TextureGenerator.h"
 
 #include <vector>
@@ -103,14 +104,9 @@ bool brushTextureChanged = true;
 
 //-----------------------      UI     -----------------------\\
 
-void uiActions(); //Associated with buttonPressed & buttonGetInput booleans
-
-void isFirstClickDoneInside(); //Associated with noButtonClick boolean
 
 //Button control
-bool noButtonClick;
-bool buttonGetInput = true;
-bool buttonPressed = false;
+
 //Button control
 
 bool enablePanelMovement = true; //Panel can be moved if true. Set false while dragging range bar pointers around.
@@ -130,16 +126,6 @@ bool exportDownloadButtonPressed = false;
 bool paintingDropperPressed = false;
 
 //Used to let mouse callback function know if it's supposed to change range bar values
-bool brushSizeRangeBarPressed;
-bool brushBlurRangeBarPressed;
-bool brushRotationRangeBarPressed;
-bool brushOpacityRangeBarPressed;
-bool brushSpacingRangeBarPressed;
-bool colorBoxColorRangeBarPressed;
-bool colorBoxPickerPressed;
-
-bool textureDemonstratorButtonPressed;
-bool textureDemonstratorBoundariesPressed;
 
 //Checkbox
 bool autoTriangulateChecked = true;
@@ -171,40 +157,6 @@ float colorBoxPickerValue_y = 0.0f;
 float textureDemonstratorButtonPosX = 0.0;
 float textureDemonstratorButtonPosY = 0.0;
 //----------RANGE VALUE----------\\.
-
-//----------ACTIONS----------\\.
-void loadModelButton();
-void modelFilePathTextBox();
-void autoTriangulateCheckBox();
-void backfaceCullingCheckBox();
-void useNegativeForDrawingCheckbox();
-void addPlaneButton();
-void addSphereButton();
-void addImageButton();
-void modelPanelButton();
-void texturePanelButton();
-void paintingPanelButton();
-void exportPanelButton();
-void addMaskTextureButton();
-void exportDownloadButtonEnter();
-void exportPathTextBox();
-void exportExtJPGCheckBox();
-void exportExtPNGCheckBox();
-void mirrorXCheckBox();
-void mirrorYCheckBox();
-void mirrorZCheckBox();
-void colorBoxColorRangeBar(float yOffset, int height);
-void colorBoxPickerButton(float xOffset, float yOffset, int width, int height);
-void brushSizeRangeBar(float xOffset, int width);
-void brushBlurRangeBar(float xOffset, int width, int height);
-void brushRotationRangeBar(float xOffset, int width, int height);
-void brushOpacityRangeBar(float xOffset, int width, int height);
-void brushSpacingRangeBar(float xOffset, int width, int height);
-void textureDemonstratorButton(float xOffset,float yOffset,int width,int height);
-void textureDemonstratorBoundaries(float xOffset,float yOffset,int width,int height);
-void paintingDropper();
-
-//----------ACTIONS----------\\
 //-----------------------      UI     -----------------------\\
 
 //bool albedoTextureChanged; use for texture updating conditions
@@ -242,6 +194,10 @@ bool LigidPainter::run()
 	TextureGenerator textureGen;
 	Callback callback;
 	Render render;
+	UiActions uiAct;
+	UiActionsData uiActData;
+	uiActData.textureDemonstratorBoundariesPressed = false;
+	uiActData.textureDemonstratorButtonPressed = false;
 
 	//Set Callbacks
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
@@ -328,10 +284,15 @@ bool LigidPainter::run()
 	glset.genTextures(modifiedMaskTexture);
 	glset.bindTexture(modifiedMaskTexture);
 
+	glset.activeTexture(GL_TEXTURE0);
+	unsigned int albedoTxtr;
+	glset.genTextures(albedoTxtr);
+	glset.bindTexture(albedoTxtr);
+
 	glset.activeTexture(GL_TEXTURE1);//Raw mask
-	txtr.getTexture(maskTexturePath,0,0);
+	txtr.getTexture(maskTexturePath,0,0,false);
 	glset.activeTexture(GL_TEXTURE12);//Modified mask
-	txtr.getTexture(maskTexturePath,0,0);
+	txtr.getTexture(maskTexturePath,0,0,false);
 	
 	//------Set Textures------\\
 
@@ -350,8 +311,6 @@ bool LigidPainter::run()
 		//util.printRenderingSpeed();
 
 		updateCameraPosChanging();
-
-		uiActions();
 
 		if(paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS){
 			int width;
@@ -477,29 +436,16 @@ bool LigidPainter::run()
 			glset.uniform1f(commonData.program, "brushBlurVal", 242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 15);
 		}
 
-		if(textureDemonstratorButtonPressed){
+		if(uiActData.textureDemonstratorButtonPressed){
 			textureDemonstratorButtonPressCounter++;
 		}
-		if(textureDemonstratorButtonPressCounter < 20 && textureDemonstratorButtonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE){
+		if(textureDemonstratorButtonPressCounter < 20 && uiActData.textureDemonstratorButtonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE){
 			textureDemonstratorButtonPressClicked = true;
 		}
 		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
 			textureDemonstratorButtonPressCounter = 0;
-			if (brushSizeRangeBarPressed){
-				brushSizeChanged = true;
-			}
-			brushSizeRangeBarPressed = false;
-			brushBlurRangeBarPressed = false;
-			brushRotationRangeBarPressed = false;
-			brushOpacityRangeBarPressed = false;
-			brushSpacingRangeBarPressed = false;
-			colorBoxPickerPressed = false;
-			colorBoxColorRangeBarPressed = false;
-			textureDemonstratorButtonPressed = false;
-			textureDemonstratorBoundariesPressed = false;
 		}
-
-
+		uiActData = uiAct.uiActions(window,callbackData,textureDemonstratorBoundariesHover);
 		//Update
 
 		//Paint
@@ -507,7 +453,7 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing){
-			textureGen.drawToScreen(window, maskTexturePath, brushTextureChanged, screenPaintingReturnData, brushSize, FBOScreen, brushBlurChanged, brushSizeChanged,brushRotationRangeBarValue, brushRotationChanged,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing);
+			textureGen.drawToScreen(window, maskTexturePath, brushTextureChanged, screenPaintingReturnData.normalId, brushSize, FBOScreen, brushBlurChanged, brushSizeChanged,brushRotationRangeBarValue, brushRotationChanged,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing);
 
 			drawingCount = 0;
 
@@ -522,7 +468,7 @@ bool LigidPainter::run()
 			lastMouseYpos = mouseYpos;
 		//Paint
 		
-		screenHoverPixel = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,textureDemonstratorBoundariesPressed,icons);
+		screenHoverPixel = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons);
 		exportImage = false; //After exporting, set exportImage false so we won't download the texture repeatedly
 
 		textureDemonstratorButtonPressClicked = false;
@@ -645,96 +591,7 @@ UiData updateUiData() {
 }
 //-------------UI ACTIONS-------------\\
 
-void uiActions() {
-	isFirstClickDoneInside();
-	if (!noButtonClick) {
-
-		if (buttonGetInput) {
-			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
-				buttonGetInput = false;
-				buttonPressed = true;
-				if (callbackData.brushSizeRangeBarEnter) {
-					brushSizeRangeBarPressed = true;
-				}
-				if (callbackData.brushBlurRangeBarEnter) {
-					brushBlurRangeBarPressed = true;
-				}
-				if (callbackData.brushRotationRangeBarEnter) {
-					brushRotationRangeBarPressed = true;
-				}
-				if (callbackData.brushOpacityRangeBarEnter) {
-					brushOpacityRangeBarPressed = true;
-				}
-				if (callbackData.brushSpacingRangeBarEnter) {
-					brushSpacingRangeBarPressed = true;
-				}
-				if (callbackData.colorBoxPickerEnter) {
-					colorBoxPickerPressed = true;
-				}
-				if (callbackData.colorBoxColorRangeBarEnter) {
-					colorBoxColorRangeBarPressed= true;
-				}
-				if (callbackData.textureDemonstratorButtonEnter) {
-					textureDemonstratorButtonPressed = true;
-				}
-				if (textureDemonstratorBoundariesHover) {
-					textureDemonstratorBoundariesPressed = true;
-				}
-			}
-		}
-		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
-			buttonGetInput = true;
-			if (buttonPressed) {
-				//Check mouse hover
-				if (callbackData.addMaskTextureButtonEnter)
-					addMaskTextureButton();
-				if (callbackData.modelFilePathTextBoxEnter)
-					modelFilePathTextBox(); 
-				if (callbackData.modelPanelButtonEnter)
-					modelPanelButton();
-				if (callbackData.texturePanelButtonEnter)
-					texturePanelButton();
-				if (callbackData.paintingPanelButtonEnter)
-					paintingPanelButton();
-				if (callbackData.exportPanelButtonEnter)
-					exportPanelButton();
-				if (callbackData.addImageButtonEnter)
-					addImageButton();
-				if (callbackData.addPlaneButtonEnter)
-					addPlaneButton();
-				if (callbackData.addSphereButtonEnter)
-					addSphereButton();
-				if (callbackData.autoTriangulateCheckBoxEnter)
-					autoTriangulateCheckBox();
-				if (callbackData.backfaceCullingCheckBoxEnter)
-					backfaceCullingCheckBox();
-				if (callbackData.useNegativeForDrawingCheckboxEnter)
-					useNegativeForDrawingCheckbox();
-				if (callbackData.loadModelButtonEnter)
-					loadModelButton();
-				if (callbackData.paintingDropperEnter)
-					paintingDropper();
-				if (callbackData.exportPathTextBoxEnter) 
-					exportPathTextBox();
-				if (callbackData.exportDownloadButtonEnter)
-					exportDownloadButtonEnter();
-				if (callbackData.exportExtJPGCheckBoxEnter)
-					exportExtJPGCheckBox();
-				if (callbackData.exportExtPNGCheckBoxEnter)
-					exportExtPNGCheckBox();
-				if (callbackData.mirrorXCheckBoxEnter)
-					mirrorXCheckBox();
-				if (callbackData.mirrorYCheckBoxEnter)
-					mirrorYCheckBox();
-				if (callbackData.mirrorZCheckBoxEnter)
-					mirrorZCheckBox();
-			}
-			buttonPressed = false;
-		}
-	}
-}
-
-void addMaskTextureButton() {
+void LigidPainter::addMaskTextureButton() {
 	//Needed for updating mask texture
 	int width;
 	int height;
@@ -749,16 +606,17 @@ void addMaskTextureButton() {
 		maskTexturePath = maskTexturePathCheck;
 		brushTextureChanged = true;
 		glset.activeTexture(GL_TEXTURE1);
-		txtr.getTexture(maskTexturePath,0,0);
+		txtr.getTexture(maskTexturePath,0,0,true);
 		txtr.updateMaskTexture(FBOScreen,width,height,brushRotationRangeBarValue);
 	}
 }
-void brushSizeRangeBar(float xOffset,int width){
+void LigidPainter::brushSizeRangeBar(float xOffset,int width){
+	brushSizeChanged = true;
 	Utilities util;
 	brushSizeRangeBarValue -= xOffset / (width / 2);
 	brushSizeRangeBarValue = util.restrictBetween(brushSizeRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
 }
-void brushBlurRangeBar(float xOffset,int width,int height) {
+void LigidPainter::brushBlurRangeBar(float xOffset,int width,int height) {
 	Utilities util;
 	Texture txtr;
 	brushBlurChanged = true;
@@ -766,19 +624,19 @@ void brushBlurRangeBar(float xOffset,int width,int height) {
 	brushBlurRangeBarValue = util.restrictBetween(brushBlurRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
 	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue);
 }
-void textureDemonstratorButton(float xOffset,float yOffset,int width,int height) {
+void LigidPainter::textureDemonstratorButton(float xOffset,float yOffset,int width,int height) {
 	Utilities util;
 	Texture txtr;
 	textureDemonstratorButtonPosX -= xOffset / (width / 2);
 	textureDemonstratorButtonPosY += yOffset / (height / 2);
 }
-void textureDemonstratorBoundaries(float xOffset,float yOffset,int width,int height) {
+void LigidPainter::textureDemonstratorBoundaries(float xOffset,float yOffset,int width,int height) {
 	Utilities util;
 	Texture txtr;
 	textureDemonstratorWidth -= xOffset / 960.0f;
 	textureDemonstratorHeight -= yOffset / 540.0f;
 }
-void brushRotationRangeBar(float xOffset, int width, int height){
+void LigidPainter::brushRotationRangeBar(float xOffset, int width, int height){
 	Utilities util;
 	Texture txtr;
 	brushRotationChanged = true;
@@ -786,14 +644,14 @@ void brushRotationRangeBar(float xOffset, int width, int height){
 	brushRotationRangeBarValue = util.restrictBetween(brushRotationRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
 	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue);
 }
-void brushOpacityRangeBar(float xOffset, int width, int height) {
+void LigidPainter::brushOpacityRangeBar(float xOffset, int width, int height) {
 	Utilities util;
 	Texture txtr;
 	//brushOpacityChanged = true; not used
 	brushOpacityRangeBarValue -= xOffset / (width / 2);
 	brushOpacityRangeBarValue = util.restrictBetween(brushOpacityRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
 }
-void brushSpacingRangeBar(float xOffset, int width, int height) {
+void LigidPainter::brushSpacingRangeBar(float xOffset, int width, int height) {
 	Utilities util;
 	Texture txtr;
 	brushSpacingRangeBarValue -= xOffset / (width / 2);
@@ -801,12 +659,12 @@ void brushSpacingRangeBar(float xOffset, int width, int height) {
 	drawingSpacing = ((brushSpacingRangeBarValue + 0.11f) * 454.545454545) + 1; //-0.11 - 0.11 --> 1 - 101
 	drawingCount = 0;
 }
-void colorBoxColorRangeBar(float yOffset,int height){
+void LigidPainter::colorBoxColorRangeBar(float yOffset,int height){
 	Utilities util;
 	colorBoxColorRangeBarValue += yOffset / (height / 2);
 	colorBoxColorRangeBarValue = util.restrictBetween(colorBoxColorRangeBarValue, 0.195f, -0.195f);//Keep in boundaries
 }
-void colorBoxPickerButton(float xOffset, float yOffset, int width, int height) {
+void LigidPainter::colorBoxPickerButton(float xOffset, float yOffset, int width, int height) {
 	Utilities util;
 	colorBoxPickerValue_x -= xOffset / (width / 2);
 	colorBoxPickerValue_x = util.restrictBetween(colorBoxPickerValue_x, 0.095f, -0.095f);//Keep in boundaries
@@ -814,7 +672,7 @@ void colorBoxPickerButton(float xOffset, float yOffset, int width, int height) {
 	colorBoxPickerValue_y = util.restrictBetween(colorBoxPickerValue_y, 0.195f, -0.195f);//Keep in boundaries
 }
 
-void modelFilePathTextBox() {
+void LigidPainter::modelFilePathTextBox() {
 	Utilities utilities;
 	char const* lFilterPatterns[1] = { "*.obj" };
 	auto modelFilePathCheck = tinyfd_openFileDialog("Select 3D Model","",1, lFilterPatterns,"",false);
@@ -824,7 +682,7 @@ void modelFilePathTextBox() {
 	}
 }
 
-void exportPathTextBox() {
+void LigidPainter::exportPathTextBox() {
 	Utilities uti;
 	Texture txtr;
 	TextureData txtrData;
@@ -834,7 +692,7 @@ void exportPathTextBox() {
 		exportFolder = uti.getLastWordBySeparatingWithChar(exportPath,'\\');
 	}
 }
-void exportExtJPGCheckBox() {
+void LigidPainter::exportExtJPGCheckBox() {
 	if (jpgFormatChecked == false) {
 		jpgFormatChecked = true;
 		pngFormatChecked = false;
@@ -843,7 +701,7 @@ void exportExtJPGCheckBox() {
 		jpgFormatChecked = false;
 	}
 }
-void exportExtPNGCheckBox() {
+void LigidPainter::exportExtPNGCheckBox() {
 	if (pngFormatChecked == false) {
 		pngFormatChecked = true;
 		jpgFormatChecked = false;
@@ -852,7 +710,7 @@ void exportExtPNGCheckBox() {
 		pngFormatChecked = false;
 	}
 }
-void mirrorXCheckBox() {
+void LigidPainter::mirrorXCheckBox() {
 	CommonData commonData;
 	if (mirrorXCheckBoxChecked == false) {
 		mirrorUsed = true;
@@ -868,7 +726,7 @@ void mirrorXCheckBox() {
 		mirrorXCheckBoxChecked = false;
 	}
 }
-void mirrorYCheckBox() {
+void LigidPainter::mirrorYCheckBox() {
 	CommonData commonData;
 	if (mirrorYCheckBoxChecked == false) {
 		mirrorUsed = true;
@@ -884,7 +742,7 @@ void mirrorYCheckBox() {
 		mirrorYCheckBoxChecked = false;
 	}
 }
-void mirrorZCheckBox() {
+void LigidPainter::mirrorZCheckBox() {
 	CommonData commonData;
 	if (mirrorZCheckBoxChecked == false) {
 		mirrorUsed = true;
@@ -900,40 +758,40 @@ void mirrorZCheckBox() {
 		mirrorZCheckBoxChecked = false;
 	}
 }
-void exportDownloadButtonEnter() {
+void LigidPainter::exportDownloadButtonEnter() {
 	exportDownloadButtonPressed = true;
 	exportImage = true;
 }
 
-void modelPanelButton() {
+void LigidPainter::modelPanelButton() {
 	panelData.modelPanelActive = true;
 	panelData.texturePanelActive = false;
 	panelData.paintingPanelActive = false;
 	panelData.exportPanelActive = false;
 	doPainting = false;
 }
-void texturePanelButton() {
+void LigidPainter::texturePanelButton() {
 	panelData.modelPanelActive = false;
 	panelData.texturePanelActive = true;
 	panelData.paintingPanelActive = false;
 	panelData.exportPanelActive = false;
 	doPainting = false;
 }
-void paintingPanelButton() {
+void LigidPainter::paintingPanelButton() {
 	panelData.modelPanelActive = false;
 	panelData.texturePanelActive = false;
 	panelData.paintingPanelActive = true;
 	panelData.exportPanelActive = false;
 	doPainting = true;
 }
-void exportPanelButton() {
+void LigidPainter::exportPanelButton() {
 	panelData.modelPanelActive = false;
 	panelData.texturePanelActive = false;
 	panelData.paintingPanelActive = false;
 	panelData.exportPanelActive = true;
 	doPainting = false;
 }
-void addImageButton() {
+void LigidPainter::addImageButton() {
 	addImageButtonPressed = true;
 	Utilities utilities;
 	GlSet glset;
@@ -943,10 +801,10 @@ void addImageButton() {
 	if (albedoPathCheck) {
 		albedoTexturePath = albedoPathCheck;
 		glset.activeTexture(GL_TEXTURE0);
-		txtr.getTexture(albedoTexturePath,1080,1080); //Force albedo's ratio to be 1:1
+		txtr.getTexture(albedoTexturePath,1080,1080,true); //Force albedo's ratio to be 1:1
 	}
 }
-void addPlaneButton() {
+void LigidPainter::addPlaneButton() {
 	addPlaneButtonPressed = true;
 	vector<float> planeVertices = {
 		-1 , 0 , 1 , 0 , 0 , 0 , 1 , 0 ,
@@ -961,7 +819,7 @@ void addPlaneButton() {
 	glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW);
 	
 }
-void addSphereButton() {
+void LigidPainter::addSphereButton() {
 	addSphereButtonPressed = true;
 	GlSet glset;
 	Sphere sphere;
@@ -969,13 +827,13 @@ void addSphereButton() {
 	vertices = sphere.getSphere();
 	glset.bufferData(vertices);
 }
-void autoTriangulateCheckBox(){
+void LigidPainter::autoTriangulateCheckBox(){
 	if (autoTriangulateChecked == false)
 		autoTriangulateChecked = true;
 	else
 		autoTriangulateChecked = false;
 }
-void backfaceCullingCheckBox() {
+void LigidPainter::backfaceCullingCheckBox() {
 	if (backfaceCullingChecked == false) {
 		backfaceCullingChecked = true;
 		enableBackfaceCulling = false;
@@ -985,7 +843,7 @@ void backfaceCullingCheckBox() {
 		backfaceCullingChecked = false;
 	}
 }
-void useNegativeForDrawingCheckbox(){
+void LigidPainter::useNegativeForDrawingCheckbox(){
 	if (useNegativeForDrawing == false) {
 		useNegativeForDrawing = true;
 	}
@@ -993,7 +851,7 @@ void useNegativeForDrawingCheckbox(){
 		useNegativeForDrawing = false;
 	}
 }
-void loadModelButton() {
+void LigidPainter::loadModelButton() {
 	loadModelButtonPressed = true;
 	Texture txtr;
 	txtr.refreshScreenDrawingTexture();
@@ -1017,7 +875,7 @@ void loadModelButton() {
 	}
 }
 
-void paintingDropper(){
+void LigidPainter::paintingDropper(){
 	paintingDropperPressed = true;
 }
 //0.195 -0.195 = 0.390
@@ -1036,6 +894,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	Callback callback;
 	CommonData commonData;
 	Utilities util;
+	UiActions uiAct; 
 	mousePosChanged = true;
 	mouseXpos = xpos;
 	mouseYpos = ypos;
@@ -1052,8 +911,9 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	yOffset = (lastYpos - ypos) / (1080 / height);
 	lastYpos = ypos;
 	//Get mouse position change
+	
+	//Texture demonstrator
 	float range = 0.025f;
-
 	if(xpos > ((textureDemonstratorButtonPosX + textureDemonstratorWidth) - range) * width/2 && xpos < ((textureDemonstratorButtonPosX + textureDemonstratorWidth) + range) * width/2){
 		textureDemonstratorBoundariesHover = true;
 	}
@@ -1063,35 +923,9 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	else{
 		textureDemonstratorBoundariesHover = false;
 	}
-
-	if (brushSizeRangeBarPressed) {
-		brushSizeRangeBar(xOffset,width);//Changes the global variable
-	}
-	if (brushBlurRangeBarPressed) {
-		brushBlurRangeBar(xOffset,width,height);//Changes the global variable
-	}
-	if (brushRotationRangeBarPressed) {
-		brushRotationRangeBar(xOffset, width, height);//Changes the global variable
-	}
-	if (brushOpacityRangeBarPressed) {
-		brushOpacityRangeBar(xOffset, width, height);//Changes the global variable
-	}
-	if (brushSpacingRangeBarPressed) {
-		brushSpacingRangeBar(xOffset, width, height);//Changes the global variable
-	}
-	if (colorBoxColorRangeBarPressed) {
-		colorBoxColorRangeBar(yOffset,height);//Changes the global variable
-	}
-	if (colorBoxPickerPressed) {
-		colorBoxPickerButton(xOffset,yOffset,width,height);//Changes the global variable
-	}
-	if (textureDemonstratorButtonPressed) {
-		textureDemonstratorButton(xOffset,yOffset,width,height);//Changes the global variable
-	}
-	if (textureDemonstratorBoundariesPressed) {
-		textureDemonstratorBoundaries(xOffset,yOffset,width,height);//Changes the global variable
-	}
-	if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed || textureDemonstratorButtonPressed ) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
+	//Texture demonstrator
+	bool hideCursor = uiAct.updateRangeValues(window,xOffset,yOffset,width,height); 
+	if (hideCursor) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		enablePanelMovement = false;
 		doPainting = false;
@@ -1130,29 +964,7 @@ void updateCameraPosChanging(){
 	}
 	holdCameraPos = callbackData.cameraPos;
 }
-bool clickTaken = false;
-void isFirstClickDoneInside() {
-	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTaken) {
-		if (!callbackData.addImageButtonEnter && !callbackData.addMaskTextureButtonEnter && !callbackData.addPlaneButtonEnter
-			//Check all the buttons
-			&& !callbackData.addSphereButtonEnter && !callbackData.autoTriangulateCheckBoxEnter && !callbackData.backfaceCullingCheckBoxEnter
-			&& !callbackData.brushSizeRangeBarEnter && !callbackData.loadModelButtonEnter && !callbackData.modelFilePathTextBoxEnter
-			&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.exportPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.colorBoxPickerEnter
-			&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGCheckBoxEnter && !callbackData.exportExtPNGCheckBoxEnter
-			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter
-			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter && !textureDemonstratorBoundariesHover && !callbackData.useNegativeForDrawingCheckboxEnter
-			&& !callbackData.paintingDropperEnter) {
-			noButtonClick = true;
-		}
-		else {
-			noButtonClick = false;
-		}
-		clickTaken = true;
-	}
-	if (glfwGetMouseButton(window, 0) == GLFW_RELEASE && clickTaken) {
-		clickTaken = false;
-	}
-}
+
 void setButtonPressedFalse() {
 	loadModelButtonPressed = false;
 	addPlaneButtonPressed = false;
@@ -1165,26 +977,26 @@ Icons loadIcons(){
 	glset.activeTexture(GL_TEXTURE6);//Raw mask
 	Texture txtr;
 	Icons icons;
-	icons.dropperIcon = txtr.getTexture("LigidPainter/Resources/Icons/Dropper.png",0,0);
-	icons.TDModel = txtr.getTexture("LigidPainter/Resources/Icons/3DModel.jpg",0,0);
-	icons.BackfaceCulling = txtr.getTexture("LigidPainter/Resources/Icons/BackfaceCulling.jpg",0,0);
-	icons.ColorPicker = txtr.getTexture("LigidPainter/Resources/Icons/ColorPicker.png",0,0);
-	icons.Export = txtr.getTexture("LigidPainter/Resources/Icons/Export.jpg",0,0);
-	icons.Folder = txtr.getTexture("LigidPainter/Resources/Icons/Folder.png",0,0);
-	icons.ImportMask = txtr.getTexture("LigidPainter/Resources/Icons/ImportMask.png",0,0);
-	icons.ImportModel = txtr.getTexture("LigidPainter/Resources/Icons/ImportModel.jpg",0,0);
-	icons.ImportTexture = txtr.getTexture("LigidPainter/Resources/Icons/ImportTexture.jpg",0,0);
-	icons.JpgFile = txtr.getTexture("LigidPainter/Resources/Icons/JpgFile.png",0,0);
-	icons.MaskGausBlur = txtr.getTexture("LigidPainter/Resources/Icons/MaskGausBlur.png",0,0);
-	icons.MaskOpacity = txtr.getTexture("LigidPainter/Resources/Icons/MaskOpacity.png",0,0);
-	icons.MaskRotation = txtr.getTexture("LigidPainter/Resources/Icons/MaskRotation.png",0,0);
-	icons.MaskScale = txtr.getTexture("LigidPainter/Resources/Icons/MaskScale.png",0,0);
-	icons.MaskSpacing = txtr.getTexture("LigidPainter/Resources/Icons/MaskSpacing.png",0,0);
-	icons.Mirror = txtr.getTexture("LigidPainter/Resources/Icons/Mirror.jpg",0,0);
-	icons.Panel = txtr.getTexture("LigidPainter/Resources/Icons/Panel.png",0,0);
-	icons.PngFile = txtr.getTexture("LigidPainter/Resources/Icons/PngFile.png",0,0);
-	icons.Sphere = txtr.getTexture("LigidPainter/Resources/Icons/Sphere.png",0,0);
-	icons.Triangulate = txtr.getTexture("LigidPainter/Resources/Icons/Triangulate.jpg",0,0);
+	icons.dropperIcon = txtr.getTexture("LigidPainter/Resources/Icons/Dropper.png",0,0,false);
+	icons.TDModel = txtr.getTexture("LigidPainter/Resources/Icons/3DModel.jpg",0,0,false);
+	icons.BackfaceCulling = txtr.getTexture("LigidPainter/Resources/Icons/BackfaceCulling.jpg",0,0,false);
+	icons.ColorPicker = txtr.getTexture("LigidPainter/Resources/Icons/ColorPicker.png",0,0,false);
+	icons.Export = txtr.getTexture("LigidPainter/Resources/Icons/Export.jpg",0,0,false);
+	icons.Folder = txtr.getTexture("LigidPainter/Resources/Icons/Folder.png",0,0,false);
+	icons.ImportMask = txtr.getTexture("LigidPainter/Resources/Icons/ImportMask.png",0,0,false);
+	icons.ImportModel = txtr.getTexture("LigidPainter/Resources/Icons/ImportModel.jpg",0,0,false);
+	icons.ImportTexture = txtr.getTexture("LigidPainter/Resources/Icons/ImportTexture.jpg",0,0,false);
+	icons.JpgFile = txtr.getTexture("LigidPainter/Resources/Icons/JpgFile.png",0,0,false);
+	icons.MaskGausBlur = txtr.getTexture("LigidPainter/Resources/Icons/MaskGausBlur.png",0,0,false);
+	icons.MaskOpacity = txtr.getTexture("LigidPainter/Resources/Icons/MaskOpacity.png",0,0,false);
+	icons.MaskRotation = txtr.getTexture("LigidPainter/Resources/Icons/MaskRotation.png",0,0,false);
+	icons.MaskScale = txtr.getTexture("LigidPainter/Resources/Icons/MaskScale.png",0,0,false);
+	icons.MaskSpacing = txtr.getTexture("LigidPainter/Resources/Icons/MaskSpacing.png",0,0,false);
+	icons.Mirror = txtr.getTexture("LigidPainter/Resources/Icons/Mirror.jpg",0,0,false);
+	icons.Panel = txtr.getTexture("LigidPainter/Resources/Icons/Panel.png",0,0,false);
+	icons.PngFile = txtr.getTexture("LigidPainter/Resources/Icons/PngFile.png",0,0,false);
+	icons.Sphere = txtr.getTexture("LigidPainter/Resources/Icons/Sphere.png",0,0,false);
+	icons.Triangulate = txtr.getTexture("LigidPainter/Resources/Icons/Triangulate.jpg",0,0,false);
 
 	return icons;
 }

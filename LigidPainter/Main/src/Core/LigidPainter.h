@@ -63,6 +63,38 @@ public:
 class LigidPainter {
 public:
 	bool run();
+
+
+	void loadModelButton();
+	void modelFilePathTextBox();
+	void autoTriangulateCheckBox();
+	void backfaceCullingCheckBox();
+	void useNegativeForDrawingCheckbox();
+	void addPlaneButton();
+	void addSphereButton();
+	void addImageButton();
+	void modelPanelButton();
+	void texturePanelButton();
+	void paintingPanelButton();
+	void exportPanelButton();
+	void addMaskTextureButton();
+	void exportDownloadButtonEnter();
+	void exportPathTextBox();
+	void exportExtJPGCheckBox();
+	void exportExtPNGCheckBox();
+	void mirrorXCheckBox();
+	void mirrorYCheckBox();
+	void mirrorZCheckBox();
+	void colorBoxColorRangeBar(float yOffset, int height);
+	void colorBoxPickerButton(float xOffset, float yOffset, int width, int height);
+	void brushSizeRangeBar(float xOffset, int width);
+	void brushBlurRangeBar(float xOffset, int width, int height);
+	void brushRotationRangeBar(float xOffset, int width, int height);
+	void brushOpacityRangeBar(float xOffset, int width, int height);
+	void brushSpacingRangeBar(float xOffset, int width, int height);
+	void textureDemonstratorButton(float xOffset,float yOffset,int width,int height);
+	void textureDemonstratorBoundaries(float xOffset,float yOffset,int width,int height);
+	void paintingDropper();
 };
 struct PanelData {
 	bool movePanel;

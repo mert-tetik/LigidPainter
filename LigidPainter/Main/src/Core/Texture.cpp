@@ -19,15 +19,23 @@ using namespace std;
 
 
 
-unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, unsigned int desiredHeight) {
+unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, unsigned int desiredHeight,bool update) {
 	//Leave desiredWidth 0 if no resize wanted
 	bool applyResize;
 	applyResize = desiredWidth;
 
 	unsigned int textureID;
+
 	GlSet glset;
-	glset.genTextures(textureID);
-	glset.bindTexture(textureID);
+
+	if(!update){
+		glset.genTextures(textureID);
+		glset.bindTexture(textureID);
+	}
+	else{
+		textureID = 0;
+	}
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

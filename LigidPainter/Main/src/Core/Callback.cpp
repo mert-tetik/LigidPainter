@@ -15,6 +15,7 @@
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
+#include "UiActions.h"
 
 //Camera 
 float yaw = -90.0f;

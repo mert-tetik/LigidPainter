@@ -26,11 +26,12 @@ ColorData colorD;
 /*
 	How UI works
 
-	Visualizattion
-		userinterface.cpp provides neccessary coordinates and sends neccessary informations to the shader
+	Visualization
+		userinterface.cpp - provides neccessary informations
 		gl.cpp - Rendering to the screen.
 		callback.cpp - Check if button hover using isMouseOnButton function in userinterface.cpp. Return boolean values to the application.cpp for each button.
-		application - Check if button pressed. Adjust values.
+		UiActions.cpp - Check if button pressed
+		application.cpp - Adjust values.
 
 */
 

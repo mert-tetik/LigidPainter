@@ -34,7 +34,7 @@ GLubyte* renderedImage;
 double lastMouseXPosIn = 0;
 double lastMouseYPosIn = 0;
 
-void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushTextureChanged, ScreenPaintingReturnData screenPaintingReturnData, float brushSize,unsigned int FBOScreen, bool brushBlurChanged,bool brushSizeChanged,float rotationValue,bool brushRotationChanged, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing) {
+void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushTextureChanged, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen, bool brushBlurChanged,bool brushSizeChanged,float rotationValue,bool brushRotationChanged, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing) {
 	Texture texture;
 	CommonData commonData;
 	
@@ -100,7 +100,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, bool brushT
 				 
 				//Get the painting area of the screen texture to the screenTextureSquare
 
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenPaintingReturnData.normalId, 0);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenPaintingTxtrId, 0);
 				if (screenTextureSquare) {
 					glReadPixels(mouseXpos * ((1920.0f / (float)screenSizeX)) - distanceX / 2, 1080 - mouseYpos * ((1080.0f / (float)screenSizeY)) - distanceY / 2, distanceX, distanceY, GL_RGB, GL_FLOAT, screenTextureSquare);
 				}
