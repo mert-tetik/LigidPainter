@@ -433,10 +433,9 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	glfwGetWindowSize(window,&width,&height);
 	
 	//Get mouse position change
-	cout << width << '\n';
 	xOffset = (lastXpos - xpos) / (1925 / width);
 	lastXpos = xpos;
-	yOffset = (lastYpos - ypos) / (1081 / height);
+	yOffset = (lastYpos - ypos) / (1085 / height);
 	lastYpos = ypos;
 	//Get mouse position change
 	
@@ -519,7 +518,10 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue){
 		if(hsvVal.r > 247.0){
 			colorBoxColorRangeBarValue = 0.195f;	
 		}
-		else if(hsvVal.r < 247.0 && hsvVal.r > 237.0){
+		else if(hsvVal.r < 247.0 && hsvVal.r > 242.0){
+			colorBoxColorRangeBarValue = 0.185f;	
+		}
+		else if(hsvVal.r < 242.0 && hsvVal.r > 237.0){
 			colorBoxColorRangeBarValue = 0.175f;	
 		}
 		else if(hsvVal.r < 237.0 && hsvVal.r > 232.0){
@@ -532,7 +534,7 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue){
 			colorBoxColorRangeBarValue = 0.145f;	
 		}
 		else if(hsvVal.r < 224.0 && hsvVal.r > 218.0){
-			colorBoxColorRangeBarValue = 0.141f;	
+			colorBoxColorRangeBarValue = 0.134f;	
 		}
 		else if(hsvVal.r < 218.0 && hsvVal.r > 210.0){
 			colorBoxColorRangeBarValue = 0.125f;	
@@ -543,8 +545,11 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue){
 		else if(hsvVal.r < 205.0 && hsvVal.r > 200.0){
 			colorBoxColorRangeBarValue = 0.110f;	
 		}
-		else if(hsvVal.r < 200.0 && hsvVal.r > 190.0){
+		else if(hsvVal.r < 200.0 && hsvVal.r > 195.0){
 			colorBoxColorRangeBarValue = 0.105f;	
+		}
+		else if(hsvVal.r < 195.0 && hsvVal.r > 190.0){
+			colorBoxColorRangeBarValue = 0.1f;	
 		}
 		else if(hsvVal.r < 190.0 && hsvVal.r > 185.0){
 			colorBoxColorRangeBarValue = 0.095f;	
@@ -564,11 +569,14 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue){
 		else if(hsvVal.r < 130.0 && hsvVal.r > 125.0){
 			colorBoxColorRangeBarValue = 0.042f;	
 		}
-		else if(hsvVal.r < 125.0 && hsvVal.r > 115.0){
+		else if(hsvVal.r < 125.0 && hsvVal.r > 117.0){
 			colorBoxColorRangeBarValue = 0.028f;	
 		}
-		else if(hsvVal.r < 115.0 && hsvVal.r > 107.0){
-			colorBoxColorRangeBarValue = 0.018f;	
+		else if(hsvVal.r < 117.0 && hsvVal.r > 113.0){
+			colorBoxColorRangeBarValue = 0.017f;	
+		}
+		else if(hsvVal.r < 113.0 && hsvVal.r > 107.0){
+			colorBoxColorRangeBarValue = 0.013f;	
 		}
 		else if(hsvVal.r < 107.0 && hsvVal.r > 103.0){
 			colorBoxColorRangeBarValue = 0.004f;	
@@ -583,10 +591,13 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue){
 			colorBoxColorRangeBarValue = -0.025f;	
 		}
 		else if(hsvVal.r < 85.0 && hsvVal.r > 75.0){
-			colorBoxColorRangeBarValue = -0.025f;	
+			colorBoxColorRangeBarValue = -0.035f;	
 		}
-		else if(hsvVal.r < 75.0 && hsvVal.r > 65.0){
-			colorBoxColorRangeBarValue = -0.045f;	
+		else if(hsvVal.r < 75.0 && hsvVal.r > 70.0){
+			colorBoxColorRangeBarValue = -0.043f;	
+		}
+		else if(hsvVal.r < 70.0 && hsvVal.r > 65.0){
+			colorBoxColorRangeBarValue = -0.048f;	
 		}
 		else if(hsvVal.r < 65.0 && hsvVal.r > 55.0){
 			colorBoxColorRangeBarValue = -0.059f;	
@@ -604,15 +615,18 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue){
 			colorBoxColorRangeBarValue = -0.15f;	
 		}
 		else if(hsvVal.r < 25.0 && hsvVal.r > 20.0){
-			colorBoxColorRangeBarValue = -0.165f;	
+			colorBoxColorRangeBarValue = -0.157f;	
 		}
 		else if(hsvVal.r < 20.0 && hsvVal.r > 15.0){
-			colorBoxColorRangeBarValue = -0.17f;	
+			colorBoxColorRangeBarValue = -0.168f;	
 		}
-		else if(hsvVal.r < 15.0 && hsvVal.r > 8.0){
+		else if(hsvVal.r < 15.0 && hsvVal.r > 10.0){
 			colorBoxColorRangeBarValue = -0.178f;	
 		}
-		else if(hsvVal.r < 8.0){
+		else if(hsvVal.r < 10.0 && hsvVal.r > 5.0){
+			colorBoxColorRangeBarValue = -0.188f;	
+		}
+		else if(hsvVal.r < 5.0){
 			colorBoxColorRangeBarValue = -0.195f;	
 		}
 		else{
