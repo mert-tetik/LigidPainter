@@ -638,9 +638,6 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue){
 	paintingDropperPressed = false;
 }
 
-
-
-
 //-----------------------------UI ACTIONS-----------------------------\\
 
 void LigidPainter::addMaskTextureButton() {
