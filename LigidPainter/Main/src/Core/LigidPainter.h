@@ -99,6 +99,7 @@ public:
 	void paintingDropper();
 	void paintingFillNumericModifier(bool p, bool n);
 	void exportFileNameTextBox();
+	void colorBox();
 };
 struct PanelData {
 	bool movePanel;

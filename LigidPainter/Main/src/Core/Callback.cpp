@@ -12,6 +12,7 @@
 #include "UserInterface.h"
 #include "Callback.h"
 #include "gl.h"
+#include "Utilities.h""
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -69,10 +70,14 @@ bool useNegativeForDrawingCheckboxEnter;
 bool paintingDropperEnter;
 bool paintingFillNumericModifierPEnter;
 bool paintingFillNumericModifierNEnter;
+bool colorBoxEnter;
 //Ui enter
 
 
 bool panelChangeLoc = false;
+
+int screenX;
+int screenY;
 
 CallbckData preapareCallbackData() {
 	CallbckData callbk;
@@ -122,6 +127,7 @@ CallbckData preapareCallbackData() {
 	callbk.paintingFillNumericModifierPEnter = paintingFillNumericModifierPEnter;
 	callbk.paintingFillNumericModifierNEnter = paintingFillNumericModifierNEnter;
 
+	callbk.colorBoxEnter = colorBoxEnter; 
 
 	return callbk;
 }
@@ -288,6 +294,8 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		mirrorXCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.15f, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
 		mirrorYCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.09f, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
 		mirrorZCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.03f, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
+
+		colorBoxEnter = ui.isMouseOnButton(window, 0.1f, 0.2f, panelLoc / centerDivider + centerSum - 0.02f, -0.6f, mouseXPos, mouseYPos, movePanel);
 	}
 	else {
 		addMaskTextureButtonEnter = false;
@@ -310,6 +318,8 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		mirrorXCheckBoxEnter = false;
 		mirrorYCheckBoxEnter = false;
 		mirrorZCheckBoxEnter = false;
+
+		colorBoxEnter = false;
 	}
 	if (panelData.exportPanelActive) {
 		exportPathTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / centerDivider + centerSum, 0.6f, mouseXPos, mouseYPos, movePanel);
@@ -407,11 +417,16 @@ void Callback::framebuffer_size_callback(GLFWwindow* window, int width, int heig
 {
 	int intrpHeight;
 	GlSet glset;
+	Utilities util;
 	int screenSizeX;
 	int screenSizeY;
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
 	intrpHeight = width / 16 * 9;
+	width = util.restrictBetween(width,1924,100); //Disable 4k window
 	glfwSetWindowSize(window, width, intrpHeight);
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
 	glset.viewport(screenSizeX, screenSizeY);
+
+	screenX = screenSizeX;
+	screenY = screenSizeY;
 }

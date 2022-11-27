@@ -251,7 +251,9 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
         ui.numericModifier(renderData.panelLoc / centerDivider + centerSum,-0.3,icons.ArrowLeft,icons.ArrowRight,0.9f, paintingFillNumericModifierVal,fillBetweenResNumericModifiermixValP,fillBetweenResNumericModifiermixValN); //Fill quality
 
 		//Color Picker
+		//ui.box(0.1f, 0.2f, renderData.panelLoc / centerDivider + centerSum-0.02f, -0.6f, "", colorBoxValue / glm::vec3(255), 0.075f, false, false, 0.9f, 1000, glm::vec3(0), 0); //indicator for picken color of the color picker
 		ui.colorBox(renderData.panelLoc / centerDivider + centerSum - 0.02f, -0.6f, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y);
+		
 		ui.colorRect(renderData.panelLoc / centerDivider + centerSum + 0.1f, -0.6f, renderData.colorBoxColorRangeBarValue, FBOScreen, renderData.window);
 
 		gl.uniform1f(commonData.program, "uiOpacity", 1.0f);

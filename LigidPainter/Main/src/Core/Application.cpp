@@ -76,7 +76,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void updateCameraPosChanging();
 RenderData updateRenderData(RenderData renderData, unsigned int depthTexture, int brushSizeIndicatorSize);
 UiData updateUiData();
-void updateColorPicker(glm::vec3 RGBval);
+void updateColorPicker(glm::vec3 RGBval,bool changeHue);
 //--------Functions--------\\
 
 CallbckData callbackData;
@@ -209,6 +209,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		}
 	}
 }
+
+bool colorBoxClicked = false;
+
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -313,8 +316,9 @@ bool LigidPainter::run()
 
 		updateCameraPosChanging();
 
-		if(paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS){
-			updateColorPicker(screenHoverPixel);
+		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || colorBoxClicked){
+			updateColorPicker(screenHoverPixel,true);
+			colorBoxClicked = false;
 		}
 
 		//Check if texture demonstrator button clicked
@@ -429,9 +433,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	glfwGetWindowSize(window,&width,&height);
 	
 	//Get mouse position change
-	xOffset = (lastXpos - xpos) / (1920 / width);
+	cout << width << '\n';
+	xOffset = (lastXpos - xpos) / (1925 / width);
 	lastXpos = xpos;
-	yOffset = (lastYpos - ypos) / (1080 / height);
+	yOffset = (lastYpos - ypos) / (1081 / height);
 	lastYpos = ypos;
 	//Get mouse position change
 	
@@ -503,114 +508,116 @@ void setButtonPressedFalse() {
 	exportDownloadButtonPressed = false;
 }
 
-void updateColorPicker(glm::vec3 RGBval){
+void updateColorPicker(glm::vec3 RGBval,bool changeHue){
 	int width;
 	int height;
 	glfwGetWindowSize(window,&width,&height);
 	
 	Utilities util;
 	glm::vec3 hsvVal = util.RGBToHSVGenerator(RGBval);
-	if(hsvVal.r > 247.0){
-		colorBoxColorRangeBarValue = 0.195f;	
-	}
-	else if(hsvVal.r < 247.0 && hsvVal.r > 237.0){
-		colorBoxColorRangeBarValue = 0.175f;	
-	}
-	else if(hsvVal.r < 237.0 && hsvVal.r > 232.0){
-		colorBoxColorRangeBarValue = 0.165f;	
-	}
-	else if(hsvVal.r < 232.0 && hsvVal.r > 228.0){
-		colorBoxColorRangeBarValue = 0.155f;	
-	}
-	else if(hsvVal.r < 228.0 && hsvVal.r > 224.0){
-		colorBoxColorRangeBarValue = 0.145f;	
-	}
-	else if(hsvVal.r < 224.0 && hsvVal.r > 218.0){
-		colorBoxColorRangeBarValue = 0.141f;	
-	}
-	else if(hsvVal.r < 218.0 && hsvVal.r > 210.0){
-		colorBoxColorRangeBarValue = 0.125f;	
-	}
-	else if(hsvVal.r < 210.0 && hsvVal.r > 205.0){
-		colorBoxColorRangeBarValue = 0.115f;	
-	}
-	else if(hsvVal.r < 205.0 && hsvVal.r > 200.0){
-		colorBoxColorRangeBarValue = 0.110f;	
-	}
-	else if(hsvVal.r < 200.0 && hsvVal.r > 190.0){
-		colorBoxColorRangeBarValue = 0.105f;	
-	}
-	else if(hsvVal.r < 190.0 && hsvVal.r > 185.0){
-		colorBoxColorRangeBarValue = 0.095f;	
-	}
-	else if(hsvVal.r < 185.0 && hsvVal.r > 175.0){
-		colorBoxColorRangeBarValue = 0.085f;	
-	}
-	else if(hsvVal.r < 155.0 && hsvVal.r > 145.0){
-		colorBoxColorRangeBarValue = 0.057f;	
-	}
-	else if(hsvVal.r < 145.0 && hsvVal.r > 135.0){
-		colorBoxColorRangeBarValue = 0.05f;	
-	}
-	else if(hsvVal.r < 135.0 && hsvVal.r > 130.0){
-		colorBoxColorRangeBarValue = 0.042f;	
-	}
-	else if(hsvVal.r < 130.0 && hsvVal.r > 125.0){
-		colorBoxColorRangeBarValue = 0.042f;	
-	}
-	else if(hsvVal.r < 125.0 && hsvVal.r > 115.0){
-		colorBoxColorRangeBarValue = 0.028f;	
-	}
-	else if(hsvVal.r < 115.0 && hsvVal.r > 107.0){
-		colorBoxColorRangeBarValue = 0.018f;	
-	}
-	else if(hsvVal.r < 107.0 && hsvVal.r > 103.0){
-		colorBoxColorRangeBarValue = 0.004f;	
-	}
-	else if(hsvVal.r < 103.0 && hsvVal.r > 97.0){
-		colorBoxColorRangeBarValue = -0.007f;	
-	}
-	else if(hsvVal.r < 97.0 && hsvVal.r > 92.0){
-		colorBoxColorRangeBarValue = -0.015f;	
-	}
-	else if(hsvVal.r < 92.0 && hsvVal.r > 85.0){
-		colorBoxColorRangeBarValue = -0.025f;	
-	}
-	else if(hsvVal.r < 85.0 && hsvVal.r > 75.0){
-		colorBoxColorRangeBarValue = -0.025f;	
-	}
-	else if(hsvVal.r < 75.0 && hsvVal.r > 65.0){
-		colorBoxColorRangeBarValue = -0.045f;	
-	}
-	else if(hsvVal.r < 65.0 && hsvVal.r > 55.0){
-		colorBoxColorRangeBarValue = -0.059f;	
-	}
-	else if(hsvVal.r < 55.0 && hsvVal.r > 45.0){
-		colorBoxColorRangeBarValue = -0.075f;	
-	}
-	else if(hsvVal.r < 42.0 && hsvVal.r > 35.0){
-		colorBoxColorRangeBarValue = -0.13f;	
-	}
-	else if(hsvVal.r < 35.0 && hsvVal.r > 30.0){
-		colorBoxColorRangeBarValue = -0.14f;	
-	}
-	else if(hsvVal.r < 30.0 && hsvVal.r > 25.0){
-		colorBoxColorRangeBarValue = -0.15f;	
-	}
-	else if(hsvVal.r < 25.0 && hsvVal.r > 20.0){
-		colorBoxColorRangeBarValue = -0.165f;	
-	}
-	else if(hsvVal.r < 20.0 && hsvVal.r > 15.0){
-		colorBoxColorRangeBarValue = -0.17f;	
-	}
-	else if(hsvVal.r < 15.0 && hsvVal.r > 8.0){
-		colorBoxColorRangeBarValue = -0.178f;	
-	}
-	else if(hsvVal.r < 8.0){
-		colorBoxColorRangeBarValue = -0.195f;	
-	}
-	else{
-		colorBoxColorRangeBarValue = (hsvVal.r / 653.846153846f) - 0.195f + 0.02f; //0.195
+	if(changeHue){
+		if(hsvVal.r > 247.0){
+			colorBoxColorRangeBarValue = 0.195f;	
+		}
+		else if(hsvVal.r < 247.0 && hsvVal.r > 237.0){
+			colorBoxColorRangeBarValue = 0.175f;	
+		}
+		else if(hsvVal.r < 237.0 && hsvVal.r > 232.0){
+			colorBoxColorRangeBarValue = 0.165f;	
+		}
+		else if(hsvVal.r < 232.0 && hsvVal.r > 228.0){
+			colorBoxColorRangeBarValue = 0.155f;	
+		}
+		else if(hsvVal.r < 228.0 && hsvVal.r > 224.0){
+			colorBoxColorRangeBarValue = 0.145f;	
+		}
+		else if(hsvVal.r < 224.0 && hsvVal.r > 218.0){
+			colorBoxColorRangeBarValue = 0.141f;	
+		}
+		else if(hsvVal.r < 218.0 && hsvVal.r > 210.0){
+			colorBoxColorRangeBarValue = 0.125f;	
+		}
+		else if(hsvVal.r < 210.0 && hsvVal.r > 205.0){
+			colorBoxColorRangeBarValue = 0.115f;	
+		}
+		else if(hsvVal.r < 205.0 && hsvVal.r > 200.0){
+			colorBoxColorRangeBarValue = 0.110f;	
+		}
+		else if(hsvVal.r < 200.0 && hsvVal.r > 190.0){
+			colorBoxColorRangeBarValue = 0.105f;	
+		}
+		else if(hsvVal.r < 190.0 && hsvVal.r > 185.0){
+			colorBoxColorRangeBarValue = 0.095f;	
+		}
+		else if(hsvVal.r < 185.0 && hsvVal.r > 175.0){
+			colorBoxColorRangeBarValue = 0.085f;	
+		}
+		else if(hsvVal.r < 155.0 && hsvVal.r > 145.0){
+			colorBoxColorRangeBarValue = 0.057f;	
+		}
+		else if(hsvVal.r < 145.0 && hsvVal.r > 135.0){
+			colorBoxColorRangeBarValue = 0.05f;	
+		}
+		else if(hsvVal.r < 135.0 && hsvVal.r > 130.0){
+			colorBoxColorRangeBarValue = 0.042f;	
+		}
+		else if(hsvVal.r < 130.0 && hsvVal.r > 125.0){
+			colorBoxColorRangeBarValue = 0.042f;	
+		}
+		else if(hsvVal.r < 125.0 && hsvVal.r > 115.0){
+			colorBoxColorRangeBarValue = 0.028f;	
+		}
+		else if(hsvVal.r < 115.0 && hsvVal.r > 107.0){
+			colorBoxColorRangeBarValue = 0.018f;	
+		}
+		else if(hsvVal.r < 107.0 && hsvVal.r > 103.0){
+			colorBoxColorRangeBarValue = 0.004f;	
+		}
+		else if(hsvVal.r < 103.0 && hsvVal.r > 97.0){
+			colorBoxColorRangeBarValue = -0.007f;	
+		}
+		else if(hsvVal.r < 97.0 && hsvVal.r > 92.0){
+			colorBoxColorRangeBarValue = -0.015f;	
+		}
+		else if(hsvVal.r < 92.0 && hsvVal.r > 85.0){
+			colorBoxColorRangeBarValue = -0.025f;	
+		}
+		else if(hsvVal.r < 85.0 && hsvVal.r > 75.0){
+			colorBoxColorRangeBarValue = -0.025f;	
+		}
+		else if(hsvVal.r < 75.0 && hsvVal.r > 65.0){
+			colorBoxColorRangeBarValue = -0.045f;	
+		}
+		else if(hsvVal.r < 65.0 && hsvVal.r > 55.0){
+			colorBoxColorRangeBarValue = -0.059f;	
+		}
+		else if(hsvVal.r < 55.0 && hsvVal.r > 45.0){
+			colorBoxColorRangeBarValue = -0.075f;	
+		}
+		else if(hsvVal.r < 42.0 && hsvVal.r > 35.0){
+			colorBoxColorRangeBarValue = -0.13f;	
+		}
+		else if(hsvVal.r < 35.0 && hsvVal.r > 30.0){
+			colorBoxColorRangeBarValue = -0.14f;	
+		}
+		else if(hsvVal.r < 30.0 && hsvVal.r > 25.0){
+			colorBoxColorRangeBarValue = -0.15f;	
+		}
+		else if(hsvVal.r < 25.0 && hsvVal.r > 20.0){
+			colorBoxColorRangeBarValue = -0.165f;	
+		}
+		else if(hsvVal.r < 20.0 && hsvVal.r > 15.0){
+			colorBoxColorRangeBarValue = -0.17f;	
+		}
+		else if(hsvVal.r < 15.0 && hsvVal.r > 8.0){
+			colorBoxColorRangeBarValue = -0.178f;	
+		}
+		else if(hsvVal.r < 8.0){
+			colorBoxColorRangeBarValue = -0.195f;	
+		}
+		else{
+			colorBoxColorRangeBarValue = (hsvVal.r / 653.846153846f) - 0.195f + 0.02f; //0.195
+		}
 	}
 	colorBoxPickerValue_x = (hsvVal.g / 1342.10526316f) - 0.095f; //0.095
 	colorBoxPickerValue_y = (hsvVal.b / 653.846153846f) - 0.195f; //0.195
@@ -648,6 +655,9 @@ void LigidPainter::brushSizeRangeBar(float xOffset,int width){
 	Utilities util;
 	brushSizeRangeBarValue -= xOffset / (width / 2);
 	brushSizeRangeBarValue = util.restrictBetween(brushSizeRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
+}
+void LigidPainter::colorBox(){
+	colorBoxClicked = true;
 }
 void LigidPainter::brushBlurRangeBar(float xOffset,int width,int height) {
 	Utilities util;
