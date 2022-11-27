@@ -22,6 +22,7 @@ struct CallbckData { //Return from callback
 	bool colorBoxColorRangeBarEnter;
 
 	bool exportPathTextBoxEnter;
+	bool exportFileNameTextBoxEnter;
 	bool exportExtJPGCheckBoxEnter;
 	bool exportExtPNGCheckBoxEnter;
 	bool exportDownloadButtonEnter;

@@ -62,6 +62,7 @@ string maskTexturePath = "./LigidPainter/Resources/Textures/PlainCircle.png";
 string maskTextureFile = "PlainCircle.png";
 string exportPath = "";
 string exportFolder = "Choose Destination Path";
+string exportFileName = "LP_Export";
 //Paths
 
 string modelName;
@@ -117,6 +118,7 @@ bool addImageButtonPressed = false;
 bool addMaskTextureButtonPressed = false;
 bool exportDownloadButtonPressed = false;
 bool paintingDropperPressed = false;
+bool exportFileNameTextBoxPressed = false;
 
 //Used to let mouse callback function know if it's supposed to change range bar values
 
@@ -175,9 +177,37 @@ bool panelChanging = false; //Disable painting while changing panel sizes
 bool brushValChanged = true;
 
 int paintingFillNumericModifierVal = 5;
+
+bool caps = false; //GLFW_MOD_CAPS_LOCK
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	//Will be used for allowing writing to a text box
-	//Can be deleted since program doesn't use it
+	if(key == 32){
+		exportFileName += ' ';
+	}
+	if(key >= 320 && key <=329){
+		key -= 272;
+	}
+	if(key == 280 && action == 0){
+		if(caps)
+			caps = false;
+		else
+			caps = true;
+	}
+	if(exportFileNameTextBoxPressed){
+		if(key == 259 && action == 0 && exportFileName != ""){
+			exportFileName.pop_back();	
+		}
+		else if(action == 0 && isalpha((char)key)){
+			if(!caps){
+				exportFileName+=(char)key+32;//lowercase
+			}
+			else{
+				exportFileName+=(char)key;//UPPERCASE
+			}
+		}
+		else if(action == 0 && isdigit((char)key)){
+			exportFileName+=(char)(key);//lowercase
+		}
+	}
 }
 bool LigidPainter::run()
 {
@@ -287,16 +317,6 @@ bool LigidPainter::run()
 			updateColorPicker(screenHoverPixel);
 		}
 
-		//Update
-		render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
-		brushSize = double(brushSizeRangeBarValue + 0.1f) * 800.0 + 20.0 ;
-		renderData = updateRenderData(renderData,textures.depthTexture, brushSize);
-		uidata = updateUiData();
-		panelData.movePanel = callbackData.movePanel;
-		exportData.exportImage = exportImage;
-		exportData.path = exportPath.c_str();
-
-
 		//Check if texture demonstrator button clicked
 		if(uiActData.textureDemonstratorButtonPressed){
 			textureDemonstratorButtonPressCounter++;
@@ -308,9 +328,21 @@ bool LigidPainter::run()
 			textureDemonstratorButtonPressCounter = 0;
 		}
 
+		if ((glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS) && !callbackData.exportFileNameTextBoxEnter){
+			exportFileNameTextBoxPressed = false;
+		}
 
 		uiActData = uiAct.uiActions(window,callbackData,textureDemonstratorBoundariesHover);
+
 		//Update
+		render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
+		brushSize = double(brushSizeRangeBarValue + 0.1f) * 800.0 + 20.0 ;
+		renderData = updateRenderData(renderData,textures.depthTexture, brushSize);
+		uidata = updateUiData();
+		panelData.movePanel = callbackData.movePanel;
+		exportData.exportImage = exportImage;
+		exportData.path = exportPath.c_str();
+		exportData.fileName = exportFileName.c_str();
 
 		//Painting
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting) {//Used for spacing
@@ -329,7 +361,6 @@ bool LigidPainter::run()
 		lastMouseXpos = mouseXpos;
 		lastMouseYpos = mouseYpos;
 		
-
 		//Render
 		screenHoverPixel = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal);
 
@@ -706,22 +737,19 @@ void LigidPainter::exportPathTextBox() {
 		exportFolder = uti.getLastWordBySeparatingWithChar(exportPath,'\\');
 	}
 }
+void LigidPainter::exportFileNameTextBox() {
+	exportFileNameTextBoxPressed = true;
+}
 void LigidPainter::exportExtJPGCheckBox() {
 	if (jpgFormatChecked == false) {
 		jpgFormatChecked = true;
 		pngFormatChecked = false;
-	}
-	else {
-		jpgFormatChecked = false;
 	}
 }
 void LigidPainter::exportExtPNGCheckBox() {
 	if (pngFormatChecked == false) {
 		pngFormatChecked = true;
 		jpgFormatChecked = false;
-	}
-	else {
-		pngFormatChecked = false;
 	}
 }
 void LigidPainter::mirrorXCheckBox() {
@@ -996,6 +1024,8 @@ UiData updateUiData() {
 	uidata.paintingFillNumericModifierNEnter = callbackData.paintingFillNumericModifierNEnter;
 
 	uidata.dropperEnter = callbackData.paintingDropperEnter;
+
+	uidata.exportFileNameTextBoxPressed = exportFileNameTextBoxPressed;
 
 	return uidata;
 }

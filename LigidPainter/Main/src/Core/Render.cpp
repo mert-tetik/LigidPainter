@@ -32,6 +32,9 @@ float fillBetweenResNumericModifiermixValN = 0.0f;
 float fillBetweenResNumericModifiermixValP = 0.0f;
 
 float dropperMixVal = 0.0f;
+
+float exportFileNameTextBoxMixVal = 0.0f;
+
 void updateButtonColorMixValues(UiData uidata) {
 	float phaseDifference = 0.05f;
 	if (uidata.addSphereButtonEnter && addSphereButtonMixVal <= 1.0f) {
@@ -94,6 +97,13 @@ void updateButtonColorMixValues(UiData uidata) {
 	else if (!uidata.dropperEnter && dropperMixVal >= 0.0f) {
 		dropperMixVal -= phaseDifference;
 	}
+
+	if (uidata.exportFileNameTextBoxPressed && exportFileNameTextBoxMixVal <= 1.0f) {
+		exportFileNameTextBoxMixVal += phaseDifference;
+	}
+	else if (!uidata.exportFileNameTextBoxPressed && exportFileNameTextBoxMixVal >= 0.0f) {
+		exportFileNameTextBoxMixVal -= phaseDifference;
+	}
 }
 //Button mix val
 float changeTextureDemonstratorWidth = 0.4f;
@@ -103,7 +113,7 @@ float orgTextureDemonstratorWidth = 0.4f;
 float orgTextureDemonstratorHeight = 0.8f;
 bool changeTextureDemonstrator;
 
-void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal) {
+void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName) {
 	ColorData colorData;
 	CommonData commonData;
 	glm::mat4 projection;
@@ -191,8 +201,6 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 		ui.renderText(commonData.program, "File Path", renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.64f, 0.00022f);
 		ui.iconBox(0.020f,0.04f,renderData.panelLoc / centerDivider + centerSum + 0.1f,0.6f,1,icons.Folder,0);
 		
-
-
 		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false, 0.9f, 10, colorData.buttonColorHover, loadModelButtonMixVal);//Load model button
 		ui.box(0.012f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.0f, "", colorData.buttonColor, 0.047f, false, false, 0.9f, 7, colorData.buttonColorHover, addPanelButtonMixVal);//Load a panel button
 		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum,0.0,0.99,icons.Panel,0);
@@ -257,13 +265,15 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 
 	if (panelData.exportPanelActive) {
 		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum, 0.6f, renderData.exportFolder, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0); //Path textbox
-		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.11f, 0.5f, "", colorData.checkBoxColor, uidata.exportExtJPGCheckBoxEnter, uidata.exportExtJPGCheckBoxPressed); //jpg checkbox
-		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - 0.06f, 0.5f,0.9,icons.JpgFile,0);
+		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum, 0.5f, exportFileName,colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, exportFileNameTextBoxMixVal); //File name textbox
 
-		ui.checkBox(renderData.panelLoc / centerDivider + centerSum + 0.05f, 0.5f, "", colorData.checkBoxColor, uidata.exportExtPNGCheckBoxEnter, uidata.exportExtPNGCheckBoxPressed); //png checkbox
-		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum + 0.1f, 0.5f,0.9,icons.PngFile,0);
+		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.11f, 0.4f, "", colorData.checkBoxColor, uidata.exportExtJPGCheckBoxEnter, uidata.exportExtJPGCheckBoxPressed); //jpg checkbox
+		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - 0.06f, 0.4f,0.9,icons.JpgFile,0);
 
-		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.3f, "Download", colorData.buttonColor, 0.045f, false, false, 0.9f, 10, colorData.buttonColorHover, exportDownloadButtonMixVal); //Download Button
+		ui.checkBox(renderData.panelLoc / centerDivider + centerSum + 0.05f, 0.4f, "", colorData.checkBoxColor, uidata.exportExtPNGCheckBoxEnter, uidata.exportExtPNGCheckBoxPressed); //png checkbox
+		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum + 0.1f, 0.4f,0.9,icons.PngFile,0);
+
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.2f, "Download", colorData.buttonColor, 0.045f, false, false, 0.9f, 10, colorData.buttonColorHover, exportDownloadButtonMixVal); //Download Button
 	}
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 	gl.uniformMatrix4fv(commonData.program, "TextProjection", projection);
@@ -466,18 +476,14 @@ void drawAxisPointer() {
 }
 
 
-
-
-
-
-void Render::exportTexture(bool JPG,bool PNG,const char* exportPath){
+void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName){
     Texture txtr;
     GLubyte* exportTxtr = txtr.getTextureFromProgram(GL_TEXTURE0,1080,1080,3);
 	if (JPG) {
-		txtr.downloadTexture(exportPath, "LigidPainter Export", 0, 1080, 1080, exportTxtr, 3);
+		txtr.downloadTexture(exportPath, exportFileName, 0, 1080, 1080, exportTxtr, 3);
 	}
 	else if (PNG) {
-		txtr.downloadTexture(exportPath, "LigidPainter Export", 1, 1080, 1080, exportTxtr, 3);
+		txtr.downloadTexture(exportPath, exportFileName, 1, 1080, 1080, exportTxtr, 3);
 	}
     delete[] exportTxtr;
 }
@@ -496,7 +502,7 @@ void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsi
 	delete[]renderedTexture;
 }
 
-void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices,bool exportImage, bool JPG, bool PNG, const char* exportPath,unsigned int screenSizeX, unsigned int screenSizeY) {
+void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices,bool exportImage, bool JPG, bool PNG, const char* exportPath,unsigned int screenSizeX, unsigned int screenSizeY,const char* exportFileName) {
 	int maxTextureHistoryHold = 20;
 
 	std::vector<float> renderVertices = { //Render backside of the uv
@@ -562,7 +568,7 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 
 	//Download enlarged texture
 	if (exportImage) {
-        exportTexture(JPG,PNG,exportPath);
+        exportTexture(JPG,PNG,exportPath,exportFileName);
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -675,9 +681,9 @@ glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, un
 
 	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || uidata.addImageButtonPressed || (colorBoxValChanged && renderData.paintingMode) || (glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
 	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false
-		renderTextures(FBOScreen,vertices,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY);
+		renderTextures(FBOScreen,vertices,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName);
 	}
-	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal);
+	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName);
 
 	if (colorBoxValChanged) { //Get value of color box
 		colorBoxVal = getColorBoxValue(FBOScreen, lastColorBoxPickerValue_x, lastColorBoxPickerValue_y,screenSizeX, screenSizeY);

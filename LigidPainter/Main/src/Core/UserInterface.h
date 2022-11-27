@@ -11,6 +11,7 @@ struct ColorData //LigidPainter color palette
 	glm::vec3 buttonColorHover = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 menuBarColor = glm::vec3(0.05f, 0.05f, 0.05f);
 	glm::vec3 textBoxColor = glm::vec3(0.05f, 0.05f, 0.05f);
+	glm::vec3 textBoxColorClicked = glm::vec3(0.35f, 0.35f, 0.35f);
 	glm::vec3 checkBoxColor = glm::vec3(0.05f, 0.05f, 0.05f);
 	glm::vec3 checkBoxCheckedColor = glm::vec3(0.17f, 0.17f, 0.17f);
 	glm::vec3 rangeBarBack = glm::vec3(0.1f, 0.1f, 0.1f);

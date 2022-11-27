@@ -98,6 +98,7 @@ public:
 	void textureDemonstratorBoundaries(float xOffset,float yOffset,int width,int height);
 	void paintingDropper();
 	void paintingFillNumericModifier(bool p, bool n);
+	void exportFileNameTextBox();
 };
 struct PanelData {
 	bool movePanel;

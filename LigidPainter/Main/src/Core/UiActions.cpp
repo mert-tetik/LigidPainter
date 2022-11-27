@@ -35,7 +35,7 @@ void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackD
 			&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGCheckBoxEnter && !callbackData.exportExtPNGCheckBoxEnter
 			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter
 			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter && !textureDemonstratorBoundariesHover && !callbackData.useNegativeForDrawingCheckboxEnter
-			&& !callbackData.paintingDropperEnter && !callbackData.paintingFillNumericModifierPEnter && !callbackData.paintingFillNumericModifierNEnter) {
+			&& !callbackData.paintingDropperEnter && !callbackData.paintingFillNumericModifierPEnter && !callbackData.paintingFillNumericModifierNEnter && !callbackData.exportFileNameTextBoxEnter) {
 			noButtonClick = true;
 		}
 		else {
@@ -133,6 +133,8 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 					ligid.paintingDropper();
 				if (callbackData.exportPathTextBoxEnter) 
 					ligid.exportPathTextBox();
+				if (callbackData.exportFileNameTextBoxEnter) 
+					ligid.exportFileNameTextBox();
 				if (callbackData.exportDownloadButtonEnter)
 					ligid.exportDownloadButtonEnter();
 				if (callbackData.exportExtJPGCheckBoxEnter)

@@ -11,6 +11,7 @@ struct ExportData
 {
 	bool exportImage;
 	const char* path;
+	const char* fileName;
 };
 struct FramebufferData
 {
@@ -81,16 +82,18 @@ struct UiData {
 	bool paintingFillNumericModifierNEnter;
 	
 	bool dropperEnter;
+
+	bool exportFileNameTextBoxPressed;
 };
 class Render {
 public:
 	glm::vec3 render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal);
 	void renderModel(bool backfaceCulling, std::vector<float>& vertices);
-	void renderUi(PanelData panelData, UiData uidata, RenderData renderData, unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal);
+	void renderUi(PanelData panelData, UiData uidata, RenderData renderData, unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName);
 
-    void exportTexture(bool JPG,bool PNG,const char* exportPath);
+    void exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName);
     void renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture);
-	void renderTextures(unsigned int FBOScreen, std::vector<float>& vertices, bool exportImage, bool JPG, bool PNG, const char* exportPath, unsigned int screenSizeX, unsigned int screenSizeY);
+	void renderTextures(unsigned int FBOScreen, std::vector<float>& vertices, bool exportImage, bool JPG, bool PNG, const char* exportPath, unsigned int screenSizeX, unsigned int screenSizeY,const char* exportFileName);
 	glm::vec3 getColorBoxValue(unsigned int FBOScreen, float colorBoxPickerValue_x, float colorBoxPickerValue_y, unsigned int screenSizeX, unsigned int screenSizeY);
 
 	void getDepthTexture(std::vector<float>& vertices, unsigned int FBOScreen, unsigned int screenSizeX, unsigned int screenSizeY);

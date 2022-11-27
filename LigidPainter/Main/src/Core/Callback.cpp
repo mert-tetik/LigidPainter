@@ -57,6 +57,7 @@ bool texturePanelButtonEnter;
 bool exportPanelButtonEnter;
 bool paintingPanelButtonEnter;
 bool exportPathTextBoxEnter;
+bool exportFileNameTextBoxEnter;
 bool exportExtJPGCheckBoxEnter;
 bool exportExtPNGCheckBoxEnter;
 bool mirrorXCheckBoxEnter;
@@ -98,6 +99,7 @@ CallbckData preapareCallbackData() {
 	callbk.exportPanelButtonEnter = exportPanelButtonEnter;
 
 	callbk.exportPathTextBoxEnter = exportPathTextBoxEnter;
+	callbk.exportFileNameTextBoxEnter = exportFileNameTextBoxEnter;
 	callbk.exportExtJPGCheckBoxEnter = exportExtJPGCheckBoxEnter;
 	callbk.exportExtPNGCheckBoxEnter = exportExtPNGCheckBoxEnter;
 	callbk.exportDownloadButtonEnter = exportDownloadButtonEnter;
@@ -311,13 +313,15 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	}
 	if (panelData.exportPanelActive) {
 		exportPathTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / centerDivider + centerSum, 0.6f, mouseXPos, mouseYPos, movePanel);
-		exportExtJPGCheckBoxEnter = ui.isMouseOnButton(window, 0.014f, 0.02f, panelLoc / centerDivider + centerSum - 0.11f, 0.5f, mouseXPos, mouseYPos, movePanel);
-		exportExtPNGCheckBoxEnter = ui.isMouseOnButton(window, 0.014f, 0.02f, panelLoc / centerDivider + centerSum + 0.05f, 0.5f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
-		exportDownloadButtonEnter = ui.isMouseOnButton(window, 0.12f, 0.04f, panelLoc / centerDivider + centerSum, 0.3f, mouseXPos, mouseYPos, movePanel);
+		exportFileNameTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / centerDivider + centerSum, 0.5f, mouseXPos, mouseYPos, movePanel);
+		exportExtJPGCheckBoxEnter = ui.isMouseOnButton(window, 0.014f, 0.02f, panelLoc / centerDivider + centerSum - 0.11f, 0.4f, mouseXPos, mouseYPos, movePanel);
+		exportExtPNGCheckBoxEnter = ui.isMouseOnButton(window, 0.014f, 0.02f, panelLoc / centerDivider + centerSum + 0.05f, 0.4f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
+		exportDownloadButtonEnter = ui.isMouseOnButton(window, 0.12f, 0.04f, panelLoc / centerDivider + centerSum, 0.2f, mouseXPos, mouseYPos, movePanel);
 		
 	}
 	else {
 		exportPathTextBoxEnter = false;
+		exportFileNameTextBoxEnter = false;
 		exportExtJPGCheckBoxEnter = false;
 		exportExtPNGCheckBoxEnter = false;
 		exportDownloadButtonEnter = false;
@@ -375,7 +379,7 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	else if (colorBoxColorRangeBarEnter) {
 		glfwSetCursor(window,pointerCursor);
 	}
-	else if (exportDownloadButtonEnter || exportExtJPGCheckBoxEnter || exportExtPNGCheckBoxEnter || exportPathTextBoxEnter) {
+	else if (exportDownloadButtonEnter || exportExtJPGCheckBoxEnter || exportExtPNGCheckBoxEnter || exportPathTextBoxEnter || exportFileNameTextBoxEnter) {
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if (textureDemonstratorButtonEnter){
@@ -408,5 +412,6 @@ void Callback::framebuffer_size_callback(GLFWwindow* window, int width, int heig
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
 	intrpHeight = width / 16 * 9;
 	glfwSetWindowSize(window, width, intrpHeight);
-	glset.viewport(screenSizeX, intrpHeight);
+	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
+	glset.viewport(screenSizeX, screenSizeY);
 }
