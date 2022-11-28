@@ -476,6 +476,46 @@ bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height
 	}
 	//Barycentric calculations
 }
+bool UserInterface::isMouseOnCoords(GLFWwindow*window,int mouseXpos, int mouseYpos,std::vector<float> buttonCoor,bool isPanelMoving){ //Return true if mouse hover on the given coordinates
+	int screenSizeX;
+	int screenSizeY;
+	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
+
+	float mouseFX;
+	if (!isPanelMoving) {
+		mouseFX = ((float)mouseXpos / (screenSizeX / 2)) - 1.0f;//Screen Coord
+	}
+	else {
+		mouseFX = ((float)mouseXpos / (screenSizeX / 2));//Screen Coord
+
+	}
+	float mouseFY = (((float)mouseYpos / (screenSizeY / 2))-1.0f)*-1.0f;//Screen Coord
+
+	//Barycentric calculations
+	for (size_t i = 0; i < 2; i++)
+	{
+		float ax = buttonCoor[0 + (24*i)];
+		float ay = buttonCoor[1 + (24 * i)];
+		float bx = buttonCoor[8 + (24 * i)];
+		float by = buttonCoor[9 + (24 * i)];
+		float cx = buttonCoor[16 + (24 * i)];
+		float cy = buttonCoor[17 + (24 * i)];
+
+		if (cy - ay == 0) {
+			cy += 0.0001f;
+		}
+
+		float w1 = (ax * (cy - ay) + (mouseFY - ay) * (cx - ax) - mouseFX * (cy - ay)) / ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay));
+		float w2 = (mouseFY - ay - w1 * (by - ay)) / (cy - ay);
+		if (w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1) {
+			return true;
+		}
+		else if (i == 1) {
+			return false;
+		}
+	}
+	//Barycentric calculations
+}
 void UserInterface::setViewportBgColor() {
 	glClearColor(colorD.viewportBackColor.x, colorD.viewportBackColor.y, colorD.viewportBackColor.z, 1.0f);
 }

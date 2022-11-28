@@ -35,7 +35,7 @@ void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackD
 			&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGCheckBoxEnter && !callbackData.exportExtPNGCheckBoxEnter
 			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter
 			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter && !textureDemonstratorBoundariesHover && !callbackData.useNegativeForDrawingCheckboxEnter
-			&& !callbackData.paintingDropperEnter && !callbackData.paintingFillNumericModifierPEnter && !callbackData.paintingFillNumericModifierNEnter && !callbackData.exportFileNameTextBoxEnter && !callbackData.colorBoxEnter) {
+			&& !callbackData.paintingDropperEnter && !callbackData.paintingFillNumericModifierPEnter && !callbackData.paintingFillNumericModifierNEnter && !callbackData.exportFileNameTextBoxEnter && !callbackData.colorBoxEnter && !callbackData.maskPanelSliderEnter) {
 			noButtonClick = true;
 		}
 		else {
@@ -57,7 +57,7 @@ bool colorBoxColorRangeBarPressed;
 bool colorBoxPickerPressed;
 bool textureDemonstratorButtonPressed;
 bool textureDemonstratorBoundariesPressed;
-
+bool maskPanelSliderPressed;
 //
 
 bool buttonGetInput = true;
@@ -96,6 +96,9 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 				}
 				if (textureDemonstratorBoundariesHover) {
 					textureDemonstratorBoundariesPressed = true;
+				}
+				if(callbackData.maskPanelSliderEnter){
+					maskPanelSliderPressed = true;
 				}
 			}
 		}
@@ -167,7 +170,7 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 		colorBoxColorRangeBarPressed = false;
 		textureDemonstratorButtonPressed = false;
 		textureDemonstratorBoundariesPressed = false;
-        
+        maskPanelSliderPressed = false;
 	}
     UiActionsData uiData;
     uiData.textureDemonstratorBoundariesPressed =textureDemonstratorBoundariesPressed;
@@ -208,7 +211,10 @@ bool UiActions::updateRangeValues(GLFWwindow* window, float xOffset,float yOffse
 	if (textureDemonstratorBoundariesPressed) {
 		ligid.textureDemonstratorBoundaries(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
 	}
-    if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed || textureDemonstratorButtonPressed || textureDemonstratorBoundariesPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
+	if(maskPanelSliderPressed){
+		ligid.maskPanelSlider(yOffset,screenHeight);//Changes the global variable
+	}
+    if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed || textureDemonstratorButtonPressed || textureDemonstratorBoundariesPressed || maskPanelSliderPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
         hideCursor = true;
 	}
 	else {

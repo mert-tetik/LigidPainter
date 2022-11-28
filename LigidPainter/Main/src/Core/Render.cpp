@@ -113,7 +113,12 @@ float orgTextureDemonstratorWidth = 0.4f;
 float orgTextureDemonstratorHeight = 0.8f;
 bool changeTextureDemonstrator;
 
-void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName) {
+float maskXpos = 0.0f;
+float maskYpos = 0.0f;
+
+GLFWcursor* pointerCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
+
+void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY) {
 	ColorData colorData;
 	CommonData commonData;
 	glm::mat4 projection;
@@ -217,35 +222,88 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 	}
 
 	if (panelData.paintingPanelActive) {
-		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.85f, "Add Mask Texture", colorData.buttonColor, 0.095f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.9f, "Add Mask Texture", colorData.buttonColor, 0.095f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
 		
-		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.03f, 0.7f, "Use Negative", colorData.checkBoxColor, uidata.useNegativeForDrawingCheckboxEnter, uidata.useNegativeForDrawingCheckboxPressed); //Auto triangulate checkbox
-		ui.renderText(commonData.program, maskTextureFile, renderData.panelLoc / centerDivider + centerSum - 0.03f, 0.62f, 0.00022f);
-		ui.box(0.035f, 0.07f, renderData.panelLoc / centerDivider + centerSum - 0.1f, 0.67f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
+		ui.box(0.005f, 0.015f, renderData.panelLoc / centerDivider + centerSum + 0.13f, 0.8f + maskPanelSliderValue, "", glm::vec3(0), 0.095f, false, false, 0.9f, 30, glm::vec3(0), 0); //Mask panel slider
+		ui.box(0.15f, 0.15f, renderData.panelLoc / centerDivider + centerSum, 0.675f, "", colorData.buttonColor, 0.095f, false, false, 0.9f, 1000, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Mask panel
+		
+		gl.uniform1i(commonData.program, "isMaskPanelDisplay", 1);
+
+		for (size_t i = 0; i < maskTextures.size(); i++)
+		{
+			if(i % 3 == 0 && i != 0){
+				maskYpos-=0.15f;
+				maskXpos=0.0f;
+			}
+			maskXpos-=0.08f;
+			float position_x = renderData.panelLoc / centerDivider + centerSum - maskXpos - 0.175f;
+			float position_y = 0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f;
+			//ui.iconBox(0.025f, 0.05f,renderData.panelLoc / centerDivider + centerSum - maskXpos - 0.2f,0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f,1,maskTextures[i],0);
+			float upBotDifMin = std::min(0.05f + position_y,0.8f) - std::min(-0.05f + position_y,0.8f);
+			float upBotDifMax = std::max(0.05f + position_y,0.55f) - std::max(-0.05f + position_y,0.55f);
+			std::vector<float> buttonCoorSq{
+				// first trianglev 
+				 0.03f + position_x,  std::min(std::max(0.06f + position_y,0.55f),0.8f), 1,1,upBotDifMin*10,0,0,0,  // top right
+				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,0.55f),0.8f), 1,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
+				-0.03f + position_x,  std::min(std::max(0.06f + position_y,0.55f),0.8f), 1,0,upBotDifMin*10,0,0,0,  // top left 
+				// second triangle						   
+				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,0.55f),0.8f), 1,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
+				-0.03f + position_x,  std::min(std::max(-0.06f + position_y,0.55f),0.8f), 1,0,1.0f-upBotDifMax*10,0,0,0,  // bottom left
+				-0.03f + position_x,  std::min(std::max(0.06f + position_y,0.55f),0.8f), 1,0,upBotDifMin*10,0,0,0  // top left
+			};
+			ColorData clrData;
+			Texture txtr;
+
+			gl.uniform1i(3,"isIcon", 1);
+			gl.uniform3fv(3,"iconColor",clrData.iconColor);
+			gl.uniform3fv(3,"iconColorHover",clrData.iconColorHover);
+			gl.uniform1f(3,"iconMixVal",0);
+			gl.activeTexture(GL_TEXTURE6);
+			gl.bindTexture(maskTextures[i]);
+			gl.drawArrays(buttonCoorSq,false);
+			gl.uniform1i(3,"isIcon", 0);
+
+			if(ui.isMouseOnCoords(renderData.window,mouseXpos,mouseYpos,buttonCoorSq,panelData.movePanel)){
+				if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
+					gl.activeTexture(GL_TEXTURE1);
+					gl.bindTexture(maskTextures[i]);
+					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,brushRotationRangeBarValue,false);
+					gl.uniform1i(commonData.program, "isTwoDimensional", 1);
+				}
+				glfwSetCursor(renderData.window, pointerCursor);
+
+			}
+		}
+		gl.uniform1i(commonData.program, "isMaskPanelDisplay", 0);
+		maskYpos = 0.0f;
+		maskXpos = 0.0f;
+		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.03f, 0.45f, "Use Negative", colorData.checkBoxColor, uidata.useNegativeForDrawingCheckboxEnter, uidata.useNegativeForDrawingCheckboxPressed); //Auto triangulate checkbox
+		ui.renderText(commonData.program, maskTextureFile, renderData.panelLoc / centerDivider + centerSum - 0.03f, 0.37f, 0.00022f);
+		ui.box(0.035f, 0.07f, renderData.panelLoc / centerDivider + centerSum - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
 
 		//Brush size rangebar
-		ui.renderText(commonData.program, "Size", renderData.panelLoc / centerDivider + centerSum - 0.02f, 0.25f+0.22f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.22f+0.22f, renderData.brushSizeRangeBarValue);
+		ui.renderText(commonData.program, "Size", renderData.panelLoc / centerDivider + centerSum - 0.02f, 0.25f+0.04f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.22f+0.02f, renderData.brushSizeRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.27f,1,icons.MaskScale);
 
 		//Brush blur rangebar
-		ui.renderText(commonData.program, "Blur", renderData.panelLoc / centerDivider + centerSum - 0.02f, +0.125f+0.22f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.09f+0.22f, brushBlurRangeBarValue);
+		ui.renderText(commonData.program, "Blur", renderData.panelLoc / centerDivider + centerSum - 0.02f, +0.125f+0.06f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.09f+0.04f, brushBlurRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.14f,1,icons.MaskGausBlur);
 
 		//Brush rotation rangebar
-		ui.renderText(commonData.program, "Rotation", renderData.panelLoc / centerDivider + centerSum - 0.04f, -0.005f+0.22f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.04f+0.22f, brushRotationRangeBarValue);
+		ui.renderText(commonData.program, "Rotation", renderData.panelLoc / centerDivider + centerSum - 0.04f, -0.005f+0.08f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.04f+0.06f, brushRotationRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, +0.01f,1,icons.MaskRotation);
 
 		//Brush opacity rangebar
-		ui.renderText(commonData.program, "Opacity", renderData.panelLoc / centerDivider + centerSum - 0.035f, -0.135f+0.22f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.17f+0.22f, brushOpacityRangeBarValue);
+		ui.renderText(commonData.program, "Opacity", renderData.panelLoc / centerDivider + centerSum - 0.035f, -0.135f+0.10f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.17f+0.08f, brushOpacityRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.12f,1,icons.MaskOpacity);
 
 		//Brush spacing rangebar
-		ui.renderText(commonData.program, "Spacing", renderData.panelLoc / centerDivider + centerSum - 0.035f, -0.265f+0.22f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.30f+0.22f, brushSpacingRangeBarValue);
+		ui.renderText(commonData.program, "Spacing", renderData.panelLoc / centerDivider + centerSum - 0.035f, -0.265f+0.12f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.30f+0.1f, brushSpacingRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.25f,1,icons.MaskSpacing);
 
         ui.numericModifier(renderData.panelLoc / centerDivider + centerSum,-0.3,icons.ArrowLeft,icons.ArrowRight,0.9f, paintingFillNumericModifierVal,fillBetweenResNumericModifiermixValP,fillBetweenResNumericModifiermixValN); //Fill quality
@@ -324,6 +382,7 @@ void Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirr
 	glm::vec3 mirrorVec = glm::vec3(1.0f - (int)mirrorX*2, 1.0f -(int)mirrorY * 2, 1.0f - (int)mirrorZ * 2);
 	glm::mat4 mirroredView;
 	mirroredView = glm::lookAt(cameraPos * mirrorVec, originPos * mirrorVec, glm::vec3(0.0, 1.0, 0.0));
+
 
 	gl.uniformMatrix4fv(cmnd.program, "view", view);
 	gl.uniformMatrix4fv(cmnd.program, "mirroredView", mirroredView);
@@ -641,7 +700,7 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 
 int renderDepthCounter = 0;
 glm::vec3 colorBoxVal = glm::vec3(0);
-glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal) {
+glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures) {
 	GlSet gls;
 	UserInterface ui;
 	CommonData commonData;
@@ -685,7 +744,8 @@ glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, un
 	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false
 		renderTextures(FBOScreen,vertices,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName);
 	}
-	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName);
+	renderModel(renderData.backfaceCulling,vertices);
+	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY);
 
 	if (colorBoxValChanged) { //Get value of color box
 		colorBoxVal = getColorBoxValue(FBOScreen, lastColorBoxPickerValue_x, lastColorBoxPickerValue_y,screenSizeX, screenSizeY);
@@ -693,7 +753,6 @@ glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, un
 
 	ctrlZCheck(renderData.window);
 
-	renderModel(renderData.backfaceCulling,vertices);
 
 	updateButtonColorMixValues(uidata);
 

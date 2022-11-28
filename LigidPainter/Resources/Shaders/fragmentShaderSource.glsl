@@ -66,6 +66,8 @@ uniform int whiteRendering;
 uniform sampler2D uvMask;
 uniform int interpretWithUvMask;
 
+uniform int isMaskPanelDisplay;
+
 uniform int isIcon;
 uniform sampler2D icon;
 uniform vec3 iconColor;
@@ -84,7 +86,7 @@ bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMir
       drawZ = texture2D(depthTexture, uv.xy).b;
    }
    else{
-      drawZ = texture2D(mirroredDepthTexture, uv.xy).b; 
+      drawZ = texture2D(mirroredDepthTexture, 1.0-uv.xy).b; 
    }
 
    return abs(drawZ - linearizeDepth(uv.z)/far) < 0.005;
@@ -262,17 +264,17 @@ void main() {
                   }
                   else{
                      //Paint around
-                     if(texture2D(uvMask,vec2(TexCoords.x - 0.004,TexCoords.y)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
-                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x - 0.004,TexCoords.y)));
+                     if(texture2D(uvMask,vec2(TexCoords.x - 0.002,TexCoords.y)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
+                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x - 0.002,TexCoords.y)));
                      }
-                     else if(texture2D(uvMask,vec2(TexCoords.x + 0.004,TexCoords.y)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
-                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x + 0.004,TexCoords.y)));
+                     else if(texture2D(uvMask,vec2(TexCoords.x + 0.002,TexCoords.y)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
+                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x + 0.002,TexCoords.y)));
                      }
-                     else if(texture2D(uvMask,vec2(TexCoords.x,TexCoords.y - 0.004)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
-                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x ,TexCoords.y - 0.004)));
+                     else if(texture2D(uvMask,vec2(TexCoords.x,TexCoords.y - 0.002)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
+                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x ,TexCoords.y - 0.002)));
                      }
-                     else if(texture2D(uvMask,vec2(TexCoords.x,TexCoords.y + 0.004)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
-                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x ,TexCoords.y + 0.004)));
+                     else if(texture2D(uvMask,vec2(TexCoords.x,TexCoords.y + 0.002)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
+                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x ,TexCoords.y + 0.002)));
                      }
                      else{
                         color = vec4(texture2D(material.diffuse,TexCoords));
@@ -295,7 +297,11 @@ void main() {
    }
    }
    else{
-      //Icon here
-      color = vec4(mix(iconColor,iconColorHover,iconMixVal), 1.0 - texture2D(icon,TexCoords).r);
+      if(isMaskPanelDisplay == 0){
+         color = vec4(mix(iconColor,iconColorHover,iconMixVal), 1.0 - texture2D(icon,TexCoords).r);
+      }
+      else{
+         color = vec4(mix(iconColor,iconColorHover,iconMixVal), texture2D(icon,TexCoords).r-0.02);
+      }
    }
 }

@@ -20,6 +20,7 @@
 #include "Texture Generator/TextureGenerator.h"
 
 #include <vector>
+#include <dirent.h>
 #include <map>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -119,6 +120,7 @@ bool addMaskTextureButtonPressed = false;
 bool exportDownloadButtonPressed = false;
 bool paintingDropperPressed = false;
 bool exportFileNameTextBoxPressed = false;
+bool colorBoxPickerButtonPressed = true;
 
 //Used to let mouse callback function know if it's supposed to change range bar values
 
@@ -149,8 +151,10 @@ float colorBoxColorRangeBarValue = 0.0f;
 float colorBoxPickerValue_x = 0.0f;
 float colorBoxPickerValue_y = 0.0f;
 
-float textureDemonstratorButtonPosX = 0.0;
-float textureDemonstratorButtonPosY = 0.0;
+float textureDemonstratorButtonPosX = 0.0f;
+float textureDemonstratorButtonPosY = 0.0f;
+
+float maskPanelSliderValue = 0.0f;
 //----------RANGE VALUE----------\\.
 //-----------------------      UI     -----------------------\\
 
@@ -212,6 +216,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 bool colorBoxClicked = false;
 
+vector<unsigned int> maskTextures;
+
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -250,6 +256,32 @@ bool LigidPainter::run()
 
 	ui.setViewportBgColor();
 	ui.uploadChars();
+
+	///////////////
+
+	struct dirent *d;
+    DIR *dr;
+    dr = opendir("C:/Users/CASPER/source/repos/LigidPainter/LigidPainter/Resources/Textures");
+    if(dr!=NULL)
+    {
+        cout<<"List of Files & Folders:-\n";
+        for(d=readdir(dr); d!=NULL; d=readdir(dr))
+        {
+			glset.activeTexture(GL_TEXTURE1);//Raw mask
+			string fileName =d->d_name;
+			if(fileName.size() > 3){
+				if(fileName[fileName.size()-1] != 't' && fileName[fileName.size()-2] != 'x' && fileName[fileName.size()-3] != 't'){
+					maskTextures.push_back(txtr.getTexture("C:/Users/CASPER/source/repos/LigidPainter/LigidPainter/Resources/Textures/" + fileName,0,0,false));
+				}
+			}		
+        }
+        closedir(dr);
+    }
+    else
+        cout<<"\nError Occurred!";
+    cout<<endl;
+
+	//////////////////
 
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 	glset.uniform1i(commonData.program, "uvMask", 7);
@@ -316,10 +348,7 @@ bool LigidPainter::run()
 
 		updateCameraPosChanging();
 
-		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || colorBoxClicked){
-			updateColorPicker(screenHoverPixel,true);
-			colorBoxClicked = false;
-		}
+
 
 		//Check if texture demonstrator button clicked
 		if(uiActData.textureDemonstratorButtonPressed){
@@ -337,7 +366,11 @@ bool LigidPainter::run()
 		}
 
 		uiActData = uiAct.uiActions(window,callbackData,textureDemonstratorBoundariesHover);
-
+				if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !colorBoxPickerButtonPressed)){
+			updateColorPicker(screenHoverPixel,true);
+			colorBoxClicked = false;
+			colorBoxPickerButtonPressed = false;
+		}
 		//Update
 		render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
 		brushSize = double(brushSizeRangeBarValue + 0.1f) * 800.0 + 20.0 ;
@@ -366,7 +399,7 @@ bool LigidPainter::run()
 		lastMouseYpos = mouseYpos;
 		
 		//Render
-		screenHoverPixel = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal);
+		screenHoverPixel = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,maskTextures);
 
 		exportImage = false; //After exporting, set exportImage false so we won't download the texture repeatedly
 		setButtonPressedFalse();
@@ -375,7 +408,7 @@ bool LigidPainter::run()
 
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue);
 		}
 		if (cameraPosChanging) { //Change the position of the camera in the shaders once camera position changed
 			glset.uniform3fv(commonData.program, "viewPos", callbackData.cameraPos);
@@ -731,6 +764,7 @@ void LigidPainter::colorBoxColorRangeBar(float yOffset,int height){
 	colorBoxColorRangeBarValue = util.restrictBetween(colorBoxColorRangeBarValue, 0.195f, -0.195f);//Keep in boundaries
 }
 void LigidPainter::colorBoxPickerButton(float xOffset, float yOffset, int width, int height) {
+	colorBoxPickerButtonPressed = true;
 	Utilities util;
 	colorBoxPickerValue_x -= xOffset / (width / 2);
 	colorBoxPickerValue_x = util.restrictBetween(colorBoxPickerValue_x, 0.095f, -0.095f);//Keep in boundaries
@@ -946,7 +980,11 @@ void LigidPainter::paintingFillNumericModifier(bool p, bool n){
 	if(n && paintingFillNumericModifierVal > 1)
 		paintingFillNumericModifierVal--;
 }
-
+void LigidPainter::maskPanelSlider(float yOffset,int screenSizeY){
+	Utilities util;
+	maskPanelSliderValue += yOffset / (screenSizeY / 2);
+	maskPanelSliderValue = util.restrictBetween(maskPanelSliderValue, 0.0f, -0.25f);//Keep in boundaries
+}
 
 
 

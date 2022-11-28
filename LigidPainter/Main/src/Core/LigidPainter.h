@@ -100,6 +100,7 @@ public:
 	void paintingFillNumericModifier(bool p, bool n);
 	void exportFileNameTextBox();
 	void colorBox();
+	void maskPanelSlider(float yOffset,int screenSizeY);
 };
 struct PanelData {
 	bool movePanel;
