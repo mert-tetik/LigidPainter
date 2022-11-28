@@ -137,7 +137,7 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 	ui.panelChangeButton(renderData.panelLoc, 0.72f);//Texture Panel
 	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.715f,0.9,icons.ImportTexture,0);
 	ui.panelChangeButton(renderData.panelLoc, 0.64f);//Painting Panel
-	//ui.iconBox(0.03f,0.04f,renderData.panelLoc,0.64f,1,icons.);//Dropper
+	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.635f,0.9,icons.Painting,0);//Dropper
 	ui.panelChangeButton(renderData.panelLoc, 0.56f);//Export Panel
 	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f, 0.555f,0.9,icons.Export,0);
 	
@@ -218,7 +218,7 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 
 	}
 	if (panelData.texturePanelActive) {
-		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "Add Image", colorData.buttonColor, 0.07f, false, false, 0.9f, 10, colorData.buttonColorHover, addAlbedoTextureMixVal); //Add albedo texture button
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.8f, "Add Texture", colorData.buttonColor, 0.048f, false, false, 0.9f, 10, colorData.buttonColorHover, addAlbedoTextureMixVal); //Add albedo texture button
 	}
 
 	if (panelData.paintingPanelActive) {

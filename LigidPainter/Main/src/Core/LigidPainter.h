@@ -28,6 +28,7 @@ struct Icons{
 	unsigned int Triangulate;
 	unsigned int ArrowRight;
 	unsigned int ArrowLeft;
+	unsigned int Painting;
 };
 struct ProjectionData
 {

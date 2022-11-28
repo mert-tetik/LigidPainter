@@ -301,7 +301,7 @@ void main() {
          color = vec4(mix(iconColor,iconColorHover,iconMixVal), 1.0 - texture2D(icon,TexCoords).r);
       }
       else{
-         color = vec4(mix(iconColor,iconColorHover,iconMixVal), texture2D(icon,TexCoords).r-0.02);
+         color = vec4(vec3(1), texture2D(icon,TexCoords).r-0.02);
       }
    }
 }

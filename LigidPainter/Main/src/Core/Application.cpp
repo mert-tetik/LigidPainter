@@ -120,7 +120,7 @@ bool addMaskTextureButtonPressed = false;
 bool exportDownloadButtonPressed = false;
 bool paintingDropperPressed = false;
 bool exportFileNameTextBoxPressed = false;
-bool colorBoxPickerButtonPressed = true;
+bool colorBoxPickerButtonPressed = false;
 
 //Used to let mouse callback function know if it's supposed to change range bar values
 
@@ -348,8 +348,6 @@ bool LigidPainter::run()
 
 		updateCameraPosChanging();
 
-
-
 		//Check if texture demonstrator button clicked
 		if(uiActData.textureDemonstratorButtonPressed){
 			textureDemonstratorButtonPressCounter++;
@@ -366,11 +364,14 @@ bool LigidPainter::run()
 		}
 
 		uiActData = uiAct.uiActions(window,callbackData,textureDemonstratorBoundariesHover);
-				if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !colorBoxPickerButtonPressed)){
+		
+		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !colorBoxPickerButtonPressed)){
 			updateColorPicker(screenHoverPixel,true);
 			colorBoxClicked = false;
-			colorBoxPickerButtonPressed = false;
 		}
+		colorBoxPickerButtonPressed = false;
+
+
 		//Update
 		render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
 		brushSize = double(brushSizeRangeBarValue + 0.1f) * 800.0 + 20.0 ;
