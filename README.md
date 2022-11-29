@@ -4,4 +4,19 @@
 
 **LigidPainter**  is a free 3D painting software.
 
-Unfortunately this software is not utilizable for it's purpose yet.
+## Notes
+   This software is not in usable state yet.
+   
+## Building
+glfw3.lib , freetype.lib & freetype.dll files are required.
+
+- After cloning the repository
+    Create a new folder named "lib" into the ./LigidPainter/Main/thirdparty/
+    Throw glfw3.lib & freetype.lib into that lib folder
+    freetype.dll has to be in the same folder as the executable (Ligid.exe)
+
+- Run following commands to initialize and build cmake project
+```
+    cmake -S . -B build/
+    cmake --build build/
+```
