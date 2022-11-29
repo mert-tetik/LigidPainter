@@ -233,6 +233,7 @@ bool LigidPainter::run()
 	UiActions uiAct;
 	UiActionsData uiActData;
 	InitializedTextures textures;
+	RenderOutData renderOut;
 	uiActData.textureDemonstratorBoundariesPressed = false;
 	uiActData.textureDemonstratorButtonPressed = false;
 
@@ -340,7 +341,6 @@ bool LigidPainter::run()
 
 	Utilities util;
 
-	glm::vec3 screenHoverPixel;
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
@@ -369,8 +369,10 @@ bool LigidPainter::run()
 		uiActData = uiAct.uiActions(window,callbackData,textureDemonstratorBoundariesHover);
 		
 		
+
+
 		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !callbackData.colorBoxPickerEnter)){
-			updateColorPicker(screenHoverPixel,true);
+			updateColorPicker(renderOut.mouseHoverPixel,true);
 		}
 		colorBoxClicked = false;
 		colorBoxPickerButtonPressed = false;
@@ -402,18 +404,23 @@ bool LigidPainter::run()
 		panelChanging = false;
 		lastMouseXpos = mouseXpos;
 		lastMouseYpos = mouseYpos;
-		
+
+
+
 		//Render
-		screenHoverPixel = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,maskTextures);
+		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,maskTextures);
+
+		if(renderOut.maskPanelMaskClicked){
+			brushValChanged = true;
+		}
 
 		exportImage = false; //After exporting, set exportImage false so we won't download the texture repeatedly
 		setButtonPressedFalse();
 		textureDemonstratorButtonPressClicked = false;
 
 
-
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover);
 		}
 		if (cameraPosChanging) { //Change the position of the camera in the shaders once camera position changed
 			glset.uniform3fv(commonData.program, "viewPos", callbackData.cameraPos);

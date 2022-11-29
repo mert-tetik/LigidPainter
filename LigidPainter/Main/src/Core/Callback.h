@@ -54,9 +54,9 @@ struct CallbckData { //Return from callback
 class Callback {
 public:
 	CallbckData scroll_callback(GLFWwindow* window, double scroll, double scrollx);
-	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, bool enablePanelMovement, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue);
+	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, bool enablePanelMovement, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover);
 	void panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX, bool enablePanelMovement);
-	void buttonCheck(GLFWwindow* window, int mouseXPos, int mouseYPos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue);
+	void buttonCheck(GLFWwindow* window, int mouseXPos, int mouseYPos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover);
 	void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 };
 #endif

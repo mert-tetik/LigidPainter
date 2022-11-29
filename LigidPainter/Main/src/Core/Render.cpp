@@ -116,15 +116,17 @@ bool changeTextureDemonstrator;
 float maskXpos = 0.0f;
 float maskYpos = 0.0f;
 
-GLFWcursor* pointerCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
-
-void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY) {
+RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY) {
 	ColorData colorData;
 	CommonData commonData;
 	glm::mat4 projection;
 	UserInterface ui;
 	Utilities util;
     GlSet gl; 
+	RenderOutData uiOut;
+	uiOut.maskPanelMaskClicked = false;
+	uiOut.maskPanelMaskHover = false;
+
 	gl.uniform1i(commonData.program, "isTwoDimensional", 1);
 	gl.uniform1i(commonData.program, "is2D", 1);
 
@@ -263,15 +265,19 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 			gl.drawArrays(buttonCoorSq,false);
 			gl.uniform1i(3,"isIcon", 0);
 
+			//TODO : Check once the mouse pos changed
 			if(ui.isMouseOnCoords(renderData.window,mouseXpos,mouseYpos,buttonCoorSq,panelData.movePanel)){
 				if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
 					gl.activeTexture(GL_TEXTURE1);
 					gl.bindTexture(maskTextures[i]);
 					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,brushRotationRangeBarValue,false);
 					gl.uniform1i(commonData.program, "isTwoDimensional", 1);
+					uiOut.maskPanelMaskClicked = true;
 				}
-				glfwSetCursor(renderData.window, pointerCursor);
-
+				else{
+					uiOut.maskPanelMaskClicked = false;
+				}
+				uiOut.maskPanelMaskHover = true;
 			}
 		}
 		gl.uniform1i(commonData.program, "isMaskPanelDisplay", 0);
@@ -337,6 +343,8 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 	}
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 	gl.uniformMatrix4fv(commonData.program, "TextProjection", projection);
+
+	return uiOut;
 }
 //--------------------RENDER UI --------------------\\
 
@@ -700,7 +708,7 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 
 int renderDepthCounter = 0;
 glm::vec3 colorBoxVal = glm::vec3(0);
-glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures) {
+RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures) {
 	GlSet gls;
 	UserInterface ui;
 	CommonData commonData;
@@ -745,7 +753,8 @@ glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, un
 		renderTextures(FBOScreen,vertices,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName);
 	}
 	renderModel(renderData.backfaceCulling,vertices);
-	renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY);
+	RenderOutData uiOut;
+	uiOut = renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY);
 
 	if (colorBoxValChanged) { //Get value of color box
 		colorBoxVal = getColorBoxValue(FBOScreen, lastColorBoxPickerValue_x, lastColorBoxPickerValue_y,screenSizeX, screenSizeY);
@@ -761,5 +770,10 @@ glm::vec3 Render::render(RenderData renderData, std::vector<float>& vertices, un
 	if(renderData.doPainting)
 		drawBrushIndicator(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorBoxVal);
 
-	return screenHoverPixel;
+
+	RenderOutData renderOut;
+	renderOut.mouseHoverPixel = screenHoverPixel;
+	renderOut.maskPanelMaskClicked = uiOut.maskPanelMaskClicked;
+	renderOut.maskPanelMaskHover = uiOut.maskPanelMaskHover;
+	return renderOut;
 }
