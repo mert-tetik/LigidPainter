@@ -362,8 +362,6 @@ bool LigidPainter::run()
 		}
 		textureDemonstratorButtonPosChanged = false;
 
-
-
 		if ((glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS) && !callbackData.exportFileNameTextBoxEnter){
 			exportFileNameTextBoxPressed = false;
 		}
@@ -371,10 +369,10 @@ bool LigidPainter::run()
 		uiActData = uiAct.uiActions(window,callbackData,textureDemonstratorBoundariesHover);
 		
 		
-		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !colorBoxPickerButtonPressed)){
+		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !callbackData.colorBoxPickerEnter)){
 			updateColorPicker(screenHoverPixel,true);
-			colorBoxClicked = false;
 		}
+		colorBoxClicked = false;
 		colorBoxPickerButtonPressed = false;
 
 
