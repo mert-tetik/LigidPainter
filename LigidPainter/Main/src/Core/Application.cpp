@@ -168,6 +168,7 @@ int lastMouseYpos = 0;
 
 int textureDemonstratorButtonPressCounter = 0;
 bool textureDemonstratorButtonPressClicked = false;
+bool textureDemonstratorButtonPosChanged = false;
 float textureDemonstratorWidth = 0.4f;
 float textureDemonstratorHeight = 0.8f;
 bool textureDemonstratorBoundariesHover = false;
@@ -348,22 +349,27 @@ bool LigidPainter::run()
 
 		updateCameraPosChanging();
 
+
 		//Check if texture demonstrator button clicked
 		if(uiActData.textureDemonstratorButtonPressed){
 			textureDemonstratorButtonPressCounter++;
 		}
-		if(textureDemonstratorButtonPressCounter < 20 && uiActData.textureDemonstratorButtonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE){
+		if(textureDemonstratorButtonPressCounter < 20 && uiActData.textureDemonstratorButtonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE && !textureDemonstratorButtonPosChanged){
 			textureDemonstratorButtonPressClicked = true;
 		}
 		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
 			textureDemonstratorButtonPressCounter = 0;
 		}
+		textureDemonstratorButtonPosChanged = false;
+
+
 
 		if ((glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS) && !callbackData.exportFileNameTextBoxEnter){
 			exportFileNameTextBoxPressed = false;
 		}
 
 		uiActData = uiAct.uiActions(window,callbackData,textureDemonstratorBoundariesHover);
+		
 		
 		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !colorBoxPickerButtonPressed)){
 			updateColorPicker(screenHoverPixel,true);
@@ -723,6 +729,9 @@ void LigidPainter::textureDemonstratorButton(float xOffset,float yOffset,int wid
 	panelChanging = true;
 	Utilities util;
 	Texture txtr;
+
+	textureDemonstratorButtonPosChanged = true;
+
 	textureDemonstratorButtonPosX -= xOffset / (width / 2);
 	textureDemonstratorButtonPosX = util.restrictBetween(textureDemonstratorButtonPosX,2.0f,0.0f);
 	textureDemonstratorButtonPosY += yOffset / (height / 2);

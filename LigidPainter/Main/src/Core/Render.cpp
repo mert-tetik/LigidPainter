@@ -225,7 +225,7 @@ void Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,un
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.9f, "Add Mask Texture", colorData.buttonColor, 0.095f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
 		
 		ui.box(0.005f, 0.015f, renderData.panelLoc / centerDivider + centerSum + 0.13f, 0.8f + maskPanelSliderValue, "", glm::vec3(0), 0.095f, false, false, 0.9f, 30, glm::vec3(0), 0); //Mask panel slider
-		ui.box(0.15f, 0.15f, renderData.panelLoc / centerDivider + centerSum, 0.675f, "", colorData.buttonColor, 0.095f, false, false, 0.9f, 1000, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Mask panel
+		ui.box(0.15f, 0.15f, renderData.panelLoc / centerDivider + centerSum, 0.675f, "", colorData.buttonColor, 0.095f, false, false, 0.9f, 1000, glm::vec3(0), 0); //Mask panel
 		
 		gl.uniform1i(commonData.program, "isMaskPanelDisplay", 1);
 
