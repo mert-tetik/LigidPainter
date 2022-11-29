@@ -86,7 +86,7 @@ bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMir
       drawZ = texture2D(depthTexture, uv.xy).b;
    }
    else{
-      drawZ = texture2D(mirroredDepthTexture, 1.0-uv.xy).b; 
+      drawZ = texture2D(mirroredDepthTexture, uv.xy).b; 
    }
 
    return abs(drawZ - linearizeDepth(uv.z)/far) < 0.005;
@@ -177,7 +177,7 @@ void main() {
                else 
                {
                   //Mask texture box here
-                  color = texture(modifiedMaskTexture, TexCoords);
+                  color = texture(mirroredDepthTexture, TexCoords);
                }
             }
          }
@@ -248,7 +248,7 @@ void main() {
                      color = vec4(vec3(linearizeDepth(gl_FragCoord.z)/far), 1.0);
                   }
                   else{
-                     color = vec4(vec3(linearizeDepth(mirroredProjectedPos.z)/far), 1.0);
+                     color = vec4(vec3(linearizeDepth(gl_FragCoord.z)/far), 1.0);
                   }
                }
                else

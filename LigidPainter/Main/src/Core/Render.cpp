@@ -440,7 +440,10 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 	gl.generateMipmap();
 	delete[]screen;
 
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	gl.uniform1i(commonData.program, "renderMirroredDepth", 1);
+	gl.uniform1i(commonData.program, "renderMirroredDepthV", 1);
 	gl.drawArrays(vertices, false);
 	GLubyte* screenMirrored = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
 	gl.activeTexture(GL_TEXTURE8);
@@ -449,6 +452,7 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 	delete[] screenMirrored;
 
 	gl.uniform1i(commonData.program, "isRenderTextureModeV", 0);
+	gl.uniform1i(commonData.program, "renderMirroredDepthV", 0);
 	gl.uniform1i(commonData.program, "isRenderTextureMode", 0);
 	gl.uniform1i(commonData.program, "renderDepth", 0);
 	gl.uniform1i(commonData.program, "renderMirroredDepth", 0);

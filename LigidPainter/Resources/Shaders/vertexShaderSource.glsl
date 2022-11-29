@@ -30,6 +30,8 @@ uniform int isRenderVerticalBlur;
 out vec2 blurTextureCoords[11];
 uniform float brushBlurVal;
 
+uniform int renderMirroredDepthV;
+
 uniform mat4 renderTrans;
 
 void main() {
@@ -56,7 +58,12 @@ void main() {
    if(isRenderTextureModeV == 0) {
       if(isText == 0) {
          if(isTwoDimensional == 0) {
-            gl_Position = projection * view * vec4(aPos, 0.5);
+            if(renderMirroredDepthV == 0){
+               gl_Position = projection * view * vec4(aPos, 0.5);
+            }
+            else{
+               gl_Position = projection * mirroredView * vec4(aPos, 0.5);
+            }
          } else {
             gl_Position = TextProjection * vec4(aPos, 1.0);
          }
