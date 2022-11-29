@@ -12,7 +12,7 @@
 #include "UserInterface.h"
 #include "Callback.h"
 #include "gl.h"
-#include "Utilities.h""
+#include "Utilities.h"
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -207,11 +207,40 @@ CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypo
 	return callbk;
 }
 bool panelChangeHover = false;
+bool panelClickTaken = false;
+bool noPanelClick = true;
 void Callback::panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX, bool enablePanelMovement) {
 	panelOffset = mouseXpos - holdXPos;
 	holdXPos = mouseXpos;
 	if (enablePanelMovement) {
-		if (panelChangeLoc) {
+		if (mouseXpos > (screenSizeX / 2 * panelLoc) - 10 && mouseXpos < (screenSizeX / 2 * panelLoc) + 10) {
+			GLFWcursor* hresizeCursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
+			glfwSetCursor(window, hresizeCursor);
+			panelChangeHover = true;
+			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
+				panelChangeLoc = true;
+			}
+		}
+		else{
+			panelChangeHover = false;
+		}
+
+
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !panelClickTaken) {
+	 		if (panelChangeHover) {
+	 			noPanelClick = true;
+	 		}
+	 		else {
+	 			noPanelClick = false;
+	 		}
+	 		panelClickTaken = true;
+	    }
+	    if (glfwGetMouseButton(window, 0) == GLFW_RELEASE && panelClickTaken) {
+	     	panelClickTaken = false;
+	    }
+
+		
+		if (panelChangeLoc && noPanelClick) {
 			panelLoc += panelOffset / 1000;
 			if (panelLoc > 1.7f) {
 				movePanel = true;
@@ -223,20 +252,9 @@ void Callback::panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX, bo
 				panelLoc = 1.6f;
 			if (panelLoc > 1.987f)
 				panelLoc = 1.987f;
-			if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
-				panelChangeLoc = false;
-			}
 		}
-		if (mouseXpos > (screenSizeX / 2 * panelLoc) - 10 && mouseXpos < (screenSizeX / 2 * panelLoc) + 10) {
-			GLFWcursor* hresizeCursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
-			glfwSetCursor(window, hresizeCursor);
-			panelChangeHover = true;
-			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
-				panelChangeLoc = true;
-			}
-		}
-		else{
-			panelChangeHover = false;
+		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
+			panelChangeLoc = false;
 		}
 	}
 }

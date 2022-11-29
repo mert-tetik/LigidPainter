@@ -177,7 +177,7 @@ void main() {
                else 
                {
                   //Mask texture box here
-                  color = texture(mirroredDepthTexture, TexCoords);
+                  color = texture(modifiedMaskTexture, TexCoords);
                }
             }
          }
