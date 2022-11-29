@@ -35,6 +35,13 @@ using namespace std;
 GlSet glset;
 GLFWwindow* window = glset.getWindow();
 
+
+#ifdef _WIN32
+    char folderDistinguisher = '\\';
+#else
+	char folderDistinguisher = '/'; 
+#endif
+
 //GL_TEXTURE0 = Albedo texture
 //GL_TEXTURE1 = Mask texture
 //GL_TEXTURE2 = Chars
@@ -699,7 +706,7 @@ void LigidPainter::addMaskTextureButton() {
 	auto maskTexturePathCheck = tinyfd_openFileDialog("Select Mask Texture", "", 2, lFilterPatterns, "", false);
 	if (maskTexturePathCheck) {
 		maskTexturePath = maskTexturePathCheck;
-		maskTextureFile = util.getLastWordBySeparatingWithChar(maskTexturePath,'\\'); 
+		maskTextureFile = util.getLastWordBySeparatingWithChar(maskTexturePath,folderDistinguisher); 
 		brushValChanged = true;
 		glset.activeTexture(GL_TEXTURE1);
 		txtr.getTexture(maskTexturePath,0,0,true);
@@ -793,7 +800,7 @@ void LigidPainter::modelFilePathTextBox() {
 	auto modelFilePathCheck = tinyfd_openFileDialog("Select 3D Model","",1, lFilterPatterns,"",false);
 	if (modelFilePathCheck) {
 		modelFilePath = modelFilePathCheck;
-		modelName = utilities.getLastWordBySeparatingWithChar(modelFilePath,'\\');
+		modelName = utilities.getLastWordBySeparatingWithChar(modelFilePath,folderDistinguisher);
 	}
 }
 
@@ -804,7 +811,7 @@ void LigidPainter::exportPathTextBox() {
 	auto exportPathCheck = tinyfd_selectFolderDialog("Save Texture","");
 	if (exportPathCheck) {
 		exportPath = exportPathCheck;
-		exportFolder = uti.getLastWordBySeparatingWithChar(exportPath,'\\');
+		exportFolder = uti.getLastWordBySeparatingWithChar(exportPath,folderDistinguisher);
 	}
 }
 void LigidPainter::exportFileNameTextBox() {
