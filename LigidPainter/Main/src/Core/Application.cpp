@@ -709,7 +709,7 @@ void LigidPainter::addMaskTextureButton() {
 		maskTextureFile = util.getLastWordBySeparatingWithChar(maskTexturePath,folderDistinguisher); 
 		brushValChanged = true;
 		glset.activeTexture(GL_TEXTURE1);
-		txtr.getTexture(maskTexturePath,0,0,true);
+		maskTextures.push_back(txtr.getTexture(maskTexturePath,0,0,false));
 		txtr.updateMaskTexture(FBOScreen,width,height,brushRotationRangeBarValue,false);
 	}
 }
