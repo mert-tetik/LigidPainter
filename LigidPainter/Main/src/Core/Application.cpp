@@ -396,10 +396,10 @@ bool LigidPainter::run()
 		exportData.fileName = exportFileName.c_str();
 
 		//Painting
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting) {//Used for spacing
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && glfwGetMouseButton(window, 1) == GLFW_RELEASE) {//Used for spacing
 			drawingCount++;
 		}
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc){
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE){
 			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal);
 			brushValChanged = false;
 			drawingCount = 0;
