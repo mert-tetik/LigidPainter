@@ -320,6 +320,5 @@ void main() {
    else{
       //skybox here
       color = texture(skybox, Pos);
-   }
-   
+   }  
 }

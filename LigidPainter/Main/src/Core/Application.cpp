@@ -593,8 +593,14 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 {
 	Callback callback;
-	if (!paintingMode) {
+	Utilities util;
+	if (!paintingMode && !callbackData.maskPanelEnter) {
 		callbackData = callback.scroll_callback(window, scroll, scrollx);
+	}
+	else if(callbackData.maskPanelEnter){
+		maskPanelSliderValue += scrollx / 40.0;
+		maskPanelSliderValue = util.restrictBetween(maskPanelSliderValue, 0.0f, -0.25f);//Keep in boundaries
+
 	}
 	else {
 		holdScrollVal = scrollx;
