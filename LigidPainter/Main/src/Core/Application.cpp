@@ -225,6 +225,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 bool colorBoxClicked = false;
 
 vector<unsigned int> maskTextures;
+vector<string> maskTextureNames;
 unsigned int loadCubemap(std::vector<std::string> faces)
 {
 	
@@ -313,6 +314,7 @@ bool LigidPainter::run()
 			if(fileName.size() > 3){
 				if(fileName[fileName.size()-1] != 't' && fileName[fileName.size()-2] != 'x' && fileName[fileName.size()-3] != 't'){
 					maskTextures.push_back(txtr.getTexture("./LigidPainter/Resources/Textures/" + fileName,0,0,false));
+					maskTextureNames.push_back(fileName);
 				}
 			}		
         }
@@ -461,6 +463,17 @@ bool LigidPainter::run()
 
 		//Render
 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,maskTextures);
+
+
+		//Update brush mask texture file's name once the brush mask texture changed
+		if(renderOut.maskPanelMaskClicked){
+			for (size_t i = 0; i < maskTextures.size(); i++)
+			{
+				if(maskTextures[i] == renderOut.currentBrushMaskTxtr){
+					maskTextureFile = maskTextureNames[i];
+				}
+			}
+		}
 
 		if(renderOut.maskPanelMaskClicked){
 			brushValChanged = true;
@@ -764,7 +777,10 @@ void LigidPainter::addMaskTextureButton() {
 		maskTextureFile = util.getLastWordBySeparatingWithChar(maskTexturePath,folderDistinguisher); 
 		brushValChanged = true;
 		glset.activeTexture(GL_TEXTURE1);
+
 		maskTextures.push_back(txtr.getTexture(maskTexturePath,0,0,false));
+		maskTextureNames.push_back(maskTexturePath);
+
 		txtr.updateMaskTexture(FBOScreen,width,height,brushRotationRangeBarValue,false);
 	}
 }

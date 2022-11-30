@@ -89,6 +89,7 @@ struct RenderOutData{
 	glm::vec3 mouseHoverPixel;
 	bool maskPanelMaskHover;
 	bool maskPanelMaskClicked;
+	unsigned int currentBrushMaskTxtr;
 };
 class Render {
 public:

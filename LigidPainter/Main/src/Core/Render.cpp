@@ -117,6 +117,8 @@ bool changeTextureDemonstrator;
 float maskXpos = 0.0f;
 float maskYpos = 0.0f;
 
+unsigned int currentBrushMaskTexture;
+
 RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY) {
 	ColorData colorData;
 	CommonData commonData;
@@ -273,6 +275,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,brushRotationRangeBarValue,false);
 					gl.uniform1i(commonData.program, "isTwoDimensional", 1);
 					uiOut.maskPanelMaskClicked = true;
+					currentBrushMaskTexture = maskTextures[i];
 				}
 				else{
 					uiOut.maskPanelMaskClicked = false;
@@ -343,7 +346,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	}
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 	gl.uniformMatrix4fv(commonData.program, "TextProjection", projection);
-
+	uiOut.currentBrushMaskTxtr = currentBrushMaskTexture;
 	return uiOut;
 }
 //--------------------RENDER UI --------------------\\
@@ -833,5 +836,6 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	renderOut.mouseHoverPixel = screenHoverPixel;
 	renderOut.maskPanelMaskClicked = uiOut.maskPanelMaskClicked;
 	renderOut.maskPanelMaskHover = uiOut.maskPanelMaskHover;
+	renderOut.currentBrushMaskTxtr = uiOut.currentBrushMaskTxtr;
 	return renderOut;
 }
