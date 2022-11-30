@@ -276,17 +276,17 @@ void main() {
                   }
                   else{
                      //Paint around
-                     if(texture2D(uvMask,vec2(TexCoords.x - 0.002,TexCoords.y)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
-                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x - 0.002,TexCoords.y)));
+                     if(texture2D(uvMask,vec2(TexCoords.x - 0.004,TexCoords.y)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
+                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x - 0.004,TexCoords.y)));
                      }
-                     else if(texture2D(uvMask,vec2(TexCoords.x + 0.002,TexCoords.y)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
-                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x + 0.002,TexCoords.y)));
+                     else if(texture2D(uvMask,vec2(TexCoords.x + 0.004,TexCoords.y)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
+                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x + 0.004,TexCoords.y)));
                      }
-                     else if(texture2D(uvMask,vec2(TexCoords.x,TexCoords.y - 0.002)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
-                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x ,TexCoords.y - 0.002)));
+                     else if(texture2D(uvMask,vec2(TexCoords.x,TexCoords.y - 0.004)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
+                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x ,TexCoords.y - 0.004)));
                      }
-                     else if(texture2D(uvMask,vec2(TexCoords.x,TexCoords.y + 0.002)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
-                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x ,TexCoords.y + 0.002)));
+                     else if(texture2D(uvMask,vec2(TexCoords.x,TexCoords.y + 0.004)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
+                        color = vec4(texture2D(material.diffuse,vec2(TexCoords.x ,TexCoords.y + 0.004)));
                      }
                      else{
                         color = vec4(texture2D(material.diffuse,TexCoords));
