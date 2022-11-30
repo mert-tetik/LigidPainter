@@ -19,6 +19,7 @@
 #include "stb_image_write.h"
 
 
+
 //--------------------RENDER UI --------------------\\
 //Button mix val
 float exportDownloadButtonMixVal = 0.0f;
@@ -142,7 +143,6 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.635f,0.9,icons.Painting,0);//Dropper
 	ui.panelChangeButton(renderData.panelLoc, 0.56f);//Export Panel
 	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f, 0.555f,0.9,icons.Export,0);
-	
 	//Panel
 
 
@@ -738,7 +738,6 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 
 	bool colorBoxValChanged = isColorBoxValueChanged(renderData);
 
-	drawAxisPointer();
 	
 	//Render depth once painting started
 	if (renderData.paintingMode) { 
@@ -756,7 +755,62 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false
 		renderTextures(FBOScreen,vertices,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName);
 	}
+
+	gls.uniform1i(commonData.program, "isRenderSkybox", 1);
+	gls.uniform1i(commonData.program, "isRenderSkyboxV", 1);
+	glDepthMask(GL_FALSE);
+	glDepthFunc(GL_LEQUAL);
+
+	std::vector<float> skyboxVertices = {
+	    // positions          
+	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f,  1.0f ,0,0,  0,0,0
+	};
+
+	gls.drawArrays(skyboxVertices,false);
+	glDepthFunc(GL_LESS);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDepthMask(GL_TRUE);
+	gls.uniform1i(commonData.program, "isRenderSkybox", 0);
+	gls.uniform1i(commonData.program, "isRenderSkyboxV", 0);
+
 	renderModel(renderData.backfaceCulling,vertices);
+	drawAxisPointer();
+
 	RenderOutData uiOut;
 	uiOut = renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY);
 

@@ -74,6 +74,9 @@ uniform vec3 iconColor;
 uniform vec3 iconColorHover;
 uniform float iconMixVal;
 
+uniform samplerCube skybox;
+uniform int isRenderSkybox;
+
 float far = 10.0f;
 float near = 0.1f;
 float linearizeDepth(float depth){
@@ -137,7 +140,8 @@ void main() {
    vec3 interpretedColorBlack = vec3(TexCoords.y)*interpretedColorWhite;
 
    vec3 result = ambient + diffuse + specular;
-   if(isIcon == 0){
+   if(isRenderSkybox == 0){
+      if(isIcon == 0){
       if(isRenderTextureMode == 0) {
       if(isColorBox == 0) {
          if(isTextF == 0) {
@@ -150,7 +154,10 @@ void main() {
                   if(isAxisPointer == 0) 
                   {
                      //3D model here
-                     color = vec4(result, 1);
+                     vec3 I = normalize(Pos - viewPos);
+                     vec3 R = reflect(I, normalize(Normal));
+                     vec4 resColor = vec4(result, 1);
+                     color =  mix(vec4(texture(skybox, -R).rgb, 1.0),resColor,0.9);
                   } 
                   else 
                   {
@@ -304,4 +311,10 @@ void main() {
          color = vec4(vec3(1), texture2D(icon,TexCoords).r-0.02);
       }
    }
+   }
+   else{
+      //skybox here
+      color = texture(skybox, Pos);
+   }
+   
 }

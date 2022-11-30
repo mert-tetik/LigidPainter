@@ -55,7 +55,7 @@ GLFWwindow* window = glset.getWindow();
 //GL_TEXTURE10 = 1080x1080 Screen Texture
 //GL_TEXTURE11 = NULL
 //GL_TEXTURE12 = Modified mask texture
-//GL_TEXTURE13 = NULL
+//GL_TEXTURE13 = skybox
 
 unsigned int VBO, VAO, FBOScreen; //Vertex Buffer Object, Vertex Array Object, Framebuffer object that I used to render the screen
 
@@ -225,7 +225,39 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 bool colorBoxClicked = false;
 
 vector<unsigned int> maskTextures;
+unsigned int loadCubemap(std::vector<std::string> faces)
+{
+	
+	glset.activeTexture(GL_TEXTURE13);
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < faces.size(); i++)
+    {
+        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
+                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+            );
+            stbi_image_free(data);
+        }
+        else
+        {
+            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+            stbi_image_free(data);
+        }
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
+}
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -270,7 +302,7 @@ bool LigidPainter::run()
 
 	struct dirent *d;
     DIR *dr;
-    dr = opendir("C:/Users/CASPER/source/repos/LigidPainter/LigidPainter/Resources/Textures");
+    dr = opendir("./LigidPainter/Resources/Textures");
     if(dr!=NULL)
     {
         cout<<"List of Files & Folders:-\n";
@@ -280,7 +312,7 @@ bool LigidPainter::run()
 			string fileName =d->d_name;
 			if(fileName.size() > 3){
 				if(fileName[fileName.size()-1] != 't' && fileName[fileName.size()-2] != 'x' && fileName[fileName.size()-3] != 't'){
-					maskTextures.push_back(txtr.getTexture("C:/Users/CASPER/source/repos/LigidPainter/LigidPainter/Resources/Textures/" + fileName,0,0,false));
+					maskTextures.push_back(txtr.getTexture("./LigidPainter/Resources/Textures/" + fileName,0,0,false));
 				}
 			}		
         }
@@ -291,6 +323,19 @@ bool LigidPainter::run()
     cout<<endl;
 
 	//////////////////
+
+	vector<std::string> faces
+	{
+	    "LigidPainter/Resources/Cubemap/Skybox/px.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/nx.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/ny.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/py.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/pz.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/nz.png"
+	};
+	unsigned int cubemapTexture = loadCubemap(faces);  
+	glset.uniform1i(commonData.program, "skybox", 13);
+
 
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 	glset.uniform1i(commonData.program, "uvMask", 7);
@@ -447,7 +492,7 @@ bool LigidPainter::run()
 		glfwSwapBuffers(window);
 
 		
-		
+
 		if(glfwWindowShouldClose(window)){
 			int dialogResult = tinyfd_messageBox("Warning","LigidPainter will be closed. Do you want to proceed?","yesno","warning",1);
 			if(dialogResult)

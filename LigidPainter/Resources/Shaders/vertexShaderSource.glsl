@@ -34,6 +34,8 @@ uniform int renderMirroredDepthV;
 
 uniform mat4 renderTrans;
 
+uniform int isRenderSkyboxV;
+
 void main() {
    
    Pos = aPos;
@@ -54,8 +56,8 @@ void main() {
          blurTextureCoords[i+5] = centerTexCoords + vec2(0,pixelSize*i); 
       }
    }
-
-   if(isRenderTextureModeV == 0) {
+   if(isRenderSkyboxV == 0){
+       if(isRenderTextureModeV == 0) {
       if(isText == 0) {
          if(isTwoDimensional == 0) {
             if(renderMirroredDepthV == 0){
@@ -79,4 +81,10 @@ void main() {
          gl_Position = renderTrans * renderTextureProjection * vec4(aPos, 1.0);
       }
    }
+   }
+   else{
+      vec4 cubePos = projection * mat4(mat3(view)) * vec4(-aPos, 1);
+      gl_Position = cubePos.xyww;
+   }
+  
 }
