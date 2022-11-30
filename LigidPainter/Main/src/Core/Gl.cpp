@@ -193,7 +193,7 @@ unsigned int GlSet::createScreenFrameBufferObject() {
 GLFWwindow* GlSet::getWindow() {
 	glfwInit();
 	//glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	GLFWwindow* window = glfwCreateWindow(1920, 1080, "Mesh Painter", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1920, 1080, "LigidPainter", NULL, NULL);
 	glfwMakeContextCurrent(window);
 
 	GLFWimage images[1];
