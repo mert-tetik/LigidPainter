@@ -79,6 +79,10 @@ uniform int isRenderSkybox;
 
 float far = 10.0f;
 float near = 0.1f;
+float rand(vec2 co)
+{
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
 float linearizeDepth(float depth){
    return (2.0 * near * far) / (far + near -(depth * 2.0 - 1.0) *(far-near));
 }
@@ -153,11 +157,12 @@ void main() {
                else if(isLightSource == 0) {
                   if(isAxisPointer == 0) 
                   {
+                     float roughness = 0.0;
                      //3D model here
                      vec3 I = normalize(Pos - viewPos);
-                     vec3 R = reflect(I, normalize(Normal));
+                     vec3 R = reflect(I, normalize(mix(vec3(rand(vec2(roughness)),rand(vec2(roughness)),rand(vec2(roughness))),Normal,1-roughness)));
                      vec4 resColor = vec4(result, 1);
-                     color =  mix(vec4(texture(skybox, -R).rgb, 1.0),resColor,0.9);
+                     color =  mix(vec4(texture(skybox, -R).rgb, 1.0),resColor,0.8);
                   } 
                   else 
                   {
