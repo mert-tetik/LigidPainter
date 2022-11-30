@@ -191,10 +191,11 @@ bool brushValChanged = true;
 int paintingFillNumericModifierVal = 5;
 
 bool caps = false; //GLFW_MOD_CAPS_LOCK
+
+char pressedChar;
+bool pressedCharChanged;
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if(key == 32){
-		exportFileName += ' ';
-	}
+
 	if(key >= 320 && key <=329){
 		key -= 272;
 	}
@@ -204,22 +205,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		else
 			caps = true;
 	}
-	if(exportFileNameTextBoxPressed){
-		if(key == 259 && action == 0 && exportFileName != ""){
-			exportFileName.pop_back();	
-		}
-		else if(action == 0 && isalpha((char)key)){
-			if(!caps){
-				exportFileName+=(char)key+32;//lowercase
-			}
-			else{
-				exportFileName+=(char)key;//UPPERCASE
-			}
-		}
-		else if(action == 0 && isdigit((char)key)){
-			exportFileName+=(char)(key);//lowercase
-		}
-	}
+	pressedChar = key;
+	pressedCharChanged = true;
 }
 
 bool colorBoxClicked = false;
@@ -395,6 +382,9 @@ bool LigidPainter::run()
 
 	Utilities util;
 
+	int charPressingSensivity = 30;
+	int charPressCounter = 0;
+
 	while (true)
 	{
 		glfwPollEvents();
@@ -460,7 +450,34 @@ bool LigidPainter::run()
 		lastMouseYpos = mouseYpos;
 
 
+		//Text input
+		charPressCounter++;
+		if(glfwGetKey(window,pressedChar) && (charPressCounter % charPressingSensivity == 0 || pressedCharChanged)){
+			if(exportFileNameTextBoxPressed){
+				if(pressedChar == 32){
+					exportFileName += ' ';
+				}
+				else if(isalpha((char)pressedChar)){
+					if(!caps){
+						exportFileName+=(char)pressedChar+32;//lowercase
+					}
+					else{
+						exportFileName+=(char)pressedChar;//UPPERCASE
+					}
+				}
+				else if(isdigit((char)pressedChar)){
+					exportFileName+=(char)(pressedChar);//lowercase
+				}
+			}
+			charPressCounter = 0;
+			pressedCharChanged = false;
+		}
+		if(glfwGetKey(window,GLFW_KEY_BACKSPACE) && (charPressCounter % charPressingSensivity == 0|| pressedCharChanged) && exportFileNameTextBoxPressed && exportFileName != ""){
+			exportFileName.pop_back();
+			pressedCharChanged = false;
+		}
 
+		
 		//Render
 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,maskTextures);
 
@@ -600,7 +617,6 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 	else if(callbackData.maskPanelEnter){
 		maskPanelSliderValue += scrollx / 40.0;
 		maskPanelSliderValue = util.restrictBetween(maskPanelSliderValue, 0.0f, -0.25f);//Keep in boundaries
-
 	}
 	else {
 		holdScrollVal = scrollx;

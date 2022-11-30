@@ -157,7 +157,7 @@ void main() {
                else if(isLightSource == 0) {
                   if(isAxisPointer == 0) 
                   {
-                     float roughness = 0.0;
+                     float roughness = 1.0;
                      //3D model here
                      vec3 I = normalize(Pos - viewPos);
                      vec3 R = reflect(I, normalize(mix(vec3(rand(vec2(roughness)),rand(vec2(roughness)),rand(vec2(roughness))),Normal,1-roughness)));
