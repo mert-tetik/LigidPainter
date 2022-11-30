@@ -348,7 +348,7 @@ bool LigidPainter::run()
 
 	Utilities util;
 
-	while (!glfwWindowShouldClose(window))
+	while (true)
 	{
 		glfwPollEvents();
 
@@ -445,6 +445,16 @@ bool LigidPainter::run()
 		}
 
 		glfwSwapBuffers(window);
+
+		
+		
+		if(glfwWindowShouldClose(window)){
+			int dialogResult = tinyfd_messageBox("Warning","LigidPainter will be closed. Do you want to proceed?","yesno","warning",1);
+			if(dialogResult)
+				break;
+			else
+				glfwSetWindowShouldClose(window,0);
+		}
 	}
 	
 	glfwDestroyWindow(window);
