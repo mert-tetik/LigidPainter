@@ -218,7 +218,6 @@ vector<unsigned int> maskTextures;
 vector<string> maskTextureNames;
 unsigned int loadCubemap(std::vector<std::string> faces)
 {
-	
 	glset.activeTexture(GL_TEXTURE13);
     unsigned int textureID;
     glGenTextures(1, &textureID);
@@ -249,10 +248,10 @@ unsigned int loadCubemap(std::vector<std::string> faces)
 
     return textureID;
 }
+Programs programs;
 bool LigidPainter::run()
 {
 	ColorData colorData;
-	CommonData commonData;
 	UserInterface ui;
 	Texture txtr;
 	RenderData renderData;
@@ -274,12 +273,17 @@ bool LigidPainter::run()
 	glfwSetScrollCallback(window, scroll_callback);
 	//Set Callbacks
 
-	glset.getProgram();
+	programs = glset.getProgram();
+
 	glGenBuffers(1, &VBO);
 	//glGenVertexArrays(1, &VAO);
 	//glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glUseProgram(commonData.program);
+	glUseProgram(programs.program);
+
+	ui.sendProgramsToUserInterface(programs);
+	render.sendProgramsToRender(programs);
+	txtr.sendProgramsToTextures(programs);
 
 	renderData.window = window;
 
@@ -289,7 +293,7 @@ bool LigidPainter::run()
 	ui.setViewportBgColor();
 	ui.uploadChars();
 
-	///////////////
+	//Load brush mask textures
 
 	struct dirent *d;
     DIR *dr;
@@ -314,8 +318,8 @@ bool LigidPainter::run()
         cout<<"\nError Occurred!";
     cout<<endl;
 
-	//////////////////
 
+	//Load cubemap
 	vector<std::string> faces
 	{
 	    "LigidPainter/Resources/Cubemap/Skybox/px.png",
@@ -328,32 +332,32 @@ bool LigidPainter::run()
 	unsigned int cubemapTexture = loadCubemap(faces);  
 
 
-	glUseProgram(6);
+	glUseProgram(programs.skyboxProgram);
 	glset.uniform1i(6, "skybox", 13);
-	glUseProgram(3);
+	glUseProgram(programs.program);
 	glset.uniform1i(3, "skybox", 13);
 
 
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-	glset.uniform1i(commonData.program, "uvMask", 7);
+	glset.uniform1i(programs.program, "uvMask", 7);
 	
-	glUseProgram(12);
+	glUseProgram(programs.iconsProgram);
 	glset.uniform1i(12, "icon", 6);
-	glUseProgram(3);
+	glUseProgram(programs.program);
 
-	glset.uniform3fv(commonData.program, "lightPos", lightPos);
-	glset.uniform1f(commonData.program, "material.shininess", 32.0f);
-	glset.uniform1i(commonData.program, "screenMaskTexture", 4);
-	glset.uniform1i(commonData.program, "mirroredScreenMaskTexture", 3);
-	glset.uniform3fv(commonData.program,"textColor",colorData.textColor);
-	glset.uniform1i(commonData.program, "material.diffuse", 0);
-	glset.uniform1i(commonData.program, "material.specular", 1);
+	glset.uniform3fv(programs.program, "lightPos", lightPos);
+	glset.uniform1f(programs.program, "material.shininess", 32.0f);
+	glset.uniform1i(programs.program, "screenMaskTexture", 4);
+	glset.uniform1i(programs.program, "mirroredScreenMaskTexture", 3);
+	glset.uniform3fv(programs.program,"textColor",colorData.textColor);
+	glset.uniform1i(programs.program, "material.diffuse", 0);
+	glset.uniform1i(programs.program, "material.specular", 1);
 
-	glUseProgram(9);
+	glUseProgram(programs.blurProgram);
 	glset.uniform1f(9, "brushBlurVal", 1000);
-	glUseProgram(3);
+	glUseProgram(programs.program);
 
-	glset.uniform1i(commonData.program, "modifiedMaskTexture", 12);
+	glset.uniform1i(programs.program, "modifiedMaskTexture", 12);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 
@@ -409,7 +413,6 @@ bool LigidPainter::run()
 
 		updateCameraPosChanging();
 
-
 		//Check if texture demonstrator button clicked
 		if(uiActData.textureDemonstratorButtonPressed){
 			textureDemonstratorButtonPressCounter++;
@@ -422,12 +425,16 @@ bool LigidPainter::run()
 		}
 		textureDemonstratorButtonPosChanged = false;
 
+
+		//Release textboxes
 		if ((glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS)){
 			if(!callbackData.exportFileNameTextBoxEnter)
 				exportFileNameTextBoxPressed = false;
 			if(!callbackData.hexValueTextboxEnter)
 				hexValTextboxPressed = false;
 		}
+
+
 
 		uiActData = uiAct.uiActions(window,callbackData,textureDemonstratorBoundariesHover);
 		
@@ -456,7 +463,7 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE){
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal);
+			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs);
 			brushValChanged = false;
 			drawingCount = 0;
 			//brushOpacityChanged = false; not used
@@ -473,7 +480,6 @@ bool LigidPainter::run()
 		charPressCounter++;
 		if(glfwGetKey(window,pressedChar) && (charPressCounter % charPressingSensivity == 0 || pressedCharChanged)){
 			if(exportFileNameTextBoxPressed){
-				//Move to a function
 				if(pressedChar == 32){
 					exportFileName += ' ';
 				}
@@ -508,7 +514,6 @@ bool LigidPainter::run()
 			charPressCounter = 0;
 			pressedCharChanged = false;
 		}
-
 		if(glfwGetKey(window,GLFW_KEY_BACKSPACE) && (charPressCounter % charPressingSensivity == 0|| pressedCharChanged)){
 			if(exportFileNameTextBoxPressed && exportFileName != ""){
 				exportFileName.pop_back();
@@ -547,7 +552,7 @@ bool LigidPainter::run()
 			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover);
 		}
 		if (cameraPosChanging) { //Change the position of the camera in the shaders once camera position changed
-			glset.uniform3fv(commonData.program, "viewPos", callbackData.cameraPos);
+			glset.uniform3fv(programs.program, "viewPos", callbackData.cameraPos);
 		}
 		if ((cameraPosChanging && paintingMode) || glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE) { //Changing camera position or painting a stroke ends painting, than updates painted texture
 			paintingMode = false;
@@ -598,7 +603,6 @@ double lastYpos;
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	Callback callback;
-	CommonData commonData;
 	Utilities util;
 	UiActions uiAct; 
 	mousePosChanged = true;
@@ -866,14 +870,14 @@ void LigidPainter::brushBlurRangeBar(float xOffset,int width,int height) {
 	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue,true);
 
 	if (242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 15 > 200){ //If the range bar value is low enough disable blur effect
-		glUseProgram(9);
+		glUseProgram(programs.blurProgram);
 		glset.uniform1f(9, "brushBlurVal", 1000);
-		glUseProgram(3);
+		glUseProgram(programs.program);
 	}
 	else {
-		glUseProgram(9);
+		glUseProgram(programs.blurProgram);
 		glset.uniform1f(9, "brushBlurVal", 242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 15);
-		glUseProgram(3);
+		glUseProgram(programs.program);
 	}
 }
 void LigidPainter::textureDemonstratorButton(float xOffset,float yOffset,int width,int height) {
@@ -969,50 +973,47 @@ void LigidPainter::exportExtPNGCheckBox() {
 	}
 }
 void LigidPainter::mirrorXCheckBox() {
-	CommonData commonData;
 	if (mirrorXCheckBoxChecked == false) {
 		mirrorUsed = true;
-		glset.uniform1i(commonData.program, "useMirror", 1);
+		glset.uniform1i(programs.program, "useMirror", 1);
 		mirrorXCheckBoxChecked = true;
 		mirrorYCheckBoxChecked = false;
 		mirrorZCheckBoxChecked = false;
-		glset.uniform1i(commonData.program, "verticalMirror", 0);
+		glset.uniform1i(programs.program, "verticalMirror", 0);
 	}
 	else {
 		mirrorUsed = false;
-		glset.uniform1i(commonData.program, "useMirror", 0);
+		glset.uniform1i(programs.program, "useMirror", 0);
 		mirrorXCheckBoxChecked = false;
 	}
 }
 void LigidPainter::mirrorYCheckBox() {
-	CommonData commonData;
 	if (mirrorYCheckBoxChecked == false) {
 		mirrorUsed = true;
-		glset.uniform1i(commonData.program, "useMirror", 1);
+		glset.uniform1i(programs.program, "useMirror", 1);
 		mirrorYCheckBoxChecked = true;
 		mirrorXCheckBoxChecked = false;
 		mirrorZCheckBoxChecked = false;
-		glset.uniform1i(commonData.program, "verticalMirror", 1);
+		glset.uniform1i(programs.program, "verticalMirror", 1);
 	}
 	else {
 		mirrorUsed = false;
-		glset.uniform1i(commonData.program, "useMirror", 0);
+		glset.uniform1i(programs.program, "useMirror", 0);
 		mirrorYCheckBoxChecked = false;
 	}
 }
 void LigidPainter::mirrorZCheckBox() {
-	CommonData commonData;
 	if (mirrorZCheckBoxChecked == false) {
 		mirrorUsed = true;
-		glset.uniform1i(commonData.program, "useMirror", 1);
+		glset.uniform1i(programs.program, "useMirror", 1);
 		mirrorZCheckBoxChecked = true;
 		mirrorYCheckBoxChecked = false;
 		mirrorXCheckBoxChecked = false;
-		glset.uniform1i(commonData.program, "verticalMirror", 0);
+		glset.uniform1i(programs.program, "verticalMirror", 0);
 	}
 	else {
 		mirrorUsed = false;
-		glset.uniform1i(commonData.program, "useMirror", 0);
+		glset.uniform1i(programs.program, "useMirror", 0);
 		mirrorZCheckBoxChecked = false;
 	}
 }

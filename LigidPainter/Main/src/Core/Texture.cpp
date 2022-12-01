@@ -17,7 +17,7 @@
 
 using namespace std;
 
-
+Programs txtrPrograms;
 
 unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, unsigned int desiredHeight,bool update) {
 	//Leave desiredWidth 0 if no resize wanted
@@ -158,7 +158,6 @@ ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTextu
 }
 void Texture::refreshScreenDrawingTexture() {
 	GlSet glset;
-	CommonData commonData;
 	GLubyte* screenTextureX = new GLubyte[1920 * 1080 * 3];//Deleted
 	std::fill_n(screenTextureX, 1920 * 1080 * 3, 0);
 	glset.activeTexture(GL_TEXTURE4);
@@ -175,7 +174,6 @@ void Texture::refreshScreenDrawingTexture() {
 	delete(screenTextureM);
 }
 GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenSize_x, unsigned int screenSize_y, float brushRotationRangeBarValue,bool renderTiny) { //rotationValue = rotationBarValue
-	CommonData commonData;
 	GlSet glset;
 	UserInterface ui;
 	glset.viewport(1080, 1080);
@@ -188,13 +186,13 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 		trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
 		trans = glm::rotate(trans, glm::radians(rotation), glm::vec3(0.0, 0.0, 1.0));
 		trans = glm::scale(trans, glm::vec3(0.8, 0.8, 0.8));
-		glset.uniformMatrix4fv(commonData.program, "renderTrans", trans);
+		glset.uniformMatrix4fv(txtrPrograms.program, "renderTrans", trans);
 	}
 	else{
 		trans = glm::translate(trans, glm::vec3(-0.875f, -0.875f, 0.0f));
 		trans = glm::rotate(trans, glm::radians(rotation), glm::vec3(0.0, 0.0, 1.0));
 		trans = glm::scale(trans, glm::vec3(0.2, 0.2, 0.2));
-		glset.uniformMatrix4fv(commonData.program, "renderTrans", trans);
+		glset.uniformMatrix4fv(txtrPrograms.program, "renderTrans", trans);
 	}
 	//Rotate and scale
 
@@ -205,9 +203,9 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 		size = 540;
 	
 	//16:9 ---> 1:1 (makes easier to get vertices into the middle)
-	glUseProgram(3);
+	glUseProgram(txtrPrograms.program);
 	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
-	glset.uniformMatrix4fv(commonData.program, "renderTextureProjection", renderTextureProjection);
+	glset.uniformMatrix4fv(txtrPrograms.program, "renderTextureProjection", renderTextureProjection);
 	//16:9 ---> 1:1
 
 	glClearColor(0, 0, 0, 1.0f); //Back color while rendering mask texture
@@ -245,13 +243,13 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	};
 	
 	//Setup
-	glset.uniform1i(commonData.program, "isTwoDimensional", 1);
-	glset.uniform1i(commonData.program, "isRenderTextureMode", 1);
-	glset.uniform1i(commonData.program, "isRenderTextureModeV", 1);
-	glset.uniform1i(commonData.program, "renderMaskBrush", 1);
+	glset.uniform1i(txtrPrograms.program, "isTwoDimensional", 1);
+	glset.uniform1i(txtrPrograms.program, "isRenderTextureMode", 1);
+	glset.uniform1i(txtrPrograms.program, "isRenderTextureModeV", 1);
+	glset.uniform1i(txtrPrograms.program, "renderMaskBrush", 1);
 	glset.bindFramebuffer(FBOScreen);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glset.uniform1i(commonData.program, "modifiedMaskTexture", 1);
+	glset.uniform1i(txtrPrograms.program, "modifiedMaskTexture", 1);
 	//Setup
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
@@ -268,18 +266,18 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	//Rotation
 
 	//Get back to previous projection after rendering rotated & scaled mask texture
-	glset.uniform1i(commonData.program, "modifiedMaskTexture", 12);
+	glset.uniform1i(txtrPrograms.program, "modifiedMaskTexture", 12);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glset.viewport(1920, 1080);
 	trans = glm::mat4(1.0f);
 
-	glset.uniformMatrix4fv(commonData.program, "renderTrans", trans);
+	glset.uniformMatrix4fv(txtrPrograms.program, "renderTrans", trans);
 	renderTextureProjection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777777778 - 1
-	glset.uniformMatrix4fv(commonData.program, "renderTextureProjection", renderTextureProjection);
+	glset.uniformMatrix4fv(txtrPrograms.program, "renderTextureProjection", renderTextureProjection);
 	//Get back to previous projection after rendering rotated & scaled mask texture
 
 
-	glUseProgram(9);
+	glUseProgram(txtrPrograms.blurProgram);
 
 
 	//Horizontal Blur
@@ -322,14 +320,14 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	//Finish
 
 	
-	glUseProgram(3);
+	glUseProgram(txtrPrograms.program);
 
 
 	ui.setViewportBgColor();
-	glset.uniform1i(commonData.program, "renderMaskBrush", 0);
-	glset.uniform1i(commonData.program, "isTwoDimensional", 0);
-	glset.uniform1i(commonData.program, "isRenderTextureModeV", 0);
-	glset.uniform1i(commonData.program, "isRenderTextureMode", 0);
+	glset.uniform1i(txtrPrograms.program, "renderMaskBrush", 0);
+	glset.uniform1i(txtrPrograms.program, "isTwoDimensional", 0);
+	glset.uniform1i(txtrPrograms.program, "isRenderTextureModeV", 0);
+	glset.uniform1i(txtrPrograms.program, "isRenderTextureMode", 0);
 	glset.bindFramebuffer(0);
 	glset.viewport(screenSize_x, screenSize_y);
 
@@ -384,4 +382,7 @@ InitializedTextures Texture::initTextures(const char* maskTexturePath){
 	textures.rawMaskTexture = rawMaskTexture;
 
 	return textures;
+}
+void Texture::sendProgramsToTextures(Programs apptxtrPrograms){
+	txtrPrograms = apptxtrPrograms;
 }

@@ -18,7 +18,7 @@
 #include "stb_image.h"
 #include "stb_image_write.h"
 
-
+Programs renderPrograms;
 
 //--------------------RENDER UI --------------------\\
 //Button mix val
@@ -114,14 +114,12 @@ float orgTextureDemonstratorWidth = 0.4f;
 float orgTextureDemonstratorHeight = 0.8f;
 bool changeTextureDemonstrator;
 
-float maskXpos = 0.0f;
-float maskYpos = 0.0f;
+
 
 unsigned int currentBrushMaskTexture;
 
 RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,std::string colorpickerHexVal) {
 	ColorData colorData;
-	CommonData commonData;
 	glm::mat4 projection;
 	UserInterface ui;
 	Utilities util;
@@ -130,15 +128,15 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	uiOut.maskPanelMaskClicked = false;
 	uiOut.maskPanelMaskHover = false;
 
-	gl.uniform1i(commonData.program, "isTwoDimensional", 1);
-	gl.uniform1i(commonData.program, "is2D", 1);
+	gl.uniform1i(renderPrograms.program, "isTwoDimensional", 1);
+	gl.uniform1i(renderPrograms.program, "is2D", 1);
 
 	//Panel
 	ui.panel(renderData.panelLoc, 0);
 	projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
-	glUseProgram(12);
+	glUseProgram(renderPrograms.iconsProgram);
 	gl.uniformMatrix4fv(12, "Projection", projection);
-	glUseProgram(3);
+	glUseProgram(renderPrograms.program);
 	gl.uniformMatrix4fv(3, "TextProjection", projection);
 	ui.panelChangeButton(renderData.panelLoc, 0.8f);//Model Panel
 	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.795f,0.9,icons.TDModel,0);
@@ -194,29 +192,29 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 
 	float centerDivider;
 	float centerSum;
-	gl.uniform1f(commonData.program, "uiOpacity", 0.5f);
+	gl.uniform1f(renderPrograms.program, "uiOpacity", 0.5f);
 	if (!panelData.movePanel) {
 		centerDivider = 2.0f;
 		centerSum = 0;
 		projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
-		glUseProgram(12);
+		glUseProgram(renderPrograms.iconsProgram);
 		gl.uniformMatrix4fv(12, "Projection", projection);
-		glUseProgram(3);
+		glUseProgram(renderPrograms.program);
 		gl.uniformMatrix4fv(3, "TextProjection", projection);
 	}
 	else {
 		centerDivider = 1.0f;
 		centerSum = 0.15f;
 		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
-		glUseProgram(12);
+		glUseProgram(renderPrograms.iconsProgram);
 		gl.uniformMatrix4fv(12, "Projection", projection);
-		glUseProgram(3);
+		glUseProgram(renderPrograms.program);
 		gl.uniformMatrix4fv(3, "TextProjection", projection);
 	}
 	if (panelData.modelPanelActive) {
 		//File path textbox
 		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0);
-		ui.renderText(commonData.program, "File Path", renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.64f, 0.00022f);
+		ui.renderText(renderPrograms.program, "File Path", renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.64f, 0.00022f);
 		ui.iconBox(0.020f,0.04f,renderData.panelLoc / centerDivider + centerSum + 0.1f,0.6f,1,icons.Folder,0);
 		
 		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false, 0.9f, 10, colorData.buttonColorHover, loadModelButtonMixVal);//Load model button
@@ -240,8 +238,11 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		ui.box(0.005f, 0.015f, renderData.panelLoc / centerDivider + centerSum + 0.13f, 0.8f + maskPanelSliderValue, "", glm::vec3(0), 0.095f, false, false, 0.9f, 30, glm::vec3(0), 0); //Mask panel slider
 		ui.box(0.15f, 0.15f, renderData.panelLoc / centerDivider + centerSum, 0.675f, "", colorData.buttonColor, 0.095f, false, false, 0.9f, 1000, glm::vec3(0), 0); //Mask panel
 		
-		gl.uniform1i(commonData.program, "isMaskPanelDisplay", 1);
+		gl.uniform1i(renderPrograms.program, "isMaskPanelDisplay", 1);
 
+		#pragma region brushMaskPanel
+		float maskXpos = 0.0f;
+		float maskYpos = 0.0f;
 		for (size_t i = 0; i < maskTextures.size(); i++)
 		{
 			if(i % 3 == 0 && i != 0){
@@ -267,7 +268,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 			ColorData clrData;
 			Texture txtr;
 
-			glUseProgram(12);
+			glUseProgram(renderPrograms.iconsProgram);
 			gl.uniform1i(12,"isMaskIcon",1);
 			gl.uniform3fv(12,"iconColor",clrData.iconColor);
 			gl.uniform3fv(12,"iconColorHover",clrData.iconColorHover);
@@ -276,7 +277,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 			gl.bindTexture(maskTextures[i]);
 			gl.drawArrays(buttonCoorSq,false);
 			gl.uniform1i(12,"isMaskIcon",0);
-			glUseProgram(3);
+			glUseProgram(renderPrograms.program);
 
 			//TODO : Check once the mouse pos changed
 			if(ui.isMouseOnCoords(renderData.window,mouseXpos,mouseYpos,buttonCoorSq,panelData.movePanel)){
@@ -284,7 +285,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 					gl.activeTexture(GL_TEXTURE1);
 					gl.bindTexture(maskTextures[i]);
 					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,brushRotationRangeBarValue,false);
-					gl.uniform1i(commonData.program, "isTwoDimensional", 1);
+					gl.uniform1i(renderPrograms.program, "isTwoDimensional", 1);
 					uiOut.maskPanelMaskClicked = true;
 					currentBrushMaskTexture = maskTextures[i];
 				}
@@ -294,35 +295,35 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 				uiOut.maskPanelMaskHover = true;
 			}
 		}
-		gl.uniform1i(commonData.program, "isMaskPanelDisplay", 0);
-		maskYpos = 0.0f;
-		maskXpos = 0.0f;
+		#pragma endregion brushMaskPanel
+
+		gl.uniform1i(renderPrograms.program, "isMaskPanelDisplay", 0);
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - 0.03f, 0.45f, "Use Negative", colorData.checkBoxColor, uidata.useNegativeForDrawingCheckboxEnter, uidata.useNegativeForDrawingCheckboxPressed); //Auto triangulate checkbox
-		ui.renderText(commonData.program, maskTextureFile, renderData.panelLoc / centerDivider + centerSum - 0.03f, 0.37f, 0.00022f);
+		ui.renderText(renderPrograms.program, maskTextureFile, renderData.panelLoc / centerDivider + centerSum - 0.03f, 0.37f, 0.00022f);
 		ui.box(0.035f, 0.07f, renderData.panelLoc / centerDivider + centerSum - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
 
 		//Brush size rangebar
-		ui.renderText(commonData.program, "Size", renderData.panelLoc / centerDivider + centerSum - 0.02f, 0.25f+0.04f, 0.00022f);
+		ui.renderText(renderPrograms.program, "Size", renderData.panelLoc / centerDivider + centerSum - 0.02f, 0.25f+0.04f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.22f+0.02f, renderData.brushSizeRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.27f,1,icons.MaskScale);
 
 		//Brush blur rangebar
-		ui.renderText(commonData.program, "Blur", renderData.panelLoc / centerDivider + centerSum - 0.02f, +0.125f+0.06f, 0.00022f);
+		ui.renderText(renderPrograms.program, "Blur", renderData.panelLoc / centerDivider + centerSum - 0.02f, +0.125f+0.06f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, 0.09f+0.04f, brushBlurRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, 0.14f,1,icons.MaskGausBlur);
 
 		//Brush rotation rangebar
-		ui.renderText(commonData.program, "Rotation", renderData.panelLoc / centerDivider + centerSum - 0.04f, -0.005f+0.08f, 0.00022f);
+		ui.renderText(renderPrograms.program, "Rotation", renderData.panelLoc / centerDivider + centerSum - 0.04f, -0.005f+0.08f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.04f+0.06f, brushRotationRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, +0.01f,1,icons.MaskRotation);
 
 		//Brush opacity rangebar
-		ui.renderText(commonData.program, "Opacity", renderData.panelLoc / centerDivider + centerSum - 0.035f, -0.135f+0.10f, 0.00022f);
+		ui.renderText(renderPrograms.program, "Opacity", renderData.panelLoc / centerDivider + centerSum - 0.035f, -0.135f+0.10f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.17f+0.08f, brushOpacityRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.12f,1,icons.MaskOpacity);
 
 		//Brush spacing rangebar
-		ui.renderText(commonData.program, "Spacing", renderData.panelLoc / centerDivider + centerSum - 0.035f, -0.265f+0.12f, 0.00022f);
+		ui.renderText(renderPrograms.program, "Spacing", renderData.panelLoc / centerDivider + centerSum - 0.035f, -0.265f+0.12f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum, -0.30f+0.1f, brushSpacingRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.25f,1,icons.MaskSpacing);
 
@@ -334,9 +335,9 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		
 		ui.colorRect(renderData.panelLoc / centerDivider + centerSum + 0.1f, -0.6f, renderData.colorBoxColorRangeBarValue, FBOScreen, renderData.window);
 
-		gl.uniform1f(commonData.program, "uiOpacity", 1.0f);
+		gl.uniform1f(renderPrograms.program, "uiOpacity", 1.0f);
 		ui.box(0.005f, 0.025f, renderData.panelLoc / centerDivider + centerSum - 0.095f, -0.85f, "", colorBoxValue / glm::vec3(255), 0.075f, false, false, 0.9f, 10, glm::vec3(0), 0); //indicator for picken color of the color picker
-		gl.uniform1f(commonData.program, "uiOpacity", 0.5f);
+		gl.uniform1f(renderPrograms.program, "uiOpacity", 0.5f);
 		ui.decorationSquare(renderData.panelLoc / centerDivider + centerSum - 0.1f, -0.84f); //Decoration for color indicator
 
 		ui.box(0.04f, 0.03f, renderData.panelLoc / centerDivider + centerSum - 0.0f,-0.86f, util.rgbToHexGenerator(colorBoxValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0);//Hex val textbox
@@ -356,9 +357,9 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.2f, "Download", colorData.buttonColor, 0.045f, false, false, 0.9f, 10, colorData.buttonColorHover, exportDownloadButtonMixVal); //Download Button
 	}
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
-	glUseProgram(12);
+	glUseProgram(renderPrograms.iconsProgram);
 	gl.uniformMatrix4fv(12, "Projection", projection);
-	glUseProgram(3);
+	glUseProgram(renderPrograms.program);
 	gl.uniformMatrix4fv(3, "TextProjection", projection);
 	uiOut.currentBrushMaskTxtr = currentBrushMaskTexture;
 	return uiOut;
@@ -367,7 +368,6 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 
 
 void Render::renderModel(bool backfaceCulling, std::vector<float>& vertices) {
-	CommonData commonData;
     GlSet gl;
 	if (backfaceCulling) { //if backface culling checked in the model panel
 		gl.enable(GL_CULL_FACE);
@@ -378,29 +378,82 @@ void Render::renderModel(bool backfaceCulling, std::vector<float>& vertices) {
 
 	gl.disable(GL_CULL_FACE); //Disable backface culling if enabled
 }
+void Render::renderSkyBox() {
+	GlSet gls;
+	glUseProgram(renderPrograms.skyboxProgram);
+
+	glDepthMask(GL_FALSE);
+	glDepthFunc(GL_LEQUAL);
+
+	std::vector<float> skyboxVertices = {
+	    // positions          
+	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
+	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
+	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
+	     1.0f, -1.0f,  1.0f ,0,0,  0,0,0
+	};
+
+	gls.drawArrays(skyboxVertices,false);
+	glDepthFunc(GL_LESS);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDepthMask(GL_TRUE);
+	
+	glUseProgram(renderPrograms.program);
+}
 void Render::setMatrices() {
-	CommonData cmnd;
     GlSet gl;
 	glm::mat4 textProjection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
-	glUseProgram(12);
-	gl.uniformMatrix4fv(12, "Projection", textProjection);
-	glUseProgram(3);
-	gl.uniformMatrix4fv(3, "TextProjection", textProjection);
+	glUseProgram(renderPrograms.iconsProgram);
+	gl.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", textProjection);
+	glUseProgram(renderPrograms.program);
+	gl.uniformMatrix4fv(renderPrograms.program, "TextProjection", textProjection);
 
 	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777777778 - 1
-	glUseProgram(9);
-	gl.uniformMatrix4fv(9, "renderTextureProjection", renderTextureProjection);
-	glUseProgram(3);
-	gl.uniformMatrix4fv(3, "renderTextureProjection", renderTextureProjection);
+	glUseProgram(renderPrograms.blurProgram);
+	gl.uniformMatrix4fv(renderPrograms.blurProgram, "renderTextureProjection", renderTextureProjection);
+	glUseProgram(renderPrograms.program);
+	gl.uniformMatrix4fv(renderPrograms.program, "renderTextureProjection", renderTextureProjection);
 
 	glm::mat4 model = glm::mat4(1.0f);
-	gl.uniformMatrix4fv(cmnd.program, "model", model);
+	gl.uniformMatrix4fv(renderPrograms.program, "model", model);
 
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
-	glUseProgram(6);
-	gl.uniformMatrix4fv(6, "projection",projection);
-	glUseProgram(3);
-	gl.uniformMatrix4fv(3, "projection",projection);
+	glUseProgram(renderPrograms.skyboxProgram);
+	gl.uniformMatrix4fv(renderPrograms.skyboxProgram, "projection",projection);
+	glUseProgram(renderPrograms.program);
+	gl.uniformMatrix4fv(renderPrograms.program, "projection",projection);
 
 
 	ProjectionData pd;
@@ -409,7 +462,6 @@ void Render::setMatrices() {
 	//pd.viewMat = view;
 }
 void Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirrorX,bool mirrorY,bool mirrorZ) {
-	CommonData cmnd;
 	glm::mat4 view;
     GlSet gl;
 	view = glm::lookAt(cameraPos, originPos, glm::vec3(0.0, 1.0, 0.0)); 
@@ -418,51 +470,48 @@ void Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirr
 	glm::mat4 mirroredView;
 	mirroredView = glm::lookAt(cameraPos * mirrorVec, originPos * mirrorVec, glm::vec3(0.0, 1.0, 0.0));
 
-	glUseProgram(6);
+	glUseProgram(renderPrograms.skyboxProgram);
 	gl.uniformMatrix4fv(6, "view", view);
-	glUseProgram(3);
+	glUseProgram(renderPrograms.program);
 	gl.uniformMatrix4fv(3, "view", view);
 
-	gl.uniformMatrix4fv(cmnd.program, "mirroredView", mirroredView);
+	gl.uniformMatrix4fv(renderPrograms.program, "mirroredView", mirroredView);
 }
 void Render::getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos) { //Not used
 	/*GlSet glset;
-	CommonData cmnd;
 	ProjectionData pd = glset.setMatrices(cameraPos, originPos);
 	return glm::project(vPos, pd.modelMat * pd.viewMat, pd.projMat, glm::vec4(0, 0, 1920, 1080));*/
 }
 
 void Render::drawLightObject(glm::vec3 lightPos) {
-	/*CommonData cmnd;
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, lightPos);
-	model = glm::scale(model, glm::vec3(0.2f));
+	// glm::mat4 model = glm::mat4(1.0f);
+	// model = glm::mat4(1.0f);
+	// model = glm::translate(model, lightPos);
+	// model = glm::scale(model, glm::vec3(0.2f));
 
-	int lightColorLoc = glGetUniformLocation(cmnd.program, "lightColor");
-	glUniform3f(lightColorLoc, 10.0f, 10.0f, 10.0f);
-	int isLightSourceLoc = glGetUniformLocation(cmnd.program, "isLightSource");
-	glUniform1i(isLightSourceLoc, 1);
-	int modelLoc = glGetUniformLocation(cmnd.program, "model");
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-	glDrawArrays(GL_TRIANGLES, 0, 36);*/
+	// int lightColorLoc = glGetUniformLocation(renderPrograms.program, "lightColor");
+	// glUniform3f(lightColorLoc, 10.0f, 10.0f, 10.0f);
+	// int isLightSourceLoc = glGetUniformLocation(renderPrograms.program, "isLightSource");
+	// glUniform1i(isLightSourceLoc, 1);
+	// int modelLoc = glGetUniformLocation(renderPrograms.program, "model");
+	// glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+	// glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
 void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen, unsigned int screenSizeX, unsigned int screenSizeY) {
-	CommonData commonData;
 	Texture txtr;
     GlSet gl;
 	gl.viewport(1920, 1080);
 	gl.bindFramebuffer(FBOScreen);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	gl.uniform1i(commonData.program, "isTwoDimensional", 0);
-	gl.uniform1i(commonData.program, "isRenderTextureMode", 1);
-	gl.uniform1i(commonData.program, "isRenderTextureModeV", 0);
-	gl.uniform1i(commonData.program, "depthTexture", 9);
-	gl.uniform1i(commonData.program, "mirroredDepthTexture", 8);
-	gl.uniform1i(commonData.program, "renderDepth", 1);
-	gl.uniform1i(commonData.program, "renderMirroredDepth", 0);
+	gl.uniform1i(renderPrograms.program, "isTwoDimensional", 0);
+	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 1);
+	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 0);
+	gl.uniform1i(renderPrograms.program, "depthTexture", 9);
+	gl.uniform1i(renderPrograms.program, "mirroredDepthTexture", 8);
+	gl.uniform1i(renderPrograms.program, "renderDepth", 1);
+	gl.uniform1i(renderPrograms.program, "renderMirroredDepth", 0);
 	gl.drawArrays(vertices, false);
 	GLubyte* screen = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
 	gl.activeTexture(GL_TEXTURE9);
@@ -472,8 +521,8 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	gl.uniform1i(commonData.program, "renderMirroredDepth", 1);
-	gl.uniform1i(commonData.program, "renderMirroredDepthV", 1);
+	gl.uniform1i(renderPrograms.program, "renderMirroredDepth", 1);
+	gl.uniform1i(renderPrograms.program, "renderMirroredDepthV", 1);
 	gl.drawArrays(vertices, false);
 	GLubyte* screenMirrored = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
 	gl.activeTexture(GL_TEXTURE8);
@@ -481,11 +530,11 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 	gl.generateMipmap();
 	delete[] screenMirrored;
 
-	gl.uniform1i(commonData.program, "isRenderTextureModeV", 0);
-	gl.uniform1i(commonData.program, "renderMirroredDepthV", 0);
-	gl.uniform1i(commonData.program, "isRenderTextureMode", 0);
-	gl.uniform1i(commonData.program, "renderDepth", 0);
-	gl.uniform1i(commonData.program, "renderMirroredDepth", 0);
+	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 0);
+	gl.uniform1i(renderPrograms.program, "renderMirroredDepthV", 0);
+	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 0);
+	gl.uniform1i(renderPrograms.program, "renderDepth", 0);
+	gl.uniform1i(renderPrograms.program, "renderMirroredDepth", 0);
 	gl.viewport(screenSizeX, screenSizeY);
 	gl.bindFramebuffer(0);
 }
@@ -518,9 +567,8 @@ void drawBrushIndicator(float distanceX,float screenWidth,float screenHeight,flo
 
 	float sizeX = distanceX / ((1920.0f / (float)screenWidth)); //Match the size of the window
 
-	CommonData commonData;
 	GlSet glset;
-	glset.uniform1i(commonData.program, "drawBrushIndicator", 1);
+	glset.uniform1i(renderPrograms.program, "drawBrushIndicator", 1);
 	std::vector<float> paintingSquare{
 		// first triangle
 		 sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,1,0,0,0,  // top right
@@ -532,11 +580,11 @@ void drawBrushIndicator(float distanceX,float screenWidth,float screenHeight,flo
 		-sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0  // top left
 	};
 	glset.uiDataToShaders(color/glm::vec3(255.0f));
-	glset.uniform1f(commonData.program, "uiOpacity", 0.2f);
+	glset.uniform1f(renderPrograms.program, "uiOpacity", 0.2f);
 	glset.drawArrays(paintingSquare, false);
-	glset.uniform1f(commonData.program, "uiOpacity", 0.5f);
+	glset.uniform1f(renderPrograms.program, "uiOpacity", 0.5f);
 
-	glset.uniform1i(commonData.program, "drawBrushIndicator", 0);
+	glset.uniform1i(renderPrograms.program, "drawBrushIndicator", 0);
 }
 
 //------------isColorBoxValueChanged------------
@@ -620,7 +668,6 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 	};
 
 	Texture txtr;
-	CommonData commonData;
 
     //Send the texture to the undoTextures vector before updating the texture
 	GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, 1080, 1080, 3);
@@ -635,9 +682,9 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 
     GlSet gl;
 	//Setup
-	gl.uniform1i(commonData.program, "isTwoDimensional", 0);
-	gl.uniform1i(commonData.program, "isRenderTextureMode", 1);
-	gl.uniform1i(commonData.program, "isRenderTextureModeV", 1);
+	gl.uniform1i(renderPrograms.program, "isTwoDimensional", 0);
+	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 1);
+	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 1);
 	gl.viewport(1920, 1080);
 	gl.bindFramebuffer(FBOScreen);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -658,15 +705,15 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 	txtr.refreshScreenDrawingTexture();
 
 	//Render uv mask
-	gl.uniform1i(commonData.program, "whiteRendering", 1);
+	gl.uniform1i(renderPrograms.program, "whiteRendering", 1);
 	renderTexture(vertices,1080, 1080,GL_TEXTURE7);
-	gl.uniform1i(commonData.program, "whiteRendering", 0);
+	gl.uniform1i(renderPrograms.program, "whiteRendering", 0);
 	//Render uv mask
 
 	//interpret the albedo with ui mask texture
-	gl.uniform1i(commonData.program, "interpretWithUvMask", 1);
+	gl.uniform1i(renderPrograms.program, "interpretWithUvMask", 1);
 	renderTexture(renderVertices,1080, 1080,GL_TEXTURE0);//Render enlarged texture
-	gl.uniform1i(commonData.program, "interpretWithUvMask", 0);
+	gl.uniform1i(renderPrograms.program, "interpretWithUvMask", 0);
 	//interpret the albedo with ui mask texture
 
 	//Download enlarged texture
@@ -677,8 +724,8 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Finish
-	gl.uniform1i(commonData.program, "isRenderTextureModeV", 0);
-	gl.uniform1i(commonData.program, "isRenderTextureMode", 0);
+	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 0);
+	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 0);
 	gl.bindFramebuffer(0);
 	gl.viewport(screenSizeX, screenSizeY);
 	//Finish
@@ -706,27 +753,26 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 	};
 
     GlSet gl;
-	CommonData commonData;
 	//Setup
 	gl.viewport(1920, 1080);
-	gl.uniform1i(commonData.program, "isRenderTextureModeV", 1);
-	gl.uniform1i(commonData.program, "isRenderTextureMode", 1);
+	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 1);
+	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 1);
 	gl.bindFramebuffer(FBOScreen);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//Setup
 
 	//Render color box
 	GLubyte* colorBoxPixel = new GLubyte[1 * 1 * 3];//Color val
-	gl.uniform1i(commonData.program, "isColorBox", 1);
+	gl.uniform1i(renderPrograms.program, "isColorBox", 1);
 	gl.drawArrays(colorBox, false); //Render Model
-	gl.uniform1i(commonData.program, "isColorBox", 0);
+	gl.uniform1i(renderPrograms.program, "isColorBox", 0);
 	glReadPixels(1080 - ((colorBoxPickerValue_x * -1.0f + 0.1f) * 5.0f * 1080), (colorBoxPickerValue_y + 0.2f) * 2.5f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorBoxPixel);
-	gl.uniform3f(commonData.program, "drawColor", colorBoxPixel[0] / 255.0f, colorBoxPixel[1] / 255.0f, colorBoxPixel[2] / 255.0f);
+	gl.uniform3f(renderPrograms.program, "drawColor", colorBoxPixel[0] / 255.0f, colorBoxPixel[1] / 255.0f, colorBoxPixel[2] / 255.0f);
 	//Render color box
 
 	//Finish
-	gl.uniform1i(commonData.program, "isRenderTextureMode", 0);
-	gl.uniform1i(commonData.program, "isRenderTextureModeV", 0);
+	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 0);
+	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 0);
 	gl.bindFramebuffer(0);
 	gl.viewport(screenSizeX, screenSizeY);
 
@@ -745,7 +791,6 @@ glm::vec3 colorBoxVal = glm::vec3(0);
 RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal) {
 	GlSet gls;
 	UserInterface ui;
-	CommonData commonData;
 	ColorData colorData;
 	Utilities util;
 	Texture txtr;
@@ -786,58 +831,7 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 		renderTextures(FBOScreen,vertices,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName);
 	}
 
-	glUseProgram(6);
-
-	glDepthMask(GL_FALSE);
-	glDepthFunc(GL_LEQUAL);
-
-	std::vector<float> skyboxVertices = {
-	    // positions          
-	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f,  1.0f ,0,0,  0,0,0
-	};
-
-	gls.drawArrays(skyboxVertices,false);
-	glDepthFunc(GL_LESS);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glDepthMask(GL_TRUE);
-	
-	glUseProgram(3);
-	
+	renderSkyBox();
 	renderModel(renderData.backfaceCulling,vertices);
 	drawAxisPointer();
 
@@ -865,4 +859,7 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	renderOut.maskPanelMaskHover = uiOut.maskPanelMaskHover;
 	renderOut.currentBrushMaskTxtr = uiOut.currentBrushMaskTxtr;
 	return renderOut;
+}
+void Render::sendProgramsToRender(Programs apprenderPrograms){
+	renderPrograms = apprenderPrograms;
 }

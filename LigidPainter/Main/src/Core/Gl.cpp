@@ -16,6 +16,9 @@
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
+
+Programs glPrograms;
+
 void GlSet::drawArrays(std::vector<float> &vertices,bool isLine) {
 	if (!isLine) {
 		glBufferSubData(GL_ARRAY_BUFFER,0,vertices.size() * sizeof(float), &vertices[0]);
@@ -27,36 +30,33 @@ void GlSet::drawArrays(std::vector<float> &vertices,bool isLine) {
 	}
 }
 void GlSet::uiDataToShaders(glm::vec3 color) {
-	CommonData cmnd;
-	int isAxisPointerLoc = glGetUniformLocation(cmnd.program, "isAxisPointer");
+	int isAxisPointerLoc = glGetUniformLocation(glPrograms.program, "isAxisPointer");
 	glUniform1i(isAxisPointerLoc, 0);
-	int isTwoDimensionalLoc = glGetUniformLocation(cmnd.program, "isTwoDimensional");
+	int isTwoDimensionalLoc = glGetUniformLocation(glPrograms.program, "isTwoDimensional");
 	glUniform1i(isTwoDimensionalLoc, 1);
-	int uiColorLoc = glGetUniformLocation(cmnd.program, "uiColor");
+	int uiColorLoc = glGetUniformLocation(glPrograms.program, "uiColor");
 	glUniform3f(uiColorLoc, color.x, color.y, color.z);
-	int is2DLoc = glGetUniformLocation(cmnd.program, "is2D");
+	int is2DLoc = glGetUniformLocation(glPrograms.program, "is2D");
 	glUniform1i(is2DLoc, 1);
 }
 void GlSet::meshDataToShaders() {
-	CommonData cmnd;
-	int isAxisPointerLoc = glGetUniformLocation(cmnd.program, "isAxisPointer");
+	int isAxisPointerLoc = glGetUniformLocation(glPrograms.program, "isAxisPointer");
 	glUniform1i(isAxisPointerLoc, 0);
-	int isTwoDimensionalLoc = glGetUniformLocation(cmnd.program, "isTwoDimensional");
+	int isTwoDimensionalLoc = glGetUniformLocation(glPrograms.program, "isTwoDimensional");
 	glUniform1i(isTwoDimensionalLoc, 0);
-	int is2DLoc = glGetUniformLocation(cmnd.program, "is2D");
+	int is2DLoc = glGetUniformLocation(glPrograms.program, "is2D");
 	glUniform1i(is2DLoc, 0);
-	int isLightSourceLoc = glGetUniformLocation(cmnd.program, "isLightSource");
+	int isLightSourceLoc = glGetUniformLocation(glPrograms.program, "isLightSource");
 	glUniform1i(isLightSourceLoc, 0);
 }
 void GlSet::axisPointerDataToShaders() {
-	CommonData cmnd;
-	int isAxisPointerLoc = glGetUniformLocation(cmnd.program, "isAxisPointer");
+	int isAxisPointerLoc = glGetUniformLocation(glPrograms.program, "isAxisPointer");
 	glUniform1i(isAxisPointerLoc, 1);
-	int isTwoDimensionalLoc = glGetUniformLocation(cmnd.program, "isTwoDimensional");
+	int isTwoDimensionalLoc = glGetUniformLocation(glPrograms.program, "isTwoDimensional");
 	glUniform1i(isTwoDimensionalLoc, 0);
-	int is2DLoc = glGetUniformLocation(cmnd.program, "is2D");
+	int is2DLoc = glGetUniformLocation(glPrograms.program, "is2D");
 	glUniform1i(is2DLoc, 0);
-	int isLightSourceLoc = glGetUniformLocation(cmnd.program, "isLightSource");
+	int isLightSourceLoc = glGetUniformLocation(glPrograms.program, "isLightSource");
 	glUniform1i(isLightSourceLoc, 0);
 }
 void GlSet::bindFramebuffer(unsigned int FBO) {
@@ -153,8 +153,7 @@ unsigned int createShader(const char* path,unsigned int shaderType){
 	testShader(shader);
 	return shader;
 }
-void GlSet::getProgram() {//Prepare shader program | Usen once
-	CommonData cmnd;
+Programs GlSet::getProgram() {//Prepare shader program | Usen once
 	Utilities utilities;
 
 	//Main Program
@@ -211,7 +210,12 @@ void GlSet::getProgram() {//Prepare shader program | Usen once
 	glDeleteShader(iconsVert);
 	glDeleteShader(iconsFrag);
 
-	std::cout << iconsProgram << '\n';
+	glPrograms.blurProgram = blurProgram;
+	glPrograms.iconsProgram = iconsProgram;
+	glPrograms.program = program;
+	glPrograms.skyboxProgram = skyboxProgram;
+
+	return glPrograms;
 }
 //------------Shaders------------
 unsigned int GlSet::createScreenFrameBufferObject() {

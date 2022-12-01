@@ -107,5 +107,7 @@ public:
 	void updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirrorX,bool mirrorY,bool mirrorZ);
 	void getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos); //Not used
 	void drawLightObject(glm::vec3 lightPos);
+	void renderSkyBox();
+	void sendProgramsToRender(Programs appPrograms);
 };
 #endif // !RGDRENDER_H

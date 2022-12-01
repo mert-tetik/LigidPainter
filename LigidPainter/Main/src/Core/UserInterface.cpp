@@ -13,6 +13,7 @@
 #include "UserInterface.h"
 #include "gl.h"
 #include "Texture.h"
+#include "Render.h"
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -20,6 +21,8 @@
 #include <map>
 
 #include FT_FREETYPE_H 
+
+Programs uiPrograms;
 
 ColorData colorD;
 
@@ -55,11 +58,10 @@ void UserInterface::panel(float panelLoc, float) {
 		panelLoc - 1.0f + 0.006f,-1.0f,0,0,0,0,0,0,
 		panelLoc - 1.0f ,-1.0f,0,0,0,0,0,0
 	};
-	CommonData commonData;
 	glm::vec3 blankVal = glm::vec3(0);
 	glset.uiDataToShaders(colorD.panelHoldColor);
-	glset.uniform3fv(commonData.program, "uiTransitionColor", blankVal);
-	glset.uniform1f(commonData.program, "uiTransitionMixVal", 0);
+	glset.uniform3fv(uiPrograms.program, "uiTransitionColor", blankVal);
+	glset.uniform1f(uiPrograms.program, "uiTransitionMixVal", 0);
 	glset.drawArrays(panelHoldCoor, false);
 	glset.uiDataToShaders(colorD.panelColor);
 	glset.drawArrays(panelCoor, false);
@@ -105,14 +107,14 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 	GlSet glset;
 	ColorData clrData;
 
-	glUseProgram(12);
+	glUseProgram(uiPrograms.iconsProgram);
 	glset.uniform3fv(12,"iconColor",clrData.iconColor);
 	glset.uniform3fv(12,"iconColorHover",clrData.iconColorHover);
 	glset.uniform1f(12,"iconMixVal",mixVal);
 	glset.activeTexture(GL_TEXTURE6);
 	glset.bindTexture(icon);
 	glset.drawArrays(buttonCoorSq,false);
-	glUseProgram(3);
+	glUseProgram(uiPrograms.program);
 }
 
 void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec3 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec3 colorTransitionColor, float mixVal) {
@@ -123,7 +125,6 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	//buttonCurveReduce = 10000 to get a square
 
 	//parameter z = position_z
-	CommonData commonData;
 	GlSet glset;
 
 	//std::vector<float> buttonCoorSq{
@@ -188,22 +189,22 @@ void UserInterface::box(float width, float height, float position_x, float posit
 		  position_x + -width - 0.08651f / buttonCurveReduce,position_y + height / 1.29802f, z, 0, 0.874506, 0, 0, 1,//L / 2
 	};
 
-	glset.uniform1i(commonData.program,"isUiTextureUsed",isMaskImageBox);
+	glset.uniform1i(uiPrograms.program,"isUiTextureUsed",isMaskImageBox);
 
-	glset.uniform3fv(commonData.program,"uiColor",color);
-	glset.uniform3fv(commonData.program, "uiTransitionColor", colorTransitionColor);
-	glset.uniform1f(commonData.program, "uiTransitionMixVal", mixVal);
+	glset.uniform3fv(uiPrograms.program,"uiColor",color);
+	glset.uniform3fv(uiPrograms.program, "uiTransitionColor", colorTransitionColor);
+	glset.uniform1f(uiPrograms.program, "uiTransitionMixVal", mixVal);
 
 	//glset.uiDataToShaders(glm::vec3(color.x, color.y, color.z));
 	glset.drawArrays(buttonCoor, false);
 
 	if (!isTextBox) {
-		renderText(commonData.program, text, position_x -textRatio, position_y - 0.01, 0.00022f);
+		renderText(uiPrograms.program, text, position_x -textRatio, position_y - 0.01, 0.00022f);
 	}
 	else {
-		renderText(commonData.program, text, -width + position_x, position_y - 0.01, 0.00022f);
+		renderText(uiPrograms.program, text, -width + position_x, position_y - 0.01, 0.00022f);
 	}
-	glset.uniform1i(commonData.program, "isUiTextureUsed", 0);
+	glset.uniform1i(uiPrograms.program, "isUiTextureUsed", 0);
 }
 void UserInterface::colorBox(float position_x, float position_y,float valueX, float valueY) {
 	ColorData colorData;
@@ -222,10 +223,9 @@ void UserInterface::colorBox(float position_x, float position_y,float valueX, fl
 	box(0.0f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 0.9f, 18,glm::vec3(0),0);
 
 	GlSet glset;
-	CommonData commonData;
-	glset.uniform1i(commonData.program,"isColorBox",1);
+	glset.uniform1i(uiPrograms.program,"isColorBox",1);
 	glset.drawArrays(boxCoor,false);
-	glset.uniform1i(commonData.program, "isColorBox", 0);
+	glset.uniform1i(uiPrograms.program, "isColorBox", 0);
 
 }
 void UserInterface::colorRect(float position_x, float position_y,float value,unsigned int FBO,GLFWwindow* window) { //Changing colorBox value will be once the value changed
@@ -282,45 +282,44 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 	};
 
 	GlSet glset;
-	CommonData commonData;
 	ColorData colorData;
 
 	//Render color rectangle into the screen to get the value
 	glset.viewport(1920, 1080);
-	glset.uniform1i(commonData.program, "isRenderTextureModeV", 1);
-	glset.uniform1i(commonData.program, "isRenderTextureMode", 1);
-	glset.uniform1i(commonData.program, "isTwoDimensional", 0);
+	glset.uniform1i(uiPrograms.program, "isRenderTextureModeV", 1);
+	glset.uniform1i(uiPrograms.program, "isRenderTextureMode", 1);
+	glset.uniform1i(uiPrograms.program, "isTwoDimensional", 0);
 	glset.bindFramebuffer(FBO);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	GLubyte* colorRectPixel = new GLubyte[1 * 1 * 3];//Color value
-	glset.uniform1i(commonData.program, "isColorBox", 1);
-	glset.uniform1i(commonData.program, "isRect", 1);
+	glset.uniform1i(uiPrograms.program, "isColorBox", 1);
+	glset.uniform1i(uiPrograms.program, "isRect", 1);
 	glset.drawArrays(boxCoor, false); //Render Model
-	glset.uniform1i(commonData.program, "isRect", 1);
-	glset.uniform1i(commonData.program, "isColorBox", 0);
+	glset.uniform1i(uiPrograms.program, "isRect", 1);
+	glset.uniform1i(uiPrograms.program, "isColorBox", 0);
 	glReadPixels(10, (value + 0.2f) * 2.5f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
 	//Render color rectangle into the screen to get the value
 
 	//Finish
-	glset.uniform1i(commonData.program, "isRenderTextureMode", 0);
-	glset.uniform1i(commonData.program, "isRenderTextureModeV", 0);
-	glset.uniform1i(commonData.program, "isTwoDimensional", 1);
+	glset.uniform1i(uiPrograms.program, "isRenderTextureMode", 0);
+	glset.uniform1i(uiPrograms.program, "isRenderTextureModeV", 0);
+	glset.uniform1i(uiPrograms.program, "isTwoDimensional", 1);
 	glset.bindFramebuffer(0);
 	int screenSizeX;
 	int screenSizeY;
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
 	glset.viewport(screenSizeX, screenSizeY);
-	glset.uniform3f(commonData.program, "boxColor", colorRectPixel[0] / 255.0f, colorRectPixel[1] / 255.0f, colorRectPixel[2] / 255.0f);
+	glset.uniform3f(uiPrograms.program, "boxColor", colorRectPixel[0] / 255.0f, colorRectPixel[1] / 255.0f, colorRectPixel[2] / 255.0f);
 	delete(colorRectPixel);
 	//Finish
 
 	box(0.01f, 0.005f, position_x, position_y + value, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 10000, glm::vec3(0), 0); //Value indicator
 
-	glset.uniform1i(commonData.program, "isColorBox", 1);
-	glset.uniform1i(commonData.program, "isRect", 1);
+	glset.uniform1i(uiPrograms.program, "isColorBox", 1);
+	glset.uniform1i(uiPrograms.program, "isRect", 1);
 	glset.drawArrays(boxCoor, false); //Render color rectangle displayer
-	glset.uniform1i(commonData.program, "isColorBox", 0);
-	glset.uniform1i(commonData.program, "isRect", 0);
+	glset.uniform1i(uiPrograms.program, "isColorBox", 0);
+	glset.uniform1i(uiPrograms.program, "isRect", 0);
 }
 void UserInterface::rangeBar(float position_x, float position_y,float value) {
 	ColorData colorData;
@@ -376,7 +375,6 @@ bool UserInterface::isMouseOnPanelChangeButton(GLFWwindow* window, float positio
 		-0.025f + position_x, -0.02f + position_y, 0.9f,0,0,0,0,0,  // bottom left
 		-0.025f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0  // top left
 	};
-	CommonData commonData;
 	//glfwGetWindowSize();
 	int screenSizeX;
 	int screenSizeY;
@@ -413,7 +411,6 @@ bool UserInterface::isMouseOnPanelChangeButton(GLFWwindow* window, float positio
 	//Barycentric calculations
 }
 void UserInterface::checkBox(float position_x, float position_y, std::string text, glm::vec3 color,bool mouseHover,bool checked) {
-	CommonData commonData;
 	ColorData colorData;
 	if (!checked) {
 		if (!mouseHover)
@@ -425,7 +422,7 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 		box(0.0f, 0.02f, position_x, position_y, "", glm::vec3(1.0f) - colorData.checkBoxColor, 0.00022f, false, false, 0.9f, 10, glm::vec3(0), 0);
 
 	}
-	renderText(commonData.program, text, position_x+0.02f, position_y - 0.01, 0.00022f);
+	renderText(uiPrograms.program, text, position_x+0.02f, position_y - 0.01, 0.00022f);
 }
 bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height, float position_x, float position_y,int mouseXpos, int mouseYpos,bool isPanelMoving){ //Return true if mouse hover on the given coordinates
 	std::vector<float> buttonCoor{
@@ -665,4 +662,8 @@ Icons UserInterface::loadIcons(){
 	icons.Painting = txtr.getTexture("LigidPainter/Resources/Icons/Painting.jpg",0,0,false);
 
 	return icons;
+}
+
+void UserInterface::sendProgramsToUserInterface(Programs appuiPrograms){
+	uiPrograms = appuiPrograms;
 }

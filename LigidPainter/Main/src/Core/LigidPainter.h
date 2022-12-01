@@ -2,8 +2,12 @@
 #define LSHPAPP_H
 #include <vector>
 
-struct CommonData {
-	unsigned int program = 3;
+struct Programs
+{
+	unsigned int program;
+	unsigned int skyboxProgram;
+	unsigned int blurProgram;
+	unsigned int iconsProgram;
 };
 struct Icons{
 	unsigned int dropperIcon;

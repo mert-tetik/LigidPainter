@@ -64,8 +64,6 @@ uniform int whiteRendering;
 uniform sampler2D uvMask;
 uniform int interpretWithUvMask;
 
-uniform int isMaskPanelDisplay;
-
 
 uniform samplerCube skybox;
 

@@ -27,5 +27,7 @@ public:
 	void refreshScreenDrawingTexture();
 	GLubyte* updateMaskTexture(unsigned int FBOScreen, unsigned int screenSize_x, unsigned int screenSize_y, float brushRotationRangeBarValue,bool renderTiny);
 	InitializedTextures initTextures(const char* maskTexturePath);
+	void sendProgramsToTextures(Programs appPrograms);
+
 };
 #endif

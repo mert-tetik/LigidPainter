@@ -1,6 +1,9 @@
 #ifndef LGDGL_H
 #define LGDGL_H
 
+
+	
+
 class GlSet {
 public:
 	void drawArrays(std::vector<float>& vertices, bool isLine);
@@ -33,7 +36,7 @@ public:
 	void disable(unsigned int target);
 	void viewport(int width, int height);
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
-	void getProgram();
+	Programs getProgram();
 
 	GLFWwindow* GlSet::getWindow();
 	unsigned int createScreenFrameBufferObject();

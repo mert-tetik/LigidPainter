@@ -35,9 +35,8 @@ GLubyte* renderedImage;
 double lastMouseXPosIn = 0;
 double lastMouseYPosIn = 0;
 
-void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal) {
+void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs programs) {
 	Texture texture;
-	CommonData commonData;
 	Render render;
 
 	double mouseXposIn;
@@ -137,10 +136,10 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 		glset.viewport(1920, 1080);
 		glset.bindFramebuffer(FBOScreen);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glset.uniform1i(commonData.program, "isTwoDimensional", 0);
-		glset.uniform1i(commonData.program, "isRenderTextureMode", 1);
-		glset.uniform1i(commonData.program, "isRenderScreenMaskMode", 1);
-		glset.uniform1i(commonData.program, "isRenderTextureModeV", 1);
+		glset.uniform1i(programs.program, "isTwoDimensional", 0);
+		glset.uniform1i(programs.program, "isRenderTextureMode", 1);
+		glset.uniform1i(programs.program, "isRenderScreenMaskMode", 1);
+		glset.uniform1i(programs.program, "isRenderTextureModeV", 1);
 		//setup
 
 		//Get texture
@@ -148,9 +147,9 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 		//Get texture
 
 		//Finish
-		glset.uniform1i(commonData.program, "isRenderTextureModeV", 0);
-		glset.uniform1i(commonData.program, "isRenderTextureMode", 0);
-		glset.uniform1i(commonData.program, "isRenderScreenMaskMode", 0);
+		glset.uniform1i(programs.program, "isRenderTextureModeV", 0);
+		glset.uniform1i(programs.program, "isRenderTextureMode", 0);
+		glset.uniform1i(programs.program, "isRenderScreenMaskMode", 0);
 		//Finish
 		//Update mirrored screen mask texture
 		}
