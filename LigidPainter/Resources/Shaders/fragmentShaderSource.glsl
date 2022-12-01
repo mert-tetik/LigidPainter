@@ -1,5 +1,11 @@
 #version 330 core
 
+
+
+
+
+
+
 struct Material {
    sampler2D diffuse;
    sampler2D specular; //Not used
@@ -67,15 +73,19 @@ uniform int interpretWithUvMask;
 
 uniform samplerCube skybox;
 
+
+
 float far = 10.0f;
 float near = 0.1f;
+float linearizeDepth(float depth){
+   return (2.0 * near * far) / (far + near -(depth * 2.0 - 1.0) *(far-near));
+}
+
 float rand(vec2 co)
 {
     return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
-float linearizeDepth(float depth){
-   return (2.0 * near * far) / (far + near -(depth * 2.0 - 1.0) *(far-near));
-}
+
 
 bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMirrored is true
    float drawZ;
@@ -86,11 +96,20 @@ bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMir
       drawZ = texture2D(mirroredDepthTexture, uv.xy).b; 
    }
 
-   return abs(drawZ - linearizeDepth(uv.z)/far) < 0.005;
+   vec3 direction = viewPos - Pos;
+   float dotProd = dot(normalize(direction),normalize(Normal));
+
+   if(dotProd < 0.2){
+      return false;
+   }  
+   else{
+      return abs(drawZ - linearizeDepth(uv.z)/far) < 0.005;
+   }
 }
 
-void main() {
-   //Painting
+
+vec3 getPaintedDiffuse(){
+      //Painting
    vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
    vec3 mirroredScreenPos = mirroredProjectedPos.xyz / mirroredProjectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
 
@@ -115,13 +134,18 @@ void main() {
    else{
       mirroredDiffuseDrawMix = diffuseDrawMix;
    }
-   vec3 ambient = vec3(0.7, 0.7, 0.7) * mirroredDiffuseDrawMix;
+   
+   return mirroredDiffuseDrawMix;
+}
 
-    // diffuse 
+vec3 getRealisticResult(vec3 paintedDiffuse){
+   vec3 ambient = vec3(0.7, 0.7, 0.7) * paintedDiffuse;
+
+   // diffuse 
    vec3 norm = normalize(Normal);
    vec3 lightDir = normalize(lightPos - FragPos);
    float diff = max(dot(norm, lightDir), 0.0);
-   vec3 diffuse = vec3(1.0f, 1.0f, 1.0f) * diff * mirroredDiffuseDrawMix;
+   vec3 diffuse = vec3(1.0f, 1.0f, 1.0f) * diff * paintedDiffuse;
 
     // specular
    vec3 viewDir = normalize(viewPos - FragPos);
@@ -129,11 +153,14 @@ void main() {
    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
    vec3 specular = lightColor * spec * vec3(texture(material.specular, TexCoords));
 
-   //Color box
-   vec3 interpretedColorWhite = ((vec3(1.0)-boxColor) * vec3(TexCoords.x)) + boxColor;
-   vec3 interpretedColorBlack = vec3(TexCoords.y)*interpretedColorWhite;
-
    vec3 result = ambient + diffuse + specular;
+
+   return result;
+}
+
+void main() {
+   //Color box
+
       if(isRenderTextureMode == 0) {
       if(isColorBox == 0) {
          if(isTextF == 0) {
@@ -147,6 +174,8 @@ void main() {
                   {
                      float roughness = 1.0;
                      //3D model here
+                     vec3 paintedDiffuse = getPaintedDiffuse();
+                     vec3 result = getRealisticResult(paintedDiffuse);
                      vec3 I = normalize(Pos - viewPos);
                      vec3 R = reflect(I, normalize(mix(vec3(rand(vec2(roughness)),rand(vec2(roughness)),rand(vec2(roughness))),Normal,1-roughness)));
                      vec4 resColor = vec4(result, 1);
@@ -192,6 +221,8 @@ void main() {
          if(isRect == 0)
          {
             //Color box here
+            vec3 interpretedColorWhite = ((vec3(1.0)-boxColor) * vec3(TexCoords.x)) + boxColor;
+            vec3 interpretedColorBlack = vec3(TexCoords.y)*interpretedColorWhite;
             color = vec4(interpretedColorBlack,1);
          }
          else
@@ -218,6 +249,8 @@ void main() {
             else if(isColorBox == 1 && isRect == 0)
             {
                //Color box texture rendering here
+               vec3 interpretedColorWhite = ((vec3(1.0)-boxColor) * vec3(TexCoords.x)) + boxColor;
+               vec3 interpretedColorBlack = vec3(TexCoords.y)*interpretedColorWhite;
                color = vec4(interpretedColorBlack,1);
             }
             else
@@ -237,7 +270,8 @@ void main() {
                   //Diffuse result here
                   if(interpretWithUvMask == 0){
                      if(whiteRendering == 0){
-                        color = vec4(mirroredDiffuseDrawMix, 1);
+                        vec3 paintedDiffuse = getPaintedDiffuse();
+                        color = vec4(paintedDiffuse, 1);
                      }
                      else{
                         color = vec4(1);
