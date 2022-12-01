@@ -73,6 +73,8 @@ string exportFolder = "Choose Destination Path";
 string exportFileName = "LP_Export";
 //Paths
 
+string colorpickerHexVal = "";
+
 string modelName;
 vector<float> vertices = { 0 };
 
@@ -127,6 +129,7 @@ bool addMaskTextureButtonPressed = false;
 bool exportDownloadButtonPressed = false;
 bool paintingDropperPressed = false;
 bool exportFileNameTextBoxPressed = false;
+bool hexValTextboxPressed = false;
 bool colorBoxPickerButtonPressed = false;
 
 //Used to let mouse callback function know if it's supposed to change range bar values
@@ -419,8 +422,11 @@ bool LigidPainter::run()
 		}
 		textureDemonstratorButtonPosChanged = false;
 
-		if ((glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS) && !callbackData.exportFileNameTextBoxEnter){
-			exportFileNameTextBoxPressed = false;
+		if ((glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS)){
+			if(!callbackData.exportFileNameTextBoxEnter)
+				exportFileNameTextBoxPressed = false;
+			if(!callbackData.hexValueTextboxEnter)
+				hexValTextboxPressed = false;
 		}
 
 		uiActData = uiAct.uiActions(window,callbackData,textureDemonstratorBoundariesHover);
@@ -467,6 +473,7 @@ bool LigidPainter::run()
 		charPressCounter++;
 		if(glfwGetKey(window,pressedChar) && (charPressCounter % charPressingSensivity == 0 || pressedCharChanged)){
 			if(exportFileNameTextBoxPressed){
+				//Move to a function
 				if(pressedChar == 32){
 					exportFileName += ' ';
 				}
@@ -482,17 +489,39 @@ bool LigidPainter::run()
 					exportFileName+=(char)(pressedChar);//lowercase
 				}
 			}
+			if(hexValTextboxPressed){
+				if(pressedChar == 32){
+					colorpickerHexVal += ' ';
+				}
+				else if(isalpha((char)pressedChar)){
+					if(!caps){
+						colorpickerHexVal+=(char)pressedChar+32;//lowercase
+					}
+					else{
+						colorpickerHexVal+=(char)pressedChar;//UPPERCASE
+					}
+				}
+				else if(isdigit((char)pressedChar)){
+					colorpickerHexVal+=(char)(pressedChar);//lowercase
+				}
+			}
 			charPressCounter = 0;
 			pressedCharChanged = false;
 		}
-		if(glfwGetKey(window,GLFW_KEY_BACKSPACE) && (charPressCounter % charPressingSensivity == 0|| pressedCharChanged) && exportFileNameTextBoxPressed && exportFileName != ""){
-			exportFileName.pop_back();
+
+		if(glfwGetKey(window,GLFW_KEY_BACKSPACE) && (charPressCounter % charPressingSensivity == 0|| pressedCharChanged)){
+			if(exportFileNameTextBoxPressed && exportFileName != ""){
+				exportFileName.pop_back();
+			}
+			if(hexValTextboxPressed && colorpickerHexVal != ""){
+				colorpickerHexVal.pop_back();
+			}
 			pressedCharChanged = false;
 		}
 
 		
 		//Render
-		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,maskTextures);
+		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,maskTextures,colorpickerHexVal);
 
 
 		//Update brush mask texture file's name once the brush mask texture changed
@@ -1117,7 +1146,9 @@ void LigidPainter::maskPanelSlider(float yOffset,int screenSizeY){
 	maskPanelSliderValue += yOffset / (screenSizeY / 2);
 	maskPanelSliderValue = util.restrictBetween(maskPanelSliderValue, 0.0f, -0.25f);//Keep in boundaries
 }
-
+void LigidPainter::hexValTextbox(){
+	hexValTextboxPressed = true;
+}
 
 
 

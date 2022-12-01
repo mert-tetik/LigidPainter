@@ -73,6 +73,7 @@ bool paintingFillNumericModifierNEnter;
 bool colorBoxEnter;
 bool maskPanelSliderEnter;
 bool maskPanelEnter;
+bool hexValueTextboxEnter;
 //Ui enter
 
 
@@ -133,6 +134,8 @@ CallbckData preapareCallbackData() {
 
 	callbk.maskPanelSliderEnter = maskPanelSliderEnter;
 	callbk.maskPanelEnter = maskPanelEnter;
+
+	callbk.hexValueTextboxEnter = hexValueTextboxEnter;
 
 	return callbk;
 }
@@ -321,6 +324,8 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 
 		maskPanelSliderEnter = ui.isMouseOnButton(window, 0.01f, 0.015f, panelLoc / centerDivider + centerSum + 0.13f, 0.8f + maskPanelSliderValue, mouseXPos, mouseYPos, movePanel);
 		maskPanelEnter = ui.isMouseOnButton(window, 0.15f, 0.15f, panelLoc / centerDivider + centerSum, 0.675f, mouseXPos, mouseYPos, movePanel);
+
+		hexValueTextboxEnter =  ui.isMouseOnButton(window, 0.04f, 0.03f, panelLoc / centerDivider + centerSum,-0.86f, mouseXPos, mouseYPos, movePanel);
 	}
 	else {
 		addMaskTextureButtonEnter = false;
@@ -348,6 +353,8 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 
 		maskPanelSliderEnter = false;
 		maskPanelEnter = false;
+
+		hexValueTextboxEnter = false;
 	}
 	if (panelData.exportPanelActive) {
 		exportPathTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / centerDivider + centerSum, 0.6f, mouseXPos, mouseYPos, movePanel);
@@ -439,6 +446,9 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if(brushMaskPanelMaskHover){
+		glfwSetCursor(window, pointerCursor);
+	}
+	else if(hexValueTextboxEnter){
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if (!panelChangeHover){

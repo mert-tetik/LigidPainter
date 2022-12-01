@@ -102,6 +102,7 @@ public:
 	void exportFileNameTextBox();
 	void colorBox();
 	void maskPanelSlider(float yOffset,int screenSizeY);
+	void hexValTextbox();
 };
 struct PanelData {
 	bool movePanel;

@@ -119,7 +119,7 @@ float maskYpos = 0.0f;
 
 unsigned int currentBrushMaskTexture;
 
-RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY) {
+RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,std::string colorpickerHexVal) {
 	ColorData colorData;
 	CommonData commonData;
 	glm::mat4 projection;
@@ -339,8 +339,8 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		gl.uniform1f(commonData.program, "uiOpacity", 0.5f);
 		ui.decorationSquare(renderData.panelLoc / centerDivider + centerSum - 0.1f, -0.84f); //Decoration for color indicator
 
-		ui.renderText(commonData.program, util.rgbToHexGenerator(colorBoxValue), renderData.panelLoc / centerDivider + centerSum - 0.05f, -0.86f, 0.00022f); //Hex value of the picken color 
-		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum + 0.05f, -0.86f,0.9,icons.dropperIcon,dropperMixVal);
+		ui.box(0.04f, 0.03f, renderData.panelLoc / centerDivider + centerSum - 0.0f,-0.86f, util.rgbToHexGenerator(colorBoxValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0);//Hex val textbox
+		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum + 0.08f, -0.86f,0.9,icons.dropperIcon,dropperMixVal);
 	}
 
 	if (panelData.exportPanelActive) {
@@ -742,7 +742,7 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 
 int renderDepthCounter = 0;
 glm::vec3 colorBoxVal = glm::vec3(0);
-RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures) {
+RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal) {
 	GlSet gls;
 	UserInterface ui;
 	CommonData commonData;
@@ -842,7 +842,7 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	drawAxisPointer();
 
 	RenderOutData uiOut;
-	uiOut = renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY);
+	uiOut = renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,colorpickerHexVal);
 
 	if (colorBoxValChanged) { //Get value of color box
 		colorBoxVal = getColorBoxValue(FBOScreen, lastColorBoxPickerValue_x, lastColorBoxPickerValue_y,screenSizeX, screenSizeY);
