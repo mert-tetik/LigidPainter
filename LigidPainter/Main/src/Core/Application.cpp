@@ -341,7 +341,11 @@ bool LigidPainter::run()
 	glset.uniform3fv(commonData.program,"textColor",colorData.textColor);
 	glset.uniform1i(commonData.program, "material.diffuse", 0);
 	glset.uniform1i(commonData.program, "material.specular", 1);
-	glset.uniform1f(commonData.program, "brushBlurVal", 1000);
+
+	glUseProgram(9);
+	glset.uniform1f(9, "brushBlurVal", 1000);
+	glUseProgram(3);
+
 	glset.uniform1i(commonData.program, "modifiedMaskTexture", 12);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
@@ -829,10 +833,14 @@ void LigidPainter::brushBlurRangeBar(float xOffset,int width,int height) {
 	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue,true);
 
 	if (242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 15 > 200){ //If the range bar value is low enough disable blur effect
-		glset.uniform1f(3, "brushBlurVal", 1000);
+		glUseProgram(9);
+		glset.uniform1f(9, "brushBlurVal", 1000);
+		glUseProgram(3);
 	}
 	else {
-		glset.uniform1f(3, "brushBlurVal", 242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 15);
+		glUseProgram(9);
+		glset.uniform1f(9, "brushBlurVal", 242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 15);
+		glUseProgram(3);
 	}
 }
 void LigidPainter::textureDemonstratorButton(float xOffset,float yOffset,int width,int height) {

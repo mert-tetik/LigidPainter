@@ -30,8 +30,6 @@ uniform int isRenderTextureMode;
 uniform int renderDepth;
 uniform int renderMirroredDepth;
 uniform int renderMaskBrush;
-uniform int renderMaskBrushBlury;
-in vec2 blurTextureCoords[11];
 
 
 uniform int isTextF;
@@ -215,27 +213,8 @@ void main() {
       if(isRenderScreenMaskMode == 0){
          if(renderMaskBrush == 1)
          {
-            if(renderMaskBrushBlury == 1)
-            {
-               //Blury mask texture here
-               color = vec4(0.0);
-               color += texture(modifiedMaskTexture, blurTextureCoords[0]) * 0.0093;
-               color += texture(modifiedMaskTexture, blurTextureCoords[1]) * 0.028002;
-               color += texture(modifiedMaskTexture, blurTextureCoords[2]) * 0.065984;
-               color += texture(modifiedMaskTexture, blurTextureCoords[3]) * 0.121703;
-               color += texture(modifiedMaskTexture, blurTextureCoords[4]) * 0.175713;
-               color += texture(modifiedMaskTexture, blurTextureCoords[5]) * 0.198596;
-               color += texture(modifiedMaskTexture, blurTextureCoords[6]) * 0.175713;
-               color += texture(modifiedMaskTexture, blurTextureCoords[7]) * 0.121703;
-               color += texture(modifiedMaskTexture, blurTextureCoords[8]) * 0.065984;
-               color += texture(modifiedMaskTexture, blurTextureCoords[9]) * 0.028002;
-               color += texture(modifiedMaskTexture, blurTextureCoords[10]) * 0.0093;
-            }
-            else
-            {
-               //Mask texture here
-               color = texture(modifiedMaskTexture, TexCoords);
-            }
+            //Mask texture here
+            color = texture(modifiedMaskTexture, TexCoords);
          }
          else
          {

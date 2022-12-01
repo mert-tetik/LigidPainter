@@ -371,7 +371,10 @@ void Render::setMatrices() {
 	gl.uniformMatrix4fv(cmnd.program, "TextProjection", textProjection);
 
 	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777777778 - 1
-	gl.uniformMatrix4fv(cmnd.program, "renderTextureProjection", renderTextureProjection);
+	glUseProgram(9);
+	gl.uniformMatrix4fv(9, "renderTextureProjection", renderTextureProjection);
+	glUseProgram(3);
+	gl.uniformMatrix4fv(3, "renderTextureProjection", renderTextureProjection);
 
 	glm::mat4 model = glm::mat4(1.0f);
 	gl.uniformMatrix4fv(cmnd.program, "model", model);

@@ -182,6 +182,20 @@ void GlSet::getProgram() {//Prepare shader program | Usen once
 
 	glDeleteShader(skyboxVert);
 	glDeleteShader(skyboxFrag);
+
+
+	//Blur program
+	unsigned int blurVert = createShader("LigidPainter/Resources/Shaders/blur.vert",GL_VERTEX_SHADER);
+	unsigned int blurFrag = createShader("LigidPainter/Resources/Shaders/blur.frag",GL_FRAGMENT_SHADER); 
+
+	unsigned int blurProgram = glCreateProgram();
+	
+	glAttachShader(blurProgram, blurVert);
+	glAttachShader(blurProgram, blurFrag);
+	glLinkProgram(blurProgram);
+
+	glDeleteShader(blurVert);
+	glDeleteShader(blurFrag);
 }
 //------------Shaders------------
 unsigned int GlSet::createScreenFrameBufferObject() {

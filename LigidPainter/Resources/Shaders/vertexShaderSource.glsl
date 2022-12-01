@@ -25,11 +25,6 @@ out vec4 mirroredProjectedPos;
 uniform mat4 renderTextureProjection;
 uniform int isRenderTextureModeV;
 
-uniform int isRenderVerticalBlur;
-
-out vec2 blurTextureCoords[11];
-uniform float brushBlurVal;
-
 uniform int renderMirroredDepthV;
 
 uniform mat4 renderTrans;
@@ -44,18 +39,8 @@ void main() {
    projectedPos = projection * view * vec4(aPos, 0.5); 
    mirroredProjectedPos = projection * mirroredView * vec4(aPos, 0.5); 
 
-   vec2 centerTexCoords = aTexCoords;
-   float pixelSize = 1.0 / brushBlurVal;
 
-   for(int i=-5;i<=5;i++){
-      if(isRenderVerticalBlur == 0){
-         blurTextureCoords[i+5] = centerTexCoords + vec2(pixelSize*i,0); 
-      }
-      else{
-         blurTextureCoords[i+5] = centerTexCoords + vec2(0,pixelSize*i); 
-      }
-   }
-       if(isRenderTextureModeV == 0) {
+      if(isRenderTextureModeV == 0) {
       if(isText == 0) {
          if(isTwoDimensional == 0) {
             if(renderMirroredDepthV == 0){

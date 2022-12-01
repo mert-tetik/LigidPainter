@@ -205,6 +205,7 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 		size = 540;
 	
 	//16:9 ---> 1:1 (makes easier to get vertices into the middle)
+	glUseProgram(3);
 	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
 	glset.uniformMatrix4fv(commonData.program, "renderTextureProjection", renderTextureProjection);
 	//16:9 ---> 1:1
@@ -248,7 +249,6 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	glset.uniform1i(commonData.program, "isRenderTextureMode", 1);
 	glset.uniform1i(commonData.program, "isRenderTextureModeV", 1);
 	glset.uniform1i(commonData.program, "renderMaskBrush", 1);
-	glset.uniform1i(commonData.program, "renderMaskBrushBlury", 0);
 	glset.bindFramebuffer(FBOScreen);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glset.uniform1i(commonData.program, "modifiedMaskTexture", 1);
@@ -259,17 +259,16 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 
 	//Rotation
 	glset.drawArrays(centerVertices, false);
-	GLubyte* renderedImageXX = new GLubyte[size * size * 3 ];
-	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, renderedImageXX);
+	GLubyte* rotatedMaskTxtr = new GLubyte[size * size * 3 ];
+	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, rotatedMaskTxtr);
 
 	glset.activeTexture(GL_TEXTURE12);
-	glset.texImage(renderedImageXX, size, size, GL_RGB);
+	glset.texImage(rotatedMaskTxtr, size, size, GL_RGB);
 	glset.generateMipmap();
 	//Rotation
 
 	//Get back to previous projection after rendering rotated & scaled mask texture
 	glset.uniform1i(commonData.program, "modifiedMaskTexture", 12);
-	glset.uniform1i(commonData.program, "renderMaskBrushBlury", 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glset.viewport(1920, 1080);
 	trans = glm::mat4(1.0f);
@@ -279,23 +278,30 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	glset.uniformMatrix4fv(commonData.program, "renderTextureProjection", renderTextureProjection);
 	//Get back to previous projection after rendering rotated & scaled mask texture
 
+
+	glUseProgram(9);
+
+
 	//Horizontal Blur
+	glset.uniform1i(9, "isRenderVerticalBlur", 0); 
+	glset.uniform1i(9, "inputTexture", 12); 
+
 	if(renderTiny)
 		glset.drawArrays(cornerVerticesQrtr, false);
 	else
 		glset.drawArrays(cornerVertices, false);
 
-	GLubyte* renderedImageX = new GLubyte[size * size * 3];
-	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, renderedImageX);
+	GLubyte* horizontalBlurMaskTxtr = new GLubyte[size * size * 3];
+	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, horizontalBlurMaskTxtr);
 
 	glset.activeTexture(GL_TEXTURE12);
-	glset.texImage(renderedImageX, size, size, GL_RGB);
+	glset.texImage(horizontalBlurMaskTxtr, size, size, GL_RGB);
 	glset.generateMipmap();
 	//Horizontal Blur
 
 	//Vertical Blur setup
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glset.uniform1i(commonData.program, "isRenderVerticalBlur", 1);
+	glset.uniform1i(9, "isRenderVerticalBlur", 1);
 	//Vertical Blur setup
 
 	//Vertical blur
@@ -304,18 +310,22 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 		else
 			glset.drawArrays(cornerVertices, false);
 
-	GLubyte* renderedImage = new GLubyte[size * size * 3 ];
-	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
+	GLubyte* verticalBlurMaskTxtr = new GLubyte[size * size * 3 ];
+	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, verticalBlurMaskTxtr);
 
 	glset.activeTexture(GL_TEXTURE12);
-	glset.texImage(renderedImage, size, size, GL_RGB);
+	glset.texImage(verticalBlurMaskTxtr, size, size, GL_RGB);
 	glset.generateMipmap();
 
 	//Verical blur
 
 	//Finish
+
+	
+	glUseProgram(3);
+
+
 	ui.setViewportBgColor();
-	glset.uniform1i(commonData.program, "isRenderVerticalBlur", 0);
 	glset.uniform1i(commonData.program, "renderMaskBrush", 0);
 	glset.uniform1i(commonData.program, "isTwoDimensional", 0);
 	glset.uniform1i(commonData.program, "isRenderTextureModeV", 0);
@@ -323,9 +333,9 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	glset.bindFramebuffer(0);
 	glset.viewport(screenSize_x, screenSize_y);
 
-	delete(renderedImageXX);
-	delete(renderedImageX);
-	return renderedImage;
+	delete(rotatedMaskTxtr);
+	delete(horizontalBlurMaskTxtr);
+	return verticalBlurMaskTxtr;
 }
 InitializedTextures Texture::initTextures(const char* maskTexturePath){
 	GlSet glset;
