@@ -323,7 +323,12 @@ bool LigidPainter::run()
 	    "LigidPainter/Resources/Cubemap/Skybox/nz.png"
 	};
 	unsigned int cubemapTexture = loadCubemap(faces);  
-	glset.uniform1i(commonData.program, "skybox", 13);
+
+
+	glUseProgram(6);
+	glset.uniform1i(6, "skybox", 13);
+	glUseProgram(3);
+	glset.uniform1i(3, "skybox", 13);
 
 
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);

@@ -157,10 +157,10 @@ void GlSet::getProgram() {//Prepare shader program | Usen once
 	CommonData cmnd;
 	Utilities utilities;
 
+	//Main Program
 	unsigned int vertexShader = createShader("LigidPainter/Resources/Shaders/vertexShaderSource.glsl",GL_VERTEX_SHADER);
 	unsigned int fragmentShader = createShader("LigidPainter/Resources/Shaders/fragmentShaderSource.glsl",GL_FRAGMENT_SHADER); 
 
-	//Program
 	unsigned int program = glCreateProgram();
 	glAttachShader(program, vertexShader);
 	glAttachShader(program, fragmentShader);
@@ -168,6 +168,20 @@ void GlSet::getProgram() {//Prepare shader program | Usen once
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+
+
+	//Skybox program
+	unsigned int skyboxVert = createShader("LigidPainter/Resources/Shaders/skybox.vert",GL_VERTEX_SHADER);
+	unsigned int skyboxFrag = createShader("LigidPainter/Resources/Shaders/skybox.frag",GL_FRAGMENT_SHADER); 
+
+	unsigned int skyboxProgram = glCreateProgram();
+	
+	glAttachShader(skyboxProgram, skyboxVert);
+	glAttachShader(skyboxProgram, skyboxFrag);
+	glLinkProgram(skyboxProgram);
+
+	glDeleteShader(skyboxVert);
+	glDeleteShader(skyboxFrag);
 }
 //------------Shaders------------
 unsigned int GlSet::createScreenFrameBufferObject() {

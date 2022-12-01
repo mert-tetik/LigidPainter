@@ -73,32 +73,32 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 				if (callbackData.brushSizeRangeBarEnter) {
 					brushSizeRangeBarPressed = true;
 				}
-				if (callbackData.brushBlurRangeBarEnter) {
+				else if (callbackData.brushBlurRangeBarEnter) {
 					brushBlurRangeBarPressed = true;
 				}
-				if (callbackData.brushRotationRangeBarEnter) {
+				else if (callbackData.brushRotationRangeBarEnter) {
 					brushRotationRangeBarPressed = true;
 				}
-				if (callbackData.brushOpacityRangeBarEnter) {
+				else if (callbackData.brushOpacityRangeBarEnter) {
 					brushOpacityRangeBarPressed = true;
 				}
-				if (callbackData.brushSpacingRangeBarEnter) {
+				else if (callbackData.brushSpacingRangeBarEnter) {
 					brushSpacingRangeBarPressed = true;
 				}
-				if (callbackData.colorBoxPickerEnter) {
+				else if (callbackData.colorBoxPickerEnter) {
 					colorBoxPickerPressed = true;
 				}
-				if (callbackData.colorBoxColorRangeBarEnter) {
+				else if (callbackData.colorBoxColorRangeBarEnter) {
 					colorBoxColorRangeBarPressed= true;
 				}
-				if (callbackData.textureDemonstratorButtonEnter) {
+				else if (callbackData.textureDemonstratorButtonEnter) {
 					textureDemonstratorButtonPressed = true;
 				}
-				if (textureDemonstratorBoundariesHover) {
-					textureDemonstratorBoundariesPressed = true;
-				}
-				if(callbackData.maskPanelSliderEnter){
+				else if(callbackData.maskPanelSliderEnter){
 					maskPanelSliderPressed = true;
+				}
+				else if (textureDemonstratorBoundariesHover) { //Keep at the end
+					textureDemonstratorBoundariesPressed = true;
 				}
 			}
 		}

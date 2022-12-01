@@ -75,7 +75,6 @@ uniform vec3 iconColorHover;
 uniform float iconMixVal;
 
 uniform samplerCube skybox;
-uniform int isRenderSkybox;
 
 float far = 10.0f;
 float near = 0.1f;
@@ -144,7 +143,6 @@ void main() {
    vec3 interpretedColorBlack = vec3(TexCoords.y)*interpretedColorWhite;
 
    vec3 result = ambient + diffuse + specular;
-   if(isRenderSkybox == 0){
       if(isIcon == 0){
       if(isRenderTextureMode == 0) {
       if(isColorBox == 0) {
@@ -316,9 +314,5 @@ void main() {
          color = vec4(vec3(1), texture2D(icon,TexCoords).r-0.02);
       }
    }
-   }
-   else{
-      //skybox here
-      color = texture(skybox, Pos);
-   }  
+
 }

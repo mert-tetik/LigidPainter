@@ -377,7 +377,11 @@ void Render::setMatrices() {
 	gl.uniformMatrix4fv(cmnd.program, "model", model);
 
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
-	gl.uniformMatrix4fv(cmnd.program, "projection",projection);
+	glUseProgram(6);
+	gl.uniformMatrix4fv(6, "projection",projection);
+	glUseProgram(3);
+	gl.uniformMatrix4fv(3, "projection",projection);
+
 
 	ProjectionData pd;
 	pd.modelMat = model;
@@ -394,8 +398,11 @@ void Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirr
 	glm::mat4 mirroredView;
 	mirroredView = glm::lookAt(cameraPos * mirrorVec, originPos * mirrorVec, glm::vec3(0.0, 1.0, 0.0));
 
+	glUseProgram(6);
+	gl.uniformMatrix4fv(6, "view", view);
+	glUseProgram(3);
+	gl.uniformMatrix4fv(3, "view", view);
 
-	gl.uniformMatrix4fv(cmnd.program, "view", view);
 	gl.uniformMatrix4fv(cmnd.program, "mirroredView", mirroredView);
 }
 void Render::getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos) { //Not used
@@ -759,8 +766,8 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 		renderTextures(FBOScreen,vertices,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName);
 	}
 
-	gls.uniform1i(commonData.program, "isRenderSkybox", 1);
-	gls.uniform1i(commonData.program, "isRenderSkyboxV", 1);
+	glUseProgram(6);
+
 	glDepthMask(GL_FALSE);
 	glDepthFunc(GL_LEQUAL);
 
@@ -808,9 +815,9 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	glDepthFunc(GL_LESS);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthMask(GL_TRUE);
-	gls.uniform1i(commonData.program, "isRenderSkybox", 0);
-	gls.uniform1i(commonData.program, "isRenderSkyboxV", 0);
-
+	
+	glUseProgram(3);
+	
 	renderModel(renderData.backfaceCulling,vertices);
 	drawAxisPointer();
 
