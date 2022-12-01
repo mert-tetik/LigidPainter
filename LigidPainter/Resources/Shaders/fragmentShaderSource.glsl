@@ -66,11 +66,6 @@ uniform int interpretWithUvMask;
 
 uniform int isMaskPanelDisplay;
 
-uniform int isIcon;
-uniform sampler2D icon;
-uniform vec3 iconColor;
-uniform vec3 iconColorHover;
-uniform float iconMixVal;
 
 uniform samplerCube skybox;
 
@@ -141,7 +136,6 @@ void main() {
    vec3 interpretedColorBlack = vec3(TexCoords.y)*interpretedColorWhite;
 
    vec3 result = ambient + diffuse + specular;
-      if(isIcon == 0){
       if(isRenderTextureMode == 0) {
       if(isColorBox == 0) {
          if(isTextF == 0) {
@@ -284,14 +278,4 @@ void main() {
          }
       }
    }
-   }
-   else{
-      if(isMaskPanelDisplay == 0){
-         color = vec4(mix(iconColor,iconColorHover,iconMixVal), 1.0 - texture2D(icon,TexCoords).r);
-      }
-      else{
-         color = vec4(vec3(1), texture2D(icon,TexCoords).r-0.02);
-      }
-   }
-
 }

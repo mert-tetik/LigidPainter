@@ -196,6 +196,22 @@ void GlSet::getProgram() {//Prepare shader program | Usen once
 
 	glDeleteShader(blurVert);
 	glDeleteShader(blurFrag);
+
+
+	//Icons program
+	unsigned int iconsVert = createShader("LigidPainter/Resources/Shaders/icons.vert",GL_VERTEX_SHADER);
+	unsigned int iconsFrag = createShader("LigidPainter/Resources/Shaders/icons.frag",GL_FRAGMENT_SHADER); 
+
+	unsigned int iconsProgram = glCreateProgram();
+	
+	glAttachShader(iconsProgram, iconsVert);
+	glAttachShader(iconsProgram, iconsFrag);
+	glLinkProgram(iconsProgram);
+
+	glDeleteShader(iconsVert);
+	glDeleteShader(iconsFrag);
+
+	std::cout << iconsProgram << '\n';
 }
 //------------Shaders------------
 unsigned int GlSet::createScreenFrameBufferObject() {

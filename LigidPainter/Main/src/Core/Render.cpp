@@ -136,7 +136,10 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	//Panel
 	ui.panel(renderData.panelLoc, 0);
 	projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
-	gl.uniformMatrix4fv(commonData.program, "TextProjection", projection);
+	glUseProgram(12);
+	gl.uniformMatrix4fv(12, "Projection", projection);
+	glUseProgram(3);
+	gl.uniformMatrix4fv(3, "TextProjection", projection);
 	ui.panelChangeButton(renderData.panelLoc, 0.8f);//Model Panel
 	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f,0.795f,0.9,icons.TDModel,0);
 	ui.panelChangeButton(renderData.panelLoc, 0.72f);//Texture Panel
@@ -196,13 +199,19 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		centerDivider = 2.0f;
 		centerSum = 0;
 		projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
-		gl.uniformMatrix4fv(commonData.program, "TextProjection", projection);
+		glUseProgram(12);
+		gl.uniformMatrix4fv(12, "Projection", projection);
+		glUseProgram(3);
+		gl.uniformMatrix4fv(3, "TextProjection", projection);
 	}
 	else {
 		centerDivider = 1.0f;
 		centerSum = 0.15f;
 		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
-		gl.uniformMatrix4fv(commonData.program, "TextProjection", projection);
+		glUseProgram(12);
+		gl.uniformMatrix4fv(12, "Projection", projection);
+		glUseProgram(3);
+		gl.uniformMatrix4fv(3, "TextProjection", projection);
 	}
 	if (panelData.modelPanelActive) {
 		//File path textbox
@@ -258,14 +267,16 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 			ColorData clrData;
 			Texture txtr;
 
-			gl.uniform1i(3,"isIcon", 1);
-			gl.uniform3fv(3,"iconColor",clrData.iconColor);
-			gl.uniform3fv(3,"iconColorHover",clrData.iconColorHover);
-			gl.uniform1f(3,"iconMixVal",0);
+			glUseProgram(12);
+			gl.uniform1i(12,"isMaskIcon",1);
+			gl.uniform3fv(12,"iconColor",clrData.iconColor);
+			gl.uniform3fv(12,"iconColorHover",clrData.iconColorHover);
+			gl.uniform1f(12,"iconMixVal",0);
 			gl.activeTexture(GL_TEXTURE6);
 			gl.bindTexture(maskTextures[i]);
 			gl.drawArrays(buttonCoorSq,false);
-			gl.uniform1i(3,"isIcon", 0);
+			gl.uniform1i(12,"isMaskIcon",0);
+			glUseProgram(3);
 
 			//TODO : Check once the mouse pos changed
 			if(ui.isMouseOnCoords(renderData.window,mouseXpos,mouseYpos,buttonCoorSq,panelData.movePanel)){
@@ -345,7 +356,10 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum, 0.2f, "Download", colorData.buttonColor, 0.045f, false, false, 0.9f, 10, colorData.buttonColorHover, exportDownloadButtonMixVal); //Download Button
 	}
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
-	gl.uniformMatrix4fv(commonData.program, "TextProjection", projection);
+	glUseProgram(12);
+	gl.uniformMatrix4fv(12, "Projection", projection);
+	glUseProgram(3);
+	gl.uniformMatrix4fv(3, "TextProjection", projection);
 	uiOut.currentBrushMaskTxtr = currentBrushMaskTexture;
 	return uiOut;
 }
@@ -368,7 +382,10 @@ void Render::setMatrices() {
 	CommonData cmnd;
     GlSet gl;
 	glm::mat4 textProjection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
-	gl.uniformMatrix4fv(cmnd.program, "TextProjection", textProjection);
+	glUseProgram(12);
+	gl.uniformMatrix4fv(12, "Projection", textProjection);
+	glUseProgram(3);
+	gl.uniformMatrix4fv(3, "TextProjection", textProjection);
 
 	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777777778 - 1
 	glUseProgram(9);

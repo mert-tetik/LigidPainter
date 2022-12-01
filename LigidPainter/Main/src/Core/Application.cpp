@@ -333,7 +333,11 @@ bool LigidPainter::run()
 
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 	glset.uniform1i(commonData.program, "uvMask", 7);
-	glset.uniform1i(commonData.program, "icon", 6);
+	
+	glUseProgram(12);
+	glset.uniform1i(12, "icon", 6);
+	glUseProgram(3);
+
 	glset.uniform3fv(commonData.program, "lightPos", lightPos);
 	glset.uniform1f(commonData.program, "material.shininess", 32.0f);
 	glset.uniform1i(commonData.program, "screenMaskTexture", 4);

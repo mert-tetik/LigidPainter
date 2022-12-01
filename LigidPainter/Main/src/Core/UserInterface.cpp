@@ -105,14 +105,14 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 	GlSet glset;
 	ColorData clrData;
 
-	glset.uniform1i(3,"isIcon", 1);
-	glset.uniform3fv(3,"iconColor",clrData.iconColor);
-	glset.uniform3fv(3,"iconColorHover",clrData.iconColorHover);
-	glset.uniform1f(3,"iconMixVal",mixVal);
+	glUseProgram(12);
+	glset.uniform3fv(12,"iconColor",clrData.iconColor);
+	glset.uniform3fv(12,"iconColorHover",clrData.iconColorHover);
+	glset.uniform1f(12,"iconMixVal",mixVal);
 	glset.activeTexture(GL_TEXTURE6);
 	glset.bindTexture(icon);
 	glset.drawArrays(buttonCoorSq,false);
-	glset.uniform1i(3,"isIcon", 0);
+	glUseProgram(3);
 }
 
 void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec3 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec3 colorTransitionColor, float mixVal) {
