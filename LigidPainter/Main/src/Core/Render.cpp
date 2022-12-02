@@ -36,6 +36,8 @@ float dropperMixVal = 0.0f;
 
 float exportFileNameTextBoxMixVal = 0.0f;
 
+float hexValTextboxMixVal = 0.0f;
+
 void updateButtonColorMixValues(UiData uidata) {
 	float phaseDifference = 0.05f;
 	if (uidata.addSphereButtonEnter && addSphereButtonMixVal <= 1.0f) {
@@ -104,6 +106,13 @@ void updateButtonColorMixValues(UiData uidata) {
 	}
 	else if (!uidata.exportFileNameTextBoxPressed && exportFileNameTextBoxMixVal >= 0.0f) {
 		exportFileNameTextBoxMixVal -= phaseDifference;
+	}
+
+	if (uidata.hexValTextboxPressed && hexValTextboxMixVal <= 1.0f) {
+		hexValTextboxMixVal += phaseDifference;
+	}
+	else if (!uidata.hexValTextboxPressed && hexValTextboxMixVal >= 0.0f) {
+		hexValTextboxMixVal -= phaseDifference;
 	}
 }
 //Button mix val
@@ -340,7 +349,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		gl.uniform1f(renderPrograms.program, "uiOpacity", 0.5f);
 		ui.decorationSquare(renderData.panelLoc / centerDivider + centerSum - 0.1f, -0.84f); //Decoration for color indicator
 
-		ui.box(0.04f, 0.03f, renderData.panelLoc / centerDivider + centerSum - 0.0f,-0.86f, util.rgbToHexGenerator(colorBoxValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0);//Hex val textbox
+		ui.box(0.04f, 0.03f, renderData.panelLoc / centerDivider + centerSum - 0.0f,-0.86f, util.rgbToHexGenerator(colorBoxValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
 		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum + 0.08f, -0.86f,0.9,icons.dropperIcon,dropperMixVal);
 	}
 
@@ -587,25 +596,6 @@ void drawBrushIndicator(float distanceX,float screenWidth,float screenHeight,flo
 	glset.uniform1i(renderPrograms.program, "drawBrushIndicator", 0);
 }
 
-//------------isColorBoxValueChanged------------
-float lastColorBoxPickerValue_x = 7;
-float lastColorBoxPickerValue_y = 3;
-float lastColorBoxRangeValue = 3;
-bool isColorBoxValueChanged(RenderData renderData){
-	bool colorBoxValChanged = true;
-	if (lastColorBoxPickerValue_x != renderData.colorBoxPickerValue_x || lastColorBoxPickerValue_y != renderData.colorBoxPickerValue_y || lastColorBoxRangeValue != renderData.colorBoxColorRangeBarValue) {
-		colorBoxValChanged = true;
-	}
-	else {
-		colorBoxValChanged = false;
-	}
-	lastColorBoxPickerValue_x = renderData.colorBoxPickerValue_x;
-	lastColorBoxPickerValue_y = renderData.colorBoxPickerValue_y;
-	lastColorBoxRangeValue = renderData.colorBoxColorRangeBarValue;
-	return colorBoxValChanged;
-}
-//------------isColorBoxValueChanged------------
-
 void drawAxisPointer() {
 	GlSet glset;
 	//Axis Pointer - start from middle of the scene
@@ -788,12 +778,16 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 
 int renderDepthCounter = 0;
 glm::vec3 colorBoxVal = glm::vec3(0);
-RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal) {
+
+
+RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged) {
 	GlSet gls;
 	UserInterface ui;
 	ColorData colorData;
 	Utilities util;
 	Texture txtr;
+	
+	colorBoxVal = util.hexToRGBConverter(colorpickerHexVal);
 
 	if(textureDemonstratorBoundariesPressed){
 		orgTextureDemonstratorWidth = textureDemonstratorWidth;
@@ -811,7 +805,6 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	glfwGetCursorPos(renderData.window, &mouseXpos, &mouseYpos);
 	//Get screen and mouse info
 
-	bool colorBoxValChanged = isColorBoxValueChanged(renderData);
 
 	
 	//Render depth once painting started
@@ -838,10 +831,10 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	RenderOutData uiOut;
 	uiOut = renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,colorpickerHexVal);
 
-	if (colorBoxValChanged) { //Get value of color box
-		colorBoxVal = getColorBoxValue(FBOScreen, lastColorBoxPickerValue_x, lastColorBoxPickerValue_y,screenSizeX, screenSizeY);
-	}
 
+	if (colorBoxValChanged && !colorpickerHexValTextboxValChanged) { //Get value of color box
+		colorBoxVal = getColorBoxValue(FBOScreen, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y,screenSizeX, screenSizeY);
+	}
 	ctrlZCheck(renderData.window);
 
 
@@ -858,6 +851,7 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	renderOut.maskPanelMaskClicked = uiOut.maskPanelMaskClicked;
 	renderOut.maskPanelMaskHover = uiOut.maskPanelMaskHover;
 	renderOut.currentBrushMaskTxtr = uiOut.currentBrushMaskTxtr;
+	renderOut.colorpickerHexVal = util.rgbToHexGenerator(colorBoxVal);
 	return renderOut;
 }
 void Render::sendProgramsToRender(Programs apprenderPrograms){

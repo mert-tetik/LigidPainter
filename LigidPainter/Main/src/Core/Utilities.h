@@ -9,5 +9,7 @@ public:
 	glm::vec3 RGBToHSVGenerator(glm::vec3 rgbData);
 	float restrictBetween(float value, float maxVal, float minVal);
 	void printRenderingSpeed();
+	glm::vec3 hexToRGBConverter(std::string hex);
+
 };
 #endif
