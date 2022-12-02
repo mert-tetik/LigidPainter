@@ -183,39 +183,36 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 bool UiActions::updateRangeValues(GLFWwindow* window, float xOffset,float yOffset,unsigned int screenWidth,unsigned int screenHeight){
     bool hideCursor;
     LigidPainter ligid;
-
-    
-
     
     if (brushSizeRangeBarPressed) {
-		ligid.brushSizeRangeBar(xOffset,screenWidth);//Changes the global variable
+		ligid.brushSizeRangeBar(xOffset,1920);//Changes the global variable
 	}
 	if (brushBlurRangeBarPressed) {
-		ligid.brushBlurRangeBar(xOffset,screenWidth,screenHeight);//Changes the global variable
+		ligid.brushBlurRangeBar(xOffset,1920,1072);//Changes the global variable
 	}
 	if (brushRotationRangeBarPressed) {
-		ligid.brushRotationRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
+		ligid.brushRotationRangeBar(xOffset, 1920, 1072);//Changes the global variable
 	}
 	if (brushOpacityRangeBarPressed) {
-		ligid.brushOpacityRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
+		ligid.brushOpacityRangeBar(xOffset, 1920, 1072);//Changes the global variable
 	}
 	if (brushSpacingRangeBarPressed) {
-		ligid.brushSpacingRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
+		ligid.brushSpacingRangeBar(xOffset, 1920, 1072);//Changes the global variable
 	}
 	if (colorBoxColorRangeBarPressed) {
-		ligid.colorBoxColorRangeBar(yOffset,screenHeight);//Changes the global variable
+		ligid.colorBoxColorRangeBar(yOffset,1072);//Changes the global variable
 	}
 	if (colorBoxPickerPressed) {
-		ligid.colorBoxPickerButton(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
+		ligid.colorBoxPickerButton(xOffset,yOffset,1920,1072);//Changes the global variable
 	}
 	if (textureDemonstratorButtonPressed) {
-		ligid.textureDemonstratorButton(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
+		ligid.textureDemonstratorButton(xOffset,yOffset,1920,1072);//Changes the global variable
 	}
 	if (textureDemonstratorBoundariesPressed) {
-		ligid.textureDemonstratorBoundaries(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
+		ligid.textureDemonstratorBoundaries(xOffset,yOffset,1920,1072);//Changes the global variable
 	}
 	if(maskPanelSliderPressed){
-		ligid.maskPanelSlider(yOffset,screenHeight);//Changes the global variable
+		ligid.maskPanelSlider(yOffset,1072);//Changes the global variable
 	}
     if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed || textureDemonstratorButtonPressed || textureDemonstratorBoundariesPressed || maskPanelSliderPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
         hideCursor = true;

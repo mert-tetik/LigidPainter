@@ -308,7 +308,7 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 	int screenSizeX;
 	int screenSizeY;
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
-	glset.viewport(screenSizeX, screenSizeY);
+	glset.viewport(1920,1072);
 	glset.uniform3f(uiPrograms.program, "boxColor", colorRectPixel[0] / 255.0f, colorRectPixel[1] / 255.0f, colorRectPixel[2] / 255.0f);
 	delete(colorRectPixel);
 	//Finish
@@ -380,8 +380,8 @@ bool UserInterface::isMouseOnPanelChangeButton(GLFWwindow* window, float positio
 	int screenSizeY;
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
 
-	float mouseFX = ((float)mouseXpos / (screenSizeX/2)); //Screen Coord
-	float mouseFY = (((float)mouseYpos / (screenSizeY / 2)) - 1.0f) * -1.0f; //Screen Coord
+	float mouseFX = ((float)mouseXpos / (1920/2)); //Screen Coord
+	float mouseFY = (((float)mouseYpos / (1072 / 2)) - 1.0f) * -1.0f; //Screen Coord
 
 	//Barycentric calculations
 	for (size_t i = 0; i < 2; i++)
@@ -440,13 +440,13 @@ bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height
 	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
 	float mouseFX;
 	if (!isPanelMoving) {
-		mouseFX = ((float)mouseXpos / (screenSizeX / 2)) - 1.0f;//Screen Coord
+		mouseFX = ((float)mouseXpos / (1920 / 2)) - 1.0f;//Screen Coord
 	}
 	else {
-		mouseFX = ((float)mouseXpos / (screenSizeX / 2));//Screen Coord
+		mouseFX = ((float)mouseXpos / (1920 / 2));//Screen Coord
 
 	}
-	float mouseFY = (((float)mouseYpos / (screenSizeY / 2))-1.0f)*-1.0f;//Screen Coord
+	float mouseFY = (((float)mouseYpos / (1072 / 2))-1.0f)*-1.0f;//Screen Coord
 
 	//Barycentric calculations
 	for (size_t i = 0; i < 2; i++)
@@ -480,13 +480,13 @@ bool UserInterface::isMouseOnCoords(GLFWwindow*window,int mouseXpos, int mouseYp
 
 	float mouseFX;
 	if (!isPanelMoving) {
-		mouseFX = ((float)mouseXpos / (screenSizeX / 2)) - 1.0f;//Screen Coord
+		mouseFX = ((float)mouseXpos / (1920 / 2)) - 1.0f;//Screen Coord
 	}
 	else {
-		mouseFX = ((float)mouseXpos / (screenSizeX / 2));//Screen Coord
+		mouseFX = ((float)mouseXpos / (1920 / 2));//Screen Coord
 
 	}
-	float mouseFY = (((float)mouseYpos / (screenSizeY / 2))-1.0f)*-1.0f;//Screen Coord
+	float mouseFY = (((float)mouseYpos / (1072 / 2))-1.0f)*-1.0f;//Screen Coord
 
 	//Barycentric calculations
 	for (size_t i = 0; i < 2; i++)
