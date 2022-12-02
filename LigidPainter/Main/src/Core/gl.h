@@ -38,7 +38,7 @@ public:
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
 	Programs getProgram();
 
-	GLFWwindow* GlSet::getWindow();
+	GLFWwindow* getWindow();
 	unsigned int createScreenFrameBufferObject();
 
 };

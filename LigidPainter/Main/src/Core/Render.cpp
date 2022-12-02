@@ -484,6 +484,9 @@ void Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirr
 	glUseProgram(renderPrograms.program);
 	gl.uniformMatrix4fv(3, "view", view);
 
+	gl.uniform3fv(renderPrograms.program, "viewPos", cameraPos);
+	gl.uniform3fv(renderPrograms.program, "mirroredViewPos", cameraPos * mirrorVec);
+
 	gl.uniformMatrix4fv(renderPrograms.program, "mirroredView", mirroredView);
 }
 void Render::getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos) { //Not used

@@ -73,7 +73,7 @@ string exportFolder = "Choose Destination Path";
 string exportFileName = "LP_Export";
 //Paths
 
-string colorpickerHexVal = "#000000";
+string colorpickerHexVal = "#3f8060";
 
 string modelName;
 vector<float> vertices = { 0 };
@@ -197,6 +197,9 @@ bool caps = false; //GLFW_MOD_CAPS_LOCK
 
 char pressedChar;
 bool pressedCharChanged;
+
+bool mirrorClick = false;
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
 	if(key >= 320 && key <=329){
@@ -250,7 +253,7 @@ unsigned int loadCubemap(std::vector<std::string> faces)
 }
 Programs programs;
 
-bool colorBoxValChanged = false;
+bool colorBoxValChanged = true;
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -447,7 +450,6 @@ bool LigidPainter::run()
 
 
 		//Update
-		render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
 		brushSize = double(brushSizeRangeBarValue + 0.1f) * 800.0 + 20.0 ;
 		renderData = updateRenderData(renderData,textures.depthTexture, brushSize);
 		uidata = updateUiData();
@@ -588,9 +590,11 @@ bool LigidPainter::run()
 		if (mousePosChanged) { //To make sure painting done before changing camera position
 			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover);
 		}
-		if (cameraPosChanging) { //Change the position of the camera in the shaders once camera position changed
-			glset.uniform3fv(programs.program, "viewPos", callbackData.cameraPos);
+		if (cameraPosChanging || mirrorClick) { //Change the position of the camera in the shaders once camera position changed
+			render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
 		}
+		mirrorClick = false;
+
 		if ((cameraPosChanging && paintingMode) || glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE) { //Changing camera position or painting a stroke ends painting, than updates painted texture
 			paintingMode = false;
 		}
@@ -735,7 +739,11 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue){
 	glfwGetWindowSize(window,&width,&height);
 	
 	Utilities util;
+	
+	colorBoxValChanged = true;
 	glm::vec3 hsvVal = util.RGBToHSVGenerator(RGBval);
+	glset.uniform3fv(programs.program, "drawColor", RGBval);
+
 	if(changeHue){
 		if(hsvVal.r > 247.0){
 			colorBoxColorRangeBarValue = 0.195f;	
@@ -1009,6 +1017,7 @@ void LigidPainter::exportExtPNGCheckBox() {
 	}
 }
 void LigidPainter::mirrorXCheckBox() {
+	mirrorClick = true;
 	if (mirrorXCheckBoxChecked == false) {
 		mirrorUsed = true;
 		glset.uniform1i(programs.program, "useMirror", 1);
@@ -1024,6 +1033,7 @@ void LigidPainter::mirrorXCheckBox() {
 	}
 }
 void LigidPainter::mirrorYCheckBox() {
+	mirrorClick = true;
 	if (mirrorYCheckBoxChecked == false) {
 		mirrorUsed = true;
 		glset.uniform1i(programs.program, "useMirror", 1);
@@ -1039,6 +1049,7 @@ void LigidPainter::mirrorYCheckBox() {
 	}
 }
 void LigidPainter::mirrorZCheckBox() {
+	mirrorClick = true;
 	if (mirrorZCheckBoxChecked == false) {
 		mirrorUsed = true;
 		glset.uniform1i(programs.program, "useMirror", 1);

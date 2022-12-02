@@ -48,6 +48,7 @@ uniform int is2D;
 uniform vec3 lightPos;
 uniform vec3 lightColor;
 uniform vec3 viewPos;
+uniform vec3 mirroredViewPos;
 uniform int isLightSource;
 uniform int isAxisPointer;
 
@@ -96,7 +97,14 @@ bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMir
       drawZ = texture2D(mirroredDepthTexture, uv.xy).b; 
    }
 
-   vec3 direction = viewPos - Pos;
+
+   vec3 direction;
+   if(isMirrored){
+      direction = mirroredViewPos - Pos;
+   }
+   else{
+      direction = viewPos - Pos;
+   }
    float dotProd = dot(normalize(direction),normalize(Normal));
 
    if(dotProd < 0.2){
@@ -172,7 +180,7 @@ void main() {
                else if(isLightSource == 0) {
                   if(isAxisPointer == 0) 
                   {
-                     float roughness = 1.0;
+                     float roughness = 0.7;
                      //3D model here
                      vec3 paintedDiffuse = getPaintedDiffuse();
                      vec3 result = getRealisticResult(paintedDiffuse);
