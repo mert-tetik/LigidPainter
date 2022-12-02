@@ -660,11 +660,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	//Get mouse position change
 	
 	//Texture demonstrator
-	float range = 0.025f;
-	if(xpos > ((textureDemonstratorButtonPosX + textureDemonstratorWidth) - range) * width/2 && xpos < ((textureDemonstratorButtonPosX + textureDemonstratorWidth) + range) * width/2){
-		textureDemonstratorBoundariesHover = true;
-	}
-	else if(height - ypos > ((textureDemonstratorButtonPosY+1.0f - textureDemonstratorHeight) - range) * height/2 && height - ypos < ((textureDemonstratorButtonPosY+1.0f - textureDemonstratorHeight) + range) * height/2 ){
+	float range = 0.05f;
+	if(xpos > ((textureDemonstratorButtonPosX + textureDemonstratorWidth) - range) * width/2 && xpos < ((textureDemonstratorButtonPosX + textureDemonstratorWidth) + range) * width/2 && height - ypos > ((textureDemonstratorButtonPosY+1.0f - textureDemonstratorHeight) - range) * height/2 && height - ypos < ((textureDemonstratorButtonPosY+1.0f - textureDemonstratorHeight) + range) * height/2 ){
 		textureDemonstratorBoundariesHover = true;
 	}
 	else{
