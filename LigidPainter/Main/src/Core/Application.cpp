@@ -436,6 +436,10 @@ bool LigidPainter::run()
 	GLFWcursor* defaultCursor = glfwCreateCursor(images,15,0);
 	stbi_image_free(images[0].pixels);
 
+	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/DropperCursor.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+	GLFWcursor* dropperCursor = glfwCreateCursor(images,0,30);
+	stbi_image_free(images[0].pixels);
+
 	while (true)
 	{
 		glfwPollEvents();
@@ -444,17 +448,6 @@ bool LigidPainter::run()
 
 		updateCameraPosChanging();
 
-		//Check if texture demonstrator button clicked
-		if(uiActData.textureDemonstratorButtonPressed){
-			textureDemonstratorButtonPressCounter++;
-		}
-		if(textureDemonstratorButtonPressCounter < 20 && uiActData.textureDemonstratorButtonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE && !textureDemonstratorButtonPosChanged){
-			textureDemonstratorButtonPressClicked = true;
-		}
-		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
-			textureDemonstratorButtonPressCounter = 0;
-		}
-		textureDemonstratorButtonPosChanged = false;
 
 
 		//Release textboxes
@@ -469,6 +462,19 @@ bool LigidPainter::run()
 
 		uiActData = uiAct.uiActions(window,callbackData,textureDemonstratorBoundariesHover);
 		
+
+				//Check if texture demonstrator button clicked
+		if(uiActData.textureDemonstratorButtonPressed){
+			textureDemonstratorButtonPressCounter++;
+		}
+		if(textureDemonstratorButtonPressCounter < 20 && uiActData.textureDemonstratorButtonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE && !textureDemonstratorButtonPosChanged){
+			textureDemonstratorButtonPressClicked = true;
+		}
+		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
+			textureDemonstratorButtonPressCounter = 0;
+		}
+		textureDemonstratorButtonPosChanged = false;
+
 
 		//Ctrl + x use negative checkbox
 		if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS && panelData.paintingPanelActive && doCtrlX){
@@ -506,10 +512,10 @@ bool LigidPainter::run()
 		exportData.fileName = exportFileName.c_str();
 
 		//Painting
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !colorBoxValChanged) {//Used for spacing
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed) {//Used for spacing
 			drawingCount++;
 		}
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !colorBoxValChanged){
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed){
 			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
 			brushValChanged = false;
 			drawingCount = 0;
@@ -627,7 +633,7 @@ bool LigidPainter::run()
 
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,pointerCursor,defaultCursor);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,pointerCursor,defaultCursor,paintingDropperPressed,dropperCursor);
 		}
 		if (cameraPosChanging || mirrorClick) { //Change the position of the camera in the shaders once camera position changed
 			render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
