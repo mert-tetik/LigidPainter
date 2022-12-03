@@ -424,6 +424,18 @@ bool LigidPainter::run()
 
 	int textBoxActiveChar = 6;
 	bool colorpickerHexValTextboxValChanged = false;
+
+	//Cursors
+	GLFWimage images[1];
+	stbi_set_flip_vertically_on_load(false);
+	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/PointerIcon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+	GLFWcursor* pointerCursor = glfwCreateCursor(images,15,0);
+	stbi_image_free(images[0].pixels);
+
+	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/DefaultIcon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+	GLFWcursor* defaultCursor = glfwCreateCursor(images,15,0);
+	stbi_image_free(images[0].pixels);
+
 	while (true)
 	{
 		glfwPollEvents();
@@ -615,7 +627,7 @@ bool LigidPainter::run()
 
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,pointerCursor,defaultCursor);
 		}
 		if (cameraPosChanging || mirrorClick) { //Change the position of the camera in the shaders once camera position changed
 			render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
