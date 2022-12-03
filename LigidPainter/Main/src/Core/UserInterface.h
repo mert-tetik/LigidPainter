@@ -21,6 +21,9 @@ struct ColorData //LigidPainter color palette
 	glm::vec3 colorBoxIndicatorColor = glm::vec3(0.05f, 0.05f, 0.05f);
 	glm::vec3 iconColor = glm::vec3(1.0f,1.0f,1.0f);
 	glm::vec3 iconColorHover = glm::vec3(0.5f,0.5f,0.5f);
+	glm::vec3 buttonMaskTxtrPanelColor = glm::vec3(0.13f, 0.13f, 0.13f);
+	glm::vec3 numericModifierArrowColor = glm::vec3(0.6f, 0.6f, 0.6f);
+	glm::vec3 numericModifierArrowHoverColor = glm::vec3(0.1f, 0.1f, 0.1f);
 };
 struct buttonData {
 
@@ -31,7 +34,7 @@ public:
 	void textureDemonstrator(float width,float height, float position_x,float position_y,float z);
 
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec3 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec3 colorTransitionColor , float mixVal);
-	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal);
+	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal,glm::vec3 color,glm::vec3 colorHover);
 	bool isMouseOnButton(GLFWwindow* window, float width, float height, float position_x, float position_y, int mouseXpos, int mouseYpos, bool isPanelMoving);
 	bool isMouseOnCoords(GLFWwindow*window,int mouseXpos, int mouseYpos,std::vector<float> buttonCoor,bool isPanelMoving);
 	void setViewportBgColor();

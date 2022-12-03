@@ -730,6 +730,9 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	if(paintingDropperPressed){
 		doPainting = false;
 	}
+	else if(callbackData.textureDemonstratorButtonEnter || callbackData.paintingPanelButtonEnter || callbackData.modelPanelButtonEnter || callbackData.exportPanelButtonEnter || callbackData.texturePanelButtonEnter || callbackData.mirrorXCheckBoxEnter|| callbackData.mirrorYCheckBoxEnter|| callbackData.mirrorZCheckBoxEnter){
+		doPainting = false;
+	}
 	else if (hideCursor) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		enablePanelMovement = false;
@@ -1023,7 +1026,7 @@ void LigidPainter::textureDemonstratorButton(float xOffset,float yOffset,int wid
 
 	textureDemonstratorButtonPosChanged = true;
 
-	textureDemonstratorButtonPosX -= xOffset / (width / 2);
+	textureDemonstratorButtonPosX -= xOffset / (width/ 2);
 	textureDemonstratorButtonPosX = util.restrictBetween(textureDemonstratorButtonPosX,2.0f,0.0f);
 	textureDemonstratorButtonPosY += yOffset / (height / 2);
 	textureDemonstratorButtonPosY = util.restrictBetween(textureDemonstratorButtonPosY,0.97f,-1.0f);

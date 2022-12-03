@@ -91,12 +91,15 @@ void UserInterface::textureDemonstrator(float width,float height, float position
 }
 void UserInterface::numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN){
 	//box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"",glm::vec3(0),0,0,0,1,10,glm::vec3(0),0);
+	ColorData clrData;
+	GlSet gl;
+	
 
-	iconBox(0.02f,0.04f,position_x - 0.05f,position_y,z,leftArrow,mixValN);
+	iconBox(0.02f,0.04f,position_x - 0.05f,position_y,z,leftArrow,mixValN,clrData.numericModifierArrowColor,clrData.numericModifierArrowHoverColor);
 	renderText(3,std::to_string(value),position_x-0.01f,position_y-0.01f,0.00022f);
-	iconBox(0.02f,0.04f,position_x+ 0.05f,position_y,z,rightArrow,mixValP);
+	iconBox(0.02f,0.04f,position_x+ 0.05f,position_y,z,rightArrow,mixValP,clrData.numericModifierArrowColor,clrData.numericModifierArrowHoverColor);
 }
-void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon,float mixVal){
+void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon,float mixVal,glm::vec3 color,glm::vec3 colorHover){
 	std::vector<float> buttonCoorSq{
 		// first triangle
 		 width + position_x,  height + position_y, z,1,1,0,0,0,  // top right
@@ -111,8 +114,8 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 	ColorData clrData;
 
 	glUseProgram(uiPrograms.iconsProgram);
-	glset.uniform3fv(12,"iconColor",clrData.iconColor);
-	glset.uniform3fv(12,"iconColorHover",clrData.iconColorHover);
+	glset.uniform3fv(12,"iconColor",color);
+	glset.uniform3fv(12,"iconColorHover",colorHover);
 	glset.uniform1f(12,"iconMixVal",mixVal);
 	glset.activeTexture(GL_TEXTURE6);
 	glset.bindTexture(icon);

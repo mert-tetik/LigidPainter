@@ -137,6 +137,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	Utilities util;
     GlSet gl; 
 	RenderOutData uiOut;
+	Texture txtr;
 	uiOut.maskPanelMaskClicked = false;
 	uiOut.maskPanelMaskHover = false;
 
@@ -153,13 +154,13 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	glUseProgram(renderPrograms.program);
 	gl.uniformMatrix4fv(3, "TextProjection", projection);
 	ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.8f);//Model Panel
-	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.795f,0.9,icons.TDModel,0);
+	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.795f,0.9,icons.TDModel,0,colorData.iconColor,colorData.iconColorHover);
 	ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.72f);//Texture Panel
-	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.715f,0.9,icons.ImportTexture,0);
+	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.715f,0.9,icons.ImportTexture,0,colorData.iconColor,colorData.iconColorHover);
 	ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.64f);//Painting Panel
-	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.635f,0.9,icons.Painting,0);//Dropper
+	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.635f,0.9,icons.Painting,0,colorData.iconColor,colorData.iconColorHover);//Dropper
 	ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.56f);//Export Panel
-	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX, 0.555f,0.9,icons.Export,0);
+	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX, 0.555f,0.9,icons.Export,0,colorData.iconColor,colorData.iconColorHover);
 	//Panel
 
 
@@ -192,7 +193,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 			changeTextureDemonstratorHeight = orgTextureDemonstratorHeight;
 		}
 	}
-	ui.textureDemonstrator(changeTextureDemonstratorWidth,changeTextureDemonstratorHeight,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,1.0f); 
+	ui.textureDemonstrator(changeTextureDemonstratorWidth,changeTextureDemonstratorHeight,textureDemonstratorButtonPosX+screenGapX,textureDemonstratorButtonPosY,1.0f); 
 
 
 	if (panelData.paintingPanelActive){
@@ -201,7 +202,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		ui.checkBox(renderData.panelLoc- 0.10f- screenGapX, 0.9f, "Y", colorData.checkBoxColor, uidata.mirrorYCheckBoxEnter, uidata.mirrorYCheckBoxPressed); //Z mirror checkbox
 		ui.checkBox(renderData.panelLoc- 0.04f- screenGapX, 0.9f, "Z", colorData.checkBoxColor, uidata.mirrorZCheckBoxEnter, uidata.mirrorZCheckBoxPressed); //Y mirror checkbox
 		ui.box(0.25f, 0.22f, renderData.panelLoc + 0.25f- screenGapX, -0.6f, "", colorData.panelColorSnd, 0.075f, false, false, 0.1f, 10000, glm::vec3(0), 0);//Backside decoration
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 0.09f- screenGapX,0.95f,0.9,icons.Mirror,0);
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 0.09f- screenGapX,0.95f,0.9,icons.Mirror,0,colorData.iconColor,colorData.iconColorHover);
 	}
 
 	float centerDivider;
@@ -229,13 +230,13 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		//File path textbox
 		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0);
 		ui.renderText(renderPrograms.program, "File Path", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.64f, 0.00022f);
-		ui.iconBox(0.020f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f,0.6f,1,icons.Folder,0);
+		ui.iconBox(0.020f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f,0.6f,1,icons.Folder,0,colorData.iconColor,colorData.iconColorHover);
 		
 		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false, 0.9f, 10, colorData.buttonColorHover, loadModelButtonMixVal);//Load model button
 		ui.box(0.012f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.0f, "", colorData.buttonColor, 0.047f, false, false, 0.9f, 7, colorData.buttonColorHover, addPanelButtonMixVal);//Load a panel button
-		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX,0.0,0.99,icons.Panel,0);
+		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX,0.0,0.99,icons.Panel,0,colorData.iconColor,colorData.iconColorHover);
 		ui.box(0.012f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.1f, "", colorData.buttonColor, 0.055f, false, false, 0.9f, 7, colorData.buttonColorHover, addSphereButtonMixVal);//Load a sphere button
-		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX,-0.1f,0.99,icons.Sphere,0);
+		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX,-0.1f,0.99,icons.Sphere,0,colorData.iconColor,colorData.iconColorHover);
 
 
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.08f, 0.3f, "Auto triangulate", colorData.checkBoxColor, uidata.autoTriangulateCheckBoxEnter, uidata.autoTriangulateCheckBoxPressed); //Auto triangulate checkbox
@@ -250,7 +251,9 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.9f, "Add Mask Texture", colorData.buttonColor, 0.095f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
 		
 		ui.box(0.005f, 0.015f, renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f + maskPanelSliderValue, "", glm::vec3(0), 0.095f, false, false, 0.9f, 30, glm::vec3(0), 0); //Mask panel slider
-		ui.box(0.15f, 0.15f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.675f, "", colorData.buttonColor, 0.095f, false, false, 0.9f, 1000, glm::vec3(0), 0); //Mask panel
+		gl.uniform1f(renderPrograms.program, "uiOpacity", 0.3f);
+		ui.box(0.15f, 0.15f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.675f, "", colorData.buttonMaskTxtrPanelColor, 0.095f, false, false, 0.9f, 1000, glm::vec3(0), 0); //Mask panel
+		gl.uniform1f(renderPrograms.program, "uiOpacity", 1.0f);
 		
 		gl.uniform1i(renderPrograms.program, "isMaskPanelDisplay", 1);
 
@@ -279,13 +282,11 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 				-0.03f + position_x,  std::min(std::max(-0.06f + position_y,0.55f),0.8f), 1,0,1.0f-upBotDifMax*10,0,0,0,  // bottom left
 				-0.03f + position_x,  std::min(std::max(0.06f + position_y,0.55f),0.8f), 1,0,upBotDifMin*10,0,0,0  // top left
 			};
-			ColorData clrData;
-			Texture txtr;
 
 			glUseProgram(renderPrograms.iconsProgram);
 			gl.uniform1i(12,"isMaskIcon",1);
-			gl.uniform3fv(12,"iconColor",clrData.iconColor);
-			gl.uniform3fv(12,"iconColorHover",clrData.iconColorHover);
+			gl.uniform3fv(12,"iconColor",colorData.iconColor);
+			gl.uniform3fv(12,"iconColorHover",colorData.iconColorHover);
 			gl.uniform1f(12,"iconMixVal",0);
 			gl.activeTexture(GL_TEXTURE6);
 			gl.bindTexture(maskTextures[i]);
@@ -355,7 +356,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		ui.decorationSquare(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.1f, -0.84f); //Decoration for color indicator
 
 		ui.box(0.04f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.0f,-0.86f, util.rgbToHexGenerator(colorBoxValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
-		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.86f,0.9,icons.dropperIcon,dropperMixVal);
+		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.86f,0.9,icons.dropperIcon,dropperMixVal,colorData.iconColor,colorData.iconColorHover);
 	}
 
 	if (panelData.exportPanelActive) {
@@ -363,10 +364,10 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.5f, exportFileName,colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, exportFileNameTextBoxMixVal); //File name textbox
 
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, 0.4f, "", colorData.checkBoxColor, uidata.exportExtJPGCheckBoxEnter, uidata.exportExtJPGCheckBoxPressed); //jpg checkbox
-		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.06f, 0.4f,0.9,icons.JpgFile,0);
+		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.06f, 0.4f,0.9,icons.JpgFile,0,colorData.iconColor,colorData.iconColorHover);
 
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.05f, 0.4f, "", colorData.checkBoxColor, uidata.exportExtPNGCheckBoxEnter, uidata.exportExtPNGCheckBoxPressed); //png checkbox
-		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f, 0.4f,0.9,icons.PngFile,0);
+		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f, 0.4f,0.9,icons.PngFile,0,colorData.iconColor,colorData.iconColorHover);
 
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.2f, "Download", colorData.buttonColor, 0.045f, false, false, 0.9f, 10, colorData.buttonColorHover, exportDownloadButtonMixVal); //Download Button
 	}

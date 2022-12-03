@@ -135,8 +135,8 @@ ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTextu
 
 
 	//Mirrored screen painting texture
-	GLubyte* mirroredScreenTexture = new GLubyte[(textureMaxScreenWidth/2) * (textureMaxScreenHeight/2) * 3];
-	std::fill_n(mirroredScreenTexture, (textureMaxScreenWidth/2) * (textureMaxScreenHeight/2)* 3, 0);
+	GLubyte* mirroredScreenTexture = new GLubyte[1080 * 1080 * 3];
+	std::fill_n(mirroredScreenTexture, 1080 * 1080* 3, 0);
 
 	glset.activeTexture(GL_TEXTURE3);
 	unsigned int textureIDMir;
@@ -148,7 +148,7 @@ ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTextu
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureMaxScreenWidth/2, textureMaxScreenHeight/2, 0, GL_RGB, GL_UNSIGNED_BYTE, mirroredScreenTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1080, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, mirroredScreenTexture);
 	glset.generateMipmap();
 
 	delete(mirroredScreenTexture);
@@ -168,10 +168,10 @@ void Texture::refreshScreenDrawingTexture() {
 	delete(screenTextureX);
 
 	//Mirrored
-	GLubyte* screenTextureM = new GLubyte[(textureMaxScreenHeight/2) * (textureMaxScreenHeight/2) * 3];//Deleted
-	std::fill_n(screenTextureM, (textureMaxScreenHeight/2) * (textureMaxScreenHeight/2) * 3, 0);
+	GLubyte* screenTextureM = new GLubyte[1080 * 1080 * 3];//Deleted
+	std::fill_n(screenTextureM, 1080 * 1080 * 3, 0);
 	glset.activeTexture(GL_TEXTURE3);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (textureMaxScreenHeight/2), (textureMaxScreenHeight/2), GL_RGB, GL_UNSIGNED_BYTE, screenTextureM); //Refresh Screen Texture
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1080,1080, GL_RGB, GL_UNSIGNED_BYTE, screenTextureM); //Refresh Screen Texture
 	glset.generateMipmap();
 	delete(screenTextureM);
 }
