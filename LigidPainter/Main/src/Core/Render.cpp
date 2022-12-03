@@ -293,9 +293,8 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 			gl.drawArrays(buttonCoorSq,false);
 			gl.uniform1i(12,"isMaskIcon",0);
 			glUseProgram(renderPrograms.program);
-
 			//TODO : Check once the mouse pos changed
-			if(ui.isMouseOnCoords(renderData.window,mouseXpos,mouseYpos,buttonCoorSq,panelData.movePanel)){
+			if(ui.isMouseOnCoords(renderData.window,mouseXpos+screenGapX*(renderMaxScreenWidth/2),mouseYpos,buttonCoorSq,panelData.movePanel)){
 				if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
 					gl.activeTexture(GL_TEXTURE1);
 					gl.bindTexture(maskTextures[i]);
