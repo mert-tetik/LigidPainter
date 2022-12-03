@@ -470,7 +470,8 @@ void Callback::framebuffer_size_callback(GLFWwindow* window, int width, int heig
 	GlSet glset;
 	Utilities util;
 	glfwSetWindowSize(window, width, height);
-	glset.viewport(1920, 1072);
+	glViewport(0, -(1072 - height), 1920, 1072);
+
 
 	screenX = width;
 	screenY = height;

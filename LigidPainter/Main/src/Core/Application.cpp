@@ -416,7 +416,7 @@ bool LigidPainter::run()
 	{
 		glfwPollEvents();
 
-		//util.printRenderingSpeed();
+		util.printRenderingSpeed();
 
 		updateCameraPosChanging();
 
@@ -443,12 +443,8 @@ bool LigidPainter::run()
 			}
 		}
 
-
-
 		uiActData = uiAct.uiActions(window,callbackData,textureDemonstratorBoundariesHover);
 		
-
-
 		//Update
 		brushSize = double(brushSizeRangeBarValue + 0.1f) * 800.0 + 20.0 ;
 		renderData = updateRenderData(renderData,textures.depthTexture, brushSize);

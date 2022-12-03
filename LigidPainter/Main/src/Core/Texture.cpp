@@ -329,7 +329,8 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	glset.uniform1i(txtrPrograms.program, "isRenderTextureModeV", 0);
 	glset.uniform1i(txtrPrograms.program, "isRenderTextureMode", 0);
 	glset.bindFramebuffer(0);
-	glset.viewport(1920,1072);
+	glViewport(0, -(1072 - screenSize_y), 1920, 1072);
+
 
 	delete(rotatedMaskTxtr);
 	delete(horizontalBlurMaskTxtr);

@@ -515,6 +515,7 @@ void Render::drawLightObject(glm::vec3 lightPos) {
 void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen, unsigned int screenSizeX, unsigned int screenSizeY) {
 	Texture txtr;
     GlSet gl;
+
 	gl.viewport(1920, 1080);
 	gl.bindFramebuffer(FBOScreen);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -549,7 +550,8 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 0);
 	gl.uniform1i(renderPrograms.program, "renderDepth", 0);
 	gl.uniform1i(renderPrograms.program, "renderMirroredDepth", 0);
-	gl.viewport(1920,1072);
+	glViewport(0, -(1072 - screenSizeY), 1920, 1072);
+
 	gl.bindFramebuffer(0);
 }
 
@@ -661,7 +663,6 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 	 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
 	 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
 	};
-
 	Texture txtr;
 
     //Send the texture to the undoTextures vector before updating the texture
@@ -722,7 +723,8 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 0);
 	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 0);
 	gl.bindFramebuffer(0);
-	gl.viewport(1920,1072);
+	glViewport(0, -(1072 - screenSizeY), 1920, 1072);
+
 	//Finish
 }
 glm::vec3 getScreenHoverPixel(double mouseXpos,double mouseYpos,unsigned int screenSizeY){
@@ -769,7 +771,8 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 0);
 	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 0);
 	gl.bindFramebuffer(0);
-	gl.viewport(1920,1072);
+	glViewport(0, -(1072 - screenSizeY), 1920, 1072);
+
 
 	//Get color value to the color vec
     glm::vec3 colorBoxPixelVal = glm::vec3(0);

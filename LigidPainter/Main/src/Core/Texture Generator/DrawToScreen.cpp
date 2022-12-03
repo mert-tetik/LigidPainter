@@ -43,6 +43,9 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 	double mouseYposIn;
 	glfwGetCursorPos(window, &mouseXposIn, &mouseYposIn);
 
+	int screenSizeX;
+	int screenSizeY;
+	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
 	//Get context data
 
 
@@ -151,7 +154,8 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 		//Finish
 		//Update mirrored screen mask texture
 		}
-		glset.viewport(1920,1072);
+		glViewport(0, -(1072 - screenSizeY), 1920, 1072);
+
 		glset.bindFramebuffer(0);
 		glset.deleteFramebuffers(FBO);
 	}
