@@ -192,7 +192,7 @@ bool UiActions::updateRangeValues(GLFWwindow* window, float xOffset,float yOffse
 		ligid.brushSizeRangeBar(xOffset,uiactionsMaxScreenWidth);//Changes the global variable
 	}
 	if (brushBlurRangeBarPressed) {
-		ligid.brushBlurRangeBar(xOffset,uiactionsMaxScreenWidth,uiactionsMaxScreenHeight);//Changes the global variable
+		ligid.brushBlurRangeBar(xOffset,uiactionsMaxScreenWidth,uiactionsMaxScreenHeight,true);//Changes the global variable
 	}
 	if (brushRotationRangeBarPressed) {
 		ligid.brushRotationRangeBar(xOffset, uiactionsMaxScreenWidth, uiactionsMaxScreenHeight);//Changes the global variable

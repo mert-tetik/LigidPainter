@@ -89,6 +89,9 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 			unsigned int FBO;
 			glset.genFramebuffers(FBO);
 			glset.bindFramebuffer(FBO);
+			
+			float opacity = ((opacityRangeBarValue + 0.11f) * 4.54545454545f); //-0.11 - 0.11 --> 0 - 1
+
 			for (size_t i = 0; i < differenceBetweenMousePoints; i++)
 			{
 				if (differenceBetweenMousePoints > 10) {
@@ -107,7 +110,6 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 				}
 				//Get the painting area of the screen texture to the screenTextureSquare
 
-				float opacity = ((opacityRangeBarValue + 0.11f) * 4.54545454545f); //-0.11 - 0.11 --> 0 - 1
 				//Avoid writing low value onto high value
 				for (size_t i = 0; i < distanceX * distanceY * 3; i++)
 				{

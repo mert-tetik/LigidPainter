@@ -241,7 +241,7 @@ unsigned int GlSet::createScreenFrameBufferObject() {
 WindowData GlSet::getWindow() {
 	glfwInit();
 	//glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	GLFWwindow* window = glfwCreateWindow(3840,2160, "LigidPainter", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(3845,2165, "LigidPainter", NULL, NULL);
 	glfwMakeContextCurrent(window);
 
 	int windowMaxWidth;

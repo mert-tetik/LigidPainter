@@ -95,7 +95,7 @@ public:
 	void colorBoxColorRangeBar(float yOffset, int height);
 	void colorBoxPickerButton(float xOffset, float yOffset, int width, int height);
 	void brushSizeRangeBar(float xOffset, int width);
-	void brushBlurRangeBar(float xOffset, int width, int height);
+	void brushBlurRangeBar(float xOffset, int width, int height,bool renderTiny);
 	void brushRotationRangeBar(float xOffset, int width, int height);
 	void brushOpacityRangeBar(float xOffset, int width, int height);
 	void brushSpacingRangeBar(float xOffset, int width, int height);
