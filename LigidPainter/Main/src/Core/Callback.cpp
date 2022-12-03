@@ -454,9 +454,6 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	else if (useNegativeForDrawingCheckboxEnter) {
 		glfwSetCursor(window, pointerCursor);
 	}
-	else if (paintingDropperEnter){
-		glfwSetCursor(window, pointerCursor);
-	}
 	else if (paintingFillNumericModifierPEnter || paintingFillNumericModifierNEnter){
 		glfwSetCursor(window, pointerCursor);
 	}
@@ -467,6 +464,9 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if(hexValueTextboxEnter){
+		glfwSetCursor(window, pointerCursor);
+	}
+	else if (paintingDropperEnter){
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if (!panelChangeHover){

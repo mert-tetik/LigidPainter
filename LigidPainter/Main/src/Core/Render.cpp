@@ -317,27 +317,27 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		ui.box(0.035f, 0.07f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
 
 		//Brush size rangebar
-		ui.renderText(renderPrograms.program, "Size", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.02f, 0.25f+0.04f, 0.00022f);
+		ui.renderText(renderPrograms.program, "Size", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.02f, 0.25f+0.04f-0.015f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.22f+0.02f, renderData.brushSizeRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.27f,1,icons.MaskScale);
 
 		//Brush blur rangebar
-		ui.renderText(renderPrograms.program, "Blur", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.02f, +0.125f+0.06f, 0.00022f);
+		ui.renderText(renderPrograms.program, "Blur", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.02f, +0.125f+0.06f-0.015f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.09f+0.04f, brushBlurRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.14f,1,icons.MaskGausBlur);
 
 		//Brush rotation rangebar
-		ui.renderText(renderPrograms.program, "Rotation", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.04f, -0.005f+0.08f, 0.00022f);
+		ui.renderText(renderPrograms.program, "Rotation", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.04f, -0.005f+0.08f-0.015f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.04f+0.06f, brushRotationRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, +0.01f,1,icons.MaskRotation);
 
 		//Brush opacity rangebar
-		ui.renderText(renderPrograms.program, "Opacity", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.035f, -0.135f+0.10f, 0.00022f);
+		ui.renderText(renderPrograms.program, "Opacity", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.035f, -0.135f+0.10f-0.015f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.17f+0.08f, brushOpacityRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, -0.12f,1,icons.MaskOpacity);
 
 		//Brush spacing rangebar
-		ui.renderText(renderPrograms.program, "Spacing", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.035f, -0.265f+0.12f, 0.00022f);
+		ui.renderText(renderPrograms.program, "Spacing", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.035f, -0.265f+0.12f-0.015f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.30f+0.1f, brushSpacingRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, -0.25f,1,icons.MaskSpacing);
 

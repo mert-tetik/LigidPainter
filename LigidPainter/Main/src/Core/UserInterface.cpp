@@ -607,13 +607,13 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 		float w = ch.Size.x * scale;
 		float h = ch.Size.y * scale;
 		std::vector <float> vertices = {
-			 xpos,     ypos + h, 0.99f  ,0.0f, 0.0f,0,0,0,
+			 xpos,     ypos + h + 0.004f, 0.99f  ,0.0f, 0.0f,0,0,0,
 			 xpos,     ypos,     0.99f  ,0.0f, 1.0f,0,0,0,
-			 xpos-0.001f + w, ypos,     0.99f  ,1.0f, 1.0f,0,0,0,
+			 xpos + w, ypos,     0.99f  ,1.0f, 1.0f,0,0,0,
 			
-			 xpos,     ypos + h, 0.99f  ,0.0f, 0.0f,0,0,0,
-			 xpos-0.001f + w, ypos,     0.99f  ,1.0f, 1.0f,0,0,0,
-			 xpos-0.001f + w, ypos + h, 0.99f  ,1.0f, 0.0f,0,0,0
+			 xpos,     ypos + h + 0.004f, 0.99f  ,0.0f, 0.0f,0,0,0,
+			 xpos + w, ypos,     0.99f  ,1.0f, 1.0f,0,0,0,
+			 xpos + w, ypos + h+ 0.004f, 0.99f  ,1.0f, 0.0f,0,0,0
 		};
 		glset.bindTexture(ch.TextureID);
 		glset.drawArrays(vertices, false);

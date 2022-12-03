@@ -311,7 +311,7 @@ bool LigidPainter::run()
 	ui.uploadChars();
 
 	//Load brush mask textures
-
+	
 	struct dirent *d;
     DIR *dr;
     dr = opendir("./LigidPainter/Resources/Textures");
@@ -379,7 +379,7 @@ bool LigidPainter::run()
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 
 	//Screen Texture
-	GLubyte* screenTexture = new GLubyte[windowData.windowMaxWidth * windowData.windowMaxHeight * 3];
+	GLubyte* screenTexture = new GLubyte[(windowData.windowMaxWidth/2) * (windowData.windowMaxHeight/2) * 3];
 	ScreenPaintingReturnData screenPaintingReturnData; 
 
 	screenPaintingReturnData = txtr.createScreenPaintTexture(screenTexture,window);
@@ -440,6 +440,8 @@ bool LigidPainter::run()
 	GLFWcursor* dropperCursor = glfwCreateCursor(images,0,30);
 	stbi_image_free(images[0].pixels);
 
+	bool textureDemonstratorButtonPressed = false;
+	
 	while (true)
 	{
 		glfwPollEvents();
@@ -452,8 +454,12 @@ bool LigidPainter::run()
 
 		//Release textboxes
 		if ((glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS)){
-			if(!callbackData.exportFileNameTextBoxEnter)
+			if(!callbackData.exportFileNameTextBoxEnter){
 				exportFileNameTextBoxPressed = false;
+				if(exportFileName == ""){
+					exportFileName = "LP_Export";
+				}	
+			}
 			if(!callbackData.hexValueTextboxEnter){
 				hexValTextboxPressed = false;
 				textBoxActiveChar = 6;
@@ -466,14 +472,18 @@ bool LigidPainter::run()
 				//Check if texture demonstrator button clicked
 		if(uiActData.textureDemonstratorButtonPressed){
 			textureDemonstratorButtonPressCounter++;
+			textureDemonstratorButtonPressed = true;
 		}
-		if(textureDemonstratorButtonPressCounter < 20 && uiActData.textureDemonstratorButtonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE && !textureDemonstratorButtonPosChanged){
+		if(textureDemonstratorButtonPressCounter < 20 && textureDemonstratorButtonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE && !textureDemonstratorButtonPosChanged){
 			textureDemonstratorButtonPressClicked = true;
+			textureDemonstratorButtonPressed = false;
+
 		}
 		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
 			textureDemonstratorButtonPressCounter = 0;
+			textureDemonstratorButtonPressed = false;
+			textureDemonstratorButtonPosChanged = false;
 		}
-		textureDemonstratorButtonPosChanged = false;
 
 
 		//Ctrl + x use negative checkbox
@@ -531,7 +541,7 @@ bool LigidPainter::run()
 		//Text input
 		charPressCounter++;
 		if(glfwGetKey(window,pressedChar) && (charPressCounter % charPressingSensivity == 0 || pressedCharChanged)){
-			if(exportFileNameTextBoxPressed){
+			if(exportFileNameTextBoxPressed && exportFileName.size() < 20){
 				if(pressedChar == 32){
 					exportFileName += ' ';
 				}
@@ -718,7 +728,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	}
 	//Texture demonstrator
 	bool hideCursor = uiAct.updateRangeValues(window,xOffset,yOffset,width,height); 
-	if (hideCursor) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
+	if(paintingDropperPressed){
+		doPainting = false;
+	}
+	else if (hideCursor) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		enablePanelMovement = false;
 		doPainting = false;
