@@ -192,7 +192,7 @@ bool panelChanging = false; //Disable painting while changing panel sizes
 
 bool brushValChanged = true;
 
-int paintingFillNumericModifierVal = 5;
+int paintingFillNumericModifierVal = 10;
 
 bool caps = false; //GLFW_MOD_CAPS_LOCK
 

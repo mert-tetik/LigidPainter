@@ -189,31 +189,31 @@ bool UiActions::updateRangeValues(GLFWwindow* window, float xOffset,float yOffse
     LigidPainter ligid;
     
     if (brushSizeRangeBarPressed) {
-		ligid.brushSizeRangeBar(xOffset,uiactionsMaxScreenWidth);//Changes the global variable
+		ligid.brushSizeRangeBar(xOffset,screenWidth);//Changes the global variable
 	}
 	if (brushBlurRangeBarPressed) {
-		ligid.brushBlurRangeBar(xOffset,uiactionsMaxScreenWidth,uiactionsMaxScreenHeight,true);//Changes the global variable
+		ligid.brushBlurRangeBar(xOffset,screenWidth,screenHeight,true);//Changes the global variable
 	}
 	if (brushRotationRangeBarPressed) {
-		ligid.brushRotationRangeBar(xOffset, uiactionsMaxScreenWidth, uiactionsMaxScreenHeight);//Changes the global variable
+		ligid.brushRotationRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
 	}
 	if (brushOpacityRangeBarPressed) {
-		ligid.brushOpacityRangeBar(xOffset, uiactionsMaxScreenWidth, uiactionsMaxScreenHeight);//Changes the global variable
+		ligid.brushOpacityRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
 	}
 	if (brushSpacingRangeBarPressed) {
-		ligid.brushSpacingRangeBar(xOffset, uiactionsMaxScreenWidth, uiactionsMaxScreenHeight);//Changes the global variable
+		ligid.brushSpacingRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
 	}
 	if (colorBoxColorRangeBarPressed) {
-		ligid.colorBoxColorRangeBar(yOffset,uiactionsMaxScreenHeight);//Changes the global variable
+		ligid.colorBoxColorRangeBar(yOffset,screenHeight);//Changes the global variable
 	}
 	if (colorBoxPickerPressed) {
 		ligid.colorBoxPickerButton(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
 	}
 	if (textureDemonstratorButtonPressed) {
-		ligid.textureDemonstratorButton(xOffset,yOffset,uiactionsMaxScreenWidth,uiactionsMaxScreenHeight);//Changes the global variable
+		ligid.textureDemonstratorButton(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
 	}
 	if (textureDemonstratorBoundariesPressed) {
-		ligid.textureDemonstratorBoundaries(xOffset,yOffset,uiactionsMaxScreenWidth,uiactionsMaxScreenHeight);//Changes the global variable
+		ligid.textureDemonstratorBoundaries(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
 	}
 	if(maskPanelSliderPressed){
 		ligid.maskPanelSlider(yOffset,uiactionsMaxScreenHeight);//Changes the global variable
