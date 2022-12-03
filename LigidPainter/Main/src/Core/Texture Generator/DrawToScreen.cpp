@@ -118,10 +118,16 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 					for (size_t i = 0; i < distanceX * distanceY * 3; i++)
 					{
 						//resultSquare[i] = max((int)resizedPixels[i], (int)(screenTextureSquare[i] * 255)); //take max value
+						//resultSquare[i] = min(max((int)resizedPixels[i], (int)(screenTextureSquare[i] * 255)) + (int)(screenTextureSquare[i] * 255)/10,255); //take max value
+
 						if(useNegativeForDrawing)
-							resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, 1.0f -(resizedPixels[i] / 255.0f)) * 255; //Mix
+							resultSquare[i] = max(255 - (int)resizedPixels[i], (int)(screenTextureSquare[i] * 255)); //take max value
+							//resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, 1.0f -(max(resizedPixels[i] - screenTextureSquare[i],0.0001f) / 255.0f)) * 255; //Mix
+
 						else
-							resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, (resizedPixels[i] / 255.0f)) * 255; //Mix
+							resultSquare[i] = max((int)resizedPixels[i], (int)(screenTextureSquare[i] * 255)); //take max value
+
+							//resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, (max(resizedPixels[i] - screenTextureSquare[i],0.0001f) / 255.0f)) * 255; //Mix
 						//resultSquare[i] = min(resizedPixels[i] + (int)(screenTextureSquare[i] * 255), 255); //sum up
 					}
 					//Avoid writing low value onto high value

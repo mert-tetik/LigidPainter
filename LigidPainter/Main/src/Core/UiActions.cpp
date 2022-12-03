@@ -207,7 +207,7 @@ bool UiActions::updateRangeValues(GLFWwindow* window, float xOffset,float yOffse
 		ligid.colorBoxColorRangeBar(yOffset,uiactionsMaxScreenHeight);//Changes the global variable
 	}
 	if (colorBoxPickerPressed) {
-		ligid.colorBoxPickerButton(xOffset,yOffset,uiactionsMaxScreenWidth,uiactionsMaxScreenHeight);//Changes the global variable
+		ligid.colorBoxPickerButton(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
 	}
 	if (textureDemonstratorButtonPressed) {
 		ligid.textureDemonstratorButton(xOffset,yOffset,uiactionsMaxScreenWidth,uiactionsMaxScreenHeight);//Changes the global variable

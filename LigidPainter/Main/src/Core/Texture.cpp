@@ -187,7 +187,7 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	if(!renderTiny){
 		trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
 		trans = glm::rotate(trans, glm::radians(rotation), glm::vec3(0.0, 0.0, 1.0));
-		trans = glm::scale(trans, glm::vec3(0.8, 0.8, 0.8));
+		trans = glm::scale(trans, glm::vec3(0.7, 0.7, 0.7));
 		glset.uniformMatrix4fv(txtrPrograms.program, "renderTrans", trans);
 	}
 	else{

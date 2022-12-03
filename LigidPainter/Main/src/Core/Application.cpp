@@ -446,7 +446,7 @@ bool LigidPainter::run()
 	{
 		glfwPollEvents();
 
-		util.printRenderingSpeed();
+		//util.printRenderingSpeed();
 
 		updateCameraPosChanging();
 
@@ -499,7 +499,6 @@ bool LigidPainter::run()
 		if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_X) == GLFW_RELEASE){
 			doCtrlX = true;
 		}
-
 
 
 		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !callbackData.colorBoxPickerEnter) || colorpickerHexValTextboxValChanged){
@@ -830,7 +829,16 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue){
 	glset.uniform3fv(programs.program, "drawColor", RGBval);
 
 	if(changeHue){
-		if(hsvVal.r > 247.0){
+		if(hsvVal.r > 106.0 && hsvVal.r < 107.0){
+			colorBoxColorRangeBarValue = -0.00f;	
+		}
+		else if(hsvVal.r > 112.0 && hsvVal.r < 114.0){
+			colorBoxColorRangeBarValue = 0.015f;	
+		}
+		else if(hsvVal.r > 123.0 && hsvVal.r < 125.0){
+			colorBoxColorRangeBarValue = 0.032f;	
+		}
+		else if(hsvVal.r > 247.0){
 			colorBoxColorRangeBarValue = 0.195f;	
 		}
 		else if(hsvVal.r < 247.0 && hsvVal.r > 242.0){
@@ -947,6 +955,7 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue){
 		else{
 			colorBoxColorRangeBarValue = (hsvVal.r / 653.846153846f) - 0.195f + 0.02f; //0.195
 		}
+		cout << hsvVal.r << ' ' << colorBoxColorRangeBarValue << '\n';
 	}
 	colorBoxPickerValue_x = (hsvVal.g / 1342.10526316f) - 0.095f; //0.095
 	colorBoxPickerValue_y = (hsvVal.b / 653.846153846f) - 0.195f; //0.195
