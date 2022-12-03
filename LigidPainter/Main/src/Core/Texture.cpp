@@ -18,6 +18,8 @@
 using namespace std;
 
 Programs txtrPrograms;
+int textureMaxScreenWidth;
+int textureMaxScreenHeight;
 
 unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, unsigned int desiredHeight,bool update) {
 	//Leave desiredWidth 0 if no resize wanted
@@ -114,7 +116,7 @@ TextureData Texture::getTextureData(const char* path) {
 }
 ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTexture,GLFWwindow* window) {
 	ScreenPaintingReturnData screenPaintingReturnData; 
-	std::fill_n(screenTexture, 1920 * 1080* 3, 0);
+	std::fill_n(screenTexture, textureMaxScreenWidth* textureMaxScreenHeight* 3, 0);
 	GlSet glset;
 
 	//Normal screen painting texture
@@ -128,13 +130,13 @@ ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTextu
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1920, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, screenTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureMaxScreenWidth, textureMaxScreenHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, screenTexture);
 	glset.generateMipmap();
 
 
 	//Mirrored screen painting texture
-	GLubyte* mirroredScreenTexture = new GLubyte[1920 * 1080 * 3];
-	std::fill_n(mirroredScreenTexture, 1920 * 1080* 3, 0);
+	GLubyte* mirroredScreenTexture = new GLubyte[textureMaxScreenWidth * textureMaxScreenHeight * 3];
+	std::fill_n(mirroredScreenTexture, textureMaxScreenWidth * textureMaxScreenHeight* 3, 0);
 
 	glset.activeTexture(GL_TEXTURE3);
 	unsigned int textureIDMir;
@@ -146,7 +148,7 @@ ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTextu
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1920, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, mirroredScreenTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureMaxScreenWidth, textureMaxScreenHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, mirroredScreenTexture);
 	glset.generateMipmap();
 
 	delete(mirroredScreenTexture);
@@ -158,18 +160,18 @@ ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTextu
 }
 void Texture::refreshScreenDrawingTexture() {
 	GlSet glset;
-	GLubyte* screenTextureX = new GLubyte[1920 * 1080 * 3];//Deleted
-	std::fill_n(screenTextureX, 1920 * 1080 * 3, 0);
+	GLubyte* screenTextureX = new GLubyte[textureMaxScreenWidth * textureMaxScreenHeight * 3];//Deleted
+	std::fill_n(screenTextureX, textureMaxScreenWidth * textureMaxScreenHeight * 3, 0);
 	glset.activeTexture(GL_TEXTURE4);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1920, 1080, GL_RGB, GL_UNSIGNED_BYTE, screenTextureX); //Refresh Screen Texture
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, textureMaxScreenWidth, textureMaxScreenHeight, GL_RGB, GL_UNSIGNED_BYTE, screenTextureX); //Refresh Screen Texture
 	glset.generateMipmap();
 	delete(screenTextureX);
 
 	//Mirrored
-	GLubyte* screenTextureM = new GLubyte[1080 * 1080 * 3];//Deleted
-	std::fill_n(screenTextureM, 1080 * 1080 * 3, 0);
+	GLubyte* screenTextureM = new GLubyte[textureMaxScreenHeight * textureMaxScreenHeight * 3];//Deleted
+	std::fill_n(screenTextureM, textureMaxScreenHeight * textureMaxScreenHeight * 3, 0);
 	glset.activeTexture(GL_TEXTURE3);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, screenTextureM); //Refresh Screen Texture
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, textureMaxScreenHeight, textureMaxScreenHeight, GL_RGB, GL_UNSIGNED_BYTE, screenTextureM); //Refresh Screen Texture
 	glset.generateMipmap();
 	delete(screenTextureM);
 }
@@ -329,7 +331,7 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	glset.uniform1i(txtrPrograms.program, "isRenderTextureModeV", 0);
 	glset.uniform1i(txtrPrograms.program, "isRenderTextureMode", 0);
 	glset.bindFramebuffer(0);
-	glViewport(0, -(1072 - screenSize_y), 1920, 1072);
+	glViewport(0, -(textureMaxScreenHeight - screenSize_y), textureMaxScreenWidth, textureMaxScreenHeight);
 
 
 	delete(rotatedMaskTxtr);
@@ -386,4 +388,8 @@ InitializedTextures Texture::initTextures(const char* maskTexturePath){
 }
 void Texture::sendProgramsToTextures(Programs apptxtrPrograms){
 	txtrPrograms = apptxtrPrograms;
+}
+void Texture::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
+	textureMaxScreenHeight = maxScreenHeight;
+	textureMaxScreenWidth = maxScreenWidth;
 }

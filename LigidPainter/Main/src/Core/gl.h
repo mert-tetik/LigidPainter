@@ -3,7 +3,11 @@
 
 
 	
-
+struct WindowData{
+	int windowMaxWidth;
+	int windowMaxHeight;
+	GLFWwindow* window;
+};
 class GlSet {
 public:
 	void drawArrays(std::vector<float>& vertices, bool isLine);
@@ -38,7 +42,7 @@ public:
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
 	Programs getProgram();
 
-	GLFWwindow* getWindow();
+	WindowData getWindow();
 	unsigned int createScreenFrameBufferObject();
 
 };

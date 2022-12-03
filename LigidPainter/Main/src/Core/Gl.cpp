@@ -238,7 +238,7 @@ unsigned int GlSet::createScreenFrameBufferObject() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	return FBO;
 }
-GLFWwindow* GlSet::getWindow() {
+WindowData GlSet::getWindow() {
 	glfwInit();
 	//glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	GLFWwindow* window = glfwCreateWindow(3840,2160, "LigidPainter", NULL, NULL);
@@ -247,7 +247,6 @@ GLFWwindow* GlSet::getWindow() {
 	int windowMaxWidth;
 	int windowMaxHeight;
 	glfwGetWindowSize(window,&windowMaxWidth,&windowMaxHeight);
-	std::cout << windowMaxHeight << ' ' << windowMaxWidth << '\n';
 
 	GLFWimage images[1];
 	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/logo-1080x.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
@@ -255,5 +254,9 @@ GLFWwindow* GlSet::getWindow() {
 	stbi_image_free(images[0].pixels);
 
 	gladLoadGL();
-	return window;
+	WindowData windowData;
+	windowData.window = window;
+	windowData.windowMaxWidth = windowMaxWidth;
+	windowData.windowMaxHeight = windowMaxHeight;
+	return windowData;
 }

@@ -112,5 +112,6 @@ public:
 	void drawLightObject(glm::vec3 lightPos);
 	void renderSkyBox();
 	void sendProgramsToRender(Programs appPrograms);
+    void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 };
 #endif // !RGDRENDER_H

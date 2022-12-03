@@ -25,6 +25,10 @@
 bool noButtonClick;
 
 bool clickTaken = false;
+
+int uiactionsMaxScreenWidth;
+int uiactionsMaxScreenHeight;
+
 void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover) {
 	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTaken) {
 		if (!callbackData.addImageButtonEnter && !callbackData.addMaskTextureButtonEnter && !callbackData.addPlaneButtonEnter
@@ -185,34 +189,34 @@ bool UiActions::updateRangeValues(GLFWwindow* window, float xOffset,float yOffse
     LigidPainter ligid;
     
     if (brushSizeRangeBarPressed) {
-		ligid.brushSizeRangeBar(xOffset,1920);//Changes the global variable
+		ligid.brushSizeRangeBar(xOffset,uiactionsMaxScreenWidth);//Changes the global variable
 	}
 	if (brushBlurRangeBarPressed) {
-		ligid.brushBlurRangeBar(xOffset,1920,1072);//Changes the global variable
+		ligid.brushBlurRangeBar(xOffset,uiactionsMaxScreenWidth,uiactionsMaxScreenHeight);//Changes the global variable
 	}
 	if (brushRotationRangeBarPressed) {
-		ligid.brushRotationRangeBar(xOffset, 1920, 1072);//Changes the global variable
+		ligid.brushRotationRangeBar(xOffset, uiactionsMaxScreenWidth, uiactionsMaxScreenHeight);//Changes the global variable
 	}
 	if (brushOpacityRangeBarPressed) {
-		ligid.brushOpacityRangeBar(xOffset, 1920, 1072);//Changes the global variable
+		ligid.brushOpacityRangeBar(xOffset, uiactionsMaxScreenWidth, uiactionsMaxScreenHeight);//Changes the global variable
 	}
 	if (brushSpacingRangeBarPressed) {
-		ligid.brushSpacingRangeBar(xOffset, 1920, 1072);//Changes the global variable
+		ligid.brushSpacingRangeBar(xOffset, uiactionsMaxScreenWidth, uiactionsMaxScreenHeight);//Changes the global variable
 	}
 	if (colorBoxColorRangeBarPressed) {
-		ligid.colorBoxColorRangeBar(yOffset,1072);//Changes the global variable
+		ligid.colorBoxColorRangeBar(yOffset,uiactionsMaxScreenHeight);//Changes the global variable
 	}
 	if (colorBoxPickerPressed) {
-		ligid.colorBoxPickerButton(xOffset,yOffset,1920,1072);//Changes the global variable
+		ligid.colorBoxPickerButton(xOffset,yOffset,uiactionsMaxScreenWidth,uiactionsMaxScreenHeight);//Changes the global variable
 	}
 	if (textureDemonstratorButtonPressed) {
-		ligid.textureDemonstratorButton(xOffset,yOffset,1920,1072);//Changes the global variable
+		ligid.textureDemonstratorButton(xOffset,yOffset,uiactionsMaxScreenWidth,uiactionsMaxScreenHeight);//Changes the global variable
 	}
 	if (textureDemonstratorBoundariesPressed) {
-		ligid.textureDemonstratorBoundaries(xOffset,yOffset,1920,1072);//Changes the global variable
+		ligid.textureDemonstratorBoundaries(xOffset,yOffset,uiactionsMaxScreenWidth,uiactionsMaxScreenHeight);//Changes the global variable
 	}
 	if(maskPanelSliderPressed){
-		ligid.maskPanelSlider(yOffset,1072);//Changes the global variable
+		ligid.maskPanelSlider(yOffset,uiactionsMaxScreenHeight);//Changes the global variable
 	}
     if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed || textureDemonstratorButtonPressed || textureDemonstratorBoundariesPressed || maskPanelSliderPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
         hideCursor = true;
@@ -222,4 +226,9 @@ bool UiActions::updateRangeValues(GLFWwindow* window, float xOffset,float yOffse
 	}
 
     return hideCursor;
+}
+
+void UiActions::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
+	uiactionsMaxScreenHeight = maxScreenHeight;
+	uiactionsMaxScreenWidth = maxScreenWidth;
 }

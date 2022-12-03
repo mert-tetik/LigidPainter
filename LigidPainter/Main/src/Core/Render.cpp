@@ -20,6 +20,9 @@
 
 Programs renderPrograms;
 
+int renderMaxScreenWidth;
+int renderMaxScreenHeight;
+
 //--------------------RENDER UI --------------------\\
 //Button mix val
 float exportDownloadButtonMixVal = 0.0f;
@@ -140,7 +143,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	gl.uniform1i(renderPrograms.program, "isTwoDimensional", 1);
 	gl.uniform1i(renderPrograms.program, "is2D", 1);
 
-	float screenGapX = (1920.0 - screenSizeX)/960.0; 
+	float screenGapX = ((float)renderMaxScreenWidth - screenSizeX)/(((float)renderMaxScreenWidth)/2.0f); 
 
 	//Panel
 	ui.panel(renderData.panelLoc-screenGapX , 0);
@@ -550,7 +553,7 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 0);
 	gl.uniform1i(renderPrograms.program, "renderDepth", 0);
 	gl.uniform1i(renderPrograms.program, "renderMirroredDepth", 0);
-	glViewport(0, -(1072 - screenSizeY), 1920, 1072);
+	glViewport(0, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
 
 	gl.bindFramebuffer(0);
 }
@@ -581,7 +584,7 @@ void ctrlZCheck(GLFWwindow* window) {
 
 void drawBrushIndicator(float distanceX,float screenWidth,float screenHeight,float mouseXpos,float mouseYpos,glm::vec3 color) {
 
-	float sizeX = distanceX / ((1920.0f / (float)screenWidth)); //Match the size of the window
+	float sizeX = distanceX / ((renderMaxScreenWidth / (float)screenWidth)); //Match the size of the window
 
 	GlSet glset;
 	glset.uniform1i(renderPrograms.program, "drawBrushIndicator", 1);
@@ -590,7 +593,6 @@ void drawBrushIndicator(float distanceX,float screenWidth,float screenHeight,flo
 		 sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,1,0,0,0,  // top right
 		 sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,0,0,0,0,  // bottom right
 		-sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0,  // top left 
-
 		 sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,0,0,0,0,  // bottom right
 		-sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom left
 		-sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0  // top left
@@ -723,7 +725,7 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 0);
 	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 0);
 	gl.bindFramebuffer(0);
-	glViewport(0, -(1072 - screenSizeY), 1920, 1072);
+	glViewport(0, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
 
 	//Finish
 }
@@ -771,7 +773,7 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 0);
 	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 0);
 	gl.bindFramebuffer(0);
-	glViewport(0, -(1072 - screenSizeY), 1920, 1072);
+	glViewport(0, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
 
 
 	//Get color value to the color vec
@@ -851,7 +853,7 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	glm::vec3 screenHoverPixel = getScreenHoverPixel(mouseXpos,mouseYpos,screenSizeY);
 
 	if(renderData.doPainting)
-		drawBrushIndicator(renderData.brushSizeIndicator, 1920, 1072, mouseXpos, mouseYpos, colorBoxVal);
+		drawBrushIndicator(renderData.brushSizeIndicator, renderMaxScreenWidth, renderMaxScreenHeight, mouseXpos, mouseYpos, colorBoxVal);
 
 
 	RenderOutData renderOut;
@@ -864,4 +866,8 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 }
 void Render::sendProgramsToRender(Programs apprenderPrograms){
 	renderPrograms = apprenderPrograms;
+}
+void Render::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
+	renderMaxScreenHeight = maxScreenHeight;
+	renderMaxScreenWidth = maxScreenWidth;
 }

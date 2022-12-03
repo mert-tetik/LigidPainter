@@ -26,6 +26,9 @@ Programs uiPrograms;
 
 ColorData colorD;
 
+int uiMaxScreenWidth;
+int uiMaxScreenHeight;
+
 //--------------------INSTRUCTIONS--------------------\\
 
 /*
@@ -308,7 +311,7 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 	int screenSizeX;
 	int screenSizeY;
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
-	glViewport(0, -(1072 - screenSizeY), 1920, 1072);
+	glViewport(0, -(uiMaxScreenHeight - screenSizeY), uiMaxScreenWidth, uiMaxScreenHeight);
 
 	glset.uniform3f(uiPrograms.program, "boxColor", colorRectPixel[0] / 255.0f, colorRectPixel[1] / 255.0f, colorRectPixel[2] / 255.0f);
 	delete(colorRectPixel);
@@ -381,8 +384,8 @@ bool UserInterface::isMouseOnPanelChangeButton(GLFWwindow* window, float positio
 	int screenSizeY;
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
 
-	float mouseFX = ((float)mouseXpos / (1920/2)); //Screen Coord
-	float mouseFY = (((float)mouseYpos / (1072 / 2)) - 1.0f) * -1.0f; //Screen Coord
+	float mouseFX = ((float)mouseXpos / (uiMaxScreenWidth/2)); //Screen Coord
+	float mouseFY = (((float)mouseYpos / (uiMaxScreenHeight / 2)) - 1.0f) * -1.0f; //Screen Coord
 
 	//Barycentric calculations
 	for (size_t i = 0; i < 2; i++)
@@ -441,13 +444,13 @@ bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height
 	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
 	float mouseFX;
 	if (!isPanelMoving) {
-		mouseFX = ((float)mouseXpos / (1920 / 2)) - 1.0f;//Screen Coord
+		mouseFX = ((float)mouseXpos / (uiMaxScreenWidth / 2)) - 1.0f;//Screen Coord
 	}
 	else {
-		mouseFX = ((float)mouseXpos / (1920 / 2));//Screen Coord
+		mouseFX = ((float)mouseXpos / (uiMaxScreenWidth / 2));//Screen Coord
 
 	}
-	float mouseFY = (((float)mouseYpos / (1072 / 2))-1.0f)*-1.0f;//Screen Coord
+	float mouseFY = (((float)mouseYpos / (uiMaxScreenHeight / 2))-1.0f)*-1.0f;//Screen Coord
 
 	//Barycentric calculations
 	for (size_t i = 0; i < 2; i++)
@@ -481,13 +484,13 @@ bool UserInterface::isMouseOnCoords(GLFWwindow*window,int mouseXpos, int mouseYp
 
 	float mouseFX;
 	if (!isPanelMoving) {
-		mouseFX = ((float)mouseXpos / (1920 / 2)) - 1.0f;//Screen Coord
+		mouseFX = ((float)mouseXpos / (uiMaxScreenWidth / 2)) - 1.0f;//Screen Coord
 	}
 	else {
-		mouseFX = ((float)mouseXpos / (1920 / 2));//Screen Coord
+		mouseFX = ((float)mouseXpos / (uiMaxScreenWidth / 2));//Screen Coord
 
 	}
-	float mouseFY = (((float)mouseYpos / (1072 / 2))-1.0f)*-1.0f;//Screen Coord
+	float mouseFY = (((float)mouseYpos / (uiMaxScreenHeight / 2))-1.0f)*-1.0f;//Screen Coord
 
 	//Barycentric calculations
 	for (size_t i = 0; i < 2; i++)
@@ -667,4 +670,8 @@ Icons UserInterface::loadIcons(){
 
 void UserInterface::sendProgramsToUserInterface(Programs appuiPrograms){
 	uiPrograms = appuiPrograms;
+}
+void UserInterface::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
+	uiMaxScreenHeight = maxScreenHeight;
+	uiMaxScreenWidth = maxScreenWidth;
 }

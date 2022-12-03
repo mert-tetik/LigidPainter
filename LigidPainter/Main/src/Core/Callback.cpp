@@ -18,6 +18,9 @@
 #include "stb_image_write.h"
 #include "UiActions.h"
 
+int callbackMaxScreenWidth;
+int callbackMaxScreenHeight;
+
 //Camera 
 float yaw = -90.0f;
 float lastX = 400, lastY = 300;
@@ -282,7 +285,8 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	int screenSizeY;
 	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
 
-	float screenGapX = (1920.0 - screenSizeX)/960.0; 
+		float screenGapX = ((float)callbackMaxScreenWidth - screenSizeX)/(((float)callbackMaxScreenWidth)/2.0f); 
+
 
 	GLFWcursor* pointerCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
 	if (panelData.modelPanelActive) {
@@ -470,9 +474,14 @@ void Callback::framebuffer_size_callback(GLFWwindow* window, int width, int heig
 	GlSet glset;
 	Utilities util;
 	glfwSetWindowSize(window, width, height);
-	glViewport(0, -(1072 - height), 1920, 1072);
+	glViewport(0, -(callbackMaxScreenHeight - height), callbackMaxScreenWidth, callbackMaxScreenHeight);
 
 
 	screenX = width;
 	screenY = height;
+}
+
+void Callback::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
+	callbackMaxScreenHeight = maxScreenHeight;
+	callbackMaxScreenWidth = maxScreenWidth;
 }

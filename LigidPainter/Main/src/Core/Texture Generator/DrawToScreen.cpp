@@ -35,7 +35,7 @@ GLubyte* renderedImage;
 double lastMouseXPosIn = 0;
 double lastMouseYPosIn = 0;
 
-void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs programs) {
+void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs programs,int maxScreenWidth,int maxScreenHeight) {
 	Texture texture;
 	Render render;
 
@@ -65,7 +65,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 		//Setup
 		resizedPixels = new GLubyte[distanceX * distanceY * 3];
 
-		renderedImage = txtr.updateMaskTexture(FBOScreen, 1920, 1072, rotationValue,false);
+		renderedImage = txtr.updateMaskTexture(FBOScreen, maxScreenWidth, maxScreenHeight, rotationValue,false);
 		//Resize
 		if (true) {
 			stbir_resize_uint8(renderedImage, 540, 540, 0, resizedPixels, distanceX, distanceY, 0, 3); //Resize (causes lags)
@@ -103,7 +103,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenPaintingTxtrId, 0);
 				if (screenTextureSquare) {
-					glReadPixels(mouseXpos * ((1920.0f / (float)1920)) - distanceX / 2, 1072 - mouseYpos * ((1080.0f / (float)1072)) - distanceY / 2, distanceX, distanceY, GL_RGB, GL_FLOAT, screenTextureSquare);
+					glReadPixels(mouseXpos - distanceX / 2, maxScreenHeight - mouseYpos - distanceY / 2, distanceX, distanceY, GL_RGB, GL_FLOAT, screenTextureSquare);
 				}
 				//Get the painting area of the screen texture to the screenTextureSquare
 
@@ -122,7 +122,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 
 				//Paint screen mask texture with resultSquare
 				glset.activeTexture(GL_TEXTURE4);
-				glTexSubImage2D(GL_TEXTURE_2D, 0, mouseXpos * ((1920.0f / (float)1920)) - distanceX / 2, 1072 - mouseYpos * ((1080.0f / (float)1072)) - distanceY / 2, distanceX, distanceY, GL_RGB, GL_UNSIGNED_BYTE, resultSquare);
+				glTexSubImage2D(GL_TEXTURE_2D, 0, mouseXpos  - distanceX / 2, maxScreenHeight - mouseYpos - distanceY / 2, distanceX, distanceY, GL_RGB, GL_UNSIGNED_BYTE, resultSquare);
 				glset.generateMipmap();
 				//Paint screen mask texture with resultSquare
 
@@ -154,7 +154,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 		//Finish
 		//Update mirrored screen mask texture
 		}
-		glViewport(0, -(1072 - screenSizeY), 1920, 1072);
+		glViewport(0, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 
 		glset.bindFramebuffer(0);
 		glset.deleteFramebuffers(FBO);

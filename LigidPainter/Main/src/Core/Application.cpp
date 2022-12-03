@@ -33,7 +33,8 @@
 using namespace std;
 
 GlSet glset;
-GLFWwindow* window = glset.getWindow();
+WindowData windowData;
+GLFWwindow* window;
 
 
 #ifdef _WIN32
@@ -271,6 +272,9 @@ bool LigidPainter::run()
 	uiActData.textureDemonstratorBoundariesPressed = false;
 	uiActData.textureDemonstratorButtonPressed = false;
 
+	windowData = glset.getWindow();
+	window = windowData.window;
+
 	//Set Callbacks
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
 	glfwSetKeyCallback(window, key_callback);
@@ -289,6 +293,12 @@ bool LigidPainter::run()
 	ui.sendProgramsToUserInterface(programs);
 	render.sendProgramsToRender(programs);
 	txtr.sendProgramsToTextures(programs);
+
+	callback.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
+	ui.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
+	uiAct.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
+	render.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
+	txtr.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 
 	renderData.window = window;
 
@@ -367,7 +377,7 @@ bool LigidPainter::run()
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 
 	//Screen Texture
-	GLubyte* screenTexture = new GLubyte[1920 * 1080 * 3];
+	GLubyte* screenTexture = new GLubyte[windowData.windowMaxWidth * windowData.windowMaxHeight * 3];
 	ScreenPaintingReturnData screenPaintingReturnData; 
 
 	screenPaintingReturnData = txtr.createScreenPaintTexture(screenTexture,window);
@@ -459,7 +469,7 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE){
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs);
+			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
 			brushValChanged = false;
 			drawingCount = 0;
 			//brushOpacityChanged = false; not used
@@ -653,9 +663,9 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	glfwGetWindowSize(window,&width,&height);
 	
 	//Get mouse position change
-	xOffset = (lastXpos - xpos) / (1925 / width);
+	xOffset = (lastXpos - xpos) / (windowData.windowMaxWidth / width);
 	lastXpos = xpos;
-	yOffset = (lastYpos - ypos) / (1085 / height);
+	yOffset = (lastYpos - ypos) / (windowData.windowMaxHeight / height);
 	lastYpos = ypos;
 	//Get mouse position change
 	

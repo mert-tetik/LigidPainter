@@ -61,5 +61,7 @@ public:
 	void panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX, bool enablePanelMovement);
 	void buttonCheck(GLFWwindow* window, int mouseXPos, int mouseYPos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover);
 	void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+	void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
+
 };
 #endif
