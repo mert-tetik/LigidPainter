@@ -102,10 +102,10 @@ public:
 
     void exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName);
     void renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture);
-	void renderTextures(unsigned int FBOScreen, std::vector<float>& vertices, bool exportImage, bool JPG, bool PNG, const char* exportPath, unsigned int screenSizeX, unsigned int screenSizeY,const char* exportFileName);
-	glm::vec3 getColorBoxValue(unsigned int FBOScreen, float colorBoxPickerValue_x, float colorBoxPickerValue_y, unsigned int screenSizeX, unsigned int screenSizeY);
+	void renderTextures(unsigned int FBOScreen, std::vector<float>& vertices, bool exportImage, bool JPG, bool PNG, const char* exportPath,  int screenSizeX,  int screenSizeY,const char* exportFileName);
+	glm::vec3 getColorBoxValue(unsigned int FBOScreen, float colorBoxPickerValue_x, float colorBoxPickerValue_y,  int screenSizeX,  int screenSizeY);
 
-	void getDepthTexture(std::vector<float>& vertices, unsigned int FBOScreen, unsigned int screenSizeX, unsigned int screenSizeY);
+	void getDepthTexture(std::vector<float>& vertices, unsigned int FBOScreen,  int screenSizeX,  int screenSizeY);
 	void setMatrices();
 	void updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirrorX,bool mirrorY,bool mirrorZ);
 	void getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos); //Not used

@@ -175,7 +175,7 @@ void Texture::refreshScreenDrawingTexture() {
 	glset.generateMipmap();
 	delete(screenTextureM);
 }
-GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenSize_x, unsigned int screenSize_y, float brushRotationRangeBarValue,bool renderTiny) { //rotationValue = rotationBarValue
+GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny) { //rotationValue = rotationBarValue
 	GlSet glset;
 	UserInterface ui;
 	glset.viewport(1080, 1080);
@@ -331,8 +331,8 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen, unsigned int screenS
 	glset.uniform1i(txtrPrograms.program, "isRenderTextureModeV", 0);
 	glset.uniform1i(txtrPrograms.program, "isRenderTextureMode", 0);
 	glset.bindFramebuffer(0);
-	glViewport(0, -(textureMaxScreenHeight - screenSize_y), textureMaxScreenWidth, textureMaxScreenHeight);
-
+	glViewport(-(textureMaxScreenWidth - screenSize_x)/2, -(textureMaxScreenHeight - screenSize_y), textureMaxScreenWidth, textureMaxScreenHeight);
+	std::cout << -(textureMaxScreenWidth - screenSize_x)/2 << ' ';  
 
 	delete(rotatedMaskTxtr);
 	delete(horizontalBlurMaskTxtr);

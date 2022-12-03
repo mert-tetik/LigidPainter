@@ -184,7 +184,7 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
     uiData.textureDemonstratorButtonPressed = textureDemonstratorButtonPressed;
     return uiData;
 }
-bool UiActions::updateRangeValues(GLFWwindow* window, float xOffset,float yOffset,unsigned int screenWidth,unsigned int screenHeight){
+bool UiActions::updateRangeValues(GLFWwindow* window, float xOffset,float yOffset, int screenWidth, int screenHeight){
     bool hideCursor;
     LigidPainter ligid;
     

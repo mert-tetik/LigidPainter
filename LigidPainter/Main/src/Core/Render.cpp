@@ -143,7 +143,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	gl.uniform1i(renderPrograms.program, "isTwoDimensional", 1);
 	gl.uniform1i(renderPrograms.program, "is2D", 1);
 
-	float screenGapX = ((float)renderMaxScreenWidth - screenSizeX)/(((float)renderMaxScreenWidth)/2.0f); 
+	float screenGapX = ((float)renderMaxScreenWidth - screenSizeX)/(((float)renderMaxScreenWidth)/2.0f)/2.0f; 
 
 	//Panel
 	ui.panel(renderData.panelLoc-screenGapX , 0);
@@ -515,7 +515,7 @@ void Render::drawLightObject(glm::vec3 lightPos) {
 	// glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
-void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen, unsigned int screenSizeX, unsigned int screenSizeY) {
+void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen,  int screenSizeX,  int screenSizeY) {
 	Texture txtr;
     GlSet gl;
 
@@ -553,7 +553,7 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 0);
 	gl.uniform1i(renderPrograms.program, "renderDepth", 0);
 	gl.uniform1i(renderPrograms.program, "renderMirroredDepth", 0);
-	glViewport(0, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
+	glViewport(-(renderMaxScreenWidth - screenSizeX)/2, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
 
 	gl.bindFramebuffer(0);
 }
@@ -584,18 +584,19 @@ void ctrlZCheck(GLFWwindow* window) {
 
 void drawBrushIndicator(float distanceX,float screenWidth,float screenHeight,float mouseXpos,float mouseYpos,glm::vec3 color) {
 
-	float sizeX = distanceX / ((renderMaxScreenWidth / (float)screenWidth)); //Match the size of the window
-
+	float sizeX = distanceX; //Match the size of the window
+	float screenGapX = ((float)renderMaxScreenWidth - (float)screenWidth)/(((float)renderMaxScreenWidth)/2.0f)/2.0f; 
+	
 	GlSet glset;
 	glset.uniform1i(renderPrograms.program, "drawBrushIndicator", 1);
 	std::vector<float> paintingSquare{
 		// first triangle
-		 sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,1,0,0,0,  // top right
-		 sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,0,0,0,0,  // bottom right
-		-sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0,  // top left 
-		 sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,1,0,0,0,0,  // bottom right
-		-sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f, -sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom left
-		-sizeX / screenWidth / 1.0f + (float)mouseXpos / screenWidth / 0.5f - 1.0f,  sizeX / screenHeight / 1.0f - (float)mouseYpos / screenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0  // top left
+		( sizeX / renderMaxScreenWidth / 1.0f + (float)mouseXpos / renderMaxScreenWidth / 0.5f - 1.0f)+screenGapX,  sizeX / renderMaxScreenHeight / 1.0f - (float)mouseYpos / renderMaxScreenHeight / 0.5f + 1.0f , 1.0f,1,1,0,0,0,  // top right
+		( sizeX / renderMaxScreenWidth / 1.0f + (float)mouseXpos / renderMaxScreenWidth / 0.5f - 1.0f)+screenGapX, -sizeX / renderMaxScreenHeight / 1.0f - (float)mouseYpos / renderMaxScreenHeight / 0.5f + 1.0f , 1.0f,1,0,0,0,0,  // bottom right
+		(-sizeX / renderMaxScreenWidth / 1.0f + (float)mouseXpos / renderMaxScreenWidth / 0.5f - 1.0f)+screenGapX,  sizeX / renderMaxScreenHeight / 1.0f - (float)mouseYpos / renderMaxScreenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0,  // top left 
+		( sizeX / renderMaxScreenWidth / 1.0f + (float)mouseXpos / renderMaxScreenWidth / 0.5f - 1.0f)+screenGapX, -sizeX / renderMaxScreenHeight / 1.0f - (float)mouseYpos / renderMaxScreenHeight / 0.5f + 1.0f , 1.0f,1,0,0,0,0,  // bottom right
+		(-sizeX / renderMaxScreenWidth / 1.0f + (float)mouseXpos / renderMaxScreenWidth / 0.5f - 1.0f)+screenGapX, -sizeX / renderMaxScreenHeight / 1.0f - (float)mouseYpos / renderMaxScreenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom left
+		(-sizeX / renderMaxScreenWidth / 1.0f + (float)mouseXpos / renderMaxScreenWidth / 0.5f - 1.0f)+screenGapX,  sizeX / renderMaxScreenHeight / 1.0f - (float)mouseYpos / renderMaxScreenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0  // top left
 	};
 	glset.uiDataToShaders(color/glm::vec3(255.0f));
 	glset.uniform1f(renderPrograms.program, "uiOpacity", 0.2f);
@@ -652,7 +653,7 @@ void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsi
 	delete[]renderedTexture;
 }
 
-void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices,bool exportImage, bool JPG, bool PNG, const char* exportPath,unsigned int screenSizeX, unsigned int screenSizeY,const char* exportFileName) {
+void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices,bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName) {
 	int maxTextureHistoryHold = 20;
 
 	std::vector<float> renderVertices = { //Render backside of the uv
@@ -725,11 +726,11 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 0);
 	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 0);
 	gl.bindFramebuffer(0);
-	glViewport(0, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
+	glViewport(-(renderMaxScreenWidth - screenSizeX)/2, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
 
 	//Finish
 }
-glm::vec3 getScreenHoverPixel(double mouseXpos,double mouseYpos,unsigned int screenSizeY){
+glm::vec3 getScreenHoverPixel(double mouseXpos,double mouseYpos, int screenSizeY){
     glm::vec3 screenHoverPixel;
 	GLubyte* screenPixel = new GLubyte[1 * 1 * 3];//Color val
 	glReadPixels(mouseXpos,screenSizeY - mouseYpos, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, screenPixel);//Read the pixel from the framebuffer
@@ -739,7 +740,7 @@ glm::vec3 getScreenHoverPixel(double mouseXpos,double mouseYpos,unsigned int scr
 	delete[] screenPixel;  
     return screenHoverPixel;
 }
-glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerValue_x, float colorBoxPickerValue_y, unsigned int screenSizeX, unsigned int screenSizeY) {
+glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerValue_x, float colorBoxPickerValue_y,  int screenSizeX,  int screenSizeY) {
 	std::vector<float> colorBox = { //Render color box into the screen
 	// first triangle
 	 0.0f,  1.0f, 0.0f,1,1,1,1,1,  // top right
@@ -773,7 +774,7 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 0);
 	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 0);
 	gl.bindFramebuffer(0);
-	glViewport(0, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
+	glViewport(-(renderMaxScreenWidth - screenSizeX)/2, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
 
 
 	//Get color value to the color vec
@@ -853,7 +854,7 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	glm::vec3 screenHoverPixel = getScreenHoverPixel(mouseXpos,mouseYpos,screenSizeY);
 
 	if(renderData.doPainting)
-		drawBrushIndicator(renderData.brushSizeIndicator, renderMaxScreenWidth, renderMaxScreenHeight, mouseXpos, mouseYpos, colorBoxVal);
+		drawBrushIndicator(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorBoxVal);
 
 
 	RenderOutData renderOut;

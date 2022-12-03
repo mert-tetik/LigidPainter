@@ -283,7 +283,7 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	int screenSizeY;
 	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
 
-		float screenGapX = ((float)callbackMaxScreenWidth - screenSizeX)/(((float)callbackMaxScreenWidth)/2.0f); 
+	float screenGapX = ((float)callbackMaxScreenWidth - screenSizeX)/(((float)callbackMaxScreenWidth)/2.0f); 
 
 
 	if(!paintingDropperPressed){
@@ -480,7 +480,7 @@ void Callback::framebuffer_size_callback(GLFWwindow* window, int width, int heig
 	GlSet glset;
 	Utilities util;
 	glfwSetWindowSize(window, width, height);
-	glViewport(0, -(callbackMaxScreenHeight - height), callbackMaxScreenWidth, callbackMaxScreenHeight);
+	glViewport(-(callbackMaxScreenWidth - width)/2, -(callbackMaxScreenHeight - height), callbackMaxScreenWidth, callbackMaxScreenHeight);
 
 
 	screenX = width;

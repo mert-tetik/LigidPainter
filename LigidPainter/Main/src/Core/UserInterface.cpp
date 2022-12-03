@@ -311,7 +311,7 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 	int screenSizeX;
 	int screenSizeY;
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
-	glViewport(0, -(uiMaxScreenHeight - screenSizeY), uiMaxScreenWidth, uiMaxScreenHeight);
+	glViewport(-(uiMaxScreenWidth - screenSizeX)/2, -(uiMaxScreenHeight - screenSizeY), uiMaxScreenWidth, uiMaxScreenHeight);
 
 	glset.uniform3f(uiPrograms.program, "boxColor", colorRectPixel[0] / 255.0f, colorRectPixel[1] / 255.0f, colorRectPixel[2] / 255.0f);
 	delete(colorRectPixel);
