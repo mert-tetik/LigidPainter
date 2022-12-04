@@ -501,25 +501,6 @@ bool LigidPainter::run()
 		}
 
 
-		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !callbackData.colorBoxPickerEnter) || colorpickerHexValTextboxValChanged){
-			if(colorpickerHexValTextboxValChanged){
-				updateColorPicker(util.hexToRGBConverter(colorpickerHexVal),true);//Update colorbox val once color picker hex value textbox value changed
-			}
-			else{
-				updateColorPicker(renderOut.mouseHoverPixel,true);//Update colorbox val once color picker is usen or colorbox is clicked
-				colorBoxValChanged = true;
-			}
-		}
-
-		//Update
-		brushSize = double(brushSizeRangeBarValue + 0.1f) * 800.0 + 20.0 ;
-		renderData = updateRenderData(renderData,textures.depthTexture, brushSize);
-		uidata = updateUiData();
-		panelData.movePanel = callbackData.movePanel;
-		exportData.exportImage = exportImage;
-		exportData.path = exportPath.c_str();
-		exportData.fileName = exportFileName.c_str();
-
 		//Painting
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed) {//Used for spacing
 			drawingCount++;
@@ -610,11 +591,27 @@ bool LigidPainter::run()
 
 
 
+		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !callbackData.colorBoxPickerEnter) || colorpickerHexValTextboxValChanged){
+			if(colorpickerHexValTextboxValChanged){
+				updateColorPicker(util.hexToRGBConverter(colorpickerHexVal),true);//Update colorbox val once color picker hex value textbox value changed
+			}
+			else{
+				updateColorPicker(renderOut.mouseHoverPixel,true);//Update colorbox val once color picker is usen or colorbox is clicked
+			}
+		}
 
 		colorBoxClicked = false;
 		colorBoxPickerButtonPressed = false;
 
 
+		//Update
+		brushSize = double(brushSizeRangeBarValue + 0.1f) * 800.0 + 20.0 ;
+		renderData = updateRenderData(renderData,textures.depthTexture, brushSize);
+		uidata = updateUiData();
+		panelData.movePanel = callbackData.movePanel;
+		exportData.exportImage = exportImage;
+		exportData.path = exportPath.c_str();
+		exportData.fileName = exportFileName.c_str();
 		//Render
 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,maskTextures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged);
 		colorBoxValChanged = false;
@@ -717,6 +714,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	lastYpos = ypos;
 	//Get mouse position change
 	
+
+	float screenGapX = (windowData.windowMaxWidth - width); 
+
+
 	//Texture demonstrator
 	float range = 0.05f;
 	if(xpos > ((textureDemonstratorButtonPosX + textureDemonstratorWidth) - range) * width/2 && xpos < ((textureDemonstratorButtonPosX + textureDemonstratorWidth) + range) * width/2 && height - ypos > ((textureDemonstratorButtonPosY+1.0f - textureDemonstratorHeight) - range) * height/2 && height - ypos < ((textureDemonstratorButtonPosY+1.0f - textureDemonstratorHeight) + range) * height/2 ){
@@ -741,13 +742,14 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	else {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		enablePanelMovement = true;
-		//Restrict painting
-		if (xpos > callbackData.panelLoc * 960 && !callbackData.brushSizeRangeBarEnter && !callbackData.colorBoxColorRangeBarEnter && !callbackData.colorBoxPickerEnter) //Inside of the panel
+		
+		//Check if cursor is inside of the panel
+
+		if (xpos > ((windowData.windowMaxWidth / 2) * callbackData.panelLoc) - screenGapX && !callbackData.brushSizeRangeBarEnter && !callbackData.colorBoxColorRangeBarEnter && !callbackData.colorBoxPickerEnter) //Inside of the panel
 			doPainting = false;
 
-		else if (xpos < callbackData.panelLoc * 960 && panelData.paintingPanelActive) //Painting panel + outside of panel
+		else if (xpos < ((windowData.windowMaxWidth / 2) * callbackData.panelLoc) - screenGapX  && panelData.paintingPanelActive) //Painting panel + outside of panel
 			doPainting = true;
-		//Restrict painting
 	}
 }
 

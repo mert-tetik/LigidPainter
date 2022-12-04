@@ -220,10 +220,10 @@ bool noPanelClick = true;
 void Callback::panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX, bool enablePanelMovement) {
 	panelOffset = mouseXpos - holdXPos;
 	holdXPos = mouseXpos;
-	float screenGapX = (1920.0 - screenSizeX); 
+	float screenGapX = (callbackMaxScreenWidth - screenSizeX); 
 
 	if (enablePanelMovement) {
-		if (mouseXpos > (1920 / 2 * panelLoc) - 10 - screenGapX && mouseXpos < (1920 / 2 * panelLoc) + 10 - screenGapX) {
+		if (mouseXpos > (callbackMaxScreenWidth / 2 * panelLoc) - 10 - screenGapX && mouseXpos < (callbackMaxScreenWidth / 2 * panelLoc) + 10 - screenGapX) {
 			panelChangeHover = true;
 			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
 				panelChangeLoc = true;
