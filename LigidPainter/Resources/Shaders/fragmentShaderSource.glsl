@@ -146,22 +146,77 @@ vec3 getPaintedDiffuse(){
    return mirroredDiffuseDrawMix;
 }
 
+   const float PI = 3.14159265359;
+
+
+float distributionGGX(float NdotH, float roughness){
+   float a     = roughness * roughness;
+   float a2    = a * a;
+   float denom = NdotH * NdotH * (a2 - 1.0) + 1.0;
+   denom = PI * denom * denom;
+   return a2 / max(denom,0.0000001);
+}
+float geometrySmith(float NdotV, float NdotL , float roughness){
+   float r = roughness + 1.0;
+   float k = (r * r) / 8.0;
+   float ggx1 = NdotV / (NdotV * (1.0 - k) + k);
+   float ggx2 = NdotL / (NdotL * (1.0 - k) + k);
+   return ggx1 * ggx2;
+}
+vec3 fresnelSchlick(float HdotV, vec3 baseReflectivity){
+   return baseReflectivity + (1.0 - baseReflectivity) * pow(1.0 - HdotV,5.0);
+}
 vec3 getRealisticResult(vec3 paintedDiffuse){
-   vec3 ambient = vec3(0.7, 0.7, 0.7) * paintedDiffuse;
+   vec3 albedo = vec3(1,0,0);
+   float metallic = 0.0;
+   float roughness = paintedDiffuse.r;
 
-   // diffuse 
-   vec3 norm = normalize(Normal);
-   vec3 lightDir = normalize(lightPos - FragPos);
-   float diff = max(dot(norm, lightDir), 0.0);
-   vec3 diffuse = vec3(1.0f, 1.0f, 1.0f) * diff * paintedDiffuse;
+   vec3 lightPosX = vec3(10);
+   vec3 lightColorX = vec3(300);
 
-    // specular
-   vec3 viewDir = normalize(viewPos - FragPos);
-   vec3 reflectDir = reflect(-lightDir, norm);
-   float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-   vec3 specular = lightColor * spec * vec3(texture(material.specular, TexCoords));
 
-   vec3 result = ambient + diffuse + specular;
+   vec3 N = normalize(Normal);
+   vec3 V = normalize(viewPos - Pos);
+
+   vec3 baseReflectivity = mix(vec3(0.04), albedo, metallic);
+
+   vec3 Lo = vec3(0.0);
+
+   //for
+
+   vec3 L = normalize(lightPosX - Pos);
+   vec3 H = normalize(V + L);
+   float distance = length(lightPosX - Pos);
+   float attenuation = 1.0 / (distance*distance);
+   vec3 radiance = lightColorX * attenuation;
+
+   float NdotV = max(dot(N,V),0.0000001);
+   float NdotL = max(dot(N,L),0.0000001);
+   float HdotV = max(dot(H,V),0.0);
+   float NdotH = max(dot(N,H),0.0);
+   
+   float D = distributionGGX(NdotH,roughness);
+   float G = geometrySmith(NdotV,NdotL,roughness);
+   vec3 F = fresnelSchlick(HdotV, baseReflectivity);
+
+   vec3 specular = D * G * F;
+   specular /= 4.0 * NdotV * NdotL;
+
+   vec3 KD = vec3(1.0) - F;
+
+   KD *= 1.0 - metallic;
+
+   Lo += (KD * albedo / PI + specular) * radiance * NdotL;
+
+   //For
+
+   vec3 ambient = vec3(0.03) * albedo;
+
+   vec3 result = ambient + Lo;
+
+   result = result / (result + vec3(1.0));
+
+   result = pow(result,vec3(1.0/2.2));
 
    return result;
 }
@@ -184,10 +239,8 @@ void main() {
                      //3D model here
                      vec3 paintedDiffuse = getPaintedDiffuse();
                      vec3 result = getRealisticResult(paintedDiffuse);
-                     vec3 I = normalize(Pos - viewPos);
-                     vec3 R = reflect(I, normalize(mix(vec3(rand(vec2(roughness)),rand(vec2(roughness)),rand(vec2(roughness))),Normal,1-roughness)));
-                     vec4 resColor = vec4(result, 1);
-                     color =  mix(vec4(texture(skybox, -R).rgb, 1.0),resColor,0.8);
+
+                     color = vec4(result,1);
                   } 
                   else 
                   {

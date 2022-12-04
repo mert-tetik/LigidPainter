@@ -337,6 +337,7 @@ bool LigidPainter::run()
     cout<<endl;
 
 
+
 	//Load cubemap
 	vector<std::string> faces
 	{
