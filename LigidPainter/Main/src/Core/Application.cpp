@@ -257,6 +257,7 @@ Programs programs;
 bool colorBoxValChanged = true;
 
 bool doCtrlX = true;
+bool doCtrlH = true;
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -501,6 +502,18 @@ bool LigidPainter::run()
 		}
 
 
+
+		//Ctrl + x change texture demonstrator's state
+		if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS && doCtrlH){
+			textureDemonstratorButtonPressClicked = true;
+			doCtrlH = false;
+		}
+		if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_H) == GLFW_RELEASE){
+			doCtrlH = true;
+		}
+
+
+
 		//Painting
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed) {//Used for spacing
 			drawingCount++;
@@ -588,8 +601,6 @@ bool LigidPainter::run()
 			}
 			pressedCharChanged = false;
 		}
-
-
 
 		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !callbackData.colorBoxPickerEnter) || colorpickerHexValTextboxValChanged){
 			if(colorpickerHexValTextboxValChanged){
@@ -1028,9 +1039,9 @@ void LigidPainter::textureDemonstratorButton(float xOffset,float yOffset,int wid
 
 	textureDemonstratorButtonPosChanged = true;
 
-	textureDemonstratorButtonPosX -= xOffset / (width/ 2);
+	textureDemonstratorButtonPosX -= xOffset / (windowData.windowMaxWidth / 2);
 	textureDemonstratorButtonPosX = util.restrictBetween(textureDemonstratorButtonPosX,2.0f,0.0f);
-	textureDemonstratorButtonPosY += yOffset / (height / 2);
+	textureDemonstratorButtonPosY += yOffset / (windowData.windowMaxHeight / 2);
 	textureDemonstratorButtonPosY = util.restrictBetween(textureDemonstratorButtonPosY,0.97f,-1.0f);
 
 }
