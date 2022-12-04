@@ -10,6 +10,6 @@ public:
 	float restrictBetween(float value, float maxVal, float minVal);
 	void printRenderingSpeed();
 	glm::vec3 hexToRGBConverter(std::string hex);
-
+	std::string cropString(std::string text,int maxSize);
 };
 #endif

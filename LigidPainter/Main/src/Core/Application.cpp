@@ -635,7 +635,7 @@ bool LigidPainter::run()
 			for (size_t i = 0; i < maskTextures.size(); i++)
 			{
 				if(maskTextures[i] == renderOut.currentBrushMaskTxtr){
-					maskTextureFile = maskTextureNames[i];
+					maskTextureFile = util.cropString(maskTextureNames[i],20);
 				}
 			}
 		}
@@ -971,7 +971,7 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue){
 		else{
 			colorBoxColorRangeBarValue = (hsvVal.r / 653.846153846f) - 0.195f + 0.02f; //0.195
 		}
-		cout << hsvVal.r << ' ' << colorBoxColorRangeBarValue << '\n';
+		//cout << hsvVal.r << ' ' << colorBoxColorRangeBarValue << '\n';
 	}
 	colorBoxPickerValue_x = (hsvVal.g / 1342.10526316f) - 0.095f; //0.095
 	colorBoxPickerValue_y = (hsvVal.b / 653.846153846f) - 0.195f; //0.195

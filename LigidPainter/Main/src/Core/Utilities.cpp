@@ -212,3 +212,16 @@ glm::vec3 Utilities::hexToRGBConverter(std::string hex){ //takes hex : #000000 (
 	glm::vec3 result =  glm::vec3(r,g,b);
 	return result;
 }
+std::string Utilities::cropString(std::string text,int maxSize){
+	std::string croppedString;
+	bool overload = false;
+	for (size_t i = 0; i < text.size(); i++)
+	{
+		croppedString += text[i];
+		if(i == maxSize){overload = true;break;}
+	}
+	if(overload){
+		for (size_t i = 0; i < 3; i++){croppedString += '.';}
+	}
+	return croppedString;
+}
