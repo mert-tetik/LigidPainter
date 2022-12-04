@@ -74,8 +74,6 @@ uniform int interpretWithUvMask;
 
 uniform samplerCube skybox;
 
-
-
 float far = 10.0f;
 float near = 0.1f;
 float linearizeDepth(float depth){
@@ -167,9 +165,10 @@ vec3 fresnelSchlick(float HdotV, vec3 baseReflectivity){
    return baseReflectivity + (1.0 - baseReflectivity) * pow(1.0 - HdotV,5.0);
 }
 vec3 getRealisticResult(vec3 paintedDiffuse){
-   vec3 albedo = vec3(1,0,0);
+   vec3 albedo = paintedDiffuse;
    float metallic = 0.0;
-   float roughness = paintedDiffuse.r;
+   float roughness = 1.0;
+   float ao = 1;
 
    vec3 lightPosX = vec3(10);
    vec3 lightColorX = vec3(300);
@@ -204,13 +203,17 @@ vec3 getRealisticResult(vec3 paintedDiffuse){
 
    vec3 KD = vec3(1.0) - F;
 
-   KD *= 1.0 - metallic;
+   KD *=  1.0 - metallic;
 
    Lo += (KD * albedo / PI + specular) * radiance * NdotL;
 
    //For
 
-   vec3 ambient = vec3(0.03) * albedo;
+    F = fresnelSchlick(NdotV, baseReflectivity);
+    KD = (1.0 - F) * (1.0 - metallic);
+   vec3 diffuse = texture(skybox,N).rgb * albedo * KD;
+
+   vec3 ambient = diffuse * ao;
 
    vec3 result = ambient + Lo;
 

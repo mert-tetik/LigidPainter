@@ -220,9 +220,9 @@ bool colorBoxClicked = false;
 
 vector<unsigned int> maskTextures;
 vector<string> maskTextureNames;
-unsigned int loadCubemap(std::vector<std::string> faces)
+unsigned int loadCubemap(std::vector<std::string> faces,unsigned int textureSlot)
 {
-	glset.activeTexture(GL_TEXTURE13);
+	glset.activeTexture(textureSlot);
     unsigned int textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
@@ -348,13 +348,23 @@ bool LigidPainter::run()
 	    "LigidPainter/Resources/Cubemap/Skybox/pz.png",
 	    "LigidPainter/Resources/Cubemap/Skybox/nz.png"
 	};
-	unsigned int cubemapTexture = loadCubemap(faces);  
+	unsigned int cubemapTexture = loadCubemap(faces,GL_TEXTURE13);  
 
+	vector<std::string> bluryfaces
+	{
+	    "LigidPainter/Resources/Cubemap/Skybox/pxblur.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/nxblur.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/nyblur.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/pyblur.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/pzblur.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/nzblur.png"
+	};
+	unsigned int cubemapTextureBlury = loadCubemap(bluryfaces,GL_TEXTURE16);  
 
 	glUseProgram(programs.skyboxProgram);
-	glset.uniform1i(6, "skybox", 13);
+	glset.uniform1i(programs.skyboxProgram, "skybox", 13);
 	glUseProgram(programs.program);
-	glset.uniform1i(3, "skybox", 13);
+	glset.uniform1i(programs.program, "skybox", 16);
 
 
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
@@ -443,7 +453,57 @@ bool LigidPainter::run()
 	stbi_image_free(images[0].pixels);
 
 	bool textureDemonstratorButtonPressed = false;
+
+
+
+	// glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f , 0.1f, 10.0f);
+	// glm::mat4 captureViews[]{
+	// 	glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f),glm::vec3(0.0f, -1.0f, 0.0f)),
+	// 	glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(-1.0f,0.0f,0.0f),glm::vec3(0.0f, -1.0f, 0.0f)),
+	// 	glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f),glm::vec3(0.0f, 0.0f, 1.0f)),
+	// 	glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f),glm::vec3(0.0f, 0.0f, -1.0f)),
+	// 	glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,1.0f),glm::vec3(0.0f, -1.0f, 0.0f)),
+	// 	glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f),glm::vec3(0.0f, -1.0f, 0.0f))
+	// };
+	// glset.activeTexture(GL_TEXTURE13);
+	// unsigned int irradianceMap;
+	// glset.genTextures(irradianceMap);
+    // glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
+	// for (unsigned int i = 0; i < 6; i++)
+	// {
+	// 	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0 , GL_RGB , 32 , 32 , 0 , GL_RGB ,GL_FLOAT, nullptr);
+	// }
+	// glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	
+	// unsigned int cubeFBO;
+	// glset.genFramebuffers(cubeFBO);
+	// glset.bindFramebuffer(cubeFBO);
+
+	// glUseProgram(programs.skyboxblurProgram);
+	// glset.uniformMatrix4fv(programs.skyboxblurProgram,"projection",captureProjection);
+	// glset.uniform1i(programs.skyboxblurProgram,"skybox",13);
+
+	// glActiveTexture(GL_TEXTURE13);
+	// //glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+	// glViewport(0,0,32,32);
+
+	// for (size_t i = 0; i < 6; i++)
+	// {
+	// 	glset.uniformMatrix4fv(programs.skyboxblurProgram,"view",captureViews[i]);
+	// 	glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap , 0);
+	// 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// 	render.renderSkyBox();
+	// 	glUseProgram(programs.skyboxblurProgram);
+
+	// }
+	// glset.bindFramebuffer(0);
+	// glUseProgram(programs.program);
+	
+
 	while (true)
 	{
 		glfwPollEvents();

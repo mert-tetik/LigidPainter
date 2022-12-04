@@ -210,8 +210,25 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 	glDeleteShader(iconsVert);
 	glDeleteShader(iconsFrag);
 
+
+
+	//Skybox Blur program
+	unsigned int skyboxblurVert = createShader("LigidPainter/Resources/Shaders/skyboxblur.vert",GL_VERTEX_SHADER);
+	unsigned int skyboxblurFrag = createShader("LigidPainter/Resources/Shaders/skyboxblur.frag",GL_FRAGMENT_SHADER); 
+
+	unsigned int skyboxblurProgram = glCreateProgram();
+	
+	glAttachShader(skyboxblurProgram, skyboxblurVert);
+	glAttachShader(skyboxblurProgram, skyboxblurFrag);
+	glLinkProgram(skyboxblurProgram);
+
+	glDeleteShader(skyboxblurVert);
+	glDeleteShader(skyboxblurFrag);
+
+
 	glPrograms.blurProgram = blurProgram;
 	glPrograms.iconsProgram = iconsProgram;
+	glPrograms.skyboxblurProgram = skyboxblurProgram;
 	glPrograms.program = program;
 	glPrograms.skyboxProgram = skyboxProgram;
 

@@ -8,6 +8,7 @@ struct Programs
 	unsigned int skyboxProgram;
 	unsigned int blurProgram;
 	unsigned int iconsProgram;
+	unsigned int skyboxblurProgram;
 };
 struct Icons{
 	unsigned int dropperIcon;
