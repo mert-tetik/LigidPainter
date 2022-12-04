@@ -374,7 +374,7 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 			exportPathTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX, 0.6f, mouseXPos, mouseYPos, movePanel);
 			exportFileNameTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX, 0.5f, mouseXPos, mouseYPos, movePanel);
 			exportExtJPGCheckBoxEnter = ui.isMouseOnButton(window, 0.014f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX - 0.11f, 0.4f, mouseXPos, mouseYPos, movePanel);
-			exportExtPNGCheckBoxEnter = ui.isMouseOnButton(window, 0.014f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX + 0.05f, 0.4f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
+			exportExtPNGCheckBoxEnter = ui.isMouseOnButton(window, 0.014f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX + 0.05f, 0.4f , mouseXPos, mouseYPos, movePanel);
 			exportDownloadButtonEnter = ui.isMouseOnButton(window, 0.12f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX, 0.2f, mouseXPos, mouseYPos, movePanel);
 
 		}

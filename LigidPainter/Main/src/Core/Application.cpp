@@ -178,7 +178,7 @@ int lastMouseXpos = 0;
 int lastMouseYpos = 0;
 
 int textureDemonstratorButtonPressCounter = 0;
-bool textureDemonstratorButtonPressClicked = false;
+bool textureDemonstratorButtonPressClicked = true;
 bool textureDemonstratorButtonPosChanged = false;
 float textureDemonstratorWidth = 0.4f;
 float textureDemonstratorHeight = 0.8f;
