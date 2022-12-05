@@ -1146,9 +1146,9 @@ void LigidPainter::colorBoxPickerButton(float xOffset, float yOffset, int width,
 	colorBoxPickerButtonPressed = true;
 	Utilities util;
 	colorBoxPickerValue_x -= xOffset / (width / 2);
-	colorBoxPickerValue_x = util.restrictBetween(colorBoxPickerValue_x, 0.095f, -0.095f);//Keep in boundaries
+	colorBoxPickerValue_x = util.restrictBetween(colorBoxPickerValue_x, 0.099f, -0.1f);//Keep in boundaries
 	colorBoxPickerValue_y += yOffset / (height / 2);
-	colorBoxPickerValue_y = util.restrictBetween(colorBoxPickerValue_y, 0.195f, -0.195f);//Keep in boundaries
+	colorBoxPickerValue_y = util.restrictBetween(colorBoxPickerValue_y, 0.199f, -0.2f);//Keep in boundaries
 	colorBoxValChanged = true;
 }
 
