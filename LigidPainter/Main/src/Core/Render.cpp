@@ -255,7 +255,14 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	if (panelData.paintingPanelActive) {
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.9f, "Add Mask Texture", colorData.buttonColor, 0.075f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
 		
-		ui.box(0.005f, 0.015f, renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f + maskPanelSliderValue, "", glm::vec3(0), 0.095f, false, false, 0.9f, 30, glm::vec3(0), 0); //Mask panel slider
+
+		ui.box(0.0f, 0.015f, renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f + maskPanelSliderValue, "",colorData.maskPanelSliderColor, 0.095f, false, false, 0.9f, 20, glm::vec3(0), 0); //Mask panel slider
+
+
+		ui.box(0.008f, 0.125f, renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.675f, "",colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 10000, glm::vec3(0), 0); //Mask panel slider background
+		ui.box(0.0f, 0.015f, renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f , "", colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 20, glm::vec3(0), 0); //Mask panel slider background
+		ui.box(0.0f, 0.015f, renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f - 0.25, "", colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 20, glm::vec3(0), 0); //Mask panel slider background
+
 		gl.uniform1f(renderPrograms.program, "uiOpacity", 0.3f);
 		ui.box(0.15f, 0.15f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.675f, "", colorData.buttonMaskTxtrPanelColor, 0.095f, false, false, 0.9f, 1000, glm::vec3(0), 0); //Mask panel
 		gl.uniform1f(renderPrograms.program, "uiOpacity", 1.0f);
@@ -363,7 +370,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		ui.colorRect(renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.6f, renderData.colorBoxColorRangeBarValue, FBOScreen, renderData.window);
 
 		gl.uniform1f(renderPrograms.program, "uiOpacity", 1.0f);
-		ui.box(0.005f, 0.025f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.095f, -0.85f, "", colorBoxValue / glm::vec3(255), 0.075f, false, false, 0.9f, 10, glm::vec3(0), 0); //indicator for picken color of the color picker
+		ui.box(0.0f, 0.025f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.095f, -0.85f, "", colorBoxValue / glm::vec3(255), 0.075f, false, false, 0.9f, 10, glm::vec3(0), 0); //indicator for picken color of the color picker
 		gl.uniform1f(renderPrograms.program, "uiOpacity", 0.5f);
 		ui.decorationSquare(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.1f, -0.84f); //Decoration for color indicator
 

@@ -30,6 +30,8 @@ struct ColorData //LigidPainter color palette
 	glm::vec3 textureDemonstratorButtonColor = LigidPainterThemeColor;
 	glm::vec3 chosenBrushMaskTextureColor = LigidPainterThemeColor;
 	glm::vec3 brushMaskIconColor = glm::vec3(1.0f);
+	glm::vec3 maskPanelSliderColor = glm::vec3(0.0f);
+	glm::vec3 maskPanelSliderBackgroundColor = glm::vec3(1.0f);
 };
 struct buttonData {
 
