@@ -201,6 +201,12 @@ bool pressedCharChanged;
 
 bool mirrorClick = false;
 
+
+int keyInputFirstKeyHoldingCounter = 0;
+bool keyInputFirstKeyHold = false;
+int textBoxActiveChar = 6;
+bool colorpickerHexValTextboxValChanged = false;
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
 	if(key >= 320 && key <=329){
@@ -212,8 +218,80 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		else
 			caps = true;
 	}
-	pressedChar = key;
+	if(action == 0 || action == 2){
+		if((true)){
+			if(exportFileNameTextBoxPressed && exportFileName.size() < 20){
+				if(key == 32){
+					exportFileName += ' ';
+				}
+				else if(isalpha((char)key)){
+					if(!caps){
+						exportFileName+=(char)key+32;//lowercase
+					}
+					else{
+						exportFileName+=(char)key;//UPPERCASE
+					}
+				}
+				else if(isdigit((char)key)){
+					exportFileName+=(char)(key);//lowercase
+				}
+			}
+			if(hexValTextboxPressed && textBoxActiveChar != 7){
+				if(isdigit((char)key)){
+					colorpickerHexVal[textBoxActiveChar]=(char)(key);//lowercase
+					textBoxActiveChar++;
+					colorpickerHexValTextboxValChanged = true;
+				}
+				else if(key == 'A'){
+					colorpickerHexVal[textBoxActiveChar] = 'a';
+					textBoxActiveChar++;
+					colorpickerHexValTextboxValChanged = true;
+				}
+				else if(key == 'B'){
+					colorpickerHexVal[textBoxActiveChar] = 'b';
+					textBoxActiveChar++;
+					colorpickerHexValTextboxValChanged = true;
+				}
+				else if(key == 'C'){
+					colorpickerHexVal[textBoxActiveChar] = 'c';
+					textBoxActiveChar++;
+					colorpickerHexValTextboxValChanged = true;
+				}
+				else if(key == 'D'){
+					colorpickerHexVal[textBoxActiveChar] = 'd';
+					textBoxActiveChar++;
+					colorpickerHexValTextboxValChanged = true;
+				}
+				else if(key == 'E'){
+					colorpickerHexVal[textBoxActiveChar] = 'e';
+					textBoxActiveChar++;
+					colorpickerHexValTextboxValChanged = true;
+				}
+				else if(key == 'F'){
+					colorpickerHexVal[textBoxActiveChar] = 'f';
+					textBoxActiveChar++;
+					colorpickerHexValTextboxValChanged = true;
+				}
+			}
+			pressedCharChanged = false;
+		}
+		if(key == 259){
+			if(exportFileNameTextBoxPressed && exportFileName != ""){
+				exportFileName.pop_back();
+			}
+			if(hexValTextboxPressed && textBoxActiveChar != 0){
+				colorpickerHexVal[textBoxActiveChar] = '0';
+				textBoxActiveChar--;
+				colorpickerHexValTextboxValChanged = true;
+			}
+			pressedCharChanged = false;
+		}
+	}
 	pressedCharChanged = true;
+	pressedChar = key;
+	keyInputFirstKeyHold = true;
+	keyInputFirstKeyHoldingCounter = 0;
+
 }
 
 bool colorBoxClicked = false;
@@ -434,8 +512,6 @@ bool LigidPainter::run()
 	int charPressingSensivity = 30;
 	int charPressCounter = 0;
 
-	int textBoxActiveChar = 6;
-	bool colorpickerHexValTextboxValChanged = false;
 
 	//Cursors
 	GLFWimage images[1];
@@ -594,74 +670,9 @@ bool LigidPainter::run()
 
 		//Text input
 		charPressCounter++;
-		if(glfwGetKey(window,pressedChar) && (charPressCounter % charPressingSensivity == 0 || pressedCharChanged)){
-			if(exportFileNameTextBoxPressed && exportFileName.size() < 20){
-				if(pressedChar == 32){
-					exportFileName += ' ';
-				}
-				else if(isalpha((char)pressedChar)){
-					if(!caps){
-						exportFileName+=(char)pressedChar+32;//lowercase
-					}
-					else{
-						exportFileName+=(char)pressedChar;//UPPERCASE
-					}
-				}
-				else if(isdigit((char)pressedChar)){
-					exportFileName+=(char)(pressedChar);//lowercase
-				}
-			}
-			if(hexValTextboxPressed && textBoxActiveChar != 7){
-				if(isdigit((char)pressedChar)){
-					colorpickerHexVal[textBoxActiveChar]=(char)(pressedChar);//lowercase
-					textBoxActiveChar++;
-					colorpickerHexValTextboxValChanged = true;
-				}
-				else if(pressedChar == 'A'){
-					colorpickerHexVal[textBoxActiveChar] = 'a';
-					textBoxActiveChar++;
-					colorpickerHexValTextboxValChanged = true;
-				}
-				else if(pressedChar == 'B'){
-					colorpickerHexVal[textBoxActiveChar] = 'b';
-					textBoxActiveChar++;
-					colorpickerHexValTextboxValChanged = true;
-				}
-				else if(pressedChar == 'C'){
-					colorpickerHexVal[textBoxActiveChar] = 'c';
-					textBoxActiveChar++;
-					colorpickerHexValTextboxValChanged = true;
-				}
-				else if(pressedChar == 'D'){
-					colorpickerHexVal[textBoxActiveChar] = 'd';
-					textBoxActiveChar++;
-					colorpickerHexValTextboxValChanged = true;
-				}
-				else if(pressedChar == 'E'){
-					colorpickerHexVal[textBoxActiveChar] = 'e';
-					textBoxActiveChar++;
-					colorpickerHexValTextboxValChanged = true;
-				}
-				else if(pressedChar == 'F'){
-					colorpickerHexVal[textBoxActiveChar] = 'f';
-					textBoxActiveChar++;
-					colorpickerHexValTextboxValChanged = true;
-				}
-			}
-			charPressCounter = 0;
-			pressedCharChanged = false;
-		}
-		if(glfwGetKey(window,GLFW_KEY_BACKSPACE) && (charPressCounter % charPressingSensivity == 0|| pressedCharChanged)){
-			if(exportFileNameTextBoxPressed && exportFileName != ""){
-				exportFileName.pop_back();
-			}
-			if(hexValTextboxPressed && textBoxActiveChar != 0){
-				colorpickerHexVal[textBoxActiveChar] = '0';
-				textBoxActiveChar--;
-				colorpickerHexValTextboxValChanged = true;
-			}
-			pressedCharChanged = false;
-		}
+
+		keyInputFirstKeyHoldingCounter++;
+		
 
 		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !callbackData.colorBoxPickerEnter) || colorpickerHexValTextboxValChanged){
 			if(colorpickerHexValTextboxValChanged){
