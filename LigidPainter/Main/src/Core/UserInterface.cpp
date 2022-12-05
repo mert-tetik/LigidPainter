@@ -72,6 +72,7 @@ void UserInterface::panel(float panelLoc, float) {
 
 void UserInterface::textureDemonstrator(float width,float height, float position_x,float position_y,float z){ 
 	GlSet glset;
+	ColorData clrData;
 	std::vector<float> buttonCoorSq{
 		// first triangle
 		 width + position_x,  position_y, z,1,1,0,0,0,  // top right
@@ -82,7 +83,7 @@ void UserInterface::textureDemonstrator(float width,float height, float position
 		 position_x, -height +position_y, z,0,0,0,0,0,  // bottom left
 		 position_x,  position_y, z,0,1,0,0,0  // top left
 	};
-	box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"",glm::vec3(0),0,0,0,1,10,glm::vec3(0),0);
+	box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDemonstratorButtonColor,0,0,0,1,10,glm::vec3(0),0);
 	glset.uniform1i(3, "is2D", 0);
 	glset.uniform1i(3, "isRenderTextureMode", 1);
 	glset.drawArrays(buttonCoorSq,false);
@@ -305,7 +306,6 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 	glset.uniform1i(uiPrograms.program, "isColorBox", 0);
 	glReadPixels(10, (value + 0.2f) * 2.5f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
 	//Render color rectangle into the screen to get the value
-
 	//Finish
 	glset.uniform1i(uiPrograms.program, "isRenderTextureMode", 0);
 	glset.uniform1i(uiPrograms.program, "isRenderTextureModeV", 0);
@@ -423,10 +423,10 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 		if (!mouseHover)
 			box(0.0f, 0.02f, position_x, position_y, "", colorData.checkBoxColor, 0.00022f, false, false, 0.9f, 10, glm::vec3(0), 0);
 		else
-			box(0.0f, 0.02f, position_x, position_y, "", colorData.checkBoxCheckedColor, 0.00022f, false, false, 0.9f, 10, glm::vec3(0), 0);
+			box(0.0f, 0.02f, position_x, position_y, "", colorData.checkBoxHoverColor, 0.00022f, false, false, 0.9f, 10, glm::vec3(0), 0);
 	}
 	else {
-		box(0.0f, 0.02f, position_x, position_y, "", glm::vec3(1.0f) - colorData.checkBoxColor, 0.00022f, false, false, 0.9f, 10, glm::vec3(0), 0);
+		box(0.0f, 0.02f, position_x, position_y, "", colorData.checkBoxCheckedColor, 0.00022f, false, false, 0.9f, 10, glm::vec3(0), 0);
 
 	}
 	renderText(uiPrograms.program, text, position_x+0.02f, position_y - 0.01, 0.00022f);

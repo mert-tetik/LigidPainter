@@ -233,10 +233,15 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		ui.iconBox(0.020f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f,0.6f,1,icons.Folder,0,colorData.iconColor,colorData.iconColorHover);
 		
 		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false, 0.9f, 10, colorData.buttonColorHover, loadModelButtonMixVal);//Load model button
-		ui.box(0.012f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.0f, "", colorData.buttonColor, 0.047f, false, false, 0.9f, 7, colorData.buttonColorHover, addPanelButtonMixVal);//Load a panel button
+		
+
+		ui.renderText(renderPrograms.program, "3D Models", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.08f, 0.00022f);
+
+		ui.box(0.008f, 0.045f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.0f, "", colorData.buttonColor, 0.047f, false, false, 0.9f, 6, colorData.buttonColorHover, addPanelButtonMixVal);//Load a panel button
 		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX,0.0,0.99,icons.Panel,0,colorData.iconColor,colorData.iconColorHover);
-		ui.box(0.012f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.1f, "", colorData.buttonColor, 0.055f, false, false, 0.9f, 7, colorData.buttonColorHover, addSphereButtonMixVal);//Load a sphere button
-		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX,-0.1f,0.99,icons.Sphere,0,colorData.iconColor,colorData.iconColorHover);
+
+		ui.box(0.008f, 0.045f, renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.1f, "", colorData.buttonColor, 0.055f, false, false, 0.9f, 6, colorData.buttonColorHover, addSphereButtonMixVal);//Load a sphere button
+		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.002,-0.1f,0.99,icons.Sphere,0,colorData.iconColor,colorData.iconColorHover);
 
 
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.08f, 0.3f, "Auto triangulate", colorData.checkBoxColor, uidata.autoTriangulateCheckBoxEnter, uidata.autoTriangulateCheckBoxPressed); //Auto triangulate checkbox
@@ -248,7 +253,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	}
 
 	if (panelData.paintingPanelActive) {
-		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.9f, "Add Mask Texture", colorData.buttonColor, 0.095f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
+		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.9f, "Add Mask Texture", colorData.buttonColor, 0.075f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
 		
 		ui.box(0.005f, 0.015f, renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f + maskPanelSliderValue, "", glm::vec3(0), 0.095f, false, false, 0.9f, 30, glm::vec3(0), 0); //Mask panel slider
 		gl.uniform1f(renderPrograms.program, "uiOpacity", 0.3f);
@@ -285,8 +290,12 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 
 			glUseProgram(renderPrograms.iconsProgram);
 			gl.uniform1i(12,"isMaskIcon",1);
-			gl.uniform3fv(12,"iconColor",colorData.iconColor);
-			gl.uniform3fv(12,"iconColorHover",colorData.iconColorHover);
+			if(maskTextures[i] == currentBrushMaskTexture){
+				gl.uniform3fv(12,"iconColor",colorData.chosenBrushMaskTextureColor);
+			}
+			else{
+				gl.uniform3fv(12,"iconColor",colorData.brushMaskIconColor);
+			}
 			gl.uniform1f(12,"iconMixVal",0);
 			gl.activeTexture(GL_TEXTURE6);
 			gl.bindTexture(maskTextures[i]);
@@ -312,7 +321,11 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		#pragma endregion brushMaskPanel
 
 		gl.uniform1i(renderPrograms.program, "isMaskPanelDisplay", 0);
+
+		gl.uniform1f(renderPrograms.program, "uiOpacity", 0.3f);
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.03f, 0.45f, "Use Negative", colorData.checkBoxColor, uidata.useNegativeForDrawingCheckboxEnter, uidata.useNegativeForDrawingCheckboxPressed); //Auto triangulate checkbox
+		gl.uniform1f(renderPrograms.program, "uiOpacity", 1.0f);
+		
 		ui.renderText(renderPrograms.program, maskTextureFile, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.03f, 0.37f, 0.00022f);
 		ui.box(0.035f, 0.07f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
 

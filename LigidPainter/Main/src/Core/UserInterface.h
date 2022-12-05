@@ -3,6 +3,8 @@
 
 struct ColorData //LigidPainter color palette
 {
+	glm::vec3 LigidPainterThemeColor = glm::vec3(0.043f,0.635f,0.823);
+
 	glm::vec3 viewportBackColor = glm::vec3(0.23f, 0.23f, 0.23f);
 	glm::vec3 panelColor = glm::vec3(0.15f, 0.15f, 0.15f);
 	glm::vec3 panelColorSnd = glm::vec3(0.05f, 0.05f, 0.05f);
@@ -11,9 +13,10 @@ struct ColorData //LigidPainter color palette
 	glm::vec3 buttonColorHover = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 menuBarColor = glm::vec3(0.05f, 0.05f, 0.05f);
 	glm::vec3 textBoxColor = glm::vec3(0.05f, 0.05f, 0.05f);
-	glm::vec3 textBoxColorClicked = glm::vec3(0.35f, 0.35f, 0.35f);
+	glm::vec3 textBoxColorClicked = LigidPainterThemeColor;
 	glm::vec3 checkBoxColor = glm::vec3(0.05f, 0.05f, 0.05f);
-	glm::vec3 checkBoxCheckedColor = glm::vec3(0.17f, 0.17f, 0.17f);
+	glm::vec3 checkBoxHoverColor = glm::vec3(0.15f, 0.15f, 0.15f);
+	glm::vec3 checkBoxCheckedColor = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::vec3 rangeBarBack = glm::vec3(0.1f, 0.1f, 0.1f);
 	glm::vec3 rangeBarFront = glm::vec3(0.6f, 0.6f, 0.6f);
 	glm::vec3 rangeBarSlide = glm::vec3(0.3f, 0.3f, 0.3f);
@@ -24,6 +27,9 @@ struct ColorData //LigidPainter color palette
 	glm::vec3 buttonMaskTxtrPanelColor = glm::vec3(0.13f, 0.13f, 0.13f);
 	glm::vec3 numericModifierArrowColor = glm::vec3(0.6f, 0.6f, 0.6f);
 	glm::vec3 numericModifierArrowHoverColor = glm::vec3(0.1f, 0.1f, 0.1f);
+	glm::vec3 textureDemonstratorButtonColor = LigidPainterThemeColor;
+	glm::vec3 chosenBrushMaskTextureColor = LigidPainterThemeColor;
+	glm::vec3 brushMaskIconColor = glm::vec3(1.0f);
 };
 struct buttonData {
 
