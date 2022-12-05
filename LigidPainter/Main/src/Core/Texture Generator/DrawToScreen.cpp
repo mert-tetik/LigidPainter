@@ -104,28 +104,28 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 				
 				if(addToScreenMaskTxtr){
 					addToScreenMaskTxtr = false;
-					GLubyte* resultSquare = new GLubyte[distanceX * distanceY * 3]; //Write to that array after interpreting resized texture with screen texture
-					GLfloat* screenTextureSquare = new GLfloat[distanceX * distanceY * 3]; //Painting area of the screen texture
+					GLubyte* resultSquare = new GLubyte[distanceX * distanceY]; //Write to that array after interpreting resized texture with screen texture
+					GLfloat* screenTextureSquare = new GLfloat[distanceX * distanceY]; //Painting area of the screen texture
 
 					//Get the painting area of the screen texture to the screenTextureSquare
 					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenPaintingTxtrId, 0);
 					if (screenTextureSquare) {
-						glReadPixels((mouseXpos/2 + screenGapX- distanceX / 2), (maxScreenHeight/2 - mouseYpos/2 - distanceY / 2), distanceX, distanceY, GL_RGB, GL_FLOAT, screenTextureSquare);
+						glReadPixels((mouseXpos/2 + screenGapX- distanceX / 2), (maxScreenHeight/2 - mouseYpos/2 - distanceY / 2), distanceX, distanceY, GL_RED, GL_FLOAT, screenTextureSquare);
 					}
 					//Get the painting area of the screen texture to the screenTextureSquare
 
 					//Avoid writing low value onto high value
-					for (size_t i = 0; i < distanceX * distanceY * 3; i++)
+					for (size_t i = 0; i < distanceX * distanceY; i++)
 					{
 						//resultSquare[i] = max((int)resizedPixels[i], (int)(screenTextureSquare[i] * 255)); //take max value
 						//resultSquare[i] = min(max((int)resizedPixels[i], (int)(screenTextureSquare[i] * 255)) + (int)(screenTextureSquare[i] * 255)/10,255); //take max value
 
 						if(useNegativeForDrawing)
-							resultSquare[i] = max(255.0f - (float)resizedPixels[i] * opacity, (float)(screenTextureSquare[i] * 255.0f)); //take max value
+							resultSquare[i] = max(255.0f - (float)resizedPixels[i*3] * opacity, (float)(screenTextureSquare[i] * 255.0f)); //take max value
 							//resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, 1.0f -(max(resizedPixels[i] - screenTextureSquare[i],0.0001f) / 255.0f)) * 255; //Mix
 
 						else
-							resultSquare[i] = max((float)resizedPixels[i] * opacity, (float)(screenTextureSquare[i] * 255.0f)); //take max value
+							resultSquare[i] = max((float)resizedPixels[i*3] * opacity, (float)(screenTextureSquare[i] * 255.0f)); //take max value
 
 							//resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, (max(resizedPixels[i] - screenTextureSquare[i],0.0001f) / 255.0f)) * 255; //Mix
 						//resultSquare[i] = min(resizedPixels[i] + (int)(screenTextureSquare[i] * 255), 255); //sum up
@@ -134,7 +134,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 
 					//Paint screen mask texture with resultSquare
 					glset.activeTexture(GL_TEXTURE4);
-					glTexSubImage2D(GL_TEXTURE_2D, 0, (mouseXpos/2 + screenGapX - distanceX / 2) ,( maxScreenHeight/2 - mouseYpos/2 - distanceY / 2), distanceX, distanceY, GL_RGB, GL_UNSIGNED_BYTE, resultSquare);
+					glTexSubImage2D(GL_TEXTURE_2D, 0, (mouseXpos/2 + screenGapX - distanceX / 2) ,( maxScreenHeight/2 - mouseYpos/2 - distanceY / 2), distanceX, distanceY, GL_RED, GL_UNSIGNED_BYTE, resultSquare);
 					glset.generateMipmap();
 					//Paint screen mask texture with resultSquare
 

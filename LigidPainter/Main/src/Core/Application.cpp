@@ -584,7 +584,7 @@ bool LigidPainter::run()
 	{
 		glfwPollEvents();
 
-		//util.printRenderingSpeed();
+		util.printRenderingSpeed();
 
 		updateCameraPosChanging();
 
