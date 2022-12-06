@@ -258,6 +258,8 @@ unsigned int GlSet::createScreenFrameBufferObject() {
 WindowData GlSet::getWindow() {
 	glfwInit();
 	//glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	int samples = 8;
+	glfwWindowHint(GLFW_SAMPLES, samples);
 	GLFWwindow* window = glfwCreateWindow(3845,2165, "LigidPainter", NULL, NULL);
 	glfwMakeContextCurrent(window);
 

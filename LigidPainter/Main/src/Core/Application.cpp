@@ -628,6 +628,7 @@ bool LigidPainter::run()
 	int charPressingSensivity = 30;
 	int charPressCounter = 0;
 
+	glEnable(GL_MULTISAMPLE);
 
 	//Cursors
 	GLFWimage images[1];
