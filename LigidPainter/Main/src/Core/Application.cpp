@@ -77,6 +77,7 @@ string exportFileName = "LP_Export";
 string colorpickerHexVal = "#3f8060";
 
 string modelName;
+string customModelName;
 vector<float> vertices = { 0 };
 
 //--------Functions--------\\
@@ -334,8 +335,10 @@ Programs programs;
 
 bool colorBoxValChanged = true;
 
-bool doCtrlX = true;
-bool doCtrlH = true;
+bool renderSphere = false;
+bool renderPlane = false;
+
+vector<float> sphereVertices;
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -579,12 +582,28 @@ bool LigidPainter::run()
 	// glset.bindFramebuffer(0);
 	// glUseProgram(programs.program);
 	
+	//Plane Model
+	vector<float> planeVertices = {
+		-1 , 0 , 1 , 0 , 0 , 0 , 1 , 0 ,
+		1 , 0 , 1 , 1 , 0 , 0 , 1 , 0 ,
+		1 , 0 , -1 , 1 , 1 , 0 , 1 , 0 ,
+		-1 , 0 , 1 , 0 , 0 , 0 , 1 , 0 ,
+		1 , 0 , -1 , 1 , 1 , 0 , 1 , 0 ,
+		-1 , 0 , -1 , 0 , 1 , 0 , 1 , 0 
+	};
+	//Sphere Model
+	Sphere sphere;
+	sphereVertices = sphere.getSphere();
 
-	while (true)
+
+	bool doCtrlX = true;
+	bool doCtrlH = true;
+
+	while (true)//Main loop
 	{
 		glfwPollEvents();
 
-		util.printRenderingSpeed();
+		//util.printRenderingSpeed();
 
 		updateCameraPosChanging();
 
@@ -696,7 +715,7 @@ bool LigidPainter::run()
 		exportData.path = exportPath.c_str();
 		exportData.fileName = exportFileName.c_str();
 		//Render
-		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,maskTextures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged);
+		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,maskTextures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere);
 		colorBoxValChanged = false;
 		colorpickerHexValTextboxValChanged = false;
 
@@ -1170,6 +1189,7 @@ void LigidPainter::modelFilePathTextBox() {
 	if (modelFilePathCheck) {
 		modelFilePath = modelFilePathCheck;
 		modelName = utilities.getLastWordBySeparatingWithChar(modelFilePath,folderDistinguisher);
+		customModelName = modelName;
 	}
 }
 
@@ -1293,27 +1313,40 @@ void LigidPainter::addImageButton() {
 	}
 }
 void LigidPainter::addPlaneButton() {
+	renderPlane = true;
+	renderSphere = false;
+
 	addPlaneButtonPressed = true;
-	vector<float> planeVertices = {
-		-1 , 0 , 1 , 0 , 0 , 0 , 1 , 0 ,
-		1 , 0 , 1 , 1 , 0 , 0 , 1 , 0 ,
-		1 , 0 , -1 , 1 , 1 , 0 , 1 , 0 ,
-		-1 , 0 , 1 , 0 , 0 , 0 , 1 , 0 ,
-		1 , 0 , -1 , 1 , 1 , 0 , 1 , 0 ,
-		-1 , 0 , -1 , 0 , 1 , 0 , 1 , 0 
-	};
-	modelName = "plane.ligidefault";
-	vertices = planeVertices;
-	glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW);
-	
+	modelName = "plane.default";	
 }
 void LigidPainter::addSphereButton() {
+	renderPlane = false;
+	renderSphere = true;
 	addSphereButtonPressed = true;
-	GlSet glset;
-	Sphere sphere;
-	modelName = "sphere.ligidefault";
-	vertices = sphere.getSphere();
-	glset.bufferData(vertices);
+	modelName = "sphere.default";
+	glset.bufferData(sphereVertices);
+}
+void LigidPainter::loadCustomModel(){
+	modelName = customModelName;
+	if(modelName == ""){
+		//If model file path is null add one
+		modelFilePathTextBox();
+		if(modelFilePath){
+			loadModelButton();
+		}
+	}
+	hexValTextboxPressed = true;
+
+	renderPlane = false;
+	renderSphere = false;
+
+	if(vertices.size() > 10000)
+		glset.bufferData(vertices);
+	else {
+		glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW);
+	}
+
+
 }
 void LigidPainter::autoTriangulateCheckBox(){
 	if (autoTriangulateChecked == false)
@@ -1340,6 +1373,9 @@ void LigidPainter::useNegativeForDrawingCheckbox(){
 	}
 }
 void LigidPainter::loadModelButton() {
+	renderPlane = false;
+	renderSphere = false;
+
 	loadModelButtonPressed = true;
 	Texture txtr;
 	txtr.refreshScreenDrawingTexture();
@@ -1379,6 +1415,7 @@ void LigidPainter::maskPanelSlider(float yOffset,int screenSizeY){
 void LigidPainter::hexValTextbox(){
 	hexValTextboxPressed = true;
 }
+
 
 
 

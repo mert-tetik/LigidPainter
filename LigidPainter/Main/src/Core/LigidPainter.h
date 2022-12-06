@@ -108,6 +108,7 @@ public:
 	void colorBox();
 	void maskPanelSlider(float yOffset,int screenSizeY);
 	void hexValTextbox();
+	void loadCustomModel();
 };
 struct PanelData {
 	bool movePanel;

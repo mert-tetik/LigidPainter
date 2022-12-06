@@ -40,7 +40,7 @@ void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackD
 			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter
 			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter && !textureDemonstratorBoundariesHover && !callbackData.useNegativeForDrawingCheckboxEnter
 			&& !callbackData.paintingDropperEnter && !callbackData.paintingFillNumericModifierPEnter && !callbackData.paintingFillNumericModifierNEnter && !callbackData.exportFileNameTextBoxEnter && !callbackData.colorBoxEnter && !callbackData.maskPanelSliderEnter 
-			&& !callbackData.hexValueTextboxEnter) {
+			&& !callbackData.hexValueTextboxEnter && !callbackData.loadCustomModelEnter) {
 			noButtonClick = true;
 		}
 		else {
@@ -163,6 +163,8 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 					ligid.colorBox();
 				if(callbackData.hexValueTextboxEnter)
 					ligid.hexValTextbox();
+				if(callbackData.loadCustomModelEnter)
+					ligid.loadCustomModel();
 			}
 			buttonPressed = false;
 		}

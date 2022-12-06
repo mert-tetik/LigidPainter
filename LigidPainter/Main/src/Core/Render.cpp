@@ -247,6 +247,8 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.08f, 0.3f, "Auto triangulate", colorData.checkBoxColor, uidata.autoTriangulateCheckBoxEnter, uidata.autoTriangulateCheckBoxPressed); //Auto triangulate checkbox
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.08f, 0.2f, "Backface culling", colorData.checkBoxColor, uidata.backfaceCullingCheckBoxEnter, uidata.backfaceCullingCheckBoxPressed); //Backface culling checkbox
 
+		ui.box(0.06f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.2f, "Custom", colorData.buttonColor, 0.032f, false, false, 0.9f, 10, colorData.buttonColorHover, 0);//Load custom model button
+
 	}
 	if (panelData.texturePanelActive) {
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.8f, "Add Texture", colorData.buttonColor, 0.048f, false, false, 0.9f, 10, colorData.buttonColorHover, addAlbedoTextureMixVal); //Add albedo texture button
@@ -810,14 +812,44 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 int renderDepthCounter = 0;
 glm::vec3 colorBoxVal = glm::vec3(0);
 
+std::vector<float> currentModel;
 
-RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged) {
+bool currentModelChanged = true;
+bool lastRenderSphere = false;
+bool lastRenderPlane = false;
+
+RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere) {
 	GlSet gls;
 	UserInterface ui;
 	ColorData colorData;
 	Utilities util;
 	Texture txtr;
+
+	//Change the current 3D Model once current model changed
+	if(renderSphere && currentModelChanged)
+		currentModel = sphereVertices;
+	else if(renderPlane && currentModelChanged)
+		currentModel = planeVertices;
+	else if(currentModelChanged)
+		currentModel = vertices;
 	
+	
+	if(renderPlane != lastRenderPlane){
+		currentModelChanged = true;
+	}
+	else if(renderSphere != lastRenderSphere){
+		currentModelChanged = true;
+	}
+	else{
+		currentModelChanged = false;
+	}
+	lastRenderPlane = renderPlane;
+	lastRenderSphere = renderSphere;
+
+
+
+
+
 	colorBoxVal = util.hexToRGBConverter(colorpickerHexVal);
 
 	if(textureDemonstratorBoundariesPressed){
@@ -846,17 +878,17 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 		renderDepthCounter = 0;
 	}
 	if (renderDepthCounter == 1) {//Get depth texture
-		getDepthTexture(vertices,FBOScreen,screenSizeX,screenSizeY);
+		getDepthTexture(currentModel,FBOScreen,screenSizeX,screenSizeY);
 	}
 	//Render depth once painting started
 
 	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || uidata.addImageButtonPressed ||(glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
 	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false
-		renderTextures(FBOScreen,vertices,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName);
+		renderTextures(FBOScreen,currentModel,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName);
 	}
 
 	renderSkyBox();
-	renderModel(renderData.backfaceCulling,vertices);
+	renderModel(renderData.backfaceCulling,currentModel);
 	drawAxisPointer();
 
 	RenderOutData uiOut;

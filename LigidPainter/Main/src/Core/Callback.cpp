@@ -77,6 +77,7 @@ bool colorBoxEnter;
 bool maskPanelSliderEnter;
 bool maskPanelEnter;
 bool hexValueTextboxEnter;
+bool loadCustomModelEnter;
 //Ui enter
 
 
@@ -139,6 +140,8 @@ CallbckData preapareCallbackData() {
 	callbk.maskPanelEnter = maskPanelEnter;
 
 	callbk.hexValueTextboxEnter = hexValueTextboxEnter;
+
+	callbk.loadCustomModelEnter = loadCustomModelEnter;
 
 	return callbk;
 }
@@ -295,6 +298,7 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 			backfaceCullingCheckBoxEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX - 0.08f, 0.2f, mouseXPos, mouseYPos, movePanel);
 			addPlaneButtonEnter = ui.isMouseOnButton(window, 0.03f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX, 0.0f, mouseXPos, mouseYPos, movePanel);
 			addSphereButtonEnter = ui.isMouseOnButton(window, 0.03f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX, -0.1f, mouseXPos, mouseYPos, movePanel);
+			loadCustomModelEnter = ui.isMouseOnButton(window, 0.1f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX, -0.2f, mouseXPos, mouseYPos,movePanel);
 		}
 		else {
 			loadModelButtonEnter = false;
@@ -303,6 +307,7 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 			backfaceCullingCheckBoxEnter = false;
 			addPlaneButtonEnter = false;
 			addSphereButtonEnter = false;
+			loadCustomModelEnter = false;
 		}
 		if (panelData.texturePanelActive) {
 			addImageButtonEnter = ui.isMouseOnButton(window, 0.12f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX, 0.8f, mouseXPos, mouseYPos, movePanel);
@@ -467,6 +472,9 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if (paintingDropperEnter){
+		glfwSetCursor(window, pointerCursor);
+	}
+	else if (loadCustomModelEnter){
 		glfwSetCursor(window, pointerCursor);
 	}
 	else if (!panelChangeHover){
