@@ -555,6 +555,7 @@ void UserInterface::uploadChars() {
 				std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
 				continue;
 			}
+			
 			// generate texture
 			unsigned int texture;
 			glGenTextures(1, &texture);
@@ -570,6 +571,7 @@ void UserInterface::uploadChars() {
 				GL_UNSIGNED_BYTE,
 				face->glyph->bitmap.buffer
 			);
+
 			// set texture options
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

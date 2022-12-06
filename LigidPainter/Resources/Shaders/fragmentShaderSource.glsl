@@ -259,7 +259,7 @@ void main() {
                   if(drawBrushIndicator == 1)
                   {
                      //Brush indicator here
-                     color = vec4(uiColor, max(texture(modifiedMaskTexture, TexCoords)-0.5,0.0)); 
+                     color = vec4(uiColor, max(texture(modifiedMaskTexture, TexCoords)/2,0.0)); 
                   }
                   else
                   {

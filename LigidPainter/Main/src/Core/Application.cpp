@@ -1205,7 +1205,7 @@ void LigidPainter::brushBlurRangeBar(float xOffset,int width,int height,bool ren
 	}
 	else {
 		glUseProgram(programs.blurProgram);
-		glset.uniform1f(9, "brushBlurVal", 242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 15);
+		glset.uniform1f(9, "brushBlurVal", 242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 8);
 		glUseProgram(programs.program);
 	}
 }
