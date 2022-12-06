@@ -583,11 +583,11 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 //------------CtrlZ------------
 std::vector<GLubyte*> undoTextures; 
 bool doCtrlZ;
-void ctrlZCheck(GLFWwindow* window) {
+void ctrlZCheck(GLFWwindow* window,bool reduceScreenPaintingQuality) {
 	Texture txtr;
 	GlSet glset;
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ && undoTextures.size() != 0) { //MAX 20
-		txtr.refreshScreenDrawingTexture();
+		txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
 		glset.activeTexture(GL_TEXTURE0);
 		glset.texImage(undoTextures[undoTextures.size() - 1], 1080, 1080, GL_RGB);
 		glset.generateMipmap();
@@ -660,22 +660,22 @@ void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* 
 	}
     delete[] exportTxtr;
 }
-void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture){
+void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     GlSet gl;
 
 	gl.drawArrays(vertices, false); //Render Model
 	GLubyte* renderedTexture = new GLubyte[width * 1080 * 3 * sizeof(GLubyte)];
-	glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, renderedTexture);
+	glReadPixels(0, 0, width, height, channels, GL_UNSIGNED_BYTE, renderedTexture);
 
 	gl.activeTexture(texture);
-	gl.texImage(renderedTexture, width, height, GL_RGB);
+	gl.texImage(renderedTexture, width, height, channels);
 	gl.generateMipmap();
 	delete[]renderedTexture;
 }
 
-void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices,bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName) {
+void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices,bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName,bool reduceScreenPaintingQuality) {
 	int maxTextureHistoryHold = 20;
 
 	std::vector<float> renderVertices = { //Render backside of the uv
@@ -723,17 +723,17 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 	delete[]renderedImage;
 	//Render painted image
 
-	txtr.refreshScreenDrawingTexture();
+	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
 
 	//Render uv mask
 	gl.uniform1i(renderPrograms.program, "whiteRendering", 1);
-	renderTexture(vertices,1080, 1080,GL_TEXTURE7);
+	renderTexture(vertices,1080, 1080,GL_TEXTURE7,GL_RGB);
 	gl.uniform1i(renderPrograms.program, "whiteRendering", 0);
 	//Render uv mask
 
 	//interpret the albedo with ui mask texture
 	gl.uniform1i(renderPrograms.program, "interpretWithUvMask", 1);
-	renderTexture(renderVertices,1080, 1080,GL_TEXTURE0);//Render enlarged texture
+	renderTexture(renderVertices,1080, 1080,GL_TEXTURE0,GL_RGB);//Render enlarged texture
 	gl.uniform1i(renderPrograms.program, "interpretWithUvMask", 0);
 	//interpret the albedo with ui mask texture
 
@@ -818,7 +818,7 @@ bool currentModelChanged = true;
 bool lastRenderSphere = false;
 bool lastRenderPlane = false;
 
-RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere) {
+RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality) {
 	GlSet gls;
 	UserInterface ui;
 	ColorData colorData;
@@ -833,7 +833,7 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	else if(currentModelChanged)
 		currentModel = vertices;
 	
-	
+
 	if(renderPlane != lastRenderPlane){
 		currentModelChanged = true;
 	}
@@ -884,7 +884,7 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 
 	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || uidata.addImageButtonPressed ||(glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
 	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false
-		renderTextures(FBOScreen,currentModel,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName);
+		renderTextures(FBOScreen,currentModel,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,reduceScreenPaintingQuality);
 	}
 
 	renderSkyBox();
@@ -898,7 +898,7 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	if (colorBoxValChanged && !colorpickerHexValTextboxValChanged) { //Get value of color box
 		colorBoxVal = getColorBoxValue(FBOScreen, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y,screenSizeX, screenSizeY);
 	}
-	ctrlZCheck(renderData.window);
+	ctrlZCheck(renderData.window,reduceScreenPaintingQuality);
 
 
 	updateButtonColorMixValues(uidata);

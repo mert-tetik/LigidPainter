@@ -339,6 +339,8 @@ bool renderSphere = false;
 bool renderPlane = false;
 
 vector<float> sphereVertices;
+
+bool reduceScreenPaintingQuality = true;
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -472,7 +474,7 @@ bool LigidPainter::run()
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 
 	//Screen Texture
-	GLubyte* screenTexture = new GLubyte[(windowData.windowMaxWidth/2) * (windowData.windowMaxHeight/2) * 3];
+	GLubyte* screenTexture = new GLubyte[(windowData.windowMaxWidth/2) * (windowData.windowMaxHeight/2)];
 	ScreenPaintingReturnData screenPaintingReturnData; 
 
 	screenPaintingReturnData = txtr.createScreenPaintTexture(screenTexture,window);
@@ -675,7 +677,7 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed){
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
+			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality);
 			brushValChanged = false;
 			drawingCount = 0;
 			//brushOpacityChanged = false; not used
@@ -715,7 +717,7 @@ bool LigidPainter::run()
 		exportData.path = exportPath.c_str();
 		exportData.fileName = exportFileName.c_str();
 		//Render
-		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,maskTextures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere);
+		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,maskTextures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality);
 		colorBoxValChanged = false;
 		colorpickerHexValTextboxValChanged = false;
 
@@ -1378,7 +1380,7 @@ void LigidPainter::loadModelButton() {
 
 	loadModelButtonPressed = true;
 	Texture txtr;
-	txtr.refreshScreenDrawingTexture();
+	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
 	GlSet glset;
 	ModelLoader modelLoader;
 	if (modelName != "" && modelName[modelName.size() - 1] == 'j' && modelName[modelName.size() - 2] == 'b' && modelName[modelName.size() - 3] == 'o' && modelName[modelName.size() - 4] == '.') {
@@ -1402,10 +1404,20 @@ void LigidPainter::paintingDropper(){
 	paintingDropperPressed = true;
 }
 void LigidPainter::paintingFillNumericModifier(bool p, bool n){
+	Texture txtr;
 	if(p && paintingFillNumericModifierVal < 10)
 		paintingFillNumericModifierVal++;
 	if(n && paintingFillNumericModifierVal > 1)
 		paintingFillNumericModifierVal--;
+	
+	if(paintingFillNumericModifierVal < 8){
+		reduceScreenPaintingQuality = false;
+	}
+	else{
+		reduceScreenPaintingQuality = true;
+	}
+	brushValChanged = true;
+	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
 }
 void LigidPainter::maskPanelSlider(float yOffset,int screenSizeY){
 	Utilities util;

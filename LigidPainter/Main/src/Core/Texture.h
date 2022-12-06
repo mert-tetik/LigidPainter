@@ -24,7 +24,7 @@ public:
 	GLubyte* getTextureFromProgram(int texture, int width, int height, int channels);
 	TextureData getTextureData(const char* path);
 	ScreenPaintingReturnData createScreenPaintTexture(GLubyte*& screenTexture, GLFWwindow* screen);
-	void refreshScreenDrawingTexture();
+	void refreshScreenDrawingTexture(bool reduceQuality);
 	GLubyte* updateMaskTexture(unsigned int FBOScreen, int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny);
 	InitializedTextures initTextures(const char* maskTexturePath);
 	void sendProgramsToTextures(Programs appPrograms);
