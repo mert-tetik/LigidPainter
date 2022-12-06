@@ -58,6 +58,22 @@ GLFWwindow* window;
 //GL_TEXTURE12 = Modified mask texture
 //GL_TEXTURE13 = skybox
 
+//Shortcuts
+
+//Left CTRL + Z : Undo painting
+//Left CTRL + X : change use negative checkbox's state
+//Left CTRL + H : hide or show the texture demonstrator
+//Left CTRL + Q + scroll = change brush size range bar value
+//Left CTRL + W + scroll = change brush blur range bar value
+//Left CTRL + E + scroll = change brush rotation range bar value
+//Left CTRL + R + scroll = change brush opacity range bar value
+//Left CTRL + T + scroll = change brush spacing range bar value
+//Left CTRL + B = set painting fill between quality to 1 or 10
+//Left CTRL + TAB + Q = Switch to model panel
+//Left CTRL + TAB + W = Switch to texture panel
+//Left CTRL + TAB + T = Switch to painting panel
+//Left CTRL + TAB + R = Switch to export panel
+
 unsigned int VBO, VAO, FBOScreen; //Vertex Buffer Object, Vertex Array Object, Framebuffer object that I used to render the screen
 
 bool cameraPosChanging = true;
@@ -208,6 +224,16 @@ bool keyInputFirstKeyHold = false;
 int textBoxActiveChar = 6;
 bool colorpickerHexValTextboxValChanged = false;
 
+bool doCtrlX = true;
+bool doCtrlH = true;
+bool doCtrlB = true;
+
+bool doCtrlTabQ = true;
+bool doCtrlTabW = true;
+bool doCtrlTabT = true;
+bool doCtrlTabR = true;
+
+bool reduceScreenPaintingQuality = true;
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
 	if(key >= 320 && key <=329){
@@ -293,6 +319,93 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	keyInputFirstKeyHold = true;
 	keyInputFirstKeyHoldingCounter = 0;
 
+
+
+
+
+
+
+
+
+
+	bool shiftTabAltRelease =  glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_RELEASE;
+	//Ctrl + x use negative checkbox
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS && panelData.paintingPanelActive && doCtrlX && shiftTabAltRelease){
+		if(useNegativeForDrawing){
+			useNegativeForDrawing = false;
+		}
+		else{
+			useNegativeForDrawing = true;
+		}
+		doCtrlX = false;
+	}
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_X) == GLFW_RELEASE){
+		doCtrlX = true;
+	}
+	//Ctrl + h change texture demonstrator's state
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS && doCtrlH && shiftTabAltRelease){
+		textureDemonstratorButtonPressClicked = true;
+		doCtrlH = false;
+	}
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_H) == GLFW_RELEASE){
+		doCtrlH = true;
+	}
+	//Ctrl + b change fill between numeric modifier's state
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && doCtrlB && shiftTabAltRelease && panelData.paintingPanelActive){
+		Texture txtr;
+		if(paintingFillNumericModifierVal == 10){
+			paintingFillNumericModifierVal = 1;
+			reduceScreenPaintingQuality = false;
+		}
+		else if(paintingFillNumericModifierVal == 1){
+			paintingFillNumericModifierVal = 10;
+			reduceScreenPaintingQuality = true;
+		}
+		else{
+			paintingFillNumericModifierVal = 10;
+			reduceScreenPaintingQuality = true;
+		}
+		brushValChanged = true;
+		txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
+		doCtrlB = false;
+	}
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_B) == GLFW_RELEASE){
+		doCtrlB = true;
+	}
+
+	LigidPainter lp;
+	//Ctrl + Tab + q switch to model panel
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS && doCtrlTabQ){
+		lp.modelPanelButton();
+		doCtrlTabQ = false;
+	}
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_Q) == GLFW_RELEASE){
+		doCtrlTabQ = true;
+	}
+	//Ctrl + Tab + w switch to texture panel
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && doCtrlTabW){
+		lp.texturePanelButton();
+		doCtrlTabW = false;
+	}
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE|| glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE){
+		doCtrlTabW = true;
+	}
+	//Ctrl + Tab + t switch to model panel
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS && doCtrlTabT){
+		lp.paintingPanelButton();
+		doCtrlTabT = false;
+	}
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE|| glfwGetKey(window, GLFW_KEY_T) == GLFW_RELEASE){
+		doCtrlTabT = true;
+	}
+	//Ctrl + Tab + r switch to model panel
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS && doCtrlTabR){
+		lp.exportPanelButton();
+		doCtrlTabR = false;
+	}
+	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE){
+		doCtrlTabR = true;
+	}
 }
 
 bool colorBoxClicked = false;
@@ -340,7 +453,6 @@ bool renderPlane = false;
 
 vector<float> sphereVertices;
 
-bool reduceScreenPaintingQuality = true;
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -418,7 +530,6 @@ bool LigidPainter::run()
     else
         cout<<"\nError Occurred!";
     cout<<endl;
-
 
 
 	//Load cubemap
@@ -598,8 +709,7 @@ bool LigidPainter::run()
 	sphereVertices = sphere.getSphere();
 
 
-	bool doCtrlX = true;
-	bool doCtrlH = true;
+
 
 	while (true)//Main loop
 	{
@@ -643,33 +753,6 @@ bool LigidPainter::run()
 			textureDemonstratorButtonPressed = false;
 			textureDemonstratorButtonPosChanged = false;
 		}
-
-
-		//Ctrl + x use negative checkbox
-		if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS && panelData.paintingPanelActive && doCtrlX){
-			if(useNegativeForDrawing){
-				useNegativeForDrawing = false;
-			}
-			else{
-				useNegativeForDrawing = true;
-			}
-			doCtrlX = false;
-		}
-		if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_X) == GLFW_RELEASE){
-			doCtrlX = true;
-		}
-
-
-
-		//Ctrl + x change texture demonstrator's state
-		if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS && doCtrlH){
-			textureDemonstratorButtonPressClicked = true;
-			doCtrlH = false;
-		}
-		if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_H) == GLFW_RELEASE){
-			doCtrlH = true;
-		}
-
 
 
 		//Painting
