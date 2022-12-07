@@ -323,29 +323,34 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 
 
 			 centerDivider + centerSum - screenGapX - 0.03f, 0.45f, mouseXPos, mouseYPos, movePanel);
-			brushSizeRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushSizeRangeBarValue,  0.22f+0.02f, mouseXPos, mouseYPos, movePanel);
-			brushBlurRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushBlurRangeBarValue, 0.09f+0.04f, mouseXPos, mouseYPos, movePanel);
-			brushRotationRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushRotationRangeBarValue, -0.04f+0.06f, mouseXPos, mouseYPos, movePanel);
-			brushOpacityRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushOpacityRangeBarValue,  -0.17f+0.08f, mouseXPos, mouseYPos, movePanel);
-			brushSpacingRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushSpacingRangeBarValue,-0.30f+0.1f, mouseXPos, mouseYPos, movePanel);		
-			paintingFillNumericModifierPEnter = ui.isMouseOnButton(window, 0.02f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX + 0.05f,-0.3f, mouseXPos, mouseYPos, movePanel);
-			brushBordersRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX + brushBorderRangeBarValue,-0.31f, mouseXPos, mouseYPos, movePanel);	
+			brushSizeRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushSizeRangeBarValue,  0.22f+0.02f+0.02f, mouseXPos, mouseYPos, movePanel);
+			brushBlurRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushBlurRangeBarValue, 0.09f+0.04f+0.02f, mouseXPos, mouseYPos, movePanel);
+			brushRotationRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushRotationRangeBarValue, -0.04f+0.06f+0.02f, mouseXPos, mouseYPos, movePanel);
+			brushOpacityRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushOpacityRangeBarValue,  -0.17f+0.08f+0.02f, mouseXPos, mouseYPos, movePanel);
+			brushSpacingRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushSpacingRangeBarValue,-0.30f+0.1f+0.02f, mouseXPos, mouseYPos, movePanel);		
+			brushBordersRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX + brushBorderRangeBarValue,-0.31f+0.02f, mouseXPos, mouseYPos, movePanel);	
 
-			paintingFillNumericModifierNEnter = ui.isMouseOnButton(window, 0.02f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX - 0.05f,-0.3f, mouseXPos, mouseYPos, movePanel);		colorBoxPickerEnter = ui.isMouseOnButton(window,0.01f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX - 0.02f + colorBoxPickerValue_x, -0.6f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
-
-
-			colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.6f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
-
+			paintingFillNumericModifierPEnter = ui.isMouseOnButton(window, 0.02f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX + 0.05f,-0.385f, mouseXPos, mouseYPos, movePanel);
+			paintingFillNumericModifierNEnter = ui.isMouseOnButton(window, 0.02f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX - 0.05f,-0.385f, mouseXPos, mouseYPos, movePanel);		
+			
+			colorBoxPickerEnter = ui.isMouseOnButton(window,0.015f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX - 0.02f + colorBoxPickerValue_x, -0.65f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
 
 
-			paintingDropperEnter = ui.isMouseOnButton(window, 0.015f,0.03f, panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.86f, mouseXPos, mouseYPos,movePanel);		mirrorXCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.15f - screenGapX, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
+			colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.65f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
+
+
+
+			paintingDropperEnter = ui.isMouseOnButton(window, 0.015f,0.03f, panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.91f, mouseXPos, mouseYPos,movePanel);		
+			mirrorXCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.15f - screenGapX, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
 			mirrorYCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.09f - screenGapX, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
 			mirrorZCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.03f - screenGapX, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
 
 
 
-			colorBoxEnter = ui.isMouseOnButton(window, 0.1f, 0.2f, panelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.6f, mouseXPos, mouseYPos, movePanel);		maskPanelSliderEnter = ui.isMouseOnButton(window, 0.01f, 0.015f, panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f + maskPanelSliderValue, mouseXPos, mouseYPos, movePanel);
-			maskPanelEnter = ui.isMouseOnButton(window, 0.15f, 0.15f, panelLoc / centerDivider + centerSum - screenGapX, 0.675f, mouseXPos, mouseYPos, movePanel);		hexValueTextboxEnter =  ui.isMouseOnButton(window, 0.04f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX,-0.86f, mouseXPos, mouseYPos, movePanel);
+			colorBoxEnter = ui.isMouseOnButton(window, 0.1f, 0.2f, panelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.65f, mouseXPos, mouseYPos, movePanel);		
+			maskPanelSliderEnter = ui.isMouseOnButton(window, 0.01f, 0.015f, panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f + maskPanelSliderValue, mouseXPos, mouseYPos, movePanel);
+			maskPanelEnter = ui.isMouseOnButton(window, 0.15f, 0.15f, panelLoc / centerDivider + centerSum - screenGapX, 0.675f, mouseXPos, mouseYPos, movePanel);		
+			hexValueTextboxEnter =  ui.isMouseOnButton(window, 0.04f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.91f, mouseXPos, mouseYPos, movePanel);
 
 
 		}

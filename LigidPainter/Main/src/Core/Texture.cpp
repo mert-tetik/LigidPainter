@@ -184,8 +184,7 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 	float rotation = ((brushRotationRangeBarValue +0.11f) * 4.54545454545) * 360; // -0.11 - 0.11 --> 0 - 360
 
 	float scaleVal = ((brushBorderRangeBarValue+0.11f)/2.0f*8.18181818182) + 0.3f;
-	float scaleValTiny = scaleVal/3.5f;
-
+	float scaleValTiny = scaleVal/4.0f;
 
 	//Rotate and scale
 	glm::mat4 trans = glm::mat4(1.0f);

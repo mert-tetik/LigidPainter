@@ -338,33 +338,33 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		ui.box(0.035f, 0.07f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
 
 		//Brush size rangebar
-		ui.renderText(renderPrograms.program, "Size", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, 0.25f+0.04f-0.035f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.22f+0.02f, renderData.brushSizeRangeBarValue);
+		ui.renderText(renderPrograms.program, "Size", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, 0.25f+0.06f-0.035f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.22f+0.02f+0.02f, renderData.brushSizeRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.27f,1,icons.MaskScale);
 
 		//Brush blur rangebar
-		ui.renderText(renderPrograms.program, "Blur", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, +0.125f+0.06f-0.035f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.09f+0.04f, brushBlurRangeBarValue);
+		ui.renderText(renderPrograms.program, "Blur", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, +0.125f+0.08f-0.035f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.09f+0.04f+0.02f, brushBlurRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.14f,1,icons.MaskGausBlur);
 
 		//Brush rotation rangebar
-		ui.renderText(renderPrograms.program, "Rotation", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.005f+0.08f-0.035f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.04f+0.06f, brushRotationRangeBarValue);
+		ui.renderText(renderPrograms.program, "Rotation", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.005f+0.1f-0.035f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.04f+0.06f+0.02f, brushRotationRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, +0.01f,1,icons.MaskRotation);
 
 		//Brush opacity rangebar
-		ui.renderText(renderPrograms.program, "Opacity", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.135f+0.10f-0.035f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.17f+0.08f, brushOpacityRangeBarValue);
+		ui.renderText(renderPrograms.program, "Opacity", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.135f+0.12f-0.035f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.17f+0.08f+0.02f, brushOpacityRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, -0.12f,1,icons.MaskOpacity);
 
 		//Brush spacing rangebar
-		ui.renderText(renderPrograms.program, "Spacing", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.265f+0.12f-0.035f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.30f+0.1f, brushSpacingRangeBarValue);
+		ui.renderText(renderPrograms.program, "Spacing", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.265f+0.14f-0.035f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.30f+0.1f+0.02f, brushSpacingRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, -0.25f,1,icons.MaskSpacing);
 
 		//Brush borders rangebar
-		ui.renderText(renderPrograms.program, "Borders", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.285f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.31f, brushBorderRangeBarValue);
+		ui.renderText(renderPrograms.program, "Borders", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.285f + 0.02f, 0.00022f);
+		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.31f+0.02f, brushBorderRangeBarValue);
 
         ui.numericModifier(renderData.panelLoc / centerDivider + centerSum - screenGapX,-0.385,icons.ArrowLeft,icons.ArrowRight,0.9f, paintingFillNumericModifierVal,fillBetweenResNumericModifiermixValP,fillBetweenResNumericModifiermixValN); //Fill quality
 
@@ -377,8 +377,9 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		gl.uniform1f(renderPrograms.program, "uiOpacity", 1.0f);
 		ui.box(0.0f, 0.025f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.095f, -0.91f, "", colorBoxValue / glm::vec3(255), 0.075f, false, false, 0.9f, 10, glm::vec3(0), 0); //indicator for picken color of the color picker
 		gl.uniform1f(renderPrograms.program, "uiOpacity", 0.5f);
+		ui.box(0.00f, 0.035f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.095f, -0.91f, "", colorData.panelColorSnd, 0.075f, false, false, 0.9f, 7, glm::vec3(0), 0); //decoration
 
-		ui.box(0.04f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.0f,-0.91f, util.rgbToHexGenerator(colorBoxValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
+		ui.box(0.04f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.91f, util.rgbToHexGenerator(colorBoxValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
 		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.91f,0.9,icons.dropperIcon,dropperMixVal,colorData.iconColor,colorData.iconColorHover);
 	}
 

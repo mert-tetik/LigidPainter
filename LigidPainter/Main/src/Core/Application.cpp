@@ -57,6 +57,7 @@ GLFWwindow* window;
 //GL_TEXTURE11 = NULL
 //GL_TEXTURE12 = Modified mask texture
 //GL_TEXTURE13 = skybox
+//GL_TEXTURE31 = last painting result
 
 //Shortcuts
 
@@ -176,7 +177,7 @@ float brushBlurRangeBarValue = -0.11f;
 float brushRotationRangeBarValue = -0.11f;
 float brushOpacityRangeBarValue = 0.11f;
 float brushSpacingRangeBarValue = -0.11f;
-float brushBorderRangeBarValue = -0.11f;
+float brushBorderRangeBarValue = 0.06f;
 float colorBoxColorRangeBarValue = 0.0f;
 float colorBoxPickerValue_x = 0.0f;
 float colorBoxPickerValue_y = 0.0f;
@@ -640,7 +641,7 @@ bool LigidPainter::run()
 	stbi_image_free(images[0].pixels);
 
 	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/DefaultIcon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
-	GLFWcursor* defaultCursor = glfwCreateCursor(images,15,0);
+	GLFWcursor* defaultCursor = glfwCreateCursor(images,7,0);
 	stbi_image_free(images[0].pixels);
 
 	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/DropperCursor.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
@@ -1265,6 +1266,7 @@ void LigidPainter::brushSpacingRangeBar(float xOffset, int width, int height) {
 void LigidPainter::brushBordersRangeBar(float xOffset, int width, int height) {
 	Utilities util;
 	Texture txtr;
+	brushValChanged = true;
 	brushBorderRangeBarValue -= xOffset / (width / 2);
 	brushBorderRangeBarValue = util.restrictBetween(brushBorderRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
 	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue);
