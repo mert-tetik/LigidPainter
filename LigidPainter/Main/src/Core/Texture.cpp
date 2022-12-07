@@ -176,25 +176,29 @@ void Texture::refreshScreenDrawingTexture(bool reduceQuality) {
 	glset.generateMipmap();
 	delete(screenTextureM);
 }
-GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny) { //rotationValue = rotationBarValue
+GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue) { //rotationValue = rotationBarValue
 	GlSet glset;
 	UserInterface ui;
 	glset.viewport(1080, 1080);
 
 	float rotation = ((brushRotationRangeBarValue +0.11f) * 4.54545454545) * 360; // -0.11 - 0.11 --> 0 - 360
 
+	float scaleVal = ((brushBorderRangeBarValue+0.11f)/2.0f*8.18181818182) + 0.3f;
+	float scaleValTiny = scaleVal/3.5f;
+
+
 	//Rotate and scale
 	glm::mat4 trans = glm::mat4(1.0f);
 	if(!renderTiny){
 		trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
 		trans = glm::rotate(trans, glm::radians(rotation), glm::vec3(0.0, 0.0, 1.0));
-		trans = glm::scale(trans, glm::vec3(0.7, 0.7, 0.7));
+		trans = glm::scale(trans, glm::vec3(scaleVal, scaleVal, scaleVal));
 		glset.uniformMatrix4fv(txtrPrograms.program, "renderTrans", trans);
 	}
 	else{
 		trans = glm::translate(trans, glm::vec3(-0.875f, -0.875f, 0.0f));
 		trans = glm::rotate(trans, glm::radians(rotation), glm::vec3(0.0, 0.0, 1.0));
-		trans = glm::scale(trans, glm::vec3(0.2, 0.2, 0.2));
+		trans = glm::scale(trans, glm::vec3(scaleValTiny, scaleValTiny, scaleValTiny));
 		glset.uniformMatrix4fv(txtrPrograms.program, "renderTrans", trans);
 	}
 	//Rotate and scale

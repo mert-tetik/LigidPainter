@@ -30,6 +30,7 @@ glfw3.lib , freetype.lib & freetype.dll files are required.
     Left CTRL + E + scroll = change brush rotation range bar value
     Left CTRL + R + scroll = change brush opacity range bar value
     Left CTRL + T + scroll = change brush spacing range bar value
+    Left CTRL + Y + scroll = change brush borders range bar value
     Left CTRL + B = switch painting fill between quality around 1 to 10 
     Left CTRL + TAB + Q = Switch to model panel
     Left CTRL + TAB + W = Switch to texture panel

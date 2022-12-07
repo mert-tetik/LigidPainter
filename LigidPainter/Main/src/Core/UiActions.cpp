@@ -37,7 +37,7 @@ void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackD
 			&& !callbackData.brushSizeRangeBarEnter && !callbackData.loadModelButtonEnter && !callbackData.modelFilePathTextBoxEnter
 			&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.exportPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.colorBoxPickerEnter
 			&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGCheckBoxEnter && !callbackData.exportExtPNGCheckBoxEnter
-			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter
+			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter && !callbackData.brushBordersRangeBarEnter
 			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter && !textureDemonstratorBoundariesHover && !callbackData.useNegativeForDrawingCheckboxEnter
 			&& !callbackData.paintingDropperEnter && !callbackData.paintingFillNumericModifierPEnter && !callbackData.paintingFillNumericModifierNEnter && !callbackData.exportFileNameTextBoxEnter && !callbackData.colorBoxEnter && !callbackData.maskPanelSliderEnter 
 			&& !callbackData.hexValueTextboxEnter && !callbackData.loadCustomModelEnter) {
@@ -58,6 +58,7 @@ bool brushBlurRangeBarPressed;
 bool brushRotationRangeBarPressed;
 bool brushOpacityRangeBarPressed;
 bool brushSpacingRangeBarPressed;
+bool brushBordersRangeBarPressed;
 bool colorBoxColorRangeBarPressed;
 bool colorBoxPickerPressed;
 bool textureDemonstratorButtonPressed;
@@ -89,6 +90,9 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 				}
 				else if (callbackData.brushSpacingRangeBarEnter) {
 					brushSpacingRangeBarPressed = true;
+				}
+				else if (callbackData.brushBordersRangeBarEnter) {
+					brushBordersRangeBarPressed = true;
 				}
 				else if (callbackData.colorBoxPickerEnter) {
 					colorBoxPickerPressed = true;
@@ -175,6 +179,7 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 		brushRotationRangeBarPressed = false;
 		brushOpacityRangeBarPressed = false;
 		brushSpacingRangeBarPressed = false;
+		brushBordersRangeBarPressed = false;
 		colorBoxPickerPressed = false;
 		colorBoxColorRangeBarPressed = false;
 		textureDemonstratorButtonPressed = false;
@@ -205,6 +210,9 @@ bool UiActions::updateRangeValues(GLFWwindow* window, float xOffset,float yOffse
 	if (brushSpacingRangeBarPressed) {
 		ligid.brushSpacingRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
 	}
+	if (brushBordersRangeBarPressed) {
+		ligid.brushBordersRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
+	}
 	if (colorBoxColorRangeBarPressed) {
 		ligid.colorBoxColorRangeBar(yOffset,screenHeight);//Changes the global variable
 	}
@@ -220,7 +228,7 @@ bool UiActions::updateRangeValues(GLFWwindow* window, float xOffset,float yOffse
 	if(maskPanelSliderPressed){
 		ligid.maskPanelSlider(yOffset,uiactionsMaxScreenHeight);//Changes the global variable
 	}
-    if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed || textureDemonstratorButtonPressed || textureDemonstratorBoundariesPressed || maskPanelSliderPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
+    if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed|| brushBordersRangeBarPressed || textureDemonstratorButtonPressed || textureDemonstratorBoundariesPressed || maskPanelSliderPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
         hideCursor = true;
 	}
 	else {

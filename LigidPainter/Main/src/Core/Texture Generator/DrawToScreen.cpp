@@ -37,7 +37,7 @@ double lastMouseYPosIn = 0;
 
 bool addToScreenMaskTxtr = true;
 
-void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs programs,int maxScreenWidth,int maxScreenHeight,bool reduceScreenPaintingQuality) {
+void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs programs,int maxScreenWidth,int maxScreenHeight,bool reduceScreenPaintingQuality,float brushBorderRangeBarValue) {
 	Texture texture;
 	Render render;
 
@@ -72,7 +72,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 		//Setup
 		resizedPixels = new GLubyte[distanceX * distanceY * 3];
 
-		renderedImage = txtr.updateMaskTexture(FBOScreen, screenSizeX,screenSizeY, rotationValue,false);
+		renderedImage = txtr.updateMaskTexture(FBOScreen, screenSizeX,screenSizeY, rotationValue,false,brushBorderRangeBarValue);
 		//Resize
 		if (true) {
 			stbir_resize_uint8(renderedImage, 540, 540, 0, resizedPixels, distanceX, distanceY, 0, 3); //Resize (causes lags)
@@ -125,11 +125,13 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 						//resultSquare[i] = min(max((int)resizedPixels[i], (int)(screenTextureSquare[i] * 255)) + (int)(screenTextureSquare[i] * 255)/10,255); //take max value
 
 						if(useNegativeForDrawing)
-							resultSquare[i] = max(255.0f - (float)resizedPixels[i*3] * opacity, (float)(screenTextureSquare[i] * 255.0f)); //take max value
-							//resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, 1.0f -(max(resizedPixels[i] - screenTextureSquare[i],0.0001f) / 255.0f)) * 255; //Mix
+							resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, 1.0f -(max(resizedPixels[i*3] - screenTextureSquare[i],0.0001f) / 255.0f)) * 255; //Mix
+							//resultSquare[i] = max(255.0f - (float)resizedPixels[i*3] * opacity, (float)(screenTextureSquare[i] * 255.0f)); //take max value
 
 						else
-							resultSquare[i] = max((float)resizedPixels[i*3] * opacity, (float)(screenTextureSquare[i] * 255.0f)); //take max value
+							resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, (max(resizedPixels[i*3] - screenTextureSquare[i],0.0001f) / 255.0f)) * 255; //Mix
+
+							//resultSquare[i] = max((float)resizedPixels[i*3] * opacity, (float)(screenTextureSquare[i] * 255.0f)); //take max value
 
 						//resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, (max(resizedPixels[i] - screenTextureSquare[i],0.0001f) / 255.0f)) * 255; //Mix
 						//resultSquare[i] = min(resizedPixels[i] + (int)(screenTextureSquare[i] * 255), 255); //sum up

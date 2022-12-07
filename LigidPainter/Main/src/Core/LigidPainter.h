@@ -60,6 +60,7 @@ struct RenderData { //GlSet::render
 	float brushRotationRangeBarValue;
 	float brushOpacityRangeBarValue;
 	float brushSpacingRangeBarValue;
+	float brushBorderRangeBarValue;
 
 	float textureDemonstratorButtonPosX;
 	float textureDemonstratorButtonPosY;
@@ -100,6 +101,7 @@ public:
 	void brushRotationRangeBar(float xOffset, int width, int height);
 	void brushOpacityRangeBar(float xOffset, int width, int height);
 	void brushSpacingRangeBar(float xOffset, int width, int height);
+	void brushBordersRangeBar(float xOffset, int width, int height);
 	void textureDemonstratorButton(float xOffset,float yOffset,int width,int height);
 	void textureDemonstratorBoundaries(float xOffset,float yOffset,int width,int height);
 	void paintingDropper();

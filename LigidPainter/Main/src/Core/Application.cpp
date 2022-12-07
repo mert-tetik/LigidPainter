@@ -68,6 +68,7 @@ GLFWwindow* window;
 //Left CTRL + E + scroll = change brush rotation range bar value
 //Left CTRL + R + scroll = change brush opacity range bar value
 //Left CTRL + T + scroll = change brush spacing range bar value
+//Left CTRL + Y + scroll = change brush borders range bar value
 //Left CTRL + B = set painting fill between quality to 1 or 10
 //Left CTRL + TAB + Q = Switch to model panel
 //Left CTRL + TAB + W = Switch to texture panel
@@ -175,6 +176,7 @@ float brushBlurRangeBarValue = -0.11f;
 float brushRotationRangeBarValue = -0.11f;
 float brushOpacityRangeBarValue = 0.11f;
 float brushSpacingRangeBarValue = -0.11f;
+float brushBorderRangeBarValue = -0.11f;
 float colorBoxColorRangeBarValue = 0.0f;
 float colorBoxPickerValue_x = 0.0f;
 float colorBoxPickerValue_y = 0.0f;
@@ -620,7 +622,7 @@ bool LigidPainter::run()
 	int screenWidth;
 	int screenHeight;
 	glfwGetWindowSize(window, &screenWidth, &screenHeight);
-	txtr.updateMaskTexture(FBOScreen, screenWidth, screenHeight, brushRotationRangeBarValue,false);
+	txtr.updateMaskTexture(FBOScreen, screenWidth, screenHeight, brushRotationRangeBarValue,false,brushBorderRangeBarValue);
 
 	panelData.modelPanelActive = true; //Active panel by default
 
@@ -761,7 +763,7 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed){
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality);
+			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue);
 			brushValChanged = false;
 			drawingCount = 0;
 			//brushOpacityChanged = false; not used
@@ -827,7 +829,7 @@ bool LigidPainter::run()
 
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,pointerCursor,defaultCursor,paintingDropperPressed,dropperCursor);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,pointerCursor,defaultCursor,paintingDropperPressed,dropperCursor,brushBorderRangeBarValue);
 		}
 		if (cameraPosChanging || mirrorClick) { //Change the position of the camera in the shaders once camera position changed
 			render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
@@ -969,6 +971,10 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 	//Ctrl + t = change brush spacing range bar value
 	else if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS && panelData.paintingPanelActive){
 		ligid.brushSpacingRangeBar((float)scrollx*10.0f,screenSizeX,screenSizeY);
+	}
+	//Ctrl + y = change brush borders range bar value
+	else if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS && panelData.paintingPanelActive){
+		ligid.brushBordersRangeBar((float)scrollx*10.0f,screenSizeX,screenSizeY);
 	}
 	else{
 		if (!paintingMode && !callbackData.maskPanelEnter) {
@@ -1178,7 +1184,7 @@ void LigidPainter::addMaskTextureButton() {
 		maskTextures.push_back(txtr.getTexture(maskTexturePath,0,0,false));
 		maskTextureNames.push_back(maskTexturePath);
 
-		txtr.updateMaskTexture(FBOScreen,width,height,brushRotationRangeBarValue,false);
+		txtr.updateMaskTexture(FBOScreen,width,height,brushRotationRangeBarValue,false,brushBorderRangeBarValue);
 	}
 }
 void LigidPainter::brushSizeRangeBar(float xOffset,int width){
@@ -1196,7 +1202,7 @@ void LigidPainter::brushBlurRangeBar(float xOffset,int width,int height,bool ren
 	brushValChanged = true;
 	brushBlurRangeBarValue -= xOffset / (width / 2);
 	brushBlurRangeBarValue = util.restrictBetween(brushBlurRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
-	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue,renderTiny);
+	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue,renderTiny,brushBorderRangeBarValue);
 
 	if (242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 15 > 200){ //If the range bar value is low enough disable blur effect
 		glUseProgram(programs.blurProgram);
@@ -1235,7 +1241,7 @@ void LigidPainter::brushRotationRangeBar(float xOffset, int width, int height){
 	brushValChanged = true;
 	brushRotationRangeBarValue -= xOffset / (width / 2);
 	brushRotationRangeBarValue = util.restrictBetween(brushRotationRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
-	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true);
+	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue);
 }
 void LigidPainter::brushOpacityRangeBar(float xOffset, int width, int height) {
 	Utilities util;
@@ -1251,6 +1257,13 @@ void LigidPainter::brushSpacingRangeBar(float xOffset, int width, int height) {
 	brushSpacingRangeBarValue = util.restrictBetween(brushSpacingRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
 	drawingSpacing = ((brushSpacingRangeBarValue + 0.11f) * 454.545454545) + 1; //-0.11 - 0.11 --> 1 - 101
 	drawingCount = 0;
+}
+void LigidPainter::brushBordersRangeBar(float xOffset, int width, int height) {
+	Utilities util;
+	Texture txtr;
+	brushBorderRangeBarValue -= xOffset / (width / 2);
+	brushBorderRangeBarValue = util.restrictBetween(brushBorderRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
+	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue);
 }
 void LigidPainter::colorBoxColorRangeBar(float yOffset,int height){
 	Utilities util;
@@ -1538,6 +1551,7 @@ RenderData updateRenderData(RenderData renderData,unsigned int depthTexture,int 
 	renderData.brushRotationRangeBarValue = brushRotationRangeBarValue;
 	renderData.brushOpacityRangeBarValue = brushOpacityRangeBarValue;
 	renderData.brushSpacingRangeBarValue = brushSpacingRangeBarValue;
+	renderData.brushBorderRangeBarValue = brushBorderRangeBarValue;
 	
 	renderData.textureDemonstratorButtonPosX = textureDemonstratorButtonPosX;
 	renderData.textureDemonstratorButtonPosY = textureDemonstratorButtonPosY;
