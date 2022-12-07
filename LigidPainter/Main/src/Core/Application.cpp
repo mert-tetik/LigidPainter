@@ -712,7 +712,11 @@ bool LigidPainter::run()
 	sphereVertices = sphere.getSphere();
 
 
-
+	glset.activeTexture(GL_TEXTURE31);
+	unsigned int lastResult;
+	glset.genTextures(lastResult);
+	glset.bindTexture(lastResult);
+	glset.texImage(NULL,windowData.windowMaxWidth/2,windowData.windowMaxHeight/2,GL_RED);
 
 	while (true)//Main loop
 	{
@@ -763,7 +767,7 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed){
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue);
+			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue,lastResult);
 			brushValChanged = false;
 			drawingCount = 0;
 			//brushOpacityChanged = false; not used
