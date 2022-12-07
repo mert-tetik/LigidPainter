@@ -137,7 +137,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 							//resultSquare[i] = max(255.0f - (float)resizedPixels[i*3] * opacity, (float)(screenTextureSquare[i] * 255.0f)); //take max value
 
 						else
-							if(lastResultSquare[i] < 0.05f){
+							if(lastResultSquare[i] == 0.0f){
 								resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, (max(resizedPixels[i*3] - screenTextureSquare[i],0.0001f) / 255.0f)) * 255; //Mix
 							}
 							else{
@@ -149,7 +149,6 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 						//resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, (max(resizedPixels[i] - screenTextureSquare[i],0.0001f) / 255.0f)) * 255; //Mix
 						//resultSquare[i] = min(resizedPixels[i] + (int)(screenTextureSquare[i] * 255), 255); //sum up
 					}
-					cout << test << ' ';
 					//Avoid writing low value onto high value
 
 					//Paint screen mask texture with resultSquare

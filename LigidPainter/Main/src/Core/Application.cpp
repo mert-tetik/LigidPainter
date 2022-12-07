@@ -1633,6 +1633,8 @@ UiData updateUiData() {
 	uidata.exportFileNameTextBoxPressed = exportFileNameTextBoxPressed;
 
 	uidata.hexValTextboxPressed = hexValTextboxPressed;
+	
+	uidata.customModelButtonHover = callbackData.loadCustomModelEnter;
 
 	return uidata;
 }

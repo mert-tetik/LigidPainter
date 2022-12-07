@@ -86,6 +86,9 @@ struct UiData {
 	bool exportFileNameTextBoxPressed;
 
 	bool hexValTextboxPressed;
+
+
+	bool customModelButtonHover;
 };
 struct RenderOutData{
 	glm::vec3 mouseHoverPixel;
