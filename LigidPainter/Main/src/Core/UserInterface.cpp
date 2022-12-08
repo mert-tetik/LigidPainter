@@ -238,54 +238,54 @@ void UserInterface::colorBox(float position_x, float position_y,float valueX, fl
 void UserInterface::colorRect(float position_x, float position_y,float value,unsigned int FBO,GLFWwindow* window) { //Changing colorBox value will be once the value changed
 	std::vector<float> boxCoor{
 		//Color - Normal Vectors Will Be Usen For Color Data Of Vertices
-		 -0.01f + position_x,  0.04f + position_y + 0.16f, 0.9f ,1, (0.04f + 0.16f) *2.5 + 0.5f  ,1,0,0,  // top right
-		 -0.01f + position_x, -0.04f + position_y + 0.16f, 0.9f ,1, (-0.04f + 0.16f)*2.5 + 0.5f  ,1,0,1,  // bottom right
-		  0.01f + position_x,  0.04f + position_y + 0.16f, 0.9f ,0, (0.04f + 0.16f) *2.5 + 0.5f  ,1,0,0,  // top left 
-		 -0.01f + position_x, -0.04f + position_y + 0.16f, 0.9f ,1, (-0.04f + 0.16f)*2.5 + 0.5f  ,1,0,1,  // bottom right
-	 	  0.01f + position_x, -0.04f + position_y + 0.16f, 0.9f ,0, (-0.04f + 0.16f)*2.5 + 0.5f  ,1,0,1,  // bottom left
-		  0.01f + position_x,  0.04f + position_y + 0.16f, 0.9f ,0, (0.04f + 0.16f) *2.5 + 0.5f  ,1,0,0,  // top left
-																	 					   	     
-		 -0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,1, (0.02f + 0.10f) *2.5 + 0.5f  ,1,0,1,  // top right
-		 -0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,1, (-0.02f + 0.10f)*2.5 + 0.5f  ,0,0,1,  // bottom right
-		  0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,0, (0.02f + 0.10f) *2.5 + 0.5f  ,1,0,1,  // top left 
-		 -0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,1, (-0.02f + 0.10f)*2.5 + 0.5f  ,0,0,1,  // bottom right
-		  0.01f + position_x, -0.02f + position_y + 0.10f, 0.9f ,0, (-0.02f + 0.10f)*2.5 + 0.5f  ,0,0,1,  // bottom left
-		  0.01f + position_x,  0.02f + position_y + 0.10f, 0.9f ,0, (0.02f + 0.10f) *2.5 + 0.5f  ,1,0,1,  // top left
-																	 					   	     
-		 -0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,1, (0.02f + 0.06f) *2.5 + 0.5f  ,0,0,1,  // top right
-		 -0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,1, (-0.02f + 0.06f)*2.5 + 0.5f  ,0,1,1,  // bottom right
-		  0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,0, (0.02f + 0.06f) *2.5 + 0.5f  ,0,0,1,  // top left 
-		 -0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,1, (-0.02f + 0.06f)*2.5 + 0.5f  ,0,1,1,  // bottom right
-		  0.01f + position_x, -0.02f + position_y + 0.06f, 0.9f ,0, (-0.02f + 0.06f)*2.5 + 0.5f  ,0,1,1,  // bottom left
-		  0.01f + position_x,  0.02f + position_y + 0.06f, 0.9f ,0, (0.02f + 0.06f) *2.5 + 0.5f  ,0,0,1,  // top left
-																	 					   	     
-		 -0.01f + position_x,  0.04f + position_y		 , 0.9f ,1, (0.04f + 0.0f)  *2.5 + 0.5f  ,0,1,1,  // top right
-		 -0.01f + position_x, -0.04f + position_y		 , 0.9f ,1, (-0.04f + 0.0f) *2.5 + 0.5f  ,0,1,0,  // bottom right
-		  0.01f + position_x,  0.04f + position_y		 , 0.9f ,0, (0.04f + 0.0f)  *2.5 + 0.5f  ,0,1,1,  // top left 
-		 -0.01f + position_x, -0.04f + position_y		 , 0.9f ,1, (-0.04f + 0.0f) *2.5 + 0.5f  ,0,1,0,  // bottom right
-		  0.01f + position_x, -0.04f + position_y	     , 0.9f ,0, (-0.04f + 0.0f) *2.5 + 0.5f  ,0,1,0,  // bottom left
-		  0.01f + position_x,  0.04f + position_y		 , 0.9f ,0, (0.04f + 0.0f)  *2.5 + 0.5f  ,0,1,1,  // top left
-																	 					   	     
-		 -0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,1, (0.02f - 0.10f) *2.5 + 0.5f  ,1,1,0,  // top right
-		 -0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,1, (-0.02f - 0.10f)*2.5 + 0.5f  ,1,1,0,  // bottom right
-		  0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,0, (0.02f - 0.10f) *2.5 + 0.5f  ,1,1,0,  // top left 
-		 -0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,1, (-0.02f - 0.10f)*2.5 + 0.5f  ,1,1,0,  // bottom right
-		  0.01f + position_x, -0.02f + position_y - 0.10f, 0.9f ,0, (-0.02f - 0.10f)*2.5 + 0.5f  ,1,1,0,  // bottom left
-		  0.01f + position_x,  0.02f + position_y - 0.10f, 0.9f ,0, (0.02f - 0.10f) *2.5 + 0.5f  ,1,1,0,  // top left
-												  					 					   	     
-		 -0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,1, (0.02f - 0.06f) *2.5 + 0.5f  ,0,1,0,  // top right
-		 -0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,1, (-0.02f - 0.06f)*2.5 + 0.5f  ,1,1,0,  // bottom right
-		  0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,0, (0.02f - 0.06f) *2.5 + 0.5f  ,0,1,0,  // top left 
-		 -0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,1, (-0.02f - 0.06f)*2.5 + 0.5f  ,1,1,0,  // bottom right
-		  0.01f + position_x, -0.02f + position_y - 0.06f, 0.9f ,0, (-0.02f - 0.06f)*2.5 + 0.5f  ,1,1,0,  // bottom left
-		  0.01f + position_x,  0.02f + position_y - 0.06f, 0.9f ,0, (0.02f - 0.06f) *2.5 + 0.5f  ,0,1,0,  // top left
-																	 					   	     
-		 -0.01f + position_x,  0.04f + position_y - 0.16f, 0.9f ,1, (0.04f - 0.16f) *2.5 + 0.5f  ,1,1,0,  // top right
-		 -0.01f + position_x, -0.04f + position_y - 0.16f, 0.9f ,1, (-0.04f - 0.16f)*2.5 + 0.5f  ,1,0,0,  // bottom right
-		  0.01f + position_x,  0.04f + position_y - 0.16f, 0.9f ,0, (0.04f - 0.16f) *2.5 + 0.5f  ,1,1,0,  // top left 
-		 -0.01f + position_x, -0.04f + position_y - 0.16f, 0.9f ,1, (-0.04f - 0.16f)*2.5 + 0.5f  ,1,0,0,  // bottom right
-		  0.01f + position_x, -0.04f + position_y - 0.16f, 0.9f ,0, (-0.04f - 0.16f)*2.5 + 0.5f  ,1,0,0,  // bottom left
-		  0.01f + position_x,  0.04f + position_y - 0.16f, 0.9f ,0, (0.04f - 0.16f) *2.5 + 0.5f  ,1,1,0,  // top left
+
+		//Red to pink
+		 -0.01f + position_x,  0.03f + position_y + 0.15f, 0.9f ,1, (0.03f + 0.15f) *2.77777777778f + 0.5f  ,1,0,0,  // top right
+		 -0.01f + position_x, -0.03f + position_y + 0.15f, 0.9f ,1, (-0.03f + 0.15f)*2.77777777778f + 0.5f  ,1,0,1,  // bottom right
+		  0.01f + position_x,  0.03f + position_y + 0.15f, 0.9f ,0, (0.03f + 0.15f) *2.77777777778f + 0.5f  ,1,0,0,  // top left 
+		 -0.01f + position_x, -0.03f + position_y + 0.15f, 0.9f ,1, (-0.03f + 0.15f)*2.77777777778f + 0.5f  ,1,0,1,  // bottom right
+	 	  0.01f + position_x, -0.03f + position_y + 0.15f, 0.9f ,0, (-0.03f + 0.15f)*2.77777777778f + 0.5f  ,1,0,1,  // bottom left
+		  0.01f + position_x,  0.03f + position_y + 0.15f, 0.9f ,0, (0.03f + 0.15f) *2.77777777778f + 0.5f  ,1,0,0,  // top left
+		
+		//Pink to blue
+		 -0.01f + position_x,  0.03f + position_y + 0.09f, 0.9f ,1, (0.03f + 0.09f) *2.77777777778f + 0.5f  ,1,0,1,  // top right
+		 -0.01f + position_x, -0.03f + position_y + 0.09f, 0.9f ,1, (-0.03f + 0.09f)*2.77777777778f + 0.5f  ,0,0,1,  // bottom right
+		  0.01f + position_x,  0.03f + position_y + 0.09f, 0.9f ,0, (0.03f + 0.09f) *2.77777777778f + 0.5f  ,1,0,1,  // top left 
+		 -0.01f + position_x, -0.03f + position_y + 0.09f, 0.9f ,1, (-0.03f + 0.09f)*2.77777777778f + 0.5f  ,0,0,1,  // bottom right
+		  0.01f + position_x, -0.03f + position_y + 0.09f, 0.9f ,0, (-0.03f + 0.09f)*2.77777777778f + 0.5f  ,0,0,1,  // bottom left
+		  0.01f + position_x,  0.03f + position_y + 0.09f, 0.9f ,0, (0.03f + 0.09f) *2.77777777778f + 0.5f  ,1,0,1,  // top left
+
+		//blue to cyan			3				 					   	     
+		 -0.01f + position_x,  0.03f + position_y + 0.03f, 0.9f ,1, (0.03f + 0.03f) *2.77777777778f + 0.5f  ,0,0,1,  // top right
+		 -0.01f + position_x, -0.03f + position_y + 0.03f, 0.9f ,1, (-0.03f + 0.03f)*2.77777777778f + 0.5f  ,0,1,1,  // bottom right
+		  0.01f + position_x,  0.03f + position_y + 0.03f, 0.9f ,0, (0.03f + 0.03f) *2.77777777778f + 0.5f  ,0,0,1,  // top left 
+		 -0.01f + position_x, -0.03f + position_y + 0.03f, 0.9f ,1, (-0.03f + 0.03f)*2.77777777778f + 0.5f  ,0,1,1,  // bottom right
+		  0.01f + position_x, -0.03f + position_y + 0.03f, 0.9f ,0, (-0.03f + 0.03f)*2.77777777778f + 0.5f  ,0,1,1,  // bottom left
+		  0.01f + position_x,  0.03f + position_y + 0.03f, 0.9f ,0, (0.03f + 0.03f) *2.77777777778f + 0.5f  ,0,0,1,  // top left
+
+		//cyan to green			3							 					   	     
+		 -0.01f + position_x,  0.03f + position_y	- 0.03f	 , 0.9f ,1, (0.03f - 0.03f)  *2.77777777778f + 0.5f  ,0,1,1,  // top right
+		 -0.01f + position_x, -0.03f + position_y	- 0.03f	 , 0.9f ,1, (-0.03f - 0.03f) *2.77777777778f + 0.5f  ,0,1,0,  // bottom right
+		  0.01f + position_x,  0.03f + position_y	- 0.03f	 , 0.9f ,0, (0.03f - 0.03f)  *2.77777777778f + 0.5f  ,0,1,1,  // top left 
+		 -0.01f + position_x, -0.03f + position_y	- 0.03f	 , 0.9f ,1, (-0.03f - 0.03f) *2.77777777778f + 0.5f  ,0,1,0,  // bottom right
+		  0.01f + position_x, -0.03f + position_y	- 0.03f  , 0.9f ,0, (-0.03f - 0.03f) *2.77777777778f + 0.5f  ,0,1,0,  // bottom left
+		  0.01f + position_x,  0.03f + position_y	- 0.03f	 , 0.9f ,0, (0.03f - 0.03f)  *2.77777777778f + 0.5f  ,0,1,1,  // top left
+
+		//Green to yellow		3				  					 					   	     
+		 -0.01f + position_x,  0.03f + position_y - 0.09f, 0.9f ,1, (0.03f - 0.09f) *2.77777777778f + 0.5f  ,0,1,0,  // top right
+		 -0.01f + position_x, -0.03f + position_y - 0.09f, 0.9f ,1, (-0.03f - 0.09f)*2.77777777778f + 0.5f  ,1,1,0,  // bottom right
+		  0.01f + position_x,  0.03f + position_y - 0.09f, 0.9f ,0, (0.03f - 0.09f) *2.77777777778f + 0.5f  ,0,1,0,  // top left 
+		 -0.01f + position_x, -0.03f + position_y - 0.09f, 0.9f ,1, (-0.03f - 0.09f)*2.77777777778f + 0.5f  ,1,1,0,  // bottom right
+		  0.01f + position_x, -0.03f + position_y - 0.09f, 0.9f ,0, (-0.03f - 0.09f)*2.77777777778f + 0.5f  ,1,1,0,  // bottom left
+		  0.01f + position_x,  0.03f + position_y - 0.09f, 0.9f ,0, (0.03f - 0.09f) *2.77777777778f + 0.5f  ,0,1,0,  // top left
+
+		//Yellow to red											 					   	     
+		 -0.01f + position_x,  0.03f + position_y - 0.15f, 0.9f ,1, (0.03f - 0.15f) *2.77777777778f + 0.5f  ,1,1,0,  // top right
+		 -0.01f + position_x, -0.03f + position_y - 0.15f, 0.9f ,1, (-0.03f - 0.15f)*2.77777777778f + 0.5f  ,1,0,0,  // bottom right
+		  0.01f + position_x,  0.03f + position_y - 0.15f, 0.9f ,0, (0.03f - 0.15f) *2.77777777778f + 0.5f  ,1,1,0,  // top left 
+		 -0.01f + position_x, -0.03f + position_y - 0.15f, 0.9f ,1, (-0.03f - 0.15f)*2.77777777778f + 0.5f  ,1,0,0,  // bottom right
+		  0.01f + position_x, -0.03f + position_y - 0.15f, 0.9f ,0, (-0.03f - 0.15f)*2.77777777778f + 0.5f  ,1,0,0,  // bottom left
+		  0.01f + position_x,  0.03f + position_y - 0.15f, 0.9f ,0, (0.03f - 0.15f) *2.77777777778f + 0.5f  ,1,1,0,  // top left
 	};
 
 	GlSet glset;
@@ -304,7 +304,8 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 	glset.drawArrays(boxCoor, false); //Render Model
 	glset.uniform1i(uiPrograms.program, "isRect", 1);
 	glset.uniform1i(uiPrograms.program, "isColorBox", 0);
-	glReadPixels(10, (value + 0.2f) * 2.5f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
+	std::cout << (value + 0.18f) * 2.77777777778f * 1080 << ' ';
+	glReadPixels(10, (value + 0.18f) * 2.77777777778f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
 	//Render color rectangle into the screen to get the value
 	//Finish
 	glset.uniform1i(uiPrograms.program, "isRenderTextureMode", 0);
