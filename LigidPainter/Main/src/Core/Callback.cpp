@@ -79,6 +79,7 @@ bool maskPanelSliderEnter;
 bool maskPanelEnter;
 bool hexValueTextboxEnter;
 bool loadCustomModelEnter;
+bool hueBarEnter;
 //Ui enter
 
 
@@ -144,6 +145,8 @@ CallbckData preapareCallbackData() {
 	callbk.hexValueTextboxEnter = hexValueTextboxEnter;
 
 	callbk.loadCustomModelEnter = loadCustomModelEnter;
+
+	callbk.hueBarEnter = hueBarEnter;
 
 	return callbk;
 }
@@ -348,10 +351,11 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 
 
 			colorBoxEnter = ui.isMouseOnButton(window, 0.1f, 0.2f, panelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.65f, mouseXPos, mouseYPos, movePanel);		
+			hueBarEnter = ui.isMouseOnButton(window, 0.01f, 0.18f, panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.65f, mouseXPos, mouseYPos, movePanel);
+			
 			maskPanelSliderEnter = ui.isMouseOnButton(window, 0.01f, 0.015f, panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f + maskPanelSliderValue, mouseXPos, mouseYPos, movePanel);
 			maskPanelEnter = ui.isMouseOnButton(window, 0.15f, 0.15f, panelLoc / centerDivider + centerSum - screenGapX, 0.675f, mouseXPos, mouseYPos, movePanel);		
 			hexValueTextboxEnter =  ui.isMouseOnButton(window, 0.04f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.91f, mouseXPos, mouseYPos, movePanel);
-
 
 		}
 		else {
@@ -380,10 +384,12 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 
 
 
-			colorBoxEnter = false;		maskPanelSliderEnter = false;
-			maskPanelEnter = false;		hexValueTextboxEnter = false;
+			colorBoxEnter = false;		
+			maskPanelSliderEnter = false;
+			maskPanelEnter = false;		
+			hexValueTextboxEnter = false;
 
-
+			hueBarEnter = false;
 		}
 		if (panelData.exportPanelActive) {
 			exportPathTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX, 0.6f, mouseXPos, mouseYPos, movePanel);

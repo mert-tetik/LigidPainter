@@ -111,6 +111,7 @@ public:
 	void maskPanelSlider(float yOffset,int screenSizeY);
 	void hexValTextbox();
 	void loadCustomModel();
+	void hueBar();
 };
 struct PanelData {
 	bool movePanel;

@@ -292,7 +292,7 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 	ColorData colorData;
 
 	//Render color rectangle into the screen to get the value
-	glset.viewport(1920, 1080);
+	glset.viewport(1920, 1081);
 	glset.uniform1i(uiPrograms.program, "isRenderTextureModeV", 1);
 	glset.uniform1i(uiPrograms.program, "isRenderTextureMode", 1);
 	glset.uniform1i(uiPrograms.program, "isTwoDimensional", 0);
@@ -304,8 +304,11 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 	glset.drawArrays(boxCoor, false); //Render Model
 	glset.uniform1i(uiPrograms.program, "isRect", 1);
 	glset.uniform1i(uiPrograms.program, "isColorBox", 0);
-	std::cout << (value + 0.18f) * 2.77777777778f * 1080 << ' ';
-	glReadPixels(10, (value + 0.18f) * 2.77777777778f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
+	if( (value + 0.18f) * 2.77777777778f * 1080 != 1080)
+		glReadPixels(10, (value + 0.18f) * 2.77777777778f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
+	else{
+		glReadPixels(10, 1079, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
+	}
 	//Render color rectangle into the screen to get the value
 	//Finish
 	glset.uniform1i(uiPrograms.program, "isRenderTextureMode", 0);

@@ -92,7 +92,7 @@ string exportFolder = "Choose Destination Path";
 string exportFileName = "LP_Export";
 //Paths
 
-string colorpickerHexVal = "#3f8060";
+string colorpickerHexVal = "#408181";
 
 string modelName;
 string customModelName;
@@ -106,7 +106,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void updateCameraPosChanging();
 RenderData updateRenderData(RenderData renderData, unsigned int depthTexture, int brushSizeIndicatorSize);
 UiData updateUiData();
-void updateColorPicker(glm::vec3 RGBval,bool changeHue);
+void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatV);
 //--------Functions--------\\
 
 CallbckData callbackData;
@@ -225,7 +225,7 @@ bool mirrorClick = false;
 int keyInputFirstKeyHoldingCounter = 0;
 bool keyInputFirstKeyHold = false;
 int textBoxActiveChar = 6;
-bool colorpickerHexValTextboxValChanged = false;
+bool colorpickerHexValTextboxValChanged = true;
 
 bool doCtrlX = true;
 bool doCtrlH = true;
@@ -412,6 +412,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 }
 
 bool colorBoxClicked = false;
+bool hueBarClicked = false;
 
 vector<unsigned int> maskTextures;
 vector<string> maskTextureNames;
@@ -456,6 +457,8 @@ bool renderPlane = false;
 
 vector<float> sphereVertices;
 
+bool hueValChanging;
+
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -470,6 +473,7 @@ bool LigidPainter::run()
 	UiActionsData uiActData;
 	InitializedTextures textures;
 	RenderOutData renderOut;
+	LigidPainter ligid;
 	uiActData.textureDemonstratorBoundariesPressed = false;
 	uiActData.textureDemonstratorButtonPressed = false;
 
@@ -571,6 +575,8 @@ bool LigidPainter::run()
 	glset.uniform1i(12, "icon", 6);
 	glUseProgram(programs.program);
 
+	Utilities util;
+
 	glset.uniform3fv(programs.program, "lightPos", lightPos);
 	glset.uniform1f(programs.program, "material.shininess", 32.0f);
 	glset.uniform1i(programs.program, "screenMaskTexture", 4);
@@ -595,7 +601,6 @@ bool LigidPainter::run()
 
 	delete(screenTexture);
 	//Screen Texture
-	Utilities util;
 
 	//Create frame buffers for getting screen texture
 	FBOScreen = glset.createScreenFrameBufferObject(); //1920x1080 get all the screen
@@ -713,6 +718,7 @@ bool LigidPainter::run()
 	sphereVertices = sphere.getSphere();
 
 
+
 	while (true)//Main loop
 	{
 		glfwPollEvents();
@@ -780,16 +786,19 @@ bool LigidPainter::run()
 		keyInputFirstKeyHoldingCounter++;
 		
 
-		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !callbackData.colorBoxPickerEnter) || colorpickerHexValTextboxValChanged){
+		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !callbackData.colorBoxPickerEnter) || (hueBarClicked && !callbackData.colorBoxPickerEnter && !hueValChanging)|| colorpickerHexValTextboxValChanged){
 			if(colorpickerHexValTextboxValChanged){
-				updateColorPicker(util.hexToRGBConverter(colorpickerHexVal),true);//Update colorbox val once color picker hex value textbox value changed
+				updateColorPicker(util.hexToRGBConverter(colorpickerHexVal),true,true);//Update colorbox val once color picker hex value textbox value changed
 			}
 			else{
-				updateColorPicker(renderOut.mouseHoverPixel,true);//Update colorbox val once color picker is usen or colorbox is clicked
+				updateColorPicker(renderOut.mouseHoverPixel,true,!hueBarClicked);//Update colorbox val once color picker is usen or colorbox is clicked
 			}
-		}
 
+		}
+		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE)
+			hueValChanging = false;
 		colorBoxClicked = false;
+		hueBarClicked = false;
 		colorBoxPickerButtonPressed = false;
 
 
@@ -1015,7 +1024,7 @@ void setButtonPressedFalse() {
 	exportDownloadButtonPressed = false;
 }
 
-void updateColorPicker(glm::vec3 RGBval,bool changeHue){
+void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatVal){
 	int width;
 	int height;
 	glfwGetWindowSize(window,&width,&height);
@@ -1024,14 +1033,15 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue){
 	
 	colorBoxValChanged = true;
 	glm::vec3 hsvVal = util.RGBToHSVGenerator(RGBval);
-	glset.uniform3fv(programs.program, "drawColor", RGBval);
+	glset.uniform3fv(programs.program, "drawColor", RGBval/glm::vec3(255.0f));
 
 	if(changeHue){
-		
 		colorBoxColorRangeBarValue = (hsvVal.r / 708.333333333f) - 0.18f; //0.195
 	}
-	colorBoxPickerValue_x = (hsvVal.g / 1342.10526316f) - 0.095f; //0.095
-	colorBoxPickerValue_y = (hsvVal.b / 653.846153846f) - 0.195f; //0.195
+	if(changeSatVal){
+		colorBoxPickerValue_x = (hsvVal.g / 1342.10526316f) - 0.095f; //0.095
+		colorBoxPickerValue_y = (hsvVal.b / 653.846153846f) - 0.195f; //0.195
+	}
 	paintingDropperPressed = false;
 }
 
@@ -1069,6 +1079,9 @@ void LigidPainter::brushSizeRangeBar(float xOffset,int width){
 }
 void LigidPainter::colorBox(){
 	colorBoxClicked = true;
+}
+void LigidPainter::hueBar(){
+	hueBarClicked = true;
 }
 void LigidPainter::brushBlurRangeBar(float xOffset,int width,int height,bool renderTiny) {
 	Utilities util;
@@ -1142,6 +1155,7 @@ void LigidPainter::brushBordersRangeBar(float xOffset, int width, int height) {
 }
 void LigidPainter::colorBoxColorRangeBar(float yOffset,int height){
 	Utilities util;
+	hueValChanging = true;
 	colorBoxColorRangeBarValue += yOffset / (height / 2);
 	colorBoxColorRangeBarValue = util.restrictBetween(colorBoxColorRangeBarValue, 0.180f, -0.180f);//Keep in boundaries
 	colorBoxValChanged = true;

@@ -29,6 +29,7 @@ bool clickTaken = false;
 int uiactionsMaxScreenWidth;
 int uiactionsMaxScreenHeight;
 
+bool colorBoxFirstPress = false;
 void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover) {
 	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTaken) {
 		if (!callbackData.addImageButtonEnter && !callbackData.addMaskTextureButtonEnter && !callbackData.addPlaneButtonEnter
@@ -40,10 +41,18 @@ void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackD
 			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter && !callbackData.brushBordersRangeBarEnter
 			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter && !textureDemonstratorBoundariesHover && !callbackData.useNegativeForDrawingCheckboxEnter
 			&& !callbackData.paintingDropperEnter && !callbackData.paintingFillNumericModifierPEnter && !callbackData.paintingFillNumericModifierNEnter && !callbackData.exportFileNameTextBoxEnter && !callbackData.colorBoxEnter && !callbackData.maskPanelSliderEnter 
-			&& !callbackData.hexValueTextboxEnter && !callbackData.loadCustomModelEnter) {
+			&& !callbackData.hexValueTextboxEnter && !callbackData.loadCustomModelEnter && !callbackData.hueBarEnter) {
 			noButtonClick = true;
+			colorBoxFirstPress = false;
+
 		}
 		else {
+			if(callbackData.colorBoxEnter){
+				colorBoxFirstPress = true;
+			}
+			else{
+				colorBoxFirstPress = false;
+			}
 			noButtonClick = false;
 		}
 		clickTaken = true;
@@ -163,8 +172,10 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 					ligid.paintingFillNumericModifier(1,0);
 				if(callbackData.paintingFillNumericModifierNEnter)
 					ligid.paintingFillNumericModifier(0,1);
-				if(callbackData.colorBoxEnter)
+				if(callbackData.colorBoxEnter && colorBoxFirstPress)
 					ligid.colorBox();
+				if(callbackData.hueBarEnter)
+					ligid.hueBar();
 				if(callbackData.hexValueTextboxEnter)
 					ligid.hexValTextbox();
 				if(callbackData.loadCustomModelEnter)

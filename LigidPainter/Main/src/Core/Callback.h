@@ -49,6 +49,8 @@ struct CallbckData { //Return from callback
 	bool hexValueTextboxEnter;
 
 	bool loadCustomModelEnter;
+	
+	bool hueBarEnter;
 
 	glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
