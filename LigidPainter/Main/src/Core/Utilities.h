@@ -11,5 +11,8 @@ public:
 	void printRenderingSpeed();
 	glm::vec3 hexToRGBConverter(std::string hex);
 	std::string cropString(std::string text,int maxSize);
+	bool shortCut(GLFWwindow* window,unsigned int input1,unsigned int input2,unsigned int input3,unsigned int input4);
+	bool shortCutRelease(GLFWwindow* window,unsigned int input1,unsigned int input2,unsigned int input3,unsigned int input4);
+
 };
 #endif

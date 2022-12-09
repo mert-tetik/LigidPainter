@@ -29,5 +29,6 @@ public:
 	InitializedTextures initTextures(const char* maskTexturePath);
 	void sendProgramsToTextures(Programs appPrograms);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
+	unsigned int loadCubemap(std::vector<std::string> faces,unsigned int textureSlot);
 };
 #endif

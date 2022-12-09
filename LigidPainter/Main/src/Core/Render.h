@@ -19,6 +19,15 @@ struct FramebufferData
 	unsigned int Texture;
 	unsigned int RBO;
 };
+struct ViewUpdateData
+{
+	glm::vec3 mirroredCameraPos;
+	glm::mat4 mirroredView;
+	glm::vec3 cameraPos;
+	glm::mat4 view;
+};
+
+
 struct UiData {
 	bool loadModelButtonEnter;
 	bool loadModelButtonPressed;
@@ -96,12 +105,13 @@ struct RenderOutData{
 	bool maskPanelMaskClicked;
 	unsigned int currentBrushMaskTxtr;
 	std::string colorpickerHexVal;
+	glm::vec3 colorBoxVal;
 };
 class Render {
 public:
-	RenderOutData render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality);
-	void renderModel(bool backfaceCulling, std::vector<float>& vertices);
-	RenderOutData renderUi(PanelData panelData, UiData uidata, RenderData renderData, unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,std::string colorpickerHexVal,float brushBorderRangeBarValue);
+	RenderOutData render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData pbrShaderData);
+	void renderModel(bool backfaceCulling, std::vector<float>& vertices,PBRShaderData data);
+	RenderOutData renderUi(PanelData panelData, UiData uidata, RenderData renderData, unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,std::string &colorpickerHexVal,float brushBorderRangeBarValue);
 
     void exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName);
     void renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels);
@@ -109,8 +119,8 @@ public:
 	glm::vec3 getColorBoxValue(unsigned int FBOScreen, float colorBoxPickerValue_x, float colorBoxPickerValue_y,  int screenSizeX,  int screenSizeY);
 
 	void getDepthTexture(std::vector<float>& vertices, unsigned int FBOScreen,  int screenSizeX,  int screenSizeY);
-	void setMatrices();
-	void updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirrorX,bool mirrorY,bool mirrorZ);
+	glm::mat4 setMatrices();
+	ViewUpdateData updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirrorX,bool mirrorY,bool mirrorZ);
 	void getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos); //Not used
 	void drawLightObject(glm::vec3 lightPos);
 	void renderSkyBox();

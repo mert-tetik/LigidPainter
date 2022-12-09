@@ -168,7 +168,7 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 	callbk = preapareCallbackData();
 	return callbk;
 }
-CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData,float brushSizeRangeBarValue,float colorBoxPickerValue_x, float colorBoxPickerValue_y,float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, bool enablePanelMovement, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue, float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,GLFWcursor* pointerCursor,GLFWcursor* defaultCursor,bool paintingDropperPressed,GLFWcursor* dropperCursor,float brushBorderRangeBarValue)
+CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData,float brushSizeRangeBarValue,float colorBoxPickerValue_x, float colorBoxPickerValue_y,float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, bool enablePanelMovement, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue, float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue)
 {
 	CallbckData callbk;
 	
@@ -179,7 +179,7 @@ CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypo
 
 	panelCheck(window,xpos,screenSizeX,enablePanelMovement);
 	
-	buttonCheck(window, xpos, ypos, panelData ,brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,brushMaskPanelMaskHover,pointerCursor,defaultCursor,paintingDropperPressed,dropperCursor,brushBorderRangeBarValue);
+	buttonCheck(window, xpos, ypos, panelData ,brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,brushMaskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue);
 	
 
 	xoffset = xpos - lastX;
@@ -272,7 +272,7 @@ void Callback::panelCheck(GLFWwindow* window, int mouseXpos, int screenSizeX, bo
 		}
 	}
 }
-void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y,float colorBoxColorRangeBarValue,float brushBlurRangeBarValue,float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,GLFWcursor* pointerCursor,GLFWcursor* defaultCursor,bool paintingDropperPressed,GLFWcursor* dropperCursor,float brushBorderRangeBarValue) {
+void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y,float colorBoxColorRangeBarValue,float brushBlurRangeBarValue,float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue) {
 	UserInterface ui;
 
 	float centerDivider;
@@ -416,85 +416,85 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 	}
 
 	if(paintingDropperPressed){
-		glfwSetCursor(window, dropperCursor);
+		glfwSetCursor(window, cursors.dropperCursor);
 	}
 	else if (modelFilePathTextBoxEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (loadModelButtonEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (autoTriangulateCheckBoxEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (backfaceCullingCheckBoxEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (addPlaneButtonEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (addSphereButtonEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (addImageButtonEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (modelPanelButtonEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (texturePanelButtonEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (paintingPanelButtonEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (exportPanelButtonEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if(addMaskTextureButtonEnter){
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (brushSizeRangeBarEnter || brushBlurRangeBarEnter || brushRotationRangeBarEnter || brushOpacityRangeBarEnter || brushSpacingRangeBarEnter || brushBordersRangeBarEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (colorBoxPickerEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (colorBoxColorRangeBarEnter) {
-		glfwSetCursor(window,pointerCursor);
+		glfwSetCursor(window,cursors.pointerCursor);
 	}
 	else if (exportDownloadButtonEnter || exportExtJPGCheckBoxEnter || exportExtPNGCheckBoxEnter || exportPathTextBoxEnter || exportFileNameTextBoxEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (textureDemonstratorButtonEnter){
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (mirrorXCheckBoxEnter || mirrorYCheckBoxEnter || mirrorZCheckBoxEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (useNegativeForDrawingCheckboxEnter) {
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (paintingFillNumericModifierPEnter || paintingFillNumericModifierNEnter){
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if(maskPanelSliderEnter){
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if(brushMaskPanelMaskHover){
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if(hexValueTextboxEnter){
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (paintingDropperEnter){
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (loadCustomModelEnter){
-		glfwSetCursor(window, pointerCursor);
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (!panelChangeHover){
-		glfwSetCursor(window, defaultCursor);
+		glfwSetCursor(window, cursors.defaultCursor);
 	}
 	
 }

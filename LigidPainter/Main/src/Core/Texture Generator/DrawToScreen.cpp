@@ -29,7 +29,6 @@ std::vector<float> renderVerticesFlipped = {
 
 GLubyte* resizedPixels = new GLubyte[50 * 50 * 3]; //Resized mask texture
 GLubyte* renderedImage;
-GLubyte* emptyScreen;
 //Check if values changed
 
 //Check if values changed
@@ -61,10 +60,6 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 	//Get brush size
 	int distanceX = brushSize/qualityDivider;
 	int distanceY = distanceX;
-
-	emptyScreen = new GLubyte[(maxScreenWidth/qualityDivider) * (maxScreenHeight/qualityDivider)];
-	std::fill_n(emptyScreen, (maxScreenWidth/qualityDivider) * (maxScreenHeight/qualityDivider), 0);
-
 
 	//Get brush size
 
@@ -110,7 +105,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 					mouseYpos -= yposDif;
 				}
 				
-				if(addToScreenMaskTxtr){
+				if(true){
 					addToScreenMaskTxtr = false;
 					GLubyte* resultSquare = new GLubyte[distanceX * distanceY]; //Write to that array after interpreting resized texture with screen texture
 					GLfloat* screenTextureSquare = new GLfloat[distanceX * distanceY]; //Painting area of the screen texture

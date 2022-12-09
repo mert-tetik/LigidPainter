@@ -8,6 +8,15 @@ struct WindowData{
 	int windowMaxHeight;
 	GLFWwindow* window;
 };
+struct Cubemaps{
+	unsigned int cubemap;
+	unsigned int blurycubemap;
+};
+struct BrushMaskTextures{
+	std::vector<unsigned int> textures;
+	std::vector<std::string> names;
+};
+
 class GlSet {
 public:
 	void drawArrays(std::vector<float>& vertices, bool isLine);
@@ -45,5 +54,10 @@ public:
 	WindowData getWindow();
 	unsigned int createScreenFrameBufferObject();
 
+	Cubemaps loadCubemaps();
+	BrushMaskTextures loadBrushMaskTextures();
+	LigidCursors loadCursors();
+
+	void usePBRShader(unsigned int program,PBRShaderData data);
 };
 #endif // !RGDGL_H

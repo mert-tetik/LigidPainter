@@ -20,7 +20,6 @@
 #include "Texture Generator/TextureGenerator.h"
 
 #include <vector>
-#include <dirent.h>
 #include <map>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -57,7 +56,6 @@ GLFWwindow* window;
 //GL_TEXTURE11 = NULL
 //GL_TEXTURE12 = Modified mask texture
 //GL_TEXTURE13 = skybox
-//GL_TEXTURE31 = last painting result
 
 //Shortcuts
 
@@ -141,6 +139,8 @@ Might be transported to callback
 
 //Used to let render function know if it's supposed to change colors
 void setButtonPressedFalse();
+//TOOD : Use struct
+
 bool loadModelButtonPressed = false;
 bool addPlaneButtonPressed = false;
 bool addSphereButtonPressed = false;
@@ -172,6 +172,8 @@ bool mirrorUsed = false;
 
 
 //----------RANGE VALUE----------\\.
+
+//TOOD : Use struct
 float brushSizeRangeBarValue = 0.0f;
 float brushBlurRangeBarValue = -0.11f;
 float brushRotationRangeBarValue = -0.11f;
@@ -222,22 +224,15 @@ bool pressedCharChanged;
 bool mirrorClick = false;
 
 
-int keyInputFirstKeyHoldingCounter = 0;
-bool keyInputFirstKeyHold = false;
 int textBoxActiveChar = 6;
 bool colorpickerHexValTextboxValChanged = true;
 
-bool doCtrlX = true;
-bool doCtrlH = true;
-bool doCtrlB = true;
-
-bool doCtrlTabQ = true;
-bool doCtrlTabW = true;
-bool doCtrlTabT = true;
-bool doCtrlTabR = true;
 
 bool reduceScreenPaintingQuality = true;
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+
+	//------------------TEXT------------------
+
 
 	if(key >= 320 && key <=329){
 		key -= 272;
@@ -319,42 +314,34 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 	pressedCharChanged = true;
 	pressedChar = key;
-	keyInputFirstKeyHold = true;
-	keyInputFirstKeyHoldingCounter = 0;
 
 
 
+	//------------------SHORTCUTS------------------
 
 
 
-
-
-
+	Utilities util;
 
 	bool shiftTabAltRelease =  glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_RELEASE;
+
 	//Ctrl + x use negative checkbox
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS && panelData.paintingPanelActive && doCtrlX && shiftTabAltRelease){
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_X,NULL,NULL) && panelData.paintingPanelActive && action == 0 && shiftTabAltRelease){
 		if(useNegativeForDrawing){
 			useNegativeForDrawing = false;
 		}
 		else{
 			useNegativeForDrawing = true;
 		}
-		doCtrlX = false;
 	}
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_X) == GLFW_RELEASE){
-		doCtrlX = true;
-	}
+
 	//Ctrl + h change texture demonstrator's state
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS && doCtrlH && shiftTabAltRelease){
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_H,NULL,NULL) && action == 0 && shiftTabAltRelease){
 		textureDemonstratorButtonPressClicked = true;
-		doCtrlH = false;
 	}
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_H) == GLFW_RELEASE){
-		doCtrlH = true;
-	}
+
 	//Ctrl + b change fill between numeric modifier's state
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && doCtrlB && shiftTabAltRelease && panelData.paintingPanelActive){
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_B,NULL,NULL) && action == 0 && shiftTabAltRelease && panelData.paintingPanelActive){
 		Texture txtr;
 		if(paintingFillNumericModifierVal == 10){
 			paintingFillNumericModifierVal = 1;
@@ -370,84 +357,32 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		}
 		brushValChanged = true;
 		txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
-		doCtrlB = false;
-	}
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_B) == GLFW_RELEASE){
-		doCtrlB = true;
 	}
 
 	LigidPainter lp;
 	//Ctrl + Tab + q switch to model panel
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS && doCtrlTabQ){
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_Q,NULL) && action == 0){
 		lp.modelPanelButton();
-		doCtrlTabQ = false;
-	}
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_Q) == GLFW_RELEASE){
-		doCtrlTabQ = true;
 	}
 	//Ctrl + Tab + w switch to texture panel
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && doCtrlTabW){
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_W,NULL) && action == 0){
 		lp.texturePanelButton();
-		doCtrlTabW = false;
-	}
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE|| glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE){
-		doCtrlTabW = true;
 	}
 	//Ctrl + Tab + t switch to model panel
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS && doCtrlTabT){
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_T,NULL) && action == 0){
 		lp.paintingPanelButton();
-		doCtrlTabT = false;
-	}
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE|| glfwGetKey(window, GLFW_KEY_T) == GLFW_RELEASE){
-		doCtrlTabT = true;
 	}
 	//Ctrl + Tab + r switch to model panel
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS && doCtrlTabR){
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_R,NULL) && action == 0){
 		lp.exportPanelButton();
-		doCtrlTabR = false;
-	}
-	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE){
-		doCtrlTabR = true;
 	}
 }
 
 bool colorBoxClicked = false;
 bool hueBarClicked = false;
 
-vector<unsigned int> maskTextures;
-vector<string> maskTextureNames;
-unsigned int loadCubemap(std::vector<std::string> faces,unsigned int textureSlot)
-{
-	glset.activeTexture(textureSlot);
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+BrushMaskTextures brushMaskTextures;
 
-    int width, height, nrChannels;
-    for (unsigned int i = 0; i < faces.size(); i++)
-    {
-        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-        if (data)
-        {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
-                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
-            );
-            stbi_image_free(data);
-        }
-        else
-        {
-            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
-            stbi_image_free(data);
-        }
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    return textureID;
-}
 Programs programs;
 
 bool colorBoxValChanged = true;
@@ -458,6 +393,11 @@ bool renderPlane = false;
 vector<float> sphereVertices;
 
 bool hueValChanging;
+
+
+PBRShaderData pbrShaderData;
+
+glm::vec3 drawColor;
 
 bool LigidPainter::run()
 {
@@ -515,58 +455,13 @@ bool LigidPainter::run()
 
 	//Load brush mask textures
 	
-	struct dirent *d;
-    DIR *dr;
-    dr = opendir("./LigidPainter/Resources/Textures");
-    if(dr!=NULL)
-    {
-        cout<<"List of Files & Folders:-\n";
-        for(d=readdir(dr); d!=NULL; d=readdir(dr))
-        {
-			glset.activeTexture(GL_TEXTURE1);//Raw mask
-			string fileName =d->d_name;
-			if(fileName.size() > 3){
-				if(fileName[fileName.size()-1] != 't' && fileName[fileName.size()-2] != 'x' && fileName[fileName.size()-3] != 't'){
-					maskTextures.push_back(txtr.getTexture("./LigidPainter/Resources/Textures/" + fileName,0,0,false));
-					maskTextureNames.push_back(fileName);
-				}
-			}		
-        }
-        closedir(dr);
-    }
-    else
-        cout<<"\nError Occurred!";
-    cout<<endl;
 
+	brushMaskTextures = glset.loadBrushMaskTextures();
 
-	//Load cubemap
-	vector<std::string> faces
-	{
-	    "LigidPainter/Resources/Cubemap/Skybox/px.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/nx.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/ny.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/py.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/pz.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/nz.png"
-	};
-	unsigned int cubemapTexture = loadCubemap(faces,GL_TEXTURE13);  
-
-	vector<std::string> bluryfaces
-	{
-	    "LigidPainter/Resources/Cubemap/Skybox/pxblur.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/nxblur.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/nyblur.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/pyblur.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/pzblur.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/nzblur.png"
-	};
-	unsigned int cubemapTextureBlury = loadCubemap(bluryfaces,GL_TEXTURE16);  
+	glset.loadCubemaps();
 
 	glUseProgram(programs.skyboxProgram);
 	glset.uniform1i(programs.skyboxProgram, "skybox", 13);
-	glUseProgram(programs.program);
-	glset.uniform1i(programs.program, "skybox", 16);
-
 
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 	glset.uniform1i(programs.program, "uvMask", 7);
@@ -611,7 +506,7 @@ bool LigidPainter::run()
 	glDepthFunc(GL_LESS);
 	glset.enable(GL_DEPTH_TEST);
 
-	render.setMatrices(); //View matrix, Projection matrix
+	glm::mat4 perspectiveProjection = render.setMatrices();
 
 	float brushSize;
 	ExportData exportData;
@@ -639,19 +534,8 @@ bool LigidPainter::run()
 	glEnable(GL_MULTISAMPLE);
 
 	//Cursors
-	GLFWimage images[1];
-	stbi_set_flip_vertically_on_load(false);
-	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/PointerIcon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
-	GLFWcursor* pointerCursor = glfwCreateCursor(images,15,0);
-	stbi_image_free(images[0].pixels);
-
-	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/DefaultIcon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
-	GLFWcursor* defaultCursor = glfwCreateCursor(images,7,0);
-	stbi_image_free(images[0].pixels);
-
-	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/DropperCursor.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
-	GLFWcursor* dropperCursor = glfwCreateCursor(images,0,30);
-	stbi_image_free(images[0].pixels);
+	LigidCursors cursors;
+	cursors = glset.loadCursors();
 
 	bool textureDemonstratorButtonPressed = false;
 
@@ -717,7 +601,7 @@ bool LigidPainter::run()
 	Sphere sphere;
 	sphereVertices = sphere.getSphere();
 
-
+	ViewUpdateData viewUpdateData;
 
 	while (true)//Main loop
 	{
@@ -783,7 +667,6 @@ bool LigidPainter::run()
 		//Text input
 		charPressCounter++;
 
-		keyInputFirstKeyHoldingCounter++;
 		
 
 		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !callbackData.colorBoxPickerEnter) || (hueBarClicked && !callbackData.colorBoxPickerEnter && !hueValChanging)|| colorpickerHexValTextboxValChanged){
@@ -810,8 +693,28 @@ bool LigidPainter::run()
 		exportData.exportImage = exportImage;
 		exportData.path = exportPath.c_str();
 		exportData.fileName = exportFileName.c_str();
+
+		viewUpdateData = render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked); //TODO : Once the value changed
+
+
+
+		pbrShaderData.bluryskybox = 16;//TODO : Once the value changed
+		pbrShaderData.depthTexture = 9;
+		pbrShaderData.drawColor = drawColor;
+		pbrShaderData.materialDiffuse = 0;
+		pbrShaderData.mirroredDepthTexture = 8;
+		pbrShaderData.mirroredScreenMaskTexture = 3;
+		pbrShaderData.mirroredView = viewUpdateData.mirroredView;
+		pbrShaderData.mirroredViewPos = viewUpdateData.mirroredCameraPos;
+		pbrShaderData.projection = perspectiveProjection;
+		pbrShaderData.screenMaskTexture = 4;
+		pbrShaderData.useMirror = mirrorUsed;
+		pbrShaderData.view = viewUpdateData.view;
+		pbrShaderData.viewPos = viewUpdateData.cameraPos;
+
 		//Render
-		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,maskTextures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality);
+		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData);
+		drawColor = renderOut.colorBoxVal/255.0f;//TODO : Once the value changed
 		colorBoxValChanged = false;
 		colorpickerHexValTextboxValChanged = false;
 
@@ -819,10 +722,10 @@ bool LigidPainter::run()
 
 		//Update brush mask texture file's name once the brush mask texture changed
 		if(renderOut.maskPanelMaskClicked){
-			for (size_t i = 0; i < maskTextures.size(); i++)
+			for (size_t i = 0; i < brushMaskTextures.textures.size(); i++)
 			{
-				if(maskTextures[i] == renderOut.currentBrushMaskTxtr){
-					maskTextureFile = util.cropString(maskTextureNames[i],20);
+				if(brushMaskTextures.textures[i] == renderOut.currentBrushMaskTxtr){
+					maskTextureFile = util.cropString(brushMaskTextures.names[i],20);
 				}
 			}
 		}
@@ -837,11 +740,11 @@ bool LigidPainter::run()
 
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,pointerCursor,defaultCursor,paintingDropperPressed,dropperCursor,brushBorderRangeBarValue);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue);
 		}
-		if (cameraPosChanging || mirrorClick) { //Change the position of the camera in the shaders once camera position changed
-			render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
-		}
+		// if (cameraPosChanging || mirrorClick) { //Change the position of the camera in the shaders once camera position changed
+		// 	render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
+		// }
 		mirrorClick = false;
 
 		if ((cameraPosChanging && paintingMode) || glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE) { //Changing camera position or painting a stroke ends painting, than updates painted texture
@@ -1003,9 +906,6 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 
 
 
-
-
-
 //---------OTHER---------\\
 
 void updateCameraPosChanging(){
@@ -1033,6 +933,9 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatVal){
 	
 	colorBoxValChanged = true;
 	glm::vec3 hsvVal = util.RGBToHSVGenerator(RGBval);
+
+	drawColor = RGBval/glm::vec3(255.0f);
+	
 	glset.uniform3fv(programs.program, "drawColor", RGBval/glm::vec3(255.0f));
 
 	if(changeHue){
@@ -1065,8 +968,8 @@ void LigidPainter::addMaskTextureButton() {
 		brushValChanged = true;
 		glset.activeTexture(GL_TEXTURE1);
 
-		maskTextures.push_back(txtr.getTexture(maskTexturePath,0,0,false));
-		maskTextureNames.push_back(maskTexturePath);
+		brushMaskTextures.textures.push_back(txtr.getTexture(maskTexturePath,0,0,false));
+		brushMaskTextures.names.push_back(maskTexturePath);
 
 		txtr.updateMaskTexture(FBOScreen,width,height,brushRotationRangeBarValue,false,brushBorderRangeBarValue);
 	}

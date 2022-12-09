@@ -9,6 +9,27 @@ struct Programs
 	unsigned int blurProgram;
 	unsigned int iconsProgram;
 	unsigned int skyboxblurProgram;
+	unsigned int PBRProgram;
+};
+struct LigidCursors{
+	GLFWcursor* pointerCursor;
+	GLFWcursor* defaultCursor;
+	GLFWcursor* dropperCursor;
+};
+struct PBRShaderData{
+	glm::mat4 view;
+	glm::mat4 mirroredView;
+	glm::mat4 projection;
+	int screenMaskTexture;
+	int mirroredScreenMaskTexture;
+	int useMirror;
+	glm::vec3 drawColor;
+	int depthTexture;
+	int mirroredDepthTexture;
+	glm::vec3 viewPos;
+	glm::vec3 mirroredViewPos;
+	int bluryskybox; 
+	int materialDiffuse;
 };
 struct Icons{
 	unsigned int dropperIcon;
@@ -35,12 +56,7 @@ struct Icons{
 	unsigned int ArrowLeft;
 	unsigned int Painting;
 };
-struct ProjectionData
-{
-	glm::mat4 modelMat;
-	glm::mat4 viewMat;
-	glm::mat4 projMat;
-};
+
 struct RenderData { //GlSet::render
 	GLFWwindow* window;
 	float panelLoc; 

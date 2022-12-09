@@ -139,7 +139,7 @@ bool changeTextureDemonstrator;
 
 unsigned int currentBrushMaskTexture;
 
-RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,std::string colorpickerHexVal,float brushBorderRangeBarValue) {
+RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,std::string &colorpickerHexVal,float brushBorderRangeBarValue) {
 	ColorData colorData;
 	glm::mat4 projection;
 	UserInterface ui;
@@ -417,8 +417,10 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 //--------------------RENDER UI --------------------\\
 
 
-void Render::renderModel(bool backfaceCulling, std::vector<float>& vertices) {
+void Render::renderModel(bool backfaceCulling, std::vector<float>& vertices,PBRShaderData data) {
     GlSet gl;
+	gl.usePBRShader(renderPrograms.PBRProgram,data);
+
 	if (backfaceCulling) { //if backface culling checked in the model panel
 		gl.enable(GL_CULL_FACE);
 		gl.cullFace(GL_BACK);
@@ -427,6 +429,8 @@ void Render::renderModel(bool backfaceCulling, std::vector<float>& vertices) {
 	gl.drawArrays(vertices, false);
 
 	gl.disable(GL_CULL_FACE); //Disable backface culling if enabled
+
+	glUseProgram(renderPrograms.program);
 }
 void Render::renderSkyBox() {
 	GlSet gls;
@@ -482,7 +486,7 @@ void Render::renderSkyBox() {
 	
 	glUseProgram(renderPrograms.program);
 }
-void Render::setMatrices() {
+glm::mat4 Render::setMatrices() {
     GlSet gl;
 	glm::mat4 textProjection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 	glUseProgram(renderPrograms.iconsProgram);
@@ -505,13 +509,10 @@ void Render::setMatrices() {
 	glUseProgram(renderPrograms.program);
 	gl.uniformMatrix4fv(renderPrograms.program, "projection",projection);
 
-
-	ProjectionData pd;
-	pd.modelMat = model;
-	pd.projMat = projection;
+	return projection;
 	//pd.viewMat = view;
 }
-void Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirrorX,bool mirrorY,bool mirrorZ) {
+ViewUpdateData Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirrorX,bool mirrorY,bool mirrorZ) {
 	glm::mat4 view;
     GlSet gl;
 	view = glm::lookAt(cameraPos, originPos, glm::vec3(0.0, 1.0, 0.0)); 
@@ -526,9 +527,21 @@ void Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirr
 	gl.uniformMatrix4fv(3, "view", view);
 
 	gl.uniform3fv(renderPrograms.program, "viewPos", cameraPos);
-	gl.uniform3fv(renderPrograms.program, "mirroredViewPos", cameraPos * mirrorVec);
+
+	glm::vec3 mirroredCameraPos = cameraPos * mirrorVec;
+
+	gl.uniform3fv(renderPrograms.program, "mirroredViewPos", mirroredCameraPos);
 
 	gl.uniformMatrix4fv(renderPrograms.program, "mirroredView", mirroredView);
+
+	ViewUpdateData viewUpdateData;
+
+	viewUpdateData.cameraPos = cameraPos;
+	viewUpdateData.mirroredCameraPos = mirroredCameraPos;
+	viewUpdateData.mirroredView = mirroredView;
+	viewUpdateData.view = view;
+
+	return viewUpdateData;
 }
 void Render::getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos) { //Not used
 	/*GlSet glset;
@@ -832,7 +845,7 @@ bool currentModelChanged = true;
 bool lastRenderSphere = false;
 bool lastRenderPlane = false;
 
-RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality) {
+RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData pbrShaderData) {
 	GlSet gls;
 	UserInterface ui;
 	ColorData colorData;
@@ -859,9 +872,6 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	}
 	lastRenderPlane = renderPlane;
 	lastRenderSphere = renderSphere;
-
-
-
 
 
 	colorBoxVal = util.hexToRGBConverter(colorpickerHexVal);
@@ -902,7 +912,7 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	}
 
 	renderSkyBox();
-	renderModel(renderData.backfaceCulling,currentModel);
+	renderModel(renderData.backfaceCulling,currentModel,pbrShaderData);
 	drawAxisPointer();
 
 	RenderOutData uiOut;
@@ -929,6 +939,7 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	renderOut.maskPanelMaskHover = uiOut.maskPanelMaskHover;
 	renderOut.currentBrushMaskTxtr = uiOut.currentBrushMaskTxtr;
 	renderOut.colorpickerHexVal = util.rgbToHexGenerator(colorBoxVal);
+	renderOut.colorBoxVal = colorBoxVal;
 	return renderOut;
 }
 void Render::sendProgramsToRender(Programs apprenderPrograms){

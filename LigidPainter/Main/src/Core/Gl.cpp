@@ -16,6 +16,8 @@
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
+#include <dirent.h>
+
 
 Programs glPrograms;
 
@@ -226,11 +228,27 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 	glDeleteShader(skyboxblurFrag);
 
 
+
+	//PBR Blur program
+	unsigned int PBRVert = createShader("LigidPainter/Resources/Shaders/PBR.vert",GL_VERTEX_SHADER);
+	unsigned int PBRFrag = createShader("LigidPainter/Resources/Shaders/PBR.frag",GL_FRAGMENT_SHADER); 
+
+	unsigned int PBRProgram = glCreateProgram();
+	
+	glAttachShader(PBRProgram, PBRVert);
+	glAttachShader(PBRProgram, PBRFrag);
+	glLinkProgram(PBRProgram);
+
+	glDeleteShader(PBRFrag);
+	glDeleteShader(PBRVert);
+
+
 	glPrograms.blurProgram = blurProgram;
 	glPrograms.iconsProgram = iconsProgram;
 	glPrograms.skyboxblurProgram = skyboxblurProgram;
 	glPrograms.program = program;
 	glPrograms.skyboxProgram = skyboxProgram;
+	glPrograms.PBRProgram = PBRProgram;
 
 	return glPrograms;
 }
@@ -278,4 +296,114 @@ WindowData GlSet::getWindow() {
 	windowData.windowMaxWidth = windowMaxWidth;
 	windowData.windowMaxHeight = windowMaxHeight;
 	return windowData;
+}
+Cubemaps GlSet::loadCubemaps(){
+	Texture txtr;
+	std::vector<std::string> faces
+	{
+	    "LigidPainter/Resources/Cubemap/Skybox/px.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/nx.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/ny.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/py.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/pz.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/nz.png"
+	};
+	unsigned int cubemapTexture = txtr.loadCubemap(faces,GL_TEXTURE13);  
+	std::vector<std::string> bluryfaces
+	{
+	    "LigidPainter/Resources/Cubemap/Skybox/pxblur.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/nxblur.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/nyblur.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/pyblur.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/pzblur.png",
+	    "LigidPainter/Resources/Cubemap/Skybox/nzblur.png"
+	};
+	unsigned int cubemapTextureBlury = txtr.loadCubemap(bluryfaces,GL_TEXTURE16); //TODO : Avoid using texture slot for blury cubemap 
+
+	Cubemaps cubemaps;
+	cubemaps.blurycubemap = cubemapTextureBlury;
+	cubemaps.cubemap = cubemapTexture;
+
+	return cubemaps;
+}
+
+BrushMaskTextures GlSet::loadBrushMaskTextures(){
+	GlSet glset;
+	Texture txtr;
+
+	std::vector<unsigned int> maskTextures;
+	std::vector<std::string> maskTextureNames;
+
+	struct dirent *d;
+    DIR *dr;
+    dr = opendir("./LigidPainter/Resources/Textures");
+    if(dr!=NULL)
+    {
+        for(d=readdir(dr); d!=NULL; d=readdir(dr))
+        {
+			glset.activeTexture(GL_TEXTURE1);//Raw mask
+			std::string fileName =d->d_name;
+			if(fileName.size() > 3){
+				if(fileName[fileName.size()-1] != 't' && fileName[fileName.size()-2] != 'x' && fileName[fileName.size()-3] != 't'){
+					maskTextures.push_back(txtr.getTexture("./LigidPainter/Resources/Textures/" + fileName,0,0,false));
+					maskTextureNames.push_back(fileName);
+				}
+			}		
+        }
+        closedir(dr);
+    }
+    else
+        std::cout<<"\nError Occurred Using Dirent.h!";
+
+	BrushMaskTextures brushMasks;
+	brushMasks.names = maskTextureNames;
+	brushMasks.textures = maskTextures;
+
+	return brushMasks;
+}
+
+LigidCursors GlSet::loadCursors(){
+
+	GLFWimage images[1];
+	stbi_set_flip_vertically_on_load(false);
+	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/PointerIcon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+	GLFWcursor* pointerCursor = glfwCreateCursor(images,15,0);
+	stbi_image_free(images[0].pixels);
+
+	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/DefaultIcon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+	GLFWcursor* defaultCursor = glfwCreateCursor(images,7,0);
+	stbi_image_free(images[0].pixels);
+
+	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/DropperCursor.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+	GLFWcursor* dropperCursor = glfwCreateCursor(images,0,30);
+	stbi_image_free(images[0].pixels);
+
+	LigidCursors cursors;
+	cursors.pointerCursor = pointerCursor;
+	cursors.defaultCursor = defaultCursor;
+	cursors.dropperCursor = dropperCursor;
+
+	return cursors;
+}
+
+void GlSet::usePBRShader(unsigned int program,PBRShaderData data){
+	glUseProgram(program);
+
+	//Vert
+	uniformMatrix4fv(program,"view",data.view);
+	uniformMatrix4fv(program,"mirroredView",data.mirroredView);
+	uniformMatrix4fv(program,"projection",data.projection);
+
+	//Frag
+	uniform1i(program,"screenMaskTexture",data.screenMaskTexture);
+	uniform1i(program,"mirroredScreenMaskTexture",data.mirroredScreenMaskTexture);
+	uniform1i(program,"useMirror",data.useMirror);
+	uniform3fv(program,"drawColor",data.drawColor);
+	uniform1i(program,"depthTexture",data.depthTexture);
+	uniform1i(program,"mirroredDepthTexture",data.mirroredDepthTexture);
+	uniform3fv(program,"viewPos",data.viewPos);
+	uniform3fv(program,"mirroredViewPos",data.mirroredViewPos);
+	uniform1i(program,"bluryskybox",data.bluryskybox);
+	uniform1i(program,"material.diffuse",data.materialDiffuse);
+	
 }
