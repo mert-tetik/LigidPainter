@@ -54,7 +54,7 @@ public:
 	bool isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, int mouseXpos, int mouseYpos);
 	void rangeBar(float position_x, float position_y, float value);
 	void colorBox(float position_x, float position_y, float valueX, float valueY);
-	glm::vec3 colorRect(float position_x, float position_y,float value, unsigned int FBO,GLFWwindow* window);
+	glm::vec3 colorRect(float position_x, float position_y,float value, unsigned int FBO,GLFWwindow* window,glm::mat4 projection);
 	void decorationSquare(float position_x, float position_y);
 	Icons loadIcons();
 	void numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN);

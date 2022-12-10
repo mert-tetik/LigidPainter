@@ -38,16 +38,11 @@ void main() {
    Normal = aNormal;
    projectedPos = projection * view * vec4(aPos, 0.5); 
    mirroredProjectedPos = projection * mirroredView * vec4(aPos, 0.5); 
-
-
       if(isRenderTextureModeV == 0) {
       if(isText == 0) {
          if(isTwoDimensional == 0) {
             if(renderMirroredDepthV == 0){
                gl_Position = projection * view * vec4(aPos, 0.5);
-            }
-            else{
-               gl_Position = projection * mirroredView * vec4(aPos, 0.5);
             }
          } else {
             gl_Position = TextProjection * vec4(aPos, 1.0);

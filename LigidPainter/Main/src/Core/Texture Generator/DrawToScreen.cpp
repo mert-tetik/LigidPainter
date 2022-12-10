@@ -37,7 +37,7 @@ double lastMouseYPosIn = 0;
 
 bool addToScreenMaskTxtr = true;
 
-void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs programs,int maxScreenWidth,int maxScreenHeight,bool reduceScreenPaintingQuality,float brushBorderRangeBarValue,float brushBlurVal) {
+void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs programs,int maxScreenWidth,int maxScreenHeight,bool reduceScreenPaintingQuality,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO) {
 	Texture texture;
 	Render render;
 
@@ -93,19 +93,18 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 		if (differenceBetweenMousePoints <= 10) {
 			differenceBetweenMousePoints = 1;
 		}
-			unsigned int FBO;
-			glset.genFramebuffers(FBO);
-			glset.bindFramebuffer(FBO);
+
 
 			float opacity = ((opacityRangeBarValue + 0.11f) * 4.54545454545f); //-0.11 - 0.11 --> 0 - 1
 
+			glset.bindFramebuffer(FBO);
 			for (size_t i = 0; i < differenceBetweenMousePoints; i++)
 			{
 				if (differenceBetweenMousePoints > 10) {
 					mouseXpos -= xposDif;
 					mouseYpos -= yposDif;
 				}
-				
+
 				if(true){
 					addToScreenMaskTxtr = false;
 					GLubyte* resultSquare = new GLubyte[distanceX * distanceY]; //Write to that array after interpreting resized texture with screen texture
@@ -148,8 +147,8 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 					//Paint screen mask texture with resultSquare
 
 					//finish
-					delete(screenTextureSquare);
-					delete(resultSquare);
+					delete[] screenTextureSquare;
+					delete[] resultSquare;
 					//finish
 				}
 				else{
@@ -183,7 +182,6 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 		glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 
 		glset.bindFramebuffer(0);
-		glset.deleteFramebuffers(FBO);
 	}
 	lastMouseXPosIn = mouseXposIn;
 	lastMouseYPosIn = mouseYposIn;

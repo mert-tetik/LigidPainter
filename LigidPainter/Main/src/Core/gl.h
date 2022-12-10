@@ -63,6 +63,7 @@ public:
 	void useBlurShader(unsigned int program, BlurShaderData data);
 	void useSaturationValBoxShader(unsigned int program, SaturationValShaderData data);
 	void useScreenDepthShader(unsigned int program, ScreenDepthShaderData data);
+	void useHueShader(unsigned int program, HueShaderData data);
 
 };
 #endif // !RGDGL_H

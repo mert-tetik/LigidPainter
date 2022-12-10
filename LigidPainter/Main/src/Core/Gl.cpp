@@ -22,6 +22,7 @@
 Programs glPrograms;
 
 void GlSet::drawArrays(std::vector<float> &vertices,bool isLine) {
+	//TODO : Avoid ui lags
 	if (!isLine) {
 		glBufferSubData(GL_ARRAY_BUFFER,0,vertices.size() * sizeof(float), &vertices[0]);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 8);
@@ -71,6 +72,7 @@ void GlSet::deleteFramebuffers(unsigned int& FBO) {
 	glDeleteFramebuffers(1, &FBO);
 }
 void GlSet::setVertexAtribPointer() {
+	//TODO : Set these for each program
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
@@ -155,8 +157,26 @@ unsigned int createShader(const char* path,unsigned int shaderType){
 	testShader(shader);
 	return shader;
 }
+
+unsigned int createProgram(std::string path){
+	unsigned int vertexShader = createShader((path + ".vert").c_str(),GL_VERTEX_SHADER);
+	unsigned int fragmentShader = createShader((path + ".frag").c_str(),GL_FRAGMENT_SHADER); 
+
+	unsigned int program = glCreateProgram();
+	glAttachShader(program, vertexShader);
+	glAttachShader(program, fragmentShader);
+	glLinkProgram(program);
+
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
+	return program;
+}
+
 Programs GlSet::getProgram() {//Prepare shader program | Usen once
 	Utilities utilities;
+
+	//TODO : 2d Shader
 
 	//Main Program
 	unsigned int vertexShader = createShader("LigidPainter/Resources/Shaders/vertexShaderSource.glsl",GL_VERTEX_SHADER);
@@ -172,104 +192,44 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 
 
 	//Skybox program
-	unsigned int skyboxVert = createShader("LigidPainter/Resources/Shaders/skybox.vert",GL_VERTEX_SHADER);
-	unsigned int skyboxFrag = createShader("LigidPainter/Resources/Shaders/skybox.frag",GL_FRAGMENT_SHADER); 
-
-	unsigned int skyboxProgram = glCreateProgram();
+	unsigned int skyboxProgram = createProgram("LigidPainter/Resources/Shaders/skybox");
 	
-	glAttachShader(skyboxProgram, skyboxVert);
-	glAttachShader(skyboxProgram, skyboxFrag);
-	glLinkProgram(skyboxProgram);
-
-	glDeleteShader(skyboxVert);
-	glDeleteShader(skyboxFrag);
 
 
 	//Blur program
-	unsigned int blurVert = createShader("LigidPainter/Resources/Shaders/blur.vert",GL_VERTEX_SHADER);
-	unsigned int blurFrag = createShader("LigidPainter/Resources/Shaders/blur.frag",GL_FRAGMENT_SHADER); 
+	unsigned int blurProgram = createProgram("LigidPainter/Resources/Shaders/blur");
 
-	unsigned int blurProgram = glCreateProgram();
-	
-	glAttachShader(blurProgram, blurVert);
-	glAttachShader(blurProgram, blurFrag);
-	glLinkProgram(blurProgram);
-
-	glDeleteShader(blurVert);
-	glDeleteShader(blurFrag);
 
 
 	//Icons program
-	unsigned int iconsVert = createShader("LigidPainter/Resources/Shaders/icons.vert",GL_VERTEX_SHADER);
-	unsigned int iconsFrag = createShader("LigidPainter/Resources/Shaders/icons.frag",GL_FRAGMENT_SHADER); 
-
-	unsigned int iconsProgram = glCreateProgram();
-	
-	glAttachShader(iconsProgram, iconsVert);
-	glAttachShader(iconsProgram, iconsFrag);
-	glLinkProgram(iconsProgram);
-
-	glDeleteShader(iconsVert);
-	glDeleteShader(iconsFrag);
+	unsigned int iconsProgram = createProgram("LigidPainter/Resources/Shaders/icons");
 
 
 
 	//Skybox Blur program
-	unsigned int skyboxblurVert = createShader("LigidPainter/Resources/Shaders/skyboxblur.vert",GL_VERTEX_SHADER);
-	unsigned int skyboxblurFrag = createShader("LigidPainter/Resources/Shaders/skyboxblur.frag",GL_FRAGMENT_SHADER); 
-
-	unsigned int skyboxblurProgram = glCreateProgram();
-	
-	glAttachShader(skyboxblurProgram, skyboxblurVert);
-	glAttachShader(skyboxblurProgram, skyboxblurFrag);
-	glLinkProgram(skyboxblurProgram);
-
-	glDeleteShader(skyboxblurVert);
-	glDeleteShader(skyboxblurFrag);
+	unsigned int skyboxblurProgram = createProgram("LigidPainter/Resources/Shaders/skyboxblur");
 
 
 
 	//PBR program
-	unsigned int PBRVert = createShader("LigidPainter/Resources/Shaders/PBR.vert",GL_VERTEX_SHADER);
-	unsigned int PBRFrag = createShader("LigidPainter/Resources/Shaders/PBR.frag",GL_FRAGMENT_SHADER); 
-
-	unsigned int PBRProgram = glCreateProgram();
-	
-	glAttachShader(PBRProgram, PBRVert);
-	glAttachShader(PBRProgram, PBRFrag);
-	glLinkProgram(PBRProgram);
-
-	glDeleteShader(PBRFrag);
-	glDeleteShader(PBRVert);
+	unsigned int PBRProgram = createProgram("LigidPainter/Resources/Shaders/PBR");
 
 
 
 	//Saturation Value program
-	unsigned int saturationValBoxVert = createShader("LigidPainter/Resources/Shaders/saturationValBox.vert",GL_VERTEX_SHADER);
-	unsigned int saturationValBoxFrag = createShader("LigidPainter/Resources/Shaders/saturationValBox.frag",GL_FRAGMENT_SHADER); 
+	unsigned int saturationValBoxProgram = createProgram("LigidPainter/Resources/Shaders/saturationValBox");
 
-	unsigned int saturationValBoxProgram = glCreateProgram();
-	
-	glAttachShader(saturationValBoxProgram, saturationValBoxVert);
-	glAttachShader(saturationValBoxProgram, saturationValBoxFrag);
-	glLinkProgram(saturationValBoxProgram);
-
-	glDeleteShader(saturationValBoxFrag);
-	glDeleteShader(saturationValBoxVert);
 
 
 	//Saturation Value program
-	unsigned int screenDepthVert = createShader("LigidPainter/Resources/Shaders/screenDepth.vert",GL_VERTEX_SHADER);
-	unsigned int screenDepthFrag = createShader("LigidPainter/Resources/Shaders/screenDepth.frag",GL_FRAGMENT_SHADER); 
+	unsigned int screenDepthProgram = createProgram("LigidPainter/Resources/Shaders/screenDepth");
 
-	unsigned int screenDepthProgram = glCreateProgram();
-	
-	glAttachShader(screenDepthProgram, screenDepthVert);
-	glAttachShader(screenDepthProgram, screenDepthFrag);
-	glLinkProgram(screenDepthProgram);
 
-	glDeleteShader(screenDepthFrag);
-	glDeleteShader(screenDepthVert);
+
+	//Hue program
+	unsigned int hueProgram = createProgram("LigidPainter/Resources/Shaders/hue");
+
+
 
 
 
@@ -281,6 +241,7 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 	glPrograms.PBRProgram = PBRProgram;
 	glPrograms.saturationValBoxProgram = saturationValBoxProgram;
 	glPrograms.screenDepthProgram = screenDepthProgram;
+	glPrograms.hueProgram = hueProgram;
 
 	return glPrograms;
 }
@@ -308,8 +269,10 @@ unsigned int GlSet::createScreenFrameBufferObject() {
 WindowData GlSet::getWindow() {
 	glfwInit();
 	//glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
 	int samples = 8;
 	glfwWindowHint(GLFW_SAMPLES, samples);
+	
 	GLFWwindow* window = glfwCreateWindow(3845,2165, "LigidPainter", NULL, NULL);
 	glfwMakeContextCurrent(window);
 
@@ -479,5 +442,11 @@ void GlSet::useScreenDepthShader(unsigned int program, ScreenDepthShaderData dat
 	uniformMatrix4fv(program,"view",data.view);
 	uniformMatrix4fv(program,"mirroredView",data.mirroredView);
 	uniformMatrix4fv(program,"projection",data.projection);
+}
+void GlSet::useHueShader(unsigned int program, HueShaderData data){
+	glUseProgram(program);
 
+	//Vert
+	uniformMatrix4fv(program,"renderTextureProjection",data.renderTextureProjection);
+	uniform1i(program,"useTexCoords",data.useTexCoords);
 }

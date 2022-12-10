@@ -25,7 +25,6 @@ uniform sampler2D mirroredDepthTexture; //Screen rendered with depth color
 
 uniform int isRenderTextureMode;
 uniform int renderDepth;
-uniform int renderMirroredDepth;
 uniform int renderMaskBrush;
 
 
@@ -38,7 +37,6 @@ uniform vec3 textColor;
 uniform int is2D;
 uniform vec3 viewPos;
 uniform vec3 mirroredViewPos;
-uniform int isLightSource;
 uniform int isAxisPointer;
 
 uniform vec3 uiColor;
@@ -48,8 +46,6 @@ uniform float uiTransitionMixVal;
 uniform float uiOpacity;
 
 uniform int isColorBox;
-uniform int isRect;
-uniform vec3 boxColor = vec3(0.0,1.0,0.0);
 
 uniform int drawBrushIndicator;
 
@@ -132,10 +128,6 @@ void main() {
       if(isColorBox == 0) {
          if(isTextF == 0) {
             if(is2D == 0) {
-               if(isLightSource == 1) {
-                  //Light source here
-                  color = vec4(1.0, 1.0, 1.0, 1.0);
-               } 
                 if(isAxisPointer == 1) 
                 {
                    //Axis pointer here
@@ -171,13 +163,6 @@ void main() {
             color = vec4(textColor,1) * sampled;
          }
       } 
-      else {
-         if(isRect == 1)
-         {
-            //Hue slide bar here
-            color = vec4(Normal,1);
-         }
-      }
    } 
    else { //Render texture
       if(isRenderScreenMaskMode == 0){
@@ -188,31 +173,7 @@ void main() {
          }
          else
          {
-            if(isColorBox == 1 && isRect == 1)
-            {
-               //Color rect slide bar texture rendering here
-               color = vec4(Normal,1);
-            }
-            else if(isColorBox == 1 && isRect == 0)
-            {
-               //Color box texture rendering here
-               vec3 interpretedColorWhite = ((vec3(1.0)-boxColor) * vec3(TexCoords.x)) + boxColor;
-               vec3 interpretedColorBlack = vec3(TexCoords.y)*interpretedColorWhite;
-               color = vec4(interpretedColorBlack,1);
-            }
-            else
-            {
-               if(renderDepth == 1)
-               {
-                  //Depth here
-                  if(renderMirroredDepth == 0){
-                     color = vec4(vec3(linearizeDepth(gl_FragCoord.z)/far), 1.0);
-                  }
-                  else{
-                     color = vec4(vec3(linearizeDepth(gl_FragCoord.z)/far), 1.0);
-                  }
-               }
-               else
+               if(renderDepth == 0)
                {
                   //Diffuse result here
                   if(interpretWithUvMask == 0){
@@ -244,7 +205,6 @@ void main() {
                   }
                   
                }
-            }
          }
       }
       else{

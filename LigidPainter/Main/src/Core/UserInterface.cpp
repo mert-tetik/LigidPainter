@@ -235,9 +235,9 @@ void UserInterface::colorBox(float position_x, float position_y,float valueX, fl
 	glset.uniform1i(uiPrograms.program, "isColorBox", 0);
 
 	glUseProgram(uiPrograms.program);
-	box(0.0f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 18,glm::vec3(0),0);
+	box(0.0f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 22,glm::vec3(0),0);
 }
-glm::vec3 UserInterface::colorRect(float position_x, float position_y,float value,unsigned int FBO,GLFWwindow* window) { //Changing colorBox value will be once the value changed
+glm::vec3 UserInterface::colorRect(float position_x, float position_y,float value,unsigned int FBO,GLFWwindow* window, glm::mat4 projection) { //Changing colorBox value will be once the value changed
 	std::vector<float> boxCoor{
 		//Color - Normal Vectors Will Be Usen For Color Data Of Vertices
 
@@ -293,52 +293,52 @@ glm::vec3 UserInterface::colorRect(float position_x, float position_y,float valu
 	GlSet glset;
 	ColorData colorData;
 
+	glm::mat4 screenprojection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
+	HueShaderData hueShaderData;
+	hueShaderData.renderTextureProjection = screenprojection;
+	hueShaderData.useTexCoords = 1;
+
 	//Render color rectangle into the screen to get the value
+	glset.useHueShader(uiPrograms.hueProgram,hueShaderData);
+
 	glset.viewport(1920, 1081);
-	glset.uniform1i(uiPrograms.program, "isRenderTextureModeV", 1);
-	glset.uniform1i(uiPrograms.program, "isRenderTextureMode", 1);
-	glset.uniform1i(uiPrograms.program, "isTwoDimensional", 0);
 	glset.bindFramebuffer(FBO);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	GLubyte* colorRectPixel = new GLubyte[1 * 1 * 3];//Color value
-	glset.uniform1i(uiPrograms.program, "isColorBox", 1);
-	glset.uniform1i(uiPrograms.program, "isRect", 1);
 	glset.drawArrays(boxCoor, false); //Render Model
-	glset.uniform1i(uiPrograms.program, "isRect", 1);
-	glset.uniform1i(uiPrograms.program, "isColorBox", 0);
+
 	if( (value + 0.18f) * 2.77777777778f * 1080 != 1080)
 		glReadPixels(10, (value + 0.18f) * 2.77777777778f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
 	else{
 		glReadPixels(10, 1079, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
 	}
-	//Render color rectangle into the screen to get the value
 	//Finish
-	glset.uniform1i(uiPrograms.program, "isRenderTextureMode", 0);
-	glset.uniform1i(uiPrograms.program, "isRenderTextureModeV", 0);
-	glset.uniform1i(uiPrograms.program, "isTwoDimensional", 1);
-	glset.bindFramebuffer(0);
-	int screenSizeX;
-	int screenSizeY;
-	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
-	glViewport(-(uiMaxScreenWidth - screenSizeX)/2, -(uiMaxScreenHeight - screenSizeY), uiMaxScreenWidth, uiMaxScreenHeight);
-
-	glset.uniform3f(uiPrograms.program, "boxColor", colorRectPixel[0] / 255.0f, colorRectPixel[1] / 255.0f, colorRectPixel[2] / 255.0f);
-
 	glm::vec3 hueValue;
 	hueValue.r = colorRectPixel[0];
 	hueValue.g = colorRectPixel[1];
 	hueValue.b = colorRectPixel[2];
 
 	delete(colorRectPixel);
-	//Finish
 
+	glset.bindFramebuffer(0);
+	int screenSizeX;
+	int screenSizeY;
+	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
+	glViewport(-(uiMaxScreenWidth - screenSizeX)/2, -(uiMaxScreenHeight - screenSizeY), uiMaxScreenWidth, uiMaxScreenHeight);
+
+
+	//glset.uniform3f(uiPrograms.program, "boxColor", colorRectPixel[0] / 255.0f, colorRectPixel[1] / 255.0f, colorRectPixel[2] / 255.0f); //Check if necessary
+
+
+	hueShaderData.useTexCoords = 0;
+	hueShaderData.renderTextureProjection = projection;
+	glset.useHueShader(uiPrograms.hueProgram,hueShaderData);
+
+	//Finish
+	glset.drawArrays(boxCoor, false); //Render color rectangle displayer
+	glUseProgram(uiPrograms.program);
 	box(0.01f, 0.005f, position_x, position_y + value, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 10000, glm::vec3(0), 0); //Value indicator
 
-	glset.uniform1i(uiPrograms.program, "isColorBox", 1);
-	glset.uniform1i(uiPrograms.program, "isRect", 1);
-	glset.drawArrays(boxCoor, false); //Render color rectangle displayer
-	glset.uniform1i(uiPrograms.program, "isColorBox", 0);
-	glset.uniform1i(uiPrograms.program, "isRect", 0);
 
 	return hueValue;
 }
@@ -614,7 +614,6 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 
 	glset.uniform1i(program,"isText", 1);
 	glset.uniform1i(program, "isTextF", 1);
-	glset.uniform1i(program, "text", 2);
 	
 	std::string::const_iterator c;
 	for (c = text.begin(); c != text.end(); c++)

@@ -395,10 +395,7 @@ vector<float> sphereVertices;
 bool hueValChanging;
 
 
-PBRShaderData pbrShaderData;
-SkyBoxShaderData skyBoxShaderData;
-BlurShaderData blurShaderData;
-ScreenDepthShaderData screenDepthShaderData;
+
 
 glm::vec3 drawColor;
 
@@ -432,6 +429,10 @@ bool LigidPainter::run()
 	glfwSetScrollCallback(window, scroll_callback);
 	//Set Callbacks
 
+
+	ui.setViewportBgColor();
+	
+	
 	programs = glset.getProgram();
 
 	glGenBuffers(1, &VBO);
@@ -455,7 +456,6 @@ bool LigidPainter::run()
 	glset.setVertexAtribPointer();
 	glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW); 
 
-	ui.setViewportBgColor();
 	ui.uploadChars();
 
 	//Load brush mask textures
@@ -471,7 +471,7 @@ bool LigidPainter::run()
 	glset.uniform1i(programs.program, "uvMask", 7);
 	
 	glUseProgram(programs.iconsProgram);
-	glset.uniform1i(12, "icon", 6);
+	glset.uniform1i(programs.iconsProgram, "icon", 6);
 	glUseProgram(programs.program);
 
 	Utilities util;
@@ -485,6 +485,7 @@ bool LigidPainter::run()
 	glset.uniform1i(programs.program, "material.specular", 1);
 	glset.uniform1i(programs.program, "depthTexture", 9);
 	glset.uniform1i(programs.program, "mirroredDepthTexture", 8);
+	glset.uniform1i(programs.program, "text", 2);
 
 
 	glset.uniform1i(programs.program, "modifiedMaskTexture", 12);
@@ -542,54 +543,6 @@ bool LigidPainter::run()
 
 	bool textureDemonstratorButtonPressed = false;
 
-
-
-	// glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f , 0.1f, 10.0f);
-	// glm::mat4 captureViews[]{
-	// 	glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f,0.0f,0.0f),glm::vec3(0.0f, -1.0f, 0.0f)),
-	// 	glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(-1.0f,0.0f,0.0f),glm::vec3(0.0f, -1.0f, 0.0f)),
-	// 	glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,1.0f,0.0f),glm::vec3(0.0f, 0.0f, 1.0f)),
-	// 	glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,-1.0f,0.0f),glm::vec3(0.0f, 0.0f, -1.0f)),
-	// 	glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,1.0f),glm::vec3(0.0f, -1.0f, 0.0f)),
-	// 	glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,-1.0f),glm::vec3(0.0f, -1.0f, 0.0f))
-	// };
-	// glset.activeTexture(GL_TEXTURE13);
-	// unsigned int irradianceMap;
-	// glset.genTextures(irradianceMap);
-    // glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
-	// for (unsigned int i = 0; i < 6; i++)
-	// {
-	// 	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0 , GL_RGB , 32 , 32 , 0 , GL_RGB ,GL_FLOAT, nullptr);
-	// }
-	// glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	
-	// unsigned int cubeFBO;
-	// glset.genFramebuffers(cubeFBO);
-	// glset.bindFramebuffer(cubeFBO);
-
-	// glUseProgram(programs.skyboxblurProgram);
-	// glset.uniformMatrix4fv(programs.skyboxblurProgram,"projection",captureProjection);
-	// glset.uniform1i(programs.skyboxblurProgram,"skybox",13);
-
-	// glActiveTexture(GL_TEXTURE13);
-	// //glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
-	// glViewport(0,0,32,32);
-
-	// for (size_t i = 0; i < 6; i++)
-	// {
-	// 	glset.uniformMatrix4fv(programs.skyboxblurProgram,"view",captureViews[i]);
-	// 	glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap , 0);
-	// 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	// 	render.renderSkyBox();
-	// 	glUseProgram(programs.skyboxblurProgram);
-
-	// }
-	// glset.bindFramebuffer(0);
-	// glUseProgram(programs.program);
 	
 	//Plane Model
 	vector<float> planeVertices = {
@@ -606,11 +559,29 @@ bool LigidPainter::run()
 
 	ViewUpdateData viewUpdateData;
 
+	unsigned int paintingFBO;
+	glset.genFramebuffers(paintingFBO);
+
+
+	PBRShaderData pbrShaderData;
+	SkyBoxShaderData skyBoxShaderData;
+	ScreenDepthShaderData screenDepthShaderData;
+
+	pbrShaderData.bluryskybox = 16;
+	pbrShaderData.depthTexture = 9;
+	pbrShaderData.materialDiffuse = 0;
+	pbrShaderData.mirroredDepthTexture = 8;
+	pbrShaderData.mirroredScreenMaskTexture = 3;
+	pbrShaderData.screenMaskTexture = 4;
+
+	skyBoxShaderData.skybox = 13;
+
+	
 	while (true)//Main loop
 	{
 		glfwPollEvents();
 
-		//util.printRenderingSpeed();
+		util.printRenderingSpeed();
 
 		updateCameraPosChanging();
 
@@ -618,22 +589,27 @@ bool LigidPainter::run()
 
 		//Release textboxes
 		if ((glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS)){
-			if(!callbackData.exportFileNameTextBoxEnter){
+			if(!callbackData.exportFileNameTextBoxEnter && exportFileNameTextBoxPressed){
 				exportFileNameTextBoxPressed = false;
 				if(exportFileName == ""){
 					exportFileName = "LP_Export";
 				}	
 			}
-			if(!callbackData.hexValueTextboxEnter){
+			if(!callbackData.hexValueTextboxEnter && exportFileNameTextBoxPressed){
 				hexValTextboxPressed = false;
 				textBoxActiveChar = 6;
 			}
 		}
 
+
+
+		//Ui actions
 		uiActData = uiAct.uiActions(window,callbackData,textureDemonstratorBoundariesHover);
 		
 
-				//Check if texture demonstrator button clicked
+
+
+		//Check if texture demonstrator button clicked
 		if(uiActData.textureDemonstratorButtonPressed){
 			textureDemonstratorButtonPressCounter++;
 			textureDemonstratorButtonPressed = true;
@@ -650,15 +626,15 @@ bool LigidPainter::run()
 		}
 
 
+
 		//Painting
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed) {//Used for spacing
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed){
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue,brushBlurVal);
+			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue,brushBlurVal,paintingFBO);
 			brushValChanged = false;
 			drawingCount = 0;
-			//brushOpacityChanged = false; not used
 			paintingMode = true;
 		}
 		if(drawingCount > drawingSpacing)
@@ -667,25 +643,25 @@ bool LigidPainter::run()
 		lastMouseXpos = mouseXpos;
 		lastMouseYpos = mouseYpos;
 
-		//Text input
-		charPressCounter++;
 
-		
 
+		//Change color picker's value
 		if((paintingDropperPressed && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorBoxClicked && !callbackData.colorBoxPickerEnter) || (hueBarClicked && !callbackData.colorBoxPickerEnter && !hueValChanging)|| colorpickerHexValTextboxValChanged){
 			if(colorpickerHexValTextboxValChanged){
 				updateColorPicker(util.hexToRGBConverter(colorpickerHexVal),true,true);//Update colorbox val once color picker hex value textbox value changed
 			}
 			else{
-				updateColorPicker(renderOut.mouseHoverPixel,true,!hueBarClicked);//Update colorbox val once color picker is usen or colorbox is clicked
+				updateColorPicker(renderOut.mouseHoverPixel,true,!hueBarClicked);//Update colorbox val once dropper is used or colorbox is clicked
 			}
-
 		}
 		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE)
 			hueValChanging = false;
-		colorBoxClicked = false;
-		hueBarClicked = false;
-		colorBoxPickerButtonPressed = false;
+		if(colorBoxClicked)
+			colorBoxClicked = false;
+		if(hueBarClicked)
+			hueBarClicked = false;
+		if(colorBoxPickerButtonPressed)
+			colorBoxPickerButtonPressed = false;
 
 
 		//Update
@@ -696,41 +672,40 @@ bool LigidPainter::run()
 		exportData.exportImage = exportImage;
 		exportData.path = exportPath.c_str();
 		exportData.fileName = exportFileName.c_str();
+		if (cameraPosChanging || mirrorClick){
+			viewUpdateData = render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked); 
+		}
 
-		viewUpdateData = render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked); //TODO : Once the value changed
 
 
 
-		pbrShaderData.bluryskybox = 16;//TODO : Once the value changed
-		pbrShaderData.depthTexture = 9;
 		pbrShaderData.drawColor = drawColor;
-		pbrShaderData.materialDiffuse = 0;
-		pbrShaderData.mirroredDepthTexture = 8;
-		pbrShaderData.mirroredScreenMaskTexture = 3;
 		pbrShaderData.mirroredView = viewUpdateData.mirroredView;
 		pbrShaderData.mirroredViewPos = viewUpdateData.mirroredCameraPos;
 		pbrShaderData.projection = perspectiveProjection;
-		pbrShaderData.screenMaskTexture = 4;
 		pbrShaderData.useMirror = mirrorUsed;
 		pbrShaderData.view = viewUpdateData.view;
 		pbrShaderData.viewPos = viewUpdateData.cameraPos;
 
 		skyBoxShaderData.projection = perspectiveProjection;
 		skyBoxShaderData.view = viewUpdateData.view;
-		skyBoxShaderData.skybox = 13;
 
 		screenDepthShaderData.mirroredView = viewUpdateData.mirroredView;
 		screenDepthShaderData.projection = perspectiveProjection;
 		screenDepthShaderData.view = viewUpdateData.view;
 
 		
+
+
 		//Render
 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData);
 		drawColor = renderOut.colorBoxVal/255.0f;//TODO : Once the value changed
 		colorBoxValChanged = false;
 		colorpickerHexValTextboxValChanged = false;
-
 		colorpickerHexVal = renderOut.colorpickerHexVal;
+
+
+
 
 		//Update brush mask texture file's name once the brush mask texture changed
 		if(renderOut.maskPanelMaskClicked){
@@ -741,7 +716,6 @@ bool LigidPainter::run()
 				}
 			}
 		}
-
 		if(renderOut.maskPanelMaskClicked){
 			brushValChanged = true;
 		}
@@ -754,9 +728,6 @@ bool LigidPainter::run()
 		if (mousePosChanged) { //To make sure painting done before changing camera position
 			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue);
 		}
-		// if (cameraPosChanging || mirrorClick) { //Change the position of the camera in the shaders once camera position changed
-		// 	render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked);
-		// }
 		mirrorClick = false;
 
 		if ((cameraPosChanging && paintingMode) || glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE) { //Changing camera position or painting a stroke ends painting, than updates painted texture
