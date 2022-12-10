@@ -37,7 +37,7 @@ double lastMouseYPosIn = 0;
 
 bool addToScreenMaskTxtr = true;
 
-void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs programs,int maxScreenWidth,int maxScreenHeight,bool reduceScreenPaintingQuality,float brushBorderRangeBarValue) {
+void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs programs,int maxScreenWidth,int maxScreenHeight,bool reduceScreenPaintingQuality,float brushBorderRangeBarValue,float brushBlurVal) {
 	Texture texture;
 	Render render;
 
@@ -71,7 +71,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 		//Setup
 		resizedPixels = new GLubyte[distanceX * distanceY * 3];
 
-		renderedImage = txtr.updateMaskTexture(FBOScreen, screenSizeX,screenSizeY, rotationValue,false,brushBorderRangeBarValue);
+		renderedImage = txtr.updateMaskTexture(FBOScreen, screenSizeX,screenSizeY, rotationValue,false,brushBorderRangeBarValue,brushBlurVal);
 		//Resize
 		if (true) {
 			stbir_resize_uint8(renderedImage, 540, 540, 0, resizedPixels, distanceX, distanceY, 0, 3); //Resize (causes lags)
@@ -80,6 +80,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 	}
 	if (lastMouseXPosIn - mouseXposIn != 0 || lastMouseYPosIn - mouseYposIn != 0) {
 		
+		//TODO : Reduce the mask value in the for loop
 
 		//----------------------PAINTING----------------------\\
 		

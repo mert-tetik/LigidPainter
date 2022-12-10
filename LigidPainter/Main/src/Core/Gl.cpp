@@ -229,7 +229,7 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 
 
 
-	//PBR Blur program
+	//PBR program
 	unsigned int PBRVert = createShader("LigidPainter/Resources/Shaders/PBR.vert",GL_VERTEX_SHADER);
 	unsigned int PBRFrag = createShader("LigidPainter/Resources/Shaders/PBR.frag",GL_FRAGMENT_SHADER); 
 
@@ -243,12 +243,28 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 	glDeleteShader(PBRVert);
 
 
+
+	// program
+	unsigned int saturationValBoxVert = createShader("LigidPainter/Resources/Shaders/saturationValBox.vert",GL_VERTEX_SHADER);
+	unsigned int saturationValBoxFrag = createShader("LigidPainter/Resources/Shaders/saturationValBox.frag",GL_FRAGMENT_SHADER); 
+
+	unsigned int saturationValBoxProgram = glCreateProgram();
+	
+	glAttachShader(saturationValBoxProgram, saturationValBoxVert);
+	glAttachShader(saturationValBoxProgram, saturationValBoxFrag);
+	glLinkProgram(saturationValBoxProgram);
+
+	glDeleteShader(saturationValBoxFrag);
+	glDeleteShader(saturationValBoxVert);
+
+
 	glPrograms.blurProgram = blurProgram;
 	glPrograms.iconsProgram = iconsProgram;
 	glPrograms.skyboxblurProgram = skyboxblurProgram;
 	glPrograms.program = program;
 	glPrograms.skyboxProgram = skyboxProgram;
 	glPrograms.PBRProgram = PBRProgram;
+	glPrograms.saturationValBoxProgram = saturationValBoxProgram;
 
 	return glPrograms;
 }
@@ -405,5 +421,37 @@ void GlSet::usePBRShader(unsigned int program,PBRShaderData data){
 	uniform3fv(program,"mirroredViewPos",data.mirroredViewPos);
 	uniform1i(program,"bluryskybox",data.bluryskybox);
 	uniform1i(program,"material.diffuse",data.materialDiffuse);
-	
+}
+
+void GlSet::useSkyBoxShader(unsigned int program, SkyBoxShaderData data){
+	glUseProgram(program);
+
+	//Vert
+	uniformMatrix4fv(program,"view",data.view);
+	uniformMatrix4fv(program,"projection",data.projection);
+
+	//Frag
+	uniform1i(program,"skybox",data.skybox);
+}
+
+void GlSet::useBlurShader(unsigned int program, BlurShaderData data){
+	glUseProgram(program);
+
+	//Vert
+	uniform1f(program,"brushBlurVal",data.brushBlurVal);
+	uniform1i(program,"isRenderVerticalBlur",data.isRenderVerticalBlur);
+	uniformMatrix4fv(program,"renderTextureProjection",data.renderTextureProjection);
+
+	//Frag
+	uniform1i(program,"inputTexture",data.inputTexture);
+}
+
+void GlSet::useSaturationValBoxShader(unsigned int program, SaturationValShaderData data){
+	glUseProgram(program);
+
+	//Vert
+	uniformMatrix4fv(program,"renderTextureProjection",data.renderTextureProjection);
+
+	//Frag
+	uniform3fv(program,"boxColor",data.boxColor);
 }

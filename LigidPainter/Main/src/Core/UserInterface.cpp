@@ -114,7 +114,7 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 	GlSet glset;
 	ColorData clrData;
 
-	glUseProgram(uiPrograms.iconsProgram);
+	glUseProgram(uiPrograms.iconsProgram); //TODO : useiconboxshader 
 	glset.uniform3fv(12,"iconColor",color);
 	glset.uniform3fv(12,"iconColorHover",colorHover);
 	glset.uniform1f(12,"iconMixVal",mixVal);
@@ -214,6 +214,7 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	glset.uniform1i(uiPrograms.program, "isUiTextureUsed", 0);
 }
 void UserInterface::colorBox(float position_x, float position_y,float valueX, float valueY) {
+
 	ColorData colorData;
 	glm::vec3 color = glm::vec3(1.0f,0.0f,0.0f);
 	std::vector<float> boxCoor{
@@ -226,16 +227,17 @@ void UserInterface::colorBox(float position_x, float position_y,float valueX, fl
 		 0.10f + position_x, -0.20f + position_y, 0.9f,0.0f,0.0f	,0,0,0,  // bottom left
 		 0.10f + position_x,  0.20f + position_y, 0.9f,0.0f,1.0f	,color.r,color.g + 0.2f,color.b + 0.2f // top left
 	};
-
-	box(0.0f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 0.9f, 18,glm::vec3(0),0);
+	
 
 	GlSet glset;
 	glset.uniform1i(uiPrograms.program,"isColorBox",1);
 	glset.drawArrays(boxCoor,false);
 	glset.uniform1i(uiPrograms.program, "isColorBox", 0);
 
+	glUseProgram(uiPrograms.program);
+	box(0.0f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 18,glm::vec3(0),0);
 }
-void UserInterface::colorRect(float position_x, float position_y,float value,unsigned int FBO,GLFWwindow* window) { //Changing colorBox value will be once the value changed
+glm::vec3 UserInterface::colorRect(float position_x, float position_y,float value,unsigned int FBO,GLFWwindow* window) { //Changing colorBox value will be once the value changed
 	std::vector<float> boxCoor{
 		//Color - Normal Vectors Will Be Usen For Color Data Of Vertices
 
@@ -321,6 +323,12 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 	glViewport(-(uiMaxScreenWidth - screenSizeX)/2, -(uiMaxScreenHeight - screenSizeY), uiMaxScreenWidth, uiMaxScreenHeight);
 
 	glset.uniform3f(uiPrograms.program, "boxColor", colorRectPixel[0] / 255.0f, colorRectPixel[1] / 255.0f, colorRectPixel[2] / 255.0f);
+
+	glm::vec3 hueValue;
+	hueValue.r = colorRectPixel[0];
+	hueValue.g = colorRectPixel[1];
+	hueValue.b = colorRectPixel[2];
+
 	delete(colorRectPixel);
 	//Finish
 
@@ -331,6 +339,8 @@ void UserInterface::colorRect(float position_x, float position_y,float value,uns
 	glset.drawArrays(boxCoor, false); //Render color rectangle displayer
 	glset.uniform1i(uiPrograms.program, "isColorBox", 0);
 	glset.uniform1i(uiPrograms.program, "isRect", 0);
+
+	return hueValue;
 }
 void UserInterface::rangeBar(float position_x, float position_y,float value) {
 	ColorData colorData;

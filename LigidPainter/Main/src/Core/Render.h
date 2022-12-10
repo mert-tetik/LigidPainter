@@ -109,9 +109,9 @@ struct RenderOutData{
 };
 class Render {
 public:
-	RenderOutData render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData pbrShaderData);
+	RenderOutData render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData pbrShaderData,SkyBoxShaderData skyBoxShaderData,float brushBlurVal);
 	void renderModel(bool backfaceCulling, std::vector<float>& vertices,PBRShaderData data);
-	RenderOutData renderUi(PanelData panelData, UiData uidata, RenderData renderData, unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,std::string &colorpickerHexVal,float brushBorderRangeBarValue);
+	RenderOutData renderUi(PanelData panelData, UiData uidata, RenderData renderData, unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,std::string &colorpickerHexVal,float brushBorderRangeBarValue,float brushBlurVal);
 
     void exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName);
     void renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels);
@@ -123,7 +123,7 @@ public:
 	ViewUpdateData updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirrorX,bool mirrorY,bool mirrorZ);
 	void getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos); //Not used
 	void drawLightObject(glm::vec3 lightPos);
-	void renderSkyBox();
+	void renderSkyBox(SkyBoxShaderData data);
 	void sendProgramsToRender(Programs appPrograms);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 };

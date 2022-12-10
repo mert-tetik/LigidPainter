@@ -61,19 +61,11 @@ uniform sampler2D uvMask;
 uniform int interpretWithUvMask;
 
 
-uniform samplerCube skybox;
-
 float far = 10.0f;
 float near = 0.1f;
 float linearizeDepth(float depth){
    return (2.0 * near * far) / (far + near -(depth * 2.0 - 1.0) *(far-near));
 }
-
-float rand(vec2 co)
-{
-    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}
-
 
 bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMirrored is true
    float drawZ;
@@ -135,7 +127,6 @@ vec3 getPaintedDiffuse(){
 
 
 void main() {
-   //Color box
 
       if(isRenderTextureMode == 0) {
       if(isColorBox == 0) {
@@ -181,16 +172,9 @@ void main() {
          }
       } 
       else {
-         if(isRect == 0)
+         if(isRect == 1)
          {
-            //Color box here
-            vec3 interpretedColorWhite = ((vec3(1.0)-boxColor) * vec3(TexCoords.x)) + boxColor;
-            vec3 interpretedColorBlack = vec3(TexCoords.y)*interpretedColorWhite;
-            color = vec4(interpretedColorBlack,1);
-         }
-         else
-         {
-            //Color rectangle slide bar here
+            //Hue slide bar here
             color = vec4(Normal,1);
          }
       }

@@ -157,55 +157,24 @@ glm::vec3 Utilities::hexToRGBConverter(std::string hex){ //takes hex : #000000 (
 	int hexVal[6];
 	for (int i = 1; i < 7; i++)
 	{
-		if(hex[i] == '0'){
-			hexVal[i-1] = 0;
-		}
-		if(hex[i] == '1'){
-			hexVal[i-1] = 1;
-		}
-		if(hex[i] == '2'){
-			hexVal[i-1] = 2;
-		}
-		if(hex[i] == '3'){
-			hexVal[i-1] = 3;
-		}
-		if(hex[i] == '4'){
-			hexVal[i-1] = 4;
-		}
-		if(hex[i] == '5'){
-			hexVal[i-1] = 5;
-		}
-		if(hex[i] == '6'){
-			hexVal[i-1] = 6;
-		}
-		if(hex[i] == '7'){
-			hexVal[i-1] = 7;
-		}
-		if(hex[i] == '8'){
-			hexVal[i-1] = 8;
-		}
-		if(hex[i] == '9'){
-			hexVal[i-1] = 9;
-		}
-		if(hex[i] == 'a'){
-			hexVal[i-1] = 10;
-		}
-		if(hex[i] == 'b'){
-			hexVal[i-1] = 11;
-		}
-		if(hex[i] == 'c'){
-			hexVal[i-1] = 12;
-		}
-		if(hex[i] == 'd'){
-			hexVal[i-1] = 13;
-		}
-		if(hex[i] == 'e'){
-			hexVal[i-1] = 14;
-		}
-		if(hex[i] == 'f'){
-			hexVal[i-1] = 15;
-		}
+		if(hex[i] == '0'){hexVal[i-1] = 0;}
+		if(hex[i] == '1'){hexVal[i-1] = 1;}
+		if(hex[i] == '2'){hexVal[i-1] = 2;}
+		if(hex[i] == '3'){hexVal[i-1] = 3;}
+		if(hex[i] == '4'){hexVal[i-1] = 4;}
+		if(hex[i] == '5'){hexVal[i-1] = 5;}
+		if(hex[i] == '6'){hexVal[i-1] = 6;}
+		if(hex[i] == '7'){hexVal[i-1] = 7;}
+		if(hex[i] == '8'){hexVal[i-1] = 8;}
+		if(hex[i] == '9'){hexVal[i-1] = 9;}
+		if(hex[i] == 'a'){hexVal[i-1] = 10;}
+		if(hex[i] == 'b'){hexVal[i-1] = 11;}
+		if(hex[i] == 'c'){hexVal[i-1] = 12;}
+		if(hex[i] == 'd'){hexVal[i-1] = 13;}
+		if(hex[i] == 'e'){hexVal[i-1] = 14;}
+		if(hex[i] == 'f'){hexVal[i-1] = 15;}
 	}
+	
 	r = hexVal[0] * 16 + hexVal[1];
 	g = hexVal[2] * 16 + hexVal[3];
 	b = hexVal[4] * 16 + hexVal[5];

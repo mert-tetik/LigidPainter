@@ -59,5 +59,9 @@ public:
 	LigidCursors loadCursors();
 
 	void usePBRShader(unsigned int program,PBRShaderData data);
+	void useSkyBoxShader(unsigned int program,SkyBoxShaderData data);
+	void useBlurShader(unsigned int program, BlurShaderData data);
+	void useSaturationValBoxShader(unsigned int program, SaturationValShaderData data);
+
 };
 #endif // !RGDGL_H

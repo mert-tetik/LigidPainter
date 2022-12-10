@@ -396,8 +396,12 @@ bool hueValChanging;
 
 
 PBRShaderData pbrShaderData;
+SkyBoxShaderData skyBoxShaderData;
+BlurShaderData blurShaderData;
 
 glm::vec3 drawColor;
+
+float brushBlurVal = 1000;
 
 bool LigidPainter::run()
 {
@@ -460,8 +464,7 @@ bool LigidPainter::run()
 
 	glset.loadCubemaps();
 
-	glUseProgram(programs.skyboxProgram);
-	glset.uniform1i(programs.skyboxProgram, "skybox", 13);
+
 
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 	glset.uniform1i(programs.program, "uvMask", 7);
@@ -480,9 +483,6 @@ bool LigidPainter::run()
 	glset.uniform1i(programs.program, "material.diffuse", 0);
 	glset.uniform1i(programs.program, "material.specular", 1);
 
-	glUseProgram(programs.blurProgram);
-	glset.uniform1f(9, "brushBlurVal", 1000);
-	glUseProgram(programs.program);
 
 	glset.uniform1i(programs.program, "modifiedMaskTexture", 12);
 
@@ -523,7 +523,7 @@ bool LigidPainter::run()
 	int screenWidth;
 	int screenHeight;
 	glfwGetWindowSize(window, &screenWidth, &screenHeight);
-	txtr.updateMaskTexture(FBOScreen, screenWidth, screenHeight, brushRotationRangeBarValue,false,brushBorderRangeBarValue);
+	txtr.updateMaskTexture(FBOScreen, screenWidth, screenHeight, brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal);
 
 	panelData.modelPanelActive = true; //Active panel by default
 
@@ -652,7 +652,7 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed){
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue);
+			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue,brushBlurVal);
 			brushValChanged = false;
 			drawingCount = 0;
 			//brushOpacityChanged = false; not used
@@ -712,8 +712,15 @@ bool LigidPainter::run()
 		pbrShaderData.view = viewUpdateData.view;
 		pbrShaderData.viewPos = viewUpdateData.cameraPos;
 
+		skyBoxShaderData.projection = perspectiveProjection;
+		skyBoxShaderData.view = viewUpdateData.view;
+		skyBoxShaderData.skybox = 13;
+
+
+
+
 		//Render
-		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData);
+		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal);
 		drawColor = renderOut.colorBoxVal/255.0f;//TODO : Once the value changed
 		colorBoxValChanged = false;
 		colorpickerHexValTextboxValChanged = false;
@@ -971,7 +978,7 @@ void LigidPainter::addMaskTextureButton() {
 		brushMaskTextures.textures.push_back(txtr.getTexture(maskTexturePath,0,0,false));
 		brushMaskTextures.names.push_back(maskTexturePath);
 
-		txtr.updateMaskTexture(FBOScreen,width,height,brushRotationRangeBarValue,false,brushBorderRangeBarValue);
+		txtr.updateMaskTexture(FBOScreen,width,height,brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal);
 	}
 }
 void LigidPainter::brushSizeRangeBar(float xOffset,int width){
@@ -992,17 +999,13 @@ void LigidPainter::brushBlurRangeBar(float xOffset,int width,int height,bool ren
 	brushValChanged = true;
 	brushBlurRangeBarValue -= xOffset / (width / 2);
 	brushBlurRangeBarValue = util.restrictBetween(brushBlurRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
-	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue,renderTiny,brushBorderRangeBarValue);
+	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue,renderTiny,brushBorderRangeBarValue,brushBlurVal);
 
 	if (242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 15 > 200){ //If the range bar value is low enough disable blur effect
-		glUseProgram(programs.blurProgram);
-		glset.uniform1f(9, "brushBlurVal", 1000);
-		glUseProgram(programs.program);
+		brushBlurVal = 1000;
 	}
 	else {
-		glUseProgram(programs.blurProgram);
-		glset.uniform1f(9, "brushBlurVal", 242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 8);
-		glUseProgram(programs.program);
+		brushBlurVal = 242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 8;
 	}
 }
 void LigidPainter::textureDemonstratorButton(float xOffset,float yOffset,int width,int height) {
@@ -1031,7 +1034,7 @@ void LigidPainter::brushRotationRangeBar(float xOffset, int width, int height){
 	brushValChanged = true;
 	brushRotationRangeBarValue -= xOffset / (width / 2);
 	brushRotationRangeBarValue = util.restrictBetween(brushRotationRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
-	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue);
+	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue,brushBlurVal);
 }
 void LigidPainter::brushOpacityRangeBar(float xOffset, int width, int height) {
 	Utilities util;
@@ -1054,7 +1057,7 @@ void LigidPainter::brushBordersRangeBar(float xOffset, int width, int height) {
 	brushValChanged = true;
 	brushBorderRangeBarValue -= xOffset / (width / 2);
 	brushBorderRangeBarValue = util.restrictBetween(brushBorderRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
-	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue);
+	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue,brushBlurVal);
 }
 void LigidPainter::colorBoxColorRangeBar(float yOffset,int height){
 	Utilities util;

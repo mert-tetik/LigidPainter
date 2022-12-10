@@ -176,7 +176,7 @@ void Texture::refreshScreenDrawingTexture(bool reduceQuality) {
 	glset.generateMipmap();
 	delete(screenTextureM);
 }
-GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue) { //rotationValue = rotationBarValue
+GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal) { //rotationValue = rotationBarValue
 	GlSet glset;
 	UserInterface ui;
 	glset.viewport(1080, 1080);
@@ -285,6 +285,14 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 
 	glUseProgram(txtrPrograms.blurProgram);
 
+	BlurShaderData blurShaderData;
+
+	blurShaderData.brushBlurVal = brushBlurVal;
+	blurShaderData.inputTexture = 12; 
+	blurShaderData.isRenderVerticalBlur = 0;
+	blurShaderData.renderTextureProjection = renderTextureProjection; 
+
+	glset.useBlurShader(txtrPrograms.blurProgram,blurShaderData);
 
 	//Horizontal Blur
 	glset.uniform1i(9, "isRenderVerticalBlur", 0); 
@@ -305,7 +313,9 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 
 	//Vertical Blur setup
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glset.uniform1i(9, "isRenderVerticalBlur", 1);
+	
+	blurShaderData.isRenderVerticalBlur = 1;
+	glset.useBlurShader(txtrPrograms.blurProgram,blurShaderData);
 	//Vertical Blur setup
 
 	//Vertical blur
