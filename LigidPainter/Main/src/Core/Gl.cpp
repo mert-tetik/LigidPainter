@@ -244,7 +244,7 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 
 
 
-	// program
+	//Saturation Value program
 	unsigned int saturationValBoxVert = createShader("LigidPainter/Resources/Shaders/saturationValBox.vert",GL_VERTEX_SHADER);
 	unsigned int saturationValBoxFrag = createShader("LigidPainter/Resources/Shaders/saturationValBox.frag",GL_FRAGMENT_SHADER); 
 
@@ -258,6 +258,21 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 	glDeleteShader(saturationValBoxVert);
 
 
+	//Saturation Value program
+	unsigned int screenDepthVert = createShader("LigidPainter/Resources/Shaders/screenDepth.vert",GL_VERTEX_SHADER);
+	unsigned int screenDepthFrag = createShader("LigidPainter/Resources/Shaders/screenDepth.frag",GL_FRAGMENT_SHADER); 
+
+	unsigned int screenDepthProgram = glCreateProgram();
+	
+	glAttachShader(screenDepthProgram, screenDepthVert);
+	glAttachShader(screenDepthProgram, screenDepthFrag);
+	glLinkProgram(screenDepthProgram);
+
+	glDeleteShader(screenDepthFrag);
+	glDeleteShader(screenDepthVert);
+
+
+
 	glPrograms.blurProgram = blurProgram;
 	glPrograms.iconsProgram = iconsProgram;
 	glPrograms.skyboxblurProgram = skyboxblurProgram;
@@ -265,6 +280,7 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 	glPrograms.skyboxProgram = skyboxProgram;
 	glPrograms.PBRProgram = PBRProgram;
 	glPrograms.saturationValBoxProgram = saturationValBoxProgram;
+	glPrograms.screenDepthProgram = screenDepthProgram;
 
 	return glPrograms;
 }
@@ -454,4 +470,14 @@ void GlSet::useSaturationValBoxShader(unsigned int program, SaturationValShaderD
 
 	//Frag
 	uniform3fv(program,"boxColor",data.boxColor);
+}
+
+void GlSet::useScreenDepthShader(unsigned int program, ScreenDepthShaderData data){
+	glUseProgram(program);
+
+	//Vert
+	uniformMatrix4fv(program,"view",data.view);
+	uniformMatrix4fv(program,"mirroredView",data.mirroredView);
+	uniformMatrix4fv(program,"projection",data.projection);
+
 }

@@ -62,6 +62,7 @@ public:
 	void useSkyBoxShader(unsigned int program,SkyBoxShaderData data);
 	void useBlurShader(unsigned int program, BlurShaderData data);
 	void useSaturationValBoxShader(unsigned int program, SaturationValShaderData data);
+	void useScreenDepthShader(unsigned int program, ScreenDepthShaderData data);
 
 };
 #endif // !RGDGL_H

@@ -569,21 +569,19 @@ void Render::drawLightObject(glm::vec3 lightPos) {
 	// glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
-void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen,  int screenSizeX,  int screenSizeY) {
+void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen,  int screenSizeX,  int screenSizeY,ScreenDepthShaderData screenDepthShaderData) {
 	Texture txtr;
     GlSet gl;
 
 	gl.viewport(1920, 1080);
 	gl.bindFramebuffer(FBOScreen);
+	
+	screenDepthShaderData.renderMirrored = 0;
+	gl.useScreenDepthShader(renderPrograms.screenDepthProgram, screenDepthShaderData);
+	
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	gl.uniform1i(renderPrograms.program, "isTwoDimensional", 0);
-	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 1);
-	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 0);
-	gl.uniform1i(renderPrograms.program, "depthTexture", 9);
-	gl.uniform1i(renderPrograms.program, "mirroredDepthTexture", 8);
-	gl.uniform1i(renderPrograms.program, "renderDepth", 1);
-	gl.uniform1i(renderPrograms.program, "renderMirroredDepth", 0);
 	gl.drawArrays(vertices, false);
 	GLubyte* screen = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
 	gl.activeTexture(GL_TEXTURE9);
@@ -593,8 +591,11 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	gl.uniform1i(renderPrograms.program, "renderMirroredDepth", 1);
-	gl.uniform1i(renderPrograms.program, "renderMirroredDepthV", 1);
+
+	//Mirrored
+	screenDepthShaderData.renderMirrored = 1;
+	gl.useScreenDepthShader(renderPrograms.screenDepthProgram, screenDepthShaderData);
+
 	gl.drawArrays(vertices, false);
 	GLubyte* screenMirrored = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
 	gl.activeTexture(GL_TEXTURE8);
@@ -602,11 +603,8 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 	gl.generateMipmap();
 	delete[] screenMirrored;
 
-	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 0);
-	gl.uniform1i(renderPrograms.program, "renderMirroredDepthV", 0);
-	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 0);
-	gl.uniform1i(renderPrograms.program, "renderDepth", 0);
-	gl.uniform1i(renderPrograms.program, "renderMirroredDepth", 0);
+	glUseProgram(renderPrograms.program);
+	
 	glViewport(-(renderMaxScreenWidth - screenSizeX)/2, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
 
 	gl.bindFramebuffer(0);
@@ -850,7 +848,7 @@ bool currentModelChanged = true;
 bool lastRenderSphere = false;
 bool lastRenderPlane = false;
 
-RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData pbrShaderData,SkyBoxShaderData skyBoxShaderData,float brushBlurVal) {
+RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData pbrShaderData,SkyBoxShaderData skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData screenDepthShaderData) {
 	GlSet gls;
 	UserInterface ui;
 	ColorData colorData;
@@ -907,7 +905,7 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 		renderDepthCounter = 0;
 	}
 	if (renderDepthCounter == 1) {//Get depth texture
-		getDepthTexture(currentModel,FBOScreen,screenSizeX,screenSizeY);
+		getDepthTexture(currentModel,FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData);
 	}
 	//Render depth once painting started
 

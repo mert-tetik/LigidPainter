@@ -11,6 +11,7 @@ struct Programs
 	unsigned int skyboxblurProgram;
 	unsigned int PBRProgram;
 	unsigned int saturationValBoxProgram;
+	unsigned int screenDepthProgram;
 };
 struct LigidCursors{
 	GLFWcursor* pointerCursor;
@@ -47,6 +48,12 @@ struct BlurShaderData{
 struct SaturationValShaderData{
 	glm::mat4 renderTextureProjection;
 	glm::vec3 boxColor = glm::vec3(0.0,1.0,0.0);
+};
+struct ScreenDepthShaderData{
+	glm::mat4 view;
+	glm::mat4 mirroredView;
+	glm::mat4 projection;
+	int renderMirrored;
 };
 struct Icons{
 	unsigned int dropperIcon;
