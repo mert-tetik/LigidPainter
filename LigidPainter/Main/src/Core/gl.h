@@ -64,6 +64,7 @@ public:
 	void useSaturationValBoxShader(unsigned int program, SaturationValShaderData data);
 	void useScreenDepthShader(unsigned int program, ScreenDepthShaderData data);
 	void useHueShader(unsigned int program, HueShaderData data);
+	void useAxisPointerShader(unsigned int program, AxisPointerShaderData data);
 
 };
 #endif // !RGDGL_H

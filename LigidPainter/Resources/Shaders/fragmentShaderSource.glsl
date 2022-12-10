@@ -34,10 +34,8 @@ uniform sampler2D modifiedMaskTexture;
 uniform int isUiTextureUsed;
 uniform vec3 textColor;
 
-uniform int is2D;
 uniform vec3 viewPos;
 uniform vec3 mirroredViewPos;
-uniform int isAxisPointer;
 
 uniform vec3 uiColor;
 uniform vec3 uiTransitionColor;
@@ -57,8 +55,8 @@ uniform sampler2D uvMask;
 uniform int interpretWithUvMask;
 
 
-float far = 10.0f;
-float near = 0.1f;
+float far = 10.0;
+float near = 0.1;
 float linearizeDepth(float depth){
    return (2.0 * near * far) / (far + near -(depth * 2.0 - 1.0) *(far-near));
 }
@@ -127,15 +125,6 @@ void main() {
       if(isRenderTextureMode == 0) {
       if(isColorBox == 0) {
          if(isTextF == 0) {
-            if(is2D == 0) {
-                if(isAxisPointer == 1) 
-                {
-                   //Axis pointer here
-                   color = vec4((abs(Pos.x) / 20), (abs(Pos.y) / 20), (abs(Pos.z) / 20), 1);
-                }
-            } 
-            else 
-            { //is2D == true
                if(isUiTextureUsed == 0) 
                {
                   if(drawBrushIndicator == 1)
@@ -155,7 +144,6 @@ void main() {
                   color = texture(modifiedMaskTexture, TexCoords);
                }
             }
-         }
          else 
          {
             //Text here

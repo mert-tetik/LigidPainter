@@ -13,6 +13,7 @@ struct Programs
 	unsigned int saturationValBoxProgram;
 	unsigned int screenDepthProgram;
 	unsigned int hueProgram;
+	unsigned int axisPointerProgram;
 };
 struct LigidCursors{
 	GLFWcursor* pointerCursor;
@@ -59,6 +60,11 @@ struct ScreenDepthShaderData{
 struct HueShaderData{
 	glm::mat4 renderTextureProjection;
 	int useTexCoords;
+};
+
+struct AxisPointerShaderData{
+	glm::mat4 projection;
+	glm::mat4 view;
 };
 
 

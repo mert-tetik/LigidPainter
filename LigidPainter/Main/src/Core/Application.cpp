@@ -566,6 +566,7 @@ bool LigidPainter::run()
 	PBRShaderData pbrShaderData;
 	SkyBoxShaderData skyBoxShaderData;
 	ScreenDepthShaderData screenDepthShaderData;
+	AxisPointerShaderData axisPointerShaderData;
 
 	pbrShaderData.bluryskybox = 16;
 	pbrShaderData.depthTexture = 9;
@@ -575,6 +576,9 @@ bool LigidPainter::run()
 	pbrShaderData.screenMaskTexture = 4;
 
 	skyBoxShaderData.skybox = 13;
+	skyBoxShaderData.projection = perspectiveProjection;
+
+	axisPointerShaderData.projection = perspectiveProjection;
 
 	
 	while (true)//Main loop
@@ -687,18 +691,18 @@ bool LigidPainter::run()
 		pbrShaderData.view = viewUpdateData.view;
 		pbrShaderData.viewPos = viewUpdateData.cameraPos;
 
-		skyBoxShaderData.projection = perspectiveProjection;
 		skyBoxShaderData.view = viewUpdateData.view;
 
 		screenDepthShaderData.mirroredView = viewUpdateData.mirroredView;
 		screenDepthShaderData.projection = perspectiveProjection;
 		screenDepthShaderData.view = viewUpdateData.view;
 
-		
+		axisPointerShaderData.view = viewUpdateData.view;
+
 
 
 		//Render
-		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData);
+		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData);
 		drawColor = renderOut.colorBoxVal/255.0f;//TODO : Once the value changed
 		colorBoxValChanged = false;
 		colorpickerHexValTextboxValChanged = false;

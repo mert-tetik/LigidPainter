@@ -136,14 +136,14 @@ void GlSet::bindRenderBuffer(unsigned int RBO) {
 }
 
 //------------Shaders------------
-void testShader(unsigned int shader){
+void testShader(unsigned int shader,const char* path){
 	int success;
 	char infoLog[512];
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
 		glGetShaderInfoLog(shader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+		std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << path << ' ' << infoLog << ' '  << shader << std::endl;
 	};
 }
 unsigned int createShader(const char* path,unsigned int shaderType){
@@ -154,7 +154,7 @@ unsigned int createShader(const char* path,unsigned int shaderType){
 	unsigned int shader = glCreateShader(shaderType);
 	glShaderSource(shader, 1, &shaderSource, NULL);
 	glCompileShader(shader);
-	testShader(shader);
+	testShader(shader,path);
 	return shader;
 }
 
@@ -231,6 +231,11 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 
 
 
+	//Axis pointer program
+	unsigned int axisPointerProgram = createProgram("LigidPainter/Resources/Shaders/axisPointer");
+
+
+
 
 
 	glPrograms.blurProgram = blurProgram;
@@ -242,6 +247,7 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 	glPrograms.saturationValBoxProgram = saturationValBoxProgram;
 	glPrograms.screenDepthProgram = screenDepthProgram;
 	glPrograms.hueProgram = hueProgram;
+	glPrograms.axisPointerProgram = axisPointerProgram;
 
 	return glPrograms;
 }
@@ -450,3 +456,11 @@ void GlSet::useHueShader(unsigned int program, HueShaderData data){
 	uniformMatrix4fv(program,"renderTextureProjection",data.renderTextureProjection);
 	uniform1i(program,"useTexCoords",data.useTexCoords);
 }
+void GlSet::useAxisPointerShader(unsigned int program, AxisPointerShaderData data){
+	glUseProgram(program);
+
+	//Vert
+	uniformMatrix4fv(program,"view",data.view);
+	uniformMatrix4fv(program,"projection",data.projection);
+}
+
