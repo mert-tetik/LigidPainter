@@ -163,19 +163,18 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 		glset.bindFramebuffer(FBOScreen);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+		glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
+		outShaderData.renderTextureProjection = projection;
 		glset.useOutShader(programs.outProgram,outShaderData);
 
 		glset.uniform1i(programs.outProgram, "isTwoDimensional", 0);
 		glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 1);
 		//setup
-
 		//Get texture
 		render.renderTexture(renderVerticesFlipped,1080,1080,GL_TEXTURE3,GL_RED);
 		//Get texture
 
 		//Finish
-		glset.uniform1i(programs.outProgram, "isRenderTextureModeV", 0);
-		glset.uniform1i(programs.outProgram, "isRenderTextureMode", 0);
 		glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 0);
 		//Finish
 		//Update mirrored screen mask texture

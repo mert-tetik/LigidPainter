@@ -885,6 +885,7 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 	glUseProgram(renderPrograms.uiProgram);
 	gl.uniform3f(renderPrograms.uiProgram, "drawColor", colorBoxPixel[0] / 255.0f, colorBoxPixel[1] / 255.0f, colorBoxPixel[2] / 255.0f);
 
+
 	//Get color value to the color vec
     glm::vec3 colorBoxPixelVal = glm::vec3(0);
 	colorBoxPixelVal.r = colorBoxPixel[0];
