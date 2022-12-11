@@ -408,6 +408,9 @@ bool verticalMirror = false;
 
 OutShaderData outShaderData;
 
+
+int screenWidth;
+int screenHeight;
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -539,8 +542,7 @@ bool LigidPainter::run()
 	//OutShaderData outShaderData; = global
 
 
-	int screenWidth;
-	int screenHeight;
+
 	glfwGetWindowSize(window, &screenWidth, &screenHeight);
 	txtr.updateMaskTexture(FBOScreen, screenWidth, screenHeight, brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData);
 
@@ -742,6 +744,11 @@ bool LigidPainter::run()
 			bool noButtonClick = true;
 			bool clickTaken = false;
 
+			panelData.exportPanelActive = false;
+			panelData.paintingPanelActive = false;
+			panelData.texturePanelActive = false;
+			panelData.modelPanelActive = false;
+
 		 	while (true)
 		 	{
 				//Disable painting
@@ -758,13 +765,14 @@ bool LigidPainter::run()
 				float messageBoxButtonColor[3] = {colorData.messageBoxButtonColor.r,colorData.messageBoxButtonColor.g,colorData.messageBoxButtonColor.r};
 
 				//show message box
-				int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,"LigidPainter will be closed. Do you want to proceed?",-0.21f,0.0f,messageBoxBackColor,messageBoxButtonColor); //0 = Yes //1 = No //2 = None
+				int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,"LigidPainter will be closed. Do you want to proceed?",-0.21f,0.0f,messageBoxBackColor,messageBoxButtonColor,windowData.windowMaxWidth, screenWidth); //0 = Yes //1 = No //2 = None
 
 				//Process the message box input
 				if(result == 0){
 					break; //Close the app
 				}
 				else if(result == 1){
+					panelData.modelPanelActive = true;
 					glfwSetWindowShouldClose(window,GLFW_FALSE);
 					break; //Act like nothing happened
 				}
@@ -843,6 +851,9 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	Callback callback;
 	callback.framebuffer_size_callback(window,width,height);
+
+	screenWidth = width;
+	screenHeight = height;
 }
 
 double lastXpos;

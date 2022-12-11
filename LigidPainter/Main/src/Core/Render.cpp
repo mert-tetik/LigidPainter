@@ -160,20 +160,32 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	float screenGapX = ((float)renderMaxScreenWidth - screenSizeX)/(((float)renderMaxScreenWidth)/2.0f)/2.0f; 
 
 	//Panel
-	ui.panel(renderData.panelLoc-screenGapX , 0);
-	projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
-	glUseProgram(renderPrograms.iconsProgram);
-	gl.uniformMatrix4fv(12, "Projection", projection);//TODO
-	glUseProgram(renderPrograms.uiProgram);
-	gl.uniformMatrix4fv(3, "TextProjection", projection);
-	ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.8f);//Model Panel
-	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.795f,0.9,icons.TDModel,0,colorData.iconColor,colorData.iconColorHover);
-	ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.72f);//Texture Panel
-	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.715f,0.9,icons.ImportTexture,0,colorData.iconColor,colorData.iconColorHover);
-	ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.64f);//Painting Panel
-	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.635f,0.9,icons.Painting,0,colorData.iconColor,colorData.iconColorHover);//Dropper
-	ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.56f);//Export Panel
-	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX, 0.555f,0.9,icons.Export,0,colorData.iconColor,colorData.iconColorHover);
+	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){
+		ui.panel(renderData.panelLoc-screenGapX , 0);
+
+		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
+		glUseProgram(renderPrograms.iconsProgram);
+		gl.uniformMatrix4fv(12, "Projection", projection);//TODO
+		glUseProgram(renderPrograms.uiProgram);
+		gl.uniformMatrix4fv(3, "TextProjection", projection);
+
+		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.8f);//Model Panel
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.795f,0.9,icons.TDModel,0,colorData.iconColor,colorData.iconColorHover);
+		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.72f);//Texture Panel
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.715f,0.9,icons.ImportTexture,0,colorData.iconColor,colorData.iconColorHover);
+		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.64f);//Painting Panel
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.635f,0.9,icons.Painting,0,colorData.iconColor,colorData.iconColorHover);//Dropper
+		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.56f);//Export Panel
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX, 0.555f,0.9,icons.Export,0,colorData.iconColor,colorData.iconColorHover);
+	}
+	else{
+		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
+		glUseProgram(renderPrograms.iconsProgram);
+		gl.uniformMatrix4fv(12, "Projection", projection);//TODO
+		glUseProgram(renderPrograms.uiProgram);
+		gl.uniformMatrix4fv(3, "TextProjection", projection);
+	}	
+
 
 	//Panel
 

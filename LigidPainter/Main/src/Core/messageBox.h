@@ -10,9 +10,7 @@ bool noButtonClickMsgBox = true;
 bool clickTakenMsgBox = false;
 
 
-int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcursor* defaultCursor,GLFWcursor* buttonHoverCursor,unsigned int icon,unsigned int uiProgram,const char * text, float textXpos,float textYpos,float backColor[3],float buttonColor[3]){
-	
-
+int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcursor* defaultCursor,GLFWcursor* buttonHoverCursor,unsigned int icon,unsigned int uiProgram,const char * text, float textXpos,float textYpos,float backColor[3],float buttonColor[3],float renderMaxScreenWidth,float screenSizeX){
     UserInterface ui;
 	ColorData colorData;
 	int result = 2;
@@ -27,23 +25,27 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
     buttonColorVec.g = buttonColor[1];
     buttonColorVec.b = buttonColor[2];
 
+	float screenGapX = ((float)renderMaxScreenWidth - (float)screenSizeX)/(((float)renderMaxScreenWidth)/2.0f)/2.0f; 
+
 	//Panel
-	ui.box(0.00f, 0.04f, -0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.9f, 7, backColorVec, 0);//Load model button
-	ui.box(0.00f, 0.04f, 0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.9f, 7, backColorVec, 0);//Load model button
-	ui.box(0.00f, 0.04f, -0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.9f, 7, backColorVec, 0);//Load model button
-	ui.box(0.00f, 0.04f, 0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.9f, 7, backColorVec, 0);//Load model button
-	ui.box(0.25f, 0.25f, 0.0f, 0.0f, "", backColorVec, 0.022f, false, false, 0.9f, 10000, backColorVec, 0);//Load model button
-	ui.box(0.25f, 0.05f, 0.0f, -0.24f, "", backColorVec, 0.022f, false, false, 0.9f, 10000, backColorVec, 0);//Load model button
-	ui.box(0.25f, 0.05f, 0.0f, +0.24f, "", backColorVec, 0.022f, false, false, 0.9f, 10000, backColorVec, 0);//Load model button
-	ui.box(0.03f, 0.25f, -0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.9f, 10000, backColorVec, 0);//Load model button
-	ui.box(0.03f, 0.25f, +0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.9f, 10000, backColorVec, 0);//Load model button
+	ui.box(0.00f, 0.04f, -0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);//Load model button
+	ui.box(0.00f, 0.04f, 0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);//Load model button
+	ui.box(0.00f, 0.04f, -0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);//Load model button
+	ui.box(0.00f, 0.04f, 0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);//Load model button
+	ui.box(0.25f, 0.25f, 0.0f, 0.0f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);//Load model button
+	ui.box(0.25f, 0.05f, 0.0f, -0.24f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);//Load model button
+	ui.box(0.25f, 0.05f, 0.0f, +0.24f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);//Load model button
+	ui.box(0.03f, 0.25f, -0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);//Load model button
+	ui.box(0.03f, 0.25f, +0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);//Load model button
+
 				
 	//Buttons
-	ui.box(0.04f, 0.04f, -0.1f, -0.15f, "Yes", buttonColorVec, 0.015f, false, false, 0.95f, 10, buttonColorVec, 0);//Load model button
-	ui.box(0.04f, 0.04f, +0.1f, -0.15f, "No", buttonColorVec, 0.012f, false, false, 0.95f, 10, buttonColorVec, 0);//Load model button
+	ui.box(0.04f, 0.04f, -0.1f, -0.15f, "Yes", buttonColorVec, 0.015f, false, false, 0.9999f, 10, buttonColorVec, 0);//Load model button
+	ui.box(0.04f, 0.04f, +0.1f, -0.15f, "No", buttonColorVec, 0.012f, false, false, 0.9999f, 10, buttonColorVec, 0);//Load model button
 
-	bool resultYesHover = ui.isMouseOnButton(window, 0.05f, 0.04f, -0.1, -0.15f, mouseXpos, mouseYpos, false);//Yes button hover
-	bool resultNoHover = ui.isMouseOnButton(window, 0.05f, 0.04f, +0.1, -0.15f, mouseXpos, mouseYpos, false);//No button hover
+
+	bool resultYesHover = ui.isMouseOnButton(window, 0.05f, 0.04f, -0.1-screenGapX, -0.15f, mouseXpos, mouseYpos, false);//Yes button hover
+	bool resultNoHover = ui.isMouseOnButton(window, 0.05f, 0.04f, +0.1-screenGapX, -0.15f, mouseXpos, mouseYpos, false);//No button hover
 
 	//Make sure first click is done inside
 	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTakenMsgBox) {
