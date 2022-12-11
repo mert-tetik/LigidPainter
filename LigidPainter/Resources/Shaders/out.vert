@@ -9,16 +9,16 @@ uniform mat4 mirroredView;
 uniform mat4 projection;
 uniform int isTwoDimensional;
 
+uniform mat4 renderTextureProjection;
+uniform mat4 renderTrans;
+
+
 out vec2 TexCoords;
 out vec3 Normal;
 out vec3 Pos;
 
 out vec4 projectedPos;
 out vec4 mirroredProjectedPos;
-
-uniform mat4 renderTextureProjection;
-
-uniform mat4 renderTrans;
 
 
 void main() {

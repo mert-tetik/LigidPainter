@@ -63,8 +63,8 @@ void UserInterface::panel(float panelLoc, float) {
 	};
 	glm::vec3 blankVal = glm::vec3(0);
 	glset.uiDataToShaders(colorD.panelHoldColor);
-	glset.uniform3fv(uiPrograms.program, "uiTransitionColor", blankVal);
-	glset.uniform1f(uiPrograms.program, "uiTransitionMixVal", 0);
+	glset.uniform3fv(uiPrograms.uiProgram, "uiTransitionColor", blankVal);
+	glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0);
 	glset.drawArrays(panelHoldCoor, false);
 	glset.uiDataToShaders(colorD.panelColor);
 	glset.drawArrays(panelCoor, false);
@@ -121,7 +121,7 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 	glset.activeTexture(GL_TEXTURE6);
 	glset.bindTexture(icon);
 	glset.drawArrays(buttonCoorSq,false);
-	glUseProgram(uiPrograms.program);
+	glUseProgram(uiPrograms.uiProgram);
 }
 
 void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec3 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec3 colorTransitionColor, float mixVal) {
@@ -196,22 +196,22 @@ void UserInterface::box(float width, float height, float position_x, float posit
 		  position_x + -width - 0.08651f / buttonCurveReduce,position_y + height / 1.29802f, z, 0, 0.874506, 0, 0, 1,//L / 2
 	};
 
-	glset.uniform1i(uiPrograms.program,"isUiTextureUsed",isMaskImageBox);
+	glset.uniform1i(uiPrograms.uiProgram,"isUiTextureUsed",isMaskImageBox);
 
-	glset.uniform3fv(uiPrograms.program,"uiColor",color);
-	glset.uniform3fv(uiPrograms.program, "uiTransitionColor", colorTransitionColor);
-	glset.uniform1f(uiPrograms.program, "uiTransitionMixVal", mixVal);
+	glset.uniform3fv(uiPrograms.uiProgram,"uiColor",color);
+	glset.uniform3fv(uiPrograms.uiProgram, "uiTransitionColor", colorTransitionColor);
+	glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", mixVal);
 
 	//glset.uiDataToShaders(glm::vec3(color.x, color.y, color.z));
 	glset.drawArrays(buttonCoor, false);
 
 	if (!isTextBox) {
-		renderText(uiPrograms.program, text, position_x -textRatio, position_y - 0.01, 0.00022f);
+		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01, 0.00022f);
 	}
 	else {
-		renderText(uiPrograms.program, text, -width + position_x, position_y - 0.01, 0.00022f);
+		renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01, 0.00022f);
 	}
-	glset.uniform1i(uiPrograms.program, "isUiTextureUsed", 0);
+	glset.uniform1i(uiPrograms.uiProgram, "isUiTextureUsed", 0);
 }
 void UserInterface::colorBox(float position_x, float position_y,float valueX, float valueY) {
 
@@ -230,11 +230,11 @@ void UserInterface::colorBox(float position_x, float position_y,float valueX, fl
 	
 
 	GlSet glset;
-	glset.uniform1i(uiPrograms.program,"isColorBox",1);
+	glset.uniform1i(uiPrograms.uiProgram,"isColorBox",1);
 	glset.drawArrays(boxCoor,false);
-	glset.uniform1i(uiPrograms.program, "isColorBox", 0);
+	glset.uniform1i(uiPrograms.uiProgram, "isColorBox", 0);
 
-	glUseProgram(uiPrograms.program);
+	glUseProgram(uiPrograms.uiProgram);
 	box(0.0f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 22,glm::vec3(0),0);
 }
 glm::vec3 UserInterface::colorRect(float position_x, float position_y,float value,unsigned int FBO,GLFWwindow* window, glm::mat4 projection) { //Changing colorBox value will be once the value changed
@@ -327,7 +327,7 @@ glm::vec3 UserInterface::colorRect(float position_x, float position_y,float valu
 	glViewport(-(uiMaxScreenWidth - screenSizeX)/2, -(uiMaxScreenHeight - screenSizeY), uiMaxScreenWidth, uiMaxScreenHeight);
 
 
-	//glset.uniform3f(uiPrograms.program, "boxColor", colorRectPixel[0] / 255.0f, colorRectPixel[1] / 255.0f, colorRectPixel[2] / 255.0f); //Check if necessary
+	//glset.uniform3f(uiPrograms.uiProgram, "boxColor", colorRectPixel[0] / 255.0f, colorRectPixel[1] / 255.0f, colorRectPixel[2] / 255.0f); //Check if necessary
 
 
 	hueShaderData.useTexCoords = 0;
@@ -336,7 +336,7 @@ glm::vec3 UserInterface::colorRect(float position_x, float position_y,float valu
 
 	//Finish
 	glset.drawArrays(boxCoor, false); //Render color rectangle displayer
-	glUseProgram(uiPrograms.program);
+	glUseProgram(uiPrograms.uiProgram);
 	box(0.01f, 0.005f, position_x, position_y + value, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 10000, glm::vec3(0), 0); //Value indicator
 
 
@@ -443,7 +443,7 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 		box(0.0f, 0.02f, position_x, position_y, "", colorData.checkBoxCheckedColor, 0.00022f, false, false, 0.9f, 10, glm::vec3(0), 0);
 
 	}
-	renderText(uiPrograms.program, text, position_x+0.02f, position_y - 0.01, 0.00022f);
+	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01, 0.00022f);
 }
 bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height, float position_x, float position_y,int mouseXpos, int mouseYpos,bool isPanelMoving){ //Return true if mouse hover on the given coordinates
 	std::vector<float> buttonCoor{
@@ -754,7 +754,7 @@ int UserInterface::messageBox(GLFWwindow* window, double mouseXpos,double mouseY
 	ui.iconBox(0.04f,0.07f,0.0f,0.15f,1,icons.Logo,0,colorData.iconColor,colorData.iconColorHover);
 
 	//Text
-	ui.renderText(uiPrograms.program, "LigidPainter will be closed. Do you want to proceed?", -0.21f, 0.00f , 0.00022f);
+	ui.renderText(uiPrograms.uiProgram, "LigidPainter will be closed. Do you want to proceed?", -0.21f, 0.00f , 0.00022f);
 
 	
 	return result;	 //0 = Yes , 1 = No , 2 = skip/none

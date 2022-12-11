@@ -402,6 +402,11 @@ glm::vec3 drawColor;
 
 float brushBlurVal = 1000;
 
+
+bool verticalMirror = false;
+
+OutShaderData outShaderData;
+
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -440,7 +445,7 @@ bool LigidPainter::run()
 	//glGenVertexArrays(1, &VAO);
 	//glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glUseProgram(programs.program);
+	glUseProgram(programs.uiProgram);
 
 	ui.sendProgramsToUserInterface(programs);
 	render.sendProgramsToRender(programs);
@@ -469,27 +474,27 @@ bool LigidPainter::run()
 
 
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-	glset.uniform1i(programs.program, "uvMask", 7);
+	glset.uniform1i(programs.uiProgram, "uvMask", 7);
 	
 	glUseProgram(programs.iconsProgram);
 	glset.uniform1i(programs.iconsProgram, "icon", 6);
-	glUseProgram(programs.program);
+	glUseProgram(programs.uiProgram);
 
 	Utilities util;
 
-	glset.uniform3fv(programs.program, "lightPos", lightPos);
-	glset.uniform1f(programs.program, "material.shininess", 32.0f);
-	glset.uniform1i(programs.program, "screenMaskTexture", 4);
-	glset.uniform1i(programs.program, "mirroredScreenMaskTexture", 3);
-	glset.uniform3fv(programs.program,"textColor",colorData.textColor);
-	glset.uniform1i(programs.program, "material.diffuse", 0);
-	glset.uniform1i(programs.program, "material.specular", 1);
-	glset.uniform1i(programs.program, "depthTexture", 9);
-	glset.uniform1i(programs.program, "mirroredDepthTexture", 8);
-	glset.uniform1i(programs.program, "text", 2);
+	glset.uniform3fv(programs.uiProgram, "lightPos", lightPos);
+	glset.uniform1f(programs.uiProgram, "material.shininess", 32.0f);
+	glset.uniform1i(programs.uiProgram, "screenMaskTexture", 4);
+	glset.uniform1i(programs.uiProgram, "mirroredScreenMaskTexture", 3);
+	glset.uniform3fv(programs.uiProgram,"textColor",colorData.textColor);
+	glset.uniform1i(programs.uiProgram, "material.diffuse", 0);
+	glset.uniform1i(programs.uiProgram, "material.specular", 1);
+	glset.uniform1i(programs.uiProgram, "depthTexture", 9);
+	glset.uniform1i(programs.uiProgram, "mirroredDepthTexture", 8);
+	glset.uniform1i(programs.uiProgram, "text", 2);
 
 
-	glset.uniform1i(programs.program, "modifiedMaskTexture", 12);
+	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 
@@ -525,10 +530,17 @@ bool LigidPainter::run()
 
 	//------Set Textures------\\
 
+	PBRShaderData pbrShaderData;
+	SkyBoxShaderData skyBoxShaderData;
+	ScreenDepthShaderData screenDepthShaderData;
+	AxisPointerShaderData axisPointerShaderData;
+	//OutShaderData outShaderData; = global
+
+
 	int screenWidth;
 	int screenHeight;
 	glfwGetWindowSize(window, &screenWidth, &screenHeight);
-	txtr.updateMaskTexture(FBOScreen, screenWidth, screenHeight, brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal);
+	txtr.updateMaskTexture(FBOScreen, screenWidth, screenHeight, brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData);
 
 	panelData.modelPanelActive = true; //Active panel by default
 
@@ -564,10 +576,7 @@ bool LigidPainter::run()
 	glset.genFramebuffers(paintingFBO);
 
 
-	PBRShaderData pbrShaderData;
-	SkyBoxShaderData skyBoxShaderData;
-	ScreenDepthShaderData screenDepthShaderData;
-	AxisPointerShaderData axisPointerShaderData;
+
 
 	pbrShaderData.bluryskybox = 16;
 	pbrShaderData.depthTexture = 9;
@@ -640,7 +649,7 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed){
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue,brushBlurVal,paintingFBO);
+			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData);
 			brushValChanged = false;
 			drawingCount = 0;
 			paintingMode = true;
@@ -703,8 +712,30 @@ bool LigidPainter::run()
 
 		axisPointerShaderData.view = viewUpdateData.view;
 
+		outShaderData.depthTexture = 9;
+		outShaderData.drawColor = drawColor;
+		outShaderData.interpretWithUvMask;//
+		outShaderData.isRenderScreenMaskMode;//
+		outShaderData.isTwoDimensional;
+		outShaderData.mirroredDepthTexture = 8;
+		outShaderData.mirroredScreenMaskTexture = 3;
+		outShaderData.mirroredView = viewUpdateData.mirroredView;
+		outShaderData.mirroredViewPos = viewUpdateData.mirroredCameraPos;
+		outShaderData.modifiedMaskTexture = 12;
+		outShaderData.projection = perspectiveProjection; // 
+		outShaderData.renderDepth; //****
+		outShaderData.renderMaskBrush; //
+		outShaderData.renderTextureProjection; //
+		outShaderData.renderTrans; //
+		outShaderData.screenMaskTexture = 4; //
+		outShaderData.useMirror = mirrorUsed;
+		outShaderData.uvMask = 7;
+		outShaderData.verticalMirror = verticalMirror; //
+		outShaderData.view = viewUpdateData.view;
+		outShaderData.viewPos = viewUpdateData.cameraPos;
 
 
+		//Closing message box
 		 if(glfwWindowShouldClose(window)){
 			bool noButtonClick = true;
 			bool clickTaken = false;
@@ -718,7 +749,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData);
+		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData);
 		 		
 				//show message box
 				int result = ui.messageBox(window,mouseXpos,mouseYpos,cursors,icons); //0 = Yes //1 = No
@@ -738,7 +769,7 @@ bool LigidPainter::run()
 
 
 		//Render
-		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData);
+		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData);
 				
 
 		drawColor = renderOut.colorBoxVal/255.0f;//TODO : Once the value changed
@@ -953,7 +984,7 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatVal){
 
 	drawColor = RGBval/glm::vec3(255.0f);
 	
-	glset.uniform3fv(programs.program, "drawColor", RGBval/glm::vec3(255.0f));
+	glset.uniform3fv(programs.uiProgram, "drawColor", RGBval/glm::vec3(255.0f));
 
 	if(changeHue){
 		colorBoxColorRangeBarValue = (hsvVal.r / 708.333333333f) - 0.18f; //0.195
@@ -988,7 +1019,7 @@ void LigidPainter::addMaskTextureButton() {
 		brushMaskTextures.textures.push_back(txtr.getTexture(maskTexturePath,0,0,false));
 		brushMaskTextures.names.push_back(maskTexturePath);
 
-		txtr.updateMaskTexture(FBOScreen,width,height,brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal);
+		txtr.updateMaskTexture(FBOScreen,width,height,brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData);
 	}
 }
 void LigidPainter::brushSizeRangeBar(float xOffset,int width){
@@ -1009,7 +1040,7 @@ void LigidPainter::brushBlurRangeBar(float xOffset,int width,int height,bool ren
 	brushValChanged = true;
 	brushBlurRangeBarValue -= xOffset / (width / 2);
 	brushBlurRangeBarValue = util.restrictBetween(brushBlurRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
-	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue,renderTiny,brushBorderRangeBarValue,brushBlurVal);
+	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue,renderTiny,brushBorderRangeBarValue,brushBlurVal,outShaderData);
 
 	if (242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 15 > 200){ //If the range bar value is low enough disable blur effect
 		brushBlurVal = 1000;
@@ -1044,7 +1075,7 @@ void LigidPainter::brushRotationRangeBar(float xOffset, int width, int height){
 	brushValChanged = true;
 	brushRotationRangeBarValue -= xOffset / (width / 2);
 	brushRotationRangeBarValue = util.restrictBetween(brushRotationRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
-	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue,brushBlurVal);
+	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue,brushBlurVal,outShaderData);
 }
 void LigidPainter::brushOpacityRangeBar(float xOffset, int width, int height) {
 	Utilities util;
@@ -1067,7 +1098,7 @@ void LigidPainter::brushBordersRangeBar(float xOffset, int width, int height) {
 	brushValChanged = true;
 	brushBorderRangeBarValue -= xOffset / (width / 2);
 	brushBorderRangeBarValue = util.restrictBetween(brushBorderRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
-	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue,brushBlurVal);
+	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue,brushBlurVal,outShaderData);
 }
 void LigidPainter::colorBoxColorRangeBar(float yOffset,int height){
 	Utilities util;
@@ -1126,15 +1157,16 @@ void LigidPainter::mirrorXCheckBox() {
 	mirrorClick = true;
 	if (mirrorXCheckBoxChecked == false) {
 		mirrorUsed = true;
-		glset.uniform1i(programs.program, "useMirror", 1);
+		glset.uniform1i(programs.uiProgram, "useMirror", 1);
 		mirrorXCheckBoxChecked = true;
 		mirrorYCheckBoxChecked = false;
 		mirrorZCheckBoxChecked = false;
-		glset.uniform1i(programs.program, "verticalMirror", 0);
+		glset.uniform1i(programs.uiProgram, "verticalMirror", 0);
+		verticalMirror = false;
 	}
 	else {
 		mirrorUsed = false;
-		glset.uniform1i(programs.program, "useMirror", 0);
+		glset.uniform1i(programs.uiProgram, "useMirror", 0);
 		mirrorXCheckBoxChecked = false;
 	}
 }
@@ -1142,15 +1174,16 @@ void LigidPainter::mirrorYCheckBox() {
 	mirrorClick = true;
 	if (mirrorYCheckBoxChecked == false) {
 		mirrorUsed = true;
-		glset.uniform1i(programs.program, "useMirror", 1);
+		glset.uniform1i(programs.uiProgram, "useMirror", 1);
 		mirrorYCheckBoxChecked = true;
 		mirrorXCheckBoxChecked = false;
 		mirrorZCheckBoxChecked = false;
-		glset.uniform1i(programs.program, "verticalMirror", 1);
+		glset.uniform1i(programs.uiProgram, "verticalMirror", 1);
+		verticalMirror = true;
 	}
 	else {
 		mirrorUsed = false;
-		glset.uniform1i(programs.program, "useMirror", 0);
+		glset.uniform1i(programs.uiProgram, "useMirror", 0);
 		mirrorYCheckBoxChecked = false;
 	}
 }
@@ -1158,15 +1191,16 @@ void LigidPainter::mirrorZCheckBox() {
 	mirrorClick = true;
 	if (mirrorZCheckBoxChecked == false) {
 		mirrorUsed = true;
-		glset.uniform1i(programs.program, "useMirror", 1);
+		glset.uniform1i(programs.uiProgram, "useMirror", 1);
 		mirrorZCheckBoxChecked = true;
 		mirrorYCheckBoxChecked = false;
 		mirrorXCheckBoxChecked = false;
-		glset.uniform1i(programs.program, "verticalMirror", 0);
+		glset.uniform1i(programs.uiProgram, "verticalMirror", 0);
+		verticalMirror = false;
 	}
 	else {
 		mirrorUsed = false;
-		glset.uniform1i(programs.program, "useMirror", 0);
+		glset.uniform1i(programs.uiProgram, "useMirror", 0);
 		mirrorZCheckBoxChecked = false;
 	}
 }

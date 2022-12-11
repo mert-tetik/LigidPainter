@@ -33,33 +33,33 @@ void GlSet::drawArrays(std::vector<float> &vertices,bool isLine) {
 	}
 }
 void GlSet::uiDataToShaders(glm::vec3 color) {
-	int isAxisPointerLoc = glGetUniformLocation(glPrograms.program, "isAxisPointer");
+	int isAxisPointerLoc = glGetUniformLocation(glPrograms.uiProgram, "isAxisPointer"); //TODO : Delete these
 	glUniform1i(isAxisPointerLoc, 0);
-	int isTwoDimensionalLoc = glGetUniformLocation(glPrograms.program, "isTwoDimensional");
+	int isTwoDimensionalLoc = glGetUniformLocation(glPrograms.uiProgram, "isTwoDimensional");
 	glUniform1i(isTwoDimensionalLoc, 1);
-	int uiColorLoc = glGetUniformLocation(glPrograms.program, "uiColor");
+	int uiColorLoc = glGetUniformLocation(glPrograms.uiProgram, "uiColor");
 	glUniform3f(uiColorLoc, color.x, color.y, color.z);
-	int is2DLoc = glGetUniformLocation(glPrograms.program, "is2D");
+	int is2DLoc = glGetUniformLocation(glPrograms.uiProgram, "is2D");
 	glUniform1i(is2DLoc, 1);
 }
 void GlSet::meshDataToShaders() {
-	int isAxisPointerLoc = glGetUniformLocation(glPrograms.program, "isAxisPointer");
+	int isAxisPointerLoc = glGetUniformLocation(glPrograms.uiProgram, "isAxisPointer");
 	glUniform1i(isAxisPointerLoc, 0);
-	int isTwoDimensionalLoc = glGetUniformLocation(glPrograms.program, "isTwoDimensional");
+	int isTwoDimensionalLoc = glGetUniformLocation(glPrograms.uiProgram, "isTwoDimensional");
 	glUniform1i(isTwoDimensionalLoc, 0);
-	int is2DLoc = glGetUniformLocation(glPrograms.program, "is2D");
+	int is2DLoc = glGetUniformLocation(glPrograms.uiProgram, "is2D");
 	glUniform1i(is2DLoc, 0);
-	int isLightSourceLoc = glGetUniformLocation(glPrograms.program, "isLightSource");
+	int isLightSourceLoc = glGetUniformLocation(glPrograms.uiProgram, "isLightSource");
 	glUniform1i(isLightSourceLoc, 0);
 }
 void GlSet::axisPointerDataToShaders() {
-	int isAxisPointerLoc = glGetUniformLocation(glPrograms.program, "isAxisPointer");
+	int isAxisPointerLoc = glGetUniformLocation(glPrograms.uiProgram, "isAxisPointer");
 	glUniform1i(isAxisPointerLoc, 1);
-	int isTwoDimensionalLoc = glGetUniformLocation(glPrograms.program, "isTwoDimensional");
+	int isTwoDimensionalLoc = glGetUniformLocation(glPrograms.uiProgram, "isTwoDimensional");
 	glUniform1i(isTwoDimensionalLoc, 0);
-	int is2DLoc = glGetUniformLocation(glPrograms.program, "is2D");
+	int is2DLoc = glGetUniformLocation(glPrograms.uiProgram, "is2D");
 	glUniform1i(is2DLoc, 0);
-	int isLightSourceLoc = glGetUniformLocation(glPrograms.program, "isLightSource");
+	int isLightSourceLoc = glGetUniformLocation(glPrograms.uiProgram, "isLightSource");
 	glUniform1i(isLightSourceLoc, 0);
 }
 void GlSet::bindFramebuffer(unsigned int FBO) {
@@ -178,17 +178,8 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 
 	//TODO : 2d Shader
 
-	//Main Program
-	unsigned int vertexShader = createShader("LigidPainter/Resources/Shaders/vertexShaderSource.glsl",GL_VERTEX_SHADER);
-	unsigned int fragmentShader = createShader("LigidPainter/Resources/Shaders/fragmentShaderSource.glsl",GL_FRAGMENT_SHADER); 
-
-	unsigned int program = glCreateProgram();
-	glAttachShader(program, vertexShader);
-	glAttachShader(program, fragmentShader);
-	glLinkProgram(program);
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
+	//Ui program
+	unsigned int uiProgram = createProgram("LigidPainter/Resources/Shaders/ui");
 
 
 	//Skybox program
@@ -236,18 +227,22 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 
 
 
+	//Out program
+	unsigned int outProgram = createProgram("LigidPainter/Resources/Shaders/out");
+
 
 
 	glPrograms.blurProgram = blurProgram;
 	glPrograms.iconsProgram = iconsProgram;
 	glPrograms.skyboxblurProgram = skyboxblurProgram;
-	glPrograms.program = program;
+	glPrograms.uiProgram = uiProgram;
 	glPrograms.skyboxProgram = skyboxProgram;
 	glPrograms.PBRProgram = PBRProgram;
 	glPrograms.saturationValBoxProgram = saturationValBoxProgram;
 	glPrograms.screenDepthProgram = screenDepthProgram;
 	glPrograms.hueProgram = hueProgram;
 	glPrograms.axisPointerProgram = axisPointerProgram;
+	glPrograms.outProgram = outProgram;
 
 	return glPrograms;
 }
@@ -465,4 +460,33 @@ void GlSet::useAxisPointerShader(unsigned int program, AxisPointerShaderData dat
 	uniformMatrix4fv(program,"view",data.view);
 	uniformMatrix4fv(program,"projection",data.projection);
 }
+void GlSet::useOutShader(unsigned int program, OutShaderData data){
+	glUseProgram(program);
 
+	//Vert
+	uniformMatrix4fv(program,"view",data.view);
+	uniformMatrix4fv(program,"mirroredView",data.mirroredView);
+	uniformMatrix4fv(program,"projection",data.projection);
+	uniformMatrix4fv(program,"renderTextureProjection",data.renderTextureProjection);
+	uniformMatrix4fv(program,"renderTrans",data.renderTrans);
+	uniform1i(program,"isTwoDimensional",data.isTwoDimensional);
+	
+
+	//Frag
+	uniform1i(program,"screenMaskTexture",data.screenMaskTexture);
+	uniform1i(program,"mirroredScreenMaskTexture",data.mirroredScreenMaskTexture);
+	uniform1i(program,"useMirror",data.useMirror);
+	uniform1i(program,"isRenderScreenMaskMode",data.isRenderScreenMaskMode);
+	uniform1i(program,"verticalMirror",data.verticalMirror);
+	uniform1i(program,"depthTexture",data.depthTexture);
+	uniform1i(program,"mirroredDepthTexture",data.mirroredDepthTexture);
+	uniform1i(program,"renderDepth",data.renderDepth);
+	uniform1i(program,"renderMaskBrush",data.renderMaskBrush);
+	uniform1i(program,"modifiedMaskTexture",data.modifiedMaskTexture);
+	uniform1i(program,"whiteRendering",data.whiteRendering);
+	uniform1i(program,"uvMask",data.uvMask);
+	uniform1i(program,"interpretWithUvMask",data.interpretWithUvMask);
+	uniform3fv(program,"drawColor",data.drawColor);
+	uniform3fv(program,"viewPos",data.viewPos);
+	uniform3fv(program,"mirroredViewPos",data.mirroredViewPos);
+}

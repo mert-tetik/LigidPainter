@@ -143,7 +143,7 @@ unsigned int currentBrushMaskTexture;
 SaturationValShaderData saturationValShaderData;
 glm::vec3 hueVal;		
 
-RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,std::string &colorpickerHexVal,float brushBorderRangeBarValue,float brushBlurVal) {
+RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,std::string &colorpickerHexVal,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData) {
 	ColorData colorData;
 	glm::mat4 projection;
 	UserInterface ui;
@@ -154,8 +154,8 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	uiOut.maskPanelMaskClicked = false;
 	uiOut.maskPanelMaskHover = false;
 
-	gl.uniform1i(renderPrograms.program, "isTwoDimensional", 1);
-	gl.uniform1i(renderPrograms.program, "is2D", 1);
+	gl.uniform1i(renderPrograms.uiProgram, "isTwoDimensional", 1);
+	gl.uniform1i(renderPrograms.uiProgram, "is2D", 1);
 
 	float screenGapX = ((float)renderMaxScreenWidth - screenSizeX)/(((float)renderMaxScreenWidth)/2.0f)/2.0f; 
 
@@ -164,7 +164,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 	glUseProgram(renderPrograms.iconsProgram);
 	gl.uniformMatrix4fv(12, "Projection", projection);//TODO
-	glUseProgram(renderPrograms.program);
+	glUseProgram(renderPrograms.uiProgram);
 	gl.uniformMatrix4fv(3, "TextProjection", projection);
 	ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.8f);//Model Panel
 	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.795f,0.9,icons.TDModel,0,colorData.iconColor,colorData.iconColorHover);
@@ -220,14 +220,14 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 
 	float centerDivider;
 	float centerSum;
-	gl.uniform1f(renderPrograms.program, "uiOpacity", 0.5f);
+	gl.uniform1f(renderPrograms.uiProgram, "uiOpacity", 0.5f);
 	if (!panelData.movePanel) {
 		centerDivider = 2.0f;
 		centerSum = 0;
 		projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 		glUseProgram(renderPrograms.iconsProgram);
 		gl.uniformMatrix4fv(12, "Projection", projection);
-		glUseProgram(renderPrograms.program);
+		glUseProgram(renderPrograms.uiProgram);
 		gl.uniformMatrix4fv(3, "TextProjection", projection);
 	}
 	else {
@@ -236,7 +236,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 		glUseProgram(renderPrograms.iconsProgram);
 		gl.uniformMatrix4fv(12, "Projection", projection);
-		glUseProgram(renderPrograms.program);
+		glUseProgram(renderPrograms.uiProgram);
 		gl.uniformMatrix4fv(3, "TextProjection", projection);
 	}
 
@@ -245,14 +245,14 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	if (panelData.modelPanelActive) { //Other
 		//File path textbox
 		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0);
-		ui.renderText(renderPrograms.program, "File Path", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.64f, 0.00022f);
-		ui.renderText(renderPrograms.program, ".OBJ only", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.1f, 0.54f, 0.00022f);
+		ui.renderText(renderPrograms.uiProgram, "File Path", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.64f, 0.00022f);
+		ui.renderText(renderPrograms.uiProgram, ".OBJ only", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.1f, 0.54f, 0.00022f);
 
 		
 		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false, 0.9f, 10, colorData.buttonColorHover, loadModelButtonMixVal);//Load model button
 		
 
-		ui.renderText(renderPrograms.program, "3D Models", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.08f-0.1f, 0.00022f);
+		ui.renderText(renderPrograms.uiProgram, "3D Models", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.08f-0.1f, 0.00022f);
 
 		ui.box(0.008f, 0.045f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.0f-0.1f, "", colorData.buttonColor, 0.047f-0.1f, false, false, 0.9f, 6, colorData.buttonColorHover, addPanelButtonMixVal);//Load a panel button
 
@@ -295,43 +295,43 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		ui.box(0.0f, 0.015f, renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f , "", colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 20, glm::vec3(0), 0); //Mask panel slider background
 		ui.box(0.0f, 0.015f, renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f - 0.25, "", colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 20, glm::vec3(0), 0); //Mask panel slider background
 
-		gl.uniform1f(renderPrograms.program, "uiOpacity", 0.3f);
+		gl.uniform1f(renderPrograms.uiProgram, "uiOpacity", 0.3f);
 		ui.box(0.15f, 0.15f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.675f, "", colorData.buttonMaskTxtrPanelColor, 0.095f, false, false, 0.9f, 1000, glm::vec3(0), 0); //Mask panel
 		
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.03f, 0.45f, "Use Negative", colorData.checkBoxColor, uidata.useNegativeForDrawingCheckboxEnter, uidata.useNegativeForDrawingCheckboxPressed); //Auto triangulate checkbox
-		gl.uniform1f(renderPrograms.program, "uiOpacity", 1.0f);
+		gl.uniform1f(renderPrograms.uiProgram, "uiOpacity", 1.0f);
 		
-		ui.renderText(renderPrograms.program, maskTextureFile, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.03f, 0.37f, 0.00022f);
+		ui.renderText(renderPrograms.uiProgram, maskTextureFile, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.03f, 0.37f, 0.00022f);
 		ui.box(0.035f, 0.07f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec3(0), 0); //Mask texture displayer / GL_TEXTURE12
 		
 
 		//Brush size rangebar
-		ui.renderText(renderPrograms.program, "Size", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, 0.25f+0.06f-0.035f, 0.00022f);
+		ui.renderText(renderPrograms.uiProgram, "Size", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, 0.25f+0.06f-0.035f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.22f+0.02f+0.02f, renderData.brushSizeRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.27f,1,icons.MaskScale);
 
 		//Brush blur rangebar
-		ui.renderText(renderPrograms.program, "Blur", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, +0.125f+0.08f-0.035f, 0.00022f);
+		ui.renderText(renderPrograms.uiProgram, "Blur", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, +0.125f+0.08f-0.035f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.09f+0.04f+0.02f, brushBlurRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.14f,1,icons.MaskGausBlur);
 
 		//Brush rotation rangebar
-		ui.renderText(renderPrograms.program, "Rotation", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.005f+0.1f-0.035f, 0.00022f);
+		ui.renderText(renderPrograms.uiProgram, "Rotation", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.005f+0.1f-0.035f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.04f+0.06f+0.02f, brushRotationRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, +0.01f,1,icons.MaskRotation);
 
 		//Brush opacity rangebar
-		ui.renderText(renderPrograms.program, "Opacity", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.135f+0.12f-0.035f, 0.00022f);
+		ui.renderText(renderPrograms.uiProgram, "Opacity", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.135f+0.12f-0.035f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.17f+0.08f+0.02f, brushOpacityRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, -0.12f,1,icons.MaskOpacity);
 
 		//Brush spacing rangebar
-		ui.renderText(renderPrograms.program, "Spacing", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.265f+0.14f-0.035f, 0.00022f);
+		ui.renderText(renderPrograms.uiProgram, "Spacing", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.265f+0.14f-0.035f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.30f+0.1f+0.02f, brushSpacingRangeBarValue);
 		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, -0.25f,1,icons.MaskSpacing);
 
 		//Brush borders rangebar
-		ui.renderText(renderPrograms.program, "Borders", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.285f + 0.02f, 0.00022f);
+		ui.renderText(renderPrograms.uiProgram, "Borders", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.285f + 0.02f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.31f+0.02f, brushBorderRangeBarValue);
 
         ui.numericModifier(renderData.panelLoc / centerDivider + centerSum - screenGapX,-0.37,icons.ArrowLeft,icons.ArrowRight,0.9f, paintingFillNumericModifierVal,fillBetweenResNumericModifiermixValP,fillBetweenResNumericModifiermixValN); //Fill quality
@@ -346,9 +346,9 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		ui.colorBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.65f, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y);
 
 
-		gl.uniform1f(renderPrograms.program, "uiOpacity", 1.0f);
+		gl.uniform1f(renderPrograms.uiProgram, "uiOpacity", 1.0f);
 		ui.box(0.002f, 0.025f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.095f, -0.91f, "", colorBoxValue / glm::vec3(255), 0.075f, false, false, 0.9f, 10, glm::vec3(0), 0); //indicator for picken color of the color picker
-		gl.uniform1f(renderPrograms.program, "uiOpacity", 0.5f);
+		gl.uniform1f(renderPrograms.uiProgram, "uiOpacity", 0.5f);
 		ui.box(0.002f, 0.035f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.095f, -0.91f, "", colorData.panelColorSnd, 0.075f, false, false, 0.9f, 7, glm::vec3(0), 0); //decoration
 
 		ui.box(0.04f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.91f, util.rgbToHexGenerator(colorBoxValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
@@ -395,14 +395,14 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 			gl.bindTexture(maskTextures[i]);
 			gl.drawArrays(buttonCoorSq,false);
 			gl.uniform1i(12,"isMaskIcon",0);
-			glUseProgram(renderPrograms.program);
+			glUseProgram(renderPrograms.uiProgram);
 			//TODO : Check once the mouse pos changed
 			if(ui.isMouseOnCoords(renderData.window,mouseXpos+screenGapX*(renderMaxScreenWidth/2),mouseYpos,buttonCoorSq,panelData.movePanel)){
 				if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
 					gl.activeTexture(GL_TEXTURE1);
 					gl.bindTexture(maskTextures[i]);
-					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal);
-					gl.uniform1i(renderPrograms.program, "isTwoDimensional", 1);
+					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData);
+					gl.uniform1i(renderPrograms.uiProgram, "isTwoDimensional", 1);
 					uiOut.maskPanelMaskClicked = true;
 					currentBrushMaskTexture = maskTextures[i];
 				}
@@ -414,7 +414,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 		}
 		#pragma endregion brushMaskPanel
 
-		gl.uniform1i(renderPrograms.program, "isMaskPanelDisplay", 0);
+		gl.uniform1i(renderPrograms.uiProgram, "isMaskPanelDisplay", 0);
 
 		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.91f,0.9,icons.dropperIcon,dropperMixVal,colorData.iconColor,colorData.iconColorHover);
 	}
@@ -454,7 +454,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 	glUseProgram(renderPrograms.iconsProgram);
 	gl.uniformMatrix4fv(12, "Projection", projection);//TODO : UNIFORMS USING CONSTANT VALUE
-	glUseProgram(renderPrograms.program);
+	glUseProgram(renderPrograms.uiProgram);
 	gl.uniformMatrix4fv(3, "TextProjection", projection);
 	uiOut.currentBrushMaskTxtr = currentBrushMaskTexture;
 	return uiOut;
@@ -475,7 +475,7 @@ void Render::renderModel(bool backfaceCulling, std::vector<float>& vertices,PBRS
 
 	gl.disable(GL_CULL_FACE); //Disable backface culling if enabled
 
-	glUseProgram(renderPrograms.program);
+	glUseProgram(renderPrograms.uiProgram);
 }
 void Render::renderSkyBox(SkyBoxShaderData data) {
 	GlSet gls;
@@ -530,28 +530,30 @@ void Render::renderSkyBox(SkyBoxShaderData data) {
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthMask(GL_TRUE);
 	
-	glUseProgram(renderPrograms.program);
+	glUseProgram(renderPrograms.uiProgram);
 }
 glm::mat4 Render::setMatrices() {
     GlSet gl;
 	glm::mat4 textProjection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 	glUseProgram(renderPrograms.iconsProgram);
 	gl.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", textProjection);
-	glUseProgram(renderPrograms.program);
-	gl.uniformMatrix4fv(renderPrograms.program, "TextProjection", textProjection);
+	glUseProgram(renderPrograms.uiProgram);
+	gl.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", textProjection);
 
 	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777777778 - 1
 	glUseProgram(renderPrograms.blurProgram);
 	gl.uniformMatrix4fv(renderPrograms.blurProgram, "renderTextureProjection", renderTextureProjection);
-	glUseProgram(renderPrograms.program);
-	gl.uniformMatrix4fv(renderPrograms.program, "renderTextureProjection", renderTextureProjection);
+	glUseProgram(renderPrograms.outProgram);
+	gl.uniformMatrix4fv(renderPrograms.outProgram, "renderTextureProjection", renderTextureProjection);
+	glUseProgram(renderPrograms.uiProgram);
+	gl.uniformMatrix4fv(renderPrograms.uiProgram, "renderTextureProjection", renderTextureProjection);
 
 	glm::mat4 model = glm::mat4(1.0f);
-	gl.uniformMatrix4fv(renderPrograms.program, "model", model);
+	gl.uniformMatrix4fv(renderPrograms.uiProgram, "model", model);
 
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
-	glUseProgram(renderPrograms.program);
-	gl.uniformMatrix4fv(renderPrograms.program, "projection",projection);
+	glUseProgram(renderPrograms.uiProgram);
+	gl.uniformMatrix4fv(renderPrograms.uiProgram, "projection",projection);
 
 	return projection;
 	//pd.viewMat = view;
@@ -565,16 +567,16 @@ ViewUpdateData Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos
 	glm::mat4 mirroredView;
 	mirroredView = glm::lookAt(cameraPos * mirrorVec, originPos * mirrorVec, glm::vec3(0.0, 1.0, 0.0));
 
-	glUseProgram(renderPrograms.program);
-	gl.uniformMatrix4fv(renderPrograms.program, "view", view);
+	glUseProgram(renderPrograms.uiProgram);
+	gl.uniformMatrix4fv(renderPrograms.uiProgram, "view", view);
 
-	gl.uniform3fv(renderPrograms.program, "viewPos", cameraPos);
+	gl.uniform3fv(renderPrograms.uiProgram, "viewPos", cameraPos);
 
 	glm::vec3 mirroredCameraPos = cameraPos * mirrorVec;
 
-	gl.uniform3fv(renderPrograms.program, "mirroredViewPos", mirroredCameraPos);
+	gl.uniform3fv(renderPrograms.uiProgram, "mirroredViewPos", mirroredCameraPos);
 
-	gl.uniformMatrix4fv(renderPrograms.program, "mirroredView", mirroredView);
+	gl.uniformMatrix4fv(renderPrograms.uiProgram, "mirroredView", mirroredView);
 
 	ViewUpdateData viewUpdateData;
 
@@ -597,11 +599,11 @@ void Render::drawLightObject(glm::vec3 lightPos) {
 	// model = glm::translate(model, lightPos);
 	// model = glm::scale(model, glm::vec3(0.2f));
 
-	// int lightColorLoc = glGetUniformLocation(renderPrograms.program, "lightColor");
+	// int lightColorLoc = glGetUniformLocation(renderPrograms.uiProgram, "lightColor");
 	// glUniform3f(lightColorLoc, 10.0f, 10.0f, 10.0f);
-	// int isLightSourceLoc = glGetUniformLocation(renderPrograms.program, "isLightSource");
+	// int isLightSourceLoc = glGetUniformLocation(renderPrograms.uiProgram, "isLightSource");
 	// glUniform1i(isLightSourceLoc, 1);
-	// int modelLoc = glGetUniformLocation(renderPrograms.program, "model");
+	// int modelLoc = glGetUniformLocation(renderPrograms.uiProgram, "model");
 	// glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 	// glDrawArrays(GL_TRIANGLES, 0, 36);
 }
@@ -640,7 +642,7 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 	gl.generateMipmap();
 	delete[] screenMirrored;
 
-	glUseProgram(renderPrograms.program);
+	glUseProgram(renderPrograms.uiProgram);
 	
 	glViewport(-(renderMaxScreenWidth - screenSizeX)/2, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
 
@@ -677,7 +679,7 @@ void drawBrushIndicator(float distanceX,float screenWidth,float screenHeight,flo
 	float screenGapX = ((float)renderMaxScreenWidth - (float)screenWidth)/(((float)renderMaxScreenWidth)/2.0f)/2.0f; 
 	
 	GlSet glset;
-	glset.uniform1i(renderPrograms.program, "drawBrushIndicator", 1); //TODO : Create shader for brush indicator
+	glset.uniform1i(renderPrograms.uiProgram, "drawBrushIndicator", 1); //TODO : Create shader for brush indicator
 	std::vector<float> paintingSquare{
 		// first triangle
 		( sizeX / renderMaxScreenWidth / 1.0f + (float)mouseXpos / renderMaxScreenWidth / 0.5f - 1.0f)+screenGapX,  sizeX / renderMaxScreenHeight / 1.0f - (float)mouseYpos / renderMaxScreenHeight / 0.5f + 1.0f , 1.0f,1,1,0,0,0,  // top right
@@ -688,11 +690,11 @@ void drawBrushIndicator(float distanceX,float screenWidth,float screenHeight,flo
 		(-sizeX / renderMaxScreenWidth / 1.0f + (float)mouseXpos / renderMaxScreenWidth / 0.5f - 1.0f)+screenGapX,  sizeX / renderMaxScreenHeight / 1.0f - (float)mouseYpos / renderMaxScreenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0  // top left
 	};
 	glset.uiDataToShaders(color/glm::vec3(255.0f));
-	glset.uniform1f(renderPrograms.program, "uiOpacity", 0.2f);
+	glset.uniform1f(renderPrograms.uiProgram, "uiOpacity", 0.2f);
 	glset.drawArrays(paintingSquare, false);
-	glset.uniform1f(renderPrograms.program, "uiOpacity", 0.5f);
+	glset.uniform1f(renderPrograms.uiProgram, "uiOpacity", 0.5f);
 
-	glset.uniform1i(renderPrograms.program, "drawBrushIndicator", 0);
+	glset.uniform1i(renderPrograms.uiProgram, "drawBrushIndicator", 0);
 }
 
 void drawAxisPointer(AxisPointerShaderData axisPointerShaderData) {
@@ -714,7 +716,7 @@ void drawAxisPointer(AxisPointerShaderData axisPointerShaderData) {
 	glset.drawArrays(axisPointer, true);
 	glset.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glUseProgram(renderPrograms.program);
+	glUseProgram(renderPrograms.uiProgram);
 }
 
 
@@ -744,7 +746,7 @@ void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsi
 	delete[]renderedTexture;
 }
 
-void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices,bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName,bool reduceScreenPaintingQuality) {
+void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices,bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName,bool reduceScreenPaintingQuality, OutShaderData outShaderData) {
 	int maxTextureHistoryHold = 20;
 
 	std::vector<float> renderVertices = { //Render backside of the uv
@@ -772,9 +774,12 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 
     GlSet gl;
 	//Setup
-	gl.uniform1i(renderPrograms.program, "isTwoDimensional", 0);
-	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 1);
-	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 1);
+	glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
+	outShaderData.renderTextureProjection = projection;
+	gl.useOutShader(renderPrograms.outProgram, outShaderData);
+
+
+	gl.uniform1i(renderPrograms.outProgram, "isTwoDimensional", 0);
 	gl.viewport(1920, 1080);
 	gl.bindFramebuffer(FBOScreen);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -795,15 +800,15 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
 
 	//Render uv mask
-	gl.uniform1i(renderPrograms.program, "whiteRendering", 1);
+	gl.uniform1i(renderPrograms.outProgram, "whiteRendering", 1);
 	renderTexture(vertices,1080, 1080,GL_TEXTURE7,GL_RGB);
-	gl.uniform1i(renderPrograms.program, "whiteRendering", 0);
+	gl.uniform1i(renderPrograms.outProgram, "whiteRendering", 0);
 	//Render uv mask
 
 	//interpret the albedo with ui mask texture
-	gl.uniform1i(renderPrograms.program, "interpretWithUvMask", 1);
+	gl.uniform1i(renderPrograms.outProgram, "interpretWithUvMask", 1);
 	renderTexture(renderVertices,1080, 1080,GL_TEXTURE0,GL_RGB);//Render enlarged texture
-	gl.uniform1i(renderPrograms.program, "interpretWithUvMask", 0);
+	gl.uniform1i(renderPrograms.outProgram, "interpretWithUvMask", 0);
 	//interpret the albedo with ui mask texture
 
 	//Download enlarged texture
@@ -814,12 +819,12 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Finish
-	gl.uniform1i(renderPrograms.program, "isRenderTextureModeV", 0);
-	gl.uniform1i(renderPrograms.program, "isRenderTextureMode", 0);
 	gl.bindFramebuffer(0);
 	glViewport(-(renderMaxScreenWidth - screenSizeX)/2, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
 
 	//Finish
+	glUseProgram(renderPrograms.uiProgram);
+
 }
 glm::vec3 getScreenHoverPixel(double mouseXpos,double mouseYpos, int screenSizeY){
     glm::vec3 screenHoverPixel;
@@ -865,8 +870,8 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 	gl.bindFramebuffer(0);
 	glViewport(-(renderMaxScreenWidth - screenSizeX)/2, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
 
-	glUseProgram(renderPrograms.program);
-	gl.uniform3f(renderPrograms.program, "drawColor", colorBoxPixel[0] / 255.0f, colorBoxPixel[1] / 255.0f, colorBoxPixel[2] / 255.0f);
+	glUseProgram(renderPrograms.uiProgram);
+	gl.uniform3f(renderPrograms.uiProgram, "drawColor", colorBoxPixel[0] / 255.0f, colorBoxPixel[1] / 255.0f, colorBoxPixel[2] / 255.0f);
 
 	//Get color value to the color vec
     glm::vec3 colorBoxPixelVal = glm::vec3(0);
@@ -887,7 +892,7 @@ bool currentModelChanged = true;
 bool lastRenderSphere = false;
 bool lastRenderPlane = false;
 
-RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData pbrShaderData,SkyBoxShaderData skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData screenDepthShaderData,AxisPointerShaderData axisPointerShaderData) {
+RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData panelData, ExportData exportData,UiData uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData pbrShaderData,SkyBoxShaderData skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData screenDepthShaderData,AxisPointerShaderData axisPointerShaderData,OutShaderData outShaderData) {
 	GlSet gls;
 	UserInterface ui;
 	ColorData colorData;
@@ -954,7 +959,7 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 
 	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || uidata.addImageButtonPressed ||(glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
 	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false
-		renderTextures(FBOScreen,currentModel,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,reduceScreenPaintingQuality);
+		renderTextures(FBOScreen,currentModel,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,reduceScreenPaintingQuality,outShaderData);
 	}
 
 	renderSkyBox(skyBoxShaderData);
@@ -962,7 +967,7 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 	drawAxisPointer(axisPointerShaderData);
 
 	RenderOutData uiOut;
-	uiOut = renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,colorpickerHexVal,renderData.brushBorderRangeBarValue,brushBlurVal);
+	uiOut = renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,colorpickerHexVal,renderData.brushBorderRangeBarValue,brushBlurVal,outShaderData);
 
 
 	if (colorBoxValChanged && !colorpickerHexValTextboxValChanged) { //Get value of color box

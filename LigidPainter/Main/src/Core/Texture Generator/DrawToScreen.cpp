@@ -37,7 +37,7 @@ double lastMouseYPosIn = 0;
 
 bool addToScreenMaskTxtr = true;
 
-void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs programs,int maxScreenWidth,int maxScreenHeight,bool reduceScreenPaintingQuality,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO) {
+void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs programs,int maxScreenWidth,int maxScreenHeight,bool reduceScreenPaintingQuality,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData outShaderData) {
 	Texture texture;
 	Render render;
 
@@ -71,7 +71,7 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 		//Setup
 		resizedPixels = new GLubyte[distanceX * distanceY * 3];
 
-		renderedImage = txtr.updateMaskTexture(FBOScreen, screenSizeX,screenSizeY, rotationValue,false,brushBorderRangeBarValue,brushBlurVal);
+		renderedImage = txtr.updateMaskTexture(FBOScreen, screenSizeX,screenSizeY, rotationValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData);
 		//Resize
 		if (true) {
 			stbir_resize_uint8(renderedImage, 540, 540, 0, resizedPixels, distanceX, distanceY, 0, 3); //Resize (causes lags)
@@ -162,10 +162,11 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 		glset.viewport(1920, 1080);
 		glset.bindFramebuffer(FBOScreen);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glset.uniform1i(programs.program, "isTwoDimensional", 0);
-		glset.uniform1i(programs.program, "isRenderTextureMode", 1);
-		glset.uniform1i(programs.program, "isRenderScreenMaskMode", 1);
-		glset.uniform1i(programs.program, "isRenderTextureModeV", 1);
+	
+		glset.useOutShader(programs.outProgram,outShaderData);
+
+		glset.uniform1i(programs.outProgram, "isTwoDimensional", 0);
+		glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 1);
 		//setup
 
 		//Get texture
@@ -173,14 +174,15 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 		//Get texture
 
 		//Finish
-		glset.uniform1i(programs.program, "isRenderTextureModeV", 0);
-		glset.uniform1i(programs.program, "isRenderTextureMode", 0);
-		glset.uniform1i(programs.program, "isRenderScreenMaskMode", 0);
+		glset.uniform1i(programs.outProgram, "isRenderTextureModeV", 0);
+		glset.uniform1i(programs.outProgram, "isRenderTextureMode", 0);
+		glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 0);
 		//Finish
 		//Update mirrored screen mask texture
 		}
 		glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 
+		glUseProgram(programs.uiProgram);
 		glset.bindFramebuffer(0);
 	}
 	lastMouseXPosIn = mouseXposIn;

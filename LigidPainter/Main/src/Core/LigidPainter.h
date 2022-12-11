@@ -4,7 +4,7 @@
 
 struct Programs
 {
-	unsigned int program;
+	unsigned int uiProgram;
 	unsigned int skyboxProgram;
 	unsigned int blurProgram;
 	unsigned int iconsProgram;
@@ -14,6 +14,7 @@ struct Programs
 	unsigned int screenDepthProgram;
 	unsigned int hueProgram;
 	unsigned int axisPointerProgram;
+	unsigned int outProgram;
 };
 struct LigidCursors{
 	GLFWcursor* pointerCursor;
@@ -65,6 +66,33 @@ struct HueShaderData{
 struct AxisPointerShaderData{
 	glm::mat4 projection;
 	glm::mat4 view;
+};
+struct OutShaderData{
+	glm::mat4 view;
+	glm::mat4 mirroredView;
+	glm::mat4 projection;
+	int isTwoDimensional;
+	glm::mat4 renderTextureProjection;
+	glm::mat4 renderTrans;	
+
+
+
+	int screenMaskTexture;
+	int mirroredScreenMaskTexture;
+	int useMirror;
+	int isRenderScreenMaskMode;
+	int verticalMirror;
+	glm::vec3 drawColor;
+	int depthTexture; //Screen rendered with depth color
+	int mirroredDepthTexture; //Screen rendered with depth color
+	int renderDepth;
+	int renderMaskBrush;
+	int modifiedMaskTexture;
+	glm::vec3 viewPos;
+	glm::vec3 mirroredViewPos;
+	int whiteRendering;
+	int uvMask;
+	int interpretWithUvMask;
 };
 
 

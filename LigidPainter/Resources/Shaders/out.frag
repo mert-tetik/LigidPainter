@@ -5,6 +5,24 @@ struct Material {
 };
 uniform Material material;
 
+uniform sampler2D screenMaskTexture;
+uniform sampler2D mirroredScreenMaskTexture;
+uniform int useMirror;
+uniform int isRenderScreenMaskMode;
+uniform int verticalMirror;
+uniform vec3 drawColor;
+uniform sampler2D depthTexture; //Screen rendered with depth color
+uniform sampler2D mirroredDepthTexture; //Screen rendered with depth color
+uniform int renderDepth;
+uniform int renderMaskBrush;
+uniform sampler2D modifiedMaskTexture;
+uniform vec3 viewPos;
+uniform vec3 mirroredViewPos;
+uniform int whiteRendering;
+uniform sampler2D uvMask;
+uniform int interpretWithUvMask;
+
+
 in vec2 TexCoords;
 in vec3 Normal;
 in vec3 Pos;
@@ -12,31 +30,7 @@ in vec3 Pos;
 in vec4 projectedPos;
 in vec4 mirroredProjectedPos;
 
-uniform sampler2D screenMaskTexture;
-uniform sampler2D mirroredScreenMaskTexture;
-uniform int useMirror;
-uniform int isRenderScreenMaskMode;
-uniform int verticalMirror;
-uniform vec3 drawColor;
-
-uniform sampler2D depthTexture; //Screen rendered with depth color
-uniform sampler2D mirroredDepthTexture; //Screen rendered with depth color
-
-uniform int renderDepth;
-uniform int renderMaskBrush;
-
-
-uniform sampler2D modifiedMaskTexture;
-
-uniform vec3 viewPos;
-uniform vec3 mirroredViewPos;
-
 out vec4 color;
-
-uniform int whiteRendering;
-
-uniform sampler2D uvMask;
-uniform int interpretWithUvMask;
 
 
 float far = 10.0;

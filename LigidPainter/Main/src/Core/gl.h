@@ -65,6 +65,7 @@ public:
 	void useScreenDepthShader(unsigned int program, ScreenDepthShaderData data);
 	void useHueShader(unsigned int program, HueShaderData data);
 	void useAxisPointerShader(unsigned int program, AxisPointerShaderData data);
+	void useOutShader(unsigned int program, OutShaderData data);
 
 };
 #endif // !RGDGL_H
