@@ -1,0 +1,89 @@
+#ifndef LGDMSHBOX_H
+#define LGDMSHBOX_H
+
+#include <GLFW/glfw3.h>
+#include "LigidPainter.h"
+#include "UserInterface.h"
+#include "../../thirdparty/include/glm/glm.hpp"
+
+bool noButtonClickMsgBox = true;
+bool clickTakenMsgBox = false;
+
+
+
+
+int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcursor* defaultCursor,GLFWcursor* buttonHoverCursor,unsigned int icon,unsigned int uiProgram,const char * text, float textXpos,float textYpos,float backColor[3],float buttonColor[3]){
+	
+
+    UserInterface ui;
+	ColorData colorData;
+	int result = 2;
+
+    glm::vec3 backColorVec;
+    backColorVec.r = backColor[0];
+    backColorVec.g = backColor[1];
+    backColorVec.b = backColor[2];
+
+    glm::vec3 buttonColorVec;
+    buttonColorVec.r = buttonColor[0];
+    buttonColorVec.g = buttonColor[1];
+    buttonColorVec.b = buttonColor[2];
+
+	//Panel
+	ui.box(0.00f, 0.04f, -0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.9f, 7, backColorVec, 0);//Load model button
+	ui.box(0.00f, 0.04f, 0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.9f, 7, backColorVec, 0);//Load model button
+	ui.box(0.00f, 0.04f, -0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.9f, 7, backColorVec, 0);//Load model button
+	ui.box(0.00f, 0.04f, 0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.9f, 7, backColorVec, 0);//Load model button
+	ui.box(0.25f, 0.25f, 0.0f, 0.0f, "", backColorVec, 0.022f, false, false, 0.9f, 10000, backColorVec, 0);//Load model button
+	ui.box(0.25f, 0.05f, 0.0f, -0.24f, "", backColorVec, 0.022f, false, false, 0.9f, 10000, backColorVec, 0);//Load model button
+	ui.box(0.25f, 0.05f, 0.0f, +0.24f, "", backColorVec, 0.022f, false, false, 0.9f, 10000, backColorVec, 0);//Load model button
+	ui.box(0.03f, 0.25f, -0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.9f, 10000, backColorVec, 0);//Load model button
+	ui.box(0.03f, 0.25f, +0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.9f, 10000, backColorVec, 0);//Load model button
+				
+	//Buttons
+	ui.box(0.04f, 0.04f, -0.1f, -0.15f, "Yes", buttonColorVec, 0.015f, false, false, 0.95f, 10, buttonColorVec, 0);//Load model button
+	ui.box(0.04f, 0.04f, +0.1f, -0.15f, "No", buttonColorVec, 0.012f, false, false, 0.95f, 10, buttonColorVec, 0);//Load model button
+
+	bool resultYesHover = ui.isMouseOnButton(window, 0.05f, 0.04f, -0.1, -0.15f, mouseXpos, mouseYpos, false);//Yes button hover
+	bool resultNoHover = ui.isMouseOnButton(window, 0.05f, 0.04f, +0.1, -0.15f, mouseXpos, mouseYpos, false);//No button hover
+
+	//Make sure first click is done inside
+	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTakenMsgBox) {
+		if (!resultYesHover && !resultNoHover) {
+			noButtonClickMsgBox = true;
+			}
+		else{
+				noButtonClickMsgBox = false;
+			}
+			clickTakenMsgBox = true;
+	}
+	if (glfwGetMouseButton(window, 0) == GLFW_RELEASE && clickTakenMsgBox) {
+		clickTakenMsgBox = false;
+	}
+
+
+	if(resultYesHover || resultNoHover){
+		glfwSetCursor(window,buttonHoverCursor);//Set pointer cursor once cursor enters any of the buttons
+	}
+	else{
+		glfwSetCursor(window,defaultCursor);//Set pointer cursor once cursor enters any of the buttons
+	}
+
+	if(glfwGetMouseButton(window, 0) == GLFW_PRESS && resultYesHover && !noButtonClickMsgBox){
+		result = 0; //Yes button pressed
+	}
+	else if(glfwGetMouseButton(window, 0) == GLFW_PRESS && resultNoHover && !noButtonClickMsgBox){
+		result = 1; //No button pressed
+	}
+
+	//LigidPainter icon
+	ui.iconBox(0.04f,0.07f,0.0f,0.15f,1,icon,0,colorData.iconColor,colorData.iconColorHover);
+
+	//Text
+	ui.renderText(uiProgram, text, textXpos, textYpos , 0.00022f);
+
+	
+	return result;	 //0 = Yes , 1 = No , 2 = skip/none
+}
+
+#endif // !LGDMSHBOX_H

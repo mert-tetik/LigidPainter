@@ -32,6 +32,8 @@ struct ColorData //LigidPainter color palette
 	glm::vec3 brushMaskIconColor = glm::vec3(1.0f);
 	glm::vec3 maskPanelSliderColor = glm::vec3(0.0f);
 	glm::vec3 maskPanelSliderBackgroundColor = glm::vec3(1.0f);
+	glm::vec3 messageBoxPanelColor = glm::vec3(0.13f, 0.13f, 0.13f);
+	glm::vec3 messageBoxButtonColor = glm::vec3(0.13f, 0.13f, 0.13f);
 };
 struct buttonData {
 
@@ -60,7 +62,6 @@ public:
 	void numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN);
 	void sendProgramsToUserInterface(Programs appPrograms);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
-	int messageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,LigidCursors cursors,Icons icons);
 
 };
 #endif 

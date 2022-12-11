@@ -28,6 +28,7 @@
 #include "stb_image_write.h"
 
 #include "tinyfiledialogs.h"
+#include "messageBox.h"
 
 
 using namespace std;
@@ -751,8 +752,12 @@ bool LigidPainter::run()
 				//Keep rendering the backside
 		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData);
 		 		
+				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
+
+				float messageBoxButtonColor[3] = {colorData.messageBoxButtonColor.r,colorData.messageBoxButtonColor.g,colorData.messageBoxButtonColor.r};
+
 				//show message box
-				int result = ui.messageBox(window,mouseXpos,mouseYpos,cursors,icons); //0 = Yes //1 = No
+				int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,"LigidPainter will be closed. Do you want to proceed?",-0.21f,0.0f,messageBoxBackColor,messageBoxButtonColor); //0 = Yes //1 = No //2 = None
 
 				//Process the message box input
 				if(result == 0){
