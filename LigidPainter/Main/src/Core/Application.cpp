@@ -493,6 +493,7 @@ bool LigidPainter::run()
 	glset.uniform1i(programs.uiProgram, "depthTexture", 9);
 	glset.uniform1i(programs.uiProgram, "mirroredDepthTexture", 8);
 	glset.uniform1i(programs.uiProgram, "text", 2);
+	glset.uniform1i(programs.uiProgram, "currentTexture", 0);
 
 
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);

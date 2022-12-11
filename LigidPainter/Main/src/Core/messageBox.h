@@ -10,8 +10,6 @@ bool noButtonClickMsgBox = true;
 bool clickTakenMsgBox = false;
 
 
-
-
 int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcursor* defaultCursor,GLFWcursor* buttonHoverCursor,unsigned int icon,unsigned int uiProgram,const char * text, float textXpos,float textYpos,float backColor[3],float buttonColor[3]){
 	
 

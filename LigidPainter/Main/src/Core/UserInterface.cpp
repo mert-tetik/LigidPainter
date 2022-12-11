@@ -84,11 +84,10 @@ void UserInterface::textureDemonstrator(float width,float height, float position
 		 position_x,  position_y, z,0,1,0,0,0  // top left
 	};
 	box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDemonstratorButtonColor,0,0,0,1,10,glm::vec3(0),0);
-	glset.uniform1i(3, "is2D", 0);
-	glset.uniform1i(3, "isRenderTextureMode", 1);
+
+	glset.uniform1i(uiPrograms.uiProgram,"drawTxtrDemonstrator",1);
 	glset.drawArrays(buttonCoorSq,false);
-	glset.uniform1i(3, "isRenderTextureMode", 0);
-	glset.uniform1i(3, "is2D", 1);
+	glset.uniform1i(uiPrograms.uiProgram,"drawTxtrDemonstrator",0);
 }
 void UserInterface::numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN){
 	//box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"",glm::vec3(0),0,0,0,1,10,glm::vec3(0),0);
