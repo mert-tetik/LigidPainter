@@ -163,7 +163,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	ui.panel(renderData.panelLoc-screenGapX , 0);
 	projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 	glUseProgram(renderPrograms.iconsProgram);
-	gl.uniformMatrix4fv(12, "Projection", projection);
+	gl.uniformMatrix4fv(12, "Projection", projection);//TODO
 	glUseProgram(renderPrograms.program);
 	gl.uniformMatrix4fv(3, "TextProjection", projection);
 	ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.8f);//Model Panel
@@ -174,6 +174,7 @@ RenderOutData Render::renderUi(PanelData panelData,UiData uidata,RenderData rend
 	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.635f,0.9,icons.Painting,0,colorData.iconColor,colorData.iconColorHover);//Dropper
 	ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.56f);//Export Panel
 	ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX, 0.555f,0.9,icons.Export,0,colorData.iconColor,colorData.iconColorHover);
+
 	//Panel
 
 
@@ -917,12 +918,16 @@ RenderOutData Render::render(RenderData renderData, std::vector<float>& vertices
 
 	colorBoxVal = util.hexToRGBConverter(colorpickerHexVal);
 
+	
+
 	if(textureDemonstratorBoundariesPressed){
 		orgTextureDemonstratorWidth = textureDemonstratorWidth;
 		orgTextureDemonstratorHeight = textureDemonstratorHeight;
 	}
 
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear before rendering
+
 
 	//Get screen and mouse info
 	int screenSizeX;

@@ -280,6 +280,8 @@ WindowData GlSet::getWindow() {
 	glfwWindowHint(GLFW_SAMPLES, samples);
 	
 	GLFWwindow* window = glfwCreateWindow(3845,2165, "LigidPainter", NULL, NULL);
+
+	
 	glfwMakeContextCurrent(window);
 
 	int windowMaxWidth;

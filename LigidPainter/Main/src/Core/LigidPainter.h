@@ -92,6 +92,7 @@ struct Icons{
 	unsigned int ArrowRight;
 	unsigned int ArrowLeft;
 	unsigned int Painting;
+	unsigned int Logo;
 };
 
 struct RenderData { //GlSet::render

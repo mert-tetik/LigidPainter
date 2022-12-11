@@ -29,6 +29,7 @@
 
 #include "tinyfiledialogs.h"
 
+
 using namespace std;
 
 GlSet glset;
@@ -580,8 +581,11 @@ bool LigidPainter::run()
 
 	axisPointerShaderData.projection = perspectiveProjection;
 
-	
-	while (true)//Main loop
+	float color[3] = {1.0f,1.0f,0.0f};
+
+	glfwMakeContextCurrent(window);
+
+	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		glfwPollEvents();
 
@@ -701,8 +705,42 @@ bool LigidPainter::run()
 
 
 
+		 if(glfwWindowShouldClose(window)){
+			bool noButtonClick = true;
+			bool clickTaken = false;
+
+		 	while (true)
+		 	{
+				//Disable painting
+				doPainting = false; 
+				renderData.doPainting = doPainting;
+
+		 		glfwPollEvents();
+
+				//Keep rendering the backside
+		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData);
+		 		
+				//show message box
+				int result = ui.messageBox(window,mouseXpos,mouseYpos,cursors,icons); //0 = Yes //1 = No
+
+				//Process the message box input
+				if(result == 0){
+					break; //Close the app
+				}
+				else if(result == 1){
+					glfwSetWindowShouldClose(window,GLFW_FALSE);
+					break; //Act like nothing happened
+				}
+
+				glfwSwapBuffers(window);
+		 	}
+		 }
+
+
 		//Render
 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData);
+				
+
 		drawColor = renderOut.colorBoxVal/255.0f;//TODO : Once the value changed
 		colorBoxValChanged = false;
 		colorpickerHexValTextboxValChanged = false;
@@ -748,15 +786,7 @@ bool LigidPainter::run()
 
 		glfwSwapBuffers(window);
 
-		
 
-		if(glfwWindowShouldClose(window)){
-			int dialogResult = tinyfd_messageBox("Warning","LigidPainter will be closed. Do you want to proceed?","yesno","warning",1);
-			if(dialogResult)
-				break;
-			else
-				glfwSetWindowShouldClose(window,0);
-		}
 	}
 	
 	glfwDestroyWindow(window);
