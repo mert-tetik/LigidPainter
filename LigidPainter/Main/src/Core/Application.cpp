@@ -1358,7 +1358,7 @@ void LigidPainter::loadModelButton() {
 	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
 	GlSet glset;
 	ModelLoader modelLoader;
-	if (modelName != "" && modelName[modelName.size() - 1] != 't' && modelName[modelName.size() - 2] != 'l' && modelName[modelName.size() - 3] != 'u' && modelName[modelName.size() - 4] == 'a' && modelName[modelName.size() - 5] != 'f' && modelName[modelName.size() - 6] != 'e' && modelName[modelName.size() - 7] != 'd' && modelName[modelName.size() - 8] == '.') {
+	if (modelName != "" && modelName != "sphere.default" && modelName != "plane.default") {
 		//vertices.clear();
 		//vertices = modelLoader.OBJ_getVertices(modelFilePath, autoTriangulateChecked);
 
