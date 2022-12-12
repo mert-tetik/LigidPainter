@@ -417,6 +417,7 @@ OutShaderData outShaderData;
 int screenWidth;
 int screenHeight;
 
+	Model model;
 
 
 bool LigidPainter::run()
@@ -440,7 +441,7 @@ bool LigidPainter::run()
 	windowData = glset.getWindow();
 	window = windowData.window;
 
-	Model model("C:/Users/CASPER/Desktop/char1.fbx");
+
 
 	//Set Callbacks
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
@@ -506,7 +507,7 @@ bool LigidPainter::run()
 	glset.uniform1i(programs.uiProgram, "depthTexture", 9);
 	glset.uniform1i(programs.uiProgram, "mirroredDepthTexture", 8);
 	glset.uniform1i(programs.uiProgram, "text", 2);
-	glset.uniform1i(programs.uiProgram, "currentTexture", 7);
+	glset.uniform1i(programs.uiProgram, "currentTexture", 0);
 
 
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
@@ -1148,8 +1149,8 @@ void LigidPainter::colorBoxPickerButton(float xOffset, float yOffset, int width,
 
 void LigidPainter::modelFilePathTextBox() {
 	Utilities utilities;
-	char const* lFilterPatterns[1] = { "*.obj" };
-	auto modelFilePathCheck = tinyfd_openFileDialog("Select 3D Model","",1, lFilterPatterns,"",false);
+	char const* lFilterPatterns[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
+	auto modelFilePathCheck = tinyfd_openFileDialog("Select 3D Model","",11, lFilterPatterns,"",false);
 	if (modelFilePathCheck) {
 		modelFilePath = modelFilePathCheck;
 		modelName = utilities.getLastWordBySeparatingWithChar(modelFilePath,folderDistinguisher);
@@ -1348,9 +1349,16 @@ void LigidPainter::loadModelButton() {
 	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
 	GlSet glset;
 	ModelLoader modelLoader;
-	if (modelName != "" && modelName[modelName.size() - 1] == 'j' && modelName[modelName.size() - 2] == 'b' && modelName[modelName.size() - 3] == 'o' && modelName[modelName.size() - 4] == '.') {
-		vertices.clear();
-		vertices = modelLoader.OBJ_getVertices(modelFilePath, autoTriangulateChecked);
+	if (true) {
+		//vertices.clear();
+		//vertices = modelLoader.OBJ_getVertices(modelFilePath, autoTriangulateChecked);
+
+		model.loadModel(modelFilePath,autoTriangulateChecked);
+		glUseProgram(programs.uiProgram);
+		glBindVertexArray(VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+
 		if(vertices.size() > 10000)
 			glset.bufferData(vertices);
 		else {
