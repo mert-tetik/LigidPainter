@@ -49,6 +49,14 @@ GLFWwindow* window;
 	char folderDistinguisher = '/'; 
 #endif
 
+//TODO : Check if the same uv coordinate is painted
+//TODO : Import settings
+//TODO : Show message box if files will be replaced 
+//TODO : Delete unnecessary uniforms
+//TODO : Use a struct for slide bar values
+//TODO : Prevent removal of default models once the custom button is clicked
+
+
 //GL_TEXTURE0 = Albedo texture
 //GL_TEXTURE1 = Mask texture
 //GL_TEXTURE2 = Chars
@@ -610,6 +618,7 @@ bool LigidPainter::run()
 	glfwMakeContextCurrent(window);
 
 
+	callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue);
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
@@ -1349,7 +1358,7 @@ void LigidPainter::loadModelButton() {
 	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
 	GlSet glset;
 	ModelLoader modelLoader;
-	if (true) {
+	if (modelName != "" && modelName[modelName.size() - 1] != 't' && modelName[modelName.size() - 2] != 'l' && modelName[modelName.size() - 3] != 'u' && modelName[modelName.size() - 4] == 'a' && modelName[modelName.size() - 5] != 'f' && modelName[modelName.size() - 6] != 'e' && modelName[modelName.size() - 7] != 'd' && modelName[modelName.size() - 8] == '.') {
 		//vertices.clear();
 		//vertices = modelLoader.OBJ_getVertices(modelFilePath, autoTriangulateChecked);
 
