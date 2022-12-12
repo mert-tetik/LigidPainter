@@ -1,4 +1,5 @@
 #include<iostream>
+
 #include "../../thirdparty/include/glad/glad.h"
 #include "../../thirdparty/include/GLFW/glfw3.h"
 #include <string>
@@ -8,6 +9,7 @@
 #include "../../thirdparty/include/glm/gtc/matrix_transform.hpp"
 #include "../../thirdparty/include/glm/gtc/type_ptr.hpp"
 #include "../../thirdparty/include/glm/gtx/string_cast.hpp"
+#include "Core/model.h"
 #include "Core/LigidPainter.h"
 #include "Core/ModelRead.h"
 #include "UserInterface.h"
@@ -29,6 +31,7 @@
 
 #include "tinyfiledialogs.h"
 #include "messageBox.h"
+
 
 
 using namespace std;
@@ -411,6 +414,9 @@ OutShaderData outShaderData;
 
 int screenWidth;
 int screenHeight;
+
+
+
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -431,6 +437,8 @@ bool LigidPainter::run()
 
 	windowData = glset.getWindow();
 	window = windowData.window;
+
+	Model model("C:/Users/CASPER/Desktop/char1.fbx");
 
 	//Set Callbacks
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
@@ -597,6 +605,8 @@ bool LigidPainter::run()
 	float color[3] = {1.0f,1.0f,0.0f};
 
 	glfwMakeContextCurrent(window);
+
+
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
@@ -784,7 +794,10 @@ bool LigidPainter::run()
 
 		//Render
 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData);
-				
+		
+		glset.usePBRShader(programs.PBRProgram,pbrShaderData);
+		model.Draw();
+		glUseProgram(programs.uiProgram);
 
 		drawColor = renderOut.colorBoxVal/255.0f;//TODO : Once the value changed
 		colorBoxValChanged = false;

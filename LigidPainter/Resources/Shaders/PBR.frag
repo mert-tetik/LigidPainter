@@ -57,10 +57,8 @@ bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMir
    }
    float dotProd = dot(normalize(direction),normalize(Normal));
 
-   if(dotProd < 0.2){
-      return false;
-   }  
-   else{
+ 
+   if(true){
       return abs(drawZ - linearizeDepth(uv.z)/far) < 0.005;
    }
 }

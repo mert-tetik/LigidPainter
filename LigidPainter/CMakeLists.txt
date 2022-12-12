@@ -24,6 +24,6 @@ target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/thirdparty)
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/src)
 target_link_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/thirdparty/lib)
 target_link_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/thirdparty/lib/freetype)
-target_link_libraries(Ligid PRIVATE glfw3 freetype)
+target_link_libraries(Ligid PRIVATE glfw3 freetype assimp-vc142-mt)
 
 # TODO: Add tests and install targets if needed.
