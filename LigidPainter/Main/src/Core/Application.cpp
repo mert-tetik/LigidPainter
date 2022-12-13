@@ -54,7 +54,12 @@ GLFWwindow* window;
 //TODO : Show message box if files will be replaced 
 //TODO : Delete unnecessary uniforms
 //TODO : Use a struct for slide bar values
-//TODO : Prevent removal of default models once the custom button is clicked
+//TODO : Specialized vao for each shader
+//TODO : A texture for each material  
+//TODO : Reduce GPU Usage
+//TODO : Take screen hover pixel once the color picker is clicked
+//TODO : Reduce mask quality once auto fill is used
+//TODO : Fix shortcuts
 
 
 //GL_TEXTURE0 = Albedo texture
@@ -622,13 +627,14 @@ bool LigidPainter::run()
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
+		//wwwglfwSwapInterval(1);
 		glfwPollEvents();
 
 		util.printRenderingSpeed();
 
 		updateCameraPosChanging();
 
-
+		//glfwSwapInterval(1);
 
 		//Release textboxes
 		if ((glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS)){
@@ -803,10 +809,12 @@ bool LigidPainter::run()
 		 	}
 		 }
 
-
+		double firstTime = glfwGetTime();
 		//Render
 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model);
-		
+		double lastTime = glfwGetTime();
+
+		cout <<  (lastTime - firstTime) * 1000  << '\n';
 
 		drawColor = renderOut.colorBoxVal/255.0f;//TODO : Once the value changed
 		colorBoxValChanged = false;
@@ -1312,15 +1320,18 @@ void LigidPainter::loadCustomModel(){
 			loadModelButton();
 		}
 	}
-	hexValTextboxPressed = true;
 
-	renderPlane = false;
-	renderSphere = false;
+	if(modelName != ""){
 
-	if(vertices.size() > 10000)
-		glset.bufferData(vertices);
-	else {
-		glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW);
+		hexValTextboxPressed = true;
+		renderPlane = false;
+		renderSphere = false;
+
+		if(vertices.size() > 10000)
+			glset.bufferData(vertices);
+		else {
+			glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW);
+		}
 	}
 
 
