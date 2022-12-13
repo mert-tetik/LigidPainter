@@ -116,7 +116,7 @@ TextureData Texture::getTextureData(const char* path) {
 }
 ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTexture,GLFWwindow* window) {
 	ScreenPaintingReturnData screenPaintingReturnData; 
-	std::fill_n(screenTexture, (textureMaxScreenWidth/2)* (textureMaxScreenHeight/2), 0);
+	std::fill_n(screenTexture, (textureMaxScreenWidth)* (textureMaxScreenHeight), 0);
 	GlSet glset;
 
 	//Normal screen painting texture
@@ -130,7 +130,7 @@ ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTextu
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, textureMaxScreenWidth/2, textureMaxScreenHeight/2, 0, GL_RED, GL_UNSIGNED_BYTE, screenTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, textureMaxScreenWidth, textureMaxScreenHeight, 0, GL_RED, GL_UNSIGNED_BYTE, screenTexture);
 	glset.generateMipmap();
 
 
@@ -159,14 +159,14 @@ ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTextu
 	return screenPaintingReturnData;
 }
 void Texture::refreshScreenDrawingTexture(bool reduceQuality) {
-	int qualityDivider = reduceQuality+1;
+	int qualityDivider = (reduceQuality+1);
 	GlSet glset;
-	GLubyte* screenTextureX = new GLubyte[(textureMaxScreenWidth/qualityDivider) * (textureMaxScreenHeight/qualityDivider) * 3];//Deleted
-	std::fill_n(screenTextureX, (textureMaxScreenWidth/qualityDivider) * (textureMaxScreenHeight/qualityDivider) * 3, 0);
+	GLubyte* screenTextureX = new GLubyte[(textureMaxScreenWidth/qualityDivider) * (textureMaxScreenHeight/qualityDivider)];
+	std::fill_n(screenTextureX, (textureMaxScreenWidth/qualityDivider) * (textureMaxScreenHeight/qualityDivider), 0);
 	glset.activeTexture(GL_TEXTURE4);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, textureMaxScreenWidth/qualityDivider, textureMaxScreenHeight/qualityDivider, 0, GL_RED, GL_UNSIGNED_BYTE, screenTextureX);
 	glset.generateMipmap();
-	delete(screenTextureX);
+	delete[] screenTextureX;
 
 	//Mirrored
 	GLubyte* screenTextureM = new GLubyte[1080 * 1080];//Deleted
@@ -174,7 +174,7 @@ void Texture::refreshScreenDrawingTexture(bool reduceQuality) {
 	glset.activeTexture(GL_TEXTURE3);
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1080,1080, GL_RED, GL_UNSIGNED_BYTE, screenTextureM); //Refresh Screen Texture
 	glset.generateMipmap();
-	delete(screenTextureM);
+	delete[] screenTextureM;
 }
 GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData) { //rotationValue = rotationBarValue
 	GlSet glset;

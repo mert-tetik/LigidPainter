@@ -52,13 +52,13 @@ GLFWwindow* window;
 //TODO : Check if the same uv coordinate is painted
 //TODO : Import settings
 //TODO : Show message box if files will be replaced 
-//TODO : Delete unnecessary uniforms
-//TODO : Use a struct for slide bar values
-//TODO : Specialized vao for each shader
 //TODO : A texture for each material  
-//TODO : Reduce GPU Usage
 //TODO : Take screen hover pixel once the color picker is clicked
-//TODO : Reduce mask quality once auto fill is used
+
+//TODO : Reduce GPU Usage
+//TODO : Specialized vao for each shader
+
+//TODO : Use a struct for slide bar values
 
 
 
@@ -248,7 +248,8 @@ int textBoxActiveChar = 6;
 bool colorpickerHexValTextboxValChanged = true;
 
 
-bool reduceScreenPaintingQuality = true;
+bool reduceScreenPaintingQuality = false;
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
 	//------------------TEXT------------------
@@ -365,18 +366,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		Texture txtr;
 		if(paintingFillNumericModifierVal == 10){
 			paintingFillNumericModifierVal = 1;
-			reduceScreenPaintingQuality = false;
 		}
 		else if(paintingFillNumericModifierVal == 1){
 			paintingFillNumericModifierVal = 10;
-			reduceScreenPaintingQuality = true;
 		}
 		else{
 			paintingFillNumericModifierVal = 10;
-			reduceScreenPaintingQuality = true;
 		}
-		brushValChanged = true;
-		txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
 	}
 
 	LigidPainter lp;
@@ -432,8 +428,9 @@ OutShaderData outShaderData;
 int screenWidth;
 int screenHeight;
 
-	Model model;
+Model model;
 
+bool paintingHold = false;
 
 bool LigidPainter::run()
 {
@@ -518,7 +515,7 @@ bool LigidPainter::run()
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 
 	//Screen Texture
-	GLubyte* screenTexture = new GLubyte[(windowData.windowMaxWidth/2) * (windowData.windowMaxHeight/2)];
+	GLubyte* screenTexture = new GLubyte[(windowData.windowMaxWidth) * (windowData.windowMaxHeight)];
 	ScreenPaintingReturnData screenPaintingReturnData; 
 
 	screenPaintingReturnData = txtr.createScreenPaintTexture(screenTexture,window);
@@ -671,11 +668,32 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed){
+			int differenceBetweenMousePoints = glm::distance(glm::vec2(mouseXpos, mouseYpos), glm::vec2(lastMouseXpos, lastMouseYpos));
+
+
+			if(differenceBetweenMousePoints && !reduceScreenPaintingQuality){
+				cout << "reduced" << '\n';
+				reduceScreenPaintingQuality = true;
+				paintingHold = true;
+				brushValChanged = true;
+				txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
+			}
+			if(!differenceBetweenMousePoints && reduceScreenPaintingQuality &&!paintingHold){
+				cout << "not reduced" << '\n';
+				reduceScreenPaintingQuality = false;
+				brushValChanged = true;
+				txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
+			}
+			
 			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData,model);
 			brushValChanged = false;
 			drawingCount = 0;
 			paintingMode = true;
 		}
+		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
+			paintingHold = false;
+		}
+
 		if(drawingCount > drawingSpacing)
 			drawingCount = 0;
 		panelChanging = false;
@@ -1381,15 +1399,6 @@ void LigidPainter::paintingFillNumericModifier(bool p, bool n){
 		paintingFillNumericModifierVal++;
 	if(n && paintingFillNumericModifierVal > 1)
 		paintingFillNumericModifierVal--;
-	
-	if(paintingFillNumericModifierVal < 8){
-		reduceScreenPaintingQuality = false;
-	}
-	else{
-		reduceScreenPaintingQuality = true;
-	}
-	brushValChanged = true;
-	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
 }
 void LigidPainter::maskPanelSlider(float yOffset,int screenSizeY){
 	Utilities util;

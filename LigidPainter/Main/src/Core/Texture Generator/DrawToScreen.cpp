@@ -37,7 +37,10 @@ double lastMouseYPosIn = 0;
 
 bool addToScreenMaskTxtr = true;
 
-void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs programs,int maxScreenWidth,int maxScreenHeight,bool reduceScreenPaintingQuality,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData outShaderData,Model &model) {
+void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs& programs,int maxScreenWidth,int maxScreenHeight,bool reduceScreenPaintingQuality,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model) {
+	
+	//TODO : Remove path parameter
+	
 	Texture texture;
 	Render render;
 
@@ -80,8 +83,6 @@ void TextureGenerator::drawToScreen(GLFWwindow* window, string path, unsigned in
 	}
 	if (lastMouseXPosIn - mouseXposIn != 0 || lastMouseYPosIn - mouseYposIn != 0) {
 		
-		//TODO : Reduce the mask value in the for loop
-
 		//----------------------PAINTING----------------------\\
 		
 		int reduceTheDifference = 21 - (paintingFillNumericModifierVal*2);
