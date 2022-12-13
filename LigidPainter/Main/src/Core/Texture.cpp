@@ -295,8 +295,8 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 	glset.useBlurShader(txtrPrograms.blurProgram,blurShaderData);
 
 	//Horizontal Blur
-	glset.uniform1i(9, "isRenderVerticalBlur", 0); 
-	glset.uniform1i(9, "inputTexture", 12); 
+	glset.uniform1i(txtrPrograms.blurProgram, "isRenderVerticalBlur", 0); 
+	glset.uniform1i(txtrPrograms.blurProgram, "inputTexture", 12); 
 
 	if(renderTiny)
 		glset.drawArrays(cornerVerticesQrtr, false);
@@ -340,10 +340,6 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 
 
 	ui.setViewportBgColor();
-	glset.uniform1i(txtrPrograms.uiProgram, "renderMaskBrush", 0);
-	glset.uniform1i(txtrPrograms.uiProgram, "isTwoDimensional", 0);
-	glset.uniform1i(txtrPrograms.uiProgram, "isRenderTextureModeV", 0);
-	glset.uniform1i(txtrPrograms.uiProgram, "isRenderTextureMode", 0);
 	glset.bindFramebuffer(0);
 	glViewport(-(textureMaxScreenWidth - screenSize_x)/2, -(textureMaxScreenHeight - screenSize_y), textureMaxScreenWidth, textureMaxScreenHeight);
 

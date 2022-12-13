@@ -59,7 +59,7 @@ GLFWwindow* window;
 //TODO : Reduce GPU Usage
 //TODO : Take screen hover pixel once the color picker is clicked
 //TODO : Reduce mask quality once auto fill is used
-//TODO : Fix shortcuts
+
 
 
 //GL_TEXTURE0 = Albedo texture
@@ -503,8 +503,6 @@ bool LigidPainter::run()
 
 
 
-	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-	glset.uniform1i(programs.uiProgram, "uvMask", 7);
 	
 	glUseProgram(programs.iconsProgram);
 	glset.uniform1i(programs.iconsProgram, "icon", 6);
@@ -512,19 +510,9 @@ bool LigidPainter::run()
 
 	Utilities util;
 
-	glset.uniform3fv(programs.uiProgram, "lightPos", lightPos);
-	glset.uniform1f(programs.uiProgram, "material.shininess", 32.0f);
-	glset.uniform1i(programs.uiProgram, "screenMaskTexture", 4);
-	glset.uniform1i(programs.uiProgram, "mirroredScreenMaskTexture", 3);
 	glset.uniform3fv(programs.uiProgram,"textColor",colorData.textColor);
-	glset.uniform1i(programs.uiProgram, "material.diffuse", 0);
-	glset.uniform1i(programs.uiProgram, "material.specular", 1);
-	glset.uniform1i(programs.uiProgram, "depthTexture", 9);
-	glset.uniform1i(programs.uiProgram, "mirroredDepthTexture", 8);
 	glset.uniform1i(programs.uiProgram, "text", 2);
 	glset.uniform1i(programs.uiProgram, "currentTexture", 0);
-
-
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
@@ -795,7 +783,7 @@ bool LigidPainter::run()
 				float messageBoxButtonColor[3] = {colorData.messageBoxButtonColor.r,colorData.messageBoxButtonColor.g,colorData.messageBoxButtonColor.r};
 
 				//show message box
-				int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,"LigidPainter will be closed. Do you want to proceed?",-0.21f,0.0f,messageBoxBackColor,messageBoxButtonColor,windowData.windowMaxWidth, screenWidth); //0 = Yes //1 = No //2 = None
+				int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,"LigidPainter will be closed. Do you want to proceed?",-0.21f,0.0f,messageBoxBackColor,messageBoxButtonColor,windowData.windowMaxWidth, screenWidth,programs.iconsProgram); //0 = Yes //1 = No //2 = None
 
 				//Process the message box input
 				if(result == 0){
@@ -1033,8 +1021,6 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatVal){
 
 	drawColor = RGBval/glm::vec3(255.0f);
 	
-	glset.uniform3fv(programs.uiProgram, "drawColor", RGBval/glm::vec3(255.0f));
-
 	if(changeHue){
 		colorBoxColorRangeBarValue = (hsvVal.r / 708.333333333f) - 0.18f; //0.195
 	}
@@ -1206,16 +1192,13 @@ void LigidPainter::mirrorXCheckBox() {
 	mirrorClick = true;
 	if (mirrorXCheckBoxChecked == false) {
 		mirrorUsed = true;
-		glset.uniform1i(programs.uiProgram, "useMirror", 1);
 		mirrorXCheckBoxChecked = true;
 		mirrorYCheckBoxChecked = false;
 		mirrorZCheckBoxChecked = false;
-		glset.uniform1i(programs.uiProgram, "verticalMirror", 0);
 		verticalMirror = false;
 	}
 	else {
 		mirrorUsed = false;
-		glset.uniform1i(programs.uiProgram, "useMirror", 0);
 		mirrorXCheckBoxChecked = false;
 	}
 }
@@ -1223,16 +1206,13 @@ void LigidPainter::mirrorYCheckBox() {
 	mirrorClick = true;
 	if (mirrorYCheckBoxChecked == false) {
 		mirrorUsed = true;
-		glset.uniform1i(programs.uiProgram, "useMirror", 1);
 		mirrorYCheckBoxChecked = true;
 		mirrorXCheckBoxChecked = false;
 		mirrorZCheckBoxChecked = false;
-		glset.uniform1i(programs.uiProgram, "verticalMirror", 1);
 		verticalMirror = true;
 	}
 	else {
 		mirrorUsed = false;
-		glset.uniform1i(programs.uiProgram, "useMirror", 0);
 		mirrorYCheckBoxChecked = false;
 	}
 }
@@ -1240,16 +1220,13 @@ void LigidPainter::mirrorZCheckBox() {
 	mirrorClick = true;
 	if (mirrorZCheckBoxChecked == false) {
 		mirrorUsed = true;
-		glset.uniform1i(programs.uiProgram, "useMirror", 1);
 		mirrorZCheckBoxChecked = true;
 		mirrorYCheckBoxChecked = false;
 		mirrorXCheckBoxChecked = false;
-		glset.uniform1i(programs.uiProgram, "verticalMirror", 0);
 		verticalMirror = false;
 	}
 	else {
 		mirrorUsed = false;
-		glset.uniform1i(programs.uiProgram, "useMirror", 0);
 		mirrorZCheckBoxChecked = false;
 	}
 }

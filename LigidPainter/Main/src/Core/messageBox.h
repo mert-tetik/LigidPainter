@@ -10,7 +10,7 @@ bool noButtonClickMsgBox = true;
 bool clickTakenMsgBox = false;
 
 
-int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcursor* defaultCursor,GLFWcursor* buttonHoverCursor,unsigned int icon,unsigned int uiProgram,const char * text, float textXpos,float textYpos,float backColor[3],float buttonColor[3],float renderMaxScreenWidth,float screenSizeX){
+int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcursor* defaultCursor,GLFWcursor* buttonHoverCursor,unsigned int icon,unsigned int uiProgram,const char * text, float textXpos,float textYpos,float backColor[3],float buttonColor[3],float renderMaxScreenWidth,float screenSizeX,unsigned int iconsProgram){
     UserInterface ui;
 	ColorData colorData;
 	int result = 2;
@@ -26,6 +26,8 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
     buttonColorVec.b = buttonColor[2];
 
 	float screenGapX = ((float)renderMaxScreenWidth - (float)screenSizeX)/(((float)renderMaxScreenWidth)/2.0f)/2.0f; 
+
+	glUseProgram(uiProgram);
 
 	//Panel
 	ui.box(0.00f, 0.04f, -0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);//Load model button
@@ -76,11 +78,13 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
 		result = 1; //No button pressed
 	}
 
-	//LigidPainter icon
-	ui.iconBox(0.04f,0.07f,0.0f,0.15f,1,icon,0,colorData.iconColor,colorData.iconColorHover);
-
 	//Text
 	ui.renderText(uiProgram, text, textXpos, textYpos , 0.00022f);
+
+	//LigidPainter icon
+	glUseProgram(iconsProgram);
+	ui.iconBox(0.04f,0.07f,0.0f,0.15f,1,icon,0,colorData.iconColor,colorData.iconColorHover);
+
 
 	
 	return result;	 //0 = Yes , 1 = No , 2 = skip/none

@@ -159,36 +159,36 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 	uiOut.maskPanelMaskClicked = false;
 	uiOut.maskPanelMaskHover = false;
 
-	gl.uniform1i(renderPrograms.uiProgram, "isTwoDimensional", 1);
-	gl.uniform1i(renderPrograms.uiProgram, "is2D", 1);
-
 	float screenGapX = ((float)renderMaxScreenWidth - screenSizeX)/(((float)renderMaxScreenWidth)/2.0f)/2.0f; 
 
 	//Panel
-	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){
+	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
 		ui.panel(renderData.panelLoc-screenGapX , 0);
 
 		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
-		glUseProgram(renderPrograms.iconsProgram);
-		gl.uniformMatrix4fv(12, "Projection", projection);//TODO
-		glUseProgram(renderPrograms.uiProgram);
-		gl.uniformMatrix4fv(3, "TextProjection", projection);
 
+		glUseProgram(renderPrograms.uiProgram);
+		gl.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
 		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.8f);//Model Panel
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.795f,0.9,icons.TDModel,0,colorData.iconColor,colorData.iconColorHover);
 		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.72f);//Texture Panel
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.715f,0.9,icons.ImportTexture,0,colorData.iconColor,colorData.iconColorHover);
 		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.64f);//Painting Panel
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.635f,0.9,icons.Painting,0,colorData.iconColor,colorData.iconColorHover);//Dropper
 		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.56f);//Export Panel
+
+		glUseProgram(renderPrograms.iconsProgram);
+		gl.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.795f,0.9,icons.TDModel,0,colorData.iconColor,colorData.iconColorHover);
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.715f,0.9,icons.ImportTexture,0,colorData.iconColor,colorData.iconColorHover);
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.635f,0.9,icons.Painting,0,colorData.iconColor,colorData.iconColorHover);
 		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX, 0.555f,0.9,icons.Export,0,colorData.iconColor,colorData.iconColorHover);
+
+		glUseProgram(renderPrograms.uiProgram);
 	}
 	else{
 		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 		glUseProgram(renderPrograms.iconsProgram);
-		gl.uniformMatrix4fv(12, "Projection", projection);//TODO
+		gl.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);//TODO
 		glUseProgram(renderPrograms.uiProgram);
-		gl.uniformMatrix4fv(3, "TextProjection", projection);
+		gl.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
 	}	
 
 
@@ -228,10 +228,11 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 
 
 	if (panelData.paintingPanelActive){
-
+		glUseProgram(renderPrograms.uiProgram); 
 		ui.checkBox(renderData.panelLoc- 0.16f- screenGapX, 0.9f, "X", colorData.checkBoxColor, uidata.mirrorXCheckBoxEnter, uidata.mirrorXCheckBoxPressed); //X mirror checkbox
 		ui.checkBox(renderData.panelLoc- 0.10f- screenGapX, 0.9f, "Y", colorData.checkBoxColor, uidata.mirrorYCheckBoxEnter, uidata.mirrorYCheckBoxPressed); //Z mirror checkbox
 		ui.checkBox(renderData.panelLoc- 0.04f- screenGapX, 0.9f, "Z", colorData.checkBoxColor, uidata.mirrorZCheckBoxEnter, uidata.mirrorZCheckBoxPressed); //Y mirror checkbox
+		glUseProgram(renderPrograms.iconsProgram); 
 		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 0.09f- screenGapX,0.95f,0.9,icons.Mirror,0,colorData.iconColor,colorData.iconColorHover);
 	}
 
@@ -243,23 +244,24 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 		centerSum = 0;
 		projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 		glUseProgram(renderPrograms.iconsProgram);
-		gl.uniformMatrix4fv(12, "Projection", projection);
+		gl.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
 		glUseProgram(renderPrograms.uiProgram);
-		gl.uniformMatrix4fv(3, "TextProjection", projection);
+		gl.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
 	}
 	else {
 		centerDivider = 1.0f;
 		centerSum = 0.15f;
 		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 		glUseProgram(renderPrograms.iconsProgram);
-		gl.uniformMatrix4fv(12, "Projection", projection);
+		gl.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
 		glUseProgram(renderPrograms.uiProgram);
-		gl.uniformMatrix4fv(3, "TextProjection", projection);
+		gl.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
 	}
 
 
 
 	if (panelData.modelPanelActive) { //Other
+		glUseProgram(renderPrograms.uiProgram); 
 		//File path textbox
 		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0);
 		ui.renderText(renderPrograms.uiProgram, "File Path", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.64f, 0.00022f);
@@ -281,6 +283,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 		ui.box(0.06f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.2f-0.1f, "Custom", colorData.buttonColor, 0.032f, false, false, 0.9f, 10, colorData.buttonColorHover, customModelMixVal);//Load custom model button
 	}
 	if (panelData.modelPanelActive) { //Icons
+		glUseProgram(renderPrograms.iconsProgram); 
 		//File path textbox
 		ui.iconBox(0.020f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f,0.6f,1,icons.Folder,0,colorData.iconColor,colorData.iconColorHover);
 		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX,0.0-0.1f,0.99,icons.Panel,0,colorData.iconColor,colorData.iconColorHover);
@@ -294,6 +297,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 
 
 	if (panelData.texturePanelActive) {
+		glUseProgram(renderPrograms.uiProgram); 
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.8f, "Add Texture", colorData.buttonColor, 0.048f, false, false, 0.9f, 10, colorData.buttonColorHover, addAlbedoTextureMixVal); //Add albedo texture button
 	}
 
@@ -302,6 +306,8 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 
 
 	if (panelData.paintingPanelActive) {
+		glUseProgram(renderPrograms.uiProgram); 
+
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.9f, "Add Mask Texture", colorData.buttonColor, 0.075f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
 		
 
@@ -372,6 +378,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 	}
 
 	if (panelData.paintingPanelActive) { //Icons
+		glUseProgram(renderPrograms.iconsProgram); 
 
 		#pragma region brushMaskPanel
 		float maskXpos = 0.0f;
@@ -399,27 +406,25 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 				-0.03f + position_x,  std::min(std::max(0.06f + position_y,0.55f),0.8f), 1,0,upBotDifMin*10,0,0,0  // top left
 			};
 
-			glUseProgram(renderPrograms.iconsProgram);
-			gl.uniform1i(12,"isMaskIcon",1);
+			gl.uniform1i(renderPrograms.iconsProgram,"isMaskIcon",1);
 			if(maskTextures[i] == currentBrushMaskTexture){
-				gl.uniform3fv(12,"iconColor",colorData.chosenBrushMaskTextureColor);
+				gl.uniform3fv(renderPrograms.iconsProgram,"iconColor",colorData.chosenBrushMaskTextureColor);
 			}
 			else{
-				gl.uniform3fv(12,"iconColor",colorData.brushMaskIconColor);
+				gl.uniform3fv(renderPrograms.iconsProgram,"iconColor",colorData.brushMaskIconColor);
 			}
-			gl.uniform1f(12,"iconMixVal",0);
+			gl.uniform1f(renderPrograms.iconsProgram,"iconMixVal",0);
 			gl.activeTexture(GL_TEXTURE6);
 			gl.bindTexture(maskTextures[i]);
 			gl.drawArrays(buttonCoorSq,false);
-			gl.uniform1i(12,"isMaskIcon",0);
-			glUseProgram(renderPrograms.uiProgram);
-			//TODO : Check once the mouse pos changed
+			gl.uniform1i(renderPrograms.iconsProgram,"isMaskIcon",0);
+
+			
 			if(ui.isMouseOnCoords(renderData.window,mouseXpos+screenGapX*(renderMaxScreenWidth/2),mouseYpos,buttonCoorSq,panelData.movePanel)){
 				if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
 					gl.activeTexture(GL_TEXTURE1);
 					gl.bindTexture(maskTextures[i]);
 					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData);
-					gl.uniform1i(renderPrograms.uiProgram, "isTwoDimensional", 1);
 					uiOut.maskPanelMaskClicked = true;
 					currentBrushMaskTexture = maskTextures[i];
 				}
@@ -431,7 +436,6 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 		}
 		#pragma endregion brushMaskPanel
 
-		gl.uniform1i(renderPrograms.uiProgram, "isMaskPanelDisplay", 0);
 
 		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.91f,0.9,icons.dropperIcon,dropperMixVal,colorData.iconColor,colorData.iconColorHover);
 	}
@@ -444,20 +448,23 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 
 
 	if (panelData.exportPanelActive) { //Others
+		glUseProgram(renderPrograms.uiProgram); 
+
 		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.6f, renderData.exportFolder, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0); //Path textbox
 		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.5f, exportFileName,colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, exportFileNameTextBoxMixVal); //File name textbox
 
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, 0.4f, "", colorData.checkBoxColor, uidata.exportExtJPGCheckBoxEnter, uidata.exportExtJPGCheckBoxPressed); //jpg checkbox
-		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.06f, 0.4f,0.9,icons.JpgFile,0,colorData.iconColor,colorData.iconColorHover);
 
 		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.05f, 0.4f, "", colorData.checkBoxColor, uidata.exportExtPNGCheckBoxEnter, uidata.exportExtPNGCheckBoxPressed); //png checkbox
-		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f, 0.4f,0.9,icons.PngFile,0,colorData.iconColor,colorData.iconColorHover);
 
 		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.2f, "Download", colorData.buttonColor, 0.045f, false, false, 0.9f, 10, colorData.buttonColorHover, exportDownloadButtonMixVal); //Download Button
 	}
 	if (panelData.exportPanelActive) { //Icons
+		glUseProgram(renderPrograms.iconsProgram); 
+
 		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.06f, 0.4f,0.9,icons.JpgFile,0,colorData.iconColor,colorData.iconColorHover);
 		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f, 0.4f,0.9,icons.PngFile,0,colorData.iconColor,colorData.iconColorHover);
+
 	}
 
 
@@ -470,9 +477,9 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 	glUseProgram(renderPrograms.iconsProgram);
-	gl.uniformMatrix4fv(12, "Projection", projection);//TODO : UNIFORMS USING CONSTANT VALUE
+	gl.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
 	glUseProgram(renderPrograms.uiProgram);
-	gl.uniformMatrix4fv(3, "TextProjection", projection);
+	gl.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
 	uiOut.currentBrushMaskTxtr = currentBrushMaskTexture;
 	return uiOut;
 }
@@ -911,7 +918,6 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 	glViewport(-(renderMaxScreenWidth - screenSizeX)/2, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
 
 	glUseProgram(renderPrograms.uiProgram);
-	gl.uniform3f(renderPrograms.uiProgram, "drawColor", colorBoxPixel[0] / 255.0f, colorBoxPixel[1] / 255.0f, colorBoxPixel[2] / 255.0f);
 
 
 	//Get color value to the color vec
