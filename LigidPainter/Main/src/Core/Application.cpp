@@ -43,7 +43,7 @@ WindowData windowData;
 GLFWwindow* window;
 
 
-#ifdef _WIN32
+#ifdef _WIN32 || _WIN64 
     char folderDistinguisher = '\\';
 #else
 	char folderDistinguisher = '/'; 
@@ -346,7 +346,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	bool shiftTabAltRelease =  glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_RELEASE;
 
 	//Ctrl + x use negative checkbox
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_X,NULL,NULL) && panelData.paintingPanelActive && action == 0 && shiftTabAltRelease){
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_X,NULL,NULL) && panelData.paintingPanelActive && action == 1 && shiftTabAltRelease){
 		if(useNegativeForDrawing){
 			useNegativeForDrawing = false;
 		}
@@ -356,12 +356,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 
 	//Ctrl + h change texture demonstrator's state
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_H,NULL,NULL) && action == 0 && shiftTabAltRelease){
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_H,NULL,NULL) && action == 1 && shiftTabAltRelease){
 		textureDemonstratorButtonPressClicked = true;
 	}
 
 	//Ctrl + b change fill between numeric modifier's state
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_B,NULL,NULL) && action == 0 && shiftTabAltRelease && panelData.paintingPanelActive){
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_B,NULL,NULL) && action == 1 && shiftTabAltRelease && panelData.paintingPanelActive){
 		Texture txtr;
 		if(paintingFillNumericModifierVal == 10){
 			paintingFillNumericModifierVal = 1;
@@ -381,19 +381,21 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	LigidPainter lp;
 	//Ctrl + Tab + q switch to model panel
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_Q,NULL) && action == 0){
+
+
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_Q,NULL) && action == 1){
 		lp.modelPanelButton();
 	}
 	//Ctrl + Tab + w switch to texture panel
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_W,NULL) && action == 0){
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_W,NULL) && action == 1){
 		lp.texturePanelButton();
 	}
 	//Ctrl + Tab + t switch to model panel
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_T,NULL) && action == 0){
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_T,NULL) && action == 1){
 		lp.paintingPanelButton();
 	}
 	//Ctrl + Tab + r switch to model panel
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_R,NULL) && action == 0){
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_R,NULL) && action == 1){
 		lp.exportPanelButton();
 	}
 }
@@ -814,7 +816,7 @@ bool LigidPainter::run()
 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model);
 		double lastTime = glfwGetTime();
 
-		cout <<  (lastTime - firstTime) * 1000  << '\n';
+		//cout <<  (lastTime - firstTime) * 1000  << '\n';
 
 		drawColor = renderOut.colorBoxVal/255.0f;//TODO : Once the value changed
 		colorBoxValChanged = false;

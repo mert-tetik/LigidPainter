@@ -219,28 +219,3 @@ bool Utilities::shortCut(GLFWwindow* window,unsigned int input1,unsigned int inp
 
 	return result;
 }
-
-bool Utilities::shortCutRelease(GLFWwindow* window,unsigned int input1,unsigned int input2,unsigned int input3,unsigned int input4){ //Max 4 inputs
-
-	bool state1 = true;
-	bool state2 = true;
-	bool state3 = true;
-	bool state4 = true;
-
-	if(input1 != NULL){
-		if(glfwGetKey(window, input1) == GLFW_RELEASE){state1 = true;}else{state1 = false;}
-	}
-	if(input2 != NULL){
-		if(glfwGetKey(window, input2) == GLFW_RELEASE){state2 = true;}else{state2 = false;}
-	}
-	if(input3 != NULL){
-		if(glfwGetKey(window, input3) == GLFW_RELEASE){state3 = true;}else{state3 = false;}
-	}
-	if(input4 != NULL){
-		if(glfwGetKey(window, input4) == GLFW_RELEASE){state4 = true;}else{state4 = false;}
-	}
-
-	bool result = state1 || state2 || state3 || state4;
-
-	return result;
-}
