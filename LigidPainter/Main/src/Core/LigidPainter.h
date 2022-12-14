@@ -93,6 +93,7 @@ struct OutShaderData{
 	int whiteRendering;
 	int uvMask;
 	int interpretWithUvMask;
+	int paintedTxtrMask;
 };
 
 

@@ -21,6 +21,8 @@ uniform vec3 mirroredViewPos;
 uniform int whiteRendering;
 uniform sampler2D uvMask;
 uniform int interpretWithUvMask;
+uniform int renderPaintedTxtrMask;
+uniform sampler2D paintedTxtrMask;
 
 
 in vec2 TexCoords;
@@ -39,7 +41,7 @@ float linearizeDepth(float depth){
    return (2.0 * near * far) / (far + near -(depth * 2.0 - 1.0) *(far-near));
 }
 
-bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMirrored is true
+float isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMirrored is true
    float drawZ;
    if(!isMirrored){
       drawZ = texture2D(depthTexture, uv.xy).b;
@@ -48,6 +50,7 @@ bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMir
       drawZ = texture2D(mirroredDepthTexture, uv.xy).b; 
    }
 
+   float uvCoordVal = texture2D(paintedTxtrMask, TexCoords.xy).r;
 
    vec3 direction;
    if(isMirrored){
@@ -58,34 +61,64 @@ bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMir
    }
    float dotProd = dot(normalize(direction),normalize(Normal));
 
-      if(true){
-      return abs(drawZ - linearizeDepth(uv.z)/far) < 0.005;
+   if(abs(drawZ - linearizeDepth(uv.z)/far) < 0.005){
+      //True
+      return 2.0;
+   }
+   else if(uvCoordVal > 0.05){
+      return uvCoordVal;
+   }
+   else{
+      //False
+      return 3.0;
    }
 }
 
 
-vec3 getPaintedDiffuse(){
+
+
+
+vec3 getPaintedDiffuse(bool useColor){
       //Painting
    vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
    vec3 mirroredScreenPos = mirroredProjectedPos.xyz / mirroredProjectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
 
-   float intensity = 0.0f;
-   float mirroredIntensity = 0.0f;
-   if(isPainted(screenPos,false)) 
-   {
+   float intensity = 0.0;
+   float mirroredIntensity = 0.0;
+
+   if(isPainted(screenPos,false) <= 1.0){
+      intensity = isPainted(screenPos,false);
+   }
+   else if(isPainted(screenPos,false) == 2.0) {
       intensity = texture2D(screenMaskTexture, screenPos.xy).r;
    }
-   if(isPainted(mirroredScreenPos, true)) 
-   {
+
+
+   if(isPainted(mirroredScreenPos,false) <= 1.0){
+      mirroredIntensity = isPainted(screenPos,false);
+   }
+   else if(isPainted(mirroredScreenPos, true) == 2.0) {
       mirroredIntensity = texture2D((mirroredScreenMaskTexture), mirroredScreenPos.xy).r;
    }
    
     // ambient
    vec3 diffuseClr = vec3(texture(material.diffuse, TexCoords));
-   vec3 diffuseDrawMix = mix(diffuseClr, drawColor, intensity);
+   vec3 diffuseDrawMix;
+   if(useColor){
+       //diffuseDrawMix = abs(diffuseClr - drawColor) ;
+       diffuseDrawMix = mix(diffuseClr, drawColor, intensity);
+   }
+   else{
+
+       diffuseDrawMix = mix(vec3(0), vec3(1), intensity);
+   }
+
    vec3 mirroredDiffuseDrawMix;
    if(useMirror == 1){
-      mirroredDiffuseDrawMix = mix(diffuseDrawMix, drawColor, mirroredIntensity);
+      if(useColor)
+         diffuseDrawMix = mix(diffuseClr, drawColor, mirroredIntensity);
+      else
+         diffuseDrawMix = mix(vec3(0), vec3(1), mirroredIntensity);
    }
    else{
       mirroredDiffuseDrawMix = diffuseDrawMix;
@@ -96,6 +129,10 @@ vec3 getPaintedDiffuse(){
 
 
 void main() {
+   vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
+
+   if(renderPaintedTxtrMask == 0){
+
     if(isRenderScreenMaskMode == 0){
        if(renderMaskBrush == 1)
        {
@@ -109,8 +146,10 @@ void main() {
                //Diffuse result here
                if(interpretWithUvMask == 0){
                   if(whiteRendering == 0){
-                     vec3 paintedDiffuse = getPaintedDiffuse();
-                     color = vec4(paintedDiffuse, 1);
+                     float intensity = texture2D(paintedTxtrMask, screenPos.xy).b;
+                     vec3 diffuseClr = vec3(texture(material.diffuse, TexCoords));
+                     vec3 diffuseDrawMix = mix(diffuseClr, drawColor, intensity);
+                     color = vec4(diffuseDrawMix, 1);
                   }
                   else{
                      color = vec4(1);
@@ -147,4 +186,10 @@ void main() {
           color = texture(screenMaskTexture, vec2(TexCoords.x , 1.0 - TexCoords.y));
        }
     }
+   }
+   else{
+      //Render painted texture in black and white
+      vec3 paintedDiffuse = getPaintedDiffuse(false);
+      color = vec4(paintedDiffuse, 1);
+   }
 }

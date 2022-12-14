@@ -69,8 +69,8 @@ vec3 getPaintedDiffuse(){
    vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
    vec3 mirroredScreenPos = mirroredProjectedPos.xyz / mirroredProjectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
 
-   float intensity = 0.0f;
-   float mirroredIntensity = 0.0f;
+   float intensity = 0.0;
+   float mirroredIntensity = 0.0;
    if(isPainted(screenPos,false)) 
    {
       intensity = texture2D(screenMaskTexture, screenPos.xy).r;

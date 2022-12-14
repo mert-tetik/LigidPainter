@@ -55,6 +55,7 @@ GLFWwindow* window;
 //TODO : A texture for each material  
 //TODO : Take screen hover pixel once the color picker is clicked
 
+
 //TODO : Reduce GPU Usage
 //TODO : Specialized vao for each shader
 
@@ -73,7 +74,7 @@ GLFWwindow* window;
 //GL_TEXTURE8 = Mirrored Depth texture
 //GL_TEXTURE9 = Depth texture
 //GL_TEXTURE10 = 1080x1080 Screen Texture
-//GL_TEXTURE11 = NULL
+//GL_TEXTURE11 = Painted mask
 //GL_TEXTURE12 = Modified mask texture
 //GL_TEXTURE13 = skybox
 
@@ -509,7 +510,7 @@ bool LigidPainter::run()
 
 	glset.uniform3fv(programs.uiProgram,"textColor",colorData.textColor);
 	glset.uniform1i(programs.uiProgram, "text", 2);
-	glset.uniform1i(programs.uiProgram, "currentTexture", 0);
+	glset.uniform1i(programs.uiProgram, "currentTexture", 11);
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
@@ -611,7 +612,8 @@ bool LigidPainter::run()
 
 
 	callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue);
-
+	
+	bool firstPaintingLookUp = true;
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		//wwwglfwSwapInterval(1);
@@ -663,42 +665,7 @@ bool LigidPainter::run()
 
 
 
-		//Painting
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed) {//Used for spacing
-			drawingCount++;
-		}
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed){
-			int differenceBetweenMousePoints = glm::distance(glm::vec2(mouseXpos, mouseYpos), glm::vec2(lastMouseXpos, lastMouseYpos));
-
-
-			if(differenceBetweenMousePoints && !reduceScreenPaintingQuality){
-				cout << "reduced" << '\n';
-				reduceScreenPaintingQuality = true;
-				paintingHold = true;
-				brushValChanged = true;
-				txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
-			}
-			if(!differenceBetweenMousePoints && reduceScreenPaintingQuality &&!paintingHold){
-				cout << "not reduced" << '\n';
-				reduceScreenPaintingQuality = false;
-				brushValChanged = true;
-				txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
-			}
-			
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData,model);
-			brushValChanged = false;
-			drawingCount = 0;
-			paintingMode = true;
-		}
-		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
-			paintingHold = false;
-		}
-
-		if(drawingCount > drawingSpacing)
-			drawingCount = 0;
-		panelChanging = false;
-		lastMouseXpos = mouseXpos;
-		lastMouseYpos = mouseYpos;
+		
 
 
 
@@ -762,6 +729,7 @@ bool LigidPainter::run()
 		outShaderData.mirroredView = viewUpdateData.mirroredView;
 		outShaderData.mirroredViewPos = viewUpdateData.mirroredCameraPos;
 		outShaderData.modifiedMaskTexture = 12;
+		outShaderData.paintedTxtrMask = 11;
 		outShaderData.projection = perspectiveProjection; // 
 		outShaderData.renderDepth; //****
 		outShaderData.renderMaskBrush; //
@@ -774,6 +742,10 @@ bool LigidPainter::run()
 		outShaderData.view = viewUpdateData.view;
 		outShaderData.viewPos = viewUpdateData.cameraPos;
 
+
+
+		//Diffuse , drawingColor, mixVal
+		cout << glm::to_string(glm::mix(glm::vec3(1),glm::vec3(0),0.25)) << " && " << glm::to_string(glm::mix(glm::vec3(0),glm::vec3(1),0.25)) << '\n';
 
 		//Closing message box
 		 if(glfwWindowShouldClose(window)){
@@ -830,7 +802,46 @@ bool LigidPainter::run()
 		colorpickerHexVal = renderOut.colorpickerHexVal;
 
 
+		//Painting
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed) {//Used for spacing
+			drawingCount++;
+		}
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed){
+			int differenceBetweenMousePoints = glm::distance(glm::vec2(mouseXpos, mouseYpos), glm::vec2(lastMouseXpos, lastMouseYpos));
 
+			if(!differenceBetweenMousePoints && firstPaintingLookUp){ //TODO : Prevent running firmly
+				firstPaintingLookUp = false;
+				cout << "not reduced \n";
+				reduceScreenPaintingQuality = false;
+				brushValChanged = true;
+				txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
+			}
+			else if(differenceBetweenMousePoints && !reduceScreenPaintingQuality){
+				//firstPaintingLookUp == false;
+				cout << "reduced \n";
+				reduceScreenPaintingQuality = true;
+				paintingHold = true;
+				brushValChanged = true;
+				txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
+			}
+
+			if(firstPaintingLookUp)
+				firstPaintingLookUp = false;
+			
+			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData,model);
+			brushValChanged = false;
+			drawingCount = 0;
+			paintingMode = true;
+		}
+		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
+			firstPaintingLookUp = true;
+		}
+
+		if(drawingCount > drawingSpacing)
+			drawingCount = 0;
+		panelChanging = false;
+		lastMouseXpos = mouseXpos;
+		lastMouseYpos = mouseYpos;
 
 		//Update brush mask texture file's name once the brush mask texture changed
 		if(renderOut.maskPanelMaskClicked){

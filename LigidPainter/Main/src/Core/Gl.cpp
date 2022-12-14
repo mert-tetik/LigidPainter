@@ -477,6 +477,7 @@ void GlSet::useOutShader(unsigned int program, OutShaderData data){
 	uniform1i(program,"mirroredScreenMaskTexture",data.mirroredScreenMaskTexture);
 	uniform1i(program,"useMirror",data.useMirror);
 	uniform1i(program,"isRenderScreenMaskMode",data.isRenderScreenMaskMode);
+	uniform1i(program,"paintedTxtrMask",11);
 	uniform1i(program,"verticalMirror",data.verticalMirror);
 	uniform1i(program,"depthTexture",data.depthTexture);
 	uniform1i(program,"mirroredDepthTexture",data.mirroredDepthTexture);

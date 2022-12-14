@@ -824,8 +824,36 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 	gl.uniform1i(renderPrograms.outProgram, "isTwoDimensional", 0);
 	gl.viewport(1920, 1080);
 	gl.bindFramebuffer(FBOScreen);
+	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//Setup
+
+
+
+	gl.uniform1i(renderPrograms.outProgram,"renderPaintedTxtrMask",1);
+	gl.uniform1i(renderPrograms.outProgram, "use3d", 1);
+	//Render painted image
+	if(!renderDefault)
+		model.Draw();
+	else
+		gl.drawArrays(vertices, false);
+
+
+	GLubyte* paintedMask = new GLubyte[1920 * 1080 * 3 * sizeof(GLubyte)];
+	glReadPixels(0, 0, 1920, 1080, GL_RGB, GL_UNSIGNED_BYTE, paintedMask);
+	gl.activeTexture(GL_TEXTURE11);
+	gl.texImage(paintedMask, 1920, 1080, GL_RGB);
+	gl.generateMipmap();
+	delete[]paintedMask;
+
+
+	UserInterface ui;
+	ui.setViewportBgColor();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	gl.uniform1i(renderPrograms.outProgram,"renderPaintedTxtrMask",0);
+	gl.uniform1i(renderPrograms.outProgram, "use3d", 0);
+
+
 
 	//Render painted image
 	if(!renderDefault)
@@ -836,6 +864,7 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 
 	if (!exportImage)
 		gl.drawArrays(renderVertices, false);
+
 	GLubyte* renderedImage = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
 	glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
 	gl.activeTexture(GL_TEXTURE0);
