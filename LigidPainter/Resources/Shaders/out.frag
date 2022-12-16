@@ -34,7 +34,6 @@ in vec4 mirroredProjectedPos;
 
 out vec4 color;
 
-
 float far = 10.0;
 float near = 0.1;
 float linearizeDepth(float depth){
@@ -50,7 +49,7 @@ float isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMi
       drawZ = texture2D(mirroredDepthTexture, uv.xy).b; 
    }
 
-   float uvCoordVal = texture2D(paintedTxtrMask, TexCoords.xy).r;
+   float uvCoordVal = texture2D(paintedTxtrMask,TexCoords).r;
 
    vec3 direction;
    if(isMirrored){
@@ -78,7 +77,7 @@ float isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMi
 
 
 
-vec3 getPaintedDiffuse(bool useColor){
+vec3 getPaintedDiffuse(){
       //Painting
    vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
    vec3 mirroredScreenPos = mirroredProjectedPos.xyz / mirroredProjectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
@@ -104,21 +103,12 @@ vec3 getPaintedDiffuse(bool useColor){
     // ambient
    vec3 diffuseClr = vec3(texture(material.diffuse, TexCoords));
    vec3 diffuseDrawMix;
-   if(useColor){
-       //diffuseDrawMix = abs(diffuseClr - drawColor) ;
-       diffuseDrawMix = mix(diffuseClr, drawColor, intensity);
-   }
-   else{
-
-       diffuseDrawMix = mix(vec3(0), vec3(1), intensity);
-   }
+   
+   diffuseDrawMix = mix(diffuseClr, drawColor, intensity);
 
    vec3 mirroredDiffuseDrawMix;
    if(useMirror == 1){
-      if(useColor)
          diffuseDrawMix = mix(diffuseClr, drawColor, mirroredIntensity);
-      else
-         diffuseDrawMix = mix(vec3(0), vec3(1), mirroredIntensity);
    }
    else{
       mirroredDiffuseDrawMix = diffuseDrawMix;
@@ -129,6 +119,8 @@ vec3 getPaintedDiffuse(bool useColor){
 
 
 void main() {
+   gl_FragDepth = 0.5;
+
    vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
 
    if(renderPaintedTxtrMask == 0){
@@ -146,9 +138,7 @@ void main() {
                //Diffuse result here
                if(interpretWithUvMask == 0){
                   if(whiteRendering == 0){
-                     float intensity = texture2D(paintedTxtrMask, screenPos.xy).b;
-                     vec3 diffuseClr = vec3(texture(material.diffuse, TexCoords));
-                     vec3 diffuseDrawMix = mix(diffuseClr, drawColor, intensity);
+                     vec3 diffuseDrawMix = getPaintedDiffuse();
                      color = vec4(diffuseDrawMix, 1);
                   }
                   else{
@@ -189,7 +179,22 @@ void main() {
    }
    else{
       //Render painted texture in black and white
-      vec3 paintedDiffuse = getPaintedDiffuse(false);
-      color = vec4(paintedDiffuse, 1);
+
+        //Painting
+      vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
+
+      float intensity = 0.0;
+
+      if(isPainted(screenPos,false) == 2.0) {
+         intensity = texture2D(screenMaskTexture, screenPos.xy).r;
+      }
+
+      vec3 diffuseDrawMix;
+
+      diffuseDrawMix = mix(vec3(0), vec3(1), intensity);
+
+         gl_FragDepth = 1.0 - intensity;
+      
+      color = vec4(diffuseDrawMix,1);
    }
 }

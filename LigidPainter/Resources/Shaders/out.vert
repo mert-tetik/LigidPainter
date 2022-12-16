@@ -31,15 +31,10 @@ void main() {
    projectedPos = projection * view * vec4(aPos, 0.5); 
    mirroredProjectedPos = projection * mirroredView * vec4(aPos, 0.5); 
 
-   if(use3d == 0){
       if(isTwoDimensional == 0){
          gl_Position = renderTextureProjection * vec4(aTexCoords, 0, 1);
       }
       else{
          gl_Position = renderTrans * renderTextureProjection * vec4(aPos, 1.0);
       }
-   }
-   else{
-      gl_Position = projectedPos;
-   }
 }
