@@ -37,7 +37,7 @@ double lastMouseYPosIn = 0;
 
 bool addToScreenMaskTxtr = true;
 
-void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs& programs,int maxScreenWidth,int maxScreenHeight,bool reduceScreenPaintingQuality,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model) {
+void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs& programs,int maxScreenWidth,int maxScreenHeight,bool reduceScreenPaintingQuality,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures) {
 	
 	//TODO : Remove path parameter
 	
@@ -173,7 +173,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 		//setup
 
 		//Get texture
-		render.renderTexture(renderVerticesFlipped,1080,1080,GL_TEXTURE3,GL_RED, model, false);
+		render.renderTexture(renderVerticesFlipped,1080,1080,GL_TEXTURE3,GL_RED, model, false,albedoTextures);
 		//Get texture
 
 		//Finish

@@ -34,12 +34,22 @@ public:
 
 
     // draws the model, and thus all its meshes
-    void Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram)
+    void Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,vector<unsigned int> albedoTextures)
     {
         for(unsigned int i = 0; i < meshes.size(); i++){
-	        glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), (0.9 * (bool)(chosenMaterialIndex == i)) + 0.1);
+            
+            //glActiveTexture(GL_TEXTURE0);
+            //glBindTexture(GL_TEXTURE_2D,albedoTextures[i]);
 
-            meshes[i].Draw();
+            if(useOpacity){
+	            glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), (0.9 * (bool)(chosenMaterialIndex == i)) + 0.1);
+                meshes[i].Draw();
+            }
+            else{
+                if(i == chosenMaterialIndex)
+                    meshes[i].Draw();
+            }
+            
         }
     }
     

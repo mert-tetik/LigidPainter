@@ -51,18 +51,23 @@ GLFWwindow* window;
 
 vector<unsigned int> albedoTextures;
 
-//TODO : Check if the same uv coordinate is painted
 //TODO : Import settings
+
 //TODO : Show message box if files will be replaced 
-//TODO : A texture for each material  
-//TODO : Take screen hover pixel once the color picker is clicked
 
 
 //TODO : Reduce GPU Usage
 //TODO : Specialized vao for each shader
+//TODO : Take screen hover pixel once the color picker is clicked
+
+
+//TODO : First painting click slip
+//TODO : CTRL + Z Compatible with materials
+//TODO : Loading multiple models
+//TODO : Loading default models
+
 
 //TODO : Use a struct for slide bar values
-
 
 
 //GL_TEXTURE0 = Albedo texture
@@ -827,7 +832,7 @@ bool LigidPainter::run()
 			if(firstPaintingLookUp)
 				firstPaintingLookUp = false;
 			
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData,model);
+			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData,model,albedoTextures);
 			brushValChanged = false;
 			drawingCount = 0;
 			paintingMode = true;
@@ -1391,6 +1396,8 @@ void LigidPainter::loadModelButton() {
 			albedoTextures.push_back(albedoTexture);
 		}
 		
+		glset.activeTexture(GL_TEXTURE0);
+		glset.bindTexture(albedoTextures[0]);
 
 		glUseProgram(programs.uiProgram);
 		glBindVertexArray(VAO);
