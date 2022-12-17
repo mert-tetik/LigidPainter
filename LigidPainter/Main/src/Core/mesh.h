@@ -43,13 +43,15 @@ public:
     vector<unsigned int> indices;
     vector<TextureMs>      textures;
     unsigned int VAO;
+    std::string materialName;
 
     // constructor
-    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<TextureMs> textures)
+    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<TextureMs> textures,std::string materialName)
     {
         this->vertices = vertices;
         this->indices = indices;
         this->textures = textures;
+        this->materialName = materialName;
 
         // now that we have all the required data, set the vertex buffers and its attribute pointers.
         setupMesh();

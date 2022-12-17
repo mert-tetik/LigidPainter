@@ -21,7 +21,7 @@
 #include "stb_image.h"
 #include "stb_image_write.h"
 
-
+unsigned int currentMaterialIndex = 0;
 
 Programs renderPrograms;
 
@@ -148,7 +148,7 @@ unsigned int currentBrushMaskTexture;
 SaturationValShaderData saturationValShaderData;
 glm::vec3 hueVal;		
 
-RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons &icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,std::string &colorpickerHexVal,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData &outShaderData) {
+RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons &icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,std::string &colorpickerHexVal,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData &outShaderData, Model &model) {
 	ColorData colorData;
 	glm::mat4 projection;
 	UserInterface ui;
@@ -158,8 +158,13 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 	Texture txtr;
 	uiOut.maskPanelMaskClicked = false;
 	uiOut.maskPanelMaskHover = false;
+	uiOut.texturePanelButtonClicked = false;
+	uiOut.texturePanelButtonHover = false;
 
 	float screenGapX = ((float)renderMaxScreenWidth - screenSizeX)/(((float)renderMaxScreenWidth)/2.0f)/2.0f; 
+
+	
+
 
 	//Panel
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
@@ -186,11 +191,31 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 	else{
 		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 		glUseProgram(renderPrograms.iconsProgram);
-		gl.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);//TODO
+		gl.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
 		glUseProgram(renderPrograms.uiProgram);
 		gl.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
 	}	
 
+	if (panelData.texturePanelActive) {
+		glUseProgram(renderPrograms.uiProgram); 
+		//ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.8f, "Add Texture", colorData.buttonColor, 0.048f, false, false, 0.9f, 10, colorData.buttonColorHover, addAlbedoTextureMixVal); //Add albedo texture button
+
+		for (int i = 0; i < model.meshes.size(); i++)
+		{
+			ui.box(0.2f, 0.06f, renderData.panelLoc - screenGapX + 0.205f, 0.8f - (i * 0.15f), model.meshes[i].materialName, colorData.buttonColor, 0.048f, true, false, 0.5f, 10000, colorData.buttonColorHover, 0); 
+			
+			bool textureButtonEnter = ui.isMouseOnButton(renderData.window, 0.2f, 0.06f, renderData.panelLoc - screenGapX*2 + 0.205f,0.8f - (i * 0.15f), mouseXpos, mouseYpos,true);
+
+			if(textureButtonEnter){
+				uiOut.texturePanelButtonHover = true;
+				if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
+					currentMaterialIndex = i;
+					uiOut.texturePanelButtonClicked = true;
+				}
+			}
+		}
+		
+	}
 
 	//Panel
 
@@ -260,6 +285,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 
 
 
+
 	if (panelData.modelPanelActive) { //Other
 		glUseProgram(renderPrograms.uiProgram); 
 		//File path textbox
@@ -296,10 +322,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 
 
 
-	if (panelData.texturePanelActive) {
-		glUseProgram(renderPrograms.uiProgram); 
-		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.8f, "Add Texture", colorData.buttonColor, 0.048f, false, false, 0.9f, 10, colorData.buttonColorHover, addAlbedoTextureMixVal); //Add albedo texture button
-	}
+    //Texture Panel Was There
 
 
 
@@ -487,6 +510,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 
 
 void Render::renderModel(bool backfaceCulling, std::vector<float>& vertices,PBRShaderData &data,Model &model,bool renderDefault) {
+	glDepthFunc(GL_ALWAYS); 
     GlSet gl;
 	gl.usePBRShader(renderPrograms.PBRProgram,data);
 
@@ -497,7 +521,7 @@ void Render::renderModel(bool backfaceCulling, std::vector<float>& vertices,PBRS
 	gl.meshDataToShaders();
 	
 	if(!renderDefault)
-		model.Draw();
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram);
 	else
 		gl.drawArrays(vertices, false);
 
@@ -505,6 +529,8 @@ void Render::renderModel(bool backfaceCulling, std::vector<float>& vertices,PBRS
 	gl.disable(GL_CULL_FACE); //Disable backface culling if enabled
 
 	glUseProgram(renderPrograms.uiProgram);
+	glDepthFunc(GL_LESS); 
+
 }
 void Render::renderSkyBox(SkyBoxShaderData data) {
 	GlSet gls;
@@ -651,7 +677,7 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	if(!renderDefault)
-		model.Draw();
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram);
 	else
 		gl.drawArrays(vertices, false);
 
@@ -670,7 +696,7 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 
 	
 	if(!renderDefault)
-		model.Draw();
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram);
 	else
 		gl.drawArrays(vertices, false);
 
@@ -775,7 +801,7 @@ void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsi
     GlSet gl;
 
 	if(useModel)
-		model.Draw();
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram);
 	else
 		gl.drawArrays(vertices, false); //Render Model
 
@@ -832,9 +858,10 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 
 	gl.uniform1i(renderPrograms.outProgram,"renderPaintedTxtrMask",1);
 
-	//Render painted image
+
+	//Prevent uv stacking
 	if(!renderDefault)
-		model.Draw();
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram);
 	else
 		gl.drawArrays(vertices, false);
 
@@ -856,7 +883,7 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 
 	//Render painted image
 	if(!renderDefault)
-		model.Draw();
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram);
 	else
 		gl.drawArrays(vertices, false);
 
@@ -968,6 +995,9 @@ bool lastRenderSphere = false;
 bool lastRenderPlane = false;
 bool renderDefault = false;
 
+
+RenderOutData uiOut;
+
 RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,UiData &uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons &icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string &colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,OutShaderData &outShaderData,Model &model) {
 	GlSet gls;
 	UserInterface ui;
@@ -1043,15 +1073,12 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 		renderTextures(FBOScreen,currentModel,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,reduceScreenPaintingQuality,outShaderData,model,renderDefault);
 	}
 
+
 	renderSkyBox(skyBoxShaderData);
 	renderModel(renderData.backfaceCulling,currentModel,pbrShaderData,model,renderDefault);
 	drawAxisPointer(axisPointerShaderData);
+	uiOut = renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,colorpickerHexVal,renderData.brushBorderRangeBarValue,brushBlurVal,outShaderData,model);
 
-	RenderOutData uiOut;
-	if(!panelData.exportPanelActive){
-
-	}
-		uiOut = renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,colorpickerHexVal,renderData.brushBorderRangeBarValue,brushBlurVal,outShaderData);
 
 
 	if (colorBoxValChanged && !colorpickerHexValTextboxValChanged) { //Get value of color box
@@ -1072,6 +1099,8 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 	renderOut.mouseHoverPixel = screenHoverPixel;
 	renderOut.maskPanelMaskClicked = uiOut.maskPanelMaskClicked;
 	renderOut.maskPanelMaskHover = uiOut.maskPanelMaskHover;
+	renderOut.texturePanelButtonHover = uiOut.texturePanelButtonHover;
+	renderOut.texturePanelButtonClicked = uiOut.texturePanelButtonClicked;
 	renderOut.currentBrushMaskTxtr = uiOut.currentBrushMaskTxtr;
 	renderOut.colorpickerHexVal = util.rgbToHexGenerator(colorBoxVal);
 	renderOut.colorBoxVal = colorBoxVal;

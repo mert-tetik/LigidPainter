@@ -171,6 +171,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 		glset.uniform1i(programs.outProgram, "isTwoDimensional", 0);
 		glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 1);
 		//setup
+
 		//Get texture
 		render.renderTexture(renderVerticesFlipped,1080,1080,GL_TEXTURE3,GL_RED, model, false);
 		//Get texture

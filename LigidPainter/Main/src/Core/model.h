@@ -31,14 +31,16 @@ public:
     vector<TextureMs> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
     vector<Mesh>    meshes;
     string directory;
-    bool gammaCorrection;
 
 
     // draws the model, and thus all its meshes
-    void Draw()
+    void Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram)
     {
-        for(unsigned int i = 0; i < meshes.size(); i++)
+        for(unsigned int i = 0; i < meshes.size(); i++){
+	        glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), (0.9 * (bool)(chosenMaterialIndex == i)) + 0.1);
+
             meshes[i].Draw();
+        }
     }
     
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
@@ -78,6 +80,7 @@ private:
             // the node object only contains indices to index the actual objects in the scene. 
             // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+
             meshes.push_back(processMesh(mesh, scene));
         }
         // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
@@ -94,6 +97,7 @@ private:
         vector<Vertex> vertices;
         vector<unsigned int> indices;
         vector<TextureMs> textures;
+        std::string materialName;
 
         // walk through each of the mesh's vertices
         for(unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -147,7 +151,10 @@ private:
                 indices.push_back(face.mIndices[j]);        
         }
         // process materials
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];    
+        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];   
+
+        //cout << "Materials are : " << material->GetName().C_Str() << '\n'; 
+        
         // we assume a convention for sampler names in the shaders. Each diffuse TextureMs should be named
         // as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER. 
         // Same applies to other TextureMs as the following list summarizes:
@@ -169,7 +176,10 @@ private:
         //textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
         
         // return a mesh object created from the extracted mesh data
-        return Mesh(vertices, indices, textures);
+        materialName = material->GetName().C_Str();
+
+
+        return Mesh(vertices, indices, textures,materialName);
     }
 
     // checks all material textures of a given type and loads the textures if they're not loaded yet.

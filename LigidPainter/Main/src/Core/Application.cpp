@@ -611,7 +611,7 @@ bool LigidPainter::run()
 	glfwMakeContextCurrent(window);
 
 
-	callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue);
+	callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue,renderOut.texturePanelButtonHover);
 	
 	bool firstPaintingLookUp = true;
 	while (!glfwWindowShouldClose(window))//Main loop
@@ -744,9 +744,6 @@ bool LigidPainter::run()
 
 
 
-		//Diffuse , drawingColor, mixVal
-		cout << glm::to_string(glm::mix(glm::vec3(1),glm::vec3(0),0.25)) << " && " << glm::to_string(glm::mix(glm::vec3(0),glm::vec3(1),0.25)) << '\n';
-
 		//Closing message box
 		 if(glfwWindowShouldClose(window)){
 			bool noButtonClick = true;
@@ -862,7 +859,7 @@ bool LigidPainter::run()
 
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, enablePanelMovement,brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue,renderOut.texturePanelButtonHover);
 		}
 		mirrorClick = false;
 
@@ -1376,12 +1373,14 @@ void LigidPainter::loadModelButton() {
 	Texture txtr;
 	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
 	GlSet glset;
-	ModelLoader modelLoader;
+
 	if (modelName != "" && modelName != "sphere.default" && modelName != "plane.default") {
 		//vertices.clear();
 		//vertices = modelLoader.OBJ_getVertices(modelFilePath, autoTriangulateChecked);
 
 		model.loadModel(modelFilePath,autoTriangulateChecked);
+		
+
 		glUseProgram(programs.uiProgram);
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);

@@ -11,8 +11,8 @@ uniform int useMirror;
 uniform int isRenderScreenMaskMode;
 uniform int verticalMirror;
 uniform vec3 drawColor;
-uniform sampler2D depthTexture; //Screen rendered with depth color
-uniform sampler2D mirroredDepthTexture; //Screen rendered with depth color
+uniform sampler2D depthTexture; 
+uniform sampler2D mirroredDepthTexture; 
 uniform int renderDepth;
 uniform int renderMaskBrush;
 uniform sampler2D modifiedMaskTexture;
@@ -22,6 +22,7 @@ uniform int whiteRendering;
 uniform sampler2D uvMask;
 uniform int interpretWithUvMask;
 uniform int renderPaintedTxtrMask;
+
 uniform sampler2D paintedTxtrMask;
 
 
@@ -186,7 +187,7 @@ void main() {
       float intensity = 0.0;
 
       if(isPainted(screenPos,false) == 2.0) {
-         intensity = texture2D(screenMaskTexture, screenPos.xy).r;
+         intensity = texture2D(screenMaskTexture,  screenPos.xy).r;
       }
 
       vec3 diffuseDrawMix;

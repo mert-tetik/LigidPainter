@@ -20,6 +20,7 @@ uniform sampler2D mirroredScreenMaskTexture;
 uniform int useMirror;
 uniform vec3 drawColor;
 
+uniform float opacity;
 
 uniform sampler2D depthTexture; //Screen rendered with depth color
 uniform sampler2D mirroredDepthTexture; //Screen rendered with depth color
@@ -178,5 +179,5 @@ void main() {
     vec3 paintedDiffuse = getPaintedDiffuse();
     vec3 result = getRealisticResult(paintedDiffuse);
 
-    color = vec4(result,1);
+    color = vec4(result,opacity);
 }
