@@ -61,10 +61,10 @@ vector<unsigned int> albedoTextures;
 //TODO : Take screen hover pixel once the color picker is clicked
 
 
-//TODO : First painting click slip
 //TODO : CTRL + Z Compatible with materials
 //TODO : Loading multiple models
 //TODO : Loading default models
+//TODO : Export in a folder
 
 
 //TODO : Use a struct for slide bar values
@@ -110,6 +110,7 @@ glm::vec3 holdCameraPos; //Used to detect the camera position change
 
 //Paths
 const char* modelFilePath;
+const char* customModelFilePath;
 string albedoTexturePath = "albedoImage.png";
 string maskTexturePath = "./LigidPainter/Resources/Textures/PlainCircle.png";
 string maskTextureFile = "PlainCircle.png";
@@ -517,7 +518,7 @@ bool LigidPainter::run()
 
 	glset.uniform3fv(programs.uiProgram,"textColor",colorData.textColor);
 	glset.uniform1i(programs.uiProgram, "text", 2);
-	glset.uniform1i(programs.uiProgram, "currentTexture", 11);
+	glset.uniform1i(programs.uiProgram, "currentTexture", 0);
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
@@ -1076,8 +1077,8 @@ void LigidPainter::addMaskTextureButton() {
 	GlSet glset;
 	Texture txtr;
 	Utilities util;
-	char const* lFilterPatterns[2] = { "*.jpg", "*.png" };
-	auto maskTexturePathCheck = tinyfd_openFileDialog("Select Mask Texture", "", 2, lFilterPatterns, "", false);
+	char const* lFilterPatterns[3] = { "*.jpg", "*.png", "*.jpeg" };
+	auto maskTexturePathCheck = tinyfd_openFileDialog("Select Mask Texture", "", 3, lFilterPatterns, "", false);
 	if (maskTexturePathCheck) {
 		maskTexturePath = maskTexturePathCheck;
 		maskTextureFile = util.getLastWordBySeparatingWithChar(maskTexturePath,folderDistinguisher); 
@@ -1309,44 +1310,27 @@ void LigidPainter::addImageButton() {
 		txtr.getTexture(albedoTexturePath,1080,1080,true); //Force albedo's ratio to be 1:1
 	}
 }
+bool renderDefaultModel = false;
 void LigidPainter::addPlaneButton() {
-	renderPlane = true;
-	renderSphere = false;
+	modelFilePath = "./LigidPainter/Resources/3D Models/plane.fbx";
+	modelName = "plane.fbx";
+	renderDefaultModel = true;
+	loadModelButton();
 
-	addPlaneButtonPressed = true;
-	modelName = "plane.default";	
 }
 void LigidPainter::addSphereButton() {
-	renderPlane = false;
-	renderSphere = true;
 	addSphereButtonPressed = true;
-	modelName = "sphere.default";
-	glset.bufferData(sphereVertices);
+	modelFilePath = "./LigidPainter/Resources/3D Models/sphere.fbx";
+	modelName = "sphere.fbx";
+	renderDefaultModel = true;
+	loadModelButton();
 }
 void LigidPainter::loadCustomModel(){
 	modelName = customModelName;
-	if(modelName == ""){
-		//If model file path is null add one
-		modelFilePathTextBox();
-		if(modelFilePath){
-			loadModelButton();
-		}
-	}
-
-	if(modelName != ""){
-
-		hexValTextboxPressed = true;
-		renderPlane = false;
-		renderSphere = false;
-
-		if(vertices.size() > 10000)
-			glset.bufferData(vertices);
-		else {
-			glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW);
-		}
-	}
-
-
+	hexValTextboxPressed = true;
+	modelFilePath = customModelFilePath;
+	loadModelButton();
+	renderDefaultModel = false;
 }
 void LigidPainter::autoTriangulateCheckBox(){
 	if (autoTriangulateChecked == false)
@@ -1381,11 +1365,13 @@ void LigidPainter::loadModelButton() {
 	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
 	GlSet glset;
 
-	if (modelName != "" && modelName != "sphere.default" && modelName != "plane.default") {
+	if (modelName != "") {
 		//vertices.clear();
 		//vertices = modelLoader.OBJ_getVertices(modelFilePath, autoTriangulateChecked);
-
 		model.loadModel(modelFilePath,autoTriangulateChecked);
+
+		if(!renderDefaultModel)
+			customModelFilePath = modelFilePath;
 		
 		albedoTextures.clear();//TODO : Delete textures
 

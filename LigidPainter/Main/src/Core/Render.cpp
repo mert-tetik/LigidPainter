@@ -512,7 +512,8 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 
 
 void Render::renderModel(bool backfaceCulling, std::vector<float>& vertices,PBRShaderData &data,Model &model,bool renderDefault, vector<unsigned int> &albedoTextures) {
-	glDepthFunc(GL_ALWAYS); 
+	glDepthFunc(GL_LESS); 
+
     GlSet gl;
 	gl.usePBRShader(renderPrograms.PBRProgram,data);
 
