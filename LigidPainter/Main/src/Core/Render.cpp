@@ -23,6 +23,8 @@
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
+#include "tinyfiledialogs.h"
+
 
 unsigned int currentMaterialIndex = 0;
 
@@ -32,6 +34,7 @@ int renderMaxScreenWidth;
 int renderMaxScreenHeight;
 
 //--------------------RENDER UI --------------------\\
+
 //Button mix val
 float exportDownloadButtonMixVal = 0.0f;
 float addMaskTextureButtonMixVal = 0.0f;
@@ -39,16 +42,11 @@ float loadModelButtonMixVal = 0.0f;
 float addPanelButtonMixVal = 0.0f;
 float addSphereButtonMixVal = 0.0f;
 float addAlbedoTextureMixVal = 0.0f;
-
 float fillBetweenResNumericModifiermixValN = 0.0f;
 float fillBetweenResNumericModifiermixValP = 0.0f;
-
 float dropperMixVal = 0.0f;
-
 float exportFileNameTextBoxMixVal = 0.0f;
-
 float hexValTextboxMixVal = 0.0f;
-
 float customModelMixVal = 0.0f;
 
 void updateButtonColorMixValues(UiData uidata) {
@@ -66,13 +64,6 @@ void updateButtonColorMixValues(UiData uidata) {
 	}
 	else if (!uidata.addPlaneButtonEnter && addPanelButtonMixVal >= 0.0f) {
 		addPanelButtonMixVal -= phaseDifference;
-	}
-
-	if (uidata.addImageButtonEnter && addAlbedoTextureMixVal <= 1.0f) {
-		addAlbedoTextureMixVal += phaseDifference;
-	}
-	else if (!uidata.addImageButtonEnter && addAlbedoTextureMixVal >= 0.0f) {
-		addAlbedoTextureMixVal -= phaseDifference;
 	}
 
 	if (uidata.loadModelButtonEnter && loadModelButtonMixVal <= 1.0f) {
@@ -102,12 +93,14 @@ void updateButtonColorMixValues(UiData uidata) {
 	else if (!uidata.paintingFillNumericModifierNEnter && fillBetweenResNumericModifiermixValN >= 0.0f) {
 		fillBetweenResNumericModifiermixValN -= phaseDifference;
 	}
+
 	if (uidata.paintingFillNumericModifierPEnter && fillBetweenResNumericModifiermixValP <= 1.0f) {
 		fillBetweenResNumericModifiermixValP += phaseDifference;
 	}
 	else if (!uidata.paintingFillNumericModifierPEnter && fillBetweenResNumericModifiermixValP >= 0.0f) {
 		fillBetweenResNumericModifiermixValP -= phaseDifference;
 	}
+
 	if (uidata.dropperEnter && dropperMixVal <= 1.0f) {
 		dropperMixVal += phaseDifference;
 	}
@@ -145,14 +138,13 @@ float orgTextureDemonstratorHeight = 0.8f;
 bool changeTextureDemonstrator;
 
 
-
 unsigned int currentBrushMaskTexture;
 
 
 SaturationValShaderData saturationValShaderData;
 glm::vec3 hueVal;		
 
-RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons &icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,std::string &colorpickerHexVal,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> albedoTextures) {
+RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,bool textureDemonstratorButtonPressClicked,Icons &icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,std::string &colorpickerHexVal,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures) {
 	ColorData colorData;
 	glm::mat4 projection;
 	UserInterface ui;
@@ -169,13 +161,15 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 
 	
 
-
 	//Panel
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
+		//If message box is not active
 		ui.panel(renderData.panelLoc-screenGapX , 0);
 
+		//Projection that is used for panel (Use that projection if things will move with panel (and will not be centered) or will be moved freely)
 		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 
+		//Panel changing buttons
 		glUseProgram(renderPrograms.uiProgram);
 		gl.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
 		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.8f);//Model Panel
@@ -183,6 +177,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.64f);//Painting Panel
 		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.56f);//Export Panel
 
+		//Panel changing button's icons
 		glUseProgram(renderPrograms.iconsProgram);
 		gl.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
 		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.795f,0.9,icons.TDModel,0,colorData.iconColor,colorData.iconColorHover);
@@ -193,6 +188,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 		glUseProgram(renderPrograms.uiProgram);
 	}
 	else{
+		//If message box is active
 		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 		glUseProgram(renderPrograms.iconsProgram);
 		gl.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
@@ -202,31 +198,65 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 
 	if (panelData.texturePanelActive) {
 		glUseProgram(renderPrograms.uiProgram); 
-		//ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.8f, "Add Texture", colorData.buttonColor, 0.048f, false, false, 0.9f, 10, colorData.buttonColorHover, addAlbedoTextureMixVal); //Add albedo texture button
 
-
-		for (int i = 0; i < model.meshes.size(); i++)
+		for (int i = 0; i < model.meshes.size(); i++)//Render buttons
 		{
-			ui.box(0.2f, 0.06f, renderData.panelLoc - screenGapX + 0.205f, 0.8f - (i * 0.15f), model.meshes[i].materialName, colorData.buttonColor, 0.048f, true, false, 0.5f, 10000, colorData.buttonColorHover, 0); 
+			//Buttons
+			ui.box(0.03f, 0.06f, renderData.panelLoc - screenGapX + 0.3f, 0.8f - (i * 0.125f), "", colorData.buttonColorHover, 0.048f, true, false, 0.6f, 10000, colorData.buttonColorHover, 0); 
+			ui.box(0.2f, 0.06f, renderData.panelLoc - screenGapX + 0.205f, 0.8f - (i * 0.125f), model.meshes[i].materialName, colorData.buttonColor, 0.048f, true, false, 0.5f, 10000, colorData.buttonColorHover, 0); 
 			
-			bool textureButtonEnter = ui.isMouseOnButton(renderData.window, 0.2f, 0.06f, renderData.panelLoc - screenGapX*2 + 0.205f,0.8f - (i * 0.15f), mouseXpos, mouseYpos,true);
-
+			//Check if mouse is entered the related button
+			bool textureButtonEnter = ui.isMouseOnButton(renderData.window, 0.2f, 0.06f, renderData.panelLoc - screenGapX*2 + 0.205f,0.8f - (i * 0.125f), mouseXpos, mouseYpos,true);
+			bool textureAddButtonEnter = ui.isMouseOnButton(renderData.window, 0.03f, 0.06f, renderData.panelLoc - screenGapX*2 + 0.3f,0.8f - (i * 0.125f), mouseXpos, mouseYpos,true);
+			
 			if(textureButtonEnter){
+				//Hover
 				uiOut.texturePanelButtonHover = true;
 				if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
+					//Pressed
 					currentMaterialIndex = i;
 					uiOut.texturePanelButtonClicked = true;
-						gl.activeTexture(GL_TEXTURE0);
-						gl.bindTexture(albedoTextures[currentMaterialIndex]);
+
+					//Bind the related texture
+					gl.activeTexture(GL_TEXTURE0);
+					gl.bindTexture(albedoTextures[currentMaterialIndex]);
+				}
+			}
+			if(textureAddButtonEnter){
+				//Hover
+				//uiOut.texturePanelButtonHover = true;
+				if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
+					//Pressed
+					//uiOut.texturePanelButtonClicked = true;
+					currentMaterialIndex = i;
+
+					//Bind the related texture
+					gl.activeTexture(GL_TEXTURE0);
+					gl.bindTexture(albedoTextures[currentMaterialIndex]);
+
+					//Load texture
+					Texture txtr;
+					//Filters
+					char const* lFilterPatterns[2] = { "*.jpg", "*.png" };
+					//File dialog
+					auto albedoPathCheck = tinyfd_openFileDialog("Select Image", "", 2, lFilterPatterns, "", false);
+
+					if (albedoPathCheck) {
+						std::string albedoTexturePath = albedoPathCheck;
+
+						//Replace the textures
+						glDeleteTextures(1,&albedoTextures[i]);
+						albedoTextures[i] =	txtr.getTexture(albedoTexturePath,1080,1080,true); //Force albedo's ratio to be 1:1
+					}
 				}
 			}
 		}
 		
 	}
 
-	//Panel
 
 
+	//Texture demonstrator transition animation
 	if(textureDemonstratorButtonPressClicked){
 		if(changeTextureDemonstrator){
 			changeTextureDemonstrator = false;
@@ -256,10 +286,15 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 			changeTextureDemonstratorHeight = orgTextureDemonstratorHeight;
 		}
 	}
+	//Texture demonstrator
 	ui.textureDemonstrator(changeTextureDemonstratorWidth,changeTextureDemonstratorHeight,textureDemonstratorButtonPosX+screenGapX,textureDemonstratorButtonPosY,1.0f); 
 
 
+
+
+
 	if (panelData.paintingPanelActive){
+		//Mirror checkboxes which uses the panel's projection
 		glUseProgram(renderPrograms.uiProgram); 
 		ui.checkBox(renderData.panelLoc- 0.16f- screenGapX, 0.9f, "X", colorData.checkBoxColor, uidata.mirrorXCheckBoxEnter, uidata.mirrorXCheckBoxPressed); //X mirror checkbox
 		ui.checkBox(renderData.panelLoc- 0.10f- screenGapX, 0.9f, "Y", colorData.checkBoxColor, uidata.mirrorYCheckBoxEnter, uidata.mirrorYCheckBoxPressed); //Z mirror checkbox
@@ -268,10 +303,13 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 0.09f- screenGapX,0.95f,0.9,icons.Mirror,0,colorData.iconColor,colorData.iconColorHover);
 	}
 
+
+	//Change the projection
 	float centerDivider;
 	float centerSum;
 	gl.uniform1f(renderPrograms.uiProgram, "uiOpacity", 0.5f);
 	if (!panelData.movePanel) {
+		//Center the panel
 		centerDivider = 2.0f;
 		centerSum = 0;
 		projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
@@ -281,6 +319,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 		gl.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
 	}
 	else {
+		//Follow the panel
 		centerDivider = 1.0f;
 		centerSum = 0.15f;
 		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
@@ -1015,7 +1054,8 @@ bool renderDefault = false;
 
 RenderOutData uiOut;
 
-RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,UiData &uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons &icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string &colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,OutShaderData &outShaderData,Model &model,vector<unsigned int> albedoTextures) {
+
+RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,UiData &uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons &icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string &colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures) {
 	GlSet gls;
 	UserInterface ui;
 	ColorData colorData;
@@ -1044,7 +1084,6 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 	double mouseXpos;
 	double mouseYpos;
 	glfwGetCursorPos(renderData.window, &mouseXpos, &mouseYpos);
-	//Get screen and mouse info
 
 
 	//Render depth once painting started
@@ -1057,7 +1096,7 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 	if (renderDepthCounter == 1) {//Get depth texture
 		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,albedoTextures);
 	}
-	//Render depth once painting started
+
 
 	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || uidata.addImageButtonPressed ||(glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
 	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false

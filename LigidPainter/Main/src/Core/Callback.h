@@ -7,7 +7,6 @@ struct CallbckData { //Return from callback
 	bool backfaceCullingCheckBoxEnter;
 	bool addPlaneButtonEnter;
 	bool addSphereButtonEnter;
-	bool addImageButtonEnter;
 	bool addMaskTextureButtonEnter;
 	bool brushSizeRangeBarEnter;
 	bool brushBlurRangeBarEnter;

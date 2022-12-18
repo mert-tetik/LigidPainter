@@ -47,7 +47,6 @@ bool autoTriangulateCheckBoxEnter;
 bool backfaceCullingCheckBoxEnter;
 bool addPlaneButtonEnter;
 bool addSphereButtonEnter;
-bool addImageButtonEnter;
 bool addMaskTextureButtonEnter;
 bool brushSizeRangeBarEnter;
 bool brushBlurRangeBarEnter;
@@ -98,7 +97,6 @@ CallbckData preapareCallbackData() {
 	callbk.addPlaneButtonEnter = addPlaneButtonEnter;
 	callbk.addSphereButtonEnter = addSphereButtonEnter;
 	callbk.movePanel = movePanel;
-	callbk.addImageButtonEnter = addImageButtonEnter;
 	callbk.modelPanelButtonEnter = modelPanelButtonEnter;
 	callbk.texturePanelButtonEnter = texturePanelButtonEnter;
 	callbk.paintingPanelButtonEnter = paintingPanelButtonEnter;
@@ -314,12 +312,6 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 			addSphereButtonEnter = false;
 			loadCustomModelEnter = false;
 		}
-		if (panelData.texturePanelActive) {
-			addImageButtonEnter = ui.isMouseOnButton(window, 0.12f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX, 0.8f, mouseXPos, mouseYPos, movePanel);
-		}
-		else {
-			addImageButtonEnter = false;
-		}
 		if (panelData.paintingPanelActive) {
 			addMaskTextureButtonEnter = ui.isMouseOnButton(window, 0.12f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX, 0.9f, mouseXPos, mouseYPos, movePanel);
 			useNegativeForDrawingCheckboxEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc /+
@@ -434,9 +426,6 @@ void Callback::buttonCheck(GLFWwindow* window, int mouseXPos,int mouseYPos,Panel
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (addSphereButtonEnter) {
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (addImageButtonEnter) {
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (modelPanelButtonEnter) {

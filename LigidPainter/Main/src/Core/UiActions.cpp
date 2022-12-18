@@ -32,7 +32,7 @@ int uiactionsMaxScreenHeight;
 bool colorBoxFirstPress = false;
 void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover) {
 	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTaken) {
-		if (!callbackData.addImageButtonEnter && !callbackData.addMaskTextureButtonEnter && !callbackData.addPlaneButtonEnter
+		if (!callbackData.addMaskTextureButtonEnter && !callbackData.addPlaneButtonEnter
 			//Check all the buttons
 			&& !callbackData.addSphereButtonEnter && !callbackData.autoTriangulateCheckBoxEnter && !callbackData.backfaceCullingCheckBoxEnter
 			&& !callbackData.brushSizeRangeBarEnter && !callbackData.loadModelButtonEnter && !callbackData.modelFilePathTextBoxEnter
@@ -136,8 +136,6 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 					ligid.paintingPanelButton();
 				if (callbackData.exportPanelButtonEnter)
 					ligid.exportPanelButton();
-				if (callbackData.addImageButtonEnter)
-					ligid.addImageButton();
 				if (callbackData.addPlaneButtonEnter)
 					ligid.addPlaneButton();
 				if (callbackData.addSphereButtonEnter)
