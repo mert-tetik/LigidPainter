@@ -4,6 +4,9 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+
+#include <direct.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -49,6 +52,7 @@ float hexValTextboxMixVal = 0.0f;
 float customModelMixVal = 0.0f;
 
 void updateButtonColorMixValues(UiData uidata) {
+	
 	float phaseDifference = 0.05f;
 	if (uidata.addSphereButtonEnter && addSphereButtonMixVal <= 1.0f) {
 		addSphereButtonMixVal += phaseDifference;
@@ -779,17 +783,45 @@ void drawAxisPointer(AxisPointerShaderData axisPointerShaderData) {
 }
 
 
-void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName){
-    Texture txtr;
-    GLubyte* exportTxtr = txtr.getTextureFromProgram(GL_TEXTURE0,1080,1080,3);
-	if (JPG) {
-		txtr.downloadTexture(exportPath, exportFileName, 0, 1080, 1080, exportTxtr, 3);
+void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName,vector<unsigned int> &albedoTextures){
+
+	//Create the export folder
+	std::string exportPathStr = exportPath;
+	exportPathStr.append("/LigidExportFolder");
+	mkdir(exportPathStr.c_str());
+    
+	GlSet gl;
+	Texture txtr;
+
+	
+	
+	for (size_t i = 0; i < albedoTextures.size(); i++) //Export all the albedo textures
+	{
+		//Give a number to the texture name
+		std::string exportFileNameStr = exportFileName;
+		exportFileNameStr.append("_Albedo_");
+		exportFileNameStr.append(to_string(i));
+
+		//Bind the related texture
+		gl.activeTexture(GL_TEXTURE0);
+		gl.bindTexture(albedoTextures[i]);
+
+		//Get the texture array
+    	GLubyte* exportTxtr = txtr.getTextureFromProgram(GL_TEXTURE0,1080,1080,3);
+
+		//Export
+		if (JPG) {
+			txtr.downloadTexture(exportPathStr.c_str(), exportFileNameStr.c_str(), 0, 1080, 1080, exportTxtr, 3);
+		}
+		else if (PNG) {
+			txtr.downloadTexture(exportPathStr.c_str(), exportFileNameStr.c_str(), 1, 1080, 1080, exportTxtr, 3);
+		}
+
+		//Delete the array after exporting
+    	delete[] exportTxtr;
 	}
-	else if (PNG) {
-		txtr.downloadTexture(exportPath, exportFileName, 1, 1080, 1080, exportTxtr, 3);
-	}
-    delete[] exportTxtr;
 }
+
 void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels,Model &model,bool useModel,vector<unsigned int> &albedoTextures){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -809,7 +841,7 @@ void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsi
 	delete[]renderedTexture;
 }
 
-void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName,bool reduceScreenPaintingQuality, OutShaderData outShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures) {
+void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName,bool reduceScreenPaintingQuality, OutShaderData outShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures,bool paintOut) {
 	int maxTextureHistoryHold = 20;
 
 	std::vector<float> renderVertices = { //Render backside of the uv
@@ -875,7 +907,7 @@ void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, 
 	//Render painted image
 	model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
 
-	if (!exportImage)
+	if (!paintOut)
 		gl.drawArrays(renderVertices, false);
 
 	GLubyte* renderedImage = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
@@ -902,7 +934,7 @@ void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, 
 
 	//Download enlarged texture
 	if (exportImage) {
-        exportTexture(JPG,PNG,exportPath,exportFileName);
+        exportTexture(JPG,PNG,exportPath,exportFileName,albedoTextures);
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1029,7 +1061,31 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 
 	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || uidata.addImageButtonPressed ||(glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
 	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false
-		renderTextures(FBOScreen,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,reduceScreenPaintingQuality,outShaderData,model,renderDefault,albedoTextures);
+		
+		if(exportData.exportImage){
+			int lastMaterialIndex = currentMaterialIndex;
+			currentMaterialIndex = 0;		
+			for (size_t i = 0; i < albedoTextures.size(); i++) //Paint outside of the uv's of the albedo textures in one color before exporting
+			{
+				//Bind the related texture
+				gls.activeTexture(GL_TEXTURE0);
+				gls.bindTexture(albedoTextures[i]);
+
+				//Render the texture 	
+				renderTextures(FBOScreen, (i == albedoTextures.size()-1) ,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,reduceScreenPaintingQuality,outShaderData,model,renderDefault,albedoTextures,true);
+
+				//Render material by material
+				currentMaterialIndex++;
+			}
+
+			//Set everything back to normal
+			currentMaterialIndex = lastMaterialIndex;
+			gls.activeTexture(GL_TEXTURE0);
+			gls.bindTexture(albedoTextures[currentMaterialIndex]);
+
+		}
+		else
+			renderTextures(FBOScreen,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,reduceScreenPaintingQuality,outShaderData,model,renderDefault,albedoTextures,false);
 	}
 
 
