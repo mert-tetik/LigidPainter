@@ -43,14 +43,17 @@ public:
 
         for(unsigned int i = 0; i < meshes.size(); i++){
             
-            //glActiveTexture(GL_TEXTURE0);
-            //glBindTexture(GL_TEXTURE_2D,albedoTextures[i]);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D,albedoTextures[i]);
 
             if(useOpacity && chosenMaterialIndex != i){
 	            glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 0.1f);
                 meshes[i].Draw();
             }            
         }
+        if(meshes.size() > 0)
+            glBindTexture(GL_TEXTURE_2D,albedoTextures[chosenMaterialIndex]);
+
     }
     
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
