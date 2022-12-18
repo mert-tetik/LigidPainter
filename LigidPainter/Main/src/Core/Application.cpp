@@ -63,7 +63,6 @@ vector<unsigned int> albedoTextures;
 
 //TODO : CTRL + Z Compatible with materials
 //TODO : Loading multiple models
-//TODO : Loading default models
 //TODO : Export in a folder
 
 
@@ -417,7 +416,6 @@ bool colorBoxValChanged = true;
 bool renderSphere = false;
 bool renderPlane = false;
 
-vector<float> sphereVertices;
 
 bool hueValChanging;
 
@@ -581,18 +579,8 @@ bool LigidPainter::run()
 	bool textureDemonstratorButtonPressed = false;
 
 	
-	//Plane Model
-	vector<float> planeVertices = {
-		-1 , 0 , 1 , 0 , 0 , 0 , 1 , 0 ,
-		1 , 0 , 1 , 1 , 0 , 0 , 1 , 0 ,
-		1 , 0 , -1 , 1 , 1 , 0 , 1 , 0 ,
-		-1 , 0 , 1 , 0 , 0 , 0 , 1 , 0 ,
-		1 , 0 , -1 , 1 , 1 , 0 , 1 , 0 ,
-		-1 , 0 , -1 , 0 , 1 , 0 , 1 , 0 
-	};
+
 	//Sphere Model
-	Sphere sphere;
-	sphereVertices = sphere.getSphere();
 
 	ViewUpdateData viewUpdateData;
 
@@ -771,7 +759,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures);
+		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures);
 		 		
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
 
@@ -796,7 +784,7 @@ bool LigidPainter::run()
 
 		double firstTime = glfwGetTime();
 		//Render
-		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,planeVertices,sphereVertices,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures);
+		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures);
 		double lastTime = glfwGetTime();
 
 		//cout <<  (lastTime - firstTime) * 1000  << '\n';
@@ -1366,16 +1354,21 @@ void LigidPainter::loadModelButton() {
 	GlSet glset;
 
 	if (modelName != "") {
-		//vertices.clear();
-		//vertices = modelLoader.OBJ_getVertices(modelFilePath, autoTriangulateChecked);
 		model.loadModel(modelFilePath,autoTriangulateChecked);
 
 		if(!renderDefaultModel)
 			customModelFilePath = modelFilePath;
 		
-		albedoTextures.clear();//TODO : Delete textures
 
-		for (size_t i = 0; i < model.meshes.size(); i++)//Create textures
+		for (size_t i = 0; i < albedoTextures.size(); i++) //Delete albedo textures
+		{
+			unsigned int albedoTexture = albedoTextures[i];
+			glDeleteTextures(1,&albedoTextures[i]);
+		}
+		
+		albedoTextures.clear(); //Clear the array
+
+		for (size_t i = 0; i < model.meshes.size(); i++) //Create textures
 		{
 			unsigned int albedoTexture;
 			glset.genTextures(albedoTexture);

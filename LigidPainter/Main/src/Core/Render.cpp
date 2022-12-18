@@ -200,6 +200,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 		glUseProgram(renderPrograms.uiProgram); 
 		//ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.8f, "Add Texture", colorData.buttonColor, 0.048f, false, false, 0.9f, 10, colorData.buttonColorHover, addAlbedoTextureMixVal); //Add albedo texture button
 
+
 		for (int i = 0; i < model.meshes.size(); i++)
 		{
 			ui.box(0.2f, 0.06f, renderData.panelLoc - screenGapX + 0.205f, 0.8f - (i * 0.15f), model.meshes[i].materialName, colorData.buttonColor, 0.048f, true, false, 0.5f, 10000, colorData.buttonColorHover, 0); 
@@ -511,7 +512,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 //--------------------RENDER UI --------------------\\
 
 
-void Render::renderModel(bool backfaceCulling, std::vector<float>& vertices,PBRShaderData &data,Model &model,bool renderDefault, vector<unsigned int> &albedoTextures) {
+void Render::renderModel(bool backfaceCulling,PBRShaderData &data,Model &model,bool renderDefault, vector<unsigned int> &albedoTextures) {
 	glDepthFunc(GL_LESS); 
 
     GlSet gl;
@@ -523,10 +524,7 @@ void Render::renderModel(bool backfaceCulling, std::vector<float>& vertices,PBRS
 	}
 	gl.meshDataToShaders();
 	
-	if(!renderDefault)
-		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,true,albedoTextures);
-	else
-		gl.drawArrays(vertices, false);
+	model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,true,albedoTextures);
 
 
 	gl.disable(GL_CULL_FACE); //Disable backface culling if enabled
@@ -666,7 +664,7 @@ void Render::drawLightObject(glm::vec3 lightPos) {
 	// glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
-void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen,  int screenSizeX,  int screenSizeY,ScreenDepthShaderData screenDepthShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures) {
+void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int screenSizeY,ScreenDepthShaderData screenDepthShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures) {
 	Texture txtr;
     GlSet gl;
 
@@ -679,10 +677,7 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if(!renderDefault)
-		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
-	else
-		gl.drawArrays(vertices, false);
+	model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
 
 	GLubyte* screen = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
 	gl.activeTexture(GL_TEXTURE9);
@@ -698,10 +693,7 @@ void Render::getDepthTexture(std::vector<float>& vertices,unsigned int FBOScreen
 	gl.useScreenDepthShader(renderPrograms.screenDepthProgram, screenDepthShaderData);
 
 	
-	if(!renderDefault)
-		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
-	else
-		gl.drawArrays(vertices, false);
+	model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
 
 	GLubyte* screenMirrored = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
 	gl.activeTexture(GL_TEXTURE8);
@@ -817,7 +809,7 @@ void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsi
 	delete[]renderedTexture;
 }
 
-void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices,bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName,bool reduceScreenPaintingQuality, OutShaderData outShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures) {
+void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName,bool reduceScreenPaintingQuality, OutShaderData outShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures) {
 	int maxTextureHistoryHold = 20;
 
 	std::vector<float> renderVertices = { //Render backside of the uv
@@ -863,11 +855,7 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 
 
 	//Prevent uv stacking
-	if(!renderDefault)
-		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
-	else
-		gl.drawArrays(vertices, false);
-
+	model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
 
 	GLubyte* paintedMask = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
 	glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, paintedMask);
@@ -885,11 +873,7 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 
 
 	//Render painted image
-	if(!renderDefault)
-		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
-	else
-		gl.drawArrays(vertices, false);
-
+	model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
 
 	if (!exportImage)
 		gl.drawArrays(renderVertices, false);
@@ -906,7 +890,7 @@ void Render::renderTextures(unsigned int FBOScreen, std::vector<float>& vertices
 
 	//Render uv mask
 	gl.uniform1i(renderPrograms.outProgram, "whiteRendering", 1);
-	renderTexture(vertices,1080, 1080,GL_TEXTURE7,GL_RGB,model, !renderDefault,albedoTextures);
+	renderTexture(renderVertices,1080, 1080,GL_TEXTURE7,GL_RGB,model,true,albedoTextures);
 	gl.uniform1i(renderPrograms.outProgram, "whiteRendering", 0);
 	//Render uv mask
 
@@ -991,9 +975,7 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 int renderDepthCounter = 0;
 glm::vec3 colorBoxVal = glm::vec3(0);
 
-std::vector<float> currentModel;
 
-bool currentModelChanged = true;
 bool lastRenderSphere = false;
 bool lastRenderPlane = false;
 bool renderDefault = false;
@@ -1001,44 +983,19 @@ bool renderDefault = false;
 
 RenderOutData uiOut;
 
-RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,UiData &uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons &icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string &colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,std::vector<float>& planeVertices,std::vector<float>& sphereVertices,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,OutShaderData &outShaderData,Model &model,vector<unsigned int> albedoTextures) {
+RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,UiData &uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons &icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string &colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,OutShaderData &outShaderData,Model &model,vector<unsigned int> albedoTextures) {
 	GlSet gls;
 	UserInterface ui;
 	ColorData colorData;
 	Utilities util;
 	Texture txtr;
 
-	//Change the current 3D Model once current model changed
-	if(renderSphere && currentModelChanged){
-		currentModel = sphereVertices;
-		renderDefault = true;
-	}
-	else if(renderPlane && currentModelChanged){
-		currentModel = planeVertices;
-		renderDefault = true;
-	}
-	else if (!renderSphere && !renderPlane){
-		renderDefault = false;
-	}
-
-
-	if(renderPlane != lastRenderPlane){
-		currentModelChanged = true;
-	}
-	else if(renderSphere != lastRenderSphere){
-		currentModelChanged = true;
-	}
-	else{
-		currentModelChanged = false;
-	}
-	lastRenderPlane = renderPlane;
-	lastRenderSphere = renderSphere;
-
-
 	colorBoxVal = util.hexToRGBConverter(colorpickerHexVal);
 
+	if(model.meshes.size()-1 < currentMaterialIndex){
+		currentMaterialIndex = 0; 
+	}
 	
-
 	if(textureDemonstratorBoundariesPressed){
 		orgTextureDemonstratorWidth = textureDemonstratorWidth;
 		orgTextureDemonstratorHeight = textureDemonstratorHeight;
@@ -1058,7 +1015,6 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 	//Get screen and mouse info
 
 
-	
 	//Render depth once painting started
 	if (renderData.paintingMode) { 
 		renderDepthCounter++;
@@ -1067,18 +1023,18 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 		renderDepthCounter = 0;
 	}
 	if (renderDepthCounter == 1) {//Get depth texture
-		getDepthTexture(currentModel,FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,albedoTextures);
+		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,albedoTextures);
 	}
 	//Render depth once painting started
 
 	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || uidata.addImageButtonPressed ||(glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
 	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false
-		renderTextures(FBOScreen,currentModel,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,reduceScreenPaintingQuality,outShaderData,model,renderDefault,albedoTextures);
+		renderTextures(FBOScreen,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,reduceScreenPaintingQuality,outShaderData,model,renderDefault,albedoTextures);
 	}
 
 
 	renderSkyBox(skyBoxShaderData);
-	renderModel(renderData.backfaceCulling,currentModel,pbrShaderData,model,renderDefault,albedoTextures);
+	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,albedoTextures);
 	drawAxisPointer(axisPointerShaderData);
 	uiOut = renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,colorpickerHexVal,renderData.brushBorderRangeBarValue,brushBlurVal,outShaderData,model,albedoTextures);
 
