@@ -25,6 +25,15 @@
 #include "stb_image_write.h"
 #include "tinyfiledialogs.h"
 
+struct UndoActions
+{
+	GLubyte* undoTextures; 
+	unsigned int activeMaterial; 
+};
+
+std::vector<UndoActions> undoList; 
+
+
 
 unsigned int currentMaterialIndex = 0;
 
@@ -752,21 +761,33 @@ void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int scre
 }
 
 //------------CtrlZ------------
-std::vector<GLubyte*> undoTextures; 
 bool doCtrlZ;
-void ctrlZCheck(GLFWwindow* window,bool reduceScreenPaintingQuality) {
+void ctrlZCheck(GLFWwindow* window,bool reduceScreenPaintingQuality,std::vector<unsigned int> &albedoTextures) {
 	Texture txtr;
 	GlSet glset;
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ && undoTextures.size() != 0) { //MAX 20
+
+	
+
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ && undoList.size() != 0) { //MAX 20
+		
+		//Refresh the screen mask texture (Prevent bugs where might be accur trying undo while in the middle of painting)
 		txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
+		
+		//Bind the related texture
 		glset.activeTexture(GL_TEXTURE0);
-		glset.texImage(undoTextures[undoTextures.size() - 1], 1080, 1080, GL_RGB);
+		currentMaterialIndex = undoList[undoList.size() - 1].activeMaterial;
+		glset.bindTexture(albedoTextures[currentMaterialIndex]);
+
+		//Change the texture to the last texture
+		glset.texImage(undoList[undoList.size() - 1].undoTextures, 1080, 1080, GL_RGB);
 		glset.generateMipmap();
 
-		GLubyte* previousTexture  = undoTextures[undoTextures.size() - 1];
-		delete[] previousTexture;
+		//Delete the texture
+		GLubyte* undoTexture = undoList[undoList.size() - 1].undoTextures;
+		delete[] undoTexture;
 
-		undoTextures.pop_back();
+		//Remove the last element
+		undoList.pop_back();
 		doCtrlZ = false;
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) {
@@ -881,7 +902,7 @@ void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsi
 }
 
 void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName,bool reduceScreenPaintingQuality, OutShaderData outShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures,bool paintOut) {
-	int maxTextureHistoryHold = 20;
+	int maxHistoryHold = 20;
 
 	std::vector<float> renderVertices = { //Render backside of the uv
 	// first triangle
@@ -897,13 +918,23 @@ void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, 
 
     //Send the texture to the undoTextures vector before updating the texture
 	GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, 1080, 1080, 3);
-	undoTextures.push_back(originalImage);
+	
 
-    //Delete the first texture from undoTextures array once the size of the vector hits 20
-	if (undoTextures.size() > maxTextureHistoryHold){
-		GLubyte* previousTexture  = undoTextures[0];
-		delete[] previousTexture;
-		undoTextures.erase(undoTextures.begin());
+	//Send the texture to the undoList before processing the texture (will be used for ctrl z)
+	UndoActions undoAct;
+	undoAct.activeMaterial = currentMaterialIndex;
+	undoAct.undoTextures = originalImage; 
+	undoList.push_back(undoAct);
+
+
+    //Delete the first element from undoList if undoList's count is greated than max history holding value which is 20
+	if (undoList.size() > maxHistoryHold){
+		//Delete the texture
+		GLubyte* undoTexture = undoList[0].undoTextures;
+		delete[] undoTexture;
+
+		//Remove the element
+		undoList.erase(undoList.begin());
 	}
 
     GlSet gl;
@@ -1138,7 +1169,7 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 	if (colorBoxValChanged && !colorpickerHexValTextboxValChanged) { //Get value of color box
 		colorBoxVal = getColorBoxValue(FBOScreen, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y,screenSizeX, screenSizeY);
 	}
-	ctrlZCheck(renderData.window,reduceScreenPaintingQuality);
+	ctrlZCheck(renderData.window,reduceScreenPaintingQuality,albedoTextures);
 
 
 	updateButtonColorMixValues(uidata);

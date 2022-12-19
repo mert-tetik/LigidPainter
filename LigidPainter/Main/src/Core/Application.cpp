@@ -52,13 +52,9 @@ GLFWwindow* window;
 BrushMaskTextures brushMaskTextures;
 vector<unsigned int> albedoTextures;
 
-//TODO : Import settings
-
-
 //TODO : Reduce GPU Usage
 //TODO : Specialized vao for each shader
 //TODO : Take screen hover pixel once the color picker is clicked
-
 
 //TODO : CTRL + Z Compatible with materials
 

@@ -53,7 +53,6 @@ public:
         }
         if(meshes.size() > 0)
             glBindTexture(GL_TEXTURE_2D,albedoTextures[chosenMaterialIndex]);
-
     }
     
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
