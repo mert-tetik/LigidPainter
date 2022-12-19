@@ -1180,14 +1180,12 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 
 	updateButtonColorMixValues(uidata);
 
-	if(paintingDropperPressed){
-		std::cout << "sfsaf";
+	if(paintingDropperPressed)
 		screenHoverPixel = getScreenHoverPixel(mouseXpos,mouseYpos,screenSizeY);
-	}
 
 	if(renderData.doPainting)
 		drawBrushIndicator(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorBoxVal);
-
+ 
 	RenderOutData renderOut;
 	renderOut.mouseHoverPixel = screenHoverPixel;
 	renderOut.maskPanelMaskClicked = uiOut.maskPanelMaskClicked;

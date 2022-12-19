@@ -546,6 +546,9 @@ bool LigidPainter::run()
 	//Framebuffer used in drawToScreen.cpp
 	unsigned int paintingFBO;
 	glset.genFramebuffers(paintingFBO);
+	glset.bindFramebuffer(paintingFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,  screenPaintingReturnData.normalId, 0);
+	glset.bindFramebuffer(0);
 
 
 
@@ -573,7 +576,7 @@ bool LigidPainter::run()
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		glfwPollEvents();
-		//glfwSwapInterval(1);
+		glfwSwapInterval(1);
 
 		util.printRenderingSpeed();
 
