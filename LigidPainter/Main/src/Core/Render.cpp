@@ -1091,7 +1091,9 @@ bool renderDefault = false;
 RenderOutData uiOut;
 
 
-RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,UiData &uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons &icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string &colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures, bool updateHueVal) {
+glm::vec3 screenHoverPixel;
+
+RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,UiData &uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons &icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string &colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures, bool updateHueVal,bool paintingDropperPressed) {
 	GlSet gls;
 	UserInterface ui;
 	ColorData colorData;
@@ -1170,8 +1172,6 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 
 	uiOut = renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,colorpickerHexVal,renderData.brushBorderRangeBarValue,brushBlurVal,outShaderData,model,albedoTextures,updateHueVal);
 
-
-
 	if (colorBoxValChanged && !colorpickerHexValTextboxValChanged) { //Get value of color box
 		colorBoxVal = getColorBoxValue(FBOScreen, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y,screenSizeX, screenSizeY);
 	}
@@ -1180,11 +1180,13 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 
 	updateButtonColorMixValues(uidata);
 
-	glm::vec3 screenHoverPixel = getScreenHoverPixel(mouseXpos,mouseYpos,screenSizeY);
+	if(paintingDropperPressed){
+		std::cout << "sfsaf";
+		screenHoverPixel = getScreenHoverPixel(mouseXpos,mouseYpos,screenSizeY);
+	}
 
 	if(renderData.doPainting)
 		drawBrushIndicator(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorBoxVal);
-
 
 	RenderOutData renderOut;
 	renderOut.mouseHoverPixel = screenHoverPixel;
