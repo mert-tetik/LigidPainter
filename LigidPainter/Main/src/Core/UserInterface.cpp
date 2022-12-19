@@ -234,7 +234,9 @@ void UserInterface::colorBox(float position_x, float position_y,float valueX, fl
 	glUseProgram(uiPrograms.uiProgram);
 	box(0.0f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 22,glm::vec3(0),0);
 }
-glm::vec3 UserInterface::colorRect(float position_x, float position_y,float value,unsigned int FBO,GLFWwindow* window, glm::mat4 projection) { //Changing colorBox value will be once the value changed
+
+glm::vec3 hueValue;
+glm::vec3 UserInterface::colorRect(float position_x, float position_y,float value,unsigned int FBO,GLFWwindow* window, glm::mat4 projection,bool updateHueVal) { //Changing colorBox value will be once the value changed
 	std::vector<float> boxCoor{
 		//Color - Normal Vectors Will Be Usen For Color Data Of Vertices
 
@@ -289,39 +291,41 @@ glm::vec3 UserInterface::colorRect(float position_x, float position_y,float valu
 
 	GlSet glset;
 	ColorData colorData;
-
-	glm::mat4 screenprojection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
 	HueShaderData hueShaderData;
-	hueShaderData.renderTextureProjection = screenprojection;
-	hueShaderData.useTexCoords = 1;
 
-	//Render color rectangle into the screen to get the value
-	glset.useHueShader(uiPrograms.hueProgram,hueShaderData);
+	if(updateHueVal){
 
-	glset.viewport(1920, 1081);
-	glset.bindFramebuffer(FBO);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	GLubyte* colorRectPixel = new GLubyte[1 * 1 * 3];//Color value
-	glset.drawArrays(boxCoor, false); //Render Model
+		glm::mat4 screenprojection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
+		hueShaderData.renderTextureProjection = screenprojection;
+		hueShaderData.useTexCoords = 1;
 
-	if( (value + 0.18f) * 2.77777777778f * 1080 != 1080)
-		glReadPixels(10, (value + 0.18f) * 2.77777777778f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
-	else{
-		glReadPixels(10, 1079, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
+		//Render color rectangle into the screen to get the value
+		glset.useHueShader(uiPrograms.hueProgram,hueShaderData);
+
+		glset.viewport(1920, 1081);
+		glset.bindFramebuffer(FBO);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		GLubyte* colorRectPixel = new GLubyte[1 * 1 * 3];//Color value
+		glset.drawArrays(boxCoor, false); //Render Model
+
+		if( (value + 0.18f) * 2.77777777778f * 1080 != 1080)
+			glReadPixels(10, (value + 0.18f) * 2.77777777778f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
+		else{
+			glReadPixels(10, 1079, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
+		}
+		//Finish
+		hueValue.r = colorRectPixel[0];
+		hueValue.g = colorRectPixel[1];
+		hueValue.b = colorRectPixel[2];
+
+		delete(colorRectPixel);
+
+		glset.bindFramebuffer(0);
+		int screenSizeX;
+		int screenSizeY;
+		glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
+		glViewport(-(uiMaxScreenWidth - screenSizeX)/2, -(uiMaxScreenHeight - screenSizeY), uiMaxScreenWidth, uiMaxScreenHeight);
 	}
-	//Finish
-	glm::vec3 hueValue;
-	hueValue.r = colorRectPixel[0];
-	hueValue.g = colorRectPixel[1];
-	hueValue.b = colorRectPixel[2];
-
-	delete(colorRectPixel);
-
-	glset.bindFramebuffer(0);
-	int screenSizeX;
-	int screenSizeY;
-	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
-	glViewport(-(uiMaxScreenWidth - screenSizeX)/2, -(uiMaxScreenHeight - screenSizeY), uiMaxScreenWidth, uiMaxScreenHeight);
 
 
 	//glset.uniform3f(uiPrograms.uiProgram, "boxColor", colorRectPixel[0] / 255.0f, colorRectPixel[1] / 255.0f, colorRectPixel[2] / 255.0f); //Check if necessary

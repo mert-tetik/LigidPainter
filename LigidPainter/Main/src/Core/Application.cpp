@@ -409,6 +409,7 @@ int screenHeight;
 
 Model model;
 
+bool updateHueVal = true;
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -714,7 +715,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures);
+		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal);
 		 		
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
 
@@ -742,12 +743,15 @@ bool LigidPainter::run()
 
 		//Render
 		//double firstTime = glfwGetTime();
-		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures);
+		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal);
 		//double lastTime = glfwGetTime();
 		//cout <<  (lastTime - firstTime) * 1000  << '\n';
 
 
 		//
+		if(panelData.paintingPanelActive)
+			updateHueVal = false; //Hue value will be updated after rendering the ui
+			
 		drawColor = renderOut.colorBoxVal/255.0f;
 		colorBoxValChanged = false;
 		colorpickerHexValTextboxValChanged = false;
@@ -1024,6 +1028,7 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatVal){
 	
 	if(changeHue){
 		colorBoxColorRangeBarValue = (hsvVal.r / 708.333333333f) - 0.18f; //0.195
+		updateHueVal = true;
 	}
 	if(changeSatVal){
 		colorBoxPickerValue_x = (hsvVal.g / 1342.10526316f) - 0.095f; //0.095
@@ -1148,6 +1153,7 @@ void LigidPainter::brushBordersRangeBar(float xOffset, int width, int height) {
 void LigidPainter::colorBoxColorRangeBar(float yOffset,int height){
 	Utilities util;
 	hueValChanging = true;
+	updateHueVal = true;
 	colorBoxColorRangeBarValue += yOffset / (height / 2);
 	colorBoxColorRangeBarValue = util.restrictBetween(colorBoxColorRangeBarValue, 0.180f, -0.180f);//Keep in boundaries
 	colorBoxValChanged = true;
