@@ -259,8 +259,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 						std::string albedoTexturePath = albedoPathCheck;
 
 						//Replace the textures
-						glDeleteTextures(1,&albedoTextures[i]);
-						albedoTextures[i] =	txtr.getTexture(albedoTexturePath,1080,1080,true); //Force albedo's ratio to be 1:1
+						txtr.getTexture(albedoTexturePath,1080,1080,true); //Force albedo's ratio to be 1:1
 					}
 				}
 			}
