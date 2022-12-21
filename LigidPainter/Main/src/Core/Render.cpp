@@ -44,6 +44,8 @@ int renderMaxScreenHeight;
 
 //--------------------RENDER UI --------------------\\
 
+bool texturePanelButtonHover = false;
+
 //Button mix val
 float exportDownloadButtonMixVal = 0.0f;
 float addMaskTextureButtonMixVal = 0.0f;
@@ -57,6 +59,7 @@ float dropperMixVal = 0.0f;
 float exportFileNameTextBoxMixVal = 0.0f;
 float hexValTextboxMixVal = 0.0f;
 float customModelMixVal = 0.0f;
+float texturePanelButtonMixVal = 0.0f;
 
 void updateButtonColorMixValues(UiData uidata) {
 	
@@ -137,6 +140,13 @@ void updateButtonColorMixValues(UiData uidata) {
 	else if (!uidata.customModelButtonHover && customModelMixVal >= 0.0f) {
 		customModelMixVal -= phaseDifference;
 	}
+
+	if (texturePanelButtonHover && texturePanelButtonMixVal <= 1.0f) {
+		texturePanelButtonMixVal += phaseDifference;
+	}
+	else if (!texturePanelButtonHover && texturePanelButtonMixVal >= 0.0f) {
+		texturePanelButtonMixVal -= phaseDifference;
+	}
 }
 //Button mix val
 float changeTextureDemonstratorWidth = 0.4f;
@@ -211,20 +221,21 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 	}	
 
 	if (panelData.texturePanelActive) {
+		bool mouseEnteredOnce = false;
 		glUseProgram(renderPrograms.uiProgram); 
 
 		for (int i = 0; i < model.meshes.size(); i++)//Render buttons
-		{
-			//Buttons
-			ui.box(0.03f, 0.06f, renderData.panelLoc - screenGapX + 0.3f, 0.8f - (i * 0.125f), "", colorData.buttonColorHover, 0.048f, true, false, 0.6f, 10000, colorData.buttonColorHover, 0); 
-			ui.box(0.2f, 0.06f, renderData.panelLoc - screenGapX + 0.205f, 0.8f - (i * 0.125f), model.meshes[i].materialName, colorData.buttonColor, 0.048f, true, false, 0.5f, 10000, colorData.buttonColorHover, 0); 
-			
+		{ 	
 			//Check if mouse is entered the related button
 			bool textureButtonEnter = ui.isMouseOnButton(renderData.window, 0.2f, 0.06f, renderData.panelLoc - screenGapX*2 + 0.205f,0.8f - (i * 0.125f), mouseXpos, mouseYpos,true);
 			bool textureAddButtonEnter = ui.isMouseOnButton(renderData.window, 0.03f, 0.06f, renderData.panelLoc - screenGapX*2 + 0.3f,0.8f - (i * 0.125f), mouseXpos, mouseYpos,true);
 			
 			if(textureButtonEnter){
 				//Hover
+				if(!textureAddButtonEnter){
+					mouseEnteredOnce = true;
+					texturePanelButtonHover = true;
+				}
 				uiOut.texturePanelButtonHover = true;
 				if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
 					//Pressed
@@ -235,6 +246,15 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 					gl.activeTexture(GL_TEXTURE0);
 					gl.bindTexture(albedoTextures[currentMaterialIndex]);
 				}
+
+				//Button (Hover)
+				ui.box(0.2f, 0.06f, renderData.panelLoc - screenGapX + 0.205f, 0.8f - (i * 0.125f), model.meshes[i].materialName, colorData.buttonColor, 0.048f, true, false, 0.5f, 10000, colorData.buttonColorHover, texturePanelButtonMixVal);
+
+			}
+			else{
+				//Button 
+				ui.box(0.2f, 0.06f, renderData.panelLoc - screenGapX + 0.205f, 0.8f - (i * 0.125f), model.meshes[i].materialName, colorData.buttonColor, 0.048f, true, false, 0.5f, 10000, colorData.buttonColorHover, 0);
+
 			}
 			if(textureAddButtonEnter){
 				//Hover
@@ -258,13 +278,16 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 					if (albedoPathCheck) {
 						std::string albedoTexturePath = albedoPathCheck;
 
-						//Replace the textures
 						txtr.getTexture(albedoTexturePath,1080,1080,true); //Force albedo's ratio to be 1:1
 					}
 				}
 			}
+
+			ui.box(0.03f, 0.06f, renderData.panelLoc - screenGapX + 0.3f, 0.8f - (i * 0.125f), "", colorData.buttonColorHover, 0.048f, true, false, 0.6f, 10000, colorData.buttonColorHover, 0); 
 		}
-		
+		if(!mouseEnteredOnce){
+			texturePanelButtonHover = false;
+		}
 	}
 
 
