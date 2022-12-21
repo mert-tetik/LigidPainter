@@ -555,7 +555,7 @@ bool LigidPainter::run()
 
 	pbrShaderData.bluryskybox = 16;
 	pbrShaderData.depthTexture = 9;
-	pbrShaderData.materialDiffuse = 12;
+	pbrShaderData.materialDiffuse = 0;
 	pbrShaderData.mirroredDepthTexture = 8;
 	pbrShaderData.mirroredScreenMaskTexture = 3;
 	pbrShaderData.screenMaskTexture = 4;

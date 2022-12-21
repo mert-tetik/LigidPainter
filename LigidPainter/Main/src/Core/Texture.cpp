@@ -347,6 +347,7 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 
 	glset.uniform1i(txtrPrograms.blurProgram , "kernel_sizeF" , oneDimensionalGaussian.size());
 
+
 	for (int i = 0; i < oneDimensionalGaussian.size(); i++)
 	{
 		if(i < 60){
@@ -357,9 +358,8 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 			std::string target = "oneDimensionalGaussF2[" + std::to_string(i - 60) + "]";
 			glset.uniform1f(txtrPrograms.blurProgram , target.c_str() , oneDimensionalGaussian[i]);
 		}
-		//std::cout << oneDimensionalGaussian[i]<< ' ';
 	}
-	//std::cout << '\n';
+	
 
 	//Horizontal Blur
 	glset.uniform1i(txtrPrograms.blurProgram, "isRenderVerticalBlur", 0); 

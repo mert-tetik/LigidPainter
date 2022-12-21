@@ -87,15 +87,15 @@ vec3 getPaintedDiffuse(){
    float mirroredIntensity = 0.0;
 
    if(isPainted(screenPos,false) <= 1.0){
-      intensity = isPainted(screenPos,false);
+      intensity = min(isPainted(screenPos,false),1.0);
    }
    else if(isPainted(screenPos,false) == 2.0) {
       intensity = texture2D(screenMaskTexture, screenPos.xy).r;
    }
 
 
-   if(isPainted(mirroredScreenPos,false) <= 1.0){
-      mirroredIntensity = isPainted(screenPos,false);
+   if(isPainted(mirroredScreenPos,true) <= 1.0){
+      mirroredIntensity = min(isPainted(screenPos,true),1.0);
    }
    else if(isPainted(mirroredScreenPos, true) == 2.0) {
       mirroredIntensity = texture2D((mirroredScreenMaskTexture), mirroredScreenPos.xy).r;
@@ -108,11 +108,12 @@ vec3 getPaintedDiffuse(){
    diffuseDrawMix = mix(diffuseClr, drawColor, intensity);
 
    vec3 mirroredDiffuseDrawMix;
+
    if(useMirror == 1){
-         diffuseDrawMix = mix(diffuseClr, drawColor, mirroredIntensity);
+         mirroredDiffuseDrawMix = mix(diffuseDrawMix, drawColor, mirroredIntensity);
    }
    else{
-      mirroredDiffuseDrawMix = diffuseDrawMix;
+         mirroredDiffuseDrawMix = diffuseDrawMix;
    }
    
    return mirroredDiffuseDrawMix;
@@ -181,21 +182,26 @@ void main() {
    else{
       //Render painted texture in black and white
 
-        //Painting
       vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
+      vec3 mirroredScreenPos = mirroredProjectedPos.xyz / mirroredProjectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
 
       float intensity = 0.0;
+      float mirroredIntensity = 0.0;
 
       if(isPainted(screenPos,false) == 2.0) {
          intensity = texture2D(screenMaskTexture,  screenPos.xy).r;
       }
+      if(isPainted(mirroredScreenPos,true) == 2.0) {
+         mirroredIntensity = texture2D(mirroredScreenMaskTexture,  mirroredScreenPos.xy).r;
+      }
 
-      vec3 diffuseDrawMix;
 
-      diffuseDrawMix = mix(vec3(0), vec3(1), intensity);
+      vec3 result = mix(vec3(0), vec3(1), intensity);
 
-         gl_FragDepth = 1.0 - intensity;
+      vec3 mirroredResult = mix(result, vec3(1), mirroredIntensity);
+
+      gl_FragDepth = 1.0 - mirroredResult.r;
       
-      color = vec4(diffuseDrawMix,1);
+      color = vec4(mirroredResult,1);
    }
 }
