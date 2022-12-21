@@ -176,6 +176,47 @@ void Texture::refreshScreenDrawingTexture(bool reduceQuality) {
 	glset.generateMipmap();
 	delete[] screenTextureM;
 }
+
+
+
+vector<float> gaussianFunc(float radius,float mean){
+	// vector<float> oneDimensionalGauss = {0.0003,	0.0004,	0.0007,	0.0012,	0.0019,	0.0029,	0.0044,	0.0064,	0.0090,	0.0124,	0.0166,	0.0216,	0.0274,	0.0337,	0.0404,	0.0470,	0.0532,	0.0587,	0.0629,	0.0655,	0.0665,	0.0655,	0.0629,	0.0587,	0.0532,	0.0470,	0.0404,	0.0337,	0.0274,	0.0216,	0.0166,	0.0124,	0.0090,	0.0064,	0.0044,	0.0029,	0.0019,	0.0012,	0.0007,	0.0004,	0.0003};
+	vector<float> oneDimensionalGauss;
+	
+	float sigma = (radius / sqrt(-2.0 * log(1 - 0.995))) ;
+
+	//float radiusX = ceil(sqrt(-2.0 * sigma * sigma * log(1.0 - 0.995)));
+ 
+	//cout << result << ' ';
+
+
+	const float pi = 3.14159265359f;
+
+	float summ = 0;
+
+	for (int i = 0; i < radius*2 + 1; i++)
+	{
+    	float denominator = sigma * sqrt(2.0f * pi);
+    	float expon = exp( (-1.0f/2.0f) * (pow((float)i-((float)radius) - mean , 2.0f) / pow(sigma,2.0f)));
+
+    	float a = 1.0f / denominator;
+    	float result = a * expon;
+		oneDimensionalGauss.push_back(result);
+		summ += result;
+		//cout << result << ' ';
+
+	}
+	//cout << "\n\n\n\n\n\n";
+
+	cout << oneDimensionalGauss.size() << ' '; 
+	
+	//cout << "Summ : "<< summ << '\n';
+
+    return oneDimensionalGauss;
+}
+
+
+
 GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData) { //rotationValue = rotationBarValue
 	GlSet glset;
 	UserInterface ui;
@@ -292,7 +333,33 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 	blurShaderData.isRenderVerticalBlur = 0;
 	blurShaderData.renderTextureProjection = renderTextureProjection; 
 
+
+
+
 	glset.useBlurShader(txtrPrograms.blurProgram,blurShaderData);
+
+	
+
+	vector<float> oneDimensionalGaussian = gaussianFunc(min(brushBlurVal,60.0f),0.0f);
+
+
+
+
+	glset.uniform1i(txtrPrograms.blurProgram , "kernel_sizeF" , oneDimensionalGaussian.size());
+
+	for (int i = 0; i < oneDimensionalGaussian.size(); i++)
+	{
+		if(i < 60){
+			std::string target = "oneDimensionalGaussF1[" + std::to_string(i) + "]";
+			glset.uniform1f(txtrPrograms.blurProgram , target.c_str() , oneDimensionalGaussian[i]);
+		}
+		else{
+			std::string target = "oneDimensionalGaussF2[" + std::to_string(i - 60) + "]";
+			glset.uniform1f(txtrPrograms.blurProgram , target.c_str() , oneDimensionalGaussian[i]);
+		}
+		//std::cout << oneDimensionalGaussian[i]<< ' ';
+	}
+	//std::cout << '\n';
 
 	//Horizontal Blur
 	glset.uniform1i(txtrPrograms.blurProgram, "isRenderVerticalBlur", 0); 

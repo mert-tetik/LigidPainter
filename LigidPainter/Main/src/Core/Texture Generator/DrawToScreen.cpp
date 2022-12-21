@@ -64,6 +64,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 	int distanceX = brushSize/qualityDivider;
 	int distanceY = distanceX;
 
+	cout << distanceX;
 	//Get brush size
 
 	//----------------------SET BRUSH TEXTURE----------------------\\

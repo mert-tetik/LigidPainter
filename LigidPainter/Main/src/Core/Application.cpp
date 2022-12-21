@@ -396,7 +396,7 @@ bool hueValChanging;
 
 glm::vec3 drawColor;
 
-float brushBlurVal = 1000;
+float brushBlurVal = 1;
 
 
 bool verticalMirror = false;
@@ -555,7 +555,7 @@ bool LigidPainter::run()
 
 	pbrShaderData.bluryskybox = 16;
 	pbrShaderData.depthTexture = 9;
-	pbrShaderData.materialDiffuse = 0;
+	pbrShaderData.materialDiffuse = 12;
 	pbrShaderData.mirroredDepthTexture = 8;
 	pbrShaderData.mirroredScreenMaskTexture = 3;
 	pbrShaderData.screenMaskTexture = 4;
@@ -578,7 +578,7 @@ bool LigidPainter::run()
 		glfwPollEvents();
 		glfwSwapInterval(1);
 
-		util.printRenderingSpeed();
+		//util.printRenderingSpeed();
 
 		//Check if camera pos changed
 		updateCameraPosChanging();
@@ -1095,12 +1095,7 @@ void LigidPainter::brushBlurRangeBar(float xOffset,int width,int height,bool ren
 	brushBlurRangeBarValue = util.restrictBetween(brushBlurRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
 	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue,renderTiny,brushBorderRangeBarValue,brushBlurVal,outShaderData);
 
-	if (242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 15 > 200){ //If the range bar value is low enough disable blur effect
-		brushBlurVal = 1000;
-	}
-	else {
-		brushBlurVal = 242 - ((brushBlurRangeBarValue + 0.1f) * 1000.0) - 8;
-	}
+	brushBlurVal = ((brushBlurRangeBarValue + 0.11f) * 268.181818182) + 1.0; //Max 59
 }
 void LigidPainter::textureDemonstratorButton(float xOffset,float yOffset,int width,int height) {
 	panelChanging = true;
