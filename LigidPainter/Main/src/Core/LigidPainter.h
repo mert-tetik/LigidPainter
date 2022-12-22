@@ -15,6 +15,7 @@ struct Programs
 	unsigned int hueProgram;
 	unsigned int axisPointerProgram;
 	unsigned int outProgram;
+	unsigned int twoDPaintingProgram;
 };
 struct LigidCursors{
 	GLFWcursor* pointerCursor;

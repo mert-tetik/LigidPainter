@@ -238,9 +238,6 @@ bool mirrorClick = false;
 int textBoxActiveChar = 6;
 bool colorpickerHexValTextboxValChanged = true;
 
-
-bool reduceScreenPaintingQuality = false;
-
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
 	//Action = 0 : First press
@@ -488,7 +485,7 @@ bool LigidPainter::run()
 
 	glset.uniform3fv(programs.uiProgram,"textColor",colorData.textColor);
 	glset.uniform1i(programs.uiProgram, "text", 2);
-	glset.uniform1i(programs.uiProgram, "currentTexture", 0);
+	glset.uniform1i(programs.uiProgram, "currentTexture", 4);
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
 
 
@@ -718,7 +715,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed);
+		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed);
 		 		
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
 
@@ -746,7 +743,7 @@ bool LigidPainter::run()
 
 		//Render
 		//double firstTime = glfwGetTime();
-		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,reduceScreenPaintingQuality,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed);
+		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed);
 		//double lastTime = glfwGetTime();
 		//cout <<  (lastTime - firstTime) * 1000  << '\n';
 
@@ -767,30 +764,30 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed){
-			int differenceBetweenMousePoints = glm::distance(glm::vec2(mouseXpos, mouseYpos), glm::vec2(lastMouseXpos, lastMouseYpos));
+			//int differenceBetweenMousePoints = glm::distance(glm::vec2(mouseXpos, mouseYpos), glm::vec2(lastMouseXpos, lastMouseYpos));
 
-			if(!differenceBetweenMousePoints && firstPaintingPhase){ //TODO : Prevent running firmly
-				//Not reduced (first press (click))
-				firstPaintingPhase = false;
-				cout << "not reduced \n";
-				reduceScreenPaintingQuality = false;
-				brushValChanged = true;
-				txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
-			}
-			else if(differenceBetweenMousePoints && !reduceScreenPaintingQuality){
-				//Reduced (press)
-				cout << "reduced \n";
-				reduceScreenPaintingQuality = true;
-				brushValChanged = true;
-				txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
-			}
+			// if(!differenceBetweenMousePoints && firstPaintingPhase){ //TODO : Prevent running firmly
+			// 	//Not reduced (first press (click))
+			// 	firstPaintingPhase = false;
+			// 	cout << "not reduced \n";
+			// 	reduceScreenPaintingQuality = false;
+			// 	brushValChanged = true;
+			// 	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
+			// }
+			// else if(differenceBetweenMousePoints && !reduceScreenPaintingQuality){
+			// 	//Reduced (press)
+			// 	cout << "reduced \n";
+			// 	reduceScreenPaintingQuality = true;
+			// 	brushValChanged = true;
+			// 	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
+			// }
 
 			//Set firstPaintingPhase false so it will be true only for first left mouse press 
-			if(firstPaintingPhase)
-				firstPaintingPhase = false;
+			// if(firstPaintingPhase)
+			// 	firstPaintingPhase = false;
 			
 			//Paint
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,reduceScreenPaintingQuality,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData,model,albedoTextures);
+			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData,model,albedoTextures);
 			
 			brushValChanged = false; //After updating the brush mask texture set brushValChanged to false so brush mask texture won't be updated repeatedly 
 			paintingMode = true;

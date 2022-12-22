@@ -232,6 +232,13 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 
 
 
+	//Out program
+	unsigned int twoDPaintingProgram = createProgram("LigidPainter/Resources/Shaders/2dPainting");
+
+
+
+
+
 	glPrograms.blurProgram = blurProgram;
 	glPrograms.iconsProgram = iconsProgram;
 	glPrograms.skyboxblurProgram = skyboxblurProgram;
@@ -242,7 +249,8 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 	glPrograms.screenDepthProgram = screenDepthProgram;
 	glPrograms.hueProgram = hueProgram;
 	glPrograms.axisPointerProgram = axisPointerProgram;
-	glPrograms.outProgram = outProgram;
+	glPrograms.outProgram = outProgram;  
+	glPrograms.twoDPaintingProgram = twoDPaintingProgram;  
 
 	return glPrograms;
 }

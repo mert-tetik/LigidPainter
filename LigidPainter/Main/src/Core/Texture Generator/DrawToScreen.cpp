@@ -15,17 +15,6 @@
 
 using namespace std;
 
-std::vector<float> renderVerticesFlipped = {
-	// first triangle
-	 1.0f,  1.0f, 0.0f,0,1,0,0,0,  // top right
-	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom right
-	 0.0f,  1.0f, 0.0f,1,1,0,0,0,  // top left 
-	// second triangle	  ,0,0,0,
-	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom right
-	 0.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom left
-	 0.0f,  1.0f, 0.0f,1,1,0,0,0   // top left
-};
-
 
 GLubyte* resizedPixels = new GLubyte[50 * 50 * 3]; //Resized mask texture
 GLubyte* renderedImage;
@@ -37,9 +26,18 @@ double lastMouseYPosIn = 0;
 
 bool addToScreenMaskTxtr = true;
 
-void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs& programs,int maxScreenWidth,int maxScreenHeight,bool reduceScreenPaintingQuality,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures) {
+vector<glm::vec2> holdLocations;
+
+bool refreshTheScreenMask = false;
+
+void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs& programs,int maxScreenWidth,int maxScreenHeight,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures) {
 	
 	//TODO : Remove path parameter
+
+	if(true){
+		holdLocations.clear();
+		refreshTheScreenMask = false;
+	}
 	
 	Texture texture;
 	Render render;
@@ -53,18 +51,34 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
 	//Get context data
 
+
+	//Get brush size
+	int distanceX = brushSize;
+	int distanceY = distanceX;
+
+
+
+	glm::vec3 drawColor = glm::vec3(1); //Will come from a parameter
+	std::vector<float> renderVerticesFlipped = {
+	// first triangle									//Normals will be used for colors
+	 	distanceX/2.0f,  distanceX/2.0f, 0.0f	,0,1,	drawColor.r,drawColor.g,drawColor.b,  // top right
+	 	distanceX/2.0f, -distanceX/2.0f, 0.0f	,0,0,	drawColor.r,drawColor.g,drawColor.b,  // bottom right
+	   -distanceX/2.0f,  distanceX/2.0f, 0.0f	,1,1,	drawColor.r,drawColor.g,drawColor.b,  // top left 
+	// second triangle
+	 	distanceX/2.0f, -distanceX/2.0f, 0.0f	,0,0,	drawColor.r,drawColor.g,drawColor.b,  // bottom right
+	   -distanceX/2.0f, -distanceX/2.0f, 0.0f	,1,0,	drawColor.r,drawColor.g,drawColor.b,  // bottom left
+	   -distanceX/2.0f,  distanceX/2.0f, 0.0f	,1,1,	drawColor.r,drawColor.g,drawColor.b   // top left
+	};
+
+	glm::mat4 paintingProjection;
+	paintingProjection = glm::ortho(0.0f,(float)maxScreenWidth,(float)maxScreenHeight,0.0f);
+	
+
 	float screenGapX = ((float)maxScreenWidth - screenSizeX)/4.0f; 
 
 	GlSet glset;
 	Texture txtr;
 
-	int qualityDivider = reduceScreenPaintingQuality+1; //Divide by 2 if reduceScreenPaintingQuality is true
-
-	//Get brush size
-	int distanceX = brushSize/qualityDivider;
-	int distanceY = distanceX;
-
-	cout << distanceX;
 	//Get brush size
 
 	//----------------------SET BRUSH TEXTURE----------------------\\
@@ -73,12 +87,12 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 		delete(resizedPixels);
 		delete(renderedImage);
 		//Setup
-		resizedPixels = new GLubyte[distanceX * distanceY * 3];
+		resizedPixels = new GLubyte[540 * 540 * 3];
 
 		renderedImage = txtr.updateMaskTexture(FBOScreen, screenSizeX,screenSizeY, rotationValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData);
 		//Resize
 		if (true) {
-			stbir_resize_uint8(renderedImage, 540, 540, 0, resizedPixels, distanceX, distanceY, 0, 3); //Resize (causes lags)
+			stbir_resize_uint8(renderedImage, 540, 540, 0, resizedPixels, 540, 540, 0, 3); //Resize (causes lags)
 		}
 		//Resize
 	}
@@ -92,14 +106,12 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 
 		float xposDif = (mouseXpos - lastMouseXPos) / differenceBetweenMousePoints;
 		float yposDif = (mouseYpos - lastMouseYPos) / differenceBetweenMousePoints;
+
 		if (differenceBetweenMousePoints <= 10) {
 			differenceBetweenMousePoints = 1;
 		}
 
-
 			float opacity = ((opacityRangeBarValue + 0.11f) * 4.54545454545f); //-0.11 - 0.11 --> 0 - 1
-
-			glset.bindFramebuffer(FBO);
 
 			for (size_t i = 0; i < differenceBetweenMousePoints; i++)
 			{
@@ -109,48 +121,8 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 				}
 
 				if(true){
-					addToScreenMaskTxtr = false;
-					GLubyte* resultSquare = new GLubyte[distanceX * distanceY]; //Write to that array after interpreting resized texture with screen texture
-					GLfloat* screenTextureSquare = new GLfloat[distanceX * distanceY]; //Painting area of the screen texture
-
-					//Get the painting area of the screen texture to the screenTextureSquare
-					glReadPixels((mouseXpos/qualityDivider + screenGapX- distanceX / 2), (maxScreenHeight/qualityDivider - mouseYpos/qualityDivider - distanceY / 2), distanceX, distanceY, GL_RED, GL_FLOAT, screenTextureSquare);
-					
-					//Get the painting area of the screen texture to the screenTextureSquare
-					int test = 0;
-					//Avoid writing low value onto high value
-					for (size_t i = 0; i < distanceX * distanceY; i++)
-					{
-						//resultSquare[i] = max((int)resizedPixels[i], (int)(screenTextureSquare[i] * 255)); //take max value
-						//resultSquare[i] = min(max((int)resizedPixels[i], (int)(screenTextureSquare[i] * 255)) + (int)(screenTextureSquare[i] * 255)/10,255); //take max value
-
-						if(useNegativeForDrawing)
-							resultSquare[i] = max(255.0f - (float)resizedPixels[i*3] * opacity, (float)(screenTextureSquare[i] * 255.0f)); //take max value
-							//resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, 1.0f -(max(resizedPixels[i*3] - screenTextureSquare[i],0.0001f) / 255.0f)) * 255; //Mix
-
-						else
-							resultSquare[i] = max((float)resizedPixels[i*3] * opacity, (float)(screenTextureSquare[i] * 255.0f)); //take max value
-
-							//resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, (max(resizedPixels[i*3] - screenTextureSquare[i],0.0001f) / 255.0f)) * 255; //Mix
-
-
-
-						//resultSquare[i] = glm::mix(screenTextureSquare[i], opacity, (max(resizedPixels[i] - screenTextureSquare[i],0.0001f) / 255.0f)) * 255; //Mix
-						//resultSquare[i] = min(resizedPixels[i] + (int)(screenTextureSquare[i] * 255), 255); //sum up
-					}
-					//Avoid writing low value onto high value
-
-					//Paint screen mask texture with resultSquare
-
-					glset.activeTexture(GL_TEXTURE4);
-					glTexSubImage2D(GL_TEXTURE_2D, 0, (mouseXpos/qualityDivider + screenGapX - distanceX / 2) ,( maxScreenHeight/qualityDivider - mouseYpos/qualityDivider - distanceY / 2), distanceX, distanceY, GL_RED, GL_UNSIGNED_BYTE, resultSquare);
-
-					//Paint screen mask texture with resultSquare
-
-					//finish
-					delete[] screenTextureSquare;
-					delete[] resultSquare;
-					//finish
+					glm::vec2 strokeLocation = glm::vec2(mouseXpos,mouseYpos);
+					holdLocations.push_back(strokeLocation);
 				}
 				else{
 					addToScreenMaskTxtr = true;
@@ -158,38 +130,69 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 				
 			}
 		
+		glUseProgram(programs.twoDPaintingProgram);
+		glset.uniform1i(programs.twoDPaintingProgram, "modifiedMaskTexture" , 12);
+		glset.uniformMatrix4fv(programs.twoDPaintingProgram, "renderProjection" , paintingProjection);
+		for (int i = 0; i < holdLocations.size(); i++)
+		{
+			std::string target = "transform[" + std::to_string(i) + "]";
+			glset.uniform3f(programs.twoDPaintingProgram , target.c_str() , holdLocations[i].x , holdLocations[i].y , 0.5f);
+		}
+		
+
+		glActiveTexture(GL_TEXTURE4);
+
+		glset.blendFunc(GL_SRC_ALPHA, GL_ONE);
+
+		glset.bindFramebuffer(FBO);
+
+		glBufferSubData(GL_ARRAY_BUFFER , 0 , renderVerticesFlipped.size() * sizeof(float) , &renderVerticesFlipped[0]);
+
+		glDrawArraysInstanced(GL_TRIANGLES , 0 , 6 , holdLocations.size());
+
+		glset.activeTexture(GL_TEXTURE4);
 		glset.generateMipmap();
+		glset.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+
+
 
 		if(mirrorUsed){
-		//Update mirrored screen mask texture
-		//setup
-		glset.viewport(1920, 1080);
-		glset.bindFramebuffer(FBOScreen);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-		glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
-		outShaderData.renderTextureProjection = projection;
-		glset.useOutShader(programs.outProgram,outShaderData);
+			//Update mirrored screen mask texture
+			//setup
+			glset.viewport(1920, 1080);
+			glset.bindFramebuffer(FBOScreen);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glset.uniform1i(programs.outProgram, "isTwoDimensional", 0);
-		glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 1);
-		//setup
+			glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
+			outShaderData.renderTextureProjection = projection;
+			glset.useOutShader(programs.outProgram,outShaderData);
 
-		//Get texture
-		render.renderTexture(renderVerticesFlipped,1080,1080,GL_TEXTURE3,GL_RED, model, false,albedoTextures);
-		//Get texture
+			glset.uniform1i(programs.outProgram, "isTwoDimensional", 0);
+			glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 1);
+			//setup
 
-		//Finish
-		glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 0);
-		//Finish
-		//Update mirrored screen mask texture
+			//Get texture
+			render.renderTexture(renderVerticesFlipped,1080,1080,GL_TEXTURE3,GL_RED, model, false,albedoTextures);
+			//Get texture
+
+			//Finish
+			glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 0);
+			//Finish
+			//Update mirrored screen mask texture
+			}
+			glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
+
+			glUseProgram(programs.uiProgram);
 		}
-		glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
+	glset.bindFramebuffer(0);
 
-		glUseProgram(programs.uiProgram);
-		glset.bindFramebuffer(0);
-	}
 	lastMouseXPosIn = mouseXposIn;
 	lastMouseYPosIn = mouseYposIn;
 	addToScreenMaskTxtr = true;
+}
+
+void Texture::refreshScreenTxtr(){
+	refreshTheScreenMask = true;
 }

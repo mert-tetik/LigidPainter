@@ -7,8 +7,7 @@ uniform sampler2D inputTexture;
 
 uniform int kernel_sizeF;
 
-uniform float oneDimensionalGaussF1[61];
-uniform float oneDimensionalGaussF2[61];
+uniform float oneDimensionalGaussF1[121];
 
 uniform int isRenderVerticalBlur;
 
@@ -27,19 +26,10 @@ void main(){
     float pixelSize = 0.005;
 
     for(int i = 0; i < kernel_sizeF; i++) {
-        if(i < 60){
             if(isRenderVerticalBlur == 0)
                 color += texture(inputTexture, centerTexCoords + vec2(pixelSize*(i - (kernel_sizeF / 2)),0)) * oneDimensionalGaussF1[i];
             else
                 color += texture(inputTexture, centerTexCoords + vec2(0,pixelSize*(i - (kernel_sizeF / 2)))) * oneDimensionalGaussF1[i];
-        }
-        else{
-             if(isRenderVerticalBlur == 0)
-                color += texture(inputTexture, centerTexCoords + vec2(pixelSize*(i - (kernel_sizeF / 2)),0)) * oneDimensionalGaussF2[i-60];
-            else
-                color += texture(inputTexture, centerTexCoords + vec2(0,pixelSize*(i - (kernel_sizeF / 2)))) * oneDimensionalGaussF2[i-60];
-        }
-
     }
     
 }

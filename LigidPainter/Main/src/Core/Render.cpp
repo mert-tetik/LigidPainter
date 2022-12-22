@@ -789,7 +789,7 @@ void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int scre
 
 //------------CtrlZ------------
 bool doCtrlZ;
-void ctrlZCheck(GLFWwindow* window,bool reduceScreenPaintingQuality,std::vector<unsigned int> &albedoTextures) {
+void ctrlZCheck(GLFWwindow* window,std::vector<unsigned int> &albedoTextures) {
 	Texture txtr;
 	GlSet glset;
 
@@ -798,7 +798,7 @@ void ctrlZCheck(GLFWwindow* window,bool reduceScreenPaintingQuality,std::vector<
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ && undoList.size() != 0) { //MAX 20
 		
 		//Refresh the screen mask texture (Prevent bugs where might be accur trying undo while in the middle of painting)
-		txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
+		txtr.refreshScreenDrawingTexture();
 		
 		//Bind the related texture
 		glset.activeTexture(GL_TEXTURE0);
@@ -928,7 +928,7 @@ void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsi
 	delete[]renderedTexture;
 }
 
-void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName,bool reduceScreenPaintingQuality, OutShaderData outShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures,bool paintOut) {
+void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName, OutShaderData outShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures,bool paintOut) {
 	int maxHistoryHold = 20;
 
 	std::vector<float> renderVertices = { //Render backside of the uv
@@ -1015,7 +1015,7 @@ void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, 
 	delete[]renderedImage;
 	//Render painted image
 
-	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
+	txtr.refreshScreenDrawingTexture();
 
 	//Render uv mask
 	gl.uniform1i(renderPrograms.outProgram, "whiteRendering", 1);
@@ -1115,7 +1115,7 @@ RenderOutData uiOut;
 
 glm::vec3 screenHoverPixel;
 
-RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,UiData &uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons &icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string &colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,bool renderPlane,bool renderSphere,bool reduceScreenPaintingQuality,PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures, bool updateHueVal,bool paintingDropperPressed) {
+RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,UiData &uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons &icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string &colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,bool renderPlane,bool renderSphere,PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures, bool updateHueVal,bool paintingDropperPressed) {
 	GlSet gls;
 	UserInterface ui;
 	ColorData colorData;
@@ -1171,7 +1171,7 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 				gls.bindTexture(albedoTextures[i]);
 
 				//Render the texture 	
-				renderTextures(FBOScreen, (i == albedoTextures.size()-1) ,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,reduceScreenPaintingQuality,outShaderData,model,renderDefault,albedoTextures,true);
+				renderTextures(FBOScreen, (i == albedoTextures.size()-1) ,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,true);
 
 				//Render material by material
 				currentMaterialIndex++;
@@ -1184,7 +1184,7 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 
 		}
 		else
-			renderTextures(FBOScreen,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,reduceScreenPaintingQuality,outShaderData,model,renderDefault,albedoTextures,false);
+			renderTextures(FBOScreen,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,false);
 	}
 
 
@@ -1197,7 +1197,7 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 	if (colorBoxValChanged && !colorpickerHexValTextboxValChanged) { //Get value of color box
 		colorBoxVal = getColorBoxValue(FBOScreen, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y,screenSizeX, screenSizeY);
 	}
-	ctrlZCheck(renderData.window,reduceScreenPaintingQuality,albedoTextures);
+	ctrlZCheck(renderData.window,albedoTextures);
 
 
 	updateButtonColorMixValues(uidata);

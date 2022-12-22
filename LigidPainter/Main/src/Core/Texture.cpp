@@ -9,6 +9,8 @@
 #include "UserInterface.h"
 #include "gl.h"
 #include "Texture.h"
+
+
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -158,13 +160,15 @@ ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTextu
 
 	return screenPaintingReturnData;
 }
-void Texture::refreshScreenDrawingTexture(bool reduceQuality) {
-	int qualityDivider = (reduceQuality+1);
+void Texture::refreshScreenDrawingTexture() {
+
+	refreshScreenTxtr();
+
 	GlSet glset;
-	GLubyte* screenTextureX = new GLubyte[(textureMaxScreenWidth/qualityDivider) * (textureMaxScreenHeight/qualityDivider)];
-	std::fill_n(screenTextureX, (textureMaxScreenWidth/qualityDivider) * (textureMaxScreenHeight/qualityDivider), 0);
+	GLubyte* screenTextureX = new GLubyte[(textureMaxScreenWidth) * (textureMaxScreenHeight)];
+	std::fill_n(screenTextureX, (textureMaxScreenWidth) * (textureMaxScreenHeight), 0);
 	glset.activeTexture(GL_TEXTURE4);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, textureMaxScreenWidth/qualityDivider, textureMaxScreenHeight/qualityDivider, 0, GL_RED, GL_UNSIGNED_BYTE, screenTextureX);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, textureMaxScreenWidth, textureMaxScreenHeight, 0, GL_RED, GL_UNSIGNED_BYTE, screenTextureX);
 	glset.generateMipmap();
 	delete[] screenTextureX;
 
@@ -350,16 +354,10 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 
 	for (int i = 0; i < oneDimensionalGaussian.size(); i++)
 	{
-		if(i < 60){
-			std::string target = "oneDimensionalGaussF1[" + std::to_string(i) + "]";
-			glset.uniform1f(txtrPrograms.blurProgram , target.c_str() , oneDimensionalGaussian[i]);
-		}
-		else{
-			std::string target = "oneDimensionalGaussF2[" + std::to_string(i - 60) + "]";
-			glset.uniform1f(txtrPrograms.blurProgram , target.c_str() , oneDimensionalGaussian[i]);
-		}
+		std::string target = "oneDimensionalGaussF1[" + std::to_string(i) + "]";
+		glset.uniform1f(txtrPrograms.blurProgram , target.c_str() , oneDimensionalGaussian[i]);
 	}
-	
+
 
 	//Horizontal Blur
 	glset.uniform1i(txtrPrograms.blurProgram, "isRenderVerticalBlur", 0); 
