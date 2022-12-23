@@ -31,14 +31,13 @@ vector<glm::vec2> holdLocations;
 bool refreshTheScreenMask = false;
 
 void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs& programs,int maxScreenWidth,int maxScreenHeight,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures) {
-	
+
 	//TODO : Remove path parameter
 
 	if(true){
 		holdLocations.clear();
-		refreshTheScreenMask = false;
 	}
-	
+
 	Texture texture;
 	Render render;
 
@@ -57,13 +56,15 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 	int distanceY = distanceX;
 
 
+	float opacity = ((opacityRangeBarValue + 0.11f) * 4.54545454545f); //-0.11 - 0.11 --> 0 - 1
 
-	glm::vec3 drawColor = glm::vec3(1); //Will come from a parameter
+	glm::vec3 drawColor = glm::vec3(opacity);
+	
 	std::vector<float> renderVerticesFlipped = {
 	// first triangle									//Normals will be used for colors
 	 	distanceX/2.0f,  distanceX/2.0f, 0.0f	,0,1,	drawColor.r,drawColor.g,drawColor.b,  // top right
 	 	distanceX/2.0f, -distanceX/2.0f, 0.0f	,0,0,	drawColor.r,drawColor.g,drawColor.b,  // bottom right
-	   -distanceX/2.0f,  distanceX/2.0f, 0.0f	,1,1,	drawColor.r,drawColor.g,drawColor.b,  // top left 
+	   -distanceX/2.0f,  distanceX/2.0f, 0.0f	,1,1,	drawColor.r,drawColor.g,drawColor.b,  // top left
 	// second triangle
 	 	distanceX/2.0f, -distanceX/2.0f, 0.0f	,0,0,	drawColor.r,drawColor.g,drawColor.b,  // bottom right
 	   -distanceX/2.0f, -distanceX/2.0f, 0.0f	,1,0,	drawColor.r,drawColor.g,drawColor.b,  // bottom left
@@ -72,9 +73,9 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 
 	glm::mat4 paintingProjection;
 	paintingProjection = glm::ortho(0.0f,(float)maxScreenWidth,(float)maxScreenHeight,0.0f);
-	
 
-	float screenGapX = ((float)maxScreenWidth - screenSizeX)/4.0f; 
+
+	float screenGapX = ((float)maxScreenWidth - screenSizeX)/4.0f;
 
 	GlSet glset;
 	Texture txtr;
@@ -97,9 +98,9 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 		//Resize
 	}
 	if (lastMouseXPosIn - mouseXposIn != 0 || lastMouseYPosIn - mouseYposIn != 0) {
-		
+
 		//----------------------PAINTING----------------------\\
-		
+
 		int reduceTheDifference = 21 - (paintingFillNumericModifierVal*2);
 
 		int differenceBetweenMousePoints = glm::distance(glm::vec2(mouseXpos, mouseYpos), glm::vec2(lastMouseXPos, lastMouseYPos))/reduceTheDifference;
@@ -110,9 +111,6 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 		if (differenceBetweenMousePoints <= 10) {
 			differenceBetweenMousePoints = 1;
 		}
-
-			float opacity = ((opacityRangeBarValue + 0.11f) * 4.54545454545f); //-0.11 - 0.11 --> 0 - 1
-
 			for (size_t i = 0; i < differenceBetweenMousePoints; i++)
 			{
 				if (differenceBetweenMousePoints > 10) {
@@ -127,26 +125,43 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 				else{
 					addToScreenMaskTxtr = true;
 				}
-				
+
 			}
-		
+
 		glUseProgram(programs.twoDPaintingProgram);
 		glset.uniform1i(programs.twoDPaintingProgram, "modifiedMaskTexture" , 12);
 		glset.uniformMatrix4fv(programs.twoDPaintingProgram, "renderProjection" , paintingProjection);
 		for (int i = 0; i < holdLocations.size(); i++)
 		{
+			float z = 0.5f;
+
 			std::string target = "transform[" + std::to_string(i) + "]";
-			glset.uniform3f(programs.twoDPaintingProgram , target.c_str() , holdLocations[i].x , holdLocations[i].y , 0.5f);
+			glset.uniform3f(programs.twoDPaintingProgram , target.c_str() , holdLocations[i].x , holdLocations[i].y , z);
 		}
-		
+
 
 		glActiveTexture(GL_TEXTURE4);
 
-		glset.blendFunc(GL_SRC_ALPHA, GL_ONE);
+
+
+		// glset.blendFunc(GL_ONE_MINUS_SRC_COLOR, GL_DST_ALPHA);
+		glBlendEquationSeparate(GL_MAX,GL_FUNC_REVERSE_SUBTRACT);
+		
+		glset.blendFunc( GL_SRC_ALPHA, GL_ONE);
 
 		glset.bindFramebuffer(FBO);
 
+		if(refreshTheScreenMask){
+			cout << "asfsf";
+			glClear(GL_DEPTH_BUFFER_BIT);
+			refreshTheScreenMask = false;
+		}
+		
 		glBufferSubData(GL_ARRAY_BUFFER , 0 , renderVerticesFlipped.size() * sizeof(float) , &renderVerticesFlipped[0]);
+
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_TRUE);
+		glDepthFunc(GL_ALWAYS);
 
 		glDrawArraysInstanced(GL_TRIANGLES , 0 , 6 , holdLocations.size());
 
@@ -155,7 +170,9 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 		glset.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
+		glDepthFunc(GL_LESS);
 
+		glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
 
 
 		if(mirrorUsed){
@@ -186,6 +203,8 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 
 			glUseProgram(programs.uiProgram);
 		}
+
+
 	glset.bindFramebuffer(0);
 
 	lastMouseXPosIn = mouseXposIn;

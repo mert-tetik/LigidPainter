@@ -14,5 +14,5 @@ void main(){
     color = aColor;
     texCoords = aTexCoords;
 
-    gl_Position = renderProjection * vec4(vec3(aPos.xy + transform[gl_InstanceID].xy , 0.9), 1.0);
+    gl_Position = renderProjection * vec4(vec3(aPos.xy + transform[gl_InstanceID].xy , 0.5), 1.0);
 }

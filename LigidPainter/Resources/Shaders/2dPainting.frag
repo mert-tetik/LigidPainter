@@ -11,5 +11,5 @@ void main(){
     
     float intensity = texture2D(modifiedMaskTexture,texCoords).r;
 
-    fragColor = vec4(intensity);
+    fragColor = vec4(vec3(intensity * color),intensity);
 }
