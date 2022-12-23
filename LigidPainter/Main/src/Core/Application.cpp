@@ -549,7 +549,7 @@ bool LigidPainter::run()
 	unsigned int RBO;
 	glset.genRenderbuffers(RBO);
 	glset.bindRenderBuffer(RBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, 1920, 1080);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, windowData.windowMaxWidth, windowData.windowMaxHeight);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
 
 	glClear(GL_DEPTH_BUFFER_BIT);

@@ -76,6 +76,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 
 
 	float screenGapX = ((float)maxScreenWidth - screenSizeX);
+	float screenGapY = ((float)maxScreenHeight - screenSizeY);
 
 	GlSet glset;
 	Texture txtr;
@@ -142,7 +143,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 
 		glActiveTexture(GL_TEXTURE4);
 
-
+		glViewport(0,0,maxScreenWidth,maxScreenHeight);
 
 		// glset.blendFunc(GL_ONE_MINUS_SRC_COLOR, GL_DST_ALPHA);
 		glBlendEquationSeparate(GL_MAX,GL_FUNC_REVERSE_SUBTRACT);
@@ -199,12 +200,12 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 			//Finish
 			//Update mirrored screen mask texture
 			}
-			glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 
 			glUseProgram(programs.uiProgram);
 		}
 
 
+	glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 	glset.bindFramebuffer(0);
 
 	lastMouseXPosIn = mouseXposIn;
