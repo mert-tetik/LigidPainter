@@ -123,6 +123,7 @@ struct Icons{
 	unsigned int ArrowLeft;
 	unsigned int Painting;
 	unsigned int Logo;
+	unsigned int AddTexture;
 };
 
 struct RenderData { //GlSet::render

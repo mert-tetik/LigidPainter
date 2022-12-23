@@ -228,7 +228,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 		{ 	
 			//Check if mouse is entered the related button
 			bool textureButtonEnter = ui.isMouseOnButton(renderData.window, 0.2f, 0.06f, renderData.panelLoc - screenGapX*2 + 0.205f,0.8f - (i * 0.125f), mouseXpos, mouseYpos,true);
-			bool textureAddButtonEnter = ui.isMouseOnButton(renderData.window, 0.03f, 0.06f, renderData.panelLoc - screenGapX*2 + 0.3f,0.8f - (i * 0.125f), mouseXpos, mouseYpos,true);
+			bool textureAddButtonEnter = ui.isMouseOnButton(renderData.window, 0.02f, 0.03f, renderData.panelLoc - screenGapX*2 + 0.3f,0.8f - (i * 0.125f), mouseXpos, mouseYpos,true);
 			
 			if(textureButtonEnter){
 				//Hover
@@ -282,8 +282,14 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 					}
 				}
 			}
-
-			ui.box(0.03f, 0.06f, renderData.panelLoc - screenGapX + 0.3f, 0.8f - (i * 0.125f), "", colorData.buttonColorHover, 0.048f, true, false, 0.6f, 10000, colorData.buttonColorHover, 0); 
+			//ui.box(0.03f, 0.06f, renderData.panelLoc - screenGapX + 0.3f, 0.8f - (i * 0.125f), "", colorData.buttonColorHover, 0.048f, true, false, 0.6f, 10000, colorData.buttonColorHover, 0); 
+			glUseProgram(renderPrograms.iconsProgram);
+			float iconmixVal = 0.0f;
+			if(textureAddButtonEnter)
+				iconmixVal = 0.5f;
+				
+			ui.iconBox(0.02f,0.025f,renderData.panelLoc - screenGapX + 0.3f ,0.8f - (i * 0.125f),0.99f,icons.AddTexture,iconmixVal,colorData.iconColor,colorData.iconColorHover);
+			glUseProgram(renderPrograms.uiProgram); 
 		}
 		if(!mouseEnteredOnce){
 			texturePanelButtonHover = false;
