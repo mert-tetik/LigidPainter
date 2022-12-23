@@ -59,7 +59,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 	float opacity = ((opacityRangeBarValue + 0.11f) * 4.54545454545f); //-0.11 - 0.11 --> 0 - 1
 
 	glm::vec3 drawColor = glm::vec3(opacity);
-	
+
 	std::vector<float> renderVerticesFlipped = {
 	// first triangle									//Normals will be used for colors
 	 	distanceX/2.0f,  distanceX/2.0f, 0.0f	,0,1,	drawColor.r,drawColor.g,drawColor.b,  // top right
@@ -75,7 +75,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 	paintingProjection = glm::ortho(0.0f,(float)maxScreenWidth,(float)maxScreenHeight,0.0f);
 
 
-	float screenGapX = ((float)maxScreenWidth - screenSizeX)/4.0f;
+	float screenGapX = ((float)maxScreenWidth - screenSizeX);
 
 	GlSet glset;
 	Texture txtr;
@@ -119,7 +119,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 				}
 
 				if(true){
-					glm::vec2 strokeLocation = glm::vec2(mouseXpos,mouseYpos);
+					glm::vec2 strokeLocation = glm::vec2(mouseXpos + screenGapX , mouseYpos);
 					holdLocations.push_back(strokeLocation);
 				}
 				else{

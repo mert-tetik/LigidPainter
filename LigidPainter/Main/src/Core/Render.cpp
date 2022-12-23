@@ -379,7 +379,6 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 		//File path textbox
 		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec3(0), 0);
 		ui.renderText(renderPrograms.uiProgram, "File Path", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.64f, 0.00022f);
-		ui.renderText(renderPrograms.uiProgram, ".OBJ only", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.1f, 0.54f, 0.00022f);
 
 		
 		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false, 0.9f, 10, colorData.buttonColorHover, loadModelButtonMixVal);//Load model button
