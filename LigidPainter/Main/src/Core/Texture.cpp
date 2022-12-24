@@ -189,11 +189,6 @@ vector<float> gaussianFunc(float radius,float mean){
 	
 	float sigma = (radius / sqrt(-2.0 * log(1 - 0.995))) ;
 
-	//float radiusX = ceil(sqrt(-2.0 * sigma * sigma * log(1.0 - 0.995)));
- 
-	//cout << result << ' ';
-
-
 	const float pi = 3.14159265359f;
 
 	float summ = 0;
@@ -207,15 +202,11 @@ vector<float> gaussianFunc(float radius,float mean){
     	float result = a * expon;
 		oneDimensionalGauss.push_back(result);
 		summ += result;
-		//cout << result << ' ';
 
 	}
-	//cout << "\n\n\n\n\n\n";
 
 	cout << oneDimensionalGauss.size() << ' '; 
 	
-	//cout << "Summ : "<< summ << '\n';
-
     return oneDimensionalGauss;
 }
 

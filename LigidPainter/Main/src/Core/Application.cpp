@@ -776,27 +776,6 @@ bool LigidPainter::run()
 			drawingCount++;
 		}
 		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed){
-			//int differenceBetweenMousePoints = glm::distance(glm::vec2(mouseXpos, mouseYpos), glm::vec2(lastMouseXpos, lastMouseYpos));
-
-			// if(!differenceBetweenMousePoints && firstPaintingPhase){ //TODO : Prevent running firmly
-			// 	//Not reduced (first press (click))
-			// 	firstPaintingPhase = false;
-			// 	cout << "not reduced \n";
-			// 	reduceScreenPaintingQuality = false;
-			// 	brushValChanged = true;
-			// 	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
-			// }
-			// else if(differenceBetweenMousePoints && !reduceScreenPaintingQuality){
-			// 	//Reduced (press)
-			// 	cout << "reduced \n";
-			// 	reduceScreenPaintingQuality = true;
-			// 	brushValChanged = true;
-			// 	txtr.refreshScreenDrawingTexture(reduceScreenPaintingQuality);
-			// }
-
-			//Set firstPaintingPhase false so it will be true only for first left mouse press 
-			// if(firstPaintingPhase)
-			// 	firstPaintingPhase = false;
 			
 			//Paint
 			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData,model,albedoTextures);

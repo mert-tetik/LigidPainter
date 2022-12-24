@@ -163,7 +163,6 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 		glset.bindFramebuffer(FBO);
 
 		if(refreshTheScreenMask){
-			cout << "asfsf";
 			glClear(GL_DEPTH_BUFFER_BIT);
 			refreshTheScreenMask = false;
 		}

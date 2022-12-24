@@ -453,6 +453,7 @@ void GlSet::useScreenDepthShader(unsigned int program, ScreenDepthShaderData dat
 	uniformMatrix4fv(program,"view",data.view);
 	uniformMatrix4fv(program,"mirroredView",data.mirroredView);
 	uniformMatrix4fv(program,"projection",data.projection);
+	uniform1i(program,"renderMirrored",data.renderMirrored);
 }
 void GlSet::useHueShader(unsigned int program, HueShaderData data){
 	glUseProgram(program);

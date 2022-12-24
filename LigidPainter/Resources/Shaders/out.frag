@@ -51,11 +51,14 @@ float isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMi
       drawZ = texture2D(mirroredDepthTexture, uv.xy).b; 
    }
 
-   float uvCoordVal = texture2D(paintedTxtrMask,TexCoords).r;
-
-   if(isMirrored){
-      uvCoordVal = 0.0;
+   float uvCoordVal;
+   if(!isMirrored){
+      uvCoordVal = texture2D(paintedTxtrMask,TexCoords).r;
    }
+   else{
+      uvCoordVal = texture2D(paintedTxtrMask,TexCoords).g;
+   }
+
    // vec3 direction;
 
    // if(isMirrored){
@@ -201,18 +204,13 @@ void main() {
          mirroredIntensity = texture2D(mirroredScreenMaskTexture,  mirroredScreenPos.xy).r;
       }
 
-      vec3 result = mix(vec3(0), vec3(1), intensity);
+      vec3 result = mix(vec3(0), vec3(1,0,0), intensity);
       vec3 mirroredResult; 
       
-      if(useMirror == 1){
-         mirroredResult = mix(result, vec3(1), mirroredIntensity);
-      }
-      else{
-         mirroredResult = result;
-      }
+      mirroredResult = mix(result, vec3(0.1,1,0), mirroredIntensity);
 
       gl_FragDepth = 1.0 - mirroredResult.r;
       
-      color = vec4(result,1);
+      color = vec4(mirroredResult,1);
    }
 }
