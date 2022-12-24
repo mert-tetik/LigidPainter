@@ -935,120 +935,160 @@ void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsi
 	delete[]renderedTexture;
 }
 
-void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName, OutShaderData outShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures,bool paintOut) {
+void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName, OutShaderData outShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint) {
 	int maxHistoryHold = 20;
-
-	std::vector<float> renderVertices = { //Render backside of the uv
-	// first triangle
-	 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
-	 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
-	 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
-	// second triangle	  ,0,0,0,
-	 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
-	 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
-	 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
-	};
-	Texture txtr;
-
-    //Send the texture to the undoTextures vector before updating the texture
-	GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, 1080, 1080, 3);
 	
+	if(firstPaint){
+		//UNDO
+		Texture txtr;
 
-	//Send the texture to the undoList before processing the texture (will be used for ctrl z)
-	UndoActions undoAct;
-	undoAct.activeMaterial = currentMaterialIndex;
-	undoAct.undoTextures = originalImage; 
-	undoList.push_back(undoAct);
+		GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, 1080, 1080, 3);
+
+		//Send the texture to the undoList before processing the texture (will be used for ctrl z)
+		UndoActions undoAct;
+		undoAct.activeMaterial = currentMaterialIndex;
+		undoAct.undoTextures = originalImage; 
+		undoList.push_back(undoAct);
 
 
-    //Delete the first element from undoList if undoList's count is greated than max history holding value which is 20
-	if (undoList.size() > maxHistoryHold){
-		//Delete the texture
-		GLubyte* undoTexture = undoList[0].undoTextures;
-		delete[] undoTexture;
+    	//Delete the first element from undoList if undoList's count is greated than max history holding value which is 20
+		if (undoList.size() > maxHistoryHold){
+			//Delete the texture
+			GLubyte* undoTexture = undoList[0].undoTextures;
+			delete[] undoTexture;
 
-		//Remove the element
-		undoList.erase(undoList.begin());
+			//Remove the element
+			undoList.erase(undoList.begin());
+		}
 	}
 
-    GlSet gl;
-	//Setup
-	glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
-	outShaderData.renderTextureProjection = projection;
-	gl.useOutShader(renderPrograms.outProgram, outShaderData);
+	if(isRenderTexture){
+
+		std::vector<float> renderVertices = { //Render backside of the uv
+		// first triangle
+		 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+		 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+		 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+		// second triangle	  ,0,0,0,
+		 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+		 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+		 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+		};
+		Texture txtr;
+
+		
 
 
-	gl.uniform1i(renderPrograms.outProgram, "isTwoDimensional", 0);
-	gl.viewport(1920, 1080);
-	gl.bindFramebuffer(FBOScreen);
-	glClearColor(0,0,0,1);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//Setup
+    	GlSet gl;
+		//Setup
+		glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
+		outShaderData.renderTextureProjection = projection;
+		gl.useOutShader(renderPrograms.outProgram, outShaderData);
 
 
-
-	gl.uniform1i(renderPrograms.outProgram,"renderPaintedTxtrMask",1);
-
-
-	//Prevent uv stacking
-	model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
-
-	GLubyte* paintedMask = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
-	glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, paintedMask);
-	gl.activeTexture(GL_TEXTURE11);
-	gl.texImage(paintedMask, 1080, 1080, GL_RGB);
-	gl.generateMipmap();
-	delete[]paintedMask;
-
-
-	UserInterface ui;
-	ui.setViewportBgColor();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	gl.uniform1i(renderPrograms.outProgram,"renderPaintedTxtrMask",0);
+		gl.uniform1i(renderPrograms.outProgram, "isTwoDimensional", 0);
+		gl.viewport(1920, 1080);
+		gl.bindFramebuffer(FBOScreen);
+		glClearColor(0,0,0,1);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//Setup
 
 
 
-	//Render painted image
-	model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
+		gl.uniform1i(renderPrograms.outProgram,"renderPaintedTxtrMask",1);
 
-	if (!paintOut)
-		gl.drawArrays(renderVertices, false);
 
-	GLubyte* renderedImage = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
-	glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
-	gl.activeTexture(GL_TEXTURE0);
-	gl.texImage(renderedImage, 1080, 1080, GL_RGB);
-	gl.generateMipmap();
-	delete[]renderedImage;
-	//Render painted image
+		//Prevent uv stacking
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
 
-	txtr.refreshScreenDrawingTexture();
+		GLubyte* paintedMask = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
+		glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, paintedMask);
+		gl.activeTexture(GL_TEXTURE11);
+		gl.texImage(paintedMask, 1080, 1080, GL_RGB);
+		gl.generateMipmap();
+		delete[]paintedMask;
 
-	//Render uv mask
-	gl.uniform1i(renderPrograms.outProgram, "whiteRendering", 1);
-	renderTexture(renderVertices,1080, 1080,GL_TEXTURE7,GL_RGB,model,true,albedoTextures);
-	gl.uniform1i(renderPrograms.outProgram, "whiteRendering", 0);
-	//Render uv mask
 
-	//interpret the albedo with ui mask texture
-	gl.uniform1i(renderPrograms.outProgram, "interpretWithUvMask", 1);
-	renderTexture(renderVertices,1080, 1080,GL_TEXTURE0,GL_RGB,model, false,albedoTextures);//Render enlarged texture
-	gl.uniform1i(renderPrograms.outProgram, "interpretWithUvMask", 0);
-	//interpret the albedo with ui mask texture
+		UserInterface ui;
+		ui.setViewportBgColor();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		gl.uniform1i(renderPrograms.outProgram,"renderPaintedTxtrMask",0);
 
-	//Download enlarged texture
-	if (exportImage) {
-        exportTexture(JPG,PNG,exportPath,exportFileName,albedoTextures);
+
+
+		//Render painted image
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
+
+		if (!paintOut)
+			gl.drawArrays(renderVertices, false);
+
+		GLubyte* renderedImage = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
+		glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
+		gl.activeTexture(GL_TEXTURE0);
+		gl.texImage(renderedImage, 1080, 1080, GL_RGB);
+		gl.generateMipmap();
+		delete[]renderedImage;
+		//Render painted image
+
+		txtr.refreshScreenDrawingTexture();
+
+		//Render uv mask
+		gl.uniform1i(renderPrograms.outProgram, "whiteRendering", 1);
+		renderTexture(renderVertices,1080, 1080,GL_TEXTURE7,GL_RGB,model,true,albedoTextures);
+		gl.uniform1i(renderPrograms.outProgram, "whiteRendering", 0);
+		//Render uv mask
+
+		//interpret the albedo with ui mask texture
+		gl.uniform1i(renderPrograms.outProgram, "interpretWithUvMask", 1);
+		renderTexture(renderVertices,1080, 1080,GL_TEXTURE0,GL_RGB,model, false,albedoTextures);//Render enlarged texture
+		gl.uniform1i(renderPrograms.outProgram, "interpretWithUvMask", 0);
+		//interpret the albedo with ui mask texture
+
+		//Download enlarged texture
+		if (exportImage) {
+    	    exportTexture(JPG,PNG,exportPath,exportFileName,albedoTextures);
+		}
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//Finish
+		gl.bindFramebuffer(0);
+		glViewport(-(renderMaxScreenWidth - screenSizeX)/2, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
+
+		//Finish
+		glUseProgram(renderPrograms.uiProgram);
 	}
+	else if(paintRender){
+		GlSet gl;
+		UserInterface ui;
+		Texture txtr;
+		
+		glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
+		outShaderData.renderTextureProjection = projection;
+		gl.useOutShader(renderPrograms.outProgram, outShaderData);
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		gl.uniform1i(renderPrograms.outProgram, "isTwoDimensional", 0);
+		gl.viewport(1920, 1080);
+		gl.bindFramebuffer(FBOScreen);
 
-	//Finish
-	gl.bindFramebuffer(0);
-	glViewport(-(renderMaxScreenWidth - screenSizeX)/2, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
+		ui.setViewportBgColor();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		gl.uniform1i(renderPrograms.outProgram,"renderPaintedTxtrMask",0);
+		//Render painted image
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
 
-	//Finish
-	glUseProgram(renderPrograms.uiProgram);
+		GLubyte* renderedImage = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
+		glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
+		gl.activeTexture(GL_TEXTURE0);
+		gl.texImage(renderedImage, 1080, 1080, GL_RGB);
+		gl.generateMipmap();
+		delete[]renderedImage;
+		gl.bindFramebuffer(0);
+		txtr.refreshScreenDrawingTexture();
+
+		glViewport(-(renderMaxScreenWidth - screenSizeX)/2, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
+	}
+	
 
 }
 glm::vec3 getScreenHoverPixel(double mouseXpos,double mouseYpos, int screenSizeY){
@@ -1122,7 +1162,8 @@ RenderOutData uiOut;
 
 glm::vec3 screenHoverPixel;
 
-RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,UiData &uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons &icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string &colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,bool renderPlane,bool renderSphere,PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures, bool updateHueVal,bool paintingDropperPressed) {
+int paintRenderCounter = 0;
+RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertices, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,UiData &uidata,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,bool textureDemonstratorBoundariesPressed,Icons &icons,const char* maskTextureFile,int paintingFillNumericModifierVal,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,std::string &colorpickerHexVal,bool colorpickerHexValTextboxValChanged,bool colorBoxValChanged,bool renderPlane,bool renderSphere,PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures, bool updateHueVal,bool paintingDropperPressed, bool paintRender) {
 	GlSet gls;
 	UserInterface ui;
 	ColorData colorData;
@@ -1166,7 +1207,19 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 
 
 	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || uidata.addImageButtonPressed ||(glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
-	if (isRenderTexture) { //colorboxvalchanged has to trigger paintingmode to false
+	
+	bool firstPaint = false; //Take the texture to the undo list
+	
+	if(paintRender)
+		paintRenderCounter++;
+	if(isRenderTexture)
+		paintRenderCounter = 0;
+	
+	if(paintRenderCounter == 1)
+		firstPaint = true;
+
+
+	if (isRenderTexture || paintRender) { //colorboxvalchanged has to trigger paintingmode to false
 		
 		if(exportData.exportImage){
 			int lastMaterialIndex = currentMaterialIndex;
@@ -1178,7 +1231,7 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 				gls.bindTexture(albedoTextures[i]);
 
 				//Render the texture 	
-				renderTextures(FBOScreen, (i == albedoTextures.size()-1) ,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,true);
+				renderTextures(FBOScreen, (i == albedoTextures.size()-1) ,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,true,isRenderTexture,paintRender,firstPaint);
 
 				//Render material by material
 				currentMaterialIndex++;
@@ -1191,7 +1244,7 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 
 		}
 		else
-			renderTextures(FBOScreen,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,false);
+			renderTextures(FBOScreen,exportData.exportImage,uidata.exportExtJPGCheckBoxPressed, uidata.exportExtPNGCheckBoxPressed,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,firstPaint);
 	}
 
 

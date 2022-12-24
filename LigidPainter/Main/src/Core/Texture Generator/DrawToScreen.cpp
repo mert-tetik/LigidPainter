@@ -85,7 +85,9 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 	paintingProjection = glm::ortho(0.0f,(float)maxScreenWidth,(float)maxScreenHeight,0.0f);
 
 
-	float screenGapX = ((float)maxScreenWidth - screenSizeX);
+	float screenGapX = ((float)maxScreenWidth - screenSizeX)/2.0f;
+	cout << screenGapX << '\n';
+
 	float screenGapY = ((float)maxScreenHeight - screenSizeY);
 
 	GlSet glset;
@@ -216,7 +218,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 
 	glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 	glset.bindFramebuffer(0);
-
+	
 	lastMouseXPosIn = mouseXposIn;
 	lastMouseYPosIn = mouseYposIn;
 	addToScreenMaskTxtr = true;
