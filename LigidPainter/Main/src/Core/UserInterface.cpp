@@ -686,6 +686,7 @@ Icons UserInterface::loadIcons(){
 	icons.Painting = txtr.getTexture("LigidPainter/Resources/Icons/Painting.jpg",0,0,false);
 	icons.Logo = txtr.getTexture("LigidPainter/Resources/Icons/ligidPainterlogo.jpg",0,0,false);
 	icons.AddTexture = txtr.getTexture("LigidPainter/Resources/Icons/AddTexture.jpg",0,0,false);
+	icons.Material = txtr.getTexture("LigidPainter/Resources/Icons/Material.jpg",0,0,false);
 
 	return icons;
 }

@@ -124,6 +124,7 @@ struct Icons{
 	unsigned int Painting;
 	unsigned int Logo;
 	unsigned int AddTexture;
+	unsigned int Material;
 };
 
 struct RenderData { //GlSet::render

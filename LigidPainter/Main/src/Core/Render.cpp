@@ -205,7 +205,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 		glUseProgram(renderPrograms.iconsProgram);
 		gl.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
 		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.795f,0.9,icons.TDModel,0,colorData.iconColor,colorData.iconColorHover);
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.715f,0.9,icons.ImportTexture,0,colorData.iconColor,colorData.iconColorHover);
+		ui.iconBox(0.015f,0.023f,renderData.panelLoc-0.01f - screenGapX,0.715f,0.9,icons.Material,0,colorData.iconColor,colorData.iconColorHover);
 		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.635f,0.9,icons.Painting,0,colorData.iconColor,colorData.iconColorHover);
 		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX, 0.555f,0.9,icons.Export,0,colorData.iconColor,colorData.iconColorHover);
 
