@@ -485,7 +485,7 @@ bool LigidPainter::run()
 
 	glset.uniform3fv(programs.uiProgram,"textColor",colorData.textColor);
 	glset.uniform1i(programs.uiProgram, "text", 2);
-	glset.uniform1i(programs.uiProgram, "currentTexture", 4);
+	glset.uniform1i(programs.uiProgram, "currentTexture", 11);
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
 
 

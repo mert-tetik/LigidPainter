@@ -43,6 +43,7 @@ float linearizeDepth(float depth){
 
 float isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMirrored is true
    float drawZ;
+
    if(!isMirrored){
       drawZ = texture2D(depthTexture, uv.xy).b;
    }
@@ -52,20 +53,25 @@ float isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMi
 
    float uvCoordVal = texture2D(paintedTxtrMask,TexCoords).r;
 
-   vec3 direction;
    if(isMirrored){
-      direction = mirroredViewPos - Pos;
+      uvCoordVal = 0.0;
    }
-   else{
-      direction = viewPos - Pos;
-   }
-   float dotProd = dot(normalize(direction),normalize(Normal));
+   // vec3 direction;
+
+   // if(isMirrored){
+   //    direction = mirroredViewPos - Pos;
+   // }
+   // else{
+   //    direction = viewPos - Pos;
+   // }
+
+   // float dotProd = dot(normalize(direction),normalize(Normal));
 
    if(abs(drawZ - linearizeDepth(uv.z)/far) < 0.005){
       //True
       return 2.0;
    }
-   else if(uvCoordVal > 0.05){
+   else if(uvCoordVal > 0.0){
       return uvCoordVal;
    }
    else{
@@ -95,7 +101,7 @@ vec3 getPaintedDiffuse(){
 
 
    if(isPainted(mirroredScreenPos,true) <= 1.0){
-      mirroredIntensity = min(isPainted(screenPos,true),1.0);
+      mirroredIntensity = min(isPainted(mirroredScreenPos,true),1.0);
    }
    else if(isPainted(mirroredScreenPos, true) == 2.0) {
       mirroredIntensity = texture2D((mirroredScreenMaskTexture), mirroredScreenPos.xy).r;
@@ -195,13 +201,18 @@ void main() {
          mirroredIntensity = texture2D(mirroredScreenMaskTexture,  mirroredScreenPos.xy).r;
       }
 
-
       vec3 result = mix(vec3(0), vec3(1), intensity);
-
-      vec3 mirroredResult = mix(result, vec3(1), mirroredIntensity);
+      vec3 mirroredResult; 
+      
+      if(useMirror == 1){
+         mirroredResult = mix(result, vec3(1), mirroredIntensity);
+      }
+      else{
+         mirroredResult = result;
+      }
 
       gl_FragDepth = 1.0 - mirroredResult.r;
       
-      color = vec4(mirroredResult,1);
+      color = vec4(result,1);
    }
 }

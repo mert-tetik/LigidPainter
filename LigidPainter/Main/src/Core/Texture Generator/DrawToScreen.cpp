@@ -15,6 +15,16 @@
 
 using namespace std;
 
+std::vector<float> textureRenderingVerticesFlipped = {
+	// first triangle
+	 1.0f,  1.0f, 0.0f,0,1,0,0,0,  // top right
+	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom right
+	 0.0f,  1.0f, 0.0f,1,1,0,0,0,  // top left 
+	// second triangle	  ,0,0,0,
+	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom right
+	 0.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom left
+	 0.0f,  1.0f, 0.0f,1,1,0,0,0   // top left
+};
 
 GLubyte* resizedPixels = new GLubyte[50 * 50 * 3]; //Resized mask texture
 GLubyte* renderedImage;
@@ -60,15 +70,15 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 
 	glm::vec3 drawColor = glm::vec3(opacity);
 
-	std::vector<float> renderVerticesFlipped = {
+	std::vector<float> paintingMaskCoords = {
 	// first triangle									//Normals will be used for colors
-	 	distanceX/2.0f,  distanceX/2.0f, 0.0f	,0,1,	drawColor.r,drawColor.g,drawColor.b,  // top right
-	 	distanceX/2.0f, -distanceX/2.0f, 0.0f	,0,0,	drawColor.r,drawColor.g,drawColor.b,  // bottom right
-	   -distanceX/2.0f,  distanceX/2.0f, 0.0f	,1,1,	drawColor.r,drawColor.g,drawColor.b,  // top left
+	 	-distanceX/2.0f,  -distanceX/2.0f, 0.0f	,0,1,	drawColor.r,drawColor.g,drawColor.b,  // top right
+	 	-distanceX/2.0f,   distanceX/2.0f, 0.0f	,0,0,	drawColor.r,drawColor.g,drawColor.b,  // bottom right
+	     distanceX/2.0f,  -distanceX/2.0f, 0.0f	,1,1,	drawColor.r,drawColor.g,drawColor.b,  // top left
 	// second triangle
-	 	distanceX/2.0f, -distanceX/2.0f, 0.0f	,0,0,	drawColor.r,drawColor.g,drawColor.b,  // bottom right
-	   -distanceX/2.0f, -distanceX/2.0f, 0.0f	,1,0,	drawColor.r,drawColor.g,drawColor.b,  // bottom left
-	   -distanceX/2.0f,  distanceX/2.0f, 0.0f	,1,1,	drawColor.r,drawColor.g,drawColor.b   // top left
+	 	-distanceX/2.0f,   distanceX/2.0f, 0.0f	,0,0,	drawColor.r,drawColor.g,drawColor.b,  // bottom right
+	     distanceX/2.0f,   distanceX/2.0f, 0.0f	,1,0,	drawColor.r,drawColor.g,drawColor.b,  // bottom left
+	     distanceX/2.0f,  -distanceX/2.0f, 0.0f	,1,1,	drawColor.r,drawColor.g,drawColor.b   // top left
 	};
 
 	glm::mat4 paintingProjection;
@@ -86,8 +96,8 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 	//----------------------SET BRUSH TEXTURE----------------------\\
 						  (Interpreted with blur value)
 	if ((brushValChanged)) {
-		delete(resizedPixels);
-		delete(renderedImage);
+		delete[]resizedPixels;
+		delete[]renderedImage;
 		//Setup
 		resizedPixels = new GLubyte[540 * 540 * 3];
 
@@ -158,7 +168,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 			refreshTheScreenMask = false;
 		}
 		
-		glBufferSubData(GL_ARRAY_BUFFER , 0 , renderVerticesFlipped.size() * sizeof(float) , &renderVerticesFlipped[0]);
+		glBufferSubData(GL_ARRAY_BUFFER , 0 , paintingMaskCoords.size() * sizeof(float) , &paintingMaskCoords[0]);
 
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
@@ -192,7 +202,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 			//setup
 
 			//Get texture
-			render.renderTexture(renderVerticesFlipped,1080,1080,GL_TEXTURE3,GL_RED, model, false,albedoTextures);
+			render.renderTexture(textureRenderingVerticesFlipped,1080,1080,GL_TEXTURE3,GL_RED, model, false,albedoTextures);
 			//Get texture
 
 			//Finish
