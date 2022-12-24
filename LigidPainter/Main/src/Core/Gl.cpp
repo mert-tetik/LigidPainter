@@ -17,6 +17,8 @@
 #include "stb_image.h"
 #include "stb_image_write.h"
 #include <dirent.h>
+#include <filesystem>
+
 
 
 Programs glPrograms;
@@ -196,7 +198,6 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 	unsigned int iconsProgram = createProgram("LigidPainter/Resources/Shaders/icons");
 
 
-
 	//Skybox Blur program
 	unsigned int skyboxblurProgram = createProgram("LigidPainter/Resources/Shaders/skyboxblur");
 
@@ -340,26 +341,19 @@ BrushMaskTextures GlSet::loadBrushMaskTextures(){
 	std::vector<unsigned int> maskTextures;
 	std::vector<std::string> maskTextureNames;
 
-	struct dirent *d;
-    DIR *dr;
-    dr = opendir("./LigidPainter/Resources/Textures");
-    if(dr!=NULL)
-    {
-        for(d=readdir(dr); d!=NULL; d=readdir(dr))
-        {
-			glset.activeTexture(GL_TEXTURE1);//Raw mask
-			std::string fileName =d->d_name;
-			if(fileName.size() > 3){
-				if(fileName[fileName.size()-1] != 't' && fileName[fileName.size()-2] != 'x' && fileName[fileName.size()-3] != 't'){
-					maskTextures.push_back(txtr.getTexture("./LigidPainter/Resources/Textures/" + fileName,0,0,false));
-					maskTextureNames.push_back(fileName);
-				}
-			}		
-        }
-        closedir(dr);
-    }
-    else
-        std::cout<<"\nError Occurred Using Dirent.h!";
+	const char* path = "./LigidPainter/Resources/Textures";
+
+
+	for (const auto & entry : std::filesystem::directory_iterator(path)){
+		glset.activeTexture(GL_TEXTURE1);//Raw mask
+		std::string fileName = entry.path().string();
+		if(fileName.size() > 3){
+	 		if(fileName[fileName.size()-1] != 't' && fileName[fileName.size()-2] != 'x' && fileName[fileName.size()-3] != 't'){
+	 			maskTextures.push_back(txtr.getTexture(fileName,0,0,false));
+	 			maskTextureNames.push_back(fileName);
+	 		}
+	 	}
+	}
 
 	BrushMaskTextures brushMasks;
 	brushMasks.names = maskTextureNames;
