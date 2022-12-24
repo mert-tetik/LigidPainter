@@ -224,6 +224,10 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 		bool mouseEnteredOnce = false;
 		glUseProgram(renderPrograms.uiProgram); 
 
+		if(model.meshes.size() == 0){
+			ui.renderText(renderPrograms.uiProgram, "Materials of the 3D model", renderData.panelLoc - screenGapX  + 0.095f, 0.8f, 0.00022f);
+			ui.renderText(renderPrograms.uiProgram, "will be show up there", renderData.panelLoc - screenGapX  + 0.115f, 0.75f, 0.00022f);
+		}
 		for (int i = 0; i < model.meshes.size(); i++)//Render buttons
 		{ 	
 			//Check if mouse is entered the related button
@@ -330,8 +334,6 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 	}
 	//Texture demonstrator
 	ui.textureDemonstrator(changeTextureDemonstratorWidth,changeTextureDemonstratorHeight,textureDemonstratorButtonPosX+screenGapX,textureDemonstratorButtonPosY,1.0f); 
-
-
 
 
 
