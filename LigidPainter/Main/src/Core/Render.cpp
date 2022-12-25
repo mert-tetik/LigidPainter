@@ -11,7 +11,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#include "model.h"
+#include "Core/Model/model.h"
 
 #include "Render.h"
 #include "LigidPainter.h"

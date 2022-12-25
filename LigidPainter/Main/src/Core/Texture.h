@@ -1,5 +1,6 @@
 #ifndef LGDTEXTURE_H
 #define LGDTEXTURE_H
+
 struct TextureData {
 	unsigned int width;
 	unsigned int height;

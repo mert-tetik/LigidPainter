@@ -1,20 +1,25 @@
 #include<iostream>
+
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
+
+#include <vector>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "LigidPainter.h"
-#include "UserInterface.h"
-#include "gl.h"
-#include "Texture.h"
 
-#include <vector>
-#include "Texture Generator/TextureGenerator.h"
+#include "Core/LigidPainter.h"
+#include "Core/UserInterface.h"
+#include "Core/gl.h"
+#include "Core/Texture.h"
+
+#include "Core/Texture Generator/TextureGenerator.h"
 
 #include "stb_image.h"
 #include "stb_image_write.h"
+
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "stb_image_resize.h"
 

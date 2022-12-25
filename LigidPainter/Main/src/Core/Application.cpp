@@ -1,39 +1,40 @@
 #include<iostream>
 
-#include "../../thirdparty/include/glad/glad.h"
-#include "../../thirdparty/include/GLFW/glfw3.h"
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
+
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "../../thirdparty/include/glm/glm.hpp"
-#include "../../thirdparty/include/glm/gtc/matrix_transform.hpp"
-#include "../../thirdparty/include/glm/gtc/type_ptr.hpp"
-#include "../../thirdparty/include/glm/gtx/string_cast.hpp"
+#include <vector>
+#include <map>
+
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 #include "Core/LigidPainter.h"
-#include "Core/ModelRead.h"
-#include "UserInterface.h"
-#include "Utilities.h"
-#include "Callback.h"
-#include "gl.h"
-#include "Render.h"
-#include "model.h"
+#include "Core/UserInterface.h"
+#include "Core/Utilities.h"
+#include "Core/Callback.h"
+#include "Core/gl.h"
+#include "Core/Render.h"
+#include "Core/Model/model.h"
+#include "Core/Texture.h"
+#include "Core/UiActions.h"
+#include "Core/Texture Generator/TextureGenerator.h"
+#include "Core/messageBox.h"
 
-#include "Texture.h"
-#include "UiActions.h"
 
-
-#include <vector>
-#include "Texture Generator/TextureGenerator.h"
-#include <map>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
 #define STBI_MSC_SECURE_CRT
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
 #include "tinyfiledialogs.h"
-#include "messageBox.h"
 
 
 using namespace std;

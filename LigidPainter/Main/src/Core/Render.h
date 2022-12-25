@@ -1,12 +1,14 @@
 #ifndef LGDRENDER_H
 #define LGDRENDER_H
 #include <vector>
-#include "../../thirdparty/include/glm/glm.hpp"
-#include "../../thirdparty/include/glm/gtc/matrix_transform.hpp"
-#include "../../thirdparty/include/glm/gtc/type_ptr.hpp"
-#include "../../thirdparty/include/glm/gtx/string_cast.hpp"
-#include "LigidPainter.h"
-#include "model.h"
+
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtx/string_cast.hpp"
+
+#include "Core/LigidPainter.h"
+#include "Core/Model/model.h"
 
 
 

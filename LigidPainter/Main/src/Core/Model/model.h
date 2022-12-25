@@ -13,7 +13,7 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
-#include "Core/mesh.h"
+#include "Core/Model/mesh.h"
 
 #include <string>
 #include <fstream>

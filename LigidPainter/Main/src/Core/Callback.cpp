@@ -1,22 +1,27 @@
 #include<iostream>
+
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
+
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <vector>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "LigidPainter.h"
-#include "UserInterface.h"
-#include "Callback.h"
-#include "gl.h"
-#include "Utilities.h"
-#include <vector>
+
+#include "Core/LigidPainter.h"
+#include "Core/UserInterface.h"
+#include "Core/Callback.h"
+#include "Core/gl.h"
+#include "Core/Utilities.h"
+#include "Core/UiActions.h"
+
 #include "stb_image.h"
 #include "stb_image_write.h"
-#include "UiActions.h"
 
 int callbackMaxScreenWidth;
 int callbackMaxScreenHeight;

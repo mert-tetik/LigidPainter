@@ -2,9 +2,11 @@
 #define LGDMSHBOX_H
 
 #include <GLFW/glfw3.h>
+
 #include "LigidPainter.h"
 #include "UserInterface.h"
-#include "../../thirdparty/include/glm/glm.hpp"
+
+#include "glm/glm.hpp"
 
 bool noButtonClickMsgBox = true;
 bool clickTakenMsgBox = false;

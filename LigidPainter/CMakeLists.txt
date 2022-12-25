@@ -22,8 +22,11 @@ add_executable(Ligid
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/thirdparty/include/)
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/thirdparty)
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/src)
+target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/src/Core)
+
 target_link_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/thirdparty/lib)
 target_link_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/thirdparty/lib/freetype)
+
 target_link_libraries(Ligid PRIVATE glfw3 freetype assimp-vc142-mt)
 
 # TODO: Add tests and install targets if needed.

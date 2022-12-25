@@ -1,5 +1,6 @@
 #ifndef LGDUTIL_H
 #define LGDUTIL_H
+
 class Utilities {
 public:
 	std::string readFile(const char* path);

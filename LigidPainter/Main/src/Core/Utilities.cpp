@@ -1,16 +1,21 @@
 #include<iostream>
+
 #include<glad/glad.h>
-#include <vector>
 #include<GLFW/glfw3.h>
+
+#include <vector>
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "stb_image.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 //#include <glm/gtx/string_cast.hpp>
-#include "Utilities.h"
+
+#include "Core/Utilities.h"
+
+#include "stb_image.h"
 #include "stb_image_write.h"
 
 using namespace std;

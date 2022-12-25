@@ -10,8 +10,8 @@
 #include "assimp/postprocess.h"
 
 
-#include "Core/mesh.h"
-#include "Core/model.h"
+#include "Core/Model/mesh.h"
+#include "Core/Model/model.h"
 
 #include <string>
 #include <fstream>

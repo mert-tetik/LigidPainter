@@ -1,14 +1,18 @@
 #include<iostream>
+
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
+
 #include "Core/LigidPainter.h"
 #include "Core/gl.h"
 #include "Core/Texture.h"
 #include "Core/Render.h"
 #include "Core/Texture Generator/TextureGenerator.h"
+
 #include "stb_image_resize.h"
 #include "stb_image.h"
 #include <vector>
@@ -86,7 +90,6 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 
 
 	float screenGapX = ((float)maxScreenWidth - screenSizeX)/2.0f;
-	cout << screenGapX << '\n';
 
 	float screenGapY = ((float)maxScreenHeight - screenSizeY);
 
