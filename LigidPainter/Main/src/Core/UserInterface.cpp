@@ -20,7 +20,7 @@
 #include "Core/UserInterface.h"
 #include "Core/gl.h"
 #include "Core/Texture.h"
-#include "Core/Render.h"
+#include "Core/Render/Render.h"
 
 #include "stb_image.h"
 #include "stb_image_write.h"

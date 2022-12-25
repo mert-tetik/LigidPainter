@@ -19,7 +19,7 @@
 #include "Core/Utilities.h"
 #include "Core/Callback.h"
 #include "Core/gl.h"
-#include "Core/Render.h"
+#include "Core/Render/Render.h"
 #include "Core/Model/model.h"
 #include "Core/Texture.h"
 #include "Core/UiActions.h"
@@ -55,11 +55,10 @@ std::vector<unsigned int> albedoTextures;
 
 //TODO : Reduce GPU Usage
 //TODO : Specialized vao for each shader
-//TODO : Take screen hover pixel once the color picker is clicked
+//TODO : Color box click error
+//TODO : Compatibility with multiple monitors (force to keep the ratio)
 
-//TODO : CTRL + Z Compatible with materials
 
-//TODO : Use a struct for slide bar values
 
 
 //GL_TEXTURE0 = Albedo texture

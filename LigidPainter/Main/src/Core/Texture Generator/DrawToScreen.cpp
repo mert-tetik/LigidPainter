@@ -10,7 +10,7 @@
 #include "Core/LigidPainter.h"
 #include "Core/gl.h"
 #include "Core/Texture.h"
-#include "Core/Render.h"
+#include "Core/Render/Render.h"
 #include "Core/Texture Generator/TextureGenerator.h"
 
 #include "stb_image_resize.h"
