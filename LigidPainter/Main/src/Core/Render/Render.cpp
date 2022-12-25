@@ -65,27 +65,7 @@ glm::vec3 hueVal;
 
 
 
-void Render::renderModel(bool backfaceCulling,PBRShaderData &data,Model &model,bool renderDefault, vector<unsigned int> &albedoTextures) {
-	glDepthFunc(GL_LESS); 
 
-    GlSet gl;
-	gl.usePBRShader(renderPrograms.PBRProgram,data);
-
-	if (backfaceCulling) { //if backface culling checked in the model panel
-		gl.enable(GL_CULL_FACE);
-		gl.cullFace(GL_BACK);
-	}
-	gl.meshDataToShaders();
-	
-	model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,true,albedoTextures);
-
-
-	gl.disable(GL_CULL_FACE); //Disable backface culling if enabled
-
-	glUseProgram(renderPrograms.uiProgram);
-	glDepthFunc(GL_LESS); 
-
-}
 void Render::renderSkyBox(SkyBoxShaderData data) {
 	GlSet gls;
 
@@ -721,7 +701,7 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 
 
 	renderSkyBox(skyBoxShaderData);
-	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,albedoTextures);
+	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,albedoTextures,renderPrograms,currentMaterialIndex);
 	drawAxisPointer(axisPointerShaderData);
 
 	uiOut = renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,colorpickerHexVal,renderData.brushBorderRangeBarValue,brushBlurVal,outShaderData,model,albedoTextures,updateHueVal,renderPrograms,currentMaterialIndex,renderMaxScreenWidth,orgTextureDemonstratorWidth, orgTextureDemonstratorHeight, saturationValShaderData,hueVal,currentBrushMaskTexture);
