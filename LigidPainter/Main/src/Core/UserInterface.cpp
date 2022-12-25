@@ -69,10 +69,16 @@ void UserInterface::panel(float panelLoc, float) {
 	glm::vec3 blankVal = glm::vec3(0);
 	glset.uiDataToShaders(colorD.panelHoldColor);
 	glset.uniform3fv(uiPrograms.uiProgram, "uiTransitionColor", blankVal);
-	glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0);
+	glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0.0f);
+
+	glset.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.4f);
 	glset.drawArrays(panelHoldCoor, false);
+
+	glset.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.25f);
 	glset.uiDataToShaders(colorD.panelColor);
 	glset.drawArrays(panelCoor, false);
+
+	glset.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.4f);
 }
 
 void UserInterface::textureDemonstrator(float width,float height, float position_x,float position_y,float z){ 

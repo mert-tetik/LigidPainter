@@ -224,3 +224,14 @@ bool Utilities::shortCut(GLFWwindow* window,unsigned int input1,unsigned int inp
 
 	return result;
 }
+
+float Utilities::transitionEffect(bool buttonEnter,float mixVal,float phaseDifference){
+
+	if (buttonEnter && mixVal <= 1.0f) {
+		mixVal += phaseDifference;
+	}
+	else if (!buttonEnter && mixVal >= 0.0f) {
+		mixVal -= phaseDifference;
+	}
+	return mixVal;
+} 

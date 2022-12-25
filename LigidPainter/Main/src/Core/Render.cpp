@@ -62,93 +62,25 @@ float customModelMixVal = 0.0f;
 float texturePanelButtonMixVal = 0.0f;
 
 void updateButtonColorMixValues(UiData uidata) {
-	
-	float phaseDifference = 0.05f;
-	if (uidata.addSphereButtonEnter && addSphereButtonMixVal <= 1.0f) {
-		addSphereButtonMixVal += phaseDifference;
-	}
-	else if (!uidata.addSphereButtonEnter && addSphereButtonMixVal >= 0.0f) {
-		addSphereButtonMixVal -= phaseDifference;
-	}
+	Utilities util;
 
-	if (uidata.addPlaneButtonEnter && addPanelButtonMixVal <= 1.0f) {
-		addPanelButtonMixVal += phaseDifference;
-	}
-	else if (!uidata.addPlaneButtonEnter && addPanelButtonMixVal >= 0.0f) {
-		addPanelButtonMixVal -= phaseDifference;
-	}
+	const float phaseDifference = 0.05f;
 
-	if (uidata.loadModelButtonEnter && loadModelButtonMixVal <= 1.0f) {
-		loadModelButtonMixVal += phaseDifference;
-	}
-	else if (!uidata.loadModelButtonEnter && loadModelButtonMixVal >= 0.0f) {
-		loadModelButtonMixVal -= phaseDifference;
-	}
-
-	if (uidata.addMaskTextureButtonEnter && addMaskTextureButtonMixVal <= 1.0f) {
-		addMaskTextureButtonMixVal += phaseDifference;
-	}
-	else if (!uidata.addMaskTextureButtonEnter && addMaskTextureButtonMixVal >= 0.0f) {
-		addMaskTextureButtonMixVal -= phaseDifference;
-	}
-	
-	if (uidata.exportDownloadButtonEnter && exportDownloadButtonMixVal <= 1.0f) {
-		exportDownloadButtonMixVal += phaseDifference;
-	}
-	else if (!uidata.exportDownloadButtonEnter && exportDownloadButtonMixVal >= 0.0f) {
-		exportDownloadButtonMixVal -= phaseDifference;
-	}
-
-	if (uidata.paintingFillNumericModifierNEnter && fillBetweenResNumericModifiermixValN <= 1.0f) {
-		fillBetweenResNumericModifiermixValN += phaseDifference;
-	}
-	else if (!uidata.paintingFillNumericModifierNEnter && fillBetweenResNumericModifiermixValN >= 0.0f) {
-		fillBetweenResNumericModifiermixValN -= phaseDifference;
-	}
-
-	if (uidata.paintingFillNumericModifierPEnter && fillBetweenResNumericModifiermixValP <= 1.0f) {
-		fillBetweenResNumericModifiermixValP += phaseDifference;
-	}
-	else if (!uidata.paintingFillNumericModifierPEnter && fillBetweenResNumericModifiermixValP >= 0.0f) {
-		fillBetweenResNumericModifiermixValP -= phaseDifference;
-	}
-
-	if (uidata.dropperEnter && dropperMixVal <= 1.0f) {
-		dropperMixVal += phaseDifference;
-	}
-	else if (!uidata.dropperEnter && dropperMixVal >= 0.0f) {
-		dropperMixVal -= phaseDifference;
-	}
-
-	if (uidata.exportFileNameTextBoxPressed && exportFileNameTextBoxMixVal <= 1.0f) {
-		exportFileNameTextBoxMixVal += phaseDifference;
-	}
-	else if (!uidata.exportFileNameTextBoxPressed && exportFileNameTextBoxMixVal >= 0.0f) {
-		exportFileNameTextBoxMixVal -= phaseDifference;
-	}
-
-	if (uidata.hexValTextboxPressed && hexValTextboxMixVal <= 1.0f) {
-		hexValTextboxMixVal += phaseDifference;
-	}
-	else if (!uidata.hexValTextboxPressed && hexValTextboxMixVal >= 0.0f) {
-		hexValTextboxMixVal -= phaseDifference;
-	}
-
-	if (uidata.customModelButtonHover && customModelMixVal <= 1.0f) {
-		customModelMixVal += phaseDifference;
-	}
-	else if (!uidata.customModelButtonHover && customModelMixVal >= 0.0f) {
-		customModelMixVal -= phaseDifference;
-	}
-
-	if (texturePanelButtonHover && texturePanelButtonMixVal <= 1.0f) {
-		texturePanelButtonMixVal += phaseDifference;
-	}
-	else if (!texturePanelButtonHover && texturePanelButtonMixVal >= 0.0f) {
-		texturePanelButtonMixVal -= phaseDifference;
-	}
+	addSphereButtonMixVal = util.transitionEffect(uidata.addSphereButtonEnter,addSphereButtonMixVal,phaseDifference);
+	addPanelButtonMixVal = util.transitionEffect(uidata.addPlaneButtonEnter,addPanelButtonMixVal,phaseDifference);
+	loadModelButtonMixVal = util.transitionEffect(uidata.loadModelButtonEnter,loadModelButtonMixVal,phaseDifference);
+	addMaskTextureButtonMixVal = util.transitionEffect(uidata.addMaskTextureButtonEnter,addMaskTextureButtonMixVal,phaseDifference);
+	exportDownloadButtonMixVal = util.transitionEffect(uidata.exportDownloadButtonEnter,exportDownloadButtonMixVal,phaseDifference);
+	fillBetweenResNumericModifiermixValN = util.transitionEffect(uidata.paintingFillNumericModifierNEnter,fillBetweenResNumericModifiermixValN,phaseDifference);
+ 	fillBetweenResNumericModifiermixValP = util.transitionEffect(uidata.paintingFillNumericModifierPEnter,fillBetweenResNumericModifiermixValP,phaseDifference);
+ 	dropperMixVal = util.transitionEffect(uidata.dropperEnter,dropperMixVal,phaseDifference);
+ 	exportFileNameTextBoxMixVal = util.transitionEffect(uidata.exportFileNameTextBoxPressed,exportFileNameTextBoxMixVal,phaseDifference);
+ 	hexValTextboxMixVal = util.transitionEffect(uidata.hexValTextboxPressed,hexValTextboxMixVal,phaseDifference);
+ 	customModelMixVal = util.transitionEffect(uidata.customModelButtonHover,customModelMixVal,phaseDifference);
+ 	texturePanelButtonMixVal = util.transitionEffect(texturePanelButtonHover,texturePanelButtonMixVal,phaseDifference);
 }
-//Button mix val
+
+
 float changeTextureDemonstratorWidth = 0.4f;
 float changeTextureDemonstratorHeight = 0.8f;
 
