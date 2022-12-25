@@ -97,7 +97,6 @@ void UserInterface::textureDemonstrator(float width,float height, float position
 void UserInterface::numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN){
 	//box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"",glm::vec3(0),0,0,0,1,10,glm::vec3(0),0);
 	ColorData clrData;
-	GlSet gl;
 	
 	glUseProgram(uiPrograms.iconsProgram);
 	iconBox(0.02f,0.04f,position_x - 0.05f,position_y,z,leftArrow,mixValN,clrData.numericModifierArrowColor,clrData.numericModifierArrowHoverColor);
@@ -150,55 +149,55 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	//};
 
 	std::vector<float> buttonCoor{
-		  position_x+ width + 0.08651f/ buttonCurveReduce,position_y + height / 1.29802f, z, 1, 0.874506, 0, 0, 1, //R / 2
-		  position_x+ -width, position_y + height, z, 0, 1, 0, 0, 1,//L / 1
-		  position_x+ -width - 0.08651f / buttonCurveReduce, position_y + height / 1.29802f, z, 0, 0.874506, 0, 0, 1,//L / 2
-		  position_x+ width + 0.15074f / buttonCurveReduce,position_y + -height / 3.88978f, z, 1, 0.375, 0, 0, 1, //R / 6
-		  position_x+ -width - 0.15800f / buttonCurveReduce,position_y + 0, z, 0, 0.5, 0, 0, 1,//L / M
-		  position_x+ -width - 0.15074f / buttonCurveReduce,position_y + -height / 3.88978f, z, 0, 0.375, 0, 0, 1,//L / 6
-		  position_x+ width + 0.15074f / buttonCurveReduce,position_y + height / 3.88978f, z, 0.99999, 0.624971, 0, 0, 1, //R / 4
-		  position_x+ -width - 0.13064f / buttonCurveReduce, position_y + height / 2.00794f, z, 0, 0.749012, 0, 0, 1,//L / 3
-		  position_x+ -width - 0.15074f / buttonCurveReduce,position_y + height / 3.88978f, z, 1e-05, 0.624971, 0, 0, 1,//L / 4
-		  position_x+ width + 0.08651f / buttonCurveReduce, position_y + -height / 1.29802f, z, 1, 0.125, 0, 0, 1,//R / 8
-		  position_x+ -width - 0.13064f / buttonCurveReduce, position_y + -height / 2.00794f, z, 0, 0.25, 0, 0, 1,//L / 7
-		  position_x+ -width - 0.08651f / buttonCurveReduce, position_y + -height / 1.29802f, z, 0, 0.125, 0, 0, 1,//L / 8
-		  position_x+ width,  position_y -height, z, 1, 0, 0, 0, 1,//R / 9
-		  position_x+ -width - 0.08651f / buttonCurveReduce,position_y + -height / 1.29802f, z, 0, 0.125, 0, 0, 1,//L / 8
-		  position_x+ -width, position_y -height, z, 0, 0, 0, 0, 1,//L / 9
-		  position_x+ width + 0.13064f / buttonCurveReduce, position_y + -height / 2.00794f, z, 1, 0.25, 0, 0, 1,//R / 7
-		  position_x+ -width - 0.15074f / buttonCurveReduce,position_y + -height / 3.88978f, z, 0, 0.375, 0, 0, 1,//L / 6
-		  position_x+ -width - 0.13064f / buttonCurveReduce, position_y + -height / 2.00794f, z, 0, 0.25, 0, 0, 1,//L / 7
-		  position_x+ width + 0.15800f / buttonCurveReduce,position_y + -0, z, 1, 0.5, 0, 0, 1,//R / M
-		  position_x+ -width - 0.15074f / buttonCurveReduce,position_y + height / 3.88978f, z, 1e-05, 0.624971, 0, 0, 1,//L / 4
-		  position_x+ -width - 0.15800f / buttonCurveReduce,position_y + 0, z, 0, 0.5, 0, 0, 1,//L / M
-		  position_x+ width + 0.13064f / buttonCurveReduce, position_y + height / 2.00794f, z, 1, 0.749012, 0, 0, 1,//R / 3
-		  position_x+ -width - 0.08651f / buttonCurveReduce,position_y + height / 1.29802f, z, 0, 0.874506, 0, 0, 1,//L / 2
-		  position_x+ -width - 0.13064f / buttonCurveReduce, position_y + height / 2.00794f, z, 0, 0.749012, 0, 0, 1,//L / 3
-		  position_x+ width + 0.08651f / buttonCurveReduce,position_y + height / 1.29802f, z, 1, 0.874506, 0, 0, 1,//R / 2
-		  position_x+ width, position_y + height, z, 1, 1, 0, 0, 1,//R / 1
-		  position_x+ -width, position_y + height,z, 0, 1, 0, 0, 1,//L / 1
-		  position_x+ width + 0.15074f / buttonCurveReduce, position_y + -height / 3.88978f, z, 1, 0.375, 0, 0, 1,//R / 6
-		  position_x+ width + 0.15800f / buttonCurveReduce,position_y + -0, z, 1, 0.5, 0, 0, 1,//R / M
-		  position_x+ -width - 0.15800f / buttonCurveReduce,position_y + 0, z, 0, 0.5, 0, 0, 1,//L / M
-		  position_x+ width + 0.15074f / buttonCurveReduce, position_y + height / 3.88978f, z, 0.99999, 0.624971, 0, 0, 1,//R / 4
-		  position_x+ width + 0.13064f / buttonCurveReduce, position_y + height / 2.00794f, z, 1, 0.749012, 0, 0, 1,//R / 3
-		  position_x+ -width - 0.13064f / buttonCurveReduce, position_y + height / 2.00794f, z, 0, 0.749012, 0, 0, 1,//L / 3
-		  position_x+ width + 0.08651f / buttonCurveReduce, position_y + -height / 1.29802f, z, 1, 0.125, 0, 0, 1,//R / 8
-		  position_x+ width + 0.13064f / buttonCurveReduce, position_y + -height / 2.00794f, z, 1, 0.25, 0, 0, 1,//R / 7
-		  position_x+ -width - 0.13064f / buttonCurveReduce, position_y + -height / 2.00794f, z, 0, 0.25, 0, 0, 1,//L / 7
-		  position_x+ width, position_y -height,z, z, 0, 0, 0, 1,//R / 9
-		  position_x+ width + 0.08651f / buttonCurveReduce, position_y + -height / 1.29802f, z, 1, 0.125, 0, 0, 1,//R / 8
-		  position_x+ -width - 0.08651f / buttonCurveReduce,position_y + -height / 1.29802f, z, 0, 0.125, 0, 0, 1,//L / 8
-		  position_x+ width + 0.13064f / buttonCurveReduce, position_y + -height / 2.00794f, z, 1, 0.25, 0, 0, 1,//R / 7
-		  position_x+ width + 0.15074f / buttonCurveReduce,position_y + -height / 3.88978f, z, 1, 0.375, 0, 0, 1,//R / 6
-		  position_x+ -width - 0.15074f / buttonCurveReduce, position_y + -height / 3.88978f, z, 0, 0.375, 0, 0, 1,//L / 6
-		  position_x+ width + 0.15800f / buttonCurveReduce, position_y + -0, z, 1, 0.5, 0, 0, 1,//R / M
-		  position_x+ width + 0.15074f / buttonCurveReduce,position_y + height / 3.88978f, z, 0.99999, 0.624971, 0, 0, 1,//R / 4
-		  position_x+ -width - 0.15074f / buttonCurveReduce, position_y + height / 3.88978f, z, 1e-05, 0.624971, 0, 0, 1,//L / 4
-		  position_x+ width + 0.13064f / buttonCurveReduce, position_y + height / 2.00794f, z, 1, 0.749012, 0, 0, 1,//R / 3
-		  position_x+ width + 0.08651f / buttonCurveReduce, position_y + height / 1.29802f, z, 1, 0.874506, 0, 0, 1,//R / 2
-		  position_x + -width - 0.08651f / buttonCurveReduce,position_y + height / 1.29802f, z, 0, 0.874506, 0, 0, 1,//L / 2
-	};
+		  position_x +  width + 0.08651f/ buttonCurveReduce 	, position_y + height / 1.29802f , z , 1 , 0.874506f 	, 0, 0, 1, 	//R / 2
+		  position_x + -width							    	, position_y + height			 , z , 0 , 1.0f	     	, 0, 0, 1,	//L / 1
+		  position_x + -width - 0.08651f / buttonCurveReduce	, position_y + height / 1.29802f , z , 0 , 0.874506f 	, 0, 0, 1,	//L / 2
+		  position_x +  width + 0.15074f / buttonCurveReduce	, position_y + -height / 3.88978f, z , 1 , 0.375f	 	, 0, 0, 1, 	//R / 6
+		  position_x + -width - 0.15800f / buttonCurveReduce	, position_y + 0				 , z , 0 , 0.5f		 	, 0, 0, 1,	//L / M
+		  position_x + -width - 0.15074f / buttonCurveReduce	, position_y + -height / 3.88978f, z , 0 , 0.375f	 	, 0, 0, 1,	//L / 6
+		  position_x +  width + 0.15074f / buttonCurveReduce	, position_y + height / 3.88978f , z , 1 , 0.624971f	, 0, 0, 1, 	//R / 4
+		  position_x + -width - 0.13064f / buttonCurveReduce	, position_y + height / 2.00794f , z , 0 , 0.749012f	, 0, 0, 1,	//L / 3
+		  position_x + -width - 0.15074f / buttonCurveReduce	, position_y + height / 3.88978f , z , 0 , 0.624971f	, 0, 0, 1,	//L / 4
+		  position_x +  width + 0.08651f / buttonCurveReduce	, position_y + -height / 1.29802f, z , 1 , 0.125f		, 0, 0, 1,	//R / 8
+		  position_x + -width - 0.13064f / buttonCurveReduce	, position_y + -height / 2.00794f, z , 0 , 0.25f		, 0, 0, 1,	//L / 7
+		  position_x + -width - 0.08651f / buttonCurveReduce	, position_y + -height / 1.29802f, z , 0 , 0.125f		, 0, 0, 1,	//L / 8
+		  position_x +  width									, position_y -height			 , z , 1 , 0.0f			, 0, 0, 1,	//R / 9
+		  position_x + -width - 0.08651f / buttonCurveReduce	, position_y + -height / 1.29802f, z , 0 , 0.125f		, 0, 0, 1,	//L / 8
+		  position_x + -width									, position_y -height			 , z , 0 , 0.0f			, 0, 0, 1,	//L / 9
+		  position_x +  width + 0.13064f / buttonCurveReduce	, position_y + -height / 2.00794f, z , 1 , 0.25f		, 0, 0, 1,	//R / 7
+		  position_x + -width - 0.15074f / buttonCurveReduce	, position_y + -height / 3.88978f, z , 0 , 0.375f		, 0, 0, 1,	//L / 6
+		  position_x + -width - 0.13064f / buttonCurveReduce	, position_y + -height / 2.00794f, z , 0 , 0.25f		, 0, 0, 1,	//L / 7
+		  position_x +  width + 0.15800f / buttonCurveReduce	, position_y + -0				 , z , 1 , 0.5f			, 0, 0, 1,	//R / M
+		  position_x + -width - 0.15074f / buttonCurveReduce	, position_y + height / 3.88978f , z , 0 , 0.624971f	, 0, 0, 1,	//L / 4
+		  position_x + -width - 0.15800f / buttonCurveReduce	, position_y + 0				 , z , 0 , 0.5f			, 0, 0, 1,	//L / M
+		  position_x +  width + 0.13064f / buttonCurveReduce	, position_y + height / 2.00794f , z , 1 , 0.749012f	, 0, 0, 1,	//R / 3
+		  position_x + -width - 0.08651f / buttonCurveReduce	, position_y + height / 1.29802f , z , 0 , 0.874506f	, 0, 0, 1,	//L / 2
+		  position_x + -width - 0.13064f / buttonCurveReduce	, position_y + height / 2.00794f , z , 0 , 0.749012f	, 0, 0, 1,	//L / 3
+		  position_x +  width + 0.08651f / buttonCurveReduce	, position_y + height / 1.29802f , z , 1 , 0.874506f	, 0, 0, 1,	//R / 2
+		  position_x +  width									, position_y + height			 , z , 1 , 1.0f			, 0, 0, 1,	//R / 1
+		  position_x + -width									, position_y + height			 , z , 0 , 1.0f			, 0, 0, 1,	//L / 1
+		  position_x +  width + 0.15074f / buttonCurveReduce	, position_y + -height / 3.88978f, z , 1 , 0.375f		, 0, 0, 1,	//R / 6
+		  position_x +  width + 0.15800f / buttonCurveReduce	, position_y + -0				 , z , 1 , 0.5f			, 0, 0, 1,	//R / M
+		  position_x + -width - 0.15800f / buttonCurveReduce	, position_y + 0				 , z , 0 , 0.5f			, 0, 0, 1,	//L / M
+		  position_x +  width + 0.15074f / buttonCurveReduce	, position_y + height / 3.88978f , z , 1 , 0.624971f	, 0, 0, 1,	//R / 4
+		  position_x +  width + 0.13064f / buttonCurveReduce	, position_y + height / 2.00794f , z , 1 , 0.749012f	, 0, 0, 1,	//R / 3
+		  position_x + -width - 0.13064f / buttonCurveReduce	, position_y + height / 2.00794f , z , 0 , 0.749012f	, 0, 0, 1,	//L / 3
+		  position_x +  width + 0.08651f / buttonCurveReduce	, position_y + -height / 1.29802f, z , 1 , 0.125f		, 0, 0, 1,	//R / 8
+		  position_x +  width + 0.13064f / buttonCurveReduce	, position_y + -height / 2.00794f, z , 1 , 0.25f		, 0, 0, 1,	//R / 7
+		  position_x + -width - 0.13064f / buttonCurveReduce	, position_y + -height / 2.00794f, z , 0 , 0.25f		, 0, 0, 1,	//L / 7
+		  position_x +  width									, position_y -height		 	 , z , 1 , 0.0f			, 0, 0, 1,	//R / 9
+		  position_x +  width + 0.08651f / buttonCurveReduce	, position_y + -height / 1.29802f, z , 1 , 0.125f		, 0, 0, 1,	//R / 8
+		  position_x + -width - 0.08651f / buttonCurveReduce	, position_y + -height / 1.29802f, z , 0 , 0.125f		, 0, 0, 1,	//L / 8
+		  position_x +  width + 0.13064f / buttonCurveReduce	, position_y + -height / 2.00794f, z , 1 , 0.25f		, 0, 0, 1,	//R / 7
+		  position_x +  width + 0.15074f / buttonCurveReduce	, position_y + -height / 3.88978f, z , 1 , 0.375f		, 0, 0, 1,	//R / 6
+		  position_x + -width - 0.15074f / buttonCurveReduce	, position_y + -height / 3.88978f, z , 0 , 0.375f		, 0, 0, 1,	//L / 6
+		  position_x +  width + 0.15800f / buttonCurveReduce	, position_y + -0				 , z , 1 , 0.5f			, 0, 0, 1,	//R / M
+		  position_x +  width + 0.15074f / buttonCurveReduce	, position_y + height / 3.88978f , z , 1 , 0.624971f	, 0, 0, 1,	//R / 4
+		  position_x + -width - 0.15074f / buttonCurveReduce	, position_y + height / 3.88978f , z , 0 , 0.624971f	, 0, 0, 1,	//L / 4
+		  position_x +  width + 0.13064f / buttonCurveReduce	, position_y + height / 2.00794f , z , 1 , 0.749012f	, 0, 0, 1,	//R / 3
+		  position_x +  width + 0.08651f / buttonCurveReduce	, position_y + height / 1.29802f , z , 1 , 0.874506f	, 0, 0, 1,	//R / 2
+		  position_x + -width - 0.08651f / buttonCurveReduce	, position_y + height / 1.29802f , z , 0 , 0.874506f	, 0, 0, 1,	//L / 2
+	}; 	
 
 	glset.uniform1i(uiPrograms.uiProgram,"isUiTextureUsed",isMaskImageBox);
 
@@ -210,10 +209,10 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	glset.drawArrays(buttonCoor, false);
 
 	if (!isTextBox) {
-		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01, 0.00022f);
+		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f);
 	}
 	else {
-		renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01, 0.00022f);
+		renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f);
 	}
 	glset.uniform1i(uiPrograms.uiProgram, "isUiTextureUsed", 0);
 }
@@ -313,8 +312,8 @@ glm::vec3 UserInterface::colorRect(float position_x, float position_y,float valu
 		GLubyte* colorRectPixel = new GLubyte[1 * 1 * 3];//Color value
 		glset.drawArrays(boxCoor, false); //Render Model
 
-		if( (value + 0.18f) * 2.77777777778f * 1080 != 1080)
-			glReadPixels(10, (value + 0.18f) * 2.77777777778f * 1080, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
+		if( (value + 0.18f) * 2.77777777778f * 1080.0f != 1080.0f)
+			glReadPixels(10, (value + 0.18f) * 2.77777777778f * 1080.0f, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
 		else{
 			glReadPixels(10, 1079, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
 		}
@@ -391,7 +390,7 @@ void UserInterface::decorationSquare(float position_x, float position_y) {
 	glset.uiDataToShaders(colorData.panelColorSnd);
 	glset.drawArrays(buttonCoor, false);
 }
-bool UserInterface::isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, int mouseXpos, int mouseYpos) { //Button with different shape used in order to switch between panels
+bool UserInterface::isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, double mouseXpos, double mouseYpos) { //Button with different shape used in order to switch between panels
 	std::vector<float> buttonCoor{
 		// first triangle
 		 0.00f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0,  // top right
@@ -449,9 +448,10 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 		box(0.0f, 0.02f, position_x, position_y, "", colorData.checkBoxCheckedColor, 0.00022f, false, false, 0.9f, 10, glm::vec3(0), 0);
 
 	}
-	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01, 0.00022f);
+	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f);
 }
-bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height, float position_x, float position_y,int mouseXpos, int mouseYpos,bool isPanelMoving){ //Return true if mouse hover on the given coordinates
+bool UserInterface::isMouseOnButton(GLFWwindow* window, float width, float height, float position_x, float position_y,double mouseXpos, double mouseYpos,bool isPanelMoving){ //Return true if mouse hover on the given coordinates
+	
 	std::vector<float> buttonCoor{
 		// first triangle
 		 width + position_x,  height + position_y, 1,1,0,0,0,0,  // top right
@@ -500,7 +500,7 @@ bool UserInterface::isMouseOnButton(GLFWwindow*window, float width, float height
 	}
 	//Barycentric calculations
 }
-bool UserInterface::isMouseOnCoords(GLFWwindow*window,int mouseXpos, int mouseYpos,std::vector<float> buttonCoor,bool isPanelMoving){ //Return true if mouse hover on the given coordinates
+bool UserInterface::isMouseOnCoords(GLFWwindow*window,double mouseXpos, double mouseYpos,std::vector<float> buttonCoor,bool isPanelMoving){ //Return true if mouse hover on the given coordinates
 	int screenSizeX;
 	int screenSizeY;
 	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
@@ -631,18 +631,20 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 
 		float w = ch.Size.x * scale;
 		float h = ch.Size.y * scale;
+
 		std::vector <float> vertices = {
-			 xpos,     ypos + h + 0.004f, 0.99999f  ,0.0f, 0.0f,0,0,0,
-			 xpos,     ypos,     0.99999f  ,0.0f, 1.0f,0,0,0,
-			 xpos + w, ypos,     0.99999f  ,1.0f, 1.0f,0,0,0,
+			 xpos,     ypos + h + 0.004f, 	  0.99999f  ,0.0f, 0.0f,	0,0,0,
+			 xpos,     ypos,      			  0.99999f  ,0.0f, 1.0f,	0,0,0,
+			 xpos + w, ypos,      			  0.99999f  ,1.0f, 1.0f,	0,0,0,
 			
-			 xpos,     ypos + h + 0.004f, 0.99999f  ,0.0f, 0.0f,0,0,0,
-			 xpos + w, ypos,     0.99999f  ,1.0f, 1.0f,0,0,0,
-			 xpos + w, ypos + h+ 0.004f, 0.99999  ,1.0f, 0.0f,0,0,0
+			 xpos,     ypos + h + 0.004f, 	  0.99999f  ,0.0f, 0.0f,	0,0,0,
+			 xpos + w, ypos,      			  0.99999f  ,1.0f, 1.0f,	0,0,0,
+			 xpos + w, ypos + h+  0.004f, 	  0.99999f  ,1.0f, 0.0f,	0,0,0
 		};
+
 		glset.bindTexture(ch.TextureID);
 		glset.drawArrays(vertices, false);
-		x += (ch.Advance >> 6) * scale / 1.2; 
+		x += (ch.Advance >> 6) * scale / 1.2f; 
 	}
 	glset.uniform1i(program, "isTextF", 0);
 	glset.uniform1i(program, "isText", 0);

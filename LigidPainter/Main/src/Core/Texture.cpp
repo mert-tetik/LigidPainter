@@ -194,9 +194,9 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 
 	glset.viewport(1080, 1080);
 
-	float rotation = ((brushRotationRangeBarValue +0.11f) * 4.54545454545) * 360; // -0.11 - 0.11 --> 0 - 360
+	float rotation = ((brushRotationRangeBarValue +0.11f) * 4.54545454545f) * 360.0f; // -0.11 - 0.11 --> 0 - 360
 
-	float scaleVal = ((brushBorderRangeBarValue+0.11f)/2.0f*8.18181818182) + 0.3f;
+	float scaleVal = ((brushBorderRangeBarValue+0.11f)/2.0f * 8.18181818182f) + 0.3f;
 	float scaleValTiny = scaleVal/4.0f;
 
 	glset.useOutShader(txtrPrograms.outProgram,outShaderData);

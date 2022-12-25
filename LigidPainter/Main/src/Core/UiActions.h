@@ -4,7 +4,7 @@ struct UiActionsData{
 };
 class UiActions {
 public:
-    bool updateRangeValues(GLFWwindow* window,float xOffset,float yOffset, int screenWidth, int screenHeight);
+    bool updateRangeValues(GLFWwindow* window,double xOffset,double yOffset, int screenWidth, int screenHeight);
     void isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover);
     UiActionsData uiActions(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);

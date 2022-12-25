@@ -178,8 +178,6 @@ unsigned int createProgram(std::string path){
 }
 
 Programs GlSet::getProgram() {//Prepare shader program | Usen once
-	Utilities utilities;
-
 	//TODO : 2d Shader
 
 	//Ui program

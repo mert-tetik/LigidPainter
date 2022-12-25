@@ -89,9 +89,9 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 	paintingProjection = glm::ortho(0.0f,(float)maxScreenWidth,(float)maxScreenHeight,0.0f);
 
 
-	float screenGapX = ((float)maxScreenWidth - screenSizeX)/2.0f;
+	float screenGapX = ((float)maxScreenWidth - (float)screenSizeX)/2.0f;
 
-	float screenGapY = ((float)maxScreenHeight - screenSizeY);
+	float screenGapY = ((float)maxScreenHeight - (float)screenSizeY);
 
 	GlSet glset;
 	Texture txtr;

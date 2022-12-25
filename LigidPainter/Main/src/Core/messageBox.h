@@ -48,8 +48,8 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
 	ui.box(0.04f, 0.04f, +0.1f, -0.15f, "No", buttonColorVec, 0.012f, false, false, 0.9999f, 10, buttonColorVec, 0);//Load model button
 
 
-	bool resultYesHover = ui.isMouseOnButton(window, 0.05f, 0.04f, -0.1-screenGapX, -0.15f, mouseXpos, mouseYpos, false);//Yes button hover
-	bool resultNoHover = ui.isMouseOnButton(window, 0.05f, 0.04f, +0.1-screenGapX, -0.15f, mouseXpos, mouseYpos, false);//No button hover
+	bool resultYesHover = ui.isMouseOnButton(window, 0.05f, 0.04f, -0.1f-screenGapX, -0.15f, mouseXpos, mouseYpos, false);//Yes button hover
+	bool resultNoHover = ui.isMouseOnButton(window, 0.05f, 0.04f, +0.f-screenGapX, -0.15f, mouseXpos, mouseYpos, false);//No button hover
 
 	//Make sure first click is done inside
 	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTakenMsgBox) {
