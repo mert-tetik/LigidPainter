@@ -1,9 +1,13 @@
 #include<iostream>
+
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
+
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <vector>
+#include <filesystem>
 
 
 #include <glm/glm.hpp>
@@ -13,17 +17,17 @@
 
 #include "Core/Model/model.h"
 
-#include "Render.h"
-#include "LigidPainter.h"
-#include "UserInterface.h"
-#include "Utilities.h"
-#include "gl.h"
-#include "Texture.h"
-#include <vector>
+#include "Core/Render.h"
+#include "Core/LigidPainter.h"
+#include "Core/UserInterface.h"
+#include "Core/Utilities.h"
+#include "Core/gl.h"
+#include "Core/Texture.h"
+
 #include "stb_image.h"
 #include "stb_image_write.h"
+
 #include "tinyfiledialogs.h"
-#include <filesystem>
 
 struct UndoActions
 {

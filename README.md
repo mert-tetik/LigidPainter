@@ -5,10 +5,14 @@
 **LigidPainter**  is a free 3D painting software.
 
 ## Notes
-   This software is not in usable state yet.
-   
+Official website : https://www.ligidtools.com/ligidpainter
+
 ## Building
-glfw3.lib , freetype.lib & freetype.dll files are required.
+glfw3, freetype, assimp libraries are required.
+
+glfw : https://www.glfw.org/download
+freetype : https://freetype.org/download.html
+assimp : https://github.com/assimp/assimp
 
 - After cloning the repository
     Create a new folder named "lib" into the ./LigidPainter/Main/thirdparty/
