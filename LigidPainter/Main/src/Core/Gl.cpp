@@ -16,7 +16,6 @@
 #include <vector>
 #include "stb_image.h"
 #include "stb_image_write.h"
-#include <dirent.h>
 #include <filesystem>
 
 

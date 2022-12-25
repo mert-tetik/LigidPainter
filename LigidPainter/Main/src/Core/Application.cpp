@@ -21,9 +21,10 @@
 
 #include "Texture.h"
 #include "UiActions.h"
-#include "Texture Generator/TextureGenerator.h"
+
 
 #include <vector>
+#include "Texture Generator/TextureGenerator.h"
 #include <map>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -33,7 +34,6 @@
 
 #include "tinyfiledialogs.h"
 #include "messageBox.h"
-
 
 
 using namespace std;
@@ -50,7 +50,7 @@ GLFWwindow* window;
 #endif
 
 BrushMaskTextures brushMaskTextures;
-vector<unsigned int> albedoTextures;
+std::vector<unsigned int> albedoTextures;
 
 //TODO : Reduce GPU Usage
 //TODO : Specialized vao for each shader
@@ -114,7 +114,7 @@ string colorpickerHexVal = "#408181";
 
 string modelName;
 string customModelName; 
-vector<float> vertices = { 0 };
+std::vector<float> vertices = { 0 };
 
 //--------Functions--------\\
 
@@ -485,7 +485,7 @@ bool LigidPainter::run()
 
 	glset.uniform3fv(programs.uiProgram,"textColor",colorData.textColor);
 	glset.uniform1i(programs.uiProgram, "text", 2);
-	glset.uniform1i(programs.uiProgram, "currentTexture", 11);
+	glset.uniform1i(programs.uiProgram, "currentTexture", 0);
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
 
 
@@ -1092,7 +1092,7 @@ void LigidPainter::brushBlurRangeBar(float xOffset,int width,int height,bool ren
 	brushBlurRangeBarValue = util.restrictBetween(brushBlurRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
 	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue,renderTiny,brushBorderRangeBarValue,brushBlurVal,outShaderData);
 
-	brushBlurVal = ((brushBlurRangeBarValue + 0.11f) * 268.181818182) + 1.0; //Max 59
+	brushBlurVal = ((brushBlurRangeBarValue + 0.11f) * 545.454545455) + 1.0; //Max 120
 }
 void LigidPainter::textureDemonstratorButton(float xOffset,float yOffset,int width,int height) {
 	panelChanging = true;

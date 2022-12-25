@@ -5,7 +5,6 @@
 #include <fstream>
 #include <sstream>
 
-#include <direct.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -24,6 +23,7 @@
 #include "stb_image.h"
 #include "stb_image_write.h"
 #include "tinyfiledialogs.h"
+#include <filesystem>
 
 struct UndoActions
 {
@@ -881,8 +881,15 @@ void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* 
 
 	//Create the export folder
 	std::string exportPathStr = exportPath;
-	exportPathStr.append("/LigidExportFolder");
-	mkdir(exportPathStr.c_str());
+
+	if(exportFileName[0] != '/'){
+		exportPathStr.append("/");
+	}
+	
+	exportPathStr.append(exportFileName);
+
+	std::filesystem::create_directories(exportPathStr.c_str());
+
     
 	GlSet gl;
 	Texture txtr;

@@ -10,8 +10,9 @@
 #include "gl.h"
 #include "Texture.h"
 
-
 #include <vector>
+#include "Texture Generator/TextureGenerator.h"
+
 #include "stb_image.h"
 #include "stb_image_write.h"
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
@@ -181,40 +182,11 @@ void Texture::refreshScreenDrawingTexture() {
 	delete[] screenTextureM;
 }
 
-
-
-vector<float> gaussianFunc(float radius,float mean){
-	// vector<float> oneDimensionalGauss = {0.0003,	0.0004,	0.0007,	0.0012,	0.0019,	0.0029,	0.0044,	0.0064,	0.0090,	0.0124,	0.0166,	0.0216,	0.0274,	0.0337,	0.0404,	0.0470,	0.0532,	0.0587,	0.0629,	0.0655,	0.0665,	0.0655,	0.0629,	0.0587,	0.0532,	0.0470,	0.0404,	0.0337,	0.0274,	0.0216,	0.0166,	0.0124,	0.0090,	0.0064,	0.0044,	0.0029,	0.0019,	0.0012,	0.0007,	0.0004,	0.0003};
-	vector<float> oneDimensionalGauss;
-	
-	float sigma = (radius / sqrt(-2.0 * log(1 - 0.995))) ;
-
-	const float pi = 3.14159265359f;
-
-	float summ = 0;
-
-	for (int i = 0; i < radius*2 + 1; i++)
-	{
-    	float denominator = sigma * sqrt(2.0f * pi);
-    	float expon = exp( (-1.0f/2.0f) * (pow((float)i-((float)radius) - mean , 2.0f) / pow(sigma,2.0f)));
-
-    	float a = 1.0f / denominator;
-    	float result = a * expon;
-		oneDimensionalGauss.push_back(result);
-		summ += result;
-
-	}
-
-	cout << oneDimensionalGauss.size() << ' '; 
-	
-    return oneDimensionalGauss;
-}
-
-
-
 GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData) { //rotationValue = rotationBarValue
 	GlSet glset;
 	UserInterface ui;
+	TextureGenerator txtrGen;
+
 	glset.viewport(1080, 1080);
 
 	float rotation = ((brushRotationRangeBarValue +0.11f) * 4.54545454545) * 360; // -0.11 - 0.11 --> 0 - 360
@@ -335,7 +307,7 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 
 	
 
-	vector<float> oneDimensionalGaussian = gaussianFunc(min(brushBlurVal,60.0f),0.0f);
+	std::vector<float> oneDimensionalGaussian = txtrGen.gaussianFunc(min(brushBlurVal,120.0f),0.0f);
 
 
 
