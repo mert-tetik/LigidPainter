@@ -296,52 +296,7 @@ glm::vec3 getScreenHoverPixel(double mouseXpos,double mouseYpos, int screenSizeY
 	delete[] screenPixel;  
     return screenHoverPixel;
 }
-glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerValue_x, float colorBoxPickerValue_y,  int screenSizeX,  int screenSizeY) {
-	std::vector<float> colorBox = { //Render color box into the screen
-	// first triangle
-	 0.0f,  1.0f, 0.0f,1,1,1,1,1,  // top right
-	 0.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
-	 1.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
-	// second triangle	  ,0,0,0,
-	 0.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right7
-	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
-	 1.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
-	};
 
-    GlSet gl;
-	glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
-	saturationValShaderData.renderTextureProjection = projection;
-	saturationValShaderData.boxColor = hueVal / 255.0f;
-    gl.useSaturationValBoxShader(renderPrograms.saturationValBoxProgram,saturationValShaderData);
-
-	//Setup
-	gl.viewport(1920, 1080);
-	gl.bindFramebuffer(FBOScreen);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//Setup
-
-	//Render color box
-	GLubyte* colorBoxPixel = new GLubyte[1 * 1 * 3];//Color val
-	gl.drawArrays(colorBox, false); //Render Model
-	glReadPixels(1080.0f - ((colorBoxPickerValue_x * -1.0f + 0.1f) * 5.0f * 1080.0f), (colorBoxPickerValue_y + 0.2f) * 2.5f * 1080.0f, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorBoxPixel);
-	//Render color box
-
-	//Finish
-	gl.bindFramebuffer(0);
-	glViewport(-(renderMaxScreenWidth - screenSizeX)/2, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
-
-	glUseProgram(renderPrograms.uiProgram);
-
-
-	//Get color value to the color vec
-    glm::vec3 colorBoxPixelVal = glm::vec3(0);
-	colorBoxPixelVal.r = colorBoxPixel[0];
-	colorBoxPixelVal.g = colorBoxPixel[1];
-	colorBoxPixelVal.b = colorBoxPixel[2];
-	delete[]colorBoxPixel;
-    return colorBoxPixelVal;
-	//Finish
-}
 
 int renderDepthCounter = 0;
 glm::vec3 colorBoxVal = glm::vec3(0);
@@ -448,7 +403,7 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 
 
 	if (colorBoxValChanged && !colorpickerHexValTextboxValChanged) { //Get value of color box
-		colorBoxVal = getColorBoxValue(FBOScreen, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y,screenSizeX, screenSizeY);
+		colorBoxVal = getColorBoxValue(FBOScreen, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y,screenSizeX, screenSizeY,hueVal,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,saturationValShaderData);
 	}
 	ctrlZCheck(renderData.window,albedoTextures);
 
