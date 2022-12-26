@@ -66,61 +66,7 @@ glm::vec3 hueVal;
 
 
 
-void Render::renderSkyBox(SkyBoxShaderData data) {
-	GlSet gls;
 
-	gls.useSkyBoxShader(renderPrograms.skyboxProgram,data);
-	
-	glDepthMask(GL_FALSE);
-	glDepthFunc(GL_LEQUAL);
-
-	std::vector<float> skyboxVertices = {
-	    // positions          
-	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f,  1.0f ,0,0,  0,0,0,
-	    -1.0f,  1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f, -1.0f ,0,0,  0,0,0,
-	    -1.0f, -1.0f,  1.0f ,0,0,  0,0,0,
-	     1.0f, -1.0f,  1.0f ,0,0,  0,0,0
-	};
-
-	gls.drawArrays(skyboxVertices,false);
-	glDepthFunc(GL_LESS);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glDepthMask(GL_TRUE);
-	
-	glUseProgram(renderPrograms.uiProgram);
-}
 glm::mat4 Render::setMatrices() {
     GlSet gl;
 	glm::mat4 textProjection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
@@ -700,7 +646,7 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 	}
 
 
-	renderSkyBox(skyBoxShaderData);
+	renderSkyBox(skyBoxShaderData,renderPrograms);
 	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,albedoTextures,renderPrograms,currentMaterialIndex);
 	drawAxisPointer(axisPointerShaderData);
 
