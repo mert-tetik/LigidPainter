@@ -139,49 +139,7 @@ void Render::drawLightObject(glm::vec3 lightPos) {
 	// glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
-void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int screenSizeY,ScreenDepthShaderData screenDepthShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures) {
-	Texture txtr;
-    GlSet gl;
 
-	gl.viewport(1920, 1080);
-	gl.bindFramebuffer(FBOScreen);
-	
-	screenDepthShaderData.renderMirrored = 0;
-	gl.useScreenDepthShader(renderPrograms.screenDepthProgram, screenDepthShaderData);
-	
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
-
-	GLubyte* screen = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
-	gl.activeTexture(GL_TEXTURE9);
-	gl.texImage(screen, 1920, 1080, GL_RGB);
-	gl.generateMipmap();
-	delete[]screen;
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-	//Mirrored
-	screenDepthShaderData.renderMirrored = 1;
-	gl.useScreenDepthShader(renderPrograms.screenDepthProgram, screenDepthShaderData);
-
-	
-	model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
-
-	GLubyte* screenMirrored = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
-	gl.activeTexture(GL_TEXTURE8);
-	gl.texImage(screenMirrored, 1920, 1080, GL_RGB);
-	gl.generateMipmap();
-	delete[] screenMirrored;
-
-	glUseProgram(renderPrograms.uiProgram);
-	
-	glViewport(-(renderMaxScreenWidth - screenSizeX)/2, -(renderMaxScreenHeight - screenSizeY), renderMaxScreenWidth, renderMaxScreenHeight);
-
-	gl.bindFramebuffer(0);
-}
 
 //------------CtrlZ------------
 bool doCtrlZ;
@@ -350,7 +308,7 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 		renderDepthCounter = 0;
 	}
 	if (renderDepthCounter == 1) {//Get depth texture
-		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,albedoTextures);
+		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,albedoTextures,renderPrograms,currentMaterialIndex, renderMaxScreenWidth , renderMaxScreenHeight);
 	}
 
 
