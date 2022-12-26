@@ -22,7 +22,7 @@
 #include "Core/UserInterface.h"
 #include "Core/Utilities.h"
 #include "Core/gl.h"
-#include "Core/Texture.h"
+#include "Core/Texture/Texture.h"
 
 #include "stb_image.h"
 #include "stb_image_write.h"

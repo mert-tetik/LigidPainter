@@ -22,7 +22,7 @@
 #include "Core/UserInterface.h"
 #include "Core/Utilities.h"
 #include "Core/gl.h"
-#include "Core/Texture.h"
+#include "Core/Texture/Texture.h"
 
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -78,7 +78,7 @@ RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& r
 bool textureDemonstratorButtonPressClicked,Icons &icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 std::string &colorpickerHexVal,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,
-bool updateHueVal,Programs programs,int &currentMaterialIndex,int renderMaxScreenWidth,float orgTextureDemonstratorWidth, float orgTextureDemonstratorHeight, 
+bool updateHueVal,Programs programs,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight,float orgTextureDemonstratorWidth, float orgTextureDemonstratorHeight, 
 SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int &currentBrushMaskTexture) {
 
 	
@@ -97,7 +97,7 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 	uiOut.texturePanelButtonClicked = false;
 	uiOut.texturePanelButtonHover = false;
 
-	float screenGapX = ((float)renderMaxScreenWidth - screenSizeX)/(((float)renderMaxScreenWidth)/2.0f)/2.0f; 
+	float screenGapX = ((float)maxScreenWidth - screenSizeX)/(((float)maxScreenWidth)/2.0f)/2.0f; 
 
 	updateButtonColorMixValues(uidata);
 
@@ -448,11 +448,11 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 			gl.uniform1i(programs.iconsProgram,"isMaskIcon",0);
 
 			
-			if(ui.isMouseOnCoords(renderData.window,mouseXpos+screenGapX*(renderMaxScreenWidth/2),mouseYpos,buttonCoorSq,panelData.movePanel)){
+			if(ui.isMouseOnCoords(renderData.window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,panelData.movePanel)){
 				if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
 					gl.activeTexture(GL_TEXTURE1);
 					gl.bindTexture(maskTextures[i]);
-					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData);
+					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData,programs,maxScreenWidth,maxScreenHeight);
 					uiOut.maskPanelMaskClicked = true;
 					currentBrushMaskTexture = maskTextures[i];
 				}

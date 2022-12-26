@@ -17,7 +17,7 @@
 #include "Core/LigidPainter.h"
 #include "Core/Utilities.h"
 #include "Core/gl.h"
-#include "Core/Texture.h"
+#include "Core/Texture/Texture.h"
 
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -309,6 +309,7 @@ WindowData GlSet::getWindow() {
 			windowMaxHeight = util.keepTheRatio(windowMaxWidth,windowMaxHeight,windowRatio);
 	}
 
+	glfwSetWindowSize(window,windowMaxWidth,windowMaxHeight);
 
 	GLFWimage images[1];
 	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/logo-1080x.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 

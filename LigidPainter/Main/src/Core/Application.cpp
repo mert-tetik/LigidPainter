@@ -21,7 +21,7 @@
 #include "Core/gl.h"
 #include "Core/Render/Render.h"
 #include "Core/Model/model.h"
-#include "Core/Texture.h"
+#include "Core/Texture/Texture.h"
 #include "Core/UiActions.h"
 #include "Core/Texture Generator/TextureGenerator.h"
 #include "Core/messageBox.h"
@@ -527,7 +527,7 @@ bool LigidPainter::run()
 
 	//Process the default mask brush
 	glfwGetWindowSize(window, &screenWidth, &screenHeight);
-	txtr.updateMaskTexture(FBOScreen, screenWidth, screenHeight, brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData);
+	txtr.updateMaskTexture(FBOScreen, screenWidth, screenHeight, brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
 
 
 	panelData.modelPanelActive = true; //Active the model panel by default
@@ -1068,7 +1068,7 @@ void LigidPainter::addMaskTextureButton() {
 		brushMaskTextures.textures.push_back(txtr.getTexture(maskTexturePath,0,0,false));
 		brushMaskTextures.names.push_back(maskTexturePath);
 
-		txtr.updateMaskTexture(FBOScreen,width,height,brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData);
+		txtr.updateMaskTexture(FBOScreen,width,height,brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
 	}
 }
 void LigidPainter::brushSizeRangeBar(double xOffset,int width){
@@ -1089,7 +1089,7 @@ void LigidPainter::brushBlurRangeBar(double xOffset,int width,int height,bool re
 	brushValChanged = true;
 	brushBlurRangeBarValue -= xOffset / (width / 2);
 	brushBlurRangeBarValue = util.restrictBetween(brushBlurRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
-	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue,renderTiny,brushBorderRangeBarValue,brushBlurVal,outShaderData);
+	txtr.updateMaskTexture(FBOScreen,width,height, brushRotationRangeBarValue,renderTiny,brushBorderRangeBarValue,brushBlurVal,outShaderData,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
 
 	brushBlurVal = ((brushBlurRangeBarValue + 0.11f) * 545.454545455f) + 1.0f; //Max 120
 }
@@ -1116,7 +1116,7 @@ void LigidPainter::brushRotationRangeBar(double xOffset, int width, int height){
 	brushValChanged = true;
 	brushRotationRangeBarValue -= xOffset / (width / 2.0f);
 	brushRotationRangeBarValue = util.restrictBetween(brushRotationRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
-	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue,brushBlurVal,outShaderData);
+	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue,brushBlurVal,outShaderData,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
 }
 void LigidPainter::brushOpacityRangeBar(double xOffset, int width, int height) {
 	Utilities util;
@@ -1139,7 +1139,7 @@ void LigidPainter::brushBordersRangeBar(double xOffset, int width, int height) {
 	brushValChanged = true;
 	brushBorderRangeBarValue -= xOffset / (width / 2.0f);
 	brushBorderRangeBarValue = util.restrictBetween(brushBorderRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
-	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue,brushBlurVal,outShaderData);
+	txtr.updateMaskTexture(FBOScreen, width, height,brushRotationRangeBarValue,true,brushBorderRangeBarValue,brushBlurVal,outShaderData,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
 }
 void LigidPainter::colorBoxColorRangeBar(double yOffset,int height){
 	Utilities util;

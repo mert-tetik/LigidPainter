@@ -9,7 +9,7 @@
 
 #include "Core/LigidPainter.h"
 #include "Core/gl.h"
-#include "Core/Texture.h"
+#include "Core/Texture/Texture.h"
 #include "Core/Render/Render.h"
 #include "Core/Texture Generator/TextureGenerator.h"
 
@@ -106,7 +106,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 		//Setup
 		resizedPixels = new GLubyte[540 * 540 * 3];
 
-		renderedImage = txtr.updateMaskTexture(FBOScreen, screenSizeX,screenSizeY, rotationValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData);
+		renderedImage = txtr.updateMaskTexture(FBOScreen, screenSizeX,screenSizeY, rotationValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData,programs,maxScreenWidth,maxScreenHeight);
 		//Resize
 		if (true) {
 			stbir_resize_uint8(renderedImage, 540, 540, 0, resizedPixels, 540, 540, 0, 3); //Resize (causes lags)
