@@ -223,29 +223,7 @@ void ctrlZCheck(GLFWwindow* window,std::vector<unsigned int> &albedoTextures) {
 }
 //------------CtrlZ------------
 
-void drawBrushIndicator(float distanceX,int screenWidth,int screenHeight,double mouseXpos,double mouseYpos,glm::vec3 color) {
 
-	float sizeX = distanceX; //Match the size of the window
-	float screenGapX = ((float)renderMaxScreenWidth - (float)screenWidth)/(((float)renderMaxScreenWidth)/2.0f)/2.0f; 
-	
-	GlSet glset;
-	glset.uniform1i(renderPrograms.uiProgram, "drawBrushIndicator", 1); //TODO : Create shader for brush indicator
-	std::vector<float> paintingSquare{
-		// first triangle
-		( sizeX / renderMaxScreenWidth / 1.0f + (float)mouseXpos / renderMaxScreenWidth / 0.5f - 1.0f)+screenGapX,  sizeX / renderMaxScreenHeight / 1.0f - (float)mouseYpos / renderMaxScreenHeight / 0.5f + 1.0f , 1.0f,1,1,0,0,0,  // top right
-		( sizeX / renderMaxScreenWidth / 1.0f + (float)mouseXpos / renderMaxScreenWidth / 0.5f - 1.0f)+screenGapX, -sizeX / renderMaxScreenHeight / 1.0f - (float)mouseYpos / renderMaxScreenHeight / 0.5f + 1.0f , 1.0f,1,0,0,0,0,  // bottom right
-		(-sizeX / renderMaxScreenWidth / 1.0f + (float)mouseXpos / renderMaxScreenWidth / 0.5f - 1.0f)+screenGapX,  sizeX / renderMaxScreenHeight / 1.0f - (float)mouseYpos / renderMaxScreenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0,  // top left 
-		( sizeX / renderMaxScreenWidth / 1.0f + (float)mouseXpos / renderMaxScreenWidth / 0.5f - 1.0f)+screenGapX, -sizeX / renderMaxScreenHeight / 1.0f - (float)mouseYpos / renderMaxScreenHeight / 0.5f + 1.0f , 1.0f,1,0,0,0,0,  // bottom right
-		(-sizeX / renderMaxScreenWidth / 1.0f + (float)mouseXpos / renderMaxScreenWidth / 0.5f - 1.0f)+screenGapX, -sizeX / renderMaxScreenHeight / 1.0f - (float)mouseYpos / renderMaxScreenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom left
-		(-sizeX / renderMaxScreenWidth / 1.0f + (float)mouseXpos / renderMaxScreenWidth / 0.5f - 1.0f)+screenGapX,  sizeX / renderMaxScreenHeight / 1.0f - (float)mouseYpos / renderMaxScreenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0  // top left
-	};
-	glset.uiDataToShaders(color/glm::vec3(255.0f));
-	glset.uniform1f(renderPrograms.uiProgram, "uiOpacity", 0.2f);
-	glset.drawArrays(paintingSquare, false);
-	glset.uniform1f(renderPrograms.uiProgram, "uiOpacity", 0.5f);
-
-	glset.uniform1i(renderPrograms.uiProgram, "drawBrushIndicator", 0);
-}
 
 
 
@@ -643,7 +621,7 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 		screenHoverPixel = getScreenHoverPixel(mouseXpos,mouseYpos,screenSizeY);
 
 	if(renderData.doPainting)
-		drawBrushIndicator(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorBoxVal);
+		renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorBoxVal,renderMaxScreenWidth,renderMaxScreenHeight,renderPrograms);
  
 	RenderOutData renderOut;
 	renderOut.mouseHoverPixel = screenHoverPixel;
