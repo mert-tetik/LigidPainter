@@ -712,7 +712,7 @@ bool LigidPainter::run()
 
 
 		//Exit message box
-		 if(glfwWindowShouldClose(window)){
+		if(glfwWindowShouldClose(window)){
 			bool noButtonClick = true;
 			bool clickTaken = false;
 
@@ -740,10 +740,10 @@ bool LigidPainter::run()
 				int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,"LigidPainter will be closed. Do you want to proceed?",-0.21f,0.0f,messageBoxBackColor,messageBoxButtonColor,(float)windowData.windowMaxWidth, (float)screenWidth,programs.iconsProgram); //0 = Yes //1 = No //2 = None
 
 				//Process the message box input
-				if(result == 0){
+				if(result == 0 || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
 					break; //Close the app
 				}
-				else if(result == 1){
+				else if(result == 1 || glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
 					panelData.modelPanelActive = true;
 					glfwSetWindowShouldClose(window,GLFW_FALSE);
 					break; //Act like nothing happened
@@ -751,7 +751,7 @@ bool LigidPainter::run()
 
 				glfwSwapBuffers(window);
 		 	}
-		 }
+		}
 
 		
 

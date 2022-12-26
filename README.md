@@ -40,3 +40,7 @@ assimp : https://github.com/assimp/assimp
     Left CTRL + TAB + W = Switch to texture panel
     Left CTRL + TAB + R = Switch to export panel
     Left CTRL + TAB + T = Switch to painting panel
+
+    While message box is active
+    ESC = Negative (Close the message box)
+    ENTER = Positive (Exit the app if closing message box is active) 
