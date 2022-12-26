@@ -227,11 +227,22 @@ bool Utilities::shortCut(GLFWwindow* window,unsigned int input1,unsigned int inp
 
 float Utilities::transitionEffect(bool buttonEnter,float mixVal,float phaseDifference){
 
-	if (buttonEnter && mixVal <= 1.0f) {
-		mixVal += phaseDifference;
-	}
-	else if (!buttonEnter && mixVal >= 0.0f) {
-		mixVal -= phaseDifference;
-	}
+	if (buttonEnter && mixVal <= 1.0f) {mixVal += phaseDifference;}
+	else if (!buttonEnter && mixVal >= 0.0f) {mixVal -= phaseDifference;}
 	return mixVal;
 } 
+
+float Utilities::keepTheRatio(double value1,double value2, double desiredRatio){
+	double maxV = max(value1,value2);
+	double minV = min(value1,value2);
+
+	double ratio = (double)maxV / (double)minV;
+
+	double ratioRatio = ratio/desiredRatio;
+
+	double result = maxV / ratioRatio;
+
+	cout << "Max : "<<maxV << " Min : " << minV << " Ratio : " << ratio << " Desired Rat : " << desiredRatio <<" RatioRatio : " << ratioRatio << " Result : " << result << '\n';
+
+	return result;
+}

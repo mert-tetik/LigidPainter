@@ -292,6 +292,24 @@ WindowData GlSet::getWindow() {
 	int windowMaxHeight;
 	glfwGetWindowSize(window,&windowMaxWidth,&windowMaxHeight);
 
+	Utilities util;
+	const float windowRatio = 16.0f/9.0f;
+	const float maxRatioDifference = 0.2; 
+
+
+	//Adjust the ratio
+	if(windowMaxWidth >= windowMaxHeight){
+
+		if(abs(((double)windowMaxWidth / (double)windowMaxHeight) - windowRatio) > maxRatioDifference)
+			windowMaxWidth = util.keepTheRatio(windowMaxWidth,windowMaxHeight,windowRatio);
+	}
+	else{
+
+		if(abs(((double)windowMaxHeight / (double)windowMaxWidth) - windowRatio) > maxRatioDifference)
+			windowMaxHeight = util.keepTheRatio(windowMaxWidth,windowMaxHeight,windowRatio);
+	}
+
+
 	GLFWimage images[1];
 	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/logo-1080x.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
 	glfwSetWindowIcon(window, 1, images);

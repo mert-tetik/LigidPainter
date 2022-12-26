@@ -15,7 +15,6 @@ public:
 	std::string cropString(std::string text,int maxSize);
 	bool shortCut(GLFWwindow* window,unsigned int input1,unsigned int input2,unsigned int input3,unsigned int input4);
 	float transitionEffect(bool buttonEnter,float mixVal,float phaseDifference);
-
-
+	float keepTheRatio(double value1,double value2, double desiredRatio);
 };
 #endif

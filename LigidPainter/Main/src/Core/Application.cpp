@@ -581,6 +581,8 @@ bool LigidPainter::run()
 	bool paintRender = false;
 	int paintRenderCounter = 0;
 
+
+
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		
