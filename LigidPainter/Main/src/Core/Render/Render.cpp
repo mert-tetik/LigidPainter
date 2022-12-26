@@ -247,27 +247,7 @@ void drawBrushIndicator(float distanceX,int screenWidth,int screenHeight,double 
 	glset.uniform1i(renderPrograms.uiProgram, "drawBrushIndicator", 0);
 }
 
-void drawAxisPointer(AxisPointerShaderData axisPointerShaderData) {
-	GlSet glset;
-		//Axis Pointer
-		std::vector<float>axisPointer{
-		0.0f, -10000.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Y
-		0.0f, 10000.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 
-		-10000.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //X
-		10000.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-
-		0.0f, 0.0f, -10000.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, //Z
-		0.0f, 0.0f, 10000.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	};
-	glset.useAxisPointerShader(renderPrograms.axisPointerProgram,axisPointerShaderData);
-	
-	glset.blendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
-	glset.drawArrays(axisPointer, true);
-	glset.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glUseProgram(renderPrograms.uiProgram);
-}
 
 
 void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName,vector<unsigned int> &albedoTextures){
@@ -648,9 +628,9 @@ RenderOutData Render::render(RenderData &renderData, std::vector<float>& vertice
 
 	renderSkyBox(skyBoxShaderData,renderPrograms);
 	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,albedoTextures,renderPrograms,currentMaterialIndex);
-	drawAxisPointer(axisPointerShaderData);
-
+	renderAxisPointer(axisPointerShaderData,renderPrograms);
 	uiOut = renderUi(panelData, uidata, renderData, FBOScreen, renderData.brushBlurRangeBarValue,renderData.brushRotationRangeBarValue, renderData.brushOpacityRangeBarValue, renderData.brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons,colorBoxVal,maskTextureFile,paintingFillNumericModifierVal,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,colorpickerHexVal,renderData.brushBorderRangeBarValue,brushBlurVal,outShaderData,model,albedoTextures,updateHueVal,renderPrograms,currentMaterialIndex,renderMaxScreenWidth,orgTextureDemonstratorWidth, orgTextureDemonstratorHeight, saturationValShaderData,hueVal,currentBrushMaskTexture);
+
 
 	if (colorBoxValChanged && !colorpickerHexValTextboxValChanged) { //Get value of color box
 		colorBoxVal = getColorBoxValue(FBOScreen, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y,screenSizeX, screenSizeY);
