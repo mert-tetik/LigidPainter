@@ -17,7 +17,7 @@
 #include <glm/gtx/string_cast.hpp>
 
 #include "Core/LigidPainter.h"
-#include "Core/UserInterface.h"
+#include "Core/UI/UserInterface.h"
 #include "Core/gl.h"
 #include "Core/Load.h"
 #include "Core/Texture/Texture.h"
@@ -34,105 +34,6 @@ ColorData colorD;
 
 int uiMaxScreenWidth;
 int uiMaxScreenHeight;
-
-//--------------------INSTRUCTIONS--------------------\\
-
-/*
-	How UI works
-
-	Visualization
-		userinterface.cpp - provides neccessary informations
-		gl.cpp - Rendering to the screen.
-		callback.cpp - Check if button hover using isMouseOnButton function in userinterface.cpp. Return boolean values to the application.cpp for each button.
-		UiActions.cpp - Check if button pressed
-		application.cpp - Adjust values.
-
-*/
-
-void UserInterface::panel(float panelLoc, float) {
-	GlSet glset;
-	std::vector<float> panelCoor{
-		panelLoc-1.0f,1.0f,0,0,0,0,0,0,
-		panelLoc -1.0f  ,-1.0f,0,0,0,0,0,0,
-		1.0f ,1.0f,0,0,0,0,0,0,
-		1.0f ,1.0f,0,0,0,0,0,0,
-		1.0f ,-1.0f,0,0,0,0,0,0,
-		panelLoc -1.0f ,-1.0f,0,0,0,0,0,0,
-	};
-	std::vector<float> panelHoldCoor{ //Holding line standing left side of the panel
-		panelLoc - 1.0f , 1.0f,0,0,0,0,0,0,
-		panelLoc - 1.0f ,-1.0f,0,0,0,0,0,0,
-		panelLoc - 1.0f + 0.006f,1.0f,0,0,0,0,0,0,
-		panelLoc - 1.0f + 0.006f,1.0f,0,0,0,0,0,0,
-		panelLoc - 1.0f + 0.006f,-1.0f,0,0,0,0,0,0,
-		panelLoc - 1.0f ,-1.0f,0,0,0,0,0,0
-	};
-	glm::vec3 blankVal = glm::vec3(0);
-	glset.uiDataToShaders(colorD.panelHoldColor);
-	glset.uniform3fv(uiPrograms.uiProgram, "uiTransitionColor", blankVal);
-	glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0.0f);
-
-	glset.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.4f);
-	glset.drawArrays(panelHoldCoor, false);
-
-	glset.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.25f);
-	glset.uiDataToShaders(colorD.panelColor);
-	glset.drawArrays(panelCoor, false);
-
-	glset.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.4f);
-}
-
-void UserInterface::textureDemonstrator(float width,float height, float position_x,float position_y,float z){ 
-	GlSet glset;
-	ColorData clrData;
-	std::vector<float> buttonCoorSq{
-		// first triangle
-		 width + position_x,  position_y, z,1,1,0,0,0,  // top right
-		 width + position_x,  -height +position_y, z,1,0,0,0,0,  // bottom right
-		 position_x,  position_y, z,0,1,0,0,0,  // top left 
-		// second triangle						   
-		 width + position_x,   -height +position_y, z,1,0,0,0,0,  // bottom right
-		 position_x, -height +position_y, z,0,0,0,0,0,  // bottom left
-		 position_x,  position_y, z,0,1,0,0,0  // top left
-	};
-	box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDemonstratorButtonColor,0,0,0,1,10,glm::vec3(0),0);
-
-	glset.uniform1i(uiPrograms.uiProgram,"drawTxtrDemonstrator",1);
-	glset.drawArrays(buttonCoorSq,false);
-	glset.uniform1i(uiPrograms.uiProgram,"drawTxtrDemonstrator",0);
-}
-void UserInterface::numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN){
-	//box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"",glm::vec3(0),0,0,0,1,10,glm::vec3(0),0);
-	ColorData clrData;
-	
-	glUseProgram(uiPrograms.iconsProgram);
-	iconBox(0.02f,0.04f,position_x - 0.05f,position_y,z,leftArrow,mixValN,clrData.numericModifierArrowColor,clrData.numericModifierArrowHoverColor);
-	iconBox(0.02f,0.04f,position_x + 0.05f,position_y,z,rightArrow,mixValP,clrData.numericModifierArrowColor,clrData.numericModifierArrowHoverColor);
-
-	glUseProgram(uiPrograms.uiProgram);
-	renderText(uiPrograms.uiProgram,std::to_string(value),position_x-0.01f,position_y-0.01f,0.00022f);
-}
-void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon,float mixVal,glm::vec3 color,glm::vec3 colorHover){
-	std::vector<float> buttonCoorSq{
-		// first triangle
-		 width + position_x,  height + position_y, z,1,1,0,0,0,  // top right
-		 width + position_x, -height + position_y, z,1,0,0,0,0,  // bottom right
-		-width + position_x,  height + position_y, z,0,1,0,0,0,  // top left 
-		// second triangle						   
-		 width + position_x, -height + position_y, z,1,0,0,0,0,  // bottom right
-		-width + position_x, -height + position_y, z,0,0,0,0,0,  // bottom left
-		-width + position_x,  height + position_y, z,0,1,0,0,0  // top left
-	};
-	GlSet glset;
-	ColorData clrData;
-
-	glset.uniform3fv(uiPrograms.iconsProgram,"iconColor",color);
-	glset.uniform3fv(uiPrograms.iconsProgram,"iconColorHover",colorHover);
-	glset.uniform1f(uiPrograms.iconsProgram,"iconMixVal",mixVal);
-	glset.activeTexture(GL_TEXTURE6);
-	glset.bindTexture(icon);
-	glset.drawArrays(buttonCoorSq,false);
-}
 
 void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec3 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec3 colorTransitionColor, float mixVal) {
 	
@@ -223,6 +124,95 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	}
 	glset.uniform1i(uiPrograms.uiProgram, "isUiTextureUsed", 0);
 }
+
+void UserInterface::panel(float panelLoc, float) {
+	GlSet glset;
+	std::vector<float> panelCoor{
+		panelLoc-1.0f,1.0f,0,0,0,0,0,0,
+		panelLoc -1.0f  ,-1.0f,0,0,0,0,0,0,
+		1.0f ,1.0f,0,0,0,0,0,0,
+		1.0f ,1.0f,0,0,0,0,0,0,
+		1.0f ,-1.0f,0,0,0,0,0,0,
+		panelLoc -1.0f ,-1.0f,0,0,0,0,0,0,
+	};
+	std::vector<float> panelHoldCoor{ //Holding line standing left side of the panel
+		panelLoc - 1.0f , 1.0f,0,0,0,0,0,0,
+		panelLoc - 1.0f ,-1.0f,0,0,0,0,0,0,
+		panelLoc - 1.0f + 0.006f,1.0f,0,0,0,0,0,0,
+		panelLoc - 1.0f + 0.006f,1.0f,0,0,0,0,0,0,
+		panelLoc - 1.0f + 0.006f,-1.0f,0,0,0,0,0,0,
+		panelLoc - 1.0f ,-1.0f,0,0,0,0,0,0
+	};
+	glm::vec3 blankVal = glm::vec3(0);
+	glset.uiDataToShaders(colorD.panelHoldColor);
+	glset.uniform3fv(uiPrograms.uiProgram, "uiTransitionColor", blankVal);
+	glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0.0f);
+
+	glset.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.4f);
+	glset.drawArrays(panelHoldCoor, false);
+
+	glset.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.25f);
+	glset.uiDataToShaders(colorD.panelColor);
+	glset.drawArrays(panelCoor, false);
+
+	glset.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.4f);
+}
+
+void UserInterface::textureDemonstrator(float width,float height, float position_x,float position_y,float z){ 
+	GlSet glset;
+	ColorData clrData;
+	std::vector<float> buttonCoorSq{
+		// first triangle
+		 width + position_x,  position_y, z,1,1,0,0,0,  // top right
+		 width + position_x,  -height +position_y, z,1,0,0,0,0,  // bottom right
+		 position_x,  position_y, z,0,1,0,0,0,  // top left 
+		// second triangle						   
+		 width + position_x,   -height +position_y, z,1,0,0,0,0,  // bottom right
+		 position_x, -height +position_y, z,0,0,0,0,0,  // bottom left
+		 position_x,  position_y, z,0,1,0,0,0  // top left
+	};
+	box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDemonstratorButtonColor,0,0,0,1,10,glm::vec3(0),0);
+
+	glset.uniform1i(uiPrograms.uiProgram,"drawTxtrDemonstrator",1);
+	glset.drawArrays(buttonCoorSq,false);
+	glset.uniform1i(uiPrograms.uiProgram,"drawTxtrDemonstrator",0);
+}
+
+void UserInterface::numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN){
+	//box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"",glm::vec3(0),0,0,0,1,10,glm::vec3(0),0);
+	ColorData clrData;
+	
+	glUseProgram(uiPrograms.iconsProgram);
+	iconBox(0.02f,0.04f,position_x - 0.05f,position_y,z,leftArrow,mixValN,clrData.numericModifierArrowColor,clrData.numericModifierArrowHoverColor);
+	iconBox(0.02f,0.04f,position_x + 0.05f,position_y,z,rightArrow,mixValP,clrData.numericModifierArrowColor,clrData.numericModifierArrowHoverColor);
+
+	glUseProgram(uiPrograms.uiProgram);
+	renderText(uiPrograms.uiProgram,std::to_string(value),position_x-0.01f,position_y-0.01f,0.00022f);
+}
+
+void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon,float mixVal,glm::vec3 color,glm::vec3 colorHover){
+	std::vector<float> buttonCoorSq{
+		// first triangle
+		 width + position_x,  height + position_y, z,1,1,0,0,0,  // top right
+		 width + position_x, -height + position_y, z,1,0,0,0,0,  // bottom right
+		-width + position_x,  height + position_y, z,0,1,0,0,0,  // top left 
+		// second triangle						   
+		 width + position_x, -height + position_y, z,1,0,0,0,0,  // bottom right
+		-width + position_x, -height + position_y, z,0,0,0,0,0,  // bottom left
+		-width + position_x,  height + position_y, z,0,1,0,0,0  // top left
+	};
+	GlSet glset;
+	ColorData clrData;
+
+	glset.uniform3fv(uiPrograms.iconsProgram,"iconColor",color);
+	glset.uniform3fv(uiPrograms.iconsProgram,"iconColorHover",colorHover);
+	glset.uniform1f(uiPrograms.iconsProgram,"iconMixVal",mixVal);
+	glset.activeTexture(GL_TEXTURE6);
+	glset.bindTexture(icon);
+	glset.drawArrays(buttonCoorSq,false);
+}
+
+
 void UserInterface::colorBox(float position_x, float position_y,float valueX, float valueY) {
 
 	ColorData colorData;
@@ -397,52 +387,7 @@ void UserInterface::decorationSquare(float position_x, float position_y) {
 	glset.uiDataToShaders(colorData.panelColorSnd);
 	glset.drawArrays(buttonCoor, false);
 }
-bool UserInterface::isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, double mouseXpos, double mouseYpos) { //Button with different shape used in order to switch between panels
-	std::vector<float> buttonCoor{
-		// first triangle
-		 0.00f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0,  // top right
-		 0.00f + position_x, -0.05f + position_y, 0.9f,0,0,0,0,0,  // bottom right
-		-0.025f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0,  // top left 
-		// second triangle						     
-		 0.00f + position_x, -0.05f + position_y, 0.9f,0,0,0,0,0,  // bottom right
-		-0.025f + position_x, -0.02f + position_y, 0.9f,0,0,0,0,0,  // bottom left
-		-0.025f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0  // top left
-	};
-	//glfwGetWindowSize();
-	int screenSizeX;
-	int screenSizeY;
-	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
 
-	float mouseFX = ((float)mouseXpos / (uiMaxScreenWidth/2)); //Screen Coord
-	float mouseFY = (((float)mouseYpos / (uiMaxScreenHeight / 2)) - 1.0f) * -1.0f; //Screen Coord
-
-	//Barycentric calculations
-	for (size_t i = 0; i < 2; i++)
-	{
-		float ax = buttonCoor[0 + (24 * i)];
-		float ay = buttonCoor[1 + (24 * i)];
-		float bx = buttonCoor[8 + (24 * i)];
-		float by = buttonCoor[9 + (24 * i)];
-		float cx = buttonCoor[16 + (24 * i)];
-		float cy = buttonCoor[17 + (24 * i)];
-
-		if (cy - ay == 0) {
-			cy += 0.0001f;
-		}
-
-		float w1 = (ax * (cy - ay) + (mouseFY - ay) * (cx - ax) - mouseFX * (cy - ay)) / ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay));
-		float w2 = (mouseFY - ay - w1 * (by - ay)) / (cy - ay);
-
-
-		if (w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1) {
-			return true;
-		}
-		else if (i == 1) {
-			return false;
-		}
-	}
-	//Barycentric calculations
-}
 void UserInterface::checkBox(float position_x, float position_y, std::string text, glm::vec3 color,bool mouseHover,bool checked) {
 	ColorData colorData;
 	if (!checked) {
@@ -457,96 +402,8 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 	}
 	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f);
 }
-bool UserInterface::isMouseOnButton(GLFWwindow* window, float width, float height, float position_x, float position_y,double mouseXpos, double mouseYpos,bool isPanelMoving){ //Return true if mouse hover on the given coordinates
-	
-	std::vector<float> buttonCoor{
-		// first triangle
-		 width + position_x,  height + position_y, 1,1,0,0,0,0,  // top right
-		 width + position_x, -height + position_y, 1,0,0,0,0,0,  // bottom right
-		-width + position_x,  height + position_y, 0,1,0,0,0,0,  // top left 
-		// second triangle
-		 width + position_x, -height + position_y, 1,0,0,0,0,0,  // bottom right
-		-width + position_x, -height + position_y, 0,0,0,0,0,0,  // bottom left
-		-width + position_x,  height + position_y, 0,1,0,0,0,0  // top left
-	};
-	int screenSizeX;
-	int screenSizeY;
-	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
-	float mouseFX;
-	if (!isPanelMoving) {
-		mouseFX = ((float)mouseXpos / (uiMaxScreenWidth / 2)) - 1.0f;//Screen Coord
-	}
-	else {
-		mouseFX = ((float)mouseXpos / (uiMaxScreenWidth / 2));//Screen Coord
 
-	}
-	float mouseFY = (((float)mouseYpos / (uiMaxScreenHeight / 2))-1.0f)*-1.0f;//Screen Coord
 
-	//Barycentric calculations
-	for (size_t i = 0; i < 2; i++)
-	{
-		float ax = buttonCoor[0 + (24*i)];
-		float ay = buttonCoor[1 + (24 * i)];
-		float bx = buttonCoor[8 + (24 * i)];
-		float by = buttonCoor[9 + (24 * i)];
-		float cx = buttonCoor[16 + (24 * i)];
-		float cy = buttonCoor[17 + (24 * i)];
-
-		if (cy - ay == 0) {
-			cy += 0.0001f;
-		}
-
-		float w1 = (ax * (cy - ay) + (mouseFY - ay) * (cx - ax) - mouseFX * (cy - ay)) / ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay));
-		float w2 = (mouseFY - ay - w1 * (by - ay)) / (cy - ay);
-		if (w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1) {
-			return true;
-		}
-		else if (i == 1) {
-			return false;
-		}
-	}
-	//Barycentric calculations
-}
-bool UserInterface::isMouseOnCoords(GLFWwindow*window,double mouseXpos, double mouseYpos,std::vector<float> buttonCoor,bool isPanelMoving){ //Return true if mouse hover on the given coordinates
-	int screenSizeX;
-	int screenSizeY;
-	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
-
-	float mouseFX;
-	if (!isPanelMoving) {
-		mouseFX = ((float)mouseXpos / (uiMaxScreenWidth / 2)) - 1.0f;//Screen Coord
-	}
-	else {
-		mouseFX = ((float)mouseXpos / (uiMaxScreenWidth / 2));//Screen Coord
-
-	}
-	float mouseFY = (((float)mouseYpos / (uiMaxScreenHeight / 2))-1.0f)*-1.0f;//Screen Coord
-
-	//Barycentric calculations
-	for (size_t i = 0; i < 2; i++)
-	{
-		float ax = buttonCoor[0 + (24*i)];
-		float ay = buttonCoor[1 + (24 * i)];
-		float bx = buttonCoor[8 + (24 * i)];
-		float by = buttonCoor[9 + (24 * i)];
-		float cx = buttonCoor[16 + (24 * i)];
-		float cy = buttonCoor[17 + (24 * i)];
-
-		if (cy - ay == 0) {
-			cy += 0.0001f;
-		}
-
-		float w1 = (ax * (cy - ay) + (mouseFY - ay) * (cx - ax) - mouseFX * (cy - ay)) / ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay));
-		float w2 = (mouseFY - ay - w1 * (by - ay)) / (cy - ay);
-		if (w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1) {
-			return true;
-		}
-		else if (i == 1) {
-			return false;
-		}
-	}
-	//Barycentric calculations
-}
 void UserInterface::setViewportBgColor() {
 	glClearColor(colorD.viewportBackColor.x, colorD.viewportBackColor.y, colorD.viewportBackColor.z, 1.0f);
 }
@@ -556,11 +413,6 @@ void UserInterface::setViewportBgColor() {
 
 
 std::map<char, character> characters;
-
-void Load::sendCharsToUI(std::map<char, character> theseCharacters){
-	characters = theseCharacters;
-}
-
 void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale) {
 	GlSet glset;
 	glset.activeTexture(GL_TEXTURE2);
@@ -611,12 +463,14 @@ void UserInterface::renderMenubar(GLFWwindow* window) {
 	box(1.0f, 0.08f, 0.0f, 1.03f, "", colorD.menuBarColor, 0.00f, false, false);*/
 }
 
-
+void Load::sendCharsToUI(std::map<char, character> theseCharacters){
+	characters = theseCharacters;
+}
 void UserInterface::sendProgramsToUserInterface(Programs appuiPrograms){
 	uiPrograms = appuiPrograms;
 }
 void UserInterface::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
 	uiMaxScreenHeight = maxScreenHeight;
 	uiMaxScreenWidth = maxScreenWidth;
+	sendMaxWindowSizeToCalculationsAndMore(maxScreenWidth,maxScreenHeight);
 }
-

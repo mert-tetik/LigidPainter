@@ -3,8 +3,8 @@
 
 #include <GLFW/glfw3.h>
 
-#include "LigidPainter.h"
-#include "UserInterface.h"
+#include "Core/LigidPainter.h"
+#include "Core/UI/UserInterface.h"
 
 #include "glm/glm.hpp"
 

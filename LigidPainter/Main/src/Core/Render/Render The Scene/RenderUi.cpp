@@ -19,7 +19,7 @@
 
 #include "Core/Render/Render.h"
 #include "Core/LigidPainter.h"
-#include "Core/UserInterface.h"
+#include "Core/UI/UserInterface.h"
 #include "Core/Utilities.h"
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"

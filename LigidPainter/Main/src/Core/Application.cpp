@@ -15,7 +15,7 @@
 #include "glm/gtx/string_cast.hpp"
 
 #include "Core/LigidPainter.h"
-#include "Core/UserInterface.h"
+#include "Core/UI/UserInterface.h"
 #include "Core/Utilities.h"
 #include "Core/Callback.h"
 #include "Core/gl.h"
@@ -56,10 +56,8 @@ std::vector<unsigned int> albedoTextures;
 
 //TODO : Reduce GPU Usage
 //TODO : Specialized vao for each shader
-//TODO : Color box click error
-//TODO : Compatibility with multiple monitors (force to keep the ratio)
-
-
+//TODO : Use texture struct
+//TODO : Dynamic ui 
 
 
 //GL_TEXTURE0 = Albedo texture
