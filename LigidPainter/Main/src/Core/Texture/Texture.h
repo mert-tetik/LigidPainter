@@ -27,10 +27,10 @@ public:
 	ScreenPaintingReturnData createScreenPaintTexture(GLubyte*& screenTexture, GLFWwindow* screen);
 	void refreshScreenDrawingTexture();
 	GLubyte* updateMaskTexture(unsigned int FBOScreen, int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData,Programs programs,int maxScreenWidth, int maxScreenHeight);
-	InitializedTextures initTextures(const char* maskTexturePath);
 	void sendProgramsToTextures(Programs appPrograms);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
-	unsigned int loadCubemap(std::vector<std::string> faces,unsigned int textureSlot);
 	void refreshScreenTxtr();
+
+
 };
 #endif

@@ -19,6 +19,7 @@
 #include "Core/LigidPainter.h"
 #include "Core/UserInterface.h"
 #include "Core/gl.h"
+#include "Core/Load.h"
 #include "Core/Texture/Texture.h"
 #include "Core/Render/Render.h"
 
@@ -550,74 +551,14 @@ void UserInterface::setViewportBgColor() {
 	glClearColor(colorD.viewportBackColor.x, colorD.viewportBackColor.y, colorD.viewportBackColor.z, 1.0f);
 }
 
-struct character {
-	unsigned int TextureID;
-	glm::ivec2   Size;
-	glm::ivec2   Bearing;
-	unsigned int Advance;
-};
+
+
+
+
 std::map<char, character> characters;
 
-void UserInterface::uploadChars() {
-	GlSet glset;
-	FT_Library ft;
-	FT_Init_FreeType(&ft);
-	//glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
-	FT_Face face;
-	if (FT_New_Face(ft, "LigidPainter/Resources/fonts/arial.ttf", 0, &face)) {
-		std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-	}
-	else {
-		glset.activeTexture(GL_TEXTURE2);
-		FT_Set_Pixel_Sizes(face, 0, 100);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-		// load first 128 characters of ASCII set
-		for (unsigned char c = 0; c < 128; c++)
-		{
-			// Load character glyph 
-			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
-			{
-				std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
-				continue;
-			}
-			
-			// generate texture
-			unsigned int texture;
-			glGenTextures(1, &texture);
-			glBindTexture(GL_TEXTURE_2D, texture);
-			glTexImage2D(
-				GL_TEXTURE_2D,
-				0,
-				GL_RED,
-				face->glyph->bitmap.width,
-				face->glyph->bitmap.rows,
-				0,
-				GL_RED,
-				GL_UNSIGNED_BYTE,
-				face->glyph->bitmap.buffer
-			);
-
-			// set texture options
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-			// now store character for later use
-			character Character = {
-				texture,
-				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-				static_cast<unsigned int>(face->glyph->advance.x)
-			};
-			characters.insert(std::pair<char, character>(c, Character));
-		}
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-	// destroy FreeType once we're finished
-	FT_Done_Face(face);
-	FT_Done_FreeType(ft);
+void Load::sendCharsToUI(std::map<char, character> theseCharacters){
+	characters = theseCharacters;
 }
 
 void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale) {
@@ -656,6 +597,7 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 	glset.uniform1i(program, "isText", 0);
 
 }
+
 void UserInterface::renderMenubar(GLFWwindow* window) {
 	/*ColorData colorD;
 	box(0.04f, 0.02f, -0.92f, 0.98f, "Layers", colorD.menuBarColor, 0.034f, false, false);
@@ -668,41 +610,7 @@ void UserInterface::renderMenubar(GLFWwindow* window) {
 
 	box(1.0f, 0.08f, 0.0f, 1.03f, "", colorD.menuBarColor, 0.00f, false, false);*/
 }
-Icons UserInterface::loadIcons(){
-	GlSet glset;
-	Texture txtr;
-	Icons icons;
 
-	glset.activeTexture(GL_TEXTURE6);
-	icons.dropperIcon = txtr.getTexture("LigidPainter/Resources/Icons/Dropper.png",0,0,false);
-	icons.TDModel = txtr.getTexture("LigidPainter/Resources/Icons/3DModel.jpg",0,0,false);
-	icons.BackfaceCulling = txtr.getTexture("LigidPainter/Resources/Icons/BackfaceCulling.jpg",0,0,false);
-	icons.ColorPicker = txtr.getTexture("LigidPainter/Resources/Icons/ColorPicker.png",0,0,false);
-	icons.Export = txtr.getTexture("LigidPainter/Resources/Icons/Export.jpg",0,0,false);
-	icons.Folder = txtr.getTexture("LigidPainter/Resources/Icons/Folder.png",0,0,false);
-	icons.ImportMask = txtr.getTexture("LigidPainter/Resources/Icons/ImportMask.png",0,0,false);
-	icons.ImportModel = txtr.getTexture("LigidPainter/Resources/Icons/ImportModel.jpg",0,0,false);
-	icons.ImportTexture = txtr.getTexture("LigidPainter/Resources/Icons/ImportTexture.jpg",0,0,false);
-	icons.JpgFile = txtr.getTexture("LigidPainter/Resources/Icons/JpgFile.png",0,0,false);
-	icons.MaskGausBlur = txtr.getTexture("LigidPainter/Resources/Icons/MaskGausBlur.png",0,0,false);
-	icons.MaskOpacity = txtr.getTexture("LigidPainter/Resources/Icons/MaskOpacity.png",0,0,false);
-	icons.MaskRotation = txtr.getTexture("LigidPainter/Resources/Icons/MaskRotation.png",0,0,false);
-	icons.MaskScale = txtr.getTexture("LigidPainter/Resources/Icons/MaskScale.png",0,0,false);
-	icons.MaskSpacing = txtr.getTexture("LigidPainter/Resources/Icons/MaskSpacing.png",0,0,false);
-	icons.Mirror = txtr.getTexture("LigidPainter/Resources/Icons/Mirror.jpg",0,0,false);
-	icons.Panel = txtr.getTexture("LigidPainter/Resources/Icons/Panel.png",0,0,false);
-	icons.PngFile = txtr.getTexture("LigidPainter/Resources/Icons/PngFile.png",0,0,false);
-	icons.Sphere = txtr.getTexture("LigidPainter/Resources/Icons/Sphere.png",0,0,false);
-	icons.Triangulate = txtr.getTexture("LigidPainter/Resources/Icons/Triangulate.jpg",0,0,false);
-	icons.ArrowRight = txtr.getTexture("LigidPainter/Resources/Icons/ArrowRight.jpg",0,0,false);
-	icons.ArrowLeft = txtr.getTexture("LigidPainter/Resources/Icons/ArrowLeft.jpg",0,0,false);
-	icons.Painting = txtr.getTexture("LigidPainter/Resources/Icons/Painting.jpg",0,0,false);
-	icons.Logo = txtr.getTexture("LigidPainter/Resources/Icons/ligidPainterlogo.jpg",0,0,false);
-	icons.AddTexture = txtr.getTexture("LigidPainter/Resources/Icons/AddTexture.jpg",0,0,false);
-	icons.Material = txtr.getTexture("LigidPainter/Resources/Icons/Material.jpg",0,0,false);
-
-	return icons;
-}
 
 void UserInterface::sendProgramsToUserInterface(Programs appuiPrograms){
 	uiPrograms = appuiPrograms;

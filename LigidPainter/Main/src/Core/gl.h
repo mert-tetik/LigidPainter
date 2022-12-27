@@ -54,9 +54,7 @@ public:
 	WindowData getWindow();
 	unsigned int createScreenFrameBufferObject();
 
-	Cubemaps loadCubemaps();
-	BrushMaskTextures loadBrushMaskTextures();
-	LigidCursors loadCursors();
+
 
 	void usePBRShader(unsigned int program,PBRShaderData data);
 	void useSkyBoxShader(unsigned int program,SkyBoxShaderData data);

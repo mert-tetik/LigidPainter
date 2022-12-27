@@ -19,6 +19,7 @@
 #include "Core/Utilities.h"
 #include "Core/Callback.h"
 #include "Core/gl.h"
+#include "Core/Load.h"
 #include "Core/Render/Render.h"
 #include "Core/Model/model.h"
 #include "Core/Texture/Texture.h"
@@ -463,18 +464,25 @@ bool LigidPainter::run()
 	glset.setVertexAtribPointer(); //TODO : Specialize for each shader
 	glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW); 
 
+
+
+	Load load;
 	//Load chars
-	ui.uploadChars();
+	load.uploadChars();
 	//Load brush mask textures
-	brushMaskTextures = glset.loadBrushMaskTextures();
+	brushMaskTextures = load.loadBrushMaskTextures();
 	//Load cubemaps both blury and not blury
-	glset.loadCubemaps();
+	load.loadCubemaps();
 	//Load icons
 	Icons icons;
-	icons = ui.loadIcons();
+	icons = load.loadIcons();
 	//Load cursors
 	LigidCursors cursors;
-	cursors = glset.loadCursors();
+	cursors = load.loadCursors();
+	//Create textures
+	textures = load.initTextures(maskTexturePath.c_str());
+
+
 
 	glUseProgram(programs.iconsProgram);
 	glset.uniform1i(programs.iconsProgram, "icon", 6);
@@ -512,11 +520,6 @@ bool LigidPainter::run()
 
 	float brushSize;
 	ExportData exportData;
-
-	
-	//Create textures
-	textures = txtr.initTextures(maskTexturePath.c_str());
-
 
 	PBRShaderData pbrShaderData;
 	SkyBoxShaderData skyBoxShaderData;

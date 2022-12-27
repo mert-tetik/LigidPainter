@@ -13,6 +13,7 @@
 #include "Core/LigidPainter.h"
 #include "Core/UserInterface.h"
 #include "Core/gl.h"
+#include "Core/gl.h"
 #include "Core/Texture/Texture.h"
 
 #include "Core/Texture Generator/TextureGenerator.h"
@@ -84,6 +85,7 @@ unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, un
 }
 
 void Texture::downloadTexture(const char* path, const char* name, int format, int width, int height, GLubyte* pixels, int channels) {
+
 	//0 -> jpg | 1 -> png
 	stbi_flip_vertically_on_write(true);
 	string stbName = name;
@@ -185,90 +187,6 @@ void Texture::refreshScreenDrawingTexture() {
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1080,1080, GL_RED, GL_UNSIGNED_BYTE, screenTextureM); //Refresh Screen Texture
 	glset.generateMipmap();
 	delete[] screenTextureM;
-}
-
-
-InitializedTextures Texture::initTextures(const char* maskTexturePath){
-	GlSet glset;
-	InitializedTextures textures;
-	glset.activeTexture(GL_TEXTURE9);
-	unsigned int depthTexture;
-	glset.genTextures(depthTexture);
-	glset.bindTexture(depthTexture);
-
-	glset.activeTexture(GL_TEXTURE8);
-	unsigned int mirroredDepthTexture;
-	glset.genTextures(mirroredDepthTexture);
-	glset.bindTexture(mirroredDepthTexture);
-
-	glset.activeTexture(GL_TEXTURE7);//Albedo
-	unsigned int enlargedTexture;
-	glset.genTextures(enlargedTexture);
-	glset.bindTexture(enlargedTexture);
-
-	glset.activeTexture(GL_TEXTURE12);
-	unsigned int modifiedMaskTexture;
-	glset.genTextures(modifiedMaskTexture);
-	glset.bindTexture(modifiedMaskTexture);
-
-	glset.activeTexture(GL_TEXTURE1);
-	unsigned int rawMaskTexture;
-	glset.genTextures(rawMaskTexture);
-	glset.bindTexture(rawMaskTexture);
-
-	glset.activeTexture(GL_TEXTURE0);
-	unsigned int albedoTxtr;
-	glset.genTextures(albedoTxtr);
-	glset.bindTexture(albedoTxtr);
-
-	glset.activeTexture(GL_TEXTURE1);//Raw mask
-	getTexture(maskTexturePath,0,0,false);
-	glset.activeTexture(GL_TEXTURE12);//Modified mask
-	getTexture(maskTexturePath,0,0,false);
-
-	textures.albedoTxtr = albedoTxtr;
-	textures.depthTexture = depthTexture;
-	textures.enlargedTexture = enlargedTexture;
-	textures.mirroredDepthTexture = mirroredDepthTexture;
-
-	textures.modifiedMaskTexture = modifiedMaskTexture;
-	textures.rawMaskTexture = rawMaskTexture;
-
-	return textures;
-}
-
-unsigned int Texture::loadCubemap(std::vector<std::string> faces,unsigned int textureSlot)
-{
-	GlSet glset;
-	glset.activeTexture(textureSlot);
-    unsigned int textureID;
-    glset.genTextures(textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-    int width, height, nrChannels;
-    for (unsigned int i = 0; i < faces.size(); i++)
-    {
-        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-        if (data)
-        {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
-                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
-            );
-            stbi_image_free(data);
-        }
-        else
-        {
-            std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
-            stbi_image_free(data);
-        }
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    return textureID;
 }
 
 void Texture::sendProgramsToTextures(Programs apptxtrPrograms){

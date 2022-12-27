@@ -1,3 +1,5 @@
+#ifndef LGDUIACTS_H
+#define LGDUIACTS_H
 struct UiActionsData{
     bool textureDemonstratorButtonPressed;
     bool textureDemonstratorBoundariesPressed;
@@ -9,3 +11,4 @@ public:
     UiActionsData uiActions(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 };
+#endif

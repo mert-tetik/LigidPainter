@@ -49,7 +49,8 @@ public:
 	bool isMouseOnCoords(GLFWwindow*window,double mouseXpos, double mouseYpos,std::vector<float> buttonCoor,bool isPanelMoving);
 	void setViewportBgColor();
 	void renderText(unsigned int program, std::string text, float x, float y, float scale);
-	void uploadChars();
+	
+	
 	void renderMenubar(GLFWwindow* window);
 	void checkBox(float position_x, float position_y, std::string text, glm::vec3 color, bool mouseHover, bool checked);
 	void panelChangeButton(float position_x, float position_y);
@@ -57,8 +58,9 @@ public:
 	void rangeBar(float position_x, float position_y, float value);
 	void colorBox(float position_x, float position_y, float valueX, float valueY);
 	glm::vec3 colorRect(float position_x, float position_y,float value, unsigned int FBO,GLFWwindow* window,glm::mat4 projection,bool updateHueVal);
+	
 	void decorationSquare(float position_x, float position_y);
-	Icons loadIcons();
+
 	void numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN);
 	void sendProgramsToUserInterface(Programs appPrograms);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);

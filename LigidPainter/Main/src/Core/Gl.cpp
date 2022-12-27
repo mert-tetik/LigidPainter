@@ -323,87 +323,11 @@ WindowData GlSet::getWindow() {
 	windowData.windowMaxHeight = windowMaxHeight;
 	return windowData;
 }
-Cubemaps GlSet::loadCubemaps(){
-	Texture txtr;
-	std::vector<std::string> faces
-	{
-	    "LigidPainter/Resources/Cubemap/Skybox/px.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/nx.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/ny.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/py.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/pz.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/nz.png"
-	};
-	unsigned int cubemapTexture = txtr.loadCubemap(faces,GL_TEXTURE13);  
-	std::vector<std::string> bluryfaces
-	{
-	    "LigidPainter/Resources/Cubemap/Skybox/pxblur.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/nxblur.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/nyblur.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/pyblur.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/pzblur.png",
-	    "LigidPainter/Resources/Cubemap/Skybox/nzblur.png"
-	};
-	unsigned int cubemapTextureBlury = txtr.loadCubemap(bluryfaces,GL_TEXTURE16); //TODO : Avoid using texture slot for blury cubemap 
-
-	Cubemaps cubemaps;
-	cubemaps.blurycubemap = cubemapTextureBlury;
-	cubemaps.cubemap = cubemapTexture;
-
-	return cubemaps;
-}
-
-BrushMaskTextures GlSet::loadBrushMaskTextures(){
-	GlSet glset;
-	Texture txtr;
-
-	std::vector<unsigned int> maskTextures;
-	std::vector<std::string> maskTextureNames;
-
-	const char* path = "./LigidPainter/Resources/Textures";
 
 
-	for (const auto & entry : std::filesystem::directory_iterator(path)){
-		glset.activeTexture(GL_TEXTURE1);//Raw mask
-		std::string fileName = entry.path().string();
-		if(fileName.size() > 3){
-	 		if(fileName[fileName.size()-1] != 't' && fileName[fileName.size()-2] != 'x' && fileName[fileName.size()-3] != 't'){
-	 			maskTextures.push_back(txtr.getTexture(fileName,0,0,false));
-	 			maskTextureNames.push_back(fileName);
-	 		}
-	 	}
-	}
 
-	BrushMaskTextures brushMasks;
-	brushMasks.names = maskTextureNames;
-	brushMasks.textures = maskTextures;
 
-	return brushMasks;
-}
 
-LigidCursors GlSet::loadCursors(){
-
-	GLFWimage images[1];
-	stbi_set_flip_vertically_on_load(false);
-	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/PointerIcon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
-	GLFWcursor* pointerCursor = glfwCreateCursor(images,15,0);
-	stbi_image_free(images[0].pixels);
-
-	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/DefaultIcon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
-	GLFWcursor* defaultCursor = glfwCreateCursor(images,7,0);
-	stbi_image_free(images[0].pixels);
-
-	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/DropperCursor.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
-	GLFWcursor* dropperCursor = glfwCreateCursor(images,0,30);
-	stbi_image_free(images[0].pixels);
-
-	LigidCursors cursors;
-	cursors.pointerCursor = pointerCursor;
-	cursors.defaultCursor = defaultCursor;
-	cursors.dropperCursor = dropperCursor;
-
-	return cursors;
-}
 
 void GlSet::usePBRShader(unsigned int program,PBRShaderData data){
 	glUseProgram(program);
