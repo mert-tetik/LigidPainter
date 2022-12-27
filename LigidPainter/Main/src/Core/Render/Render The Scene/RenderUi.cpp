@@ -453,6 +453,8 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 					gl.activeTexture(GL_TEXTURE1);
 					gl.bindTexture(maskTextures[i]);
 					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData,programs,maxScreenWidth,maxScreenHeight);
+					glUseProgram(programs.iconsProgram); 
+					
 					uiOut.maskPanelMaskClicked = true;
 					currentBrushMaskTexture = maskTextures[i];
 				}

@@ -7,7 +7,7 @@ uniform sampler2D inputTexture;
 
 uniform int kernel_sizeF;
 
-const int maxKernelSize = 121;
+const int maxKernelSize = 121*2;
 uniform float oneDimensionalGaussF1[maxKernelSize];
 
 uniform int isRenderVerticalBlur;

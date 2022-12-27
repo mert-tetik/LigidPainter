@@ -149,7 +149,7 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 
 	
 
-	std::vector<float> oneDimensionalGaussian = txtrGen.gaussianFunc(min(brushBlurVal,120.0f),0.0f);
+	std::vector<double> oneDimensionalGaussian = txtrGen.gaussianFunc(min(brushBlurVal,120.0f),0.0f);
 
 
 
@@ -162,6 +162,7 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 		std::string target = "oneDimensionalGaussF1[" + std::to_string(i) + "]";
 		glset.uniform1f(programs.blurProgram , target.c_str() , oneDimensionalGaussian[i]);
 	}
+
 
 
 	//Horizontal Blur

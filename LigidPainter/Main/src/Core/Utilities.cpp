@@ -242,7 +242,5 @@ float Utilities::keepTheRatio(double value1,double value2, double desiredRatio){
 
 	double result = maxV / ratioRatio;
 
-	cout << "Max : "<<maxV << " Min : " << minV << " Ratio : " << ratio << " Desired Rat : " << desiredRatio <<" RatioRatio : " << ratioRatio << " Result : " << result << '\n';
-
 	return result;
 }

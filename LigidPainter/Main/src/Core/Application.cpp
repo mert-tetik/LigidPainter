@@ -1026,7 +1026,6 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatVal){
 	
 	if(changeHue){
 		colorBoxColorRangeBarValue = (hsvVal.r / 708.333333333f) - 0.18f; //0.195
-		cout << colorBoxColorRangeBarValue << ' '; 
 		updateHueVal = true;
 	}
 	if(changeSatVal){
