@@ -23,7 +23,7 @@
 #include "Core/Render/Render.h"
 #include "Core/Model/model.h"
 #include "Core/Texture/Texture.h"
-#include "Core/UiActions.h"
+#include "Core/UI/UiActions.h"
 #include "Core/Texture Generator/TextureGenerator.h"
 #include "Core/messageBox.h"
 

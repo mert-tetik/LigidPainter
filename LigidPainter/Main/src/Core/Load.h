@@ -1,5 +1,6 @@
 #ifndef LGDLOAD_H
 #define LGDLOAD_H
+#include <map>
 
 struct character {
 	unsigned int TextureID;

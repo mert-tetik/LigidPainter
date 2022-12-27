@@ -1,8 +1,5 @@
 #include<iostream>
 
-#include<glad/glad.h>
-#include<GLFW/glfw3.h>
-
 #include <vector>
 
 #include <glm/glm.hpp>
@@ -16,11 +13,6 @@
 #include "Core/Texture/Texture.h"
 
 #include "Core/Texture Generator/TextureGenerator.h"
-
-#include "stb_image.h"
-#include "stb_image_write.h"
-
-#include "stb_image_resize.h"
 
 using namespace std;
 

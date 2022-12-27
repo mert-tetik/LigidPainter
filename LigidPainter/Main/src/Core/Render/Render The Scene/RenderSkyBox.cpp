@@ -1,33 +1,15 @@
 #include<iostream>
 
-#include<glad/glad.h>
-#include<GLFW/glfw3.h>
-
-#include <string>
-#include <fstream>
-#include <sstream>
 #include <vector>
-#include <filesystem>
-
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#include "Core/Model/model.h"
-
 #include "Core/Render/Render.h"
 #include "Core/LigidPainter.h"
-#include "Core/UI/UserInterface.h"
-#include "Core/Utilities.h"
 #include "Core/gl.h"
-#include "Core/Texture/Texture.h"
-
-#include "stb_image.h"
-#include "stb_image_write.h"
-
-#include "tinyfiledialogs.h"
 
 void Render::renderSkyBox(SkyBoxShaderData data,Programs programs) {
 	GlSet gls;

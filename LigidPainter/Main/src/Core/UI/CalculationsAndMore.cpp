@@ -1,15 +1,6 @@
 #include<iostream>
 
-#include<glad/glad.h>
-#include<GLFW/glfw3.h>
-
-#include <string>
-#include <cstring>
-#include <fstream>
-#include <sstream>
 #include <vector>
-#include <ft2build.h>
-#include <map>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -18,14 +9,6 @@
 
 #include "Core/LigidPainter.h"
 #include "Core/UI/UserInterface.h"
-#include "Core/gl.h"
-#include "Core/Load.h"
-#include "Core/Texture/Texture.h"
-#include "Core/Render/Render.h"
-
-#include "stb_image.h"
-#include "stb_image_write.h"
-
 
 int CAMuiMaxScreenWidth;
 int CAMuiMaxScreenHeight;

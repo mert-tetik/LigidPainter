@@ -1,14 +1,6 @@
 #include<iostream>
 
-#include<glad/glad.h>
-#include<GLFW/glfw3.h>
-
-#include <string>
-#include <fstream>
-#include <sstream>
 #include <vector>
-#include <filesystem>
-
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -20,14 +12,8 @@
 #include "Core/Render/Render.h"
 #include "Core/LigidPainter.h"
 #include "Core/UI/UserInterface.h"
-#include "Core/Utilities.h"
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"
-
-#include "stb_image.h"
-#include "stb_image_write.h"
-
-#include "tinyfiledialogs.h"
 
 void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName, OutShaderData outShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,std::vector<UndoActions> &undoList,Programs programs, int maxScreenWidth , int maxScreenHeight) {
 	int maxHistoryHold = 20;

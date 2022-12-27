@@ -1,31 +1,9 @@
 #include<iostream>
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <map>
-
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "glm/gtx/string_cast.hpp"
-
 #include "Core/LigidPainter.h"
-#include "Core/UI/UserInterface.h"
-#include "Core/Utilities.h"
 #include "Core/Callback.h"
 #include "Core/gl.h"
-#include "Core/Render/Render.h"
-#include "Core/UiActions.h"
-
-#include "stb_image.h"
-#include "stb_image_write.h"
-
-#include "tinyfiledialogs.h"
+#include "Core/UI/UiActions.h"
 
 bool noButtonClick;
 
