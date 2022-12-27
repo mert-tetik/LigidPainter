@@ -94,6 +94,38 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 	uiOut.texturePanelButtonClicked = false;
 	uiOut.texturePanelButtonHover = false;
 
+	//Texture demonstrator transition animation
+	if(textureDemonstratorButtonPressClicked){
+		if(changeTextureDemonstrator){
+			changeTextureDemonstrator = false;
+		}
+		else{
+			changeTextureDemonstrator = true;
+		}
+	}
+	if(changeTextureDemonstrator){
+		changeTextureDemonstratorWidth -= 0.035f;
+		changeTextureDemonstratorHeight -= 0.07f;
+		
+		if(changeTextureDemonstratorWidth < 0.0f){
+			changeTextureDemonstratorWidth = 0.0f;
+		}
+		if(changeTextureDemonstratorHeight < 0.0f){
+			changeTextureDemonstratorHeight = 0.0f;
+		}
+	}
+	else{
+		changeTextureDemonstratorWidth += 0.035f;
+		changeTextureDemonstratorHeight += 0.07f;
+		if(changeTextureDemonstratorWidth > orgTextureDemonstratorWidth){
+			changeTextureDemonstratorWidth = orgTextureDemonstratorWidth;
+		}
+		if(changeTextureDemonstratorHeight > orgTextureDemonstratorHeight){
+			changeTextureDemonstratorHeight = orgTextureDemonstratorHeight;
+		}
+	}
+
+
 	float screenGapX = ((float)maxScreenWidth - screenSizeX)/(((float)maxScreenWidth)/2.0f)/2.0f; 
 
 	updateButtonColorMixValues(uidata);
@@ -113,6 +145,9 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.72f);//Texture Panel
 		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.64f);//Painting Panel
 		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.56f);//Export Panel
+
+		//Texture demonstrator	
+		ui.textureDemonstrator(changeTextureDemonstratorWidth,changeTextureDemonstratorHeight,textureDemonstratorButtonPosX+screenGapX,textureDemonstratorButtonPosY,0.9999f); 
 
 		//Panel changing button's icons
 		glUseProgram(programs.iconsProgram);
@@ -215,38 +250,8 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 
 
 
-	//Texture demonstrator transition animation
-	if(textureDemonstratorButtonPressClicked){
-		if(changeTextureDemonstrator){
-			changeTextureDemonstrator = false;
-		}
-		else{
-			changeTextureDemonstrator = true;
-		}
-	}
-	if(changeTextureDemonstrator){
-		changeTextureDemonstratorWidth -= 0.035f;
-		changeTextureDemonstratorHeight -= 0.07f;
-		
-		if(changeTextureDemonstratorWidth < 0.0f){
-			changeTextureDemonstratorWidth = 0.0f;
-		}
-		if(changeTextureDemonstratorHeight < 0.0f){
-			changeTextureDemonstratorHeight = 0.0f;
-		}
-	}
-	else{
-		changeTextureDemonstratorWidth += 0.035f;
-		changeTextureDemonstratorHeight += 0.07f;
-		if(changeTextureDemonstratorWidth > orgTextureDemonstratorWidth){
-			changeTextureDemonstratorWidth = orgTextureDemonstratorWidth;
-		}
-		if(changeTextureDemonstratorHeight > orgTextureDemonstratorHeight){
-			changeTextureDemonstratorHeight = orgTextureDemonstratorHeight;
-		}
-	}
-	//Texture demonstrator
-	ui.textureDemonstrator(changeTextureDemonstratorWidth,changeTextureDemonstratorHeight,textureDemonstratorButtonPosX+screenGapX,textureDemonstratorButtonPosY,1.0f); 
+
+
 
 
 
