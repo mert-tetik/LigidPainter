@@ -37,9 +37,6 @@ struct CallbckData { //Return from callback
 
 	bool paintingDropperEnter;
 
-	bool paintingFillNumericModifierPEnter;
-	bool paintingFillNumericModifierNEnter;
-
 	bool colorBoxEnter;
 
 	bool maskPanelSliderEnter;

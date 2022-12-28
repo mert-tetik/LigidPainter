@@ -67,8 +67,6 @@ bool exportDownloadButtonEnter;
 bool textureDemonstratorButtonEnter;
 bool useNegativeForDrawingCheckboxEnter;
 bool paintingDropperEnter;
-bool paintingFillNumericModifierPEnter;
-bool paintingFillNumericModifierNEnter;
 bool colorBoxEnter;
 bool maskPanelSliderEnter;
 bool maskPanelEnter;
@@ -128,8 +126,6 @@ CallbckData preapareCallbackData() {
 
 	callbk.paintingDropperEnter = paintingDropperEnter;
 
-	callbk.paintingFillNumericModifierPEnter = paintingFillNumericModifierPEnter;
-	callbk.paintingFillNumericModifierNEnter = paintingFillNumericModifierNEnter;
 
 	callbk.colorBoxEnter = colorBoxEnter; 
 
@@ -326,29 +322,26 @@ void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos
 			brushSpacingRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushSpacingRangeBarValue,-0.30f+0.1f+0.02f, mouseXPos, mouseYPos, movePanel);		
 			brushBordersRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX + brushBorderRangeBarValue,-0.31f+0.02f, mouseXPos, mouseYPos, movePanel);	
 
-			paintingFillNumericModifierPEnter = ui.isMouseOnButton(window, 0.02f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX + 0.05f,-0.385f, mouseXPos, mouseYPos, movePanel);
-			paintingFillNumericModifierNEnter = ui.isMouseOnButton(window, 0.02f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX - 0.05f,-0.385f, mouseXPos, mouseYPos, movePanel);		
+
+
+
+
+			colorBoxPickerEnter = ui.isMouseOnButton(window,0.015f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX - 0.02f + colorBoxPickerValue_x, -0.55f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
+			colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
+
 			
-			colorBoxPickerEnter = ui.isMouseOnButton(window,0.015f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX - 0.02f + colorBoxPickerValue_x, -0.65f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
-
-
-			colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.65f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
-
-
-
-			paintingDropperEnter = ui.isMouseOnButton(window, 0.015f,0.03f, panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.91f, mouseXPos, mouseYPos,movePanel);		
 			mirrorXCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.15f - screenGapX, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
 			mirrorYCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.09f - screenGapX, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
 			mirrorZCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.03f - screenGapX, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
 
 
-
-			colorBoxEnter = ui.isMouseOnButton(window, 0.1f, 0.2f, panelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.65f, mouseXPos, mouseYPos, movePanel);		
-			hueBarEnter = ui.isMouseOnButton(window, 0.01f, 0.18f, panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.65f, mouseXPos, mouseYPos, movePanel);
+			colorBoxEnter = ui.isMouseOnButton(window, 0.1f, 0.2f, panelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.55f, mouseXPos, mouseYPos, movePanel);		
+			hueBarEnter = ui.isMouseOnButton(window, 0.01f, 0.18f, panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f, mouseXPos, mouseYPos, movePanel);
+			hexValueTextboxEnter =  ui.isMouseOnButton(window, 0.04f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.81f, mouseXPos, mouseYPos, movePanel);
 			
+			paintingDropperEnter = ui.isMouseOnButton(window, 0.015f,0.03f, panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.81f, mouseXPos, mouseYPos,movePanel);		
 			maskPanelSliderEnter = ui.isMouseOnButton(window, 0.01f, 0.015f, panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f + maskPanelSliderValue, mouseXPos, mouseYPos, movePanel);
 			maskPanelEnter = ui.isMouseOnButton(window, 0.15f, 0.15f, panelLoc / centerDivider + centerSum - screenGapX, 0.675f, mouseXPos, mouseYPos, movePanel);		
-			hexValueTextboxEnter =  ui.isMouseOnButton(window, 0.04f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.91f, mouseXPos, mouseYPos, movePanel);
 
 		}
 		else {
@@ -359,11 +352,9 @@ void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos
 			brushRotationRangeBarEnter = false;
 			brushOpacityRangeBarEnter = false;
 			brushSpacingRangeBarEnter = false;
-			paintingFillNumericModifierPEnter = false;
 			brushBordersRangeBarEnter = false;
 
 
-			paintingFillNumericModifierNEnter = false;
 			colorBoxColorRangeBarEnter = false;
 
 
@@ -463,9 +454,6 @@ void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (useNegativeForDrawingCheckboxEnter) {
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (paintingFillNumericModifierPEnter || paintingFillNumericModifierNEnter){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if(maskPanelSliderEnter){

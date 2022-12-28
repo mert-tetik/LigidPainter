@@ -201,7 +201,6 @@ public:
 	void textureDemonstratorButton(double xOffset,double yOffset,int width,int height);
 	void textureDemonstratorBoundaries(double xOffset,double yOffset,int width,int height);
 	void paintingDropper();
-	void paintingFillNumericModifier(bool p, bool n);
 	void exportFileNameTextBox();
 	void colorBox();
 	void maskPanelSlider(double yOffset,int screenSizeY);

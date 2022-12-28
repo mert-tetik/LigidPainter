@@ -224,7 +224,6 @@ bool panelChanging = false; //Disable painting while changing panel sizes
 
 bool brushValChanged = true; //Update brush mask texture in drawToScreen.cpp if true
 
-int paintingFillNumericModifierVal = 10;
 
 bool caps = false; //GLFW_MOD_CAPS_LOCK
 
@@ -333,19 +332,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	//Ctrl + h change texture demonstrator's state
 	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_H,NULL,NULL) && action == 1 && shiftTabAltRelease){
 		textureDemonstratorButtonPressClicked = true;
-	}
-
-	//Ctrl + b change fill between numeric modifier's state
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_B,NULL,NULL) && action == 1 && shiftTabAltRelease && panelData.paintingPanelActive){
-		if(paintingFillNumericModifierVal == 10){
-			paintingFillNumericModifierVal = 1;
-		}
-		else if(paintingFillNumericModifierVal == 1){
-			paintingFillNumericModifierVal = 10;
-		}
-		else{
-			paintingFillNumericModifierVal = 10;
-		}
 	}
 
 	LigidPainter lp;
@@ -743,7 +729,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter);
+		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -773,7 +759,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter);
+			renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter);
 			cout << "sdfg";
 		}
 		//double lastTime = glfwGetTime();
@@ -800,7 +786,7 @@ bool LigidPainter::run()
 			mouseDrawingPosY = mouseYpos;
 
 			//Paint
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData,model,albedoTextures, paintingSpacing < 10);
+			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData,model,albedoTextures, paintingSpacing < 10);
 			paintRenderCounter++;
 			if(paintRenderCounter == 10){
 				paintRender = true;
@@ -1415,13 +1401,7 @@ void LigidPainter::loadModelButton() {
 void LigidPainter::paintingDropper(){
 	paintingDropperPressed = true;
 }
-void LigidPainter::paintingFillNumericModifier(bool p, bool n){
-	Texture txtr;
-	if(p && paintingFillNumericModifierVal < 10)
-		paintingFillNumericModifierVal++;
-	if(n && paintingFillNumericModifierVal > 1)
-		paintingFillNumericModifierVal--;
-}
+
 void LigidPainter::maskPanelSlider(double yOffset,int screenSizeY){
 	Utilities util;
 	maskPanelSliderValue += yOffset / (screenSizeY / 2);
@@ -1523,9 +1503,6 @@ UiData updateUiData() {
 
 	uidata.exportDownloadButtonEnter = callbackData.exportDownloadButtonEnter;
 	uidata.exportDownloadButtonPressed;
-
-	uidata.paintingFillNumericModifierPEnter = callbackData.paintingFillNumericModifierPEnter;
-	uidata.paintingFillNumericModifierNEnter = callbackData.paintingFillNumericModifierNEnter;
 
 	uidata.dropperEnter = callbackData.paintingDropperEnter;
 

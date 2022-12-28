@@ -35,8 +35,6 @@ float loadModelButtonMixVal = 0.0f;
 float addPanelButtonMixVal = 0.0f;
 float addSphereButtonMixVal = 0.0f;
 float addAlbedoTextureMixVal = 0.0f;
-float fillBetweenResNumericModifiermixValN = 0.0f;
-float fillBetweenResNumericModifiermixValP = 0.0f;
 float dropperMixVal = 0.0f;
 float exportFileNameTextBoxMixVal = 0.0f;
 float hexValTextboxMixVal = 0.0f;
@@ -55,8 +53,6 @@ void updateButtonColorMixValues(UiData uidata) {
 	loadModelButtonMixVal = util.transitionEffect(uidata.loadModelButtonEnter,loadModelButtonMixVal,phaseDifference);
 	addMaskTextureButtonMixVal = util.transitionEffect(uidata.addMaskTextureButtonEnter,addMaskTextureButtonMixVal,phaseDifference);
 	exportDownloadButtonMixVal = util.transitionEffect(uidata.exportDownloadButtonEnter,exportDownloadButtonMixVal,phaseDifference);
-	fillBetweenResNumericModifiermixValN = util.transitionEffect(uidata.paintingFillNumericModifierNEnter,fillBetweenResNumericModifiermixValN,phaseDifference);
- 	fillBetweenResNumericModifiermixValP = util.transitionEffect(uidata.paintingFillNumericModifierPEnter,fillBetweenResNumericModifiermixValP,phaseDifference);
  	dropperMixVal = util.transitionEffect(uidata.dropperEnter,dropperMixVal,phaseDifference);
  	exportFileNameTextBoxMixVal = util.transitionEffect(uidata.exportFileNameTextBoxPressed,exportFileNameTextBoxMixVal,phaseDifference);
  	hexValTextboxMixVal = util.transitionEffect(uidata.hexValTextboxPressed,hexValTextboxMixVal,phaseDifference);
@@ -72,7 +68,7 @@ float changeTextureDemonstratorHeight = 0.8f;
 
 RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue
 , float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,
-bool textureDemonstratorButtonPressClicked,Icons &icons,glm::vec3 colorBoxValue,const char* maskTextureFile,int paintingFillNumericModifierVal,
+bool textureDemonstratorButtonPressClicked,Icons &icons,glm::vec3 colorBoxValue,const char* maskTextureFile,
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 std::string &colorpickerHexVal,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,
 bool updateHueVal,Programs programs,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight,float orgTextureDemonstratorWidth, float orgTextureDemonstratorHeight, 
@@ -387,24 +383,22 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 		ui.renderText(programs.uiProgram, "Borders", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.285f + 0.02f, 0.00022f);
 		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.31f+0.02f, brushBorderRangeBarValue);
 
-        ui.numericModifier(renderData.panelLoc / centerDivider + centerSum - screenGapX,-0.37f,icons.ArrowLeft,icons.ArrowRight,0.9f, paintingFillNumericModifierVal,fillBetweenResNumericModifiermixValP,fillBetweenResNumericModifiermixValN); //Fill quality
-
 		//Color Picker
-		hueVal = ui.colorRect(renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.65f, renderData.colorBoxColorRangeBarValue, FBOScreen, renderData.window,projection,updateHueVal); //Hue TODO : Get the value once value changed 
+		hueVal = ui.colorRect(renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f, renderData.colorBoxColorRangeBarValue, FBOScreen, renderData.window,projection,updateHueVal); //Hue TODO : Get the value once value changed 
 
 		saturationValShaderData.boxColor = hueVal / 255.0f;
 		saturationValShaderData.renderTextureProjection = projection;
 
 		gl.useSaturationValBoxShader(programs.saturationValBoxProgram,saturationValShaderData);
-		ui.colorBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.65f, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y);
+		ui.colorBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.55f, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y);
 
 
 		gl.uniform1f(programs.uiProgram, "uiOpacity", 1.0f);
-		ui.box(0.002f, 0.025f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.095f, -0.91f, "", colorBoxValue / glm::vec3(255), 0.075f, false, false, 0.9f, 10, glm::vec3(0), 0); //indicator for picken color of the color picker
+		ui.box(0.002f, 0.025f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.095f, -0.81f, "", colorBoxValue / glm::vec3(255), 0.075f, false, false, 0.9f, 10, glm::vec3(0), 0); //indicator for picken color of the color picker
 		gl.uniform1f(programs.uiProgram, "uiOpacity", 0.5f);
-		ui.box(0.002f, 0.035f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.095f, -0.91f, "", colorData.panelColorSnd, 0.075f, false, false, 0.9f, 7, glm::vec3(0), 0); //decoration
+		ui.box(0.002f, 0.035f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.095f, -0.81f, "", colorData.panelColorSnd, 0.075f, false, false, 0.9f, 7, glm::vec3(0), 0); //decoration
 
-		ui.box(0.04f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.91f, util.rgbToHexGenerator(colorBoxValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
+		ui.box(0.04f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.81f, util.rgbToHexGenerator(colorBoxValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
 	}
 
 	if (panelData.paintingPanelActive) { //Icons
@@ -469,7 +463,7 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 		#pragma endregion brushMaskPanel
 
 
-		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.91f,0.9f,icons.dropperIcon,dropperMixVal,colorData.iconColor,colorData.iconColorHover);
+		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.81f,0.9f,icons.dropperIcon,dropperMixVal,colorData.iconColor,colorData.iconColorHover);
 	}
 
 

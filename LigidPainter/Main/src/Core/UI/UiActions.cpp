@@ -23,7 +23,7 @@ void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackD
 			&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGCheckBoxEnter && !callbackData.exportExtPNGCheckBoxEnter
 			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter && !callbackData.brushBordersRangeBarEnter
 			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter && !textureDemonstratorBoundariesHover && !callbackData.useNegativeForDrawingCheckboxEnter
-			&& !callbackData.paintingDropperEnter && !callbackData.paintingFillNumericModifierPEnter && !callbackData.paintingFillNumericModifierNEnter && !callbackData.exportFileNameTextBoxEnter && !callbackData.colorBoxEnter && !callbackData.maskPanelSliderEnter 
+			&& !callbackData.paintingDropperEnter && !callbackData.exportFileNameTextBoxEnter && !callbackData.colorBoxEnter && !callbackData.maskPanelSliderEnter 
 			&& !callbackData.hexValueTextboxEnter && !callbackData.loadCustomModelEnter && !callbackData.hueBarEnter) {
 			noButtonClick = true;
 			colorBoxFirstPress = false;
@@ -149,10 +149,6 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 					ligid.mirrorYCheckBox();
 				if (callbackData.mirrorZCheckBoxEnter)
 					ligid.mirrorZCheckBox();
-				if(callbackData.paintingFillNumericModifierPEnter)
-					ligid.paintingFillNumericModifier(1,0);
-				if(callbackData.paintingFillNumericModifierNEnter)
-					ligid.paintingFillNumericModifier(0,1);
 				if(callbackData.colorBoxEnter && colorBoxFirstPress)
 					ligid.colorBox();
 				if(callbackData.hueBarEnter)
