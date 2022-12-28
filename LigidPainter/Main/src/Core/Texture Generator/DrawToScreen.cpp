@@ -44,13 +44,14 @@ std::vector<glm::vec2> holdLocations;
 
 bool refreshTheScreenMask = false;
 
-void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs& programs,int maxScreenWidth,int maxScreenHeight,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<unsigned int> &albedoTextures) {
+void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,int paintingFillNumericModifierVal,Programs& programs,int maxScreenWidth,int maxScreenHeight,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<unsigned int> &albedoTextures,bool fillBetween) {
 
 	//TODO : Remove path parameter
 
 	if(true){
 		holdLocations.clear();
 	}
+
 
 	Texture texture;
 	Render render;
@@ -124,7 +125,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, string& path, unsigned 
 		float xposDif = (mouseXpos - lastMouseXPos) / differenceBetweenMousePoints;
 		float yposDif = (mouseYpos - lastMouseYPos) / differenceBetweenMousePoints;
 
-		if (differenceBetweenMousePoints <= 10) {
+		if (differenceBetweenMousePoints <= 10 || !fillBetween) {
 			differenceBetweenMousePoints = 1;
 		}
 			for (size_t i = 0; i < differenceBetweenMousePoints; i++)

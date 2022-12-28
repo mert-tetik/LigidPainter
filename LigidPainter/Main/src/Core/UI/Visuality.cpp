@@ -415,7 +415,7 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 		float xpos = x + ch.Bearing.x * scale;
 		float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
 
-		float w = ch.Size.x * scale;
+		float w = ch.Size.x * scale * 0.8f;
 		float h = ch.Size.y * scale;
 
 		std::vector <float> vertices = {

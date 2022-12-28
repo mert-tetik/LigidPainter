@@ -203,7 +203,7 @@ float maskPanelSliderValue = 0.0f;
 
 //bool albedoTextureChanged; use for texture updating conditions
 
-int drawingSpacing = 1;
+int paintingSpacing = 1;
 
 //Last mouse position (used in drawToScreen.cpp)
 double lastMouseXpos = 0;
@@ -404,6 +404,11 @@ int screenHeight;
 Model model;
 
 bool updateHueVal = true;
+
+bool renderTheScene = true;//Set true in the callback functions
+int renderTheSceneCounter = 0;
+const int renderingThreshold = 120;
+
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -584,6 +589,7 @@ bool LigidPainter::run()
 
 	double mouseDrawingPosX = 0;
 	double mouseDrawingPosY = 0;
+
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		
@@ -595,8 +601,12 @@ bool LigidPainter::run()
 		//Check if camera pos changed
 		updateCameraPosChanging();
 
+		renderTheSceneCounter++;
 
-
+		if(glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetMouseButton(window, 2) == GLFW_PRESS){
+			renderTheScene = true;
+			renderTheSceneCounter = 0;
+		}
 
 
 		//Release textboxes
@@ -735,6 +745,7 @@ bool LigidPainter::run()
 				//Keep rendering the backside
 		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter);
 		 		
+				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
 
 				float messageBoxButtonColor[3] = {colorData.messageBoxButtonColor.r,colorData.messageBoxButtonColor.g,colorData.messageBoxButtonColor.r};
@@ -751,7 +762,7 @@ bool LigidPainter::run()
 					glfwSetWindowShouldClose(window,GLFW_FALSE);
 					break; //Act like nothing happened
 				}
-
+	
 				glfwSwapBuffers(window);
 		 	}
 		}
@@ -761,9 +772,13 @@ bool LigidPainter::run()
 
 		//Render
 		//double firstTime = glfwGetTime();
-		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter);
+		if(renderTheScene){
+			renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),paintingFillNumericModifierVal,maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter);
+			cout << "sdfg";
+		}
 		//double lastTime = glfwGetTime();
 		//cout <<  (lastTime - firstTime) * 1000  << '\n';
+		
 		paintRender = false;
 
 
@@ -778,13 +793,14 @@ bool LigidPainter::run()
 
 
 		//Painting
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed && glm::distance(glm::vec2(mouseDrawingPosX,mouseDrawingPosY),glm::vec2(mouseXpos,mouseYpos)) > drawingSpacing){
+		bool distance_spacingCompatibility = glm::distance(glm::vec2(mouseDrawingPosX,mouseDrawingPosY),glm::vec2(mouseXpos,mouseYpos)) > paintingSpacing;
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed && distance_spacingCompatibility){
 
 			mouseDrawingPosX = mouseXpos;
 			mouseDrawingPosY = mouseYpos;
 
 			//Paint
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData,model,albedoTextures);
+			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData,model,albedoTextures, paintingSpacing < 10);
 			paintRenderCounter++;
 			if(paintRenderCounter == 10){
 				paintRender = true;
@@ -844,8 +860,11 @@ bool LigidPainter::run()
 		if (glfwGetMouseButton(window, 1) == GLFW_RELEASE) { //Camera position changed
 			cameraPosChanging = false;
 		}
+		if(renderTheScene)
+			glfwSwapBuffers(window);
 
-		glfwSwapBuffers(window);
+		if(renderTheSceneCounter == renderingThreshold)
+			renderTheScene = false;
 	}
 	
 	//Close the program
@@ -864,6 +883,9 @@ bool LigidPainter::run()
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
+	renderTheScene = true;
+	renderTheSceneCounter = 0;
+
 	Callback callback;
 	callback.framebuffer_size_callback(window,width,height);
 
@@ -875,6 +897,9 @@ double lastXpos;
 double lastYpos;
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+	renderTheScene = true;
+	renderTheSceneCounter = 0;
+
 	UiActions uiAct; 
 	mousePosChanged = true;
 	mouseXpos = xpos;
@@ -939,6 +964,9 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 {
+	renderTheScene = true;
+	renderTheSceneCounter = 0;
+
 	Callback callback;
 	Utilities util;
 	LigidPainter ligid;
@@ -1125,7 +1153,7 @@ void LigidPainter::brushSpacingRangeBar(double xOffset, int width, int height) {
 	Texture txtr;
 	brushSpacingRangeBarValue -= xOffset / (width / 2.0f);
 	brushSpacingRangeBarValue = util.restrictBetween(brushSpacingRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
-	drawingSpacing = ((brushSpacingRangeBarValue + 0.11f) * 454.545454545f) + 1.0f; //-0.11 - 0.11 --> 1 - 101
+	paintingSpacing = ((brushSpacingRangeBarValue + 0.11f) * 454.545454545f) + 1.0f; //-0.11 - 0.11 --> 1 - 101
 }
 void LigidPainter::brushBordersRangeBar(double xOffset, int width, int height) {
 	Utilities util;
