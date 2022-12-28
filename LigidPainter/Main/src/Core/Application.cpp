@@ -143,7 +143,7 @@ double mouseXpos;
 double mouseYpos;
 bool mousePosChanged = false;
 
-
+bool mainPanelHover = false;
 
 
 bool enablePanelMovement = true; //Panel can be moved if true. Set false while dragging range bar pointers around.
@@ -390,6 +390,8 @@ int screenHeight;
 Model model;
 
 bool updateHueVal = true;
+
+float materialsPanelSlideValue = 0.0f;
 
 bool renderTheScene = true;//Set true in the callback functions
 int renderTheSceneCounter = 0;
@@ -729,7 +731,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter);
+		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter,materialsPanelSlideValue);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -759,7 +761,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter);
+			renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter,materialsPanelSlideValue);
 			cout << "sdfg";
 		}
 		//double lastTime = glfwGetTime();
@@ -940,11 +942,18 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 		
 		//Check if cursor is inside of the panel
 
-		if (xpos > ((windowData.windowMaxWidth / 2) * callbackData.panelLoc) - screenGapX && !callbackData.brushSizeRangeBarEnter && !callbackData.colorBoxColorRangeBarEnter && !callbackData.colorBoxPickerEnter) //Inside of the panel
+		if (xpos > ((windowData.windowMaxWidth / 2) * callbackData.panelLoc) - screenGapX && !callbackData.brushSizeRangeBarEnter && !callbackData.colorBoxColorRangeBarEnter && !callbackData.colorBoxPickerEnter){
+			//Inside of the panel
+			mainPanelHover = true;
 			doPainting = false;
+		} 
+			
 
-		else if (xpos < ((windowData.windowMaxWidth / 2) * callbackData.panelLoc) - screenGapX  && panelData.paintingPanelActive) //Painting panel + outside of panel
+		else if (xpos < ((windowData.windowMaxWidth / 2) * callbackData.panelLoc) - screenGapX  && panelData.paintingPanelActive){
+			//Painting panel + outside of panel
+			mainPanelHover = false;
 			doPainting = true;
+		}
 	}
 }
 
@@ -985,13 +994,19 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 		ligid.brushBordersRangeBar((float)scrollx*10.0f,screenSizeX,screenSizeY);
 	}
 	else{
-		if (!paintingMode && !callbackData.maskPanelEnter) {
+		if (!paintingMode && !mainPanelHover) {
 			callbackData = callback.scroll_callback(window, scroll, scrollx);
 		}
 		else if(callbackData.maskPanelEnter){
 			//Brush mask panel scroll
 			maskPanelSliderValue += (float)(scrollx / 40.0);
 			maskPanelSliderValue = util.restrictBetween(maskPanelSliderValue, 0.0f, -0.25f);//Keep in boundaries
+		}
+		else if(mainPanelHover && panelData.texturePanelActive){
+			//Materials
+			materialsPanelSlideValue += scrollx/10.0f;
+			if(materialsPanelSlideValue > 0.0f)
+				materialsPanelSlideValue = 0.0f;
 		}
 		else {
 			holdScrollVal = scrollx;
