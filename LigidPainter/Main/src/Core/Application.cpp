@@ -610,14 +610,14 @@ bool LigidPainter::run()
 
 
 		//Release textboxes
-		if ((glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS)){
+		if ((glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)){
 			if(!callbackData.exportFileNameTextBoxEnter && exportFileNameTextBoxPressed){
 				exportFileNameTextBoxPressed = false;
 				if(exportFileName == ""){
 					exportFileName = "LP_Export";
 				}	
 			}
-			if(!callbackData.hexValueTextboxEnter && exportFileNameTextBoxPressed){
+			if(!callbackData.hexValueTextboxEnter || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
 				hexValTextboxPressed = false;
 				textBoxActiveChar = 6;
 			}
