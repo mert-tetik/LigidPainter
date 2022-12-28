@@ -379,12 +379,12 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 	ColorData colorData;
 	if (!checked) {
 		if (!mouseHover)
-			box(0.0f, 0.02f, position_x, position_y, "", colorData.checkBoxColor, 0.00022f, false, false, 0.9f, 10, glm::vec3(0), 0);
+			box(0.002f, 0.02f, position_x, position_y, "", colorData.checkBoxColor, 0.00022f, false, false, 0.9f, 12.5f, glm::vec3(0), 0);
 		else
-			box(0.0f, 0.02f, position_x, position_y, "", colorData.checkBoxHoverColor, 0.00022f, false, false, 0.9f, 10, glm::vec3(0), 0);
+			box(0.002f, 0.02f, position_x, position_y, "", colorData.checkBoxHoverColor, 0.00022f, false, false, 0.9f, 12.5f, glm::vec3(0), 0);
 	}
 	else {
-		box(0.0f, 0.02f, position_x, position_y, "", colorData.checkBoxCheckedColor, 0.00022f, false, false, 0.9f, 10, glm::vec3(0), 0);
+		box(0.002f, 0.02f, position_x, position_y, "", colorData.checkBoxCheckedColor, 0.00022f, false, false, 0.9f, 12.5f, glm::vec3(0), 0);
 
 	}
 	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f);
