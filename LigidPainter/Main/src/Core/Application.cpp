@@ -762,7 +762,6 @@ bool LigidPainter::run()
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
 			renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter,materialsPanelSlideValue);
-			cout << "sdfg";
 		}
 		//double lastTime = glfwGetTime();
 		//cout <<  (lastTime - firstTime) * 1000  << '\n';
@@ -790,7 +789,7 @@ bool LigidPainter::run()
 			//Paint
 			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData,model,albedoTextures, paintingSpacing < 10);
 			paintRenderCounter++;
-			if(paintRenderCounter == 10){
+			if(paintRenderCounter == 5){
 				paintRender = true;
 				paintRenderCounter = 0;
 			}
