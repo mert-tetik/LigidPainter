@@ -330,9 +330,9 @@ void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos
 			colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
 
 			
-			mirrorXCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.15f - screenGapX, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
-			mirrorYCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.09f - screenGapX, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
-			mirrorZCheckBoxEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- 0.03f - screenGapX, 0.91f, mouseXPos, mouseYPos); //isMouseOnPanelChangeButton used for projection
+			mirrorXCheckBoxEnter = ui.isMouseOnButton(window, 0.02f, 0.03f, panelLoc- 0.15f - screenGapX, 0.91f, mouseXPos, mouseYPos,true); //isMouseOnPanelChangeButton used for projection
+			mirrorYCheckBoxEnter = ui.isMouseOnButton(window, 0.02f, 0.03f, panelLoc- 0.09f - screenGapX, 0.91f, mouseXPos, mouseYPos,true); //isMouseOnPanelChangeButton used for projection
+			mirrorZCheckBoxEnter = ui.isMouseOnButton(window, 0.02f, 0.03f, panelLoc- 0.03f - screenGapX, 0.91f, mouseXPos, mouseYPos,true); //isMouseOnPanelChangeButton used for projection
 
 
 			colorBoxEnter = ui.isMouseOnButton(window, 0.1f, 0.2f, panelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.55f, mouseXPos, mouseYPos, movePanel);		
