@@ -204,7 +204,6 @@ float maskPanelSliderValue = 0.0f;
 //bool albedoTextureChanged; use for texture updating conditions
 
 int drawingSpacing = 1;
-int drawingCount; // if drawingCount matches with drawingSpaces do painting
 
 //Last mouse position (used in drawToScreen.cpp)
 double lastMouseXpos = 0;
@@ -583,7 +582,8 @@ bool LigidPainter::run()
 	int paintRenderCounter = 0;
 
 
-
+	double mouseDrawingPosX = 0;
+	double mouseDrawingPosY = 0;
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		
@@ -778,12 +778,11 @@ bool LigidPainter::run()
 
 
 		//Painting
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed) {
-			//Used for spacing
-			drawingCount++;
-		}
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && drawingCount == drawingSpacing && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed){
-			
+		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && !panelChanging && !callbackData.panelChangeLoc && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !paintingDropperPressed && glm::distance(glm::vec2(mouseDrawingPosX,mouseDrawingPosY),glm::vec2(mouseXpos,mouseYpos)) > drawingSpacing){
+
+			mouseDrawingPosX = mouseXpos;
+			mouseDrawingPosY = mouseYpos;
+
 			//Paint
 			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,brushRotationRangeBarValue,brushOpacityRangeBarValue,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,paintingFillNumericModifierVal,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,brushBorderRangeBarValue,brushBlurVal,paintingFBO,outShaderData,model,albedoTextures);
 			paintRenderCounter++;
@@ -792,14 +791,10 @@ bool LigidPainter::run()
 				paintRenderCounter = 0;
 			}
 
-
 			brushValChanged = false; //After updating the brush mask texture set brushValChanged to false so brush mask texture won't be updated repeatedly 
 			paintingMode = true;
-			drawingCount = 0;
 		}
 
-		if(drawingCount > drawingSpacing)
-			drawingCount = 0;
 		panelChanging = false;
 		lastMouseXpos = mouseXpos;
 		lastMouseYpos = mouseYpos;
@@ -1131,7 +1126,6 @@ void LigidPainter::brushSpacingRangeBar(double xOffset, int width, int height) {
 	brushSpacingRangeBarValue -= xOffset / (width / 2.0f);
 	brushSpacingRangeBarValue = util.restrictBetween(brushSpacingRangeBarValue, 0.11f, -0.11f);//Keep in boundaries
 	drawingSpacing = ((brushSpacingRangeBarValue + 0.11f) * 454.545454545f) + 1.0f; //-0.11 - 0.11 --> 1 - 101
-	drawingCount = 0;
 }
 void LigidPainter::brushBordersRangeBar(double xOffset, int width, int height) {
 	Utilities util;
