@@ -4,8 +4,8 @@
 #include "TextureGenerator.h"
 
 
-std::vector<double> TextureGenerator::gaussianFunc(int radius,float mean){
-	std::vector<double> oneDimensionalGauss;
+std::vector<float> TextureGenerator::gaussianFunc(int radius,float mean){
+	std::vector<float> oneDimensionalGauss;
 	
 	double sigma = ((double)radius / sqrt(-2.0 * log(1 - 0.995))) ;
 
