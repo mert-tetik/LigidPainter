@@ -37,35 +37,10 @@ void GlSet::drawArrays(std::vector<float> &vertices,bool isLine) {
 	}
 }
 void GlSet::uiDataToShaders(glm::vec3 color) {
-	int isAxisPointerLoc = glGetUniformLocation(glPrograms.uiProgram, "isAxisPointer"); //TODO : Delete these
-	glUniform1i(isAxisPointerLoc, 0);
-	int isTwoDimensionalLoc = glGetUniformLocation(glPrograms.uiProgram, "isTwoDimensional");
-	glUniform1i(isTwoDimensionalLoc, 1);
-	int uiColorLoc = glGetUniformLocation(glPrograms.uiProgram, "uiColor");
-	glUniform3f(uiColorLoc, color.x, color.y, color.z);
-	int is2DLoc = glGetUniformLocation(glPrograms.uiProgram, "is2D");
-	glUniform1i(is2DLoc, 1);
+
 }
-void GlSet::meshDataToShaders() {
-	int isAxisPointerLoc = glGetUniformLocation(glPrograms.uiProgram, "isAxisPointer");
-	glUniform1i(isAxisPointerLoc, 0);
-	int isTwoDimensionalLoc = glGetUniformLocation(glPrograms.uiProgram, "isTwoDimensional");
-	glUniform1i(isTwoDimensionalLoc, 0);
-	int is2DLoc = glGetUniformLocation(glPrograms.uiProgram, "is2D");
-	glUniform1i(is2DLoc, 0);
-	int isLightSourceLoc = glGetUniformLocation(glPrograms.uiProgram, "isLightSource");
-	glUniform1i(isLightSourceLoc, 0);
-}
-void GlSet::axisPointerDataToShaders() {
-	int isAxisPointerLoc = glGetUniformLocation(glPrograms.uiProgram, "isAxisPointer");
-	glUniform1i(isAxisPointerLoc, 1);
-	int isTwoDimensionalLoc = glGetUniformLocation(glPrograms.uiProgram, "isTwoDimensional");
-	glUniform1i(isTwoDimensionalLoc, 0);
-	int is2DLoc = glGetUniformLocation(glPrograms.uiProgram, "is2D");
-	glUniform1i(is2DLoc, 0);
-	int isLightSourceLoc = glGetUniformLocation(glPrograms.uiProgram, "isLightSource");
-	glUniform1i(isLightSourceLoc, 0);
-}
+
+
 void GlSet::bindFramebuffer(unsigned int FBO) {
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 }
@@ -162,7 +137,7 @@ unsigned int createShader(const char* path,unsigned int shaderType){
 	return shader;
 }
 
-unsigned int createProgram(std::string path){
+unsigned int GlSet::createProgram(std::string path){
 	unsigned int vertexShader = createShader((path + ".vert").c_str(),GL_VERTEX_SHADER);
 	unsigned int fragmentShader = createShader((path + ".frag").c_str(),GL_FRAGMENT_SHADER); 
 
@@ -177,83 +152,7 @@ unsigned int createProgram(std::string path){
 	return program;
 }
 
-Programs GlSet::getProgram() {//Prepare shader program | Usen once
 
-	//Ui program
-	unsigned int uiProgram = createProgram("LigidPainter/Resources/Shaders/UI/ui");
-
-
-	//Skybox program
-	unsigned int skyboxProgram = createProgram("LigidPainter/Resources/Shaders/3D/skybox");
-	
-
-
-	//Blur program
-	unsigned int blurProgram = createProgram("LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/blur");
-
-
-
-	//Icons program
-	unsigned int iconsProgram = createProgram("LigidPainter/Resources/Shaders/UI/icons");
-
-
-	//Skybox Blur program
-	unsigned int skyboxblurProgram = createProgram("LigidPainter/Resources/Shaders/skyboxblur");
-
-
-
-	//PBR program
-	unsigned int PBRProgram = createProgram("LigidPainter/Resources/Shaders/3D/PBR");
-
-
-
-	//Saturation Value program
-	unsigned int saturationValBoxProgram = createProgram("LigidPainter/Resources/Shaders/UI/saturationValBox");
-
-
-
-	//Saturation Value program
-	unsigned int screenDepthProgram = createProgram("LigidPainter/Resources/Shaders/Texture Processing/screenDepth");
-
-
-
-	//Hue program
-	unsigned int hueProgram = createProgram("LigidPainter/Resources/Shaders/UI/hue");
-
-
-
-	//Axis pointer program
-	unsigned int axisPointerProgram = createProgram("LigidPainter/Resources/Shaders/3D/axisPointer");
-
-
-
-	//Out program
-	unsigned int outProgram = createProgram("LigidPainter/Resources/Shaders/Texture Processing/out");
-
-
-
-	//Out program
-	unsigned int twoDPaintingProgram = createProgram("LigidPainter/Resources/Shaders/Texture Processing/2dPainting");
-
-
-
-
-
-	glPrograms.blurProgram = blurProgram;
-	glPrograms.iconsProgram = iconsProgram;
-	glPrograms.skyboxblurProgram = skyboxblurProgram;
-	glPrograms.uiProgram = uiProgram;
-	glPrograms.skyboxProgram = skyboxProgram;
-	glPrograms.PBRProgram = PBRProgram;
-	glPrograms.saturationValBoxProgram = saturationValBoxProgram;
-	glPrograms.screenDepthProgram = screenDepthProgram;
-	glPrograms.hueProgram = hueProgram;
-	glPrograms.axisPointerProgram = axisPointerProgram;
-	glPrograms.outProgram = outProgram;  
-	glPrograms.twoDPaintingProgram = twoDPaintingProgram;  
-
-	return glPrograms;
-}
 //------------Shaders------------
 unsigned int GlSet::createScreenFrameBufferObject() {
 	activeTexture(GL_TEXTURE5);

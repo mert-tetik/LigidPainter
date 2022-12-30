@@ -12,7 +12,7 @@
 #include "Core/LigidPainter.h"
 #include "Core/UI/UserInterface.h"
 #include "Core/gl.h"
-#include "Core/Load.h"
+#include "Core/Load.hpp"
 
 
 Programs uiPrograms;
@@ -100,7 +100,6 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	glset.uniform3fv(uiPrograms.uiProgram, "uiTransitionColor", colorTransitionColor);
 	glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", mixVal);
 
-	//glset.uiDataToShaders(glm::vec3(color.x, color.y, color.z));
 	glset.drawArrays(buttonCoor, false);
 
 	if (!isTextBox) {
@@ -131,7 +130,11 @@ void UserInterface::panel(float panelLoc, float) {
 		panelLoc - 1.0f ,-1.0f,0,0,0,0,0,0
 	};
 	glm::vec3 blankVal = glm::vec3(0);
-	glset.uiDataToShaders(colorD.panelHoldColor);
+
+
+
+	glset.uniform3fv(uiPrograms.uiProgram, "uiColor", colorD.panelHoldColor);
+
 	glset.uniform3fv(uiPrograms.uiProgram, "uiTransitionColor", blankVal);
 	glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0.0f);
 
@@ -139,7 +142,11 @@ void UserInterface::panel(float panelLoc, float) {
 	glset.drawArrays(panelHoldCoor, false);
 
 	glset.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.25f);
-	glset.uiDataToShaders(colorD.panelColor);
+
+	glset.uniform3fv(uiPrograms.uiProgram, "uiColor", colorD.panelColor);
+
+
+
 	glset.drawArrays(panelCoor, false);
 
 	glset.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.4f);
@@ -355,7 +362,9 @@ void UserInterface::panelChangeButton(float position_x, float position_y) {
 	};
 	GlSet glset;
 	ColorData colorData;
-	glset.uiDataToShaders(colorData.panelHoldColor);
+	glset.uniform3fv(uiPrograms.uiProgram, "uiColor", colorData.panelHoldColor);
+
+	
 	glset.drawArrays(buttonCoor, false);
 }
 void UserInterface::decorationSquare(float position_x, float position_y) {
@@ -371,7 +380,9 @@ void UserInterface::decorationSquare(float position_x, float position_y) {
 	};
 	GlSet glset;
 	ColorData colorData;
-	glset.uiDataToShaders(colorData.panelColorSnd);
+	
+	glset.uniform3fv(uiPrograms.uiProgram, "uiColor", colorData.panelColorSnd);
+
 	glset.drawArrays(buttonCoor, false);
 }
 

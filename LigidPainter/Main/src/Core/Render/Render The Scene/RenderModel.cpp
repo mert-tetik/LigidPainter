@@ -19,7 +19,7 @@ void Render::renderModel(bool backfaceCulling,PBRShaderData &data,Model &model,b
 		gl.enable(GL_CULL_FACE);
 		gl.cullFace(GL_BACK);
 	}
-	gl.meshDataToShaders();
+	//gl.meshDataToShaders();
 	
 	model.Draw(currentMaterialIndex,programs.PBRProgram,true,albedoTextures);
 

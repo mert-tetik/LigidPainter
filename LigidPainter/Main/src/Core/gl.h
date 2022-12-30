@@ -21,8 +21,6 @@ class GlSet {
 public:
 	void drawArrays(std::vector<float>& vertices, bool isLine);
 	void uiDataToShaders(glm::vec3 color);
-	void meshDataToShaders();
-	void axisPointerDataToShaders();
 	void bindFramebuffer(unsigned int FBO);
 	void genFramebuffers(unsigned int& FBO);
 	void deleteFramebuffers(unsigned int& FBO);
@@ -49,11 +47,11 @@ public:
 	void disable(unsigned int target);
 	void viewport(int width, int height);
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
-	Programs getProgram();
 
 	WindowData getWindow();
 	unsigned int createScreenFrameBufferObject();
 
+	unsigned int createProgram(std::string path);
 
 
 	void usePBRShader(unsigned int program,PBRShaderData data);

@@ -27,7 +27,9 @@ void Render::renderModifiedBrushCursor(float distanceX,int screenWidth,int scree
 		(-sizeX / maxScreenWidth / 1.0f + (float)mouseXpos / maxScreenWidth / 0.5f - 1.0f)+screenGapX, -sizeX / maxScreenHeight / 1.0f - (float)mouseYpos / maxScreenHeight / 0.5f + 1.0f , 1.0f,0,0,0,0,0,  // bottom left
 		(-sizeX / maxScreenWidth / 1.0f + (float)mouseXpos / maxScreenWidth / 0.5f - 1.0f)+screenGapX,  sizeX / maxScreenHeight / 1.0f - (float)mouseYpos / maxScreenHeight / 0.5f + 1.0f , 1.0f,0,1,0,0,0  // top left
 	};
-	glset.uiDataToShaders(color/glm::vec3(255.0f));
+	
+	glset.uniform3fv(programs.uiProgram, "uiColor", color/glm::vec3(255.0f));
+	
 	glset.uniform1f(programs.uiProgram, "uiOpacity", 0.2f);
 	glset.drawArrays(paintingSquare, false);
 	glset.uniform1f(programs.uiProgram, "uiOpacity", 0.5f);

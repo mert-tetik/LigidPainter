@@ -39,14 +39,14 @@ struct TextureMs {
 class Mesh {
 public:
     // mesh Data
-    vector<Vertex>       vertices;
-    vector<unsigned int> indices;
-    vector<TextureMs>      textures;
+    std::vector<Vertex>       vertices;
+    std::vector<unsigned int> indices;
+    std::vector<TextureMs>      textures;
     unsigned int VAO;
     std::string materialName;
 
     // constructor
-    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<TextureMs> textures,std::string materialName)
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<TextureMs> textures,std::string materialName)
     {
         this->vertices = vertices;
         this->indices = indices;

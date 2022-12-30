@@ -9,7 +9,6 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
-
 #include "Core/Model/mesh.h"
 #include "Core/Model/model.h"
 
