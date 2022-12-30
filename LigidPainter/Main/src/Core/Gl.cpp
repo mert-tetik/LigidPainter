@@ -178,24 +178,23 @@ unsigned int createProgram(std::string path){
 }
 
 Programs GlSet::getProgram() {//Prepare shader program | Usen once
-	//TODO : 2d Shader
 
 	//Ui program
-	unsigned int uiProgram = createProgram("LigidPainter/Resources/Shaders/ui");
+	unsigned int uiProgram = createProgram("LigidPainter/Resources/Shaders/UI/ui");
 
 
 	//Skybox program
-	unsigned int skyboxProgram = createProgram("LigidPainter/Resources/Shaders/skybox");
+	unsigned int skyboxProgram = createProgram("LigidPainter/Resources/Shaders/3D/skybox");
 	
 
 
 	//Blur program
-	unsigned int blurProgram = createProgram("LigidPainter/Resources/Shaders/blur");
+	unsigned int blurProgram = createProgram("LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/blur");
 
 
 
 	//Icons program
-	unsigned int iconsProgram = createProgram("LigidPainter/Resources/Shaders/icons");
+	unsigned int iconsProgram = createProgram("LigidPainter/Resources/Shaders/UI/icons");
 
 
 	//Skybox Blur program
@@ -204,37 +203,37 @@ Programs GlSet::getProgram() {//Prepare shader program | Usen once
 
 
 	//PBR program
-	unsigned int PBRProgram = createProgram("LigidPainter/Resources/Shaders/PBR");
+	unsigned int PBRProgram = createProgram("LigidPainter/Resources/Shaders/3D/PBR");
 
 
 
 	//Saturation Value program
-	unsigned int saturationValBoxProgram = createProgram("LigidPainter/Resources/Shaders/saturationValBox");
+	unsigned int saturationValBoxProgram = createProgram("LigidPainter/Resources/Shaders/UI/saturationValBox");
 
 
 
 	//Saturation Value program
-	unsigned int screenDepthProgram = createProgram("LigidPainter/Resources/Shaders/screenDepth");
+	unsigned int screenDepthProgram = createProgram("LigidPainter/Resources/Shaders/Texture Processing/screenDepth");
 
 
 
 	//Hue program
-	unsigned int hueProgram = createProgram("LigidPainter/Resources/Shaders/hue");
+	unsigned int hueProgram = createProgram("LigidPainter/Resources/Shaders/UI/hue");
 
 
 
 	//Axis pointer program
-	unsigned int axisPointerProgram = createProgram("LigidPainter/Resources/Shaders/axisPointer");
+	unsigned int axisPointerProgram = createProgram("LigidPainter/Resources/Shaders/3D/axisPointer");
 
 
 
 	//Out program
-	unsigned int outProgram = createProgram("LigidPainter/Resources/Shaders/out");
+	unsigned int outProgram = createProgram("LigidPainter/Resources/Shaders/Texture Processing/out");
 
 
 
 	//Out program
-	unsigned int twoDPaintingProgram = createProgram("LigidPainter/Resources/Shaders/2dPainting");
+	unsigned int twoDPaintingProgram = createProgram("LigidPainter/Resources/Shaders/Texture Processing/2dPainting");
 
 
 
