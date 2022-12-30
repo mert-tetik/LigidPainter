@@ -22,7 +22,7 @@ ColorData colorD;
 int uiMaxScreenWidth;
 int uiMaxScreenHeight;
 
-void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec3 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec3 colorTransitionColor, float mixVal) {
+void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec4 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec4 colorTransitionColor, float mixVal) {
 	
 	//buttonCurveReduce = 10 | normal  
 	//buttonCurveReduce = >10 | smaller
@@ -96,8 +96,9 @@ void UserInterface::box(float width, float height, float position_x, float posit
 
 	glset.uniform1i(uiPrograms.uiProgram,"isUiTextureUsed",isMaskImageBox);
 
-	glset.uniform3fv(uiPrograms.uiProgram,"uiColor",color);
-	glset.uniform3fv(uiPrograms.uiProgram, "uiTransitionColor", colorTransitionColor);
+	glset.uniform4fv(uiPrograms.uiProgram,"uiColor",color);
+	glset.uniform4fv(uiPrograms.uiProgram, "uiTransitionColor", colorTransitionColor);
+
 	glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", mixVal);
 
 	glset.drawArrays(buttonCoor, false);
@@ -129,27 +130,22 @@ void UserInterface::panel(float panelLoc, float) {
 		panelLoc - 1.0f + 0.006f,-1.0f,0,0,0,0,0,0,
 		panelLoc - 1.0f ,-1.0f,0,0,0,0,0,0
 	};
-	glm::vec3 blankVal = glm::vec3(0);
+	glm::vec4 blankVal = glm::vec4(0);
 
+	glset.uniform4fv(uiPrograms.uiProgram, "uiColor", colorD.panelHoldColor);
 
-
-	glset.uniform3fv(uiPrograms.uiProgram, "uiColor", colorD.panelHoldColor);
-
-	glset.uniform3fv(uiPrograms.uiProgram, "uiTransitionColor", blankVal);
+	glset.uniform4fv(uiPrograms.uiProgram, "uiTransitionColor", blankVal);
 	glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0.0f);
 
-	glset.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.4f);
 	glset.drawArrays(panelHoldCoor, false);
 
-	glset.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.25f);
 
-	glset.uniform3fv(uiPrograms.uiProgram, "uiColor", colorD.panelColor);
+	glset.uniform4fv(uiPrograms.uiProgram, "uiColor", colorD.panelColor);
 
 
 
 	glset.drawArrays(panelCoor, false);
 
-	glset.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.4f);
 }
 
 void UserInterface::textureDemonstrator(float width,float height, float position_x,float position_y,float z){ 
@@ -165,7 +161,7 @@ void UserInterface::textureDemonstrator(float width,float height, float position
 		 position_x, -height +position_y, z,0,0,0,0,0,  // bottom left
 		 position_x,  position_y, z,0,1,0,0,0  // top left
 	};
-	box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDemonstratorButtonColor,0,0,0,1,10,glm::vec3(0),0);
+	box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDemonstratorButtonColor,0,0,0,1,10,glm::vec4(0,0,0,1),0);
 
 	glset.uniform1i(uiPrograms.uiProgram,"drawTxtrDemonstrator",1);
 	glset.drawArrays(buttonCoorSq,false);
@@ -200,6 +196,7 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 
 	glset.uniform3fv(uiPrograms.iconsProgram,"iconColor",color);
 	glset.uniform3fv(uiPrograms.iconsProgram,"iconColorHover",colorHover);
+	
 	glset.uniform1f(uiPrograms.iconsProgram,"iconMixVal",mixVal);
 	glset.activeTexture(GL_TEXTURE6);
 	glset.bindTexture(icon);
@@ -227,7 +224,7 @@ void UserInterface::colorBox(float position_x, float position_y,float valueX, fl
 	glset.drawArrays(boxCoor,false);
 
 	glUseProgram(uiPrograms.uiProgram);
-	box(0.0f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 22,glm::vec3(0),0);
+	box(0.0f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 22,glm::vec4(0),0);
 }
 
 glm::vec3 hueValue;
@@ -333,7 +330,7 @@ glm::vec3 UserInterface::colorRect(float position_x, float position_y,float valu
 	//Finish
 	glset.drawArrays(boxCoor, false); //Render color rectangle displayer
 	glUseProgram(uiPrograms.uiProgram);
-	box(0.01f, 0.005f, position_x, position_y + value, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 10000, glm::vec3(0), 0); //Value indicator
+	box(0.01f, 0.005f, position_x, position_y + value, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 10000, glm::vec4(0), 0); //Value indicator
 
 
 	return hueValue;
@@ -342,11 +339,9 @@ void UserInterface::rangeBar(float position_x, float position_y,float value) {
 	ColorData colorData;
 	GlSet gl;
 
-	gl.uniform1f(uiPrograms.uiProgram, "uiOpacity", 1.0f);
-	box(0, 0.015f, position_x+value, position_y, "", colorData.rangeBarFront, 0.035f, false, false, 0.9f, 15, glm::vec3(0), 0);//Value Square
-	box((value+0.11f) / 2, 0.0075f, position_x+(value+0.11f) / 2 - 0.11f, position_y, "", colorData.rangeBarSlide, 0.035f, false, false, 0.9f, 15, glm::vec3(0), 0);//Range Rectangle
-	box(0.11f, 0.0075f, position_x, position_y, "", colorData.rangeBarBack, 0.035f, false, false, 0.9f, 15, glm::vec3(0), 0);//Range Rectangle
-	gl.uniform1f(uiPrograms.uiProgram, "uiOpacity", 0.5f);
+	box(0, 0.015f, position_x+value, position_y, "", colorData.rangeBarFront, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Value Square
+	box((value+0.11f) / 2, 0.0075f, position_x+(value+0.11f) / 2 - 0.11f, position_y, "", colorData.rangeBarSlide, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Range Rectangle
+	box(0.11f, 0.0075f, position_x, position_y, "", colorData.rangeBarBack, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Range Rectangle
 
 }
 void UserInterface::panelChangeButton(float position_x, float position_y) {
@@ -362,10 +357,10 @@ void UserInterface::panelChangeButton(float position_x, float position_y) {
 	};
 	GlSet glset;
 	ColorData colorData;
-	glset.uniform3fv(uiPrograms.uiProgram, "uiColor", colorData.panelHoldColor);
-
 	
+	glset.uniform4fv(uiPrograms.uiProgram, "uiColor", colorData.panelHoldColor);
 	glset.drawArrays(buttonCoor, false);
+
 }
 void UserInterface::decorationSquare(float position_x, float position_y) {
 	std::vector<float> buttonCoor{
@@ -381,21 +376,21 @@ void UserInterface::decorationSquare(float position_x, float position_y) {
 	GlSet glset;
 	ColorData colorData;
 	
-	glset.uniform3fv(uiPrograms.uiProgram, "uiColor", colorData.panelColorSnd);
+	glset.uniform4fv(uiPrograms.uiProgram, "uiColor", colorData.panelColorSnd);
 
 	glset.drawArrays(buttonCoor, false);
 }
 
-void UserInterface::checkBox(float position_x, float position_y, std::string text, glm::vec3 color,bool mouseHover,bool checked) {
+void UserInterface::checkBox(float position_x, float position_y, std::string text, glm::vec4 color,bool mouseHover,bool checked) {
 	ColorData colorData;
 	if (!checked) {
 		if (!mouseHover)
-			box(0.002f, 0.02f, position_x, position_y, "", colorData.checkBoxColor, 0.00022f, false, false, 0.9f, 12.5f, glm::vec3(0), 0);
+			box(0.002f, 0.02f, position_x, position_y, "", colorData.checkBoxColor, 0.00022f, false, false, 0.9f, 12.5f, glm::vec4(0), 0);
 		else
-			box(0.002f, 0.02f, position_x, position_y, "", colorData.checkBoxHoverColor, 0.00022f, false, false, 0.9f, 12.5f, glm::vec3(0), 0);
+			box(0.002f, 0.02f, position_x, position_y, "", colorData.checkBoxHoverColor, 0.00022f, false, false, 0.9f, 12.5f, glm::vec4(0), 0);
 	}
 	else {
-		box(0.002f, 0.02f, position_x, position_y, "", colorData.checkBoxCheckedColor, 0.00022f, false, false, 0.9f, 12.5f, glm::vec3(0), 0);
+		box(0.002f, 0.02f, position_x, position_y, "", colorData.checkBoxCheckedColor, 0.00022f, false, false, 0.9f, 12.5f, glm::vec4(0), 0);
 
 	}
 	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f);

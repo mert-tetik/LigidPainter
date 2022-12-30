@@ -39,6 +39,7 @@ public:
 	void uniform1f(unsigned int program, const char* target, float floatValue);
 	void uniform3fv(unsigned int program, const char* target, glm::vec3& vectorValue);
 	void uniform3f(unsigned int program, const char* target, float f1, float f2, float f3);
+	void uniform4fv(unsigned int program, const char* target, glm::vec4 &vectorValue);
 	void uniformMatrix4fv(unsigned int program, const char* target, glm::mat4x4 matrixVal);
 
 

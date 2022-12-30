@@ -17,15 +17,18 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
 	ColorData colorData;
 	int result = 2;
 
-    glm::vec3 backColorVec;
+    glm::vec4 backColorVec;
     backColorVec.r = backColor[0];
     backColorVec.g = backColor[1];
     backColorVec.b = backColor[2];
+	backColorVec.a = colorData.messageBoxPanelColor.a;
 
-    glm::vec3 buttonColorVec;
+    glm::vec4 buttonColorVec;
     buttonColorVec.r = buttonColor[0];
     buttonColorVec.g = buttonColor[1];
     buttonColorVec.b = buttonColor[2];
+	buttonColorVec.a = colorData.messageBoxButtonColor.a;
+
 
 	float screenGapX = ((float)renderMaxScreenWidth - (float)screenSizeX)/(((float)renderMaxScreenWidth)/2.0f)/2.0f; 
 

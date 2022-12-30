@@ -7,10 +7,14 @@ uniform sampler2D text;
 uniform sampler2D modifiedMaskTexture;
 uniform int isUiTextureUsed;
 uniform vec3 textColor;
-uniform vec3 uiColor;
+
+uniform vec4 uiColor;
+
 uniform vec3 uiTransitionColor;
 uniform float uiTransitionMixVal;
+
 uniform float uiOpacity;
+
 uniform int drawBrushIndicator;
 uniform int drawTxtrDemonstrator;
 uniform sampler2D currentTexture;
@@ -28,12 +32,12 @@ void main() {
                if(drawBrushIndicator == 1)
                {
                   //Brush indicator here
-                  color = vec4(uiColor, max(texture(modifiedMaskTexture, TexCoords)/3.0,0.0)); 
+                  color = vec4(uiColor.rgb, max(texture(modifiedMaskTexture, TexCoords)/3.0,0.0)); 
                }
                else
                {
                   //Ui here
-                  color = vec4(mix(uiColor,uiTransitionColor,uiTransitionMixVal), uiOpacity);
+                  color = vec4(mix(uiColor.rgb,uiTransitionColor,uiTransitionMixVal), uiColor.a);
                }
             } 
             else 

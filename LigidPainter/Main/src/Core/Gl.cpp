@@ -83,6 +83,9 @@ void GlSet::uniform3fv(unsigned int program, const char* target, glm::vec3 &vect
 void GlSet::uniform3f(unsigned int program, const char* target, float f1, float f2, float f3) {
 	glUniform3f(glGetUniformLocation(program, target), f1,f2,f3);
 }
+void GlSet::uniform4fv(unsigned int program, const char* target, glm::vec4 &vectorValue) {
+	glUniform4fv(glGetUniformLocation(program, target),1, &vectorValue[0]);
+}
 void GlSet::uniformMatrix4fv(unsigned int program, const char* target, glm::mat4x4 matrixVal) {
 	glUniformMatrix4fv(glGetUniformLocation(program, target), 1,GL_FALSE, glm::value_ptr(matrixVal));
 }
