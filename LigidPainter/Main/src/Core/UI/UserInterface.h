@@ -62,8 +62,8 @@ struct Container{
 	float positionY;
 	float positionZ;
 	glm::vec4 color;
-	bool attachedToMainPanel;
-	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
+	
+	
 };
 
 struct Button{
@@ -78,19 +78,14 @@ struct Button{
 	glm::vec4 colorHover;
 	float buttonCurveReduce;
 	float transitionMixVal;
-	bool attachedToMainPanel;
-	bool hover;
-	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
-
+	bool hover = false;
 };
 
 struct RangeBar{
 	float positionX;
 	float positionY;
 	float value;
-	bool attachedToMainPanel;
-	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
-
+	bool hover = false;
 };
 
 struct Icon{
@@ -103,10 +98,7 @@ struct Icon{
 	glm::vec3 color;
 	glm::vec3 colorHover;
 	float mixVal;
-	bool hover;
-	bool attachedToMainPanel;
-	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
-
+	bool hover = false;
 };
 
 struct Text{
@@ -115,9 +107,6 @@ struct Text{
 	float positionX;
 	float positionY;
 	float scale;
-	bool attachedToMainPanel;
-	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
-
 };
 
 struct CheckBox{
@@ -125,9 +114,7 @@ struct CheckBox{
 	float positionY;
 	std::string text;
 	bool mouseHover;
-	bool checked;
-	bool attachedToMainPanel;
-	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
+	bool checked = false;
 };
 struct TextBox{
 	float width;
@@ -135,9 +122,10 @@ struct TextBox{
 	float position_x;
 	float position_y;
 	float position_z;
+	bool hover = false;
+	float transitionMixVal = 0.0f;
+	bool clicked = false;
 	std::string text;
-	bool attachedToMainPanel;
-	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
 };
 
 struct Box{
@@ -150,8 +138,6 @@ struct Box{
 	glm::vec4 color;
 	glm::vec4 colorTransitionColor; 
 	float mixVal;
-	bool attachedToMainPanel;
-	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
 };
 
 struct UIElement{
@@ -164,6 +150,8 @@ struct UIElement{
 	TextBox textBox;
 	Box box;
 	const char* type;
+	bool attachedToMainPanel;
+	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
 };
 
 struct UI{

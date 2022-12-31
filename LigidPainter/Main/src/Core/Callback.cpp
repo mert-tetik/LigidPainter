@@ -12,6 +12,7 @@
 #include "Core/UI/UserInterface.h"
 #include "Core/Callback.h"
 #include "Core/gl.h"
+#include "Core/UI/UserInterface.h"
 
 
 int callbackMaxScreenWidth;
@@ -73,6 +74,9 @@ bool maskPanelEnter;
 bool hexValueTextboxEnter;
 bool loadCustomModelEnter;
 bool hueBarEnter;
+
+
+bool uiElementEnter;
 //Ui enter
 
 
@@ -91,9 +95,12 @@ CallbckData preapareCallbackData() {
 	callbk.addPlaneButtonEnter = addPlaneButtonEnter;
 	callbk.addSphereButtonEnter = addSphereButtonEnter;
 	callbk.movePanel = movePanel;
+
 	callbk.modelPanelButtonEnter = modelPanelButtonEnter;
 	callbk.texturePanelButtonEnter = texturePanelButtonEnter;
 	callbk.paintingPanelButtonEnter = paintingPanelButtonEnter;
+	callbk.exportPanelButtonEnter = exportPanelButtonEnter;
+
 	callbk.addMaskTextureButtonEnter = addMaskTextureButtonEnter;
 	callbk.brushSizeRangeBarEnter = brushSizeRangeBarEnter;
 	callbk.brushBlurRangeBarEnter = brushBlurRangeBarEnter;
@@ -103,7 +110,6 @@ CallbckData preapareCallbackData() {
 	callbk.brushBordersRangeBarEnter = brushBordersRangeBarEnter;
 	callbk.colorBoxColorRangeBarEnter = colorBoxColorRangeBarEnter;
 	callbk.colorBoxPickerEnter = colorBoxPickerEnter;
-	callbk.exportPanelButtonEnter = exportPanelButtonEnter;
 
 	callbk.exportPathTextBoxEnter = exportPathTextBoxEnter;
 	callbk.exportFileNameTextBoxEnter = exportFileNameTextBoxEnter;
@@ -138,6 +144,8 @@ CallbckData preapareCallbackData() {
 
 	callbk.hueBarEnter = hueBarEnter;
 
+	callbk.uiElementEnter = uiElementEnter;
+
 	return callbk;
 }
 
@@ -162,7 +170,7 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData,float brushSizeRangeBarValue,float colorBoxPickerValue_x, 
 float colorBoxPickerValue_y,float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, bool enablePanelMovement, float brushRotationRangeBarValue, 
 float brushOpacityRangeBarValue, float brushSpacingRangeBarValue, float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,
-bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue,bool texturePanelButtonHover)
+bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue,bool texturePanelButtonHover,UI &uiMaterials)
 {
 	CallbckData callbk;
 	
@@ -173,7 +181,7 @@ bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,fl
 
 	panelCheck(window,xpos,screenSizeX,enablePanelMovement);
 	
-	buttonCheck(window, xpos, ypos, panelData ,brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,brushMaskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue, texturePanelButtonHover);
+	buttonCheck(window, xpos, ypos, panelData ,brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,brushMaskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue, texturePanelButtonHover,uiMaterials);
 	
 
 	xoffset = xpos - lastX;
@@ -267,7 +275,7 @@ void Callback::panelCheck(GLFWwindow* window, double mouseXpos, int screenSizeX,
 		}
 	}
 }
-void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y,float colorBoxColorRangeBarValue,float brushBlurRangeBarValue,float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue,bool texturePanelButtonHover) {
+void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y,float colorBoxColorRangeBarValue,float brushBlurRangeBarValue,float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue,bool texturePanelButtonHover,UI &uiMaterials) {
 	UserInterface ui;
 
 	float centerDivider;
@@ -290,110 +298,74 @@ void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos
 
 
 	if(!paintingDropperPressed){
-		//GLFWcursor* pointerCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
-		if (panelData.modelPanelActive) {
-			loadModelButtonEnter = ui.isMouseOnButton(window, 0.1f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX, 0.4f, mouseXPos, mouseYPos,movePanel);
-			modelFilePathTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX, 0.6f, mouseXPos, mouseYPos, movePanel);
-			autoTriangulateCheckBoxEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX - 0.08f, 0.3f, mouseXPos, mouseYPos, movePanel);
-			backfaceCullingCheckBoxEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX - 0.08f, 0.2f, mouseXPos, mouseYPos, movePanel);
-			addPlaneButtonEnter = ui.isMouseOnButton(window, 0.03f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX, 0.0f-0.1f, mouseXPos, mouseYPos, movePanel);
-			addSphereButtonEnter = ui.isMouseOnButton(window, 0.03f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX, -0.1f-0.1f, mouseXPos, mouseYPos, movePanel);
-			loadCustomModelEnter = ui.isMouseOnButton(window, 0.1f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX, -0.2f-0.1f, mouseXPos, mouseYPos,movePanel);
+		for (size_t i = 0; i < uiMaterials.uiIndex.size(); i++)
+		{
+			uiElementEnter = false;
+			std::string currentElement = uiMaterials.uiIndex[i];
+
+			std::string currentType = uiMaterials.uiElements[currentElement].type;
+
+			bool panelCompatibility;
+			if(uiMaterials.uiElements[currentElement].panel == 1 && panelData.modelPanelActive || uiMaterials.uiElements[currentElement].panel == 2 && panelData.texturePanelActive || uiMaterials.uiElements[currentElement].panel == 3 && panelData.paintingPanelActive || uiMaterials.uiElements[currentElement].panel == 4 && panelData.exportPanelActive || uiMaterials.uiElements[currentElement].panel == 0){
+				panelCompatibility = true;
+			}
+			else{
+				panelCompatibility = false;
+			}
+			float centerCoords = (panelLoc + std::max(panelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
+		
+			if(uiMaterials.uiElements[currentElement].attachedToMainPanel == false){
+				centerCoords =  panelLoc - 1.0f;
+			}
+
+			if(panelCompatibility){
+				if(currentType == "button"){
+					uiElementEnter = ui.isMouseOnButton(window, uiMaterials.uiElements[currentElement].button.width + 0.02f, uiMaterials.uiElements[currentElement].button.height, centerCoords - screenGapX + uiMaterials.uiElements[currentElement].button.positionX, uiMaterials.uiElements[currentElement].button.positionY, mouseXPos, mouseYPos, movePanel);
+					uiMaterials.uiElements[currentElement].button.hover = uiElementEnter;
+				}
+			
+				if(currentType == "text"){	
+				
+				}
+	
+				if(currentType == "rangeBar"){
+					uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiMaterials.uiElements[currentElement].rangeBar.positionX + uiMaterials.uiElements[currentElement].rangeBar.value, uiMaterials.uiElements[currentElement].rangeBar.positionY, mouseXPos, mouseYPos, movePanel);
+					uiMaterials.uiElements[currentElement].rangeBar.hover = uiElementEnter;
+				}
+	
+				if(currentType == "textBox"){
+					uiElementEnter = ui.isMouseOnButton(window, uiMaterials.uiElements[currentElement].textBox.width, uiMaterials.uiElements[currentElement].textBox.height, centerCoords - screenGapX + uiMaterials.uiElements[currentElement].textBox.position_x, uiMaterials.uiElements[currentElement].textBox.position_y, mouseXPos, mouseYPos, movePanel);
+					uiMaterials.uiElements[currentElement].textBox.hover = uiElementEnter;
+				}
+	
+				if(currentType == "checkBox"){
+					uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiMaterials.uiElements[currentElement].checkBox.positionX, uiMaterials.uiElements[currentElement].checkBox.positionY, mouseXPos, mouseYPos, movePanel);
+					uiMaterials.uiElements[currentElement].checkBox.mouseHover = uiElementEnter;
+				}
+				if(currentType == "icon"){
+				}
+				
+			}
+			if(uiElementEnter){
+				break;
+			}
 		}
-		else {
-			loadModelButtonEnter = false;
-			modelFilePathTextBoxEnter = false;
-			autoTriangulateCheckBoxEnter = false;
-			backfaceCullingCheckBoxEnter = false;
-			addPlaneButtonEnter = false;
-			addSphereButtonEnter = false;
-			loadCustomModelEnter = false;
-		}
-		if (panelData.paintingPanelActive) {
-			addMaskTextureButtonEnter = ui.isMouseOnButton(window, 0.12f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX, 0.9f, mouseXPos, mouseYPos, movePanel);
-			useNegativeForDrawingCheckboxEnter = ui.isMouseOnButton(window, 0.012f, 0.02f, panelLoc /+
 
-
-			 centerDivider + centerSum - screenGapX - 0.03f, 0.45f, mouseXPos, mouseYPos, movePanel);
-			brushSizeRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushSizeRangeBarValue,  0.22f+0.02f+0.02f, mouseXPos, mouseYPos, movePanel);
-			brushBlurRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushBlurRangeBarValue, 0.09f+0.04f+0.02f, mouseXPos, mouseYPos, movePanel);
-			brushRotationRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushRotationRangeBarValue, -0.04f+0.06f+0.02f, mouseXPos, mouseYPos, movePanel);
-			brushOpacityRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushOpacityRangeBarValue,  -0.17f+0.08f+0.02f, mouseXPos, mouseYPos, movePanel);
-			brushSpacingRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX+ brushSpacingRangeBarValue,-0.30f+0.1f+0.02f, mouseXPos, mouseYPos, movePanel);		
-			brushBordersRangeBarEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX + brushBorderRangeBarValue,-0.31f+0.02f, mouseXPos, mouseYPos, movePanel);	
-
-
-
-
-
+		if(panelData.paintingPanelActive){
 			colorBoxPickerEnter = ui.isMouseOnButton(window,0.015f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX - 0.02f + colorBoxPickerValue_x, -0.55f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
 			colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
-
+			hexValueTextboxEnter =  ui.isMouseOnButton(window, 0.04f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.81f, mouseXPos, mouseYPos, movePanel);
+			paintingDropperEnter = ui.isMouseOnButton(window, 0.015f,0.03f, panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.81f, mouseXPos, mouseYPos,movePanel);
 			
-			mirrorXCheckBoxEnter = ui.isMouseOnButton(window, 0.02f, 0.03f, panelLoc- 0.15f - screenGapX, 0.91f, mouseXPos, mouseYPos,true); //isMouseOnPanelChangeButton used for projection
-			mirrorYCheckBoxEnter = ui.isMouseOnButton(window, 0.02f, 0.03f, panelLoc- 0.09f - screenGapX, 0.91f, mouseXPos, mouseYPos,true); //isMouseOnPanelChangeButton used for projection
-			mirrorZCheckBoxEnter = ui.isMouseOnButton(window, 0.02f, 0.03f, panelLoc- 0.03f - screenGapX, 0.91f, mouseXPos, mouseYPos,true); //isMouseOnPanelChangeButton used for projection
-
-
 			colorBoxEnter = ui.isMouseOnButton(window, 0.1f, 0.2f, panelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.55f, mouseXPos, mouseYPos, movePanel);		
 			hueBarEnter = ui.isMouseOnButton(window, 0.01f, 0.18f, panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f, mouseXPos, mouseYPos, movePanel);
-			hexValueTextboxEnter =  ui.isMouseOnButton(window, 0.04f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.81f, mouseXPos, mouseYPos, movePanel);
-			
-			paintingDropperEnter = ui.isMouseOnButton(window, 0.015f,0.03f, panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.81f, mouseXPos, mouseYPos,movePanel);		
-			maskPanelSliderEnter = ui.isMouseOnButton(window, 0.01f, 0.015f, panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f + maskPanelSliderValue, mouseXPos, mouseYPos, movePanel);
-			maskPanelEnter = ui.isMouseOnButton(window, 0.15f, 0.15f, panelLoc / centerDivider + centerSum - screenGapX, 0.675f, mouseXPos, mouseYPos, movePanel);		
-
+		
+			maskPanelEnter = ui.isMouseOnButton(window, 0.15f, 0.15f, panelLoc / centerDivider + centerSum - screenGapX, 0.675f, mouseXPos, mouseYPos, movePanel);
 		}
-		else {
-			addMaskTextureButtonEnter = false;
-			useNegativeForDrawingCheckboxEnter = false;
-			brushSizeRangeBarEnter = false;
-			brushBlurRangeBarEnter = false;
-			brushRotationRangeBarEnter = false;
-			brushOpacityRangeBarEnter = false;
-			brushSpacingRangeBarEnter = false;
-			brushBordersRangeBarEnter = false;
-
-
-			colorBoxColorRangeBarEnter = false;
-
-
-			colorBoxPickerEnter = false;
-			paintingDropperEnter = false;
-			mirrorXCheckBoxEnter = false;
-
-
-			mirrorYCheckBoxEnter = false;
-			mirrorZCheckBoxEnter = false;
-
-
-
-			colorBoxEnter = false;		
-			maskPanelSliderEnter = false;
-			maskPanelEnter = false;		
-			hexValueTextboxEnter = false;
-
-			hueBarEnter = false;
-		}
-		if (panelData.exportPanelActive) {
-			exportPathTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX, 0.6f, mouseXPos, mouseYPos, movePanel);
-			exportFileNameTextBoxEnter = ui.isMouseOnButton(window, 0.12f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX, 0.5f, mouseXPos, mouseYPos, movePanel);
-			exportExtJPGCheckBoxEnter = ui.isMouseOnButton(window, 0.014f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX - 0.11f, 0.4f, mouseXPos, mouseYPos, movePanel);
-			exportExtPNGCheckBoxEnter = ui.isMouseOnButton(window, 0.014f, 0.02f, panelLoc / centerDivider + centerSum - screenGapX + 0.05f, 0.4f , mouseXPos, mouseYPos, movePanel);
-			exportDownloadButtonEnter = ui.isMouseOnButton(window, 0.12f, 0.04f, panelLoc / centerDivider + centerSum - screenGapX, 0.2f, mouseXPos, mouseYPos, movePanel);
-
-		}
-		else {
-			exportPathTextBoxEnter = false;
-			exportFileNameTextBoxEnter = false;
-			exportExtJPGCheckBoxEnter = false;
-			exportExtPNGCheckBoxEnter = false;
-			exportDownloadButtonEnter = false;
-		}
-
 
 
 		textureDemonstratorButtonEnter = ui.isMouseOnButton(window, 0.02f,0.045f,(textureDemonstratorButtonPosX+0.005f)-1.0f,textureDemonstratorButtonPosY-0.01f, mouseXPos, mouseYPos, 0);	modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- screenGapX, 0.8f, mouseXPos, mouseYPos);
+		modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- screenGapX, 0.8f, mouseXPos, mouseYPos);
 		texturePanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- screenGapX, 0.72f, mouseXPos, mouseYPos);
 		paintingPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- screenGapX, 0.64f, mouseXPos, mouseYPos);
 		exportPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- screenGapX, 0.56f, mouseXPos, mouseYPos);
@@ -402,76 +374,19 @@ void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos
 	if(paintingDropperPressed){
 		glfwSetCursor(window, cursors.dropperCursor);
 	}
-	else if (modelFilePathTextBoxEnter) {
+	else if(uiElementEnter){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
-	else if (loadModelButtonEnter) {
+	else if(paintingDropperEnter){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
-	else if (autoTriangulateCheckBoxEnter) {
+	else if(textureDemonstratorButtonEnter){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
-	else if (backfaceCullingCheckBoxEnter) {
+	else if(colorBoxPickerEnter || colorBoxColorRangeBarEnter || hexValueTextboxEnter){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
-	else if (addPlaneButtonEnter) {
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (addSphereButtonEnter) {
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (modelPanelButtonEnter) {
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (texturePanelButtonEnter) {
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (paintingPanelButtonEnter) {
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (exportPanelButtonEnter) {
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if(addMaskTextureButtonEnter){
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (brushSizeRangeBarEnter || brushBlurRangeBarEnter || brushRotationRangeBarEnter || brushOpacityRangeBarEnter || brushSpacingRangeBarEnter || brushBordersRangeBarEnter) {
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (colorBoxPickerEnter) {
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (colorBoxColorRangeBarEnter) {
-		glfwSetCursor(window,cursors.pointerCursor);
-	}
-	else if (exportDownloadButtonEnter || exportExtJPGCheckBoxEnter || exportExtPNGCheckBoxEnter || exportPathTextBoxEnter || exportFileNameTextBoxEnter) {
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (textureDemonstratorButtonEnter){
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (mirrorXCheckBoxEnter || mirrorYCheckBoxEnter || mirrorZCheckBoxEnter) {
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (useNegativeForDrawingCheckboxEnter) {
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if(maskPanelSliderEnter){
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if(brushMaskPanelMaskHover){
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if(texturePanelButtonHover){
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if(hexValueTextboxEnter){
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (paintingDropperEnter){
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
-	else if (loadCustomModelEnter){
+	else if(modelPanelButtonEnter || texturePanelButtonEnter || paintingPanelButtonEnter || exportPanelButtonEnter){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (!panelChangeHover){

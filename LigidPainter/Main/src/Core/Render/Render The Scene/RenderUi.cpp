@@ -44,20 +44,27 @@ float texturePanelButtonMixVal = 0.0f;
 
 
 
-void updateButtonColorMixValues(UiData uidata) {
+void updateButtonColorMixValues(UiData uidata,UI &UIElements) {
 	Utilities util;
 
-	const float phaseDifference = 0.05f;
+	const float phaseDifference = 0.1f;
 
-	addSphereButtonMixVal = util.transitionEffect(uidata.addSphereButtonEnter,addSphereButtonMixVal,phaseDifference);
-	addPanelButtonMixVal = util.transitionEffect(uidata.addPlaneButtonEnter,addPanelButtonMixVal,phaseDifference);
-	loadModelButtonMixVal = util.transitionEffect(uidata.loadModelButtonEnter,loadModelButtonMixVal,phaseDifference);
-	addMaskTextureButtonMixVal = util.transitionEffect(uidata.addMaskTextureButtonEnter,addMaskTextureButtonMixVal,phaseDifference);
-	exportDownloadButtonMixVal = util.transitionEffect(uidata.exportDownloadButtonEnter,exportDownloadButtonMixVal,phaseDifference);
+	for (size_t i = 0; i < UIElements.uiIndex.size(); i++)
+	{
+		std::string currentElement = UIElements.uiIndex[i];
+		
+		std::string currentType = UIElements.uiElements[currentElement].type;
+		
+		if(currentType == "button"){
+			UIElements.uiElements[currentElement].button.transitionMixVal = util.transitionEffect(UIElements.uiElements[currentElement].button.hover,UIElements.uiElements[currentElement].button.transitionMixVal,phaseDifference);
+		}
+		else if(currentType == "textBox"){
+			UIElements.uiElements[currentElement].textBox.transitionMixVal = util.transitionEffect(UIElements.uiElements[currentElement].textBox.clicked,UIElements.uiElements[currentElement].textBox.transitionMixVal,phaseDifference);
+		}
+	}
+
  	dropperMixVal = util.transitionEffect(uidata.dropperEnter,dropperMixVal,phaseDifference);
- 	exportFileNameTextBoxMixVal = util.transitionEffect(uidata.exportFileNameTextBoxPressed,exportFileNameTextBoxMixVal,phaseDifference);
- 	hexValTextboxMixVal = util.transitionEffect(uidata.hexValTextboxPressed,hexValTextboxMixVal,phaseDifference);
- 	customModelMixVal = util.transitionEffect(uidata.customModelButtonHover,customModelMixVal,phaseDifference);
+	hexValTextboxMixVal = util.transitionEffect(uidata.hexValTextboxPressed,hexValTextboxMixVal,phaseDifference);
  	texturePanelButtonMixVal = util.transitionEffect(texturePanelButtonHover,texturePanelButtonMixVal,phaseDifference);
 }
 
@@ -73,7 +80,7 @@ bool textureDemonstratorButtonPressClicked,Icons &icons,glm::vec3 colorBoxValue,
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 std::string &colorpickerHexVal,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,
 bool updateHueVal,Programs programs,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight,float orgTextureDemonstratorWidth, float orgTextureDemonstratorHeight, 
-SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int &currentBrushMaskTexture,float materialsPanelSlideValue,UI UIElements) {
+SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int &currentBrushMaskTexture,float materialsPanelSlideValue,UI &UIElements) {
 
 	
 	//---EveryFrame---
@@ -90,6 +97,20 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 	uiOut.maskPanelMaskHover = false;
 	uiOut.texturePanelButtonClicked = false;
 	uiOut.texturePanelButtonHover = false;
+
+
+		//Change the projection
+	float centerDivider;
+	float centerSum;
+	centerDivider = 2.0f;
+	centerSum = 0;
+	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+	glUseProgram(programs.iconsProgram);
+	gl.uniformMatrix4fv(programs.iconsProgram, "Projection", projection);
+	glUseProgram(programs.uiProgram);
+	gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
+
+
 
 	//Texture demonstrator transition animation
 	if(textureDemonstratorButtonPressClicked){
@@ -125,7 +146,7 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 
 	float screenGapX = ((float)maxScreenWidth - screenSizeX)/(((float)maxScreenWidth)/2.0f)/2.0f; 
 
-	updateButtonColorMixValues(uidata);
+	updateButtonColorMixValues(uidata,UIElements);
 
 	//Panel
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
@@ -133,22 +154,19 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 		ui.panel(renderData.panelLoc-screenGapX , 0);
 
 		//Projection that is used for panel (Use that projection if things will move with panel (and will not be centered) or will be moved freely)
-		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
 
 		//Panel changing buttons
 		glUseProgram(programs.uiProgram);
-		gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
-		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.8f);//Model Panel
-		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.72f);//Texture Panel
-		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.64f);//Painting Panel
-		ui.panelChangeButton(renderData.panelLoc - screenGapX, 0.56f);//Export Panel
+		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.8f);//Model Panel
+		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.72f);//Texture Panel
+		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.64f);//Painting Panel
+		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.56f);//Export Panel
 
 		//Texture demonstrator	
-		ui.textureDemonstrator(changeTextureDemonstratorWidth,changeTextureDemonstratorHeight,textureDemonstratorButtonPosX+screenGapX,textureDemonstratorButtonPosY,0.9999f); 
+		ui.textureDemonstrator(changeTextureDemonstratorWidth,changeTextureDemonstratorHeight,textureDemonstratorButtonPosX - 1.0f +screenGapX,textureDemonstratorButtonPosY,0.9999f); 
 
 		//Panel changing button's icons
 		glUseProgram(programs.iconsProgram);
-		gl.uniformMatrix4fv(programs.iconsProgram, "Projection", projection);
 		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.795f,0.9f,icons.TDModel,0.0f,colorData.iconColor,colorData.iconColorHover);
 		ui.iconBox(0.015f,0.023f,renderData.panelLoc-0.01f - screenGapX,0.715f,0.9f,icons.Material,0.0f,colorData.iconColor,colorData.iconColorHover);
 		ui.iconBox(0.015f,0.02f,renderData.panelLoc-0.01f - screenGapX,0.635f,0.9f,icons.Painting,0.0f,colorData.iconColor,colorData.iconColorHover);
@@ -156,14 +174,7 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 
 		glUseProgram(programs.uiProgram);
 	}
-	else{
-		//If message box is active
-		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
-		glUseProgram(programs.iconsProgram);
-		gl.uniformMatrix4fv(programs.iconsProgram, "Projection", projection);
-		glUseProgram(programs.uiProgram);
-		gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
-	}	
+
 
 	if (panelData.texturePanelActive) {
 		bool mouseEnteredOnce = false;
@@ -244,29 +255,7 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 			texturePanelButtonHover = false;
 		}
 	}
-	//Change the projection
-	float centerDivider;
-	float centerSum;
-	if (!panelData.movePanel) {
-		//Center the panel
-		centerDivider = 2.0f;
-		centerSum = 0;
-		projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
-		glUseProgram(programs.iconsProgram);
-		gl.uniformMatrix4fv(programs.iconsProgram, "Projection", projection);
-		glUseProgram(programs.uiProgram);
-		gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
-	}
-	else {
-		//Follow the panel
-		centerDivider = 1.0f;
-		centerSum = 0.15f;
-		projection = glm::ortho(0.0f, 2.0f, -1.0f, 1.0f);
-		glUseProgram(programs.iconsProgram);
-		gl.uniformMatrix4fv(programs.iconsProgram, "Projection", projection);
-		glUseProgram(programs.uiProgram);
-		gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
-	}
+
 
     //Texture Panel Was There
 
@@ -357,13 +346,61 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 
 
 	//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+	if(panelData.paintingPanelActive){
+		glUseProgram(programs.uiProgram);
+		ui.box(0.035f, 0.07f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0);
+	}
+
 	for (size_t i = 0; i < UIElements.uiIndex.size(); i++)
 	{
 		std::string currentElement = UIElements.uiIndex[i];
-		cout << currentElement << ' ' << i << '\n';
+		
 		std::string currentType = UIElements.uiElements[currentElement].type;
 		
+		float centerCoords = (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
 		
+		if(UIElements.uiElements[currentElement].attachedToMainPanel == false){
+			centerCoords =  renderData.panelLoc - 1.0f;
+		}
+
+
+		bool panelCompatibility;
+		if(UIElements.uiElements[currentElement].panel == 1 && panelData.modelPanelActive || UIElements.uiElements[currentElement].panel == 2 && panelData.texturePanelActive || UIElements.uiElements[currentElement].panel == 3 && panelData.paintingPanelActive || UIElements.uiElements[currentElement].panel == 4 && panelData.exportPanelActive || UIElements.uiElements[currentElement].panel == 0){
+			panelCompatibility = true;
+		}
+		else{
+			panelCompatibility = false;
+		}
+		if(panelCompatibility){
+			if(currentType == "button"){
+				glUseProgram(programs.uiProgram);
+				ui.box(UIElements.uiElements[currentElement].button.width, UIElements.uiElements[currentElement].button.height, centerCoords - screenGapX + UIElements.uiElements[currentElement].button.positionX, UIElements.uiElements[currentElement].button.positionY, UIElements.uiElements[currentElement].button.text, UIElements.uiElements[currentElement].button.color, UIElements.uiElements[currentElement].button.textRatio, false, false, UIElements.uiElements[currentElement].button.positionZ, UIElements.uiElements[currentElement].button.buttonCurveReduce, UIElements.uiElements[currentElement].button.colorHover, UIElements.uiElements[currentElement].button.transitionMixVal); //Add mask texture button
+			}
+			
+			if(currentType == "text"){	
+				glUseProgram(programs.uiProgram);
+				ui.renderText(programs.uiProgram,UIElements.uiElements[currentElement].text.text, centerCoords - screenGapX + UIElements.uiElements[currentElement].text.positionX, UIElements.uiElements[currentElement].text.positionY, UIElements.uiElements[currentElement].text.scale);
+			}
+
+			if(currentType == "rangeBar"){
+				glUseProgram(programs.uiProgram);
+				ui.rangeBar(centerCoords - screenGapX + UIElements.uiElements[currentElement].rangeBar.positionX, UIElements.uiElements[currentElement].rangeBar.positionY, UIElements.uiElements[currentElement].rangeBar.value);
+			}
+
+			if(currentType == "textBox"){
+				glUseProgram(programs.uiProgram);
+				ui.box(UIElements.uiElements[currentElement].textBox.width, UIElements.uiElements[currentElement].textBox.height,centerCoords - screenGapX + UIElements.uiElements[currentElement].textBox.position_x, UIElements.uiElements[currentElement].textBox.position_y,UIElements.uiElements[currentElement].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements.uiElements[currentElement].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements.uiElements[currentElement].textBox.transitionMixVal); //Add mask texture button
+			}
+
+			if(currentType == "checkBox"){
+				glUseProgram(programs.uiProgram);
+				ui.checkBox(centerCoords - screenGapX + UIElements.uiElements[currentElement].checkBox.positionX, UIElements.uiElements[currentElement].checkBox.positionY, UIElements.uiElements[currentElement].checkBox.text, colorData.checkBoxColor,  UIElements.uiElements[currentElement].checkBox.mouseHover,  UIElements.uiElements[currentElement].checkBox.checked); //jpg checkbox
+			}
+			if(currentType == "icon"){
+				glUseProgram(programs.iconsProgram);
+				ui.iconBox(UIElements.uiElements[currentElement].icon.width,UIElements.uiElements[currentElement].icon.height,centerCoords - screenGapX + UIElements.uiElements[currentElement].icon.positionX ,UIElements.uiElements[currentElement].icon.positionY,UIElements.uiElements[currentElement].icon.positionZ,UIElements.uiElements[currentElement].icon.icon, 0.0f , colorData.iconColor , colorData.iconColorHover);
+			}
+		}
 	}
 	
 
@@ -372,11 +409,6 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 
 
 
-	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
-	glUseProgram(programs.iconsProgram);
-	gl.uniformMatrix4fv(programs.iconsProgram, "Projection", projection);
-	glUseProgram(programs.uiProgram);
-	gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
 	uiOut.currentBrushMaskTxtr = currentBrushMaskTexture;
 	return uiOut;
 }

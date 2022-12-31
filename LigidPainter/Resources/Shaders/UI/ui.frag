@@ -10,7 +10,7 @@ uniform vec3 textColor;
 
 uniform vec4 uiColor;
 
-uniform vec3 uiTransitionColor;
+uniform vec4 uiTransitionColor;
 uniform float uiTransitionMixVal;
 
 
@@ -36,7 +36,7 @@ void main() {
                else
                {
                   //Ui here
-                  color = vec4(mix(uiColor.rgb,uiTransitionColor,uiTransitionMixVal), uiColor.a);
+                  color = vec4(mix(uiColor,uiTransitionColor,uiTransitionMixVal));
                }
             } 
             else 

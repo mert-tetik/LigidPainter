@@ -15,16 +15,9 @@ int uiactionsMaxScreenHeight;
 bool colorBoxFirstPress = false;
 void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover) {
 	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTaken) {
-		if (!callbackData.addMaskTextureButtonEnter && !callbackData.addPlaneButtonEnter
-			//Check all the buttons
-			&& !callbackData.addSphereButtonEnter && !callbackData.autoTriangulateCheckBoxEnter && !callbackData.backfaceCullingCheckBoxEnter
-			&& !callbackData.brushSizeRangeBarEnter && !callbackData.loadModelButtonEnter && !callbackData.modelFilePathTextBoxEnter
-			&& !callbackData.modelPanelButtonEnter && !callbackData.paintingPanelButtonEnter && !callbackData.exportPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.colorBoxPickerEnter
-			&& !callbackData.colorBoxColorRangeBarEnter && !callbackData.exportPathTextBoxEnter && !callbackData.exportDownloadButtonEnter && !callbackData.exportExtJPGCheckBoxEnter && !callbackData.exportExtPNGCheckBoxEnter
-			&& !callbackData.brushBlurRangeBarEnter && !callbackData.brushRotationRangeBarEnter && !callbackData.brushOpacityRangeBarEnter && !callbackData.brushSpacingRangeBarEnter && !callbackData.brushBordersRangeBarEnter
-			&& !callbackData.mirrorXCheckBoxEnter && !callbackData.mirrorYCheckBoxEnter && !callbackData.mirrorZCheckBoxEnter && !callbackData.textureDemonstratorButtonEnter && !textureDemonstratorBoundariesHover && !callbackData.useNegativeForDrawingCheckboxEnter
-			&& !callbackData.paintingDropperEnter && !callbackData.exportFileNameTextBoxEnter && !callbackData.colorBoxEnter && !callbackData.maskPanelSliderEnter 
-			&& !callbackData.hexValueTextboxEnter && !callbackData.loadCustomModelEnter && !callbackData.hueBarEnter) {
+		if (!callbackData.uiElementEnter && !callbackData.modelPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.paintingPanelButtonEnter 
+		&& !callbackData.exportPanelButtonEnter && !callbackData.colorBoxPickerEnter && !callbackData.colorBoxColorRangeBarEnter && !callbackData.hexValueTextboxEnter
+		&& !callbackData.paintingDropperEnter && !callbackData.hueBarEnter && !callbackData.colorBoxEnter && !callbackData.maskPanelEnter && !callbackData.textureDemonstratorButtonEnter) {
 			noButtonClick = true;
 			colorBoxFirstPress = false;
 
@@ -60,30 +53,31 @@ bool maskPanelSliderPressed;
 
 bool buttonGetInput = true;
 bool buttonPressed = false;
-UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover) {
+UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover, UI &UIElements) {
     LigidPainter ligid;
 	isFirstClickDoneInside(window ,callbackData,textureDemonstratorBoundariesHover);
+
 	if (!noButtonClick) {
 		if (buttonGetInput) {
 			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
 				buttonGetInput = false;
 				buttonPressed = true;
-				if (callbackData.brushSizeRangeBarEnter) {
+				if (UIElements.uiElements["brushSizeRangeBar"].rangeBar.hover) {
 					brushSizeRangeBarPressed = true;
 				}
-				else if (callbackData.brushBlurRangeBarEnter) {
+				else if (UIElements.uiElements["brushBlurRangeBar"].rangeBar.hover) {
 					brushBlurRangeBarPressed = true;
 				}
-				else if (callbackData.brushRotationRangeBarEnter) {
+				else if (UIElements.uiElements["brushRotationRangeBar"].rangeBar.hover) {
 					brushRotationRangeBarPressed = true;
 				}
-				else if (callbackData.brushOpacityRangeBarEnter) {
+				else if (UIElements.uiElements["brushOpacityRangeBar"].rangeBar.hover) {
 					brushOpacityRangeBarPressed = true;
 				}
-				else if (callbackData.brushSpacingRangeBarEnter) {
+				else if (UIElements.uiElements["brushSpacingRangeBar"].rangeBar.hover) {
 					brushSpacingRangeBarPressed = true;
 				}
-				else if (callbackData.brushBordersRangeBarEnter) {
+				else if (UIElements.uiElements["brushBordersRangeBar"].rangeBar.hover) {
 					brushBordersRangeBarPressed = true;
 				}
 				else if (callbackData.colorBoxPickerEnter) {
@@ -107,10 +101,11 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 			buttonGetInput = true;
 			if (buttonPressed) {
 				//Check mouse hover
-				if (callbackData.addMaskTextureButtonEnter)
+				if (UIElements.uiElements["addBrushMaskTextureButton"].button.hover)
 					ligid.addMaskTextureButton();
-				if (callbackData.modelFilePathTextBoxEnter)
+				if (UIElements.uiElements["uploadingModelPathTextBox"].textBox.hover){
 					ligid.modelFilePathTextBox(); 
+				}
 				if (callbackData.modelPanelButtonEnter)
 					ligid.modelPanelButton();
 				if (callbackData.texturePanelButtonEnter)
@@ -119,35 +114,38 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 					ligid.paintingPanelButton();
 				if (callbackData.exportPanelButtonEnter)
 					ligid.exportPanelButton();
-				if (callbackData.addPlaneButtonEnter)
+				if (UIElements.uiElements["loadPlaneModelButton"].button.hover)
 					ligid.addPlaneButton();
-				if (callbackData.addSphereButtonEnter)
+				if (UIElements.uiElements["loadSphereModelButton"].button.hover)
 					ligid.addSphereButton();
-				if (callbackData.autoTriangulateCheckBoxEnter)
+				if (UIElements.uiElements["autoTriangulateCheckBox"].checkBox.mouseHover)
 					ligid.autoTriangulateCheckBox();
-				if (callbackData.backfaceCullingCheckBoxEnter)
+				if (UIElements.uiElements["backfaceCullingCheckBox"].checkBox.mouseHover)
 					ligid.backfaceCullingCheckBox();
-				if (callbackData.useNegativeForDrawingCheckboxEnter)
+				if (UIElements.uiElements["useNegativeCheckBox"].checkBox.mouseHover)
 					ligid.useNegativeForDrawingCheckbox();
-				if (callbackData.loadModelButtonEnter)
+				if (UIElements.uiElements["loadModelButton"].button.hover)
 					ligid.loadModelButton();
 				if (callbackData.paintingDropperEnter)
 					ligid.paintingDropper();
-				if (callbackData.exportPathTextBoxEnter) 
+				if (UIElements.uiElements["exportingPathTextBox"].textBox.hover){
 					ligid.exportPathTextBox();
-				if (callbackData.exportFileNameTextBoxEnter) 
+				}
+				if (UIElements.uiElements["exportingFolderNameTextBox"].textBox.hover){
+					UIElements.uiElements["exportingFolderNameTextBox"].textBox.clicked = !UIElements.uiElements["exportingFolderNameTextBox"].textBox.clicked; 
 					ligid.exportFileNameTextBox();
-				if (callbackData.exportDownloadButtonEnter)
+				}
+				if (UIElements.uiElements["downloadButton"].button.hover)
 					ligid.exportDownloadButtonEnter();
-				if (callbackData.exportExtJPGCheckBoxEnter)
+				if (UIElements.uiElements["jpgCheckBox"].checkBox.mouseHover)
 					ligid.exportExtJPGCheckBox();
-				if (callbackData.exportExtPNGCheckBoxEnter)
+				if (UIElements.uiElements["pngCheckBox"].checkBox.mouseHover)
 					ligid.exportExtPNGCheckBox();
-				if (callbackData.mirrorXCheckBoxEnter)
+				if (UIElements.uiElements["mirrorXCheckBox"].checkBox.mouseHover)
 					ligid.mirrorXCheckBox();
-				if (callbackData.mirrorYCheckBoxEnter)
+				if (UIElements.uiElements["mirrorYCheckBox"].checkBox.mouseHover)
 					ligid.mirrorYCheckBox();
-				if (callbackData.mirrorZCheckBoxEnter)
+				if (UIElements.uiElements["mirrorZCheckBox"].checkBox.mouseHover)
 					ligid.mirrorZCheckBox();
 				if(callbackData.colorBoxEnter && colorBoxFirstPress)
 					ligid.colorBox();
