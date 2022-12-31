@@ -13,7 +13,6 @@ uniform vec4 uiColor;
 uniform vec3 uiTransitionColor;
 uniform float uiTransitionMixVal;
 
-uniform float uiOpacity;
 
 uniform int drawBrushIndicator;
 uniform int drawTxtrDemonstrator;

@@ -447,8 +447,10 @@ bool LigidPainter::run()
 	cursors = load.loadCursors();
 	//Create textures
 	textures = load.initTextures(maskTexturePath.c_str());
-	
 
+	//Load UI
+    UI uiElements;
+	uiElements = ui.getUiElements(icons);
 
 
 	glGenBuffers(1, &VBO);
@@ -480,7 +482,7 @@ bool LigidPainter::run()
 	glUseProgram(programs.uiProgram);
 
 
-	glset.uniform3fv(programs.uiProgram,"textColor",colorData.textColor);
+	glset.uniform3fv(programs.uiProgram,"textColor",glm::vec3(colorData.textColor));
 	glset.uniform1i(programs.uiProgram, "text", 2);
 	glset.uniform1i(programs.uiProgram, "currentTexture", 0);
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
@@ -732,7 +734,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter,materialsPanelSlideValue);
+		 		renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter,materialsPanelSlideValue,uiElements);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -762,7 +764,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter,materialsPanelSlideValue);
+			renderOut = render.render(renderData, vertices, FBOScreen, panelData,exportData,uidata,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskTextureFile.c_str(),maskPanelSliderValue,brushMaskTextures.textures,colorpickerHexVal,colorpickerHexValTextboxValChanged,colorBoxValChanged,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,updateHueVal,paintingDropperPressed,paintRender,callbackData.colorBoxEnter,callbackData.hueBarEnter,materialsPanelSlideValue,uiElements);
 		}
 		//double lastTime = glfwGetTime();
 		//cout <<  (lastTime - firstTime) * 1000  << '\n';

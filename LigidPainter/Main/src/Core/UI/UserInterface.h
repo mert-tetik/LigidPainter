@@ -1,6 +1,8 @@
 #ifndef LGDUI_H
 #define LGDUI_H
 
+#include <map>
+
 struct ColorData //LigidPainter color palette
 {
 	glm::vec3 LigidPainterThemeColor = glm::vec3(0.043f,0.635f,0.823f);
@@ -26,7 +28,7 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 rangeBarFront = glm::vec4(0.95f, 0.95f, 0.95f,0.5f);
 	glm::vec4 rangeBarSlide = glm::vec4(0.95f, 0.95f, 0.95f,0.5f);
 
-	glm::vec3 textColor = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::vec4 textColor = glm::vec4(1.0f, 1.0f, 1.0f,1.0f);
 
 	glm::vec4 colorBoxIndicatorColor = glm::vec4(0.05f, 0.05f, 0.05f,0.5f);
 
@@ -51,8 +53,128 @@ struct ColorData //LigidPainter color palette
 struct buttonData {
 
 };
+
+//Width will be added to the midPanelPos if attachedToMainPanel is true
+struct Container{
+	float width;
+	float height;
+	float positionX;
+	float positionY;
+	float positionZ;
+	glm::vec4 color;
+	bool attachedToMainPanel;
+	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
+};
+
+struct Button{
+	float width;
+	float height;
+	float positionX;
+	float positionY;
+	float positionZ;
+	std::string text;
+	float textRatio;
+	glm::vec4 color;
+	glm::vec4 colorHover;
+	float buttonCurveReduce;
+	float transitionMixVal;
+	bool attachedToMainPanel;
+	bool hover;
+	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
+
+};
+
+struct RangeBar{
+	float positionX;
+	float positionY;
+	float value;
+	bool attachedToMainPanel;
+	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
+
+};
+
+struct Icon{
+	float width;
+	float height;
+	float positionX;
+	float positionY;
+	float positionZ;
+	unsigned int icon;
+	glm::vec3 color;
+	glm::vec3 colorHover;
+	float mixVal;
+	bool hover;
+	bool attachedToMainPanel;
+	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
+
+};
+
+struct Text{
+	std::string text;
+	glm::vec4 color;
+	float positionX;
+	float positionY;
+	float scale;
+	bool attachedToMainPanel;
+	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
+
+};
+
+struct CheckBox{
+	float positionX;
+	float positionY;
+	std::string text;
+	bool mouseHover;
+	bool checked;
+	bool attachedToMainPanel;
+	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
+};
+struct TextBox{
+	float width;
+	float height;
+	float position_x;
+	float position_y;
+	float position_z;
+	std::string text;
+	bool attachedToMainPanel;
+	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
+};
+
+struct Box{
+	float width;
+	float height;
+	float position_x;
+	float position_y;
+	float position_z;
+	float buttonCurveReduce;
+	glm::vec4 color;
+	glm::vec4 colorTransitionColor; 
+	float mixVal;
+	bool attachedToMainPanel;
+	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
+};
+
+struct UIElement{
+	Container container;
+	Button button;
+	RangeBar rangeBar;
+	Icon icon;
+	Text text;
+	CheckBox checkBox;
+	TextBox textBox;
+	Box box;
+	const char* type;
+};
+
+struct UI{
+	std::map<std::string, UIElement> uiElements;
+	std::vector<std::string> uiIndex;
+};
+
+
 class UserInterface {
 public:
+	UI UserInterface::getUiElements(Icons icons);
 
 	//Visuality
 	void panel(float panelLoc, float movePanel_x);

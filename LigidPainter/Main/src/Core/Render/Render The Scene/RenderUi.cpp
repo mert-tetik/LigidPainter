@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <map>
 #include <filesystem>
 
 
@@ -72,7 +73,7 @@ bool textureDemonstratorButtonPressClicked,Icons &icons,glm::vec3 colorBoxValue,
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 std::string &colorpickerHexVal,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,
 bool updateHueVal,Programs programs,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight,float orgTextureDemonstratorWidth, float orgTextureDemonstratorHeight, 
-SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int &currentBrushMaskTexture,float materialsPanelSlideValue) {
+SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int &currentBrushMaskTexture,float materialsPanelSlideValue,UI UIElements) {
 
 	
 	//---EveryFrame---
@@ -243,27 +244,9 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 			texturePanelButtonHover = false;
 		}
 	}
-
-
-
-
-
-
-	if (panelData.paintingPanelActive){
-		//Mirror checkboxes which uses the panel's projection
-		glUseProgram(programs.uiProgram); 
-		ui.checkBox(renderData.panelLoc- 0.16f- screenGapX, 0.9f, "X", colorData.checkBoxColor, uidata.mirrorXCheckBoxEnter, uidata.mirrorXCheckBoxPressed); //X mirror checkbox
-		ui.checkBox(renderData.panelLoc- 0.10f- screenGapX, 0.9f, "Y", colorData.checkBoxColor, uidata.mirrorYCheckBoxEnter, uidata.mirrorYCheckBoxPressed); //Z mirror checkbox
-		ui.checkBox(renderData.panelLoc- 0.04f- screenGapX, 0.9f, "Z", colorData.checkBoxColor, uidata.mirrorZCheckBoxEnter, uidata.mirrorZCheckBoxPressed); //Y mirror checkbox
-		glUseProgram(programs.iconsProgram); 
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 0.09f- screenGapX,0.95f,0.9f,icons.Mirror,0.0f,colorData.iconColor,colorData.iconColorHover);
-	}
-
-
 	//Change the projection
 	float centerDivider;
 	float centerSum;
-	gl.uniform1f(programs.uiProgram, "uiOpacity", 0.5f);
 	if (!panelData.movePanel) {
 		//Center the panel
 		centerDivider = 2.0f;
@@ -285,101 +268,10 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 		gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
 	}
 
-
-
-
-	if (panelData.modelPanelActive) { //Other
-		glUseProgram(programs.uiProgram); 
-		//File path textbox
-		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.6f, renderData.modelLoadFilePath, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec4(0), 0);
-		ui.renderText(programs.uiProgram, "File Path", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.64f, 0.00022f);
-
-		
-		ui.box(0.08f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.4f, "Load", colorData.buttonColor, 0.022f, false, false, 0.9f, 10, colorData.buttonColorHover, loadModelButtonMixVal);//Load model button
-		
-
-		ui.renderText(programs.uiProgram, "3D Models", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.08f-0.1f, 0.00022f);
-
-		ui.box(0.008f, 0.045f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.0f-0.1f, "", colorData.buttonColor, 0.047f-0.1f, false, false, 0.9f, 6, colorData.buttonColorHover, addPanelButtonMixVal);//Load a panel button
-
-		ui.box(0.008f, 0.045f, renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.1f-0.1f, "", colorData.buttonColor, 0.055f, false, false, 0.9f, 6, colorData.buttonColorHover, addSphereButtonMixVal);//Load a sphere button
-
-		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.08f, 0.3f, "Auto triangulate", colorData.checkBoxColor, uidata.autoTriangulateCheckBoxEnter, uidata.autoTriangulateCheckBoxPressed); //Auto triangulate checkbox
-		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.08f, 0.2f, "Backface culling", colorData.checkBoxColor, uidata.backfaceCullingCheckBoxEnter, uidata.backfaceCullingCheckBoxPressed); //Backface culling checkbox
-
-		ui.box(0.06f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.2f-0.1f, "Custom", colorData.buttonColor, 0.032f, false, false, 0.9f, 10, colorData.buttonColorHover, customModelMixVal);//Load custom model button
-	}
-	if (panelData.modelPanelActive) { //Icons
-		glUseProgram(programs.iconsProgram); 
-		//File path textbox
-		ui.iconBox(0.020f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f,0.6f,1.0f,icons.Folder,0.0f,colorData.iconColor,colorData.iconColorHover);
-		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX,0.0f-0.1f,0.99f,icons.Panel,0.0f,colorData.iconColor,colorData.iconColorHover);
-		ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.002f,-0.1f-0.1f,0.99f,icons.Sphere,0.0f,colorData.iconColor,colorData.iconColorHover);
-	}
-
-
-
-
-
-
-
     //Texture Panel Was There
-
-
-
-
 
 	if (panelData.paintingPanelActive) {
 		glUseProgram(programs.uiProgram); 
-
-		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.9f, "Add Mask Texture", colorData.buttonColor, 0.075f, false, false, 0.9f, 10, colorData.buttonColorHover, addMaskTextureButtonMixVal); //Add mask texture button
-		
-
-		ui.box(0.0f, 0.015f, renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f + maskPanelSliderValue, "",colorData.maskPanelSliderColor, 0.095f, false, false, 0.9f, 20, glm::vec4(0), 0); //Mask panel slider
-
-
-		ui.box(0.008f, 0.125f, renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.675f, "",colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 10000, glm::vec4(0), 0); //Mask panel slider background
-		ui.box(0.0f, 0.015f, renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f , "", colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 20, glm::vec4(0), 0); //Mask panel slider background
-		ui.box(0.0f, 0.015f, renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f, 0.8f - 0.25, "", colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 20, glm::vec4(0), 0); //Mask panel slider background
-
-		gl.uniform1f(programs.uiProgram, "uiOpacity", 0.3f);
-		ui.box(0.15f, 0.15f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.675f, "", colorData.buttonMaskTxtrPanelColor, 0.095f, false, false, 0.9f, 1000, glm::vec4(0), 0); //Mask panel
-		
-		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.03f, 0.45f, "Use Negative", colorData.checkBoxColor, uidata.useNegativeForDrawingCheckboxEnter, uidata.useNegativeForDrawingCheckboxPressed); //Auto triangulate checkbox
-		gl.uniform1f(programs.uiProgram, "uiOpacity", 1.0f);
-		
-		ui.renderText(programs.uiProgram, maskTextureFile, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.03f, 0.37f, 0.00022f);
-		ui.box(0.035f, 0.07f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0); //Mask texture displayer / GL_TEXTURE12
-		
-
-		//Brush size rangebar
-		ui.renderText(programs.uiProgram, "Size", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, 0.25f+0.06f-0.035f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.22f+0.02f+0.02f, renderData.brushSizeRangeBarValue);
-		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.27f,1,icons.MaskScale);
-
-		//Brush blur rangebar
-		ui.renderText(programs.uiProgram, "Blur", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, +0.125f+0.08f-0.035f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.09f+0.04f+0.02f, brushBlurRangeBarValue);
-		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, 0.14f,1,icons.MaskGausBlur);
-
-		//Brush rotation rangebar
-		ui.renderText(programs.uiProgram, "Rotation", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.005f+0.1f-0.035f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.04f+0.06f+0.02f, brushRotationRangeBarValue);
-		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, +0.01f,1,icons.MaskRotation);
-
-		//Brush opacity rangebar
-		ui.renderText(programs.uiProgram, "Opacity", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.135f+0.12f-0.035f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.17f+0.08f+0.02f, brushOpacityRangeBarValue);
-		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, -0.12f,1,icons.MaskOpacity);
-
-		//Brush spacing rangebar
-		ui.renderText(programs.uiProgram, "Spacing", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.265f+0.14f-0.035f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.30f+0.1f+0.02f, brushSpacingRangeBarValue);
-		//ui.iconBox(0.03f,0.04f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.05f, -0.25f,1,icons.MaskSpacing);
-
-		//Brush borders rangebar
-		ui.renderText(programs.uiProgram, "Borders", renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, -0.285f + 0.02f, 0.00022f);
-		ui.rangeBar(renderData.panelLoc / centerDivider + centerSum - screenGapX, -0.31f+0.02f, brushBorderRangeBarValue);
 
 		//Color Picker
 		hueVal = ui.colorRect(renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f, renderData.colorBoxColorRangeBarValue, FBOScreen, renderData.window,projection,updateHueVal); //Hue TODO : Get the value once value changed 
@@ -397,6 +289,7 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 
 		ui.box(0.04f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.81f, util.rgbToHexGenerator(colorBoxValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
 	}
+
 
 	if (panelData.paintingPanelActive) { //Icons
 		glUseProgram(programs.iconsProgram); 
@@ -459,39 +352,20 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 		}
 		#pragma endregion brushMaskPanel
 
-
 		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.81f,0.9f,icons.dropperIcon,dropperMixVal,colorData.iconColor,colorData.iconColorHover);
 	}
 
 
-
-
-
-
-
-
-	if (panelData.exportPanelActive) { //Others
-		glUseProgram(programs.uiProgram); 
-
-		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.6f, renderData.exportFolder, colorData.textBoxColor, 0, true, false, 0.9f, 10, glm::vec4(0), 0); //Path textbox
-		ui.box(0.12f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.5f, exportFileName,colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, exportFileNameTextBoxMixVal); //File name textbox
-
-		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.11f, 0.4f, "", colorData.checkBoxColor, uidata.exportExtJPGCheckBoxEnter, uidata.exportExtJPGCheckBoxPressed); //jpg checkbox
-
-		ui.checkBox(renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.05f, 0.4f, "", colorData.checkBoxColor, uidata.exportExtPNGCheckBoxEnter, uidata.exportExtPNGCheckBoxPressed); //png checkbox
-
-		ui.box(0.1f, 0.04f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.2f, "Download", colorData.buttonColor, 0.045f, false, false, 0.9f, 10, colorData.buttonColorHover, exportDownloadButtonMixVal); //Download Button
+	//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+	for (size_t i = 0; i < UIElements.uiIndex.size(); i++)
+	{
+		std::string currentElement = UIElements.uiIndex[i];
+		cout << currentElement << ' ' << i << '\n';
+		std::string currentType = UIElements.uiElements[currentElement].type;
+		
+		
 	}
-	if (panelData.exportPanelActive) { //Icons
-		glUseProgram(programs.iconsProgram); 
-
-		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.06f, 0.4f,0.9f,icons.JpgFile,0,colorData.iconColor,colorData.iconColorHover);
-		ui.iconBox(0.05f,0.065f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f, 0.4f,0.9f,icons.PngFile,0,colorData.iconColor,colorData.iconColorHover);
-
-	}
-
-
-
+	
 
 
 
