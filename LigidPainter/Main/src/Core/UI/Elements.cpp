@@ -169,7 +169,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement addBrushMaskTextureButtonElement;
     addBrushMaskTextureButtonElement.button.positionX = 0.0f;
-    addBrushMaskTextureButtonElement.button.positionY = 0.9f;
+    addBrushMaskTextureButtonElement.button.positionY = 0.85f;
     addBrushMaskTextureButtonElement.button.positionZ = 0.9f;
     addBrushMaskTextureButtonElement.button.width = 0.1f;
     addBrushMaskTextureButtonElement.button.height = 0.04f;

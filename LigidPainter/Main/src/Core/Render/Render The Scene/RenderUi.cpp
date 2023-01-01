@@ -108,6 +108,7 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 	glUseProgram(programs.uiProgram);
 	gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
 
+	float centerCoords = (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
 
 
 	//Texture demonstrator transition animation
@@ -149,7 +150,7 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 	//Panel
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
 		//If message box is not active
-		ui.panel(renderData.panelLoc-screenGapX , 0);
+		ui.panel(renderData.panelLoc-  screenGapX -1.0f , 0);
 
 		//Projection that is used for panel (Use that projection if things will move with panel (and will not be centered) or will be moved freely)
 
@@ -165,10 +166,10 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 
 		//Panel changing button's icons
 		glUseProgram(programs.iconsProgram);
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc-1.01f - screenGapX,0.795f,0.9f,icons.TDModel,0.0f,colorData.iconColor,colorData.iconColorHover);
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc-1.01f - screenGapX,0.715f,0.9f,icons.Material,0.0f,colorData.iconColor,colorData.iconColorHover);
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc-1.01f - screenGapX,0.635f,0.9f,icons.Painting,0.0f,colorData.iconColor,colorData.iconColorHover);
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc-1.01f - screenGapX, 0.555f,0.9f,icons.Export,0.0f,colorData.iconColor,colorData.iconColorHover);
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.795f , 0.9f , icons.TDModel , 0.0f , colorData.iconColor , colorData.iconColorHover);
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.715f , 0.9f , icons.Material , 0.0f , colorData.iconColor , colorData.iconColorHover);
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.635f , 0.9f , icons.Painting , 0.0f , colorData.iconColor , colorData.iconColorHover);
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.555f , 0.9f , icons.Export , 0.0f , colorData.iconColor , colorData.iconColorHover);
 
 		glUseProgram(programs.uiProgram);
 	}
@@ -261,20 +262,20 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 		glUseProgram(programs.uiProgram); 
 
 		//Color Picker
-		hueVal = ui.colorRect(renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f, renderData.colorBoxColorRangeBarValue, FBOScreen, renderData.window,projection,updateHueVal); //Hue TODO : Get the value once value changed 
+		hueVal = ui.colorRect(centerCoords - screenGapX + 0.1f, -0.55f, renderData.colorBoxColorRangeBarValue, FBOScreen, renderData.window,projection,updateHueVal); //Hue TODO : Get the value once value changed 
 
 		saturationValShaderData.boxColor = hueVal / 255.0f;
 		saturationValShaderData.renderTextureProjection = projection;
 
 		gl.useSaturationValBoxShader(programs.saturationValBoxProgram,saturationValShaderData);
-		ui.colorBox(renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.55f, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y);
+		ui.colorBox(centerCoords - screenGapX - 0.02f, -0.55f, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y);
 
 
-		ui.box(0.002f, 0.025f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.095f, -0.81f, "", glm::vec4(colorBoxValue / glm::vec3(255),1.0f), 0.075f, false, false, 0.9f, 10, glm::vec4(0), 0); //indicator for picken color of the color picker
+		ui.box(0.002f, 0.025f, centerCoords - screenGapX - 0.095f, -0.81f, "", glm::vec4(colorBoxValue / glm::vec3(255),1.0f), 0.075f, false, false, 0.9f, 10, glm::vec4(0), 0); //indicator for picken color of the color picker
 
-		ui.box(0.002f, 0.035f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.095f, -0.81f, "", colorData.panelColorSnd, 0.075f, false, false, 0.9f, 7, glm::vec4(0), 0); //decoration
+		ui.box(0.002f, 0.035f, centerCoords - screenGapX - 0.095f, -0.81f, "", colorData.panelColorSnd, 0.075f, false, false, 0.9f, 7, glm::vec4(0), 0); //decoration
 
-		ui.box(0.04f, 0.03f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.81f, util.rgbToHexGenerator(colorBoxValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
+		ui.box(0.04f, 0.03f, centerCoords - screenGapX - 0.008f,-0.81f, util.rgbToHexGenerator(colorBoxValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
 	}
 
 
@@ -291,9 +292,9 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 				maskXpos=0.0f;
 			}
 			maskXpos-=0.08f;
-			float position_x = renderData.panelLoc / centerDivider + centerSum - screenGapX - maskXpos - 0.175f;
+			float position_x = centerCoords - screenGapX - maskXpos - 0.175f;
 			float position_y = 0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f;
-			//ui.iconBox(0.025f, 0.05f,renderData.panelLoc / centerDivider + centerSum - screenGapX - maskXpos - 0.2f,0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f,1,maskTextures[i],0);
+			//ui.iconBox(0.025f, 0.05f,centerCoords - screenGapX - maskXpos - 0.2f,0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f,1,maskTextures[i],0);
 			float upBotDifMin = std::min(0.05f + position_y,0.8f) - std::min(-0.05f + position_y,0.8f);
 			float upBotDifMax = std::max(0.05f + position_y,0.55f) - std::max(-0.05f + position_y,0.55f);
 			std::vector<float> buttonCoorSq{
@@ -339,24 +340,25 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 		}
 		#pragma endregion brushMaskPanel
 
-		ui.iconBox(0.02f,0.03f,renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.81f,0.9f,icons.dropperIcon,dropperMixVal,colorData.iconColor,colorData.iconColorHover);
+		ui.iconBox(0.02f,0.03f,centerCoords - screenGapX + 0.08f, -0.81f,0.9f,icons.dropperIcon,dropperMixVal,colorData.iconColor,colorData.iconColorHover);
 	}
 
 
 	//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 	if(panelData.paintingPanelActive){
 		glUseProgram(programs.uiProgram);
-		ui.box(0.035f, 0.07f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0);
+		ui.box(0.035f, 0.07f, centerCoords - screenGapX - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0);
 	}
 
 	for (size_t i = 0; i < UIElements.size(); i++)
 	{
 		std::string currentType = UIElements[i].type;
-		
-		float centerCoords = (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
-		
+				
 		if(UIElements[i].attachedToMainPanel == false){
 			centerCoords =  renderData.panelLoc - 1.0f;
+		}
+		else{
+			centerCoords = (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
 		}
 
 
@@ -397,13 +399,7 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 				ui.iconBox(UIElements[i].icon.width,UIElements[i].icon.height,centerCoords - screenGapX + UIElements[i].icon.positionX ,UIElements[i].icon.positionY,UIElements[i].icon.positionZ,UIElements[i].icon.icon, 0.0f , colorData.iconColor , colorData.iconColorHover);
 			}
 		}
-	}
-	
-
-
-
-
-
+	}	
 
 	uiOut.currentBrushMaskTxtr = currentBrushMaskTexture;
 	return uiOut;

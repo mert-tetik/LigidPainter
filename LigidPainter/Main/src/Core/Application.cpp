@@ -402,6 +402,7 @@ bool renderTheScene = true;//Set true in the callback functions
 int renderTheSceneCounter = 0;
 const int renderingThreshold = 120;
 
+float mainPanelLoc = 1.6f;
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -576,7 +577,7 @@ bool LigidPainter::run()
 	glfwMakeContextCurrent(window);
 
 	//Use mouse_callback function before the while loop to do necessary calculations
-	callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurValue, enablePanelMovement,brushRotationValue, brushOpacityValue, brushSpacingValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,paintingDropperPressed,brushBorderValue,renderOut.texturePanelButtonHover,UIElements);
+	callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurValue, enablePanelMovement,brushRotationValue, brushOpacityValue, brushSpacingValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,paintingDropperPressed,brushBorderValue,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc);
 	
 	bool paintRender = false;
 	int paintRenderCounter = 0;
@@ -842,7 +843,7 @@ bool LigidPainter::run()
 
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurValue, enablePanelMovement,brushRotationValue, brushOpacityValue, brushSpacingValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,paintingDropperPressed,brushBorderValue,renderOut.texturePanelButtonHover,UIElements);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData, brushSizeValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurValue, enablePanelMovement,brushRotationValue, brushOpacityValue, brushSpacingValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,paintingDropperPressed,brushBorderValue,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc);
 		}
 
 		mirrorClick = false;
@@ -952,14 +953,14 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 		
 		//Check if cursor is inside of the panel
 
-		if (xpos > ((windowData.windowMaxWidth / 2) * callbackData.panelLoc) - screenGapX && !callbackData.brushSizeRangeBarEnter && !callbackData.colorBoxColorRangeBarEnter && !callbackData.colorBoxPickerEnter){
+		if (xpos > ((windowData.windowMaxWidth / 2) * mainPanelLoc) - screenGapX && !callbackData.brushSizeRangeBarEnter && !callbackData.colorBoxColorRangeBarEnter && !callbackData.colorBoxPickerEnter){
 			//Inside of the panel
 			mainPanelHover = true;
 			doPainting = false;
 		} 
 			
 
-		else if (xpos < ((windowData.windowMaxWidth / 2) * callbackData.panelLoc) - screenGapX  && panelData.paintingPanelActive){
+		else if (xpos < ((windowData.windowMaxWidth / 2) * mainPanelLoc) - screenGapX  && panelData.paintingPanelActive){
 			//Painting panel + outside of panel
 			mainPanelHover = false;
 			doPainting = true;
@@ -1451,8 +1452,14 @@ void LigidPainter::maskPanelSlider(double yOffset,int screenSizeY){
 void LigidPainter::hexValTextbox(){
 	hexValTextboxPressed = true;
 }
-
-
+void LigidPainter::mainPanelBoundaries(float xOffset,int screenSizeX){
+	if (enablePanelMovement) {
+		Utilities util;
+		mainPanelLoc -= xOffset / (screenSizeX / 2);
+		cout << mainPanelLoc << ' ';
+		mainPanelLoc = util.restrictBetween(mainPanelLoc, 1.98f, 1.6f);//Keep in boundaries
+    }
+}
 
 
 
@@ -1461,7 +1468,7 @@ void LigidPainter::hexValTextbox(){
 
 
 RenderData updateRenderData(RenderData renderData,unsigned int depthTexture,int brushSizeIndicatorSize) {
-	renderData.panelLoc = callbackData.panelLoc;
+	renderData.panelLoc = mainPanelLoc;
 	renderData.modelLoadFilePath = modelName;
 	renderData.backfaceCulling = enableBackfaceCulling;
 	renderData.brushSizeValue = brushSizeValue;

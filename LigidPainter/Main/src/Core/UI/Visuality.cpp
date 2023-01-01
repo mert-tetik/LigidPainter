@@ -114,37 +114,31 @@ void UserInterface::box(float width, float height, float position_x, float posit
 
 void UserInterface::panel(float panelLoc, float) {
 	GlSet glset;
-	std::vector<float> panelCoor{
-		panelLoc-1.0f,1.0f,0,0,0,0,0,0,
-		panelLoc -1.0f  ,-1.0f,0,0,0,0,0,0,
-		1.0f ,1.0f,0,0,0,0,0,0,
-		1.0f ,1.0f,0,0,0,0,0,0,
-		1.0f ,-1.0f,0,0,0,0,0,0,
-		panelLoc -1.0f ,-1.0f,0,0,0,0,0,0,
-	};
-	std::vector<float> panelHoldCoor{ //Holding line standing left side of the panel
-		panelLoc - 1.0f , 1.0f,0,0,0,0,0,0,
-		panelLoc - 1.0f ,-1.0f,0,0,0,0,0,0,
-		panelLoc - 1.0f + 0.006f,1.0f,0,0,0,0,0,0,
-		panelLoc - 1.0f + 0.006f,1.0f,0,0,0,0,0,0,
-		panelLoc - 1.0f + 0.006f,-1.0f,0,0,0,0,0,0,
-		panelLoc - 1.0f ,-1.0f,0,0,0,0,0,0
-	};
-	glm::vec4 blankVal = glm::vec4(0);
 
-	glset.uniform4fv(uiPrograms.uiProgram, "uiColor", colorD.panelHoldColor);
+	box(0.00f, 0.04f, panelLoc + 0.022f, 0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 7, colorD.panelColor, 0);//Load model button
+	box(0.00f, 0.04f, panelLoc + 0.022f, -0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 7, colorD.panelColor, 0);//Load model button
 
-	glset.uniform4fv(uiPrograms.uiProgram, "uiTransitionColor", blankVal);
-	glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0.0f);
+	const float panelWidth = 0.2f;
+	const float panelHeigth = 0.88f;
+	
+	box(0.02f, panelHeigth, panelLoc + 0.02f, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);//Load model button
+	box(panelWidth, 0.04f, panelLoc + panelWidth + 0.02f, 0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);//Load model button
+	box(panelWidth, 0.04f, panelLoc + panelWidth + 0.02f, -0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);//Load model button
+	box(panelWidth, panelHeigth - 0.02f, panelLoc + panelWidth + 0.02f, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);//Load model button
 
-	glset.drawArrays(panelHoldCoor, false);
+	// glset.uniform4fv(uiPrograms.uiProgram, "uiColor", colorD.panelHoldColor);
+
+	// glset.uniform4fv(uiPrograms.uiProgram, "uiTransitionColor", blankVal);
+	// glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0.0f);
+
+	// glset.drawArrays(panelHoldCoor, false);
 
 
-	glset.uniform4fv(uiPrograms.uiProgram, "uiColor", colorD.panelColor);
+	// glset.uniform4fv(uiPrograms.uiProgram, "uiColor", colorD.panelColor);
 
 
 
-	glset.drawArrays(panelCoor, false);
+	// glset.drawArrays(panelCoor, false);
 
 }
 

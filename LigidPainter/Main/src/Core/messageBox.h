@@ -35,15 +35,15 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
 	glUseProgram(uiProgram);
 
 	//Panel
-	ui.box(0.00f, 0.04f, -0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);//Load model button
-	ui.box(0.00f, 0.04f, 0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);//Load model button
-	ui.box(0.00f, 0.04f, -0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);//Load model button
-	ui.box(0.00f, 0.04f, 0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);//Load model button
-	ui.box(0.25f, 0.25f, 0.0f, 0.0f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);//Load model button
-	ui.box(0.25f, 0.05f, 0.0f, -0.24f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);//Load model button
-	ui.box(0.25f, 0.05f, 0.0f, +0.24f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);//Load model button
-	ui.box(0.03f, 0.25f, -0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);//Load model button
-	ui.box(0.03f, 0.25f, +0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);//Load model button
+	ui.box(0.00f, 0.04f, -0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);
+	ui.box(0.00f, 0.04f, 0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);
+	ui.box(0.00f, 0.04f, -0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);
+	ui.box(0.00f, 0.04f, 0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);
+	ui.box(0.25f, 0.25f, 0.0f, 0.0f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);
+	ui.box(0.25f, 0.05f, 0.0f, -0.24f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);
+	ui.box(0.25f, 0.05f, 0.0f, +0.24f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);
+	ui.box(0.03f, 0.25f, -0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);
+	ui.box(0.03f, 0.25f, +0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);
 
 				
 	//Buttons

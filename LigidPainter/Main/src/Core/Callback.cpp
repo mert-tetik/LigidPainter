@@ -32,7 +32,6 @@ glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
 
 //Panel
 int holdXPos = 1536;
-float panelLoc = 1.6f;
 float panelOffset;
 bool movePanel;
 //Panel
@@ -75,6 +74,7 @@ bool hexValueTextboxEnter;
 bool loadCustomModelEnter;
 bool hueBarEnter;
 
+bool mainPanelBoundariesEnter;
 
 bool uiElementEnter;
 //Ui enter
@@ -123,7 +123,6 @@ CallbckData preapareCallbackData() {
 
 	callbk.cameraPos = cameraPos;
 	callbk.originPos = originPos;
-	callbk.panelLoc = panelLoc;
 	callbk.panelChangeLoc = panelChangeLoc; 
 
 	callbk.textureDemonstratorButtonEnter = textureDemonstratorButtonEnter;
@@ -145,6 +144,8 @@ CallbckData preapareCallbackData() {
 	callbk.hueBarEnter = hueBarEnter;
 
 	callbk.uiElementEnter = uiElementEnter;
+
+	callbk.mainPanelBoundariesEnter = mainPanelBoundariesEnter;
 
 	return callbk;
 }
@@ -170,7 +171,7 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData,float brushSizeRangeBarValue,float colorBoxPickerValue_x, 
 float colorBoxPickerValue_y,float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, bool enablePanelMovement, float brushRotationRangeBarValue, 
 float brushOpacityRangeBarValue, float brushSpacingRangeBarValue, float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,
-bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue,bool texturePanelButtonHover,std::vector<UIElement> &uiElements)
+bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc)
 {
 	CallbckData callbk;
 	
@@ -181,7 +182,7 @@ bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,fl
 
 	panelCheck(window,xpos,screenSizeX,enablePanelMovement);
 	
-	buttonCheck(window, xpos, ypos, panelData ,brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,brushMaskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue, texturePanelButtonHover,uiElements);
+	buttonCheck(window, xpos, ypos, panelData ,brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,brushMaskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue, texturePanelButtonHover,uiElements,mainPanelLoc);
 	
 
 	xoffset = xpos - lastX;
@@ -229,53 +230,9 @@ bool panelClickTaken = false;
 bool noPanelClick = true;
 
 void Callback::panelCheck(GLFWwindow* window, double mouseXpos, int screenSizeX, bool enablePanelMovement) {
-	panelOffset = mouseXpos - holdXPos;
-	holdXPos = mouseXpos;
-	float screenGapX = (callbackMaxScreenWidth - screenSizeX); 
-
-	if (enablePanelMovement) {
-		if (mouseXpos > (callbackMaxScreenWidth / 2 * panelLoc) - 10 - screenGapX && mouseXpos < (callbackMaxScreenWidth / 2 * panelLoc) + 10 - screenGapX) {
-			panelChangeHover = true;
-			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
-				panelChangeLoc = true;
-			}
-		}
-		else{
-			panelChangeHover = false;
-		}
-
-
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !panelClickTaken) {
-	 		if (panelChangeHover) {
-	 			noPanelClick = true;
-	 		}
-	 		else {
-	 			noPanelClick = false;
-	 		}
-	 		panelClickTaken = true;
-	    }
-	    if (glfwGetMouseButton(window, 0) == GLFW_RELEASE && panelClickTaken) {
-	     	panelClickTaken = false;
-	    }
-		if (panelChangeLoc && noPanelClick) {
-			panelLoc += panelOffset / 1000;
-			if (panelLoc > 1.7f) {
-				movePanel = true;
-			}
-			else {
-				movePanel = false;
-			}
-			if (panelLoc < 1.6f)
-				panelLoc = 1.6f;
-			if (panelLoc > 1.987f)
-				panelLoc = 1.987f;
-		}
-		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
-			panelChangeLoc = false;
-		}
-	}
+	
 }
-void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y,float colorBoxColorRangeBarValue,float brushBlurRangeBarValue,float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue,bool texturePanelButtonHover,std::vector<UIElement> &uiElements) {
+void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y,float colorBoxColorRangeBarValue,float brushBlurRangeBarValue,float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc) {
 	UserInterface ui;
 
 	float centerDivider;
@@ -311,10 +268,10 @@ void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos
 			else{
 				panelCompatibility = false;
 			}
-			float centerCoords = (panelLoc + std::max(panelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
+			float centerCoords = (mainPanelLoc + std::max(mainPanelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
 		
 			if(uiElements[i].attachedToMainPanel == false){
-				centerCoords =  panelLoc - 1.0f;
+				centerCoords =  mainPanelLoc - 1.0f;
 			}
 
 			if(panelCompatibility){
@@ -351,27 +308,31 @@ void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos
 		}
 
 		if(panelData.paintingPanelActive){
-			colorBoxPickerEnter = ui.isMouseOnButton(window,0.015f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX - 0.02f + colorBoxPickerValue_x, -0.55f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
-			colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
-			hexValueTextboxEnter =  ui.isMouseOnButton(window, 0.04f, 0.03f, panelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.81f, mouseXPos, mouseYPos, movePanel);
-			paintingDropperEnter = ui.isMouseOnButton(window, 0.015f,0.03f, panelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.81f, mouseXPos, mouseYPos,movePanel);
+			colorBoxPickerEnter = ui.isMouseOnButton(window,0.015f, 0.03f, mainPanelLoc / centerDivider + centerSum - screenGapX - 0.02f + colorBoxPickerValue_x, -0.55f + colorBoxPickerValue_y, mouseXPos, mouseYPos, movePanel);
+			colorBoxColorRangeBarEnter = ui.isMouseOnButton(window, 0.01f, 0.01f, mainPanelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f + colorBoxColorRangeBarValue, mouseXPos, mouseYPos, movePanel);
+			hexValueTextboxEnter =  ui.isMouseOnButton(window, 0.04f, 0.03f, mainPanelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.81f, mouseXPos, mouseYPos, movePanel);
+			paintingDropperEnter = ui.isMouseOnButton(window, 0.015f,0.03f, mainPanelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.81f, mouseXPos, mouseYPos,movePanel);
 			
-			colorBoxEnter = ui.isMouseOnButton(window, 0.1f, 0.2f, panelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.55f, mouseXPos, mouseYPos, movePanel);		
-			hueBarEnter = ui.isMouseOnButton(window, 0.01f, 0.18f, panelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f, mouseXPos, mouseYPos, movePanel);
+			colorBoxEnter = ui.isMouseOnButton(window, 0.1f, 0.2f, mainPanelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.55f, mouseXPos, mouseYPos, movePanel);		
+			hueBarEnter = ui.isMouseOnButton(window, 0.01f, 0.18f, mainPanelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f, mouseXPos, mouseYPos, movePanel);
 		
-			maskPanelEnter = ui.isMouseOnButton(window, 0.15f, 0.15f, panelLoc / centerDivider + centerSum - screenGapX, 0.675f, mouseXPos, mouseYPos, movePanel);
+			maskPanelEnter = ui.isMouseOnButton(window, 0.15f, 0.15f, mainPanelLoc / centerDivider + centerSum - screenGapX, 0.675f, mouseXPos, mouseYPos, movePanel);
 		}
 
-
-		textureDemonstratorButtonEnter = ui.isMouseOnButton(window, 0.02f,0.045f,(textureDemonstratorButtonPosX+0.005f)-1.0f,textureDemonstratorButtonPosY-0.01f, mouseXPos, mouseYPos, 0);	modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- screenGapX, 0.8f, mouseXPos, mouseYPos);
-		modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- screenGapX, 0.8f, mouseXPos, mouseYPos);
-		texturePanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- screenGapX, 0.72f, mouseXPos, mouseYPos);
-		paintingPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- screenGapX, 0.64f, mouseXPos, mouseYPos);
-		exportPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, panelLoc- screenGapX, 0.56f, mouseXPos, mouseYPos);
+		mainPanelBoundariesEnter =  ui.isMouseOnButton(window, 0.02f, 0.88f, mainPanelLoc -1.0f + 0.02f, 0.0f, mouseXPos, mouseYPos, false);
+		
+		textureDemonstratorButtonEnter = ui.isMouseOnButton(window, 0.02f,0.045f,(textureDemonstratorButtonPosX+0.005f)-1.0f,textureDemonstratorButtonPosY-0.01f, mouseXPos, mouseYPos, 0);	modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.8f, mouseXPos, mouseYPos);
+		modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.8f, mouseXPos, mouseYPos);
+		texturePanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.72f, mouseXPos, mouseYPos);
+		paintingPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.64f, mouseXPos, mouseYPos);
+		exportPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.56f, mouseXPos, mouseYPos);
 	}
 
 	if(paintingDropperPressed){
 		glfwSetCursor(window, cursors.dropperCursor);
+	}
+	else if(mainPanelBoundariesEnter){
+		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if(uiElementEnter){
 		glfwSetCursor(window, cursors.pointerCursor);

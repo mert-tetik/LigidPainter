@@ -183,9 +183,10 @@ WindowData GlSet::getWindow() {
 
 	int samples = 8;
 	glfwWindowHint(GLFW_SAMPLES, samples);
-	
+
 	GLFWwindow* window = glfwCreateWindow(3845,2165, "LigidPainter", NULL, NULL);
 
+	//glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
 	
 	glfwMakeContextCurrent(window);
 

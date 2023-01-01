@@ -17,7 +17,8 @@ void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackD
 	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTaken) {
 		if (!callbackData.uiElementEnter && !callbackData.modelPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.paintingPanelButtonEnter 
 		&& !callbackData.exportPanelButtonEnter && !callbackData.colorBoxPickerEnter && !callbackData.colorBoxColorRangeBarEnter && !callbackData.hexValueTextboxEnter
-		&& !callbackData.paintingDropperEnter && !callbackData.hueBarEnter && !callbackData.colorBoxEnter && !callbackData.maskPanelEnter && !callbackData.textureDemonstratorButtonEnter) {
+		&& !callbackData.paintingDropperEnter && !callbackData.hueBarEnter && !callbackData.colorBoxEnter && !callbackData.maskPanelEnter 
+		&& !callbackData.textureDemonstratorButtonEnter && !callbackData.mainPanelBoundariesEnter) {
 			noButtonClick = true;
 			colorBoxFirstPress = false;
 
@@ -49,6 +50,7 @@ bool colorBoxPickerPressed;
 bool textureDemonstratorButtonPressed;
 bool textureDemonstratorBoundariesPressed;
 bool maskPanelSliderPressed;
+bool mainPanelBoundariesPressed;
 //
 
 bool buttonGetInput = true;
@@ -94,6 +96,9 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 				}
 				else if (textureDemonstratorBoundariesHover) { //Keep at the end
 					textureDemonstratorBoundariesPressed = true;
+				}
+				else if(callbackData.mainPanelBoundariesEnter){
+					mainPanelBoundariesPressed = true;
 				}
 			}
 		}
@@ -169,6 +174,7 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 		textureDemonstratorButtonPressed = false;
 		textureDemonstratorBoundariesPressed = false;
         maskPanelSliderPressed = false;
+		mainPanelBoundariesPressed = false;
 	}
     UiActionsData uiData;
     uiData.textureDemonstratorBoundariesPressed =textureDemonstratorBoundariesPressed;
@@ -211,6 +217,9 @@ bool UiActions::updateRangeValues(GLFWwindow* window, double xOffset,double yOff
 	}
 	if(maskPanelSliderPressed){
 		ligid.maskPanelSlider(yOffset,uiactionsMaxScreenHeight);//Changes the global variable
+	}
+	if(mainPanelBoundariesPressed){
+		ligid.mainPanelBoundaries(xOffset,screenWidth);
 	}
     if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed|| brushBordersRangeBarPressed || textureDemonstratorButtonPressed || textureDemonstratorBoundariesPressed || maskPanelSliderPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
         hideCursor = true;

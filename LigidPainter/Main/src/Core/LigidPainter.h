@@ -207,6 +207,7 @@ public:
 	void hexValTextbox();
 	void loadCustomModel();
 	void hueBar();
+	void mainPanelBoundaries(float xOffset,int screenSizeX);
 };
 struct PanelData {
 	bool movePanel;
