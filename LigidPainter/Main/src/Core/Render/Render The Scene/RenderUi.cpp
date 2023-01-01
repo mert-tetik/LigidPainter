@@ -44,22 +44,20 @@ float texturePanelButtonMixVal = 0.0f;
 
 
 
-void updateButtonColorMixValues(UiData uidata,UI &UIElements) {
+void updateButtonColorMixValues(UiData uidata,std::vector<UIElement> &UIElements) {
 	Utilities util;
 
 	const float phaseDifference = 0.1f;
 
-	for (size_t i = 0; i < UIElements.uiIndex.size(); i++)
+	for (size_t i = 0; i < UIElements.size(); i++)
 	{
-		std::string currentElement = UIElements.uiIndex[i];
-		
-		std::string currentType = UIElements.uiElements[currentElement].type;
+		std::string currentType = UIElements[i].type;
 		
 		if(currentType == "button"){
-			UIElements.uiElements[currentElement].button.transitionMixVal = util.transitionEffect(UIElements.uiElements[currentElement].button.hover,UIElements.uiElements[currentElement].button.transitionMixVal,phaseDifference);
+			UIElements[i].button.transitionMixVal = util.transitionEffect(UIElements[i].button.hover,UIElements[i].button.transitionMixVal,phaseDifference);
 		}
 		else if(currentType == "textBox"){
-			UIElements.uiElements[currentElement].textBox.transitionMixVal = util.transitionEffect(UIElements.uiElements[currentElement].textBox.clicked,UIElements.uiElements[currentElement].textBox.transitionMixVal,phaseDifference);
+			UIElements[i].textBox.transitionMixVal = util.transitionEffect(UIElements[i].textBox.clicked,UIElements[i].textBox.transitionMixVal,phaseDifference);
 		}
 	}
 
@@ -80,7 +78,7 @@ bool textureDemonstratorButtonPressClicked,Icons &icons,glm::vec3 colorBoxValue,
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 std::string &colorpickerHexVal,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,
 bool updateHueVal,Programs programs,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight,float orgTextureDemonstratorWidth, float orgTextureDemonstratorHeight, 
-SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int &currentBrushMaskTexture,float materialsPanelSlideValue,UI &UIElements) {
+SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int &currentBrushMaskTexture,float materialsPanelSlideValue,std::vector<UIElement> &UIElements) {
 
 	
 	//---EveryFrame---
@@ -351,21 +349,19 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 		ui.box(0.035f, 0.07f, renderData.panelLoc / centerDivider + centerSum - screenGapX - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0);
 	}
 
-	for (size_t i = 0; i < UIElements.uiIndex.size(); i++)
+	for (size_t i = 0; i < UIElements.size(); i++)
 	{
-		std::string currentElement = UIElements.uiIndex[i];
-		
-		std::string currentType = UIElements.uiElements[currentElement].type;
+		std::string currentType = UIElements[i].type;
 		
 		float centerCoords = (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
 		
-		if(UIElements.uiElements[currentElement].attachedToMainPanel == false){
+		if(UIElements[i].attachedToMainPanel == false){
 			centerCoords =  renderData.panelLoc - 1.0f;
 		}
 
 
 		bool panelCompatibility;
-		if(UIElements.uiElements[currentElement].panel == 1 && panelData.modelPanelActive || UIElements.uiElements[currentElement].panel == 2 && panelData.texturePanelActive || UIElements.uiElements[currentElement].panel == 3 && panelData.paintingPanelActive || UIElements.uiElements[currentElement].panel == 4 && panelData.exportPanelActive || UIElements.uiElements[currentElement].panel == 0){
+		if(UIElements[i].panel == 1 && panelData.modelPanelActive || UIElements[i].panel == 2 && panelData.texturePanelActive || UIElements[i].panel == 3 && panelData.paintingPanelActive || UIElements[i].panel == 4 && panelData.exportPanelActive || UIElements[i].panel == 0){
 			panelCompatibility = true;
 		}
 		else{
@@ -374,31 +370,31 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 		if(panelCompatibility){
 			if(currentType == "button"){
 				glUseProgram(programs.uiProgram);
-				ui.box(UIElements.uiElements[currentElement].button.width, UIElements.uiElements[currentElement].button.height, centerCoords - screenGapX + UIElements.uiElements[currentElement].button.positionX, UIElements.uiElements[currentElement].button.positionY, UIElements.uiElements[currentElement].button.text, UIElements.uiElements[currentElement].button.color, UIElements.uiElements[currentElement].button.textRatio, false, false, UIElements.uiElements[currentElement].button.positionZ, UIElements.uiElements[currentElement].button.buttonCurveReduce, UIElements.uiElements[currentElement].button.colorHover, UIElements.uiElements[currentElement].button.transitionMixVal); //Add mask texture button
+				ui.box(UIElements[i].button.width, UIElements[i].button.height, centerCoords - screenGapX + UIElements[i].button.positionX, UIElements[i].button.positionY, UIElements[i].button.text, UIElements[i].button.color, UIElements[i].button.textRatio, false, false, UIElements[i].button.positionZ, UIElements[i].button.buttonCurveReduce, UIElements[i].button.colorHover, UIElements[i].button.transitionMixVal); //Add mask texture button
 			}
 			
 			if(currentType == "text"){	
 				glUseProgram(programs.uiProgram);
-				ui.renderText(programs.uiProgram,UIElements.uiElements[currentElement].text.text, centerCoords - screenGapX + UIElements.uiElements[currentElement].text.positionX, UIElements.uiElements[currentElement].text.positionY, UIElements.uiElements[currentElement].text.scale);
+				ui.renderText(programs.uiProgram,UIElements[i].text.text, centerCoords - screenGapX + UIElements[i].text.positionX, UIElements[i].text.positionY, UIElements[i].text.scale);
 			}
 
 			if(currentType == "rangeBar"){
 				glUseProgram(programs.uiProgram);
-				ui.rangeBar(centerCoords - screenGapX + UIElements.uiElements[currentElement].rangeBar.positionX, UIElements.uiElements[currentElement].rangeBar.positionY, UIElements.uiElements[currentElement].rangeBar.value);
+				ui.rangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY, UIElements[i].rangeBar.value);
 			}
 
 			if(currentType == "textBox"){
 				glUseProgram(programs.uiProgram);
-				ui.box(UIElements.uiElements[currentElement].textBox.width, UIElements.uiElements[currentElement].textBox.height,centerCoords - screenGapX + UIElements.uiElements[currentElement].textBox.position_x, UIElements.uiElements[currentElement].textBox.position_y,UIElements.uiElements[currentElement].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements.uiElements[currentElement].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements.uiElements[currentElement].textBox.transitionMixVal); //Add mask texture button
+				ui.box(UIElements[i].textBox.width, UIElements[i].textBox.height,centerCoords - screenGapX + UIElements[i].textBox.position_x, UIElements[i].textBox.position_y,UIElements[i].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements[i].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements[i].textBox.transitionMixVal); //Add mask texture button
 			}
 
 			if(currentType == "checkBox"){
 				glUseProgram(programs.uiProgram);
-				ui.checkBox(centerCoords - screenGapX + UIElements.uiElements[currentElement].checkBox.positionX, UIElements.uiElements[currentElement].checkBox.positionY, UIElements.uiElements[currentElement].checkBox.text, colorData.checkBoxColor,  UIElements.uiElements[currentElement].checkBox.mouseHover,  UIElements.uiElements[currentElement].checkBox.checked); //jpg checkbox
+				ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY, UIElements[i].checkBox.text, colorData.checkBoxColor,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked); //jpg checkbox
 			}
 			if(currentType == "icon"){
 				glUseProgram(programs.iconsProgram);
-				ui.iconBox(UIElements.uiElements[currentElement].icon.width,UIElements.uiElements[currentElement].icon.height,centerCoords - screenGapX + UIElements.uiElements[currentElement].icon.positionX ,UIElements.uiElements[currentElement].icon.positionY,UIElements.uiElements[currentElement].icon.positionZ,UIElements.uiElements[currentElement].icon.icon, 0.0f , colorData.iconColor , colorData.iconColorHover);
+				ui.iconBox(UIElements[i].icon.width,UIElements[i].icon.height,centerCoords - screenGapX + UIElements[i].icon.positionX ,UIElements[i].icon.positionY,UIElements[i].icon.positionZ,UIElements[i].icon.icon, 0.0f , colorData.iconColor , colorData.iconColorHover);
 			}
 		}
 	}

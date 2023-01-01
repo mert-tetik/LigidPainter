@@ -28,516 +28,476 @@
 #include "tinyfiledialogs.h"
 
 
-UI UserInterface::getUiElements(Icons icons) {
 
-    std::map<std::string, UIElement> UIElements;
-	std::vector<std::string> uiIndex;
+
+std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
+
+	std::vector<UIElement> UIElements;
 
 	ColorData colorData;
 
 
 	//---------------------------MODEL PANEL---------------------------
 
-	UIElement uploadingModelPathTextBox;
-    uploadingModelPathTextBox.textBox.position_x = 0.0f;
-    uploadingModelPathTextBox.textBox.position_y = 0.6f;
-    uploadingModelPathTextBox.textBox.position_z = 0.9f;
-    uploadingModelPathTextBox.textBox.width = 0.12;
-    uploadingModelPathTextBox.textBox.height = 0.03;
-    uploadingModelPathTextBox.textBox.text = "";
-    uploadingModelPathTextBox.panel = 1;
-    uploadingModelPathTextBox.attachedToMainPanel = true;
-	uploadingModelPathTextBox.type = "textBox";
-    UIElements["uploadingModelPathTextBox"] = uploadingModelPathTextBox;
-    uiIndex.push_back("uploadingModelPathTextBox");//1
+	UIElement uploadingModelPathTextBoxElement;
+    uploadingModelPathTextBoxElement.textBox.position_x = 0.0f;
+    uploadingModelPathTextBoxElement.textBox.position_y = 0.6f;
+    uploadingModelPathTextBoxElement.textBox.position_z = 0.9f;
+    uploadingModelPathTextBoxElement.textBox.width = 0.12;
+    uploadingModelPathTextBoxElement.textBox.height = 0.03;
+    uploadingModelPathTextBoxElement.textBox.text = "";
+    uploadingModelPathTextBoxElement.panel = 1;
+    uploadingModelPathTextBoxElement.attachedToMainPanel = true;
+	uploadingModelPathTextBoxElement.type = "textBox";
+    UIElements.push_back(uploadingModelPathTextBoxElement);//1
 
-	UIElement uploadingModelPathText;
-    uploadingModelPathText.text.positionX = -0.05f;
-    uploadingModelPathText.text.positionY = 0.64f;
-    uploadingModelPathText.text.text = "File Path";
-    uploadingModelPathText.text.scale = 0.00022f;
-    uploadingModelPathText.text.color = colorData.textBoxColor;
-    uploadingModelPathText.panel = 1;
-    uploadingModelPathText.attachedToMainPanel = true;
-    uploadingModelPathText.type = "text";
-	UIElements["uploadingModelPathText"] = uploadingModelPathText;
-	uiIndex.push_back("uploadingModelPathText");//2
+	UIElement uploadingModelPathTextElement;
+    uploadingModelPathTextElement.text.positionX = -0.05f;
+    uploadingModelPathTextElement.text.positionY = 0.64f;
+    uploadingModelPathTextElement.text.text = "File Path";
+    uploadingModelPathTextElement.text.scale = 0.00022f;
+    uploadingModelPathTextElement.text.color = colorData.textBoxColor;
+    uploadingModelPathTextElement.panel = 1;
+    uploadingModelPathTextElement.attachedToMainPanel = true;
+    uploadingModelPathTextElement.type = "text";
+	UIElements.push_back(uploadingModelPathTextElement);//2
 
-	UIElement loadModelButton;
-    loadModelButton.button.positionX = 0.0f;
-    loadModelButton.button.positionY = 0.45f;
-    loadModelButton.button.positionZ = 0.9f;
-    loadModelButton.button.width = 0.08f;
-    loadModelButton.button.height = 0.04f;
-    loadModelButton.button.color = colorData.buttonColor;
-    loadModelButton.button.colorHover = colorData.buttonColorHover;
-    loadModelButton.button.transitionMixVal = 0.0f;
-    loadModelButton.button.buttonCurveReduce = 10.0f;
-    loadModelButton.button.text = "Load";
-    loadModelButton.button.textRatio = 0.022f;
-    loadModelButton.panel = 1;
-    loadModelButton.attachedToMainPanel = true;
-	loadModelButton.type = "button";
-    UIElements["loadModelButton"] = loadModelButton;
-    uiIndex.push_back("loadModelButton");//3
+	UIElement loadModelButtonElement;
+    loadModelButtonElement.button.positionX = 0.0f;
+    loadModelButtonElement.button.positionY = 0.45f;
+    loadModelButtonElement.button.positionZ = 0.9f;
+    loadModelButtonElement.button.width = 0.08f;
+    loadModelButtonElement.button.height = 0.04f;
+    loadModelButtonElement.button.color = colorData.buttonColor;
+    loadModelButtonElement.button.colorHover = colorData.buttonColorHover;
+    loadModelButtonElement.button.transitionMixVal = 0.0f;
+    loadModelButtonElement.button.buttonCurveReduce = 10.0f;
+    loadModelButtonElement.button.text = "Load";
+    loadModelButtonElement.button.textRatio = 0.022f;
+    loadModelButtonElement.panel = 1;
+    loadModelButtonElement.attachedToMainPanel = true;
+	loadModelButtonElement.type = "button";
+    UIElements.push_back(loadModelButtonElement);//3
 
-	UIElement autoTriangulateCheckBox;
-    autoTriangulateCheckBox.checkBox.positionX = -0.08f;
-    autoTriangulateCheckBox.checkBox.positionY = 0.3f;
-    autoTriangulateCheckBox.checkBox.text = "Auto triangulate";
-    autoTriangulateCheckBox.panel = 1;
-    autoTriangulateCheckBox.attachedToMainPanel = true;
-	autoTriangulateCheckBox.type = "checkBox";
-    UIElements["autoTriangulateCheckBox"] = autoTriangulateCheckBox;
-    uiIndex.push_back("autoTriangulateCheckBox");//4
+	UIElement autoTriangulateCheckBoxElement;
+    autoTriangulateCheckBoxElement.checkBox.positionX = -0.08f;
+    autoTriangulateCheckBoxElement.checkBox.positionY = 0.3f;
+    autoTriangulateCheckBoxElement.checkBox.text = "Auto triangulate";
+    autoTriangulateCheckBoxElement.panel = 1;
+    autoTriangulateCheckBoxElement.attachedToMainPanel = true;
+	autoTriangulateCheckBoxElement.type = "checkBox";
+    UIElements.push_back(autoTriangulateCheckBoxElement);//4
 	
 
-	UIElement backfaceCullingCheckBox;
-    backfaceCullingCheckBox.checkBox.positionX = -0.08f;
-    backfaceCullingCheckBox.checkBox.positionY = 0.2f;
-    backfaceCullingCheckBox.checkBox.text = "Backface Culling";
-    backfaceCullingCheckBox.panel = 1;
-    backfaceCullingCheckBox.attachedToMainPanel = true;
-	backfaceCullingCheckBox.type = "checkBox";
-    UIElements["backfaceCullingCheckBox"] = backfaceCullingCheckBox;
-    uiIndex.push_back("backfaceCullingCheckBox");//5
+	UIElement backfaceCullingCheckBoxElement;
+    backfaceCullingCheckBoxElement.checkBox.positionX = -0.08f;
+    backfaceCullingCheckBoxElement.checkBox.positionY = 0.2f;
+    backfaceCullingCheckBoxElement.checkBox.text = "Backface Culling";
+    backfaceCullingCheckBoxElement.panel = 1;
+    backfaceCullingCheckBoxElement.attachedToMainPanel = true;
+	backfaceCullingCheckBoxElement.type = "checkBox";
+    UIElements.push_back(backfaceCullingCheckBoxElement);//5
 
 
-	UIElement modelPanel3DModelsText;
-    modelPanel3DModelsText.text.positionX = -0.05f;
-    modelPanel3DModelsText.text.positionY = 0.08f-0.1f;
-    modelPanel3DModelsText.text.text = "3D Models";
-    modelPanel3DModelsText.text.scale = 0.00022f;
-    modelPanel3DModelsText.text.color = colorData.textBoxColor;
-    modelPanel3DModelsText.panel = 1;
-    modelPanel3DModelsText.attachedToMainPanel = true;
-	modelPanel3DModelsText.type = "text";
-    UIElements["modelPanel3DModelsText"] = modelPanel3DModelsText;
-    uiIndex.push_back("modelPanel3DModelsText");//6
+	UIElement modelPanel3DModelsTextElement;
+    modelPanel3DModelsTextElement.text.positionX = -0.05f;
+    modelPanel3DModelsTextElement.text.positionY = 0.08f-0.1f;
+    modelPanel3DModelsTextElement.text.text = "3D Models";
+    modelPanel3DModelsTextElement.text.scale = 0.00022f;
+    modelPanel3DModelsTextElement.text.color = colorData.textBoxColor;
+    modelPanel3DModelsTextElement.panel = 1;
+    modelPanel3DModelsTextElement.attachedToMainPanel = true;
+	modelPanel3DModelsTextElement.type = "text";
+    UIElements.push_back(modelPanel3DModelsTextElement);//6
 
 	//Load plane button
-	UIElement loadPlaneModelButton;
-    loadPlaneModelButton.button.positionX = 0.0f;
-    loadPlaneModelButton.button.positionY = -0.1f;
-    loadPlaneModelButton.button.positionZ = 0.9f;
-    loadPlaneModelButton.button.width = 0.008f;
-    loadPlaneModelButton.button.height = 0.045f;
-    loadPlaneModelButton.button.color = colorData.buttonColor;
-    loadPlaneModelButton.button.colorHover = colorData.buttonColorHover;
-    loadPlaneModelButton.button.transitionMixVal = 0.0f;
-    loadPlaneModelButton.button.buttonCurveReduce = 7.0f;
-    loadPlaneModelButton.button.text = "";
-    loadPlaneModelButton.button.textRatio = 0.022f;
-    loadPlaneModelButton.panel = 1;
-    loadPlaneModelButton.attachedToMainPanel = true;
-	loadPlaneModelButton.type = "button";
-    UIElements["loadPlaneModelButton"] = loadPlaneModelButton;
-    uiIndex.push_back("loadPlaneModelButton");//7
+	UIElement loadPlaneModelButtonElement;
+    loadPlaneModelButtonElement.button.positionX = 0.0f;
+    loadPlaneModelButtonElement.button.positionY = -0.1f;
+    loadPlaneModelButtonElement.button.positionZ = 0.9f;
+    loadPlaneModelButtonElement.button.width = 0.008f;
+    loadPlaneModelButtonElement.button.height = 0.045f;
+    loadPlaneModelButtonElement.button.color = colorData.buttonColor;
+    loadPlaneModelButtonElement.button.colorHover = colorData.buttonColorHover;
+    loadPlaneModelButtonElement.button.transitionMixVal = 0.0f;
+    loadPlaneModelButtonElement.button.buttonCurveReduce = 7.0f;
+    loadPlaneModelButtonElement.button.text = "";
+    loadPlaneModelButtonElement.button.textRatio = 0.022f;
+    loadPlaneModelButtonElement.panel = 1;
+    loadPlaneModelButtonElement.attachedToMainPanel = true;
+	loadPlaneModelButtonElement.type = "button";
+    UIElements.push_back(loadPlaneModelButtonElement);//7
 
 	//Load sphere button 
-	UIElement loadSphereModelButton;
-    loadSphereModelButton.button.positionX = 0.0f;
-    loadSphereModelButton.button.positionY = -0.2f;
-    loadSphereModelButton.button.positionZ = 0.9f;
-    loadSphereModelButton.button.width = 0.008f;
-    loadSphereModelButton.button.height = 0.045f;
-    loadSphereModelButton.button.color = colorData.buttonColor;
-    loadSphereModelButton.button.colorHover = colorData.buttonColorHover;
-    loadSphereModelButton.button.transitionMixVal = 0.0f;
-    loadSphereModelButton.button.buttonCurveReduce = 7.0f;
-    loadSphereModelButton.button.text = "";
-    loadSphereModelButton.button.textRatio = 0.022f;
-    loadSphereModelButton.panel = 1;
-    loadSphereModelButton.attachedToMainPanel = true;
-	loadSphereModelButton.type = "button";
-    UIElements["loadSphereModelButton"] = loadSphereModelButton;
-	uiIndex.push_back("loadSphereModelButton");//8
+	UIElement loadSphereModelButtonElement;
+    loadSphereModelButtonElement.button.positionX = 0.0f;
+    loadSphereModelButtonElement.button.positionY = -0.2f;
+    loadSphereModelButtonElement.button.positionZ = 0.9f;
+    loadSphereModelButtonElement.button.width = 0.008f;
+    loadSphereModelButtonElement.button.height = 0.045f;
+    loadSphereModelButtonElement.button.color = colorData.buttonColor;
+    loadSphereModelButtonElement.button.colorHover = colorData.buttonColorHover;
+    loadSphereModelButtonElement.button.transitionMixVal = 0.0f;
+    loadSphereModelButtonElement.button.buttonCurveReduce = 7.0f;
+    loadSphereModelButtonElement.button.text = "";
+    loadSphereModelButtonElement.button.textRatio = 0.022f;
+    loadSphereModelButtonElement.panel = 1;
+    loadSphereModelButtonElement.attachedToMainPanel = true;
+	loadSphereModelButtonElement.type = "button";
+	UIElements.push_back(loadSphereModelButtonElement);//8
 
 
-	UIElement loadCustomModelButton;
-    loadCustomModelButton.button.positionX = 0.0f;
-    loadCustomModelButton.button.positionY = -0.3f;
-    loadCustomModelButton.button.positionZ = 0.9f;
-    loadCustomModelButton.button.width = 0.06f;
-    loadCustomModelButton.button.height = 0.04f;
-    loadCustomModelButton.button.color = colorData.buttonColor;
-    loadCustomModelButton.button.colorHover = colorData.buttonColorHover;
-    loadCustomModelButton.button.transitionMixVal = 0.0f;
-    loadCustomModelButton.button.buttonCurveReduce = 10.0f;
-    loadCustomModelButton.button.text = "Custom";
-    loadCustomModelButton.button.textRatio = 0.022f;
-    loadCustomModelButton.panel = 1;
-    loadCustomModelButton.attachedToMainPanel = true;
-    loadCustomModelButton.type = "button";
-    UIElements["loadCustomModelButton"] = loadCustomModelButton;
-    uiIndex.push_back("loadCustomModelButton");//9
+	UIElement loadCustomModelButtonElement;
+    loadCustomModelButtonElement.button.positionX = 0.0f;
+    loadCustomModelButtonElement.button.positionY = -0.3f;
+    loadCustomModelButtonElement.button.positionZ = 0.9f;
+    loadCustomModelButtonElement.button.width = 0.06f;
+    loadCustomModelButtonElement.button.height = 0.04f;
+    loadCustomModelButtonElement.button.color = colorData.buttonColor;
+    loadCustomModelButtonElement.button.colorHover = colorData.buttonColorHover;
+    loadCustomModelButtonElement.button.transitionMixVal = 0.0f;
+    loadCustomModelButtonElement.button.buttonCurveReduce = 10.0f;
+    loadCustomModelButtonElement.button.text = "Custom";
+    loadCustomModelButtonElement.button.textRatio = 0.022f;
+    loadCustomModelButtonElement.panel = 1;
+    loadCustomModelButtonElement.attachedToMainPanel = true;
+    loadCustomModelButtonElement.type = "button";
+    UIElements.push_back(loadCustomModelButtonElement);//9
 
 
      //---------------------------PAINTING PANEL---------------------------
 
-    UIElement addBrushMaskTextureButton;
-    addBrushMaskTextureButton.button.positionX = 0.0f;
-    addBrushMaskTextureButton.button.positionY = 0.9f;
-    addBrushMaskTextureButton.button.positionZ = 0.9f;
-    addBrushMaskTextureButton.button.width = 0.1f;
-    addBrushMaskTextureButton.button.height = 0.04f;
-    addBrushMaskTextureButton.button.color = colorData.buttonColor;
-    addBrushMaskTextureButton.button.colorHover = colorData.buttonColorHover;
-    addBrushMaskTextureButton.button.transitionMixVal = 0.0f;
-    addBrushMaskTextureButton.button.buttonCurveReduce = 10.0f;
-    addBrushMaskTextureButton.button.text = "Add Mask Texture";
-    addBrushMaskTextureButton.button.textRatio = 0.075f;
-    addBrushMaskTextureButton.panel = 3;
-    addBrushMaskTextureButton.attachedToMainPanel = true;
-    addBrushMaskTextureButton.type = "button";
-    UIElements["addBrushMaskTextureButton"] = addBrushMaskTextureButton;
-    uiIndex.push_back("addBrushMaskTextureButton");//10
+    UIElement addBrushMaskTextureButtonElement;
+    addBrushMaskTextureButtonElement.button.positionX = 0.0f;
+    addBrushMaskTextureButtonElement.button.positionY = 0.9f;
+    addBrushMaskTextureButtonElement.button.positionZ = 0.9f;
+    addBrushMaskTextureButtonElement.button.width = 0.1f;
+    addBrushMaskTextureButtonElement.button.height = 0.04f;
+    addBrushMaskTextureButtonElement.button.color = colorData.buttonColor;
+    addBrushMaskTextureButtonElement.button.colorHover = colorData.buttonColorHover;
+    addBrushMaskTextureButtonElement.button.transitionMixVal = 0.0f;
+    addBrushMaskTextureButtonElement.button.buttonCurveReduce = 10.0f;
+    addBrushMaskTextureButtonElement.button.text = "Add Mask Texture";
+    addBrushMaskTextureButtonElement.button.textRatio = 0.075f;
+    addBrushMaskTextureButtonElement.panel = 3;
+    addBrushMaskTextureButtonElement.attachedToMainPanel = true;
+    addBrushMaskTextureButtonElement.type = "button";
+    UIElements.push_back(addBrushMaskTextureButtonElement);//10
 		
-    UIElement useNegativeCheckBox;
-    useNegativeCheckBox.checkBox.positionX = -0.03f;
-    useNegativeCheckBox.checkBox.positionY = 0.45f;
-    useNegativeCheckBox.checkBox.text = "Use Negative";
-    useNegativeCheckBox.panel = 3;
-    useNegativeCheckBox.attachedToMainPanel = true;
-    useNegativeCheckBox.type = "checkBox";
-    UIElements["useNegativeCheckBox"] = useNegativeCheckBox;
-	uiIndex.push_back("useNegativeCheckBox");//11
+    UIElement useNegativeCheckBoxElement;
+    useNegativeCheckBoxElement.checkBox.positionX = -0.03f;
+    useNegativeCheckBoxElement.checkBox.positionY = 0.45f;
+    useNegativeCheckBoxElement.checkBox.text = "Use Negative";
+    useNegativeCheckBoxElement.panel = 3;
+    useNegativeCheckBoxElement.attachedToMainPanel = true;
+    useNegativeCheckBoxElement.type = "checkBox";
+	UIElements.push_back(useNegativeCheckBoxElement);//11
 
-    UIElement maskTextureFileNameText;
-    maskTextureFileNameText.text.positionX = -0.03f;
-    maskTextureFileNameText.text.positionY = 0.37f;
-    maskTextureFileNameText.text.text = "";
-    maskTextureFileNameText.text.scale = 0.00022f;
-    maskTextureFileNameText.text.color = colorData.textColor;
-    maskTextureFileNameText.panel = 3;
-    maskTextureFileNameText.attachedToMainPanel = true;
-    maskTextureFileNameText.type = "text";
-    UIElements["maskTextureFileNameText"] = maskTextureFileNameText;
-    uiIndex.push_back("maskTextureFileNameText");//12
+    UIElement maskTextureFileNameTextElement;
+    maskTextureFileNameTextElement.text.positionX = -0.03f;
+    maskTextureFileNameTextElement.text.positionY = 0.37f;
+    maskTextureFileNameTextElement.text.text = "";
+    maskTextureFileNameTextElement.text.scale = 0.00022f;
+    maskTextureFileNameTextElement.text.color = colorData.textColor;
+    maskTextureFileNameTextElement.panel = 3;
+    maskTextureFileNameTextElement.attachedToMainPanel = true;
+    maskTextureFileNameTextElement.type = "text";
+    UIElements.push_back(maskTextureFileNameTextElement);//12
 	 
 	//Brush size range bar
-    UIElement brushSizeText;
-    brushSizeText.text.positionX = -0.11f;
-    brushSizeText.text.positionY = 0.25f+0.06f-0.035f;
-    brushSizeText.text.text = "Size";
-    brushSizeText.text.scale = 0.00022f;
-    brushSizeText.text.color = colorData.textBoxColor;
-    brushSizeText.panel = 3;
-    brushSizeText.attachedToMainPanel = true;
-    brushSizeText.type = "text";
-    UIElements["brushSizeText"] = brushSizeText;
-    uiIndex.push_back("brushSizeText");//13
+    UIElement brushSizeTextElement;
+    brushSizeTextElement.text.positionX = -0.11f;
+    brushSizeTextElement.text.positionY = 0.25f+0.06f-0.035f;
+    brushSizeTextElement.text.text = "Size";
+    brushSizeTextElement.text.scale = 0.00022f;
+    brushSizeTextElement.text.color = colorData.textBoxColor;
+    brushSizeTextElement.panel = 3;
+    brushSizeTextElement.attachedToMainPanel = true;
+    brushSizeTextElement.type = "text";
+    UIElements.push_back(brushSizeTextElement);//13
 
-	UIElement brushSizeRangeBar;
-	brushSizeRangeBar.rangeBar.positionX = 0.0f;
-	brushSizeRangeBar.rangeBar.positionY = 0.22f+0.02f+0.02f;
-	brushSizeRangeBar.rangeBar.value = 0.0f;
-	brushSizeRangeBar.panel = 3;
-	brushSizeRangeBar.attachedToMainPanel = true;
-	brushSizeRangeBar.type = "rangeBar";
-    UIElements["brushSizeRangeBar"] = brushSizeRangeBar;
-    uiIndex.push_back("brushSizeRangeBar");//14
+	UIElement brushSizeRangeBarElement;
+	brushSizeRangeBarElement.rangeBar.positionX = 0.0f;
+	brushSizeRangeBarElement.rangeBar.positionY = 0.22f+0.02f+0.02f;
+	brushSizeRangeBarElement.rangeBar.value = 0.0f;
+	brushSizeRangeBarElement.panel = 3;
+	brushSizeRangeBarElement.attachedToMainPanel = true;
+	brushSizeRangeBarElement.type = "rangeBar";
+    UIElements.push_back(brushSizeRangeBarElement);//14
 
 	//Brush blur range bar
-    UIElement brushBlurText;
-    brushBlurText.text.positionX = -0.11f;
-    brushBlurText.text.positionY = +0.125f+0.08f-0.035f;
-    brushBlurText.text.text = "Blur";
-    brushBlurText.text.scale = 0.00022f;
-    brushBlurText.text.color = colorData.textBoxColor;
-    brushBlurText.panel = 3;
-    brushBlurText.attachedToMainPanel = true;
-    brushBlurText.type = "text";
-    UIElements["brushBlurText"] = brushBlurText;
-    uiIndex.push_back("brushBlurText");//15
+    UIElement brushBlurTextElement;
+    brushBlurTextElement.text.positionX = -0.11f;
+    brushBlurTextElement.text.positionY = +0.125f+0.08f-0.035f;
+    brushBlurTextElement.text.text = "Blur";
+    brushBlurTextElement.text.scale = 0.00022f;
+    brushBlurTextElement.text.color = colorData.textBoxColor;
+    brushBlurTextElement.panel = 3;
+    brushBlurTextElement.attachedToMainPanel = true;
+    brushBlurTextElement.type = "text";
+    UIElements.push_back(brushBlurTextElement);//15
 
-	UIElement brushBlurRangeBar;
-	brushBlurRangeBar.rangeBar.positionX = 0.0f;
-	brushBlurRangeBar.rangeBar.positionY = 0.09f+0.04f+0.02f;
-	brushBlurRangeBar.rangeBar.value = -0.11f;
-	brushBlurRangeBar.panel = 3;
-	brushBlurRangeBar.attachedToMainPanel = true;
-	brushBlurRangeBar.type = "rangeBar";
-    UIElements["brushBlurRangeBar"] = brushBlurRangeBar;
-    uiIndex.push_back("brushBlurRangeBar");//16
+	UIElement brushBlurRangeBarElement;
+	brushBlurRangeBarElement.rangeBar.positionX = 0.0f;
+	brushBlurRangeBarElement.rangeBar.positionY = 0.09f+0.04f+0.02f;
+	brushBlurRangeBarElement.rangeBar.value = -0.11f;
+	brushBlurRangeBarElement.panel = 3;
+	brushBlurRangeBarElement.attachedToMainPanel = true;
+	brushBlurRangeBarElement.type = "rangeBar";
+    UIElements.push_back(brushBlurRangeBarElement);//16
 
 	//Brush rotation range bar
-    UIElement brushRotationText;
-    brushRotationText.text.positionX = -0.11f;
-    brushRotationText.text.positionY = -0.005f+0.1f-0.035f;
-    brushRotationText.text.text = "Rotation";
-    brushRotationText.text.scale = 0.00022f;
-    brushRotationText.text.color = colorData.textBoxColor;
-    brushRotationText.panel = 3;
-    brushRotationText.attachedToMainPanel = true;
-    brushRotationText.type = "text";
-    UIElements["brushRotationText"] = brushRotationText;
-    uiIndex.push_back("brushRotationText");//17
+    UIElement brushRotationTextElement;
+    brushRotationTextElement.text.positionX = -0.11f;
+    brushRotationTextElement.text.positionY = -0.005f+0.1f-0.035f;
+    brushRotationTextElement.text.text = "Rotation";
+    brushRotationTextElement.text.scale = 0.00022f;
+    brushRotationTextElement.text.color = colorData.textBoxColor;
+    brushRotationTextElement.panel = 3;
+    brushRotationTextElement.attachedToMainPanel = true;
+    brushRotationTextElement.type = "text";
+    UIElements.push_back(brushRotationTextElement);//17
 
-	UIElement brushRotationRangeBar;
-	brushRotationRangeBar.rangeBar.positionX = 0.0f;
-	brushRotationRangeBar.rangeBar.positionY = -0.04f+0.06f+0.02f;
-	brushRotationRangeBar.rangeBar.value = -0.11f;
-	brushRotationRangeBar.panel = 3;
-	brushRotationRangeBar.attachedToMainPanel = true;
-	brushRotationRangeBar.type = "rangeBar";
-    UIElements["brushRotationRangeBar"] = brushRotationRangeBar;
-    uiIndex.push_back("brushRotationRangeBar");//18
+	UIElement brushRotationRangeBarElement;
+	brushRotationRangeBarElement.rangeBar.positionX = 0.0f;
+	brushRotationRangeBarElement.rangeBar.positionY = -0.04f+0.06f+0.02f;
+	brushRotationRangeBarElement.rangeBar.value = -0.11f;
+	brushRotationRangeBarElement.panel = 3;
+	brushRotationRangeBarElement.attachedToMainPanel = true;
+	brushRotationRangeBarElement.type = "rangeBar";
+    UIElements.push_back(brushRotationRangeBarElement);//18
 
 	//Brush opacity range bar
-    UIElement brushOpacityText;
-    brushOpacityText.text.positionX = -0.11f;
-    brushOpacityText.text.positionY = -0.135f+0.12f-0.035f;
-    brushOpacityText.text.text = "Opacity";
-    brushOpacityText.text.scale = 0.00022f;
-    brushOpacityText.text.color = colorData.textBoxColor;
-    brushOpacityText.panel = 3;
-    brushOpacityText.attachedToMainPanel = true;
-    brushOpacityText.type = "text";
-    UIElements["brushOpacityText"] = brushOpacityText;
-    uiIndex.push_back("brushOpacityText");//19
+    UIElement brushOpacityTextElement;
+    brushOpacityTextElement.text.positionX = -0.11f;
+    brushOpacityTextElement.text.positionY = -0.135f+0.12f-0.035f;
+    brushOpacityTextElement.text.text = "Opacity";
+    brushOpacityTextElement.text.scale = 0.00022f;
+    brushOpacityTextElement.text.color = colorData.textBoxColor;
+    brushOpacityTextElement.panel = 3;
+    brushOpacityTextElement.attachedToMainPanel = true;
+    brushOpacityTextElement.type = "text";
+    UIElements.push_back(brushOpacityTextElement);//19
 
-	UIElement brushOpacityRangeBar;
-	brushOpacityRangeBar.rangeBar.positionX = 0.0f;
-	brushOpacityRangeBar.rangeBar.positionY = -0.17f+0.08f+0.02f;
-	brushOpacityRangeBar.rangeBar.value = 0.11f;
-	brushOpacityRangeBar.panel = 3;
-	brushOpacityRangeBar.attachedToMainPanel = true;
-	brushOpacityRangeBar.type = "rangeBar";
-    UIElements["brushOpacityRangeBar"] = brushOpacityRangeBar;
-    uiIndex.push_back("brushOpacityRangeBar");//20
+	UIElement brushOpacityRangeBarElement;
+	brushOpacityRangeBarElement.rangeBar.positionX = 0.0f;
+	brushOpacityRangeBarElement.rangeBar.positionY = -0.17f+0.08f+0.02f;
+	brushOpacityRangeBarElement.rangeBar.value = 0.11f;
+	brushOpacityRangeBarElement.panel = 3;
+	brushOpacityRangeBarElement.attachedToMainPanel = true;
+	brushOpacityRangeBarElement.type = "rangeBar";
+    UIElements.push_back(brushOpacityRangeBarElement);//20
     
 	//Brush spacing range bar
-    UIElement brushSpacingText;
-    brushSpacingText.text.positionX = -0.11f;
-    brushSpacingText.text.positionY = -0.265f+0.14f-0.035f;
-    brushSpacingText.text.text = "Spacing";
-    brushSpacingText.text.scale = 0.00022f;
-    brushSpacingText.text.color = colorData.textBoxColor;
-    brushSpacingText.panel = 3;
-    brushSpacingText.attachedToMainPanel = true;
-    brushSpacingText.type = "text";
-    UIElements["brushSpacingText"] = brushSpacingText;
-    uiIndex.push_back("brushSpacingText");//21
+    UIElement brushSpacingTextElement;
+    brushSpacingTextElement.text.positionX = -0.11f;
+    brushSpacingTextElement.text.positionY = -0.265f+0.14f-0.035f;
+    brushSpacingTextElement.text.text = "Spacing";
+    brushSpacingTextElement.text.scale = 0.00022f;
+    brushSpacingTextElement.text.color = colorData.textBoxColor;
+    brushSpacingTextElement.panel = 3;
+    brushSpacingTextElement.attachedToMainPanel = true;
+    brushSpacingTextElement.type = "text";
+    UIElements.push_back(brushSpacingTextElement);//21
 
-	UIElement brushSpacingRangeBar;
-	brushSpacingRangeBar.rangeBar.positionX = 0.0f;
-	brushSpacingRangeBar.rangeBar.positionY = -0.30f+0.1f+0.02f;
-	brushSpacingRangeBar.rangeBar.value = -0.11f;
-	brushSpacingRangeBar.panel = 3;
-	brushSpacingRangeBar.attachedToMainPanel = true;
-	brushSpacingRangeBar.type = "rangeBar";
-    UIElements["brushSpacingRangeBar"] = brushSpacingRangeBar;
-    uiIndex.push_back("brushSpacingRangeBar");//22
+	UIElement brushSpacingRangeBarElement;
+	brushSpacingRangeBarElement.rangeBar.positionX = 0.0f;
+	brushSpacingRangeBarElement.rangeBar.positionY = -0.30f+0.1f+0.02f;
+	brushSpacingRangeBarElement.rangeBar.value = -0.11f;
+	brushSpacingRangeBarElement.panel = 3;
+	brushSpacingRangeBarElement.attachedToMainPanel = true;
+	brushSpacingRangeBarElement.type = "rangeBar";
+    UIElements.push_back(brushSpacingRangeBarElement);//22
 
 	//Brush spacing range bar
-    UIElement brushBordersText;
-    brushBordersText.text.positionX = -0.11f;
-    brushBordersText.text.positionY = -0.285f + 0.02f;
-    brushBordersText.text.text = "Borders";
-    brushBordersText.text.scale = 0.00022f;
-    brushBordersText.text.color = colorData.textBoxColor;
-    brushBordersText.panel = 3;
-    brushBordersText.attachedToMainPanel = true;
-    brushBordersText.type = "text";
-    UIElements["brushBordersText"] = brushBordersText;
-    uiIndex.push_back("brushBordersText");//23
+    UIElement brushBordersTextElement;
+    brushBordersTextElement.text.positionX = -0.11f;
+    brushBordersTextElement.text.positionY = -0.285f + 0.02f;
+    brushBordersTextElement.text.text = "Borders";
+    brushBordersTextElement.text.scale = 0.00022f;
+    brushBordersTextElement.text.color = colorData.textBoxColor;
+    brushBordersTextElement.panel = 3;
+    brushBordersTextElement.attachedToMainPanel = true;
+    brushBordersTextElement.type = "text";
+    UIElements.push_back(brushBordersTextElement);//23
 
-	UIElement brushBordersRangeBar;
-	brushBordersRangeBar.rangeBar.positionX = 0.0f;
-	brushBordersRangeBar.rangeBar.positionY = -0.31f+0.02f;
-	brushBordersRangeBar.rangeBar.value = 0.06f;
-	brushBordersRangeBar.panel = 3;
-	brushBordersRangeBar.attachedToMainPanel = true;
-	brushBordersRangeBar.type = "rangeBar";
-    UIElements["brushBordersRangeBar"] = brushBordersRangeBar;
-    uiIndex.push_back("brushBordersRangeBar");//24
+	UIElement brushBordersRangeBarElement;
+	brushBordersRangeBarElement.rangeBar.positionX = 0.0f;
+	brushBordersRangeBarElement.rangeBar.positionY = -0.31f+0.02f;
+	brushBordersRangeBarElement.rangeBar.value = 0.06f;
+	brushBordersRangeBarElement.panel = 3;
+	brushBordersRangeBarElement.attachedToMainPanel = true;
+	brushBordersRangeBarElement.type = "rangeBar";
+    UIElements.push_back(brushBordersRangeBarElement);//24
 
-	UIElement mirrorXCheckBox;
-    mirrorXCheckBox.checkBox.positionX = -0.16f;
-    mirrorXCheckBox.checkBox.positionY = 0.9f;
-    mirrorXCheckBox.checkBox.text = "X";
-    mirrorXCheckBox.panel = 3;
-    mirrorXCheckBox.attachedToMainPanel = false;
-    mirrorXCheckBox.type = "checkBox";
-    UIElements["mirrorXCheckBox"] = mirrorXCheckBox;
-    uiIndex.push_back("mirrorXCheckBox");//25
+	UIElement mirrorXCheckBoxElement;
+    mirrorXCheckBoxElement.checkBox.positionX = -0.16f;
+    mirrorXCheckBoxElement.checkBox.positionY = 0.9f;
+    mirrorXCheckBoxElement.checkBox.text = "X";
+    mirrorXCheckBoxElement.panel = 3;
+    mirrorXCheckBoxElement.attachedToMainPanel = false;
+    mirrorXCheckBoxElement.type = "checkBox";
+    UIElements.push_back(mirrorXCheckBoxElement);//25
 
-	UIElement mirrorYCheckBox;
-    mirrorYCheckBox.checkBox.positionX = -0.10f;
-    mirrorYCheckBox.checkBox.positionY = 0.9f;
-    mirrorYCheckBox.checkBox.text = "Y";
-    mirrorYCheckBox.panel = 3;
-    mirrorYCheckBox.attachedToMainPanel = false;
-    mirrorYCheckBox.type = "checkBox";
-    UIElements["mirrorYCheckBox"] = mirrorYCheckBox;
-    uiIndex.push_back("mirrorYCheckBox");//26
+	UIElement mirrorYCheckBoxElement;
+    mirrorYCheckBoxElement.checkBox.positionX = -0.10f;
+    mirrorYCheckBoxElement.checkBox.positionY = 0.9f;
+    mirrorYCheckBoxElement.checkBox.text = "Y";
+    mirrorYCheckBoxElement.panel = 3;
+    mirrorYCheckBoxElement.attachedToMainPanel = false;
+    mirrorYCheckBoxElement.type = "checkBox";
+    UIElements.push_back(mirrorYCheckBoxElement);//26
 
-	UIElement mirrorZCheckBox;
-    mirrorZCheckBox.checkBox.positionX = -0.04f;
-    mirrorZCheckBox.checkBox.positionY = 0.9f;
-    mirrorZCheckBox.checkBox.text = "Z";
-    mirrorZCheckBox.panel = 3;
-    mirrorZCheckBox.attachedToMainPanel = false;
-    mirrorZCheckBox.type = "checkBox";
-    UIElements["mirrorZCheckBox"] = mirrorZCheckBox;
-    uiIndex.push_back("mirrorZCheckBox");//27
+	UIElement mirrorZCheckBoxElement;
+    mirrorZCheckBoxElement.checkBox.positionX = -0.04f;
+    mirrorZCheckBoxElement.checkBox.positionY = 0.9f;
+    mirrorZCheckBoxElement.checkBox.text = "Z";
+    mirrorZCheckBoxElement.panel = 3;
+    mirrorZCheckBoxElement.attachedToMainPanel = false;
+    mirrorZCheckBoxElement.type = "checkBox";
+    UIElements.push_back(mirrorZCheckBoxElement);//27
 	
     //---------------------------EXPORT PANEL---------------------------
 
 	
-    UIElement exportingPathTextBox;
-    exportingPathTextBox.textBox.position_x = 0.0f;
-    exportingPathTextBox.textBox.position_y = 0.6f;
-    exportingPathTextBox.textBox.position_z = 0.9f;
-    exportingPathTextBox.textBox.width = 0.12;
-    exportingPathTextBox.textBox.height = 0.03;
-    exportingPathTextBox.textBox.text = "Choose Destination Path";
-    exportingPathTextBox.panel = 4;
-    exportingPathTextBox.attachedToMainPanel = true;
-	exportingPathTextBox.type = "textBox";
-    UIElements["exportingPathTextBox"] = exportingPathTextBox;
-    uiIndex.push_back("exportingPathTextBox");//28
+    UIElement exportingPathTextBoxElement;
+    exportingPathTextBoxElement.textBox.position_x = 0.0f;
+    exportingPathTextBoxElement.textBox.position_y = 0.6f;
+    exportingPathTextBoxElement.textBox.position_z = 0.9f;
+    exportingPathTextBoxElement.textBox.width = 0.12;
+    exportingPathTextBoxElement.textBox.height = 0.03;
+    exportingPathTextBoxElement.textBox.text = "Choose Destination Path";
+    exportingPathTextBoxElement.panel = 4;
+    exportingPathTextBoxElement.attachedToMainPanel = true;
+	exportingPathTextBoxElement.type = "textBox";
+    UIElements.push_back(exportingPathTextBoxElement);//28
 
-    UIElement exportingFolderNameTextBox;
-    exportingFolderNameTextBox.textBox.position_x = 0.0f;
-    exportingFolderNameTextBox.textBox.position_y = 0.5f;
-    exportingFolderNameTextBox.textBox.position_z = 0.9f;
-    exportingFolderNameTextBox.textBox.width = 0.12;
-    exportingFolderNameTextBox.textBox.height = 0.03;
-    exportingFolderNameTextBox.textBox.text = "LP_Export";
-    exportingFolderNameTextBox.panel = 4;
-    exportingFolderNameTextBox.attachedToMainPanel = true;
-    exportingFolderNameTextBox.type = "textBox";
-    UIElements["exportingFolderNameTextBox"] = exportingFolderNameTextBox;
-    uiIndex.push_back("exportingFolderNameTextBox");//29
+    UIElement exportingFolderNameTextBoxElement;
+    exportingFolderNameTextBoxElement.textBox.position_x = 0.0f;
+    exportingFolderNameTextBoxElement.textBox.position_y = 0.5f;
+    exportingFolderNameTextBoxElement.textBox.position_z = 0.9f;
+    exportingFolderNameTextBoxElement.textBox.width = 0.12;
+    exportingFolderNameTextBoxElement.textBox.height = 0.03;
+    exportingFolderNameTextBoxElement.textBox.text = "LP_Export";
+    exportingFolderNameTextBoxElement.panel = 4;
+    exportingFolderNameTextBoxElement.attachedToMainPanel = true;
+    exportingFolderNameTextBoxElement.type = "textBox";
+    UIElements.push_back(exportingFolderNameTextBoxElement);//29
 
-    UIElement jpgCheckBox;
-    jpgCheckBox.checkBox.positionX = -0.11f;
-    jpgCheckBox.checkBox.positionY = 0.4f;
-    jpgCheckBox.checkBox.text = "";
-    jpgCheckBox.panel = 4;
-    jpgCheckBox.attachedToMainPanel = true;
-    jpgCheckBox.type = "checkBox";
-    UIElements["jpgCheckBox"] = jpgCheckBox;
-    uiIndex.push_back("jpgCheckBox");//30
+    UIElement jpgCheckBoxElement;
+    jpgCheckBoxElement.checkBox.positionX = -0.11f;
+    jpgCheckBoxElement.checkBox.positionY = 0.4f;
+    jpgCheckBoxElement.checkBox.text = "";
+    jpgCheckBoxElement.panel = 4;
+    jpgCheckBoxElement.attachedToMainPanel = true;
+    jpgCheckBoxElement.type = "checkBox";
+    UIElements.push_back(jpgCheckBoxElement);//30
 
-    UIElement pngCheckBox;
-    pngCheckBox.checkBox.positionX = 0.05f;
-    pngCheckBox.checkBox.positionY = 0.4f;
-    pngCheckBox.checkBox.text = "";
-    pngCheckBox.panel = 4;
-    pngCheckBox.attachedToMainPanel = true;
-    pngCheckBox.type = "checkBox";
-    UIElements["pngCheckBox"] = pngCheckBox;
-    uiIndex.push_back("pngCheckBox");//31
+    UIElement pngCheckBoxElement;
+    pngCheckBoxElement.checkBox.positionX = 0.05f;
+    pngCheckBoxElement.checkBox.positionY = 0.4f;
+    pngCheckBoxElement.checkBox.text = "";
+    pngCheckBoxElement.panel = 4;
+    pngCheckBoxElement.attachedToMainPanel = true;
+    pngCheckBoxElement.type = "checkBox";
+    UIElements.push_back(pngCheckBoxElement);//31
 
-    UIElement downloadButton;
-    downloadButton.button.positionX = 0.0f;
-    downloadButton.button.positionY = 0.2f;
-    downloadButton.button.positionZ = 0.9f;
-    downloadButton.button.width = 0.1f;
-    downloadButton.button.height = 0.04f;
-    downloadButton.button.color = colorData.buttonColor;
-    downloadButton.button.colorHover = colorData.buttonColorHover;
-    downloadButton.button.transitionMixVal = 0.0f;
-    downloadButton.button.buttonCurveReduce = 10.0f;
-    downloadButton.button.text = "Download";
-    downloadButton.button.textRatio = 0.045f;
-    downloadButton.panel = 4;
-    downloadButton.attachedToMainPanel = true;
-    downloadButton.type = "button";
-    UIElements["downloadButton"] = downloadButton;
-    uiIndex.push_back("downloadButton");//32
+    UIElement downloadButtonElement;
+    downloadButtonElement.button.positionX = 0.0f;
+    downloadButtonElement.button.positionY = 0.2f;
+    downloadButtonElement.button.positionZ = 0.9f;
+    downloadButtonElement.button.width = 0.1f;
+    downloadButtonElement.button.height = 0.04f;
+    downloadButtonElement.button.color = colorData.buttonColor;
+    downloadButtonElement.button.colorHover = colorData.buttonColorHover;
+    downloadButtonElement.button.transitionMixVal = 0.0f;
+    downloadButtonElement.button.buttonCurveReduce = 10.0f;
+    downloadButtonElement.button.text = "Download";
+    downloadButtonElement.button.textRatio = 0.045f;
+    downloadButtonElement.panel = 4;
+    downloadButtonElement.attachedToMainPanel = true;
+    downloadButtonElement.type = "button";
+    UIElements.push_back(downloadButtonElement);//32
 
 
 
 	//-------------ICONS-------------
 
 
-    UIElement jpgIcon;
-    jpgIcon.icon.positionX = -0.06f;
-    jpgIcon.icon.positionY = 0.4f;
-    jpgIcon.icon.positionZ = 0.9f;
-    jpgIcon.icon.width = 0.05f;
-    jpgIcon.icon.height = 0.065f;
-    jpgIcon.icon.color = colorData.iconColor;
-    jpgIcon.icon.colorHover = colorData.iconColorHover;
-    jpgIcon.icon.mixVal = 0.0f;
-    jpgIcon.icon.icon = icons.JpgFile;
-    jpgIcon.panel = 4;
-    jpgIcon.attachedToMainPanel = true;
-    jpgIcon.type = "icon";
-    UIElements["jpgIcon"] = jpgIcon;
-    uiIndex.push_back("jpgIcon");//33
+    UIElement jpgIconElement;
+    jpgIconElement.icon.positionX = -0.06f;
+    jpgIconElement.icon.positionY = 0.4f;
+    jpgIconElement.icon.positionZ = 0.9f;
+    jpgIconElement.icon.width = 0.05f;
+    jpgIconElement.icon.height = 0.065f;
+    jpgIconElement.icon.color = colorData.iconColor;
+    jpgIconElement.icon.colorHover = colorData.iconColorHover;
+    jpgIconElement.icon.mixVal = 0.0f;
+    jpgIconElement.icon.icon = icons.JpgFile;
+    jpgIconElement.panel = 4;
+    jpgIconElement.attachedToMainPanel = true;
+    jpgIconElement.type = "icon";
+    UIElements.push_back(jpgIconElement);//33
 
-    UIElement pngIcon;
-    pngIcon.icon.positionX = +0.1f;
-    pngIcon.icon.positionY = 0.4f;
-    pngIcon.icon.positionZ = 0.9f;
-    pngIcon.icon.width = 0.05f;
-    pngIcon.icon.height = 0.065f;
-    pngIcon.icon.color = colorData.iconColor;
-    pngIcon.icon.colorHover = colorData.iconColorHover;
-    pngIcon.icon.mixVal = 0.0f;
-    pngIcon.icon.icon = icons.PngFile;
-    pngIcon.panel = 4;
-    pngIcon.attachedToMainPanel = true;
-    pngIcon.type = "icon";
-    UIElements["pngIcon"] = pngIcon;
-    uiIndex.push_back("pngIcon");//34
+    UIElement pngIconElement;
+    pngIconElement.icon.positionX = +0.1f;
+    pngIconElement.icon.positionY = 0.4f;
+    pngIconElement.icon.positionZ = 0.9f;
+    pngIconElement.icon.width = 0.05f;
+    pngIconElement.icon.height = 0.065f;
+    pngIconElement.icon.color = colorData.iconColor;
+    pngIconElement.icon.colorHover = colorData.iconColorHover;
+    pngIconElement.icon.mixVal = 0.0f;
+    pngIconElement.icon.icon = icons.PngFile;
+    pngIconElement.panel = 4;
+    pngIconElement.attachedToMainPanel = true;
+    pngIconElement.type = "icon";
+    UIElements.push_back(pngIconElement);//34
 
-	UIElement folderIcon;
-    folderIcon.icon.positionX = 0.1f;
-    folderIcon.icon.positionY = 0.6f;
-    folderIcon.icon.positionZ = 0.99f;
-    folderIcon.icon.width = 0.02f;
-    folderIcon.icon.height = 0.04f;
-    folderIcon.icon.color = colorData.iconColor;
-    folderIcon.icon.colorHover = colorData.iconColorHover;
-    folderIcon.icon.mixVal = 0.0f;
-    folderIcon.icon.icon = icons.Folder;
-    folderIcon.panel = 1;
-    folderIcon.attachedToMainPanel = true;
-    folderIcon.type = "icon";
-    UIElements["folderIcon"] = folderIcon;
-    uiIndex.push_back("folderIcon");//35
+	UIElement folderIconElement;
+    folderIconElement.icon.positionX = 0.1f;
+    folderIconElement.icon.positionY = 0.6f;
+    folderIconElement.icon.positionZ = 0.99f;
+    folderIconElement.icon.width = 0.02f;
+    folderIconElement.icon.height = 0.04f;
+    folderIconElement.icon.color = colorData.iconColor;
+    folderIconElement.icon.colorHover = colorData.iconColorHover;
+    folderIconElement.icon.mixVal = 0.0f;
+    folderIconElement.icon.icon = icons.Folder;
+    folderIconElement.panel = 1;
+    folderIconElement.attachedToMainPanel = true;
+    folderIconElement.type = "icon";
+    UIElements.push_back(folderIconElement);//35
 
-	UIElement planeIcon;
-    planeIcon.icon.positionX = 0.0f;
-    planeIcon.icon.positionY = -0.1f;
-    planeIcon.icon.positionZ = 0.99f;
-    planeIcon.icon.width = 0.025f;
-    planeIcon.icon.height = 0.035f;
-    planeIcon.icon.color = colorData.iconColor;
-    planeIcon.icon.colorHover = colorData.iconColorHover;
-    planeIcon.icon.mixVal = 0.0f;
-    planeIcon.icon.icon = icons.Panel;
-    planeIcon.panel = 1;
-    planeIcon.attachedToMainPanel = true;
-	planeIcon.type = "icon";
-    UIElements["planeIcon"] = planeIcon;
-    uiIndex.push_back("planeIcon");//36
+	UIElement planeIconElement;
+    planeIconElement.icon.positionX = 0.0f;
+    planeIconElement.icon.positionY = -0.1f;
+    planeIconElement.icon.positionZ = 0.99f;
+    planeIconElement.icon.width = 0.025f;
+    planeIconElement.icon.height = 0.035f;
+    planeIconElement.icon.color = colorData.iconColor;
+    planeIconElement.icon.colorHover = colorData.iconColorHover;
+    planeIconElement.icon.mixVal = 0.0f;
+    planeIconElement.icon.icon = icons.Panel;
+    planeIconElement.panel = 1;
+    planeIconElement.attachedToMainPanel = true;
+	planeIconElement.type = "icon";
+    UIElements.push_back(planeIconElement);//36
 
-    UIElement sphereIcon;
-    sphereIcon.icon.positionX = -0.002f;
-    sphereIcon.icon.positionY = -0.2f;
-    sphereIcon.icon.positionZ = 0.99f;
-    sphereIcon.icon.width = 0.03f;
-    sphereIcon.icon.height = 0.04f;
-    sphereIcon.icon.color = colorData.iconColor;
-    sphereIcon.icon.colorHover = colorData.iconColorHover;
-    sphereIcon.icon.mixVal = 0.0f;
-    sphereIcon.icon.icon = icons.Sphere;
-    sphereIcon.panel = 1;
-    sphereIcon.attachedToMainPanel = true;
-	sphereIcon.type = "icon";
-    UIElements["sphereIcon"] = sphereIcon;
-    uiIndex.push_back("sphereIcon");//37
+    UIElement sphereIconElement;
+    sphereIconElement.icon.positionX = -0.002f;
+    sphereIconElement.icon.positionY = -0.2f;
+    sphereIconElement.icon.positionZ = 0.99f;
+    sphereIconElement.icon.width = 0.03f;
+    sphereIconElement.icon.height = 0.04f;
+    sphereIconElement.icon.color = colorData.iconColor;
+    sphereIconElement.icon.colorHover = colorData.iconColorHover;
+    sphereIconElement.icon.mixVal = 0.0f;
+    sphereIconElement.icon.icon = icons.Sphere;
+    sphereIconElement.panel = 1;
+    sphereIconElement.attachedToMainPanel = true;
+	sphereIconElement.type = "icon";
+    UIElements.push_back(sphereIconElement);//37
 
-	UI ui;
-	ui.uiElements = UIElements;
-	ui.uiIndex = uiIndex; 
-
-	return ui;
+	return UIElements;
 }

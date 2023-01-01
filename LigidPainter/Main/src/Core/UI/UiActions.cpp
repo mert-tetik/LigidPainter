@@ -53,7 +53,7 @@ bool maskPanelSliderPressed;
 
 bool buttonGetInput = true;
 bool buttonPressed = false;
-UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover, UI &UIElements) {
+UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover, std::vector<UIElement> &UIElements) {
     LigidPainter ligid;
 	isFirstClickDoneInside(window ,callbackData,textureDemonstratorBoundariesHover);
 
@@ -62,22 +62,22 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
 				buttonGetInput = false;
 				buttonPressed = true;
-				if (UIElements.uiElements["brushSizeRangeBar"].rangeBar.hover) {
+				if (UIElements[UIbrushSizeRangeBar].rangeBar.hover) {
 					brushSizeRangeBarPressed = true;
 				}
-				else if (UIElements.uiElements["brushBlurRangeBar"].rangeBar.hover) {
+				else if (UIElements[UIbrushBlurRangeBar].rangeBar.hover) {
 					brushBlurRangeBarPressed = true;
 				}
-				else if (UIElements.uiElements["brushRotationRangeBar"].rangeBar.hover) {
+				else if (UIElements[UIbrushRotationRangeBar].rangeBar.hover) {
 					brushRotationRangeBarPressed = true;
 				}
-				else if (UIElements.uiElements["brushOpacityRangeBar"].rangeBar.hover) {
+				else if (UIElements[UIbrushOpacityRangeBar].rangeBar.hover) {
 					brushOpacityRangeBarPressed = true;
 				}
-				else if (UIElements.uiElements["brushSpacingRangeBar"].rangeBar.hover) {
+				else if (UIElements[UIbrushSpacingRangeBar].rangeBar.hover) {
 					brushSpacingRangeBarPressed = true;
 				}
-				else if (UIElements.uiElements["brushBordersRangeBar"].rangeBar.hover) {
+				else if (UIElements[UIbrushBordersRangeBar].rangeBar.hover) {
 					brushBordersRangeBarPressed = true;
 				}
 				else if (callbackData.colorBoxPickerEnter) {
@@ -101,11 +101,10 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 			buttonGetInput = true;
 			if (buttonPressed) {
 				//Check mouse hover
-				if (UIElements.uiElements["addBrushMaskTextureButton"].button.hover)
+				if (UIElements[UIaddBrushMaskTextureButton].button.hover)
 					ligid.addMaskTextureButton();
-				if (UIElements.uiElements["uploadingModelPathTextBox"].textBox.hover){
+				if (UIElements[UIUploadingModelPathTextBox].textBox.hover)
 					ligid.modelFilePathTextBox(); 
-				}
 				if (callbackData.modelPanelButtonEnter)
 					ligid.modelPanelButton();
 				if (callbackData.texturePanelButtonEnter)
@@ -114,38 +113,37 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 					ligid.paintingPanelButton();
 				if (callbackData.exportPanelButtonEnter)
 					ligid.exportPanelButton();
-				if (UIElements.uiElements["loadPlaneModelButton"].button.hover)
+				if (UIElements[UIloadPlaneModelButton].button.hover)
 					ligid.addPlaneButton();
-				if (UIElements.uiElements["loadSphereModelButton"].button.hover)
+				if (UIElements[UIloadSphereModelButton].button.hover)
 					ligid.addSphereButton();
-				if (UIElements.uiElements["autoTriangulateCheckBox"].checkBox.mouseHover)
+				if (UIElements[UIautoTriangulateCheckBox].checkBox.mouseHover)
 					ligid.autoTriangulateCheckBox();
-				if (UIElements.uiElements["backfaceCullingCheckBox"].checkBox.mouseHover)
+				if (UIElements[UIbackfaceCullingCheckBox].checkBox.mouseHover)
 					ligid.backfaceCullingCheckBox();
-				if (UIElements.uiElements["useNegativeCheckBox"].checkBox.mouseHover)
+				if (UIElements[UIuseNegativeCheckBox].checkBox.mouseHover)
 					ligid.useNegativeForDrawingCheckbox();
-				if (UIElements.uiElements["loadModelButton"].button.hover)
+				if (UIElements[UIloadModelButton].button.hover)
 					ligid.loadModelButton();
 				if (callbackData.paintingDropperEnter)
 					ligid.paintingDropper();
-				if (UIElements.uiElements["exportingPathTextBox"].textBox.hover){
+				if (UIElements[UIexportingPathTextBox].textBox.hover)
 					ligid.exportPathTextBox();
-				}
-				if (UIElements.uiElements["exportingFolderNameTextBox"].textBox.hover){
-					UIElements.uiElements["exportingFolderNameTextBox"].textBox.clicked = !UIElements.uiElements["exportingFolderNameTextBox"].textBox.clicked; 
+				if (UIElements[UIexportingFolderNameTextBox].textBox.hover){
+					UIElements[UIexportingFolderNameTextBox].textBox.clicked = !UIElements[UIexportingFolderNameTextBox].textBox.clicked; 
 					ligid.exportFileNameTextBox();
 				}
-				if (UIElements.uiElements["downloadButton"].button.hover)
+				if (UIElements[UIdownloadButton].button.hover)
 					ligid.exportDownloadButtonEnter();
-				if (UIElements.uiElements["jpgCheckBox"].checkBox.mouseHover)
+				if (UIElements[UIjpgCheckBox].checkBox.mouseHover)
 					ligid.exportExtJPGCheckBox();
-				if (UIElements.uiElements["pngCheckBox"].checkBox.mouseHover)
+				if (UIElements[UIpngCheckBox].checkBox.mouseHover)
 					ligid.exportExtPNGCheckBox();
-				if (UIElements.uiElements["mirrorXCheckBox"].checkBox.mouseHover)
+				if (UIElements[UImirrorXCheckBox].checkBox.mouseHover)
 					ligid.mirrorXCheckBox();
-				if (UIElements.uiElements["mirrorYCheckBox"].checkBox.mouseHover)
+				if (UIElements[UImirrorYCheckBox].checkBox.mouseHover)
 					ligid.mirrorYCheckBox();
-				if (UIElements.uiElements["mirrorZCheckBox"].checkBox.mouseHover)
+				if (UIElements[UImirrorZCheckBox].checkBox.mouseHover)
 					ligid.mirrorZCheckBox();
 				if(callbackData.colorBoxEnter && colorBoxFirstPress)
 					ligid.colorBox();

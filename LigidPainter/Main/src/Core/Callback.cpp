@@ -170,7 +170,7 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData,float brushSizeRangeBarValue,float colorBoxPickerValue_x, 
 float colorBoxPickerValue_y,float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, bool enablePanelMovement, float brushRotationRangeBarValue, 
 float brushOpacityRangeBarValue, float brushSpacingRangeBarValue, float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,
-bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue,bool texturePanelButtonHover,UI &uiMaterials)
+bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue,bool texturePanelButtonHover,std::vector<UIElement> &uiElements)
 {
 	CallbckData callbk;
 	
@@ -181,7 +181,7 @@ bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,fl
 
 	panelCheck(window,xpos,screenSizeX,enablePanelMovement);
 	
-	buttonCheck(window, xpos, ypos, panelData ,brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,brushMaskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue, texturePanelButtonHover,uiMaterials);
+	buttonCheck(window, xpos, ypos, panelData ,brushSizeRangeBarValue, colorBoxPickerValue_x, colorBoxPickerValue_y, colorBoxColorRangeBarValue, brushBlurRangeBarValue, brushRotationRangeBarValue, brushOpacityRangeBarValue, brushSpacingRangeBarValue,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,brushMaskPanelMaskHover,cursors,paintingDropperPressed,brushBorderRangeBarValue, texturePanelButtonHover,uiElements);
 	
 
 	xoffset = xpos - lastX;
@@ -275,7 +275,7 @@ void Callback::panelCheck(GLFWwindow* window, double mouseXpos, int screenSizeX,
 		}
 	}
 }
-void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y,float colorBoxColorRangeBarValue,float brushBlurRangeBarValue,float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue,bool texturePanelButtonHover,UI &uiMaterials) {
+void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y,float colorBoxColorRangeBarValue,float brushBlurRangeBarValue,float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue,bool texturePanelButtonHover,std::vector<UIElement> &uiElements) {
 	UserInterface ui;
 
 	float centerDivider;
@@ -298,15 +298,14 @@ void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos
 
 
 	if(!paintingDropperPressed){
-		for (size_t i = 0; i < uiMaterials.uiIndex.size(); i++)
+		for (size_t i = 0; i < uiElements.size(); i++)
 		{
 			uiElementEnter = false;
-			std::string currentElement = uiMaterials.uiIndex[i];
 
-			std::string currentType = uiMaterials.uiElements[currentElement].type;
+			std::string currentType = uiElements[i].type; 
 
 			bool panelCompatibility;
-			if(uiMaterials.uiElements[currentElement].panel == 1 && panelData.modelPanelActive || uiMaterials.uiElements[currentElement].panel == 2 && panelData.texturePanelActive || uiMaterials.uiElements[currentElement].panel == 3 && panelData.paintingPanelActive || uiMaterials.uiElements[currentElement].panel == 4 && panelData.exportPanelActive || uiMaterials.uiElements[currentElement].panel == 0){
+			if(uiElements[i].panel == 1 && panelData.modelPanelActive || uiElements[i].panel == 2 && panelData.texturePanelActive || uiElements[i].panel == 3 && panelData.paintingPanelActive || uiElements[i].panel == 4 && panelData.exportPanelActive || uiElements[i].panel == 0){
 				panelCompatibility = true;
 			}
 			else{
@@ -314,14 +313,14 @@ void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos
 			}
 			float centerCoords = (panelLoc + std::max(panelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
 		
-			if(uiMaterials.uiElements[currentElement].attachedToMainPanel == false){
+			if(uiElements[i].attachedToMainPanel == false){
 				centerCoords =  panelLoc - 1.0f;
 			}
 
 			if(panelCompatibility){
 				if(currentType == "button"){
-					uiElementEnter = ui.isMouseOnButton(window, uiMaterials.uiElements[currentElement].button.width + 0.02f, uiMaterials.uiElements[currentElement].button.height, centerCoords - screenGapX + uiMaterials.uiElements[currentElement].button.positionX, uiMaterials.uiElements[currentElement].button.positionY, mouseXPos, mouseYPos, movePanel);
-					uiMaterials.uiElements[currentElement].button.hover = uiElementEnter;
+					uiElementEnter = ui.isMouseOnButton(window, uiElements[i].button.width + 0.02f, uiElements[i].button.height, centerCoords - screenGapX + uiElements[i].button.positionX, uiElements[i].button.positionY, mouseXPos, mouseYPos, movePanel);
+					uiElements[i].button.hover = uiElementEnter;
 				}
 			
 				if(currentType == "text"){	
@@ -329,18 +328,18 @@ void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos
 				}
 	
 				if(currentType == "rangeBar"){
-					uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiMaterials.uiElements[currentElement].rangeBar.positionX + uiMaterials.uiElements[currentElement].rangeBar.value, uiMaterials.uiElements[currentElement].rangeBar.positionY, mouseXPos, mouseYPos, movePanel);
-					uiMaterials.uiElements[currentElement].rangeBar.hover = uiElementEnter;
+					uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].rangeBar.positionX + uiElements[i].rangeBar.value, uiElements[i].rangeBar.positionY, mouseXPos, mouseYPos, movePanel);
+					uiElements[i].rangeBar.hover = uiElementEnter;
 				}
 	
 				if(currentType == "textBox"){
-					uiElementEnter = ui.isMouseOnButton(window, uiMaterials.uiElements[currentElement].textBox.width, uiMaterials.uiElements[currentElement].textBox.height, centerCoords - screenGapX + uiMaterials.uiElements[currentElement].textBox.position_x, uiMaterials.uiElements[currentElement].textBox.position_y, mouseXPos, mouseYPos, movePanel);
-					uiMaterials.uiElements[currentElement].textBox.hover = uiElementEnter;
+					uiElementEnter = ui.isMouseOnButton(window, uiElements[i].textBox.width, uiElements[i].textBox.height, centerCoords - screenGapX + uiElements[i].textBox.position_x, uiElements[i].textBox.position_y, mouseXPos, mouseYPos, movePanel);
+					uiElements[i].textBox.hover = uiElementEnter;
 				}
 	
 				if(currentType == "checkBox"){
-					uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiMaterials.uiElements[currentElement].checkBox.positionX, uiMaterials.uiElements[currentElement].checkBox.positionY, mouseXPos, mouseYPos, movePanel);
-					uiMaterials.uiElements[currentElement].checkBox.mouseHover = uiElementEnter;
+					uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].checkBox.positionX, uiElements[i].checkBox.positionY, mouseXPos, mouseYPos, movePanel);
+					uiElements[i].checkBox.mouseHover = uiElementEnter;
 				}
 				if(currentType == "icon"){
 				}

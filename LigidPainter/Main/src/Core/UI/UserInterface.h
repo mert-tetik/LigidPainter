@@ -3,6 +3,44 @@
 
 #include <map>
 
+#define UIUploadingModelPathTextBox 0
+#define UIuploadingModelPathText 1
+#define UIloadModelButton 2
+#define UIautoTriangulateCheckBox 3
+#define UIbackfaceCullingCheckBox 4
+#define UImodelPanel3DModelsText 5
+#define UIloadPlaneModelButton 6
+#define UIloadSphereModelButton 7
+#define UIloadCustomModelButton 8
+#define UIaddBrushMaskTextureButton 9
+#define UIuseNegativeCheckBox 10
+#define UImaskTextureFileNameText 11
+#define UIbrushSizeText 12
+#define UIbrushSizeRangeBar 13
+#define UIbrushBlurText 14
+#define UIbrushBlurRangeBar 15
+#define UIbrushRotationText 16
+#define UIbrushRotationRangeBar 17
+#define UIbrushOpacityText 18
+#define UIbrushOpacityRangeBar 19
+#define UIbrushSpacingText 20
+#define UIbrushSpacingRangeBar 21
+#define UIbrushBordersText 22
+#define UIbrushBordersRangeBar 23
+#define UImirrorXCheckBox 24
+#define UImirrorYCheckBox 25
+#define UImirrorZCheckBox 26
+#define UIexportingPathTextBox 27 
+#define UIexportingFolderNameTextBox 28
+#define UIjpgCheckBox 29
+#define UIpngCheckBox 30
+#define UIdownloadButton 31
+#define UIjpgIcon 32
+#define UIpngIcon 33
+#define UIfolderIcon 34
+#define UIplaneIcon 35
+#define UIsphereIcon 36
+
 struct ColorData //LigidPainter color palette
 {
 	glm::vec3 LigidPainterThemeColor = glm::vec3(0.043f,0.635f,0.823f);
@@ -162,7 +200,7 @@ struct UI{
 
 class UserInterface {
 public:
-	UI UserInterface::getUiElements(Icons icons);
+	std::vector<UIElement> UserInterface::getUiElements(Icons icons);
 
 	//Visuality
 	void panel(float panelLoc, float movePanel_x);
