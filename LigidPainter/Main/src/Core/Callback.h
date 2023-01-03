@@ -9,7 +9,6 @@ struct CallbckData { //Return from callback
 	bool texturePanelButtonEnter;
 	bool paintingPanelButtonEnter;
 	bool exportPanelButtonEnter;
-	bool textureDemonstratorButtonEnter;
 	bool maskPanelSliderEnter;
 	bool maskPanelEnter;
 	bool uiElementEnter;
@@ -21,11 +20,11 @@ struct CallbckData { //Return from callback
 class Callback {
 public:
 	CallbckData scroll_callback(GLFWwindow* window, double scroll, double scrollx);
-	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker);
+	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer);
 	void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 	void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 
 private:
-	void buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData, float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc, ColorPicker &colorPicker);
+	void buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData,float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc, ColorPicker &colorPicker,TextureDisplayer &textureDisplayer);
 };
 #endif

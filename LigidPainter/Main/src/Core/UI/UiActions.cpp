@@ -13,12 +13,12 @@ int uiactionsMaxScreenWidth;
 int uiactionsMaxScreenHeight;
 
 bool colorBoxFirstPress = false;
-void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover, ColorPicker &colorPicker) {
+void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackData,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer) {
 	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTaken) {
 		if (!callbackData.uiElementEnter && !callbackData.modelPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.paintingPanelButtonEnter 
 		&& !callbackData.exportPanelButtonEnter && !colorPicker.saturationValuePointerHover && !colorPicker.hueValuePointerHover && !colorPicker.hexValTextBoxEnter
 		&& !colorPicker.dropperEnter && !colorPicker.hueValueBarHover && !colorPicker.saturationValueBoxHover && !callbackData.maskPanelEnter 
-		&& !callbackData.textureDemonstratorButtonEnter && !callbackData.mainPanelBoundariesEnter) {
+		&& !textureDisplayer.buttonHover && !callbackData.mainPanelBoundariesEnter && !textureDisplayer.cornerHover ) {
 			noButtonClick = true;
 			colorBoxFirstPress = false;
 		}
@@ -46,17 +46,15 @@ bool brushSpacingRangeBarPressed;
 bool brushBordersRangeBarPressed;
 bool colorBoxColorRangeBarPressed;
 bool colorBoxPickerPressed;
-bool textureDemonstratorButtonPressed;
-bool textureDemonstratorBoundariesPressed;
 bool maskPanelSliderPressed;
 bool mainPanelBoundariesPressed;
 //
 
 bool buttonGetInput = true;
 bool buttonPressed = false;
-UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover, std::vector<UIElement> &UIElements, ColorPicker &colorPicker) {
+void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vector<UIElement> &UIElements, ColorPicker &colorPicker,TextureDisplayer &textureDisplayer) {
     LigidPainter ligid;
-	isFirstClickDoneInside(window ,callbackData,textureDemonstratorBoundariesHover,colorPicker);
+	isFirstClickDoneInside(window ,callbackData,colorPicker,textureDisplayer);
 
 	if (!noButtonClick) {
 		if (buttonGetInput) {
@@ -87,14 +85,14 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 				else if (colorPicker.hueValuePointerHover) {
 					colorBoxColorRangeBarPressed= true;
 				}
-				else if (callbackData.textureDemonstratorButtonEnter) {
-					textureDemonstratorButtonPressed = true;
+				else if (textureDisplayer.buttonHover) {
+					textureDisplayer.buttonPressed = true;
 				}
 				else if(callbackData.maskPanelSliderEnter){
 					maskPanelSliderPressed = true;
 				}
-				else if (textureDemonstratorBoundariesHover) { //Keep at the end
-					textureDemonstratorBoundariesPressed = true;
+				else if (textureDisplayer.cornerHover) { //Keep at the end
+					textureDisplayer.cornerPressed = true;
 				}
 				else if(callbackData.mainPanelBoundariesEnter){
 					mainPanelBoundariesPressed = true;
@@ -170,17 +168,13 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 		brushBordersRangeBarPressed = false;
 		colorBoxPickerPressed = false;
 		colorBoxColorRangeBarPressed = false;
-		textureDemonstratorButtonPressed = false;
-		textureDemonstratorBoundariesPressed = false;
+		textureDisplayer.buttonPressed = false;
+		textureDisplayer.cornerPressed = false;
         maskPanelSliderPressed = false;
 		mainPanelBoundariesPressed = false;
 	}
-    UiActionsData uiData;
-    uiData.textureDemonstratorBoundariesPressed = textureDemonstratorBoundariesPressed;
-    uiData.textureDemonstratorButtonPressed = textureDemonstratorButtonPressed;
-    return uiData;
 }
-bool UiActions::updateRangeValues(GLFWwindow* window, double xOffset,double yOffset, int screenWidth, int screenHeight){
+bool UiActions::updateRangeValues(GLFWwindow* window, double xOffset,double yOffset, int screenWidth, int screenHeight,TextureDisplayer &textureDisplayer){
     bool hideCursor;
     LigidPainter ligid;
     
@@ -208,10 +202,10 @@ bool UiActions::updateRangeValues(GLFWwindow* window, double xOffset,double yOff
 	if (colorBoxPickerPressed) {
 		ligid.colorBoxPickerButton(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
 	}
-	if (textureDemonstratorButtonPressed) {
+	if (textureDisplayer.buttonPressed) {
 		ligid.textureDemonstratorButton(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
 	}
-	if (textureDemonstratorBoundariesPressed) {
+	if (textureDisplayer.cornerPressed) {
 		ligid.textureDemonstratorBoundaries(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
 	}
 	if(maskPanelSliderPressed){
@@ -220,7 +214,7 @@ bool UiActions::updateRangeValues(GLFWwindow* window, double xOffset,double yOff
 	if(mainPanelBoundariesPressed){
 		ligid.mainPanelBoundaries(xOffset,screenWidth);
 	}
-    if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed|| brushBordersRangeBarPressed || textureDemonstratorButtonPressed || textureDemonstratorBoundariesPressed || maskPanelSliderPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
+    if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed|| brushBordersRangeBarPressed || textureDisplayer.buttonPressed || textureDisplayer.cornerPressed || maskPanelSliderPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
         hideCursor = true;
 	}
 	else {

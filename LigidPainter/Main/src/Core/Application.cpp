@@ -109,6 +109,7 @@ string exportFileName = "LP_Export";
 
 std::vector<UIElement> UIElements;
 ColorPicker colorPicker;
+TextureDisplayer textureDisplayer;
 
 
 string modelName;
@@ -168,8 +169,6 @@ bool mirrorUsed = false;
 
 
 //----------RANGE VALUE----------\\.
-float textureDemonstratorButtonPosX = 0.0f;
-float textureDemonstratorButtonPosY = 0.0f;
 
 float maskPanelSliderValue = 0.0f;
 //----------RANGE VALUE----------\\.
@@ -183,15 +182,6 @@ int paintingSpacing = 1;
 //Last mouse position (used in drawToScreen.cpp)
 double lastMouseXpos = 0;
 double lastMouseYpos = 0;
-
-int textureDemonstratorButtonPressCounter = 0;
-bool textureDemonstratorButtonPressClicked = true;
-bool textureDemonstratorButtonPosChanged = false;
-float textureDemonstratorWidth = 0.4f;
-float textureDemonstratorHeight = 0.8f;
-bool textureDemonstratorBoundariesHover = false;
-//bool textureDemonstratorBoundariesHoverR = false;
-//bool textureDemonstratorBoundariesHoverB = false;
 
 bool useNegativeForDrawing;
 
@@ -318,7 +308,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	//Ctrl + h change texture demonstrator's state
 	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_H,NULL,NULL) && action == 1 && shiftTabAltRelease){
-		textureDemonstratorButtonPressClicked = true;
+		textureDisplayer.buttonClicked = true;
 	}
 
 	LigidPainter lp;
@@ -378,13 +368,9 @@ bool LigidPainter::run()
 	Callback callback;
 	Render render;
 	UiActions uiAct;
-	UiActionsData uiActData;
 	InitializedTextures textures;
 	RenderOutData renderOut;
 	Utilities util;
-
-	uiActData.textureDemonstratorBoundariesPressed = false;
-	uiActData.textureDemonstratorButtonPressed = false;
 
 	windowData = glset.getWindow();
 	window = windowData.window;
@@ -456,9 +442,7 @@ bool LigidPainter::run()
 	glset.uniform1i(programs.uiProgram, "currentTexture", 0);
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
 
-
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
-
 
 	//Create screen painting mask Texture
 	GLubyte* screenTexture = new GLubyte[(windowData.windowMaxWidth) * (windowData.windowMaxHeight)];
@@ -497,10 +481,6 @@ bool LigidPainter::run()
 
 	panelData.modelPanelActive = true; //Active the model panel by default
 
-
-	bool textureDemonstratorButtonPressed = false;
-
-	
 	ViewUpdateData viewUpdateData;
 
 	//Framebuffer used in drawToScreen.cpp
@@ -583,27 +563,28 @@ bool LigidPainter::run()
 		}
 
 
-		//Ui actions
-		uiActData = uiAct.uiActions(window,callbackData,textureDemonstratorBoundariesHover,UIElements,colorPicker);
+
 		
 
 
 		//Check if texture demonstrator button clicked
-		if(uiActData.textureDemonstratorButtonPressed){
-			textureDemonstratorButtonPressCounter++;
-			textureDemonstratorButtonPressed = true;
+		if(textureDisplayer.buttonPressed){
+			textureDisplayer.buttonPressedCounter++;
+			textureDisplayer.buttonPressed = true;
 		}
-		if(textureDemonstratorButtonPressCounter < 20 && textureDemonstratorButtonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE && !textureDemonstratorButtonPosChanged){
-			textureDemonstratorButtonPressClicked = true;
-			textureDemonstratorButtonPressed = false;
+		if(textureDisplayer.buttonPressedCounter < 20 && textureDisplayer.buttonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE && !textureDisplayer.positionChanged){
+			textureDisplayer.buttonClicked = true;
+			textureDisplayer.buttonPressed = false;
 
 		}
 		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
-			textureDemonstratorButtonPressCounter = 0;
-			textureDemonstratorButtonPressed = false;
-			textureDemonstratorButtonPosChanged = false;
+			textureDisplayer.buttonPressedCounter = 0;
+			textureDisplayer.buttonPressed = false;
+			textureDisplayer.positionChanged = false;
 		}
 
+		//Ui actions
+		uiAct.uiActions(window,callbackData,UIElements,colorPicker,textureDisplayer);
 
 		//Change color picker's value
 		if((colorPicker.dropperActive && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorPicker.saturationValueBoxClicked && !colorPicker.saturationValuePointerHover) || (colorPicker.hueBarClicked && !colorPicker.saturationValuePointerHover && !colorPicker.huePointerChanging)|| colorPicker.hexValTextBoxGotInput){
@@ -697,7 +678,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -727,7 +708,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,textureDemonstratorWidth,textureDemonstratorHeight,uiActData.textureDemonstratorBoundariesPressed,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer);
 		}
 		
 		//double lastTime = glfwGetTime();
@@ -789,13 +770,13 @@ bool LigidPainter::run()
 
 		//After rendering
 		exportImage = false; //After exporting, set exportImage false so we won't download the texture repeatedly
-		textureDemonstratorButtonPressClicked = false;
+		textureDisplayer.buttonClicked = false;
 
 
 
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer);
 		}
 
 		mirrorClick = false;
@@ -875,23 +856,23 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 	//Texture demonstrator corner hover
 	float range = 0.05f;
-	if(xpos > ((textureDemonstratorButtonPosX + textureDemonstratorWidth) - range) * width/2 && xpos < ((textureDemonstratorButtonPosX + textureDemonstratorWidth) + range) * width/2 && height - ypos > ((textureDemonstratorButtonPosY+1.0f - textureDemonstratorHeight) - range) * height/2 && height - ypos < ((textureDemonstratorButtonPosY+1.0f - textureDemonstratorHeight) + range) * height/2 ){
-		textureDemonstratorBoundariesHover = true;
+	if(xpos > ((textureDisplayer.buttonPosX + textureDisplayer.width) - range) * width/2 && xpos < ((textureDisplayer.buttonPosX + textureDisplayer.width) + range) * width/2 && height - ypos > ((textureDisplayer.buttonPosY+1.0f - textureDisplayer.height) - range) * height/2 && height - ypos < ((textureDisplayer.buttonPosY+1.0f - textureDisplayer.height) + range) * height/2 ){
+		textureDisplayer.cornerHover = true;
 	}
 	else{
-		textureDemonstratorBoundariesHover = false;
+		textureDisplayer.cornerHover = false;
 	}
 
 
 	
-	bool hideCursor = uiAct.updateRangeValues(window,xOffset,yOffset,width,height); 
+	bool hideCursor = uiAct.updateRangeValues(window,xOffset,yOffset,width,height,textureDisplayer); 
 
 
 
 	if(colorPicker.dropperActive){
 		doPainting = false;
 	}
-	else if(callbackData.textureDemonstratorButtonEnter || callbackData.paintingPanelButtonEnter || callbackData.modelPanelButtonEnter || callbackData.exportPanelButtonEnter || callbackData.texturePanelButtonEnter || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover){
+	else if(textureDisplayer.buttonHover || callbackData.paintingPanelButtonEnter || callbackData.modelPanelButtonEnter || callbackData.exportPanelButtonEnter || callbackData.texturePanelButtonEnter || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover){
 		doPainting = false;
 	}
 	else if (hideCursor) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
@@ -1071,18 +1052,18 @@ void LigidPainter::textureDemonstratorButton(double xOffset,double yOffset,int w
 	panelChanging = true;
 	Utilities util;
 
-	textureDemonstratorButtonPosChanged = true;
+	textureDisplayer.positionChanged = true;
 
-	textureDemonstratorButtonPosX -= xOffset / (double)(windowData.windowMaxWidth / 2.0f);
-	textureDemonstratorButtonPosX = util.restrictBetween(textureDemonstratorButtonPosX,2.0f,0.0f);
-	textureDemonstratorButtonPosY += yOffset / (double)(windowData.windowMaxHeight / 2.0f);
-	textureDemonstratorButtonPosY = util.restrictBetween(textureDemonstratorButtonPosY,0.97f,-1.0f);
+	textureDisplayer.buttonPosX -= xOffset / (double)(windowData.windowMaxWidth / 2.0f);
+	textureDisplayer.buttonPosX = util.restrictBetween(textureDisplayer.buttonPosX,2.0f,0.0f);
+	textureDisplayer.buttonPosY += yOffset / (double)(windowData.windowMaxHeight / 2.0f);
+	textureDisplayer.buttonPosY = util.restrictBetween(textureDisplayer.buttonPosY,0.97f,-1.0f);
 
 }
 void LigidPainter::textureDemonstratorBoundaries(double xOffset,double yOffset,int width,int height) {
 	panelChanging = true;
-	textureDemonstratorWidth -= xOffset / 960.0;
-	textureDemonstratorHeight -= yOffset / 540.0;
+	textureDisplayer.width -= xOffset / 960.0;
+	textureDisplayer.height -= yOffset / 540.0;
 }
 void LigidPainter::brushRotationRangeBar(double xOffset, int width, int height){
 	Utilities util;
@@ -1400,9 +1381,6 @@ RenderData updateRenderData(RenderData renderData,unsigned int depthTexture,int 
 	renderData.paintingMode = paintingMode;
 	renderData.brushSizeIndicator = brushSizeIndicatorSize;
 	renderData.cameraPosChanged = cameraPosChanging;
-	
-	renderData.textureDemonstratorButtonPosX = textureDemonstratorButtonPosX;
-	renderData.textureDemonstratorButtonPosY = textureDemonstratorButtonPosY;
 
 	return renderData;
 }

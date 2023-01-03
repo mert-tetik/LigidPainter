@@ -76,9 +76,8 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 numericModifierArrowColor = glm::vec4(0.6f, 0.6f, 0.6f,0.5f);
 	glm::vec4 numericModifierArrowHoverColor = glm::vec4(0.95f, 0.95f, 0.95f,0.5f);
 
-	glm::vec4 textureDemonstratorButtonColor = glm::vec4(LigidPainterThemeColor,0.5f);
+	glm::vec4 textureDisplayerButtonColor = glm::vec4(LigidPainterThemeColor,0.5f);
 
-	
 	glm::vec4 buttonMaskTxtrPanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 	glm::vec3 chosenBrushMaskTextureColor = glm::vec3(LigidPainterThemeColor);
 	glm::vec3 brushMaskIconColor = glm::vec3(1.0f,1.0f,1.0f);
@@ -224,6 +223,30 @@ struct ColorPicker{
 
 	glm::vec3 hueColorValue = glm::vec3(0, 238.f/255.f, 254.f/255.f);
 	glm::vec3 pickerValue = glm::vec3(68.0f/255.0f, 127.0f/255.0f, 135.0f/255.0f);
+};
+
+struct TextureDisplayer{
+	float buttonPosX;
+	float buttonPosY;
+
+	float width = 0.4f;
+	float height = 0.8f;
+
+	float ndWidth = 0.4f;
+	float ndHeight = 0.8f;
+
+	bool cornerHover;
+	bool cornerPressed;
+	
+	bool positionChanged;
+
+	bool buttonHover;
+	bool buttonPressed;
+	bool buttonClicked;
+
+	bool changeState;
+
+	int buttonPressedCounter = 0;
 };
 
 class UserInterface {

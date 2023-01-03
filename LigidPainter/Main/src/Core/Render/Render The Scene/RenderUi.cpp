@@ -56,24 +56,11 @@ void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &
  	texturePanelButtonMixVal = util.transitionEffect(texturePanelButtonHover,texturePanelButtonMixVal,phaseDifference);
 }
 
-
-bool changeTextureDemonstrator;
-
-float changeTextureDemonstratorWidth = 0.4f;
-float changeTextureDemonstratorHeight = 0.8f;
-
-RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen
-, float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,
-bool textureDemonstratorButtonPressClicked,Icons &icons,
+RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,Programs programs
-,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight,float orgTextureDemonstratorWidth, float orgTextureDemonstratorHeight, 
-SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,float materialsPanelSlideValue,std::vector<UIElement> &UIElements
-,ColorPicker &colorPicker) {
-
-	
-	//---EveryFrame---
-
+,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
+float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -103,33 +90,33 @@ SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskT
 
 
 	//Texture demonstrator transition animation
-	if(textureDemonstratorButtonPressClicked){
-		if(changeTextureDemonstrator){
-			changeTextureDemonstrator = false;
+	if(textureDisplayer.buttonClicked){
+		if(textureDisplayer.changeState){
+			textureDisplayer.changeState = false;
 		}
 		else{
-			changeTextureDemonstrator = true;
+			textureDisplayer.changeState = true;
 		}
 	}
-	if(changeTextureDemonstrator){
-		changeTextureDemonstratorWidth -= 0.035f;
-		changeTextureDemonstratorHeight -= 0.07f;
+	if(textureDisplayer.changeState){
+		textureDisplayer.ndWidth -= 0.035f;
+		textureDisplayer.ndHeight -= 0.07f;
 		
-		if(changeTextureDemonstratorWidth < 0.0f){
-			changeTextureDemonstratorWidth = 0.0f;
+		if(textureDisplayer.ndWidth < 0.0f){
+			textureDisplayer.ndWidth = 0.0f;
 		}
-		if(changeTextureDemonstratorHeight < 0.0f){
-			changeTextureDemonstratorHeight = 0.0f;
+		if(textureDisplayer.ndHeight < 0.0f){
+			textureDisplayer.ndHeight = 0.0f;
 		}
 	}
 	else{
-		changeTextureDemonstratorWidth += 0.035f;
-		changeTextureDemonstratorHeight += 0.07f;
-		if(changeTextureDemonstratorWidth > orgTextureDemonstratorWidth){
-			changeTextureDemonstratorWidth = orgTextureDemonstratorWidth;
+		textureDisplayer.ndWidth += 0.035f;
+		textureDisplayer.ndHeight += 0.07f;
+		if(textureDisplayer.ndWidth > textureDisplayer.width){
+			textureDisplayer.ndWidth = textureDisplayer.width;
 		}
-		if(changeTextureDemonstratorHeight > orgTextureDemonstratorHeight){
-			changeTextureDemonstratorHeight = orgTextureDemonstratorHeight;
+		if(textureDisplayer.ndHeight > textureDisplayer.height){
+			textureDisplayer.ndHeight = textureDisplayer.height;
 		}
 	}
 
@@ -153,7 +140,7 @@ SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskT
 		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.56f);//Export Panel
 
 		//Texture demonstrator	
-		ui.textureDemonstrator(changeTextureDemonstratorWidth,changeTextureDemonstratorHeight,textureDemonstratorButtonPosX - 1.0f +screenGapX,textureDemonstratorButtonPosY,0.9999f); 
+		ui.textureDemonstrator(textureDisplayer.ndWidth,textureDisplayer.ndHeight,textureDisplayer.buttonPosX - 1.0f +screenGapX,textureDisplayer.buttonPosY,0.9999f); 
 
 		//Panel changing button's icons
 		glUseProgram(programs.iconsProgram);
@@ -362,7 +349,7 @@ SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskT
 		}
 		if(panelCompatibility){
 			if(currentType == "button"){
-				glUseProgram(programs.uiProgram);
+				glUseProgram(programs.uiProgram);//TODO : Prevent firm use of glUseProgram
 				ui.box(UIElements[i].button.width, UIElements[i].button.height, centerCoords - screenGapX + UIElements[i].button.positionX, UIElements[i].button.positionY, UIElements[i].button.text, UIElements[i].button.color, UIElements[i].button.textRatio, false, false, UIElements[i].button.positionZ, UIElements[i].button.buttonCurveReduce, UIElements[i].button.colorHover, UIElements[i].button.transitionMixVal); //Add mask texture button
 			}
 			

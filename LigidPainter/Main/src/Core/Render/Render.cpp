@@ -46,14 +46,6 @@ int renderMaxScreenHeight;
 //--------------------RENDER UI --------------------\\
 
 
-
-
-
-
-float orgTextureDemonstratorWidth = 0.4f;
-float orgTextureDemonstratorHeight = 0.8f;
-
-
 unsigned int currentBrushMaskTexture;
 
 
@@ -266,12 +258,11 @@ RenderOutData uiOut;
 glm::vec3 screenHoverPixel;
 
 int paintRenderCounter = 0;
-RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,float textureDemonstratorButtonPosX,
-float textureDemonstratorButtonPosY, bool textureDemonstratorButtonPressClicked,float textureDemonstratorWidth, float textureDemonstratorHeight,
-bool textureDemonstratorBoundariesPressed,Icons &icons,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures, bool renderPlane,bool renderSphere,
+RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
+Icons &icons,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures, bool renderPlane,bool renderSphere,
 PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,
-OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures, bool paintRender,float materialsPanelSlideValue, 
-std::vector<UIElement> &UIElements, ColorPicker &colorPicker) {
+OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
+ColorPicker &colorPicker,TextureDisplayer &textureDisplayer) {
 	GlSet gls;
 	ColorData colorData;
 	Utilities util;
@@ -280,11 +271,6 @@ std::vector<UIElement> &UIElements, ColorPicker &colorPicker) {
 
 	if(model.meshes.size()-1 < currentMaterialIndex){
 		currentMaterialIndex = 0; 
-	}
-	
-	if(textureDemonstratorBoundariesPressed){
-		orgTextureDemonstratorWidth = textureDemonstratorWidth;
-		orgTextureDemonstratorHeight = textureDemonstratorHeight;
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear before rendering
@@ -356,12 +342,11 @@ std::vector<UIElement> &UIElements, ColorPicker &colorPicker) {
 	renderSkyBox(skyBoxShaderData,renderPrograms);
 	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,albedoTextures,renderPrograms,currentMaterialIndex);
 	renderAxisPointer(axisPointerShaderData,renderPrograms);
-	uiOut = renderUi(panelData, renderData, FBOScreen,
-		textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,textureDemonstratorButtonPressClicked,icons
+	uiOut = renderUi(panelData, renderData, FBOScreen,icons
 		,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,
 		brushBlurVal,outShaderData,model,albedoTextures,renderPrograms,currentMaterialIndex,renderMaxScreenWidth,
-		renderMaxScreenHeight,orgTextureDemonstratorWidth, orgTextureDemonstratorHeight, saturationValShaderData,currentBrushMaskTexture,materialsPanelSlideValue,UIElements,
-		colorPicker);
+		renderMaxScreenHeight, saturationValShaderData,currentBrushMaskTexture,materialsPanelSlideValue,UIElements,
+		colorPicker,textureDisplayer);
 
 
 	colorPicker.updatePickerVal = colorPicker.saturationValueValChanged && !colorPicker.hexValTextBoxGotInput; 

@@ -148,9 +148,6 @@ struct RenderData { //GlSet::render
 	bool doPainting; 
 	unsigned int depthTexture;
 	bool paintingMode;
-
-	float textureDemonstratorButtonPosX;
-	float textureDemonstratorButtonPosY;
 };
 class Sphere {
 public:

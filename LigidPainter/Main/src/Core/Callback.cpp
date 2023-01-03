@@ -41,7 +41,6 @@ bool modelPanelButtonEnter;
 bool texturePanelButtonEnter;
 bool exportPanelButtonEnter;
 bool paintingPanelButtonEnter;
-bool textureDemonstratorButtonEnter;
 bool maskPanelSliderEnter;
 bool maskPanelEnter;
 bool mainPanelBoundariesEnter;
@@ -61,7 +60,6 @@ CallbckData preapareCallbackData() {
 	callbk.exportPanelButtonEnter = exportPanelButtonEnter;
 	callbk.cameraPos = cameraPos;
 	callbk.originPos = originPos;
-	callbk.textureDemonstratorButtonEnter = textureDemonstratorButtonEnter;
 	callbk.maskPanelSliderEnter = maskPanelSliderEnter;
 	callbk.maskPanelEnter = maskPanelEnter;
 	callbk.uiElementEnter = uiElementEnter;
@@ -88,10 +86,8 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 	return callbk;
 }
 
-CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, 
-float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, float maskPanelSliderValue,
-bool brushMaskPanelMaskHover,LigidCursors cursors,bool texturePanelButtonHover,
-std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker)
+CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float maskPanelSliderValue,bool brushMaskPanelMaskHover,
+LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer)
 {
 	CallbckData callbk;
 	
@@ -100,7 +96,7 @@ std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker)
 	int screenSizeY;
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
 	
-	buttonCheck(window, xpos, ypos, panelData, textureDemonstratorButtonPosX,textureDemonstratorButtonPosY,maskPanelSliderValue,brushMaskPanelMaskHover,cursors, texturePanelButtonHover,uiElements,mainPanelLoc,colorPicker);	
+	buttonCheck(window, xpos, ypos, panelData,maskPanelSliderValue,brushMaskPanelMaskHover,cursors, texturePanelButtonHover,uiElements,mainPanelLoc,colorPicker,textureDisplayer);	
 
 	xoffset = xpos - lastX;
 	yoffset = lastY - ypos;
@@ -146,7 +142,8 @@ bool panelChangeHover = false;
 bool panelClickTaken = false;
 bool noPanelClick = true;
 
-void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData, float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker) {
+void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData,float maskPanelSliderValue,bool brushMaskPanelMaskHover,
+LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker, TextureDisplayer &textureDisplayer) {
 	UserInterface ui;
 
 	float centerDivider;
@@ -235,7 +232,7 @@ void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos
 
 		mainPanelBoundariesEnter =  ui.isMouseOnButton(window, 0.02f, 0.88f, mainPanelLoc -1.0f + 0.02f, 0.0f, mouseXPos, mouseYPos, false);
 		
-		textureDemonstratorButtonEnter = ui.isMouseOnButton(window, 0.02f,0.045f,(textureDemonstratorButtonPosX+0.005f)-1.0f,textureDemonstratorButtonPosY-0.01f, mouseXPos, mouseYPos, 0);	modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.8f, mouseXPos, mouseYPos);
+		textureDisplayer.buttonHover = ui.isMouseOnButton(window, 0.02f,0.045f,(textureDisplayer.buttonPosX+0.005f)-1.0f,textureDisplayer.buttonPosY-0.01f, mouseXPos, mouseYPos, 0);	modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.8f, mouseXPos, mouseYPos);
 		modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.8f, mouseXPos, mouseYPos);
 		texturePanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.72f, mouseXPos, mouseYPos);
 		paintingPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.64f, mouseXPos, mouseYPos);
@@ -254,7 +251,7 @@ void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos
 	else if(colorPicker.dropperEnter){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
-	else if(textureDemonstratorButtonEnter){
+	else if(textureDisplayer.buttonHover){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if(colorPicker.saturationValuePointerHover || colorPicker.hueValuePointerHover || colorPicker.hexValTextBoxEnter){
