@@ -213,8 +213,8 @@ struct ColorPicker{
 	bool saturationValuePointerChanging;
 	bool huePointerChanging;
 
-	bool updateHueVal;
-	bool updatePickerVal;
+	bool updateHueVal = true;
+	bool updatePickerVal = true;
 
 	bool saturationValueBoxClicked;
 	bool hueBarClicked;
@@ -222,8 +222,8 @@ struct ColorPicker{
 	bool dropperEnter;
 	bool dropperActive;
 
-	glm::vec3 hueColorValue;
-	glm::vec3 pickerValue;
+	glm::vec3 hueColorValue = glm::vec3(0, 238.f/255.f, 254.f/255.f);
+	glm::vec3 pickerValue = glm::vec3(68.0f/255.0f, 127.0f/255.0f, 135.0f/255.0f);
 };
 
 class UserInterface {
