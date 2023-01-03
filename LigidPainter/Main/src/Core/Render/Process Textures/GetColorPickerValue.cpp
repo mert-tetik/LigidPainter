@@ -12,7 +12,7 @@
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"
 
-glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerValue_x, float colorBoxPickerValue_y,  int screenSizeX,  int screenSizeY, glm::vec3 hueVal, Programs programs, int maxScreenWidth,int maxScreenHeight,SaturationValShaderData &saturationValShaderData) {
+glm::vec3 Render::getColorPickerValue(unsigned int FBOScreen, ColorPicker &colorPicker,  int screenSizeX,  int screenSizeY, Programs programs, int maxScreenWidth,int maxScreenHeight,SaturationValShaderData &saturationValShaderData) {
 	std::vector<float> colorBox = { //Render color box into the screen
 	// first triangle
 	 0.0f,  1.0f, 0.0f,1,1,1,1,1,  // top right
@@ -27,7 +27,7 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
     GlSet gl;
 	glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
 	saturationValShaderData.renderTextureProjection = projection;
-	saturationValShaderData.boxColor = hueVal / 255.0f;
+	saturationValShaderData.boxColor = colorPicker.hueColorValue / 255.0f;
     gl.useSaturationValBoxShader(programs.saturationValBoxProgram,saturationValShaderData);
 
 	//Setup
@@ -39,7 +39,7 @@ glm::vec3 Render::getColorBoxValue(unsigned int FBOScreen,float colorBoxPickerVa
 	//Render color box
 	GLubyte* colorBoxPixel = new GLubyte[1 * 1 * 3];//Color val
 	gl.drawArrays(colorBox, false); 
-	glReadPixels(1080.0f - ((colorBoxPickerValue_x * -1.0f + 0.1f) * 5.0f * 1080.0f), (colorBoxPickerValue_y + 0.2f) * 2.5f * 1080.0f, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorBoxPixel);
+	glReadPixels(1080.0f - ((colorPicker.saturationValuePosX * -1.0f + 0.1f) * 5.0f * 1080.0f), (colorPicker.saturationValuePosY + 0.2f) * 2.5f * 1080.0f, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorBoxPixel);
 	//Render color box
 
 	//Finish

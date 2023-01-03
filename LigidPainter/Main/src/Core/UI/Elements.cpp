@@ -196,7 +196,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElement maskTextureFileNameTextElement;
     maskTextureFileNameTextElement.text.positionX = -0.03f;
     maskTextureFileNameTextElement.text.positionY = 0.37f;
-    maskTextureFileNameTextElement.text.text = "";
+    maskTextureFileNameTextElement.text.text = "PlainCircle.png";
     maskTextureFileNameTextElement.text.scale = 0.00022f;
     maskTextureFileNameTextElement.text.color = colorData.textColor;
     maskTextureFileNameTextElement.panel = 3;

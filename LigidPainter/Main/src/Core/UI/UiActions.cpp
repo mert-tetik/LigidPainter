@@ -13,18 +13,17 @@ int uiactionsMaxScreenWidth;
 int uiactionsMaxScreenHeight;
 
 bool colorBoxFirstPress = false;
-void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover) {
+void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover, ColorPicker &colorPicker) {
 	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTaken) {
 		if (!callbackData.uiElementEnter && !callbackData.modelPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.paintingPanelButtonEnter 
-		&& !callbackData.exportPanelButtonEnter && !callbackData.colorBoxPickerEnter && !callbackData.colorBoxColorRangeBarEnter && !callbackData.hexValueTextboxEnter
-		&& !callbackData.paintingDropperEnter && !callbackData.hueBarEnter && !callbackData.colorBoxEnter && !callbackData.maskPanelEnter 
+		&& !callbackData.exportPanelButtonEnter && !colorPicker.saturationValuePointerHover && !colorPicker.hueValuePointerHover && !colorPicker.hexValTextBoxEnter
+		&& !colorPicker.dropperEnter && !colorPicker.hueValueBarHover && !colorPicker.saturationValueBoxHover && !callbackData.maskPanelEnter 
 		&& !callbackData.textureDemonstratorButtonEnter && !callbackData.mainPanelBoundariesEnter) {
 			noButtonClick = true;
 			colorBoxFirstPress = false;
-
 		}
 		else {
-			if(callbackData.colorBoxEnter){
+			if(colorPicker.saturationValueBoxHover){
 				colorBoxFirstPress = true;
 			}
 			else{
@@ -55,9 +54,9 @@ bool mainPanelBoundariesPressed;
 
 bool buttonGetInput = true;
 bool buttonPressed = false;
-UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover, std::vector<UIElement> &UIElements) {
+UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,bool textureDemonstratorBoundariesHover, std::vector<UIElement> &UIElements, ColorPicker &colorPicker) {
     LigidPainter ligid;
-	isFirstClickDoneInside(window ,callbackData,textureDemonstratorBoundariesHover);
+	isFirstClickDoneInside(window ,callbackData,textureDemonstratorBoundariesHover,colorPicker);
 
 	if (!noButtonClick) {
 		if (buttonGetInput) {
@@ -82,10 +81,10 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 				else if (UIElements[UIbrushBordersRangeBar].rangeBar.hover) {
 					brushBordersRangeBarPressed = true;
 				}
-				else if (callbackData.colorBoxPickerEnter) {
+				else if (colorPicker.saturationValuePointerHover) {
 					colorBoxPickerPressed = true;
 				}
-				else if (callbackData.colorBoxColorRangeBarEnter) {
+				else if (colorPicker.hueValuePointerHover) {
 					colorBoxColorRangeBarPressed= true;
 				}
 				else if (callbackData.textureDemonstratorButtonEnter) {
@@ -130,7 +129,7 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 					ligid.useNegativeForDrawingCheckbox();
 				if (UIElements[UIloadModelButton].button.hover)
 					ligid.loadModelButton();
-				if (callbackData.paintingDropperEnter)
+				if (colorPicker.dropperEnter)
 					ligid.paintingDropper();
 				if (UIElements[UIexportingPathTextBox].textBox.hover)
 					ligid.exportPathTextBox();
@@ -150,13 +149,13 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 					ligid.mirrorYCheckBox();
 				if (UIElements[UImirrorZCheckBox].checkBox.mouseHover)
 					ligid.mirrorZCheckBox();
-				if(callbackData.colorBoxEnter && colorBoxFirstPress)
+				if(colorPicker.saturationValueBoxHover&& colorBoxFirstPress)
 					ligid.colorBox();
-				if(callbackData.hueBarEnter)
+				if(colorPicker.hueValueBarHover)
 					ligid.hueBar();
-				if(callbackData.hexValueTextboxEnter)
+				if(colorPicker.hexValTextBoxEnter)
 					ligid.hexValTextbox();
-				if(callbackData.loadCustomModelEnter)
+				if(UIElements[UIloadCustomModelButton].button.hover)
 					ligid.loadCustomModel();
 			}
 			buttonPressed = false;
@@ -177,7 +176,7 @@ UiActionsData UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,
 		mainPanelBoundariesPressed = false;
 	}
     UiActionsData uiData;
-    uiData.textureDemonstratorBoundariesPressed =textureDemonstratorBoundariesPressed;
+    uiData.textureDemonstratorBoundariesPressed = textureDemonstratorBoundariesPressed;
     uiData.textureDemonstratorButtonPressed = textureDemonstratorButtonPressed;
     return uiData;
 }

@@ -18,6 +18,8 @@
 void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName, OutShaderData outShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,std::vector<UndoActions> &undoList,Programs programs, int maxScreenWidth , int maxScreenHeight) {
 	int maxHistoryHold = 20;
 	
+	//TODO : Check if uv stacking removal algorithm is necessary 
+
 	if(firstPaint){
 		//UNDO
 		Texture txtr;

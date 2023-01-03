@@ -192,11 +192,39 @@ struct UIElement{
 	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
 };
 
-struct UI{
-	std::map<std::string, UIElement> uiElements;
-	std::vector<std::string> uiIndex;
-};
 
+struct ColorPicker{
+	float saturationValuePosX;
+	float saturationValuePosY;
+	float hueValue;
+
+	bool saturationValueBoxHover;
+	bool saturationValuePointerHover;
+	bool hueValueBarHover;
+	bool hueValuePointerHover;
+
+	bool hexValTextBoxEnter;
+	bool hexValTextBoxActive;
+	std::string hexValTextBoxVal = "#408181";
+
+	bool hexValTextBoxGotInput;
+	bool saturationValueValChanged;
+
+	bool saturationValuePointerChanging;
+	bool huePointerChanging;
+
+	bool updateHueVal;
+	bool updatePickerVal;
+
+	bool saturationValueBoxClicked;
+	bool hueBarClicked;
+
+	bool dropperEnter;
+	bool dropperActive;
+
+	glm::vec3 hueColorValue;
+	glm::vec3 pickerValue;
+};
 
 class UserInterface {
 public:

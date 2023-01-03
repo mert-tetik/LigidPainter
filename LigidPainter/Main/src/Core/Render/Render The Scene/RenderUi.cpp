@@ -29,22 +29,12 @@
 
 bool texturePanelButtonHover = false;
 
-//Button mix val
-float exportDownloadButtonMixVal = 0.0f;
-float addMaskTextureButtonMixVal = 0.0f;
-float loadModelButtonMixVal = 0.0f;
-float addPanelButtonMixVal = 0.0f;
-float addSphereButtonMixVal = 0.0f;
-float addAlbedoTextureMixVal = 0.0f;
 float dropperMixVal = 0.0f;
-float exportFileNameTextBoxMixVal = 0.0f;
 float hexValTextboxMixVal = 0.0f;
-float customModelMixVal = 0.0f;
 float texturePanelButtonMixVal = 0.0f;
 
 
-
-void updateButtonColorMixValues(UiData uidata,std::vector<UIElement> &UIElements) {
+void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &colorPicker) {
 	Utilities util;
 
 	const float phaseDifference = 0.1f;
@@ -61,8 +51,8 @@ void updateButtonColorMixValues(UiData uidata,std::vector<UIElement> &UIElements
 		}
 	}
 
- 	dropperMixVal = util.transitionEffect(uidata.dropperEnter,dropperMixVal,phaseDifference);
-	hexValTextboxMixVal = util.transitionEffect(uidata.hexValTextboxPressed,hexValTextboxMixVal,phaseDifference);
+ 	dropperMixVal = util.transitionEffect(colorPicker.dropperEnter,dropperMixVal,phaseDifference);
+	hexValTextboxMixVal = util.transitionEffect(colorPicker.hexValTextBoxActive,hexValTextboxMixVal,phaseDifference);
  	texturePanelButtonMixVal = util.transitionEffect(texturePanelButtonHover,texturePanelButtonMixVal,phaseDifference);
 }
 
@@ -72,13 +62,14 @@ bool changeTextureDemonstrator;
 float changeTextureDemonstratorWidth = 0.4f;
 float changeTextureDemonstratorHeight = 0.8f;
 
-RenderOutData Render::renderUi(PanelData &panelData,UiData& uidata,RenderData& renderData,unsigned int FBOScreen, float brushBlurRangeBarValue, float brushRotationRangeBarValue
-, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,
-bool textureDemonstratorButtonPressClicked,Icons &icons,glm::vec3 colorBoxValue,const char* maskTextureFile,
+RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen
+, float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,
+bool textureDemonstratorButtonPressClicked,Icons &icons,
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
-std::string &colorpickerHexVal,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,
-bool updateHueVal,Programs programs,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight,float orgTextureDemonstratorWidth, float orgTextureDemonstratorHeight, 
-SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int &currentBrushMaskTexture,float materialsPanelSlideValue,std::vector<UIElement> &UIElements) {
+float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,Programs programs
+,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight,float orgTextureDemonstratorWidth, float orgTextureDemonstratorHeight, 
+SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,float materialsPanelSlideValue,std::vector<UIElement> &UIElements
+,ColorPicker &colorPicker) {
 
 	
 	//---EveryFrame---
@@ -145,7 +136,7 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 
 	float screenGapX = ((float)maxScreenWidth - screenSizeX)/(((float)maxScreenWidth)/2.0f)/2.0f; 
 
-	updateButtonColorMixValues(uidata,UIElements);
+	updateButtonColorMixValues(UIElements,colorPicker);
 
 	//Panel
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
@@ -180,14 +171,14 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 		glUseProgram(programs.uiProgram); 
 
 		if(model.meshes.size() == 0){
-			ui.renderText(programs.uiProgram, "Materials of the 3D model", renderData.panelLoc - screenGapX  + 0.095f, 0.8f, 0.00022f);
-			ui.renderText(programs.uiProgram, "will be show up there", renderData.panelLoc - screenGapX  + 0.115f, 0.75f, 0.00022f);
+			ui.renderText(programs.uiProgram, "Materials of the 3D model", renderData.panelLoc - 1.0f - screenGapX  + 0.095f, 0.8f, 0.00022f);
+			ui.renderText(programs.uiProgram, "will be show up there", renderData.panelLoc - 1.0f - screenGapX  + 0.115f, 0.75f, 0.00022f);
 		}
 		for (int i = 0; i < model.meshes.size(); i++)//Render buttons
 		{ 	
 			//Check if mouse is entered the related button
-			bool textureButtonEnter = ui.isMouseOnButton(renderData.window, 0.2f, 0.06f, renderData.panelLoc - screenGapX*2 + 0.205f,0.8f - (i * 0.125f) + materialsPanelSlideValue, mouseXpos, mouseYpos,true);
-			bool textureAddButtonEnter = ui.isMouseOnButton(renderData.window, 0.02f, 0.03f, renderData.panelLoc - screenGapX*2 + 0.3f,0.8f - (i * 0.125f) + materialsPanelSlideValue, mouseXpos, mouseYpos,true);
+			bool textureButtonEnter = ui.isMouseOnButton(renderData.window, 0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX*2 + 0.205f,0.8f - (i * 0.125f) + materialsPanelSlideValue, mouseXpos, mouseYpos,true);
+			bool textureAddButtonEnter = ui.isMouseOnButton(renderData.window, 0.02f, 0.03f, renderData.panelLoc - 1.0f - screenGapX*2 + 0.3f,0.8f - (i * 0.125f) + materialsPanelSlideValue, mouseXpos, mouseYpos,true);
 			
 			if(textureButtonEnter){
 				//Hover
@@ -207,12 +198,12 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 				}
 
 				//Button (Hover)
-				ui.box(0.2f, 0.06f, renderData.panelLoc - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, colorData.buttonColor, 0.048f, true, false, 0.5f, 10000, colorData.buttonColorHover, texturePanelButtonMixVal);
+				ui.box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, colorData.buttonColor, 0.048f, true, false, 0.9f, 10000, colorData.buttonColorHover, texturePanelButtonMixVal);
 
 			}
 			else{
 				//Button 
-				ui.box(0.2f, 0.06f, renderData.panelLoc - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, colorData.buttonColor, 0.048f, true, false, 0.5f, 10000, colorData.buttonColorHover, 0);
+				ui.box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, colorData.buttonColor, 0.048f, true, false, 0.9f, 10000, colorData.buttonColorHover, 0);
 
 			}
 			if(textureAddButtonEnter){
@@ -247,7 +238,7 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 			if(textureAddButtonEnter)
 				iconmixVal = 0.5f;
 				
-			ui.iconBox(0.02f,0.025f,renderData.panelLoc - screenGapX + 0.3f ,0.8f - (i * 0.125f) + materialsPanelSlideValue,0.99f,icons.AddTexture,iconmixVal,colorData.iconColor,colorData.iconColorHover);
+			ui.iconBox(0.02f,0.025f,renderData.panelLoc - 1.0f - screenGapX + 0.3f ,0.8f - (i * 0.125f) + materialsPanelSlideValue,0.99f,icons.AddTexture,iconmixVal,colorData.iconColor,colorData.iconColorHover);
 			glUseProgram(programs.uiProgram); 
 		}
 		if(!mouseEnteredOnce){
@@ -262,20 +253,20 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 		glUseProgram(programs.uiProgram); 
 
 		//Color Picker
-		hueVal = ui.colorRect(centerCoords - screenGapX + 0.1f, -0.55f, renderData.colorBoxColorRangeBarValue, FBOScreen, renderData.window,projection,updateHueVal); //Hue TODO : Get the value once value changed 
+		colorPicker.hueColorValue = ui.colorRect(centerCoords - screenGapX + 0.1f, -0.55f, colorPicker.hueValue, FBOScreen, renderData.window,projection,colorPicker.updateHueVal); //Hue TODO : Get the value once value changed 
 
-		saturationValShaderData.boxColor = hueVal / 255.0f;
+		saturationValShaderData.boxColor = colorPicker.hueColorValue / 255.0f;
 		saturationValShaderData.renderTextureProjection = projection;
 
 		gl.useSaturationValBoxShader(programs.saturationValBoxProgram,saturationValShaderData);
-		ui.colorBox(centerCoords - screenGapX - 0.02f, -0.55f, renderData.colorBoxPickerValue_x, renderData.colorBoxPickerValue_y);
+		ui.colorBox(centerCoords - screenGapX - 0.02f, -0.55f, colorPicker.saturationValuePosX, colorPicker.saturationValuePosY);
 
 
-		ui.box(0.002f, 0.025f, centerCoords - screenGapX - 0.095f, -0.81f, "", glm::vec4(colorBoxValue / glm::vec3(255),1.0f), 0.075f, false, false, 0.9f, 10, glm::vec4(0), 0); //indicator for picken color of the color picker
+		ui.box(0.002f, 0.025f, centerCoords - screenGapX - 0.095f, -0.81f, "", glm::vec4(colorPicker.pickerValue / glm::vec3(255),1.0f), 0.075f, false, false, 0.9f, 10, glm::vec4(0), 0); //indicator for picken color of the color picker
 
 		ui.box(0.002f, 0.035f, centerCoords - screenGapX - 0.095f, -0.81f, "", colorData.panelColorSnd, 0.075f, false, false, 0.9f, 7, glm::vec4(0), 0); //decoration
 
-		ui.box(0.04f, 0.03f, centerCoords - screenGapX - 0.008f,-0.81f, util.rgbToHexGenerator(colorBoxValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
+		ui.box(0.04f, 0.03f, centerCoords - screenGapX - 0.008f,-0.81f, util.rgbToHexGenerator(colorPicker.pickerValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
 	}
 
 
@@ -326,7 +317,7 @@ SaturationValShaderData &saturationValShaderData,glm::vec3 &hueVal,unsigned int 
 				if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
 					gl.activeTexture(GL_TEXTURE1);
 					gl.bindTexture(maskTextures[i]);
-					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,brushRotationRangeBarValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData,programs,maxScreenWidth,maxScreenHeight);
+					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,maxScreenWidth,maxScreenHeight);
 					glUseProgram(programs.iconsProgram); 
 					
 					uiOut.maskPanelMaskClicked = true;

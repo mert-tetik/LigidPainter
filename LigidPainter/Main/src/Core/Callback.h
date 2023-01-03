@@ -4,72 +4,28 @@
 #include "Core/UI/UserInterface.h";
 
 struct CallbckData { //Return from callback
-	bool loadModelButtonEnter;
-	bool modelFilePathTextBoxEnter;
-	bool autoTriangulateCheckBoxEnter;
-	bool backfaceCullingCheckBoxEnter;
-	bool addPlaneButtonEnter;
-	bool addSphereButtonEnter;
-	bool addMaskTextureButtonEnter;
-	bool brushSizeRangeBarEnter;
-	bool brushBlurRangeBarEnter;
-	bool brushRotationRangeBarEnter;
-	bool brushSpacingRangeBarEnter;
-	bool brushBordersRangeBarEnter;
-	bool brushOpacityRangeBarEnter;
+	bool movePanel;
 	bool modelPanelButtonEnter;
 	bool texturePanelButtonEnter;
 	bool paintingPanelButtonEnter;
 	bool exportPanelButtonEnter;
-	bool colorBoxPickerEnter;
-	bool colorBoxColorRangeBarEnter;
-
-	bool exportPathTextBoxEnter;
-	bool exportFileNameTextBoxEnter;
-	bool exportExtJPGCheckBoxEnter;
-	bool exportExtPNGCheckBoxEnter;
-	bool exportDownloadButtonEnter;
-
-	bool mirrorXCheckBoxEnter;
-	bool mirrorYCheckBoxEnter;
-	bool mirrorZCheckBoxEnter;
-
 	bool textureDemonstratorButtonEnter;
-
-	bool useNegativeForDrawingCheckboxEnter;
-
-	bool paintingDropperEnter;
-
-	bool colorBoxEnter;
-
 	bool maskPanelSliderEnter;
 	bool maskPanelEnter;
-
-	bool hexValueTextboxEnter;
-
-	bool loadCustomModelEnter;
-	
-	bool hueBarEnter;
-
 	bool uiElementEnter;
-
 	bool mainPanelBoundariesEnter;
 
 	glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);
-	float panelLoc;
-
-	bool movePanel;
-	bool panelChangeLoc; 
 };
 class Callback {
 public:
 	CallbckData scroll_callback(GLFWwindow* window, double scroll, double scrollx);
-	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, bool enablePanelMovement, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc);
-	void panelCheck(GLFWwindow* window, double mouseXpos, int screenSizeX, bool enablePanelMovement);
-	void buttonCheck(GLFWwindow* window, double mouseXPos, double mouseYPos, PanelData panelData, float brushSizeRangeBarValue, float colorBoxPickerValue_x, float colorBoxPickerValue_y, float colorBoxColorRangeBarValue, float brushBlurRangeBarValue, float brushRotationRangeBarValue, float brushOpacityRangeBarValue, float brushSpacingRangeBarValue,float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool paintingDropperPressed,float brushBorderRangeBarValue,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc);
+	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY, float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker);
 	void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 	void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 
+private:
+	void buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData, float textureDemonstratorButtonPosX,float textureDemonstratorButtonPosY,float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc, ColorPicker &colorPicker);
 };
 #endif

@@ -36,10 +36,6 @@ void GlSet::drawArrays(std::vector<float> &vertices,bool isLine) {
 		glDrawArrays(GL_LINES, 0, vertices.size() / 8);
 	}
 }
-void GlSet::uiDataToShaders(glm::vec3 color) {
-
-}
-
 
 void GlSet::bindFramebuffer(unsigned int FBO) {
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);

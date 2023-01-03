@@ -142,21 +142,12 @@ struct RenderData { //GlSet::render
 	float panelLoc; 
 	std::string modelLoadFilePath; 
 	bool backfaceCulling;
-	float brushSizeValue;
 	float brushSizeIndicator;
-	float colorBoxPickerValue_x; 
-	float colorBoxPickerValue_y;
-	float colorBoxColorRangeBarValue;
 	bool cameraPosChanged;
 	const char* exportFolder;
 	bool doPainting; 
 	unsigned int depthTexture;
 	bool paintingMode;
-	float brushBlurValue;
-	float brushRotationValue;
-	float brushOpacityValue;
-	float brushSpacingValue;
-	float brushBorderValue;
 
 	float textureDemonstratorButtonPosX;
 	float textureDemonstratorButtonPosY;
