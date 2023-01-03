@@ -203,10 +203,10 @@ bool UiActions::updateRangeValues(GLFWwindow* window, double xOffset,double yOff
 		ligid.colorBoxPickerButton(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
 	}
 	if (textureDisplayer.buttonPressed) {
-		ligid.textureDemonstratorButton(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
+		ligid.textureDisplayerButton(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
 	}
 	if (textureDisplayer.cornerPressed) {
-		ligid.textureDemonstratorBoundaries(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
+		ligid.textureDisplayerBoundaries(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
 	}
 	if(maskPanelSliderPressed){
 		ligid.maskPanelSlider(yOffset,uiactionsMaxScreenHeight);//Changes the global variable

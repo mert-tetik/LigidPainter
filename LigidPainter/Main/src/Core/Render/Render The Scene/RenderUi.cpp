@@ -140,7 +140,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.56f);//Export Panel
 
 		//Texture demonstrator	
-		ui.textureDemonstrator(textureDisplayer.ndWidth,textureDisplayer.ndHeight,textureDisplayer.buttonPosX - 1.0f +screenGapX,textureDisplayer.buttonPosY,0.9999f); 
+		ui.textureDisplayer(textureDisplayer.ndWidth,textureDisplayer.ndHeight,textureDisplayer.buttonPosX - 1.0f +screenGapX,textureDisplayer.buttonPosY,0.9999f); 
 
 		//Panel changing button's icons
 		glUseProgram(programs.iconsProgram);

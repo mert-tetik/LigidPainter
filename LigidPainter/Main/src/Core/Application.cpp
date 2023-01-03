@@ -192,8 +192,6 @@ bool brushValChanged = true; //Update brush mask texture in drawToScreen.cpp if 
 
 bool caps = false; //GLFW_MOD_CAPS_LOCK
 
-char pressedChar;
-
 bool mirrorClick = false;
 
 int textBoxActiveChar = 6;
@@ -215,79 +213,25 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	renderTheScene = true;
 	renderTheSceneCounter = 0;
 
-	if(key >= 320 && key <=329){
-		//Numpad Optimization
-		key -= 272;
-	}
-	
 	if(key == 280 && action == 0){
 		//Change capslock's state
-		if(caps)
-			caps = false;
-		else
-			caps = true;
+		caps = !caps;
 	}
-	
-	if(action == 0 || action == 2){ //Take input
 
-		if(UIElements[UIexportingFolderNameTextBox].textBox.clicked && exportFileName.size() < 20){
-			if(key == 32){
-				//Space
-				exportFileName += ' ';
-			}
-			else if(isalpha((char)key)){
-				if(!caps){
-					exportFileName+=(char)key+32;//lowercase
-				}
-				else{
-					exportFileName+=(char)key;//UPPERCASE
-				}
-			}
-			else if(isdigit((char)key)){
-				exportFileName+=(char)(key);
-			}
+	UserInterface ui;
+	const int exportFileNameThreshold = 20;
+	if(UIElements[UIexportingFolderNameTextBox].textBox.clicked){
+		if(ui.textInput(key,action,caps,exportFileName,exportFileNameThreshold)){
 			UIElements[UIexportingFolderNameTextBox].textBox.text = exportFileName;
 		}
-		if(colorPicker.hexValTextBoxActive && textBoxActiveChar != 7){
-			if(isdigit((char)key)){
-				//Add decimal numbers
-				colorPicker.hexValTextBoxVal[textBoxActiveChar]=(char)(key);
-				colorPicker.saturationValueValChanged = true;
-				textBoxActiveChar++;
-				colorPicker.hexValTextBoxGotInput = true;
-			}
-			else{
-				//Add hexadecimal numbers
-				const char* chars = "ABCDEF";
-				for (int i = 0; i < 6; i++)
-				{
-					if(key == chars[i]){
-						colorPicker.hexValTextBoxVal[textBoxActiveChar] = (char)(chars[i]+32);
-						colorPicker.saturationValueValChanged = true;
-						textBoxActiveChar++;
-						colorPicker.hexValTextBoxGotInput = true;
-					}
-				}
-			}
-		}
-		if(key == 259){
-			//Backspace
-			if(UIElements[UIexportingFolderNameTextBox].textBox.clicked && exportFileName != ""){
-				exportFileName.pop_back();
-				UIElements[UIexportingFolderNameTextBox].textBox.text = exportFileName;
-			}
-			if(colorPicker.hexValTextBoxActive && textBoxActiveChar != 0){
-				colorPicker.hexValTextBoxVal[textBoxActiveChar] = '0';
-				colorPicker.saturationValueValChanged = true;
-				textBoxActiveChar--;
-				colorPicker.hexValTextBoxGotInput = true;
-			}
+	}
+	
+	if(colorPicker.hexValTextBoxActive){
+		if(ui.textInputHex(key,action,colorPicker.hexValTextBoxVal,textBoxActiveChar)){
+			colorPicker.saturationValueValChanged = true;
+			colorPicker.hexValTextBoxGotInput = true;
 		}
 	}
-
-	//Assign the key to a global variable
-	pressedChar = key;
-
 
 
 	//------------------SHORTCUTS------------------
@@ -384,9 +328,6 @@ bool LigidPainter::run()
 	//Changes clearColor
 	ui.setViewportBgColor();
 	
-
-
-
 	Load load;
 	programs = load.getProgram();
 	//Load chars
@@ -403,7 +344,6 @@ bool LigidPainter::run()
 	cursors = load.loadCursors();
 	//Create textures
 	textures = load.initTextures(maskTexturePath.c_str());
-
 	//Load UI
 	UIElements = ui.getUiElements(icons);
 
@@ -460,7 +400,6 @@ bool LigidPainter::run()
 	glset.enable(GL_MULTISAMPLE);
 
 
-
 	glm::mat4 perspectiveProjection = render.setMatrices();
 
 
@@ -499,10 +438,6 @@ bool LigidPainter::run()
 
 	glset.bindFramebuffer(0);
 	glset.bindRenderBuffer(0);
-
-	
-
-
 
 
 	pbrShaderData.bluryskybox = 16;
@@ -546,6 +481,7 @@ bool LigidPainter::run()
 			renderTheSceneCounter = 0;
 		}
 
+
 		//Release textboxes
 		if ((glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)){
 			if(!UIElements[UIexportingFolderNameTextBox].textBox.hover && UIElements[UIexportingFolderNameTextBox].textBox.clicked){
@@ -562,9 +498,6 @@ bool LigidPainter::run()
 			}
 		}
 
-
-
-		
 
 
 		//Check if texture demonstrator button clicked
@@ -685,7 +618,7 @@ bool LigidPainter::run()
 
 				float messageBoxButtonColor[3] = {colorData.messageBoxButtonColor.r,colorData.messageBoxButtonColor.g,colorData.messageBoxButtonColor.r};
 
-				//show message box
+				//render the message box
 				int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,"LigidPainter will be closed. Do you want to proceed?",-0.21f,0.0f,messageBoxBackColor,messageBoxButtonColor,(float)windowData.windowMaxWidth, (float)screenWidth,programs.iconsProgram); //0 = Yes //1 = No //2 = None
 
 				//Process the message box input
@@ -1048,7 +981,7 @@ void LigidPainter::brushBlurRangeBar(double xOffset,int width,int height,bool re
 	txtr.updateMaskTexture(FBOScreen,width,height, UIElements[UIbrushRotationRangeBar].rangeBar.value,renderTiny,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
 
 }
-void LigidPainter::textureDemonstratorButton(double xOffset,double yOffset,int width,int height) {
+void LigidPainter::textureDisplayerButton(double xOffset,double yOffset,int width,int height) {
 	panelChanging = true;
 	Utilities util;
 
@@ -1060,7 +993,7 @@ void LigidPainter::textureDemonstratorButton(double xOffset,double yOffset,int w
 	textureDisplayer.buttonPosY = util.restrictBetween(textureDisplayer.buttonPosY,0.97f,-1.0f);
 
 }
-void LigidPainter::textureDemonstratorBoundaries(double xOffset,double yOffset,int width,int height) {
+void LigidPainter::textureDisplayerBoundaries(double xOffset,double yOffset,int width,int height) {
 	panelChanging = true;
 	textureDisplayer.width -= xOffset / 960.0;
 	textureDisplayer.height -= yOffset / 540.0;

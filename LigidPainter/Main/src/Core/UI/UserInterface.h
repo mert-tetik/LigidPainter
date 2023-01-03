@@ -255,7 +255,7 @@ public:
 
 	//Visuality
 	void panel(float panelLoc, float movePanel_x);
-	void textureDemonstrator(float width,float height, float position_x,float position_y,float z);
+	void textureDisplayer(float width,float height, float position_x,float position_y,float z);
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec4 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec4 colorTransitionColor , float mixVal);
 	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal,glm::vec3 color,glm::vec3 colorHover);
 	void setViewportBgColor();
@@ -273,6 +273,8 @@ public:
 	bool isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, double mouseXpos, double mouseYpos);
 	bool isMouseOnButton(GLFWwindow* window, float width, float height, float position_x, float position_y, double mouseXpos, double mouseYpos, bool isPanelMoving);
 	bool isMouseOnCoords(GLFWwindow*window,double mouseXpos, double mouseYpos,std::vector<float> buttonCoor,bool isPanelMoving);
+	bool textInput(int key, int action,bool caps,std::string &text,int threshold);
+	bool textInputHex(int key, int action, std::string &text, int &activeChar);
 	
 	void sendProgramsToUserInterface(Programs appPrograms);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
