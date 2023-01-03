@@ -268,6 +268,7 @@ public:
 	glm::vec3 colorRect(float position_x, float position_y,float value, unsigned int FBO,GLFWwindow* window,glm::mat4 projection,bool updateHueVal);
 	void decorationSquare(float position_x, float position_y);
 	void numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN);
+	void verticalRangeBar(float positionX,float positionY,float height,float value);
 	
 	//Calculations and More
 	bool isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, double mouseXpos, double mouseYpos);

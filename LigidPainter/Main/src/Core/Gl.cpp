@@ -26,7 +26,6 @@
 Programs glPrograms;
 
 void GlSet::drawArrays(std::vector<float> &vertices,bool isLine) {
-	//TODO : Avoid ui lags
 	if (!isLine) {
 		glBufferSubData(GL_ARRAY_BUFFER,0,vertices.size() * sizeof(float), &vertices[0]);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 8);
@@ -47,7 +46,6 @@ void GlSet::deleteFramebuffers(unsigned int& FBO) {
 	glDeleteFramebuffers(1, &FBO);
 }
 void GlSet::setVertexAtribPointer() {
-	//TODO : Set these for each program
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));

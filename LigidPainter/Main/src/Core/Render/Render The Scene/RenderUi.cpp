@@ -233,14 +233,11 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		}
 	}
 
-
-    //Texture Panel Was There
-
 	if (panelData.paintingPanelActive) {
 		glUseProgram(programs.uiProgram); 
 
 		//Color Picker
-		colorPicker.hueColorValue = ui.colorRect(centerCoords - screenGapX + 0.1f, -0.55f, colorPicker.hueValue, FBOScreen, renderData.window,projection,colorPicker.updateHueVal); //Hue TODO : Get the value once value changed 
+		colorPicker.hueColorValue = ui.colorRect(centerCoords - screenGapX + 0.1f, -0.55f, colorPicker.hueValue, FBOScreen, renderData.window,projection,colorPicker.updateHueVal); 
 
 		saturationValShaderData.boxColor = colorPicker.hueColorValue / 255.0f;
 		saturationValShaderData.renderTextureProjection = projection;
@@ -325,6 +322,11 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 	//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 	if(panelData.paintingPanelActive){
 		glUseProgram(programs.uiProgram);
+
+		const float maskPanelRange = ceil((int)maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
+		
+		ui.verticalRangeBar( renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f,0.8f,0.125,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f));
+
 		ui.box(0.035f, 0.07f, centerCoords - screenGapX - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0);
 	}
 

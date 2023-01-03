@@ -106,28 +106,6 @@ ViewUpdateData Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos
 
 	return viewUpdateData;
 }
-void Render::getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos) { //Not used
-	/*GlSet glset;
-	ProjectionData pd = glset.setMatrices(cameraPos, originPos);
-	return glm::project(vPos, pd.modelMat * pd.viewMat, pd.projMat, glm::vec4(0, 0, 1920, 1080));*/
-}
-
-void Render::drawLightObject(glm::vec3 lightPos) {
-	// glm::mat4 model = glm::mat4(1.0f);
-	// model = glm::mat4(1.0f);
-	// model = glm::translate(model, lightPos);
-	// model = glm::scale(model, glm::vec3(0.2f));
-
-	// int lightColorLoc = glGetUniformLocation(renderPrograms.uiProgram, "lightColor");
-	// glUniform3f(lightColorLoc, 10.0f, 10.0f, 10.0f);
-	// int isLightSourceLoc = glGetUniformLocation(renderPrograms.uiProgram, "isLightSource");
-	// glUniform1i(isLightSourceLoc, 1);
-	// int modelLoc = glGetUniformLocation(renderPrograms.uiProgram, "model");
-	// glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-	// glDrawArrays(GL_TRIANGLES, 0, 36);
-}
-
-
 
 //------------CtrlZ------------
 bool doCtrlZ;

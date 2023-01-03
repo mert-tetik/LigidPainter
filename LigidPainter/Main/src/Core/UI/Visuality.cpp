@@ -126,20 +126,6 @@ void UserInterface::panel(float panelLoc, float) {
 	box(panelWidth, 0.04f, panelLoc + panelWidth + 0.02f, -0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);//Load model button
 	box(panelWidth, panelHeigth - 0.02f, panelLoc + panelWidth + 0.02f, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);//Load model button
 
-	// glset.uniform4fv(uiPrograms.uiProgram, "uiColor", colorD.panelHoldColor);
-
-	// glset.uniform4fv(uiPrograms.uiProgram, "uiTransitionColor", blankVal);
-	// glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0.0f);
-
-	// glset.drawArrays(panelHoldCoor, false);
-
-
-	// glset.uniform4fv(uiPrograms.uiProgram, "uiColor", colorD.panelColor);
-
-
-
-	// glset.drawArrays(panelCoor, false);
-
 }
 
 void UserInterface::textureDisplayer(float width,float height, float position_x,float position_y,float z){ 
@@ -161,6 +147,19 @@ void UserInterface::textureDisplayer(float width,float height, float position_x,
 	glset.drawArrays(buttonCoorSq,false);
 	glset.uniform1i(uiPrograms.uiProgram,"drawTxtrDemonstrator",0);
 }
+
+void UserInterface::verticalRangeBar(float positionX,float positionY,float height,float value){
+	ColorData colorData;
+
+	//Pointer 
+	box(0.0f, 0.015f, positionX, positionY - value, "",colorData.maskPanelSliderColor, 0.095f, false, false, 0.9f, 20, glm::vec4(0), 0); //Mask panel slider
+		
+	//Background
+	box(0.008f, height, positionX, positionY - height, "",colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 10000, glm::vec4(0), 0); 
+	box(0.0f, 0.015f, positionX, positionY , "", colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 20, glm::vec4(0), 0); 
+	box(0.0f, 0.015f, positionX, positionY - height*2.f, "", colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 20, glm::vec4(0), 0); 
+}
+
 
 void UserInterface::numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN){
 	//box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"",glm::vec3(0),0,0,0,1,10,glm::vec3(0),0);
@@ -222,7 +221,7 @@ void UserInterface::colorBox(float position_x, float position_y,float valueX, fl
 }
 
 glm::vec3 hueValue;
-glm::vec3 UserInterface::colorRect(float position_x, float position_y,float value,unsigned int FBO,GLFWwindow* window, glm::mat4 projection,bool updateHueVal) { //Changing colorBox value will be once the value changed
+glm::vec3 UserInterface::hueBar(float position_x, float position_y,float value,unsigned int FBO,GLFWwindow* window, glm::mat4 projection,bool updateHueVal) { //Changing colorBox value will be once the value changed
 	std::vector<float> boxCoor{
 		//Color - Normal Vectors Will Be Usen For Color Data Of Vertices
 
@@ -291,20 +290,20 @@ glm::vec3 UserInterface::colorRect(float position_x, float position_y,float valu
 		glset.viewport(1920, 1081);
 		glset.bindFramebuffer(FBO);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		GLubyte* colorRectPixel = new GLubyte[1 * 1 * 3];//Color value
+		GLubyte* hueBarPixel = new GLubyte[1 * 1 * 3];//Color value
 		glset.drawArrays(boxCoor, false); //Render Model
 
 		if( (value + 0.18f) * 2.77777777778f * 1080.0f != 1080.0f)
-			glReadPixels(10, (value + 0.18f) * 2.77777777778f * 1080.0f, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
+			glReadPixels(10, (value + 0.18f) * 2.77777777778f * 1080.0f, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, hueBarPixel);
 		else{
-			glReadPixels(10, 1079, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, colorRectPixel);
+			glReadPixels(10, 1079, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, hueBarPixel);
 		}
 		//Finish
-		hueValue.r = colorRectPixel[0];
-		hueValue.g = colorRectPixel[1];
-		hueValue.b = colorRectPixel[2];
+		hueValue.r = hueBarPixel[0];
+		hueValue.g = hueBarPixel[1];
+		hueValue.b = hueBarPixel[2];
 
-		delete(colorRectPixel);
+		delete(hueBarPixel);
 
 		glset.bindFramebuffer(0);
 		int screenSizeX;
@@ -312,9 +311,6 @@ glm::vec3 UserInterface::colorRect(float position_x, float position_y,float valu
 		glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
 		glViewport(-(uiMaxScreenWidth - screenSizeX)/2, -(uiMaxScreenHeight - screenSizeY), uiMaxScreenWidth, uiMaxScreenHeight);
 	}
-
-
-	//glset.uniform3f(uiPrograms.uiProgram, "boxColor", colorRectPixel[0] / 255.0f, colorRectPixel[1] / 255.0f, colorRectPixel[2] / 255.0f); //Check if necessary
 
 
 	hueShaderData.useTexCoords = 0;

@@ -70,9 +70,5 @@ private:
 	void getDepthTexture( unsigned int FBOScreen,  int screenSizeX,  int screenSizeY,ScreenDepthShaderData screenDepthShaderData,Model &model,bool renderDefault,std::vector<unsigned int> &albedoTextures,Programs programs,int currentMaterialIndex, int maxScreenWidth ,int maxScreenHeight);
     void exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName,std::vector<unsigned int> &albedoTextures);
 
-
-	//TODO : Delete these
-	void getUnprojection(glm::vec3 vPos, glm::vec3 cameraPos, glm::vec3 originPos); //Not used
-	void drawLightObject(glm::vec3 lightPos);//Not used
 };
 #endif // !RGDRENDER_H

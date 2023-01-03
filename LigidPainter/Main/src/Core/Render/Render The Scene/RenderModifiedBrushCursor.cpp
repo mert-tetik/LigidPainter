@@ -17,7 +17,7 @@ void Render::renderModifiedBrushCursor(float distanceX,int screenWidth,int scree
 	float screenGapX = ((float)maxScreenWidth - (float)screenWidth)/(((float)maxScreenWidth)/2.0f)/2.0f; 
 	
 	GlSet glset;
-	glset.uniform1i(programs.uiProgram, "drawBrushIndicator", 1); //TODO : Create shader for brush indicator
+	glset.uniform1i(programs.uiProgram, "drawBrushIndicator", 1);
 	std::vector<float> paintingSquare{
 		// first triangle
 		( sizeX / maxScreenWidth / 1.0f + (float)mouseXpos / maxScreenWidth / 0.5f - 1.0f)+screenGapX,  sizeX / maxScreenHeight / 1.0f - (float)mouseYpos / maxScreenHeight / 0.5f + 1.0f , 1.0f,1,1,0,0,0,  // top right

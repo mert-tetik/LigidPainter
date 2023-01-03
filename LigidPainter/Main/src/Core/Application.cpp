@@ -160,20 +160,11 @@ bool enableBackfaceCulling;
 bool jpgFormatChecked;
 bool pngFormatChecked = true;
 
-bool mirrorXCheckBoxChecked = false;
-bool mirrorYCheckBoxChecked = false;
-bool mirrorZCheckBoxChecked = false;
 bool mirrorUsed = false;
 //Checkbox
-//----------PRESSED----------\\
-
-
-//----------RANGE VALUE----------\\.
 
 float maskPanelSliderValue = 0.0f;
-//----------RANGE VALUE----------\\.
 
-//-----------------------      UI     -----------------------\\
 
 //bool albedoTextureChanged; use for texture updating conditions
 
@@ -201,11 +192,6 @@ int renderTheSceneCounter = 0;
 const int renderingThreshold = 120;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-
-	//Action = 0 : First press
-	//Action = 1 : Stability phase
-	//Action = 2 : Key spam
-
 	//TODO : Dynamic textbox
 
 	//------------------TEXT------------------
@@ -369,7 +355,7 @@ bool LigidPainter::run()
 
 	renderData.window = window;
 
-	glset.setVertexAtribPointer(); //TODO : Specialize for each shader
+	glset.setVertexAtribPointer();
 	glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW); 
 
 	glUseProgram(programs.iconsProgram);
@@ -547,7 +533,7 @@ bool LigidPainter::run()
 		exportData.path = exportPath.c_str();
 		exportData.fileName = exportFileName.c_str();
 		if (cameraPosChanging || mirrorClick){
-			viewUpdateData = render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,mirrorXCheckBoxChecked,mirrorYCheckBoxChecked,mirrorZCheckBoxChecked); 
+			viewUpdateData = render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,UIElements[UImirrorXCheckBox].checkBox.checked ,UIElements[UImirrorYCheckBox].checkBox.checked ,UIElements[UImirrorZCheckBox].checkBox.checked ); 
 		}
 
 
@@ -666,7 +652,7 @@ bool LigidPainter::run()
 			mouseDrawingPosY = mouseYpos;
 
 			//Paint
-			textureGen.drawToScreen(window, maskTexturePath, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,albedoTextures, paintingSpacing < 10);
+			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,albedoTextures, paintingSpacing < 10);
 			paintRenderCounter++;
 			if(paintRenderCounter == 5){
 				paintRender = true;
@@ -868,13 +854,14 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 		ligid.brushBordersRangeBar((float)scrollx*10.0f,screenSizeX,screenSizeY);
 	}
 	else{
-		if (!paintingMode && !mainPanelHover) {
-			callbackData = callback.scroll_callback(window, scroll, scrollx);
-		}
-		else if(callbackData.maskPanelEnter){
+		if(callbackData.maskPanelEnter){
 			//Brush mask panel scroll
 			maskPanelSliderValue += (float)(scrollx / 40.0);
-			maskPanelSliderValue = util.restrictBetween(maskPanelSliderValue, 0.0f, -0.25f);//Keep in boundaries
+			const float maskPanelRange = ceil((int)brushMaskTextures.textures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
+			maskPanelSliderValue = util.restrictBetween(maskPanelSliderValue, 0.0f, -maskPanelRange/4.f);//Keep in boundaries
+		}
+		else if (!paintingMode && !mainPanelHover) {
+			callbackData = callback.scroll_callback(window, scroll, scrollx);
 		}
 		else if(mainPanelHover && panelData.texturePanelActive){
 			//Materials
@@ -1092,55 +1079,46 @@ void LigidPainter::exportExtPNGCheckBox() {
 }
 void LigidPainter::mirrorXCheckBox() {
 	mirrorClick = true;
-	if (mirrorXCheckBoxChecked == false) {
+	if (UIElements[UImirrorXCheckBox].checkBox.checked  == false) {
 		mirrorUsed = true;
-		mirrorXCheckBoxChecked = true;
-		mirrorYCheckBoxChecked = false;
-		mirrorZCheckBoxChecked = false;
+		UIElements[UImirrorXCheckBox].checkBox.checked  = true;
+		UIElements[UImirrorYCheckBox].checkBox.checked  = false;
+		UIElements[UImirrorZCheckBox].checkBox.checked  = false;
 		verticalMirror = false;
 	}
 	else {
 		mirrorUsed = false;
-		mirrorXCheckBoxChecked = false;
+		UIElements[UImirrorXCheckBox].checkBox.checked  = false;
 	}
-	UIElements[UImirrorXCheckBox].checkBox.checked = mirrorXCheckBoxChecked;
-	UIElements[UImirrorYCheckBox].checkBox.checked = mirrorYCheckBoxChecked;
-	UIElements[UImirrorZCheckBox].checkBox.checked = mirrorZCheckBoxChecked;
 
 }
 void LigidPainter::mirrorYCheckBox() {
 	mirrorClick = true;
-	if (mirrorYCheckBoxChecked == false) {
+	if (UIElements[UImirrorYCheckBox].checkBox.checked  == false) {
 		mirrorUsed = true;
-		mirrorYCheckBoxChecked = true;
-		mirrorXCheckBoxChecked = false;
-		mirrorZCheckBoxChecked = false;
+		UIElements[UImirrorYCheckBox].checkBox.checked  = true;
+		UIElements[UImirrorXCheckBox].checkBox.checked  = false;
+		UIElements[UImirrorZCheckBox].checkBox.checked  = false;
 		verticalMirror = true;
 	}
 	else {
 		mirrorUsed = false;
-		mirrorYCheckBoxChecked = false;
+		UIElements[UImirrorYCheckBox].checkBox.checked  = false;
 	}
-	UIElements[UImirrorXCheckBox].checkBox.checked = mirrorXCheckBoxChecked;
-	UIElements[UImirrorYCheckBox].checkBox.checked = mirrorYCheckBoxChecked;
-	UIElements[UImirrorZCheckBox].checkBox.checked = mirrorZCheckBoxChecked;
 }
 void LigidPainter::mirrorZCheckBox() {
 	mirrorClick = true;
-	if (mirrorZCheckBoxChecked == false) {
+	if (UIElements[UImirrorZCheckBox].checkBox.checked  == false) {
 		mirrorUsed = true;
-		mirrorZCheckBoxChecked = true;
-		mirrorYCheckBoxChecked = false;
-		mirrorXCheckBoxChecked = false;
+		UIElements[UImirrorZCheckBox].checkBox.checked  = true;
+		UIElements[UImirrorYCheckBox].checkBox.checked  = false;
+		UIElements[UImirrorXCheckBox].checkBox.checked  = false;
 		verticalMirror = false;
 	}
 	else {
 		mirrorUsed = false;
-		mirrorZCheckBoxChecked = false;
+		UIElements[UImirrorZCheckBox].checkBox.checked  = false;
 	}
-	UIElements[UImirrorXCheckBox].checkBox.checked = mirrorXCheckBoxChecked;
-	UIElements[UImirrorYCheckBox].checkBox.checked = mirrorYCheckBoxChecked;
-	UIElements[UImirrorZCheckBox].checkBox.checked = mirrorZCheckBoxChecked;
 }
 void LigidPainter::exportDownloadButtonEnter() {
 	exportImage = true;
