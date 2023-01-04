@@ -321,7 +321,8 @@ bool LigidPainter::run()
 	//Load brush mask textures
 	brushMaskTextures = load.loadBrushMaskTextures();
 	//Load cubemaps both blury and not blury
-	load.loadCubemaps();
+	Cubemaps cubemaps;
+	cubemaps = load.loadCubemaps();
 	//Load icons
 	Icons icons;
 	icons = load.loadIcons();
@@ -426,7 +427,7 @@ bool LigidPainter::run()
 	glset.bindRenderBuffer(0);
 
 
-	pbrShaderData.bluryskybox = 16;
+	pbrShaderData.bluryskybox = 13;
 	pbrShaderData.depthTexture = 9;
 	pbrShaderData.materialDiffuse = 0;
 	pbrShaderData.mirroredDepthTexture = 8;
@@ -597,7 +598,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -627,7 +628,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps);
 		}
 		
 		//double lastTime = glfwGetTime();
@@ -666,8 +667,6 @@ bool LigidPainter::run()
 		panelChanging = false;
 		lastMouseXpos = mouseXpos;
 		lastMouseYpos = mouseYpos;
-
-
 
 
 		//Update brush mask texture file's name once the brush mask texture changed

@@ -240,7 +240,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 Icons &icons,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures, bool renderPlane,bool renderSphere,
 PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,
 OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
-ColorPicker &colorPicker,TextureDisplayer &textureDisplayer) {
+ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps) {
 	GlSet gls;
 	ColorData colorData;
 	Utilities util;
@@ -316,9 +316,14 @@ ColorPicker &colorPicker,TextureDisplayer &textureDisplayer) {
 			renderTextures(FBOScreen,exportData.exportImage,UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,undoList,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight);
 	}
 
-
+	glActiveTexture(GL_TEXTURE13);
+	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
 	renderSkyBox(skyBoxShaderData,renderPrograms);
+	
+	glActiveTexture(GL_TEXTURE13);
+	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
 	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,albedoTextures,renderPrograms,currentMaterialIndex);
+	
 	renderAxisPointer(axisPointerShaderData,renderPrograms);
 	uiOut = renderUi(panelData, renderData, FBOScreen,icons
 		,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,

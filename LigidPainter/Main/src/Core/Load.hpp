@@ -97,7 +97,7 @@ public:
 		    "LigidPainter/Resources/Cubemap/Skybox/pzblur.png",
 		    "LigidPainter/Resources/Cubemap/Skybox/nzblur.png"
 		};
-		unsigned int cubemapTextureBlury = loadCubemap(bluryfaces,GL_TEXTURE16); //TODO : Avoid using texture slot for blury cubemap 
+		unsigned int cubemapTextureBlury = loadCubemap(bluryfaces,GL_TEXTURE13); //TODO : Avoid using texture slot for blury cubemap 
 	
 		Cubemaps cubemaps;
 		cubemaps.blurycubemap = cubemapTextureBlury;

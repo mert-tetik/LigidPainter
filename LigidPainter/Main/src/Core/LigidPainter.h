@@ -27,6 +27,10 @@ struct Programs
 	unsigned int outProgram;
 	unsigned int twoDPaintingProgram;
 };
+struct Cubemaps{
+	unsigned int cubemap;
+	unsigned int blurycubemap;
+};
 struct LigidCursors{
 	GLFWcursor* pointerCursor;
 	GLFWcursor* defaultCursor;
