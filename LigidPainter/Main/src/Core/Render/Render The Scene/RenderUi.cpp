@@ -130,6 +130,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
 		//If message box is not active
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , 0);
+		ui.nodePanel(renderData.panelLoc - 1.0f - screenGapX,nodePanel.heigth);
 
 		//Projection that is used for panel (Use that projection if things will move with panel (and will not be centered) or will be moved freely)
 
@@ -234,7 +235,6 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		}
 	}
 
-	ui.nodePanel(renderData.panelLoc - 1.0f - screenGapX,nodePanel.heigth);
 
 	if(addNodeContextMenu.stateChanged){
 		addNodeContextMenu.positionX = mouseXpos/maxScreenWidth*2.f - 1.0f;
