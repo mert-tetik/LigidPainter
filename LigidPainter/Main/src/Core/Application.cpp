@@ -110,6 +110,7 @@ std::vector<UIElement> UIElements;
 ColorPicker colorPicker;
 TextureDisplayer textureDisplayer;
 ContextMenu addNodeContextMenu;
+NodePanel nodePanel;
 
 
 string modelName;
@@ -455,7 +456,7 @@ bool LigidPainter::run()
 
 
 		//Ui actions
-		uiAct.uiActions(window,callbackData,UIElements,colorPicker,textureDisplayer);
+		uiAct.uiActions(window,callbackData,UIElements,colorPicker,textureDisplayer,nodePanel);
 
 
 
@@ -543,7 +544,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel);
 		}
 		
 		//double lastTime = glfwGetTime();
@@ -609,7 +610,7 @@ bool LigidPainter::run()
 
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel);
 		}
 
 		mirrorClick = false;
@@ -652,7 +653,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -1300,11 +1301,16 @@ void LigidPainter::mainPanelBoundaries(float xOffset,int screenSizeX){
 	if (enablePanelMovement) {
 		Utilities util;
 		mainPanelLoc -= xOffset / (screenSizeX / 2);
-		cout << mainPanelLoc << ' ';
 		mainPanelLoc = util.restrictBetween(mainPanelLoc, 1.98f, 1.6f);//Keep in boundaries
     }
 }
-
+void LigidPainter::nodePanelBoundaries(float yOffset,float screenHeight){
+	if (enablePanelMovement) {
+		Utilities util;
+		nodePanel.heigth += yOffset / (screenHeight / 2);
+		nodePanel.heigth = util.restrictBetween(nodePanel.heigth, 1.98f, 0.05);//Keep in boundaries
+    }
+}
 
 
 //-----------------------------PREPARE STRUCTS-----------------------------\\

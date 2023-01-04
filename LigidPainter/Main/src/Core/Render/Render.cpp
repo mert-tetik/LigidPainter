@@ -240,7 +240,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 Icons &icons,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures, bool renderPlane,bool renderSphere,
 PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,
 OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
-ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,ContextMenu &addNodeContextMenu) {
+ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel) {
 	GlSet gls;
 	ColorData colorData;
 	Utilities util;
@@ -329,7 +329,7 @@ ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,Co
 		,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,
 		brushBlurVal,outShaderData,model,albedoTextures,renderPrograms,currentMaterialIndex,renderMaxScreenWidth,
 		renderMaxScreenHeight, saturationValShaderData,currentBrushMaskTexture,materialsPanelSlideValue,UIElements,
-		colorPicker,textureDisplayer,addNodeContextMenu);
+		colorPicker,textureDisplayer,addNodeContextMenu,nodePanel);
 
 
 	colorPicker.updatePickerVal = colorPicker.saturationValueValChanged && !colorPicker.hexValTextBoxGotInput; 

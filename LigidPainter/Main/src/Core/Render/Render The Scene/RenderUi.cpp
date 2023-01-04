@@ -60,7 +60,8 @@ RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsig
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,Programs programs
 ,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
-float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu) {
+float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
+,NodePanel &nodePanel) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -233,7 +234,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		}
 	}
 
-	ui.nodePanel(renderData.panelLoc - 1.0f,1.f);
+	ui.nodePanel(renderData.panelLoc - 1.0f - screenGapX,nodePanel.heigth);
 
 	if(addNodeContextMenu.stateChanged){
 		addNodeContextMenu.positionX = mouseXpos/maxScreenWidth*2.f - 1.0f;

@@ -89,7 +89,8 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 }
 
 CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float maskPanelSliderValue,bool brushMaskPanelMaskHover,
-LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer)
+LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer
+, NodePanel &nodePanel)
 {
 	CallbckData callbk;
 	
@@ -98,7 +99,8 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 	int screenSizeY;
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
 	
-	buttonCheck(window, xpos, ypos, panelData,maskPanelSliderValue,brushMaskPanelMaskHover,cursors, texturePanelButtonHover,uiElements,mainPanelLoc,colorPicker,textureDisplayer);	
+	buttonCheck(window, xpos, ypos, panelData,maskPanelSliderValue,brushMaskPanelMaskHover,cursors, texturePanelButtonHover,uiElements,mainPanelLoc,
+	colorPicker,textureDisplayer,nodePanel);	
 
 	xoffset = xpos - lastX;
 	yoffset = lastY - ypos;
@@ -145,7 +147,8 @@ bool panelClickTaken = false;
 bool noPanelClick = true;
 
 void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData,float maskPanelSliderValue,bool brushMaskPanelMaskHover,
-LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker, TextureDisplayer &textureDisplayer) {
+LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker, TextureDisplayer &textureDisplayer
+,NodePanel &nodePanel) {
 	UserInterface ui;
 
 	float centerDivider;
@@ -232,7 +235,10 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 			maskPanelEnter = ui.isMouseOnButton(window, 0.15f, 0.15f, mainPanelLoc / centerDivider + centerSum - screenGapX, 0.675f, mouseXPos, mouseYPos, movePanel);
 		}
 
-		mainPanelBoundariesEnter =  ui.isMouseOnButton(window, 0.02f, 0.88f, mainPanelLoc -1.0f + 0.02f, 0.0f, mouseXPos, mouseYPos, false);
+		nodePanel.panelHover = ui.isMouseOnNodePanel(window,mainPanelLoc - screenGapX, nodePanel.heigth,mouseXPos,mouseYPos,false);
+		nodePanel.boundariesHover = ui.isMouseOnNodePanel(window,mainPanelLoc - screenGapX, nodePanel.heigth,mouseXPos,mouseYPos,true);
+
+		mainPanelBoundariesEnter =  ui.isMouseOnButton(window, 0.02f, 0.88f, mainPanelLoc -1.0f + 0.02f - screenGapX, 0.0f, mouseXPos, mouseYPos, false);
 		
 		mainPanelEnter = ui.isMouseOnButton(window, 0.2f,0.9f,mainPanelLoc - 1.0f - screenGapX + 0.2f, 0.0f, mouseXPos, mouseYPos, 0);
 		

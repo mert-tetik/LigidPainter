@@ -151,6 +151,70 @@ bool UserInterface::isMouseOnCoords(GLFWwindow*window,double mouseXpos, double m
 	}
 	//Barycentric calculations
 }
+bool UserInterface::isMouseOnNodePanel(GLFWwindow* window,float mainPanelLoc,float height,double mouseXpos,double mouseYpos,bool calculateBoundaries){
+	std::vector<float> buttonCoor;
+	
+	if(!calculateBoundaries){
+		buttonCoor = std::vector<float>{
+			//first triangle								    //Color - Normal Vectors Will Be Usen For Color Data Of Vertices
+			 -1.0f + 0.05 			,  -1.00f 			, 0.9f,1.0f,1.0f	,1,1,1,  // top right
+			 -1.0f + 0.05			,  -1.00f + height 	, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
+			 mainPanelLoc 	-0.05f	,  -1.00f 			, 0.9f,0.0f,1.0f	,0,0,0,  // top left 
+			//second triangle
+			 -1.0f + 0.05			,  -1.00f + height	, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
+			 mainPanelLoc 	-0.05f	,  -1.00f + height	, 0.9f,0.0f,0.0f	,0,0,0,  // bottom left
+			 mainPanelLoc 	-0.05f	,  -1.00f 			, 0.9f,0.0f,1.0f	,0,0,0 // top left
+		};
+	}
+	else{
+		const float trackingRange = 0.05f;
+		buttonCoor = std::vector<float>{
+			//first triangle								    //Color - Normal Vectors Will Be Usen For Color Data Of Vertices
+			 -1.0f + 0.05 			,  -1.00f + (height - trackingRange) 			, 0.9f,1.0f,1.0f	,1,1,1,  // top right
+			 -1.0f + 0.05			,  -1.00f + (height + trackingRange) 								, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
+			 mainPanelLoc 	-0.05f	,  -1.00f + (height - trackingRange) 			, 0.9f,0.0f,1.0f	,0,0,0,  // top left 
+			//second triangle
+			 -1.0f + 0.05			,  -1.00f + (height + trackingRange)								, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
+			 mainPanelLoc 	-0.05f	,  -1.00f + (height + trackingRange)								, 0.9f,0.0f,0.0f	,0,0,0,  // bottom left
+			 mainPanelLoc 	-0.05f	,  -1.00f + (height - trackingRange) 			, 0.9f,0.0f,1.0f	,0,0,0 // top left
+		};
+		
+	}
+
+	int screenSizeX;
+	int screenSizeY;
+	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
+
+	float mouseFX = ((float)mouseXpos / (CAMuiMaxScreenWidth / 2));//Screen Coord
+
+	float mouseFY = (((float)mouseYpos / (CAMuiMaxScreenHeight / 2))-1.0f)*-1.0f;//Screen Coord
+
+	//Barycentric calculations
+	for (size_t i = 0; i < 2; i++)
+	{
+		float ax = buttonCoor[0 + (24*i)];
+		float ay = buttonCoor[1 + (24 * i)];
+		float bx = buttonCoor[8 + (24 * i)];
+		float by = buttonCoor[9 + (24 * i)];
+		float cx = buttonCoor[16 + (24 * i)];
+		float cy = buttonCoor[17 + (24 * i)];
+
+		if (cy - ay == 0) {
+			cy += 0.0001f;
+		}
+
+		float w1 = (ax * (cy - ay) + (mouseFY - ay) * (cx - ax) - mouseFX * (cy - ay)) / ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay));
+		float w2 = (mouseFY - ay - w1 * (by - ay)) / (cy - ay);
+		if (w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1) {
+			return true;
+		}
+		else if (i == 1) {
+			return false;
+		}
+	}
+}
+
+
 void UserInterface::sendMaxWindowSizeToCalculationsAndMore(int maxScreenWidth,int maxScreenHeight){
 	CAMuiMaxScreenHeight = maxScreenHeight;
 	CAMuiMaxScreenWidth = maxScreenWidth;

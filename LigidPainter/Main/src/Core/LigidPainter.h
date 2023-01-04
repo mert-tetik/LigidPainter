@@ -201,6 +201,8 @@ public:
 	void loadCustomModel();
 	void hueBar();
 	void mainPanelBoundaries(float xOffset,int screenSizeX);
+	void nodePanelBoundaries(float yOffset,float screenHeight);
+
 };
 struct PanelData {
 	bool movePanel;

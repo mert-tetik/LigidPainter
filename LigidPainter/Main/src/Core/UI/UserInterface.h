@@ -259,6 +259,14 @@ struct TextureDisplayer{
 	int buttonPressedCounter = 0;
 };
 
+struct NodePanel{
+	float heigth = 0.5f;
+
+	bool panelHover;
+	bool boundariesHover;
+	bool boundariesPressed;
+};
+
 struct NodeInput{
 	std::string text;
 	std::string type;
@@ -310,6 +318,8 @@ public:
 	bool isMouseOnCoords(GLFWwindow*window,double mouseXpos, double mouseYpos,std::vector<float> buttonCoor,bool isPanelMoving);
 	bool textInput(int key, int action,bool caps,std::string &text,int threshold);
 	bool textInputHex(int key, int action, std::string &text, int &activeChar);
+	bool isMouseOnNodePanel(GLFWwindow* window,float mainPanelLoc,float height,double mouseXpos,double mouseYpos,bool calculateBoundaries);
+
 
 	
 	void sendProgramsToUserInterface(Programs appPrograms);
