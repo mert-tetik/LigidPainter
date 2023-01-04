@@ -433,6 +433,24 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 
 }
 
+void UserInterface::nodePanel(float mainPanelLoc, float height){
+	std::vector<float> boxCoor{
+		//first triangle								    //Color - Normal Vectors Will Be Usen For Color Data Of Vertices
+		 -1.0f + 0.05 			,  -1.00f 			, 0.9f,1.0f,1.0f	,1,1,1,  // top right
+		 -1.0f + 0.05			,  -1.00f + height 	, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
+		 mainPanelLoc 	-0.05f	,  -1.00f 			, 0.9f,0.0f,1.0f	,0,0,0,  // top left 
+		//second triangle
+		 -1.0f + 0.05			,  -1.00f + height	, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
+		 mainPanelLoc 	-0.05f	,  -1.00f + height	, 0.9f,0.0f,0.0f	,0,0,0,  // bottom left
+		 mainPanelLoc 	-0.05f	,  -1.00f 			, 0.9f,0.0f,1.0f	,0,0,0 // top left
+	};
+
+	GlSet gl;
+	ColorData colorData;
+	gl.uniform4fv(uiPrograms.uiProgram,"uiColor",colorData.nodePanelColor);
+	gl.drawArrays(boxCoor,false);
+}
+
 void UserInterface::renderMenubar(GLFWwindow* window) {
 	/*ColorData colorD;
 	box(0.04f, 0.02f, -0.92f, 0.98f, "Layers", colorD.menuBarColor, 0.034f, false, false);

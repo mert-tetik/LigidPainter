@@ -86,6 +86,8 @@ struct ColorData //LigidPainter color palette
 	
 	glm::vec4 messageBoxPanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 	glm::vec4 messageBoxButtonColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
+
+	glm::vec4 nodePanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 };
 struct buttonData {
 
@@ -276,6 +278,8 @@ public:
 	bool isMouseOnCoords(GLFWwindow*window,double mouseXpos, double mouseYpos,std::vector<float> buttonCoor,bool isPanelMoving);
 	bool textInput(int key, int action,bool caps,std::string &text,int threshold);
 	bool textInputHex(int key, int action, std::string &text, int &activeChar);
+
+	void nodePanel(float mainPanelLoc, float height);
 	
 	void sendProgramsToUserInterface(Programs appPrograms);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);

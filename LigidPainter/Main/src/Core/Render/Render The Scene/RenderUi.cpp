@@ -233,6 +233,8 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		}
 	}
 
+	ui.nodePanel(renderData.panelLoc - 1.0f,1.f);
+
 	if (panelData.paintingPanelActive) {
 		glUseProgram(programs.uiProgram); 
 

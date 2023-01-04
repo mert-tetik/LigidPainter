@@ -192,7 +192,6 @@ bool renderTheScene = true;//Set true in the callback functions & set renderTheS
 int renderTheSceneCounter = 0;
 const int renderingThreshold = 120;
 
-
 Programs programs;
 
 
