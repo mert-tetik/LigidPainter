@@ -16,12 +16,9 @@ uniform sampler2D mirroredDepthTexture;
 uniform int renderDepth;
 uniform int renderMaskBrush;
 uniform sampler2D modifiedMaskTexture;
-uniform vec3 viewPos;
-uniform vec3 mirroredViewPos;
 uniform int whiteRendering;
 uniform sampler2D uvMask;
 uniform int interpretWithUvMask;
-uniform int renderPaintedTxtrMask;
 
 uniform sampler2D paintedTxtrMask;
 
@@ -125,6 +122,8 @@ vec3 getPaintedDiffuse(){
          mirroredDiffuseDrawMix = diffuseDrawMix;
    }
    
+   gl_FragDepth = 1.0 - (intensity/2.0 + 0.5);
+
    return mirroredDiffuseDrawMix;
 }
 
@@ -134,7 +133,6 @@ void main() {
 
    vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
 
-   if(renderPaintedTxtrMask == 0){
 
     if(isRenderScreenMaskMode == 0){
        if(renderMaskBrush == 1)
@@ -187,30 +185,4 @@ void main() {
           color = texture(screenMaskTexture, vec2(TexCoords.x , 1.0 - TexCoords.y));
        }
     }
-   }
-   else{
-      //Render painted texture in black and white
-
-      vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
-      vec3 mirroredScreenPos = mirroredProjectedPos.xyz / mirroredProjectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
-
-      float intensity = 0.0;
-      float mirroredIntensity = 0.0;
-
-      if(isPainted(screenPos,false) == 2.0) {
-         intensity = texture2D(screenMaskTexture,  screenPos.xy).r;
-      }
-      if(isPainted(mirroredScreenPos,true) == 2.0) {
-         mirroredIntensity = texture2D(mirroredScreenMaskTexture,  mirroredScreenPos.xy).r;
-      }
-
-      vec3 result = mix(vec3(0), vec3(1,0,0), intensity);
-      vec3 mirroredResult; 
-      
-      mirroredResult = mix(result, vec3(0.1,1,0), mirroredIntensity);
-
-      gl_FragDepth = 1.0 - mirroredResult.r;
-      
-      color = vec4(mirroredResult,1);
-   }
 }

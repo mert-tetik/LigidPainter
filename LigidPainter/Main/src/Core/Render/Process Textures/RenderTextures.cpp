@@ -18,8 +18,6 @@
 void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName, OutShaderData outShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,std::vector<UndoActions> &undoList,Programs programs, int maxScreenWidth , int maxScreenHeight) {
 	int maxHistoryHold = 20;
 	
-	//TODO : Check if uv stacking removal algorithm is necessary 
-
 	if(firstPaint){
 		//UNDO
 		Texture txtr;
@@ -58,9 +56,6 @@ void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, 
 		};
 		Texture txtr;
 
-		
-
-
     	GlSet gl;
 		//Setup
 		glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
@@ -76,26 +71,9 @@ void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, 
 		//Setup
 
 
-
-		gl.uniform1i(programs.outProgram,"renderPaintedTxtrMask",1);
-
-
-		//Prevent uv stacking
-		model.Draw(currentMaterialIndex,programs.PBRProgram,false,albedoTextures);
-
-		GLubyte* paintedMask = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
-		glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, paintedMask);
-		gl.activeTexture(GL_TEXTURE11);
-		gl.texImage(paintedMask, 1080, 1080, GL_RGB);
-		gl.generateMipmap();
-		delete[]paintedMask;
-
-
 		UserInterface ui;
 		ui.setViewportBgColor();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		gl.uniform1i(programs.outProgram,"renderPaintedTxtrMask",0);
-
 
 
 		//Render painted image

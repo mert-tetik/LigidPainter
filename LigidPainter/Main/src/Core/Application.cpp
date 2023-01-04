@@ -70,7 +70,6 @@ std::vector<unsigned int> albedoTextures;
 //GL_TEXTURE8 = Mirrored Depth texture
 //GL_TEXTURE9 = Depth texture
 //GL_TEXTURE10 = 1080x1080 Screen Texture
-//GL_TEXTURE11 = Painted mask
 //GL_TEXTURE12 = Modified mask texture
 //GL_TEXTURE13 = skybox
 
@@ -120,6 +119,8 @@ string customModelName;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 void updateCameraPosChanging();
 RenderData updateRenderData(RenderData renderData, unsigned int depthTexture, int brushSizeIndicatorSize);
 void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatV);
@@ -190,77 +191,6 @@ int textBoxActiveChar = 6;
 bool renderTheScene = true;//Set true in the callback functions & set renderTheSceneCounter to 0 if renderTheScene's state is changed
 int renderTheSceneCounter = 0;
 const int renderingThreshold = 120;
-
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	//TODO : Dynamic textbox
-
-	//------------------TEXT------------------
-	
-	renderTheScene = true;
-	renderTheSceneCounter = 0;
-
-	if(key == 280 && action == 0){
-		//Change capslock's state
-		caps = !caps;
-	}
-
-	UserInterface ui;
-	const int exportFileNameThreshold = 20;
-	if(UIElements[UIexportingFolderNameTextBox].textBox.clicked){
-		if(ui.textInput(key,action,caps,exportFileName,exportFileNameThreshold)){
-			UIElements[UIexportingFolderNameTextBox].textBox.text = exportFileName;
-		}
-	}
-	
-	if(colorPicker.hexValTextBoxActive){
-		if(ui.textInputHex(key,action,colorPicker.hexValTextBoxVal,textBoxActiveChar)){
-			colorPicker.saturationValueValChanged = true;
-			colorPicker.hexValTextBoxGotInput = true;
-		}
-	}
-
-
-	//------------------SHORTCUTS------------------
-
-	Utilities util;
-
-	bool shiftTabAltRelease =  glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_RELEASE;
-
-	//Ctrl + x use negative checkbox
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_X,NULL,NULL) && panelData.paintingPanelActive && action == 1 && shiftTabAltRelease){
-		if(useNegativeForDrawing){
-			useNegativeForDrawing = false;
-		}
-		else{
-			useNegativeForDrawing = true;
-		}
-	}
-
-	//Ctrl + h change texture demonstrator's state
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_H,NULL,NULL) && action == 1 && shiftTabAltRelease){
-		textureDisplayer.buttonClicked = true;
-	}
-
-	LigidPainter lp;
-	//Ctrl + Tab + q switch to model panel
-
-
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_Q,NULL) && action == 1){
-		lp.modelPanelButton();
-	}
-	//Ctrl + Tab + w switch to texture panel
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_W,NULL) && action == 1){
-		lp.texturePanelButton();
-	}
-	//Ctrl + Tab + t switch to model panel
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_T,NULL) && action == 1){
-		lp.paintingPanelButton();
-	}
-	//Ctrl + Tab + r switch to model panel
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_R,NULL) && action == 1){
-		lp.exportPanelButton();
-	}
-}
 
 
 Programs programs;
@@ -463,36 +393,37 @@ bool LigidPainter::run()
 
 		renderTheSceneCounter++;
 
-		if(glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetMouseButton(window, 2) == GLFW_PRESS){
+		const bool mouseInputTaken = glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetMouseButton(window, 2) == GLFW_PRESS;   
+		if(mouseInputTaken){
 			renderTheScene = true;
 			renderTheSceneCounter = 0;
 		}
 
 
 		//Release textboxes
-		if ((glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)){
+		const bool deactivatingTextBoxesCondition = glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS; 
+		if (deactivatingTextBoxesCondition){
 			if(!UIElements[UIexportingFolderNameTextBox].textBox.hover && UIElements[UIexportingFolderNameTextBox].textBox.clicked){
 				UIElements[UIexportingFolderNameTextBox].textBox.clicked = false; 
 				if(exportFileName == ""){
 					exportFileName = "LP_Export";
 					UIElements[UIexportingFolderNameTextBox].textBox.text = exportFileName;
-
 				}	
 			}
-			if(!colorPicker.hexValTextBoxEnter || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
+			if(!colorPicker.hexValTextBoxEnter){
 				colorPicker.hexValTextBoxActive = false;
 				textBoxActiveChar = 6;
 			}
 		}
 
 
-
-		//Check if texture demonstrator button clicked
+		//Check if texture displayer button clicked
 		if(textureDisplayer.buttonPressed){
 			textureDisplayer.buttonPressedCounter++;
 			textureDisplayer.buttonPressed = true;
 		}
-		if(textureDisplayer.buttonPressedCounter < 20 && textureDisplayer.buttonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE && !textureDisplayer.positionChanged){
+		const bool textureDisplayerClickedCondition = textureDisplayer.buttonPressedCounter < 20 && textureDisplayer.buttonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE && !textureDisplayer.positionChanged; 
+		if(textureDisplayerClickedCondition){
 			textureDisplayer.buttonClicked = true;
 			textureDisplayer.buttonPressed = false;
 
@@ -503,26 +434,38 @@ bool LigidPainter::run()
 			textureDisplayer.positionChanged = false;
 		}
 
+
+
 		//Ui actions
 		uiAct.uiActions(window,callbackData,UIElements,colorPicker,textureDisplayer);
 
+
+
+
+
 		//Change color picker's value
-		if((colorPicker.dropperActive && glfwGetMouseButton(window, 0) == GLFW_PRESS) || (colorPicker.saturationValueBoxClicked && !colorPicker.saturationValuePointerHover) || (colorPicker.hueBarClicked && !colorPicker.saturationValuePointerHover && !colorPicker.huePointerChanging)|| colorPicker.hexValTextBoxGotInput){
+		const bool dropperColorPickingCondition = colorPicker.dropperActive && glfwGetMouseButton(window, 0) == GLFW_PRESS;
+		const bool movingSatValPointerCondition = colorPicker.saturationValueBoxClicked && !colorPicker.saturationValuePointerHover;
+		const bool movingHuePointerCondition = colorPicker.hueBarClicked && !colorPicker.saturationValuePointerHover && !colorPicker.huePointerChanging; 
+		
+		if(dropperColorPickingCondition || movingSatValPointerCondition || movingHuePointerCondition || colorPicker.hexValTextBoxGotInput){
 			if(colorPicker.hexValTextBoxGotInput){
 				updateColorPicker(util.hexToRGBConverter(colorPicker.hexValTextBoxVal),true,true);//Update colorbox val once color picker hex value textbox value changed
 			}
 			else{
 				updateColorPicker(renderOut.mouseHoverPixel,true,!colorPicker.hueBarClicked);//Update colorbox val once dropper is used or colorbox is clicked
+				colorPicker.dropperActive = false;
 			}
 		}
+
 		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE)
 			colorPicker.huePointerChanging = false;
-		if(colorPicker.saturationValueBoxClicked)
-			colorPicker.saturationValueBoxClicked = false;
-		if(colorPicker.hueBarClicked)
-			colorPicker.hueBarClicked = false;
-		if(colorPicker.saturationValuePointerChanging)
-			colorPicker.saturationValuePointerChanging = false;
+
+		colorPicker.saturationValueBoxClicked = false;
+		colorPicker.hueBarClicked = false;
+		colorPicker.saturationValuePointerChanging = false;
+
+
 
 
 
@@ -536,7 +479,6 @@ bool LigidPainter::run()
 		if (cameraPosChanging || mirrorClick){
 			viewUpdateData = render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,UIElements[UImirrorXCheckBox].checkBox.checked ,UIElements[UImirrorYCheckBox].checkBox.checked ,UIElements[UImirrorZCheckBox].checkBox.checked ); 
 		}
-
 
 		pbrShaderData.drawColor = drawColor;
 		pbrShaderData.mirroredView = viewUpdateData.mirroredView;
@@ -577,8 +519,102 @@ bool LigidPainter::run()
 		outShaderData.view = viewUpdateData.view;
 		outShaderData.viewPos = viewUpdateData.cameraPos;
 
+		
 
 
+		//Render
+		//double firstTime = glfwGetTime();
+		if(renderTheScene){
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps);
+		}
+		
+		//double lastTime = glfwGetTime();
+		//cout <<  (lastTime - firstTime) * 1000  << '\n';
+		
+		paintRender = false;
+
+		//
+		if(panelData.paintingPanelActive)
+			colorPicker.updateHueVal = false; //Hue value will be updated after rendering the ui
+
+		drawColor = colorPicker.pickerValue/255.0f;
+		colorPicker.saturationValueValChanged = false;
+		colorPicker.hexValTextBoxGotInput = false;
+
+
+		//Painting
+		const bool distance_spacingCompatibility = glm::distance(glm::vec2(mouseDrawingPosX,mouseDrawingPosY),glm::vec2(mouseXpos,mouseYpos)) > paintingSpacing;
+		const bool paintingCondition = glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && !panelChanging && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !colorPicker.dropperActive && distance_spacingCompatibility; 
+		if (paintingCondition){
+
+			mouseDrawingPosX = mouseXpos;
+			mouseDrawingPosY = mouseYpos;
+
+			//Paint
+			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,albedoTextures, paintingSpacing < 10);
+			paintRenderCounter++;
+			if(paintRenderCounter == 5){
+				paintRender = true;
+				paintRenderCounter = 0;
+			}
+
+			brushValChanged = false; //After updating the brush mask texture set brushValChanged to false so brush mask texture won't be updated repeatedly 
+			paintingMode = true;
+		}
+
+		panelChanging = false;
+		lastMouseXpos = mouseXpos;
+		lastMouseYpos = mouseYpos;
+
+
+		//Update brush mask texture file's name once the brush mask texture changed
+		if(renderOut.maskPanelMaskClicked){
+			for (size_t i = 0; i < brushMaskTextures.textures.size(); i++)
+			{
+				if(brushMaskTextures.textures[i] == renderOut.currentBrushMaskTxtr){
+					//Restrict brush mask texture's name (20 chars)
+					std::string maskTextureName = util.getLastWordBySeparatingWithChar(brushMaskTextures.names[i],folderDistinguisher);  
+					UIElements[UImaskTextureFileNameText].text.text = util.cropString(maskTextureName,20); 
+				}
+			}
+		}
+		if(renderOut.maskPanelMaskClicked){
+			//If a new mask texture is selected from mask texture panel set brushValChanged to true to update brush mask texture 
+			brushValChanged = true;
+		}
+
+
+		//After rendering
+		exportImage = false;
+		textureDisplayer.buttonClicked = false;
+
+
+
+		if (mousePosChanged) { //To make sure painting done before changing camera position
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer);
+		}
+
+		mirrorClick = false;
+
+		if ((cameraPosChanging && paintingMode) || glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE) { //Changing camera position or painting a stroke ends painting, than updates painted texture
+			paintingMode = false;
+		}
+		if (doScrollAfterCallInPaintingMode) //Do a scroll after texture update using holdScroll
+		{
+			callbackData = callback.scroll_callback(window, 0, holdScrollVal);
+			doScrollAfterCallInPaintingMode = false;
+		}
+		if (glfwGetMouseButton(window, 1) == GLFW_RELEASE) { //Camera position changed
+			cameraPosChanging = false;
+		}
+		if(renderTheScene)
+			glfwSwapBuffers(window);
+
+		if(renderTheSceneCounter == renderingThreshold)
+			renderTheScene = false;
+
+
+		
 		//Exit message box
 		if(glfwWindowShouldClose(window)){
 			bool noButtonClick = true;
@@ -621,101 +657,6 @@ bool LigidPainter::run()
 				glfwSwapBuffers(window);
 		 	}
 		}
-
-		
-
-
-		//Render
-		//double firstTime = glfwGetTime();
-		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps);
-		}
-		
-		//double lastTime = glfwGetTime();
-		//cout <<  (lastTime - firstTime) * 1000  << '\n';
-		
-		paintRender = false;
-
-		//
-		if(panelData.paintingPanelActive)
-			colorPicker.updateHueVal = false; //Hue value will be updated after rendering the ui
-
-		drawColor = colorPicker.pickerValue/255.0f;
-		colorPicker.saturationValueValChanged = false;
-		colorPicker.hexValTextBoxGotInput = false;
-
-
-		//Painting
-		bool distance_spacingCompatibility = glm::distance(glm::vec2(mouseDrawingPosX,mouseDrawingPosY),glm::vec2(mouseXpos,mouseYpos)) > paintingSpacing;
-		if (glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && !panelChanging && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !colorPicker.dropperActive && distance_spacingCompatibility){
-
-			mouseDrawingPosX = mouseXpos;
-			mouseDrawingPosY = mouseYpos;
-
-			//Paint
-			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,albedoTextures, paintingSpacing < 10);
-			paintRenderCounter++;
-			if(paintRenderCounter == 5){
-				paintRender = true;
-				paintRenderCounter = 0;
-			}
-
-			brushValChanged = false; //After updating the brush mask texture set brushValChanged to false so brush mask texture won't be updated repeatedly 
-			paintingMode = true;
-		}
-
-		panelChanging = false;
-		lastMouseXpos = mouseXpos;
-		lastMouseYpos = mouseYpos;
-
-
-		//Update brush mask texture file's name once the brush mask texture changed
-		if(renderOut.maskPanelMaskClicked){
-			for (size_t i = 0; i < brushMaskTextures.textures.size(); i++)
-			{
-				if(brushMaskTextures.textures[i] == renderOut.currentBrushMaskTxtr){
-					//Restrict brush mask texture's name (20 chars)
-					std::string maskTextureName = util.getLastWordBySeparatingWithChar(brushMaskTextures.names[i],folderDistinguisher);  
-					UIElements[UImaskTextureFileNameText].text.text = util.cropString(maskTextureName,20); 
-				}
-			}
-		}
-		if(renderOut.maskPanelMaskClicked){
-			//If a new mask texture is selected from mask texture panel set brushValChanged to true to update brush mask texture 
-			brushValChanged = true;
-		}
-
-
-
-		//After rendering
-		exportImage = false; //After exporting, set exportImage false so we won't download the texture repeatedly
-		textureDisplayer.buttonClicked = false;
-
-
-
-
-		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer);
-		}
-
-		mirrorClick = false;
-
-		if ((cameraPosChanging && paintingMode) || glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE) { //Changing camera position or painting a stroke ends painting, than updates painted texture
-			paintingMode = false;
-		}
-		if (doScrollAfterCallInPaintingMode) //Do a scroll after texture update using holdScroll
-		{
-			callbackData = callback.scroll_callback(window, 0, holdScrollVal);
-			doScrollAfterCallInPaintingMode = false;
-		}
-		if (glfwGetMouseButton(window, 1) == GLFW_RELEASE) { //Camera position changed
-			cameraPosChanging = false;
-		}
-		if(renderTheScene)
-			glfwSwapBuffers(window);
-
-		if(renderTheSceneCounter == renderingThreshold)
-			renderTheScene = false;
 	}
 	
 	//Close the program
@@ -731,6 +672,77 @@ bool LigidPainter::run()
 
 
 //-------------CALLBACK-------------\\
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	//TODO : Dynamic textbox
+
+	//------------------TEXT------------------
+	
+	renderTheScene = true;
+	renderTheSceneCounter = 0;
+
+	if(key == 280 && action == 0){
+		//Change capslock's state
+		caps = !caps;
+	}
+
+	UserInterface ui;
+	const int exportFileNameThreshold = 20;
+	if(UIElements[UIexportingFolderNameTextBox].textBox.clicked){
+		if(ui.textInput(key,action,caps,exportFileName,exportFileNameThreshold)){
+			UIElements[UIexportingFolderNameTextBox].textBox.text = exportFileName;
+		}
+	}
+	
+	if(colorPicker.hexValTextBoxActive){
+		if(ui.textInputHex(key,action,colorPicker.hexValTextBoxVal,textBoxActiveChar)){
+			colorPicker.saturationValueValChanged = true;
+			colorPicker.hexValTextBoxGotInput = true;
+		}
+	}
+
+
+	//------------------SHORTCUTS------------------
+
+	Utilities util;
+
+	bool shiftTabAltRelease = glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_RELEASE;
+
+	//Ctrl + x use negative checkbox
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_X,0,0) && panelData.paintingPanelActive && action == 1 && shiftTabAltRelease){
+		if(useNegativeForDrawing){
+			useNegativeForDrawing = false;
+		}
+		else{
+			useNegativeForDrawing = true;
+		}
+	}
+
+	//Ctrl + h change texture demonstrator's state
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_H,0,0) && action == 1 && shiftTabAltRelease){
+		textureDisplayer.buttonClicked = true;
+	}
+
+	LigidPainter lp;
+	//Ctrl + Tab + q switch to model panel
+
+
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_Q,0) && action == 1){
+		lp.modelPanelButton();
+	}
+	//Ctrl + Tab + w switch to texture panel
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_W,0) && action == 1){
+		lp.texturePanelButton();
+	}
+	//Ctrl + Tab + t switch to model panel
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_T,0) && action == 1){
+		lp.paintingPanelButton();
+	}
+	//Ctrl + Tab + r switch to model panel
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_R,0) && action == 1){
+		lp.exportPanelButton();
+	}
+}
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -910,7 +922,6 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatVal){
 		colorPicker.saturationValuePosX = (hsvVal.g / 1342.10526316f) - 0.095f; //0.095
 		colorPicker.saturationValuePosY = (hsvVal.b / 653.846153846f) - 0.195f; //0.195
 	}
-	colorPicker.dropperActive = false;
 }
 
 //-----------------------------UI ACTIONS-----------------------------\\
