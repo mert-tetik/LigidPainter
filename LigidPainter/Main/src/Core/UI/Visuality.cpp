@@ -371,18 +371,22 @@ void UserInterface::decorationSquare(float position_x, float position_y) {
 	glset.drawArrays(buttonCoor, false);
 }
 
-void UserInterface::checkBox(float position_x, float position_y, std::string text, glm::vec4 color,bool mouseHover,bool checked) {
+void UserInterface::checkBox(float position_x, float position_y, std::string text, bool mouseHover,bool checked) {
 	ColorData colorData;
+
+	glm::vec4 color;
+
 	if (!checked) {
 		if (!mouseHover)
-			box(0.002f, 0.02f, position_x, position_y, "", colorData.checkBoxColor, 0.00022f, false, false, 0.9f, 12.5f, glm::vec4(0), 0);
+			color = colorData.checkBoxColor;
 		else
-			box(0.002f, 0.02f, position_x, position_y, "", colorData.checkBoxHoverColor, 0.00022f, false, false, 0.9f, 12.5f, glm::vec4(0), 0);
+			color =  colorData.checkBoxHoverColor;
 	}
 	else {
-		box(0.002f, 0.02f, position_x, position_y, "", colorData.checkBoxCheckedColor, 0.00022f, false, false, 0.9f, 12.5f, glm::vec4(0), 0);
-
+		color = colorData.checkBoxCheckedColor;
 	}
+	box(0.002f, 0.02f, position_x, position_y, "", color, 0.00022f, false, false, 0.9f, 13.0f, glm::vec4(0), 0);
+	
 	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f);
 }
 
@@ -390,10 +394,6 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 void UserInterface::setViewportBgColor() {
 	glClearColor(colorD.viewportBackColor.x, colorD.viewportBackColor.y, colorD.viewportBackColor.z, 1.0f);
 }
-
-
-
-
 
 std::map<char, character> characters;
 void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale) {

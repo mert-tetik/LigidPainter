@@ -44,6 +44,7 @@ bool paintingPanelButtonEnter;
 bool maskPanelSliderEnter;
 bool maskPanelEnter;
 bool mainPanelBoundariesEnter;
+bool mainPanelEnter;
 bool uiElementEnter;
 //Ui enter
 
@@ -64,6 +65,7 @@ CallbckData preapareCallbackData() {
 	callbk.maskPanelEnter = maskPanelEnter;
 	callbk.uiElementEnter = uiElementEnter;
 	callbk.mainPanelBoundariesEnter = mainPanelBoundariesEnter;
+	callbk.mainPanelEnter = mainPanelEnter;
 
 	return callbk;
 }
@@ -232,7 +234,10 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 
 		mainPanelBoundariesEnter =  ui.isMouseOnButton(window, 0.02f, 0.88f, mainPanelLoc -1.0f + 0.02f, 0.0f, mouseXPos, mouseYPos, false);
 		
-		textureDisplayer.buttonHover = ui.isMouseOnButton(window, 0.02f,0.045f,(textureDisplayer.buttonPosX+0.005f)-1.0f,textureDisplayer.buttonPosY-0.01f, mouseXPos, mouseYPos, 0);	modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.8f, mouseXPos, mouseYPos);
+		mainPanelEnter = ui.isMouseOnButton(window, 0.2f,0.9f,mainPanelLoc - 1.0f - screenGapX + 0.2f, 0.0f, mouseXPos, mouseYPos, 0);
+		
+		textureDisplayer.buttonHover = ui.isMouseOnButton(window, 0.02f,0.045f,(textureDisplayer.buttonPosX+0.005f)-1.0f,textureDisplayer.buttonPosY-0.01f, mouseXPos, mouseYPos, 0);		
+
 		modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.8f, mouseXPos, mouseYPos);
 		texturePanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.72f, mouseXPos, mouseYPos);
 		paintingPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.64f, mouseXPos, mouseYPos);

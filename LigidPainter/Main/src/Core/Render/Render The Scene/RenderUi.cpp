@@ -236,22 +236,18 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 	if (panelData.paintingPanelActive) {
 		glUseProgram(programs.uiProgram); 
 
-		//Color Picker
-		colorPicker.hueColorValue = ui.colorRect(centerCoords - screenGapX + 0.1f, -0.55f, colorPicker.hueValue, FBOScreen, renderData.window,projection,colorPicker.updateHueVal); 
 
+		//Color Picker
+		colorPicker.hueColorValue = ui.hueBar(centerCoords - screenGapX + 0.1f, -0.55f, colorPicker.hueValue, FBOScreen, renderData.window,projection,colorPicker.updateHueVal); 
 		saturationValShaderData.boxColor = colorPicker.hueColorValue / 255.0f;
 		saturationValShaderData.renderTextureProjection = projection;
-
 		gl.useSaturationValBoxShader(programs.saturationValBoxProgram,saturationValShaderData);
 		ui.colorBox(centerCoords - screenGapX - 0.02f, -0.55f, colorPicker.saturationValuePosX, colorPicker.saturationValuePosY);
-
-
-		ui.box(0.002f, 0.025f, centerCoords - screenGapX - 0.095f, -0.81f, "", glm::vec4(colorPicker.pickerValue / glm::vec3(255),1.0f), 0.075f, false, false, 0.9f, 10, glm::vec4(0), 0); //indicator for picken color of the color picker
-
-		ui.box(0.002f, 0.035f, centerCoords - screenGapX - 0.095f, -0.81f, "", colorData.panelColorSnd, 0.075f, false, false, 0.9f, 7, glm::vec4(0), 0); //decoration
-
+		ui.box(0.002f, 0.025f, centerCoords - screenGapX - 0.095f, -0.81f, "", glm::vec4(colorPicker.pickerValue / glm::vec3(255),1.0f), 0.075f, false, false, 0.9f, 12, glm::vec4(0), 0); //indicator for picken color of the color picker
+		ui.box(0.004f, 0.035f, centerCoords - screenGapX - 0.095f, -0.81f, "", colorData.panelColorSnd, 0.075f, false, false, 0.9f, 10, glm::vec4(0), 0); //decoration
 		ui.box(0.04f, 0.03f, centerCoords - screenGapX - 0.008f,-0.81f, util.rgbToHexGenerator(colorPicker.pickerValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
 	}
+		
 
 
 	if (panelData.paintingPanelActive) { //Icons
@@ -330,6 +326,10 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		ui.box(0.035f, 0.07f, centerCoords - screenGapX - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0);
 	}
 
+	bool usingUiProgram = false;
+	bool usingIconProgram = false;
+
+	
 	for (size_t i = 0; i < UIElements.size(); i++)
 	{
 		std::string currentType = UIElements[i].type;
@@ -350,32 +350,37 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 			panelCompatibility = false;
 		}
 		if(panelCompatibility){
+			
+			const int uiIconStartingIndex = 32; 
+			if(i < uiIconStartingIndex && !usingUiProgram){
+				glUseProgram(programs.uiProgram);
+				usingUiProgram = true;
+			}
+			else if(i >= uiIconStartingIndex && !usingIconProgram){
+				glUseProgram(programs.iconsProgram);
+				usingIconProgram = true;
+			}
+
 			if(currentType == "button"){
-				glUseProgram(programs.uiProgram);//TODO : Prevent firm use of glUseProgram
 				ui.box(UIElements[i].button.width, UIElements[i].button.height, centerCoords - screenGapX + UIElements[i].button.positionX, UIElements[i].button.positionY, UIElements[i].button.text, UIElements[i].button.color, UIElements[i].button.textRatio, false, false, UIElements[i].button.positionZ, UIElements[i].button.buttonCurveReduce, UIElements[i].button.colorHover, UIElements[i].button.transitionMixVal); //Add mask texture button
 			}
 			
 			if(currentType == "text"){	
-				glUseProgram(programs.uiProgram);
 				ui.renderText(programs.uiProgram,UIElements[i].text.text, centerCoords - screenGapX + UIElements[i].text.positionX, UIElements[i].text.positionY, UIElements[i].text.scale);
 			}
 
 			if(currentType == "rangeBar"){
-				glUseProgram(programs.uiProgram);
 				ui.rangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY, UIElements[i].rangeBar.value);
 			}
 
 			if(currentType == "textBox"){
-				glUseProgram(programs.uiProgram);
 				ui.box(UIElements[i].textBox.width, UIElements[i].textBox.height,centerCoords - screenGapX + UIElements[i].textBox.position_x, UIElements[i].textBox.position_y,UIElements[i].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements[i].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements[i].textBox.transitionMixVal); //Add mask texture button
 			}
 
 			if(currentType == "checkBox"){
-				glUseProgram(programs.uiProgram);
-				ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY, UIElements[i].checkBox.text, colorData.checkBoxColor,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked); //jpg checkbox
+				ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked); //jpg checkbox
 			}
 			if(currentType == "icon"){
-				glUseProgram(programs.iconsProgram);
 				ui.iconBox(UIElements[i].icon.width,UIElements[i].icon.height,centerCoords - screenGapX + UIElements[i].icon.positionX ,UIElements[i].icon.positionY,UIElements[i].icon.positionZ,UIElements[i].icon.icon, 0.0f , colorData.iconColor , colorData.iconColorHover);
 			}
 		}

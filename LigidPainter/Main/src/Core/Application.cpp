@@ -676,7 +676,8 @@ bool LigidPainter::run()
 			{
 				if(brushMaskTextures.textures[i] == renderOut.currentBrushMaskTxtr){
 					//Restrict brush mask texture's name (20 chars)
-					UIElements[UImaskTextureFileNameText].text.text = util.cropString(brushMaskTextures.names[i],20); 
+					std::string maskTextureName = util.getLastWordBySeparatingWithChar(brushMaskTextures.names[i],folderDistinguisher);  
+					UIElements[UImaskTextureFileNameText].text.text = util.cropString(maskTextureName,20); 
 				}
 			}
 		}
@@ -804,12 +805,12 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 		enablePanelMovement = true;
 		
 		//Check if cursor is inside of the panel
-		if (false){ //TODO : callbackdata.mainpanelenter
+		if (callbackData.mainPanelEnter){ 
 			//Inside of the panel
 			mainPanelHover = true;
 			doPainting = false;
 		} 
-		else if (xpos < ((windowData.windowMaxWidth / 2) * mainPanelLoc) - screenGapX  && panelData.paintingPanelActive){
+		else if(panelData.paintingPanelActive){
 			//Painting panel + outside of panel
 			mainPanelHover = false;
 			doPainting = true;

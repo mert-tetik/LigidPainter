@@ -1,7 +1,7 @@
 #ifndef LGDCALLBACK_H
 #define LGDCALLBACK_H
 
-#include "Core/UI/UserInterface.h";
+#include "Core/UI/UserInterface.h"
 
 struct CallbckData { //Return from callback
 	bool movePanel;
@@ -13,6 +13,7 @@ struct CallbckData { //Return from callback
 	bool maskPanelEnter;
 	bool uiElementEnter;
 	bool mainPanelBoundariesEnter;
+	bool mainPanelEnter;
 
 	glm::vec3 originPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraPos = glm::vec3(0.034906f, 0.000000f, -9.999939f);

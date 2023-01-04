@@ -261,11 +261,11 @@ public:
 	void setViewportBgColor();
 	void renderText(unsigned int program, std::string text, float x, float y, float scale);
 	void renderMenubar(GLFWwindow* window);
-	void checkBox(float position_x, float position_y, std::string text, glm::vec4 color, bool mouseHover, bool checked);
+	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked);
 	void panelChangeButton(float position_x, float position_y);
 	void rangeBar(float position_x, float position_y, float value);
 	void colorBox(float position_x, float position_y, float valueX, float valueY);
-	glm::vec3 colorRect(float position_x, float position_y,float value, unsigned int FBO,GLFWwindow* window,glm::mat4 projection,bool updateHueVal);
+	glm::vec3 hueBar(float position_x, float position_y,float value, unsigned int FBO,GLFWwindow* window,glm::mat4 projection,bool updateHueVal);
 	void decorationSquare(float position_x, float position_y);
 	void numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN);
 	void verticalRangeBar(float positionX,float positionY,float height,float value);
