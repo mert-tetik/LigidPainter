@@ -60,7 +60,7 @@ RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsig
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,Programs programs
 ,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
-float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer) {
+float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -235,6 +235,16 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 
 	ui.nodePanel(renderData.panelLoc - 1.0f,1.f);
 
+	if(addNodeContextMenu.stateChanged){
+		addNodeContextMenu.positionX = mouseXpos/maxScreenWidth*2.f - 1.0f;
+		cout << addNodeContextMenu.positionX;
+		addNodeContextMenu.positionY = -mouseYpos/maxScreenHeight*2.f + 1.0f;
+	}
+
+	if(addNodeContextMenu.active)
+		ui.container(addNodeContextMenu.positionX,addNodeContextMenu.positionY,addNodeContextMenu.positionZ,addNodeContextMenu.width,addNodeContextMenu.height,glm::vec4(0,0,0,0.5f),programs,icons.Circle);
+
+
 	if (panelData.paintingPanelActive) {
 		glUseProgram(programs.uiProgram); 
 
@@ -283,10 +293,10 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 
 			gl.uniform1i(programs.iconsProgram,"isMaskIcon",1);
 			if(maskTextures[i] == currentBrushMaskTexture){
-				gl.uniform3fv(programs.iconsProgram,"iconColor",colorData.chosenBrushMaskTextureColor);
+				gl.uniform4fv(programs.iconsProgram,"iconColor",glm::vec4(colorData.chosenBrushMaskTextureColor,1.0f));
 			}
 			else{
-				gl.uniform3fv(programs.iconsProgram,"iconColor",colorData.brushMaskIconColor);
+				gl.uniform4fv(programs.iconsProgram,"iconColor",colorData.brushMaskIconColor);
 			}
 			gl.uniform1f(programs.iconsProgram,"iconMixVal",0);
 			gl.activeTexture(GL_TEXTURE6);

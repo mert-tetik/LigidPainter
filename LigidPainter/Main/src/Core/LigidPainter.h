@@ -139,6 +139,7 @@ struct Icons{
 	unsigned int Logo;
 	unsigned int AddTexture;
 	unsigned int Material;
+	unsigned int Circle;
 };
 
 struct RenderData { //GlSet::render

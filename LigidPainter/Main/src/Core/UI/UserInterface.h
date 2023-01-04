@@ -70,8 +70,8 @@ struct ColorData //LigidPainter color palette
 
 	glm::vec4 colorBoxIndicatorColor = glm::vec4(0.05f, 0.05f, 0.05f,0.5f);
 
-	glm::vec4 iconColor = glm::vec4(1.0f,1.0f,1.0f,0.5f);
-	glm::vec4 iconColorHover = glm::vec4(0.5f,0.5f,0.5f,0.5f);
+	glm::vec4 iconColor = glm::vec4(1.0f,1.0f,1.0f,1.0f);
+	glm::vec4 iconColorHover = glm::vec4(0.5f,0.5f,0.5f,1.0f);
 	
 	glm::vec4 numericModifierArrowColor = glm::vec4(0.6f, 0.6f, 0.6f,0.5f);
 	glm::vec4 numericModifierArrowHoverColor = glm::vec4(0.95f, 0.95f, 0.95f,0.5f);
@@ -80,7 +80,7 @@ struct ColorData //LigidPainter color palette
 
 	glm::vec4 buttonMaskTxtrPanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 	glm::vec3 chosenBrushMaskTextureColor = glm::vec3(LigidPainterThemeColor);
-	glm::vec3 brushMaskIconColor = glm::vec3(1.0f,1.0f,1.0f);
+	glm::vec4 brushMaskIconColor = glm::vec4(1.0f,1.0f,1.0f,1.0f);
 	glm::vec4 maskPanelSliderColor = glm::vec4(0.0f,0.0f,0.0f,0.5f);
 	glm::vec4 maskPanelSliderBackgroundColor = glm::vec4(1.0f,1.0f,1.0f,0.5f);
 	
@@ -89,8 +89,16 @@ struct ColorData //LigidPainter color palette
 
 	glm::vec4 nodePanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 };
-struct buttonData {
+struct ContextMenu {
+	float positionX;
+	float positionY;
+	float positionZ;
 
+	float width;
+	float height;
+
+	bool stateChanged;
+	bool active;
 };
 
 //Width will be added to the midPanelPos if attachedToMainPanel is true
@@ -251,6 +259,27 @@ struct TextureDisplayer{
 	int buttonPressedCounter = 0;
 };
 
+struct NodeInput{
+	std::string text;
+	std::string type;
+};
+
+struct Node{
+	std::string title;
+
+	glm::vec3 upBarColor;
+	glm::vec3 backColor;
+	int inputSize;
+	std::vector<NodeInput> inputData;
+
+	float positionX;
+	float positionY;
+
+	float width;
+	float height;
+};
+
+
 class UserInterface {
 public:
 	std::vector<UIElement> UserInterface::getUiElements(Icons icons);
@@ -259,7 +288,7 @@ public:
 	void panel(float panelLoc, float movePanel_x);
 	void textureDisplayer(float width,float height, float position_x,float position_y,float z);
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec4 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec4 colorTransitionColor , float mixVal);
-	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal,glm::vec3 color,glm::vec3 colorHover);
+	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover);
 	void setViewportBgColor();
 	void renderText(unsigned int program, std::string text, float x, float y, float scale);
 	void renderMenubar(GLFWwindow* window);
@@ -271,6 +300,9 @@ public:
 	void decorationSquare(float position_x, float position_y);
 	void numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN);
 	void verticalRangeBar(float positionX,float positionY,float height,float value);
+	void container(float positionX,float positionY,float positionZ,float width, float height,glm::vec4 color, Programs &programs,unsigned int circleTexture);
+	void nodePanel(float mainPanelLoc, float height);
+	void circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture,glm::vec4 color);
 	
 	//Calculations and More
 	bool isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, double mouseXpos, double mouseYpos);
@@ -279,7 +311,6 @@ public:
 	bool textInput(int key, int action,bool caps,std::string &text,int threshold);
 	bool textInputHex(int key, int action, std::string &text, int &activeChar);
 
-	void nodePanel(float mainPanelLoc, float height);
 	
 	void sendProgramsToUserInterface(Programs appPrograms);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);

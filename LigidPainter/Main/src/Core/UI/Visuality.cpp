@@ -116,7 +116,7 @@ void UserInterface::panel(float panelLoc, float) {
 	GlSet glset;
 
 	box(0.00f, 0.04f, panelLoc + 0.022f, 0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 7, colorD.panelColor, 0);//Load model button
-	box(0.00f, 0.04f, panelLoc + 0.022f, -0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 7, colorD.panelColor, 0);//Load model button
+	box(0.00f, 0.04f, panelLoc + 0.022f, -0.8805f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 7, colorD.panelColor, 0);//Load model button
 
 	const float panelWidth = 0.2f;
 	const float panelHeigth = 0.88f;
@@ -173,7 +173,7 @@ void UserInterface::numericModifier(float position_x,float position_y,unsigned i
 	renderText(uiPrograms.uiProgram,std::to_string(value),position_x-0.01f,position_y-0.01f,0.00022f);
 }
 
-void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon,float mixVal,glm::vec3 color,glm::vec3 colorHover){
+void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover){
 	std::vector<float> buttonCoorSq{
 		// first triangle
 		 width + position_x,  height + position_y, z,1,1,0,0,0,  // top right
@@ -187,8 +187,8 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 	GlSet glset;
 	ColorData clrData;
 
-	glset.uniform3fv(uiPrograms.iconsProgram,"iconColor",color);
-	glset.uniform3fv(uiPrograms.iconsProgram,"iconColorHover",colorHover);
+	glset.uniform4fv(uiPrograms.iconsProgram,"iconColor",color);
+	glset.uniform4fv(uiPrograms.iconsProgram,"iconColorHover",colorHover);
 	
 	glset.uniform1f(uiPrograms.iconsProgram,"iconMixVal",mixVal);
 	glset.activeTexture(GL_TEXTURE6);
@@ -196,6 +196,9 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 	glset.drawArrays(buttonCoorSq,false);
 }
 
+void UserInterface::circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture, glm::vec4 color){
+	iconBox(width,height,positionX,positionY,positionZ,circleTexture,0,color,glm::vec4(0));
+}
 
 void UserInterface::colorBox(float position_x, float position_y,float valueX, float valueY) {
 
@@ -432,7 +435,21 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 	glset.uniform1i(program, "isText", 0);
 
 }
+void UserInterface::container(float positionX,float positionY,float positionZ,float width, float height,glm::vec4 color,Programs &programs,unsigned int circleTexture){
+	glUseProgram(programs.uiProgram);
+	box(width,height,positionX,positionY,"", color,0,0,0,positionZ,10000,glm::vec4(0),0);
+	
+	box(0.03f,height,positionX - width + 0.006f,positionY,"", color,0,0,0,positionZ,10000,glm::vec4(0),0); //Left
+	box(0.03f,height,positionX + width - 0.006f,positionY,"", color,0,0,0,positionZ,10000,glm::vec4(0),0); //Right
+	box(width,0.06f,positionX,positionY + height - 0.012 ,"", color,0,0,0,positionZ,10000,glm::vec4(0),0); //Top
+	box(width,0.06f,positionX,positionY - height + 0.012 ,"", color,0,0,0,positionZ,10000,glm::vec4(0),0); //Bottom
 
+	glUseProgram(programs.iconsProgram);
+	circle(positionX - width,positionY + height,positionZ,0.03f,0.06f,circleTexture,color);//Left top
+	circle(positionX - width,positionY - height,positionZ,0.03f,0.06f,circleTexture,color);//Left bot
+	circle(positionX + width,positionY + height,positionZ,0.03f,0.06f,circleTexture,color);//Right top
+	circle(positionX + width,positionY - height,positionZ,0.03f,0.06f,circleTexture,color);//Right bot
+}
 void UserInterface::nodePanel(float mainPanelLoc, float height){
 	std::vector<float> boxCoor{
 		//first triangle								    //Color - Normal Vectors Will Be Usen For Color Data Of Vertices

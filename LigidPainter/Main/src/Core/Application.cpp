@@ -109,6 +109,7 @@ string exportFileName = "LP_Export";
 std::vector<UIElement> UIElements;
 ColorPicker colorPicker;
 TextureDisplayer textureDisplayer;
+ContextMenu addNodeContextMenu;
 
 
 string modelName;
@@ -378,7 +379,11 @@ bool LigidPainter::run()
 	double mouseDrawingPosX = 0;
 	double mouseDrawingPosY = 0;
 		
+	bool doChangeStateOfTheAddNodeContextBar = true;
 
+	addNodeContextMenu.width = 0.07f;
+	addNodeContextMenu.height = 0.05f;
+	addNodeContextMenu.positionZ = 0.99f;
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		
@@ -396,6 +401,20 @@ bool LigidPainter::run()
 		if(mouseInputTaken){
 			renderTheScene = true;
 			renderTheSceneCounter = 0;
+		}
+
+
+
+		if(glfwGetMouseButton(window,1) == GLFW_PRESS && doChangeStateOfTheAddNodeContextBar){
+			doChangeStateOfTheAddNodeContextBar = false;
+			addNodeContextMenu.stateChanged = true;  
+			addNodeContextMenu.active = true;  
+		}
+		if(glfwGetMouseButton(window,1) == GLFW_RELEASE){
+			doChangeStateOfTheAddNodeContextBar = true;
+		}
+		if(glfwGetMouseButton(window,0) == GLFW_PRESS){
+			addNodeContextMenu.active = false;  
 		}
 
 
@@ -524,7 +543,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu);
 		}
 		
 		//double lastTime = glfwGetTime();
@@ -612,8 +631,8 @@ bool LigidPainter::run()
 		if(renderTheSceneCounter == renderingThreshold)
 			renderTheScene = false;
 
+		addNodeContextMenu.stateChanged = false;
 
-		
 		//Exit message box
 		if(glfwWindowShouldClose(window)){
 			bool noButtonClick = true;
@@ -633,7 +652,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
