@@ -1315,7 +1315,7 @@ void LigidPainter::nodePanelBoundaries(float yOffset,float screenHeight){
 	if (enablePanelMovement) {
 		Utilities util;
 		nodePanel.heigth += yOffset / (screenHeight / 2);
-		nodePanel.heigth = util.restrictBetween(nodePanel.heigth, 1.98f, 0.05);//Keep in boundaries
+		nodePanel.heigth = util.restrictBetween(nodePanel.heigth, 1.92f, 0.05);//Keep in boundaries
     }
 }
 

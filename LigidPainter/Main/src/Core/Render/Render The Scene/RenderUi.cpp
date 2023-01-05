@@ -131,9 +131,10 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
 		//If message box is not active
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , 0);
-		ui.nodePanel(renderData.panelLoc - 1.0f - screenGapX,nodePanel.heigth);
 
-		//Projection that is used for panel (Use that projection if things will move with panel (and will not be centered) or will be moved freely)
+		ui.nodePanel(renderData.panelLoc - 1.0f - screenGapX,nodePanel.heigth,programs,icons.Circle);
+
+
 
 		//Panel changing buttons
 		glUseProgram(programs.uiProgram);
@@ -248,7 +249,6 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 
 		for (size_t i = 0; i < addNodeContextMenu.buttons.size(); i++)
 		{
-			
 			addNodeContextMenu.buttons[i].transitionMixVal = (float)addNodeContextMenu.buttons[i].hover * (float)addNodeContextMenu.buttons[i].hoverAnimationActive;
 			
 			if(addNodeContextMenu.buttons[i].hover && addNodeContextMenu.buttons[i].hoverAnimationActive){

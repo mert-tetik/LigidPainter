@@ -450,22 +450,73 @@ void UserInterface::container(float positionX,float positionY,float positionZ,fl
 	circle(positionX + width,positionY + height,positionZ,0.03f,0.06f,circleTexture,color);//Right top
 	circle(positionX + width,positionY - height,positionZ,0.03f,0.06f,circleTexture,color);//Right bot
 }
-void UserInterface::nodePanel(float mainPanelLoc, float height){
+void UserInterface::nodePanel(float mainPanelLoc, float height,Programs programs,unsigned int circleTexture){
+	const float nodePanelLeft = -1.0f + 0.1f;
+	const float nodePanelRight = mainPanelLoc - 0.1f;
+	const float nodePanelTop = -1.00f + height;
+	const float nodePanelZ = 0.9f;
+	
+
 	std::vector<float> boxCoor{
-		//first triangle								    //Color - Normal Vectors Will Be Usen For Color Data Of Vertices
-		 -1.0f + 0.05 			,  -1.00f 			, 0.9f,1.0f,1.0f	,1,1,1,  // top right
-		 -1.0f + 0.05			,  -1.00f + height 	, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
-		 mainPanelLoc 	-0.05f	,  -1.00f 			, 0.9f,0.0f,1.0f	,0,0,0,  // top left 
+		//first triangle								    
+		 nodePanelLeft 			,  -1.00f 			, nodePanelZ,1.0f,1.0f	,1,1,1,  // top right
+		 nodePanelLeft			,  nodePanelTop 	, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
+		 nodePanelRight			,  -1.00f 			, nodePanelZ,0.0f,1.0f	,0,0,0,  // top left 
 		//second triangle
-		 -1.0f + 0.05			,  -1.00f + height	, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
-		 mainPanelLoc 	-0.05f	,  -1.00f + height	, 0.9f,0.0f,0.0f	,0,0,0,  // bottom left
-		 mainPanelLoc 	-0.05f	,  -1.00f 			, 0.9f,0.0f,1.0f	,0,0,0 // top left
+		 nodePanelLeft			,  nodePanelTop		, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
+		 nodePanelRight			,  nodePanelTop		, nodePanelZ,0.0f,0.0f	,0,0,0,  // bottom left
+		 nodePanelRight			,  -1.00f 			, nodePanelZ,0.0f,1.0f	,0,0,0 // top left
+	};
+
+	std::vector<float> topCoor{
+		//first triangle								   
+		 nodePanelLeft 			,  nodePanelTop+0.076f 			, nodePanelZ,1.0f,1.0f	,1,1,1,  // top right
+		 nodePanelLeft			,  nodePanelTop 				, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
+		 nodePanelRight			,  nodePanelTop+0.076f 			, nodePanelZ,0.0f,1.0f	,0,0,0,  // top left 
+		//second triangle
+		 nodePanelLeft			,  nodePanelTop					, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
+		 nodePanelRight			,  nodePanelTop					, nodePanelZ,0.0f,0.0f	,0,0,0,  // bottom left
+		 nodePanelRight			,  nodePanelTop+0.076f 			, nodePanelZ,0.0f,1.0f	,0,0,0 // top left
+	};
+	std::vector<float> leftCoor{
+		//first triangle								   
+		 nodePanelLeft 					,  -1.00f 			, nodePanelZ,1.0f,1.0f	,1,1,1,  // top right
+		 nodePanelLeft					,  nodePanelTop 	, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
+		 nodePanelLeft - 0.038f			,  -1.00f 			, nodePanelZ,0.0f,1.0f	,0,0,0,  // top left 
+		//second triangle
+		 nodePanelLeft					,  nodePanelTop		, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
+		 nodePanelLeft - 0.038f			,  nodePanelTop		, nodePanelZ,0.0f,0.0f	,0,0,0,  // bottom left
+		 nodePanelLeft - 0.038f			,  -1.00f 			, nodePanelZ,0.0f,1.0f	,0,0,0 // top left
+	};
+
+	std::vector<float> rightCoor{
+		//first triangle								   
+		 nodePanelRight 					,  -1.00f 			, nodePanelZ,1.0f,1.0f	,1,1,1,  // top right
+		 nodePanelRight						,  nodePanelTop 	, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
+		 nodePanelRight + 0.038f			,  -1.00f 			, nodePanelZ,0.0f,1.0f	,0,0,0,  // top left 
+		//second triangle
+		 nodePanelRight						,  nodePanelTop		, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
+		 nodePanelRight + 0.038f			,  nodePanelTop		, nodePanelZ,0.0f,0.0f	,0,0,0,  // bottom left
+		 nodePanelRight + 0.038f			,  -1.00f 			, nodePanelZ,0.0f,1.0f	,0,0,0 // top left
 	};
 
 	GlSet gl;
 	ColorData colorData;
+
+
+	glUseProgram(programs.uiProgram);
 	gl.uniform4fv(uiPrograms.uiProgram,"uiColor",colorData.nodePanelColor);
 	gl.drawArrays(boxCoor,false);
+	gl.drawArrays(leftCoor,false);
+	gl.drawArrays(rightCoor,false);
+	
+	gl.uniform4fv(uiPrograms.uiProgram,"uiColor",colorData.nodePanelColorSnd);
+	gl.drawArrays(topCoor,false);
+
+	glUseProgram(programs.iconsProgram);
+	circle(nodePanelLeft,nodePanelTop,nodePanelZ,0.05f,0.1f,circleTexture,colorData.nodePanelColorSnd); //Left
+	circle(nodePanelRight,nodePanelTop,nodePanelZ,0.05f,0.1f,circleTexture,colorData.nodePanelColorSnd); //Right
+	glUseProgram(programs.uiProgram);
 }
 
 void UserInterface::renderMenubar(GLFWwindow* window) {

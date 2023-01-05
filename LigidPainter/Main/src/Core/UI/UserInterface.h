@@ -88,6 +88,7 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 messageBoxButtonColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 
 	glm::vec4 nodePanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
+	glm::vec4 nodePanelColorSnd = glm::vec4(0.0f, 0.0f, 0.0f,0.7f);
 	glm::vec4 nodePanelContextMenuPanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 	glm::vec4 nodePanelContextMenuButtonColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 	glm::vec4 nodePanelContextMenuButtonColorHover = glm::vec4(0.33f, 0.33f, 0.33f,0.5f);
@@ -320,7 +321,7 @@ public:
 	void numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN);
 	void verticalRangeBar(float positionX,float positionY,float height,float value);
 	void container(float positionX,float positionY,float positionZ,float width, float height,glm::vec4 color, Programs &programs,unsigned int circleTexture);
-	void nodePanel(float mainPanelLoc, float height);
+	void nodePanel(float mainPanelLoc, float height,Programs programs,unsigned int circleTexture);
 	void circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture,glm::vec4 color);
 	
 	//Calculations and More
