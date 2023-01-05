@@ -90,7 +90,7 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 nodePanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 	glm::vec4 nodePanelContextMenuPanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 	glm::vec4 nodePanelContextMenuButtonColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
-	glm::vec4 nodePanelContextMenuButtonColorHover = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
+	glm::vec4 nodePanelContextMenuButtonColorHover = glm::vec4(0.33f, 0.33f, 0.33f,0.5f);
 };
 
 //Width will be added to the midPanelPos if attachedToMainPanel is true
@@ -116,6 +116,7 @@ struct Button{
 	float buttonCurveReduce;
 	float transitionMixVal;
 	bool hover = false;
+	bool hoverAnimationActive; 
 };
 
 struct RangeBar{

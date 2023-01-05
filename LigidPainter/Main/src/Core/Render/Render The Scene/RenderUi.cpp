@@ -248,6 +248,15 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 
 		for (size_t i = 0; i < addNodeContextMenu.buttons.size(); i++)
 		{
+			
+			addNodeContextMenu.buttons[i].transitionMixVal = (float)addNodeContextMenu.buttons[i].hover * (float)addNodeContextMenu.buttons[i].hoverAnimationActive;
+			
+			if(addNodeContextMenu.buttons[i].hover && addNodeContextMenu.buttons[i].hoverAnimationActive){
+				addNodeContextMenu.buttons[i].positionZ = 0.999f;
+			}
+			else{
+				addNodeContextMenu.buttons[i].positionZ = 0.99f;
+			}
 			ui.box(addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[i].positionY, addNodeContextMenu.buttons[i].text, addNodeContextMenu.buttons[i].color, addNodeContextMenu.buttons[i].textRatio, false, false, addNodeContextMenu.buttons[i].positionZ, addNodeContextMenu.buttons[i].buttonCurveReduce, addNodeContextMenu.buttons[i].colorHover, addNodeContextMenu.buttons[i].transitionMixVal); //Add mask texture button	
 		}
 	}

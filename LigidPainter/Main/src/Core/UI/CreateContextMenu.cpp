@@ -41,6 +41,7 @@ ContextMenu UserInterface::createContextMenus(){
     title.positionZ = 0.99f;
     title.text = "Add Nodes";
     title.textRatio = 0.052f;
+    title.hoverAnimationActive = false;
     addNodeContextMenu.buttons.push_back(title);
 
     Button imageTextureNode;
@@ -54,6 +55,7 @@ ContextMenu UserInterface::createContextMenus(){
     imageTextureNode.positionZ = 0.99f;
     imageTextureNode.text = "Image Texture";
     imageTextureNode.textRatio = 0.052f;
+    imageTextureNode.hoverAnimationActive = true;
     addNodeContextMenu.buttons.push_back(imageTextureNode);
 
     Button pbrOutputNode;
@@ -67,6 +69,7 @@ ContextMenu UserInterface::createContextMenus(){
     pbrOutputNode.positionZ = 0.99f;
     pbrOutputNode.text = "PBR Output";
     pbrOutputNode.textRatio = 0.052f;
+    pbrOutputNode.hoverAnimationActive = true;
     addNodeContextMenu.buttons.push_back(pbrOutputNode);
 
     return addNodeContextMenu;
