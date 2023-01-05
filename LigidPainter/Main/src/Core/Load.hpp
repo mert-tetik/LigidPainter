@@ -163,6 +163,10 @@ public:
 		icons.AddTexture = txtr.getTexture("LigidPainter/Resources/Icons/AddTexture.jpg",0,0,false);
 		icons.Material = txtr.getTexture("LigidPainter/Resources/Icons/Material.jpg",0,0,false);
 		icons.Circle = txtr.getTexture("LigidPainter/Resources/Icons/Circle.jpg",0,0,false);
+		icons.TL = txtr.getTexture("LigidPainter/Resources/Sprites/TL.jpg",0,0,false);
+		icons.TR = txtr.getTexture("LigidPainter/Resources/Sprites/TR.jpg",0,0,false);
+		icons.BL = txtr.getTexture("LigidPainter/Resources/Sprites/BL.jpg",0,0,false);
+		icons.BR = txtr.getTexture("LigidPainter/Resources/Sprites/BR.jpg",0,0,false);
 	
 		return icons;
 	}

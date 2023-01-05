@@ -519,6 +519,23 @@ void UserInterface::nodePanel(float mainPanelLoc, float height,Programs programs
 	glUseProgram(programs.uiProgram);
 }
 
+void UserInterface::node(Node node,Programs programs,Icons icons){
+	glUseProgram(programs.uiProgram);
+	box(node.width,node.height,node.positionX,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);
+	
+	const float iconWidth = node.width/6.f;
+	box(iconWidth,node.height,node.positionX-node.width -iconWidth,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Left
+	box(iconWidth,node.height,node.positionX+node.width +iconWidth,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Right
+	box(node.width,iconWidth*2.f,node.positionX,node.positionY + node.height + iconWidth*2.f,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Top
+	box(node.width,iconWidth*2.f,node.positionX,node.positionY - node.height - iconWidth*2.f,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Bottom
+
+	glUseProgram(programs.iconsProgram);
+	iconBox(iconWidth , iconWidth*2.f , node.positionX-node.width -iconWidth, node.positionY + node.height + iconWidth*2.f, 0.9999f , icons.TL , 0 , node.backColor , node.backColor);
+	iconBox(iconWidth , iconWidth*2.f , node.positionX+node.width +iconWidth, node.positionY + node.height + iconWidth*2.f, 0.9999f , icons.TR , 0 , node.backColor , node.backColor);
+	iconBox(iconWidth , iconWidth*2.f , node.positionX-node.width -iconWidth, node.positionY - node.height - iconWidth*2.f, 0.9999f , icons.BL , 0 , node.backColor , node.backColor);
+	iconBox(iconWidth , iconWidth*2.f , node.positionX+node.width +iconWidth, node.positionY - node.height - iconWidth*2.f, 0.9999f , icons.BR , 0 , node.backColor , node.backColor);
+}
+
 void UserInterface::renderMenubar(GLFWwindow* window) {
 	/*ColorData colorD;
 	box(0.04f, 0.02f, -0.92f, 0.98f, "Layers", colorD.menuBarColor, 0.034f, false, false);
