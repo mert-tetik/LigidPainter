@@ -90,7 +90,7 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 
 CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float maskPanelSliderValue,bool brushMaskPanelMaskHover,
 LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer
-, NodePanel &nodePanel)
+, NodePanel &nodePanel, ContextMenu &addNodeContextMenu)
 {
 	CallbckData callbk;
 	
@@ -100,7 +100,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
 	
 	buttonCheck(window, xpos, ypos, panelData,maskPanelSliderValue,brushMaskPanelMaskHover,cursors, texturePanelButtonHover,uiElements,mainPanelLoc,
-	colorPicker,textureDisplayer,nodePanel);	
+	colorPicker,textureDisplayer,nodePanel,addNodeContextMenu);	
 
 	xoffset = xpos - lastX;
 	yoffset = lastY - ypos;
@@ -148,7 +148,7 @@ bool noPanelClick = true;
 
 void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData,float maskPanelSliderValue,bool brushMaskPanelMaskHover,
 LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker, TextureDisplayer &textureDisplayer
-,NodePanel &nodePanel) {
+,NodePanel &nodePanel,ContextMenu &addNodeContextMenu) {
 	UserInterface ui;
 
 	float centerDivider;
@@ -237,6 +237,8 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 
 		nodePanel.panelHover = ui.isMouseOnNodePanel(window,mainPanelLoc - screenGapX, nodePanel.heigth,mouseXPos,mouseYPos,false);
 		nodePanel.boundariesHover = ui.isMouseOnNodePanel(window,mainPanelLoc - screenGapX, nodePanel.heigth,mouseXPos,mouseYPos,true);
+
+		addNodeContextMenu.hover = ui.isMouseOnButton(window, addNodeContextMenu.width+0.02f, addNodeContextMenu.height+0.04f, addNodeContextMenu.positionX - screenGapX/2.f, addNodeContextMenu.positionY, mouseXPos, mouseYPos, false);
 
 		mainPanelBoundariesEnter =  ui.isMouseOnButton(window, 0.02f, 0.88f, mainPanelLoc -1.0f + 0.02f - screenGapX, 0.0f, mouseXPos, mouseYPos, false);
 		

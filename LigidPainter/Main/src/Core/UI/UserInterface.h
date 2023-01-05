@@ -88,17 +88,9 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 messageBoxButtonColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 
 	glm::vec4 nodePanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
-};
-struct ContextMenu {
-	float positionX;
-	float positionY;
-	float positionZ;
-
-	float width;
-	float height;
-
-	bool stateChanged;
-	bool active;
+	glm::vec4 nodePanelContextMenuPanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
+	glm::vec4 nodePanelContextMenuButtonColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
+	glm::vec4 nodePanelContextMenuButtonColorHover = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 };
 
 //Width will be added to the midPanelPos if attachedToMainPanel is true
@@ -109,8 +101,6 @@ struct Container{
 	float positionY;
 	float positionZ;
 	glm::vec4 color;
-	
-	
 };
 
 struct Button{
@@ -287,10 +277,30 @@ struct Node{
 	float height;
 };
 
+struct ContextMenu {
+	float positionX;
+	float positionY;
+	float positionZ;
+
+	float width;
+	float height;
+
+	bool stateChanged;
+	bool active;
+
+	bool hover;
+
+	std::vector<Button> buttons;
+};
+
 
 class UserInterface {
 public:
+	//Load
 	std::vector<UIElement> UserInterface::getUiElements(Icons icons);
+	ContextMenu createContextMenus();
+
+
 
 	//Visuality
 	void panel(float panelLoc, float movePanel_x);

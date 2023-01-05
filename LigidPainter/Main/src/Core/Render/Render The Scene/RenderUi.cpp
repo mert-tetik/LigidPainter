@@ -76,6 +76,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 	uiOut.texturePanelButtonHover = false;
 
 
+
 		//Change the projection
 	float centerDivider;
 	float centerSum;
@@ -237,13 +238,20 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 
 
 	if(addNodeContextMenu.stateChanged){
-		addNodeContextMenu.positionX = mouseXpos/maxScreenWidth*2.f - 1.0f;
-		cout << addNodeContextMenu.positionX;
+		addNodeContextMenu.positionX = mouseXpos/(maxScreenWidth/2.f) - 1.0f + screenGapX ;
 		addNodeContextMenu.positionY = -mouseYpos/maxScreenHeight*2.f + 1.0f;
 	}
 
-	if(addNodeContextMenu.active)
-		ui.container(addNodeContextMenu.positionX,addNodeContextMenu.positionY,addNodeContextMenu.positionZ,addNodeContextMenu.width,addNodeContextMenu.height,glm::vec4(0,0,0,0.5f),programs,icons.Circle);
+	if(addNodeContextMenu.active){
+		ui.container(addNodeContextMenu.positionX,addNodeContextMenu.positionY,addNodeContextMenu.positionZ,addNodeContextMenu.width,addNodeContextMenu.height,colorData.nodePanelContextMenuPanelColor,programs,icons.Circle);
+		glUseProgram(programs.uiProgram); 
+
+		for (size_t i = 0; i < addNodeContextMenu.buttons.size(); i++)
+		{
+			ui.box(addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[i].positionY, addNodeContextMenu.buttons[i].text, addNodeContextMenu.buttons[i].color, addNodeContextMenu.buttons[i].textRatio, false, false, addNodeContextMenu.buttons[i].positionZ, addNodeContextMenu.buttons[i].buttonCurveReduce, addNodeContextMenu.buttons[i].colorHover, addNodeContextMenu.buttons[i].transitionMixVal); //Add mask texture button	
+		}
+	}
+	
 
 
 	if (panelData.paintingPanelActive) {

@@ -264,6 +264,8 @@ bool LigidPainter::run()
 	textures = load.initTextures(maskTexturePath.c_str());
 	//Load UI
 	UIElements = ui.getUiElements(icons);
+	//Load context menus
+	addNodeContextMenu = ui.createContextMenus();
 
 
 	glGenBuffers(1, &VBO);
@@ -382,9 +384,7 @@ bool LigidPainter::run()
 		
 	bool doChangeStateOfTheAddNodeContextBar = true;
 
-	addNodeContextMenu.width = 0.07f;
-	addNodeContextMenu.height = 0.05f;
-	addNodeContextMenu.positionZ = 0.99f;
+
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		
@@ -404,12 +404,19 @@ bool LigidPainter::run()
 			renderTheSceneCounter = 0;
 		}
 
-
+		if(addNodeContextMenu.active && !addNodeContextMenu.hover){
+			addNodeContextMenu.active = false;
+		}
 
 		if(glfwGetMouseButton(window,1) == GLFW_PRESS && doChangeStateOfTheAddNodeContextBar){
 			doChangeStateOfTheAddNodeContextBar = false;
-			addNodeContextMenu.stateChanged = true;  
-			addNodeContextMenu.active = true;  
+			addNodeContextMenu.stateChanged = true; 
+			if(nodePanel.panelHover){
+				addNodeContextMenu.active = true;  
+			} 
+			else{
+				addNodeContextMenu.active = false;
+			}
 		}
 		if(glfwGetMouseButton(window,1) == GLFW_RELEASE){
 			doChangeStateOfTheAddNodeContextBar = true;
@@ -610,7 +617,7 @@ bool LigidPainter::run()
 
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel,addNodeContextMenu);
 		}
 
 		mirrorClick = false;
