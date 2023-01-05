@@ -524,16 +524,21 @@ void UserInterface::node(Node node,Programs programs,Icons icons){
 	box(node.width,node.height,node.positionX,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);
 	
 	const float iconWidth = node.width/6.f;
+
 	box(iconWidth,node.height,node.positionX-node.width -iconWidth,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Left
 	box(iconWidth,node.height,node.positionX+node.width +iconWidth,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Right
-	box(node.width,iconWidth*2.f,node.positionX,node.positionY + node.height + iconWidth*2.f,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Top
+	box(node.width,iconWidth*2.f,node.positionX,node.positionY + node.height + iconWidth*2.f,"",node.upBarColor,0,0,0,0.9999f,10000,node.upBarColor,0);///Top
 	box(node.width,iconWidth*2.f,node.positionX,node.positionY - node.height - iconWidth*2.f,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Bottom
 
 	glUseProgram(programs.iconsProgram);
-	iconBox(iconWidth , iconWidth*2.f , node.positionX-node.width -iconWidth, node.positionY + node.height + iconWidth*2.f, 0.9999f , icons.TL , 0 , node.backColor , node.backColor);
-	iconBox(iconWidth , iconWidth*2.f , node.positionX+node.width +iconWidth, node.positionY + node.height + iconWidth*2.f, 0.9999f , icons.TR , 0 , node.backColor , node.backColor);
+	iconBox(iconWidth , iconWidth*2.f , node.positionX-node.width -iconWidth, node.positionY + node.height + iconWidth*2.f, 0.9999f , icons.TL , 0 , node.upBarColor , node.backColor);
+	iconBox(iconWidth , iconWidth*2.f , node.positionX+node.width +iconWidth, node.positionY + node.height + iconWidth*2.f, 0.9999f , icons.TR , 0 , node.upBarColor , node.backColor);
 	iconBox(iconWidth , iconWidth*2.f , node.positionX-node.width -iconWidth, node.positionY - node.height - iconWidth*2.f, 0.9999f , icons.BL , 0 , node.backColor , node.backColor);
 	iconBox(iconWidth , iconWidth*2.f , node.positionX+node.width +iconWidth, node.positionY - node.height - iconWidth*2.f, 0.9999f , icons.BR , 0 , node.backColor , node.backColor);
+
+	glUseProgram(programs.uiProgram);
+	renderText(programs.uiProgram,node.title,node.positionX-node.width -iconWidth,node.positionY + node.height + iconWidth*1.f,node.width/300.f);
+
 }
 
 void UserInterface::renderMenubar(GLFWwindow* window) {
