@@ -89,6 +89,7 @@ struct ColorData //LigidPainter color palette
 
 	glm::vec4 nodePanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 	glm::vec4 nodePanelColorSnd = glm::vec4(0.0f, 0.0f, 0.0f,0.7f);
+	
 	glm::vec4 nodePanelContextMenuPanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 	glm::vec4 nodePanelContextMenuButtonColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 	glm::vec4 nodePanelContextMenuButtonColorHover = glm::vec4(0.33f, 0.33f, 0.33f,0.5f);
