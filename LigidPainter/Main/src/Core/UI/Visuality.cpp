@@ -166,8 +166,8 @@ void UserInterface::numericModifier(float position_x,float position_y,unsigned i
 	ColorData clrData;
 	
 	glUseProgram(uiPrograms.iconsProgram);
-	iconBox(0.02f,0.04f,position_x - 0.05f,position_y,z,leftArrow,mixValN,clrData.numericModifierArrowColor,clrData.numericModifierArrowHoverColor);
-	iconBox(0.02f,0.04f,position_x + 0.05f,position_y,z,rightArrow,mixValP,clrData.numericModifierArrowColor,clrData.numericModifierArrowHoverColor);
+	iconBox(0.02f,0.04f,position_x - 0.06f,position_y,z,leftArrow,mixValN,clrData.numericModifierArrowColor,clrData.numericModifierArrowHoverColor);
+	iconBox(0.02f,0.04f,position_x + 0.06f,position_y,z,rightArrow,mixValP,clrData.numericModifierArrowColor,clrData.numericModifierArrowHoverColor);
 
 	glUseProgram(uiPrograms.uiProgram);
 	renderText(uiPrograms.uiProgram,std::to_string(value),position_x-0.01f,position_y-0.01f,0.00022f);
@@ -525,19 +525,41 @@ void UserInterface::node(Node node,Programs programs,Icons icons){
 	
 	const float iconWidth = node.width/6.f;
 
+	//Side area
 	box(iconWidth,node.height,node.positionX-node.width -iconWidth,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Left
 	box(iconWidth,node.height,node.positionX+node.width +iconWidth,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Right
 	box(node.width,iconWidth*2.f,node.positionX,node.positionY + node.height + iconWidth*2.f,"",node.upBarColor,0,0,0,0.9999f,10000,node.upBarColor,0);///Top
 	box(node.width,iconWidth*2.f,node.positionX,node.positionY - node.height - iconWidth*2.f,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Bottom
 
+	//Corners
 	glUseProgram(programs.iconsProgram);
 	iconBox(iconWidth , iconWidth*2.f , node.positionX-node.width -iconWidth, node.positionY + node.height + iconWidth*2.f, 0.9999f , icons.TL , 0 , node.upBarColor , node.backColor);
 	iconBox(iconWidth , iconWidth*2.f , node.positionX+node.width +iconWidth, node.positionY + node.height + iconWidth*2.f, 0.9999f , icons.TR , 0 , node.upBarColor , node.backColor);
 	iconBox(iconWidth , iconWidth*2.f , node.positionX-node.width -iconWidth, node.positionY - node.height - iconWidth*2.f, 0.9999f , icons.BL , 0 , node.backColor , node.backColor);
 	iconBox(iconWidth , iconWidth*2.f , node.positionX+node.width +iconWidth, node.positionY - node.height - iconWidth*2.f, 0.9999f , icons.BR , 0 , node.backColor , node.backColor);
+	
+	int ioIndex = 0;
+	for (size_t i = 0; i < node.outputs.size(); i++)
+	{
+		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX+node.width +iconWidth, (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , node.upBarColor , node.backColor);
+		ioIndex++;
+	}
+
+	for (size_t i = 0; i < node.inputs.size(); i++)
+	{
+		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX-node.width -iconWidth, (node.positionY + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , node.upBarColor , node.backColor);
+	}
 
 	glUseProgram(programs.uiProgram);
 	renderText(programs.uiProgram,node.title,node.positionX-node.width -iconWidth,node.positionY + node.height + iconWidth*1.f,node.width/300.f);
+	for (size_t i = 0; i < node.outputs.size(); i++)
+	{
+		renderText(programs.uiProgram,node.outputs[i].text,node.positionX+node.width - (node.outputs[i].text.size()/60.f)*node.width*8.f,(node.positionY + node.height) - i/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
+	}
+	for (size_t i = 0; i < node.inputs.size(); i++)
+	{
+		renderText(programs.uiProgram,node.inputs[i].text,node.positionX-node.width -iconWidth + 0.015f,(node.positionY + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
+	}
 
 }
 

@@ -270,8 +270,8 @@ struct Node{
 
 	glm::vec4 upBarColor;
 	glm::vec4 backColor;
-	int inputSize;
-	std::vector<NodeInput> inputData;
+	std::vector<NodeInput> inputs;
+	std::vector<NodeInput> outputs;
 
 	float positionX;
 	float positionY;

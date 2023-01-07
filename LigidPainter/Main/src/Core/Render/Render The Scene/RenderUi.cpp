@@ -134,16 +134,30 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 
 		ui.nodePanel(renderData.panelLoc - 1.0f - screenGapX,nodePanel.heigth,programs,icons.Circle);
 
-		float zoomVal = 0.5f;
+		float zoomVal = 1.3f;
 
 		Node imageNode;
 		imageNode.backColor = glm::vec4(0.2,0.2,0.2,1);
-		imageNode.height = 0.3f * zoomVal;
 		imageNode.positionX = 0.5f;
 		imageNode.positionY = 0.5f;
 		imageNode.title = "Image Texture";
 		imageNode.upBarColor =glm::vec4(0.9,0.2,0.2,1);
 		imageNode.width = 0.12f * zoomVal;
+
+		NodeInput input1;
+		input1.text = "input 1";
+		input1.type = "vec3";
+		imageNode.inputs.push_back(input1);
+		
+		NodeInput input2;
+		input2.text = "input 2";
+		input2.type = "vec3";
+		imageNode.inputs.push_back(input2);
+		imageNode.outputs.push_back(input2);
+		imageNode.outputs.push_back(input2);
+
+		imageNode.height = (imageNode.inputs.size() + imageNode.outputs.size())/13.f * zoomVal;
+
 		ui.node(imageNode,programs,icons);
 
 
