@@ -134,7 +134,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 
 		ui.nodePanel(renderData.panelLoc - 1.0f - screenGapX,nodePanel.heigth,programs,icons.Circle);
 
-		float zoomVal = 1.2f;
+		float zoomVal = 0.5f;
 
 		Node imageNode;
 		imageNode.backColor = glm::vec4(0.2,0.2,0.2,1);
@@ -276,7 +276,6 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 
 	if (panelData.paintingPanelActive) {
 		glUseProgram(programs.uiProgram); 
-
 
 		//Color Picker
 		colorPicker.hueColorValue = ui.hueBar(centerCoords - screenGapX + 0.1f, -0.55f, colorPicker.hueValue, FBOScreen, renderData.window,projection,colorPicker.updateHueVal); 

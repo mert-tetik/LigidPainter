@@ -14,6 +14,9 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/string_cast.hpp"
 
+#include "Core/ProcessTheNodeFile.hpp"
+
+
 #include "Core/LigidPainter.h"
 #include "Core/UI/UserInterface.h"
 #include "Core/Utilities.h"
@@ -215,12 +218,19 @@ int screenHeight;
 
 Model model;
 
+	
 
 float materialsPanelSlideValue = 0.0f;
 
 float mainPanelLoc = 1.6f;
 bool LigidPainter::run()
 {
+	processNode process;
+	ProcessHppNode nodee;
+	nodee = process.processNodeFile(".\\LigidPainter\\Resources\\Nodes\\node.txt");
+	std::cout << "title : " << nodee.title << "Output size : " << nodee.outputs.size() << "input size : " << nodee.inputs.size() << "Color : " << nodee.color <<"Code : "<< nodee.code;
+
+
 	ColorData colorData;
 	UserInterface ui;
 	Texture txtr;

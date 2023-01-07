@@ -155,7 +155,8 @@ bool UserInterface::isMouseOnNodePanel(GLFWwindow* window,float mainPanelLoc,flo
 	std::vector<float> buttonCoor;
 	
 	if(!calculateBoundaries){
-		buttonCoor = std::vector<float>{
+		buttonCoor = std::vector<float>
+		{
 			//first triangle								    //Color - Normal Vectors Will Be Usen For Color Data Of Vertices
 			 -1.0f + 0.05 			,  -1.00f 			, 0.9f,1.0f,1.0f	,1,1,1,  // top right
 			 -1.0f + 0.05			,  -1.00f + height 	, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right

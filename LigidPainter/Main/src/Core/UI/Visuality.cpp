@@ -451,8 +451,8 @@ void UserInterface::container(float positionX,float positionY,float positionZ,fl
 	circle(positionX + width,positionY - height,positionZ,0.03f,0.06f,circleTexture,color);//Right bot
 }
 void UserInterface::nodePanel(float mainPanelLoc, float height,Programs programs,unsigned int circleTexture){
-	const float nodePanelLeft = -1.0f + 0.1f;
-	const float nodePanelRight = mainPanelLoc - 0.1f;
+	const float nodePanelLeft = -1.0f + 0.037f;
+	const float nodePanelRight = mainPanelLoc - 0.037f;
 	const float nodePanelTop = -1.00f + height;
 	const float nodePanelZ = 0.9f;
 	

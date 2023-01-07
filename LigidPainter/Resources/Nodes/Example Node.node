@@ -1,0 +1,34 @@
+#For ligidtools.com
+
+%attributes;
+
+-title : ExampleNode;
+-color : 981212;
+-opacity : 60;
+
+-input_0 : 
+--type : vec3;
+--title : Albedo color;
+--element : picker;
+
+-input_1 :
+--type : sampler2D;
+--title : Texture;
+--element : none;
+
+-output_0 :
+--type : sampler2D;
+--title : Image Out;
+
+-output_1 :
+--type : vec3;
+--title : Color out;
+
+-uniforms : tex_coords|normal|pos;
+
+%code;
+
+void main(){
+    output_1 = Texture2D(input_2,tex_coords);
+    output_2 = vec4(input_1,1.0);
+}
