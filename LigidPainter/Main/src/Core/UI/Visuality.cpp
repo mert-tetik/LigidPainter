@@ -551,9 +551,24 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 		ioIndex++;
 	}
 
+	float rangeBarCountInputs = 0;
 	for (size_t i = 0; i < node.inputs.size(); i++)
 	{
-		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX-node.width - iconWidth*2.f, (node.positionY + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , node.upBarColor , node.backColor);
+
+		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX-node.width - iconWidth*2.f, (node.positionY + node.height) - (i+ioIndex+rangeBarCountInputs)/(20.f/(node.width*16)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , node.upBarColor , node.backColor);
+		
+		if(node.inputs[i].type == "float"){
+			rangeBarCountInputs += 2;
+		}
+		if(node.inputs[i].type == "vec2"){
+			rangeBarCountInputs += 3;
+		}
+		if(node.inputs[i].type == "vec3"){
+			rangeBarCountInputs += 4;
+		}
+		if(node.inputs[i].type == "vec4"){
+			rangeBarCountInputs += 5;
+		}
 	}
 
 	glUseProgram(programs.uiProgram);
@@ -564,9 +579,29 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 		renderText(programs.uiProgram,node.outputs[i].text,node.positionX+node.width - (node.outputs[i].text.size()/60.f)*node.width*8.f,(node.positionY + node.height) - i/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
 	}
 	double xOffset = mouseX - lastMouseX;
+		
 
+	int inputElementIndex = 0;
 	for (size_t i = 0; i < node.inputs.size(); i++)
 	{
+		float rangeBarCount = 0;
+
+
+
+		if(node.inputs[i].type == "float"){
+			rangeBarCount = 1;
+		}
+		if(node.inputs[i].type == "vec2"){
+			rangeBarCount = 2;
+		}
+		if(node.inputs[i].type == "vec3"){
+			rangeBarCount = 3;
+		}
+		if(node.inputs[i].type == "vec4"){
+			rangeBarCount = 4;
+		}
+
+
 
 		bool anyPointerPressed = false;
 		for (size_t i = 0; i < node.inputs.size(); i++)
@@ -577,31 +612,38 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 			}
 		}
 		
-		//Range bar
-		box(node.width,iconWidth*2.f,node.positionX,(node.positionY + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,0.99998f,8 / (node.width*6),node.backColor,0);///Bottom
-		//Pointer
-		
-		float pointPosVal = node.inputs[i].value.r / (1.f/(node.width*2.f)) - node.width;
-		box(iconWidth/4.f,iconWidth*2.f,node.positionX + pointPosVal,(node.positionY + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,0.99999f,8 / (node.width*6),node.backColor,0);///Bottom
-		
-		//TODO : Calculate the screen gap
-		bool isRangeBarPointerHover = false;
-		if(!anyPointerPressed)
-			isRangeBarPointerHover = isMouseOnButton(window , iconWidth , iconWidth*2.f ,node.positionX + pointPosVal,(node.positionY + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
-		
-		if(glfwGetMouseButton(window,0) == GLFW_PRESS && isRangeBarPointerHover){
-			node.inputs[i].pointerPressed = true;
-		}
-		if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
-			node.inputs[i].pointerPressed = false;
+		renderText(programs.uiProgram,node.inputs[i].text,node.positionX-node.width -iconWidth + 0.015f,(node.positionY + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
+		inputElementIndex++;
+		for (size_t k = 0; k < rangeBarCount; k++)
+		{
+			float pointPosVal = node.inputs[i].value.r / (1.f/(node.width*2.f)) - node.width;
+			//Range bar
+			box(node.width,iconWidth*2.f,node.positionX,(node.positionY + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,0.99998f,8 / (node.width*6),node.backColor,0);///Bottom
+			//Pointer
+			box(iconWidth/4.f,iconWidth*2.f,node.positionX + pointPosVal,(node.positionY + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,0.99999f,8 / (node.width*6),node.backColor,0);///Bottom
+
+			//TODO : Calculate the screen gap
+			bool isRangeBarPointerHover = false;
+			if(!anyPointerPressed){
+				isRangeBarPointerHover = isMouseOnButton(window , iconWidth , iconWidth*2.f ,node.positionX + pointPosVal,(node.positionY + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+			}
+
+			if(glfwGetMouseButton(window,0) == GLFW_PRESS && isRangeBarPointerHover){
+				node.inputs[i].pointerPressed = true;
+			}
+			if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
+				node.inputs[i].pointerPressed = false;
+			}
+
+			if(node.inputs[i].pointerPressed){
+				node.inputs[i].value.r += xOffset/100.f;
+				node.inputs[i].value.r = util.restrictBetween(node.inputs[i].value.r,1.f,0.001f);
+			}	
+			
+
+			inputElementIndex++;
 		}
 
-		if(node.inputs[i].pointerPressed){
-			node.inputs[i].value.r += xOffset/100.f;
-			node.inputs[i].value.r = util.restrictBetween(node.inputs[i].value.r,1.f,0.001f);
-		}
-
-		renderText(programs.uiProgram,node.inputs[i].text,node.positionX-node.width -iconWidth + 0.015f,(node.positionY + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
 
 	}
 	lastMouseX = mouseX;

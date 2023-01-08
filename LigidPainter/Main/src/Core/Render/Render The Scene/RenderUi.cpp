@@ -149,17 +149,38 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		if(!aaaa){
 		NodeInput input1;
 		input1.text = "input 1";
-		input1.type = "vec3";
+		input1.type = "vec4";
 		imageNode.inputs.push_back(input1);
 		
 		NodeInput input2;
 		input2.text = "input 2";
-		input2.type = "vec3";
+		input2.type = "float";
+		imageNode.inputs.push_back(input2);
+		imageNode.inputs.push_back(input2);
+		imageNode.inputs.push_back(input2);
 		imageNode.inputs.push_back(input2);
 		imageNode.outputs.push_back(input2);
 		imageNode.outputs.push_back(input2);
 
-		imageNode.height = (imageNode.inputs.size() + imageNode.outputs.size())/13.f * zoomVal;
+		float rangeBarCount = 0;
+		for (size_t i = 0; i < imageNode.inputs.size(); i++)
+		{
+			if(imageNode.inputs[i].type == "float"){
+				rangeBarCount += 0.7f;
+			}
+			if(imageNode.inputs[i].type == "vec2"){
+				rangeBarCount += 0.7f*2;
+			}
+			if(imageNode.inputs[i].type == "vec3"){
+				rangeBarCount += 0.7f*3;
+			}
+			if(imageNode.inputs[i].type == "vec4"){
+				rangeBarCount += 0.7f*4;
+			}
+		}
+		
+
+		imageNode.height = (imageNode.inputs.size() + rangeBarCount+ imageNode.outputs.size())/13.f * zoomVal;
 
 		}
 
