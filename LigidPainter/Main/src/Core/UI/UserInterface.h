@@ -93,6 +93,10 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 nodePanelContextMenuPanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 	glm::vec4 nodePanelContextMenuButtonColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 	glm::vec4 nodePanelContextMenuButtonColorHover = glm::vec4(0.33f, 0.33f, 0.33f,0.5f);
+
+	glm::vec4 floatNodeInputColor = glm::vec4(0.55f, 0.55f, 0.55f,1.0f);
+	glm::vec4 vec2NodeInputColor = glm::vec4(0.33f, 0.93f, 0.33f,1.0f);
+	glm::vec4 vec3NodeInputColor = glm::vec4(0.93f, 0.93f, 0.33f,1.0f);
 };
 
 //Width will be added to the midPanelPos if attachedToMainPanel is true

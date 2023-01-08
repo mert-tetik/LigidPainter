@@ -168,9 +168,12 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 							input2.text = "input 2";
 							input2.type = "float";
 							imageNode.inputs.push_back(input2);
-							imageNode.inputs.push_back(input2);
-							imageNode.inputs.push_back(input2);
-							imageNode.inputs.push_back(input2);
+							
+							NodeInput input3;
+							input3.text = "input 3";
+							input3.type = "vec2";
+							imageNode.inputs.push_back(input3);
+
 							imageNode.outputs.push_back(input2);
 							imageNode.outputs.push_back(input2);
 

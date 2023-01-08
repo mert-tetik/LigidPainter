@@ -565,15 +565,37 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 	int ioIndex = 0;
 	for (size_t i = 0; i < node.outputs.size(); i++)
 	{
-		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX+node.width +iconWidth*2.f, (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , node.upBarColor , node.backColor);
+		glm::vec4 nodeColor = glm::vec4(0);
+
+		if(node.outputs[i].type == "float"){
+			nodeColor = colorData.floatNodeInputColor;
+		}
+		if(node.outputs[i].type == "vec2"){
+			nodeColor = colorData.vec2NodeInputColor;
+		}
+		if(node.outputs[i].type == "vec3"){
+			nodeColor = colorData.vec3NodeInputColor;
+		}
+		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX+node.width +iconWidth*2.f, (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , nodeColor , nodeColor);
 		ioIndex++;
 	}
 
 	float rangeBarCountInputs = 0;
 	for (size_t i = 0; i < node.inputs.size(); i++)
 	{
+		glm::vec4 nodeColor = glm::vec4(0);
 
-		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX-node.width - iconWidth*2.f, (node.positionY + node.height) - (i+ioIndex+rangeBarCountInputs)/(20.f/(node.width*16)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , node.upBarColor , node.backColor);
+		if(node.inputs[i].type == "float"){
+			nodeColor = colorData.floatNodeInputColor;
+		}
+		if(node.inputs[i].type == "vec2"){
+			nodeColor = colorData.vec2NodeInputColor;
+		}
+		if(node.inputs[i].type == "vec3"){
+			nodeColor = colorData.vec3NodeInputColor;
+		}
+
+		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX-node.width - iconWidth*2.f, (node.positionY + node.height) - (i+ioIndex+rangeBarCountInputs)/(20.f/(node.width*16)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , nodeColor , nodeColor);
 		
 		if(node.inputs[i].type == "float"){
 			rangeBarCountInputs += 2;
@@ -583,9 +605,6 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 		}
 		if(node.inputs[i].type == "vec3"){
 			rangeBarCountInputs += 4;
-		}
-		if(node.inputs[i].type == "vec4"){
-			rangeBarCountInputs += 5;
 		}
 	}
 
