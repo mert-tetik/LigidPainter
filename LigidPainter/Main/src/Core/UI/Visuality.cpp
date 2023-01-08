@@ -12,6 +12,7 @@
 #include "Core/LigidPainter.h"
 #include "Core/UI/UserInterface.h"
 #include "Core/gl.h"
+#include "Core/Utilities.h"
 #include "Core/Load.hpp"
 
 
@@ -519,11 +520,16 @@ void UserInterface::nodePanel(float mainPanelLoc, float height,Programs programs
 	glUseProgram(programs.uiProgram);
 }
 
-void UserInterface::node(Node node,Programs programs,Icons icons){
+double lastMouseX = 0;
+void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY){
+	ColorData colorData;
+	Utilities util;
+
 	glUseProgram(programs.uiProgram);
 	box(node.width,node.height,node.positionX,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);
 	
 	const float iconWidth = node.width/6.f;
+
 
 	//Side area
 	box(iconWidth,node.height,node.positionX-node.width -iconWidth,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Left
@@ -541,25 +547,64 @@ void UserInterface::node(Node node,Programs programs,Icons icons){
 	int ioIndex = 0;
 	for (size_t i = 0; i < node.outputs.size(); i++)
 	{
-		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX+node.width +iconWidth, (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , node.upBarColor , node.backColor);
+		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX+node.width +iconWidth*2.f, (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , node.upBarColor , node.backColor);
 		ioIndex++;
 	}
 
 	for (size_t i = 0; i < node.inputs.size(); i++)
 	{
-		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX-node.width -iconWidth, (node.positionY + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , node.upBarColor , node.backColor);
+		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX-node.width - iconWidth*2.f, (node.positionY + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , node.upBarColor , node.backColor);
 	}
 
 	glUseProgram(programs.uiProgram);
 	renderText(programs.uiProgram,node.title,node.positionX-node.width -iconWidth,node.positionY + node.height + iconWidth*1.f,node.width/300.f);
+	
 	for (size_t i = 0; i < node.outputs.size(); i++)
 	{
 		renderText(programs.uiProgram,node.outputs[i].text,node.positionX+node.width - (node.outputs[i].text.size()/60.f)*node.width*8.f,(node.positionY + node.height) - i/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
 	}
+	double xOffset = mouseX - lastMouseX;
+
 	for (size_t i = 0; i < node.inputs.size(); i++)
 	{
+
+		bool anyPointerPressed = false;
+		for (size_t i = 0; i < node.inputs.size(); i++)
+		{
+			if(node.inputs[i].pointerPressed){
+				anyPointerPressed = true;
+				break;
+			}
+		}
+		
+		//Range bar
+		box(node.width,iconWidth*2.f,node.positionX,(node.positionY + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,0.99998f,8 / (node.width*6),node.backColor,0);///Bottom
+		//Pointer
+		
+		float pointPosVal = node.inputs[i].value.r / (1.f/(node.width*2.f)) - node.width;
+		box(iconWidth/4.f,iconWidth*2.f,node.positionX + pointPosVal,(node.positionY + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,0.99999f,8 / (node.width*6),node.backColor,0);///Bottom
+		
+		//TODO : Calculate the screen gap
+		bool isRangeBarPointerHover = false;
+		if(!anyPointerPressed)
+			isRangeBarPointerHover = isMouseOnButton(window , iconWidth , iconWidth*2.f ,node.positionX + pointPosVal,(node.positionY + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+		
+		if(glfwGetMouseButton(window,0) == GLFW_PRESS && isRangeBarPointerHover){
+			node.inputs[i].pointerPressed = true;
+		}
+		if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
+			node.inputs[i].pointerPressed = false;
+		}
+
+		if(node.inputs[i].pointerPressed){
+			node.inputs[i].value.r += xOffset/100.f;
+			node.inputs[i].value.r = util.restrictBetween(node.inputs[i].value.r,1.f,0.001f);
+		}
+
 		renderText(programs.uiProgram,node.inputs[i].text,node.positionX-node.width -iconWidth + 0.015f,(node.positionY + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
+
 	}
+	lastMouseX = mouseX;
 
 }
 

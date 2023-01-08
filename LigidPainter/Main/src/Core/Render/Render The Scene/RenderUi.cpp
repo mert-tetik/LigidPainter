@@ -56,6 +56,9 @@ void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &
  	texturePanelButtonMixVal = util.transitionEffect(texturePanelButtonHover,texturePanelButtonMixVal,phaseDifference);
 }
 
+Node imageNode;
+int aaaa = 0;
+
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,Programs programs
@@ -134,9 +137,8 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 
 		ui.nodePanel(renderData.panelLoc - 1.0f - screenGapX,nodePanel.heigth,programs,icons.Circle);
 
-		float zoomVal = 1.3f;
+		float zoomVal = 0.4f;
 
-		Node imageNode;
 		imageNode.backColor = glm::vec4(0.2,0.2,0.2,1);
 		imageNode.positionX = 0.5f;
 		imageNode.positionY = 0.5f;
@@ -144,6 +146,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		imageNode.upBarColor =glm::vec4(0.9,0.2,0.2,1);
 		imageNode.width = 0.12f * zoomVal;
 
+		if(!aaaa){
 		NodeInput input1;
 		input1.text = "input 1";
 		input1.type = "vec3";
@@ -158,8 +161,10 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 
 		imageNode.height = (imageNode.inputs.size() + imageNode.outputs.size())/13.f * zoomVal;
 
-		ui.node(imageNode,programs,icons);
+		}
 
+		ui.node(imageNode,programs,icons,renderData.window,mouseXpos,mouseYpos);
+		aaaa++;
 
 		//Panel changing buttons
 		glUseProgram(programs.uiProgram);
