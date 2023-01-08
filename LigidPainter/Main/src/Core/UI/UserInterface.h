@@ -264,7 +264,8 @@ struct NodeInput{
 	std::string text;
 	std::string type;
 	glm::vec4 value = glm::vec4(0.001);
-	bool pointerPressed = false;
+	std::vector<bool> rangeBarsPointerPressed;
+
 };
 
 struct Node{
@@ -274,7 +275,7 @@ struct Node{
 	glm::vec4 backColor;
 	std::vector<NodeInput> inputs;
 	std::vector<NodeInput> outputs;
-
+	
 	float positionX;
 	float positionY;
 
