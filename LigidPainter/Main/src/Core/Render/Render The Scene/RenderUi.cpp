@@ -56,15 +56,15 @@ void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &
  	texturePanelButtonMixVal = util.transitionEffect(texturePanelButtonHover,texturePanelButtonMixVal,phaseDifference);
 }
 
-Node imageNode;
-int aaaa = 0;
+double lastMouseX = 0;
+double lastMouseY = 0;
 
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,Programs programs
 ,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
-,NodePanel &nodePanel) {
+,NodePanel &nodePanel,std::vector<Node> &nodes) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -139,56 +139,82 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 
 		float zoomVal = 0.4f;
 
-		imageNode.backColor = glm::vec4(0.2,0.2,0.2,1);
-		imageNode.positionX = 0.5f;
-		imageNode.positionY = 0.5f;
-		imageNode.title = "Image Texture";
-		imageNode.upBarColor =glm::vec4(0.9,0.2,0.2,1);
-		imageNode.width = 0.12f * zoomVal;
+		//Add node context menu
+		if(addNodeContextMenu.active){
+		ui.container(addNodeContextMenu.positionX,addNodeContextMenu.positionY,addNodeContextMenu.positionZ,addNodeContextMenu.width,addNodeContextMenu.height,colorData.nodePanelContextMenuPanelColor,programs,icons.Circle);
+		glUseProgram(programs.uiProgram); 
 
-		if(!aaaa){
-			NodeInput input1;
-			input1.text = "input 1";
-			input1.type = "vec3";
-			imageNode.inputs.push_back(input1);
-
-			NodeInput input2;
-			input2.text = "input 2";
-			input2.type = "float";
-			imageNode.inputs.push_back(input2);
-			imageNode.inputs.push_back(input2);
-			imageNode.inputs.push_back(input2);
-			imageNode.inputs.push_back(input2);
-			imageNode.outputs.push_back(input2);
-			imageNode.outputs.push_back(input2);
-
-			float rangeBarCount = 0;
-			for (size_t i = 0; i < imageNode.inputs.size(); i++)
+			for (size_t i = 0; i < addNodeContextMenu.buttons.size(); i++)
 			{
-				if(imageNode.inputs[i].type == "float"){
-					rangeBarCount += 0.7f;
-					imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+				addNodeContextMenu.buttons[i].transitionMixVal = (float)addNodeContextMenu.buttons[i].hover * (float)addNodeContextMenu.buttons[i].hoverAnimationActive;
+
+				if(addNodeContextMenu.buttons[i].hover && addNodeContextMenu.buttons[i].hoverAnimationActive){
+					addNodeContextMenu.buttons[i].positionZ = 0.999f;
+					if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
+						if(i == 1){
+							Node imageNode;
+							imageNode.backColor = glm::vec4(0.2,0.2,0.2,1);
+							imageNode.positionX = mouseXpos/maxScreenWidth-0.5f;
+							imageNode.positionY = mouseYpos/maxScreenHeight-1.5f;
+							imageNode.title = "Image Texture";
+							imageNode.upBarColor =glm::vec4(0.9,0.2,0.2,1);
+							imageNode.width = 0.12f * zoomVal;
+							NodeInput input1;
+							input1.text = "input 1";
+							input1.type = "vec3";
+							imageNode.inputs.push_back(input1);
+
+							NodeInput input2;
+							input2.text = "input 2";
+							input2.type = "float";
+							imageNode.inputs.push_back(input2);
+							imageNode.inputs.push_back(input2);
+							imageNode.inputs.push_back(input2);
+							imageNode.inputs.push_back(input2);
+							imageNode.outputs.push_back(input2);
+							imageNode.outputs.push_back(input2);
+
+							float rangeBarCount = 0;
+							for (size_t i = 0; i < imageNode.inputs.size(); i++)
+							{
+							if(imageNode.inputs[i].type == "float"){
+								rangeBarCount += 0.7f;
+								imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+							}
+							if(imageNode.inputs[i].type == "vec2"){
+								rangeBarCount += 0.7f*2;
+								imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+								imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+							}
+							if(imageNode.inputs[i].type == "vec3"){
+								rangeBarCount += 0.7f*3;
+								imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+								imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+								imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+							}
+							}
+							imageNode.height = (imageNode.inputs.size() + rangeBarCount+ imageNode.outputs.size())/13.f * zoomVal;
+							nodes.push_back(imageNode);
+						}
+						addNodeContextMenu.active = false;
+					}
 				}
-				if(imageNode.inputs[i].type == "vec2"){
-					rangeBarCount += 0.7f*2;
-					imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-					imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+				else{
+					addNodeContextMenu.buttons[i].positionZ = 0.99f;
 				}
-				if(imageNode.inputs[i].type == "vec3"){
-					rangeBarCount += 0.7f*3;
-					imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-					imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-					imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-				}
+				ui.box(addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[i].positionY, addNodeContextMenu.buttons[i].text, addNodeContextMenu.buttons[i].color, addNodeContextMenu.buttons[i].textRatio, false, false, addNodeContextMenu.buttons[i].positionZ, addNodeContextMenu.buttons[i].buttonCurveReduce, addNodeContextMenu.buttons[i].colorHover, addNodeContextMenu.buttons[i].transitionMixVal); //Add mask texture button	
 			}
-
-
-			imageNode.height = (imageNode.inputs.size() + rangeBarCount+ imageNode.outputs.size())/13.f * zoomVal;
-
 		}
 
-		ui.node(imageNode,programs,icons,renderData.window,mouseXpos,mouseYpos);
-		aaaa++;
+		double xOffset = mouseXpos - lastMouseX;
+		double yOffset = mouseYpos - lastMouseY;
+		for (size_t i = 0; i < nodes.size(); i++)
+		{
+			ui.node(nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset);
+		}
+		lastMouseX = mouseXpos;
+		lastMouseY = mouseYpos;
+
 
 		//Panel changing buttons
 		glUseProgram(programs.uiProgram);
@@ -297,23 +323,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		addNodeContextMenu.positionY = -mouseYpos/maxScreenHeight*2.f + 1.0f;
 	}
 
-	if(addNodeContextMenu.active){
-		ui.container(addNodeContextMenu.positionX,addNodeContextMenu.positionY,addNodeContextMenu.positionZ,addNodeContextMenu.width,addNodeContextMenu.height,colorData.nodePanelContextMenuPanelColor,programs,icons.Circle);
-		glUseProgram(programs.uiProgram); 
-
-		for (size_t i = 0; i < addNodeContextMenu.buttons.size(); i++)
-		{
-			addNodeContextMenu.buttons[i].transitionMixVal = (float)addNodeContextMenu.buttons[i].hover * (float)addNodeContextMenu.buttons[i].hoverAnimationActive;
-			
-			if(addNodeContextMenu.buttons[i].hover && addNodeContextMenu.buttons[i].hoverAnimationActive){
-				addNodeContextMenu.buttons[i].positionZ = 0.999f;
-			}
-			else{
-				addNodeContextMenu.buttons[i].positionZ = 0.99f;
-			}
-			ui.box(addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[i].positionY, addNodeContextMenu.buttons[i].text, addNodeContextMenu.buttons[i].color, addNodeContextMenu.buttons[i].textRatio, false, false, addNodeContextMenu.buttons[i].positionZ, addNodeContextMenu.buttons[i].buttonCurveReduce, addNodeContextMenu.buttons[i].colorHover, addNodeContextMenu.buttons[i].transitionMixVal); //Add mask texture button	
-		}
-	}
+	
 	
 
 

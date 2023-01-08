@@ -520,22 +520,40 @@ void UserInterface::nodePanel(float mainPanelLoc, float height,Programs programs
 	glUseProgram(programs.uiProgram);
 }
 
-double lastMouseX = 0;
-void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY){
+
+
+void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset){
 	ColorData colorData;
 	Utilities util;
 
-	glUseProgram(programs.uiProgram);
-	box(node.width,node.height,node.positionX,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);
-	
+
 	const float iconWidth = node.width/6.f;
 
 
+	
+	node.barHover = isMouseOnButton(window , node.width , iconWidth*2.f ,node.positionX,node.positionY + node.height + iconWidth*2.f,mouseX,mouseY,false);
+	if(glfwGetMouseButton(window,0) == GLFW_PRESS && node.barHover){
+		node.barPressed = true;
+	}
+	if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
+		node.barPressed = false;
+	}
+	if(node.barPressed){
+		node.positionX += xOffset/uiMaxScreenWidth*2.f;
+		node.positionY -= yOffset/uiMaxScreenHeight*2.f;
+		xOffset = 0;
+		yOffset = 0;
+	}
+
+	glUseProgram(programs.uiProgram);
+	box(node.width,node.height,node.positionX,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);
 	//Side area
 	box(iconWidth,node.height,node.positionX-node.width -iconWidth,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Left
 	box(iconWidth,node.height,node.positionX+node.width +iconWidth,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Right
 	box(node.width,iconWidth*2.f,node.positionX,node.positionY + node.height + iconWidth*2.f,"",node.upBarColor,0,0,0,0.9999f,10000,node.upBarColor,0);///Top
 	box(node.width,iconWidth*2.f,node.positionX,node.positionY - node.height - iconWidth*2.f,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Bottom
+
+
 
 	//Corners
 	glUseProgram(programs.iconsProgram);
@@ -578,18 +596,18 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 	{
 		renderText(programs.uiProgram,node.outputs[i].text,node.positionX+node.width - (node.outputs[i].text.size()/60.f)*node.width*8.f,(node.positionY + node.height) - i/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
 	}
-	double xOffset = mouseX - lastMouseX;
 		
 
 	int inputElementIndex = 0;
 	
 	bool isRangeBarPointerHover = false;
+	
 	for (size_t i = 0; i < node.inputs.size(); i++)
 	{
-		bool anyPointerHover = false;
+
+
+
 		float rangeBarCount = 0;
-
-
 
 		if(node.inputs[i].type == "float"){
 			rangeBarCount = 1;
@@ -600,17 +618,38 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 		if(node.inputs[i].type == "vec3"){
 			rangeBarCount = 3;
 		}
-		if(node.inputs[i].type == "vec4"){
-			rangeBarCount = 4;
-		}
 
 
 
+		
 		
 		renderText(programs.uiProgram,node.inputs[i].text,node.positionX-node.width -iconWidth + 0.015f,(node.positionY + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
 		inputElementIndex++;
 		for (size_t k = 0; k < rangeBarCount; k++)
 		{
+			bool anyPointerPressed = false;
+			for (size_t a = 0; a < node.inputs.size(); a++)
+			{
+				float rangeBarCountTest = 0;
+
+				if(node.inputs[a].type == "float"){
+					rangeBarCountTest = 1;
+				}
+				if(node.inputs[a].type == "vec2"){
+					rangeBarCountTest = 2;
+				}
+				if(node.inputs[a].type == "vec3"){
+					rangeBarCountTest = 3;
+				}
+
+				for (size_t aa = 0; aa < rangeBarCountTest; aa++)
+				{
+					if(node.inputs[a].rangeBarsPointerPressed[aa]){
+						anyPointerPressed = true;
+					}
+				}
+			
+			}
 			float val;
 			if(k == 0){
 				val = node.inputs[i].value.x;
@@ -630,10 +669,8 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 			box(iconWidth/4.f,iconWidth*2.f,node.positionX + pointPosVal,(node.positionY + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,0.99999f,8 / (node.width*6),node.backColor,0);///Bottom
 
 			//TODO : Calculate the screen gap
-			if(!anyPointerHover){
+			if(!anyPointerPressed){
 				isRangeBarPointerHover = isMouseOnButton(window , iconWidth , iconWidth*2.f ,node.positionX + pointPosVal,(node.positionY + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
-				if(isRangeBarPointerHover)
-					anyPointerHover = true;
 			}
 
 			if(glfwGetMouseButton(window,0) == GLFW_PRESS && isRangeBarPointerHover){
@@ -658,10 +695,9 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 				}
 			}	
 			inputElementIndex++;
-		isRangeBarPointerHover = false;
+			isRangeBarPointerHover = false;
 		}
 	}
-	lastMouseX = mouseX;
 
 }
 
