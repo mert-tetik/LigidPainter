@@ -343,7 +343,9 @@ public:
 	void container(float positionX,float positionY,float positionZ,float width, float height,glm::vec4 color, Programs &programs,unsigned int circleTexture);
 	void nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,unsigned int circleTexture);
 	void circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture,glm::vec4 color);
-	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset);
+	void drawLine(float posX,float posY,float posZ,float toPosX,float toPosY,float width);
+	
+	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,float maxScreenHeight);
 
 	
 	//Calculations and More

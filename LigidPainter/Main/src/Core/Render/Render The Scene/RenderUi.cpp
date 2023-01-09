@@ -138,7 +138,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 
 		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons.Circle);
 
-		float zoomVal = 1.0f;
+		float zoomVal = 0.3f;
 
 		//Add node context menu
 		if(addNodeContextMenu.active){
@@ -214,7 +214,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		double yOffset = mouseYpos - lastMouseY;
 		for (size_t i = 0; i < nodes.size(); i++)
 		{
-			ui.node(nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset);
+			ui.node(nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight);
 		}
 		lastMouseX = mouseXpos;
 		lastMouseY = mouseYpos;
