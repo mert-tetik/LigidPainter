@@ -85,10 +85,11 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 			node.outputs[i].connectionPosX += xOffset/maxScreenWidth*2.f;
 			node.outputs[i].connectionPosY -= yOffset/maxScreenHeight*2.f;
 		}
-
+        glUseProgram(programs.uiProgram);
         //Render the connection line
-		drawLine(node.positionX+node.width +iconWidth*2.f,(node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,0.99999f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY,0);
+		drawLine(node.positionX+node.width +iconWidth*2.f,(node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,0.99999f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY,0,nodeColor);
 
+        glUseProgram(programs.iconsProgram);
         //Render the output
 		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX+node.width +iconWidth*2.f, (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , nodeColor , nodeColor);
 		ioIndex++;
