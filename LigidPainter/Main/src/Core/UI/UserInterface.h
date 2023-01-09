@@ -310,7 +310,7 @@ struct ContextMenu {
 };
 
 struct SndPanel{
-	float position = -0.7f;
+	float position = -0.6f;
 	bool boundariesHover = false;
 	bool boundariesPressed = false;
 };
