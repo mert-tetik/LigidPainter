@@ -116,17 +116,23 @@ void UserInterface::box(float width, float height, float position_x, float posit
 void UserInterface::panel(float panelLoc, float) {
 	GlSet glset;
 
-	box(0.00f, 0.04f, panelLoc + 0.022f, 0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 7, colorD.panelColor, 0);//Load model button
-	box(0.00f, 0.04f, panelLoc + 0.022f, -0.8805f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 7, colorD.panelColor, 0);//Load model button
+	box(0.00f, 0.04f, panelLoc + 0.022f, 0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 7, colorD.panelColor, 0);
+	box(0.00f, 0.04f, panelLoc + 0.022f, -0.8805f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 7, colorD.panelColor, 0);
 
 	const float panelWidth = 0.2f;
 	const float panelHeigth = 0.88f;
 	
-	box(0.02f, panelHeigth, panelLoc + 0.02f, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);//Load model button
-	box(panelWidth, 0.04f, panelLoc + panelWidth + 0.02f, 0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);//Load model button
-	box(panelWidth, 0.04f, panelLoc + panelWidth + 0.02f, -0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);//Load model button
-	box(panelWidth, panelHeigth - 0.02f, panelLoc + panelWidth + 0.02f, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);//Load model button
+	box(0.02f, panelHeigth, panelLoc + 0.02f, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	box(panelWidth, 0.04f, panelLoc + panelWidth + 0.02f, 0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	box(panelWidth, 0.04f, panelLoc + panelWidth + 0.02f, -0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	box(panelWidth, panelHeigth - 0.02f, panelLoc + panelWidth + 0.02f, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
 
+}
+void UserInterface::sndPanel(float panelLoc) {
+	GlSet glset;
+	const float panelWidth = 0.2f;
+	const float panelHeigth = 0.88f;
+	box(panelWidth, panelHeigth, panelLoc - panelWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
 }
 
 void UserInterface::textureDisplayer(float width,float height, float position_x,float position_y,float z){ 
@@ -451,8 +457,8 @@ void UserInterface::container(float positionX,float positionY,float positionZ,fl
 	circle(positionX + width,positionY + height,positionZ,0.03f,0.06f,circleTexture,color);//Right top
 	circle(positionX + width,positionY - height,positionZ,0.03f,0.06f,circleTexture,color);//Right bot
 }
-void UserInterface::nodePanel(float mainPanelLoc, float height,Programs programs,unsigned int circleTexture){
-	const float nodePanelLeft = -1.0f + 0.037f;
+void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,unsigned int circleTexture){
+	const float nodePanelLeft = sndPanel + 0.037f;
 	const float nodePanelRight = mainPanelLoc - 0.037f;
 	const float nodePanelTop = -1.00f + height;
 	const float nodePanelZ = 0.9f;
@@ -520,7 +526,16 @@ void UserInterface::nodePanel(float mainPanelLoc, float height,Programs programs
 	glUseProgram(programs.uiProgram);
 }
 
-
+void drawLine(float posX,float posY,float posZ,float toPosX,float toPosY,float width){
+	std::vector<float> lineCoor{
+		//first triangle								   
+		 posX	,	posY	,posZ	,1.0f,1.0f,1,1,1,  // top right
+		 toPosX	,	toPosY	,posZ	,1.0f,1.0f,1,1,1,  // top right
+	};
+	glLineWidth(0.f);
+	GlSet gl;
+	gl.drawArrays(lineCoor,true);
+}
 
 void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset){
 	ColorData colorData;
@@ -576,6 +591,22 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 		if(node.outputs[i].type == "vec3"){
 			nodeColor = colorData.vec3NodeInputColor;
 		}
+		node.outputs[i].hover = isMouseOnButton(window , iconWidth/1.5f , iconWidth*1.5f  ,node.positionX+node.width +iconWidth*2.f,(node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,mouseX,mouseY,false);
+		
+		
+		if(glfwGetMouseButton(window,0) == GLFW_PRESS && node.outputs[i].hover){
+			node.outputs[i].pressed = true;
+		}
+		if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
+			node.outputs[i].pressed = false;
+		}
+		if(node.outputs[i].pressed){
+			node.outputs[i].connectionPosX += xOffset/uiMaxScreenWidth*2.f;
+			node.outputs[i].connectionPosY -= yOffset/uiMaxScreenHeight*2.f;
+		}
+		
+		drawLine(node.positionX+node.width +iconWidth*2.f,(node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,0.99999f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY,0);
+
 		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX+node.width +iconWidth*2.f, (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , nodeColor , nodeColor);
 		ioIndex++;
 	}

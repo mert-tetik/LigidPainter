@@ -64,7 +64,7 @@ const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> 
 float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,Programs programs
 ,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
-,NodePanel &nodePanel,std::vector<Node> &nodes) {
+,NodePanel &nodePanel,std::vector<Node> &nodes,SndPanel &sndPanel) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -134,10 +134,11 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
 		//If message box is not active
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , 0);
+		ui.sndPanel(sndPanel.position + screenGapX);
 
-		ui.nodePanel(renderData.panelLoc - 1.0f - screenGapX,nodePanel.heigth,programs,icons.Circle);
+		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons.Circle);
 
-		float zoomVal = 0.4f;
+		float zoomVal = 1.0f;
 
 		//Add node context menu
 		if(addNodeContextMenu.active){
@@ -153,7 +154,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 					if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
 						if(i == 1){
 							Node imageNode;
-							imageNode.backColor = glm::vec4(0.2,0.2,0.2,1);
+							imageNode.backColor = glm::vec4(0.2,0.2,0.2,0.5);
 							imageNode.positionX = mouseXpos/maxScreenWidth-0.5f;
 							imageNode.positionY = mouseYpos/maxScreenHeight-1.5f;
 							imageNode.title = "Image Texture";

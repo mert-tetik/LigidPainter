@@ -269,7 +269,10 @@ struct NodeInput{
 	std::string type;
 	glm::vec4 value = glm::vec4(0.001);
 	std::vector<bool> rangeBarsPointerPressed;
-
+	float connectionPosX = 0;
+	float connectionPosY = 0;
+	bool hover;
+	bool pressed;
 };
 
 struct Node{
@@ -306,6 +309,9 @@ struct ContextMenu {
 	std::vector<Button> buttons;
 };
 
+struct SndPanel{
+	float position = -0.7f;
+};
 
 class UserInterface {
 public:
@@ -317,6 +323,7 @@ public:
 
 	//Visuality
 	void panel(float panelLoc, float movePanel_x);
+	void sndPanel(float panelLoc);
 	void textureDisplayer(float width,float height, float position_x,float position_y,float z);
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec4 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec4 colorTransitionColor , float mixVal);
 	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover);
@@ -332,7 +339,7 @@ public:
 	void numericModifier(float position_x,float position_y,unsigned int leftArrow,unsigned int rightArrow,float z,int value,float mixValP,float mixValN);
 	void verticalRangeBar(float positionX,float positionY,float height,float value);
 	void container(float positionX,float positionY,float positionZ,float width, float height,glm::vec4 color, Programs &programs,unsigned int circleTexture);
-	void nodePanel(float mainPanelLoc, float height,Programs programs,unsigned int circleTexture);
+	void nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,unsigned int circleTexture);
 	void circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture,glm::vec4 color);
 	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset);
 
