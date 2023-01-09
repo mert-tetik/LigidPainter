@@ -133,6 +133,7 @@ void UserInterface::sndPanel(float panelLoc) {
 	const float panelWidth = 0.2f;
 	const float panelHeigth = 0.88f;
 	box(panelWidth, panelHeigth, panelLoc - panelWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	box(0.02f, panelHeigth, panelLoc, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.2f, 10000, colorD.panelColor, 0);
 }
 
 void UserInterface::textureDisplayer(float width,float height, float position_x,float position_y,float z){ 

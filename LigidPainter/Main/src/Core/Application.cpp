@@ -472,7 +472,7 @@ bool LigidPainter::run()
 
 
 		//Ui actions
-		uiAct.uiActions(window,callbackData,UIElements,colorPicker,textureDisplayer,nodePanel);
+		uiAct.uiActions(window,callbackData,UIElements,colorPicker,textureDisplayer,nodePanel,sndPanel);
 
 
 
@@ -626,7 +626,7 @@ bool LigidPainter::run()
 
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel,addNodeContextMenu);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel);
 		}
 
 		mirrorClick = false;
@@ -831,7 +831,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 
 	
-	bool hideCursor = uiAct.updateRangeValues(window,xOffset,yOffset,width,height,textureDisplayer); 
+	bool hideCursor = uiAct.updateRangeValues(window,xOffset,yOffset,width,height,textureDisplayer,sndPanel); 
 
 
 
@@ -1321,6 +1321,12 @@ void LigidPainter::mainPanelBoundaries(float xOffset,int screenSizeX){
 		Utilities util;
 		mainPanelLoc -= xOffset / (screenSizeX / 2);
 		mainPanelLoc = util.restrictBetween(mainPanelLoc, 1.98f, 1.6f);//Keep in boundaries
+    }
+}
+void LigidPainter::sndPanelBoundaries(float xOffset,int screenSizeX){
+	if (enablePanelMovement) {
+		Utilities util;
+		sndPanel.position -= xOffset / (screenSizeX / 2);
     }
 }
 void LigidPainter::nodePanelBoundaries(float yOffset,float screenHeight){

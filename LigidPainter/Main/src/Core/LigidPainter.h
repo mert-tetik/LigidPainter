@@ -206,6 +206,7 @@ public:
 	void hueBar();
 	void mainPanelBoundaries(float xOffset,int screenSizeX);
 	void nodePanelBoundaries(float yOffset,float screenHeight);
+	void sndPanelBoundaries(float xOffset, int screenSizeX);
 
 };
 struct PanelData {

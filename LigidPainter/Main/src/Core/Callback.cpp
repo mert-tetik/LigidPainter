@@ -90,7 +90,7 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 
 CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float maskPanelSliderValue,bool brushMaskPanelMaskHover,
 LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer
-, NodePanel &nodePanel, ContextMenu &addNodeContextMenu)
+, NodePanel &nodePanel, ContextMenu &addNodeContextMenu, SndPanel &sndPanel)
 {
 	CallbckData callbk;
 	
@@ -100,7 +100,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
 	
 	buttonCheck(window, xpos, ypos, panelData,maskPanelSliderValue,brushMaskPanelMaskHover,cursors, texturePanelButtonHover,uiElements,mainPanelLoc,
-	colorPicker,textureDisplayer,nodePanel,addNodeContextMenu);	
+	colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel);	
 
 	xoffset = xpos - lastX;
 	yoffset = lastY - ypos;
@@ -148,7 +148,7 @@ bool noPanelClick = true;
 
 void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData,float maskPanelSliderValue,bool brushMaskPanelMaskHover,
 LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker, TextureDisplayer &textureDisplayer
-,NodePanel &nodePanel,ContextMenu &addNodeContextMenu) {
+,NodePanel &nodePanel,ContextMenu &addNodeContextMenu,SndPanel &sndPanel) {
 	UserInterface ui;
 
 	float centerDivider;
@@ -252,6 +252,8 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		mainPanelEnter = ui.isMouseOnButton(window, 0.2f,0.9f,mainPanelLoc - 1.0f - screenGapX + 0.2f, 0.0f, mouseXPos, mouseYPos, 0);
 		
 		textureDisplayer.buttonHover = ui.isMouseOnButton(window, 0.02f,0.045f,(textureDisplayer.buttonPosX+0.005f)-1.0f,textureDisplayer.buttonPosY-0.01f, mouseXPos, mouseYPos, 0);		
+
+		sndPanel.boundariesHover = ui.isMouseOnButton(window, 0.02f,0.88,sndPanel.position,0.0f, mouseXPos, mouseYPos, 0);
 
 		modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.8f, mouseXPos, mouseYPos);
 		texturePanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.72f, mouseXPos, mouseYPos);
