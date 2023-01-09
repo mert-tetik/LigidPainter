@@ -1328,7 +1328,6 @@ void LigidPainter::sndPanelBoundaries(float xOffset,int screenSizeX){
 		Utilities util;
 		sndPanel.position -= xOffset / (screenSizeX / 2);
 		sndPanel.position = util.restrictBetween(sndPanel.position, -0.6f, -1.0f);//Keep in boundaries
-
     }
 }
 void LigidPainter::nodePanelBoundaries(float yOffset,float screenHeight){

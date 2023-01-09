@@ -115,7 +115,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     loadPlaneModelButtonElement.button.positionX = 0.0f;
     loadPlaneModelButtonElement.button.positionY = -0.1f;
     loadPlaneModelButtonElement.button.positionZ = 0.9f;
-    loadPlaneModelButtonElement.button.width = 0.008f;
+    loadPlaneModelButtonElement.button.width = 0.002f;
     loadPlaneModelButtonElement.button.height = 0.045f;
     loadPlaneModelButtonElement.button.color = colorData.buttonColor;
     loadPlaneModelButtonElement.button.colorHover = colorData.buttonColorHover;
@@ -133,7 +133,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     loadSphereModelButtonElement.button.positionX = 0.0f;
     loadSphereModelButtonElement.button.positionY = -0.2f;
     loadSphereModelButtonElement.button.positionZ = 0.9f;
-    loadSphereModelButtonElement.button.width = 0.008f;
+    loadSphereModelButtonElement.button.width = 0.002f;
     loadSphereModelButtonElement.button.height = 0.045f;
     loadSphereModelButtonElement.button.color = colorData.buttonColor;
     loadSphereModelButtonElement.button.colorHover = colorData.buttonColorHover;
@@ -473,7 +473,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     planeIconElement.icon.positionX = 0.0f;
     planeIconElement.icon.positionY = -0.1f;
     planeIconElement.icon.positionZ = 0.99f;
-    planeIconElement.icon.width = 0.025f;
+    planeIconElement.icon.width = 0.0175f;
     planeIconElement.icon.height = 0.035f;
     planeIconElement.icon.color = colorData.iconColor;
     planeIconElement.icon.colorHover = colorData.iconColorHover;
@@ -485,10 +485,10 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(planeIconElement);//36
 
     UIElement sphereIconElement;
-    sphereIconElement.icon.positionX = -0.002f;
+    sphereIconElement.icon.positionX = 0.0f;
     sphereIconElement.icon.positionY = -0.2f;
     sphereIconElement.icon.positionZ = 0.99f;
-    sphereIconElement.icon.width = 0.03f;
+    sphereIconElement.icon.width = 0.02f;
     sphereIconElement.icon.height = 0.04f;
     sphereIconElement.icon.color = colorData.iconColor;
     sphereIconElement.icon.colorHover = colorData.iconColorHover;
