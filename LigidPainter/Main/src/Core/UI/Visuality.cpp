@@ -180,11 +180,11 @@ void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons,std::v
 		float upBotDifMin = std::min(0.05f + position_y,maxTop) - std::min(-0.05f + position_y,maxTop);
 		float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
 
-		
+
 		glBindTexture(GL_TEXTURE_2D,albedoTextures[i]);
 
 		std::vector<float> buttonCoorSq{
-			// first trianglev 
+			// first triangle
 			 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		upBotDifMin*10			,0,0,0,  // top right
 			 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
 			-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0,  // top left 
