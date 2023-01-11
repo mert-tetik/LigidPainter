@@ -22,9 +22,19 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 
 	const float iconWidth = node.width/6.f;
 
+	bool anyBarPressed = false;
+	for (int nodeI = 0; nodeI < nodes.size(); nodeI++)
+	{
+		if(nodes[nodeI].barPressed){
+			anyBarPressed = true;
+			break;
+		}
+	}
+		
+
     //Move the node if it's top bar is pressed
 	node.barHover = isMouseOnButton(window , node.width , iconWidth*2.f ,node.positionX,node.positionY + node.height + iconWidth*2.f,mouseX,mouseY,false);
-	if(glfwGetMouseButton(window,0) == GLFW_PRESS && node.barHover){
+	if(glfwGetMouseButton(window,0) == GLFW_PRESS && node.barHover && !anyBarPressed){
 		node.barPressed = true;
 	}
 	if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
@@ -33,6 +43,7 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 	if(node.barPressed){
 		node.positionX += xOffset/maxScreenWidth*2.f;
 		node.positionY -= yOffset/maxScreenHeight*2.f;
+		
 		xOffset = 0;
 		yOffset = 0;
 	}
@@ -73,11 +84,13 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 		}
 
 		//Check if mouse is hover any of the inputs
+
+		//TODO : Check this algorithm
 		bool inputHover = false;
 		int inputIndex;
 		for (int nodeI = 0; nodeI < nodes.size(); nodeI++)
 		{
-			for (int inputI = 0; inputI < node.inputs.size(); inputI++)
+			for (int inputI = 0; inputI < nodes[nodeI].inputs.size(); inputI++)
 			{
 				if(nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed){
 					node.outputs[i].inputConnectionIndex = inputI;
@@ -89,7 +102,6 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 				}			
 			}
 		}
-		
 
         //Check if output pressed
 		node.outputs[i].connectionHover = isMouseOnButton(window , iconWidth/1.5f , iconWidth*1.5f  ,node.positionX+node.width +iconWidth*2.f,(node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,mouseX,mouseY,false);
@@ -98,11 +110,12 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 			node.outputs[i].connectionPosX = node.positionX+node.width +iconWidth*2.f;
 			node.outputs[i].connectionPosY = (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
 		}
-		if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
+		if(glfwGetMouseButton(window,0) == GLFW_RELEASE || node.barPressed || anyBarPressed){
 			node.outputs[i].pressed = false;
 			if(true){
 				node.outputs[i].connectionPosX = node.positionX+node.width +iconWidth*2.f;
 				node.outputs[i].connectionPosY = (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
+				
 				if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
 					node.outputs[i].connectionPosX = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
 					node.outputs[i].connectionPosY = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
@@ -112,6 +125,7 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 		if(node.outputs[i].pressed){
 			node.outputs[i].connectionPosX += xOffset/maxScreenWidth*2.f;
 			node.outputs[i].connectionPosY -= yOffset/maxScreenHeight*2.f;
+			
 		}
         glUseProgram(programs.uiProgram);
         //Render the connection line
