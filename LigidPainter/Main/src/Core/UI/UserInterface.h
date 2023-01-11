@@ -336,7 +336,7 @@ public:
 
 	//Visuality
 	void panel(float panelLoc, float movePanel_x);
-	void sndPanel(float panelLoc,Programs programs,Icons icons);
+	void sndPanel(float panelLoc , Programs programs , Icons icons , std::vector<unsigned int> &albedoTextures);
 	void textureDisplayer(float width,float height, float position_x,float position_y,float z);
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec4 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec4 colorTransitionColor , float mixVal);
 	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover);

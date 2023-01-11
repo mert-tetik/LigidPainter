@@ -134,7 +134,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
 		//If message box is not active
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , 0);
-		ui.sndPanel(sndPanel.position + screenGapX,programs,icons);
+		ui.sndPanel(sndPanel.position + screenGapX,programs,icons,albedoTextures);
 
 		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons.Circle);
 

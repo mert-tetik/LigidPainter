@@ -167,6 +167,8 @@ public:
 		icons.TR = txtr.getTexture("LigidPainter/Resources/Sprites/TR.jpg",0,0,false);
 		icons.BL = txtr.getTexture("LigidPainter/Resources/Sprites/BL.jpg",0,0,false);
 		icons.BR = txtr.getTexture("LigidPainter/Resources/Sprites/BR.jpg",0,0,false);
+		icons.Plus = txtr.getTexture("LigidPainter/Resources/Icons/Plus.jpg",0,0,false);
+		icons.Minus = txtr.getTexture("LigidPainter/Resources/Icons/Minus.jpg",0,0,false);
 	
 		return icons;
 	}

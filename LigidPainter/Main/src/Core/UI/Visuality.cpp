@@ -128,7 +128,7 @@ void UserInterface::panel(float panelLoc, float) {
 	box(panelWidth, panelHeigth - 0.02f, panelLoc + panelWidth + 0.02f, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
 
 }
-void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons) {
+void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons,std::vector<unsigned int> &albedoTextures) {
 	GlSet glset;
 	const float panelWidth = 0.2f;
 	const float panelHeigth = 0.88f;
@@ -146,7 +146,52 @@ void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons) {
 	circle(panelLoc - cornerWidth,panelHeigth - cornerWidth,0.1f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,0.1f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 
-	iconBox(0.02f,0.04f,);
+	iconBox(0.02f,0.04f,panelLoc - 0.05f,0.85f,0.5f,icons.Plus,0,colorD.iconColor,colorD.iconColorHover);
+	iconBox(0.02f,0.04f,panelLoc - 0.10f,0.85f,0.5f,icons.Minus,0,colorD.iconColor,colorD.iconColorHover);
+
+	glUseProgram(programs.uiProgram);
+
+
+
+	float maskXpos = 0.0f;
+	float maskYpos = 0.0f;
+
+	for (size_t i = 0; i < albedoTextures.size(); i++)
+	{
+		if(i % 3 == 0 && i != 0){
+			maskYpos-=0.23f;
+			maskXpos=0.0f;
+		}
+		maskXpos-=0.12f;
+
+		const float startingPoint = 0.7f;
+
+		float position_x = panelLoc - maskXpos - panelWidth*2 - 0.04f;
+		float position_y = startingPoint + maskYpos;
+		//ui.iconBox(0.025f, 0.05f,centerCoords - screenGapX - maskXpos - 0.2f,0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f,1,maskTextures[i],0);
+		
+		const float textureWidth = 0.05f;
+
+		const float maxTop = startingPoint + textureWidth*2;
+		const float minBot = 0.0f;
+		
+		float upBotDifMin = std::min(0.05f + position_y,maxTop) - std::min(-0.05f + position_y,maxTop);
+		float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
+
+
+		std::vector<float> buttonCoorSq{
+			// first trianglev 
+			 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		upBotDifMin*10			,0,0,0,  // top right
+			 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+			-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0,  // top left 
+			// second triangle						   	
+			 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+			-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
+			-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0  // top left
+		};
+		glset.drawArrays(buttonCoorSq,false);
+	}
+	
 }
 
 void UserInterface::textureDisplayer(float width,float height, float position_x,float position_y,float z){ 
