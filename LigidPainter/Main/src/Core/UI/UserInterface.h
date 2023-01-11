@@ -280,8 +280,8 @@ struct NodeInput{
 	bool connectionHover = false;
 	bool pressed;
 
-	int nodeConnectionIndex = 0;
-	int inputConnectionIndex = 0;
+	int nodeConnectionIndex = 10000;
+	int inputConnectionIndex = 10000;
 };
 
 

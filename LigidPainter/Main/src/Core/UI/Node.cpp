@@ -103,9 +103,10 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 			if(true){
 				node.outputs[i].connectionPosX = node.positionX+node.width +iconWidth*2.f;
 				node.outputs[i].connectionPosY = (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
-
-				node.outputs[i].connectionPosX = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
-				node.outputs[i].connectionPosY = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
+				if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
+					node.outputs[i].connectionPosX = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
+					node.outputs[i].connectionPosY = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
+				}
 			}
 		}
 		if(node.outputs[i].pressed){

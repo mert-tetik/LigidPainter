@@ -162,6 +162,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 							imageNode.title = "Image Texture";
 							imageNode.upBarColor =glm::vec4(0.9,0.2,0.2,1);
 							imageNode.width = 0.12f * zoomVal;
+							
 							NodeInput input1;
 							input1.text = "input 1";
 							input1.type = "vec3";
@@ -178,6 +179,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 							imageNode.inputs.push_back(input3);
 
 							imageNode.outputs.push_back(input2);
+							
 							imageNode.outputs.push_back(input2);
 
 							float rangeBarCount = 0;
