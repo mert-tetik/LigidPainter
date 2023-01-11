@@ -134,7 +134,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
 		//If message box is not active
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , 0);
-		ui.sndPanel(sndPanel.position + screenGapX);
+		ui.sndPanel(sndPanel.position + screenGapX,programs,icons);
 
 		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons.Circle);
 
@@ -214,7 +214,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		double yOffset = mouseYpos - lastMouseY;
 		for (size_t i = 0; i < nodes.size(); i++)
 		{
-			ui.node(nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight);
+			ui.node(nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodes);
 		}
 		lastMouseX = mouseXpos;
 		lastMouseY = mouseYpos;

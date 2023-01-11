@@ -128,13 +128,25 @@ void UserInterface::panel(float panelLoc, float) {
 	box(panelWidth, panelHeigth - 0.02f, panelLoc + panelWidth + 0.02f, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
 
 }
-void UserInterface::sndPanel(float panelLoc) {
+void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons) {
 	GlSet glset;
 	const float panelWidth = 0.2f;
 	const float panelHeigth = 0.88f;
 	
+	const float cornerWidth = 0.04f;
+
+	glUseProgram(programs.uiProgram);
+	box(panelWidth, panelHeigth - cornerWidth, panelLoc - panelWidth - cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
 	
-	box(panelWidth, panelHeigth, panelLoc - panelWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	box(panelWidth, cornerWidth, panelLoc - panelWidth - cornerWidth, panelHeigth, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	box(panelWidth, cornerWidth, panelLoc - panelWidth - cornerWidth, -panelHeigth, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	box(cornerWidth, panelHeigth - cornerWidth, panelLoc - cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+
+	glUseProgram(programs.iconsProgram);
+	circle(panelLoc - cornerWidth,panelHeigth - cornerWidth,0.1f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,0.1f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+
+	iconBox(0.02f,0.04f,);
 }
 
 void UserInterface::textureDisplayer(float width,float height, float position_x,float position_y,float z){ 
@@ -532,7 +544,7 @@ void UserInterface::drawLine(float posX,float posY,float posZ,float toPosX,float
 	GlSet gl;
 	gl.uniform4fv(uiPrograms.uiProgram,"uiColor",color);
 
-	for (size_t i = 0; i < 10; i++)
+	for (size_t i = 0; i < 5; i++)
 	{
 		const float pixel = 10000.f/2.f;
 		std::vector<float> lineCoor{
@@ -543,7 +555,7 @@ void UserInterface::drawLine(float posX,float posY,float posZ,float toPosX,float
 		gl.drawArrays(lineCoor,true);
 		/* code */
 	}
-	for (size_t i = 0; i < 10; i++)
+	for (size_t i = 0; i < 5; i++)
 	{
 		const float pixel = 10000.f/2.f;
 		std::vector<float> lineCoor{
@@ -554,7 +566,7 @@ void UserInterface::drawLine(float posX,float posY,float posZ,float toPosX,float
 		gl.drawArrays(lineCoor,true);
 		/* code */
 	}
-	for (size_t i = 0; i < 10; i++)
+	for (size_t i = 0; i < 5; i++)
 	{
 		const float pixel = 10000.f/2.f;
 		std::vector<float> lineCoor{
@@ -565,7 +577,7 @@ void UserInterface::drawLine(float posX,float posY,float posZ,float toPosX,float
 		gl.drawArrays(lineCoor,true);
 		/* code */
 	}
-	for (size_t i = 0; i < 10; i++)
+	for (size_t i = 0; i < 5; i++)
 	{
 		const float pixel = 10000.f/2.f;
 		std::vector<float> lineCoor{

@@ -183,7 +183,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		sndPanel.boundariesPressed = false;
 	}
 }
-bool UiActions::updateRangeValues(GLFWwindow* window, double xOffset,double yOffset, int screenWidth, int screenHeight,TextureDisplayer &textureDisplayer,SndPanel &sndPanel){
+bool UiActions::updateRangeValues(GLFWwindow* window, double xOffset,double yOffset, int screenWidth, int screenHeight,TextureDisplayer &textureDisplayer,
+SndPanel &sndPanel){
     bool hideCursor;
     LigidPainter ligid;
     

@@ -268,12 +268,23 @@ struct NodeInput{
 	std::string text;
 	std::string type;
 	glm::vec4 value = glm::vec4(0.001);
+	
 	std::vector<bool> rangeBarsPointerPressed;
+
 	float connectionPosX = 0;
 	float connectionPosY = 0;
-	bool hover;
+
+	float posX;
+	float posY;
+
+	bool connectionHover = false;
 	bool pressed;
+
+	int nodeConnectionIndex = 0;
+	int inputConnectionIndex = 0;
 };
+
+
 
 struct Node{
 	std::string title;
@@ -325,7 +336,7 @@ public:
 
 	//Visuality
 	void panel(float panelLoc, float movePanel_x);
-	void sndPanel(float panelLoc);
+	void sndPanel(float panelLoc,Programs programs,Icons icons);
 	void textureDisplayer(float width,float height, float position_x,float position_y,float z);
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec4 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec4 colorTransitionColor , float mixVal);
 	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover);
@@ -345,8 +356,7 @@ public:
 	void circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture,glm::vec4 color);
 	void drawLine(float posX,float posY,float posZ,float toPosX,float toPosY,float width,glm::vec4 color);
 	
-	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,float maxScreenHeight);
-
+	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,float maxScreenHeight,std::vector<Node> &nodes);
 	
 	//Calculations and More
 	bool isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, double mouseXpos, double mouseYpos);
@@ -357,7 +367,6 @@ public:
 	bool isMouseOnNodePanel(GLFWwindow* window,float mainPanelLoc,float height,double mouseXpos,double mouseYpos,bool calculateBoundaries);
 
 
-	
 	void sendProgramsToUserInterface(Programs appPrograms);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void sendMaxWindowSizeToCalculationsAndMore(int maxScreenWidth,int maxScreenHeight);

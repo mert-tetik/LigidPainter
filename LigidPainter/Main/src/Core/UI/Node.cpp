@@ -15,7 +15,8 @@
 #include "Core/Utilities.h"
 #include "Core/Load.hpp"
 
-void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,float maxScreenHeight){
+void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
+float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 	ColorData colorData;
 	Utilities util;
 
@@ -71,15 +72,41 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 			nodeColor = colorData.vec3NodeInputColor;
 		}
 
+		//Check if mouse is hover any of the inputs
+		bool inputHover = false;
+		int inputIndex;
+		for (int nodeI = 0; nodeI < nodes.size(); nodeI++)
+		{
+			for (int inputI = 0; inputI < node.inputs.size(); inputI++)
+			{
+				if(nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed){
+					node.outputs[i].inputConnectionIndex = inputI;
+					node.outputs[i].nodeConnectionIndex = nodeI;
+
+					node.outputs[i].connectionPosX = nodes[nodeI].inputs[inputI].posX; 
+					node.outputs[i].connectionPosY = nodes[nodeI].inputs[inputI].posY; 
+					break;
+				}			
+			}
+		}
+		
+
         //Check if output pressed
-		node.outputs[i].hover = isMouseOnButton(window , iconWidth/1.5f , iconWidth*1.5f  ,node.positionX+node.width +iconWidth*2.f,(node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,mouseX,mouseY,false);
-		if(glfwGetMouseButton(window,0) == GLFW_PRESS && node.outputs[i].hover && !node.outputs[i].pressed){
+		node.outputs[i].connectionHover = isMouseOnButton(window , iconWidth/1.5f , iconWidth*1.5f  ,node.positionX+node.width +iconWidth*2.f,(node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,mouseX,mouseY,false);
+		if(glfwGetMouseButton(window,0) == GLFW_PRESS && node.outputs[i].connectionHover && !node.outputs[i].pressed){
 			node.outputs[i].pressed = true;
 			node.outputs[i].connectionPosX = node.positionX+node.width +iconWidth*2.f;
 			node.outputs[i].connectionPosY = (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
 		}
 		if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
 			node.outputs[i].pressed = false;
+			if(true){
+				node.outputs[i].connectionPosX = node.positionX+node.width +iconWidth*2.f;
+				node.outputs[i].connectionPosY = (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
+
+				node.outputs[i].connectionPosX = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
+				node.outputs[i].connectionPosY = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
+			}
 		}
 		if(node.outputs[i].pressed){
 			node.outputs[i].connectionPosX += xOffset/maxScreenWidth*2.f;
@@ -91,6 +118,9 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 
         glUseProgram(programs.iconsProgram);
         //Render the output
+		//TODO : Use those values for rendering and tracking
+		node.outputs[i].posX = node.positionX+node.width +iconWidth*2.f;
+		node.outputs[i].posY = (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
 		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX+node.width +iconWidth*2.f, (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , nodeColor , nodeColor);
 		ioIndex++;
 	}
@@ -100,7 +130,7 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 	{
         //Input color
 		glm::vec4 nodeColor = glm::vec4(0);
-
+		
         //Process the color (related to the input type)
 		if(node.inputs[i].type == "float"){
 			nodeColor = colorData.floatNodeInputColor;
@@ -111,6 +141,11 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 		if(node.inputs[i].type == "vec3"){
 			nodeColor = colorData.vec3NodeInputColor;
 		}
+
+		node.inputs[i].connectionHover = isMouseOnButton(window,iconWidth/1.5f , iconWidth*1.5f,node.positionX-node.width - iconWidth*2.f,(node.positionY + node.height) - (i+ioIndex+rangeBarCountInputs)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+
+		node.inputs[i].posX = node.positionX-node.width - iconWidth*2.f;
+		node.inputs[i].posY = (node.positionY + node.height) - (i+ioIndex+rangeBarCountInputs)/(20.f/(node.width*16)) - 0.05f * node.width*10;
 
 		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX-node.width - iconWidth*2.f, (node.positionY + node.height) - (i+ioIndex+rangeBarCountInputs)/(20.f/(node.width*16)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , nodeColor , nodeColor);
 		
@@ -161,6 +196,7 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 		}
 
 
+
         //Render the input title
 		renderText(programs.uiProgram,node.inputs[i].text,node.positionX-node.width -iconWidth + 0.015f,(node.positionY + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
 		inputElementIndex++;
@@ -168,7 +204,6 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
         //Render the range bars
         for (size_t k = 0; k < rangeBarCount; k++)
 		{
-
             //Check if any other range bar pointer is pressed to prevent multiple selection
 			bool anyPointerPressed = false;
 			for (size_t a = 0; a < node.inputs.size(); a++)
@@ -191,7 +226,6 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 						anyPointerPressed = true;
 					}
 				}
-			
 			}
 
             //Assign the corresponding value for the range bar
@@ -242,6 +276,5 @@ void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 			inputElementIndex++;
 			isRangeBarPointerHover = false;
 		}
-
 	}
 }
