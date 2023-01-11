@@ -25,7 +25,8 @@ struct Programs
 	unsigned int hueProgram;
 	unsigned int axisPointerProgram;
 	unsigned int outProgram;
-	unsigned int twoDPaintingProgram;
+	unsigned int twoDPaintingProgram; 
+	unsigned int renderTheTextureProgram; 
 };
 struct Cubemaps{
 	unsigned int cubemap;

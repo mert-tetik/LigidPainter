@@ -382,6 +382,11 @@ public:
 		unsigned int twoDPaintingProgram = gl.createProgram("LigidPainter/Resources/Shaders/Texture Processing/2dPainting");
 
 
+
+		//renderTheTexture Program
+		unsigned int renderTheTextureProgram = gl.createProgram("LigidPainter/Resources/Shaders/UI/renderTheTexture");
+
+
 		Programs glPrograms;
 
 		glPrograms.blurProgram = blurProgram;
@@ -395,7 +400,8 @@ public:
 		glPrograms.hueProgram = hueProgram;
 		glPrograms.axisPointerProgram = axisPointerProgram;
 		glPrograms.outProgram = outProgram;  
-		glPrograms.twoDPaintingProgram = twoDPaintingProgram;  
+		glPrograms.twoDPaintingProgram = twoDPaintingProgram;   
+		glPrograms.renderTheTextureProgram = renderTheTextureProgram;   
 
 		return glPrograms;
 	}

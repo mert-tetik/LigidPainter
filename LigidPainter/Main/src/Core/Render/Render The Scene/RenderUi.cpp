@@ -88,6 +88,8 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 	glUseProgram(programs.iconsProgram);
 	gl.uniformMatrix4fv(programs.iconsProgram, "Projection", projection);
+	glUseProgram(programs.renderTheTextureProgram);
+	gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
 	glUseProgram(programs.uiProgram);
 	gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
 

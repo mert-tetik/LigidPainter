@@ -149,8 +149,10 @@ void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons,std::v
 	iconBox(0.02f,0.04f,panelLoc - 0.05f,0.85f,0.5f,icons.Plus,0,colorD.iconColor,colorD.iconColorHover);
 	iconBox(0.02f,0.04f,panelLoc - 0.10f,0.85f,0.5f,icons.Minus,0,colorD.iconColor,colorD.iconColorHover);
 
-	glUseProgram(programs.uiProgram);
-
+	glUseProgram(programs.renderTheTextureProgram);
+	
+	glActiveTexture(GL_TEXTURE14);
+	glset.uniform1i(uiPrograms.renderTheTextureProgram, "texture" ,14);
 
 
 	float maskXpos = 0.0f;
@@ -178,6 +180,8 @@ void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons,std::v
 		float upBotDifMin = std::min(0.05f + position_y,maxTop) - std::min(-0.05f + position_y,maxTop);
 		float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
 
+		
+		glBindTexture(GL_TEXTURE_2D,albedoTextures[i]);
 
 		std::vector<float> buttonCoorSq{
 			// first trianglev 
@@ -191,7 +195,6 @@ void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons,std::v
 		};
 		glset.drawArrays(buttonCoorSq,false);
 	}
-	
 }
 
 void UserInterface::textureDisplayer(float width,float height, float position_x,float position_y,float z){ 

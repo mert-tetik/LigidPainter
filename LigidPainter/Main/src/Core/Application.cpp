@@ -75,6 +75,7 @@ std::vector<unsigned int> albedoTextures;
 //GL_TEXTURE10 = 1080x1080 Screen Texture
 //GL_TEXTURE12 = Modified mask texture
 //GL_TEXTURE13 = skybox
+//GL_TEXTURE14 = texture rendering for the ui
 
 //Shortcuts
 
