@@ -313,7 +313,7 @@ struct ContextMenu {
 	float height;
 
 	bool stateChanged;
-	bool active;
+	bool active = false;
 
 	bool hover;
 
