@@ -64,7 +64,9 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,float zoomV
 		
 
     //Move the node if it's top bar is pressed
-	node.barHover = isMouseOnButton(window , node.width , iconWidth*2.f ,node.positionX * zoomVal,node.positionY * zoomVal + node.height + iconWidth*2.f,mouseX,mouseY,false);
+	if(!anyConnectionPressed){
+		node.barHover = isMouseOnButton(window , node.width , iconWidth*2.f ,node.positionX * zoomVal,node.positionY * zoomVal + node.height + iconWidth*2.f,mouseX,mouseY,false);
+	}
 	if(glfwGetMouseButton(window,0) == GLFW_PRESS && node.barHover && !anyBarPressed){
 		node.barPressed = true;
 	}
