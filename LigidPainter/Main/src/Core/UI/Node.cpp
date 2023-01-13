@@ -14,7 +14,8 @@
 #include "Core/gl.h"
 #include "Core/Utilities.h"
 #include "Core/Load.hpp"
-		bool firstRelease = false;
+
+bool firstRelease = false;
 
 void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
 float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
@@ -23,9 +24,10 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 
 	const float iconWidth = node.width/6.f;
 
-	bool anyBarPressed = false;
 
 	//TODO : Check in one for loop
+	//Check if any of the node's bar is pressed
+	bool anyBarPressed = false;
 	for (int nodeI = 0; nodeI < nodes.size(); nodeI++)
 	{
 		if(nodes[nodeI].barPressed){
@@ -33,13 +35,28 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 			break;
 		}
 	}
+
+	//Check if any of the node's input is pressed
 	bool anyInputHover = false;
 	for (int nodeI = 0; nodeI < nodes.size(); nodeI++)
 	{
-		for (size_t i = 0; i < nodes[nodeI].inputs.size(); i++)
+		for (size_t inIndex = 0; inIndex < nodes[nodeI].inputs.size(); inIndex++)
 		{
-			if(nodes[nodeI].inputs[i].connectionHover){
+			if(nodes[nodeI].inputs[inIndex].connectionHover){
 				anyInputHover = true;
+				break;
+			}
+		}
+	}
+
+	//
+	bool anyConnectionPressed = false;
+	for (int nodeI = 0; nodeI < nodes.size(); nodeI++)
+	{
+		for (size_t outIndex = 0; outIndex < nodes[nodeI].outputs.size(); outIndex++)
+		{
+			if(nodes[nodeI].outputs[outIndex].pressed){
+				anyConnectionPressed = true;
 				break;
 			}
 		}
@@ -65,15 +82,12 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
     //Render the panel
 	glUseProgram(programs.uiProgram);
 	box(node.width,node.height,node.positionX,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);
-	
-    //Side area
+    //-Side area
 	box(iconWidth,node.height,node.positionX-node.width -iconWidth,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Left
 	box(iconWidth,node.height,node.positionX+node.width +iconWidth,node.positionY,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Right
 	box(node.width,iconWidth*2.f,node.positionX,node.positionY + node.height + iconWidth*2.f,"",node.upBarColor,0,0,0,0.9999f,10000,node.upBarColor,0);///Top
 	box(node.width,iconWidth*2.f,node.positionX,node.positionY - node.height - iconWidth*2.f,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Bottom
-
-
-	//Smooth corners
+	//-Smooth corners
 	glUseProgram(programs.iconsProgram);
 	iconBox(iconWidth , iconWidth*2.f , node.positionX-node.width -iconWidth, node.positionY + node.height + iconWidth*2.f, 0.9999f , icons.TL , 0 , node.upBarColor , node.backColor);
 	iconBox(iconWidth , iconWidth*2.f , node.positionX+node.width +iconWidth, node.positionY + node.height + iconWidth*2.f, 0.9999f , icons.TR , 0 , node.upBarColor , node.backColor);
@@ -83,10 +97,10 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 	int ioIndex = 0; //Interpret the input with output size since they both rendered seperately
 	for (size_t i = 0; i < node.outputs.size(); i++)
 	{
-        //Color of the output (changes related to input type)
+        //Color of the output (changes related to output type)
 		glm::vec4 nodeColor = glm::vec4(0);
 
-        //Process the input type
+        //Process the output type
 		if(node.outputs[i].type == "float"){
 			nodeColor = colorData.floatNodeInputColor;
 		}
@@ -97,14 +111,15 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 			nodeColor = colorData.vec3NodeInputColor;
 		}
 
-		//Check if mouse is hover any of the inputs
 
 		//TODO : Check this algorithm
+		//Check if mouse is hover any of the inputs
 		int inputIndex;
 		for (int nodeI = 0; nodeI < nodes.size(); nodeI++)
 		{
 			for (int inputI = 0; inputI < nodes[nodeI].inputs.size(); inputI++)
 			{
+				//Establish connection
 				if(nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed){
 					node.outputs[i].inputConnectionIndex = inputI;
 					node.outputs[i].nodeConnectionIndex = nodeI;
@@ -117,23 +132,30 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 		}
 		
         //Check if output pressed
-		node.outputs[i].connectionHover = isMouseOnButton(window , iconWidth/1.5f , iconWidth*1.5f  ,node.positionX+node.width +iconWidth*2.f,(node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,mouseX,mouseY,false);
+		node.outputs[i].connectionHover = isMouseOnButton(window , iconWidth/1.5f , iconWidth*1.5f  ,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY,mouseX,mouseY,false);
+		
+		//If output pressed (move the connection)
 		if(glfwGetMouseButton(window,0) == GLFW_PRESS && node.outputs[i].connectionHover && !node.outputs[i].pressed){
 			node.outputs[i].pressed = true;
 			node.outputs[i].connectionPosX = node.positionX+node.width +iconWidth*2.f;
 			node.outputs[i].connectionPosY = (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
 			firstRelease = true;
 		}
+		//If output released (release the connection)
 		if(glfwGetMouseButton(window,0) == GLFW_RELEASE || node.barPressed || anyBarPressed){
 			node.outputs[i].pressed = false;
 			if(true){
+				//Severe the connection if connection is not released in a input
 				if(!anyInputHover && firstRelease){
 					node.outputs[i].nodeConnectionIndex = 10000;
 					node.outputs[i].inputConnectionIndex = 10000;
 				}
+				
+				//Render the connection on top of the default connection circle (hide)
 				node.outputs[i].connectionPosX = node.positionX+node.width +iconWidth*2.f;
 				node.outputs[i].connectionPosY = (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
 				
+				//Render the connection on top of the connection circle (show)
 				if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
 					node.outputs[i].connectionPosX = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
 					node.outputs[i].connectionPosY = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
@@ -141,18 +163,19 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 			}
 			firstRelease = false;
 		}
+		//Move the connection (on top of the cursor)
 		if(node.outputs[i].pressed){
 			node.outputs[i].connectionPosX += xOffset/maxScreenWidth*2.f;
 			node.outputs[i].connectionPosY -= yOffset/maxScreenHeight*2.f;
-			
 		}
-        glUseProgram(programs.uiProgram);
+
         //Render the connection line
+        glUseProgram(programs.uiProgram);
 		drawLine(node.positionX+node.width +iconWidth*2.f,(node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,0.99999f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY,0,nodeColor);
 
-        glUseProgram(programs.iconsProgram);
         //Render the output
 		//TODO : Use those values for rendering and tracking
+        glUseProgram(programs.iconsProgram);
 		node.outputs[i].posX = node.positionX+node.width +iconWidth*2.f;
 		node.outputs[i].posY = (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
 		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX+node.width +iconWidth*2.f, (node.positionY + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , nodeColor , nodeColor);
@@ -292,7 +315,7 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 			if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
 				node.inputs[i].rangeBarsPointerPressed[k] = false;
 			}
-			if(node.inputs[i].rangeBarsPointerPressed[k]){
+			if(node.inputs[i].rangeBarsPointerPressed[k] && !anyConnectionPressed){
                 //Adjust the corresponding values
 				if(k == 0){
 					node.inputs[i].value.x += xOffset/100.f;
