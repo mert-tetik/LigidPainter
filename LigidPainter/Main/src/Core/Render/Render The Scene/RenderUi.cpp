@@ -219,7 +219,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		{
 			nodes[i].height = (nodes[i].inputs.size() + nodes[i].rangeBarCount + nodes[i].outputs.size())/13.f * nodePanel.zoomVal;
 			nodes[i].width = 0.12f * nodePanel.zoomVal;
-			ui.node(nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodes,nodePanel.zoomVal);
+			ui.node(nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodes,nodePanel);
 		}
 		lastMouseX = mouseXpos;
 		lastMouseY = mouseYpos;

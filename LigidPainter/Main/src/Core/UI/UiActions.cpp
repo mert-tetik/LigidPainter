@@ -100,6 +100,7 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 				}
 				else if(nodePanel.boundariesHover){
 					nodePanelBoundariesPressed = true;
+					nodePanel.boundariesPressed = true;
 				}
 				else if(sndPanel.boundariesHover){
 					sndPanel.boundariesPressed = true;
@@ -180,6 +181,7 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
         maskPanelSliderPressed = false;
 		mainPanelBoundariesPressed = false;
 		nodePanelBoundariesPressed = false;
+		nodePanel.boundariesPressed = false;
 		sndPanel.boundariesPressed = false;
 	}
 }
