@@ -140,7 +140,6 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 
 		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons.Circle);
 
-		float zoomVal = 0.3f;
 
 		//Add node context menu
 		if(addNodeContextMenu.active){
@@ -161,7 +160,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 							imageNode.positionY = -mouseYpos/maxScreenHeight*2 + 1.0f;
 							imageNode.title = "Image Texture";
 							imageNode.upBarColor =glm::vec4(0.9,0.2,0.2,1);
-							imageNode.width = 0.12f * zoomVal;
+							imageNode.width = 0.12f;
 							
 							NodeInput input1;
 							input1.text = "input 1";
@@ -201,7 +200,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 								imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
 							}
 							}
-							imageNode.height = (imageNode.inputs.size() + rangeBarCount+ imageNode.outputs.size())/13.f * zoomVal;
+							imageNode.rangeBarCount = rangeBarCount;
 							nodes.push_back(imageNode);
 						}
 						addNodeContextMenu.active = false;
@@ -218,6 +217,8 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		double yOffset = mouseYpos - lastMouseY;
 		for (size_t i = 0; i < nodes.size(); i++)
 		{
+			nodes[i].height = (nodes[i].inputs.size() + nodes[i].rangeBarCount + nodes[i].outputs.size())/13.f * nodePanel.zoomVal;
+			nodes[i].width = 0.12f * nodePanel.zoomVal;
 			ui.node(nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodes);
 		}
 		lastMouseX = mouseXpos;

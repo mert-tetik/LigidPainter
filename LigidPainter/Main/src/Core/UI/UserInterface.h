@@ -262,6 +262,8 @@ struct NodePanel{
 	bool panelHover;
 	bool boundariesHover;
 	bool boundariesPressed;
+
+	float zoomVal = 1.0f;
 };
 
 struct NodeInput{
@@ -302,6 +304,9 @@ struct Node{
 
 	bool barHover;
 	bool barPressed;
+
+
+	int rangeBarCount = 0;
 };
 
 struct ContextMenu {

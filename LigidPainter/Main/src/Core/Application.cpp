@@ -911,6 +911,10 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 			const float maskPanelRange = ceil((int)brushMaskTextures.textures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
 			maskPanelSliderValue = util.restrictBetween(maskPanelSliderValue, 0.0f, -maskPanelRange/4.f);//Keep in boundaries
 		}
+		else if(nodePanel.panelHover){
+			nodePanel.zoomVal += (float)(scrollx / 40.0);
+			nodePanel.zoomVal = util.restrictBetween(nodePanel.zoomVal, 2.0f, 0.01f);//Keep in boundaries
+		}
 		else if (!paintingMode && !mainPanelHover) {
 			callbackData = callback.scroll_callback(window, scroll, scrollx);
 		}
