@@ -63,6 +63,7 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 	}
 		
 
+
     //Move the node if it's top bar is pressed
 	if(!anyConnectionPressed){
 		node.barHover = isMouseOnButton(window , node.width , iconWidth*2.f ,node.positionX * nodePanel.zoomVal,node.positionY * nodePanel.zoomVal + node.height + iconWidth*2.f,mouseX,mouseY,false);
@@ -80,6 +81,7 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 		xOffset = 0;
 		yOffset = 0;
 	}
+
 
     //Render the panel
 	glUseProgram(programs.uiProgram);
@@ -175,7 +177,7 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 
         //Render the connection line
         glUseProgram(programs.uiProgram);
-		drawLine(node.positionX * nodePanel.zoomVal+node.width +iconWidth*2.f,(node.positionY * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,0.99999f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY,0,nodeColor);
+		drawLine(node.positionX * nodePanel.zoomVal+node.width +iconWidth*2.f,(node.positionY * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,0.99999f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY, node.width*200.f ,nodeColor);
 
         //Render the output
 		//TODO : Use those values for rendering and tracking

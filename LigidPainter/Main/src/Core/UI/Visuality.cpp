@@ -588,11 +588,11 @@ void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Pr
 	glUseProgram(programs.uiProgram);
 }
 
-void UserInterface::drawLine(float posX,float posY,float posZ,float toPosX,float toPosY,float width,glm::vec4 color){
+void UserInterface::drawLine(float posX,float posY, float posZ, float toPosX,float toPosY, float width, glm::vec4 color){
 	GlSet gl;
 	gl.uniform4fv(uiPrograms.uiProgram,"uiColor",color);
 
-	for (size_t i = 0; i < 5; i++)
+	for (size_t i = 0; i < width; i++)
 	{
 		const float pixel = 10000.f/2.f;
 		std::vector<float> lineCoor{
@@ -603,7 +603,7 @@ void UserInterface::drawLine(float posX,float posY,float posZ,float toPosX,float
 		gl.drawArrays(lineCoor,true);
 		/* code */
 	}
-	for (size_t i = 0; i < 5; i++)
+	for (size_t i = 0; i < width; i++)
 	{
 		const float pixel = 10000.f/2.f;
 		std::vector<float> lineCoor{
@@ -614,7 +614,7 @@ void UserInterface::drawLine(float posX,float posY,float posZ,float toPosX,float
 		gl.drawArrays(lineCoor,true);
 		/* code */
 	}
-	for (size_t i = 0; i < 5; i++)
+	for (size_t i = 0; i < width; i++)
 	{
 		const float pixel = 10000.f/2.f;
 		std::vector<float> lineCoor{
@@ -625,7 +625,7 @@ void UserInterface::drawLine(float posX,float posY,float posZ,float toPosX,float
 		gl.drawArrays(lineCoor,true);
 		/* code */
 	}
-	for (size_t i = 0; i < 5; i++)
+	for (size_t i = 0; i < width; i++)
 	{
 		const float pixel = 10000.f/2.f;
 		std::vector<float> lineCoor{
