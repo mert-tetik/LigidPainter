@@ -912,6 +912,7 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 			maskPanelSliderValue = util.restrictBetween(maskPanelSliderValue, 0.0f, -maskPanelRange/4.f);//Keep in boundaries
 		}
 		else if(nodePanel.panelHover){
+			//Node panel scroll
 			nodePanel.zoomVal += (float)(scrollx / 40.0);
 			nodePanel.zoomVal = util.restrictBetween(nodePanel.zoomVal, 2.0f, 0.01f);//Keep in boundaries
 		}

@@ -132,7 +132,9 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes){
 		}
 		
         //Check if output pressed
-		node.outputs[i].connectionHover = isMouseOnButton(window , iconWidth/1.5f , iconWidth*1.5f  ,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY,mouseX,mouseY,false);
+		if(!anyConnectionPressed){//Prevent multiple selection
+			node.outputs[i].connectionHover = isMouseOnButton(window , iconWidth/1.5f , iconWidth*1.5f  ,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY,mouseX,mouseY,false);
+		}
 		
 		//If output pressed (move the connection)
 		if(glfwGetMouseButton(window,0) == GLFW_PRESS && node.outputs[i].connectionHover && !node.outputs[i].pressed){
