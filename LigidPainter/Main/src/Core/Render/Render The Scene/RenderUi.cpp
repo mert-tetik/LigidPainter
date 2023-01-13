@@ -156,8 +156,8 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 						if(i == 1){
 							Node imageNode;
 							imageNode.backColor = glm::vec4(0.2,0.2,0.2,0.5);
-							imageNode.positionX = mouseXpos/screenSizeX*2 - 1.0f;
-							imageNode.positionY = -mouseYpos/maxScreenHeight*2 + 1.0f;
+							imageNode.positionX = (mouseXpos/screenSizeX*2 - 1.0f) / nodePanel.zoomVal;
+							imageNode.positionY = (-mouseYpos/maxScreenHeight*2 + 1.0f) / nodePanel.zoomVal;
 							imageNode.title = "Image Texture";
 							imageNode.upBarColor =glm::vec4(0.9,0.2,0.2,1);
 							imageNode.width = 0.12f;
