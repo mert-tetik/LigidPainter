@@ -264,6 +264,7 @@ struct NodePanel{
 	bool boundariesPressed;
 
 	float zoomVal = 1.0f;
+	bool zoomValChanged = false;
 };
 
 struct NodeInput{

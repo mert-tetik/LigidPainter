@@ -650,6 +650,8 @@ bool LigidPainter::run()
 			renderTheScene = false;
 
 		addNodeContextMenu.stateChanged = false;
+		
+		nodePanel.zoomValChanged = false;
 
 		//Exit message box
 		if(glfwWindowShouldClose(window)){
@@ -689,9 +691,11 @@ bool LigidPainter::run()
 					glfwSetWindowShouldClose(window,GLFW_FALSE);
 					break; //Act like nothing happened
 				}
-	
+
+				
 				glfwSwapBuffers(window);
 		 	}
+
 		}
 	}
 	
@@ -914,6 +918,7 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 		else if(nodePanel.panelHover){
 			//Node panel scroll
 			nodePanel.zoomVal += (float)(scrollx / 40.0);
+			nodePanel.zoomValChanged = true;
 			nodePanel.zoomVal = util.restrictBetween(nodePanel.zoomVal, 2.0f, 0.01f);//Keep in boundaries
 		}
 		else if (!paintingMode && !mainPanelHover) {

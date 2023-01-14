@@ -143,22 +143,34 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 		//If output pressed (move the connection)
 		if(glfwGetMouseButton(window,0) == GLFW_PRESS && node.outputs[i].connectionHover && !node.outputs[i].pressed){
 			node.outputs[i].pressed = true;
-			node.outputs[i].connectionPosX = node.positionX * nodePanel.zoomVal+node.width +iconWidth*2.f;
+			node.outputs[i].connectionPosX = node.positionX * nodePanel.zoomVal + node.width +iconWidth*2.f;
 			node.outputs[i].connectionPosY = (node.positionY * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
 			firstRelease = true;
 		}
+		//Prevent zooming in and out bug while moving the connection
+		if((!node.outputs[i].pressed && nodePanel.zoomValChanged)){
+				//Render the connection on top of the default connection circle (hide)
+				node.outputs[i].connectionPosX = node.positionX * nodePanel.zoomVal + node.width +iconWidth*2.f;
+				node.outputs[i].connectionPosY = (node.positionY * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
+				
+				//Render the connection on top of the connection circle (show)
+				if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
+					node.outputs[i].connectionPosX = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
+					node.outputs[i].connectionPosY = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
+				}
+		}
+
 		//If output released (release the connection)
 		if(glfwGetMouseButton(window,0) == GLFW_RELEASE || node.barPressed || anyBarPressed){
-			node.outputs[i].pressed = false;
 			if(true){
 				//Severe the connection if connection is not released in a input
-				if(!anyInputHover && firstRelease){
+				if(!anyInputHover && firstRelease && node.outputs[i].pressed){
 					node.outputs[i].nodeConnectionIndex = 10000;
 					node.outputs[i].inputConnectionIndex = 10000;
 				}
 				
 				//Render the connection on top of the default connection circle (hide)
-				node.outputs[i].connectionPosX = node.positionX * nodePanel.zoomVal+node.width +iconWidth*2.f;
+				node.outputs[i].connectionPosX = node.positionX * nodePanel.zoomVal + node.width +iconWidth*2.f;
 				node.outputs[i].connectionPosY = (node.positionY * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
 				
 				//Render the connection on top of the connection circle (show)
@@ -168,6 +180,7 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 				}
 			}
 			firstRelease = false;
+			node.outputs[i].pressed = false;
 		}
 		//Move the connection (on top of the cursor)
 		if(node.outputs[i].pressed){
