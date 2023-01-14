@@ -139,6 +139,12 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		cameraPos.y = sin(glm::radians(pitch)) * -radius + originPos.y;
 		cameraPos.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.z;
 	}
+	
+	if (glfwGetMouseButton(window, 2) == GLFW_PRESS && nodePanel.panelHover){
+		nodePanel.panelPositionX += xoffset/200.f;
+		nodePanel.panelPositionY += yoffset/200.f;
+	}
+
 	callbk = preapareCallbackData();
 	return callbk;
 }

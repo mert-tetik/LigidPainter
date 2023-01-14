@@ -265,6 +265,9 @@ struct NodePanel{
 
 	float zoomVal = 1.0f;
 	bool zoomValChanged = false;
+
+	float panelPositionX = 0.0;
+	float panelPositionY = 0.0;
 };
 
 struct NodeInput{
