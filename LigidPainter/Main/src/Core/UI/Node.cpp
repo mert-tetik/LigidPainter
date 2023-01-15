@@ -85,18 +85,18 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 
     //Render the panel
 	glUseProgram(programs.uiProgram);
-	box(node.width,node.height,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal,node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);
+	box(node.width,node.height,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal,node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal,"",node.backColor,0,0,0,0.999f,10000,node.backColor,0);
     //-Side area
-	box(iconWidth,node.height,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal-node.width -iconWidth,node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Left
-	box(iconWidth,node.height,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal+node.width +iconWidth,node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Right
-	box(node.width,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal,node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height + iconWidth*2.f,"",node.upBarColor,0,0,0,0.9999f,10000,node.upBarColor,0);///Top
-	box(node.width,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal,node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal - node.height - iconWidth*2.f,"",node.backColor,0,0,0,0.9999f,10000,node.backColor,0);///Bottom
+	box(iconWidth,node.height,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal-node.width -iconWidth,node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal,"",node.backColor,0,0,0,0.999f,10000,node.backColor,0);///Left
+	box(iconWidth,node.height,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal+node.width +iconWidth,node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal,"",node.backColor,0,0,0,0.999f,10000,node.backColor,0);///Right
+	box(node.width,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal,node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height + iconWidth*2.f,"",node.upBarColor,0,0,0,0.999f,10000,node.upBarColor,0);///Top
+	box(node.width,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal,node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal - node.height - iconWidth*2.f,"",node.backColor,0,0,0,0.999f,10000,node.backColor,0);///Bottom
 	//-Smooth corners
 	glUseProgram(programs.iconsProgram);
-	iconBox(iconWidth , iconWidth*2.f , node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal-node.width -iconWidth, node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height + iconWidth*2.f, 0.9999f , icons.TL , 0 , node.upBarColor , node.backColor);
-	iconBox(iconWidth , iconWidth*2.f , node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal+node.width +iconWidth, node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height + iconWidth*2.f, 0.9999f , icons.TR , 0 , node.upBarColor , node.backColor);
-	iconBox(iconWidth , iconWidth*2.f , node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal-node.width -iconWidth, node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal - node.height - iconWidth*2.f, 0.9999f , icons.BL , 0 , node.backColor , node.backColor);
-	iconBox(iconWidth , iconWidth*2.f , node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal+node.width +iconWidth, node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal - node.height - iconWidth*2.f, 0.9999f , icons.BR , 0 , node.backColor , node.backColor);
+	iconBox(iconWidth , iconWidth*2.f , node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal-node.width -iconWidth, node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height + iconWidth*2.f, 0.999f , icons.TL , 0 , node.upBarColor , node.backColor);
+	iconBox(iconWidth , iconWidth*2.f , node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal+node.width +iconWidth, node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height + iconWidth*2.f, 0.999f , icons.TR , 0 , node.upBarColor , node.backColor);
+	iconBox(iconWidth , iconWidth*2.f , node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal-node.width -iconWidth, node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal - node.height - iconWidth*2.f, 0.999f , icons.BL , 0 , node.backColor , node.backColor);
+	iconBox(iconWidth , iconWidth*2.f , node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal+node.width +iconWidth, node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal - node.height - iconWidth*2.f, 0.999f , icons.BR , 0 , node.backColor , node.backColor);
 	
 	int ioIndex = 0; //Interpret the input with output size since they both rendered seperately
 	for (size_t i = 0; i < node.outputs.size(); i++)
@@ -201,6 +201,9 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 		ioIndex++;
 	}
 
+
+
+
 	float rangeBarCountInputs = 0;
 	for (size_t i = 0; i < node.inputs.size(); i++)
 	{
@@ -226,17 +229,25 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 		iconBox(iconWidth/1.5f , iconWidth*1.5f , node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal-node.width - iconWidth*2.f, (node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+rangeBarCountInputs)/(20.f/(node.width*16)) - 0.05f * node.width*10, 0.99999f , icons.Circle , 0 , nodeColor , nodeColor);
 		
         //Process the gap necessary related to the input type after rendering
-		if(node.inputs[i].type == "float"){
-			rangeBarCountInputs += 2;
+		if(node.inputs[i].element == "range"){
+			if(node.inputs[i].type == "float"){
+				rangeBarCountInputs += 2;
+			}
+			if(node.inputs[i].type == "vec2"){
+				rangeBarCountInputs += 3;
+			}
+			if(node.inputs[i].type == "vec3"){
+				rangeBarCountInputs += 4;
+			}
 		}
-		if(node.inputs[i].type == "vec2"){
-			rangeBarCountInputs += 3;
-		}
-		if(node.inputs[i].type == "vec3"){
-			rangeBarCountInputs += 4;
+		else if(node.inputs[i].element == "image"){
+			rangeBarCountInputs += 1;
 		}
 
 	}
+
+
+
 
 	glUseProgram(programs.uiProgram);
 
@@ -257,100 +268,106 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
     //Render the input elements
 	for (size_t i = 0; i < node.inputs.size(); i++)
 	{
-
-
-        //Determine the range bar count
-		float rangeBarCount = 0;
-		if(node.inputs[i].type == "float"){
-			rangeBarCount = 1;
-		}
-		if(node.inputs[i].type == "vec2"){
-			rangeBarCount = 2;
-		}
-		if(node.inputs[i].type == "vec3"){
-			rangeBarCount = 3;
-		}
-
-
-
         //Render the input title
 		renderText(programs.uiProgram,node.inputs[i].text,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal-node.width,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
-		inputElementIndex++;
 		
+		if(node.inputs[i].element == "image"){
+			inputElementIndex++;
+			box(iconWidth/2.f,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal - node.width, (node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,0.99999f,8 / (node.width*6),node.backColor,0);///Bottom
+			box(iconWidth/2.f,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal + node.width, (node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,0.99999f,8 / (node.width*6),node.backColor,0);///Bottom
+			
+			box(iconWidth*6,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal, (node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.buttonColor,0,0,0,0.9999f,8 / (node.width*6),node.backColor,0);///Bottom
+			
+			renderText(programs.uiProgram,"texture",node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal - node.width/1.5f,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
+		}
+
         //Render the range bars
-        for (size_t k = 0; k < rangeBarCount; k++)
-		{
-            //Check if any other range bar pointer is pressed to prevent multiple selection
-			bool anyPointerPressed = false;
-			for (size_t a = 0; a < node.inputs.size(); a++)
+		if(node.inputs[i].element == "range"){
+			inputElementIndex++;
+		
+        	//Determine the range bar count
+			float rangeBarCount = 0;
+			if(node.inputs[i].type == "float")
+				rangeBarCount = 1;
+			if(node.inputs[i].type == "vec2")
+				rangeBarCount = 2;
+			if(node.inputs[i].type == "vec3")
+				rangeBarCount = 3;
+
+        	for (size_t k = 0; k < rangeBarCount; k++)
 			{
-				float rangeBarCountTest = 0;
-
-				if(node.inputs[a].type == "float"){
-					rangeBarCountTest = 1;
-				}
-				if(node.inputs[a].type == "vec2"){
-					rangeBarCountTest = 2;
-				}
-				if(node.inputs[a].type == "vec3"){
-					rangeBarCountTest = 3;
-				}
-
-				for (size_t aa = 0; aa < rangeBarCountTest; aa++)
+        	    //Check if any other range bar pointer is pressed to prevent multiple selection
+				bool anyPointerPressed = false;
+				for (size_t a = 0; a < node.inputs.size(); a++)
 				{
-					if(node.inputs[a].rangeBarsPointerPressed[aa]){
-						anyPointerPressed = true;
+					float rangeBarCountTest = 0;
+
+					if(node.inputs[a].type == "float"){
+						rangeBarCountTest = 1;
+					}
+					if(node.inputs[a].type == "vec2"){
+						rangeBarCountTest = 2;
+					}
+					if(node.inputs[a].type == "vec3"){
+						rangeBarCountTest = 3;
+					}
+
+					for (size_t aa = 0; aa < rangeBarCountTest; aa++)
+					{
+						if(node.inputs[a].rangeBarsPointerPressed[aa]){
+							anyPointerPressed = true;
+						}
 					}
 				}
-			}
 
-            //Assign the corresponding value for the range bar
-			float val;
-			if(k == 0){
-				val = node.inputs[i].value.x;
-			} 
-			else if(k == 1){
-				val = node.inputs[i].value.y;
-			}
-			else if(k == 2){
-				val = node.inputs[i].value.z;
-			}
-
-			float pointPosVal = val / (1.f/(node.width*2.f)) - node.width;
-			
-			//Range bar
-			box(node.width,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,0.99998f,8 / (node.width*6),node.backColor,0);///Bottom
-			//Pointer
-			box(iconWidth/4.f,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal + pointPosVal,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,0.99999f,8 / (node.width*6),node.backColor,0);///Bottom
-
-			//TODO : Calculate the screen gap
-            //Check if range bar pointer pressed
-			if(!anyPointerPressed){
-				isRangeBarPointerHover = isMouseOnButton(window , iconWidth , iconWidth*2.f ,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal + pointPosVal,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
-			}
-			if(glfwGetMouseButton(window,0) == GLFW_PRESS && isRangeBarPointerHover){
-				node.inputs[i].rangeBarsPointerPressed[k] = true;
-			}
-			if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
-				node.inputs[i].rangeBarsPointerPressed[k] = false;
-			}
-			if(node.inputs[i].rangeBarsPointerPressed[k] && !anyConnectionPressed){
-                //Adjust the corresponding values
+        	    //Assign the corresponding value for the range bar
+				float val;
 				if(k == 0){
-					node.inputs[i].value.x += xOffset/100.f;
-					node.inputs[i].value.x = util.restrictBetween(node.inputs[i].value.x,1.f,0.001f);
+					val = node.inputs[i].value.x;
+				} 
+				else if(k == 1){
+					val = node.inputs[i].value.y;
 				}
-				if(k == 1){
-					node.inputs[i].value.y += xOffset/100.f;
-					node.inputs[i].value.y = util.restrictBetween(node.inputs[i].value.y,1.f,0.001f);
+				else if(k == 2){
+					val = node.inputs[i].value.z;
 				}
-				if(k == 2){
-					node.inputs[i].value.z += xOffset/100.f;
-					node.inputs[i].value.z = util.restrictBetween(node.inputs[i].value.z,1.f,0.001f);
+
+				float pointPosVal = val / (1.f/(node.width*2.f)) - node.width;
+
+				//Range bar
+				box(node.width,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,0.99998f,8 / (node.width*6),node.backColor,0);///Bottom
+				//Pointer
+				box(iconWidth/4.f,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal + pointPosVal,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,0.99999f,8 / (node.width*6),node.backColor,0);///Bottom
+
+				//TODO : Calculate the screen gap
+        	    //Check if range bar pointer pressed
+				if(!anyPointerPressed){
+					isRangeBarPointerHover = isMouseOnButton(window , iconWidth , iconWidth*2.f ,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal + pointPosVal,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
 				}
-			}	
-			inputElementIndex++;
-			isRangeBarPointerHover = false;
+				if(glfwGetMouseButton(window,0) == GLFW_PRESS && isRangeBarPointerHover){
+					node.inputs[i].rangeBarsPointerPressed[k] = true;
+				}
+				if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
+					node.inputs[i].rangeBarsPointerPressed[k] = false;
+				}
+				if(node.inputs[i].rangeBarsPointerPressed[k] && !anyConnectionPressed){
+        	        //Adjust the corresponding values
+					if(k == 0){
+						node.inputs[i].value.x += xOffset/100.f;
+						node.inputs[i].value.x = util.restrictBetween(node.inputs[i].value.x,1.f,0.001f);
+					}
+					if(k == 1){
+						node.inputs[i].value.y += xOffset/100.f;
+						node.inputs[i].value.y = util.restrictBetween(node.inputs[i].value.y,1.f,0.001f);
+					}
+					if(k == 2){
+						node.inputs[i].value.z += xOffset/100.f;
+						node.inputs[i].value.z = util.restrictBetween(node.inputs[i].value.z,1.f,0.001f);
+					}
+				}	
+				inputElementIndex++;
+				isRangeBarPointerHover = false;
+			}
 		}
 	}
 }

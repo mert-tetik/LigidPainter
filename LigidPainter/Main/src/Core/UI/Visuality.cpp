@@ -216,6 +216,10 @@ void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons,std::v
 	}
 }
 
+void UserInterface::textureSelectionPanel(float posX,float posY,std::vector<unsigned int> &albedoTextures){
+	box(0.005f,0.035f,posX,posY,"", clrData.textureDisplayerButtonColor,0,0,0,1,10,glm::vec4(0,0,0,1),0);
+}
+
 void UserInterface::textureDisplayer(float width,float height, float position_x,float position_y,float z){ 
 	GlSet glset;
 	ColorData clrData;

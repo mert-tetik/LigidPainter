@@ -273,6 +273,9 @@ struct NodePanel{
 struct NodeInput{
 	std::string text;
 	std::string type;
+	
+	std::string element;
+
 	glm::vec4 value = glm::vec4(0.001);
 	
 	std::vector<bool> rangeBarsPointerPressed;
@@ -370,6 +373,8 @@ public:
 	void nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,unsigned int circleTexture);
 	void circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture,glm::vec4 color);
 	void drawLine(float posX,float posY,float posZ,float toPosX,float toPosY,float width,glm::vec4 color);
+	void textureSelectionPanel(float posX,float posY,std::vector<unsigned int> &albedoTextures);
+
 	
 	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,float maxScreenHeight,std::vector<Node> &nodes,NodePanel &nodePanel);
 	

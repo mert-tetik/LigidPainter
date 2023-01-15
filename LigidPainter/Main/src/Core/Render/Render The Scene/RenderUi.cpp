@@ -138,6 +138,8 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , 0);
 		ui.sndPanel(sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex);
 
+		ui.textureSelectionPanel(0.0f,0.0f,albedoTextures);
+
 		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons.Circle);
 
 
@@ -165,16 +167,19 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 							NodeInput input1;
 							input1.text = "input 1";
 							input1.type = "vec3";
+							input1.element = "image";
 							imageNode.inputs.push_back(input1);
 
 							NodeInput input2;
 							input2.text = "input 2";
 							input2.type = "float";
+							input2.element = "range";
 							imageNode.inputs.push_back(input2);
 							
 							NodeInput input3;
 							input3.text = "input 3";
 							input3.type = "vec2";
+							input3.element = "range";
 							imageNode.inputs.push_back(input3);
 
 							imageNode.outputs.push_back(input2);
@@ -182,23 +187,34 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 							imageNode.outputs.push_back(input2);
 
 							float rangeBarCount = 0;
-							for (size_t i = 0; i < imageNode.inputs.size(); i++)
-							{
-							if(imageNode.inputs[i].type == "float"){
-								rangeBarCount += 0.7f;
-								imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-							}
-							if(imageNode.inputs[i].type == "vec2"){
-								rangeBarCount += 0.7f*2;
-								imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-								imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-							}
-							if(imageNode.inputs[i].type == "vec3"){
-								rangeBarCount += 0.7f*3;
-								imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-								imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-								imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-							}
+							for (size_t i = 0; i < imageNode.inputs.size(); i++){
+								if(imageNode.inputs[i].type == "float"){
+									if(imageNode.inputs[i].element == "range")
+										rangeBarCount += 1.5f;
+										
+									imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+								}
+								if(imageNode.inputs[i].type == "vec2"){
+									if(imageNode.inputs[i].element == "range")
+										rangeBarCount += 1.5f*2;
+									
+									if(imageNode.inputs[i].element == "image")
+										rangeBarCount += 1.5f;
+
+									imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+									imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+								}
+								if(imageNode.inputs[i].type == "vec3"){
+									if(imageNode.inputs[i].element == "range")
+										rangeBarCount += 1.5f*3;
+
+									if(imageNode.inputs[i].element == "image")
+										rangeBarCount += 1.5f;
+
+									imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+									imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+									imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+								}
 							}
 							imageNode.rangeBarCount = rangeBarCount;
 							nodes.push_back(imageNode);
@@ -217,7 +233,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		double yOffset = mouseYpos - lastMouseY;
 		for (size_t i = 0; i < nodes.size(); i++)
 		{
-			nodes[i].height = (nodes[i].inputs.size() + nodes[i].rangeBarCount + nodes[i].outputs.size())/13.f * nodePanel.zoomVal;
+			nodes[i].height = (nodes[i].inputs.size() + nodes[i].rangeBarCount + nodes[i].outputs.size())/22.f * nodePanel.zoomVal;
 			nodes[i].width = 0.12f * nodePanel.zoomVal;
 			ui.node(nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodes,nodePanel);
 		}

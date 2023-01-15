@@ -1357,7 +1357,6 @@ void LigidPainter::sndPanelPlusIcon(){
 	albedoTextures.push_back(texture);
 }
 void LigidPainter::sndPanelDownIcon(){
-	
 	glActiveTexture(GL_TEXTURE0);
 	unsigned int texture;
 	glset.genTextures(texture);
