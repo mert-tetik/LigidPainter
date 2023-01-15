@@ -1356,6 +1356,26 @@ void LigidPainter::sndPanelPlusIcon(){
 	glset.genTextures(texture);
 	albedoTextures.push_back(texture);
 }
+void LigidPainter::sndPanelDownIcon(){
+	
+	glActiveTexture(GL_TEXTURE0);
+	unsigned int texture;
+	glset.genTextures(texture);
+	glset.bindTexture(texture);
+
+	//Load texture
+	Texture txtr;
+	//Filters
+	char const* lFilterPatterns[2] = { "*.jpg", "*.png" };
+	//File dialog
+	auto albedoPathCheck = tinyfd_openFileDialog("Select Image", "", 2, lFilterPatterns, "", false);
+	if (albedoPathCheck) {
+		std::string albedoTexturePath = albedoPathCheck;
+		txtr.getTexture(albedoTexturePath,1080,1080,true); //Force albedo's ratio to be 1:1
+	}
+
+	albedoTextures.push_back(texture);
+}
 
 //-----------------------------PREPARE STRUCTS-----------------------------\\
 

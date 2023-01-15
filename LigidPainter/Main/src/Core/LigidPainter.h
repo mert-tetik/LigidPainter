@@ -212,6 +212,7 @@ public:
 	void nodePanelBoundaries(float yOffset,float screenHeight);
 	void sndPanelBoundaries(float xOffset, int screenSizeX);
 	void sndPanelPlusIcon();
+	void sndPanelDownIcon();
 
 
 };
