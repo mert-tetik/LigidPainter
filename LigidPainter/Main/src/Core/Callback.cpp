@@ -252,6 +252,13 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		}
 		
 
+		//Snd Panel
+		sndPanel.downSignHover = ui.isMouseOnButton(window, 0.015f,0.03f, sndPanel.position - 0.05f - screenGapX, 0.85f, mouseXPos, mouseYPos, false);
+		sndPanel.plusSignHover = ui.isMouseOnButton(window, 0.015f,0.03f, sndPanel.position - 0.10f - screenGapX, 0.85f, mouseXPos, mouseYPos, false);
+		sndPanel.minusSignHover = ui.isMouseOnButton(window, 0.015f,0.03f, sndPanel.position - 0.15f - screenGapX, 0.85f, mouseXPos, mouseYPos, false);
+		
+		sndPanel.boundariesHover = ui.isMouseOnButton(window, 0.02f,0.88,sndPanel.position,0.0f, mouseXPos, mouseYPos, 0);
+
 
 		mainPanelBoundariesEnter =  ui.isMouseOnButton(window, 0.02f, 0.88f, mainPanelLoc -1.0f + 0.02f - screenGapX, 0.0f, mouseXPos, mouseYPos, false);
 		
@@ -259,7 +266,6 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		
 		textureDisplayer.buttonHover = ui.isMouseOnButton(window, 0.02f,0.045f,(textureDisplayer.buttonPosX+0.005f)-1.0f,textureDisplayer.buttonPosY-0.01f, mouseXPos, mouseYPos, 0);		
 
-		sndPanel.boundariesHover = ui.isMouseOnButton(window, 0.02f,0.88,sndPanel.position,0.0f, mouseXPos, mouseYPos, 0);
 
 		modelPanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.8f, mouseXPos, mouseYPos);
 		texturePanelButtonEnter = ui.isMouseOnPanelChangeButton(window, mainPanelLoc- screenGapX, 0.72f, mouseXPos, mouseYPos);
@@ -283,6 +289,9 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if(colorPicker.saturationValuePointerHover || colorPicker.hueValuePointerHover || colorPicker.hexValTextBoxEnter){
+		glfwSetCursor(window, cursors.pointerCursor);
+	}
+	else if(sndPanel.plusSignHover || sndPanel.downSignHover || sndPanel.minusSignHover){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if(modelPanelButtonEnter || texturePanelButtonEnter || paintingPanelButtonEnter || exportPanelButtonEnter){

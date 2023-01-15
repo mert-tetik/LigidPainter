@@ -128,7 +128,7 @@ void UserInterface::panel(float panelLoc, float) {
 	box(panelWidth, panelHeigth - 0.02f, panelLoc + panelWidth + 0.02f, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
 
 }
-void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons,std::vector<unsigned int> &albedoTextures) {
+void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons,std::vector<unsigned int> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex) {
 	GlSet glset;
 	const float panelWidth = 0.2f;
 	const float panelHeigth = 0.88f;
@@ -146,8 +146,11 @@ void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons,std::v
 	circle(panelLoc - cornerWidth,panelHeigth - cornerWidth,0.1f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,0.1f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 
-	iconBox(0.02f,0.04f,panelLoc - 0.05f,0.85f,0.5f,icons.Plus,0,colorD.iconColor,colorD.iconColorHover);
-	iconBox(0.02f,0.04f,panelLoc - 0.10f,0.85f,0.5f,icons.Minus,0,colorD.iconColor,colorD.iconColorHover);
+	
+	iconBox(0.015f,0.03f,panelLoc - 0.05f,0.85f,0.5f,icons.ArrowDown,0,colorD.iconColor,colorD.iconColorHover);
+	iconBox(0.015f,0.03f,panelLoc - 0.10f,0.85f,0.5f,icons.Plus,0,colorD.iconColor,colorD.iconColorHover);
+	iconBox(0.015f,0.03f,panelLoc - 0.15f,0.85f,0.5f,icons.Minus,0,colorD.iconColor,colorD.iconColorHover);
+
 
 	glUseProgram(programs.renderTheTextureProgram);
 	
@@ -175,7 +178,7 @@ void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons,std::v
 		const float textureWidth = 0.05f;
 
 		const float maxTop = startingPoint + textureWidth*2;
-		const float minBot = 0.0f;
+		const float minBot = -0.8f;
 		
 		float upBotDifMin = std::min(0.05f + position_y,maxTop) - std::min(-0.05f + position_y,maxTop);
 		float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
@@ -193,6 +196,22 @@ void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons,std::v
 			-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
 			-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0  // top left
 		};
+		if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false)){
+			glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
+			if(glfwGetMouseButton(window,0) == GLFW_PRESS){
+				selectedAlbedoTextureIndex = i;
+			}
+		}
+		else{
+			glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,0);
+		}
+
+		if(selectedAlbedoTextureIndex == i){
+			glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,1);
+		}
+		else{
+			glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,0);
+		}
 		glset.drawArrays(buttonCoorSq,false);
 	}
 }

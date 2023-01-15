@@ -311,7 +311,6 @@ struct Node{
 	bool barHover;
 	bool barPressed;
 
-
 	int rangeBarCount = 0;
 };
 
@@ -335,6 +334,10 @@ struct SndPanel{
 	float position = -0.6f;
 	bool boundariesHover = false;
 	bool boundariesPressed = false;
+
+	bool plusSignHover = false;
+	bool minusSignHover = false;
+	bool downSignHover = false;
 };
 
 class UserInterface {
@@ -347,7 +350,8 @@ public:
 
 	//Visuality
 	void panel(float panelLoc, float movePanel_x);
-	void sndPanel(float panelLoc , Programs programs , Icons icons , std::vector<unsigned int> &albedoTextures);
+	void sndPanel(float panelLoc , Programs programs , Icons icons , std::vector<unsigned int> &albedoTextures,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth,int& selectedAlbedoTextureIndex);
+
 	void textureDisplayer(float width,float height, float position_x,float position_y,float z);
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec4 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec4 colorTransitionColor , float mixVal);
 	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover);

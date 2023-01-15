@@ -75,8 +75,8 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 		node.barPressed = false;
 	}
 	if(node.barPressed && !nodePanel.boundariesPressed){
-		node.positionX += xOffset/maxScreenWidth*2.f ;
-		node.positionY -= yOffset/maxScreenHeight*2.f ;
+		node.positionX += xOffset/maxScreenWidth*2.f;
+		node.positionY -= yOffset/maxScreenHeight*2.f;
 		
 		xOffset = 0;
 		yOffset = 0;

@@ -136,6 +136,7 @@ struct Icons{
 	unsigned int Triangulate;
 	unsigned int ArrowRight;
 	unsigned int ArrowLeft;
+	unsigned int ArrowDown;
 	unsigned int Painting;
 	unsigned int Logo;
 	unsigned int AddTexture;
@@ -210,6 +211,8 @@ public:
 	void mainPanelBoundaries(float xOffset,int screenSizeX);
 	void nodePanelBoundaries(float yOffset,float screenHeight);
 	void sndPanelBoundaries(float xOffset, int screenSizeX);
+	void sndPanelPlusIcon();
+
 
 };
 struct PanelData {

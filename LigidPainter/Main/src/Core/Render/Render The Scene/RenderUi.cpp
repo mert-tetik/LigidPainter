@@ -64,7 +64,7 @@ const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> 
 float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,Programs programs
 ,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
-,NodePanel &nodePanel,std::vector<Node> &nodes,SndPanel &sndPanel) {
+,NodePanel &nodePanel,std::vector<Node> &nodes,SndPanel &sndPanel, int& selectedAlbedoTextureIndex) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -136,7 +136,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
 		//If message box is not active
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , 0);
-		ui.sndPanel(sndPanel.position + screenGapX,programs,icons,albedoTextures);
+		ui.sndPanel(sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex);
 
 		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons.Circle);
 
