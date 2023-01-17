@@ -64,7 +64,7 @@ const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> 
 float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,Programs programs
 ,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
-,NodePanel &nodePanel,std::vector<Node> &nodes,SndPanel &sndPanel, int& selectedAlbedoTextureIndex) {
+,NodePanel &nodePanel,std::vector<Node> &nodes,SndPanel &sndPanel, int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -138,7 +138,8 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , 0);
 		ui.sndPanel(sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex);
 
-		ui.textureSelectionPanel(0.0f,0.0f,albedoTextures);
+		if(textureSelectionPanel.active)
+			ui.textureSelectionPanel(textureSelectionPanel,albedoTextures,programs,renderData.window,mouseXpos,mouseYpos,screenGapX, maxScreenWidth);
 
 		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons.Circle);
 
@@ -235,7 +236,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		{
 			nodes[i].height = (nodes[i].inputs.size() + nodes[i].rangeBarCount + nodes[i].outputs.size())/22.f * nodePanel.zoomVal;
 			nodes[i].width = 0.12f * nodePanel.zoomVal;
-			ui.node(nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodes,nodePanel);
+			ui.node(nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodes,nodePanel,textureSelectionPanel);
 		}
 		lastMouseX = mouseXpos;
 		lastMouseY = mouseYpos;

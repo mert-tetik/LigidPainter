@@ -15,10 +15,8 @@
 #include "Core/Utilities.h"
 #include "Core/Load.hpp"
 
-bool firstRelease = false;
-
 void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
-float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &nodePanel){
+float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel){
 	ColorData colorData;
 	Utilities util;
 
@@ -61,6 +59,7 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 			}
 		}
 	}
+
 		
 
 
@@ -83,6 +82,10 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 	}
 
 
+
+
+
+
     //Render the panel
 	glUseProgram(programs.uiProgram);
 	box(node.width,node.height,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal,node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal,"",node.backColor,0,0,0,0.999f,10000,node.backColor,0);
@@ -97,8 +100,17 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 	iconBox(iconWidth , iconWidth*2.f , node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal+node.width +iconWidth, node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height + iconWidth*2.f, 0.999f , icons.TR , 0 , node.upBarColor , node.backColor);
 	iconBox(iconWidth , iconWidth*2.f , node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal-node.width -iconWidth, node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal - node.height - iconWidth*2.f, 0.999f , icons.BL , 0 , node.backColor , node.backColor);
 	iconBox(iconWidth , iconWidth*2.f , node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal+node.width +iconWidth, node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal - node.height - iconWidth*2.f, 0.999f , icons.BR , 0 , node.backColor , node.backColor);
-	
+
+
+
+
+
+
+
+
 	int ioIndex = 0; //Interpret the input with output size since they both rendered seperately
+	
+	//-----RENDER THE OUTPUT-----
 	for (size_t i = 0; i < node.outputs.size(); i++)
 	{
         //Color of the output (changes related to output type)
@@ -145,8 +157,8 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 			node.outputs[i].pressed = true;
 			node.outputs[i].connectionPosX = node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal + node.width +iconWidth*2.f;
 			node.outputs[i].connectionPosY = (node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
-			firstRelease = true;
 		}
+		
 		//Prevent zooming in and out bug while moving the connection
 		if((!node.outputs[i].pressed && nodePanel.zoomValChanged)){
 				//Render the connection on top of the default connection circle (hide)
@@ -164,7 +176,7 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 		if(glfwGetMouseButton(window,0) == GLFW_RELEASE || node.barPressed || anyBarPressed){
 			if(true){
 				//Severe the connection if connection is not released in a input
-				if(!anyInputHover && firstRelease && node.outputs[i].pressed){
+				if(!anyInputHover && node.outputs[i].pressed){
 					node.outputs[i].nodeConnectionIndex = 10000;
 					node.outputs[i].inputConnectionIndex = 10000;
 				}
@@ -179,7 +191,6 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 					node.outputs[i].connectionPosY = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
 				}
 			}
-			firstRelease = false;
 			node.outputs[i].pressed = false;
 		}
 		//Move the connection (on top of the cursor)
@@ -190,7 +201,10 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 
         //Render the connection line
         glUseProgram(programs.uiProgram);
-		drawLine(node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal+node.width +iconWidth*2.f,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,0.99999f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY, node.width*200.f ,nodeColor);
+		//TODO : Move the rendering of connection lines to the output element rendering
+		if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000 || node.outputs[i].pressed)//Render the connection lines if output connects to an input or moves
+			drawLine(node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal+node.width +iconWidth*2.f,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,0.99999f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY, node.width*200.f ,nodeColor);
+		
 
         //Render the output
 		//TODO : Use those values for rendering and tracking
@@ -204,7 +218,14 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 
 
 
+
+
+
+
+
+
 	float rangeBarCountInputs = 0;
+	//-----RENDER THE INPUTS-----
 	for (size_t i = 0; i < node.inputs.size(); i++)
 	{
         //Input color
@@ -249,23 +270,29 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 
 
 
+
+
 	glUseProgram(programs.uiProgram);
 
     //Render the node title
 	renderText(programs.uiProgram,node.title,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal-node.width -iconWidth,node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height + iconWidth*1.f,node.width/300.f);
 	
-    //Render the output titles
+    //-----RENDER THE OUTPUT ELEMENTS-----
 	for (size_t i = 0; i < node.outputs.size(); i++)
 	{
 		renderText(programs.uiProgram,node.outputs[i].text,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal+node.width - (node.outputs[i].text.size()/60.f)*node.width*8.f,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
 	}
 		
 
+
+
+
+
 	int inputElementIndex = 0;
 	
 	bool isRangeBarPointerHover = false;
 	
-    //Render the input elements
+    //-----RENDER THE INPUT ELEMENTS-----
 	for (size_t i = 0; i < node.inputs.size(); i++)
 	{
         //Render the input title
@@ -273,8 +300,19 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 		
 		if(node.inputs[i].element == "image"){
 			inputElementIndex++;
-			box(iconWidth/2.f,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal - node.width, (node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,0.99999f,8 / (node.width*6),node.backColor,0);///Bottom
-			box(iconWidth/2.f,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal + node.width, (node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,0.99999f,8 / (node.width*6),node.backColor,0);///Bottom
+			
+			//Select texture
+			node.inputs[i].addTextureButtonHover = isMouseOnButton(window,iconWidth/2.f, iconWidth/2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal - node.width,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+			
+			if(node.inputs[i].addTextureButtonHover && glfwGetMouseButton(window,0) == GLFW_PRESS){
+				textureSelectionPanel.active = true;
+				textureSelectionPanel.posX = node.inputs[i].posX;
+				textureSelectionPanel.posY = node.inputs[i].posY;
+			}
+			
+			box(iconWidth/2.f,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal - node.width, (node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,0.99999f,8 / (node.width*6),node.backColor,0);
+			//Remove texture
+			box(iconWidth/2.f,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal + node.width, (node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,0.99999f,8 / (node.width*6),node.backColor,0);
 			
 			box(iconWidth*6,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal, (node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.buttonColor,0,0,0,0.9999f,8 / (node.width*6),node.backColor,0);///Bottom
 			
@@ -353,15 +391,15 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 				if(node.inputs[i].rangeBarsPointerPressed[k] && !anyConnectionPressed){
         	        //Adjust the corresponding values
 					if(k == 0){
-						node.inputs[i].value.x += xOffset/100.f;
+						node.inputs[i].value.x += xOffset/(nodePanel.zoomVal*200);
 						node.inputs[i].value.x = util.restrictBetween(node.inputs[i].value.x,1.f,0.001f);
 					}
 					if(k == 1){
-						node.inputs[i].value.y += xOffset/100.f;
+						node.inputs[i].value.y += xOffset/(nodePanel.zoomVal*200);
 						node.inputs[i].value.y = util.restrictBetween(node.inputs[i].value.y,1.f,0.001f);
 					}
 					if(k == 2){
-						node.inputs[i].value.z += xOffset/100.f;
+						node.inputs[i].value.z += xOffset/(nodePanel.zoomVal*200);
 						node.inputs[i].value.z = util.restrictBetween(node.inputs[i].value.z,1.f,0.001f);
 					}
 				}	
