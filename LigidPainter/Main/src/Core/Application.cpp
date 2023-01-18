@@ -115,7 +115,7 @@ NodePanel nodePanel;
 SndPanel sndPanel;
 std::vector<Node> nodes;
 std::vector<NodeScene> nodeScenes;
-int selectedNodeScene;
+int selectedNodeScene = 0;
 TextureSelectionPanel textureSelectionPanel;
 BrushMaskTextures brushMaskTextures;
 std::vector<unsigned int> albedoTextures;

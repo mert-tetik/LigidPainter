@@ -397,7 +397,7 @@ public:
 	//Visuality
 	void panel(float panelLoc, float movePanel_x);
 	void sndPanel(int state,float panelLoc , Programs programs , Icons icons , std::vector<unsigned int> &albedoTextures,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth,int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene);
-	void nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,unsigned int circleTexture);
+	void nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,Icons icons,std::vector<NodeScene> nodeScenes,int selectedNodeScene);
 
 	void textureDisplayer(float width,float height, float position_x,float position_y,float z);
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec4 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec4 colorTransitionColor , float mixVal);

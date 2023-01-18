@@ -229,6 +229,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			glset.drawArrays(buttonCoorSq,false);
 		}
 	}
+
 	if(state == 1){
 		glUseProgram(programs.uiProgram);
 		renderText(programs.uiProgram,"Materials",panelLoc-0.35f,0.84f,0.00032f);
@@ -260,6 +261,8 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 			glUseProgram(programs.uiProgram);
 			renderText(programs.uiProgram,nodeScenes[i].sceneName,position_x- textureWidth ,position_y - textureWidth*2,0.00022f);
+			
+			renderText(programs.uiProgram,std::to_string(nodeScenes[i].index),position_x - textureWidth ,position_y - textureWidth,0.00042f);
 			
 			std::vector<float> buttonCoorSq{
 				// first triangle
@@ -294,6 +297,8 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				isPressed = false;
 			}
 
+
+
 			if(!isHover && !isPressed)
 				iconColor = colorData.materialIconColor;
 
@@ -305,6 +310,8 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			
 			else if(isHover && isPressed)
 				iconColor = colorData.materialIconColorActiveHover;
+
+
 
 			glUseProgram(programs.iconsProgram);
 			glActiveTexture(GL_TEXTURE6);
@@ -715,7 +722,7 @@ void UserInterface::container(float positionX,float positionY,float positionZ,fl
 	circle(positionX + width,positionY + height,positionZ,0.03f,0.06f,circleTexture,color);//Right top
 	circle(positionX + width,positionY - height,positionZ,0.03f,0.06f,circleTexture,color);//Right bot
 }
-void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,unsigned int circleTexture){
+void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,Icons icons,std::vector<NodeScene> nodeScenes,int selectedNodeScene){
 	const float nodePanelLeft = sndPanel + 0.037f;
 	const float nodePanelRight = mainPanelLoc - 0.037f;
 	const float nodePanelTop = -1.00f + height;
@@ -778,9 +785,17 @@ void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Pr
 	gl.uniform4fv(uiPrograms.uiProgram,"uiColor",colorData.nodePanelColorSnd);
 	gl.drawArrays(topCoor,false);
 
+	if(nodeScenes.size() != 0)
+		renderText(programs.uiProgram,nodeScenes[selectedNodeScene].sceneName,(nodePanelRight + nodePanelLeft)/2,nodePanelTop + 0.025f,0.00025f);
+
 	glUseProgram(programs.iconsProgram);
-	circle(nodePanelLeft,nodePanelTop,nodePanelZ,0.05f,0.1f,circleTexture,colorData.nodePanelColorSnd); //Left
-	circle(nodePanelRight,nodePanelTop,nodePanelZ,0.05f,0.1f,circleTexture,colorData.nodePanelColorSnd); //Right
+	
+	if(nodeScenes.size() != 0)
+		circle((nodePanelRight + nodePanelLeft)/2 - 0.025,nodePanelTop+0.04f,0.999f,0.015f,0.03f,icons.Material,colorData.iconColor); //Left
+	
+	circle(nodePanelLeft,nodePanelTop,nodePanelZ,0.05f,0.1f,icons.Circle,colorData.nodePanelColorSnd); //Left
+	circle(nodePanelRight,nodePanelTop,nodePanelZ,0.05f,0.1f,icons.Circle,colorData.nodePanelColorSnd); //Right
+	
 	glUseProgram(programs.uiProgram);
 }
 
