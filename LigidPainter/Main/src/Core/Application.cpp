@@ -1282,7 +1282,6 @@ void LigidPainter::loadModelButton() {
 
 		for (size_t i = 0; i < albedoTextures.size(); i++) //Delete albedo textures
 		{
-			unsigned int albedoTexture = albedoTextures[i];
 			glDeleteTextures(1,&albedoTextures[i]);
 		}
 
@@ -1352,6 +1351,13 @@ void LigidPainter::nodePanelBoundaries(float yOffset,float screenHeight){
     }
 }
 
+void LigidPainter::sndPanelMinusIcon(){
+	unsigned int texture;
+	texture = albedoTextures[selectedAlbedoTextureIndex];
+	glDeleteTextures(1, &texture);
+
+	albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
+}
 void LigidPainter::sndPanelPlusIcon(){
 	unsigned int texture;
 	glset.genTextures(texture);

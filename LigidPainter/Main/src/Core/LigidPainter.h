@@ -213,7 +213,7 @@ public:
 	void sndPanelBoundaries(float xOffset, int screenSizeX);
 	void sndPanelPlusIcon();
 	void sndPanelDownIcon();
-
+	void sndPanelMinusIcon();
 
 };
 struct PanelData {

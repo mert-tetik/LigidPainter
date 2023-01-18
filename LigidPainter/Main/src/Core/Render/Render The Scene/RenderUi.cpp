@@ -140,8 +140,6 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		ui.sndPanel(sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex);
 		
 		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons.Circle);
-		if(textureSelectionPanel.active)
-			ui.textureSelectionPanel(textureSelectionPanel,albedoTextures,programs,renderData.window,mouseXpos,mouseYpos,screenGapX, maxScreenWidth,icons.Circle);
 
 		double xOffset = mouseXpos - lastMouseX;
 		double yOffset = mouseYpos - lastMouseY;
@@ -154,6 +152,8 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		lastMouseX = mouseXpos;
 		lastMouseY = mouseYpos;
 
+		if(textureSelectionPanel.active)
+			ui.textureSelectionPanel(textureSelectionPanel,albedoTextures,programs,renderData.window,mouseXpos,mouseYpos,screenGapX, maxScreenWidth,icons.Circle);
 
 
 
@@ -275,8 +275,8 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 		for (int i = 0; i < model.meshes.size(); i++)//Render buttons
 		{ 	
 			//Check if mouse is entered the related button
-			bool textureButtonEnter = ui.isMouseOnButton(renderData.window, 0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX*2 + 0.205f,0.8f - (i * 0.125f) + materialsPanelSlideValue, mouseXpos, mouseYpos,true);
-			bool textureAddButtonEnter = ui.isMouseOnButton(renderData.window, 0.02f, 0.03f, renderData.panelLoc - 1.0f - screenGapX*2 + 0.3f,0.8f - (i * 0.125f) + materialsPanelSlideValue, mouseXpos, mouseYpos,true);
+			bool textureButtonEnter = ui.isMouseOnButton(renderData.window, 0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX*2 + 0.205f,0.8f - (i * 0.125f) + materialsPanelSlideValue, mouseXpos, mouseYpos,false);
+			bool textureAddButtonEnter = ui.isMouseOnButton(renderData.window, 0.02f, 0.03f, renderData.panelLoc - 1.0f - screenGapX*2 + 0.3f,0.8f - (i * 0.125f) + materialsPanelSlideValue, mouseXpos, mouseYpos,false);
 			
 			if(textureButtonEnter){
 				//Hover
@@ -295,13 +295,34 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 					gl.bindTexture(albedoTextures[currentMaterialIndex]);
 				}
 
+				glm::vec4 currentColor;
+				glm::vec4 currentColorHover;
+				if(i == currentMaterialIndex){
+					currentColor = colorData.materialButtonColorActive;
+					currentColorHover = colorData.materialButtonColorActiveHover;
+				}
+				else{
+					currentColor = colorData.materialButtonColor;
+					currentColorHover = colorData.materialButtonColorHover;
+				}
 				//Button (Hover)
-				ui.box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, colorData.buttonColor, 0.048f, true, false, 0.9f, 10000, colorData.buttonColorHover, texturePanelButtonMixVal);
+				ui.box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, currentColor, 0.048f, true, false, 0.9f, 10000, currentColorHover, texturePanelButtonMixVal);
 
 			}
 			else{
+				glm::vec4 currentColor;
+				glm::vec4 currentColorHover;
+				if(i == currentMaterialIndex){
+					currentColor = colorData.materialButtonColorActive;
+					currentColorHover = colorData.materialButtonColorActiveHover;
+				}
+				else{
+					currentColor = colorData.materialButtonColor;
+					currentColorHover = colorData.materialButtonColorHover;
+				}
+
 				//Button 
-				ui.box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, colorData.buttonColor, 0.048f, true, false, 0.9f, 10000, colorData.buttonColorHover, 0);
+				ui.box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, currentColor, 0.048f, true, false, 0.9f, 10000, currentColorHover, 0);
 
 			}
 			if(textureAddButtonEnter){

@@ -19,7 +19,7 @@ void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackD
 		&& !callbackData.exportPanelButtonEnter && !colorPicker.saturationValuePointerHover && !colorPicker.hueValuePointerHover && !colorPicker.hexValTextBoxEnter
 		&& !colorPicker.dropperEnter && !colorPicker.hueValueBarHover && !colorPicker.saturationValueBoxHover && !callbackData.maskPanelEnter && !sndPanel.boundariesHover
 		&& !textureDisplayer.buttonHover && !callbackData.mainPanelBoundariesEnter && !textureDisplayer.cornerHover && !nodePanel.boundariesHover && !sndPanel.plusSignHover
-		&& !sndPanel.downSignHover) {
+		&& !sndPanel.downSignHover && !sndPanel.minusSignHover) {
 			noButtonClick = true;
 			colorBoxFirstPress = false;
 		}
@@ -168,6 +168,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 					ligid.sndPanelPlusIcon();
 				if(sndPanel.downSignHover)
 					ligid.sndPanelDownIcon();
+				if(sndPanel.minusSignHover)
+					ligid.sndPanelMinusIcon();
 			}
 			buttonPressed = false;
 		}
