@@ -291,6 +291,9 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 	else if(textureDisplayer.buttonHover){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
+	else if(sndPanel.texturePanelButtonHover || sndPanel.materialPanelButtonHover){
+		glfwSetCursor(window, cursors.pointerCursor);
+	}
 	else if(colorPicker.saturationValuePointerHover || colorPicker.hueValuePointerHover || colorPicker.hexValTextBoxEnter){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}

@@ -1376,6 +1376,26 @@ void LigidPainter::sndPanelPlusIcon(){
 	else if(sndPanel.state == 1){
 		//Materials
 		NodeScene emptyNodeScene;
+		emptyNodeScene.index = 0;
+		
+		const int maxMaterialSize = 100;
+
+		for (int i = 0; i < maxMaterialSize; i++)
+		{
+			bool numberAvailable = false;
+			for (int nodeSceneIndex = 0; nodeSceneIndex < nodeScenes.size(); nodeSceneIndex++)
+			{
+				if(nodeScenes[nodeSceneIndex].index == i){
+					numberAvailable = true;
+				}
+			}
+			if(!numberAvailable){
+				emptyNodeScene.index = i;
+				break;
+			}
+		}
+		
+		emptyNodeScene.sceneName = "material_" + std::to_string(emptyNodeScene.index); 
 		nodeScenes.push_back(emptyNodeScene);
 	}
 }

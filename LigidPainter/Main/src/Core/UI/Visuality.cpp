@@ -254,6 +254,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			float upBotDifMin = std::min(0.05f + position_y,maxTop) - std::min(-0.05f + position_y,maxTop);
 			float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
 
+			glUseProgram(programs.uiProgram);
+			renderText(programs.uiProgram,nodeScenes[i].sceneName,position_x- textureWidth ,position_y - textureWidth*2,0.00022f);
+			
 			std::vector<float> buttonCoorSq{
 				// first triangle
 				 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		upBotDifMin*10			,0,0,0,  // top right
@@ -264,23 +267,45 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
 				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0  // top left
 			};
+			ColorData colorData;
+			bool isHover;
+			bool isPressed;
+
+			glm::vec4 iconColor;
 			if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false)){
+				isHover = true;
+ 				
 				if(glfwGetMouseButton(window,0) == GLFW_PRESS){
-					selectedAlbedoTextureIndex = i;
+					selectedNodeScene = i;
 				}
 			}
 			else{
+				isHover = false;
 			}
 
-			if(selectedAlbedoTextureIndex == i){
+			if(selectedNodeScene == i){
+				isPressed = true;
 			}
 			else{
+				isPressed = false;
 			}
-			ColorData colorData;
+
+			if(!isHover && !isPressed)
+				iconColor = colorData.materialIconColor;
+
+			else if(isHover && !isPressed)
+				iconColor = colorData.materialIconColorHover;
+			
+			else if(!isHover && isPressed)
+				iconColor = colorData.materialIconColorActive;
+			
+			else if(isHover && isPressed)
+				iconColor = colorData.materialIconColorActiveHover;
+
 			glUseProgram(programs.iconsProgram);
 			glActiveTexture(GL_TEXTURE6);
 			glBindTexture(GL_TEXTURE_2D,icons.Material);
-			glset.uniform4fv(programs.iconsProgram,"iconColor",colorData.iconColor);
+			glset.uniform4fv(programs.iconsProgram,"iconColor",iconColor);
 			glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
 			glset.drawArrays(buttonCoorSq,false);
 		}

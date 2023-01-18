@@ -104,6 +104,11 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 materialButtonColorHover = glm::vec4(0.0f, 0.0f, 0.0f,0.5f);
 	glm::vec4 materialButtonColorActive = glm::vec4(LigidPainterThemeColor,0.5);
 	glm::vec4 materialButtonColorActiveHover = glm::vec4(0.043f,0.435f,0.623f,0.5);
+
+	glm::vec4 materialIconColor = glm::vec4(1.0f,1.0f,1.0f,1.0f);
+	glm::vec4 materialIconColorHover = glm::vec4(0.5f,0.5f,0.5f,1.0f);
+	glm::vec4 materialIconColorActive = glm::vec4(LigidPainterThemeColor,1.0);
+	glm::vec4 materialIconColorActiveHover = glm::vec4(0.043f,0.435f,0.623f,1.0);
 };
 
 //Width will be added to the midPanelPos if attachedToMainPanel is true
@@ -364,6 +369,7 @@ struct SndPanel{
 
 struct NodeScene{
 	std::string sceneName;
+	int index;
 };
 
 struct TextureSelectionPanel{

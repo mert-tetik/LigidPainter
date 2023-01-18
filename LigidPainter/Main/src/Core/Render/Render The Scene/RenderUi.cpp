@@ -137,10 +137,30 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene) {
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
 		//If message box is not active
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , 0);
-		
+
+
+		//Panel changing buttons
+		glUseProgram(programs.uiProgram);
+		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.8f);//Model Panel
+		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.72f);//Texture Panel
+		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.64f);//Painting Panel
+		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.56f);//Export Panel
+
+		//Texture demonstrator	
+		ui.textureDisplayer(textureDisplayer.ndWidth,textureDisplayer.ndHeight,textureDisplayer.buttonPosX - 1.0f +screenGapX,textureDisplayer.buttonPosY,0.9999f); 
+
+		//Panel changing button's icons
+		glUseProgram(programs.iconsProgram);
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.795f , 0.01f , icons.TDModel , 0.0f , colorData.iconColor , colorData.iconColorHover);
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.715f , 0.01f , icons.Material , 0.0f , colorData.iconColor , colorData.iconColorHover);
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.635f , 0.01f , icons.Painting , 0.0f , colorData.iconColor , colorData.iconColorHover);
+		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.555f , 0.01f , icons.Export , 0.0f , colorData.iconColor , colorData.iconColorHover);
+
+
 		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene);
 		
 		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons.Circle);
+		
 
 		double xOffset = mouseXpos - lastMouseX;
 		double yOffset = mouseYpos - lastMouseY;
@@ -244,23 +264,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene) {
 				ui.box(addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[i].positionY, addNodeContextMenu.buttons[i].text, addNodeContextMenu.buttons[i].color, addNodeContextMenu.buttons[i].textRatio, false, false, addNodeContextMenu.buttons[i].positionZ, addNodeContextMenu.buttons[i].buttonCurveReduce, addNodeContextMenu.buttons[i].colorHover, addNodeContextMenu.buttons[i].transitionMixVal); //Add mask texture button	
 			}
 		}
-		//Panel changing buttons
-		glUseProgram(programs.uiProgram);
-		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.8f);//Model Panel
-		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.72f);//Texture Panel
-		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.64f);//Painting Panel
-		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.56f);//Export Panel
-
-		//Texture demonstrator	
-		ui.textureDisplayer(textureDisplayer.ndWidth,textureDisplayer.ndHeight,textureDisplayer.buttonPosX - 1.0f +screenGapX,textureDisplayer.buttonPosY,0.9999f); 
-
-		//Panel changing button's icons
-		glUseProgram(programs.iconsProgram);
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.795f , 0.9f , icons.TDModel , 0.0f , colorData.iconColor , colorData.iconColorHover);
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.715f , 0.9f , icons.Material , 0.0f , colorData.iconColor , colorData.iconColorHover);
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.635f , 0.9f , icons.Painting , 0.0f , colorData.iconColor , colorData.iconColorHover);
-		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.555f , 0.9f , icons.Export , 0.0f , colorData.iconColor , colorData.iconColorHover);
-
 		glUseProgram(programs.uiProgram);
 	}
 
