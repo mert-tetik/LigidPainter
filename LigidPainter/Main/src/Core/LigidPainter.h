@@ -146,6 +146,8 @@ struct Icons{
 	unsigned int TR;
 	unsigned int BL;
 	unsigned int BR;
+	unsigned int PanelButtonL;
+	unsigned int PanelButtonR;
 	unsigned int Plus;
 	unsigned int Minus;
 };

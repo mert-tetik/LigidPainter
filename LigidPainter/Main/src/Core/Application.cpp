@@ -54,10 +54,6 @@ GLFWwindow* window;
 	char folderDistinguisher = '/'; 
 #endif
 
-BrushMaskTextures brushMaskTextures;
-std::vector<unsigned int> albedoTextures;
-int selectedAlbedoTextureIndex;
-
 //TODO : Reduce GPU Usage
 //TODO : Specialized vao for each shader
 //TODO : Use texture struct
@@ -118,7 +114,12 @@ ContextMenu addNodeContextMenu;
 NodePanel nodePanel;
 SndPanel sndPanel;
 std::vector<Node> nodes;
+std::vector<NodeScene> nodeScenes;
+int selectedNodeScene;
 TextureSelectionPanel textureSelectionPanel;
+BrushMaskTextures brushMaskTextures;
+std::vector<unsigned int> albedoTextures;
+int selectedAlbedoTextureIndex;
 
 
 string modelName;
@@ -563,7 +564,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,nodes,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,nodes,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene);
 		}
 		
 		//double lastTime = glfwGetTime();
@@ -674,7 +675,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,nodes,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,nodes,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -1352,16 +1353,31 @@ void LigidPainter::nodePanelBoundaries(float yOffset,float screenHeight){
 }
 
 void LigidPainter::sndPanelMinusIcon(){
-	unsigned int texture;
-	texture = albedoTextures[selectedAlbedoTextureIndex];
-	glDeleteTextures(1, &texture);
+	if(sndPanel.state == 0){
+		//Textures
+		unsigned int texture;
+		texture = albedoTextures[selectedAlbedoTextureIndex];
+		glDeleteTextures(1, &texture);
 
-	albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
+		albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
+	}
+	else if(sndPanel.state == 1){
+		//Materials
+		nodeScenes.erase(nodeScenes.begin() + selectedNodeScene);
+	}
 }
 void LigidPainter::sndPanelPlusIcon(){
-	unsigned int texture;
-	glset.genTextures(texture);
-	albedoTextures.push_back(texture);
+	if(sndPanel.state == 0){
+		//Textures
+		unsigned int texture;
+		glset.genTextures(texture);
+		albedoTextures.push_back(texture);
+	}
+	else if(sndPanel.state == 1){
+		//Materials
+		NodeScene emptyNodeScene;
+		nodeScenes.push_back(emptyNodeScene);
+	}
 }
 void LigidPainter::sndPanelDownIcon(){
 	glActiveTexture(GL_TEXTURE0);
