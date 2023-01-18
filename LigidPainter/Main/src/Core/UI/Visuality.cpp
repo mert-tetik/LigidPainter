@@ -163,6 +163,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	
 
 	if(state == 0){
+		glUseProgram(programs.uiProgram);
+		renderText(programs.uiProgram,"Textures",panelLoc-0.35f,0.84f,0.00032f);
+		
 		glUseProgram(programs.renderTheTextureProgram);
 	
 		glActiveTexture(GL_TEXTURE14);
@@ -227,8 +230,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 		}
 	}
 	if(state == 1){
-
-
+		glUseProgram(programs.uiProgram);
+		renderText(programs.uiProgram,"Materials",panelLoc-0.35f,0.84f,0.00032f);
+		
 		//RENDER THE NODES
 		float maskXpos = 0.0f;
 		float maskYpos = 0.0f;
