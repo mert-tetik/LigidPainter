@@ -150,6 +150,7 @@ struct Icons{
 	unsigned int PanelButtonR;
 	unsigned int Plus;
 	unsigned int Minus;
+	unsigned int Texture;
 };
 
 struct RenderData { //GlSet::render

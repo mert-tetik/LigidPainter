@@ -172,6 +172,7 @@ public:
 		icons.Plus = txtr.getTexture("LigidPainter/Resources/Icons/Plus.jpg",0,0,false);
 		icons.Minus = txtr.getTexture("LigidPainter/Resources/Icons/Minus.jpg",0,0,false);
 		icons.ArrowDown = txtr.getTexture("LigidPainter/Resources/Icons/ArrowDown.jpg",0,0,false);
+		icons.Texture = txtr.getTexture("LigidPainter/Resources/Icons/Texture.jpg",0,0,false);
 	
 		return icons;
 	}

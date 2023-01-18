@@ -156,10 +156,13 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	iconBox(0.015f,0.03f,panelLoc - 0.15f,0.85f,0.5f,icons.Minus,0,colorD.iconColor,colorD.iconColorHover);
 
 	//Texture panel button
-	iconBox(0.015f,0.03f,panelLoc + 0.015f,0.8f,0.5f,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.017f,0.034f,panelLoc + 0.017f,0.8f,0.5f,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.01f,0.02f,panelLoc + 0.013f,0.808f,0.6f,icons.Texture,0,colorD.iconColor,colorD.iconColor);
+	
 	
 	//Material panel button
-	iconBox(0.015f,0.03f,panelLoc + 0.015f,0.72f,0.5f,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.017f,0.034f,panelLoc + 0.017f,0.72f,0.5f,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.015f,0.03f,panelLoc + 0.013f,0.725f,0.6f,icons.Material,0,colorD.iconColor,colorD.iconColor);
 	
 
 
