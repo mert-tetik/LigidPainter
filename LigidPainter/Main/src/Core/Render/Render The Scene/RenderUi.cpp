@@ -273,8 +273,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene) {
 		glUseProgram(programs.uiProgram); 
 
 		if(model.meshes.size() == 0){
-			ui.renderText(programs.uiProgram, "Materials of the 3D model", renderData.panelLoc - 1.0f - screenGapX  + 0.095f, 0.8f, 0.00022f);
-			ui.renderText(programs.uiProgram, "will be show up there", renderData.panelLoc - 1.0f - screenGapX  + 0.115f, 0.75f, 0.00022f);
+			ui.renderText(programs.uiProgram, "Materials of the 3D model", renderData.panelLoc - 1.0f - screenGapX  + 0.095f, 0.8f, 0.00022f,colorData.textColor);
+			ui.renderText(programs.uiProgram, "will be show up there", renderData.panelLoc - 1.0f - screenGapX  + 0.115f, 0.75f, 0.00022f,colorData.textColor);
 		}
 		for (int i = 0; i < model.meshes.size(); i++)//Render buttons
 		{ 	
@@ -511,7 +511,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene) {
 			}
 			
 			if(currentType == "text"){	
-				ui.renderText(programs.uiProgram,UIElements[i].text.text, centerCoords - screenGapX + UIElements[i].text.positionX, UIElements[i].text.positionY, UIElements[i].text.scale);
+				ui.renderText(programs.uiProgram,UIElements[i].text.text, centerCoords - screenGapX + UIElements[i].text.positionX, UIElements[i].text.positionY, UIElements[i].text.scale,colorData.textColor);
 			}
 
 			if(currentType == "rangeBar"){

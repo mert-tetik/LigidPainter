@@ -109,6 +109,7 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 materialIconColorHover = glm::vec4(0.5f,0.5f,0.5f,1.0f);
 	glm::vec4 materialIconColorActive = glm::vec4(LigidPainterThemeColor,1.0);
 	glm::vec4 materialIconColorActiveHover = glm::vec4(0.043f,0.435f,0.623f,1.0);
+	glm::vec4 materialIconIndexTextColor = glm::vec4(0.1f,0.1f,0.1f,1.0);
 };
 
 //Width will be added to the midPanelPos if attachedToMainPanel is true
@@ -403,7 +404,7 @@ public:
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec4 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec4 colorTransitionColor , float mixVal);
 	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover);
 	void setViewportBgColor();
-	void renderText(unsigned int program, std::string text, float x, float y, float scale);
+	void renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color);
 	void renderMenubar(GLFWwindow* window);
 	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked);
 	void panelChangeButton(float position_x, float position_y);

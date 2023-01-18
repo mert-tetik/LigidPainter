@@ -103,12 +103,13 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", mixVal);
 
 	glset.drawArrays(buttonCoor, false);
+	ColorData colorData;
 
 	if (!isTextBox) {
-		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f);
+		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor);
 	}
 	else {
-		renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f);
+		renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor);
 	}
 	glset.uniform1i(uiPrograms.uiProgram, "isUiTextureUsed", 0);
 }
@@ -130,6 +131,9 @@ void UserInterface::panel(float panelLoc, float) {
 }
 void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<unsigned int> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene) {
 	GlSet glset;
+	ColorData colorData;
+	
+	
 	const float panelWidth = 0.2f;
 	const float panelHeigth = 0.88f;
 	
@@ -164,7 +168,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 	if(state == 0){
 		glUseProgram(programs.uiProgram);
-		renderText(programs.uiProgram,"Textures",panelLoc-0.35f,0.84f,0.00032f);
+		renderText(programs.uiProgram,"Textures",panelLoc-0.35f,0.84f,0.00032f,colorData.textColor);
 		
 		glUseProgram(programs.renderTheTextureProgram);
 	
@@ -231,8 +235,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	}
 
 	if(state == 1){
+
 		glUseProgram(programs.uiProgram);
-		renderText(programs.uiProgram,"Materials",panelLoc-0.35f,0.84f,0.00032f);
+		renderText(programs.uiProgram,"Materials",panelLoc-0.35f,0.84f,0.00032f,colorData.textColor);
 		
 		//RENDER THE NODES
 		float maskXpos = 0.0f;
@@ -258,21 +263,16 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 			float upBotDifMin = std::min(0.05f + position_y,maxTop) - std::min(-0.05f + position_y,maxTop);
 			float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
-
-			glUseProgram(programs.uiProgram);
-			renderText(programs.uiProgram,nodeScenes[i].sceneName,position_x- textureWidth ,position_y - textureWidth*2,0.00022f);
-			
-			renderText(programs.uiProgram,std::to_string(nodeScenes[i].index),position_x - textureWidth ,position_y - textureWidth,0.00042f);
 			
 			std::vector<float> buttonCoorSq{
 				// first triangle
-				 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		upBotDifMin*10			,0,0,0,  // top right
-				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
-				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0,  // top left 
-				// second triangle						   	
-				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
-				-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
-				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0  // top left
+				 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	1,		upBotDifMin*10			,0,0,0,  // top right
+				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	0,		upBotDifMin*10			,0,0,0,  // top left 
+				// second triangle						   
+				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+				-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
+				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	0,		upBotDifMin*10			,0,0,0  // top left
 			};
 			ColorData colorData;
 			bool isHover;
@@ -319,6 +319,11 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			glset.uniform4fv(programs.iconsProgram,"iconColor",iconColor);
 			glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
 			glset.drawArrays(buttonCoorSq,false);
+
+			glUseProgram(programs.uiProgram);
+			renderText(programs.uiProgram,nodeScenes[i].sceneName,position_x- textureWidth ,position_y - textureWidth*2,0.00022f,colorData.textColor);
+
+			renderText(programs.uiProgram,std::to_string(nodeScenes[i].index),position_x - textureWidth ,position_y - textureWidth,0.00042f,colorData.materialIconIndexTextColor);
 		}
 	}
 	
@@ -442,7 +447,7 @@ void UserInterface::numericModifier(float position_x,float position_y,unsigned i
 	iconBox(0.02f,0.04f,position_x + 0.06f,position_y,z,rightArrow,mixValP,clrData.numericModifierArrowColor,clrData.numericModifierArrowHoverColor);
 
 	glUseProgram(uiPrograms.uiProgram);
-	renderText(uiPrograms.uiProgram,std::to_string(value),position_x-0.01f,position_y-0.01f,0.00022f);
+	renderText(uiPrograms.uiProgram,std::to_string(value),position_x-0.01f,position_y-0.01f,0.00022f,clrData.textColor);
 }
 
 void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover){
@@ -662,7 +667,7 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 	}
 	box(0.002f, 0.02f, position_x, position_y, "", color, 0.00022f, false, false, 0.9f, 13.0f, glm::vec4(0), 0);
 	
-	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f);
+	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f,colorData.textColor);
 }
 
 
@@ -671,12 +676,13 @@ void UserInterface::setViewportBgColor() {
 }
 
 std::map<char, character> characters;
-void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale) {
+void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color) {
 	GlSet glset;
 	glset.activeTexture(GL_TEXTURE2);
 
 	glset.uniform1i(program,"isText", 1);
 	glset.uniform1i(program, "isTextF", 1);
+	glset.uniform4fv(program, "uiColor", color);
 	
 	std::string::const_iterator c;
 	for (c = text.begin(); c != text.end(); c++)
@@ -786,7 +792,7 @@ void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Pr
 	gl.drawArrays(topCoor,false);
 
 	if(nodeScenes.size() != 0)
-		renderText(programs.uiProgram,nodeScenes[selectedNodeScene].sceneName,(nodePanelRight + nodePanelLeft)/2,nodePanelTop + 0.025f,0.00025f);
+		renderText(programs.uiProgram,nodeScenes[selectedNodeScene].sceneName,(nodePanelRight + nodePanelLeft)/2,nodePanelTop + 0.025f,0.00025f,colorData.textColor);
 
 	glUseProgram(programs.iconsProgram);
 	
