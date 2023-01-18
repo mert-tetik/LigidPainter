@@ -136,12 +136,26 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
 		//If message box is not active
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , 0);
+		
 		ui.sndPanel(sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex);
-
-		if(textureSelectionPanel.active)
-			ui.textureSelectionPanel(textureSelectionPanel,albedoTextures,programs,renderData.window,mouseXpos,mouseYpos,screenGapX, maxScreenWidth);
-
+		
 		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons.Circle);
+		if(textureSelectionPanel.active)
+			ui.textureSelectionPanel(textureSelectionPanel,albedoTextures,programs,renderData.window,mouseXpos,mouseYpos,screenGapX, maxScreenWidth,icons.Circle);
+
+		double xOffset = mouseXpos - lastMouseX;
+		double yOffset = mouseYpos - lastMouseY;
+		for (size_t i = 0; i < nodes.size(); i++)
+		{
+			nodes[i].height = (nodes[i].inputs.size() + nodes[i].rangeBarCount + nodes[i].outputs.size())/22.f * nodePanel.zoomVal;
+			nodes[i].width = 0.12f * nodePanel.zoomVal;
+			ui.node(nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodes,nodePanel,textureSelectionPanel);
+		}
+		lastMouseX = mouseXpos;
+		lastMouseY = mouseYpos;
+
+
+
 
 
 		//Add node context menu
@@ -229,19 +243,6 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 				ui.box(addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[i].positionY, addNodeContextMenu.buttons[i].text, addNodeContextMenu.buttons[i].color, addNodeContextMenu.buttons[i].textRatio, false, false, addNodeContextMenu.buttons[i].positionZ, addNodeContextMenu.buttons[i].buttonCurveReduce, addNodeContextMenu.buttons[i].colorHover, addNodeContextMenu.buttons[i].transitionMixVal); //Add mask texture button	
 			}
 		}
-
-		double xOffset = mouseXpos - lastMouseX;
-		double yOffset = mouseYpos - lastMouseY;
-		for (size_t i = 0; i < nodes.size(); i++)
-		{
-			nodes[i].height = (nodes[i].inputs.size() + nodes[i].rangeBarCount + nodes[i].outputs.size())/22.f * nodePanel.zoomVal;
-			nodes[i].width = 0.12f * nodePanel.zoomVal;
-			ui.node(nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodes,nodePanel,textureSelectionPanel);
-		}
-		lastMouseX = mouseXpos;
-		lastMouseY = mouseYpos;
-
-
 		//Panel changing buttons
 		glUseProgram(programs.uiProgram);
 		ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.8f);//Model Panel

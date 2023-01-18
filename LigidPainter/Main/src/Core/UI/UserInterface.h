@@ -285,6 +285,8 @@ struct NodeInput{
 
 	//Texture element
 	bool addTextureButtonHover;
+	bool removeTextureButtonHover;
+	int selectedTextureIndex = 10000;
 	
 
 	float connectionPosX = 0;
@@ -360,6 +362,8 @@ struct TextureSelectionPanel{
 	int selectedIndex = 10000;
 
 	bool panelHover = false;
+
+	bool textureClicked = false;
 };
 
 class UserInterface {
@@ -392,7 +396,7 @@ public:
 	void nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,unsigned int circleTexture);
 	void circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture,glm::vec4 color);
 	void drawLine(float posX,float posY,float posZ,float toPosX,float toPosY,float width,glm::vec4 color);
-	void textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<unsigned int> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth);
+	void textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<unsigned int> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth,unsigned int circleTexture);
 
 	
 	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,float maxScreenHeight,std::vector<Node> &nodes,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel);

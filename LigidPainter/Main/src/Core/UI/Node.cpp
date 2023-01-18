@@ -302,7 +302,9 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 			inputElementIndex++;
 			
 			//Select texture
-			node.inputs[i].addTextureButtonHover = isMouseOnButton(window,iconWidth/2.f, iconWidth/2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal - node.width,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+			node.inputs[i].addTextureButtonHover = isMouseOnButton(window,iconWidth, iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal - node.width,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+			//Remove texture
+			node.inputs[i].removeTextureButtonHover = isMouseOnButton(window,iconWidth, iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal + node.width,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
 			
 			if(node.inputs[i].addTextureButtonHover && glfwGetMouseButton(window,0) == GLFW_PRESS){
 				textureSelectionPanel.active = true;
@@ -310,13 +312,27 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 				textureSelectionPanel.posY = node.inputs[i].posY;
 			}
 			
+			if(node.inputs[i].removeTextureButtonHover && glfwGetMouseButton(window,0) == GLFW_PRESS){
+				node.inputs[i].selectedTextureIndex = 10000;
+			}
+
+
+
+			if(textureSelectionPanel.active && textureSelectionPanel.textureClicked){
+				node.inputs[i].selectedTextureIndex = textureSelectionPanel.selectedIndex;
+				textureSelectionPanel.selectedIndex = 10000;
+				textureSelectionPanel.active = false;
+				textureSelectionPanel.textureClicked = false;
+			}
+
+			//Select a texture
 			box(iconWidth/2.f,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal - node.width, (node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,0.99999f,8 / (node.width*6),node.backColor,0);
 			//Remove texture
 			box(iconWidth/2.f,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal + node.width, (node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,0.99999f,8 / (node.width*6),node.backColor,0);
 			
 			box(iconWidth*6,iconWidth*2.f,node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal, (node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.buttonColor,0,0,0,0.9999f,8 / (node.width*6),node.backColor,0);///Bottom
 			
-			renderText(programs.uiProgram,"texture",node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal - node.width/1.5f,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
+			renderText(programs.uiProgram,"texture_" + std::to_string(node.inputs[i].selectedTextureIndex),node.positionX + nodePanel.panelPositionX * nodePanel.zoomVal - node.width/1.5f,(node.positionY + nodePanel.panelPositionY * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f);
 		}
 
         //Render the range bars

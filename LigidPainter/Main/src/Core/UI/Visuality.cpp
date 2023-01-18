@@ -217,7 +217,7 @@ void UserInterface::sndPanel(float panelLoc,Programs programs,Icons icons,std::v
 	glUseProgram(programs.uiProgram);
 }
 
-void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<unsigned int> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth){
+void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<unsigned int> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth,unsigned int circleTexture){
 	ColorData clrData;
 	GlSet glset;
 
@@ -229,8 +229,8 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 		textureSelectionPanel.active = false;
 	}
 
-
-	box(boxWidth,boxWidth,textureSelectionPanel.posX,textureSelectionPanel.posY,"", clrData.textureSelectionPanelColor ,0,0,0,0.99999,10000,clrData.textureSelectionPanelColor,0);
+	container(textureSelectionPanel.posX,textureSelectionPanel.posY,0.99999f,boxWidth,boxWidth,clrData.textureSelectionPanelColor,programs,circleTexture);
+	//box(boxWidth,boxWidth,textureSelectionPanel.posX,textureSelectionPanel.posY,"", clrData.textureSelectionPanelColor ,0,0,0,0.99999,10000,clrData.textureSelectionPanelColor,0);
 
 	glUseProgram(programs.renderTheTextureProgram);
 	
@@ -280,7 +280,7 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 			glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
 			if(glfwGetMouseButton(window,0) == GLFW_PRESS){
 				textureSelectionPanel.selectedIndex = i;
-				textureSelectionPanel.active = false;
+				textureSelectionPanel.textureClicked = true;
 			}
 		}
 		else{
