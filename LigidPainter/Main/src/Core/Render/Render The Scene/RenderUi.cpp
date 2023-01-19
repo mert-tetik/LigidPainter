@@ -327,7 +327,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene) {
 
 				//Button 
 				ui.box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, currentColor, 0.048f, true, false, 0.9f, 10000, currentColorHover, 0);
-
 			}
 			if(textureAddButtonEnter){
 				//Hover
@@ -337,31 +336,21 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene) {
 					//uiOut.texturePanelButtonClicked = true;
 					currentMaterialIndex = i;
 
-					//Bind the related texture
-					gl.activeTexture(GL_TEXTURE0);
-					gl.bindTexture(albedoTextures[currentMaterialIndex]);
-
-					//Load texture
-					Texture txtr;
-					//Filters
-					char const* lFilterPatterns[2] = { "*.jpg", "*.png" };
-					//File dialog
-					auto albedoPathCheck = tinyfd_openFileDialog("Select Image", "", 2, lFilterPatterns, "", false);
-
-					if (albedoPathCheck) {
-						std::string albedoTexturePath = albedoPathCheck;
-
-						txtr.getTexture(albedoTexturePath,1080,1080,true); //Force albedo's ratio to be 1:1
-					}
+					model.meshes[i].materialIndex = selectedNodeScene;
 				}
 			}
 			//ui.box(0.03f, 0.06f, renderData.panelLoc - screenGapX + 0.3f, 0.8f - (i * 0.125f), "", colorData.buttonColorHover, 0.048f, true, false, 0.6f, 10000, colorData.buttonColorHover, 0); 
+			if(model.meshes[i].materialIndex != 10000)
+				ui.renderText(programs.uiProgram,std::to_string(model.meshes[i].materialIndex),renderData.panelLoc - 1.0f - screenGapX + 0.235f,0.8f - (i * 0.125f) + materialsPanelSlideValue - 0.02,0.00022,colorData.materialIconIndexTextColor);
+			
 			glUseProgram(programs.iconsProgram);
+			if(model.meshes[i].materialIndex != 10000)
+				ui.iconBox(0.02f,0.04f,renderData.panelLoc - 1.0f - screenGapX + 0.255f ,0.8f - (i * 0.125f) + materialsPanelSlideValue,0.99f,icons.Material,0,colorData.iconColor,colorData.iconColor);
 			float iconmixVal = 0.0f;
 			if(textureAddButtonEnter)
 				iconmixVal = 0.5f;
 				
-			ui.iconBox(0.02f,0.025f,renderData.panelLoc - 1.0f - screenGapX + 0.3f ,0.8f - (i * 0.125f) + materialsPanelSlideValue,0.99f,icons.AddTexture,iconmixVal,colorData.iconColor,colorData.iconColorHover);
+			ui.iconBox(0.02f,0.03f,renderData.panelLoc - 1.0f - screenGapX + 0.3f ,0.8f - (i * 0.125f) + materialsPanelSlideValue,0.99f,icons.AddTexture,iconmixVal,colorData.iconColor,colorData.iconColorHover);
 			glUseProgram(programs.uiProgram); 
 		}
 		if(!mouseEnteredOnce){

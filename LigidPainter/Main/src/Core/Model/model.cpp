@@ -103,6 +103,7 @@ using namespace std;
         vector<unsigned int> indices;
         vector<TextureMs> textures;
         std::string materialName;
+        int materialIndex = 10000;
 
         // walk through each of the mesh's vertices
         for(unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -184,7 +185,7 @@ using namespace std;
         materialName = material->GetName().C_Str();
 
 
-        return Mesh(vertices, indices, textures,materialName);
+        return Mesh(vertices, indices, textures,materialName,materialIndex);
     }
 
     // checks all material textures of a given type and loads the textures if they're not loaded yet.
