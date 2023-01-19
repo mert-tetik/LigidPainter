@@ -64,7 +64,7 @@ const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> 
 float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,Programs programs
 ,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
-,NodePanel &nodePanel,std::vector<Node> &nodes,SndPanel &sndPanel, int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,
+,NodePanel &nodePanel,SndPanel &sndPanel, int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene) {
 
 	ColorData colorData;
@@ -164,11 +164,11 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene) {
 
 		double xOffset = mouseXpos - lastMouseX;
 		double yOffset = mouseYpos - lastMouseY;
-		for (size_t i = 0; i < nodes.size(); i++)
+		for (size_t i = 0; i < nodeScenes[selectedNodeScene].nodes.size(); i++)
 		{
-			nodes[i].height = (nodes[i].inputs.size() + nodes[i].rangeBarCount + nodes[i].outputs.size())/22.f * nodePanel.zoomVal;
-			nodes[i].width = 0.12f * nodePanel.zoomVal;
-			ui.node(nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodes,nodePanel,textureSelectionPanel);
+			nodeScenes[selectedNodeScene].nodes[i].height = (nodeScenes[selectedNodeScene].nodes[i].inputs.size() + nodeScenes[selectedNodeScene].nodes[i].rangeBarCount + nodeScenes[selectedNodeScene].nodes[i].outputs.size())/22.f * nodePanel.zoomVal;
+			nodeScenes[selectedNodeScene].nodes[i].width = 0.12f * nodePanel.zoomVal;
+			ui.node(nodeScenes[selectedNodeScene].nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodeScenes[selectedNodeScene].nodes,nodePanel,textureSelectionPanel);
 		}
 		lastMouseX = mouseXpos;
 		lastMouseY = mouseYpos;
@@ -253,7 +253,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene) {
 								}
 							}
 							imageNode.rangeBarCount = rangeBarCount;
-							nodes.push_back(imageNode);
+							nodeScenes[selectedNodeScene].nodes.push_back(imageNode);
 						}
 						addNodeContextMenu.active = false;
 					}

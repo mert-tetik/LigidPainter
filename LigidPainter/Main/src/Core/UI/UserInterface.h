@@ -370,6 +370,8 @@ struct SndPanel{
 
 struct NodeScene{
 	std::string sceneName;
+	std::vector<Node> nodes;
+
 	int index;
 };
 
