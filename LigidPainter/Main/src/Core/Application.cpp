@@ -71,6 +71,8 @@ GLFWwindow* window;
 //GL_TEXTURE13 = skybox
 //GL_TEXTURE14 = texture rendering for the ui
 
+//GL_TEXTURE 20 - 28 Is reserved for nodes
+
 //Shortcuts
 
 //Left CTRL + Z : Undo painting

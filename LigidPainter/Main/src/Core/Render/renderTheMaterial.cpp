@@ -87,5 +87,51 @@ void Render::renderTheNodes(NodeScene material){
         }
     }
 
-    std::cout << renderingPipeline.size() << ' ';
+    //std::cout << renderingPipeline.size() << ' ';
+
+    for (size_t nodeI = 0; nodeI < renderingPipeline.size(); nodeI++)
+    {
+        for (size_t inputI = 0; inputI < renderingPipeline[nodeI].inputs.size(); inputI++)
+        {
+            GlSet glset;
+
+            NodeInput input = renderingPipeline[nodeI].inputs[inputI];
+            unsigned int texture;
+            glGenTextures(1, &texture);
+
+            if(input.element == "range"){
+                glActiveTexture(GL_TEXTURE20);
+                glBindTexture(GL_TEXTURE_2D,texture);
+                
+                unsigned int channels;
+                int channelSize;
+
+                if(input.type == "float"){
+                    channels = GL_RED;
+                    channelSize = 1;
+                }
+                
+                if(input.type == "vec2"){
+                    channels = GL_RG;
+                    channelSize = 2;
+                }
+                
+                if(input.type == "vec3"){
+                    channels = GL_RGB;
+                    channelSize = 3;
+                }
+                
+                GLubyte* data = new GLubyte[channelSize];
+
+                for (size_t i = 0; i < channelSize; i++)
+                {
+                    data[i] = input.value[i];
+                }
+                
+                glset.texImage(data,1,1,channels);
+            }
+        }
+        
+    }
+    
 }
