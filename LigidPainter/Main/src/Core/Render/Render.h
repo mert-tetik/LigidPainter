@@ -69,6 +69,8 @@ private:
 	//Render The Scene
 	void renderModel(bool backfaceCulling, PBRShaderData &data,Model &model,bool renderDefault,std::vector<unsigned int> &albedoTextures,Programs programs,int currentMaterialIndex);
 	
+	void renderTheNodes(NodeScene material);
+
 	
 	RenderOutData renderUi(PanelData& panelData, RenderData &renderData, unsigned int FBOScreen, Icons &icons,const char* exportFileName,
 	float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,float brushBlurVal,

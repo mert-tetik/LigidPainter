@@ -180,13 +180,13 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 			if(true){
 				//Severe the connection if connection is not released in a input
 				if(!anyInputHover && node.outputs[i].pressed){
-					
-					nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].nodeConnectionIndex = 10000;
-					nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].inputConnectionIndex = 10000;
+					if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
+						nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].nodeConnectionIndex = 10000;
+						nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].inputConnectionIndex = 10000;
+					}
 					
 					node.outputs[i].nodeConnectionIndex = 10000;
 					node.outputs[i].inputConnectionIndex = 10000;
-
 				}
 				
 				//Render the connection on top of the default connection circle (hide)

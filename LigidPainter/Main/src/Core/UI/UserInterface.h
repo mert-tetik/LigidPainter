@@ -339,7 +339,7 @@ struct Node{
 	unsigned int program;
 
 
-	int renderingIndex;
+	int renderingIndex = 10000;
 
 	std::vector<unsigned int> results;
 };

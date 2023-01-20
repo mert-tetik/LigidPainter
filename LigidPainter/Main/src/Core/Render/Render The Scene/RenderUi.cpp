@@ -170,6 +170,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			nodeScenes[selectedNodeScene].nodes[i].width = 0.12f * nodePanel.zoomVal;
 			ui.node(nodeScenes[selectedNodeScene].nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodeScenes[selectedNodeScene].nodes,nodePanel,textureSelectionPanel,i);
 		}
+		if(nodeScenes[selectedNodeScene].nodes.size() != 0)
+			renderTheNodes(nodeScenes[selectedNodeScene]);
 
 		lastMouseX = mouseXpos;
 		lastMouseY = mouseYpos;
