@@ -190,15 +190,13 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 				if(addNodeContextMenu.buttons[i].hover && addNodeContextMenu.buttons[i].hoverAnimationActive){
 					addNodeContextMenu.buttons[i].positionZ = 0.999f;
-					if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
-						if(i == 1){
-							Node imageNode;
+					if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS && i != 0){
+						Node node;
+						node = appNodes[i-1];
+						node.positionX = (mouseXpos/screenSizeX*2 - 1.0f) / nodePanel.zoomVal;
+						node.positionY = (-mouseYpos/maxScreenHeight*2 + 1.0f) / nodePanel.zoomVal;						
 
-							imageNode = ui.createNode("Example Node",(mouseXpos/screenSizeX*2 - 1.0f) / nodePanel.zoomVal,(-mouseYpos/maxScreenHeight*2 + 1.0f) / nodePanel.zoomVal);
-							
-							
-							nodeScenes[selectedNodeScene].nodes.push_back(imageNode);
-						}
+						nodeScenes[selectedNodeScene].nodes.push_back(node);
 						addNodeContextMenu.active = false;
 					}
 				}

@@ -23,12 +23,13 @@
 #include "Core/UI/UiActions.h"
 #include "Core/Texture Generator/TextureGenerator.h"
 
-ContextMenu UserInterface::createContextMenus(){
+ContextMenu UserInterface::createContextMenus(std::vector<Node> appNodes){
     ColorData colorData;
     ContextMenu addNodeContextMenu; 
     addNodeContextMenu.width = 0.07f;
-	addNodeContextMenu.height = 0.08f;
 	addNodeContextMenu.positionZ = 0.99f;
+
+    float panelHeight = 0.f;
 
     Button title;
     title.width = addNodeContextMenu.width+0.02f;
@@ -37,40 +38,33 @@ ContextMenu UserInterface::createContextMenus(){
     title.color = colorData.nodePanelContextMenuButtonColor; 
     title.colorHover = colorData.nodePanelContextMenuButtonColorHover;
     title.positionX = 0;
-    title.positionY = 0.1;
+    title.positionY = 0.04f*appNodes.size();
     title.positionZ = 0.99f;
     title.text = "Add Nodes";
     title.textRatio = 0.052f;
     title.hoverAnimationActive = false;
     addNodeContextMenu.buttons.push_back(title);
 
-    Button imageTextureNode;
-    imageTextureNode.width = addNodeContextMenu.width+0.02f;
-    imageTextureNode.height = 0.025f;
-    imageTextureNode.buttonCurveReduce = 10000;
-    imageTextureNode.color = colorData.nodePanelContextMenuButtonColor; 
-    imageTextureNode.colorHover = colorData.nodePanelContextMenuButtonColorHover;
-    imageTextureNode.positionX = 0;
-    imageTextureNode.positionY = 0.025;
-    imageTextureNode.positionZ = 0.99f;
-    imageTextureNode.text = "Image Texture";
-    imageTextureNode.textRatio = 0.052f;
-    imageTextureNode.hoverAnimationActive = true;
-    addNodeContextMenu.buttons.push_back(imageTextureNode);
+    for (size_t i = 0; i < appNodes.size(); i++)
+    {
+        Button button;
+        button.width = addNodeContextMenu.width+0.02f;
+        button.height = 0.025f;
+        button.buttonCurveReduce = 10000;
+        button.color = colorData.nodePanelContextMenuButtonColor; 
+        button.colorHover = colorData.nodePanelContextMenuButtonColorHover;
+        button.positionX = 0;
+        button.positionY = 0.0 - (i*0.025);
+        button.positionZ = 0.99f;
+        button.text = appNodes[i].title;
+        button.textRatio = 0.052f;
+        button.hoverAnimationActive = true;
+        addNodeContextMenu.buttons.push_back(button);
+        panelHeight += 0.04f;
+    }
+	addNodeContextMenu.height = panelHeight;
+    
 
-    Button pbrOutputNode;
-    pbrOutputNode.width = addNodeContextMenu.width+0.02f;
-    pbrOutputNode.height = 0.025f;
-    pbrOutputNode.buttonCurveReduce = 10000;
-    pbrOutputNode.color = colorData.nodePanelContextMenuButtonColor; 
-    pbrOutputNode.colorHover = colorData.nodePanelContextMenuButtonColorHover;
-    pbrOutputNode.positionX = 0;
-    pbrOutputNode.positionY = -0.025f;
-    pbrOutputNode.positionZ = 0.99f;
-    pbrOutputNode.text = "PBR Output";
-    pbrOutputNode.textRatio = 0.052f;
-    pbrOutputNode.hoverAnimationActive = true;
-    addNodeContextMenu.buttons.push_back(pbrOutputNode);
 
     return addNodeContextMenu;
 }

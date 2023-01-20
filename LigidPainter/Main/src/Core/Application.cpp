@@ -271,10 +271,10 @@ bool LigidPainter::run()
 	textures = load.initTextures(maskTexturePath.c_str());
 	//Load UI
 	UIElements = ui.getUiElements(icons);
-	//Load context menus
-	addNodeContextMenu = ui.createContextMenus();
 	//Load nodes
-	appNodes = load.loadNodes();
+	appNodes = load.loadNodes(folderDistinguisher);
+	//Load context menus
+	addNodeContextMenu = ui.createContextMenus(appNodes);
 
 	NodeScene emptyNodeScene;
 	emptyNodeScene.index = 0;

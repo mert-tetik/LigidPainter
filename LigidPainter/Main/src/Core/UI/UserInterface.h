@@ -341,7 +341,7 @@ struct Node{
 
 	int renderingIndex;
 
-	std::vector<unsigned int> outputs;
+	std::vector<unsigned int> results;
 };
 
 struct ContextMenu {
@@ -400,7 +400,7 @@ class UserInterface {
 public:
 	//Load
 	std::vector<UIElement> UserInterface::getUiElements(Icons icons);
-	ContextMenu createContextMenus();
+	ContextMenu createContextMenus(std::vector<Node> appNodes);
 
 
 
@@ -430,7 +430,6 @@ public:
 
 	
 	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,float maxScreenHeight,std::vector<Node> &nodes,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel);
-	Node createNode(std::string nodeName,float spawningPosX,float spawningPosY);
 
 	
 	//Calculations and More
