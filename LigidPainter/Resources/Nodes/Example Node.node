@@ -19,7 +19,7 @@
 --title_1 : box; #returns 1 if selected
 
 -title : Example Node;
--color : hex981212; #rgb122,124,66  #hsv86,45,23
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
 -opacity : 60;
 
 -input_0 : 

@@ -24,7 +24,7 @@ struct ProcessHppNode{
     std::vector<ProcessHppNodeInput> inputs;
     std::vector<ProcessHppNodeOutput> outputs;
     std::string title;
-    float color[4] = {20.f,20.f,20.f,100.f};
+    std::vector<float> color = {20.f,20.f,20.f,100.f};
     
     std::vector<std::vector<std::string>> lists;
 
@@ -170,7 +170,7 @@ private:
 
 
     //----------------------------------PROCESS THE COLORS----------------------------------
-    float* hexToRGBConverter(std::string hex){ //takes hex : #000000 (# is required) 
+    std::vector<float> hexToRGBConverter(std::string hex){ //takes hex : #000000 (# is required) 
     	float r;
     	float g;
     	float b;
@@ -198,10 +198,10 @@ private:
     	r = hexVal[0] * 16 + hexVal[1];
     	g = hexVal[2] * 16 + hexVal[3];
     	b = hexVal[4] * 16 + hexVal[5];
-    	float result[3] = {r,g,b};
+    	std::vector<float> result = {r,g,b};
     	return result;
     }
-    float* hsvToRgbConverter(float H,float S,float V){
+    std::vector<float> hsvToRgbConverter(float H,float S,float V){
         double r = 0, g = 0, b = 0;
 
 	    if (S == 0)
@@ -267,8 +267,8 @@ private:
 	    	}
 
 	    }
-        std::cout << r*255 << ' ' << g*255 << ' ' << b*255 << ' ';
-        float result[3] = {r*255 , g*255 , b*255};
+        // std::cout << r*255 << ' ' << g*255 << ' ' << b*255 << ' ';
+        std::vector<float> result = {(float)r*255.f , (float)g*255.f , (float)b*255.f};
         return result;
     }
 
@@ -279,7 +279,7 @@ private:
             colorType += attribute[i];
         }
         //Process the color value
-        float* value;
+        std::vector<float> value;
         if(colorType == "hex"){
             //Process the hex value
             std::string colorValue = processTheWord(line,attributeIndex + 3,false,';'); 

@@ -16,7 +16,7 @@
 #include "Core/Load.hpp"
 
 void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
-float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel){
+float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex){
 	ColorData colorData;
 	Utilities util;
 
@@ -140,6 +140,9 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 					node.outputs[i].inputConnectionIndex = inputI;
 					node.outputs[i].nodeConnectionIndex = nodeI;
 
+					nodes[nodeI].inputs[inputI].inputConnectionIndex = i;
+					nodes[nodeI].inputs[inputI].nodeConnectionIndex = currentNodeIndex;
+
 					node.outputs[i].connectionPosX = nodes[nodeI].inputs[inputI].posX; 
 					node.outputs[i].connectionPosY = nodes[nodeI].inputs[inputI].posY; 
 					break;
@@ -177,8 +180,13 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 			if(true){
 				//Severe the connection if connection is not released in a input
 				if(!anyInputHover && node.outputs[i].pressed){
+					
+					nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].nodeConnectionIndex = 10000;
+					nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].inputConnectionIndex = 10000;
+					
 					node.outputs[i].nodeConnectionIndex = 10000;
 					node.outputs[i].inputConnectionIndex = 10000;
+
 				}
 				
 				//Render the connection on top of the default connection circle (hide)

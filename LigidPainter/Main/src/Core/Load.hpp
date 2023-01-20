@@ -16,6 +16,7 @@
 #include <glm/gtx/string_cast.hpp>
 
 #include "Core/LigidPainter.h"
+#include "Core/Utilities.h"
 #include "Core/UI/UserInterface.h"
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"
@@ -416,15 +417,13 @@ public:
 		ProcessHppNode node;
 		node = process.processNodeFile(".\\LigidPainter\\Resources\\Nodes\\" + nodeName + ".node");
 
-		//std::cout << "title : " << nodee.title << "Output size : " << nodee.outputs.size() << "input size : " << nodee.inputs.size() << "Color : " << nodee.color <<"Code : "<< nodee.code;
-
 		Node resultNode;
 		resultNode.title = node.title;
 
-		resultNode.upBarColor.r = node.color[0];
-		resultNode.upBarColor.g = node.color[1]; 
-		resultNode.upBarColor.b = node.color[2];
-		resultNode.upBarColor.a = node.color[3];
+		resultNode.upBarColor.r = node.color[0]/255.f;
+		resultNode.upBarColor.g = node.color[1]/255.f; 
+		resultNode.upBarColor.b = node.color[2]/255.f;
+		resultNode.upBarColor.a = 1.f;
 
 		float rangeBarCount = 0;
 		//Load inputs
@@ -482,7 +481,6 @@ public:
 		//resultNode.positionX = spawningPosX;
 		//resultNode.positionY = spawningPosY;
 		resultNode.title = nodeName;
-		resultNode.upBarColor =glm::vec4(0.9,0.2,0.2,1);
 		resultNode.width = 0.12f;
 
 		const char* defaultVertexShader = 
