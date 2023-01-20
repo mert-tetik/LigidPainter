@@ -15,6 +15,9 @@
 #include "Core/Utilities.h"
 #include "Core/Load.hpp"
 
+#include "Core/ProcessTheNodeFile.hpp"
+
+
 void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
 float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel){
 	ColorData colorData;
@@ -424,4 +427,133 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 			}
 		}
 	}
+}
+
+Node UserInterface::createNode(std::string nodeName,float spawningPosX,float spawningPosY){
+	processNode process;
+	ProcessHppNode node;
+	node = process.processNodeFile(".\\LigidPainter\\Resources\\Nodes\\" + nodeName + ".node");
+	
+	//std::cout << "title : " << nodee.title << "Output size : " << nodee.outputs.size() << "input size : " << nodee.inputs.size() << "Color : " << nodee.color <<"Code : "<< nodee.code;
+	
+	Node resultNode;
+	resultNode.title = node.title;
+	
+	resultNode.upBarColor.r = node.color[0];
+	resultNode.upBarColor.g = node.color[1]; 
+	resultNode.upBarColor.b = node.color[2];
+	resultNode.upBarColor.a = node.color[3];
+
+	float rangeBarCount = 0;
+	//Load inputs
+	for (int i = 0; i < node.inputs.size(); i++)
+	{
+		NodeInput input;
+		
+		input.element = node.inputs[i].element;
+		input.text = node.inputs[i].title;
+		input.type = node.inputs[i].type;
+		//node.inputs[i].list;
+		//node.inputs[i].listIndex;
+
+		resultNode.inputs.push_back(input);
+		if(resultNode.inputs[i].type == "float"){
+			if(resultNode.inputs[i].element == "range")
+				rangeBarCount += 1.5f;
+				
+			resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+		}
+		if(resultNode.inputs[i].type == "vec2"){
+			if(resultNode.inputs[i].element == "range")
+				rangeBarCount += 1.5f*2;
+			
+			if(resultNode.inputs[i].element == "image")
+				rangeBarCount += 1.5f;
+			resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+			resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+		}
+		if(resultNode.inputs[i].type == "vec3"){
+			if(resultNode.inputs[i].element == "range")
+				rangeBarCount += 1.5f*3;
+			if(resultNode.inputs[i].element == "image")
+				rangeBarCount += 1.5f;
+			resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+			resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+			resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+		}
+
+	}
+
+	resultNode.rangeBarCount = rangeBarCount;
+	//Load outputs
+	for (int i = 0; i < node.outputs.size(); i++){
+		NodeInput output;
+
+		output.text = node.outputs[i].title;
+		output.type = node.outputs[i].type;
+
+		resultNode.outputs.push_back(output);
+	}
+	//node.lists
+
+	resultNode.backColor = glm::vec4(0.2,0.2,0.2,0.5);
+	resultNode.positionX = spawningPosX;
+	resultNode.positionY = spawningPosY;
+	resultNode.title = nodeName;
+	resultNode.upBarColor =glm::vec4(0.9,0.2,0.2,1);
+	resultNode.width = 0.12f;
+
+	const char* defaultVertexShader = 
+		"#version 330 core\n"
+		"layout(location = 0) in vec3 aPos;\n"
+		"layout(location = 1) in vec3 aNormal;\n"
+		"layout(location = 2) in vec2 aTexCoords;\n"
+		"uniform mat4 view;\n"
+		"uniform mat4 projection;\n"
+		"out vec2 tex_coords;\n"
+		"out vec3 normal;\n"
+		"out vec3 posModel;\n"
+		"out vec4 posScene;\n"
+		"void main() {\n"
+		    "posModel = aPos;\n"
+		    "tex_coords = aTexCoords;\n"
+		    "normal = aNormal;\n"
+		    "posScene = projection * view * vec4(aPos, 0.5);\n" 
+		    "gl_Position = posScene;\n"
+		"}\0";
+
+	//Compile the fragment shader
+	const char* shaderSource = node.code.c_str();
+	unsigned int fragShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragShader, 1, &shaderSource, NULL);
+	glCompileShader(fragShader);
+	
+	//Test the shader
+	int success;
+	char infoLog[512];
+	glGetShaderiv(fragShader, GL_COMPILE_STATUS, &success);
+	//Print the error if any occurs
+	if (!success){glGetShaderInfoLog(fragShader, 512, NULL, infoLog);std::cout << "ERROR::SHADER::COMPILATION_FAILED " << infoLog << std::endl;};
+
+	//Compile the vertex shader
+	unsigned int vertShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertShader, 1, &defaultVertexShader, NULL);
+	glCompileShader(vertShader);
+
+	//Test the shader
+	glGetShaderiv(vertShader, GL_COMPILE_STATUS, &success);
+	//Print the error if any occurs
+	if (!success){glGetShaderInfoLog(vertShader, 512, NULL, infoLog);std::cout << "ERROR::SHADER::COMPILATION_FAILED " << infoLog << std::endl;};
+
+	unsigned int program = glCreateProgram();
+	glAttachShader(program, vertShader);
+	glAttachShader(program, fragShader);
+	glLinkProgram(program);
+
+	glDeleteShader(vertShader);
+	glDeleteShader(fragShader);
+
+	resultNode.program = program;
+	
+	return resultNode;
 }

@@ -1,34 +1,66 @@
-#For ligidtools.com
+# For ligidtools.com
+# Node extension v1.0
+
+# All the proper elements
+# --none
+# --rangebar
+# --color
+# --curves
 
 %attributes;
 
--title : ExampleNode;
--color : 981212;
+#lists must be declared on top of the other declarations
+-listbox_0 :
+--title_0 : gauss; #returns 0 if selected
+--title_1 : box; #returns 1 if selected
+
+-listbox_1 :
+--title_0 : gauss; #returns 0 if selected
+--title_1 : box; #returns 1 if selected
+
+-title : Example Node;
+-color : hex981212; #rgb122,124,66  #hsv86,45,23
 -opacity : 60;
 
 -input_0 : 
+--list : 0;
+--list_index : none;
 --type : vec3;
 --title : Albedo color;
---element : picker;
+--element : range;
 
 -input_1 :
---type : sampler2D;
+--list : none;
+--list_index : none;
+--type : vec3;
 --title : Texture;
---element : none;
+--element : range;
 
 -output_0 :
---type : sampler2D;
+--list : none;
+--list_index : none;
+--type : vec3;
 --title : Image Out;
 
 -output_1 :
+--list : none;
+--list_index : none;
 --type : vec3;
 --title : Color out;
 
--uniforms : tex_coords|normal|pos;
+-uniforms : tex_coords|normal|posScene|posModel;
 
-%code;
+%code; #GLSL Code here
 
-void main(){
-    output_1 = Texture2D(input_2,tex_coords);
-    output_2 = vec4(input_1,1.0);
+void main (){
+    
+    //if(listbox_0 == 0){
+        //Do something
+    //}
+    //else if(listbox_0 == 1){
+        //Do something different
+    //}
+
+    output_0 = vec4(texture2D(input_0,tex_coords).rgb,1);
+    output_1 = vec4(texture2D(input_1,tex_coords).rgb,1);
 }

@@ -335,6 +335,13 @@ struct Node{
 	bool barPressed;
 
 	int rangeBarCount = 0;
+
+	unsigned int program;
+
+
+	int renderingIndex;
+
+	std::vector<unsigned int> outputs;
 };
 
 struct ContextMenu {
@@ -423,6 +430,8 @@ public:
 
 	
 	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,float maxScreenHeight,std::vector<Node> &nodes,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel);
+	Node createNode(std::string nodeName,float spawningPosX,float spawningPosY);
+
 	
 	//Calculations and More
 	bool isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, double mouseXpos, double mouseYpos);

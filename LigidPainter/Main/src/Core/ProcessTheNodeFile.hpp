@@ -10,11 +10,15 @@
 struct ProcessHppNodeInput{
     std::string title; //"Color"
     std::string element;//"Color picker or range slide bar"
-    std::string type; //Sampler2D, vec3 , vec2 , float 
+    std::string type; //vec3 , vec2 , float 
+    std::string listIndex; //none,0,1,2,3,4
+    std::string list; //none,0,1,2,3,4
 };
 struct ProcessHppNodeOutput{
     std::string title; //"Color"
-    std::string type; //Sampler2D, vec3 , vec2 , float 
+    std::string type; //vec3 , vec2 , float 
+    std::string listIndex; //none,0,1,2,3,4
+    std::string list; //none,0,1,2,3,4
 };
 struct ProcessHppNode{
     std::vector<ProcessHppNodeInput> inputs;
@@ -22,8 +26,11 @@ struct ProcessHppNode{
     std::string title;
     float color[4] = {20.f,20.f,20.f,100.f};
     
+    std::vector<std::vector<std::string>> lists;
+
     std::string code;
 };
+
 class processNode
 {
 public:
@@ -32,7 +39,7 @@ ProcessHppNode processNodeFile(std::string filePath){
     
     
     std::fstream filein;
-    filein.open(filePath.c_str());
+    filein.open(filePath);
 
     if(!filein.is_open()){
         std::cout << "Unable to open the file";
@@ -43,28 +50,26 @@ ProcessHppNode processNodeFile(std::string filePath){
     std::string codeFile;
 
     std::string completeToken;
-    int i = 0;
+    int mainIndex = 0;
     int stateChanged = 0;
     std::string line;
     while(std::getline(filein,line))
     {
-
-
         completeFile += line;
         line = removeComments(line);
         
         if(line[0] == '%'){ //Major tokens
-            completeToken = processTheWord(line,1);
+            completeToken = processTheWord(line,1,true,';');
             
             if(completeToken == "attributes"){
                 attributes = true;
                 code = false;
-                stateChanged = i;
+                stateChanged = mainIndex;
             }
             else if(completeToken == "code"){
                 attributes = false;
                 code = true;
-                stateChanged = i;
+                stateChanged = mainIndex;
             }
             else{
                 std::cout << "ERROR : Invalid Preindicator : " << completeToken << std::endl;
@@ -72,20 +77,17 @@ ProcessHppNode processNodeFile(std::string filePath){
             }
         }
 
-        if(attributes && i != stateChanged){ //Subtokens
+        if(attributes && mainIndex != stateChanged){ //Subtokens
             processSubToken(line);
         }
-        if(code && i != stateChanged){
+        if(code && mainIndex != stateChanged){
             codeFile += line + '\n';
         }
-
         if((inputDefinitions || outputDefinitions)){ //Subsubtokens
             processSubsubtoken(line);
         }
 
-
-
-        i++;
+        mainIndex++;
     }
     createTheCode(codeFile);
     return processHppNode;
@@ -97,6 +99,7 @@ private:
     bool code = false;
 
     bool inputDefinitions = false;
+    bool listDefinitions = false;
     bool outputDefinitions = false;
 
 
@@ -111,13 +114,16 @@ private:
         "title",
         "element",
         "type"
+        "list_index"
     };
     std::vector<std::string> outputTokens = {
         "title",
         "type"
+        "list_index"
     };
     std::vector<std::string> subTokens = {
         "input_",
+        "list_",
         "output_",
         "title",
         "color",
@@ -132,27 +138,38 @@ private:
     };
 
     std::map<std::string,std::string> uniformData{
-        {"tex_coords","vec2"}, {"normal","vec3"}, {"pos","vec3"}
+        {"tex_coords","vec2"}, {"normal","vec3"}, {"posScene","vec3"} , {"posModel","vec3"}
     };
 
     std::vector<std::string> uniforms;
 
     int currentInputIndex;
+    int currentListIndex;
     int currentOutputIndex;
 
-    std::string processTheWord(std::string line, int startingIndex){
+    std::string processTheWord(std::string line, int startingIndex, bool processSpaces, char haltingChar){
         int i = startingIndex;
 
         std::string word;
 
-        while(line[i] != ' ' && line[i] != ';'){
-            word += line[i];
-            i++;
+        if(processSpaces){
+            while(line[i] != ' ' && line[i] != haltingChar){
+                word += line[i];
+                i++;
+            }
+        }
+        else{
+            while(line[i] != haltingChar){
+                word += line[i];
+                i++;
+            }
         }
 
         return word;
     }
 
+
+    //----------------------------------PROCESS THE COLORS----------------------------------
     float* hexToRGBConverter(std::string hex){ //takes hex : #000000 (# is required) 
     	float r;
     	float g;
@@ -184,6 +201,111 @@ private:
     	float result[3] = {r,g,b};
     	return result;
     }
+    float* hsvToRgbConverter(float H,float S,float V){
+        double r = 0, g = 0, b = 0;
+
+	    if (S == 0)
+	    {
+	    	r = V;
+	    	g = V;
+	    	b = V;
+	    }
+	    else
+	    {
+	    	int i;
+	    	double f, p, q, t;
+
+	    	if (H == 360)
+	    		H = 0;
+	    	else
+	    		H = H / 60;
+
+	    	i = (int)trunc(H);
+	    	f = H - i;
+
+	    	p = V * (1.0 - S);
+	    	q = V * (1.0 - (S * f));
+	    	t = V * (1.0 - (S * (1.0 - f)));
+
+	    	switch (i)
+	    	{
+	    	case 0:
+	    		r = V;
+	    		g = t;
+	    		b = p;
+	    		break;
+
+	    	case 1:
+	    		r = q;
+	    		g = V;
+	    		b = p;
+	    		break;
+
+	    	case 2:
+	    		r = p;
+	    		g = V;
+	    		b = t;
+	    		break;
+
+	    	case 3:
+	    		r = p;
+	    		g = q;
+	    		b = V;
+	    		break;
+
+	    	case 4:
+	    		r = t;
+	    		g = p;
+	    		b = V;
+	    		break;
+
+	    	default:
+	    		r = V;
+	    		g = p;
+	    		b = q;
+	    		break;
+	    	}
+
+	    }
+        std::cout << r*255 << ' ' << g*255 << ' ' << b*255 << ' ';
+        float result[3] = {r*255 , g*255 , b*255};
+        return result;
+    }
+
+    void processTheColors(std::string line, std::string attribute,int attributeIndex){
+        //Process the color type (hex , rgb , hsv)
+        std::string colorType;
+        for(int i = 0; i < 3; i++){
+            colorType += attribute[i];
+        }
+        //Process the color value
+        float* value;
+        if(colorType == "hex"){
+            //Process the hex value
+            std::string colorValue = processTheWord(line,attributeIndex + 3,false,';'); 
+            value = hexToRGBConverter('#' + colorValue);
+        }
+        if(colorType == "rgb"){//rgb153,45,112
+            //Process the rgb value
+            std::string valueR = processTheWord(line,attributeIndex + 3,false,',');
+            std::string valueG = processTheWord(line,attributeIndex + 4 + valueR.size(),false,',');
+            std::string valueB = processTheWord(line,attributeIndex + 5 + valueR.size() + valueG.size(),false,';');
+            value[0] = std::stoi(valueR);
+            value[1] = std::stoi(valueG);
+            value[2] = std::stoi(valueB);
+        }
+        if(colorType == "hsv"){
+            //Process the hsv value
+            std::string valueR = processTheWord(line,attributeIndex + 3,false,',');
+            std::string valueG = processTheWord(line,attributeIndex + 4 + valueR.size(),false,',');
+            std::string valueB = processTheWord(line,attributeIndex + 5 + valueR.size() + valueG.size(),false,';');
+            value = hsvToRgbConverter(std::stoi(valueR),std::stoi(valueG),std::stoi(valueB));
+        }
+        processHppNode.color[0] = value[0];//R
+        processHppNode.color[1] = value[1];//G
+        processHppNode.color[2] = value[2];//B
+    }
+
 
 
     bool checkIfArrayContainsTheWord(std::vector<std::string> array, std::string word){
@@ -203,44 +325,78 @@ private:
 
     void processSubToken(std::string line){
         if(line[0] == '-' && line[1] != '-'){ //Check subtokens
-            std::string completeToken = processTheWord(line,1);
+
+            //Example 
+            //title : imatitle
+            //title = subtoken
+            // : = required equation sign
+            //imatitle = attribute
+
+
+            std::string completeToken = processTheWord(line,1,true,';');
+            
             std::string attribute;
+            int attributeIndex = 0;
+
 
             bool properToken = checkIfArrayContainsTheWord(subTokens,completeToken);
 
             const int signIndex = completeToken.size() + 2;
 
-            bool tokenIsInputOrOutput = false;
+            bool tokenIsInputOrOutputOrList = false;
             for (size_t i = 0; i < 60; i++)
             {
                 if(completeToken == "input_" + std::to_string(i)){
-                    tokenIsInputOrOutput = true;
+                    tokenIsInputOrOutputOrList = true;
                     break;
                 }
                 if(completeToken == "output_" + std::to_string(i)){
-                   tokenIsInputOrOutput = true;
+                   tokenIsInputOrOutputOrList = true;
+                    break;
+                }
+                if(completeToken == "listbox_" + std::to_string(i)){
+                   tokenIsInputOrOutputOrList = true;
                     break;
                 }
             }
 
-            if(properToken || tokenIsInputOrOutput){
+
+            if(properToken || tokenIsInputOrOutputOrList){
                 if(line[signIndex] == ':'){
-                    if(!tokenIsInputOrOutput)
-                        attribute = processTheWord(line,signIndex+2);
+                    if(!tokenIsInputOrOutputOrList){
+                        //Process the index for the attribute
+                        while(line[signIndex + attributeIndex + 1] == ' '){
+                            attributeIndex++;
+                        }
+                        attributeIndex = signIndex + attributeIndex + 1;
 
-
-                    if(completeToken == "title"){
-                        processHppNode.title = attribute;
+                        //Attribute will contain spaces if the token is title
+                        if(completeToken == "title"){
+                            attribute = processTheWord(line,attributeIndex,true,';');
+                            processHppNode.title = attribute;
+                        }
+                        else{
+                            attribute = processTheWord(line,attributeIndex,false,';');
+                        }
                     }
+
+                    
+
+
+
                     if(completeToken == "color"){
-                        float* value = hexToRGBConverter(attribute); 
-                        processHppNode.color[0] = value[0];//R
-                        processHppNode.color[1] = value[1];//G
-                        processHppNode.color[2] = value[2];//B
+                        processTheColors( line, attribute,attributeIndex);
                     }
+
+
+
                     if(completeToken == "opacity"){
                         processHppNode.color[3] = std::stoi(attribute);
                     }   
+
+
+
+
                     const int maxInputCount = 60;
                     for (size_t i = 0; i < 60; i++)
                     {
@@ -252,14 +408,32 @@ private:
                                 ProcessHppNodeInput input;
                                 //Default input values
                                 input.element = "none";
-                                input.title = completeToken.c_str();
+                                input.title = completeToken;
                                 input.type = "float";
                                 processHppNode.inputs.push_back(input);
 
                                 inputDefinitions = true;
+                                listDefinitions = false;
                                 outputDefinitions = false;
 
                                 currentInputIndex = i;
+                            }
+                        }
+                        if(completeToken == "list_" + std::to_string(i)){
+                            if(processHppNode.inputs.size() < i){
+                                std::cout << "ERROR : Wrong index : " << completeToken << std::endl;
+                            }
+                            else{
+                                std::vector<std::string> list;
+                                //Default input values
+                                list.push_back("list_" + std::to_string(i));
+                                processHppNode.lists.push_back(list);
+
+                                listDefinitions = true;
+                                inputDefinitions = false;
+                                outputDefinitions = false;
+
+                                currentListIndex = i;
                             }
                         }
 
@@ -270,30 +444,33 @@ private:
                             else{
                                 ProcessHppNodeOutput output;
                                 //Default output values
-                                output.title = completeToken.c_str();
+                                output.title = completeToken;
                                 output.type = "float";
                                 processHppNode.outputs.push_back(output);
 
                                 outputDefinitions = true;
                                 inputDefinitions = false;
+                                listDefinitions = false;
+
 
                                 currentOutputIndex = i;
                             }
                         }
                     }
+
                     if(completeToken == "uniforms"){
                         interpretTheUniforms(attribute);
                     }
                 }
                 else{
-                    std::cout << "ERROR : Equation required : " << completeToken << std::endl;    
+                    std::cout << "ERROR : ':' required : " << line << std::endl;    
                 }
             }
             else{
                 std::cout << "ERROR : Invalid Token : " << completeToken << std::endl;
             }
         }
-    }
+    }  
 
     void interpretTheUniforms(std::string attribute){
         
@@ -305,111 +482,149 @@ private:
         while (i < attribute.size())
         {
             if(attribute[i] == '|'){
-                uniforms.push_back(currentWord.c_str());
+                uniforms.push_back(currentWord);
                 currentWord = "";
                 i++;
             }
             currentWord += attribute[i];
             i++;
         }
-        uniforms.push_back(currentWord.c_str());
+        uniforms.push_back(currentWord);
         currentWord = "";
     }
 
     void processSubsubtoken(std::string line){
         if(line[0] == '-' && line[1] == '-'){
-                std::string completeToken = processTheWord(line,2);
-                
-                std::string title = "title";
-                std::string type = "type";
-                std::string element = "element";
-                
-                bool titleToken = true;
-                bool typeToken = true;
-                bool elementToken = true;
+                std::string completeToken = processTheWord(line,2,true,';');
+                if(!listDefinitions){
+                    //Process the token
+                    bool titleToken = false;
+                    bool typeToken = false;
+                    bool elementToken = false;
+                    bool listIndexToken = false;
+                    bool listToken = false;
 
-                for (size_t i = 0; i < 5; i++)
-                {
-                    if(completeToken[i] == title[i]){
-                        
+                    if(completeToken == "title"){
+                        titleToken = true;
                     }
-                    else{
-                        titleToken = false;
-                        break;
+                    if(completeToken == "type"){
+                        typeToken = true;
                     }
-                }
-                for (size_t i = 0; i < 4; i++)
-                {
-                    if(completeToken[i] == type[i]){
-                        
+                    if(completeToken == "element"){
+                        elementToken = true;
                     }
-                    else{
-                        typeToken = false;
-                        break;
+                    if(completeToken == "list_index"){
+                        listIndexToken = true;
                     }
-                }
-                for (size_t i = 0; i < 7; i++)
-                {
-                    if(completeToken[i] == element[i]){
-                        
+                    if(completeToken == "list"){
+                        listToken = true;
                     }
-                    else{
-                        elementToken = false;
-                        break;
-                    }
-                }
 
-                if((!titleToken && !typeToken && !elementToken) || outputDefinitions && elementToken){
-                    std::cout << "ERROR : Invalid Token : " << completeToken << std::endl;
+
+                    if((!titleToken && !typeToken && !elementToken && !listIndexToken && !listToken) || outputDefinitions && elementToken){
+                        std::cout << "ERROR : Invalid Token : " << completeToken << std::endl;
+                    }
+
+                    else{
+                        bool goOn = false;
+
+                        //
+                        int signIndex = completeToken.size()+3;
+                        if(line[signIndex] == ':'){
+                            goOn = true;
+                        }
+
+                        //Process the index for the attribute
+                        int attributeIndex = 0;
+                        while(line[signIndex + attributeIndex + 1] != ' '){
+                            attributeIndex++;
+                        }
+                        attributeIndex = signIndex + attributeIndex + 2;
+
+
+                        if(goOn){
+                            std::string attribute;
+                            if(titleToken){
+                                attribute = processTheWord(line,attributeIndex,false,';');
+                            }
+                            else{
+                                attribute = processTheWord(line,attributeIndex,true,';');
+                            }
+
+                            if(titleToken){
+                                if(inputDefinitions)
+                                    processHppNode.inputs[currentInputIndex].title = attribute;
+                                if(outputDefinitions)
+                                    processHppNode.outputs[currentOutputIndex].title = attribute;
+                            }
+                            if(typeToken){
+                                if(inputDefinitions)
+                                    processHppNode.inputs[currentInputIndex].type = attribute;
+                                if(outputDefinitions)
+                                    processHppNode.outputs[currentOutputIndex].type = attribute;
+                            }
+                            if(elementToken){
+                                if(inputDefinitions)
+                                    processHppNode.inputs[currentInputIndex].element = attribute;
+                            }
+                            if(listIndexToken){
+                                if(inputDefinitions)
+                                    processHppNode.inputs[currentInputIndex].listIndex = attribute;
+                                if(outputDefinitions)
+                                    processHppNode.outputs[currentOutputIndex].listIndex = attribute;
+                            }
+                            if(listToken){
+                                if(inputDefinitions)
+                                    processHppNode.inputs[currentInputIndex].list = attribute;
+                                if(outputDefinitions)
+                                    processHppNode.outputs[currentOutputIndex].list = attribute;
+                            }
+                            
+
+                        }
+                        else{
+                            std::cout << "ERROR : ':' Expected " << line << std::endl;
+                        }
+                    }
                 }
                 else{
-                    bool goOn = false;
+                    //List definitions
+                    int titleIndex = 10000;
 
-                    int index = 0;
-
-                    if(titleToken){
-                        if(line[8] == ':'){
-                            goOn = true;
-                            index = 8+2;
+                    const int maxSubSubTokenCount = 60;
+                    for(int i = 0; i < maxSubSubTokenCount; i++){
+                        if(completeToken == "title_" + std::to_string(i)){
+                            titleIndex = i;
+                            if(titleIndex == processHppNode.lists[currentListIndex].size())
+                                processHppNode.lists[currentListIndex].push_back(completeToken);
+                            else{
+                                std::cout << "ERROR : Invalid Index : " << completeToken + std::to_string(i) << std::endl;
+                            }
+                            break;
                         }
+                     } 
+                    if(titleIndex == 10000){
+                        std::cout << "ERROR : Invalid Token : " << completeToken << std::endl;
                     }
-                    if(typeToken){
-                        if(line[7] == ':'){
-                            goOn = true;
-                            index = 7+2;
-                        }
-                    }
-                    if(elementToken){
-                        if(line[10] == ':'){
-                            goOn = true;
-                            index = 10+2;
-                        }
-                    }
+                    
+                    //TODO : Check if has probleem
+                    const int signIndex = completeToken.size() + 3;
 
-                    if(goOn){
-                        std::string attribute;
-                        attribute = processTheWord(line,index);
-
-                        if(titleToken){
-                            if(inputDefinitions)
-                                processHppNode.inputs[currentInputIndex].title = attribute.c_str();
-                            if(outputDefinitions)
-                                processHppNode.outputs[currentOutputIndex].title = attribute.c_str();
-                        }
-                        if(typeToken){
-                            if(inputDefinitions)
-                                processHppNode.inputs[currentInputIndex].type = attribute.c_str();
-                            if(outputDefinitions)
-                                processHppNode.outputs[currentOutputIndex].type = attribute.c_str();
-                        }
-                        if(elementToken){
-                            if(inputDefinitions)
-                                processHppNode.inputs[currentInputIndex].element = attribute.c_str();
-                        }
-
+                    int attributeIndex = 0;
+                    
+                    while(line[signIndex + attributeIndex + 1] != ' '){
+                        attributeIndex++;
                     }
-                    else{
-                        std::cout << "ERROR : ':' Expected " << line << std::endl;
+                    attributeIndex = signIndex + attributeIndex + 1;
+                    
+                    std::string attribute;
+                    
+                    attribute = processTheWord(line,attributeIndex,true,';');
+
+                    if(line[signIndex] == ':'){
+                        attribute = processTheWord(line,attributeIndex,false,';');
+
+                        processHppNode.lists[currentListIndex][titleIndex] = attribute;
                     }
                 }
             }
@@ -447,12 +662,13 @@ private:
         
         for (size_t i = 0; i < processHppNode.inputs.size(); i++)
         {
-            std::string uniform = "uniform " + processHppNode.inputs[i].type + " input_" + std::to_string(i)+ ';' + '\n';
+            std::string uniform = "uniform sampler2D input_" + std::to_string(i)+ ';' + '\n';
             result.append(uniform);
         }
+        
         for (size_t i = 0; i < processHppNode.outputs.size(); i++)
         {
-            std::string out = "layout(location=" + std::to_string(i) + ") out " + processHppNode.outputs[i].type + " output_" + std::to_string(i) + ';' + '\n';
+            std::string out = "layout(location=" + std::to_string(i) + ") out " + "vec4" + " output_" + std::to_string(i) + ';' + '\n';
             result.append(out);
         }
         

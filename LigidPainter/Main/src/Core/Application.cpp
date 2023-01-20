@@ -14,9 +14,6 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/string_cast.hpp"
 
-#include "Core/ProcessTheNodeFile.hpp"
-
-
 #include "Core/LigidPainter.h"
 #include "Core/UI/UserInterface.h"
 #include "Core/Utilities.h"
@@ -119,6 +116,7 @@ TextureSelectionPanel textureSelectionPanel;
 BrushMaskTextures brushMaskTextures;
 std::vector<unsigned int> albedoTextures;
 int selectedAlbedoTextureIndex;
+std::vector<Node> appNodes;
 
 
 string modelName;
@@ -230,12 +228,6 @@ float materialsPanelSlideValue = 0.0f;
 float mainPanelLoc = 1.6f;
 bool LigidPainter::run()
 {
-	processNode process;
-	ProcessHppNode nodee;
-	nodee = process.processNodeFile(".\\LigidPainter\\Resources\\Nodes\\node.txt");
-	std::cout << "title : " << nodee.title << "Output size : " << nodee.outputs.size() << "input size : " << nodee.inputs.size() << "Color : " << nodee.color <<"Code : "<< nodee.code;
-
-
 	ColorData colorData;
 	UserInterface ui;
 	Texture txtr;
@@ -281,6 +273,8 @@ bool LigidPainter::run()
 	UIElements = ui.getUiElements(icons);
 	//Load context menus
 	addNodeContextMenu = ui.createContextMenus();
+	//Load nodes
+	appNodes = load.loadNodes();
 
 	NodeScene emptyNodeScene;
 	emptyNodeScene.index = 0;
@@ -568,7 +562,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes);
 		}
 		
 		//double lastTime = glfwGetTime();
@@ -679,7 +673,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};

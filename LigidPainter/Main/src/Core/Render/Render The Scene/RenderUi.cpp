@@ -65,7 +65,7 @@ float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned in
 ,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
 ,NodePanel &nodePanel,SndPanel &sndPanel, int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,
-std::vector<NodeScene>& nodeScenes,int &selectedNodeScene) {
+std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -193,66 +193,10 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene) {
 					if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
 						if(i == 1){
 							Node imageNode;
-							imageNode.backColor = glm::vec4(0.2,0.2,0.2,0.5);
-							imageNode.positionX = (mouseXpos/screenSizeX*2 - 1.0f) / nodePanel.zoomVal;
-							imageNode.positionY = (-mouseYpos/maxScreenHeight*2 + 1.0f) / nodePanel.zoomVal;
-							imageNode.title = "Image Texture";
-							imageNode.upBarColor =glm::vec4(0.9,0.2,0.2,1);
-							imageNode.width = 0.12f;
+
+							imageNode = ui.createNode("Example Node",(mouseXpos/screenSizeX*2 - 1.0f) / nodePanel.zoomVal,(-mouseYpos/maxScreenHeight*2 + 1.0f) / nodePanel.zoomVal);
 							
-							NodeInput input1;
-							input1.text = "input 1";
-							input1.type = "vec3";
-							input1.element = "image";
-							imageNode.inputs.push_back(input1);
-
-							NodeInput input2;
-							input2.text = "input 2";
-							input2.type = "float";
-							input2.element = "range";
-							imageNode.inputs.push_back(input2);
 							
-							NodeInput input3;
-							input3.text = "input 3";
-							input3.type = "vec2";
-							input3.element = "range";
-							imageNode.inputs.push_back(input3);
-
-							imageNode.outputs.push_back(input2);
-							
-							imageNode.outputs.push_back(input2);
-
-							float rangeBarCount = 0;
-							for (size_t i = 0; i < imageNode.inputs.size(); i++){
-								if(imageNode.inputs[i].type == "float"){
-									if(imageNode.inputs[i].element == "range")
-										rangeBarCount += 1.5f;
-										
-									imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-								}
-								if(imageNode.inputs[i].type == "vec2"){
-									if(imageNode.inputs[i].element == "range")
-										rangeBarCount += 1.5f*2;
-									
-									if(imageNode.inputs[i].element == "image")
-										rangeBarCount += 1.5f;
-
-									imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-									imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-								}
-								if(imageNode.inputs[i].type == "vec3"){
-									if(imageNode.inputs[i].element == "range")
-										rangeBarCount += 1.5f*3;
-
-									if(imageNode.inputs[i].element == "image")
-										rangeBarCount += 1.5f;
-
-									imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-									imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-									imageNode.inputs[i].rangeBarsPointerPressed.push_back(false);
-								}
-							}
-							imageNode.rangeBarCount = rangeBarCount;
 							nodeScenes[selectedNodeScene].nodes.push_back(imageNode);
 						}
 						addNodeContextMenu.active = false;
