@@ -488,17 +488,26 @@ public:
 			"layout(location = 0) in vec3 aPos;\n"
 			"layout(location = 1) in vec3 aNormal;\n"
 			"layout(location = 2) in vec2 aTexCoords;\n"
+			
 			"uniform mat4 view;\n"
 			"uniform mat4 projection;\n"
+			"uniform int is3D;\n"
+			
 			"out vec2 tex_coords;\n"
 			"out vec3 normal;\n"
 			"out vec3 posModel;\n"
 			"out vec4 posScene;\n"
+			
 			"void main() {\n"
 			    "posModel = aPos;\n"
 			    "tex_coords = aTexCoords;\n"
 			    "normal = aNormal;\n"
-			    "posScene = projection * view * vec4(aPos, 0.5);\n" 
+				"if(is3D == 1){\n"
+			    	"posScene = projection * view * vec4(aPos, 0.5);\n" 
+				"}\n"
+				"else{\n"
+			    	"posScene = projection * vec4(aPos, 0.5);\n" 
+				"}\n"
 			    "gl_Position = posScene;\n"
 			"}\0";
 

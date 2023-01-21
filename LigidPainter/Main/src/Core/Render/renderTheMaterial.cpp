@@ -16,10 +16,28 @@
 #include "Core/Utilities.h"
 #include "Core/Load.hpp"
 
+std::vector<float> renderVertices = { 
+	// first triangle
+	 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+	 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+	 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+	// second triangle	  ,0,0,0,
+	 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+	 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+	 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+};
+
 void Render::renderTheNodes(NodeScene material){
 
 
     std::vector<Node> renderingPipeline;
+    GlSet glset;
+
+    //TODO : Create before the while loop
+
+    unsigned int FBO; 
+    glset.genFramebuffers(FBO);
+    glset.bindFramebuffer(FBO);
 
 
     //Default indexes
@@ -87,51 +105,107 @@ void Render::renderTheNodes(NodeScene material){
         }
     }
 
-    //std::cout << renderingPipeline.size() << ' ';
+    
+
 
     for (size_t nodeI = 0; nodeI < renderingPipeline.size(); nodeI++)
     {
-        for (size_t inputI = 0; inputI < renderingPipeline[nodeI].inputs.size(); inputI++)
-        {
-            GlSet glset;
+        Node node = renderingPipeline[nodeI];
+        unsigned int nodeProgram = node.program;
 
-            NodeInput input = renderingPipeline[nodeI].inputs[inputI];
+        for (size_t inputI = 0; inputI < node.inputs.size(); inputI++)
+        {
+            //------CREATE THE TEXTURE------
+
+
+            NodeInput input = node.inputs[inputI];
+            
             unsigned int texture;
-            glGenTextures(1, &texture);
 
             if(input.element == "range"){
-                glActiveTexture(GL_TEXTURE20);
-                glBindTexture(GL_TEXTURE_2D,texture);
-                
-                unsigned int channels;
-                int channelSize;
+                if(input.nodeConnectionIndex == 10000){
+                    glActiveTexture(GL_TEXTURE28);
+                    glGenTextures(1, &texture);
+                    glBindTexture(GL_TEXTURE_2D,texture);
 
-                if(input.type == "float"){
-                    channels = GL_RED;
-                    channelSize = 1;
-                }
-                
-                if(input.type == "vec2"){
-                    channels = GL_RG;
-                    channelSize = 2;
-                }
-                
-                if(input.type == "vec3"){
-                    channels = GL_RGB;
-                    channelSize = 3;
-                }
-                
-                GLubyte* data = new GLubyte[channelSize];
+                    unsigned int channels;
+                    int channelSize;
 
-                for (size_t i = 0; i < channelSize; i++)
-                {
-                    data[i] = input.value[i];
+                    if(input.type == "float"){
+                        channels = GL_RED;
+                        channelSize = 1;
+                    }
+
+                    if(input.type == "vec2"){
+                        channels = GL_RG;
+                        channelSize = 2;
+                    }
+
+                    if(input.type == "vec3"){
+                        channels = GL_RGB;
+                        channelSize = 3;
+                    }
+
+                    GLubyte* data = new GLubyte[channelSize];
+
+                    for (size_t i = 0; i < channelSize; i++)
+                    {
+                        data[i] = input.value[i];
+                    }
+
+                    glset.texImage(data,1,1,channels);
                 }
-                
-                glset.texImage(data,1,1,channels);
+                else{
+                    texture = material.nodes[input.nodeConnectionIndex].outputs[input.inputConnectionIndex].result;
+                }
             }
+            else if(input.element == "image"){
+                if(input.nodeConnectionIndex == 10000){
+                    texture = input.selectedTexture;
+                }
+                else{
+                    texture = material.nodes[input.nodeConnectionIndex].outputs[input.inputConnectionIndex].result;
+                }
+            }
+            else if(input.element == "none"){
+                if(input.nodeConnectionIndex == 10000){
+                    glActiveTexture(GL_TEXTURE28);
+                    glGenTextures(1, &texture);
+                }
+                else{
+                    texture = material.nodes[input.nodeConnectionIndex].outputs[input.inputConnectionIndex].result;
+                }
+            }
+
+            //------PROCESS------
+
+            glUseProgram(nodeProgram);
+            
+            glActiveTexture(GL_TEXTURE20 + inputI);
+            glBindTexture(GL_TEXTURE_2D,texture);
+            
+            glset.uniform1i(nodeProgram,("input_" + std::to_string(inputI)).c_str(),20+inputI);
         }
-        
+
+        glset.uniform1i(nodeProgram,"is3D",0);
+		
+        glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
+        glset.uniformMatrix4fv(nodeProgram,"projection",projection);
+
+        glActiveTexture(GL_TEXTURE28);
+
+        for (int outI = 0; outI < node.outputs.size(); outI++)
+        {
+            unsigned int resultTexture;
+            glset.genTextures(resultTexture);
+    	    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + outI, GL_TEXTURE_2D,  resultTexture, 0);
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glset.drawArrays(renderVertices,false);
+            
+            node.outputs[outI].result = resultTexture;
+        }
     }
-    
+
+    glset.bindFramebuffer(0);
 }

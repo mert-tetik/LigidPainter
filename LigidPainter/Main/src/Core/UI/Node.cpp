@@ -16,7 +16,8 @@
 #include "Core/Load.hpp"
 
 void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
-float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex){
+float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,
+std::vector<unsigned int> albedoTextures){
 	ColorData colorData;
 	Utilities util;
 
@@ -322,12 +323,16 @@ float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &
 
 			if(node.inputs[i].removeTextureButtonHover && glfwGetMouseButton(window,0) == GLFW_PRESS){
 				node.inputs[i].selectedTextureIndex = 10000;
+				node.inputs[i].selectedTexture = 0;
 			}
 
 
 
 			if(textureSelectionPanel.active && textureSelectionPanel.textureClicked){
 				node.inputs[i].selectedTextureIndex = textureSelectionPanel.selectedIndex;
+				node.inputs[i].selectedTexture = albedoTextures[textureSelectionPanel.selectedIndex];
+
+
 				textureSelectionPanel.selectedIndex = 10000;
 				textureSelectionPanel.active = false;
 				textureSelectionPanel.textureClicked = false;

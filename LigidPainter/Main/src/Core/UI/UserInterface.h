@@ -298,6 +298,7 @@ struct NodeInput{
 	bool addTextureButtonHover;
 	bool removeTextureButtonHover;
 	int selectedTextureIndex = 10000;
+	unsigned int selectedTexture = 0;
 	
 
 	float connectionPosX = 0;
@@ -311,6 +312,9 @@ struct NodeInput{
 
 	int nodeConnectionIndex = 10000;
 	int inputConnectionIndex = 10000;
+
+
+	unsigned int result;
 };
 
 
@@ -340,8 +344,6 @@ struct Node{
 
 
 	int renderingIndex = 10000;
-
-	std::vector<unsigned int> results;
 };
 
 struct ContextMenu {
@@ -430,7 +432,8 @@ public:
 
 	
 	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,
-	float maxScreenHeight,std::vector<Node> &nodes,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex);
+	float maxScreenHeight,std::vector<Node> &nodes,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,std::vector<unsigned int> albedoTextures);
+
 
 	
 	//Calculations and More

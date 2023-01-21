@@ -71,7 +71,7 @@ GLFWwindow* window;
 //GL_TEXTURE13 = skybox
 //GL_TEXTURE14 = texture rendering for the ui
 
-//GL_TEXTURE 20 - 28 Is reserved for nodes
+//GL_TEXTURE 20 - 27 Is reserved for nodes
 
 //Shortcuts
 
