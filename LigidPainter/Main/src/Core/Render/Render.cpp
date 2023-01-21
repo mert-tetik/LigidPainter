@@ -241,7 +241,8 @@ Icons &icons,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,
 PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,
 OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
 ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel
-,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes) {
+,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
+std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view) {
 	GlSet gls;
 	ColorData colorData;
 	Utilities util;
@@ -320,11 +321,16 @@ ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,Co
 	glActiveTexture(GL_TEXTURE13);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
 	renderSkyBox(skyBoxShaderData,renderPrograms);
-	
+
+	NodeResult nodeResult;
+	if(nodeScenes[selectedNodeScene].nodes.size() != 0)
+		nodeResult = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view);
+
 	glActiveTexture(GL_TEXTURE13);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
-	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,albedoTextures,renderPrograms,currentMaterialIndex);
+	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,albedoTextures,renderPrograms,currentMaterialIndex,nodeResult);
 	
+
 	renderAxisPointer(axisPointerShaderData,renderPrograms);
 	uiOut = renderUi(panelData, renderData, FBOScreen,icons
 		,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,

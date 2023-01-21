@@ -27,8 +27,11 @@ std::vector<float> renderVertices = {
 	 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
 };
 
-void Render::renderTheNodes(NodeScene material){
-
+NodeResult Render::renderTheNodes(NodeScene material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view){
+    
+    NodeResult nodeResult;
+    nodeResult.program = 18;
+    nodeResult.colorAttachment = 0;
 
     std::vector<Node> renderingPipeline;
     GlSet glset;
@@ -150,7 +153,7 @@ void Render::renderTheNodes(NodeScene material){
 
                     for (size_t i = 0; i < channelSize; i++)
                     {
-                        data[i] = input.value[i];
+                        data[i] = input.value[i]*255;
                     }
 
                     glset.texImage(data,1,1,channels);
@@ -196,16 +199,33 @@ void Render::renderTheNodes(NodeScene material){
 
         for (int outI = 0; outI < node.outputs.size(); outI++)
         {
-            unsigned int resultTexture;
-            glset.genTextures(resultTexture);
-    	    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + outI, GL_TEXTURE_2D,  resultTexture, 0);
+            if(node.outputs[outI].isConnectedToShaderInput){
+                nodeResult.colorAttachment = GL_COLOR_ATTACHMENT0 + outI;
+                nodeResult.program = node.program; 
+                glset.uniform1i(nodeProgram,"is3D",1);
+                glset.uniformMatrix4fv(nodeProgram,"projection",perspectiveProjection);
+                glset.uniformMatrix4fv(nodeProgram,"view",view);
 
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glset.drawArrays(renderVertices,false);
-            
-            node.outputs[outI].result = resultTexture;
+                goto end;
+            }
+            else{
+                unsigned int resultTexture;
+                glset.genTextures(resultTexture);
+    	        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + outI, GL_TEXTURE_2D,  resultTexture, 0);
+
+                glDrawBuffer(GL_COLOR_ATTACHMENT0 + outI);
+
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                glset.drawArrays(renderVertices,false);
+
+                node.outputs[outI].result = resultTexture;
+                
+            }
         }
     }
-
+    
+    end:
+    glDrawBuffer(GL_COLOR_ATTACHMENT0);
     glset.bindFramebuffer(0);
+    return nodeResult;
 }

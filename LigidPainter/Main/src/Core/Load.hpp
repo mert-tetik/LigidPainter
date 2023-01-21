@@ -571,6 +571,29 @@ public:
 	
 		return appNodes;
 	}
+	Node createOutputNode(){	
+		ColorData colorData;
+
+		Node mainOutNode;
+		mainOutNode.backColor = colorData.nodePanelColor;
+		mainOutNode.height = 0.05f;
+		mainOutNode.width = 0.12f;
+		mainOutNode.title = "Shader Out";
+
+		NodeInput mainOutInput;
+		mainOutInput.type = "vec3";
+		mainOutInput.text = "Shader";
+		mainOutInput.element = "none";
+
+		mainOutNode.inputs.push_back(mainOutInput);
+		mainOutNode.isMainOut = true;
+		mainOutNode.positionX = 0;
+		mainOutNode.positionY = 0;
+		mainOutNode.rangeBarCount = 0;
+		mainOutNode.upBarColor = glm::vec4(0,0,0,1);
+
+		return mainOutNode;
+	}
 };
 
 

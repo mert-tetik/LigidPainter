@@ -18,7 +18,7 @@ uniform int drawBrushIndicator;
 uniform int drawTxtrDemonstrator;
 uniform sampler2D currentTexture;
 
-out vec4 color;
+layout(location = 0) out vec4 color;
 
 void main() {
    if(drawTxtrDemonstrator == 1){

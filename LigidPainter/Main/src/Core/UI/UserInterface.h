@@ -313,6 +313,7 @@ struct NodeInput{
 	int nodeConnectionIndex = 10000;
 	int inputConnectionIndex = 10000;
 
+	bool isConnectedToShaderInput = false;
 
 	unsigned int result;
 };
@@ -342,6 +343,7 @@ struct Node{
 
 	unsigned int program;
 
+	bool isMainOut = false;
 
 	int renderingIndex = 10000;
 };

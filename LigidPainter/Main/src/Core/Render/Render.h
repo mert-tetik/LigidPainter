@@ -12,12 +12,16 @@
 #include "Core/UI/UserInterface.h"
 
 
+struct NodeResult{
+	unsigned int program;
+	unsigned int colorAttachment;
+};
+
 struct UndoActions
 {
 	GLubyte* undoTextures; 
 	unsigned int activeMaterial; 
 };
-
 struct ExportData
 {
 	bool exportImage;
@@ -57,7 +61,7 @@ public:
 	std::vector<unsigned int> &albedoTextures,bool paintRender,float materialsPanelSlideValue,std::vector<UIElement> &UIElements, ColorPicker &colorPicker,
 	TextureDisplayer &textureDisplayer,Cubemaps cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel,
 	int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene
-	,std::vector<Node> appNodes);
+	,std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view);
 
 
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
@@ -67,9 +71,9 @@ public:
     void renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels,Model &model,bool useModel,std::vector<unsigned int> &albedoTextures);
 private:
 	//Render The Scene
-	void renderModel(bool backfaceCulling, PBRShaderData &data,Model &model,bool renderDefault,std::vector<unsigned int> &albedoTextures,Programs programs,int currentMaterialIndex);
+	void renderModel(bool backfaceCulling, PBRShaderData &data,Model &model,bool renderDefault,std::vector<unsigned int> &albedoTextures,Programs programs,int currentMaterialIndex,NodeResult nodeResult);
 	
-	void renderTheNodes(NodeScene material);
+	NodeResult renderTheNodes(NodeScene material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view);
 
 	
 	RenderOutData renderUi(PanelData& panelData, RenderData &renderData, unsigned int FBOScreen, Icons &icons,const char* exportFileName,

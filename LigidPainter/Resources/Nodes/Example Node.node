@@ -27,7 +27,7 @@
 --list_index : none;
 --type : vec3;
 --title : Albedo color;
---element : range;
+--element : image;
 
 -input_1 :
 --list : none;

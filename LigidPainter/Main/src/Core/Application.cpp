@@ -278,9 +278,14 @@ bool LigidPainter::run()
 	//Load context menus
 	addNodeContextMenu = ui.createContextMenus(appNodes);
 
+
+	Node mainOutNode;
+	mainOutNode = load.createOutputNode();		
+
 	NodeScene emptyNodeScene;
 	emptyNodeScene.index = 0;
 	emptyNodeScene.sceneName = "material_0";
+	emptyNodeScene.nodes.push_back(mainOutNode);
 	nodeScenes.push_back(emptyNodeScene);
 
 
@@ -399,7 +404,6 @@ bool LigidPainter::run()
 	double mouseDrawingPosY = 0;
 		
 	bool doChangeStateOfTheAddNodeContextBar = true;
-
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
@@ -564,7 +568,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view);
 		}
 		
 		//double lastTime = glfwGetTime();
@@ -675,7 +679,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -1375,6 +1379,13 @@ void LigidPainter::sndPanelPlusIcon(){
 	}
 	else if(sndPanel.state == 1){
 		//Materials
+
+		ColorData colorData;
+		
+		Node mainOutNode;
+		Load load;
+		mainOutNode = load.createOutputNode();		
+
 		NodeScene emptyNodeScene;
 		emptyNodeScene.index = 0;
 		
@@ -1396,6 +1407,7 @@ void LigidPainter::sndPanelPlusIcon(){
 		}
 		
 		emptyNodeScene.sceneName = "material_" + std::to_string(emptyNodeScene.index); 
+		emptyNodeScene.nodes.push_back(mainOutNode);
 		nodeScenes.push_back(emptyNodeScene);
 	}
 }
