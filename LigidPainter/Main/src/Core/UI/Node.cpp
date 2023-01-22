@@ -15,21 +15,22 @@
 #include "Core/Utilities.h"
 #include "Core/Load.hpp"
 
+bool establishConnectionFirstRelease = false;
+
 void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
-float maxScreenWidth,float maxScreenHeight, std::vector<Node> &nodes,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,
+float maxScreenWidth,float maxScreenHeight, NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,
 std::vector<unsigned int> albedoTextures){
 	ColorData colorData;
 	Utilities util;
 
 	const float iconWidth = node.width/6.f;
 
-
 	//TODO : Check in one for loop
 	//Check if any of the node's bar is pressed
 	bool anyBarPressed = false;
-	for (int nodeI = 0; nodeI < nodes.size(); nodeI++)
+	for (int nodeI = 0; nodeI < material.nodes.size(); nodeI++)
 	{
-		if(nodes[nodeI].barPressed){
+		if(material.nodes[nodeI].barPressed){
 			anyBarPressed = true;
 			break;
 		}
@@ -37,11 +38,11 @@ std::vector<unsigned int> albedoTextures){
 
 	//Check if any of the node's input is pressed
 	bool anyInputHover = false;
-	for (int nodeI = 0; nodeI < nodes.size(); nodeI++)
+	for (int nodeI = 0; nodeI < material.nodes.size(); nodeI++)
 	{
-		for (size_t inIndex = 0; inIndex < nodes[nodeI].inputs.size(); inIndex++)
+		for (size_t inIndex = 0; inIndex < material.nodes[nodeI].inputs.size(); inIndex++)
 		{
-			if(nodes[nodeI].inputs[inIndex].connectionHover){
+			if(material.nodes[nodeI].inputs[inIndex].connectionHover){
 				anyInputHover = true;
 				break;
 			}
@@ -50,11 +51,11 @@ std::vector<unsigned int> albedoTextures){
 
 	//
 	bool anyConnectionPressed = false;
-	for (int nodeI = 0; nodeI < nodes.size(); nodeI++)
+	for (int nodeI = 0; nodeI < material.nodes.size(); nodeI++)
 	{
-		for (size_t outIndex = 0; outIndex < nodes[nodeI].outputs.size(); outIndex++)
+		for (size_t outIndex = 0; outIndex < material.nodes[nodeI].outputs.size(); outIndex++)
 		{
-			if(nodes[nodeI].outputs[outIndex].pressed){
+			if(material.nodes[nodeI].outputs[outIndex].pressed){
 				anyConnectionPressed = true;
 				break;
 			}
@@ -132,29 +133,36 @@ std::vector<unsigned int> albedoTextures){
 		//TODO : Check this algorithm
 		//Check if mouse is hover any of the inputs
 		int inputIndex;
-		for (int nodeI = 0; nodeI < nodes.size(); nodeI++)
+		for (int nodeI = 0; nodeI < material.nodes.size(); nodeI++)
 		{
-			for (int inputI = 0; inputI < nodes[nodeI].inputs.size(); inputI++)
+			for (int inputI = 0; inputI < material.nodes[nodeI].inputs.size(); inputI++)
 			{
 				//Establish connection
-				if(nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed){
+				if(material.nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed){
+					establishConnectionFirstRelease = true;
+				}
+				if(glfwGetMouseButton(window,0) == GLFW_RELEASE && establishConnectionFirstRelease){
 					node.outputs[i].inputConnectionIndex = inputI;
 					node.outputs[i].nodeConnectionIndex = nodeI;
 
-					nodes[nodeI].inputs[inputI].inputConnectionIndex = i;
-					nodes[nodeI].inputs[inputI].nodeConnectionIndex = currentNodeIndex;
+					material.nodes[nodeI].inputs[inputI].inputConnectionIndex = i;
+					material.nodes[nodeI].inputs[inputI].nodeConnectionIndex = currentNodeIndex;
 
-					if(nodes[nodeI].isMainOut){
+					if(material.nodes[nodeI].isMainOut){
 						node.outputs[i].isConnectedToShaderInput = true;
 					}
 					else{
 						node.outputs[i].isConnectedToShaderInput = false;
 					}
 
-					node.outputs[i].connectionPosX = nodes[nodeI].inputs[inputI].posX; 
-					node.outputs[i].connectionPosY = nodes[nodeI].inputs[inputI].posY; 
+					node.outputs[i].connectionPosX = material.nodes[nodeI].inputs[inputI].posX; 
+					node.outputs[i].connectionPosY = material.nodes[nodeI].inputs[inputI].posY; 
+
+					material.stateChanged = true;
+					establishConnectionFirstRelease = false;
 					break;
-				}			
+
+				}	
 			}
 		}
 		
@@ -178,8 +186,8 @@ std::vector<unsigned int> albedoTextures){
 				
 				//Render the connection on top of the connection circle (show)
 				if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
-					node.outputs[i].connectionPosX = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
-					node.outputs[i].connectionPosY = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
+					node.outputs[i].connectionPosX = material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
+					node.outputs[i].connectionPosY = material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
 				}
 		}
 
@@ -189,12 +197,13 @@ std::vector<unsigned int> albedoTextures){
 				//Severe the connection if connection is not released in a input
 				if(!anyInputHover && node.outputs[i].pressed){
 					if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
-						nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].nodeConnectionIndex = 10000;
-						nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].inputConnectionIndex = 10000;
+						material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].nodeConnectionIndex = 10000;
+						material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].inputConnectionIndex = 10000;
 					}
-					
 					node.outputs[i].nodeConnectionIndex = 10000;
 					node.outputs[i].inputConnectionIndex = 10000;
+
+					material.stateChanged = true;
 				}
 				
 				//Render the connection on top of the default connection circle (hide)
@@ -203,8 +212,8 @@ std::vector<unsigned int> albedoTextures){
 				
 				//Render the connection on top of the connection circle (show)
 				if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
-					node.outputs[i].connectionPosX = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
-					node.outputs[i].connectionPosY = nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
+					node.outputs[i].connectionPosX = material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
+					node.outputs[i].connectionPosY = material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
 				}
 			}
 			node.outputs[i].pressed = false;
@@ -334,6 +343,7 @@ std::vector<unsigned int> albedoTextures){
 			}
 
 			if(node.inputs[i].removeTextureButtonHover && glfwGetMouseButton(window,0) == GLFW_PRESS){
+				material.stateChanged = true;
 				node.inputs[i].selectedTextureIndex = 10000;
 				node.inputs[i].selectedTexture = 0;
 			}
@@ -341,6 +351,7 @@ std::vector<unsigned int> albedoTextures){
 
 
 			if(textureSelectionPanel.active && textureSelectionPanel.textureClicked && node.inputs[i].textureSelectingState){
+				material.stateChanged = true;
 				node.inputs[i].selectedTextureIndex = textureSelectionPanel.selectedIndex;
 				node.inputs[i].selectedTexture = albedoTextures[textureSelectionPanel.selectedIndex];
 
@@ -431,6 +442,7 @@ std::vector<unsigned int> albedoTextures){
 				}
 				if(node.inputs[i].rangeBarsPointerPressed[k] && !anyConnectionPressed){
         	        //Adjust the corresponding values
+					material.stateChanged = true;
 					if(k == 0){
 						node.inputs[i].value.x += xOffset/(nodePanel.zoomVal*200);
 						node.inputs[i].value.x = util.restrictBetween(node.inputs[i].value.x,1.f,0.001f);

@@ -387,6 +387,7 @@ struct NodeScene{
 	std::vector<Node> nodes;
 
 	int index;
+	bool stateChanged = true;
 };
 
 struct TextureSelectionPanel{
@@ -437,7 +438,7 @@ public:
 
 	
 	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,
-	float maxScreenHeight,std::vector<Node> &nodes,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,std::vector<unsigned int> albedoTextures);
+	float maxScreenHeight,NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,std::vector<unsigned int> albedoTextures);
 
 
 	

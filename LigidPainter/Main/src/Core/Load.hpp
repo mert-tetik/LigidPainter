@@ -573,8 +573,10 @@ public:
 	
 		return appNodes;
 	}
-	Node createOutputNode(){	
+	std::vector<Node> createOutputNode(std::vector<Node> appNodes){	
 		ColorData colorData;
+
+		std::vector<Node> result;
 
 		Node mainOutNode;
 		mainOutNode.backColor = colorData.nodePanelColor;
@@ -594,7 +596,22 @@ public:
 		mainOutNode.rangeBarCount = 0;
 		mainOutNode.upBarColor = glm::vec4(0,0,0,1);
 
-		return mainOutNode;
+		result.push_back(mainOutNode);
+		
+		appNodes[0].outputs[0].nodeConnectionIndex = 0;
+		appNodes[0].outputs[0].inputConnectionIndex = 0;
+		appNodes[0].outputs[0].isConnectedToShaderInput = true;
+		appNodes[0].outputs[0].pressed = false;
+		appNodes[0].outputs[0].connectionHover = false;
+
+		appNodes[0].positionX = -0.55;
+		appNodes[0].positionY = 0;
+
+		result.push_back(appNodes[0]);
+
+
+
+		return result;
 	}
 };
 

@@ -11,6 +11,8 @@
 
 #include "Core/Model/mesh.h"
 #include "Core/Model/model.h"
+#include <glm/gtc/type_ptr.hpp>
+
 
 #include <string>
 #include <fstream>
@@ -29,25 +31,29 @@ using namespace std;
 
 
     // draws the model, and thus all its meshes
-    void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,vector<unsigned int> albedoTextures)
+    void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,vector<unsigned int> &modelMaterialPrograms,glm::mat4 view)
     {
-        if(meshes.size() > 0){
-            glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 1.0f);
-            meshes[chosenMaterialIndex].Draw(); 
-        }
+        // if(meshes.size() > 0){
+        //     glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 1.0f);
+        //     meshes[chosenMaterialIndex].Draw(); 
+        // }
 
         for(unsigned int i = 0; i < meshes.size(); i++){
             
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D,albedoTextures[i]);
+            //glActiveTexture(GL_TEXTURE0);
+           // glBindTexture(GL_TEXTURE_2D,albedoTextures[i]);
 
-            if(useOpacity && chosenMaterialIndex != i){
-	            glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 0.1f);
-                meshes[i].Draw();
-            }            
+	        //glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 0.1f);
+	        glUseProgram(modelMaterialPrograms[meshes[i].materialIndex]);
+        	glUniformMatrix4fv(glGetUniformLocation(modelMaterialPrograms[meshes[i].materialIndex], "view"), 1,GL_FALSE, glm::value_ptr(view));
+
+            
+            meshes[i].Draw();
         }
-        if(meshes.size() > 0)
-            glBindTexture(GL_TEXTURE_2D,albedoTextures[chosenMaterialIndex]);
+        if(meshes.size() > 0){
+
+        }
+            //glBindTexture(GL_TEXTURE_2D,albedoTextures[chosenMaterialIndex]);
     }
     
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
@@ -103,7 +109,7 @@ using namespace std;
         vector<unsigned int> indices;
         vector<TextureMs> textures;
         std::string materialName;
-        int materialIndex = 10000;
+        int materialIndex = 0;
 
         // walk through each of the mesh's vertices
         for(unsigned int i = 0; i < mesh->mNumVertices; i++)

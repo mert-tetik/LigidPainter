@@ -44,7 +44,7 @@ std::vector<glm::vec2> holdLocations;
 
 bool refreshTheScreenMask = false;
 
-void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int maxScreenWidth,int maxScreenHeight,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<unsigned int> &albedoTextures,bool fillBetween) {
+void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int maxScreenWidth,int maxScreenHeight,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<unsigned int> &albedoTextures,bool fillBetween,glm::mat4 view) {
 
 	if(true){
 		holdLocations.clear();
@@ -204,7 +204,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 			//setup
 
 			//Get texture
-			render.renderTexture(textureRenderingVerticesFlipped,1080,1080,GL_TEXTURE3,GL_RED, model, false,albedoTextures);
+			render.renderTexture(textureRenderingVerticesFlipped,1080,1080,GL_TEXTURE3,GL_RED, model, false,albedoTextures,view);
 			//Get texture
 
 			//Finish

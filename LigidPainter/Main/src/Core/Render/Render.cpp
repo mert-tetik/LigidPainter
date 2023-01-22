@@ -190,13 +190,13 @@ void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* 
 	}
 }
 
-void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels,Model &model,bool useModel,vector<unsigned int> &albedoTextures){
+void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels,Model &model,bool useModel,vector<unsigned int> &modelMaterialPrograms,glm::mat4 view){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     GlSet gl;
 
 	if(useModel)
-		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,albedoTextures);
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterialPrograms,view);
 	else
 		gl.drawArrays(vertices, false); //Render Model
 
@@ -242,7 +242,7 @@ PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurV
 OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
 ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel
 ,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
-std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view) {
+std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<unsigned int> &modelMaterialPrograms,bool &newModelAdded) {
 	GlSet gls;
 	ColorData colorData;
 	Utilities util;
@@ -273,7 +273,7 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view) {
 		renderDepthCounter = 0;
 	}
 	if (renderDepthCounter == 1) {//Get depth texture
-		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,albedoTextures,renderPrograms,currentMaterialIndex, renderMaxScreenWidth , renderMaxScreenHeight);
+		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,modelMaterialPrograms,renderPrograms,currentMaterialIndex, renderMaxScreenWidth , renderMaxScreenHeight,view);
 	}
 
 
@@ -297,12 +297,8 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view) {
 			currentMaterialIndex = 0;		
 			for (size_t i = 0; i < albedoTextures.size(); i++) //Paint outside of the uv's of the albedo textures in one color before exporting
 			{
-				//Bind the related texture
-				gls.activeTexture(GL_TEXTURE0);
-				gls.bindTexture(albedoTextures[i]);
-
 				//Render the texture 	
-				renderTextures(FBOScreen, (i == albedoTextures.size()-1) ,UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,true,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,undoList,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight);
+				renderTextures(FBOScreen, (i == albedoTextures.size()-1) ,UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,true,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,undoList,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterialPrograms,view);
 
 				//Render material by material
 				currentMaterialIndex++;
@@ -310,25 +306,34 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view) {
 
 			//Set everything back to normal
 			currentMaterialIndex = lastMaterialIndex;
-			gls.activeTexture(GL_TEXTURE0);
-			gls.bindTexture(albedoTextures[currentMaterialIndex]);
-
 		}
 		else
-			renderTextures(FBOScreen,exportData.exportImage,UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,undoList,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight);
+			renderTextures(FBOScreen,exportData.exportImage,UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,undoList,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterialPrograms,view);
 	}
 
 	glActiveTexture(GL_TEXTURE13);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
 	renderSkyBox(skyBoxShaderData,renderPrograms);
 
-	NodeResult nodeResult;
-	if(nodeScenes[selectedNodeScene].nodes.size() != 0)
-		nodeResult = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,renderMaxScreenWidth,screenSizeX,renderMaxScreenHeight,screenSizeY);
+	if(model.meshes.size() != 0){
+		if(nodeScenes[model.meshes[currentMaterialIndex].materialIndex].stateChanged || newModelAdded){
+			if(newModelAdded){
+				for (size_t i = 0; i < modelMaterialPrograms.size(); i++)
+				{
+					modelMaterialPrograms[i] = renderTheNodes(nodeScenes[model.meshes[i].materialIndex],model,perspectiveProjection,view,renderMaxScreenWidth,screenSizeX,renderMaxScreenHeight,screenSizeY);
+				}
+				newModelAdded = false;
+			}
+			else{
+				modelMaterialPrograms[currentMaterialIndex] = renderTheNodes(nodeScenes[model.meshes[currentMaterialIndex].materialIndex],model,perspectiveProjection,view,renderMaxScreenWidth,screenSizeX,renderMaxScreenHeight,screenSizeY);
+				nodeScenes[model.meshes[currentMaterialIndex].materialIndex].stateChanged = false;
+			}
+		}
+	}
 
 	glActiveTexture(GL_TEXTURE13);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
-	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,albedoTextures,renderPrograms,currentMaterialIndex,nodeResult);
+	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterialPrograms,renderPrograms,currentMaterialIndex,view);
 	
 
 	renderAxisPointer(axisPointerShaderData,renderPrograms);

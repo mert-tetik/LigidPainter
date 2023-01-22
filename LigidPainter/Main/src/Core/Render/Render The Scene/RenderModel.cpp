@@ -9,8 +9,8 @@
 #include "Core/gl.h"
 
 
-void Render::renderModel(bool backfaceCulling,PBRShaderData &data,Model &model,bool renderDefault, vector<unsigned int> &albedoTextures,Programs programs,
-int currentMaterialIndex,NodeResult nodeResult) {
+void Render::renderModel(bool backfaceCulling,PBRShaderData &data,Model &model,bool renderDefault, vector<unsigned int> &modelMaterialPrograms,Programs programs,
+int currentMaterialIndex,glm::mat4 view) {
 	glDepthFunc(GL_LESS); 
 
     GlSet gl;
@@ -21,11 +21,8 @@ int currentMaterialIndex,NodeResult nodeResult) {
 		gl.cullFace(GL_BACK);
 	}
 	//gl.meshDataToShaders();
-
-	glUseProgram(nodeResult.program);
-
 	
-	model.Draw(currentMaterialIndex,programs.PBRProgram,true,albedoTextures);
+	model.Draw(currentMaterialIndex,programs.PBRProgram,true,modelMaterialPrograms,view);
 
 	gl.disable(GL_CULL_FACE); //Disable backface culling if enabled
 

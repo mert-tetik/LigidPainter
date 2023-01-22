@@ -29,8 +29,8 @@ std::vector<float> renderVertices = {
 
 std::vector<Node> renderingPipeline;
 
-NodeResult Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY){
-    
+unsigned int Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY){
+    unsigned int resultProgram = 0;
 
     for (size_t i = 0; i < renderingPipeline.size(); i++)
     {
@@ -41,10 +41,6 @@ NodeResult Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 per
         }
     }
     renderingPipeline.clear();
-
-    NodeResult nodeResult;
-    nodeResult.program = 18;
-    nodeResult.colorAttachment = 0;
 
     GlSet glset;
 
@@ -172,7 +168,6 @@ NodeResult Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 per
                 }
                 else{
                     texture = renderingPipeline[material.nodes[renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;
-                    std::cout << texture << ' ';
                 }
             }
             else if(renderingPipeline[nodeI].inputs[inputI].element == "none"){
@@ -204,8 +199,7 @@ NodeResult Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 per
         for (int outI = 0; outI < renderingPipeline[nodeI].outputs.size(); outI++)
         {
             if(renderingPipeline[nodeI].outputs[outI].isConnectedToShaderInput){
-                nodeResult.colorAttachment = outI;
-                nodeResult.program = renderingPipeline[nodeI].program; 
+                resultProgram = renderingPipeline[nodeI].program; 
                 glset.uniform1i(nodeProgram,"is3D",1);
                 glset.uniformMatrix4fv(nodeProgram,"projection",perspectiveProjection);
                 glset.uniformMatrix4fv(nodeProgram,"view",view);
@@ -262,5 +256,5 @@ NodeResult Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 per
     glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 
 
-    return nodeResult;
+    return resultProgram;
 }

@@ -20,7 +20,7 @@ public:
 
 
     // draws the model, and thus all its meshes
-    void Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<unsigned int> albedoTextures);
+    void Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<unsigned int> &modelMaterialPrograms,glm::mat4 view);
     
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void loadModel(std::string const &path,bool triangulate);
