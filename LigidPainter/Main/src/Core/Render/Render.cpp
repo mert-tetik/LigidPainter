@@ -324,7 +324,7 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view) {
 
 	NodeResult nodeResult;
 	if(nodeScenes[selectedNodeScene].nodes.size() != 0)
-		nodeResult = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view);
+		nodeResult = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,renderMaxScreenWidth,screenSizeX,renderMaxScreenHeight,screenSizeY);
 
 	glActiveTexture(GL_TEXTURE13);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);

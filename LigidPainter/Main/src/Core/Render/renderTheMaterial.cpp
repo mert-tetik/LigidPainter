@@ -27,24 +27,37 @@ std::vector<float> renderVertices = {
 	 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
 };
 
-NodeResult Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view){
+std::vector<Node> renderingPipeline;
+
+NodeResult Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY){
     
+
+    for (size_t i = 0; i < renderingPipeline.size(); i++)
+    {
+        //Removal of the previous output textures
+        for (size_t outI = 0; outI < renderingPipeline[i].outputs.size(); outI++)
+        {
+            glDeleteTextures(1,&renderingPipeline[i].outputs[outI].result);
+        }
+    }
+    renderingPipeline.clear();
+
     NodeResult nodeResult;
     nodeResult.program = 18;
     nodeResult.colorAttachment = 0;
 
-    std::vector<Node> renderingPipeline;
     GlSet glset;
 
+    glset.viewport(1920,1080);
     //TODO : Create before the while loop
 
 
 
 
-    //Default indexes
     for (size_t i = 0; i < material.nodes.size(); i++)
     {
-        material.nodes[i].renderingIndex = 10000;
+        //Default indexes
+        material.nodes[i].renderingIndex = 10000;        
     }
     
 
@@ -217,8 +230,7 @@ NodeResult Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 per
                 
                 GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5,GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7 };
                 glDrawBuffers(8, drawBuffers);
-                
-                glDrawBuffers(8,drawBuffers);
+
                 glReadBuffer(GL_COLOR_ATTACHMENT0 + outI);
                 
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -231,8 +243,11 @@ NodeResult Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 per
 
                 glset.texImage(data,1920,1080,GL_RGBA);
                 glset.generateMipmap();
+
+                delete[] data;
                 
                 glset.bindFramebuffer(0);
+                glset.deleteFramebuffers(FBO);
 
                 renderingPipeline[nodeI].outputs[outI].result = resultTexture;
                 
@@ -240,8 +255,12 @@ NodeResult Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 per
         }
     }
     
+    
     end:
     glset.bindFramebuffer(0);
 	glset.bindRenderBuffer(0);
+    glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
+
+
     return nodeResult;
 }
