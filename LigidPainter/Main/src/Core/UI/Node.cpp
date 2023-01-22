@@ -326,6 +326,11 @@ std::vector<unsigned int> albedoTextures){
 				textureSelectionPanel.active = true;
 				textureSelectionPanel.posX = node.inputs[i].posX;
 				textureSelectionPanel.posY = node.inputs[i].posY;
+				node.inputs[i].textureSelectingState = true;
+			}
+
+			if(!textureSelectionPanel.active){
+				node.inputs[i].textureSelectingState = false;
 			}
 
 			if(node.inputs[i].removeTextureButtonHover && glfwGetMouseButton(window,0) == GLFW_PRESS){
@@ -335,7 +340,7 @@ std::vector<unsigned int> albedoTextures){
 
 
 
-			if(textureSelectionPanel.active && textureSelectionPanel.textureClicked){
+			if(textureSelectionPanel.active && textureSelectionPanel.textureClicked && node.inputs[i].textureSelectingState){
 				node.inputs[i].selectedTextureIndex = textureSelectionPanel.selectedIndex;
 				node.inputs[i].selectedTexture = albedoTextures[textureSelectionPanel.selectedIndex];
 

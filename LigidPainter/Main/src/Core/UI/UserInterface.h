@@ -313,7 +313,10 @@ struct NodeInput{
 	int nodeConnectionIndex = 10000;
 	int inputConnectionIndex = 10000;
 
+
 	bool isConnectedToShaderInput = false;
+	
+	bool textureSelectingState = false;
 
 	unsigned int result;
 };

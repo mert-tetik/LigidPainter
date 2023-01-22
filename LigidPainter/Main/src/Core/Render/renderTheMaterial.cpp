@@ -27,7 +27,7 @@ std::vector<float> renderVertices = {
 	 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
 };
 
-NodeResult Render::renderTheNodes(NodeScene material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view){
+NodeResult Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view){
     
     NodeResult nodeResult;
     nodeResult.program = 18;
@@ -38,9 +38,7 @@ NodeResult Render::renderTheNodes(NodeScene material,Model &model,glm::mat4 pers
 
     //TODO : Create before the while loop
 
-    unsigned int FBO; 
-    glset.genFramebuffers(FBO);
-    glset.bindFramebuffer(FBO);
+
 
 
     //Default indexes
@@ -49,7 +47,6 @@ NodeResult Render::renderTheNodes(NodeScene material,Model &model,glm::mat4 pers
         material.nodes[i].renderingIndex = 10000;
     }
     
-    int renderingIndex = 0;
 
     //Process indexes independant nodes
     for (size_t i = 0; i < material.nodes.size(); i++)
@@ -72,8 +69,7 @@ NodeResult Render::renderTheNodes(NodeScene material,Model &model,glm::mat4 pers
         
         if(!nodeHasInputConnection){
             renderingPipeline.push_back(material.nodes[i]);
-            material.nodes[i].renderingIndex = renderingIndex; 
-            renderingIndex++;
+            material.nodes[i].renderingIndex = renderingPipeline.size()-1; 
         }
     }
     for (int i = 0; i < 1000; i++)
@@ -98,8 +94,7 @@ NodeResult Render::renderTheNodes(NodeScene material,Model &model,glm::mat4 pers
             }
             if(addToPipeline){
                 renderingPipeline.push_back(material.nodes[nodeI]);
-                material.nodes[nodeI].renderingIndex = renderingIndex; 
-                renderingIndex++;
+                material.nodes[nodeI].renderingIndex = renderingPipeline.size()-1; 
                 isChangesAreMade = true;
             }
         }
@@ -113,20 +108,16 @@ NodeResult Render::renderTheNodes(NodeScene material,Model &model,glm::mat4 pers
 
     for (size_t nodeI = 0; nodeI < renderingPipeline.size(); nodeI++)
     {
-        Node node = renderingPipeline[nodeI];
-        unsigned int nodeProgram = node.program;
+        unsigned int nodeProgram = renderingPipeline[nodeI].program;
 
-        for (size_t inputI = 0; inputI < node.inputs.size(); inputI++)
+        for (size_t inputI = 0; inputI < renderingPipeline[nodeI].inputs.size(); inputI++)
         {
             //------CREATE THE TEXTURE------
 
-
-            NodeInput input = node.inputs[inputI];
-            
             unsigned int texture;
 
-            if(input.element == "range"){
-                if(input.nodeConnectionIndex == 10000){
+            if(renderingPipeline[nodeI].inputs[inputI].element == "range"){
+                if(renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
                     glActiveTexture(GL_TEXTURE28);
                     glGenTextures(1, &texture);
                     glBindTexture(GL_TEXTURE_2D,texture);
@@ -134,17 +125,17 @@ NodeResult Render::renderTheNodes(NodeScene material,Model &model,glm::mat4 pers
                     unsigned int channels;
                     int channelSize;
 
-                    if(input.type == "float"){
+                    if(renderingPipeline[nodeI].inputs[inputI].type == "float"){
                         channels = GL_RED;
                         channelSize = 1;
                     }
 
-                    if(input.type == "vec2"){
+                    if(renderingPipeline[nodeI].inputs[inputI].type == "vec2"){
                         channels = GL_RG;
                         channelSize = 2;
                     }
 
-                    if(input.type == "vec3"){
+                    if(renderingPipeline[nodeI].inputs[inputI].type == "vec3"){
                         channels = GL_RGB;
                         channelSize = 3;
                     }
@@ -153,30 +144,30 @@ NodeResult Render::renderTheNodes(NodeScene material,Model &model,glm::mat4 pers
 
                     for (size_t i = 0; i < channelSize; i++)
                     {
-                        data[i] = input.value[i]*255;
+                        data[i] = renderingPipeline[nodeI].inputs[inputI].value[i]*255;
                     }
 
                     glset.texImage(data,1,1,channels);
                 }
                 else{
-                    texture = material.nodes[input.nodeConnectionIndex].outputs[input.inputConnectionIndex].result;
+                    texture = renderingPipeline[material.nodes[renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;
                 }
             }
-            else if(input.element == "image"){
-                if(input.nodeConnectionIndex == 10000){
-                    texture = input.selectedTexture;
+            else if(renderingPipeline[nodeI].inputs[inputI].element == "image"){
+                if(renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
+                    texture = renderingPipeline[nodeI].inputs[inputI].selectedTexture;
                 }
                 else{
-                    texture = material.nodes[input.nodeConnectionIndex].outputs[input.inputConnectionIndex].result;
+                    texture = renderingPipeline[material.nodes[renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;
+                    std::cout << texture << ' ';
                 }
             }
-            else if(input.element == "none"){
-                if(input.nodeConnectionIndex == 10000){
-                    glActiveTexture(GL_TEXTURE28);
+            else if(renderingPipeline[nodeI].inputs[inputI].element == "none"){
+                if(renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
                     glGenTextures(1, &texture);
                 }
                 else{
-                    texture = material.nodes[input.nodeConnectionIndex].outputs[input.inputConnectionIndex].result;
+                    texture = renderingPipeline[material.nodes[renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;
                 }
             }
 
@@ -192,16 +183,16 @@ NodeResult Render::renderTheNodes(NodeScene material,Model &model,glm::mat4 pers
 
         glset.uniform1i(nodeProgram,"is3D",0);
 		
-        glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
+        glm::mat4 projection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
         glset.uniformMatrix4fv(nodeProgram,"projection",projection);
 
         glActiveTexture(GL_TEXTURE28);
 
-        for (int outI = 0; outI < node.outputs.size(); outI++)
+        for (int outI = 0; outI < renderingPipeline[nodeI].outputs.size(); outI++)
         {
-            if(node.outputs[outI].isConnectedToShaderInput){
-                nodeResult.colorAttachment = GL_COLOR_ATTACHMENT0 + outI;
-                nodeResult.program = node.program; 
+            if(renderingPipeline[nodeI].outputs[outI].isConnectedToShaderInput){
+                nodeResult.colorAttachment = outI;
+                nodeResult.program = renderingPipeline[nodeI].program; 
                 glset.uniform1i(nodeProgram,"is3D",1);
                 glset.uniformMatrix4fv(nodeProgram,"projection",perspectiveProjection);
                 glset.uniformMatrix4fv(nodeProgram,"view",view);
@@ -209,23 +200,48 @@ NodeResult Render::renderTheNodes(NodeScene material,Model &model,glm::mat4 pers
                 goto end;
             }
             else{
+                glActiveTexture(GL_TEXTURE28);
+                
                 unsigned int resultTexture;
                 glset.genTextures(resultTexture);
+                glset.bindTexture(resultTexture);
+
+                glset.texImage(nullptr,1920,1080,GL_RGBA);
+                glset.generateMipmap();
+                
+                unsigned int FBO; 
+                glset.genFramebuffers(FBO);
+                glset.bindFramebuffer(FBO);
+
     	        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + outI, GL_TEXTURE_2D,  resultTexture, 0);
-
-                glDrawBuffer(GL_COLOR_ATTACHMENT0 + outI);
-
+                
+                GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5,GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7 };
+                glDrawBuffers(8, drawBuffers);
+                
+                glDrawBuffers(8,drawBuffers);
+                glReadBuffer(GL_COLOR_ATTACHMENT0 + outI);
+                
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
                 glset.drawArrays(renderVertices,false);
+                glset.generateMipmap();
 
-                node.outputs[outI].result = resultTexture;
+                GLubyte* data = new GLubyte[1920*1080*4];
+                glReadPixels(0,0,1920,1080,GL_RGBA,GL_UNSIGNED_BYTE,data);
+
+                glset.texImage(data,1920,1080,GL_RGBA);
+                glset.generateMipmap();
+                
+                glset.bindFramebuffer(0);
+
+                renderingPipeline[nodeI].outputs[outI].result = resultTexture;
                 
             }
         }
     }
     
     end:
-    glDrawBuffer(GL_COLOR_ATTACHMENT0);
     glset.bindFramebuffer(0);
+	glset.bindRenderBuffer(0);
     return nodeResult;
 }

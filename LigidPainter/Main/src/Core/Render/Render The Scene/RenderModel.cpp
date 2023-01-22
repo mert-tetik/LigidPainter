@@ -23,9 +23,8 @@ int currentMaterialIndex,NodeResult nodeResult) {
 	//gl.meshDataToShaders();
 
 	glUseProgram(nodeResult.program);
-	//glDrawBuffer(nodeResult.colorAttachment);
-	//glBindFragDataLocation(nodeResult.program, 0, "Color");
 
+	
 	model.Draw(currentMaterialIndex,programs.PBRProgram,true,albedoTextures);
 
 	gl.disable(GL_CULL_FACE); //Disable backface culling if enabled

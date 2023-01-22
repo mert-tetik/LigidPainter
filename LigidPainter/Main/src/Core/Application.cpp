@@ -381,6 +381,40 @@ bool LigidPainter::run()
 	glset.bindRenderBuffer(0);
 
 
+
+
+
+	//Node rendering FBO
+	unsigned int FBO; 
+    glset.genFramebuffers(FBO);
+    glset.bindFramebuffer(FBO);
+    // unsigned int RBO;
+	// glset.genRenderbuffers(RBO);
+	// glset.bindRenderBuffer(RBO);
+
+    const GLenum buffers[]{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2,GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4,GL_COLOR_ATTACHMENT5,GL_COLOR_ATTACHMENT6,GL_COLOR_ATTACHMENT7};
+    glDrawBuffers( 8, buffers );
+
+	std::vector<unsigned int> nodeRenderingTextures = {
+		0,0,0,0,0,0,0,0
+	};
+	for (size_t i = 0; i < nodeRenderingTextures.size(); i++)
+	{
+    	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D,  nodeRenderingTextures[i], 0);
+		
+	}
+	
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA16, windowData.windowMaxWidth, windowData.windowMaxHeight);
+
+	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + outI, GL_RENDERBUFFER, RBO);
+	
+	glset.bindFramebuffer(0);
+	glset.bindRenderBuffer(0);
+
+
+
+
+
 	pbrShaderData.bluryskybox = 13;
 	pbrShaderData.depthTexture = 9;
 	pbrShaderData.materialDiffuse = 0;

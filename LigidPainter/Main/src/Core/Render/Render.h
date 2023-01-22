@@ -73,7 +73,7 @@ private:
 	//Render The Scene
 	void renderModel(bool backfaceCulling, PBRShaderData &data,Model &model,bool renderDefault,std::vector<unsigned int> &albedoTextures,Programs programs,int currentMaterialIndex,NodeResult nodeResult);
 	
-	NodeResult renderTheNodes(NodeScene material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view);
+	NodeResult renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view);
 
 	
 	RenderOutData renderUi(PanelData& panelData, RenderData &renderData, unsigned int FBOScreen, Icons &icons,const char* exportFileName,

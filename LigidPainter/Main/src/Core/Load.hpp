@@ -506,7 +506,7 @@ public:
 			    	"posScene = projection * view * vec4(aPos, 0.5);\n" 
 				"}\n"
 				"else{\n"
-			    	"posScene = projection * vec4(aPos, 0.5);\n" 
+			    	"posScene = projection * vec4(aPos, 1);\n" 
 				"}\n"
 			    "gl_Position = posScene;\n"
 			"}\0";
@@ -516,6 +516,8 @@ public:
 		unsigned int fragShader = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fragShader, 1, &shaderSource, NULL);
 		glCompileShader(fragShader);
+
+		std::cout << node.code;
 
 		//Test the shader
 		int success;
