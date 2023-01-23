@@ -9,7 +9,7 @@
 #include "Core/gl.h"
 
 
-void Render::renderModel(bool backfaceCulling,PBRShaderData &data,Model &model,bool renderDefault, vector<unsigned int> &modelMaterialPrograms,Programs programs,
+void Render::renderModel(bool backfaceCulling,PBRShaderData &data,Model &model,bool renderDefault, vector<MaterialOut> &modelMaterials,Programs programs,
 int currentMaterialIndex,glm::mat4 view) {
 	glDepthFunc(GL_LESS); 
 
@@ -22,7 +22,7 @@ int currentMaterialIndex,glm::mat4 view) {
 	}
 	//gl.meshDataToShaders();
 	
-	model.Draw(currentMaterialIndex,programs.PBRProgram,true,modelMaterialPrograms,view);
+	model.Draw(currentMaterialIndex,programs.PBRProgram,true,modelMaterials,view);
 
 	gl.disable(GL_CULL_FACE); //Disable backface culling if enabled
 

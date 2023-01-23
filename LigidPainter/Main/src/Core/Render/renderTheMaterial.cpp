@@ -29,17 +29,18 @@ std::vector<float> renderVertices = {
 
 std::vector<Node> renderingPipeline;
 
-unsigned int Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY){
-    unsigned int resultProgram = 0;
+MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY){
+    
+    MaterialOut resultOut;
 
-    for (size_t i = 0; i < renderingPipeline.size(); i++)
-    {
-        //Removal of the previous output textures
-        for (size_t outI = 0; outI < renderingPipeline[i].outputs.size(); outI++)
-        {
-            glDeleteTextures(1,&renderingPipeline[i].outputs[outI].result);
-        }
-    }
+    // for (size_t i = 0; i < renderingPipeline.size(); i++)
+    // {
+    //     //Removal of the previous output textures
+    //     for (size_t outI = 0; outI < renderingPipeline[i].outputs.size(); outI++)
+    //     {
+    //         glDeleteTextures(1,&renderingPipeline[i].outputs[outI].result);
+    //     }
+    // }
     renderingPipeline.clear();
 
     GlSet glset;
@@ -187,6 +188,7 @@ unsigned int Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 p
             glBindTexture(GL_TEXTURE_2D,texture);
             
             glset.uniform1i(nodeProgram,("input_" + std::to_string(inputI)).c_str(),20+inputI);
+            resultOut.textures.push_back(texture);
         }
 
         glset.uniform1i(nodeProgram,"is3D",0);
@@ -199,7 +201,7 @@ unsigned int Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 p
         for (int outI = 0; outI < renderingPipeline[nodeI].outputs.size(); outI++)
         {
             if(renderingPipeline[nodeI].outputs[outI].isConnectedToShaderInput){
-                resultProgram = renderingPipeline[nodeI].program; 
+                resultOut.program = renderingPipeline[nodeI].program; 
                 glset.uniform1i(nodeProgram,"is3D",1);
                 glset.uniformMatrix4fv(nodeProgram,"projection",perspectiveProjection);
                 glset.uniformMatrix4fv(nodeProgram,"view",view);
@@ -245,6 +247,7 @@ unsigned int Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 p
 
                 renderingPipeline[nodeI].outputs[outI].result = resultTexture;
                 
+                resultOut.textures.clear();
             }
         }
     }
@@ -256,5 +259,5 @@ unsigned int Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 p
     glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 
 
-    return resultProgram;
+    return resultOut;
 }

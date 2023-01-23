@@ -129,7 +129,7 @@ void UserInterface::panel(float panelLoc, float) {
 	box(panelWidth, panelHeigth - 0.02f, panelLoc + panelWidth + 0.02f, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
 
 }
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<unsigned int> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<unsigned int> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -286,7 +286,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				isHover = true;
  				
 				if(glfwGetMouseButton(window,0) == GLFW_PRESS){
+					//TODO : Update once is changed
 					selectedNodeScene = i;
+					newModelAdded = true;
 				}
 			}
 			else{

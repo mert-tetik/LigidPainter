@@ -11,6 +11,7 @@
 
 #include "Core/Model/mesh.h"
 #include "Core/Model/model.h"
+
 #include <glm/gtc/type_ptr.hpp>
 
 
@@ -29,9 +30,8 @@ using namespace std;
     vector<Mesh>    meshes;
     string directory;
 
-
     // draws the model, and thus all its meshes
-    void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,vector<unsigned int> &modelMaterialPrograms,glm::mat4 view)
+    void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view)
     {
         // if(meshes.size() > 0){
         //     glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 1.0f);
@@ -44,15 +44,24 @@ using namespace std;
            // glBindTexture(GL_TEXTURE_2D,albedoTextures[i]);
 
 	        //glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 0.1f);
-	        glUseProgram(modelMaterialPrograms[meshes[i].materialIndex]);
-        	glUniformMatrix4fv(glGetUniformLocation(modelMaterialPrograms[meshes[i].materialIndex], "view"), 1,GL_FALSE, glm::value_ptr(view));
+	        glUseProgram(modelMaterials[meshes[i].materialIndex].program);
+        	glUniformMatrix4fv(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "view"), 1,GL_FALSE, glm::value_ptr(view));
 
+
+            for (size_t txtI = 0; txtI < modelMaterials[meshes[i].materialIndex].textures.size(); txtI++)
+            {
+                glActiveTexture(GL_TEXTURE20 + txtI);
+                glBindTexture(GL_TEXTURE_2D,modelMaterials[meshes[i].materialIndex].textures[txtI]);
+            
+            	glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, ("input_" + std::to_string(txtI)).c_str()), 20+txtI);
+            }
             
             meshes[i].Draw();
         }
         if(meshes.size() > 0){
 
         }
+        //std::cout << '\n';
             //glBindTexture(GL_TEXTURE_2D,albedoTextures[chosenMaterialIndex]);
     }
     

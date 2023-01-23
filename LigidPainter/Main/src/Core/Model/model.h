@@ -6,9 +6,15 @@
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
+
 #include "mesh.h"
 
 using namespace std;
+
+struct MaterialOut{
+	unsigned int program;
+	std::vector<unsigned int> textures;
+};
 
 class Model 
 {
@@ -20,13 +26,12 @@ public:
 
 
     // draws the model, and thus all its meshes
-    void Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<unsigned int> &modelMaterialPrograms,glm::mat4 view);
+    void Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view);
     
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void loadModel(std::string const &path,bool triangulate);
 
 private:
-
     void processNode(aiNode *node, const aiScene *scene);
 
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);

@@ -190,13 +190,13 @@ void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* 
 	}
 }
 
-void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels,Model &model,bool useModel,vector<unsigned int> &modelMaterialPrograms,glm::mat4 view){
+void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels,Model &model,bool useModel,vector<MaterialOut> &modelMaterials,glm::mat4 view){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     GlSet gl;
 
 	if(useModel)
-		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterialPrograms,view);
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterials,view);
 	else
 		gl.drawArrays(vertices, false); //Render Model
 
@@ -242,7 +242,7 @@ PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurV
 OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
 ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel
 ,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
-std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<unsigned int> &modelMaterialPrograms,bool &newModelAdded) {
+std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded) {
 	GlSet gls;
 	ColorData colorData;
 	Utilities util;
@@ -273,7 +273,7 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::v
 		renderDepthCounter = 0;
 	}
 	if (renderDepthCounter == 1) {//Get depth texture
-		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,modelMaterialPrograms,renderPrograms,currentMaterialIndex, renderMaxScreenWidth , renderMaxScreenHeight,view);
+		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex, renderMaxScreenWidth , renderMaxScreenHeight,view);
 	}
 
 
@@ -298,7 +298,7 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::v
 			for (size_t i = 0; i < albedoTextures.size(); i++) //Paint outside of the uv's of the albedo textures in one color before exporting
 			{
 				//Render the texture 	
-				renderTextures(FBOScreen, (i == albedoTextures.size()-1) ,UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,true,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,undoList,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterialPrograms,view);
+				renderTextures(FBOScreen, (i == albedoTextures.size()-1) ,UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,true,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,undoList,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterials,view);
 
 				//Render material by material
 				currentMaterialIndex++;
@@ -308,32 +308,26 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::v
 			currentMaterialIndex = lastMaterialIndex;
 		}
 		else
-			renderTextures(FBOScreen,exportData.exportImage,UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,undoList,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterialPrograms,view);
+			renderTextures(FBOScreen,exportData.exportImage,UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,undoList,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterials,view);
 	}
 
 	glActiveTexture(GL_TEXTURE13);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
 	renderSkyBox(skyBoxShaderData,renderPrograms);
+	
+
 
 	if(model.meshes.size() != 0){
-		if(nodeScenes[model.meshes[currentMaterialIndex].materialIndex].stateChanged || newModelAdded){
-			if(newModelAdded){
-				for (size_t i = 0; i < modelMaterialPrograms.size(); i++)
-				{
-					modelMaterialPrograms[i] = renderTheNodes(nodeScenes[model.meshes[i].materialIndex],model,perspectiveProjection,view,renderMaxScreenWidth,screenSizeX,renderMaxScreenHeight,screenSizeY);
-				}
-				newModelAdded = false;
-			}
-			else{
-				modelMaterialPrograms[currentMaterialIndex] = renderTheNodes(nodeScenes[model.meshes[currentMaterialIndex].materialIndex],model,perspectiveProjection,view,renderMaxScreenWidth,screenSizeX,renderMaxScreenHeight,screenSizeY);
-				nodeScenes[model.meshes[currentMaterialIndex].materialIndex].stateChanged = false;
-			}
+		if(nodeScenes[selectedNodeScene].stateChanged || newModelAdded){
+			modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,renderMaxScreenWidth,screenSizeX,renderMaxScreenHeight,screenSizeY);
+			nodeScenes[selectedNodeScene].stateChanged = false;
+			newModelAdded = false;
 		}
 	}
 
 	glActiveTexture(GL_TEXTURE13);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
-	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterialPrograms,renderPrograms,currentMaterialIndex,view);
+	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view);
 	
 
 	renderAxisPointer(axisPointerShaderData,renderPrograms);
@@ -342,7 +336,7 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::v
 		brushBlurVal,outShaderData,model,albedoTextures,renderPrograms,currentMaterialIndex,renderMaxScreenWidth,
 		renderMaxScreenHeight, saturationValShaderData,currentBrushMaskTexture,materialsPanelSlideValue,UIElements,
 		colorPicker,textureDisplayer,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,
-		nodeScenes,selectedNodeScene,appNodes);
+		nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials);
 
 
 	colorPicker.updatePickerVal = colorPicker.saturationValueValChanged && !colorPicker.hexValTextBoxGotInput; 

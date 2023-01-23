@@ -65,7 +65,7 @@ float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned in
 ,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
 ,NodePanel &nodePanel,SndPanel &sndPanel, int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,
-std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes) {
+std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -157,7 +157,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.555f , 0.01f , icons.Export , 0.0f , colorData.iconColor , colorData.iconColorHover);
 
 
-		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene);
+		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded);
 		
 		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons,nodeScenes,selectedNodeScene);
 		
@@ -237,10 +237,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 					//Pressed
 					currentMaterialIndex = i;
 					uiOut.texturePanelButtonClicked = true;
-
-					//Bind the related texture
-					gl.activeTexture(GL_TEXTURE0);
-					gl.bindTexture(albedoTextures[currentMaterialIndex]);
 				}
 
 				glm::vec4 currentColor;
@@ -279,6 +275,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 					//Pressed
 					//uiOut.texturePanelButtonClicked = true;
 					currentMaterialIndex = i;
+					newModelAdded = true; 
 
 					model.meshes[i].materialIndex = selectedNodeScene;
 				}
