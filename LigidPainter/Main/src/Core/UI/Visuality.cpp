@@ -106,10 +106,10 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	ColorData colorData;
 
 	if (!isTextBox) {
-		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor);
+		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor,0.99999f);
 	}
 	else {
-		renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor);
+		renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,0.99999f);
 	}
 	glset.uniform1i(uiPrograms.uiProgram, "isUiTextureUsed", 0);
 }
@@ -171,7 +171,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 	if(state == 0){
 		glUseProgram(programs.uiProgram);
-		renderText(programs.uiProgram,"Textures",panelLoc-0.35f,0.84f,0.00032f,colorData.textColor);
+		renderText(programs.uiProgram,"Textures",panelLoc-0.35f,0.84f,0.00032f,colorData.textColor,0.99999f);
 		
 		glUseProgram(programs.renderTheTextureProgram);
 	
@@ -240,7 +240,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	if(state == 1){
 
 		glUseProgram(programs.uiProgram);
-		renderText(programs.uiProgram,"Materials",panelLoc-0.35f,0.84f,0.00032f,colorData.textColor);
+		renderText(programs.uiProgram,"Materials",panelLoc-0.35f,0.84f,0.00032f,colorData.textColor,0.99999f);
 		
 		//RENDER THE NODES
 		float maskXpos = 0.0f;
@@ -326,9 +326,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			glset.drawArrays(buttonCoorSq,false);
 
 			glUseProgram(programs.uiProgram);
-			renderText(programs.uiProgram,nodeScenes[i].sceneName,position_x- textureWidth ,position_y - textureWidth*2,0.00022f,colorData.textColor);
+			renderText(programs.uiProgram,nodeScenes[i].sceneName,position_x- textureWidth ,position_y - textureWidth*2,0.00022f,colorData.textColor,0.99999f);
 
-			renderText(programs.uiProgram,std::to_string(nodeScenes[i].index),position_x - textureWidth ,position_y - textureWidth,0.00042f,colorData.materialIconIndexTextColor);
+			renderText(programs.uiProgram,std::to_string(nodeScenes[i].index),position_x - textureWidth ,position_y - textureWidth,0.00042f,colorData.materialIconIndexTextColor,0.99999f);
 		}
 	}
 	
@@ -452,7 +452,7 @@ void UserInterface::numericModifier(float position_x,float position_y,unsigned i
 	iconBox(0.02f,0.04f,position_x + 0.06f,position_y,z,rightArrow,mixValP,clrData.numericModifierArrowColor,clrData.numericModifierArrowHoverColor);
 
 	glUseProgram(uiPrograms.uiProgram);
-	renderText(uiPrograms.uiProgram,std::to_string(value),position_x-0.01f,position_y-0.01f,0.00022f,clrData.textColor);
+	renderText(uiPrograms.uiProgram,std::to_string(value),position_x-0.01f,position_y-0.01f,0.00022f,clrData.textColor,0.99999f);
 }
 
 void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover){
@@ -672,8 +672,10 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 	}
 	box(0.002f, 0.02f, position_x, position_y, "", color, 0.00022f, false, false, 0.9f, 13.0f, glm::vec4(0), 0);
 	
-	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f,colorData.textColor);
+	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f,colorData.textColor,0.99999f);
 }
+
+
 
 
 void UserInterface::setViewportBgColor() {
@@ -681,7 +683,7 @@ void UserInterface::setViewportBgColor() {
 }
 
 std::map<char, character> characters;
-void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color) {
+void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z) {
 	GlSet glset;
 	glset.activeTexture(GL_TEXTURE2);
 
@@ -701,13 +703,13 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 		float h = ch.Size.y * scale;
 
 		std::vector <float> vertices = {
-			 xpos,     ypos + h + 0.004f, 	  0.99999f  ,0.0f, 0.0f,	0,0,0,
-			 xpos,     ypos,      			  0.99999f  ,0.0f, 1.0f,	0,0,0,
-			 xpos + w, ypos,      			  0.99999f  ,1.0f, 1.0f,	0,0,0,
+			 xpos,     ypos + h + 0.004f, 	  z  ,0.0f, 0.0f,	0,0,0,
+			 xpos,     ypos,      			  z  ,0.0f, 1.0f,	0,0,0,
+			 xpos + w, ypos,      			  z  ,1.0f, 1.0f,	0,0,0,
 			
-			 xpos,     ypos + h + 0.004f, 	  0.99999f  ,0.0f, 0.0f,	0,0,0,
-			 xpos + w, ypos,      			  0.99999f  ,1.0f, 1.0f,	0,0,0,
-			 xpos + w, ypos + h+  0.004f, 	  0.99999f  ,1.0f, 0.0f,	0,0,0
+			 xpos,     ypos + h + 0.004f, 	  z  ,0.0f, 0.0f,	0,0,0,
+			 xpos + w, ypos,      			  z  ,1.0f, 1.0f,	0,0,0,
+			 xpos + w, ypos + h+  0.004f, 	  z  ,1.0f, 0.0f,	0,0,0
 		};
 
 		glset.bindTexture(ch.TextureID);
@@ -718,6 +720,10 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 	glset.uniform1i(program, "isText", 0);
 
 }
+
+
+
+
 void UserInterface::container(float positionX,float positionY,float positionZ,float width, float height,glm::vec4 color,Programs &programs,unsigned int circleTexture){
 	glUseProgram(programs.uiProgram);
 	box(width,height,positionX,positionY,"", color,0,0,0,positionZ,10000,glm::vec4(0),0);
@@ -797,7 +803,7 @@ void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Pr
 	gl.drawArrays(topCoor,false);
 
 	if(nodeScenes.size() != 0)
-		renderText(programs.uiProgram,nodeScenes[selectedNodeScene].sceneName,(nodePanelRight + nodePanelLeft)/2,nodePanelTop + 0.025f,0.00025f,colorData.textColor);
+		renderText(programs.uiProgram,nodeScenes[selectedNodeScene].sceneName,(nodePanelRight + nodePanelLeft)/2,nodePanelTop + 0.025f,0.00025f,colorData.textColor,0.99999f);
 
 	glUseProgram(programs.iconsProgram);
 	
