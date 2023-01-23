@@ -295,13 +295,26 @@ std::vector<unsigned int> albedoTextures){
 
 
 
-
+	//Delete the node
+	bool deleteButtonEnter = isMouseOnButton(window,iconWidth, iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) + iconWidth*1.7f,mouseX,mouseY,false);
+	
+	if(deleteButtonEnter && glfwGetMouseButton(window,0) == GLFW_PRESS){
+		material.nodes.erase(material.nodes.begin() + currentNodeIndex);
+	}
+	
+	iconBox(iconWidth/3.f , iconWidth/1.5f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height + iconWidth*1.7f, 0.99999f , icons.X , 0 , colorData.iconColor, colorData.iconColor);
 
 	glUseProgram(programs.uiProgram);
 
     //Render the node title
 	renderText(programs.uiProgram,node.title,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width -iconWidth,(node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height + iconWidth*1.f,node.width/300.f,colorData.textColor);
 	
+
+
+
+
+
+
     //-----RENDER THE OUTPUT ELEMENTS-----
 	for (size_t i = 0; i < node.outputs.size(); i++)
 	{
