@@ -49,8 +49,6 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
     //TODO : Create before the while loop
 
 
-
-
     for (size_t i = 0; i < material.nodes.size(); i++)
     {
         //Default indexes
