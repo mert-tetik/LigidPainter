@@ -204,7 +204,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 			//setup
 
 			//Get texture
-			render.renderTexture(textureRenderingVerticesFlipped,1080,1080,GL_TEXTURE3,GL_RED, model, false,modelMaterials,view);
+			render.renderTexture(textureRenderingVerticesFlipped,1080,1080,GL_TEXTURE3,GL_RED, model, false,modelMaterials,view,{0},0);
 			//Get texture
 
 			//Finish

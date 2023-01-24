@@ -15,7 +15,7 @@
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"
 
-void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName, OutShaderData outShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,std::vector<UndoActions> &undoList,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view) {
+void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName, OutShaderData outShaderData,Model &model,bool renderDefault,vector<unsigned int> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,std::vector<UndoActions> &undoList,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex) {
 	int maxHistoryHold = 20;
 	
 	if(firstPaint){
@@ -77,7 +77,7 @@ void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, 
 
 
 		//Render painted image
-		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view);
+		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,albedoTextures,chosenTextureIndex);
 
 		if (!paintOut)
 			gl.drawArrays(renderVertices, false);
@@ -94,13 +94,13 @@ void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, 
 
 		//Render uv mask
 		gl.uniform1i(programs.outProgram, "whiteRendering", 1);
-		renderTexture(renderVertices,1080, 1080,GL_TEXTURE7,GL_RGB,model,true,modelMaterials,view);
+		renderTexture(renderVertices,1080, 1080,GL_TEXTURE7,GL_RGB,model,true,modelMaterials,view,albedoTextures,chosenTextureIndex);
 		gl.uniform1i(programs.outProgram, "whiteRendering", 0);
 		//Render uv mask
 
 		//interpret the albedo with ui mask texture
 		gl.uniform1i(programs.outProgram, "interpretWithUvMask", 1);
-		renderTexture(renderVertices,1080, 1080,GL_TEXTURE0,GL_RGB,model, false,modelMaterials,view);//Render enlarged texture
+		renderTexture(renderVertices,1080, 1080,GL_TEXTURE0,GL_RGB,model, false,modelMaterials,view,albedoTextures,chosenTextureIndex);//Render enlarged texture
 		gl.uniform1i(programs.outProgram, "interpretWithUvMask", 0);
 		//interpret the albedo with ui mask texture
 
@@ -135,13 +135,15 @@ void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		gl.uniform1i(programs.outProgram,"renderPaintedTxtrMask",0);
 		//Render painted image
-		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view);
+		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,albedoTextures,chosenTextureIndex);
 
 		GLubyte* renderedImage = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
 		glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
+		
 		gl.activeTexture(GL_TEXTURE0);
 		gl.texImage(renderedImage, 1080, 1080, GL_RGB);
 		gl.generateMipmap();
+		
 		delete[]renderedImage;
 		gl.bindFramebuffer(0);
 		txtr.refreshScreenDrawingTexture();
