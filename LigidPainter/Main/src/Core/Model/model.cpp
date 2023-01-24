@@ -35,7 +35,8 @@ using namespace std;
     {
         if(meshes.size() > 0 && paintingMode){
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D,albedoTextures[chosenTextureIndex]);
+            if(albedoTextures.size() != 0)
+                glBindTexture(GL_TEXTURE_2D,albedoTextures[chosenTextureIndex]);
             glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 1.0f);
             meshes[chosenMaterialIndex].Draw(); 
         }
@@ -57,7 +58,6 @@ using namespace std;
             }
             else if(useOpacity){
                 glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D,albedoTextures[chosenTextureIndex]);
 	            if(i != chosenMaterialIndex){
                     glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 0.3f);
                     meshes[i].Draw();
