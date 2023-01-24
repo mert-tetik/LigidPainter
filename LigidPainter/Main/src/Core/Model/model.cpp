@@ -51,6 +51,8 @@ using namespace std;
 
             	    glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, ("input_" + std::to_string(txtI)).c_str()), 20+txtI);
                 }
+                glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "is3D"), 1);
+
                 meshes[i].Draw();
             }
             else if(useOpacity){

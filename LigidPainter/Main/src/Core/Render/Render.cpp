@@ -243,7 +243,7 @@ PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurV
 OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
 ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel
 ,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
-std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded) {
+std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool firstClick) {
 	GlSet gls;
 	ColorData colorData;
 	Utilities util;
@@ -337,7 +337,7 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::v
 		brushBlurVal,outShaderData,model,albedoTextures,renderPrograms,currentMaterialIndex,renderMaxScreenWidth,
 		renderMaxScreenHeight, saturationValShaderData,currentBrushMaskTexture,materialsPanelSlideValue,UIElements,
 		colorPicker,textureDisplayer,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,
-		nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials);
+		nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick);
 
 
 	colorPicker.updatePickerVal = colorPicker.saturationValueValChanged && !colorPicker.hexValTextBoxGotInput; 

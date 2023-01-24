@@ -19,7 +19,7 @@ bool establishConnectionFirstRelease = false;
 
 void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
 float maxScreenWidth,float maxScreenHeight, NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,
-std::vector<unsigned int> albedoTextures,float screenGapX){
+std::vector<unsigned int> albedoTextures,float screenGapX,bool firstClick){
 	ColorData colorData;
 	Utilities util;
 
@@ -301,7 +301,7 @@ std::vector<unsigned int> albedoTextures,float screenGapX){
 	if(!node.isMainOut){
 		bool deleteButtonEnter = isMouseOnButton(window,iconWidth, iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) + iconWidth*1.7f,mouseX,mouseY,false);
 	
-		if(deleteButtonEnter && glfwGetMouseButton(window,0) == GLFW_PRESS){
+		if(deleteButtonEnter && firstClick){
 			material.nodes.erase(material.nodes.begin() + currentNodeIndex);
 		}
 	
@@ -348,7 +348,7 @@ std::vector<unsigned int> albedoTextures,float screenGapX){
 			//Remove texture
 			node.inputs[i].removeTextureButtonHover = isMouseOnButton(window,iconWidth, iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
 			
-			if(node.inputs[i].addTextureButtonHover && glfwGetMouseButton(window,0) == GLFW_PRESS){
+			if(node.inputs[i].addTextureButtonHover && firstClick){
 				textureSelectionPanel.active = true;
 				textureSelectionPanel.posX = node.inputs[i].posX;
 				textureSelectionPanel.posY = node.inputs[i].posY;
@@ -359,7 +359,7 @@ std::vector<unsigned int> albedoTextures,float screenGapX){
 				node.inputs[i].textureSelectingState = false;
 			}
 
-			if(node.inputs[i].removeTextureButtonHover && glfwGetMouseButton(window,0) == GLFW_PRESS){
+			if(node.inputs[i].removeTextureButtonHover && firstClick){
 				material.stateChanged = true;
 				node.inputs[i].selectedTextureIndex = 10000;
 				node.inputs[i].selectedTexture = 0;
