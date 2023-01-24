@@ -9,35 +9,35 @@
 #define UIautoTriangulateCheckBox 3
 #define UIbackfaceCullingCheckBox 4
 #define UImodelPanel3DModelsText 5
-#define UIloadPlaneModelButton 6
-#define UIloadSphereModelButton 7
-#define UIloadCustomModelButton 8
-#define UIaddBrushMaskTextureButton 9
-#define UIuseNegativeCheckBox 10
-#define UImaskTextureFileNameText 11
-#define UIbrushSizeText 12
-#define UIbrushSizeRangeBar 13
-#define UIbrushBlurText 14
-#define UIbrushBlurRangeBar 15
-#define UIbrushRotationText 16
-#define UIbrushRotationRangeBar 17
-#define UIbrushOpacityText 18
-#define UIbrushOpacityRangeBar 19
-#define UIbrushSpacingText 20
-#define UIbrushSpacingRangeBar 21
-#define UIbrushBordersText 22
-#define UIbrushBordersRangeBar 23
-#define UImirrorXCheckBox 24
-#define UImirrorYCheckBox 25
-#define UImirrorZCheckBox 26
-#define UIexportingPathTextBox 27 
-#define UIexportingFolderNameTextBox 28
-#define UIjpgCheckBox 29
-#define UIpngCheckBox 30
-#define UIdownloadButton 31
-#define UIjpgIcon 32
-#define UIpngIcon 33
-#define UIfolderIcon 34
+#define UIloadCustomModelButton 6
+#define UIaddBrushMaskTextureButton 7
+#define UIuseNegativeCheckBox 8
+#define UImaskTextureFileNameText 9
+#define UIbrushSizeText 10
+#define UIbrushSizeRangeBar 11
+#define UIbrushBlurText 12
+#define UIbrushBlurRangeBar 13
+#define UIbrushRotationText 14
+#define UIbrushRotationRangeBar 15
+#define UIbrushOpacityText 16
+#define UIbrushOpacityRangeBar 17
+#define UIbrushSpacingText 18
+#define UIbrushSpacingRangeBar 19
+#define UIbrushBordersText 20
+#define UIbrushBordersRangeBar 21
+#define UImirrorXCheckBox 22
+#define UImirrorYCheckBox 23
+#define UImirrorZCheckBox 24
+#define UIexportingPathTextBox 25 
+#define UIexportingFolderNameTextBox 26
+#define UIjpgCheckBox 27
+#define UIpngCheckBox 28
+#define UIdownloadButton 29
+#define UIjpgIcon 30
+#define UIpngIcon 31
+#define UIfolderIcon 32
+#define UIloadPlaneModelButton 33
+#define UIloadSphereModelButton 34
 #define UIplaneIcon 35
 #define UIsphereIcon 36
 
@@ -152,10 +152,11 @@ struct Icon{
 	float positionY;
 	float positionZ;
 	unsigned int icon;
-	glm::vec3 color;
-	glm::vec3 colorHover;
-	float mixVal;
+	glm::vec4 color;
+	glm::vec4 colorHover;
+	float mixVal = 0;
 	bool hover = false;
+	bool clickable = false;
 };
 
 struct Text{
@@ -423,7 +424,7 @@ public:
 	void setViewportBgColor();
 	void renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z);
 	void renderMenubar(GLFWwindow* window);
-	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked);
+	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked,unsigned int circleTxtr);
 	void panelChangeButton(float position_x, float position_y);
 	void rangeBar(float position_x, float position_y, float value);
 	void colorBox(float position_x, float position_y, float valueX, float valueY);

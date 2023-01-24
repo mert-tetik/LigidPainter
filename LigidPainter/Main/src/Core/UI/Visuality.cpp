@@ -656,7 +656,7 @@ void UserInterface::decorationSquare(float position_x, float position_y) {
 	glset.drawArrays(buttonCoor, false);
 }
 
-void UserInterface::checkBox(float position_x, float position_y, std::string text, bool mouseHover,bool checked) {
+void UserInterface::checkBox(float position_x, float position_y, std::string text, bool mouseHover,bool checked,unsigned int circleTxtr) {
 	ColorData colorData;
 
 	glm::vec4 color;
@@ -670,8 +670,10 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 	else {
 		color = colorData.checkBoxCheckedColor;
 	}
-	box(0.002f, 0.02f, position_x, position_y, "", color, 0.00022f, false, false, 0.9f, 13.0f, glm::vec4(0), 0);
+	glUseProgram(uiPrograms.iconsProgram);
+	iconBox(0.015,0.0273f,position_x, position_y,0.9f,circleTxtr,0,color,color);
 	
+	glUseProgram(uiPrograms.uiProgram);
 	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f,colorData.textColor,0.99999f);
 }
 

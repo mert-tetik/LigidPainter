@@ -110,42 +110,6 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	modelPanel3DModelsTextElement.type = "text";
     UIElements.push_back(modelPanel3DModelsTextElement);//6
 
-	//Load plane button
-	UIElement loadPlaneModelButtonElement;
-    loadPlaneModelButtonElement.button.positionX = 0.0f;
-    loadPlaneModelButtonElement.button.positionY = -0.1f;
-    loadPlaneModelButtonElement.button.positionZ = 0.9f;
-    loadPlaneModelButtonElement.button.width = 0.002f;
-    loadPlaneModelButtonElement.button.height = 0.045f;
-    loadPlaneModelButtonElement.button.color = colorData.buttonColor;
-    loadPlaneModelButtonElement.button.colorHover = colorData.buttonColorHover;
-    loadPlaneModelButtonElement.button.transitionMixVal = 0.0f;
-    loadPlaneModelButtonElement.button.buttonCurveReduce = 7.0f;
-    loadPlaneModelButtonElement.button.text = "";
-    loadPlaneModelButtonElement.button.textRatio = 0.022f;
-    loadPlaneModelButtonElement.panel = 1;
-    loadPlaneModelButtonElement.attachedToMainPanel = true;
-	loadPlaneModelButtonElement.type = "button";
-    UIElements.push_back(loadPlaneModelButtonElement);//7
-
-	//Load sphere button 
-	UIElement loadSphereModelButtonElement;
-    loadSphereModelButtonElement.button.positionX = 0.0f;
-    loadSphereModelButtonElement.button.positionY = -0.2f;
-    loadSphereModelButtonElement.button.positionZ = 0.9f;
-    loadSphereModelButtonElement.button.width = 0.002f;
-    loadSphereModelButtonElement.button.height = 0.045f;
-    loadSphereModelButtonElement.button.color = colorData.buttonColor;
-    loadSphereModelButtonElement.button.colorHover = colorData.buttonColorHover;
-    loadSphereModelButtonElement.button.transitionMixVal = 0.0f;
-    loadSphereModelButtonElement.button.buttonCurveReduce = 7.0f;
-    loadSphereModelButtonElement.button.text = "";
-    loadSphereModelButtonElement.button.textRatio = 0.022f;
-    loadSphereModelButtonElement.panel = 1;
-    loadSphereModelButtonElement.attachedToMainPanel = true;
-	loadSphereModelButtonElement.type = "button";
-	UIElements.push_back(loadSphereModelButtonElement);//8
-
 
 	UIElement loadCustomModelButtonElement;
     loadCustomModelButtonElement.button.positionX = 0.0f;
@@ -162,7 +126,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     loadCustomModelButtonElement.panel = 1;
     loadCustomModelButtonElement.attachedToMainPanel = true;
     loadCustomModelButtonElement.type = "button";
-    UIElements.push_back(loadCustomModelButtonElement);//9
+    UIElements.push_back(loadCustomModelButtonElement);//7
 
 
      //---------------------------PAINTING PANEL---------------------------
@@ -182,7 +146,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     addBrushMaskTextureButtonElement.panel = 3;
     addBrushMaskTextureButtonElement.attachedToMainPanel = true;
     addBrushMaskTextureButtonElement.type = "button";
-    UIElements.push_back(addBrushMaskTextureButtonElement);//10
+    UIElements.push_back(addBrushMaskTextureButtonElement);//8
 		
     UIElement useNegativeCheckBoxElement;
     useNegativeCheckBoxElement.checkBox.positionX = -0.03f;
@@ -191,7 +155,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     useNegativeCheckBoxElement.panel = 3;
     useNegativeCheckBoxElement.attachedToMainPanel = true;
     useNegativeCheckBoxElement.type = "checkBox";
-	UIElements.push_back(useNegativeCheckBoxElement);//11
+	UIElements.push_back(useNegativeCheckBoxElement);//9
 
     UIElement maskTextureFileNameTextElement;
     maskTextureFileNameTextElement.text.positionX = -0.03f;
@@ -202,7 +166,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     maskTextureFileNameTextElement.panel = 3;
     maskTextureFileNameTextElement.attachedToMainPanel = true;
     maskTextureFileNameTextElement.type = "text";
-    UIElements.push_back(maskTextureFileNameTextElement);//12
+    UIElements.push_back(maskTextureFileNameTextElement);//10
 	 
 	//Brush size range bar
     UIElement brushSizeTextElement;
@@ -214,7 +178,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     brushSizeTextElement.panel = 3;
     brushSizeTextElement.attachedToMainPanel = true;
     brushSizeTextElement.type = "text";
-    UIElements.push_back(brushSizeTextElement);//13
+    UIElements.push_back(brushSizeTextElement);//11
 
 	UIElement brushSizeRangeBarElement;
 	brushSizeRangeBarElement.rangeBar.positionX = 0.0f;
@@ -223,7 +187,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	brushSizeRangeBarElement.panel = 3;
 	brushSizeRangeBarElement.attachedToMainPanel = true;
 	brushSizeRangeBarElement.type = "rangeBar";
-    UIElements.push_back(brushSizeRangeBarElement);//14
+    UIElements.push_back(brushSizeRangeBarElement);//12
 
 	//Brush blur range bar
     UIElement brushBlurTextElement;
@@ -235,7 +199,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     brushBlurTextElement.panel = 3;
     brushBlurTextElement.attachedToMainPanel = true;
     brushBlurTextElement.type = "text";
-    UIElements.push_back(brushBlurTextElement);//15
+    UIElements.push_back(brushBlurTextElement);//13
 
 	UIElement brushBlurRangeBarElement;
 	brushBlurRangeBarElement.rangeBar.positionX = 0.0f;
@@ -244,7 +208,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	brushBlurRangeBarElement.panel = 3;
 	brushBlurRangeBarElement.attachedToMainPanel = true;
 	brushBlurRangeBarElement.type = "rangeBar";
-    UIElements.push_back(brushBlurRangeBarElement);//16
+    UIElements.push_back(brushBlurRangeBarElement);//14
 
 	//Brush rotation range bar
     UIElement brushRotationTextElement;
@@ -256,7 +220,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     brushRotationTextElement.panel = 3;
     brushRotationTextElement.attachedToMainPanel = true;
     brushRotationTextElement.type = "text";
-    UIElements.push_back(brushRotationTextElement);//17
+    UIElements.push_back(brushRotationTextElement);//15
 
 	UIElement brushRotationRangeBarElement;
 	brushRotationRangeBarElement.rangeBar.positionX = 0.0f;
@@ -265,7 +229,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	brushRotationRangeBarElement.panel = 3;
 	brushRotationRangeBarElement.attachedToMainPanel = true;
 	brushRotationRangeBarElement.type = "rangeBar";
-    UIElements.push_back(brushRotationRangeBarElement);//18
+    UIElements.push_back(brushRotationRangeBarElement);//16
 
 	//Brush opacity range bar
     UIElement brushOpacityTextElement;
@@ -277,7 +241,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     brushOpacityTextElement.panel = 3;
     brushOpacityTextElement.attachedToMainPanel = true;
     brushOpacityTextElement.type = "text";
-    UIElements.push_back(brushOpacityTextElement);//19
+    UIElements.push_back(brushOpacityTextElement);//17
 
 	UIElement brushOpacityRangeBarElement;
 	brushOpacityRangeBarElement.rangeBar.positionX = 0.0f;
@@ -286,7 +250,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	brushOpacityRangeBarElement.panel = 3;
 	brushOpacityRangeBarElement.attachedToMainPanel = true;
 	brushOpacityRangeBarElement.type = "rangeBar";
-    UIElements.push_back(brushOpacityRangeBarElement);//20
+    UIElements.push_back(brushOpacityRangeBarElement);//18
     
 	//Brush spacing range bar
     UIElement brushSpacingTextElement;
@@ -298,7 +262,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     brushSpacingTextElement.panel = 3;
     brushSpacingTextElement.attachedToMainPanel = true;
     brushSpacingTextElement.type = "text";
-    UIElements.push_back(brushSpacingTextElement);//21
+    UIElements.push_back(brushSpacingTextElement);//19
 
 	UIElement brushSpacingRangeBarElement;
 	brushSpacingRangeBarElement.rangeBar.positionX = 0.0f;
@@ -307,7 +271,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	brushSpacingRangeBarElement.panel = 3;
 	brushSpacingRangeBarElement.attachedToMainPanel = true;
 	brushSpacingRangeBarElement.type = "rangeBar";
-    UIElements.push_back(brushSpacingRangeBarElement);//22
+    UIElements.push_back(brushSpacingRangeBarElement);//20
 
 	//Brush spacing range bar
     UIElement brushBordersTextElement;
@@ -319,7 +283,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     brushBordersTextElement.panel = 3;
     brushBordersTextElement.attachedToMainPanel = true;
     brushBordersTextElement.type = "text";
-    UIElements.push_back(brushBordersTextElement);//23
+    UIElements.push_back(brushBordersTextElement);//21
 
 	UIElement brushBordersRangeBarElement;
 	brushBordersRangeBarElement.rangeBar.positionX = 0.0f;
@@ -328,7 +292,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	brushBordersRangeBarElement.panel = 3;
 	brushBordersRangeBarElement.attachedToMainPanel = true;
 	brushBordersRangeBarElement.type = "rangeBar";
-    UIElements.push_back(brushBordersRangeBarElement);//24
+    UIElements.push_back(brushBordersRangeBarElement);//22
 
 	UIElement mirrorXCheckBoxElement;
     mirrorXCheckBoxElement.checkBox.positionX = -0.16f;
@@ -337,7 +301,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     mirrorXCheckBoxElement.panel = 3;
     mirrorXCheckBoxElement.attachedToMainPanel = false;
     mirrorXCheckBoxElement.type = "checkBox";
-    UIElements.push_back(mirrorXCheckBoxElement);//25
+    UIElements.push_back(mirrorXCheckBoxElement);//23
 
 	UIElement mirrorYCheckBoxElement;
     mirrorYCheckBoxElement.checkBox.positionX = -0.10f;
@@ -346,7 +310,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     mirrorYCheckBoxElement.panel = 3;
     mirrorYCheckBoxElement.attachedToMainPanel = false;
     mirrorYCheckBoxElement.type = "checkBox";
-    UIElements.push_back(mirrorYCheckBoxElement);//26
+    UIElements.push_back(mirrorYCheckBoxElement);//24
 
 	UIElement mirrorZCheckBoxElement;
     mirrorZCheckBoxElement.checkBox.positionX = -0.04f;
@@ -355,7 +319,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     mirrorZCheckBoxElement.panel = 3;
     mirrorZCheckBoxElement.attachedToMainPanel = false;
     mirrorZCheckBoxElement.type = "checkBox";
-    UIElements.push_back(mirrorZCheckBoxElement);//27
+    UIElements.push_back(mirrorZCheckBoxElement);//25
 	
     //---------------------------EXPORT PANEL---------------------------
 
@@ -370,7 +334,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     exportingPathTextBoxElement.panel = 4;
     exportingPathTextBoxElement.attachedToMainPanel = true;
 	exportingPathTextBoxElement.type = "textBox";
-    UIElements.push_back(exportingPathTextBoxElement);//28
+    UIElements.push_back(exportingPathTextBoxElement);//26
 
     UIElement exportingFolderNameTextBoxElement;
     exportingFolderNameTextBoxElement.textBox.position_x = 0.0f;
@@ -382,7 +346,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     exportingFolderNameTextBoxElement.panel = 4;
     exportingFolderNameTextBoxElement.attachedToMainPanel = true;
     exportingFolderNameTextBoxElement.type = "textBox";
-    UIElements.push_back(exportingFolderNameTextBoxElement);//29
+    UIElements.push_back(exportingFolderNameTextBoxElement);//27
 
     UIElement jpgCheckBoxElement;
     jpgCheckBoxElement.checkBox.positionX = -0.11f;
@@ -391,7 +355,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     jpgCheckBoxElement.panel = 4;
     jpgCheckBoxElement.attachedToMainPanel = true;
     jpgCheckBoxElement.type = "checkBox";
-    UIElements.push_back(jpgCheckBoxElement);//30
+    UIElements.push_back(jpgCheckBoxElement);//28
 
     UIElement pngCheckBoxElement;
     pngCheckBoxElement.checkBox.positionX = 0.05f;
@@ -400,7 +364,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     pngCheckBoxElement.panel = 4;
     pngCheckBoxElement.attachedToMainPanel = true;
     pngCheckBoxElement.type = "checkBox";
-    UIElements.push_back(pngCheckBoxElement);//31
+    UIElements.push_back(pngCheckBoxElement);//29
 
     UIElement downloadButtonElement;
     downloadButtonElement.button.positionX = 0.0f;
@@ -417,7 +381,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     downloadButtonElement.panel = 4;
     downloadButtonElement.attachedToMainPanel = true;
     downloadButtonElement.type = "button";
-    UIElements.push_back(downloadButtonElement);//32
+    UIElements.push_back(downloadButtonElement);//30
 
 
 
@@ -437,7 +401,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     jpgIconElement.panel = 4;
     jpgIconElement.attachedToMainPanel = true;
     jpgIconElement.type = "icon";
-    UIElements.push_back(jpgIconElement);//33
+    UIElements.push_back(jpgIconElement);//31
 
     UIElement pngIconElement;
     pngIconElement.icon.positionX = +0.1f;
@@ -452,7 +416,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     pngIconElement.panel = 4;
     pngIconElement.attachedToMainPanel = true;
     pngIconElement.type = "icon";
-    UIElements.push_back(pngIconElement);//34
+    UIElements.push_back(pngIconElement);//32
 
 	UIElement folderIconElement;
     folderIconElement.icon.positionX = 0.1f;
@@ -467,7 +431,41 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     folderIconElement.panel = 1;
     folderIconElement.attachedToMainPanel = true;
     folderIconElement.type = "icon";
-    UIElements.push_back(folderIconElement);//35
+    UIElements.push_back(folderIconElement);//33
+
+    //Load plane button
+	UIElement loadPlaneModelButtonElement;
+    loadPlaneModelButtonElement.icon.positionX = 0.0f;
+    loadPlaneModelButtonElement.icon.positionY = -0.1f;
+    loadPlaneModelButtonElement.icon.positionZ = 0.9f;
+    loadPlaneModelButtonElement.icon.width = 0.03f;
+    loadPlaneModelButtonElement.icon.height = 0.055f;
+    loadPlaneModelButtonElement.icon.color = colorData.buttonColor;
+    loadPlaneModelButtonElement.icon.colorHover = colorData.buttonColorHover;
+    loadPlaneModelButtonElement.icon.mixVal = 0.0f;
+    loadPlaneModelButtonElement.icon.icon = icons.Circle;
+    loadPlaneModelButtonElement.icon.clickable = true;
+    loadPlaneModelButtonElement.panel = 1;
+    loadPlaneModelButtonElement.attachedToMainPanel = true;
+	loadPlaneModelButtonElement.type = "icon";
+    UIElements.push_back(loadPlaneModelButtonElement);//34
+
+	//Load sphere button 
+	UIElement loadSphereModelButtonElement;
+    loadSphereModelButtonElement.icon.positionX = 0.0f;
+    loadSphereModelButtonElement.icon.positionY = -0.2f;
+    loadSphereModelButtonElement.icon.positionZ = 0.91f;
+    loadSphereModelButtonElement.icon.width = 0.03f;
+    loadSphereModelButtonElement.icon.height = 0.055f;
+    loadSphereModelButtonElement.icon.color = colorData.buttonColor;
+    loadSphereModelButtonElement.icon.colorHover = colorData.buttonColorHover;
+    loadSphereModelButtonElement.icon.mixVal = 0.0f;
+    loadSphereModelButtonElement.icon.icon = icons.Circle;
+    loadSphereModelButtonElement.icon.clickable = true;
+    loadSphereModelButtonElement.panel = 1;
+    loadSphereModelButtonElement.attachedToMainPanel = true;
+	loadSphereModelButtonElement.type = "icon";
+    UIElements.push_back(loadSphereModelButtonElement);//35
 
 	UIElement planeIconElement;
     planeIconElement.icon.positionX = 0.0f;
@@ -488,8 +486,8 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     sphereIconElement.icon.positionX = 0.0f;
     sphereIconElement.icon.positionY = -0.2f;
     sphereIconElement.icon.positionZ = 0.99f;
-    sphereIconElement.icon.width = 0.02f;
-    sphereIconElement.icon.height = 0.04f;
+    sphereIconElement.icon.width = 0.03f/1.6f;
+    sphereIconElement.icon.height = 0.055f/1.6f;
     sphereIconElement.icon.color = colorData.iconColor;
     sphereIconElement.icon.colorHover = colorData.iconColorHover;
     sphereIconElement.icon.mixVal = 0.0f;

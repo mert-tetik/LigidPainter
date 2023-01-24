@@ -424,7 +424,7 @@ bool LigidPainter::run()
 		glfwPollEvents();
 		glfwSwapInterval(1);
 
-		//util.printRenderingSpeed();
+		util.printRenderingSpeed();
 
 		//Check if camera pos changed
 		updateCameraPosChanging();

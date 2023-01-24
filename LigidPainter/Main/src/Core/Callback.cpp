@@ -221,6 +221,10 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 					uiElements[i].checkBox.mouseHover = uiElementEnter;
 				}
 				if(currentType == "icon"){
+					if(uiElements[i].icon.clickable){
+						uiElementEnter = ui.isMouseOnButton(window, uiElements[i].icon.width/1.5, uiElements[i].icon.height/1.5, centerCoords - screenGapX + uiElements[i].icon.positionX, uiElements[i].icon.positionY, mouseXPos, mouseYPos, movePanel);
+						uiElements[i].icon.hover = uiElementEnter;
+					}
 				}
 				
 			}

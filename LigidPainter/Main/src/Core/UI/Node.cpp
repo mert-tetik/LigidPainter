@@ -228,7 +228,7 @@ std::vector<unsigned int> albedoTextures){
         glUseProgram(programs.uiProgram);
 		//TODO : Move the rendering of connection lines to the output element rendering
 		if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000 || node.outputs[i].pressed)//Render the connection lines if output connects to an input or moves
-			drawLine((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,0.99999f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY, node.width*200.f ,nodeColor);
+			drawLine((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,1.f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY, node.width*200.f ,nodeColor);
 		
 
         //Render the output
@@ -296,13 +296,15 @@ std::vector<unsigned int> albedoTextures){
 
 
 	//Delete the node
-	bool deleteButtonEnter = isMouseOnButton(window,iconWidth, iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) + iconWidth*1.7f,mouseX,mouseY,false);
+	if(!node.isMainOut){
+		bool deleteButtonEnter = isMouseOnButton(window,iconWidth, iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) + iconWidth*1.7f,mouseX,mouseY,false);
 	
-	if(deleteButtonEnter && glfwGetMouseButton(window,0) == GLFW_PRESS){
-		material.nodes.erase(material.nodes.begin() + currentNodeIndex);
+		if(deleteButtonEnter && glfwGetMouseButton(window,0) == GLFW_PRESS){
+			material.nodes.erase(material.nodes.begin() + currentNodeIndex);
+		}
+	
+		iconBox(iconWidth/3.f , iconWidth/1.5f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height + iconWidth*1.7f, 0.99999f , icons.X , 0 , colorData.iconColor, colorData.iconColor);
 	}
-	
-	iconBox(iconWidth/3.f , iconWidth/1.5f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height + iconWidth*1.7f, 0.99999f , icons.X , 0 , colorData.iconColor, colorData.iconColor);
 
 	glUseProgram(programs.uiProgram);
 

@@ -124,9 +124,9 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 					ligid.paintingPanelButton();
 				if (callbackData.exportPanelButtonEnter)
 					ligid.exportPanelButton();
-				if (UIElements[UIloadPlaneModelButton].button.hover)
+				if (UIElements[UIloadPlaneModelButton].icon.hover)
 					ligid.addPlaneButton();
-				if (UIElements[UIloadSphereModelButton].button.hover)
+				if (UIElements[UIloadSphereModelButton].icon.hover)
 					ligid.addSphereButton();
 				if (UIElements[UIautoTriangulateCheckBox].checkBox.mouseHover)
 					ligid.autoTriangulateCheckBox();

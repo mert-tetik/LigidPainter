@@ -46,6 +46,11 @@ void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &
 		if(currentType == "button"){
 			UIElements[i].button.transitionMixVal = util.transitionEffect(UIElements[i].button.hover,UIElements[i].button.transitionMixVal,phaseDifference);
 		}
+		else if(currentType == "icon"){
+			if(UIElements[i].icon.clickable){
+				UIElements[i].icon.mixVal = util.transitionEffect(UIElements[i].icon.hover,UIElements[i].icon.mixVal,phaseDifference);
+			}
+		}
 		else if(currentType == "textBox"){
 			UIElements[i].textBox.transitionMixVal = util.transitionEffect(UIElements[i].textBox.clicked,UIElements[i].textBox.transitionMixVal,phaseDifference);
 		}
@@ -318,9 +323,11 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		saturationValShaderData.renderTextureProjection = projection;
 		gl.useSaturationValBoxShader(programs.saturationValBoxProgram,saturationValShaderData);
 		ui.colorBox(centerCoords - screenGapX - 0.02f, -0.55f, colorPicker.saturationValuePosX, colorPicker.saturationValuePosY);
-		ui.box(0.002f, 0.025f, centerCoords - screenGapX - 0.095f, -0.81f, "", glm::vec4(colorPicker.pickerValue / glm::vec3(255),1.0f), 0.075f, false, false, 0.9f, 12, glm::vec4(0), 0); //indicator for picken color of the color picker
-		ui.box(0.004f, 0.035f, centerCoords - screenGapX - 0.095f, -0.81f, "", colorData.panelColorSnd, 0.075f, false, false, 0.9f, 10, glm::vec4(0), 0); //decoration
 		ui.box(0.04f, 0.03f, centerCoords - screenGapX - 0.008f,-0.81f, util.rgbToHexGenerator(colorPicker.pickerValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
+		
+		glUseProgram(programs.iconsProgram);
+		ui.iconBox(0.02*1.2,0.0364f*1.2,centerCoords - screenGapX - 0.095f,-0.81f,0.9f,icons.Circle,0,colorData.panelColorSnd,glm::vec4(0));
+		ui.iconBox(0.02,0.0364f,centerCoords - screenGapX - 0.095f,-0.81f,0.91f,icons.Circle,0,glm::vec4(colorPicker.pickerValue / glm::vec3(255),1.0f),glm::vec4(0));
 	}
 		
 	
@@ -426,7 +433,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		}
 		if(panelCompatibility){
 			
-			const int uiIconStartingIndex = 32; 
+			const int uiIconStartingIndex = 30; 
 			if(i < uiIconStartingIndex && !usingUiProgram){
 				glUseProgram(programs.uiProgram);
 				usingUiProgram = true;
@@ -453,10 +460,10 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			}
 
 			if(currentType == "checkBox"){
-				ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked); //jpg checkbox
+				ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,icons.Circle); //jpg checkbox
 			}
 			if(currentType == "icon"){
-				ui.iconBox(UIElements[i].icon.width,UIElements[i].icon.height,centerCoords - screenGapX + UIElements[i].icon.positionX ,UIElements[i].icon.positionY,UIElements[i].icon.positionZ,UIElements[i].icon.icon, 0.0f , colorData.iconColor , colorData.iconColorHover);
+				ui.iconBox(UIElements[i].icon.width,UIElements[i].icon.height,centerCoords - screenGapX + UIElements[i].icon.positionX ,UIElements[i].icon.positionY,UIElements[i].icon.positionZ,UIElements[i].icon.icon, UIElements[i].icon.mixVal , UIElements[i].icon.color , UIElements[i].icon.colorHover);
 			}
 		}
 	}	
