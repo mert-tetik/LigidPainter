@@ -5,39 +5,11 @@
 #include "Core/gl.h"
 #include "Core/UI/UiActions.h"
 
-bool noButtonClick;
-
-bool clickTaken = false;
-
 int uiactionsMaxScreenWidth;
 int uiactionsMaxScreenHeight;
 
 bool colorBoxFirstPress = false;
-void UiActions::isFirstClickDoneInside(GLFWwindow* window ,CallbckData callbackData,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,NodePanel &nodePanel,SndPanel &sndPanel) {
-	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTaken) {
-		if (!callbackData.uiElementEnter && !callbackData.modelPanelButtonEnter && !callbackData.texturePanelButtonEnter && !callbackData.paintingPanelButtonEnter 
-		&& !callbackData.exportPanelButtonEnter && !colorPicker.saturationValuePointerHover && !colorPicker.hueValuePointerHover && !colorPicker.hexValTextBoxEnter
-		&& !colorPicker.dropperEnter && !colorPicker.hueValueBarHover && !colorPicker.saturationValueBoxHover && !callbackData.maskPanelEnter && !sndPanel.boundariesHover
-		&& !textureDisplayer.buttonHover && !callbackData.mainPanelBoundariesEnter && !textureDisplayer.cornerHover && !nodePanel.boundariesHover && !sndPanel.plusSignHover
-		&& !sndPanel.downSignHover && !sndPanel.minusSignHover && !sndPanel.texturePanelButtonHover && !sndPanel.materialPanelButtonHover) {
-			noButtonClick = true;
-			colorBoxFirstPress = false;
-		}
-		else {
-			if(colorPicker.saturationValueBoxHover){
-				colorBoxFirstPress = true;
-			}
-			else{
-				colorBoxFirstPress = false;
-			}
-			noButtonClick = false;
-		}
-		clickTaken = true;
-	}
-	if (glfwGetMouseButton(window, 0) == GLFW_RELEASE && clickTaken) {
-		clickTaken = false;
-	}
-}
+
 //Range Values
 bool brushSizeRangeBarPressed;
 bool brushBlurRangeBarPressed;
@@ -52,131 +24,116 @@ bool mainPanelBoundariesPressed;
 bool nodePanelBoundariesPressed;
 //
 
-bool buttonGetInput = true;
-bool buttonPressed = false;
-void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vector<UIElement> &UIElements, ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,NodePanel &nodePanel,SndPanel &sndPanel) {
+void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vector<UIElement> &UIElements, ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,NodePanel &nodePanel,SndPanel &sndPanel,bool firstClick) {
     LigidPainter ligid;
-	isFirstClickDoneInside(window ,callbackData,colorPicker,textureDisplayer,nodePanel,sndPanel);
 
-	if (!noButtonClick) {
-		if (buttonGetInput) {
-			if (glfwGetMouseButton(window, 0) == GLFW_PRESS) {
-				buttonGetInput = false;
-				buttonPressed = true;
-				if (UIElements[UIbrushSizeRangeBar].rangeBar.hover) {
-					brushSizeRangeBarPressed = true;
-				}
-				else if (UIElements[UIbrushBlurRangeBar].rangeBar.hover) {
-					brushBlurRangeBarPressed = true;
-				}
-				else if (UIElements[UIbrushRotationRangeBar].rangeBar.hover) {
-					brushRotationRangeBarPressed = true;
-				}
-				else if (UIElements[UIbrushOpacityRangeBar].rangeBar.hover) {
-					brushOpacityRangeBarPressed = true;
-				}
-				else if (UIElements[UIbrushSpacingRangeBar].rangeBar.hover) {
-					brushSpacingRangeBarPressed = true;
-				}
-				else if (UIElements[UIbrushBordersRangeBar].rangeBar.hover) {
-					brushBordersRangeBarPressed = true;
-				}
-				else if (colorPicker.saturationValuePointerHover) {
-					colorBoxPickerPressed = true;
-				}
-				else if (colorPicker.hueValuePointerHover) {
-					colorBoxColorRangeBarPressed= true;
-				}
-				else if (textureDisplayer.buttonHover) {
-					textureDisplayer.buttonPressed = true;
-				}
-				else if(callbackData.maskPanelSliderEnter){
-					maskPanelSliderPressed = true;
-				}
-				else if (textureDisplayer.cornerHover) { //Keep at the end
-					textureDisplayer.cornerPressed = true;
-				}
-				else if(callbackData.mainPanelBoundariesEnter){
-					mainPanelBoundariesPressed = true;
-				}
-				else if(nodePanel.boundariesHover){
-					nodePanelBoundariesPressed = true;
-					nodePanel.boundariesPressed = true;
-				}
-				else if(sndPanel.boundariesHover){
-					sndPanel.boundariesPressed = true;
-				}
-			}
+	if (firstClick) {
+		if (UIElements[UIbrushSizeRangeBar].rangeBar.hover) {
+			brushSizeRangeBarPressed = true;
 		}
-		if (glfwGetMouseButton(window, 0) == GLFW_RELEASE) {
-			buttonGetInput = true;
-			if (buttonPressed) {
+		else if (UIElements[UIbrushBlurRangeBar].rangeBar.hover) {
+			brushBlurRangeBarPressed = true;
+		}
+		else if (UIElements[UIbrushRotationRangeBar].rangeBar.hover) {
+			brushRotationRangeBarPressed = true;
+		}
+		else if (UIElements[UIbrushOpacityRangeBar].rangeBar.hover) {
+			brushOpacityRangeBarPressed = true;
+		}
+		else if (UIElements[UIbrushSpacingRangeBar].rangeBar.hover) {
+			brushSpacingRangeBarPressed = true;
+		}
+		else if (UIElements[UIbrushBordersRangeBar].rangeBar.hover) {
+			brushBordersRangeBarPressed = true;
+		}
+		else if (colorPicker.saturationValuePointerHover) {
+			colorBoxPickerPressed = true;
+		}
+		else if (colorPicker.hueValuePointerHover) {
+			colorBoxColorRangeBarPressed= true;
+		}
+		else if (textureDisplayer.buttonHover) {
+			textureDisplayer.buttonPressed = true;
+		}
+		else if(callbackData.maskPanelSliderEnter){
+			maskPanelSliderPressed = true;
+		}
+		else if (textureDisplayer.cornerHover) { //Keep at the end
+			textureDisplayer.cornerPressed = true;
+		}
+		else if(callbackData.mainPanelBoundariesEnter){
+			mainPanelBoundariesPressed = true;
+		}
+		else if(nodePanel.boundariesHover){
+			nodePanelBoundariesPressed = true;
+			nodePanel.boundariesPressed = true;
+		}
+		else if(sndPanel.boundariesHover){
+			sndPanel.boundariesPressed = true;
+		}
 				//Check mouse hover
-				if (UIElements[UIaddBrushMaskTextureButton].button.hover)
-					ligid.addMaskTextureButton();
-				if (UIElements[UIUploadingModelPathTextBox].textBox.hover)
-					ligid.modelFilePathTextBox(); 
-				if (callbackData.modelPanelButtonEnter)
-					ligid.modelPanelButton();
-				if (callbackData.texturePanelButtonEnter)
-					ligid.texturePanelButton();
-				if (callbackData.paintingPanelButtonEnter)
-					ligid.paintingPanelButton();
-				if (callbackData.exportPanelButtonEnter)
-					ligid.exportPanelButton();
-				if (UIElements[UIloadPlaneModelButton].icon.hover)
-					ligid.addPlaneButton();
-				if (UIElements[UIloadSphereModelButton].icon.hover)
-					ligid.addSphereButton();
-				if (UIElements[UIautoTriangulateCheckBox].checkBox.mouseHover)
-					ligid.autoTriangulateCheckBox();
-				if (UIElements[UIbackfaceCullingCheckBox].checkBox.mouseHover)
-					ligid.backfaceCullingCheckBox();
-				if (UIElements[UIuseNegativeCheckBox].checkBox.mouseHover)
-					ligid.useNegativeForDrawingCheckbox();
-				if (UIElements[UIloadModelButton].button.hover)
-					ligid.loadModelButton();
-				if (colorPicker.dropperEnter)
-					ligid.paintingDropper();
-				if (UIElements[UIexportingPathTextBox].textBox.hover)
-					ligid.exportPathTextBox();
-				if (UIElements[UIexportingFolderNameTextBox].textBox.hover){
-					UIElements[UIexportingFolderNameTextBox].textBox.clicked = !UIElements[UIexportingFolderNameTextBox].textBox.clicked; 
-					ligid.exportFileNameTextBox();
-				}
-				if (UIElements[UIdownloadButton].button.hover)
-					ligid.exportDownloadButtonEnter();
-				if (UIElements[UIjpgCheckBox].checkBox.mouseHover)
-					ligid.exportExtJPGCheckBox();
-				if (UIElements[UIpngCheckBox].checkBox.mouseHover)
-					ligid.exportExtPNGCheckBox();
-				if (UIElements[UImirrorXCheckBox].checkBox.mouseHover)
-					ligid.mirrorXCheckBox();
-				if (UIElements[UImirrorYCheckBox].checkBox.mouseHover)
-					ligid.mirrorYCheckBox();
-				if (UIElements[UImirrorZCheckBox].checkBox.mouseHover)
-					ligid.mirrorZCheckBox();
-				if(colorPicker.saturationValueBoxHover&& colorBoxFirstPress)
-					ligid.colorBox();
-				if(colorPicker.hueValueBarHover)
-					ligid.hueBar();
-				if(colorPicker.hexValTextBoxEnter)
-					ligid.hexValTextbox();
-				if(UIElements[UIloadCustomModelButton].button.hover)
-					ligid.loadCustomModel();
-				if(sndPanel.plusSignHover)
-					ligid.sndPanelPlusIcon();
-				if(sndPanel.downSignHover)
-					ligid.sndPanelDownIcon();
-				if(sndPanel.minusSignHover)
-					ligid.sndPanelMinusIcon();
-				if(sndPanel.texturePanelButtonHover)
-					sndPanel.state = 0;
-				if(sndPanel.materialPanelButtonHover)
-					sndPanel.state = 1;
-			}
-			buttonPressed = false;
+		if (UIElements[UIaddBrushMaskTextureButton].button.hover)
+			ligid.addMaskTextureButton();
+		if (UIElements[UIUploadingModelPathTextBox].textBox.hover)
+			ligid.modelFilePathTextBox(); 
+		if (callbackData.modelPanelButtonEnter)
+			ligid.modelPanelButton();
+		if (callbackData.texturePanelButtonEnter)
+			ligid.texturePanelButton();
+		if (callbackData.paintingPanelButtonEnter)
+			ligid.paintingPanelButton();
+		if (callbackData.exportPanelButtonEnter)
+			ligid.exportPanelButton();
+		if (UIElements[UIloadPlaneModelButton].icon.hover)
+			ligid.addPlaneButton();
+		if (UIElements[UIloadSphereModelButton].icon.hover)
+			ligid.addSphereButton();
+		if (UIElements[UIautoTriangulateCheckBox].checkBox.mouseHover)
+			ligid.autoTriangulateCheckBox();
+		if (UIElements[UIbackfaceCullingCheckBox].checkBox.mouseHover)
+			ligid.backfaceCullingCheckBox();
+		if (UIElements[UIuseNegativeCheckBox].checkBox.mouseHover)
+			ligid.useNegativeForDrawingCheckbox();
+		if (UIElements[UIloadModelButton].button.hover)
+			ligid.loadModelButton();
+		if (colorPicker.dropperEnter)
+			ligid.paintingDropper();
+		if (UIElements[UIexportingPathTextBox].textBox.hover)
+			ligid.exportPathTextBox();
+		if (UIElements[UIexportingFolderNameTextBox].textBox.hover){
+			UIElements[UIexportingFolderNameTextBox].textBox.clicked = !UIElements[UIexportingFolderNameTextBox].textBox.clicked; 
+			ligid.exportFileNameTextBox();
 		}
+		if (UIElements[UIdownloadButton].button.hover)
+			ligid.exportDownloadButtonEnter();
+		if (UIElements[UIjpgCheckBox].checkBox.mouseHover)
+			ligid.exportExtJPGCheckBox();
+		if (UIElements[UIpngCheckBox].checkBox.mouseHover)
+			ligid.exportExtPNGCheckBox();
+		if (UIElements[UImirrorXCheckBox].checkBox.mouseHover)
+			ligid.mirrorXCheckBox();
+		if (UIElements[UImirrorYCheckBox].checkBox.mouseHover)
+			ligid.mirrorYCheckBox();
+		if (UIElements[UImirrorZCheckBox].checkBox.mouseHover)
+			ligid.mirrorZCheckBox();
+		if(colorPicker.saturationValueBoxHover&& colorBoxFirstPress)
+			ligid.colorBox();
+		if(colorPicker.hueValueBarHover)
+			ligid.hueBar();
+		if(colorPicker.hexValTextBoxEnter)
+			ligid.hexValTextbox();
+		if(UIElements[UIloadCustomModelButton].button.hover)
+			ligid.loadCustomModel();
+		if(sndPanel.plusSignHover)
+			ligid.sndPanelPlusIcon();
+		if(sndPanel.downSignHover)
+			ligid.sndPanelDownIcon();
+		if(sndPanel.minusSignHover)
+			ligid.sndPanelMinusIcon();
+		if(sndPanel.texturePanelButtonHover)
+			sndPanel.state = 0;
+		if(sndPanel.materialPanelButtonHover)
+			sndPanel.state = 1;
 	}
     if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
 		brushSizeRangeBarPressed = false;

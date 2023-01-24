@@ -92,6 +92,9 @@ GLFWwindow* window;
 
 unsigned int VBO, VAO, FBOScreen; //Vertex Buffer Object, Vertex Array Object, Framebuffer object that I used to render the screen
 
+bool firstClick = false;
+bool mousePress = false;
+
 bool cameraPosChanging = true;
 bool paintingMode = false; //True if painting started, False if camera position changed after painting
 glm::vec3 holdCameraPos; //Used to detect the camera position change
@@ -427,6 +430,21 @@ bool LigidPainter::run()
 
 		renderTheSceneCounter++;
 
+
+		if(glfwGetMouseButton(window, 0) == GLFW_PRESS){
+			if(!mousePress){
+				firstClick = true;
+			}
+			else{
+				firstClick = false;
+			}
+			mousePress = true;
+		}
+		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
+			mousePress = false;
+		}
+
+
 		const bool mouseInputTaken = glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetMouseButton(window, 2) == GLFW_PRESS;   
 		if(mouseInputTaken){
 			renderTheScene = true;
@@ -489,7 +507,7 @@ bool LigidPainter::run()
 
 
 		//Ui actions
-		uiAct.uiActions(window,callbackData,UIElements,colorPicker,textureDisplayer,nodePanel,sndPanel);
+		uiAct.uiActions(window,callbackData,UIElements,colorPicker,textureDisplayer,nodePanel,sndPanel,firstClick);
 
 
 
