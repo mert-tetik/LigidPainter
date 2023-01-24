@@ -122,31 +122,33 @@ void UserInterface::panel(float panelLoc, Icons icons) {
 	
 	const float cornerWidth = 0.04f;
 
+	const float panelZ = 0.2f;
+
 	glUseProgram(uiPrograms.uiProgram);
-	box(panelWidth, panelHeigth - cornerWidth, panelLoc + panelWidth + cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	box(panelWidth, panelHeigth - cornerWidth, panelLoc + panelWidth + cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 	
-	box(panelWidth, cornerWidth, panelLoc + panelWidth + cornerWidth, panelHeigth, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
-	box(panelWidth, cornerWidth, panelLoc + panelWidth + cornerWidth, -panelHeigth, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
-	box(cornerWidth, panelHeigth - cornerWidth, panelLoc + cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	box(panelWidth, cornerWidth, panelLoc + panelWidth + cornerWidth, panelHeigth, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
+	box(panelWidth, cornerWidth, panelLoc + panelWidth + cornerWidth, -panelHeigth, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
+	box(cornerWidth, panelHeigth - cornerWidth, panelLoc + cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 
 	glUseProgram(uiPrograms.iconsProgram);
-	circle(panelLoc + cornerWidth, panelHeigth - cornerWidth,0.1f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
-	circle(panelLoc + cornerWidth,-panelHeigth + cornerWidth,0.1f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+	circle(panelLoc + cornerWidth, panelHeigth - cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+	circle(panelLoc + cornerWidth,-panelHeigth + cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 
 	//Texture panel button
-	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.8f,0.5f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.8f,panelZ,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
 	iconBox(0.01f,0.02f,panelLoc - 0.013f,0.808f,0.6f,icons.TDModel,0,colorD.iconColor,colorD.iconColor);
 	
 	//Material panel button
-	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.72f,0.5f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.72f,panelZ,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
 	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.725f,0.6f,icons.Material,0,colorD.iconColor,colorD.iconColor);
 
 	//Painting panel button
-	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.64f,0.5f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.64f,panelZ,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
 	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.647f,0.6f,icons.Painting,0,colorD.iconColor,colorD.iconColor);
 
 	//Export panel button
-	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.56f,0.5f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.56f,panelZ,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
 	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.567f,0.6f,icons.Export,0,colorD.iconColor,colorD.iconColor);
 
 }
@@ -160,16 +162,18 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	
 	const float cornerWidth = 0.04f;
 
+	const float panelZ = 0.2f;
+
 	glUseProgram(programs.uiProgram);
-	box(panelWidth, panelHeigth - cornerWidth, panelLoc - panelWidth - cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	box(panelWidth, panelHeigth - cornerWidth, panelLoc - panelWidth - cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 	
-	box(panelWidth, cornerWidth, panelLoc - panelWidth - cornerWidth, panelHeigth, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
-	box(panelWidth, cornerWidth, panelLoc - panelWidth - cornerWidth, -panelHeigth, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
-	box(cornerWidth, panelHeigth - cornerWidth, panelLoc - cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	box(panelWidth, cornerWidth, panelLoc - panelWidth - cornerWidth, panelHeigth, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
+	box(panelWidth, cornerWidth, panelLoc - panelWidth - cornerWidth, -panelHeigth, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
+	box(cornerWidth, panelHeigth - cornerWidth, panelLoc - cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 
 	glUseProgram(programs.iconsProgram);
-	circle(panelLoc - cornerWidth,panelHeigth - cornerWidth,0.1f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
-	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,0.1f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+	circle(panelLoc - cornerWidth,panelHeigth - cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 
 	
 	iconBox(0.015f,0.03f,panelLoc - 0.05f,0.85f,0.5f,icons.ArrowDown,0,colorD.iconColor,colorD.iconColorHover);
@@ -763,10 +767,11 @@ void UserInterface::container(float positionX,float positionY,float positionZ,fl
 	circle(positionX + width,positionY - height,positionZ,0.03f,0.06f,circleTexture,color);//Right bot
 }
 void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,Icons icons,std::vector<NodeScene> nodeScenes,int selectedNodeScene){
+	
 	const float nodePanelLeft = sndPanel + 0.037f;
 	const float nodePanelRight = mainPanelLoc - 0.037f;
 	const float nodePanelTop = -1.00f + height;
-	const float nodePanelZ = 0.9f;
+	const float nodePanelZ = 0.0f;
 	
 
 	std::vector<float> boxCoor{
@@ -837,6 +842,60 @@ void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Pr
 	circle(nodePanelRight,nodePanelTop,nodePanelZ,0.05f,0.1f,icons.Circle,colorData.nodePanelColorSnd); //Right
 	
 	glUseProgram(programs.uiProgram);
+}
+
+void UserInterface::nodePanelBarriers(float mainPanelLoc,float sndPanel, float height){
+	
+	const float nodePanelLeft = -1.0f;
+	const float nodePanelRight = 1.0f;
+
+	const float nodePanelLeftOrg = sndPanel;
+	const float nodePanelRightOrg = mainPanelLoc ;
+
+	const float nodePanelTop = -1.00f + height;
+	const float nodePanelZ = 0.19f;
+	
+
+	std::vector<float> topCoor{
+		//first triangle								   
+		 nodePanelLeft 			,  1.f				, nodePanelZ,1.0f,1.0f	,1,1,1,  // top right
+		 nodePanelLeft			,  nodePanelTop 	, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
+		 nodePanelRight			,  1.f 				, nodePanelZ,0.0f,1.0f	,0,0,0,  // top left 
+		//second triangle
+		 nodePanelLeft			,  nodePanelTop		, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
+		 nodePanelRight			,  nodePanelTop		, nodePanelZ,0.0f,0.0f	,0,0,0,  // bottom left
+		 nodePanelRight			,  1.f 				, nodePanelZ,0.0f,1.0f	,0,0,0 // top left
+	};
+	std::vector<float> leftCoor{
+		//first triangle								   
+		 nodePanelLeftOrg 					,  -1.00f 			, nodePanelZ,1.0f,1.0f	,1,1,1,  // top right
+		 nodePanelLeftOrg					,  nodePanelTop 	, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
+		 nodePanelLeft						,  -1.00f 			, nodePanelZ,0.0f,1.0f	,0,0,0,  // top left 
+		//second triangle
+		 nodePanelLeftOrg					,  nodePanelTop		, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
+		 nodePanelLeft 						,  nodePanelTop		, nodePanelZ,0.0f,0.0f	,0,0,0,  // bottom left
+		 nodePanelLeft 						,  -1.00f 			, nodePanelZ,0.0f,1.0f	,0,0,0 // top left
+	};
+		std::vector<float> rightCoor{
+		//first triangle								   
+		 nodePanelRightOrg 					,  -1.00f 			, nodePanelZ,1.0f,1.0f	,1,1,1,  // top right
+		 nodePanelRightOrg					,  nodePanelTop 	, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
+		 nodePanelRight						,  -1.00f 			, nodePanelZ,0.0f,1.0f	,0,0,0,  // top left 
+		//second triangle
+		 nodePanelRightOrg					,  nodePanelTop		, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
+		 nodePanelRight 						,  nodePanelTop		, nodePanelZ,0.0f,0.0f	,0,0,0,  // bottom left
+		 nodePanelRight 						,  -1.00f 			, nodePanelZ,0.0f,1.0f	,0,0,0 // top left
+	};
+
+
+	GlSet gl;
+	ColorData colorData;
+	
+	glUseProgram(uiPrograms.uiProgram);
+	gl.uniform4fv(uiPrograms.uiProgram,"uiColor",glm::vec4(0));
+	gl.drawArrays(topCoor,false);
+	gl.drawArrays(leftCoor,false);
+	gl.drawArrays(rightCoor,false);
 }
 
 void UserInterface::drawLine(float posX,float posY, float posZ, float toPosX,float toPosY, float width, glm::vec4 color){

@@ -141,30 +141,22 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	//Panel
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive){ //Disable panel if a message box is active
 		//If message box is not active
-		ui.panel(renderData.panelLoc-  screenGapX -1.0f , icons);
 
 
 		//Panel changing buttons
 		glUseProgram(programs.uiProgram);
-		// ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.8f);//Model Panel
-		// ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.72f);//Texture Panel
-		// ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.64f);//Painting Panel
-		// ui.panelChangeButton(renderData.panelLoc - 1.0f - screenGapX, 0.56f);//Export Panel
 
 		//Texture demonstrator	
 		ui.textureDisplayer(textureDisplayer.ndWidth,textureDisplayer.ndHeight,textureDisplayer.buttonPosX - 1.0f +screenGapX,textureDisplayer.buttonPosY,1.f); 
 
-		// //Panel changing button's icons
-		// glUseProgram(programs.iconsProgram);
-		// ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.795f , 0.01f , icons.TDModel , 0.0f , colorData.iconColor , colorData.iconColorHover);
-		// ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.715f , 0.01f , icons.Material , 0.0f , colorData.iconColor , colorData.iconColorHover);
-		// ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.635f , 0.01f , icons.Painting , 0.0f , colorData.iconColor , colorData.iconColorHover);
-		// ui.iconBox(0.015f,0.02f,renderData.panelLoc - 1.01f - screenGapX, 0.555f , 0.01f , icons.Export , 0.0f , colorData.iconColor , colorData.iconColorHover);
 
-
-		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded);
-		
 		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons,nodeScenes,selectedNodeScene);
+		
+		ui.panel(renderData.panelLoc-  screenGapX -1.0f , icons);
+		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded);
+
+		ui.nodePanelBarriers(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth);
+		
 		
 
 		double xOffset = mouseXpos - lastMouseX;
@@ -179,6 +171,10 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 		lastMouseX = mouseXpos;
 		lastMouseY = mouseYpos;
+
+
+
+
 
 		if(textureSelectionPanel.active)
 			ui.textureSelectionPanel(textureSelectionPanel,albedoTextures,programs,renderData.window,mouseXpos,mouseYpos,screenGapX, maxScreenWidth,icons.Circle);
