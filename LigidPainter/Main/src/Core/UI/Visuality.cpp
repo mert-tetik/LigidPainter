@@ -114,19 +114,40 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	glset.uniform1i(uiPrograms.uiProgram, "isUiTextureUsed", 0);
 }
 
-void UserInterface::panel(float panelLoc, float) {
+void UserInterface::panel(float panelLoc, Icons icons) {
 	GlSet glset;
-
-	box(0.00f, 0.04f, panelLoc + 0.022f, 0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 7, colorD.panelColor, 0);
-	box(0.00f, 0.04f, panelLoc + 0.022f, -0.8805f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 7, colorD.panelColor, 0);
 
 	const float panelWidth = 0.2f;
 	const float panelHeigth = 0.88f;
 	
-	box(0.02f, panelHeigth, panelLoc + 0.02f, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
-	box(panelWidth, 0.04f, panelLoc + panelWidth + 0.02f, 0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
-	box(panelWidth, 0.04f, panelLoc + panelWidth + 0.02f, -0.88f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
-	box(panelWidth, panelHeigth - 0.02f, panelLoc + panelWidth + 0.02f, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	const float cornerWidth = 0.04f;
+
+	glUseProgram(uiPrograms.uiProgram);
+	box(panelWidth, panelHeigth - cornerWidth, panelLoc + panelWidth + cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	
+	box(panelWidth, cornerWidth, panelLoc + panelWidth + cornerWidth, panelHeigth, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	box(panelWidth, cornerWidth, panelLoc + panelWidth + cornerWidth, -panelHeigth, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+	box(cornerWidth, panelHeigth - cornerWidth, panelLoc + cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, 0.1f, 10000, colorD.panelColor, 0);
+
+	glUseProgram(uiPrograms.iconsProgram);
+	circle(panelLoc + cornerWidth, panelHeigth - cornerWidth,0.1f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+	circle(panelLoc + cornerWidth,-panelHeigth + cornerWidth,0.1f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+
+	//Texture panel button
+	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.8f,0.5f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.01f,0.02f,panelLoc - 0.013f,0.808f,0.6f,icons.TDModel,0,colorD.iconColor,colorD.iconColor);
+	
+	//Material panel button
+	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.72f,0.5f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.725f,0.6f,icons.Material,0,colorD.iconColor,colorD.iconColor);
+
+	//Painting panel button
+	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.64f,0.5f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.647f,0.6f,icons.Painting,0,colorD.iconColor,colorD.iconColor);
+
+	//Export panel button
+	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.56f,0.5f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.567f,0.6f,icons.Export,0,colorD.iconColor,colorD.iconColor);
 
 }
 void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<unsigned int> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded) {
@@ -162,7 +183,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	
 	//Material panel button
 	iconBox(0.017f,0.034f,panelLoc + 0.017f,0.72f,0.5f,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.015f,0.03f,panelLoc + 0.013f,0.725f,0.6f,icons.Material,0,colorD.iconColor,colorD.iconColor);
+	iconBox(0.012f,0.024f,panelLoc + 0.013f,0.725f,0.6f,icons.Material,0,colorD.iconColor,colorD.iconColor);
 	
 
 

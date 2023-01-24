@@ -161,13 +161,11 @@ bool mainPanelHover = false;
 bool enablePanelMovement = true; //Panel can be moved if true. Set false while dragging range bar pointers around.
 
 
-//Used to let render function know if it's supposed to change colors
-
-
 //Checkbox
 bool backfaceCullingChecked = true;
 bool enableBackfaceCulling;
 
+//TODO : Remove these bools
 bool jpgFormatChecked;
 bool pngFormatChecked = true;
 

@@ -414,7 +414,7 @@ public:
 
 
 	//Visuality
-	void panel(float panelLoc, float movePanel_x);
+	void panel(float panelLoc, Icons icons);
 	void sndPanel(int state,float panelLoc , Programs programs , Icons icons , std::vector<unsigned int> &albedoTextures,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth,int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded);
 	void nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,Icons icons,std::vector<NodeScene> nodeScenes,int selectedNodeScene);
 
