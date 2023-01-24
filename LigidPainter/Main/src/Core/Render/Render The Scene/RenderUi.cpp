@@ -330,8 +330,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		ui.iconBox(0.02,0.0364f,centerCoords - screenGapX - 0.095f,-0.81f,0.91f,icons.Circle,0,glm::vec4(colorPicker.pickerValue / glm::vec3(255),1.0f),glm::vec4(0));
 	}
 		
-	
-
 	if (panelData.paintingPanelActive) { //Icons
 		glUseProgram(programs.iconsProgram); 
 

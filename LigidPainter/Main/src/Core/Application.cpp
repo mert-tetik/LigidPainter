@@ -165,8 +165,6 @@ bool enablePanelMovement = true; //Panel can be moved if true. Set false while d
 
 
 //Checkbox
-bool autoTriangulateChecked = true;
-
 bool backfaceCullingChecked = true;
 bool enableBackfaceCulling;
 
@@ -1262,7 +1260,6 @@ void LigidPainter::loadCustomModel(){
 	renderDefaultModel = false;
 }
 void LigidPainter::autoTriangulateCheckBox(){
-	autoTriangulateChecked = !autoTriangulateChecked;
 	UIElements[UIautoTriangulateCheckBox].checkBox.checked = !UIElements[UIautoTriangulateCheckBox].checkBox.checked;
 }
 void LigidPainter::backfaceCullingCheckBox() {
@@ -1289,7 +1286,7 @@ void LigidPainter::loadModelButton() {
 	if (modelName != "") {
 		
 		//Load the model
-		model.loadModel(modelFilePath,autoTriangulateChecked);
+		model.loadModel(modelFilePath,UIElements[UIautoTriangulateCheckBox].checkBox.checked);
 
 
 
