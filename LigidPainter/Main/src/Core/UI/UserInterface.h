@@ -301,7 +301,6 @@ struct NodeInput{
 	int selectedTextureIndex = 10000;
 	unsigned int selectedTexture = 0;
 	
-
 	float connectionPosX = 0;
 	float connectionPosY = 0;
 
@@ -314,12 +313,13 @@ struct NodeInput{
 	int nodeConnectionIndex = 10000;
 	int inputConnectionIndex = 10000;
 
-
 	bool isConnectedToShaderInput = false;
 	
 	bool textureSelectingState = false;
 
 	unsigned int result;
+
+	bool removeTheResult = true;
 };
 
 
@@ -386,6 +386,8 @@ struct SndPanel{
 struct NodeScene{
 	std::string sceneName;
 	std::vector<Node> nodes;
+
+	std::vector<Node> renderingPipeline;
 
 	int index;
 	bool stateChanged = true;

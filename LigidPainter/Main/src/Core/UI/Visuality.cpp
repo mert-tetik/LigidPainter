@@ -313,7 +313,6 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				if(glfwGetMouseButton(window,0) == GLFW_PRESS){
 					//TODO : Update once is changed
 					selectedNodeScene = i;
-					newModelAdded = true;
 				}
 			}
 			else{

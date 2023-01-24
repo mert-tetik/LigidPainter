@@ -27,27 +27,24 @@ std::vector<float> renderVertices = {
 	 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
 };
 
-std::vector<Node> renderingPipeline;
-
 MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY){
     
     MaterialOut resultOut;
 
-    // for (size_t i = 0; i < renderingPipeline.size(); i++)
-    // {
-    //     //Removal of the previous output textures
-    //     for (size_t outI = 0; outI < renderingPipeline[i].outputs.size(); outI++)
-    //     {
-    //         glDeleteTextures(1,&renderingPipeline[i].outputs[outI].result);
-    //     }
-    // }
-    renderingPipeline.clear();
+    for (size_t i = 0; i < material.renderingPipeline.size(); i++)
+    {
+        //Removal of the previous output textures
+        for (size_t outI = 0; outI < material.renderingPipeline[i].outputs.size(); outI++)
+        {
+            glDeleteTextures(1,&material.renderingPipeline[i].outputs[outI].result);
+        }
+    }
+
+    material.renderingPipeline.clear();
 
     GlSet glset;
 
     glset.viewport(1920,1080);
-    //TODO : Create before the while loop
-
 
     for (size_t i = 0; i < material.nodes.size(); i++)
     {
@@ -76,8 +73,8 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
         }
         
         if(!nodeHasInputConnection){
-            renderingPipeline.push_back(material.nodes[i]);
-            material.nodes[i].renderingIndex = renderingPipeline.size()-1; 
+            material.renderingPipeline.push_back(material.nodes[i]);
+            material.nodes[i].renderingIndex = material.renderingPipeline.size()-1; 
         }
     }
     for (int i = 0; i < 1000; i++)
@@ -101,8 +98,8 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                 }
             }
             if(addToPipeline){
-                renderingPipeline.push_back(material.nodes[nodeI]);
-                material.nodes[nodeI].renderingIndex = renderingPipeline.size()-1; 
+                material.renderingPipeline.push_back(material.nodes[nodeI]);
+                material.nodes[nodeI].renderingIndex = material.renderingPipeline.size()-1; 
                 isChangesAreMade = true;
             }
         }
@@ -114,18 +111,18 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
     
 
 
-    for (size_t nodeI = 0; nodeI < renderingPipeline.size(); nodeI++)
+    for (size_t nodeI = 0; nodeI < material.renderingPipeline.size(); nodeI++)
     {
-        unsigned int nodeProgram = renderingPipeline[nodeI].program;
+        unsigned int nodeProgram = material.renderingPipeline[nodeI].program;
 
-        for (size_t inputI = 0; inputI < renderingPipeline[nodeI].inputs.size(); inputI++)
+        for (size_t inputI = 0; inputI < material.renderingPipeline[nodeI].inputs.size(); inputI++)
         {
             //------CREATE THE TEXTURE------
 
             unsigned int texture;
 
-            if(renderingPipeline[nodeI].inputs[inputI].element == "range"){
-                if(renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
+            if(material.renderingPipeline[nodeI].inputs[inputI].element == "range"){
+                if(material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
                     glActiveTexture(GL_TEXTURE28);
                     glGenTextures(1, &texture);
                     glBindTexture(GL_TEXTURE_2D,texture);
@@ -133,17 +130,17 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     unsigned int channels;
                     int channelSize;
 
-                    if(renderingPipeline[nodeI].inputs[inputI].type == "float"){
+                    if(material.renderingPipeline[nodeI].inputs[inputI].type == "float"){
                         channels = GL_RED;
                         channelSize = 1;
                     }
 
-                    if(renderingPipeline[nodeI].inputs[inputI].type == "vec2"){
+                    if(material.renderingPipeline[nodeI].inputs[inputI].type == "vec2"){
                         channels = GL_RG;
                         channelSize = 2;
                     }
 
-                    if(renderingPipeline[nodeI].inputs[inputI].type == "vec3"){
+                    if(material.renderingPipeline[nodeI].inputs[inputI].type == "vec3"){
                         channels = GL_RGB;
                         channelSize = 3;
                     }
@@ -152,29 +149,29 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
                     for (size_t i = 0; i < channelSize; i++)
                     {
-                        data[i] = renderingPipeline[nodeI].inputs[inputI].value[i]*255;
+                        data[i] = material.renderingPipeline[nodeI].inputs[inputI].value[i]*255;
                     }
 
                     glset.texImage(data,1,1,channels);
                 }
                 else{
-                    texture = renderingPipeline[material.nodes[renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;
+                    texture = material.renderingPipeline[material.nodes[material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[material.renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;
                 }
             }
-            else if(renderingPipeline[nodeI].inputs[inputI].element == "image"){
-                if(renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
-                    texture = renderingPipeline[nodeI].inputs[inputI].selectedTexture;
+            else if(material.renderingPipeline[nodeI].inputs[inputI].element == "image"){
+                if(material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
+                    texture = material.renderingPipeline[nodeI].inputs[inputI].selectedTexture;
                 }
                 else{
-                    texture = renderingPipeline[material.nodes[renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;
+                    texture = material.renderingPipeline[material.nodes[material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[material.renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;
                 }
             }
-            else if(renderingPipeline[nodeI].inputs[inputI].element == "none"){
-                if(renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
+            else if(material.renderingPipeline[nodeI].inputs[inputI].element == "none"){
+                if(material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
                     glGenTextures(1, &texture);
                 }
                 else{
-                    texture = renderingPipeline[material.nodes[renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;
+                    texture = material.renderingPipeline[material.nodes[material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[material.renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;
                 }
             }
 
@@ -196,11 +193,10 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
         glActiveTexture(GL_TEXTURE28);
 
-        for (int outI = 0; outI < renderingPipeline[nodeI].outputs.size(); outI++)
+        for (int outI = 0; outI < material.renderingPipeline[nodeI].outputs.size(); outI++)
         {
-            if(renderingPipeline[nodeI].outputs[outI].isConnectedToShaderInput){
-                resultOut.program = renderingPipeline[nodeI].program; 
-                glset.uniform1i(nodeProgram,"is3D",1);
+            if(material.renderingPipeline[nodeI].outputs[outI].isConnectedToShaderInput){
+                resultOut.program = material.renderingPipeline[nodeI].program; 
                 glset.uniformMatrix4fv(nodeProgram,"projection",perspectiveProjection);
                 glset.uniformMatrix4fv(nodeProgram,"view",view);
 
@@ -243,7 +239,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                 glset.bindFramebuffer(0);
                 glset.deleteFramebuffers(FBO);
 
-                renderingPipeline[nodeI].outputs[outI].result = resultTexture;
+                material.renderingPipeline[nodeI].outputs[outI].result = resultTexture;
                 
                 resultOut.textures.clear();
             }
@@ -254,6 +250,8 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
     end:
     glset.bindFramebuffer(0);
 	glset.bindRenderBuffer(0);
+    glset.uniform1i(resultOut.program,"is3D",1);
+
     glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 
 
