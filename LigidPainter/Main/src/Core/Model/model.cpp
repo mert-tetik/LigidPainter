@@ -33,10 +33,12 @@ using namespace std;
     // draws the model, and thus all its meshes
     void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,std::vector<unsigned int> albedoTextures,int chosenTextureIndex)
     {
-        // if(meshes.size() > 0){
-        //     glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 1.0f);
-        //     meshes[chosenMaterialIndex].Draw(); 
-        // }
+        if(meshes.size() > 0 && paintingMode){
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D,albedoTextures[chosenTextureIndex]);
+            glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 1.0f);
+            meshes[chosenMaterialIndex].Draw(); 
+        }
 
         for(unsigned int i = 0; i < meshes.size(); i++){
             if(!paintingMode){
@@ -46,16 +48,19 @@ using namespace std;
                 {
                     glActiveTexture(GL_TEXTURE20 + txtI);
                     glBindTexture(GL_TEXTURE_2D,modelMaterials[meshes[i].materialIndex].textures[txtI]);
-            
+
             	    glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, ("input_" + std::to_string(txtI)).c_str()), 20+txtI);
                 }
+                meshes[i].Draw();
             }
-            else{
+            else if(useOpacity){
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D,albedoTextures[chosenTextureIndex]);
-	            glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 1.f);
+	            if(i != chosenMaterialIndex){
+                    glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 0.3f);
+                    meshes[i].Draw();
+                }
             }
-            meshes[i].Draw();
         }
         if(meshes.size() > 0){
 
