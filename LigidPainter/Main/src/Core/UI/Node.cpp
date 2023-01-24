@@ -143,7 +143,7 @@ std::vector<unsigned int> albedoTextures,float screenGapX,bool firstClick){
 			for (int inputI = 0; inputI < material.nodes[nodeI].inputs.size(); inputI++)
 			{
 				//Establish connection
-				if(material.nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed){
+				if(material.nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed && material.nodes[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
 					establishConnectionFirstRelease = true;
 				}
 				if(glfwGetMouseButton(window,0) == GLFW_RELEASE && establishConnectionFirstRelease){
@@ -153,13 +153,10 @@ std::vector<unsigned int> albedoTextures,float screenGapX,bool firstClick){
 					material.nodes[nodeI].inputs[inputI].inputConnectionIndex = i;
 					material.nodes[nodeI].inputs[inputI].nodeConnectionIndex = currentNodeIndex;
 
-					if(material.nodes[nodeI].isMainOut){
-						node.outputs[i].isConnectedToShaderInput = true;
-					}
-					else{
-						node.outputs[i].isConnectedToShaderInput = false;
-					}
+					
+					node.outputs[i].isConnectedToShaderInput = material.nodes[nodeI].isMainOut;
 
+					
 					node.outputs[i].connectionPosX = material.nodes[nodeI].inputs[inputI].posX; 
 					node.outputs[i].connectionPosY = material.nodes[nodeI].inputs[inputI].posY; 
 
