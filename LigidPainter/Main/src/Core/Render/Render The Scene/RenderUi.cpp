@@ -202,8 +202,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 					if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS && i != 0){
 						Node node;
 						node = appNodes[i-1];
-						node.positionX = (mouseXpos/screenSizeX*2 - 1.0f) / nodePanel.zoomVal;
-						node.positionY = (-mouseYpos/maxScreenHeight*2 + 1.0f) / nodePanel.zoomVal;						
+						node.positionX = (mouseXpos/screenSizeX*2 - 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionX;
+						node.positionY = (-mouseYpos/maxScreenHeight*2 + 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionY;						
 
 						nodeScenes[selectedNodeScene].nodes.push_back(node);
 						addNodeContextMenu.active = false;
