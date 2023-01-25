@@ -83,6 +83,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     autoTriangulateCheckBoxElement.checkBox.positionX = -0.08f;
     autoTriangulateCheckBoxElement.checkBox.positionY = 0.3f;
     autoTriangulateCheckBoxElement.checkBox.text = "Auto triangulate";
+    autoTriangulateCheckBoxElement.checkBox.checked = true;
     autoTriangulateCheckBoxElement.panel = 1;
     autoTriangulateCheckBoxElement.attachedToMainPanel = true;
 	autoTriangulateCheckBoxElement.type = "checkBox";
