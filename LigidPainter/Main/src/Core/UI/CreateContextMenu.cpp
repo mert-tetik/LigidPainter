@@ -54,7 +54,7 @@ ContextMenu UserInterface::createContextMenus(std::vector<Node> appNodes){
         button.color = colorData.nodePanelContextMenuButtonColor; 
         button.colorHover = colorData.nodePanelContextMenuButtonColorHover;
         button.positionX = 0;
-        button.positionY = 0.0 - (i*0.025);
+        button.positionY = 0.02 - (i*0.05);
         button.positionZ = 0.99f;
         button.text = appNodes[i].title;
         button.textRatio = 0.052f;

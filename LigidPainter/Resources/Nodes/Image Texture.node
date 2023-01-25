@@ -1,0 +1,38 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Image Texture;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Image;
+--element : image;
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+void main (){
+    
+    //if(listbox_0 == 0){
+        //Do something
+    //}
+    //else if(listbox_0 == 1){
+        //Do something different
+    //}
+
+    output_0 = vec4(texture2D(input_0,tex_coords).rgb,1);
+}
