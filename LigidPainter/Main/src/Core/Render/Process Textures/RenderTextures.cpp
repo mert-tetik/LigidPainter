@@ -77,7 +77,7 @@ void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, 
 
 
 		//Render painted image
-		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,albedoTextures,chosenTextureIndex);
+		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,albedoTextures,chosenTextureIndex,glm::vec3(0));
 
 		if (!paintOut)
 			gl.drawArrays(renderVertices, false);
@@ -135,7 +135,7 @@ void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		gl.uniform1i(programs.outProgram,"renderPaintedTxtrMask",0);
 		//Render painted image
-		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,albedoTextures,chosenTextureIndex);
+		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,albedoTextures,chosenTextureIndex,glm::vec3(0));
 
 		GLubyte* renderedImage = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
 		glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);

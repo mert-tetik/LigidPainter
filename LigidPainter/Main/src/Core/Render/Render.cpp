@@ -197,7 +197,7 @@ std::vector<unsigned int> albedoTextures,int chosenTextureIndex){
     GlSet gl;
 
 	if(useModel)
-		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterials,view,true,albedoTextures,chosenTextureIndex);
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterials,view,true,albedoTextures,chosenTextureIndex,glm::vec3(0));
 	else
 		gl.drawArrays(vertices, false); //Render Model
 
@@ -243,7 +243,8 @@ PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurV
 OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
 ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel
 ,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
-std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool firstClick) {
+std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool firstClick,
+glm::vec3 viewPos) {
 	GlSet gls;
 	ColorData colorData;
 	Utilities util;
@@ -328,7 +329,7 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::v
 
 	glActiveTexture(GL_TEXTURE13);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
-	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex);
+	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos);
 	
 
 	renderAxisPointer(axisPointerShaderData,renderPrograms);

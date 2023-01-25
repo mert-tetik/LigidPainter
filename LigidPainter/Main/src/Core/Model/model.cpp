@@ -31,7 +31,7 @@ using namespace std;
     string directory;
 
     // draws the model, and thus all its meshes
-    void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,std::vector<unsigned int> albedoTextures,int chosenTextureIndex)
+    void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,std::vector<unsigned int> albedoTextures,int chosenTextureIndex,glm::vec3 viewPos)
     {
         if(meshes.size() > 0 && paintingMode){
             glActiveTexture(GL_TEXTURE0);
@@ -53,6 +53,9 @@ using namespace std;
             	    glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, ("input_" + std::to_string(txtI)).c_str()), 20+txtI);
                 }
                 glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "is3D"), 1);
+                glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "blurySkybox"), 13);
+                glUniform3fv(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "viewPos"),1,&viewPos[0]);
+
 
                 meshes[i].Draw();
             }

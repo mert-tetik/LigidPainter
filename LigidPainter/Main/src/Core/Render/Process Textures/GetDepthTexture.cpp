@@ -26,7 +26,7 @@ void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int scre
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,albedoTextures,chosenTextureIndex);
+	model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,albedoTextures,chosenTextureIndex,glm::vec3(0));
 
 	GLubyte* screen = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
 	gl.activeTexture(GL_TEXTURE9);
@@ -42,7 +42,7 @@ void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int scre
 	gl.useScreenDepthShader(programs.screenDepthProgram, screenDepthShaderData);
 
 	
-	model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,albedoTextures,chosenTextureIndex);
+	model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,albedoTextures,chosenTextureIndex,glm::vec3(0));
 
 	GLubyte* screenMirrored = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
 	gl.activeTexture(GL_TEXTURE8);
