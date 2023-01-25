@@ -49,7 +49,7 @@ void main() {
       {
          //Text here
          vec4 sampled = vec4(uiColor.rgb, texture(text, TexCoords).r);
-         color = vec4(textColor,1) * sampled;
+         color = vec4(textColor,1) * sampled * uiColor.a;
       }
    }
 

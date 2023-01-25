@@ -64,6 +64,10 @@ void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &
 double lastMouseX = 0;
 double lastMouseY = 0;
 
+int alertState = 0;
+std::string alertMessage = "";
+int alertDuration = 1;
+
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned int> &albedoTextures,Programs programs
@@ -156,7 +160,9 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded);
 
 		ui.nodePanelBarriers(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth);
+
 		
+		ui.renderAlert(alertMessage,alertDuration,programs.uiProgram,alertState);		
 		
 
 		double xOffset = mouseXpos - lastMouseX;
@@ -462,7 +468,16 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		}
 	}	
 
+	alertState = 0;
+
+
 	uiOut.currentBrushMaskTxtr = currentBrushMaskTexture;
 	return uiOut;
 }
 //--------------------RENDER UI --------------------\\
+
+void UserInterface::alert(std::string message,int duration){
+	alertState = 1;
+	alertMessage = message;
+	alertDuration = duration;
+}

@@ -110,6 +110,8 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 materialIconColorActive = glm::vec4(LigidPainterThemeColor,1.0);
 	glm::vec4 materialIconColorActiveHover = glm::vec4(0.043f,0.435f,0.623f,1.0);
 	glm::vec4 materialIconIndexTextColor = glm::vec4(0.1f,0.1f,0.1f,1.0);
+
+	glm::vec3 alertColor = glm::vec3(0.76,0.17,0.17);
 };
 
 //Width will be added to the midPanelPos if attachedToMainPanel is true
@@ -439,6 +441,8 @@ public:
 	void circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture,glm::vec4 color);
 	void drawLine(float posX,float posY,float posZ,float toPosX,float toPosY,float width,glm::vec4 color);
 	void textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<unsigned int> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth,unsigned int circleTexture);
+	void renderAlert(std::string message,int duration,unsigned int uiProgram,int state);
+	void alert(std::string message,int duration);
 
 	
 	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,

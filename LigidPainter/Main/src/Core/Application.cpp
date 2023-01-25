@@ -1234,11 +1234,15 @@ void LigidPainter::texturePanelButton() {
 	doPainting = false;
 }
 void LigidPainter::paintingPanelButton() {
+	UserInterface ui;
 	panelData.modelPanelActive = false;
 	panelData.texturePanelActive = false;
 	panelData.paintingPanelActive = true;
 	panelData.exportPanelActive = false;
 	doPainting = true;
+	
+	if(!albedoTextures.size())
+		ui.alert("Warning! There Are No Textures Selected.",100);
 }
 void LigidPainter::exportPanelButton() {
 	panelData.modelPanelActive = false;
