@@ -423,7 +423,7 @@ bool LigidPainter::run()
 		glfwPollEvents();
 		glfwSwapInterval(1);
 
-		util.printRenderingSpeed();
+		//util.printRenderingSpeed();
 
 		//Check if camera pos changed
 		updateCameraPosChanging();
@@ -506,18 +506,19 @@ bool LigidPainter::run()
 
 
 
-		//Ui actions
-		uiAct.uiActions(window,callbackData,UIElements,colorPicker,textureDisplayer,nodePanel,sndPanel,firstClick);
+
 
 
 
 
 
 		//Change color picker's value
-		const bool dropperColorPickingCondition = colorPicker.dropperActive && glfwGetMouseButton(window, 0) == GLFW_PRESS;
+		const bool dropperColorPickingCondition = colorPicker.dropperActive && firstClick;
 		const bool movingSatValPointerCondition = colorPicker.saturationValueBoxClicked && !colorPicker.saturationValuePointerHover;
 		const bool movingHuePointerCondition = colorPicker.hueBarClicked && !colorPicker.saturationValuePointerHover && !colorPicker.huePointerChanging; 
 		
+
+
 		if(dropperColorPickingCondition || movingSatValPointerCondition || movingHuePointerCondition || colorPicker.hexValTextBoxGotInput){
 			if(colorPicker.hexValTextBoxGotInput){
 				updateColorPicker(util.hexToRGBConverter(colorPicker.hexValTextBoxVal),true,true);//Update colorbox val once color picker hex value textbox value changed
@@ -525,6 +526,7 @@ bool LigidPainter::run()
 			else{
 				updateColorPicker(renderOut.mouseHoverPixel,true,!colorPicker.hueBarClicked);//Update colorbox val once dropper is used or colorbox is clicked
 				colorPicker.dropperActive = false;
+				colorPicker.dropperEnter = false;
 			}
 		}
 
@@ -536,7 +538,8 @@ bool LigidPainter::run()
 		colorPicker.saturationValuePointerChanging = false;
 
 
-
+		//Ui actions
+		uiAct.uiActions(window,callbackData,UIElements,colorPicker,textureDisplayer,nodePanel,sndPanel,firstClick);
 
 
 		//Update

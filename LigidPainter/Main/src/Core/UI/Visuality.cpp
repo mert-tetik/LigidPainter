@@ -973,3 +973,14 @@ void UserInterface::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
 	uiMaxScreenWidth = maxScreenWidth;
 	sendMaxWindowSizeToCalculationsAndMore(maxScreenWidth,maxScreenHeight);
 }
+
+void UserInterface::coloringPanel(float posX,float posY,Programs programs,Icons icons){
+	const float depth = 0.9f;
+
+	const float panelWidth = 0.2f;
+	const float panelHeigth = 0.2f;
+	
+	ColorData colorData;
+
+	container(posX,posY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle);
+}

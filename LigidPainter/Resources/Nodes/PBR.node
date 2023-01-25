@@ -163,7 +163,7 @@ vec3 getRealisticResult(){
 void main() {
     vec3 result = getRealisticResult();
 
-    float alpha = texture2D(input_4,tex_coords).r;
+    float alpha = texture2D(input_6,tex_coords).r;
     
-    output_0 = vec4(result,1);
+    output_0 = vec4(result,alpha);
 }
