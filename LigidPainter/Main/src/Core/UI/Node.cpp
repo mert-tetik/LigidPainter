@@ -81,8 +81,8 @@ std::vector<unsigned int> albedoTextures,float screenGapX,bool firstClick){
 		node.barPressed = false;
 	}
 	if(node.barPressed && !nodePanel.boundariesPressed){
-		node.positionX += xOffset/maxScreenWidth*2.f;
-		node.positionY -= yOffset/maxScreenHeight*2.f;
+		node.positionX += xOffset/maxScreenWidth*2.f / nodePanel.zoomVal;
+		node.positionY -= yOffset/maxScreenHeight*2.f / nodePanel.zoomVal;
 		
 		xOffset = 0;
 		yOffset = 0;
