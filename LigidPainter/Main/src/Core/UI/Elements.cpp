@@ -123,7 +123,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     loadCustomModelButtonElement.button.transitionMixVal = 0.0f;
     loadCustomModelButtonElement.button.buttonCurveReduce = 10.0f;
     loadCustomModelButtonElement.button.text = "Custom";
-    loadCustomModelButtonElement.button.textRatio = 0.022f;
+    loadCustomModelButtonElement.button.textRatio = 0.032f;
     loadCustomModelButtonElement.panel = 1;
     loadCustomModelButtonElement.attachedToMainPanel = true;
     loadCustomModelButtonElement.type = "button";
