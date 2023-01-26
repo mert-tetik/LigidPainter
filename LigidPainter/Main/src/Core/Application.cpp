@@ -441,6 +441,7 @@ bool LigidPainter::run()
 			mousePress = true;
 		}
 		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
+			firstClick = false;
 			mousePress = false;
 		}
 
