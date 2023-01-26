@@ -233,7 +233,6 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
 
 
-			glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
 
 			std::vector<float> buttonCoorSq{
 				// first triangle
@@ -261,6 +260,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			else{
 				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,0);
 			}
+			glActiveTexture(GL_TEXTURE14);
+			glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
+
 			glset.drawArrays(buttonCoorSq,false);
 
 			glUseProgram(programs.uiProgram);
@@ -991,11 +993,19 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 	GlSet glset;
 	Utilities util;
 
+
 	container(coloringPanel.panelPosX,coloringPanel.panelPosY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle);
 	
 	coloringPanel.panelHover = isMouseOnButton(window,panelWidth+0.03f,panelHeigth+0.06f,coloringPanel.panelPosX,coloringPanel.panelPosY,mouseXpos,mouseYpos,false);
-	if(!coloringPanel.panelHover)
+	
+	if(coloringPanel.panelHover){
+		coloringPanel.enteredOnce = true;
+	}
+	
+	if(!coloringPanel.panelHover && coloringPanel.enteredOnce){
 		coloringPanel.active = false;
+		coloringPanel.enteredOnce = false;
+	}
 
 
 	glUseProgram(programs.uiProgram); 
@@ -1107,8 +1117,11 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 	container(txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle);
 	txtrCreatingPanel.panelHover = isMouseOnButton(window,panelWidth+0.03f,panelHeigth+0.06f,txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY,mouseXpos,mouseYpos,false);
 	
-	if(!txtrCreatingPanel.panelHover)
+	if(!txtrCreatingPanel.panelHover){
+		txtrCreatingPanel.color = glm::vec3(0);
 		txtrCreatingPanel.active = false;
+		txtrCreatingPanel.textBoxVal = "texture";
+	}
 
 	glUseProgram(programs.uiProgram);
 	
@@ -1155,31 +1168,27 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 		glset.texImage(nullptr,1080,1080,GL_RGB);
 		glset.generateMipmap();
 
-
-		glClearColor(txtrCreatingPanel.color.r/255.f,txtrCreatingPanel.color.g/255.f,txtrCreatingPanel.color.b/255.f,1);
-
-
 		unsigned int FBO;
 		glset.genFramebuffers(FBO);
 		glset.bindFramebuffer(FBO);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,  texture, 0);
 
+		glClearColor(txtrCreatingPanel.color.r/255.f,txtrCreatingPanel.color.g/255.f,txtrCreatingPanel.color.b/255.f,1);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		GLubyte* data = new GLubyte[1080*1080*3]; 
-		glReadPixels(0,0,1080,1080,GL_RGB,GL_UNSIGNED_BYTE,data);
-		glset.texImage(data,1080,1080,GL_RGB);
-		glset.generateMipmap();
-		
-		delete[] data;
-
 		glset.bindFramebuffer(0);
+
+		glset.generateMipmap();
+
 		glDeleteFramebuffers(1,&FBO);
 
 		txtr.id = texture;
 		txtr.name = txtrCreatingPanel.textBoxVal;
-		 
-		albedoTextures.push_back(txtr);
 		
+		albedoTextures.push_back(txtr);
+
+		txtrCreatingPanel.textBoxVal = "texture";
+		txtrCreatingPanel.color = glm::vec3(0);
+		txtrCreatingPanel.active = false;
 	}
 }

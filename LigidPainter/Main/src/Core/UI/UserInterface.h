@@ -424,6 +424,8 @@ struct ColoringPanel{
 	
 	bool panelHover = false;
 
+	bool enteredOnce = false;
+
 	float saturationValueBoxPosX = 0.f;
 	float saturationValueBoxPosY = 0.f;
 	bool saturationValueBoxPointerHover = false;
@@ -456,7 +458,7 @@ struct TextureCreatingPanel{
 
 	bool active; 
 
-	std::string textBoxVal;
+	std::string textBoxVal = "texture";
 	bool textBoxActive = false;
 	bool textBoxHover = false;
 	bool newTextboxEntry = false;
