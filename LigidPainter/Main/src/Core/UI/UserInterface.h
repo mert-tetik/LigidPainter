@@ -409,6 +409,31 @@ struct TextureSelectionPanel{
 	bool textureClicked = false;
 };
 
+struct ColoringPanel{
+	float panelPosX = 0.f;
+	float panelPosY = 0.f;
+	
+	float saturationValueBoxPosX = 0.f;
+	float saturationValueBoxPosY = 0.f;
+	bool saturationValueBoxPointerHover = false;
+	bool saturationValueBoxPointerPressed = false;
+
+	float hueBarPosX = 0.f;
+	bool hueBarPointerHover = false;
+	bool hueBarPointerPressed = false;
+
+	bool pickerValueChanged = false;
+	
+	bool active;
+
+	std::string hexVal = "#408080";
+	bool hexValTextboxActive = false;
+	bool hexValTextboxHover = false;
+	bool newHexValTextboxEntry = false;
+
+	glm::vec3 result;
+};
+
 class UserInterface {
 public:
 	//Load
@@ -443,7 +468,7 @@ public:
 	void textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<unsigned int> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth,unsigned int circleTexture);
 	void renderAlert(std::string message,int duration,unsigned int uiProgram,int state);
 	void alert(std::string message,int duration);
-	void coloringPanel(float posX,float posY,Programs programs,Icons icons);
+	void coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,unsigned int FBOscreen);
 
 
 	

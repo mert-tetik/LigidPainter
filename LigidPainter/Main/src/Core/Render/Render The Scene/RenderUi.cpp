@@ -74,7 +74,8 @@ float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<unsigned in
 ,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
 ,NodePanel &nodePanel,SndPanel &sndPanel, int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,
-std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool firstClick) {
+std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool firstClick
+,ColoringPanel &coloringPanel) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -161,13 +162,14 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 		ui.nodePanelBarriers(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth);
 
-		ui.coloringPanel(0.f,0.f,programs,icons);
 
 		ui.renderAlert(alertMessage,alertDuration,programs.uiProgram,alertState);		
 		
-
 		double xOffset = mouseXpos - lastMouseX;
 		double yOffset = mouseYpos - lastMouseY;
+		
+		ui.coloringPanel(coloringPanel,programs,icons,renderData.window,saturationValShaderData,projection,mouseXpos,mouseYpos,firstClick,xOffset,yOffset,FBOScreen);
+
 		for (size_t i = 0; i < nodeScenes[selectedNodeScene].nodes.size(); i++)
 		{
 			nodeScenes[selectedNodeScene].nodes[i].height = (nodeScenes[selectedNodeScene].nodes[i].inputs.size() + nodeScenes[selectedNodeScene].nodes[i].rangeBarCount + nodeScenes[selectedNodeScene].nodes[i].outputs.size())/22.f * nodePanel.zoomVal;

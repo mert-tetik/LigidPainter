@@ -13,6 +13,7 @@
 #include "Core/UI/UserInterface.h"
 #include "Core/gl.h"
 #include "Core/Utilities.h"
+#include "Core/Render/Render.h"
 #include "Core/Load.hpp"
 
 
@@ -974,13 +975,105 @@ void UserInterface::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
 	sendMaxWindowSizeToCalculationsAndMore(maxScreenWidth,maxScreenHeight);
 }
 
-void UserInterface::coloringPanel(float posX,float posY,Programs programs,Icons icons){
-	const float depth = 0.9f;
+void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,unsigned int FBOscreen){
+	const float depth = 0.8f;
 
 	const float panelWidth = 0.2f;
 	const float panelHeigth = 0.2f;
 	
 	ColorData colorData;
+	GlSet glset;
+	Utilities util;
 
-	container(posX,posY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle);
+	container(coloringPanel.panelPosX,coloringPanel.panelPosY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle);
+
+	glUseProgram(programs.uiProgram); 
+
+	//Color Picker
+	glm::vec3 hueResult = hueBar(coloringPanel.panelPosX + 0.02f, coloringPanel.panelPosY, coloringPanel.hueBarPosX, FBOscreen,window,orthoProjection,true); 
+	
+	saturationValShaderData.boxColor = hueResult/255.f;
+	saturationValShaderData.renderTextureProjection = orthoProjection;
+
+	glset.useSaturationValBoxShader(programs.saturationValBoxProgram,saturationValShaderData);
+	colorBox(coloringPanel.panelPosX - 0.1f, coloringPanel.panelPosY, coloringPanel.saturationValueBoxPosX, coloringPanel.saturationValueBoxPosY);
+
+	int screenSizeX;
+	int screenSizeY;
+	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
+
+	Render render;
+	ColorPicker colorPicker;
+	colorPicker.hueColorValue = hueResult;
+	colorPicker.saturationValuePosX = coloringPanel.saturationValueBoxPosX;
+	colorPicker.saturationValuePosY = coloringPanel.saturationValueBoxPosY;
+	coloringPanel.result = render.getColorPickerValue(FBOscreen,colorPicker,screenSizeX,screenSizeY,programs,uiMaxScreenWidth,uiMaxScreenHeight,saturationValShaderData);
+	
+	box(0.04f, 0.03f, coloringPanel.panelPosX + 0.125f,coloringPanel.panelPosY+0.15f, coloringPanel.hexVal, colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, (float)coloringPanel.hexValTextboxActive);//Hex val textbox
+	
+	coloringPanel.hexValTextboxHover = isMouseOnButton(window,0.05f,0.03f, coloringPanel.panelPosX + 0.125f, coloringPanel.panelPosY + 0.15f,mouseXpos,mouseYpos,false);
+
+	if(coloringPanel.hexValTextboxHover && firstClick){
+		coloringPanel.hexValTextboxActive = true;
+	}
+
+
+
+	if(coloringPanel.newHexValTextboxEntry){
+		LigidPainter lp;
+		lp.updateColorPicker(util.hexToRGBConverter(coloringPanel.hexVal),true,true,coloringPanel.hueBarPosX,coloringPanel.saturationValueBoxPosX,coloringPanel.saturationValueBoxPosY,false);
+		coloringPanel.newHexValTextboxEntry = false;
+	}
+	if(coloringPanel.pickerValueChanged){
+		coloringPanel.hexVal = util.rgbToHexGenerator(coloringPanel.result);
+		coloringPanel.pickerValueChanged = false;
+	}
+
+
+
+
+	glUseProgram(programs.iconsProgram);
+	iconBox(0.02*1.2,0.0364f*1.2,coloringPanel.panelPosX + 0.125f,coloringPanel.panelPosY+0.075f,0.9f,icons.Circle,0,colorData.panelColorSnd,glm::vec4(0));
+	iconBox(0.02,0.0364f,coloringPanel.panelPosX + 0.125f,coloringPanel.panelPosY+0.075f,0.91f,icons.Circle,0,glm::vec4(1),glm::vec4(0));
+	
+	iconBox(0.02f,0.03f,coloringPanel.panelPosX + 0.18f, coloringPanel.panelPosY-0.18,0.9f,icons.dropperIcon,0,colorData.iconColor,colorData.iconColorHover);
+
+
+
+	coloringPanel.saturationValueBoxPointerHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX - 0.1f + coloringPanel.saturationValueBoxPosX,coloringPanel.panelPosY+coloringPanel.saturationValueBoxPosY,mouseXpos,mouseYpos,false);
+	coloringPanel.hueBarPointerHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX + 0.02f,coloringPanel.panelPosY + coloringPanel.hueBarPosX,mouseXpos,mouseYpos,false);
+
+
+
+	if(coloringPanel.saturationValueBoxPointerHover && firstClick)
+		coloringPanel.saturationValueBoxPointerPressed = true;
+		
+
+	if(coloringPanel.saturationValueBoxPointerPressed){
+		coloringPanel.saturationValueBoxPosX += xOffset/uiMaxScreenWidth*2;
+		coloringPanel.saturationValueBoxPosX = util.restrictBetween(coloringPanel.saturationValueBoxPosX, 0.099f, -0.1f);//Keep in boundaries
+		coloringPanel.saturationValueBoxPosY -= yOffset/uiMaxScreenHeight*2;
+		coloringPanel.saturationValueBoxPosY = util.restrictBetween(coloringPanel.saturationValueBoxPosY, 0.199f, -0.2f);//Keep in boundaries
+		coloringPanel.pickerValueChanged = true;
+	}
+
+
+
+	if(coloringPanel.hueBarPointerHover && firstClick)
+		coloringPanel.hueBarPointerPressed = true;
+
+	if(coloringPanel.hueBarPointerPressed){
+		coloringPanel.hueBarPosX -= yOffset/uiMaxScreenWidth*2;
+		coloringPanel.hueBarPosX = util.restrictBetween(coloringPanel.hueBarPosX, 0.180f, -0.180f);//Keep in boundaries
+		coloringPanel.pickerValueChanged = true;
+	}
+
+
+
+	if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
+		coloringPanel.saturationValueBoxPointerPressed = false;
+		coloringPanel.hueBarPointerPressed = false;
+	}
+
+	glUseProgram(programs.uiProgram); 
 }

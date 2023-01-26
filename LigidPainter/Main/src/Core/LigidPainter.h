@@ -218,6 +218,8 @@ public:
 	void sndPanelPlusIcon();
 	void sndPanelDownIcon();
 	void sndPanelMinusIcon();
+	void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatV,float &hueValue,float &saturationValuePosX, float &saturationValuePosY,bool isMainColorPicker);
+
 
 };
 struct PanelData {

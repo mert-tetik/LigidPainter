@@ -8,6 +8,7 @@
 #include <glm/gtx/string_cast.hpp>
 
 #include "Core/Render/Render.h"
+#include "Core/UI/UserInterface.h"
 #include "Core/LigidPainter.h"
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"

@@ -67,7 +67,7 @@ bool UserInterface::textInputHex(int key, int action, std::string &text, int &ac
 	    		}
 	    	}
 	    }
-        if(key == 259 && activeChar != 0){
+        if(key == 259 && activeChar != 0 && text[activeChar-1] != '#'){
 	    	//Backspace
 	    	text[activeChar] = '0';
             valueChanged = true;

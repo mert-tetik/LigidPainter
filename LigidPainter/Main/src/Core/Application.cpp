@@ -124,6 +124,7 @@ std::vector<MaterialOut> modelMaterials;
 bool newModelAdded = false;
 int selectedAlbedoTextureIndex;
 std::vector<Node> appNodes;
+ColoringPanel coloringPanel;
 
 
 string modelName;
@@ -138,7 +139,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void updateCameraPosChanging();
 RenderData updateRenderData(RenderData renderData, unsigned int depthTexture, int brushSizeIndicatorSize);
-void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatV);
 
 //--------Functions--------\\
 
@@ -484,6 +484,10 @@ bool LigidPainter::run()
 				colorPicker.hexValTextBoxActive = false;
 				textBoxActiveChar = 6;
 			}
+			if(!coloringPanel.hexValTextboxHover){
+				coloringPanel.hexValTextboxActive = false;
+				textBoxActiveChar = 6;
+			}
 		}
 
 
@@ -521,10 +525,10 @@ bool LigidPainter::run()
 
 		if(dropperColorPickingCondition || movingSatValPointerCondition || movingHuePointerCondition || colorPicker.hexValTextBoxGotInput){
 			if(colorPicker.hexValTextBoxGotInput){
-				updateColorPicker(util.hexToRGBConverter(colorPicker.hexValTextBoxVal),true,true);//Update colorbox val once color picker hex value textbox value changed
+				updateColorPicker(util.hexToRGBConverter(colorPicker.hexValTextBoxVal),true,true,colorPicker.hueValue,colorPicker.saturationValuePosX,colorPicker.saturationValuePosY,true);//Update colorbox val once color picker hex value textbox value changed
 			}
 			else{
-				updateColorPicker(renderOut.mouseHoverPixel,true,!colorPicker.hueBarClicked);//Update colorbox val once dropper is used or colorbox is clicked
+				updateColorPicker(renderOut.mouseHoverPixel,true,!colorPicker.hueBarClicked,colorPicker.hueValue,colorPicker.saturationValuePosX,colorPicker.saturationValuePosY,true);//Update colorbox val once dropper is used or colorbox is clicked
 				colorPicker.dropperActive = false;
 				colorPicker.dropperEnter = false;
 			}
@@ -598,7 +602,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel);
 		}
 		
 		//double lastTime = glfwGetTime();
@@ -709,7 +713,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -776,6 +780,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			colorPicker.saturationValueValChanged = true;
 			colorPicker.hexValTextBoxGotInput = true;
 		}
+	}
+
+	if(coloringPanel.hexValTextboxActive){
+		if(ui.textInputHex(key,action,coloringPanel.hexVal,textBoxActiveChar)){
+			coloringPanel.newHexValTextboxEntry = true;
+		}	
+
 	}
 
 
@@ -988,7 +999,7 @@ void updateCameraPosChanging(){
 }
 
 
-void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatVal){
+void LigidPainter::updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatVal,float &hueValue,float &saturationValuePosX, float &saturationValuePosY,bool isMainColorPicker){
 	int width;
 	int height;
 	glfwGetWindowSize(window,&width,&height);
@@ -997,16 +1008,17 @@ void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatVal){
 	
 	colorPicker.saturationValueValChanged = true;
 	glm::vec3 hsvVal = util.RGBToHSVGenerator(RGBval);
-
-	drawColor = RGBval/glm::vec3(255.0f);
+	
+	if(isMainColorPicker)
+		drawColor = RGBval/glm::vec3(255.0f);
 	
 	if(changeHue){
-		colorPicker.hueValue = (hsvVal.r / 708.333333333f) - 0.18f; //0.195
+		hueValue = (hsvVal.r / 708.333333333f) - 0.18f; //0.195
 		colorPicker.updateHueVal = true;
 	}
 	if(changeSatVal){
-		colorPicker.saturationValuePosX = (hsvVal.g / 1342.10526316f) - 0.095f; //0.095
-		colorPicker.saturationValuePosY = (hsvVal.b / 653.846153846f) - 0.195f; //0.195
+		saturationValuePosX = ((hsvVal.g / 1342.10526316f) - 0.095f); //0.095
+		saturationValuePosY = (hsvVal.b / 653.846153846f) - 0.195f; //0.195
 	}
 }
 
