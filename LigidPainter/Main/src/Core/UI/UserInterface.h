@@ -302,6 +302,10 @@ struct NodeInput{
 	bool removeTextureButtonHover;
 	int selectedTextureIndex = 10000;
 	unsigned int selectedTexture = 0;
+
+	//Color element
+	glm::vec3 color = glm::vec3(0);
+	bool coloringPanelActivated;
 	
 	float connectionPosX = 0;
 	float connectionPosY = 0;
@@ -413,6 +417,8 @@ struct ColoringPanel{
 	float panelPosX = 0.f;
 	float panelPosY = 0.f;
 	
+	bool panelHover = false;
+
 	float saturationValueBoxPosX = 0.f;
 	float saturationValueBoxPosY = 0.f;
 	bool saturationValueBoxPointerHover = false;
@@ -478,7 +484,7 @@ public:
 	
 	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,
 	float maxScreenHeight,NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,std::vector<unsigned int> albedoTextures,
-	float screenGapX,bool firstClick);
+	float screenGapX,bool firstClick,ColoringPanel &coloringPanel);
 
 
 	

@@ -166,6 +166,30 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     texture = material.renderingPipeline[material.nodes[material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[material.renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;
                 }
             }
+            else if(material.renderingPipeline[nodeI].inputs[inputI].element == "color"){
+                if(material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
+                    
+                    glActiveTexture(GL_TEXTURE28);
+                    glGenTextures(1, &texture);
+                    glBindTexture(GL_TEXTURE_2D,texture);
+
+                    const unsigned int channels = GL_RGB;
+                    const int channelSize = 3;
+
+
+                    GLubyte* data = new GLubyte[channelSize];
+
+                    for (size_t i = 0; i < channelSize; i++)
+                    {
+                        data[i] = material.renderingPipeline[nodeI].inputs[inputI].color[i];
+                    }
+
+                    glset.texImage(data,1,1,channels);
+                }
+                else{
+                    texture = material.renderingPipeline[material.nodes[material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[material.renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;
+                }
+            }
             else if(material.renderingPipeline[nodeI].inputs[inputI].element == "none"){
                 if(material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
                     glGenTextures(1, &texture);

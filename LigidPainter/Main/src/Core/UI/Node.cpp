@@ -19,7 +19,7 @@ bool establishConnectionFirstRelease = false;
 
 void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
 float maxScreenWidth,float maxScreenHeight, NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,
-std::vector<unsigned int> albedoTextures,float screenGapX,bool firstClick){
+std::vector<unsigned int> albedoTextures,float screenGapX,bool firstClick,ColoringPanel &coloringPanel){
 	ColorData colorData;
 	Utilities util;
 
@@ -296,6 +296,9 @@ std::vector<unsigned int> albedoTextures,float screenGapX,bool firstClick){
 		else if(node.inputs[i].element == "image"){
 			rangeBarCountInputs += 1;
 		}
+		else if(node.inputs[i].element == "color"){
+			rangeBarCountInputs += 1;
+		}
 
 	}
 
@@ -346,7 +349,33 @@ std::vector<unsigned int> albedoTextures,float screenGapX,bool firstClick){
 	{
         //Render the input title
 		renderText(programs.uiProgram,node.inputs[i].text,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+0.01f);
-		
+		if(node.inputs[i].element == "color"){
+			inputElementIndex++;
+			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].color/255.f,1),0,0,0,depth+0.01,8 / (node.width*6),node.backColor,0);///Bottom
+			bool colorInputHover = false; 
+			if(nodePanel.panelHover){
+				colorInputHover = isMouseOnButton(window,iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+			}
+			if(colorInputHover && firstClick){
+				node.inputs[i].coloringPanelActivated = true;
+				coloringPanel.active = true;
+				
+				coloringPanel.hexVal = util.rgbToHexGenerator(node.inputs[i].color);
+				coloringPanel.newHexValTextboxEntry = true;
+				coloringPanel.result = node.inputs[i].color;
+				coloringPanel.panelPosX = mouseX/(maxScreenWidth/2.f) - 1.0f + screenGapX ;
+				coloringPanel.panelPosY = -mouseY/maxScreenHeight*2.f + 1.0f;
+			}
+
+			if(!coloringPanel.active)
+				node.inputs[i].coloringPanelActivated = false;
+
+			if(node.inputs[i].coloringPanelActivated){
+				node.inputs[i].color = coloringPanel.result;
+				material.stateChanged = true;
+			}
+		}
+
 		if(node.inputs[i].element == "image"){
 			inputElementIndex++;
 			

@@ -986,6 +986,11 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 	Utilities util;
 
 	container(coloringPanel.panelPosX,coloringPanel.panelPosY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle);
+	
+	coloringPanel.panelHover = isMouseOnButton(window,panelWidth+0.03f,panelHeigth+0.06f,coloringPanel.panelPosX,coloringPanel.panelPosY,mouseXpos,mouseYpos,false);
+	if(!coloringPanel.panelHover)
+		coloringPanel.active = false;
+
 
 	glUseProgram(programs.uiProgram); 
 

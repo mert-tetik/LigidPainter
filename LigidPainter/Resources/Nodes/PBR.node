@@ -15,7 +15,7 @@
 --list_index : none;
 --type : vec3;
 --title : Albedo;
---element : range;
+--element : color;
 
 #Roughness
 -input_1 : 
