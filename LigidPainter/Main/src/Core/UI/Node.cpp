@@ -14,12 +14,13 @@
 #include "Core/gl.h"
 #include "Core/Utilities.h"
 #include "Core/Load.hpp"
+#include "Core/Render/Render.h"
 
 bool establishConnectionFirstRelease = false;
 
 void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
 float maxScreenWidth,float maxScreenHeight, NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,
-std::vector<unsigned int> albedoTextures,float screenGapX,bool firstClick,ColoringPanel &coloringPanel){
+std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPanel &coloringPanel){
 	ColorData colorData;
 	Utilities util;
 
@@ -412,7 +413,7 @@ std::vector<unsigned int> albedoTextures,float screenGapX,bool firstClick,Colori
 			if(textureSelectionPanel.active && textureSelectionPanel.textureClicked && node.inputs[i].textureSelectingState){
 				material.stateChanged = true;
 				node.inputs[i].selectedTextureIndex = textureSelectionPanel.selectedIndex;
-				node.inputs[i].selectedTexture = albedoTextures[textureSelectionPanel.selectedIndex];
+				node.inputs[i].selectedTexture = albedoTextures[textureSelectionPanel.selectedIndex].id;
 
 
 				textureSelectionPanel.selectedIndex = 10000;

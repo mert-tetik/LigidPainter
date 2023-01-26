@@ -119,7 +119,7 @@ std::vector<NodeScene> nodeScenes;
 int selectedNodeScene = 0;
 TextureSelectionPanel textureSelectionPanel;
 BrushMaskTextures brushMaskTextures;
-std::vector<unsigned int> albedoTextures;
+std::vector<aTexture> albedoTextures;
 std::vector<MaterialOut> modelMaterials;
 bool newModelAdded = false;
 int selectedAlbedoTextureIndex;
@@ -1399,7 +1399,7 @@ void LigidPainter::sndPanelMinusIcon(){
 	if(sndPanel.state == 0){
 		//Textures
 		unsigned int texture;
-		texture = albedoTextures[selectedAlbedoTextureIndex];
+		texture = albedoTextures[selectedAlbedoTextureIndex].id;
 		glDeleteTextures(1, &texture);
 
 		albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
@@ -1413,9 +1413,13 @@ void LigidPainter::sndPanelMinusIcon(){
 void LigidPainter::sndPanelPlusIcon(){
 	if(sndPanel.state == 0){
 		//Textures
+
+		aTexture txtr;
 		unsigned int texture;
 		glset.genTextures(texture);
-		albedoTextures.push_back(texture);
+		txtr.id = texture;
+		txtr.name = "texture_" + std::to_string(albedoTextures.size()); 
+		albedoTextures.push_back(txtr);
 	}
 	else if(sndPanel.state == 1){
 		//Materials
@@ -1456,6 +1460,8 @@ void LigidPainter::sndPanelPlusIcon(){
 	}
 }
 void LigidPainter::sndPanelDownIcon(){
+	aTexture result;
+
 	glActiveTexture(GL_TEXTURE0);
 	unsigned int texture;
 	glset.genTextures(texture);
@@ -1471,8 +1477,9 @@ void LigidPainter::sndPanelDownIcon(){
 		std::string albedoTexturePath = albedoPathCheck;
 		txtr.getTexture(albedoTexturePath,1080,1080,true); //Force albedo's ratio to be 1:1
 	}
-
-	albedoTextures.push_back(texture);
+	result.id = texture;
+	result.name = "texture_" + std::to_string(albedoTextures.size()); 
+	albedoTextures.push_back(result);
 }
 
 //-----------------------------PREPARE STRUCTS-----------------------------\\

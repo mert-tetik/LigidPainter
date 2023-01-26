@@ -153,7 +153,7 @@ void UserInterface::panel(float panelLoc, Icons icons) {
 	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.567f,0.6f,icons.Export,0,colorD.iconColor,colorD.iconColor);
 
 }
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<unsigned int> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -210,6 +210,8 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 		//RENDER THE TEXTURES
 		for (size_t i = 0; i < albedoTextures.size(); i++)
 		{
+			glUseProgram(programs.renderTheTextureProgram);
+
 			if(i % 3 == 0 && i != 0){
 				maskYpos-=0.23f;
 				maskXpos=0.0f;
@@ -231,17 +233,17 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
 
 
-			glBindTexture(GL_TEXTURE_2D,albedoTextures[i]);
+			glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
 
 			std::vector<float> buttonCoorSq{
 				// first triangle
-				 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		upBotDifMin*10			,0,0,0,  // top right
-				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
-				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0,  // top left 
+				 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	1,		upBotDifMin*10			,0,0,0,  // top right
+				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	0,		upBotDifMin*10			,0,0,0,  // top left 
 				// second triangle						   	
-				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
-				-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
-				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0  // top left
+				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+				-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
+				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	0,		upBotDifMin*10			,0,0,0  // top left
 			};
 			if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false)){
 				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
@@ -260,6 +262,10 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,0);
 			}
 			glset.drawArrays(buttonCoorSq,false);
+
+			glUseProgram(programs.uiProgram);
+
+			renderText(programs.uiProgram,albedoTextures[i].name,position_x- textureWidth ,position_y - textureWidth*2.5,0.00022f,colorData.textColor,0.99999f);
 		}
 	}
 
@@ -360,7 +366,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	glUseProgram(programs.uiProgram);
 }
 
-void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<unsigned int> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth,unsigned int circleTexture){
+void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<aTexture> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth,unsigned int circleTexture){
 	ColorData clrData;
 	GlSet glset;
 
@@ -407,7 +413,7 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 		float upBotDifMin = std::min(0.05f + position_y,maxTop) - std::min(-0.05f + position_y,maxTop);
 		float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
 
-		glBindTexture(GL_TEXTURE_2D,albedoTextures[i]);
+		glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
 
 		std::vector<float> buttonCoorSq{
 			// first triangle

@@ -2,6 +2,7 @@
 #define LGDUI_H
 
 #include <map>
+#include <vector>
 
 #define UIUploadingModelPathTextBox 0
 #define UIuploadingModelPathText 1
@@ -114,7 +115,6 @@ struct ColorData //LigidPainter color palette
 	glm::vec3 alertColor = glm::vec3(0.76,0.17,0.17);
 };
 
-//Width will be added to the midPanelPos if attachedToMainPanel is true
 struct Container{
 	float width;
 	float height;
@@ -122,6 +122,11 @@ struct Container{
 	float positionY;
 	float positionZ;
 	glm::vec4 color;
+};
+
+struct aTexture{
+	unsigned int id;
+	std::string name;
 };
 
 struct Button{
@@ -453,7 +458,7 @@ public:
 
 	//Visuality
 	void panel(float panelLoc, Icons icons);
-	void sndPanel(int state,float panelLoc , Programs programs , Icons icons , std::vector<unsigned int> &albedoTextures,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth,int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded);
+	void sndPanel(int state,float panelLoc , Programs programs , Icons icons , std::vector<aTexture> &albedoTextures,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth,int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded);
 	void nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,Icons icons,std::vector<NodeScene> nodeScenes,int selectedNodeScene);
 	void nodePanelBarriers(float mainPanelLoc,float sndPanel, float height);
 
@@ -474,7 +479,7 @@ public:
 	void container(float positionX,float positionY,float positionZ,float width, float height,glm::vec4 color, Programs &programs,unsigned int circleTexture);
 	void circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture,glm::vec4 color);
 	void drawLine(float posX,float posY,float posZ,float toPosX,float toPosY,float width,glm::vec4 color);
-	void textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<unsigned int> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth,unsigned int circleTexture);
+	void textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<aTexture> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth,unsigned int circleTexture);
 	void renderAlert(std::string message,int duration,unsigned int uiProgram,int state);
 	void alert(std::string message,int duration);
 	void coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,
@@ -483,7 +488,7 @@ public:
 
 	
 	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,
-	float maxScreenHeight,NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,std::vector<unsigned int> albedoTextures,
+	float maxScreenHeight,NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,std::vector<aTexture> albedoTextures,
 	float screenGapX,bool firstClick,ColoringPanel &coloringPanel);
 
 

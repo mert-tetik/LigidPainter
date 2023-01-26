@@ -31,12 +31,11 @@ using namespace std;
     string directory;
 
     // draws the model, and thus all its meshes
-    void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,std::vector<unsigned int> albedoTextures,int chosenTextureIndex,glm::vec3 viewPos)
+    void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,unsigned int selectedTexture,glm::vec3 viewPos)
     {
         if(meshes.size() > 0 && paintingMode){
             glActiveTexture(GL_TEXTURE0);
-            if(albedoTextures.size() != 0)
-                glBindTexture(GL_TEXTURE_2D,albedoTextures[chosenTextureIndex]);
+            glBindTexture(GL_TEXTURE_2D,selectedTexture);
             glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 1.0f);
             meshes[chosenMaterialIndex].Draw(); 
         }
@@ -70,8 +69,6 @@ using namespace std;
         if(meshes.size() > 0){
 
         }
-        //std::cout << '\n';
-            //glBindTexture(GL_TEXTURE_2D,albedoTextures[chosenMaterialIndex]);
     }
     
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.

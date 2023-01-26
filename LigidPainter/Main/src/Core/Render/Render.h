@@ -52,7 +52,7 @@ public:
 	RenderOutData render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,Icons &icons,float maskPanelSliderValue,
 	std::vector<unsigned int> &maskTextures,bool renderPlane,bool renderSphere,PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,
 	float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,OutShaderData &outShaderData,Model &model,
-	std::vector<unsigned int> &albedoTextures,bool paintRender,float materialsPanelSlideValue,std::vector<UIElement> &UIElements, ColorPicker &colorPicker,
+	std::vector<aTexture> &albedoTextures,bool paintRender,float materialsPanelSlideValue,std::vector<UIElement> &UIElements, ColorPicker &colorPicker,
 	TextureDisplayer &textureDisplayer,Cubemaps cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel,
 	int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene
 	,std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool& newModelAdded,bool firstClick,
@@ -63,19 +63,19 @@ public:
 	void sendProgramsToRender(Programs appPrograms);
 	ViewUpdateData updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirrorX,bool mirrorY,bool mirrorZ);//TODO : This function is not related
 	glm::mat4 setMatrices();
-    void renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels,Model &model,bool useModel,std::vector<MaterialOut> &modelMaterialProgram,glm::mat4 view,std::vector<unsigned int> albedoTextures,int chosenTextureIndex);
+    void renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels,Model &model,bool useModel,std::vector<MaterialOut> &modelMaterialProgram,glm::mat4 view,std::vector<aTexture> albedoTextures,int chosenTextureIndex);
 	glm::vec3 getColorPickerValue(unsigned int FBOScreen,ColorPicker &colorPicker,  int screenSizeX,  int screenSizeY, Programs programs, int maxScreenWidth,int maxScreenHeight,SaturationValShaderData &saturationValShaderData);
 
 private:
 	//Render The Scene
-	void renderModel(bool backfaceCulling, PBRShaderData &data,Model &model,bool renderDefault,std::vector<MaterialOut> &modelMaterials,Programs programs,int currentMaterialIndex,glm::mat4 view,bool paintingMode,std::vector<unsigned int> albedoTextures,int chosenTextureIndex,glm::vec3 viewPos);
+	void renderModel(bool backfaceCulling, PBRShaderData &data,Model &model,bool renderDefault,std::vector<MaterialOut> &modelMaterials,Programs programs,int currentMaterialIndex,glm::mat4 view,bool paintingMode,std::vector<aTexture> albedoTextures,int chosenTextureIndex,glm::vec3 viewPos);
 	
 	MaterialOut renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY);
 
 	
 	RenderOutData renderUi(PanelData& panelData, RenderData &renderData, unsigned int FBOScreen, Icons &icons,const char* exportFileName,
 	float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,float brushBlurVal,
-	OutShaderData &outShaderData,Model &model,std::vector<unsigned int> &albedoTextures,Programs programs,int &currentMaterialIndex,int maxScreenWidth,
+	OutShaderData &outShaderData,Model &model,std::vector<aTexture> &albedoTextures,Programs programs,int &currentMaterialIndex,int maxScreenWidth,
 	int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,float materialsPanelSlideValue,
 	std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,
 	SndPanel &sndPanel,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,
@@ -87,9 +87,9 @@ private:
 	void renderSkyBox(SkyBoxShaderData data,Programs programs);
 
 	//Texture Process
-	void renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName, OutShaderData outShaderData,Model &model,bool renderDefault,std::vector<unsigned int> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,std::vector<UndoActions> &undoList,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex);
-	void getDepthTexture( unsigned int FBOScreen,  int screenSizeX,  int screenSizeY,ScreenDepthShaderData screenDepthShaderData,Model &model,bool renderDefault,std::vector<MaterialOut> &modelMaterials,Programs programs,int currentMaterialIndex, int maxScreenWidth ,int maxScreenHeight,glm::mat4 view,std::vector<unsigned int> albedoTextures,int chosenTextureIndex);
-    void exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName,std::vector<unsigned int> &albedoTextures);
+	void renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName, OutShaderData outShaderData,Model &model,bool renderDefault,std::vector<aTexture> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,std::vector<UndoActions> &undoList,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex);
+	void getDepthTexture( unsigned int FBOScreen,  int screenSizeX,  int screenSizeY,ScreenDepthShaderData screenDepthShaderData,Model &model,bool renderDefault,std::vector<MaterialOut> &modelMaterials,Programs programs,int currentMaterialIndex, int maxScreenWidth ,int maxScreenHeight,glm::mat4 view,std::vector<aTexture> albedoTextures,int chosenTextureIndex);
+    void exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName,std::vector<aTexture> &albedoTextures);
 
 };
 #endif // !RGDRENDER_H

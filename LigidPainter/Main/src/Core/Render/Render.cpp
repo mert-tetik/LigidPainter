@@ -109,7 +109,7 @@ ViewUpdateData Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos
 
 //------------CtrlZ------------
 bool doCtrlZ;
-void ctrlZCheck(GLFWwindow* window,std::vector<unsigned int> &albedoTextures) {
+void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures) {
 	Texture txtr;
 	GlSet glset;
 
@@ -123,7 +123,7 @@ void ctrlZCheck(GLFWwindow* window,std::vector<unsigned int> &albedoTextures) {
 		//Bind the related texture
 		glset.activeTexture(GL_TEXTURE0);
 		currentMaterialIndex = undoList[undoList.size() - 1].activeMaterial;
-		glset.bindTexture(albedoTextures[currentMaterialIndex]);
+		glset.bindTexture(albedoTextures[currentMaterialIndex].id);
 
 		//Change the texture to the last texture
 		glset.texImage(undoList[undoList.size() - 1].undoTextures, 1080, 1080, GL_RGB);
@@ -145,7 +145,7 @@ void ctrlZCheck(GLFWwindow* window,std::vector<unsigned int> &albedoTextures) {
 
 
 
-void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName,vector<unsigned int> &albedoTextures){
+void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName,vector<aTexture> &albedoTextures){
 
 	//Create the export folder
 	std::string exportPathStr = exportPath;
@@ -172,7 +172,7 @@ void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* 
 
 		//Bind the related texture
 		gl.activeTexture(GL_TEXTURE0);
-		gl.bindTexture(albedoTextures[i]);
+		gl.bindTexture(albedoTextures[i].id);
 
 		//Get the texture array
     	GLubyte* exportTxtr = txtr.getTextureFromProgram(GL_TEXTURE0,1080,1080,3);
@@ -191,13 +191,17 @@ void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* 
 }
 
 void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels,Model &model,bool useModel,vector<MaterialOut> &modelMaterials,glm::mat4 view,
-std::vector<unsigned int> albedoTextures,int chosenTextureIndex){
+std::vector<aTexture> albedoTextures,int chosenTextureIndex){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     GlSet gl;
 
+	unsigned int chosenTxtr = 0;
+	if(albedoTextures.size() != 0)
+		chosenTxtr = albedoTextures[chosenTextureIndex].id;
+
 	if(useModel)
-		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterials,view,true,albedoTextures,chosenTextureIndex,glm::vec3(0));
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0));
 	else
 		gl.drawArrays(vertices, false); //Render Model
 
@@ -240,7 +244,7 @@ int paintRenderCounter = 0;
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
 Icons &icons,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures, bool renderPlane,bool renderSphere,
 PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,
-OutShaderData &outShaderData,Model &model,vector<unsigned int> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
+OutShaderData &outShaderData,Model &model,vector<aTexture> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
 ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel
 ,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
 std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool firstClick,
