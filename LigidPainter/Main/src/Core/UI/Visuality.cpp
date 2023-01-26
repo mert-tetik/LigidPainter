@@ -1117,7 +1117,7 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 	container(txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle);
 	txtrCreatingPanel.panelHover = isMouseOnButton(window,panelWidth+0.03f,panelHeigth+0.06f,txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY,mouseXpos,mouseYpos,false);
 	
-	if(!txtrCreatingPanel.panelHover){
+	if(!txtrCreatingPanel.panelHover && !coloringPanel.panelHover){
 		txtrCreatingPanel.color = glm::vec3(0);
 		txtrCreatingPanel.active = false;
 		txtrCreatingPanel.textBoxVal = "texture";
@@ -1143,8 +1143,8 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 		coloringPanel.hexVal = util.rgbToHexGenerator(txtrCreatingPanel.color);
 		coloringPanel.newHexValTextboxEntry = true;
 		coloringPanel.result = txtrCreatingPanel.color;
-		coloringPanel.panelPosX = mouseXpos/(uiMaxScreenWidth/2.f) - 1.0f + screenGapX;
-		coloringPanel.panelPosY = -mouseYpos/uiMaxScreenHeight*2.f + 1.0f;
+		coloringPanel.panelPosX = txtrCreatingPanel.panelPosX + panelWidth + 0.2f;
+		coloringPanel.panelPosY = txtrCreatingPanel.panelPosY;
 		coloringPanel.active = true;
 	}
 	
@@ -1186,6 +1186,16 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 		txtr.name = txtrCreatingPanel.textBoxVal;
 		
 		albedoTextures.push_back(txtr);
+
+
+		//Rename if necessary
+		for (size_t i = 0; i < 1000; i++)
+		{
+			if(albedoTextures[i].name)
+		}
+		
+
+
 
 		txtrCreatingPanel.textBoxVal = "texture";
 		txtrCreatingPanel.color = glm::vec3(0);
