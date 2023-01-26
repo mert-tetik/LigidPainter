@@ -88,7 +88,7 @@ private:
 	void renderSkyBox(SkyBoxShaderData data,Programs programs);
 
 	//Texture Process
-	void renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName, OutShaderData outShaderData,Model &model,bool renderDefault,std::vector<aTexture> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,std::vector<UndoActions> &undoList,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex);
+	void renderTextures(unsigned int FBOScreen, int screenSizeX,  int screenSizeY, OutShaderData outShaderData,Model &model,bool renderDefault,std::vector<aTexture> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,std::vector<UndoActions> &undoList,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex);
 	void getDepthTexture( unsigned int FBOScreen,  int screenSizeX,  int screenSizeY,ScreenDepthShaderData screenDepthShaderData,Model &model,bool renderDefault,std::vector<MaterialOut> &modelMaterials,Programs programs,int currentMaterialIndex, int maxScreenWidth ,int maxScreenHeight,glm::mat4 view,std::vector<aTexture> albedoTextures,int chosenTextureIndex);
     void exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName,std::vector<aTexture> &albedoTextures);
 

@@ -166,9 +166,8 @@ void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* 
 	for (size_t i = 0; i < albedoTextures.size(); i++) //Export all the albedo textures
 	{
 		//Give a number to the texture name
-		std::string exportFileNameStr = exportFileName;
-		exportFileNameStr.append("_Albedo_");
-		exportFileNameStr.append(to_string(i));
+		std::string exportFileNameStr = "";
+		exportFileNameStr.append(albedoTextures[i].name);
 
 		//Bind the related texture
 		gl.activeTexture(GL_TEXTURE0);
@@ -297,24 +296,13 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 
 	if (isRenderTexture || paintRender) {
+		renderTextures(FBOScreen,screenSizeX, screenSizeY,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,undoList,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterials,view,selectedAlbedoTextureIndex);
 		
-		if(exportData.exportImage){
-			int lastMaterialIndex = currentMaterialIndex;
-			currentMaterialIndex = 0;		
-			for (size_t i = 0; i < albedoTextures.size(); i++) //Paint outside of the uv's of the albedo textures in one color before exporting
-			{
-				//Render the texture 	
-				renderTextures(FBOScreen, (i == albedoTextures.size()-1) ,UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,true,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,undoList,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterials,view,selectedAlbedoTextureIndex);
-
-				//Render material by material
-				currentMaterialIndex++;
-			}
-
-			//Set everything back to normal
-			currentMaterialIndex = lastMaterialIndex;
-		}
-		else
-			renderTextures(FBOScreen,exportData.exportImage,UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,screenSizeX, screenSizeY,exportData.fileName,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,undoList,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterials,view,selectedAlbedoTextureIndex);
+		//Download enlarged texture
+		
+	}
+	if(exportData.exportImage){
+    	exportTexture(UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,exportData.fileName,albedoTextures);
 	}
 
 	glActiveTexture(GL_TEXTURE13);

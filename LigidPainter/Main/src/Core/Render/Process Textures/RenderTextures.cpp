@@ -15,7 +15,7 @@
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"
 
-void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, bool PNG, const char* exportPath, int screenSizeX,  int screenSizeY,const char* exportFileName, OutShaderData outShaderData,Model &model,bool renderDefault,vector<aTexture> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,std::vector<UndoActions> &undoList,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex) {
+void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screenSizeY, OutShaderData outShaderData,Model &model,bool renderDefault,vector<aTexture> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,std::vector<UndoActions> &undoList,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex) {
 	int maxHistoryHold = 20;
 	
 	if(firstPaint){
@@ -107,10 +107,6 @@ void Render::renderTextures(unsigned int FBOScreen, bool exportImage, bool JPG, 
 		gl.uniform1i(programs.outProgram, "interpretWithUvMask", 0);
 		//interpret the albedo with ui mask texture
 
-		//Download enlarged texture
-		if (exportImage) {
-    	    exportTexture(JPG,PNG,exportPath,exportFileName,albedoTextures);
-		}
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
