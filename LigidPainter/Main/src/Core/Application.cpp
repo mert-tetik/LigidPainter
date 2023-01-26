@@ -125,6 +125,7 @@ bool newModelAdded = false;
 int selectedAlbedoTextureIndex;
 std::vector<Node> appNodes;
 ColoringPanel coloringPanel;
+TextureCreatingPanel txtrCreatingPanel;
 
 
 string modelName;
@@ -489,6 +490,10 @@ bool LigidPainter::run()
 				coloringPanel.hexValTextboxActive = false;
 				textBoxActiveChar = 6;
 			}
+			if(!txtrCreatingPanel.textBoxHover){
+				txtrCreatingPanel.textBoxActive = false;
+				textBoxActiveChar = 6;
+			}
 		}
 
 
@@ -608,7 +613,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel);
 		}
 		
 		//double lastTime = glfwGetTime();
@@ -719,7 +724,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -792,9 +797,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		if(ui.textInputHex(key,action,coloringPanel.hexVal,textBoxActiveChar)){
 			coloringPanel.newHexValTextboxEntry = true;
 		}	
-
 	}
 
+	const int maxTextureCharCount = 22;
+	if(txtrCreatingPanel.textBoxActive){
+		if(ui.textInput(key,action,caps,txtrCreatingPanel.textBoxVal,maxTextureCharCount)){
+			txtrCreatingPanel.newTextboxEntry = true;
+		}	
+	}
 
 	//------------------SHORTCUTS------------------
 
@@ -1414,12 +1424,9 @@ void LigidPainter::sndPanelPlusIcon(){
 	if(sndPanel.state == 0){
 		//Textures
 
-		aTexture txtr;
-		unsigned int texture;
-		glset.genTextures(texture);
-		txtr.id = texture;
-		txtr.name = "texture_" + std::to_string(albedoTextures.size()); 
-		albedoTextures.push_back(txtr);
+
+		txtrCreatingPanel.active = true;
+
 	}
 	else if(sndPanel.state == 1){
 		//Materials

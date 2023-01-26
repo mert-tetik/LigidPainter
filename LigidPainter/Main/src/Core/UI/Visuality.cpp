@@ -107,10 +107,10 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	ColorData colorData;
 
 	if (!isTextBox) {
-		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor,0.99999f);
+		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f);
 	}
 	else {
-		renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,0.99999f);
+		renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f);
 	}
 	glset.uniform1i(uiPrograms.uiProgram, "isUiTextureUsed", 0);
 }
@@ -1093,4 +1093,93 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 	}
 
 	glUseProgram(programs.uiProgram); 
+}
+void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool firstClick,ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures){
+	ColorData colorData;
+	Utilities util;
+	GlSet glset;
+
+	const float depth = 0.51f;
+
+	const float panelWidth = 0.15f;
+	const float panelHeigth = 0.12f;
+
+	container(txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle);
+	txtrCreatingPanel.panelHover = isMouseOnButton(window,panelWidth+0.03f,panelHeigth+0.06f,txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY,mouseXpos,mouseYpos,false);
+	
+	if(!txtrCreatingPanel.panelHover)
+		txtrCreatingPanel.active = false;
+
+	glUseProgram(programs.uiProgram);
+	
+	renderText(programs.uiProgram,"Title :",txtrCreatingPanel.panelPosX - panelWidth,txtrCreatingPanel.panelPosY+0.12f,0.00022f,colorData.textColor,depth+0.01);
+	box(panelWidth - 0.02f, 0.03f, txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY+0.08f, txtrCreatingPanel.textBoxVal, colorData.textBoxColor, 0, true, false, depth+0.01f, 10, colorData.textBoxColorClicked, (float)txtrCreatingPanel.textBoxActive);
+	txtrCreatingPanel.textBoxHover = isMouseOnButton(window,panelWidth - 0.02f, 0.03f,txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY+0.08f,mouseXpos,mouseYpos,false);
+
+	if(txtrCreatingPanel.textBoxHover && firstClick){
+		txtrCreatingPanel.textBoxActive = true;
+	}
+
+	renderText(programs.uiProgram,"Color :",txtrCreatingPanel.panelPosX - panelWidth,txtrCreatingPanel.panelPosY+0.02f,0.00022f,colorData.textColor,depth+0.01);
+	box(panelWidth - 0.02f, 0.03f, txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY-0.02f, "", glm::vec4(txtrCreatingPanel.color/255.f,1), 0, true, false, depth+0.01f, 10, glm::vec4(0), 0);
+	txtrCreatingPanel.colorBarHover = isMouseOnButton(window,panelWidth - 0.02f, 0.03f,txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY-0.02f,mouseXpos,mouseYpos,false);
+
+	if(txtrCreatingPanel.colorBarHover && firstClick){
+		txtrCreatingPanel.coloringPanelActive = true;
+		
+		coloringPanel.hexVal = util.rgbToHexGenerator(txtrCreatingPanel.color);
+		coloringPanel.newHexValTextboxEntry = true;
+		coloringPanel.result = txtrCreatingPanel.color;
+		coloringPanel.panelPosX = mouseXpos/(uiMaxScreenWidth/2.f) - 1.0f + screenGapX;
+		coloringPanel.panelPosY = -mouseYpos/uiMaxScreenHeight*2.f + 1.0f;
+		coloringPanel.active = true;
+	}
+	
+	if(!coloringPanel.active)
+		txtrCreatingPanel.coloringPanelActive = false;
+
+	if(txtrCreatingPanel.coloringPanelActive){
+		txtrCreatingPanel.color = coloringPanel.result;
+	}
+	
+	box(0.04f, 0.03f, txtrCreatingPanel.panelPosX-0.09,txtrCreatingPanel.panelPosY-0.1f, "Create", colorData.buttonColor, 0.03f, false, false, depth+0.01f, 10, colorData.buttonColorHover, txtrCreatingPanel.createButtonHover);
+	txtrCreatingPanel.createButtonHover = isMouseOnButton(window,0.04f, 0.03f, txtrCreatingPanel.panelPosX-0.09,txtrCreatingPanel.panelPosY-0.1f,mouseXpos,mouseYpos,false);
+
+	if(txtrCreatingPanel.createButtonHover && firstClick){
+		aTexture txtr;
+		glActiveTexture(GL_TEXTURE28);
+
+		unsigned int texture;
+		glset.genTextures(texture);
+		glset.bindTexture(texture);
+		glset.texImage(nullptr,1080,1080,GL_RGB);
+		glset.generateMipmap();
+
+
+		glClearColor(txtrCreatingPanel.color.r/255.f,txtrCreatingPanel.color.g/255.f,txtrCreatingPanel.color.b/255.f,1);
+
+
+		unsigned int FBO;
+		glset.genFramebuffers(FBO);
+		glset.bindFramebuffer(FBO);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,  texture, 0);
+
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		GLubyte* data = new GLubyte[1080*1080*3]; 
+		glReadPixels(0,0,1080,1080,GL_RGB,GL_UNSIGNED_BYTE,data);
+		glset.texImage(data,1080,1080,GL_RGB);
+		glset.generateMipmap();
+		
+		delete[] data;
+
+		glset.bindFramebuffer(0);
+		glDeleteFramebuffers(1,&FBO);
+
+		txtr.id = texture;
+		txtr.name = txtrCreatingPanel.textBoxVal;
+		 
+		albedoTextures.push_back(txtr);
+		
+	}
 }

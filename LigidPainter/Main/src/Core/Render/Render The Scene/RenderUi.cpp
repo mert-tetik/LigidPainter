@@ -75,7 +75,7 @@ float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<aTexture> &
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
 ,NodePanel &nodePanel,SndPanel &sndPanel, int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool firstClick
-,ColoringPanel &coloringPanel) {
+,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -175,6 +175,12 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			nodeScenes[selectedNodeScene].nodes[i].width = 0.12f * nodePanel.zoomVal;
 			ui.node(nodeScenes[selectedNodeScene].nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodeScenes[selectedNodeScene],nodePanel,textureSelectionPanel,i,albedoTextures,screenGapX,firstClick,coloringPanel);
 		}
+		
+		txtrCreatingPanel.panelPosX = sndPanel.position + screenGapX; 
+		txtrCreatingPanel.panelPosY = 0.73f;
+
+		if(txtrCreatingPanel.active)
+			ui.textureCreatingPanel(txtrCreatingPanel,icons,programs,renderData.window,mouseXpos,mouseYpos, firstClick,coloringPanel,screenGapX,albedoTextures);
 
 		if(coloringPanel.active)
 			ui.coloringPanel(coloringPanel,programs,icons,renderData.window,saturationValShaderData,projection,mouseXpos,mouseYpos,firstClick,xOffset,yOffset,FBOScreen,colorPicker);
@@ -188,6 +194,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 		if(textureSelectionPanel.active)
 			ui.textureSelectionPanel(textureSelectionPanel,albedoTextures,programs,renderData.window,mouseXpos,mouseYpos,screenGapX, maxScreenWidth,icons.Circle);
+
 
 
 

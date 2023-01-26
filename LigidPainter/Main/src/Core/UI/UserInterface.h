@@ -448,6 +448,27 @@ struct ColoringPanel{
 	glm::vec3 result;
 };
 
+struct TextureCreatingPanel{
+	float panelPosX;
+	float panelPosY;
+	
+	bool panelHover = false;
+
+	bool active; 
+
+	std::string textBoxVal;
+	bool textBoxActive = false;
+	bool textBoxHover = false;
+	bool newTextboxEntry = false;
+
+	bool colorBarHover = false;
+	bool coloringPanelActive = false;
+
+	bool createButtonHover = false;
+
+	glm::vec3 color = glm::vec3(0);
+};
+
 class UserInterface {
 public:
 	//Load
@@ -484,6 +505,8 @@ public:
 	void alert(std::string message,int duration);
 	void coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,
 	unsigned int FBOscreen,ColorPicker &colorPicker);
+	void textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool firstClick,ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures);
+
 
 
 	
