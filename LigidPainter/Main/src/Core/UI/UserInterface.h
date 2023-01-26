@@ -381,6 +381,9 @@ struct ContextMenu {
 
 struct SndPanel{
 	float position = -0.6f;
+	
+	bool panelHover = false;
+
 	bool boundariesHover = false;
 	bool boundariesPressed = false;
 
@@ -390,6 +393,9 @@ struct SndPanel{
 
 	bool texturePanelButtonHover;
 	bool materialPanelButtonHover;
+
+	float texturePanelSlideVal = 0.f;
+	float materialPanelSlideVal = 0.f;
 
 	int state; //0 = textures , 1 = materials
 };
@@ -481,7 +487,7 @@ public:
 
 	//Visuality
 	void panel(float panelLoc, Icons icons);
-	void sndPanel(int state,float panelLoc , Programs programs , Icons icons , std::vector<aTexture> &albedoTextures,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth,int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded);
+	void sndPanel(int state,float panelLoc , Programs programs , Icons icons , std::vector<aTexture> &albedoTextures,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth,int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal);
 	void nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,Icons icons,std::vector<NodeScene> nodeScenes,int selectedNodeScene);
 	void nodePanelBarriers(float mainPanelLoc,float sndPanel, float height);
 

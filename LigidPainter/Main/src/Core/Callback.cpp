@@ -266,6 +266,8 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 
 		sndPanel.boundariesHover = ui.isMouseOnButton(window, 0.02f,0.88,sndPanel.position,0.0f, mouseXPos, mouseYPos, 0);
 
+		sndPanel.panelHover = ui.isMouseOnButton(window, 0.2f, 0.88f, sndPanel.position - 0.2f,0.0f, mouseXPos, mouseYPos, 0);
+
 
 		mainPanelBoundariesEnter =  ui.isMouseOnButton(window, 0.02f, 0.88f, mainPanelLoc -1.0f + 0.02f - screenGapX, 0.0f, mouseXPos, mouseYPos, false);
 		

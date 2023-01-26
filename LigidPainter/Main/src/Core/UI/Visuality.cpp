@@ -153,7 +153,7 @@ void UserInterface::panel(float panelLoc, Icons icons) {
 	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.567f,0.6f,icons.Export,0,colorD.iconColor,colorD.iconColor);
 
 }
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -166,9 +166,12 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	const float panelZ = 0.2f;
 
 	glUseProgram(programs.uiProgram);
+	
+	
 	box(panelWidth, panelHeigth - cornerWidth, panelLoc - panelWidth - cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 	
 	box(panelWidth, cornerWidth, panelLoc - panelWidth - cornerWidth, panelHeigth, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
+	
 	box(panelWidth, cornerWidth, panelLoc - panelWidth - cornerWidth, -panelHeigth, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 	box(cornerWidth, panelHeigth - cornerWidth, panelLoc - cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 
@@ -177,9 +180,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,panelZ-0.11f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 
 	
-	iconBox(0.015f,0.03f,panelLoc - 0.05f,0.85f,0.5f,icons.ArrowDown,0,colorD.iconColor,colorD.iconColorHover);
-	iconBox(0.015f,0.03f,panelLoc - 0.10f,0.85f,0.5f,icons.Plus,0,colorD.iconColor,colorD.iconColorHover);
-	iconBox(0.015f,0.03f,panelLoc - 0.15f,0.85f,0.5f,icons.Minus,0,colorD.iconColor,colorD.iconColorHover);
+	iconBox(0.015f,0.03f,panelLoc - 0.05f,0.85f,panelZ+0.01f,icons.ArrowDown,0,colorD.iconColor,colorD.iconColorHover);
+	iconBox(0.015f,0.03f,panelLoc - 0.10f,0.85f,panelZ+0.01f,icons.Plus,0,colorD.iconColor,colorD.iconColorHover);
+	iconBox(0.015f,0.03f,panelLoc - 0.15f,0.85f,panelZ+0.01f,icons.Minus,0,colorD.iconColor,colorD.iconColorHover);
 
 	//Texture panel button
 	iconBox(0.017f,0.034f,panelLoc + 0.017f,0.8f,panelZ,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
@@ -191,6 +194,11 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	iconBox(0.012f,0.024f,panelLoc + 0.013f,0.725f,panelZ+0.01f,icons.Material,0,colorD.iconColor,colorD.iconColor);
 	
 
+	glUseProgram(programs.uiProgram);
+
+	//Barrier
+	box(panelWidth+0.05f, 0.5f, panelLoc - panelWidth - cornerWidth, panelHeigth+0.42f, "", glm::vec4(0), 0.022f, false, false, panelZ+0.05, 10000, colorD.panelColor, 0);
+	box(panelWidth+0.05f, 0.5f, panelLoc - panelWidth - cornerWidth, -panelHeigth-0.42f, "", glm::vec4(0), 0.022f, false, false, panelZ+0.05, 10000, colorD.panelColor, 0);
 
 
 	
@@ -221,7 +229,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			const float startingPoint = 0.7f;
 
 			float position_x = panelLoc - maskXpos - panelWidth*2 - 0.04f;
-			float position_y = startingPoint + maskYpos;
+			float position_y = startingPoint + maskYpos + txtrSlideVal;
 			//ui.iconBox(0.025f, 0.05f,centerCoords - screenGapX - maskXpos - 0.2f,0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f,1,maskTextures[i],0);
 
 			const float textureWidth = 0.05f;
@@ -236,13 +244,13 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 			std::vector<float> buttonCoorSq{
 				// first triangle
-				 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.01f,	1,		upBotDifMin*10			,0,0,0,  // top right
-				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.01f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
-				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.01f,	0,		upBotDifMin*10			,0,0,0,  // top left 
+				 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		upBotDifMin*10			,0,0,0,  // top right
+				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		upBotDifMin*10			,0,0,0,  // top left 
 				// second triangle						   	
-				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.01f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
-				-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.01f,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
-				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.01f,	0,		upBotDifMin*10			,0,0,0  // top left
+				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+				-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
+				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		upBotDifMin*10			,0,0,0  // top left
 			};
 			if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false)){
 				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
@@ -267,7 +275,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 			glUseProgram(programs.uiProgram);
 
-			renderText(programs.uiProgram,albedoTextures[i].name,position_x- textureWidth ,position_y - textureWidth*2.5,0.00022f,colorData.textColor,0.99999f);
+			renderText(programs.uiProgram,albedoTextures[i].name,position_x- textureWidth ,position_y - textureWidth*2.5,0.00022f,colorData.textColor,panelZ+0.02f);
 		}
 	}
 
@@ -290,7 +298,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			const float startingPoint = 0.7f;
 
 			float position_x = panelLoc - maskXpos - panelWidth*2 - 0.04f;
-			float position_y = startingPoint + maskYpos;
+			float position_y = startingPoint + maskYpos + materialSlideVal;
 			//ui.iconBox(0.025f, 0.05f,centerCoords - screenGapX - maskXpos - 0.2f,0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f,1,maskTextures[i],0);
 
 			const float textureWidth = 0.05f;
@@ -303,13 +311,13 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			
 			std::vector<float> buttonCoorSq{
 				// first triangle
-				 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	1,		upBotDifMin*10			,0,0,0,  // top right
-				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
-				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	0,		upBotDifMin*10			,0,0,0,  // top left 
+				 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		upBotDifMin*10			,0,0,0,  // top right
+				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		upBotDifMin*10			,0,0,0,  // top left 
 				// second triangle						   
-				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
-				-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
-				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	0.9f,	0,		upBotDifMin*10			,0,0,0  // top left
+				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+				-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
+				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		upBotDifMin*10			,0,0,0  // top left
 			};
 			ColorData colorData;
 			bool isHover;
@@ -359,9 +367,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			glset.drawArrays(buttonCoorSq,false);
 
 			glUseProgram(programs.uiProgram);
-			renderText(programs.uiProgram,nodeScenes[i].sceneName,position_x- textureWidth ,position_y - textureWidth*2,0.00022f,colorData.textColor,0.99999f);
+			renderText(programs.uiProgram,nodeScenes[i].sceneName,position_x- textureWidth ,position_y - textureWidth*2,0.00022f,colorData.textColor,panelZ+0.03f);
 
-			renderText(programs.uiProgram,std::to_string(nodeScenes[i].index),position_x - textureWidth ,position_y - textureWidth,0.00042f,colorData.materialIconIndexTextColor,0.99999f);
+			renderText(programs.uiProgram,std::to_string(nodeScenes[i].index),position_x - textureWidth ,position_y - textureWidth,0.00042f,colorData.materialIconIndexTextColor,panelZ+0.03f);
 		}
 	}
 	
