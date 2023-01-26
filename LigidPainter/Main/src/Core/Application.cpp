@@ -529,8 +529,13 @@ bool LigidPainter::run()
 				updateColorPicker(util.hexToRGBConverter(colorPicker.hexValTextBoxVal),true,true,colorPicker.hueValue,colorPicker.saturationValuePosX,colorPicker.saturationValuePosY,true);//Update colorbox val once color picker hex value textbox value changed
 			}
 			else{
-				updateColorPicker(renderOut.mouseHoverPixel,true,!colorPicker.hueBarClicked,colorPicker.hueValue,colorPicker.saturationValuePosX,colorPicker.saturationValuePosY,true);//Update colorbox val once dropper is used or colorbox is clicked
+				if(coloringPanel.dropperActive)
+					updateColorPicker(renderOut.mouseHoverPixel,true,true,coloringPanel.hueBarPosX,coloringPanel.saturationValueBoxPosX,coloringPanel.saturationValueBoxPosY,false);//Update colorbox val once dropper is used or colorbox is clicked
+				else
+					updateColorPicker(renderOut.mouseHoverPixel,true,!colorPicker.hueBarClicked,colorPicker.hueValue,colorPicker.saturationValuePosX,colorPicker.saturationValuePosY,true);//Update colorbox val once dropper is used or colorbox is clicked
+				
 				colorPicker.dropperActive = false;
+				coloringPanel.dropperActive = false;
 				colorPicker.dropperEnter = false;
 			}
 		}
@@ -669,7 +674,7 @@ bool LigidPainter::run()
 
 
 		if (mousePosChanged) { //To make sure painting done before changing camera position
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel,coloringPanel);
 		}
 
 		mirrorClick = false;
@@ -1007,15 +1012,17 @@ void LigidPainter::updateColorPicker(glm::vec3 RGBval,bool changeHue,bool change
 	
 	Utilities util;
 	
-	colorPicker.saturationValueValChanged = true;
 	glm::vec3 hsvVal = util.RGBToHSVGenerator(RGBval);
 	
-	if(isMainColorPicker)
+	if(isMainColorPicker){
 		drawColor = RGBval/glm::vec3(255.0f);
+		colorPicker.saturationValueValChanged = true;
+	}
 	
 	if(changeHue){
 		hueValue = (hsvVal.r / 708.333333333f) - 0.18f; //0.195
-		colorPicker.updateHueVal = true;
+		if(isMainColorPicker)
+			colorPicker.updateHueVal = true;
 	}
 	if(changeSatVal){
 		saturationValuePosX = ((hsvVal.g / 1342.10526316f) - 0.095f); //0.095

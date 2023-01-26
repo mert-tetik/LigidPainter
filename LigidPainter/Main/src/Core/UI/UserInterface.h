@@ -431,6 +431,9 @@ struct ColoringPanel{
 	bool hexValTextboxHover = false;
 	bool newHexValTextboxEntry = false;
 
+	bool dropperHover = false;
+	bool dropperActive = false;
+
 	glm::vec3 result;
 };
 
@@ -468,7 +471,8 @@ public:
 	void textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<unsigned int> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth,unsigned int circleTexture);
 	void renderAlert(std::string message,int duration,unsigned int uiProgram,int state);
 	void alert(std::string message,int duration);
-	void coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,unsigned int FBOscreen);
+	void coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,
+	unsigned int FBOscreen,ColorPicker &colorPicker);
 
 
 	

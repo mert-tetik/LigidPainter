@@ -975,7 +975,7 @@ void UserInterface::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
 	sendMaxWindowSizeToCalculationsAndMore(maxScreenWidth,maxScreenHeight);
 }
 
-void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,unsigned int FBOscreen){
+void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,unsigned int FBOscreen,ColorPicker &colorPicker){
 	const float depth = 0.8f;
 
 	const float panelWidth = 0.2f;
@@ -1003,11 +1003,11 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
 
 	Render render;
-	ColorPicker colorPicker;
-	colorPicker.hueColorValue = hueResult;
-	colorPicker.saturationValuePosX = coloringPanel.saturationValueBoxPosX;
-	colorPicker.saturationValuePosY = coloringPanel.saturationValueBoxPosY;
-	coloringPanel.result = render.getColorPickerValue(FBOscreen,colorPicker,screenSizeX,screenSizeY,programs,uiMaxScreenWidth,uiMaxScreenHeight,saturationValShaderData);
+	ColorPicker cp;
+	cp.hueColorValue = hueResult;
+	cp.saturationValuePosX = coloringPanel.saturationValueBoxPosX;
+	cp.saturationValuePosY = coloringPanel.saturationValueBoxPosY;
+	coloringPanel.result = render.getColorPickerValue(FBOscreen,cp,screenSizeX,screenSizeY,programs,uiMaxScreenWidth,uiMaxScreenHeight,saturationValShaderData);
 	
 	box(0.04f, 0.03f, coloringPanel.panelPosX + 0.125f,coloringPanel.panelPosY+0.15f, coloringPanel.hexVal, colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, (float)coloringPanel.hexValTextboxActive);//Hex val textbox
 	
@@ -1031,13 +1031,19 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 
 
 
-
 	glUseProgram(programs.iconsProgram);
 	iconBox(0.02*1.2,0.0364f*1.2,coloringPanel.panelPosX + 0.125f,coloringPanel.panelPosY+0.075f,0.9f,icons.Circle,0,colorData.panelColorSnd,glm::vec4(0));
-	iconBox(0.02,0.0364f,coloringPanel.panelPosX + 0.125f,coloringPanel.panelPosY+0.075f,0.91f,icons.Circle,0,glm::vec4(1),glm::vec4(0));
+	iconBox(0.02,0.0364f,coloringPanel.panelPosX + 0.125f,coloringPanel.panelPosY+0.075f,0.91f,icons.Circle,0,glm::vec4(coloringPanel.result/255.f,1),glm::vec4(0));
 	
-	iconBox(0.02f,0.03f,coloringPanel.panelPosX + 0.18f, coloringPanel.panelPosY-0.18,0.9f,icons.dropperIcon,0,colorData.iconColor,colorData.iconColorHover);
 
+	iconBox(0.02f,0.04f,coloringPanel.panelPosX + 0.18f, coloringPanel.panelPosY-0.18,0.9f,icons.dropperIcon,0,colorData.iconColor,colorData.iconColorHover);
+	coloringPanel.dropperHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX + 0.18f,coloringPanel.panelPosY-0.18,mouseXpos,mouseYpos,false);
+
+	if(coloringPanel.dropperHover && firstClick){
+		coloringPanel.dropperActive = true;
+		colorPicker.dropperActive = true;
+	}
+	
 
 
 	coloringPanel.saturationValueBoxPointerHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX - 0.1f + coloringPanel.saturationValueBoxPosX,coloringPanel.panelPosY+coloringPanel.saturationValueBoxPosY,mouseXpos,mouseYpos,false);
