@@ -159,7 +159,7 @@ vec3 getRealisticResult(vec3 paintedDiffuse){
    vec3 lightColorX = vec3(300.0f, 300.0f, 300.0f);
 
 
-   vec3 N = Normal;
+    vec3 N = Normal;
     vec3 V = normalize(viewPos - Pos);
     vec3 R = reflect(-V, N); 
 

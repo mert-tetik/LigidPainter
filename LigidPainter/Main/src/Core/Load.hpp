@@ -502,6 +502,8 @@ public:
 			"layout(location = 0) in vec3 aPos;\n"
 			"layout(location = 1) in vec3 aNormal;\n"
 			"layout(location = 2) in vec2 aTexCoords;\n"
+			"layout(location = 3) in vec3 aTangent;\n"
+			"layout(location = 4) in vec3 aBitangent;\n"
 			
 			"uniform mat4 view;\n"
 			"uniform mat4 projection;\n"
@@ -511,8 +513,12 @@ public:
 			"out vec3 normal;\n"
 			"out vec3 posModel;\n"
 			"out vec4 posScene;\n"
+			"out vec3 tangent;\n"
+			"out vec3 bitangent;\n"
 			
 			"void main() {\n"
+				"tangent = aTangent;\n"
+				"bitangent = aBitangent;\n"
 			    "posModel = aPos;\n"
 			    "tex_coords = aTexCoords;\n"
 			    "normal = aNormal;\n"

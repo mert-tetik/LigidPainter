@@ -80,7 +80,7 @@
 --title : Texture;
 
 
--uniforms : tex_coords|normal|posScene|posModel|viewPos|blurySkybox|prefilterMap;
+-uniforms : tex_coords|normal|posScene|posModel|viewPos|blurySkybox|prefilterMap|tangent|bitangent;
 
 %code;
 
@@ -145,9 +145,20 @@ vec3 getRealisticResult(){
 
    vec3 lightColorX = vec3(300.0f, 300.0f, 300.0f);
 
+    vec3 T = normalize(tangent);
+    vec3 aN = normalize(normal);
+    T = normalize(T - dot(T, aN) * aN);
+    vec3 B = cross(aN, T);
+    
+    mat3 TBN = transpose(mat3(T, B, aN));    
+    
+    vec3 tangentViewPos  = TBN * viewPos;
+    vec3 tangentPosModel  = TBN * posModel;
 
-   vec3 N = normal;
-    vec3 V = normalize(viewPos - posModel);
+    vec3 N = texture(input_3, tex_coords).rgb;
+    N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
+
+    vec3 V = normalize(tangentViewPos - tangentPosModel);
     vec3 R = reflect(-V, N); 
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
@@ -170,10 +181,13 @@ vec3 getRealisticResult(){
       if(i == 3)
          lightPosX = lightPos4;
 
+         vec3 tangentLightPos = TBN * lightPosX;
+
+
         // calculate per-light radiance
-        vec3 L = normalize(lightPosX - posModel);
+        vec3 L = normalize(tangentLightPos - tangentPosModel);
         vec3 H = normalize(V + L);
-        float distance = length(lightPosX - posModel);
+        float distance = length(tangentLightPos - tangentPosModel);
         float attenuation = 1.0 / (distance * distance);
         vec3 radiance = lightColorX * attenuation;
 
