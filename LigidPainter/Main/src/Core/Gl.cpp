@@ -235,6 +235,8 @@ void GlSet::usePBRShader(unsigned int program,PBRShaderData data){
 
 	//Frag
 	uniform1i(program,"screenMaskTexture",data.screenMaskTexture);
+	uniform1i(program,"brdfLUT",15);
+	uniform1i(program,"prefilterMap",16);
 	uniform1i(program,"mirroredScreenMaskTexture",data.mirroredScreenMaskTexture);
 	uniform1i(program,"useMirror",data.useMirror);
 	uniform3fv(program,"drawColor",data.drawColor);

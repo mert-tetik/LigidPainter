@@ -395,6 +395,17 @@ public:
 		unsigned int renderTheTextureProgram = gl.createProgram("LigidPainter/Resources/Shaders/UI/renderTheTexture");
 
 
+
+		//Prefiltered map
+		unsigned int prefilterMapProgram = gl.createProgram("LigidPainter/Resources/Shaders/3D/prefilterMap");
+		
+		
+		
+		//BRDF
+		unsigned int brdfProgram = gl.createProgram("LigidPainter/Resources/Shaders/3D/BRDF");
+
+
+
 		Programs glPrograms;
 
 		glPrograms.blurProgram = blurProgram;
@@ -410,6 +421,8 @@ public:
 		glPrograms.outProgram = outProgram;  
 		glPrograms.twoDPaintingProgram = twoDPaintingProgram;   
 		glPrograms.renderTheTextureProgram = renderTheTextureProgram;   
+		glPrograms.prefilterMapProgram = prefilterMapProgram;   
+		glPrograms.brdfProgram = brdfProgram;   
 
 		return glPrograms;
 	}
@@ -517,8 +530,6 @@ public:
 		unsigned int fragShader = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fragShader, 1, &shaderSource, NULL);
 		glCompileShader(fragShader);
-
-		std::cout << node.code;
 
 		//Test the shader
 		int success;

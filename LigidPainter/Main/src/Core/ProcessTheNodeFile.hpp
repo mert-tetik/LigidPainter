@@ -138,7 +138,7 @@ private:
     };
 
     std::map<std::string,std::string> uniformData{
-        {"tex_coords","vec2"}, {"normal","vec3"}, {"posScene","vec3"} , {"posModel","vec3"} , {"viewPos","vec3"} , {"blurySkybox","samplerCube"}
+        {"tex_coords","vec2"}, {"normal","vec3"}, {"posScene","vec3"} , {"posModel","vec3"} , {"viewPos","vec3"} , {"blurySkybox","samplerCube"} , {"prefilterMap","samplerCube"}
     };
 
     std::vector<std::string> uniforms;
@@ -657,7 +657,7 @@ private:
             std::string type;
             std::string in;
             
-            if(uniforms[i] == "viewPos" || uniforms[i] == "blurySkybox"){
+            if(uniforms[i] == "viewPos" || uniforms[i] == "blurySkybox" || uniforms[i] == "prefilterMap"){
                 in = "uniform " + uniformData[uniforms[i]] + ' ' + uniforms[i] + ';' + '\n';
             }
             else{

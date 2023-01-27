@@ -27,6 +27,8 @@ struct Programs
 	unsigned int outProgram;
 	unsigned int twoDPaintingProgram; 
 	unsigned int renderTheTextureProgram; 
+	unsigned int prefilterMapProgram; 
+	unsigned int brdfProgram; 
 };
 struct Cubemaps{
 	unsigned int cubemap;

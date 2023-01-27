@@ -61,7 +61,6 @@ void Render::renderSkyBox(SkyBoxShaderData data,Programs programs) {
 
 	gls.drawArrays(skyboxVertices,false);
 	glDepthFunc(GL_LESS);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthMask(GL_TRUE);
 	
 	glUseProgram(programs.uiProgram);

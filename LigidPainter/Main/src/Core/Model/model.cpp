@@ -52,6 +52,7 @@ using namespace std;
             	    glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, ("input_" + std::to_string(txtI)).c_str()), 20+txtI);
                 }
                 glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "is3D"), 1);
+                glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "prefilterMap"), 16);
                 glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "blurySkybox"), 13);
                 glUniform3fv(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "viewPos"),1,&viewPos[0]);
 
