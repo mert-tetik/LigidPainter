@@ -285,13 +285,13 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
         //Process the gap necessary related to the input type after rendering
 		if(node.inputs[i].element == "range"){
 			if(node.inputs[i].type == "float"){
-				rangeBarCountInputs += 2;
+				rangeBarCountInputs += 1;
 			}
 			if(node.inputs[i].type == "vec2"){
-				rangeBarCountInputs += 3;
+				rangeBarCountInputs += 2;
 			}
 			if(node.inputs[i].type == "vec3"){
-				rangeBarCountInputs += 4;
+				rangeBarCountInputs += 3;
 			}
 		}
 		else if(node.inputs[i].element == "image"){
@@ -519,7 +519,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 						node.inputs[i].value.z = util.restrictBetween(node.inputs[i].value.z,1.f,0.001f);
 					}
 				}	
-				inputElementIndex++;
+				if(k != rangeBarCount-1)
+					inputElementIndex++;
 				isRangeBarPointerHover = false;
 			}
 		}

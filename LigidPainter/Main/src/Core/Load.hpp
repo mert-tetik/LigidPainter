@@ -483,24 +483,24 @@ public:
 			resultNode.inputs.push_back(input);
 			if(resultNode.inputs[i].type == "float"){
 				if(resultNode.inputs[i].element == "range")
-					rangeBarCount += 1.5f;
+					rangeBarCount += 1.3f;
 
 				resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
 			}
 			if(resultNode.inputs[i].type == "vec2"){
 				if(resultNode.inputs[i].element == "range")
-					rangeBarCount += 1.5f*2;
+					rangeBarCount += 1.3f*2;
 
 				if(resultNode.inputs[i].element == "image" || resultNode.inputs[i].element == "color")
-					rangeBarCount += 1.5f;
+					rangeBarCount += 1.3f;
 				resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
 				resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
 			}
 			if(resultNode.inputs[i].type == "vec3"){
 				if(resultNode.inputs[i].element == "range")
-					rangeBarCount += 1.5f*3;
+					rangeBarCount += 1.3f*3;
 				if(resultNode.inputs[i].element == "image" || resultNode.inputs[i].element == "color")
-					rangeBarCount += 1.5f;
+					rangeBarCount += 1.3f;
 				resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
 				resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
 				resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);

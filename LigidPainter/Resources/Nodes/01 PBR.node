@@ -148,7 +148,7 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 }   
 vec3 getRealisticResult(){
    vec3 albedo = texture2D(input_0,tex_coords).rgb;
-   float roughness = texture2D(input_1,tex_coords).r;
+   float roughness = texture2D(input_1,tex_coords).r+0.01;
    float metallic = texture2D(input_2,tex_coords).r;
    float ao = texture2D(input_4,tex_coords).r;
 
