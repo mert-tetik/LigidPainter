@@ -448,6 +448,35 @@ public:
 			input.element = node.inputs[i].element;
 			input.text = node.inputs[i].title;
 			input.type = node.inputs[i].type;
+			if(input.element == "range"){
+				if(input.type == "float"){
+					input.value.r = stof(node.inputs[i].values[0])/ 255.f;
+				}
+				else if(input.type == "vec2"){
+					input.value.r = stof(node.inputs[i].values[0])/ 255.f;
+					input.value.g = stof(node.inputs[i].values[1])/ 255.f;
+				}		
+				else if(input.type == "vec3"){
+					input.value.r = stof(node.inputs[i].values[0])/ 255.f;
+					input.value.g = stof(node.inputs[i].values[1])/ 255.f;
+					input.value.b = stof(node.inputs[i].values[2])/ 255.f;
+				}	
+			}
+			else{
+				if(input.type == "float"){
+					input.color.r = stof(node.inputs[i].values[0]);
+				}
+				else if(input.type == "vec2"){
+					input.color.r = stof(node.inputs[i].values[0]);
+					input.color.g = stof(node.inputs[i].values[1]);
+				}		
+				else if(input.type == "vec3"){
+					input.color.r = stof(node.inputs[i].values[0]);
+					input.color.g = stof(node.inputs[i].values[1]);
+					input.color.b = stof(node.inputs[i].values[2]);
+				}	
+			}
+
 			//node.inputs[i].list;
 			//node.inputs[i].listIndex;
 
@@ -462,7 +491,7 @@ public:
 				if(resultNode.inputs[i].element == "range")
 					rangeBarCount += 1.5f*2;
 
-				if(resultNode.inputs[i].element == "image")
+				if(resultNode.inputs[i].element == "image" || resultNode.inputs[i].element == "color")
 					rangeBarCount += 1.5f;
 				resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
 				resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
@@ -470,7 +499,7 @@ public:
 			if(resultNode.inputs[i].type == "vec3"){
 				if(resultNode.inputs[i].element == "range")
 					rangeBarCount += 1.5f*3;
-				if(resultNode.inputs[i].element == "image")
+				if(resultNode.inputs[i].element == "image" || resultNode.inputs[i].element == "color")
 					rangeBarCount += 1.5f;
 				resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
 				resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);

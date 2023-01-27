@@ -13,6 +13,7 @@ struct ProcessHppNodeInput{
     std::string type; //vec3 , vec2 , float 
     std::string listIndex; //none,0,1,2,3,4
     std::string list; //none,0,1,2,3,4
+    std::vector<std::string> values;
 };
 struct ProcessHppNodeOutput{
     std::string title; //"Color"
@@ -138,7 +139,7 @@ private:
     };
 
     std::map<std::string,std::string> uniformData{
-        {"tex_coords","vec2"}, {"normal","vec3"}, {"posScene","vec3"} , {"posModel","vec3"} , {"viewPos","vec3"} , {"blurySkybox","samplerCube"} , {"prefilterMap","samplerCube"}, {"tangent", "vec3"} , {"bitangent", "vec3"}
+        {"tex_coords","vec2"}, {"normal","vec3"}, {"posScene","vec3"} , {"posModel","vec3"} , {"viewPos","vec3"} , {"blurySkybox","samplerCube"} , {"prefilterMap","samplerCube"}, {"tangent", "vec3"} , {"bitangent", "vec3"},{"brdfLUT","sampler2D"}
     };
 
     std::vector<std::string> uniforms;
@@ -492,6 +493,30 @@ private:
         uniforms.push_back(currentWord);
         currentWord = "";
     }
+    std::vector<std::string> interpretTheValues(std::string attribute){
+        
+        //TODO : Check if uniform is correct
+        std::vector<std::string> result;
+
+        std::string currentWord;
+        int i = 0;
+
+        while (i < attribute.size())
+        {
+            if(attribute[i] == ','){
+                result.push_back(currentWord);
+                currentWord = "";
+                i++;
+            }
+
+            currentWord += attribute[i];
+            i++;
+        }
+        result.push_back(currentWord);
+        currentWord = "";
+
+        return result;
+    }
 
     void processSubsubtoken(std::string line){
         if(line[0] == '-' && line[1] == '-'){
@@ -503,6 +528,7 @@ private:
                     bool elementToken = false;
                     bool listIndexToken = false;
                     bool listToken = false;
+                    bool valueToken = false;
 
                     if(completeToken == "title"){
                         titleToken = true;
@@ -519,9 +545,12 @@ private:
                     if(completeToken == "list"){
                         listToken = true;
                     }
+                    if(completeToken == "value"){
+                        valueToken = true;
+                    }
 
 
-                    if((!titleToken && !typeToken && !elementToken && !listIndexToken && !listToken) || outputDefinitions && elementToken){
+                    if((!titleToken && !typeToken && !elementToken && !listIndexToken && !listToken && !valueToken) || outputDefinitions && elementToken && valueToken){
                         std::cout << "ERROR : Invalid Token : " << completeToken << std::endl;
                     }
 
@@ -566,6 +595,11 @@ private:
                             if(elementToken){
                                 if(inputDefinitions)
                                     processHppNode.inputs[currentInputIndex].element = attribute;
+                            }
+                            if(valueToken){
+                                if(inputDefinitions){
+                                    processHppNode.inputs[currentInputIndex].values = interpretTheValues(attribute);
+                                }
                             }
                             if(listIndexToken){
                                 if(inputDefinitions)
@@ -657,7 +691,7 @@ private:
             std::string type;
             std::string in;
             
-            if(uniforms[i] == "viewPos" || uniforms[i] == "blurySkybox" || uniforms[i] == "prefilterMap"){
+            if(uniforms[i] == "viewPos" || uniforms[i] == "blurySkybox" || uniforms[i] == "prefilterMap" || uniforms[i] == "brdfLUT"){
                 in = "uniform " + uniformData[uniforms[i]] + ' ' + uniforms[i] + ';' + '\n';
             }
             else{

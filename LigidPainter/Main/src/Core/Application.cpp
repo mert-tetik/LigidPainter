@@ -558,7 +558,7 @@ bool LigidPainter::run()
 	glActiveTexture(GL_TEXTURE16);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
 
-
+	
 
 	glActiveTexture(GL_TEXTURE15);
 	unsigned int BRDFTexture = txtr.getTexture("LigidPainter/Resources/Source/ibl_brdf_lut.png",540,540,false);
