@@ -154,6 +154,7 @@ struct Icons{
 	unsigned int Minus;
 	unsigned int Texture;
 	unsigned int X;
+	unsigned int O;
 };
 
 struct RenderData { //GlSet::render

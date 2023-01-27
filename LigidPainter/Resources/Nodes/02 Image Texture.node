@@ -27,13 +27,5 @@
 %code;
 
 void main (){
-    
-    //if(listbox_0 == 0){
-        //Do something
-    //}
-    //else if(listbox_0 == 1){
-        //Do something different
-    //}
-
     output_0 = vec4(texture2D(input_0,tex_coords).rgb,1);
 }

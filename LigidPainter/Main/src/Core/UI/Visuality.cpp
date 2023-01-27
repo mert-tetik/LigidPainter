@@ -523,12 +523,12 @@ void UserInterface::circle(float positionX,float positionY,float positionZ,float
 	iconBox(width,height,positionX,positionY,positionZ,circleTexture,0,color,glm::vec4(0));
 }
 
-void UserInterface::colorBox(float position_x, float position_y,float valueX, float valueY) {
+void UserInterface::colorBox(float position_x, float position_y,float valueX, float valueY,Icons icons) {
 
 	ColorData colorData;
 	glm::vec3 color = glm::vec3(1.0f,0.0f,0.0f);
 	std::vector<float> boxCoor{
-		// first triangle								    //Color - Normal Vectors Will Be Usen For Color Data Of Vertices
+		// first triangle								   
 		 -0.10f + position_x,  0.20f + position_y, 0.9f,1.0f,1.0f	,1,1,1,  // top right
 		 -0.10f + position_x, -0.20f + position_y, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
 		 0.10f + position_x,  0.20f + position_y, 0.9f,0.0f,1.0f	,color.r,color.g+0.22f,color.b + 0.22f,  // top left 
@@ -542,8 +542,10 @@ void UserInterface::colorBox(float position_x, float position_y,float valueX, fl
 	GlSet glset;
 	glset.drawArrays(boxCoor,false);
 
+	glUseProgram(uiPrograms.iconsProgram);
+	circle(position_x + valueX, position_y + valueY,0.91f,0.01f,0.02f,icons.O,colorData.colorBoxIndicatorColor);
 	glUseProgram(uiPrograms.uiProgram);
-	box(0.0f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 22,glm::vec4(0),0);
+	//box(0.0f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 22,glm::vec4(0),0);
 }
 
 glm::vec3 hueValue;
@@ -1025,7 +1027,7 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 	saturationValShaderData.renderTextureProjection = orthoProjection;
 
 	glset.useSaturationValBoxShader(programs.saturationValBoxProgram,saturationValShaderData);
-	colorBox(coloringPanel.panelPosX - 0.1f, coloringPanel.panelPosY, coloringPanel.saturationValueBoxPosX, coloringPanel.saturationValueBoxPosY);
+	colorBox(coloringPanel.panelPosX - 0.1f, coloringPanel.panelPosY, coloringPanel.saturationValueBoxPosX, coloringPanel.saturationValueBoxPosY,icons);
 
 	int screenSizeX;
 	int screenSizeY;

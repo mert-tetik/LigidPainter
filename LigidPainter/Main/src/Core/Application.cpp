@@ -619,6 +619,26 @@ bool LigidPainter::run()
 			doChangeStateOfTheAddNodeContextBar = true;
 		}
 
+		GLenum err;
+		while((err = glGetError()) != GL_NO_ERROR)
+		{
+		  	if(err == GL_INVALID_ENUM){
+				std::cout << "ERROR : GL_INVALID_ENUM";
+		  	}
+		  	if(err == GL_INVALID_VALUE){
+				std::cout << "ERROR : GL_INVALID_VALUE";
+			}
+			if(err == GL_INVALID_OPERATION){
+				std::cout << "ERROR : GL_INVALID_OPERATION";
+			}
+			if(err == GL_OUT_OF_MEMORY){
+				std::cout << "ERROR : GL_OUT_OF_MEMORY";
+			}
+			if(err == GL_INVALID_FRAMEBUFFER_OPERATION){
+				std::cout << "ERROR : GL_INVALID_FRAMEBUFFER_OPERATION";
+			}
+			std::cout << '\n';
+		}
 
 		//Release textboxes
 		const bool deactivatingTextBoxesCondition = glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS; 

@@ -43,6 +43,11 @@ using namespace std;
         for(unsigned int i = 0; i < meshes.size(); i++){
             if(!paintingMode){
 	            glUseProgram(modelMaterials[meshes[i].materialIndex].program);
+
+                glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
+
+
+        	    glUniformMatrix4fv(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "projection"), 1,GL_FALSE, glm::value_ptr(projection));
         	    glUniformMatrix4fv(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "view"), 1,GL_FALSE, glm::value_ptr(view));
                 for (size_t txtI = 0; txtI < modelMaterials[meshes[i].materialIndex].textures.size(); txtI++)
                 {
@@ -68,9 +73,7 @@ using namespace std;
                 }
             }
         }
-        if(meshes.size() > 0){
 
-        }
     }
     
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
