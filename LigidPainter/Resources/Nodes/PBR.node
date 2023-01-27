@@ -57,8 +57,16 @@
 --title : Emission;
 --element : range;
 
-#Alpha
+#Emission Strength
 -input_6 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Emission Strength;
+--element : range;
+
+#Alpha
+-input_7 : 
 --list : none;
 --list_index : none;
 --type : float;
@@ -226,7 +234,11 @@ vec3 getRealisticResult(){
 void main() {
     vec3 result = getRealisticResult();
 
-    float alpha = texture2D(input_6,tex_coords).r;
+    float alpha = texture2D(input_7,tex_coords).r;
     
-    output_0 = vec4(result,alpha);
+    float emissionStr = texture2D(input_6,tex_coords).r;
+    
+    vec3 emission = texture2D(input_5,tex_coords).rgb;
+    
+    output_0 = vec4(mix(result,emission,emissionStr),alpha);
 }
