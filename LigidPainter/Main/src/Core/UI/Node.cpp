@@ -357,7 +357,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			if(nodePanel.panelHover){
 				colorInputHover = isMouseOnButton(window,iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
 			}
-			if(colorInputHover && firstClick){
+			if(colorInputHover && firstClick && !node.inputs[i].coloringPanelActivated){
 				node.inputs[i].coloringPanelActivated = true;
 				coloringPanel.active = true;
 				
