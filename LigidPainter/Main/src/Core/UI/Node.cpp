@@ -180,8 +180,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		//If output pressed (move the connection)
 		if(firstClick && node.outputs[i].connectionHover && !node.outputs[i].pressed){
 			node.outputs[i].pressed = true;
-			node.outputs[i].connectionPosX = (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width +iconWidth*2.f;
-			node.outputs[i].connectionPosY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
 		}
 		
 		//Prevent zooming in and out bug while moving the connection
@@ -213,8 +211,10 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				}
 				
 				//Render the connection on top of the default connection circle (hide)
-				node.outputs[i].connectionPosX = (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width +iconWidth*2.f;
-				node.outputs[i].connectionPosY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
+				if(node.outputs[i].nodeConnectionIndex == 10000 && node.outputs[i].inputConnectionIndex == 10000){
+					node.outputs[i].connectionPosX = (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width +iconWidth*2.f;
+					node.outputs[i].connectionPosY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
+				}
 				
 				//Render the connection on top of the connection circle (show)
 				if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){

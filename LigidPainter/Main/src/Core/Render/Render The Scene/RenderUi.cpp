@@ -156,14 +156,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 
 		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons,nodeScenes,selectedNodeScene);
-		
-		ui.panel(renderData.panelLoc-  screenGapX -1.0f , icons);
-		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal);
-
 		ui.nodePanelBarriers(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth);
-
-
-		ui.renderAlert(alertMessage,alertDuration,programs.uiProgram,alertState);		
 		
 		double xOffset = mouseXpos - lastMouseX;
 		double yOffset = mouseYpos - lastMouseY;
@@ -175,6 +168,14 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			nodeScenes[selectedNodeScene].nodes[i].width = 0.12f * nodePanel.zoomVal;
 			ui.node(nodeScenes[selectedNodeScene].nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodeScenes[selectedNodeScene],nodePanel,textureSelectionPanel,i,albedoTextures,screenGapX,firstClick,coloringPanel);
 		}
+		
+		ui.panel(renderData.panelLoc-  screenGapX -1.0f , icons);
+		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal);
+
+
+
+		ui.renderAlert(alertMessage,alertDuration,programs.uiProgram,alertState);		
+		
 		
 		txtrCreatingPanel.panelPosX = sndPanel.position + screenGapX; 
 		txtrCreatingPanel.panelPosY = 0.73f;

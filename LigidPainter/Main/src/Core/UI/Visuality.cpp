@@ -135,8 +135,8 @@ void UserInterface::panel(float panelLoc, Icons icons) {
 	box(cornerWidth, panelHeigth - cornerWidth, panelLoc + cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 
 	glUseProgram(uiPrograms.iconsProgram);
-	circle(panelLoc + cornerWidth - 0.002f, panelHeigth - cornerWidth + 0.002f,panelZ-0.11f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
-	circle(panelLoc + cornerWidth,-panelHeigth + cornerWidth,panelZ-0.11f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+	circle(panelLoc + cornerWidth - 0.002f, panelHeigth - cornerWidth + 0.002f,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+	circle(panelLoc + cornerWidth,-panelHeigth + cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 
 	//Texture panel button
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.8f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
@@ -178,8 +178,8 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	box(cornerWidth, panelHeigth - cornerWidth, panelLoc - cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 
 	glUseProgram(programs.iconsProgram);
-	circle(panelLoc - cornerWidth + 0.002f,panelHeigth - cornerWidth + 0.002f,panelZ-0.11f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
-	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,panelZ-0.11f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+	circle(panelLoc - cornerWidth + 0.002f,panelHeigth - cornerWidth + 0.002f,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 
 	if(state == 0)
 		iconBox(0.015f,0.03f,panelLoc - 0.05f,0.85f,panelZ+0.01f,icons.ArrowDown,0,colorD.iconColor,colorD.iconColorHover);
@@ -188,13 +188,13 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	iconBox(0.015f,0.03f,panelLoc - 0.15f,0.85f,panelZ+0.01f,icons.Minus,0,colorD.iconColor,colorD.iconColorHover);
 
 	//Texture panel button
-	iconBox(0.017f,0.034f,panelLoc + 0.017f,0.8f,panelZ,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.01f,0.02f,panelLoc + 0.013f,0.808f,panelZ+0.01f,icons.Texture,0,colorD.iconColor,colorD.iconColor);
+	iconBox(0.017f,0.034f,panelLoc + 0.017f,0.8f,panelZ+0.01f,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.01f,0.02f,panelLoc + 0.013f,0.808f,panelZ+0.02f,icons.Texture,0,colorD.iconColor,colorD.iconColor);
 	
 	
 	//Material panel button
-	iconBox(0.017f,0.034f,panelLoc + 0.017f,0.72f,panelZ,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.012f,0.024f,panelLoc + 0.013f,0.725f,panelZ+0.01f,icons.Material,0,colorD.iconColor,colorD.iconColor);
+	iconBox(0.017f,0.034f,panelLoc + 0.017f,0.72f,panelZ+0.01f,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.012f,0.024f,panelLoc + 0.013f,0.725f,panelZ+0.02f,icons.Material,0,colorD.iconColor,colorD.iconColor);
 	
 
 	glUseProgram(programs.uiProgram);
