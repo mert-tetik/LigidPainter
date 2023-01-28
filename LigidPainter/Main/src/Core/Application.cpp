@@ -959,7 +959,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	UserInterface ui;
 	const int exportFileNameThreshold = 20;
 	if(UIElements[UIexportingFolderNameTextBox].textBox.clicked){
-		if(ui.textInput(key,action,caps,exportFileName,exportFileNameThreshold)){
+		if(ui.textInput(key,action,caps,exportFileName,exportFileNameThreshold,window)){
 			UIElements[UIexportingFolderNameTextBox].textBox.text = exportFileName;
 		}
 	}
@@ -979,7 +979,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	const int maxTextureCharCount = 22;
 	if(txtrCreatingPanel.textBoxActive){
-		if(ui.textInput(key,action,caps,txtrCreatingPanel.textBoxVal,maxTextureCharCount)){
+		if(ui.textInput(key,action,caps,txtrCreatingPanel.textBoxVal,maxTextureCharCount,window)){
 			txtrCreatingPanel.newTextboxEntry = true;
 		}	
 	}

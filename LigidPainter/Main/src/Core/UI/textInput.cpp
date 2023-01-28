@@ -5,13 +5,14 @@
 #include "Core/LigidPainter.h"
 #include "Core/UI/UserInterface.h"
 
-bool UserInterface::textInput(int key, int action,bool caps,std::string &text,int threshold){
+bool UserInterface::textInput(int key, int action,bool caps,std::string &text,int threshold,GLFWwindow* window){
     bool valueChanged = false;
     if(key >= 320 && key <=329){
 		//Numpad Optimization
 		key -= 272;
 	}
 	if(action == 0 || action == 2){ //Take input
+		std::cout << key << ' ';
 
 		if(text.size() < threshold){
 			if(key == 32){
@@ -19,19 +20,35 @@ bool UserInterface::textInput(int key, int action,bool caps,std::string &text,in
 				text += ' ';
                 valueChanged = true;
 			}
-			else if(isalpha((char)key)){
-				if(!caps){
-					text+=(char)key+32;//lowercase
-                    valueChanged = true;
-				}
-				else{
-					text+=(char)key;//UPPERCASE
-                    valueChanged = true;
+			else if(glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS  || glfwGetKey(window,GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS){
+
+			}
+			else if(glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS  || glfwGetKey(window,GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS){
+				if(key == 61){
+					text += '_';
+					valueChanged = true;
 				}
 			}
-			else if(isdigit((char)key)){
-				text+=(char)(key);
-                valueChanged = true;
+			if(key != GLFW_KEY_RIGHT_SHIFT && key != GLFW_KEY_LEFT_SHIFT && key != GLFW_KEY_LEFT_CONTROL && key != GLFW_KEY_RIGHT_CONTROL && key != GLFW_KEY_LEFT_ALT && key != GLFW_KEY_RIGHT_ALT && key != GLFW_KEY_TAB && key != GLFW_KEY_ENTER){
+				if(key == 333 || key == 61){
+					text += '-';
+					valueChanged = true;
+				}
+				else if(isalpha((char)key)){
+						if(!caps){
+							text+=(char)key+32;//lowercase
+            	        	valueChanged = true;
+						}
+						else{
+							text+=(char)key;//UPPERCASE
+            	        	valueChanged = true;
+						}
+					}
+
+				else if(isdigit((char)key)){
+					text+=(char)(key);
+            	    valueChanged = true;
+				}
 			}
 		}
 

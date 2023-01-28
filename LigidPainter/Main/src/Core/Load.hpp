@@ -566,6 +566,7 @@ public:
 		unsigned int fragShader = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fragShader, 1, &shaderSource, NULL);
 		glCompileShader(fragShader);
+		std::cout << node.code;
 
 		//Test the shader
 		int success;
