@@ -35,20 +35,20 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
 	glUseProgram(uiProgram);
 
 	//Panel
-	ui.box(0.00f, 0.04f, -0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);
-	ui.box(0.00f, 0.04f, 0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);
-	ui.box(0.00f, 0.04f, -0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);
-	ui.box(0.00f, 0.04f, 0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.999f, 7, backColorVec, 0);
-	ui.box(0.25f, 0.25f, 0.0f, 0.0f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);
-	ui.box(0.25f, 0.05f, 0.0f, -0.24f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);
-	ui.box(0.25f, 0.05f, 0.0f, +0.24f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);
-	ui.box(0.03f, 0.25f, -0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);
-	ui.box(0.03f, 0.25f, +0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.999f, 10000, backColorVec, 0);
+	ui.box(0.00f, 0.04f, -0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.899f, 7, backColorVec, 0);
+	ui.box(0.00f, 0.04f, 0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.899f, 7, backColorVec, 0);
+	ui.box(0.00f, 0.04f, -0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.899f, 7, backColorVec, 0);
+	ui.box(0.00f, 0.04f, 0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.899f, 7, backColorVec, 0);
+	ui.box(0.25f, 0.25f, 0.0f, 0.0f, "", backColorVec, 0.022f, false, false, 0.899f, 10000, backColorVec, 0);
+	ui.box(0.25f, 0.05f, 0.0f, -0.24f, "", backColorVec, 0.022f, false, false, 0.899f, 10000, backColorVec, 0);
+	ui.box(0.25f, 0.05f, 0.0f, +0.24f, "", backColorVec, 0.022f, false, false, 0.899f, 10000, backColorVec, 0);
+	ui.box(0.03f, 0.25f, -0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.899f, 10000, backColorVec, 0);
+	ui.box(0.03f, 0.25f, +0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.899f, 10000, backColorVec, 0);
 
 				
 	//Buttons
-	ui.box(0.04f, 0.04f, -0.1f, -0.15f, "Yes", buttonColorVec, 0.015f, false, false, 0.9999f, 10, buttonColorVec, 0);//Load model button
-	ui.box(0.04f, 0.04f, +0.1f, -0.15f, "No", buttonColorVec, 0.012f, false, false, 0.9999f, 10, buttonColorVec, 0);//Load model button
+	ui.box(0.04f, 0.04f, -0.1f, -0.15f, "Yes", buttonColorVec, 0.015f, false, false, 0.8999f, 10, buttonColorVec, 0);//Load model button
+	ui.box(0.04f, 0.04f, +0.1f, -0.15f, "No", buttonColorVec, 0.012f, false, false, 0.8999f, 10, buttonColorVec, 0);//Load model button
 
 
 	bool resultYesHover = ui.isMouseOnButton(window, 0.05f, 0.04f, -0.1f-screenGapX, -0.15f, mouseXpos, mouseYpos, false);//Yes button hover
@@ -84,7 +84,7 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
 	}
 
 	//Text
-	ui.renderText(uiProgram, text, textXpos, textYpos , 0.00022f,colorData.textColor,0.99999f,false);
+	ui.renderText(uiProgram, text, textXpos, textYpos , 0.00022f,colorData.textColor,0.89999f,false);
 
 	//LigidPainter icon
 	glUseProgram(iconsProgram);
