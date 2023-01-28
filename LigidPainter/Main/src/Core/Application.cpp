@@ -619,6 +619,16 @@ bool LigidPainter::run()
 			doChangeStateOfTheAddNodeContextBar = true;
 		}
 
+
+
+		if(glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+			coloringPanel.active = false;
+			addNodeContextMenu.active = false;
+			textureSelectionPanel.active = false;
+		}
+
+
+
 		GLenum err;
 		while((err = glGetError()) != GL_NO_ERROR)
 		{
