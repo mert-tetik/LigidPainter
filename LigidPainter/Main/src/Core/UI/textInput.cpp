@@ -70,10 +70,10 @@ bool UserInterface::textInput(int key, int action,bool caps,std::string &text,in
 
 bool UserInterface::textInputHex(int key, int action, std::string &text, int &activeChar){
     bool valueChanged = false;
-    if(action == 0 || action == 2){ 
+    if((action == 0 || action == 2) && activeChar > -6){ 
         if(isdigit((char)key)){
 	    	//Add decimal numbers
-	    	text[activeChar] = (char)(key);
+	    	text[text.size() +activeChar- 1] = (char)(key);
             valueChanged = true;
 	    	activeChar++;
 	    }
@@ -83,18 +83,20 @@ bool UserInterface::textInputHex(int key, int action, std::string &text, int &ac
 	    	for (int i = 0; i < 6; i++)
 	    	{
 	    		if(key == chars[i]){
-	    			text[activeChar] = (char)(chars[i]+32);
+	    			text[text.size() +activeChar- 1] = (char)(chars[i]+32);
                     valueChanged = true;
 	    			activeChar++;
 	    		}
 	    	}
 	    }
-        if(key == 259 && activeChar != 0 && text[activeChar-1] != '#'){
+        if(key == 259 && text.size() + activeChar - 1!= 0 && text[text.size() + activeChar - 1] != '#'){
 	    	//Backspace
-	    	text[activeChar] = '0';
+	    	text[text.size() + activeChar - 1] = '0';
             valueChanged = true;
             activeChar--;
 	    }
     }
+	if(activeChar > 0)
+		activeChar = 0;
     return valueChanged;
 }

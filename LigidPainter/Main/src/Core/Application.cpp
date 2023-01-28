@@ -966,7 +966,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		if(ui.textInput(key,action,caps,exportFileName,exportFileNameThreshold,window,textBoxActiveChar)){
 			UIElements[UIexportingFolderNameTextBox].textBox.text = exportFileName;
 		}
-		if(action == 0 || action == 1){
+		if(action == 1 || action == 2){
 			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && UIElements[UIexportingFolderNameTextBox].textBox.text.size()+textBoxActiveChar){
 				textBoxActiveChar--;
 			}
@@ -981,7 +981,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			colorPicker.saturationValueValChanged = true;
 			colorPicker.hexValTextBoxGotInput = true;
 		}
-		if(action == 0 || action == 1){
+		if(action == 1 || action == 2){
 			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && colorPicker.hexValTextBoxVal.size()+textBoxActiveChar){
 				textBoxActiveChar--;
 			}
@@ -995,7 +995,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		if(ui.textInputHex(key,action,coloringPanel.hexVal,textBoxActiveChar)){
 			coloringPanel.newHexValTextboxEntry = true;
 		}	
-		if(action == 0 || action == 1){
+		if(action == 1 || action == 2){
 			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && coloringPanel.hexVal.size()+textBoxActiveChar){
 				textBoxActiveChar--;
 			}
@@ -1010,7 +1010,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		if(ui.textInput(key,action,caps,txtrCreatingPanel.textBoxVal,maxTextureCharCount,window,textBoxActiveChar)){
 			txtrCreatingPanel.newTextboxEntry = true;
 		}	
-		if(action == 0 || action == 1){
+		if(action == 1 || action == 2){
 			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && txtrCreatingPanel.textBoxVal.size()+textBoxActiveChar){
 				textBoxActiveChar--;
 			}
