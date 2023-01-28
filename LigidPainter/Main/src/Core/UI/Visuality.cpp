@@ -24,6 +24,8 @@ ColorData colorD;
 int uiMaxScreenWidth;
 int uiMaxScreenHeight;
 
+int uiTextBoxActiveChar;
+
 void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec4 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec4 colorTransitionColor, float mixVal) {
 	
 	//buttonCurveReduce = 10 | normal  
@@ -107,10 +109,10 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	ColorData colorData;
 
 	if (!isTextBox) {
-		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f);
+		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,false);
 	}
 	else {
-		renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f);
+		renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,mixVal > 0.f);
 	}
 	glset.uniform1i(uiPrograms.uiProgram, "isUiTextureUsed", 0);
 }
@@ -206,7 +208,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 	if(state == 0){
 		glUseProgram(programs.uiProgram);
-		renderText(programs.uiProgram,"Textures",panelLoc-0.35f,0.84f,0.00032f,colorData.textColor,0.99999f);
+		renderText(programs.uiProgram,"Textures",panelLoc-0.35f,0.84f,0.00032f,colorData.textColor,0.99999f,false);
 		
 		glUseProgram(programs.renderTheTextureProgram);
 	
@@ -276,14 +278,14 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 			glUseProgram(programs.uiProgram);
 
-			renderText(programs.uiProgram,albedoTextures[i].name,position_x- textureWidth ,position_y - textureWidth*2.5,0.00022f,colorData.textColor,panelZ+0.02f);
+			renderText(programs.uiProgram,albedoTextures[i].name,position_x- textureWidth ,position_y - textureWidth*2.5,0.00022f,colorData.textColor,panelZ+0.02f,false);
 		}
 	}
 
 	if(state == 1){
 
 		glUseProgram(programs.uiProgram);
-		renderText(programs.uiProgram,"Materials",panelLoc-0.35f,0.84f,0.00032f,colorData.textColor,0.99999f);
+		renderText(programs.uiProgram,"Materials",panelLoc-0.35f,0.84f,0.00032f,colorData.textColor,0.99999f,false);
 		
 		//RENDER THE NODES
 		float maskXpos = 0.0f;
@@ -368,9 +370,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			glset.drawArrays(buttonCoorSq,false);
 
 			glUseProgram(programs.uiProgram);
-			renderText(programs.uiProgram,nodeScenes[i].sceneName,position_x- textureWidth ,position_y - textureWidth*2,0.00022f,colorData.textColor,panelZ+0.03f);
+			renderText(programs.uiProgram,nodeScenes[i].sceneName,position_x- textureWidth ,position_y - textureWidth*2,0.00022f,colorData.textColor,panelZ+0.03f,false);
 
-			renderText(programs.uiProgram,std::to_string(nodeScenes[i].index),position_x - textureWidth ,position_y - textureWidth,0.00042f,colorData.materialIconIndexTextColor,panelZ+0.03f);
+			renderText(programs.uiProgram,std::to_string(nodeScenes[i].index),position_x - textureWidth ,position_y - textureWidth,0.00042f,colorData.materialIconIndexTextColor,panelZ+0.03f,false);
 		}
 	}
 	
@@ -494,7 +496,7 @@ void UserInterface::numericModifier(float position_x,float position_y,unsigned i
 	iconBox(0.02f,0.04f,position_x + 0.06f,position_y,z,rightArrow,mixValP,clrData.numericModifierArrowColor,clrData.numericModifierArrowHoverColor);
 
 	glUseProgram(uiPrograms.uiProgram);
-	renderText(uiPrograms.uiProgram,std::to_string(value),position_x-0.01f,position_y-0.01f,0.00022f,clrData.textColor,0.99999f);
+	renderText(uiPrograms.uiProgram,std::to_string(value),position_x-0.01f,position_y-0.01f,0.00022f,clrData.textColor,0.99999f,false);
 }
 
 void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover){
@@ -718,7 +720,7 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 	iconBox(0.015,0.0273f,position_x, position_y,0.9f,circleTxtr,0,color,color);
 	
 	glUseProgram(uiPrograms.uiProgram);
-	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f,colorData.textColor,0.99999f);
+	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f,colorData.textColor,0.99999f,false);
 }
 
 
@@ -729,8 +731,20 @@ void UserInterface::setViewportBgColor() {
 }
 
 std::map<char, character> characters;
-void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z) {
+int textCursorPhaseCounter = 0;
+
+void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active) {
 	GlSet glset;
+	ColorData2 colorData2;
+	
+	const int maxCharCountSize = 100;
+	if(active){
+		textCursorPhaseCounter++;
+		if(textCursorPhaseCounter == maxCharCountSize)
+			textCursorPhaseCounter = 0;
+	}
+
+
 	glset.activeTexture(GL_TEXTURE2);
 
 	glset.uniform1i(program,"isText", 1);
@@ -738,6 +752,7 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 	glset.uniform4fv(program, "uiColor", color);
 	
 	std::string::const_iterator c;
+	int counter = 0;
 	for (c = text.begin(); c != text.end(); c++)
 	{
 		character ch = characters[*c];
@@ -757,13 +772,37 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 			 xpos + w, ypos,      			  z  ,1.0f, 1.0f,	0,0,0,
 			 xpos + w, ypos + h+  0.004f, 	  z  ,1.0f, 0.0f,	0,0,0
 		};
+		std::vector <float> curVert = {
+			 xpos+w,     			ypos-0.002f + h + 0.014f, 	  z+0.001f  ,0.0f, 0.0f,	0,0,0,
+			 xpos+w,     			ypos-0.002f,      			  z+0.001f  ,0.0f, 1.0f,	0,0,0,
+			 xpos+w + 0.003f, 		ypos-0.002f,      			  z+0.001f  ,1.0f, 1.0f,	0,0,0,
+			
+			 xpos+w,     			ypos-0.002f + h + 0.014f, 	  z+0.001f  ,0.0f, 0.0f,	0,0,0,
+			 xpos+w + 0.003f, 		ypos-0.002f,      			  z+0.001f  ,1.0f, 1.0f,	0,0,0,
+			 xpos+w + 0.003f, 		ypos-0.002f + h+  0.014f, 	  z+0.001f  ,1.0f, 0.0f,	0,0,0
+		};
 
 		glset.bindTexture(ch.TextureID);
 		glset.drawArrays(vertices, false);
+		if(active){
+			if(counter == text.size()+uiTextBoxActiveChar-1 && textCursorPhaseCounter < maxCharCountSize/2){
+				glset.uniform1i(program,"isText", 0);
+				glset.uniform1i(program, "isTextF", 0);
+				glset.uniform4fv(program, "uiColor", colorData2.textboxCursorColor);
+				glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0);
+				glset.drawArrays(curVert, false);
+				glset.uniform1i(program, "isTextF", 1);
+				glset.uniform1i(program,"isText", 1);
+				glset.uniform4fv(program, "uiColor", color);
+			}
+		}
+
 		x += (ch.Advance >> 6) * scale / 1.2f; 
+		counter++;
 	}
 	glset.uniform1i(program, "isTextF", 0);
 	glset.uniform1i(program, "isText", 0);
+
 
 }
 
@@ -850,7 +889,7 @@ void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Pr
 	gl.drawArrays(topCoor,false);
 
 	if(nodeScenes.size() != 0)
-		renderText(programs.uiProgram,nodeScenes[selectedNodeScene].sceneName,(nodePanelRight + nodePanelLeft)/2,nodePanelTop + 0.025f,0.00025f,colorData.textColor,0.99999f);
+		renderText(programs.uiProgram,nodeScenes[selectedNodeScene].sceneName,(nodePanelRight + nodePanelLeft)/2,nodePanelTop + 0.025f,0.00025f,colorData.textColor,0.99999f,false);
 
 	glUseProgram(programs.iconsProgram);
 	
@@ -1136,7 +1175,7 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 
 	glUseProgram(programs.uiProgram);
 	
-	renderText(programs.uiProgram,"Title :",txtrCreatingPanel.panelPosX - panelWidth,txtrCreatingPanel.panelPosY+0.12f,0.00022f,colorData.textColor,depth+0.01);
+	renderText(programs.uiProgram,"Title :",txtrCreatingPanel.panelPosX - panelWidth,txtrCreatingPanel.panelPosY+0.12f,0.00022f,colorData.textColor,depth+0.01,false);
 	box(panelWidth - 0.02f, 0.03f, txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY+0.08f, txtrCreatingPanel.textBoxVal, colorData.textBoxColor, 0, true, false, depth+0.01f, 10, colorData.textBoxColorClicked, (float)txtrCreatingPanel.textBoxActive);
 	txtrCreatingPanel.textBoxHover = isMouseOnButton(window,panelWidth - 0.02f, 0.03f,txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY+0.08f,mouseXpos,mouseYpos,false);
 
@@ -1144,7 +1183,7 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 		txtrCreatingPanel.textBoxActive = true;
 	}
 
-	renderText(programs.uiProgram,"Color :",txtrCreatingPanel.panelPosX - panelWidth,txtrCreatingPanel.panelPosY+0.02f,0.00022f,colorData.textColor,depth+0.01);
+	renderText(programs.uiProgram,"Color :",txtrCreatingPanel.panelPosX - panelWidth,txtrCreatingPanel.panelPosY+0.02f,0.00022f,colorData.textColor,depth+0.01,false);
 	box(panelWidth - 0.02f, 0.03f, txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY-0.02f, "", glm::vec4(txtrCreatingPanel.color/255.f,1), 0, true, false, depth+0.01f, 10, glm::vec4(0), 0);
 	txtrCreatingPanel.colorBarHover = isMouseOnButton(window,panelWidth - 0.02f, 0.03f,txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY-0.02f,mouseXpos,mouseYpos,false);
 
@@ -1233,4 +1272,12 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 		txtrCreatingPanel.color = glm::vec3(0);
 		txtrCreatingPanel.active = false;
 	}
+}
+int uiLastTextBoxActiveChar = 0;
+void UserInterface::sendTextBoxActiveCharToUI(int textBoxActiveChar){
+	if(uiLastTextBoxActiveChar != uiTextBoxActiveChar){
+		textCursorPhaseCounter = 0;
+	}
+	uiLastTextBoxActiveChar = uiTextBoxActiveChar;
+	uiTextBoxActiveChar = textBoxActiveChar;
 }

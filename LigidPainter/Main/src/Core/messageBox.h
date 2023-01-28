@@ -84,7 +84,7 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
 	}
 
 	//Text
-	ui.renderText(uiProgram, text, textXpos, textYpos , 0.00022f,colorData.textColor,0.99999f);
+	ui.renderText(uiProgram, text, textXpos, textYpos , 0.00022f,colorData.textColor,0.99999f,false);
 
 	//LigidPainter icon
 	glUseProgram(iconsProgram);

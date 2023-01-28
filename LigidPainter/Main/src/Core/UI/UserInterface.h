@@ -113,6 +113,12 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 materialIconIndexTextColor = glm::vec4(0.1f,0.1f,0.1f,1.0);
 
 	glm::vec3 alertColor = glm::vec3(0.76,0.17,0.17);
+	
+};
+
+struct ColorData2{
+	glm::vec3 LigidPainterThemeColor = glm::vec3(0.043f,0.635f,0.823f);
+	glm::vec4 textboxCursorColor = glm::vec4(1.f);
 };
 
 struct Container{
@@ -495,7 +501,7 @@ public:
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec4 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec4 colorTransitionColor , float mixVal);
 	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover);
 	void setViewportBgColor();
-	void renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z);
+	void renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active);
 	void renderMenubar(GLFWwindow* window);
 	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked,unsigned int circleTxtr);
 	void panelChangeButton(float position_x, float position_y);
@@ -528,7 +534,7 @@ public:
 	bool isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, double mouseXpos, double mouseYpos);
 	bool isMouseOnButton(GLFWwindow* window, float width, float height, float position_x, float position_y, double mouseXpos, double mouseYpos, bool isPanelMoving);
 	bool isMouseOnCoords(GLFWwindow*window,double mouseXpos, double mouseYpos,std::vector<float> buttonCoor,bool isPanelMoving);
-	bool textInput(int key, int action,bool caps,std::string &text,int threshold,GLFWwindow* window);
+	bool textInput(int key, int action,bool caps,std::string &text,int threshold,GLFWwindow* window,int activeChar);
 	bool textInputHex(int key, int action, std::string &text, int &activeChar);
 	bool isMouseOnNodePanel(GLFWwindow* window,float mainPanelLoc,float height,double mouseXpos,double mouseYpos,bool calculateBoundaries);
 
@@ -536,5 +542,6 @@ public:
 	void sendProgramsToUserInterface(Programs appPrograms);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void sendMaxWindowSizeToCalculationsAndMore(int maxScreenWidth,int maxScreenHeight);
+	void sendTextBoxActiveCharToUI(int textBoxActiveChar);
 };
 #endif 

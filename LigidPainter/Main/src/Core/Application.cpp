@@ -200,7 +200,7 @@ bool caps = false; //GLFW_MOD_CAPS_LOCK
 
 bool mirrorClick = false;
 
-int textBoxActiveChar = 6;
+int textBoxActiveChar = 0;
 
 bool renderTheScene = true;//Set true in the callback functions & set renderTheSceneCounter to 0 if renderTheScene's state is changed
 int renderTheSceneCounter = 0;
@@ -629,6 +629,9 @@ bool LigidPainter::run()
 
 
 
+		ui.sendTextBoxActiveCharToUI(textBoxActiveChar);
+
+
 		GLenum err;
 		while((err = glGetError()) != GL_NO_ERROR)
 		{
@@ -662,15 +665,15 @@ bool LigidPainter::run()
 			}
 			if(!colorPicker.hexValTextBoxEnter){
 				colorPicker.hexValTextBoxActive = false;
-				textBoxActiveChar = 6;
+				// = 6;
 			}
 			if(!coloringPanel.hexValTextboxHover){
 				coloringPanel.hexValTextboxActive = false;
-				textBoxActiveChar = 6;
+				//textBoxActiveChar = 6;
 			}
 			if(!txtrCreatingPanel.textBoxHover){
 				txtrCreatingPanel.textBoxActive = false;
-				textBoxActiveChar = 6;
+				//textBoxActiveChar = 6;
 			}
 		}
 
@@ -956,11 +959,20 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		caps = !caps;
 	}
 
+
 	UserInterface ui;
 	const int exportFileNameThreshold = 20;
 	if(UIElements[UIexportingFolderNameTextBox].textBox.clicked){
-		if(ui.textInput(key,action,caps,exportFileName,exportFileNameThreshold,window)){
+		if(ui.textInput(key,action,caps,exportFileName,exportFileNameThreshold,window,textBoxActiveChar)){
 			UIElements[UIexportingFolderNameTextBox].textBox.text = exportFileName;
+		}
+		if(action == 0 || action == 1){
+			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && UIElements[UIexportingFolderNameTextBox].textBox.text.size()+textBoxActiveChar){
+				textBoxActiveChar--;
+			}
+			if(glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_PRESS && textBoxActiveChar != 0){
+				textBoxActiveChar++;
+			}
 		}
 	}
 	
@@ -969,19 +981,43 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			colorPicker.saturationValueValChanged = true;
 			colorPicker.hexValTextBoxGotInput = true;
 		}
+		if(action == 0 || action == 1){
+			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && colorPicker.hexValTextBoxVal.size()+textBoxActiveChar){
+				textBoxActiveChar--;
+			}
+			if(glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_PRESS && textBoxActiveChar != 0){
+				textBoxActiveChar++;
+			}
+		}
 	}
 
 	if(coloringPanel.hexValTextboxActive){
 		if(ui.textInputHex(key,action,coloringPanel.hexVal,textBoxActiveChar)){
 			coloringPanel.newHexValTextboxEntry = true;
 		}	
+		if(action == 0 || action == 1){
+			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && coloringPanel.hexVal.size()+textBoxActiveChar){
+				textBoxActiveChar--;
+			}
+			if(glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_PRESS && textBoxActiveChar != 0){
+				textBoxActiveChar++;
+			}
+		}
 	}
 
 	const int maxTextureCharCount = 22;
 	if(txtrCreatingPanel.textBoxActive){
-		if(ui.textInput(key,action,caps,txtrCreatingPanel.textBoxVal,maxTextureCharCount,window)){
+		if(ui.textInput(key,action,caps,txtrCreatingPanel.textBoxVal,maxTextureCharCount,window,textBoxActiveChar)){
 			txtrCreatingPanel.newTextboxEntry = true;
 		}	
+		if(action == 0 || action == 1){
+			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && txtrCreatingPanel.textBoxVal.size()+textBoxActiveChar){
+				textBoxActiveChar--;
+			}
+			if(glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_PRESS && textBoxActiveChar != 0){
+				textBoxActiveChar++;
+			}
+		}
 	}
 
 	//------------------SHORTCUTS------------------
