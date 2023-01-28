@@ -662,18 +662,19 @@ bool LigidPainter::run()
 					exportFileName = "LP_Export";
 					UIElements[UIexportingFolderNameTextBox].textBox.text = exportFileName;
 				}	
+				textBoxActiveChar = 0;
 			}
 			if(!colorPicker.hexValTextBoxEnter){
 				colorPicker.hexValTextBoxActive = false;
-				// = 6;
+				textBoxActiveChar = 0;
 			}
 			if(!coloringPanel.hexValTextboxHover){
 				coloringPanel.hexValTextboxActive = false;
-				//textBoxActiveChar = 6;
+				textBoxActiveChar = 0;
 			}
 			if(!txtrCreatingPanel.textBoxHover){
 				txtrCreatingPanel.textBoxActive = false;
-				//textBoxActiveChar = 6;
+				textBoxActiveChar = 0;
 			}
 		}
 
