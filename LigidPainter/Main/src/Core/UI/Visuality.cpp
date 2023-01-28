@@ -179,8 +179,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	circle(panelLoc - cornerWidth + 0.002f,panelHeigth - cornerWidth + 0.002f,panelZ-0.11f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,panelZ-0.11f,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 
+	if(state == 0)
+		iconBox(0.015f,0.03f,panelLoc - 0.05f,0.85f,panelZ+0.01f,icons.ArrowDown,0,colorD.iconColor,colorD.iconColorHover);
 	
-	iconBox(0.015f,0.03f,panelLoc - 0.05f,0.85f,panelZ+0.01f,icons.ArrowDown,0,colorD.iconColor,colorD.iconColorHover);
 	iconBox(0.015f,0.03f,panelLoc - 0.10f,0.85f,panelZ+0.01f,icons.Plus,0,colorD.iconColor,colorD.iconColorHover);
 	iconBox(0.015f,0.03f,panelLoc - 0.15f,0.85f,panelZ+0.01f,icons.Minus,0,colorD.iconColor,colorD.iconColorHover);
 
