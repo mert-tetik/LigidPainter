@@ -147,7 +147,7 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 vec3 getRealisticResult(vec3 paintedDiffuse){
    vec3 albedo = paintedDiffuse;
    float metallic = 0.0;
-   float roughness = 1.0;
+   float roughness = 0.5;
    float ao = 1;
 
    

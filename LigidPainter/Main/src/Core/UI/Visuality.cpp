@@ -332,7 +332,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false)){
 				isHover = true;
  				
-				if(glfwGetMouseButton(window,0) == GLFW_PRESS){
+				if(firstClick){
 					//TODO : Update once is changed
 					selectedNodeScene = i;
 				}
