@@ -144,7 +144,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			for (int inputI = 0; inputI < material.nodes[nodeI].inputs.size(); inputI++)
 			{
 				//Establish connection
-				if(material.nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed && material.nodes[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
+				if(material.nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed ){
 					establishConnectionFirstRelease = true;
 				}
 				if(glfwGetMouseButton(window,0) == GLFW_RELEASE && establishConnectionFirstRelease){
@@ -206,6 +206,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 					}
 					node.outputs[i].nodeConnectionIndex = 10000;
 					node.outputs[i].inputConnectionIndex = 10000;
+					node.outputs[i].isConnectedToShaderInput = false;
 
 					material.stateChanged = true;
 				}
@@ -313,6 +314,27 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			deleteButtonEnter = isMouseOnButton(window,iconWidth, iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) + iconWidth*1.7f,mouseX,mouseY,false);
 		
 		if(deleteButtonEnter && firstClick){
+			for (int dOutI = 0; dOutI < material.nodes[currentNodeIndex].outputs.size(); dOutI++)
+			{
+				if(material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex != 10000){
+					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex].nodeConnectionIndex = 10000;
+					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex].inputConnectionIndex = 10000;
+					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex].isConnectedToShaderInput = false;
+				}
+			}
+			for (int dInI = 0; dInI < material.nodes[currentNodeIndex].inputs.size(); dInI++)
+			{
+				material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex = 10000;
+				material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex = 10000;
+				material.nodes[currentNodeIndex].inputs[dInI].isConnectedToShaderInput = false;
+			}
+			for (int dOutI = 0; dOutI < material.nodes[currentNodeIndex].outputs.size(); dOutI++)
+			{
+				material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex = 10000;
+				material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex = 10000;
+				material.nodes[currentNodeIndex].outputs[dOutI].isConnectedToShaderInput = false;
+			}
+			material.stateChanged = true;
 			material.nodes.erase(material.nodes.begin() + currentNodeIndex);
 		}
 	
