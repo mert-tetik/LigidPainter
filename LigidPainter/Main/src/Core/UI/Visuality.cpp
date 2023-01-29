@@ -258,6 +258,8 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false)){
 				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
 				if(glfwGetMouseButton(window,0) == GLFW_PRESS){
+					glActiveTexture(GL_TEXTURE0);
+					glBindTexture(GL_TEXTURE_2D,albedoTextures[selectedAlbedoTextureIndex].id);
 					selectedAlbedoTextureIndex = i;
 				}
 			}
