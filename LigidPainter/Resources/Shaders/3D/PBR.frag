@@ -51,14 +51,14 @@ bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMir
    }
 
 
-   vec3 direction;
-   if(isMirrored){
-      direction = mirroredViewPos - Pos;
-   }
-   else{
-      direction = viewPos - Pos;
-   }
-   float dotProd = dot(normalize(direction),normalize(Normal));
+   // vec3 direction;
+   // if(isMirrored){
+   //    direction = mirroredViewPos - Pos;
+   // }
+   // else{
+   //    direction = viewPos - Pos;
+   // }
+   // float dotProd = dot(normalize(direction),normalize(Normal));
 
  
    if(true){

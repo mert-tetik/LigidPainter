@@ -139,7 +139,7 @@ private:
     };
 
     std::map<std::string,std::string> uniformData{
-        {"tex_coords","vec2"}, {"normal","vec3"}, {"posScene","vec3"} , {"posModel","vec3"} , {"viewPos","vec3"} , {"blurySkybox","samplerCube"} , {"prefilterMap","samplerCube"}, {"tangent", "vec3"} , {"bitangent", "vec3"},{"brdfLUT","sampler2D"}
+        {"tex_coords","vec2"}, {"normal","vec3"}, {"posScene","vec4"} , {"posModel","vec3"} , {"viewPos","vec3"} , {"blurySkybox","samplerCube"} , {"prefilterMap","samplerCube"}, {"tangent", "vec3"} , {"bitangent", "vec3"},{"brdfLUT","sampler2D"}
     };
 
     std::vector<std::string> uniforms;

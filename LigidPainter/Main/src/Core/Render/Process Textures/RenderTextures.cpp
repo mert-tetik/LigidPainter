@@ -86,8 +86,8 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		//Render painted image
 		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0));
 
-		if (!paintOut)
-			gl.drawArrays(renderVertices, false);
+		// if (!paintOut)
+		// 	gl.drawArrays(renderVertices, false);
 
 		GLubyte* renderedImage = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
 		glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);

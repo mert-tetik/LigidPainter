@@ -566,7 +566,6 @@ public:
 		unsigned int fragShader = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fragShader, 1, &shaderSource, NULL);
 		glCompileShader(fragShader);
-		std::cout << node.code;
 
 		//Test the shader
 		int success;
@@ -579,6 +578,8 @@ public:
 		unsigned int vertShader = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vertShader, 1, &defaultVertexShader, NULL);
 		glCompileShader(vertShader);
+
+		std::cout << "Vertex : \n" << defaultVertexShader << "Fragment : \n" << shaderSource << '\n';
 
 		//Test the shader
 		glGetShaderiv(vertShader, GL_COMPILE_STATUS, &success);
@@ -594,6 +595,7 @@ public:
 		glDeleteShader(fragShader);
 
 		resultNode.program = program;
+		std::cout << " Program : " << program << ' ';
 
 		return resultNode;
 	}

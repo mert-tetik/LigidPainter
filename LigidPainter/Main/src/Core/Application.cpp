@@ -260,6 +260,8 @@ bool LigidPainter::run()
 	
 	Load load;
 	programs = load.getProgram();
+	//Load nodes
+	appNodes = load.loadNodes(folderDistinguisher);
 	//Load chars
 	load.uploadChars();
 	//Load brush mask textures
@@ -277,8 +279,6 @@ bool LigidPainter::run()
 	textures = load.initTextures(maskTexturePath.c_str());
 	//Load UI
 	UIElements = ui.getUiElements(icons);
-	//Load nodes
-	appNodes = load.loadNodes(folderDistinguisher);
 	//Load context menus
 	addNodeContextMenu = ui.createContextMenus(appNodes);
 
@@ -823,7 +823,7 @@ bool LigidPainter::run()
 			//Paint
 			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view);
 			paintRenderCounter++;
-			if(paintRenderCounter == 5){
+			if(paintRenderCounter == 50000){
 				paintRender = true;
 				paintRenderCounter = 0;
 			}

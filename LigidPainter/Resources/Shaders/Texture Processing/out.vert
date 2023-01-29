@@ -32,7 +32,7 @@ void main() {
    mirroredProjectedPos = projection * mirroredView * vec4(aPos, 0.5); 
 
       if(isTwoDimensional == 0){
-         gl_Position = renderTextureProjection * vec4(aTexCoords, 0, 1);
+         gl_Position = renderTextureProjection * vec4(aTexCoords, 0.5, 1);
       }
       else{
          gl_Position = renderTrans * renderTextureProjection * vec4(aPos, 1.0);

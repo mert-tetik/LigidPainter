@@ -20,8 +20,6 @@ uniform int whiteRendering;
 uniform sampler2D uvMask;
 uniform int interpretWithUvMask;
 
-uniform sampler2D paintedTxtrMask;
-
 
 in vec2 TexCoords;
 in vec3 Normal;
@@ -38,9 +36,8 @@ float linearizeDepth(float depth){
    return (2.0 * near * far) / (far + near -(depth * 2.0 - 1.0) *(far-near));
 }
 
-float isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMirrored is true
+bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMirrored is true
    float drawZ;
-
    if(!isMirrored){
       drawZ = texture2D(depthTexture, uv.xy).b;
    }
@@ -48,35 +45,19 @@ float isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMi
       drawZ = texture2D(mirroredDepthTexture, uv.xy).b; 
    }
 
-   float uvCoordVal;
-   if(!isMirrored){
-      uvCoordVal = texture2D(paintedTxtrMask,TexCoords).r;
-   }
-   else{
-      uvCoordVal = texture2D(paintedTxtrMask,TexCoords).g;
-   }
 
    // vec3 direction;
-
    // if(isMirrored){
    //    direction = mirroredViewPos - Pos;
    // }
    // else{
    //    direction = viewPos - Pos;
    // }
-
    // float dotProd = dot(normalize(direction),normalize(Normal));
 
-   if(abs(drawZ - linearizeDepth(uv.z)/far) < 0.005){
-      //True
-      return 2.0;
-   }
-   else if(uvCoordVal > 0.0){
-      return uvCoordVal;
-   }
-   else{
-      //False
-      return 3.0;
+ 
+   if(true){
+      return abs(drawZ - linearizeDepth(uv.z)/far) < 0.0025;
    }
 }
 
@@ -92,18 +73,12 @@ vec3 getPaintedDiffuse(){
    float intensity = 0.0;
    float mirroredIntensity = 0.0;
 
-   if(isPainted(screenPos,false) <= 1.0){
-      intensity = min(isPainted(screenPos,false),1.0);
-   }
-   else if(isPainted(screenPos,false) == 2.0) {
+   if(isPainted(screenPos,false)) {
       intensity = texture2D(screenMaskTexture, screenPos.xy).r;
    }
 
 
-   if(isPainted(mirroredScreenPos,true) <= 1.0){
-      mirroredIntensity = min(isPainted(mirroredScreenPos,true),1.0);
-   }
-   else if(isPainted(mirroredScreenPos, true) == 2.0) {
+   if(isPainted(mirroredScreenPos, true)) {
       mirroredIntensity = texture2D((mirroredScreenMaskTexture), mirroredScreenPos.xy).r;
    }
    
@@ -122,15 +97,18 @@ vec3 getPaintedDiffuse(){
          mirroredDiffuseDrawMix = diffuseDrawMix;
    }
    
-   gl_FragDepth = 1.0 - (intensity/2.0 + 0.5);
+   if(intensity > 0.00001)
+      gl_FragDepth = 0.1;
+   else{
+      gl_FragDepth = 0.5;
+   }
 
    return mirroredDiffuseDrawMix;
 }
 
 
 void main() {
-   gl_FragDepth = 0.5;
-
+   
    vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
 
 
