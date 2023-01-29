@@ -639,6 +639,8 @@ public:
 		mainOutInput.type = "vec3";
 		mainOutInput.text = "Shader";
 		mainOutInput.element = "none";
+		mainOutInput.nodeConnectionIndex = 1;
+		mainOutInput.inputConnectionIndex = 0;
 
 		mainOutNode.inputs.push_back(mainOutInput);
 		mainOutNode.isMainOut = true;

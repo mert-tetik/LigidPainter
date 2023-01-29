@@ -28,7 +28,6 @@ std::vector<float> renderVertices = {
 };
 
 MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY){
-    
     MaterialOut resultOut;
 
     for (size_t i = 0; i < material.renderingPipeline.size(); i++)
