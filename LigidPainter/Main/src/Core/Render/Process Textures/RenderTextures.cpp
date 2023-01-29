@@ -15,30 +15,34 @@
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"
 
-void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screenSizeY, OutShaderData outShaderData,Model &model,bool renderDefault,vector<aTexture> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,std::vector<UndoActions> &undoList,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex) {
+void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screenSizeY, OutShaderData outShaderData,Model &model,bool renderDefault,vector<aTexture> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex) {
 	int maxHistoryHold = 20;
 	
 	if(firstPaint){
 		//UNDO
 		Texture txtr;
+		if(albedoTextures.size() > 0){
+			GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, 1080, 1080, 3);
 
-		GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, 1080, 1080, 3);
+			GlSet glset;
+			glActiveTexture(GL_TEXTURE28);
+			unsigned int orgTexture;
+			glset.genTextures(orgTexture);
+			glset.bindTexture(orgTexture);
+			glset.texImage(originalImage,1080,1080,GL_RGB);
+			glset.generateMipmap();
 
-		//Send the texture to the undoList before processing the texture (will be used for ctrl z)
-		UndoActions undoAct;
-		undoAct.activeMaterial = currentMaterialIndex;
-		undoAct.undoTextures = originalImage; 
-		undoList.push_back(undoAct);
+			albedoTextures[chosenTextureIndex].undoList.push_back(orgTexture);
 
+    		//Delete the first element from undoList if undoList's count is greated than max history holding value which is 20
+			if (albedoTextures[chosenTextureIndex].undoList.size() > maxHistoryHold){
+				//Delete the texture
+				unsigned int undoTexture = albedoTextures[chosenTextureIndex].undoList[0];
+				glDeleteTextures(0,&undoTexture);
 
-    	//Delete the first element from undoList if undoList's count is greated than max history holding value which is 20
-		if (undoList.size() > maxHistoryHold){
-			//Delete the texture
-			GLubyte* undoTexture = undoList[0].undoTextures;
-			delete[] undoTexture;
-
-			//Remove the element
-			undoList.erase(undoList.begin());
+				//Remove the element
+				albedoTextures[chosenTextureIndex].undoList.erase(albedoTextures[chosenTextureIndex].undoList.begin());
+			}
 		}
 	}
 

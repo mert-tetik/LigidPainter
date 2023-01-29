@@ -32,9 +32,6 @@
 
 
 
-std::vector<UndoActions> undoList; 
-
-
 
 int currentMaterialIndex = 0;
 
@@ -109,32 +106,26 @@ ViewUpdateData Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos
 
 //------------CtrlZ------------
 bool doCtrlZ;
-void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures) {
+void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex) {
 	Texture txtr;
 	GlSet glset;
 
 	
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ && undoList.size() != 0) { //MAX 20
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ && albedoTextures[selectedAlbedoTextureIndex].undoList.size() != 0) { //MAX 20
 		
 		//Refresh the screen mask texture (Prevent bugs where might be accur trying undo while in the middle of painting)
 		txtr.refreshScreenDrawingTexture();
 		
 		//Bind the related texture
 		glset.activeTexture(GL_TEXTURE0);
-		currentMaterialIndex = undoList[undoList.size() - 1].activeMaterial;
-		glset.bindTexture(albedoTextures[currentMaterialIndex].id);
+		unsigned int currentTexture = albedoTextures[selectedAlbedoTextureIndex].id;
+		glDeleteTextures(1,&currentTexture);
 
-		//Change the texture to the last texture
-		glset.texImage(undoList[undoList.size() - 1].undoTextures, 1080, 1080, GL_RGB);
-		glset.generateMipmap();
-
-		//Delete the texture
-		GLubyte* undoTexture = undoList[undoList.size() - 1].undoTextures;
-		delete[] undoTexture;
+		albedoTextures[selectedAlbedoTextureIndex].id = albedoTextures[selectedAlbedoTextureIndex].undoList[albedoTextures[selectedAlbedoTextureIndex].undoList.size()-1];
 
 		//Remove the last element
-		undoList.pop_back();
+		albedoTextures[selectedAlbedoTextureIndex].undoList.pop_back();
 		doCtrlZ = false;
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) {
@@ -296,7 +287,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 
 	if (isRenderTexture || paintRender) {
-		renderTextures(FBOScreen,screenSizeX, screenSizeY,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,undoList,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterials,view,selectedAlbedoTextureIndex);
+		renderTextures(FBOScreen,screenSizeX, screenSizeY,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterials,view,selectedAlbedoTextureIndex);
 		
 		//Download enlarged texture
 		
@@ -339,7 +330,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	if (colorPicker.updatePickerVal) { //Get value of color box
 		colorPicker.pickerValue = getColorPickerValue(FBOScreen, colorPicker ,screenSizeX, screenSizeY,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,saturationValShaderData);
 	}
-	ctrlZCheck(renderData.window,albedoTextures);
+	ctrlZCheck(renderData.window,albedoTextures,selectedAlbedoTextureIndex);
 
 
 

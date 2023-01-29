@@ -133,6 +133,7 @@ struct Container{
 struct aTexture{
 	unsigned int id;
 	std::string name;
+	std::vector<unsigned int> undoList;
 };
 
 struct Button{
