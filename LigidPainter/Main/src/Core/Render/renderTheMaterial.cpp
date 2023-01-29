@@ -27,6 +27,8 @@ std::vector<float> renderVertices = {
 	 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
 };
 
+unsigned int lastProgram = 0;
+
 MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY){
     MaterialOut resultOut;
 
@@ -239,6 +241,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
         {
             if(material.renderingPipeline[nodeI].outputs[outI].isConnectedToShaderInput){
                 resultOut.program = material.renderingPipeline[nodeI].program; 
+                lastProgram = resultOut.program;
                 glset.uniformMatrix4fv(nodeProgram,"projection",perspectiveProjection);
                 glset.uniformMatrix4fv(nodeProgram,"view",view);
 
@@ -292,6 +295,8 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
     end:
     glset.bindFramebuffer(0);
 	glset.bindRenderBuffer(0);
+    
+    resultOut.program = lastProgram;
     glset.uniform1i(resultOut.program,"is3D",1);
 
     glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
