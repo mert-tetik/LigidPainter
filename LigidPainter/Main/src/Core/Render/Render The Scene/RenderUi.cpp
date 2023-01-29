@@ -269,7 +269,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 					currentColorHover = colorData.materialButtonColorHover;
 				}
 				//Button (Hover)
-				ui.box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, currentColor, 0.048f, true, false, 0.9f, 10000, currentColorHover, texturePanelButtonMixVal);
+				ui.box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, currentColor, 0.2f, false, false, 0.9f, 10000, currentColorHover, texturePanelButtonMixVal);
 
 			}
 			else{
@@ -285,7 +285,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 				}
 
 				//Button 
-				ui.box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, currentColor, 0.048f, true, false, 0.9f, 10000, currentColorHover, 0);
+				ui.box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, currentColor, 0.2f, false, false, 0.9f, 10000, currentColorHover, 0);
 			}
 			if(textureAddButtonEnter){
 				//Hover
