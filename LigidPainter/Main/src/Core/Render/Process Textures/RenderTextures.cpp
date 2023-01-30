@@ -17,8 +17,9 @@
 
 void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screenSizeY, OutShaderData outShaderData,Model &model,bool renderDefault,vector<aTexture> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex) {
 	int maxHistoryHold = 20;
-	
-	if(firstPaint){
+
+	if(isRenderTexture){
+		
 		//UNDO
 		Texture txtr;
 		if(albedoTextures.size() > 0){
@@ -32,6 +33,8 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 			glset.texImage(originalImage,1080,1080,GL_RGB);
 			glset.generateMipmap();
 
+			std::cout << "\n Writing \n";
+
 			albedoTextures[chosenTextureIndex].undoList.push_back(orgTexture);
 
     		//Delete the first element from undoList if undoList's count is greated than max history holding value which is 20
@@ -44,9 +47,6 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 				albedoTextures[chosenTextureIndex].undoList.erase(albedoTextures[chosenTextureIndex].undoList.begin());
 			}
 		}
-	}
-
-	if(isRenderTexture){
 
 		std::vector<float> renderVertices = { //Render backside of the uv
 		// first triangle
@@ -58,7 +58,6 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
 		 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
 		};
-		Texture txtr;
 
     	GlSet gl;
 		//Setup
