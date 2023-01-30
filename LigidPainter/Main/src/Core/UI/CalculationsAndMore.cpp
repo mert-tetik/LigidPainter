@@ -168,16 +168,16 @@ bool UserInterface::isMouseOnNodePanel(GLFWwindow* window,float mainPanelLoc,flo
 		};
 	}
 	else{
-		const float trackingRange = 0.05f;
+		const float trackingRange = 0.06f;
 		buttonCoor = std::vector<float>{
 			//first triangle								    //Color - Normal Vectors Will Be Usen For Color Data Of Vertices
-			 -1.0f + 0.05 			,  -1.00f + (height+0.076f - trackingRange) 			, 0.9f,1.0f,1.0f	,1,1,1,  // top right
-			 -1.0f + 0.05			,  -1.00f + (height+0.076f + trackingRange) 								, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
-			 mainPanelLoc 	-0.05f	,  -1.00f + (height+0.076f - trackingRange) 			, 0.9f,0.0f,1.0f	,0,0,0,  // top left 
+			 -1.0f + 0.05 			,  -1.00f + (height+0.056f - trackingRange) 			, 0.9f,1.0f,1.0f	,1,1,1,  // top right
+			 -1.0f + 0.05			,  -1.00f + (height+0.056f + trackingRange) 								, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
+			 mainPanelLoc 	-0.05f	,  -1.00f + (height+0.056f - trackingRange) 			, 0.9f,0.0f,1.0f	,0,0,0,  // top left 
 			//second triangle
-			 -1.0f + 0.05			,  -1.00f + (height+0.076f + trackingRange)								, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
-			 mainPanelLoc 	-0.05f	,  -1.00f + (height+0.076f + trackingRange)								, 0.9f,0.0f,0.0f	,0,0,0,  // bottom left
-			 mainPanelLoc 	-0.05f	,  -1.00f + (height+0.076f - trackingRange) 			, 0.9f,0.0f,1.0f	,0,0,0 // top left
+			 -1.0f + 0.05			,  -1.00f + (height+0.056f + trackingRange)								, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
+			 mainPanelLoc 	-0.05f	,  -1.00f + (height+0.056f + trackingRange)								, 0.9f,0.0f,0.0f	,0,0,0,  // bottom left
+			 mainPanelLoc 	-0.05f	,  -1.00f + (height+0.056f - trackingRange) 			, 0.9f,0.0f,1.0f	,0,0,0 // top left
 		};
 		
 	}

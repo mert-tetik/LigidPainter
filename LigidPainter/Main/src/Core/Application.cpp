@@ -1125,7 +1125,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	else if(textureDisplayer.buttonHover || callbackData.paintingPanelButtonEnter || callbackData.modelPanelButtonEnter || callbackData.exportPanelButtonEnter || callbackData.texturePanelButtonEnter || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover){
 		doPainting = false;
 	}
-	else if(nodePanel.panelHover || nodePanel.boundariesHover || nodePanel.boundariesPressed){
+	else if(nodePanel.panelHover || nodePanel.boundariesHover || nodePanel.boundariesPressed || sndPanel.panelHover){
 		doPainting = false;
 	}
 	else if (hideCursor) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
@@ -1212,14 +1212,14 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 			nodePanel.zoomValChanged = true;
 			nodePanel.zoomVal = util.restrictBetween(nodePanel.zoomVal, 2.0f, 0.01f);//Keep in boundaries
 		}
-		else if (!paintingMode && !mainPanelHover) {
-			callbackData = callback.scroll_callback(window, scroll, scrollx);
-		}
-		else if(mainPanelHover && panelData.texturePanelActive){
+		else if(callbackData.mainPanelEnter && panelData.texturePanelActive && model.meshes.size() >= 4){
 			//Materials
 			materialsPanelSlideValue += scrollx/10.0f;
-			if(materialsPanelSlideValue > 0.0f)
+			if(materialsPanelSlideValue < 0.0f)
 				materialsPanelSlideValue = 0.0f;
+		}
+		else if (!paintingMode && !mainPanelHover) {
+			callbackData = callback.scroll_callback(window, scroll, scrollx);
 		}
 		else {
 			holdScrollVal = scrollx;

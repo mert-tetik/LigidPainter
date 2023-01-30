@@ -133,7 +133,7 @@ void UserInterface::panel(float panelLoc, Icons icons) {
 	box(panelWidth, cornerWidth, panelLoc + panelWidth + cornerWidth, panelHeigth, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 	box(panelWidth, cornerWidth, panelLoc + panelWidth + cornerWidth, -panelHeigth, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 	box(cornerWidth, panelHeigth - cornerWidth, panelLoc + cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
-
+	
 	glUseProgram(uiPrograms.iconsProgram);
 	circle(panelLoc + cornerWidth - 0.002f, panelHeigth - cornerWidth + 0.002f,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 	circle(panelLoc + cornerWidth,-panelHeigth + cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
@@ -153,6 +153,11 @@ void UserInterface::panel(float panelLoc, Icons icons) {
 	//Export panel button
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.56f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
 	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.567f,0.6f,icons.Export,0,colorD.iconColor,colorD.iconColor);
+
+	glUseProgram(uiPrograms.uiProgram);
+	//Barriers
+	box(panelWidth*1.2, cornerWidth*2, panelLoc + panelWidth + cornerWidth, panelHeigth + cornerWidth*2, "", glm::vec4(0), 0.022f, false, false, 1.f, 10000, glm::vec4(0), 0);
+	box(panelWidth*1.2, cornerWidth*2, panelLoc + panelWidth + cornerWidth, -panelHeigth - cornerWidth*2, "", glm::vec4(0), 0.022f, false, false, 1.f, 10000, glm::vec4(0), 0);
 
 }
 void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick) {
