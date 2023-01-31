@@ -1,3 +1,45 @@
+//Application.cpp
+//Note : Main loop is there
+//Every element is called from there
+
+
+//GL_TEXTURE0 = Albedo texture
+//GL_TEXTURE1 = Mask texture
+//GL_TEXTURE2 = Chars
+//GL_TEXTURE3 = Mirrored Screen Mask Painting Texture
+//GL_TEXTURE4 = Screen Mask Painting Texture
+//GL_TEXTURE5 = 1920x1080 Screen Texture
+//GL_TEXTURE6 = Icons
+//GL_TEXTURE7 = UV mask texture (used for painting over boundaries)
+//GL_TEXTURE8 = Mirrored Depth texture
+//GL_TEXTURE9 = Depth texture
+//GL_TEXTURE10 = 1080x1080 Screen Texture
+//GL_TEXTURE12 = Modified mask texture
+//GL_TEXTURE13 = skybox
+//GL_TEXTURE14 = texture rendering for the ui
+//GL_TEXTURE15 = BRDF
+//GL_TEXTURE16 = prefilteredMap
+
+//GL_TEXTURE 20 - 27 Is reserved for nodes
+//GL_TEXTURE28 = Empty
+
+//Shortcuts
+
+//Left CTRL + Z : Undo painting
+//Left CTRL + X : change use negative checkbox's state
+//Left CTRL + H : hide or show the texture demonstrator
+//Left CTRL + Q + scroll = change brush size range bar value
+//Left CTRL + W + scroll = change brush blur range bar value
+//Left CTRL + E + scroll = change brush rotation range bar value
+//Left CTRL + R + scroll = change brush opacity range bar value
+//Left CTRL + T + scroll = change brush spacing range bar value
+//Left CTRL + Y + scroll = change brush borders range bar value
+//Left CTRL + B = set painting fill between quality to 1 or 10
+//Left CTRL + TAB + Q = Switch to model panel
+//Left CTRL + TAB + W = Switch to texture panel
+//Left CTRL + TAB + T = Switch to painting panel
+//Left CTRL + TAB + R = Switch to export panel
+
 #include<iostream>
 
 #include "glad/glad.h"
@@ -27,7 +69,6 @@
 #include "Core/Texture Generator/TextureGenerator.h"
 #include "Core/messageBox.h"
 
-
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -36,7 +77,6 @@
 #include "stb_image_write.h"
 
 #include "tinyfiledialogs.h"
-
 
 using namespace std;
 
@@ -51,55 +91,13 @@ GLFWwindow* window;
 	char folderDistinguisher = '/'; 
 #endif
 
-//TODO : Reduce GPU Usage
-//TODO : Specialized vao for each shader
-//TODO : Use texture struct
-
-
-//GL_TEXTURE0 = Albedo texture
-//GL_TEXTURE1 = Mask texture
-//GL_TEXTURE2 = Chars
-//GL_TEXTURE3 = Mirrored Screen Mask Painting Texture
-//GL_TEXTURE4 = Screen Mask Painting Texture
-//GL_TEXTURE5 = 1920x1080 Screen Texture
-//GL_TEXTURE6 = Icons
-//GL_TEXTURE7 = UV mask texture (used for painting over boundaries)
-//GL_TEXTURE8 = Mirrored Depth texture
-//GL_TEXTURE9 = Depth texture
-//GL_TEXTURE10 = 1080x1080 Screen Texture
-//GL_TEXTURE12 = Modified mask texture
-//GL_TEXTURE13 = skybox
-//GL_TEXTURE14 = texture rendering for the ui
-//GL_TEXTURE15 = BRDF
-//GL_TEXTURE16 = prefilteredMap
-
-//GL_TEXTURE 20 - 27 Is reserved for nodes
-
-//Shortcuts
-
-//Left CTRL + Z : Undo painting
-//Left CTRL + X : change use negative checkbox's state
-//Left CTRL + H : hide or show the texture demonstrator
-//Left CTRL + Q + scroll = change brush size range bar value
-//Left CTRL + W + scroll = change brush blur range bar value
-//Left CTRL + E + scroll = change brush rotation range bar value
-//Left CTRL + R + scroll = change brush opacity range bar value
-//Left CTRL + T + scroll = change brush spacing range bar value
-//Left CTRL + Y + scroll = change brush borders range bar value
-//Left CTRL + B = set painting fill between quality to 1 or 10
-//Left CTRL + TAB + Q = Switch to model panel
-//Left CTRL + TAB + W = Switch to texture panel
-//Left CTRL + TAB + T = Switch to painting panel
-//Left CTRL + TAB + R = Switch to export panel
-
-unsigned int VBO, VAO, FBOScreen; //Vertex Buffer Object, Vertex Array Object, Framebuffer object that I used to render the screen
+unsigned int VBO, VAO, FBOScreen;
 
 bool firstClick = false;
 bool mousePress = false;
 
 bool cameraPosChanging = true;
 bool paintingMode = false; //True if painting started, False if camera position changed after painting
-glm::vec3 holdCameraPos; //Used to detect the camera position change
 
 //Paths
 const char* modelFilePath;
@@ -110,6 +108,7 @@ string exportPath = "";
 string exportFolder = "Choose Destination Path";
 string exportFileName = "LP_Export";
 //Paths
+
 
 std::vector<UIElement> UIElements;
 ColorPicker colorPicker;
@@ -128,6 +127,8 @@ int selectedAlbedoTextureIndex;
 std::vector<Node> appNodes;
 ColoringPanel coloringPanel;
 TextureCreatingPanel txtrCreatingPanel;
+Model model;
+
 
 
 string modelName;
@@ -139,7 +140,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-
 void updateCameraPosChanging();
 RenderData updateRenderData(RenderData renderData, unsigned int depthTexture, int brushSizeIndicatorSize);
 
@@ -148,90 +148,39 @@ RenderData updateRenderData(RenderData renderData, unsigned int depthTexture, in
 CallbckData callbackData;
 PanelData panelData;
 
-bool doPainting = true;//Prevent painting
-
-double holdScrollVal; //Hold scroll data to call the scroll function in while loop
-bool doScrollAfterCallInPaintingMode; //Prevent painting size change after scrolling
-
-bool exportImage;//To let render function know if exporting called
-
-
-//Update once the mouse location value changed
-double mouseXpos; 
-double mouseYpos;
-bool mousePosChanged = false;
-
-bool mainPanelHover = false;
-
-
-bool enablePanelMovement = true; //Panel can be moved if true. Set false while dragging range bar pointers around.
-
-
-//Checkbox
-bool backfaceCullingChecked = true;
-bool enableBackfaceCulling;
-
-//TODO : Remove these bools
-bool jpgFormatChecked;
-bool pngFormatChecked = true;
-
-bool mirrorUsed = false;
-//Checkbox
-
 float maskPanelSliderValue = 0.0f;
-
-
-//bool albedoTextureChanged; use for texture updating conditions
-
-int paintingSpacing = 1;
-
-//Last mouse position (used in drawToScreen.cpp)
+float materialsPanelSlideValue = 0.0f;
+float mainPanelLoc = 1.6f;
+float brushBlurVal = 1;
 double lastMouseXpos = 0;
 double lastMouseYpos = 0;
-
-bool useNegativeForDrawing;
-
-bool panelChanging = false; //Disable painting while changing panel sizes
-
-bool brushValChanged = true; //Update brush mask texture in drawToScreen.cpp if true
-
-
-bool caps = false; //GLFW_MOD_CAPS_LOCK
-
+double holdScrollVal;
+double mouseXpos; 
+double mouseYpos;
+bool doScrollAfterCallInPaintingMode; //Prevent painting size change after scrolling
+bool exportImage;//To let render function know if exporting called
+bool doPainting = true;//Prevent painting & hide the painting cursor
+bool mainPanelHover = false;
+bool enablePanelMovement = true; 
+bool backfaceCullingChecked = true;
+bool enableBackfaceCulling;
+bool mirrorUsed = false;
+bool panelChanging = false; 
+bool brushValChanged = true; 
 bool mirrorClick = false;
-
-int textBoxActiveChar = 0;
-
-bool renderTheScene = true;//Set true in the callback functions & set renderTheSceneCounter to 0 if renderTheScene's state is changed
-int renderTheSceneCounter = 0;
-const int renderingThreshold = 120;
-
-Programs programs;
-
-
+bool renderTheScene = true;
 bool renderSphere = false;
 bool renderPlane = false;
-
-glm::vec3 drawColor;
-
-float brushBlurVal = 1;
-
-
 bool verticalMirror = false;
-
-OutShaderData outShaderData;
-
-
+int paintingSpacing = 1;
+int textBoxActiveChar = 0;
+int renderTheSceneCounter = 0;
 int screenWidth;
 int screenHeight;
+Programs programs;
+glm::vec3 drawColor;
+OutShaderData outShaderData;
 
-Model model;
-
-	
-
-float materialsPanelSlideValue = 0.0f;
-
-float mainPanelLoc = 1.6f;
 bool LigidPainter::run()
 {
 	ColorData colorData;
@@ -246,8 +195,12 @@ bool LigidPainter::run()
 	RenderOutData renderOut;
 	Utilities util;
 
+
+
 	windowData = glset.getWindow();
 	window = windowData.window;
+
+
 
 	//Set Callbacks
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
@@ -255,25 +208,26 @@ bool LigidPainter::run()
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 
+
+
 	glGenBuffers(1, &VBO);
-	//glGenVertexArrays(1, &VAO);
-	//glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glUseProgram(programs.uiProgram);
-
 	glset.setVertexAtribPointer();
 	glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW); 
 
-	//Changes clearColor
-	ui.setViewportBgColor();
-	
 
-	//Create screen painting mask Texture
-	GLubyte* screenTexture = new GLubyte[(windowData.windowMaxWidth) * (windowData.windowMaxHeight)];
-	ScreenPaintingReturnData screenPaintingReturnData; 
-	screenPaintingReturnData = txtr.createScreenPaintTexture(screenTexture,window);
-	delete[] screenTexture;
-	
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
+	glEnable(GL_BLEND);
+	glDepthFunc(GL_LESS);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_MULTISAMPLE);
+
+
+
+
+
 	Load load;
 	programs = load.getProgram();
 	//Load nodes
@@ -299,10 +253,10 @@ bool LigidPainter::run()
 	addNodeContextMenu = ui.createContextMenus(appNodes);
 	//Load the prefilter map
 	load.createPrefilterMap(programs,cubemaps,windowData);
-	//Load screen painting FBO
-	unsigned int paintingFBO = load.getPaintingFBO(windowData,screenPaintingReturnData.normalId);
 	//Load general rendering FBO
 	FBOScreen = load.createScreenFrameBufferObject(windowData.windowMaxWidth,windowData.windowMaxHeight);
+	//Get BRDF Look Up Texture
+	unsigned int BRDFLUTxtr = load.getBrdflutTexture();
 	//Create the default node scene(material)
 	load.getDefaultNodeScene(nodeScenes,appNodes,"material_0");
 	//Create the default material out (for model)
@@ -311,6 +265,17 @@ bool LigidPainter::run()
 	modelMaterials.push_back(mOut);
 	//Set context
 	glfwMakeContextCurrent(window);
+	//Create screen painting mask Texture
+	GLubyte* screenTexture = new GLubyte[(windowData.windowMaxWidth) * (windowData.windowMaxHeight)];
+	ScreenPaintingReturnData screenPaintingReturnData; 
+	screenPaintingReturnData = txtr.createScreenPaintTexture(screenTexture,window);
+	delete[] screenTexture;
+	//Load screen painting FBO
+	unsigned int paintingFBO = load.getPaintingFBO(windowData,screenPaintingReturnData.normalId);
+	//
+	glm::mat4 perspectiveProjection = render.setMatrices();
+
+
 
 
 
@@ -320,7 +285,6 @@ bool LigidPainter::run()
 	ui.sendProgramsToUserInterface(programs);
 	render.sendProgramsToRender(programs);
 	txtr.sendProgramsToTextures(programs);
-
 	//--Send max window size
 	callback.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	ui.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
@@ -328,70 +292,49 @@ bool LigidPainter::run()
 	render.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	txtr.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 
+
+
 	glUseProgram(programs.iconsProgram);
 	glset.uniform1i(programs.iconsProgram, "icon", 6);
 	glUseProgram(programs.uiProgram);
-
 	glm::vec3 textClr = glm::vec3(colorData.textColor);
 	glset.uniform3fv(programs.uiProgram,"textColor",textClr);
 	glset.uniform1i(programs.uiProgram, "text", 2);
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 
-
-	glset.enable(GL_BLEND);
-	glDepthFunc(GL_LESS);
-	glset.enable(GL_DEPTH_TEST);
-	glset.enable(GL_MULTISAMPLE);
-
-
-	glm::mat4 perspectiveProjection = render.setMatrices();
-
-
-	float brushSize;
 	ExportData exportData;
-
 	PBRShaderData pbrShaderData;
 	SkyBoxShaderData skyBoxShaderData;
 	ScreenDepthShaderData screenDepthShaderData;
 	AxisPointerShaderData axisPointerShaderData;
-	//OutShaderData outShaderData; = global
-
-
-	//Process the default mask brush
-	glfwGetWindowSize(window, &screenWidth, &screenHeight);
-	txtr.updateMaskTexture(FBOScreen, screenWidth, screenHeight, UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
-
-
-	panelData.modelPanelActive = true; //Active the model panel by default
-
-	ViewUpdateData viewUpdateData;
-
-
+	//
 	pbrShaderData.bluryskybox = 13;
 	pbrShaderData.depthTexture = 9;
 	pbrShaderData.materialDiffuse = 0;
 	pbrShaderData.mirroredDepthTexture = 8;
 	pbrShaderData.mirroredScreenMaskTexture = 3;
 	pbrShaderData.screenMaskTexture = 4;
-
+	//
 	skyBoxShaderData.skybox = 13;
 	skyBoxShaderData.projection = perspectiveProjection;
-
+	//
 	axisPointerShaderData.projection = perspectiveProjection;
 
-	bool paintRender = false;
-	int paintRenderCounter = 0;
-
-
-	double mouseDrawingPosX = 0;
-	double mouseDrawingPosY = 0;
-		
-	bool doChangeStateOfTheAddNodeContextBar = true;
 
 
 	renderData.window = window;
+	panelData.modelPanelActive = true; //Active the model panel by default
+
+
+	bool paintRender = false;
+	int paintRenderCounter = 0;
+	ViewUpdateData viewUpdateData;
+	double mouseDrawingPosX = 0;
+	double mouseDrawingPosY = 0;
+	bool doChangeStateOfTheAddNodeContextBar = true;
+	float brushSize;
+
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
@@ -655,7 +598,7 @@ bool LigidPainter::run()
 			mouseDrawingPosY = mouseYpos;
 
 			//Paint
-			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,useNegativeForDrawing,brushValChanged,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view);
+			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view);
 			paintRenderCounter++;
 			if(paintRenderCounter == 50000){
 				paintRender = true;
@@ -694,9 +637,8 @@ bool LigidPainter::run()
 
 
 
-		if (mousePosChanged) { //To make sure painting done before changing camera position
 			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel,coloringPanel);
-		}
+
 
 		mirrorClick = false;
 
@@ -714,6 +656,7 @@ bool LigidPainter::run()
 		if(renderTheScene)
 			glfwSwapBuffers(window);
 
+		const int renderingThreshold = 120;
 		if(renderTheSceneCounter == renderingThreshold)
 			renderTheScene = false;
 
@@ -781,6 +724,7 @@ bool LigidPainter::run()
 
 //-------------CALLBACK-------------\\
 
+bool caps = false; //GLFW_MOD_CAPS_LOCK
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//TODO : Dynamic textbox
 
@@ -863,12 +807,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	//Ctrl + x use negative checkbox
 	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_X,0,0) && panelData.paintingPanelActive && action == 1 && shiftTabAltRelease){
-		if(useNegativeForDrawing){
-			useNegativeForDrawing = false;
-		}
-		else{
-			useNegativeForDrawing = true;
-		}
+		UIElements[UIuseNegativeCheckBox].checkBox.checked = !UIElements[UIuseNegativeCheckBox].checkBox.checked;
 	}
 
 	//Ctrl + h change texture demonstrator's state
@@ -917,7 +856,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	renderTheSceneCounter = 0;
 
 	UiActions uiAct; 
-	mousePosChanged = true;
 	mouseXpos = xpos;
 	mouseYpos = ypos;
 	double xOffset;
@@ -1068,6 +1006,7 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 
 //---------OTHER---------\\
 
+glm::vec3 holdCameraPos; //Used to detect the camera position change
 void updateCameraPosChanging(){
 	if (callbackData.cameraPos != holdCameraPos) {
 		cameraPosChanging = true;
@@ -1251,17 +1190,13 @@ void LigidPainter::exportFileNameTextBox() {
 
 }
 void LigidPainter::exportExtJPGCheckBox() {
-	if (jpgFormatChecked == false) {
-		jpgFormatChecked = true;
-		pngFormatChecked = false;
+	if (!UIElements[UIjpgCheckBox].checkBox.checked) {
 		UIElements[UIjpgCheckBox].checkBox.checked = true;
 		UIElements[UIpngCheckBox].checkBox.checked = false;
 	}
 }
 void LigidPainter::exportExtPNGCheckBox() {
-	if (pngFormatChecked == false) {
-		pngFormatChecked = true;
-		jpgFormatChecked = false;
+	if (!UIElements[UIpngCheckBox].checkBox.checked) {
 		UIElements[UIpngCheckBox].checkBox.checked = true;
 		UIElements[UIjpgCheckBox].checkBox.checked = false;
 	}

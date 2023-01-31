@@ -824,7 +824,7 @@ public:
 		return prefilterMap;
 	}
 
-	NodeScene getDefaultNodeScene(std::vector<NodeScene> &nodeScenes,std::vector<Node> appNodes,const char* name){
+	void getDefaultNodeScene(std::vector<NodeScene> &nodeScenes,std::vector<Node> appNodes,const char* name){
 		std::vector<Node> mainOutNodes;
 		mainOutNodes = createOutputNode(appNodes);		
 

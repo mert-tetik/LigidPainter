@@ -735,12 +735,6 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 }
 
 
-
-
-void UserInterface::setViewportBgColor() {
-	glClearColor(colorD.viewportBackColor.x, colorD.viewportBackColor.y, colorD.viewportBackColor.z, 1.0f);
-}
-
 std::map<char, character> characters;
 int textCursorPhaseCounter = 0;
 

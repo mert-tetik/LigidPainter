@@ -202,7 +202,6 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 	glUseProgram(programs.uiProgram);
 
 
-	ui.setViewportBgColor();
 	glset.bindFramebuffer(0);
 	glViewport(-(maxScreenWidth - screenSize_x)/2, -(maxScreenHeight - screenSize_y), maxScreenWidth, maxScreenHeight);
 

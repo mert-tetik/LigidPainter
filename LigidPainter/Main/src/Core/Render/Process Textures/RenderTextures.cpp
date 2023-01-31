@@ -73,7 +73,6 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 
 
 		UserInterface ui;
-		ui.setViewportBgColor();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		unsigned int chosenTxtr = 0;
@@ -131,7 +130,6 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		gl.viewport(1920, 1080);
 		gl.bindFramebuffer(FBOScreen);
 
-		ui.setViewportBgColor();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		gl.uniform1i(programs.outProgram,"renderPaintedTxtrMask",0);
 		//Render painted image
