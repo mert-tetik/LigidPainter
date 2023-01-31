@@ -31,7 +31,24 @@ void main() {
                if(drawBrushIndicator == 1)
                {
                   //Brush indicator here
-                  color = vec4(uiColor.rgb, max(texture(modifiedMaskTexture, TexCoords)/3.0,0.0)); 
+                  float maskTxtr = max(texture(modifiedMaskTexture, TexCoords),0.0).r;
+                  
+                  const float thickness = 0.02;
+
+                  float maskTxtrLeft = max(texture(modifiedMaskTexture, TexCoords - vec2(thickness,0)),0.0).r;
+                  float maskTxtrRight = max(texture(modifiedMaskTexture, TexCoords + vec2(thickness,0)),0.0).r;
+                  float maskTxtrTop = max(texture(modifiedMaskTexture, TexCoords - vec2(0,thickness)),0.0).r;
+                  float maskTxtrBot = max(texture(modifiedMaskTexture, TexCoords + vec2(0,thickness)),0.0).r;
+                  
+                  float maskResult = 0;
+                  
+                  if(maskTxtr > 0.02){
+                     if(maskTxtrLeft < 0.02 || maskTxtrRight < 0.02 || maskTxtrTop < 0.02 || maskTxtrBot < 0.02){
+                        maskResult = 1.0;
+                     }
+                  }
+
+                  color = vec4(uiColor.rgb, maskResult); 
                }
                else
                {

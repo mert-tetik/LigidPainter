@@ -319,6 +319,8 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
 	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos);
 	
+	if(renderData.doPainting)
+		renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorPicker.pickerValue,renderMaxScreenWidth,renderMaxScreenHeight,renderPrograms);
 
 	renderAxisPointer(axisPointerShaderData,renderPrograms);
 	uiOut = renderUi(panelData, renderData, FBOScreen,icons
@@ -340,9 +342,6 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	if(colorPicker.dropperActive || colorPicker.saturationValueBoxHover || colorPicker.hueValueBarHover){
 		screenHoverPixel = getScreenHoverPixel(mouseXpos,mouseYpos,screenSizeY);
 	}
-
-	if(renderData.doPainting)
-		renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorPicker.pickerValue,renderMaxScreenWidth,renderMaxScreenHeight,renderPrograms);
  
 	RenderOutData renderOut;
 	renderOut.mouseHoverPixel = screenHoverPixel;

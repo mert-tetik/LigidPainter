@@ -16,7 +16,6 @@
 #include "Core/Render/Render.h"
 #include "Core/Load.hpp"
 
-
 Programs uiPrograms;
 
 ColorData colorD;
@@ -117,7 +116,7 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	glset.uniform1i(uiPrograms.uiProgram, "isUiTextureUsed", 0);
 }
 
-void UserInterface::panel(float panelLoc, Icons icons) {
+void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
 	GlSet glset;
 
 	const float panelWidth = 0.2f;
@@ -155,12 +154,15 @@ void UserInterface::panel(float panelLoc, Icons icons) {
 	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.567f,0.6f,icons.Export,0,colorD.iconColor,colorD.iconColor);
 
 	glUseProgram(uiPrograms.uiProgram);
+	
 	//Barriers
-	box(panelWidth*1.2, cornerWidth*2, panelLoc + panelWidth + cornerWidth, panelHeigth + cornerWidth*2, "", glm::vec4(0), 0.022f, false, false, 1.f, 10000, glm::vec4(0), 0);
-	box(panelWidth*1.2, cornerWidth*2, panelLoc + panelWidth + cornerWidth, -panelHeigth - cornerWidth*2, "", glm::vec4(0), 0.022f, false, false, 1.f, 10000, glm::vec4(0), 0);
+	if(panelData.texturePanelActive){
+		box(panelWidth*1.2, cornerWidth*2, panelLoc + panelWidth + cornerWidth, panelHeigth + cornerWidth*2, "", glm::vec4(0), 0.022f, false, false, 1.f, 10000, glm::vec4(0), 0);
+		box(panelWidth*1.2, cornerWidth*2, panelLoc + panelWidth + cornerWidth, -panelHeigth - cornerWidth*2, "", glm::vec4(0), 0.022f, false, false, 1.f, 10000, glm::vec4(0), 0);
+	}
 
 }
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -260,7 +262,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
 				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		upBotDifMin*10			,0,0,0  // top left
 			};
-			if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false)){
+			if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false) && !clringPanel.active && !txtrCreatingPanel.active){
 				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
 				if(firstClick){
 					glActiveTexture(GL_TEXTURE0);
@@ -285,7 +287,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 			glUseProgram(programs.uiProgram);
 
-			renderText(programs.uiProgram,albedoTextures[i].name,position_x- textureWidth ,position_y - textureWidth*2.5,0.00022f,colorData.textColor,panelZ+0.02f,false);
+			renderText(programs.uiProgram,albedoTextures[i].name,position_x- textureWidth ,position_y - textureWidth*2.5,0.00017f,colorData.textColor,panelZ+0.02f,false);
 		}
 	}
 
@@ -393,7 +395,7 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 	const float boxWidth = 0.25f;
 
 
-	textureSelectionPanel.panelHover = isMouseOnButton(window,boxWidth,boxWidth,textureSelectionPanel.posX,textureSelectionPanel.posY,mouseXpos,mouseYpos,false);
+	textureSelectionPanel.panelHover = isMouseOnButton(window,boxWidth,boxWidth,textureSelectionPanel.posX - screenGapX,textureSelectionPanel.posY,mouseXpos,mouseYpos,false);
 	if(!textureSelectionPanel.panelHover){
 		textureSelectionPanel.active = false;
 	}
@@ -445,10 +447,11 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 			-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
 			-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0  // top left
 		};
-		if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false)){
+		if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2) - screenGapX,mouseYpos,buttonCoorSq,false)){
 			glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
 			if(glfwGetMouseButton(window,0) == GLFW_PRESS){
 				textureSelectionPanel.selectedIndex = i;
+				textureSelectionPanel.selectedTextureName = albedoTextures[i].name;
 				textureSelectionPanel.textureClicked = true;
 			}
 		}
@@ -836,7 +839,7 @@ void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Pr
 	const float nodePanelLeft = sndPanel + 0.037f;
 	const float nodePanelRight = mainPanelLoc - 0.037f;
 	const float nodePanelTop = -1.00f + height;
-	const float nodePanelZ = 0.0f;
+	const float nodePanelZ = 0.01f;
 	
 
 	std::vector<float> boxCoor{
@@ -1040,7 +1043,7 @@ void UserInterface::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
 	sendMaxWindowSizeToCalculationsAndMore(maxScreenWidth,maxScreenHeight);
 }
 
-void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,unsigned int FBOscreen,ColorPicker &colorPicker){
+void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,unsigned int FBOscreen,ColorPicker &colorPicker,float screenGapX){
 	const float depth = 0.8f;
 
 	const float panelWidth = 0.2f;
@@ -1053,13 +1056,13 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 
 	container(coloringPanel.panelPosX,coloringPanel.panelPosY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle);
 	
-	coloringPanel.panelHover = isMouseOnButton(window,panelWidth+0.03f,panelHeigth+0.06f,coloringPanel.panelPosX,coloringPanel.panelPosY,mouseXpos,mouseYpos,false);
+	coloringPanel.panelHover = isMouseOnButton(window,panelWidth+0.03f,panelHeigth+0.06f,coloringPanel.panelPosX - screenGapX,coloringPanel.panelPosY,mouseXpos,mouseYpos,false);
 	
-	if(coloringPanel.panelHover){
+	if(coloringPanel.panelHover && !coloringPanel.dropperActive){
 		coloringPanel.enteredOnce = true;
 	}
 	
-	if(!coloringPanel.panelHover && coloringPanel.enteredOnce){
+	if(!coloringPanel.panelHover && coloringPanel.enteredOnce && !coloringPanel.dropperActive){
 		coloringPanel.active = false;
 		coloringPanel.enteredOnce = false;
 	}
@@ -1089,7 +1092,7 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 	
 	box(0.04f, 0.03f, coloringPanel.panelPosX + 0.125f,coloringPanel.panelPosY+0.15f, coloringPanel.hexVal, colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, (float)coloringPanel.hexValTextboxActive);//Hex val textbox
 	
-	coloringPanel.hexValTextboxHover = isMouseOnButton(window,0.05f,0.03f, coloringPanel.panelPosX + 0.125f, coloringPanel.panelPosY + 0.15f,mouseXpos,mouseYpos,false);
+	coloringPanel.hexValTextboxHover = isMouseOnButton(window,0.05f,0.03f, coloringPanel.panelPosX + 0.125f - screenGapX, coloringPanel.panelPosY + 0.15f,mouseXpos,mouseYpos,false);
 
 	if(coloringPanel.hexValTextboxHover && firstClick){
 		coloringPanel.hexValTextboxActive = true;
@@ -1114,18 +1117,19 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 	iconBox(0.02,0.0364f,coloringPanel.panelPosX + 0.125f,coloringPanel.panelPosY+0.075f,0.91f,icons.Circle,0,glm::vec4(coloringPanel.result/255.f,1),glm::vec4(0));
 	
 
-	iconBox(0.02f,0.04f,coloringPanel.panelPosX + 0.18f, coloringPanel.panelPosY-0.18,0.9f,icons.dropperIcon,0,colorData.iconColor,colorData.iconColorHover);
-	coloringPanel.dropperHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX + 0.18f,coloringPanel.panelPosY-0.18,mouseXpos,mouseYpos,false);
+	iconBox(0.023f,0.0325f,coloringPanel.panelPosX + 0.18f, coloringPanel.panelPosY-0.18,0.9f,icons.dropperIcon,0,colorData.iconColor,colorData.iconColorHover);
+	coloringPanel.dropperHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX + 0.18f - screenGapX,coloringPanel.panelPosY-0.18,mouseXpos,mouseYpos,false);
 
 	if(coloringPanel.dropperHover && firstClick){
 		coloringPanel.dropperActive = true;
+		coloringPanel.enteredOnce = false;
 		colorPicker.dropperActive = true;
 	}
 	
 
 
-	coloringPanel.saturationValueBoxPointerHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX - 0.1f + coloringPanel.saturationValueBoxPosX,coloringPanel.panelPosY+coloringPanel.saturationValueBoxPosY,mouseXpos,mouseYpos,false);
-	coloringPanel.hueBarPointerHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX + 0.02f,coloringPanel.panelPosY + coloringPanel.hueBarPosX,mouseXpos,mouseYpos,false);
+	coloringPanel.saturationValueBoxPointerHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX - 0.1f + coloringPanel.saturationValueBoxPosX - screenGapX ,coloringPanel.panelPosY+coloringPanel.saturationValueBoxPosY,mouseXpos,mouseYpos,false);
+	coloringPanel.hueBarPointerHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX + 0.02f - screenGapX,coloringPanel.panelPosY + coloringPanel.hueBarPosX,mouseXpos,mouseYpos,false);
 
 
 
@@ -1172,7 +1176,7 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 	const float panelHeigth = 0.12f;
 
 	container(txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle);
-	txtrCreatingPanel.panelHover = isMouseOnButton(window,panelWidth+0.03f,panelHeigth+0.06f,txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY,mouseXpos,mouseYpos,false);
+	txtrCreatingPanel.panelHover = isMouseOnButton(window,panelWidth+0.03f,panelHeigth+0.06f,txtrCreatingPanel.panelPosX-screenGapX,txtrCreatingPanel.panelPosY,mouseXpos,mouseYpos,false);
 	
 	if(!txtrCreatingPanel.panelHover && !coloringPanel.panelHover){
 		txtrCreatingPanel.color = glm::vec3(0);
@@ -1184,7 +1188,7 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 	
 	renderText(programs.uiProgram,"Title :",txtrCreatingPanel.panelPosX - panelWidth,txtrCreatingPanel.panelPosY+0.12f,0.00022f,colorData.textColor,depth+0.01,false);
 	box(panelWidth - 0.02f, 0.03f, txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY+0.08f, txtrCreatingPanel.textBoxVal, colorData.textBoxColor, 0, true, false, depth+0.01f, 10, colorData.textBoxColorClicked, (float)txtrCreatingPanel.textBoxActive);
-	txtrCreatingPanel.textBoxHover = isMouseOnButton(window,panelWidth - 0.02f, 0.03f,txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY+0.08f,mouseXpos,mouseYpos,false);
+	txtrCreatingPanel.textBoxHover = isMouseOnButton(window,panelWidth - 0.02f, 0.03f,txtrCreatingPanel.panelPosX -screenGapX,txtrCreatingPanel.panelPosY+0.08f,mouseXpos,mouseYpos,false);
 
 	if(txtrCreatingPanel.textBoxHover && firstClick){
 		txtrCreatingPanel.textBoxActive = true;
@@ -1192,7 +1196,7 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 
 	renderText(programs.uiProgram,"Color :",txtrCreatingPanel.panelPosX - panelWidth,txtrCreatingPanel.panelPosY+0.02f,0.00022f,colorData.textColor,depth+0.01,false);
 	box(panelWidth - 0.02f, 0.03f, txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY-0.02f, "", glm::vec4(txtrCreatingPanel.color/255.f,1), 0, true, false, depth+0.01f, 10, glm::vec4(0), 0);
-	txtrCreatingPanel.colorBarHover = isMouseOnButton(window,panelWidth - 0.02f, 0.03f,txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY-0.02f,mouseXpos,mouseYpos,false);
+	txtrCreatingPanel.colorBarHover = isMouseOnButton(window,panelWidth - 0.02f, 0.03f,txtrCreatingPanel.panelPosX-screenGapX,txtrCreatingPanel.panelPosY-0.02f,mouseXpos,mouseYpos,false);
 
 	if(txtrCreatingPanel.colorBarHover && firstClick){
 		txtrCreatingPanel.coloringPanelActive = true;
@@ -1213,71 +1217,72 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 	}
 	
 	box(0.04f, 0.03f, txtrCreatingPanel.panelPosX-0.09,txtrCreatingPanel.panelPosY-0.1f, "Create", colorData.buttonColor, 0.03f, false, false, depth+0.01f, 10, colorData.buttonColorHover, txtrCreatingPanel.createButtonHover);
-	txtrCreatingPanel.createButtonHover = isMouseOnButton(window,0.04f, 0.03f, txtrCreatingPanel.panelPosX-0.09,txtrCreatingPanel.panelPosY-0.1f,mouseXpos,mouseYpos,false);
+	txtrCreatingPanel.createButtonHover = isMouseOnButton(window,0.04f, 0.03f, txtrCreatingPanel.panelPosX-0.09-screenGapX,txtrCreatingPanel.panelPosY-0.1f,mouseXpos,mouseYpos,false);
 
 	if(txtrCreatingPanel.createButtonHover && firstClick){
-		aTexture txtr;
-		glActiveTexture(GL_TEXTURE28);
+		if(txtrCreatingPanel.textBoxVal != ""){
+			aTexture txtr;
+			glActiveTexture(GL_TEXTURE28);
 
-		unsigned int texture;
-		glset.genTextures(texture);
-		glset.bindTexture(texture);
-		glset.texImage(nullptr,1080,1080,GL_RGB);
-		glset.generateMipmap();
+			unsigned int texture;
+			glset.genTextures(texture);
+			glset.bindTexture(texture);
+			glset.texImage(nullptr,1080,1080,GL_RGB);
+			glset.generateMipmap();
 
-		unsigned int FBO;
-		glset.genFramebuffers(FBO);
-		glset.bindFramebuffer(FBO);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,  texture, 0);
+			unsigned int FBO;
+			glset.genFramebuffers(FBO);
+			glset.bindFramebuffer(FBO);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,  texture, 0);
 
-		glClearColor(txtrCreatingPanel.color.r/255.f,txtrCreatingPanel.color.g/255.f,txtrCreatingPanel.color.b/255.f,1);
-		glClear(GL_COLOR_BUFFER_BIT);
+			glClearColor(txtrCreatingPanel.color.r/255.f,txtrCreatingPanel.color.g/255.f,txtrCreatingPanel.color.b/255.f,1);
+			glClear(GL_COLOR_BUFFER_BIT);
 
-		glset.bindFramebuffer(0);
+			glset.bindFramebuffer(0);
 
-		glset.generateMipmap();
+			glset.generateMipmap();
 
-		glDeleteFramebuffers(1,&FBO);
-
-	
-		
+			glDeleteFramebuffers(1,&FBO);
 
 
-		//Rename if necessary
-		bool isTheSame = false;
-		for (size_t i = 0; i < albedoTextures.size(); i++)
-		{
-			if(albedoTextures[i].name == txtrCreatingPanel.textBoxVal){
-				isTheSame = true;
-			}
-		}
-
-		if(isTheSame){
-			for (size_t i = 0; i < 1000; i++)
+			//Rename if necessary
+			bool isTheSame = false;
+			for (size_t i = 0; i < albedoTextures.size(); i++)
 			{
-				bool matched = false;
-				for (size_t txtrI = 0; txtrI < albedoTextures.size(); txtrI++)
+				if(albedoTextures[i].name == txtrCreatingPanel.textBoxVal){
+					isTheSame = true;
+				}
+			}
+
+			if(isTheSame){
+				for (size_t i = 0; i < 1000; i++)
 				{
-					if(albedoTextures[txtrI].name == txtrCreatingPanel.textBoxVal + '(' + std::to_string(i) + ')'){
-						matched = true;
+					bool matched = false;
+					for (size_t txtrI = 0; txtrI < albedoTextures.size(); txtrI++)
+					{
+						if(albedoTextures[txtrI].name == txtrCreatingPanel.textBoxVal + '(' + std::to_string(i) + ')'){
+							matched = true;
+						}
+					}
+					if(!matched){
+						txtrCreatingPanel.textBoxVal += '(' + std::to_string(i) + ')';
+						break;
 					}
 				}
-				if(!matched){
-					txtrCreatingPanel.textBoxVal += '(' + std::to_string(i) + ')';
-					break;
-				}
 			}
-			
+
+			txtr.id = texture;
+			txtr.name = txtrCreatingPanel.textBoxVal;
+
+			albedoTextures.push_back(txtr);
+
+			txtrCreatingPanel.textBoxVal = "texture";
+			txtrCreatingPanel.color = glm::vec3(0);
+			txtrCreatingPanel.active = false;
 		}
-		
-		txtr.id = texture;
-		txtr.name = txtrCreatingPanel.textBoxVal;
-
-		albedoTextures.push_back(txtr);
-
-		txtrCreatingPanel.textBoxVal = "texture";
-		txtrCreatingPanel.color = glm::vec3(0);
-		txtrCreatingPanel.active = false;
+		else{
+			alert("Warning! Title can not be empty.",200);
+		}
 	}
 }
 int uiLastTextBoxActiveChar = 0;

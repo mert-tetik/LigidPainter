@@ -24,6 +24,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	ColorData colorData;
 	Utilities util;
 
+	nodePanel.pointerCursor = false;
+
 	const float depth = 0.1f;
 
 	const float iconWidth = node.width/6.f;
@@ -70,7 +72,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 
     //Move the node if it's top bar is pressed
 	if(!anyConnectionPressed){
-		if(nodePanel.panelHover)
+		if(nodePanel.panelHover && !coloringPanel.active)
 			node.barHover = isMouseOnButton(window , node.width , iconWidth*2.f ,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - screenGap,(node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height + iconWidth*2.f,mouseX,mouseY,false);
 		else
 			node.barHover = false;
@@ -108,7 +110,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	iconBox(iconWidth , iconWidth*2.f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height + iconWidth*2.f, depth , icons.TR , 0 , node.upBarColor , node.backColor);
 	iconBox(iconWidth , iconWidth*2.f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width -iconWidth, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height - iconWidth*2.f, depth , icons.BL , 0 , node.backColor , node.backColor);
 	iconBox(iconWidth , iconWidth*2.f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height - iconWidth*2.f, depth , icons.BR , 0 , node.backColor , node.backColor);
-
 
 
 
@@ -171,7 +172,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		
         //Check if output pressed
 		if(!anyConnectionPressed){//Prevent multiple selection
-			if(nodePanel.panelHover)
+			if(nodePanel.panelHover && !coloringPanel.active)
 				node.outputs[i].connectionHover = isMouseOnButton(window , iconWidth/1.5f , iconWidth*1.5f  ,node.outputs[i].connectionPosX- screenGap,node.outputs[i].connectionPosY,mouseX,mouseY,false);
 			else
 				node.outputs[i].connectionHover = false;
@@ -273,7 +274,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		if(node.inputs[i].type == "vec3"){
 			nodeColor = colorData.vec3NodeInputColor;
 		}
-		if(nodePanel.panelHover)
+		if(nodePanel.panelHover && !coloringPanel.active)
 			node.inputs[i].connectionHover = isMouseOnButton(window,iconWidth/1.5f , iconWidth*1.5f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width - iconWidth*2.f - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+rangeBarCountInputs)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
 		else
 			node.inputs[i].connectionHover = false;
@@ -310,7 +311,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	//Delete the node
 	if(!node.isMainOut){
 		bool deleteButtonEnter = false;
-		if(nodePanel.panelHover)
+		if(nodePanel.panelHover && !coloringPanel.active)
 			deleteButtonEnter = isMouseOnButton(window,iconWidth, iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) + iconWidth*1.7f,mouseX,mouseY,false);
 		
 		if(deleteButtonEnter && firstClick){
@@ -376,8 +377,10 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			inputElementIndex++;
 			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].color/255.f,1),0,0,0,depth+0.01,8 / (node.width*6),node.backColor,0);///Bottom
 			bool colorInputHover = false; 
-			if(nodePanel.panelHover){
-				colorInputHover = isMouseOnButton(window,iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+			if(nodePanel.panelHover && !coloringPanel.active){
+				colorInputHover = isMouseOnButton(window,iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - screenGap, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+				if(colorInputHover)
+					nodePanel.pointerCursor = true;
 			}
 			if(colorInputHover && firstClick && !node.inputs[i].coloringPanelActivated){
 				node.inputs[i].coloringPanelActivated = true;
@@ -403,13 +406,19 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			inputElementIndex++;
 			
 			//Select texture
-			if(nodePanel.panelHover)
+			if(nodePanel.panelHover && !coloringPanel.active){
 				node.inputs[i].addTextureButtonHover = isMouseOnButton(window,iconWidth, iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+				if(node.inputs[i].addTextureButtonHover)
+					nodePanel.pointerCursor = true;
+			}
 			else
 				node.inputs[i].addTextureButtonHover = false;
 			//Remove texture
-			if(nodePanel.panelHover)
+			if(nodePanel.panelHover && !coloringPanel.active){
 				node.inputs[i].removeTextureButtonHover = isMouseOnButton(window,iconWidth, iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+				if(node.inputs[i].removeTextureButtonHover)
+					nodePanel.pointerCursor = true;
+			}
 			else
 				node.inputs[i].removeTextureButtonHover = false;
 			
@@ -427,6 +436,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			if(node.inputs[i].removeTextureButtonHover && firstClick){
 				material.stateChanged = true;
 				node.inputs[i].selectedTextureIndex = 10000;
+				node.inputs[i].selectedTextureName = "none";
 				node.inputs[i].selectedTexture = 0;
 			}
 
@@ -435,8 +445,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			if(textureSelectionPanel.active && textureSelectionPanel.textureClicked && node.inputs[i].textureSelectingState){
 				material.stateChanged = true;
 				node.inputs[i].selectedTextureIndex = textureSelectionPanel.selectedIndex;
+				node.inputs[i].selectedTextureName = textureSelectionPanel.selectedTextureName;
 				node.inputs[i].selectedTexture = albedoTextures[textureSelectionPanel.selectedIndex].id;
-
 
 				textureSelectionPanel.selectedIndex = 10000;
 				textureSelectionPanel.active = false;
@@ -445,12 +455,20 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 
 			//Select a texture
 			box(iconWidth/2.f,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,depth+0.01,8 / (node.width*6),node.backColor,0);
+			glUseProgram(programs.iconsProgram);
+			iconBox(iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+0.02,icons.AddTexture,0,colorData.iconColor,glm::vec4(0));
+			
 			//Remove texture
+			
+			glUseProgram(programs.uiProgram);
 			box(iconWidth/2.f,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+0.02,8 / (node.width*6),node.backColor,0);
+			glUseProgram(programs.iconsProgram);
+			iconBox(iconWidth/2,iconWidth,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+0.03,icons.X,0,colorData.iconColor,glm::vec4(0));
+			glUseProgram(programs.uiProgram);
 			
 			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.buttonColor,0,0,0,depth+0.01,8 / (node.width*6),node.backColor,0);///Bottom
 			
-			renderText(programs.uiProgram,"texture_" + std::to_string(node.inputs[i].selectedTextureIndex),(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.5f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+0.02,false);
+			renderText(programs.uiProgram,node.inputs[i].selectedTextureName,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.5f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/350.f,colorData.textColor,depth+0.02,false);
 		}
 
         //Render the range bars
@@ -509,12 +527,12 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				//Range bar
 				box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+0.01f,8 / (node.width*6),node.backColor,0);///Bottom
 				//Pointer
-				box(iconWidth/4.f,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + pointPosVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,depth+0.02f,8 / (node.width*6),node.backColor,0);///Top
+				box(iconWidth/4.f,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + pointPosVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,depth+0.02f,8 / (node.width*4.5),node.backColor,0);///Top
 
 				//TODO : Calculate the screen gap
         	    //Check if range bar pointer pressed
 				if(!anyPointerPressed){
-					if(nodePanel.panelHover)
+					if(nodePanel.panelHover && !coloringPanel.active)
 						isRangeBarPointerHover = isMouseOnButton(window , iconWidth , iconWidth*2.f ,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + pointPosVal - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
 					else
 						isRangeBarPointerHover = false;

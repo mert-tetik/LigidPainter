@@ -645,7 +645,7 @@ public:
 		mainOutNode.inputs.push_back(mainOutInput);
 		mainOutNode.isMainOut = true;
 		mainOutNode.positionX = 0;
-		mainOutNode.positionY = 0;
+		mainOutNode.positionY = -1.5;
 		mainOutNode.rangeBarCount = 0;
 		mainOutNode.upBarColor = glm::vec4(0,0,0,1);
 
@@ -658,7 +658,7 @@ public:
 		appNodes[0].outputs[0].connectionHover = false;
 
 		appNodes[0].positionX = -0.55;
-		appNodes[0].positionY = 0;
+		appNodes[0].positionY =-2.5;
 
 		result.push_back(appNodes[0]);
 

@@ -151,7 +151,7 @@ unsigned int GlSet::createProgram(std::string path){
 
 
 //------------Shaders------------
-unsigned int GlSet::createScreenFrameBufferObject() {
+unsigned int GlSet::createScreenFrameBufferObject(int maxScreenWidth,int maxScreenHeight) {
 	activeTexture(GL_TEXTURE5);
 	unsigned int FBO;
 	genFramebuffers(FBO);

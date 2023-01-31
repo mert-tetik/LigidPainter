@@ -344,7 +344,7 @@ bool LigidPainter::run()
 	delete(screenTexture);
 
 	//Create a framebuffer (Will be used to reading from screen)
-	FBOScreen = glset.createScreenFrameBufferObject();
+	FBOScreen = glset.createScreenFrameBufferObject(windowData.windowMaxWidth,windowData.windowMaxHeight);
 
 	
 	glset.enable(GL_BLEND);
@@ -699,7 +699,12 @@ bool LigidPainter::run()
 
 
 
-
+		if(!coloringPanel.active){
+			coloringPanel.panelHover = false;
+		}
+		if(!txtrCreatingPanel.active){
+			txtrCreatingPanel.panelHover = false;
+		}
 
 
 
@@ -914,7 +919,7 @@ bool LigidPainter::run()
 				float messageBoxButtonColor[3] = {colorData.messageBoxButtonColor.r,colorData.messageBoxButtonColor.g,colorData.messageBoxButtonColor.r};
 
 				//render the message box
-				int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,"LigidPainter will be closed. Do you want to proceed?",-0.21f,0.0f,messageBoxBackColor,messageBoxButtonColor,(float)windowData.windowMaxWidth, (float)screenWidth,programs.iconsProgram); //0 = Yes //1 = No //2 = None
+				int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,"LigidPainter will be closed. Do you want to proceed?",-0.21f,0.0f,messageBoxBackColor,messageBoxButtonColor,(float)windowData.windowMaxWidth, (float)screenWidth,programs.iconsProgram,icons,programs); //0 = Yes //1 = No //2 = None
 
 				//Process the message box input
 				if(result == 0 || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
@@ -1125,7 +1130,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	else if(textureDisplayer.buttonHover || callbackData.paintingPanelButtonEnter || callbackData.modelPanelButtonEnter || callbackData.exportPanelButtonEnter || callbackData.texturePanelButtonEnter || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover){
 		doPainting = false;
 	}
-	else if(nodePanel.panelHover || nodePanel.boundariesHover || nodePanel.boundariesPressed || sndPanel.panelHover){
+	else if(nodePanel.panelHover || nodePanel.boundariesHover || nodePanel.boundariesPressed || sndPanel.panelHover || coloringPanel.panelHover || txtrCreatingPanel.panelHover){
 		doPainting = false;
 	}
 	else if (hideCursor) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
@@ -1480,6 +1485,8 @@ void LigidPainter::exportDownloadButtonEnter() {
 }
 
 void LigidPainter::modelPanelButton() {
+	nodeScenes[selectedNodeScene].stateChanged = true;
+
 	panelData.modelPanelActive = true;
 	panelData.texturePanelActive = false;
 	panelData.paintingPanelActive = false;
@@ -1487,6 +1494,8 @@ void LigidPainter::modelPanelButton() {
 	doPainting = false;
 }
 void LigidPainter::texturePanelButton() {
+	nodeScenes[selectedNodeScene].stateChanged = true;
+
 	panelData.modelPanelActive = false;
 	panelData.texturePanelActive = true;
 	panelData.paintingPanelActive = false;
@@ -1505,6 +1514,8 @@ void LigidPainter::paintingPanelButton() {
 		ui.alert("Warning! There Are No Textures Selected.",100);
 }
 void LigidPainter::exportPanelButton() {
+	nodeScenes[selectedNodeScene].stateChanged = true;
+
 	panelData.modelPanelActive = false;
 	panelData.texturePanelActive = false;
 	panelData.paintingPanelActive = false;
@@ -1633,87 +1644,129 @@ void LigidPainter::nodePanelBoundaries(float yOffset,float screenHeight){
 }
 
 void LigidPainter::sndPanelMinusIcon(){
-	if(sndPanel.state == 0){
-		//Textures
-		unsigned int texture;
-		texture = albedoTextures[selectedAlbedoTextureIndex].id;
-		glDeleteTextures(1, &texture);
+	UserInterface ui;
 
-		albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
-	}
-	else if(sndPanel.state == 1){
-		//Materials
-		nodeScenes.erase(nodeScenes.begin() + selectedNodeScene);
-		modelMaterials.erase(modelMaterials.begin() + selectedNodeScene);
-	}
-}
-void LigidPainter::sndPanelPlusIcon(){
-	if(sndPanel.state == 0){
-		//Textures
+	if(!txtrCreatingPanel.active){
+		if(sndPanel.state == 0){
+			//Textures
+			if(albedoTextures.size()){
+				unsigned int texture;
+				texture = albedoTextures[selectedAlbedoTextureIndex].id;
+				glDeleteTextures(1, &texture);
 
-
-		txtrCreatingPanel.active = true;
-
-	}
-	else if(sndPanel.state == 1){
-		//Materials
-
-		ColorData colorData;
-		
-		std::vector<Node> mainOutNodes;
-		Load load;
-		mainOutNodes = load.createOutputNode(appNodes);		
-
-		NodeScene emptyNodeScene;
-		emptyNodeScene.index = 0;
-		
-		const int maxMaterialSize = 100;
-
-		for (int i = 0; i < maxMaterialSize; i++)
-		{
-			bool numberAvailable = false;
-			for (int nodeSceneIndex = 0; nodeSceneIndex < nodeScenes.size(); nodeSceneIndex++)
-			{
-				if(nodeScenes[nodeSceneIndex].index == i){
-					numberAvailable = true;
-				}
+				albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
+				if(selectedAlbedoTextureIndex)
+					selectedAlbedoTextureIndex--;
 			}
-			if(!numberAvailable){
-				emptyNodeScene.index = i;
-				break;
+			else{
+				ui.alert("Warning! Deleting request is ignored. There are no texture to delete.",200);
 			}
 		}
-		
-		emptyNodeScene.sceneName = "material_" + std::to_string(emptyNodeScene.index); 
-		emptyNodeScene.nodes = mainOutNodes;
-		nodeScenes.push_back(emptyNodeScene);
-		
-		MaterialOut mOut;
-		mOut.program = 0;
-		modelMaterials.push_back(mOut);
+		else if(sndPanel.state == 1){
+			//Materials
+			bool deletable = true;
+			if(nodeScenes.size() != 1){
+				for (size_t i = 0; i < model.meshes.size(); i++)
+				{
+					if(model.meshes[i].materialIndex == selectedNodeScene){
+						ui.alert("Warning! Deleting request is ignored. This material is already in use.",200);
+						deletable = false;
+						break;
+					}
+				}
+				if(deletable){
+					nodeScenes.erase(nodeScenes.begin() + selectedNodeScene);
+					modelMaterials.erase(modelMaterials.begin() + selectedNodeScene);
+					if(selectedNodeScene)
+						selectedNodeScene--;
+					for (size_t i = 0; i < model.meshes.size(); i++)
+					{
+						if(selectedNodeScene < model.meshes[i].materialIndex){
+							model.meshes[i].materialIndex--;
+						}
+					}
+					
+				}
+			}
+			else{
+				ui.alert("Warning! Deleting request is ignored. Last material can't be deleted.",200);
+			}
+		}
+	}
+
+}
+void LigidPainter::sndPanelPlusIcon(){
+	if(!txtrCreatingPanel.active){
+		if(sndPanel.state == 0){
+			//Textures
+
+
+			txtrCreatingPanel.active = true;
+
+		}
+		else if(sndPanel.state == 1){
+			//Materials
+
+			ColorData colorData;
+
+			std::vector<Node> mainOutNodes;
+			Load load;
+			mainOutNodes = load.createOutputNode(appNodes);		
+
+			NodeScene emptyNodeScene;
+			emptyNodeScene.index = 0;
+
+			const int maxMaterialSize = 100;
+
+			for (int i = 0; i < maxMaterialSize; i++)
+			{
+				bool numberAvailable = false;
+				for (int nodeSceneIndex = 0; nodeSceneIndex < nodeScenes.size(); nodeSceneIndex++)
+				{
+					if(nodeScenes[nodeSceneIndex].index == i){
+						numberAvailable = true;
+					}
+				}
+				if(!numberAvailable){
+					emptyNodeScene.index = i;
+					break;
+				}
+			}
+
+			emptyNodeScene.sceneName = "material_" + std::to_string(emptyNodeScene.index); 
+			emptyNodeScene.nodes = mainOutNodes;
+			nodeScenes.push_back(emptyNodeScene);
+
+			MaterialOut mOut;
+			mOut.program = 0;
+			modelMaterials.push_back(mOut);
+		}
 	}
 }
 void LigidPainter::sndPanelDownIcon(){
-	aTexture result;
+	if(!txtrCreatingPanel.active){
+		aTexture result;
 
-	glActiveTexture(GL_TEXTURE0);
-	unsigned int texture;
-	glset.genTextures(texture);
-	glset.bindTexture(texture);
+		glActiveTexture(GL_TEXTURE0);
+		unsigned int texture;
+		glset.genTextures(texture);
+		glset.bindTexture(texture);
 
-	//Load texture
-	Texture txtr;
-	//Filters
-	char const* lFilterPatterns[2] = { "*.jpg", "*.png" };
-	//File dialog
-	auto albedoPathCheck = tinyfd_openFileDialog("Select Image", "", 2, lFilterPatterns, "", false);
-	if (albedoPathCheck) {
-		std::string albedoTexturePath = albedoPathCheck;
-		txtr.getTexture(albedoTexturePath,1080,1080,true); //Force albedo's ratio to be 1:1
+		//Load texture
+		Texture txtr;
+		//Filters
+		char const* lFilterPatterns[2] = { "*.jpg", "*.png" };
+		//File dialog
+		auto albedoPathCheck = tinyfd_openFileDialog("Select Image", "", 2, lFilterPatterns, "", false);
+		
+		if (albedoPathCheck) {
+			std::string albedoTexturePath = albedoPathCheck;
+			txtr.getTexture(albedoTexturePath,1080,1080,true); //Force albedo's ratio to be 1:1
+			result.id = texture;
+			result.name = "texture_" + std::to_string(albedoTextures.size()); 
+			albedoTextures.push_back(result);
+		}
 	}
-	result.id = texture;
-	result.name = "texture_" + std::to_string(albedoTextures.size()); 
-	albedoTextures.push_back(result);
 }
 
 //-----------------------------PREPARE STRUCTS-----------------------------\\

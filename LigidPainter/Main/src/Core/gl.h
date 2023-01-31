@@ -46,7 +46,7 @@ public:
 	void blendFunc(unsigned int sfactor, unsigned int dfactor);
 
 	WindowData getWindow();
-	unsigned int createScreenFrameBufferObject();
+	unsigned int createScreenFrameBufferObject(int maxScreenWidth,int maxScreenHeight);
 
 	unsigned int createProgram(std::string path);
 

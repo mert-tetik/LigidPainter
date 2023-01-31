@@ -12,7 +12,7 @@ bool noButtonClickMsgBox = true;
 bool clickTakenMsgBox = false;
 
 
-int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcursor* defaultCursor,GLFWcursor* buttonHoverCursor,unsigned int icon,unsigned int uiProgram,const char * text, float textXpos,float textYpos,float backColor[3],float buttonColor[3],float renderMaxScreenWidth,float screenSizeX,unsigned int iconsProgram){
+int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcursor* defaultCursor,GLFWcursor* buttonHoverCursor,unsigned int icon,unsigned int uiProgram,const char * text, float textXpos,float textYpos,float backColor[3],float buttonColor[3],float renderMaxScreenWidth,float screenSizeX,unsigned int iconsProgram,Icons icons,Programs programs){
     UserInterface ui;
 	ColorData colorData;
 	int result = 2;
@@ -32,19 +32,10 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
 
 	float screenGapX = ((float)renderMaxScreenWidth - (float)screenSizeX)/(((float)renderMaxScreenWidth)/2.0f)/2.0f; 
 
-	glUseProgram(uiProgram);
 
-	//Panel
-	ui.box(0.00f, 0.04f, -0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.899f, 7, backColorVec, 0);
-	ui.box(0.00f, 0.04f, 0.25f, -0.25f, "", backColorVec, 0.022f, false, false, 0.899f, 7, backColorVec, 0);
-	ui.box(0.00f, 0.04f, -0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.899f, 7, backColorVec, 0);
-	ui.box(0.00f, 0.04f, 0.25f, 0.25f, "", backColorVec, 0.022f, false, false, 0.899f, 7, backColorVec, 0);
-	ui.box(0.25f, 0.25f, 0.0f, 0.0f, "", backColorVec, 0.022f, false, false, 0.899f, 10000, backColorVec, 0);
-	ui.box(0.25f, 0.05f, 0.0f, -0.24f, "", backColorVec, 0.022f, false, false, 0.899f, 10000, backColorVec, 0);
-	ui.box(0.25f, 0.05f, 0.0f, +0.24f, "", backColorVec, 0.022f, false, false, 0.899f, 10000, backColorVec, 0);
-	ui.box(0.03f, 0.25f, -0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.899f, 10000, backColorVec, 0);
-	ui.box(0.03f, 0.25f, +0.242f, 0.0f, "", backColorVec, 0.022f, false, false, 0.899f, 10000, backColorVec, 0);
 
+	ui.container(+0.f, 0.f,0.899f,0.25f, 0.22f,backColorVec,programs,icons.Circle);
+	glUseProgram(programs.uiProgram);
 				
 	//Buttons
 	ui.box(0.04f, 0.04f, -0.1f, -0.15f, "Yes", buttonColorVec, 0.015f, false, false, 0.8999f, 10, buttonColorVec, 0);//Load model button

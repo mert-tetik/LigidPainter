@@ -291,11 +291,13 @@ struct NodePanel{
 	bool boundariesHover;
 	bool boundariesPressed;
 
-	float zoomVal = 1.0f;
+	float zoomVal = 0.5f;
 	bool zoomValChanged = false;
 
 	float panelPositionX = 0.0;
 	float panelPositionY = 0.0;
+
+	bool pointerCursor = false;
 };
 
 struct NodeInput{
@@ -313,6 +315,7 @@ struct NodeInput{
 	bool addTextureButtonHover;
 	bool removeTextureButtonHover;
 	int selectedTextureIndex = 10000;
+	std::string selectedTextureName = "none";
 	unsigned int selectedTexture = 0;
 
 	//Color element
@@ -425,6 +428,7 @@ struct TextureSelectionPanel{
 	bool active;
 
 	int selectedIndex = 10000;
+	std::string selectedTextureName = "";
 
 	bool panelHover = false;
 
@@ -493,8 +497,8 @@ public:
 
 
 	//Visuality
-	void panel(float panelLoc, Icons icons);
-	void sndPanel(int state,float panelLoc , Programs programs , Icons icons , std::vector<aTexture> &albedoTextures,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth,int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick);
+	void panel(float panelLoc, Icons icons,PanelData panelData);
+	void sndPanel(int state,float panelLoc , Programs programs , Icons icons , std::vector<aTexture> &albedoTextures,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth,int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel);
 	void nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,Icons icons,std::vector<NodeScene> nodeScenes,int selectedNodeScene);
 	void nodePanelBarriers(float mainPanelLoc,float sndPanel, float height);
 
@@ -519,7 +523,7 @@ public:
 	void renderAlert(std::string message,int duration,unsigned int uiProgram,int state);
 	void alert(std::string message,int duration);
 	void coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,
-	unsigned int FBOscreen,ColorPicker &colorPicker);
+	unsigned int FBOscreen,ColorPicker &colorPicker,float screenGapX);
 	void textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool firstClick,ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures);
 
 

@@ -175,10 +175,11 @@ vec3 getRealisticResult(){
     vec3 N = texture(input_3, tex_coords).rgb;
     N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
 
-
-
     vec3 V = normalize(tangentViewPos - tangentPosModel);
-    vec3 R = reflect(-V, N); 
+
+    vec3 unTV = normalize(viewPos - posModel);
+    
+    vec3 R = reflect(-unTV, normalize(normal)); 
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
@@ -270,8 +271,11 @@ void main() {
     float alpha = texture2D(input_7,tex_coords).r;
     
     float emissionStr = texture2D(input_6,tex_coords).r;
-    
     vec3 emission = texture2D(input_5,tex_coords).rgb;
+
+    float maxRG = max(emission.r , emission.g);
+    emissionStr = emissionStr * max(maxRG,emission.b);
+    emissionStr = sqrt(emissionStr);
     
     output_0 = vec4(mix(result,emission,emissionStr),alpha);
 }
