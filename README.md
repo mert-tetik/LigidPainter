@@ -3,7 +3,8 @@
 <img src="https://raw.githubusercontent.com/mert-tetik/LigidPainter/main/LigidPainter/Main/src/.gh_resources/logo-1080x.png" width="200" alt="Ligid Painter Logo"><br><br>
 
 **LigidPainter**  is a free 3D painting software.
-<img src="https://raw.githubusercontent.com/mert-tetik/LigidPainter/main/LigidPainter/Main/src/.gh_resources/ligidPainterSS.jpg" width="400" height="225" alt="LigidPainterSS"><br><br>
+
+<br><br><img src="https://raw.githubusercontent.com/mert-tetik/LigidPainter/main/LigidPainter/Main/src/.gh_resources/ligidPainterSS.jpg" width="600" height="337" alt="LigidPainterSS"><br><br>
 
 ## Notes
 Official website : https://www.ligidtools.com/ligidpainter
