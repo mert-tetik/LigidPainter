@@ -110,10 +110,7 @@ void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int sel
 	Texture txtr;
 	GlSet glset;
 
-	
-
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ && albedoTextures[selectedAlbedoTextureIndex].undoList.size() != 0) { //MAX 20
-		
+	if ((glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ && albedoTextures[selectedAlbedoTextureIndex].undoList.size() != 0) && albedoTextures.size()) { //MAX 20
 		//Refresh the screen mask texture (Prevent bugs where might be accur trying undo while in the middle of painting)
 		txtr.refreshScreenDrawingTexture();
 		
@@ -129,8 +126,8 @@ void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int sel
 		doCtrlZ = false;
 
 	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) {
-		doCtrlZ = true   ;
+	if ((glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) && albedoTextures.size()) {
+		doCtrlZ = true;
 	}
 }
 //------------CtrlZ------------
