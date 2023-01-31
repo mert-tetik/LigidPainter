@@ -823,6 +823,21 @@ public:
 		//Return the cube map
 		return prefilterMap;
 	}
+
+	NodeScene getDefaultNodeScene(std::vector<NodeScene> &nodeScenes,std::vector<Node> appNodes,const char* name){
+		std::vector<Node> mainOutNodes;
+		mainOutNodes = createOutputNode(appNodes);		
+
+		NodeScene emptyNodeScene;
+		emptyNodeScene.index = 0;
+		emptyNodeScene.sceneName = name;
+		emptyNodeScene.nodes = mainOutNodes;
+		emptyNodeScene.stateChanged = true;
+		nodeScenes.push_back(emptyNodeScene);
+	}
+	unsigned int getPaintingFBO(WindowData windowData){
+
+	}
 };
 
 

@@ -267,6 +267,8 @@ bool LigidPainter::run()
 	//Changes clearColor
 	ui.setViewportBgColor();
 	
+
+	
 	Load load;
 	programs = load.getProgram();
 	//Load nodes
@@ -292,17 +294,9 @@ bool LigidPainter::run()
 	addNodeContextMenu = ui.createContextMenus(appNodes);
 	//Load the prefilter map
 	load.createPrefilterMap(programs,cubemaps,windowData);
-	
-	std::vector<Node> mainOutNodes;
-	mainOutNodes = load.createOutputNode(appNodes);		
-
-	NodeScene emptyNodeScene;
-	emptyNodeScene.index = 0;
-	emptyNodeScene.sceneName = "material_0";
-	emptyNodeScene.nodes = mainOutNodes;
-	emptyNodeScene.stateChanged = true;
-	nodeScenes.push_back(emptyNodeScene);
-
+	//Create the default node scene(material)
+	load.getDefaultNodeScene(nodeScenes,appNodes,"material_0");
+	//Create the default material out (for model)
 	MaterialOut mOut;
 	mOut.program = 0;
 	modelMaterials.push_back(mOut);
@@ -310,19 +304,17 @@ bool LigidPainter::run()
 
 
 	//Send some data to related cpp files
-	//Send programs struct
+	//--Send programs struct
 	ui.sendProgramsToUserInterface(programs);
 	render.sendProgramsToRender(programs);
 	txtr.sendProgramsToTextures(programs);
-	
-	//Send max window size
+
+	//--Send max window size
 	callback.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	ui.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	uiAct.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	render.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	txtr.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
-
-	renderData.window = window;
 
 	glUseProgram(programs.iconsProgram);
 	glset.uniform1i(programs.iconsProgram, "icon", 6);
@@ -372,6 +364,7 @@ bool LigidPainter::run()
 	panelData.modelPanelActive = true; //Active the model panel by default
 
 	ViewUpdateData viewUpdateData;
+
 
 	//Framebuffer used in drawToScreen.cpp
 	unsigned int paintingFBO;
@@ -424,6 +417,7 @@ bool LigidPainter::run()
 	glset.bindTexture(BRDFTexture);
 
 
+	renderData.window = window;
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
