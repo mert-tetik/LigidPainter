@@ -140,7 +140,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-void updateCameraPosChanging();
 RenderData updateRenderData(RenderData renderData, unsigned int depthTexture, int brushSizeIndicatorSize);
 
 //--------Functions--------\\
@@ -335,7 +334,7 @@ bool LigidPainter::run()
 	bool doChangeStateOfTheAddNodeContextBar = true;
 	float brushSize;
 
-
+	MainLoop mainLoop;
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		
@@ -343,6 +342,7 @@ bool LigidPainter::run()
 		glfwSwapInterval(1);
 
 		//util.printRenderingSpeed();
+		util.printError();
 
 		//Check if camera pos changed
 		updateCameraPosChanging();
@@ -350,20 +350,7 @@ bool LigidPainter::run()
 		renderTheSceneCounter++;
 
 
-		if(glfwGetMouseButton(window, 0) == GLFW_PRESS){
-			if(!mousePress){
-				firstClick = true;
-			}
-			else{
-				firstClick = false;
-			}
-			mousePress = true;
-		}
-		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
-			firstClick = false;
-			mousePress = false;
-		}
-
+		mainLoop.detectClick(window,mousePress,firstClick);
 
 
 
@@ -403,27 +390,6 @@ bool LigidPainter::run()
 
 		ui.sendTextBoxActiveCharToUI(textBoxActiveChar);
 
-
-		GLenum err;
-		while((err = glGetError()) != GL_NO_ERROR)
-		{
-		  	if(err == GL_INVALID_ENUM){
-				std::cout << "ERROR : GL_INVALID_ENUM";
-		  	}
-		  	if(err == GL_INVALID_VALUE){
-				std::cout << "ERROR : GL_INVALID_VALUE";
-			}
-			if(err == GL_INVALID_OPERATION){
-				std::cout << "ERROR : GL_INVALID_OPERATION";
-			}
-			if(err == GL_OUT_OF_MEMORY){
-				std::cout << "ERROR : GL_OUT_OF_MEMORY";
-			}
-			if(err == GL_INVALID_FRAMEBUFFER_OPERATION){
-				std::cout << "ERROR : GL_INVALID_FRAMEBUFFER_OPERATION";
-			}
-			std::cout << '\n';
-		}
 
 		//Release textboxes
 		const bool deactivatingTextBoxesCondition = glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS; 
@@ -1005,15 +971,6 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 
 
 //---------OTHER---------\\
-
-glm::vec3 holdCameraPos; //Used to detect the camera position change
-void updateCameraPosChanging(){
-	if (callbackData.cameraPos != holdCameraPos) {
-		cameraPosChanging = true;
-	}
-	holdCameraPos = callbackData.cameraPos;
-}
-
 
 void LigidPainter::updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatVal,float &hueValue,float &saturationValuePosX, float &saturationValuePosY,bool isMainColorPicker){
 	int width;

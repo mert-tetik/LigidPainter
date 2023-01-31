@@ -244,3 +244,26 @@ float Utilities::keepTheRatio(double value1,double value2, double desiredRatio){
 
 	return result;
 }
+
+void Utilities::printError(){
+	GLenum err;
+	while((err = glGetError()) != GL_NO_ERROR)
+	{
+	  	if(err == GL_INVALID_ENUM){
+			std::cout << "ERROR : GL_INVALID_ENUM";
+	  	}
+	  	if(err == GL_INVALID_VALUE){
+			std::cout << "ERROR : GL_INVALID_VALUE";
+		}
+		if(err == GL_INVALID_OPERATION){
+			std::cout << "ERROR : GL_INVALID_OPERATION";
+		}
+		if(err == GL_OUT_OF_MEMORY){
+			std::cout << "ERROR : GL_OUT_OF_MEMORY";
+		}
+		if(err == GL_INVALID_FRAMEBUFFER_OPERATION){
+			std::cout << "ERROR : GL_INVALID_FRAMEBUFFER_OPERATION";
+		}
+		std::cout << '\n';
+	}
+}

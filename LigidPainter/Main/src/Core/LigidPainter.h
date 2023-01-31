@@ -174,6 +174,10 @@ class Sphere {
 public:
 	std::vector<float> getSphere();
 };
+class MainLoop{
+public:
+	void detectClick(GLFWwindow* window,bool &mousePress,bool &firstClick);
+};
 class LigidPainter {
 public:
 	bool run();
