@@ -106,7 +106,7 @@ ViewUpdateData Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos
 
 //------------CtrlZ------------
 bool doCtrlZ;
-void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex) {
+void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes) {
 	Texture txtr;
 	GlSet glset;
 
@@ -117,6 +117,19 @@ void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int sel
 		//Bind the related texture
 		//glset.activeTexture(GL_TEXTURE0);
 		unsigned int currentTexture = albedoTextures[selectedAlbedoTextureIndex].id;
+		for (size_t sceneI = 0; sceneI < nodeScenes.size(); sceneI++)
+		{
+			for (size_t nodeI = 0; nodeI < nodeScenes[sceneI].nodes.size(); nodeI++)
+			{
+				for (size_t inI = 0; inI < nodeScenes[sceneI].nodes[nodeI].inputs.size(); inI++)
+				{
+					if(nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTexture == currentTexture){
+						nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTexture = albedoTextures[selectedAlbedoTextureIndex].undoList[albedoTextures[selectedAlbedoTextureIndex].undoList.size()-1];
+					}
+				}
+			}
+		}
+		
 		glDeleteTextures(1,&currentTexture);
 
 		albedoTextures[selectedAlbedoTextureIndex].id = albedoTextures[selectedAlbedoTextureIndex].undoList[albedoTextures[selectedAlbedoTextureIndex].undoList.size()-1];
@@ -125,6 +138,7 @@ void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int sel
 		albedoTextures[selectedAlbedoTextureIndex].undoList.pop_back();
 		doCtrlZ = false;
 
+		
 	}
 	if ((glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) && albedoTextures.size()) {
 		doCtrlZ = true;
@@ -330,7 +344,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	if (colorPicker.updatePickerVal) { //Get value of color box
 		colorPicker.pickerValue = getColorPickerValue(FBOScreen, colorPicker ,screenSizeX, screenSizeY,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,saturationValShaderData);
 	}
-	ctrlZCheck(renderData.window,albedoTextures,selectedAlbedoTextureIndex);
+	ctrlZCheck(renderData.window,albedoTextures,selectedAlbedoTextureIndex,nodeScenes);
 
 
 

@@ -43,7 +43,6 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
 
 
 	bool resultYesHover = ui.isMouseOnButton(window, 0.05f, 0.04f, -0.1f, -0.15f, mouseXpos, mouseYpos, false);//Yes button hover
-	std::cout << resultYesHover;
 	bool resultNoHover = ui.isMouseOnButton(window, 0.05f, 0.04f,  +0.1f, -0.15f, mouseXpos, mouseYpos, false);//No button hover
 
 	//Make sure first click is done inside
