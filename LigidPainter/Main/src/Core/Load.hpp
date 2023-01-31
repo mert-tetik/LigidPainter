@@ -835,8 +835,27 @@ public:
 		emptyNodeScene.stateChanged = true;
 		nodeScenes.push_back(emptyNodeScene);
 	}
-	unsigned int getPaintingFBO(WindowData windowData){
+	unsigned int getPaintingFBO(WindowData windowData,unsigned int screenPaintingTexture){
+		GlSet glset;
 
+		//Framebuffer used in drawToScreen.cpp
+		unsigned int paintingFBO;
+		glset.genFramebuffers(paintingFBO);
+		glset.bindFramebuffer(paintingFBO);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,  screenPaintingTexture, 0);
+
+		unsigned int RBO;
+		glset.genRenderbuffers(RBO);
+		glset.bindRenderBuffer(RBO);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, windowData.windowMaxWidth, windowData.windowMaxHeight);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
+
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		glset.bindFramebuffer(0);
+		glset.bindRenderBuffer(0);
+
+		return paintingFBO;
 	}
 };
 

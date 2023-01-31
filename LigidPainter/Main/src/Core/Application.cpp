@@ -268,6 +268,11 @@ bool LigidPainter::run()
 	ui.setViewportBgColor();
 	
 
+	//Create screen painting mask Texture
+	GLubyte* screenTexture = new GLubyte[(windowData.windowMaxWidth) * (windowData.windowMaxHeight)];
+	ScreenPaintingReturnData screenPaintingReturnData; 
+	screenPaintingReturnData = txtr.createScreenPaintTexture(screenTexture,window);
+	delete[] screenTexture;
 	
 	Load load;
 	programs = load.getProgram();
@@ -294,6 +299,8 @@ bool LigidPainter::run()
 	addNodeContextMenu = ui.createContextMenus(appNodes);
 	//Load the prefilter map
 	load.createPrefilterMap(programs,cubemaps,windowData);
+	//Load screen painting FBO
+	unsigned int paintingFBO = load.getPaintingFBO(windowData,screenPaintingReturnData.normalId);
 	//Create the default node scene(material)
 	load.getDefaultNodeScene(nodeScenes,appNodes,"material_0");
 	//Create the default material out (for model)
@@ -327,12 +334,6 @@ bool LigidPainter::run()
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 
-	//Create screen painting mask Texture
-	GLubyte* screenTexture = new GLubyte[(windowData.windowMaxWidth) * (windowData.windowMaxHeight)];
-	ScreenPaintingReturnData screenPaintingReturnData; 
-	screenPaintingReturnData = txtr.createScreenPaintTexture(screenTexture,window);
-	delete(screenTexture);
-
 	//Create a framebuffer (Will be used to reading from screen)
 	FBOScreen = glset.createScreenFrameBufferObject(windowData.windowMaxWidth,windowData.windowMaxHeight);
 
@@ -364,26 +365,6 @@ bool LigidPainter::run()
 	panelData.modelPanelActive = true; //Active the model panel by default
 
 	ViewUpdateData viewUpdateData;
-
-
-	//Framebuffer used in drawToScreen.cpp
-	unsigned int paintingFBO;
-	glset.genFramebuffers(paintingFBO);
-	glset.bindFramebuffer(paintingFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,  screenPaintingReturnData.normalId, 0);
-
-	unsigned int RBO;
-	glset.genRenderbuffers(RBO);
-	glset.bindRenderBuffer(RBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, windowData.windowMaxWidth, windowData.windowMaxHeight);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
-
-	glClear(GL_DEPTH_BUFFER_BIT);
-
-	glset.bindFramebuffer(0);
-	glset.bindRenderBuffer(0);
-
-
 
 
 	pbrShaderData.bluryskybox = 13;
