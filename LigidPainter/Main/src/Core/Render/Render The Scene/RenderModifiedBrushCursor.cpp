@@ -30,8 +30,10 @@ void Render::renderModifiedBrushCursor(float distanceX,int screenWidth,int scree
 
 	glm::vec4 result = glm::vec4(color / glm::vec3(255.0f),0.2f);
 	glset.uniform4fv(programs.uiProgram, "uiColor", result);
+	glset.uniform1i(programs.uiProgram, "currentTexture", 0);
 
 	glset.drawArrays(paintingSquare, false);
+	
 
 	glset.uniform1i(programs.uiProgram, "drawBrushIndicator", 0);
 }

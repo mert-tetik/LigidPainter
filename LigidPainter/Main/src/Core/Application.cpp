@@ -292,6 +292,7 @@ bool LigidPainter::run()
 	emptyNodeScene.index = 0;
 	emptyNodeScene.sceneName = "material_0";
 	emptyNodeScene.nodes = mainOutNodes;
+	emptyNodeScene.stateChanged = true;
 	nodeScenes.push_back(emptyNodeScene);
 
 	MaterialOut mOut;
@@ -332,7 +333,6 @@ bool LigidPainter::run()
 
 	glset.uniform3fv(programs.uiProgram,"textColor",glm::vec3(colorData.textColor));
 	glset.uniform1i(programs.uiProgram, "text", 2);
-	glset.uniform1i(programs.uiProgram, "currentTexture", 0);
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
@@ -593,6 +593,8 @@ bool LigidPainter::run()
 			firstClick = false;
 			mousePress = false;
 		}
+
+
 
 
 		const bool mouseInputTaken = glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetMouseButton(window, 2) == GLFW_PRESS;   

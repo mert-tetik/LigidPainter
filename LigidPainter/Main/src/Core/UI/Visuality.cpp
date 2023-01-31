@@ -447,6 +447,7 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 			-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
 			-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0  // top left
 		};
+		glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,0);
 		if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2) - screenGapX,mouseYpos,buttonCoorSq,false)){
 			glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
 			if(glfwGetMouseButton(window,0) == GLFW_PRESS){

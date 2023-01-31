@@ -29,9 +29,11 @@ std::vector<float> renderVertices = {
 
 unsigned int lastProgram = 0;
 
-MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY){
+MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY,std::vector<Node>appNodes){
     MaterialOut resultOut;
-
+    if(lastProgram == 0){
+        lastProgram = appNodes[0].program;
+    }
     for (size_t i = 0; i < material.renderingPipeline.size(); i++)
     {
         //Removal of the previous output textures
