@@ -857,6 +857,37 @@ public:
 
 		return paintingFBO;
 	}
+	unsigned int createScreenFrameBufferObject(int maxScreenWidth,int maxScreenHeight) {
+		GlSet gl;
+		gl.activeTexture(GL_TEXTURE5);
+		unsigned int FBO;
+		gl.genFramebuffers(FBO);
+		gl.bindFramebuffer(FBO);
+		unsigned int textureColorbuffer;
+		gl.genTextures(textureColorbuffer);
+		gl.bindTexture(textureColorbuffer);
+		gl.texImage(NULL, 1920,1080,GL_RGB);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+		unsigned int RBO;
+		gl.genRenderbuffers(RBO);
+		gl.bindRenderBuffer(RBO);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1920, 1080);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		return FBO;
+	}
+	unsigned int getBrdflutTexture(){
+		Texture txtr;
+		GlSet glset;
+
+		glActiveTexture(GL_TEXTURE15);
+		unsigned int BRDFTexture = txtr.getTexture("LigidPainter/Resources/Source/ibl_brdf_lut.png",540,540,false);
+		glset.bindTexture(BRDFTexture);
+
+		return BRDFTexture;
+	}
 };
 
 

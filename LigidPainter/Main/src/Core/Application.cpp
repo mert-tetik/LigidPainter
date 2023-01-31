@@ -301,12 +301,17 @@ bool LigidPainter::run()
 	load.createPrefilterMap(programs,cubemaps,windowData);
 	//Load screen painting FBO
 	unsigned int paintingFBO = load.getPaintingFBO(windowData,screenPaintingReturnData.normalId);
+	//Load general rendering FBO
+	FBOScreen = load.createScreenFrameBufferObject(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	//Create the default node scene(material)
 	load.getDefaultNodeScene(nodeScenes,appNodes,"material_0");
 	//Create the default material out (for model)
 	MaterialOut mOut;
 	mOut.program = 0;
 	modelMaterials.push_back(mOut);
+	//Set context
+	glfwMakeContextCurrent(window);
+
 
 
 
@@ -334,10 +339,7 @@ bool LigidPainter::run()
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 
-	//Create a framebuffer (Will be used to reading from screen)
-	FBOScreen = glset.createScreenFrameBufferObject(windowData.windowMaxWidth,windowData.windowMaxHeight);
 
-	
 	glset.enable(GL_BLEND);
 	glDepthFunc(GL_LESS);
 	glset.enable(GL_DEPTH_TEST);
@@ -379,9 +381,6 @@ bool LigidPainter::run()
 
 	axisPointerShaderData.projection = perspectiveProjection;
 
-
-	glfwMakeContextCurrent(window);
-
 	bool paintRender = false;
 	int paintRenderCounter = 0;
 
@@ -390,12 +389,6 @@ bool LigidPainter::run()
 	double mouseDrawingPosY = 0;
 		
 	bool doChangeStateOfTheAddNodeContextBar = true;
-
-	
-
-	glActiveTexture(GL_TEXTURE15);
-	unsigned int BRDFTexture = txtr.getTexture("LigidPainter/Resources/Source/ibl_brdf_lut.png",540,540,false);
-	glset.bindTexture(BRDFTexture);
 
 
 	renderData.window = window;
