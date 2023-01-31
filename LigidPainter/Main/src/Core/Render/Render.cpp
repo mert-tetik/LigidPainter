@@ -128,8 +128,6 @@ void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int sel
 		albedoTextures[selectedAlbedoTextureIndex].undoList.pop_back();
 		doCtrlZ = false;
 
-		std::cout << "\n Reading \n";
-
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) {
 		doCtrlZ = true   ;

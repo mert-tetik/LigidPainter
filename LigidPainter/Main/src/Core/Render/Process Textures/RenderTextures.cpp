@@ -33,8 +33,6 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 			glset.texImage(originalImage,1080,1080,GL_RGB);
 			glset.generateMipmap();
 
-			std::cout << "\n Writing \n";
-
 			albedoTextures[chosenTextureIndex].undoList.push_back(orgTexture);
 
     		//Delete the first element from undoList if undoList's count is greated than max history holding value which is 20

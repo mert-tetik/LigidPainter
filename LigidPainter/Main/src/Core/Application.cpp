@@ -1549,8 +1549,8 @@ void LigidPainter::loadCustomModel(){
 	modelName = customModelName;
 	UIElements[UIUploadingModelPathTextBox].textBox.text = modelName;
 	modelFilePath = customModelFilePath;
-	loadModelButton();
 	renderDefaultModel = false;
+	loadModelButton();
 }
 void LigidPainter::autoTriangulateCheckBox(){
 	UIElements[UIautoTriangulateCheckBox].checkBox.checked = !UIElements[UIautoTriangulateCheckBox].checkBox.checked;
@@ -1577,15 +1577,16 @@ void LigidPainter::loadModelButton() {
 	GlSet glset;
 
 	if (modelName != "") {
-		
-		//Load the model
-		model.loadModel(modelFilePath,UIElements[UIautoTriangulateCheckBox].checkBox.checked);
-
-
-
 		//Store the custom model file path (used for load custom model) 
 		if(!renderDefaultModel)
 			customModelFilePath = modelFilePath;
+		
+
+		//Load the model
+		if(renderDefaultModel)
+			model.loadModel(modelFilePath,UIElements[UIautoTriangulateCheckBox].checkBox.checked);
+		else if(customModelFilePath != "")
+			model.loadModel(customModelFilePath,UIElements[UIautoTriangulateCheckBox].checkBox.checked);
 
 
 		newModelAdded = true;

@@ -580,8 +580,6 @@ public:
 		glShaderSource(vertShader, 1, &defaultVertexShader, NULL);
 		glCompileShader(vertShader);
 
-		std::cout << "Vertex : \n" << defaultVertexShader << "Fragment : \n" << shaderSource << '\n';
-
 		//Test the shader
 		glGetShaderiv(vertShader, GL_COMPILE_STATUS, &success);
 		//Print the error if any occurs
@@ -596,7 +594,6 @@ public:
 		glDeleteShader(fragShader);
 
 		resultNode.program = program;
-		std::cout << " Program : " << program << ' ';
 
 		return resultNode;
 	}
