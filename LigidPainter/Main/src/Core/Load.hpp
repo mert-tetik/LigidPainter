@@ -627,6 +627,8 @@ public:
 
 		std::vector<Node> result;
 
+
+		//Unique output node
 		Node mainOutNode;
 		mainOutNode.backColor = colorData.nodePanelColor;
 		mainOutNode.height = 0.05f;
@@ -647,8 +649,10 @@ public:
 		mainOutNode.rangeBarCount = 0;
 		mainOutNode.upBarColor = glm::vec4(0,0,0,1);
 
+		//Add to material
 		result.push_back(mainOutNode);
 		
+		//Pull the 01 PBR node 
 		appNodes[0].outputs[0].nodeConnectionIndex = 0;
 		appNodes[0].outputs[0].inputConnectionIndex = 0;
 		appNodes[0].outputs[0].isConnectedToShaderInput = true;
@@ -658,11 +662,166 @@ public:
 		appNodes[0].positionX = -0.55;
 		appNodes[0].positionY =-2.5;
 
+		//Add to material
 		result.push_back(appNodes[0]);
 
-
-
 		return result;
+	}
+
+	unsigned int createPrefilterMap(Programs programs,Cubemaps cubemaps,WindowData windowData){
+		GlSet glset;
+		
+		//Is required for rendering the skybox
+		glDepthMask(GL_FALSE);
+		glDepthFunc(GL_LEQUAL);
+
+		//Coordinates necessary to render a skybox
+		std::vector<float> cube = {
+    	    // back face
+    	    -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+    	     1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+    	     1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
+    	     1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+    	    -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+    	    -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
+    	    // front face
+    	    -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+    	     1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
+    	     1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+    	     1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+    	    -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
+    	    -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+    	    // left face
+    	    -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+    	    -1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
+    	    -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+    	    -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+    	    -1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+    	    -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+    	    // right face
+    	     1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+    	     1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+    	     1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
+    	     1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+    	     1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+    	     1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
+    	    // bottom face
+    	    -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+    	     1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
+    	     1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+    	     1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+    	    -1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+    	    -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+    	    // top face
+    	    -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+    	     1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+    	     1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
+    	     1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+    	    -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+    	    -1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
+    	};
+
+		//Skybox will be rendered to that FBO
+		unsigned int captureFBO, captureRBO;
+		glGenFramebuffers(1, &captureFBO);
+		glGenRenderbuffers(1, &captureRBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+
+		
+		glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+		//For rendering every side of the skybox
+		glm::mat4 captureViews[] = 
+		{
+		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+		};
+
+
+		//Create the cube map texture
+		glActiveTexture(GL_TEXTURE28);
+		unsigned int prefilterMap;
+		glGenTextures(1, &prefilterMap);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+		for (unsigned int i = 0; i < 6; ++i)
+		{
+			//Every side
+    		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
+		}
+
+		//Texture Parameters
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//Generate mipmap after creating the txtr
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+
+		//Use the related program for rendering
+		glUseProgram(programs.prefilterMapProgram);
+		//Slot 13 = skybox
+		glset.uniform1i(programs.prefilterMapProgram,"environmentMap",13);
+		glset.uniformMatrix4fv(programs.prefilterMapProgram,"projection",captureProjection);
+
+		//Bind the skybox to the Slot 13
+		glActiveTexture(GL_TEXTURE13);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemaps.cubemap);
+
+		//Bind the framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+
+		//5 levels will be created
+		unsigned int maxMipLevels = 5;
+		for (unsigned int mip = 0; mip < maxMipLevels; ++mip)
+		{
+			//Every level
+
+		    //resize framebuffer according to mip-level size.
+		    unsigned int mipWidth  = 128 * std::pow(0.5, mip);
+		    unsigned int mipHeight = 128 * std::pow(0.5, mip);
+		    glViewport(0, 0, mipWidth, mipHeight);
+
+			//Adjust the roughness value
+		    float roughness = (float)mip / (float)(maxMipLevels - 1);
+			glset.uniform1f(programs.prefilterMapProgram,"roughness",roughness);
+
+			//Create the texture
+		    for (unsigned int i = 0; i < 6; ++i)
+		    {
+				//Every side
+
+				glset.uniformMatrix4fv(programs.prefilterMapProgram,"view",captureViews[i]);
+		        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+		                               GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterMap, mip);
+
+		        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		        glset.drawArrays(cube,false);
+		    }
+		}
+
+		//Set everything to default
+		glBindFramebuffer(GL_FRAMEBUFFER, 0); 
+		glViewport(0, 0, windowData.windowMaxWidth, windowData.windowMaxHeight);
+
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);  
+
+		//Bind the result cube map to 16th slote
+		glActiveTexture(GL_TEXTURE16);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+
+		//Delete the framebuffer
+		glDeleteFramebuffers(1,&captureFBO);
+		glDeleteRenderbuffers(1,&captureRBO);
+
+		//Return the cube map
+		return prefilterMap;
 	}
 };
 
