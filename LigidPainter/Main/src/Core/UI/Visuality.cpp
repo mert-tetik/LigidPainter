@@ -1378,3 +1378,70 @@ void UserInterface::modelMaterialPanel(Model &model,Programs programs,RenderData
 			texturePanelButtonHover = false;
 		}
 }
+
+void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned int> &maskTextures,float centerCoords, float screenGapX,float maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData){
+	ColorData colorData;
+	GlSet gl;
+	Texture txtr;
+
+	glUseProgram(programs.iconsProgram); 
+
+		#pragma region brushMaskPanel
+		float maskXpos = 0.0f;
+		float maskYpos = 0.0f;
+		for (size_t i = 0; i < maskTextures.size(); i++)
+		{
+			if(i % 3 == 0 && i != 0){
+				maskYpos-=0.15f;
+				maskXpos=0.0f;
+			}
+			maskXpos-=0.08f;
+			float position_x = centerCoords - screenGapX - maskXpos - 0.175f;
+			float position_y = 0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f;
+			//ui.iconBox(0.025f, 0.05f,centerCoords - screenGapX - maskXpos - 0.2f,0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f,1,maskTextures[i],0);
+			float upBotDifMin = std::min(0.05f + position_y,0.8f) - std::min(-0.05f + position_y,0.8f);
+			float upBotDifMax = std::max(0.05f + position_y,0.55f) - std::max(-0.05f + position_y,0.55f);
+			std::vector<float> buttonCoorSq{
+				// first trianglev 
+				 0.03f + position_x,  std::min(std::max(0.06f + position_y,0.55f),0.8f), 1,1,upBotDifMin*10,0,0,0,  // top right
+				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,0.55f),0.8f), 1,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
+				-0.03f + position_x,  std::min(std::max(0.06f + position_y,0.55f),0.8f), 1,0,upBotDifMin*10,0,0,0,  // top left 
+				// second triangle						   
+				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,0.55f),0.8f), 1,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
+				-0.03f + position_x,  std::min(std::max(-0.06f + position_y,0.55f),0.8f), 1,0,1.0f-upBotDifMax*10,0,0,0,  // bottom left
+				-0.03f + position_x,  std::min(std::max(0.06f + position_y,0.55f),0.8f), 1,0,upBotDifMin*10,0,0,0  // top left
+			};
+
+			gl.uniform1i(programs.iconsProgram,"isMaskIcon",1);
+			if(maskTextures[i] == currentBrushMaskTexture){
+				glm::vec4 chosenBrushMaskTextureColor = glm::vec4(colorData.chosenBrushMaskTextureColor,1.0f);
+				gl.uniform4fv(programs.iconsProgram,"iconColor",chosenBrushMaskTextureColor);
+			}
+			else{
+				gl.uniform4fv(programs.iconsProgram,"iconColor",colorData.brushMaskIconColor);
+			}
+			gl.uniform1f(programs.iconsProgram,"iconMixVal",0);
+			gl.activeTexture(GL_TEXTURE6);
+			gl.bindTexture(maskTextures[i]);
+			gl.drawArrays(buttonCoorSq,false);
+			gl.uniform1i(programs.iconsProgram,"isMaskIcon",0);
+
+			
+			if(isMouseOnCoords(window,mouseXpos+screenGapX*(uiMaxScreenWidth/2),mouseYpos,buttonCoorSq,panelData.movePanel)){
+				if(firstClick){
+					gl.activeTexture(GL_TEXTURE1);
+					gl.bindTexture(maskTextures[i]);
+					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,uiMaxScreenWidth,uiMaxScreenHeight);
+					glUseProgram(programs.iconsProgram); 
+					
+					uiOut.maskPanelMaskClicked = true;
+					currentBrushMaskTexture = maskTextures[i];
+				}
+				else{
+					uiOut.maskPanelMaskClicked = false;
+				}
+				uiOut.maskPanelMaskHover = true;
+			}
+		}
+		#pragma endregion brushMaskPanel
+}

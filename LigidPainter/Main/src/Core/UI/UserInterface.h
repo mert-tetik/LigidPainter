@@ -536,6 +536,7 @@ public:
 	unsigned int FBOscreen,ColorPicker &colorPicker,float screenGapX);
 	void textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool firstClick,ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures);
 	void modelMaterialPanel(Model &model,Programs programs,RenderData renderData,int screenGapX,float materialsPanelSlideValue,double mouseXpos,double mouseYpos,bool &texturePanelButtonHover,RenderOutData& uiOut,int& currentMaterialIndex,bool firstClick,bool& newModelAdded, float texturePanelButtonMixVal,int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes);
+	void brushMaskTexturePanel(Programs programs,std::vector<unsigned int> &maskTextures,float centerCoords, float screenGapX,float maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData);
 
 
 
