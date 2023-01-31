@@ -382,7 +382,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 			gl.uniform1i(programs.iconsProgram,"isMaskIcon",1);
 			if(maskTextures[i] == currentBrushMaskTexture){
-				gl.uniform4fv(programs.iconsProgram,"iconColor",glm::vec4(colorData.chosenBrushMaskTextureColor,1.0f));
+				glm::vec4 chosenBrushMaskTextureColor = glm::vec4(colorData.chosenBrushMaskTextureColor,1.0f);
+				gl.uniform4fv(programs.iconsProgram,"iconColor",chosenBrushMaskTextureColor);
 			}
 			else{
 				gl.uniform4fv(programs.iconsProgram,"iconColor",colorData.brushMaskIconColor);

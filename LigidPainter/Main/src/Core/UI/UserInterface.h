@@ -491,7 +491,7 @@ struct TextureCreatingPanel{
 class UserInterface {
 public:
 	//Load
-	std::vector<UIElement> UserInterface::getUiElements(Icons icons);
+	std::vector<UIElement> getUiElements(Icons icons);
 	ContextMenu createContextMenus(std::vector<Node> appNodes);
 
 

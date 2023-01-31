@@ -961,7 +961,8 @@ void UserInterface::nodePanelBarriers(float mainPanelLoc,float sndPanel, float h
 	ColorData colorData;
 	
 	glUseProgram(uiPrograms.uiProgram);
-	gl.uniform4fv(uiPrograms.uiProgram,"uiColor",glm::vec4(0));
+	glm::vec4 none =  glm::vec4(0);
+	gl.uniform4fv(uiPrograms.uiProgram,"uiColor",none);
 	gl.drawArrays(topCoor,false);
 	gl.drawArrays(leftCoor,false);
 	gl.drawArrays(rightCoor,false);

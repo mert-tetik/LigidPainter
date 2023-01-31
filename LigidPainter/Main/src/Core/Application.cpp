@@ -330,8 +330,8 @@ bool LigidPainter::run()
 	glset.uniform1i(programs.iconsProgram, "icon", 6);
 	glUseProgram(programs.uiProgram);
 
-
-	glset.uniform3fv(programs.uiProgram,"textColor",glm::vec3(colorData.textColor));
+	glm::vec3 textClr = glm::vec3(colorData.textColor);
+	glset.uniform3fv(programs.uiProgram,"textColor",textClr);
 	glset.uniform1i(programs.uiProgram, "text", 2);
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
 
