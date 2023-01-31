@@ -4,6 +4,8 @@
 #include <map>
 #include <vector>
 
+#include "Core/Model/model.h"
+
 #define UIUploadingModelPathTextBox 0
 #define UIuploadingModelPathText 1
 #define UIloadModelButton 2
@@ -487,7 +489,16 @@ struct TextureCreatingPanel{
 
 	glm::vec3 color = glm::vec3(0);
 };
+struct RenderOutData{
+	glm::vec3 mouseHoverPixel;
+	bool maskPanelMaskHover;
+	bool maskPanelMaskClicked;
+	unsigned int currentBrushMaskTxtr;
 
+	bool texturePanelButtonHover;
+	bool texturePanelButtonClicked;
+	unsigned int chosenMaterialIndex;
+};
 class UserInterface {
 public:
 	//Load
@@ -524,6 +535,7 @@ public:
 	void coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,
 	unsigned int FBOscreen,ColorPicker &colorPicker,float screenGapX);
 	void textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool firstClick,ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures);
+	void modelMaterialPanel(Model &model,Programs programs,RenderData renderData,int screenGapX,float materialsPanelSlideValue,double mouseXpos,double mouseYpos,bool &texturePanelButtonHover,RenderOutData& uiOut,int& currentMaterialIndex,bool firstClick,bool& newModelAdded, float texturePanelButtonMixVal,int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes);
 
 
 
@@ -547,5 +559,15 @@ public:
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void sendMaxWindowSizeToCalculationsAndMore(int maxScreenWidth,int maxScreenHeight);
 	void sendTextBoxActiveCharToUI(int textBoxActiveChar);
+};
+class MainLoop{
+public:
+	void updateCameraPosChanging(glm::vec3 cameraPos,bool &cameraPosChanging);
+	void detectClick(GLFWwindow* window,bool &mousePress,bool &firstClick);
+	void updateRenderTheScene(GLFWwindow* window,int &renderTheSceneCounter,bool &renderTheScene);
+	void setContextPanelsStates(GLFWwindow* window,ColoringPanel &coloringPanel, ContextMenu &addNodeContextMenu, TextureSelectionPanel &textureSelectionPanel);
+	void releaseTextBoxes(GLFWwindow* window,std::vector<UIElement> &UIElements,std::string &exportFileName,int& textBoxActiveChar,ColoringPanel &coloringPanel,TextureCreatingPanel& txtrCreatingPanel,ColorPicker &colorPicker);
+	void changeTextureDisplayersState(GLFWwindow* window,TextureDisplayer &textureDisplayer);
+	void changeColorPickersValue(GLFWwindow* window,ColorPicker& colorPicker,ColoringPanel &coloringPanel,glm::vec3 mouseHoverPixel,bool firstClick);
 };
 #endif 

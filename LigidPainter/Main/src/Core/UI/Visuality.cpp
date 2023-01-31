@@ -1289,3 +1289,92 @@ void UserInterface::sendTextBoxActiveCharToUI(int textBoxActiveChar){
 	uiLastTextBoxActiveChar = uiTextBoxActiveChar;
 	uiTextBoxActiveChar = textBoxActiveChar;
 }
+
+void UserInterface::modelMaterialPanel(Model &model,Programs programs,RenderData renderData,int screenGapX,float materialsPanelSlideValue,double mouseXpos,double mouseYpos,bool &texturePanelButtonHover,RenderOutData& uiOut,int& currentMaterialIndex,bool firstClick,bool& newModelAdded, float texturePanelButtonMixVal,int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes){
+	ColorData colorData;
+
+	bool mouseEnteredOnce = false;
+		glUseProgram(programs.uiProgram); 
+
+		if(model.meshes.size() == 0){
+			renderText(programs.uiProgram, "Materials of the 3D model", renderData.panelLoc - 1.0f - screenGapX  + 0.095f, 0.8f, 0.00022f,colorData.textColor,0.99999f,false);
+			renderText(programs.uiProgram, "will be show up there", renderData.panelLoc - 1.0f - screenGapX  + 0.115f, 0.75f, 0.00022f,colorData.textColor,0.99999f,false);
+		}
+		for (int i = 0; i < model.meshes.size(); i++)//Render buttons
+		{ 	
+			//Check if mouse is entered the related button
+			bool textureButtonEnter = isMouseOnButton(renderData.window, 0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX*2 + 0.205f,0.8f - (i * 0.125f) + materialsPanelSlideValue, mouseXpos, mouseYpos,false);
+			bool textureAddButtonEnter = isMouseOnButton(renderData.window, 0.02f, 0.03f, renderData.panelLoc - 1.0f - screenGapX*2 + 0.3f,0.8f - (i * 0.125f) + materialsPanelSlideValue, mouseXpos, mouseYpos,false);
+			
+			if(textureButtonEnter){
+				//Hover
+				if(!textureAddButtonEnter){
+					mouseEnteredOnce = true;
+					texturePanelButtonHover = true;
+				}
+				uiOut.texturePanelButtonHover = true;
+				if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
+					//Pressed
+					currentMaterialIndex = i;
+					uiOut.texturePanelButtonClicked = true;
+				}
+
+				glm::vec4 currentColor;
+				glm::vec4 currentColorHover;
+				if(i == currentMaterialIndex){
+					currentColor = colorData.materialButtonColorActive;
+					currentColorHover = colorData.materialButtonColorActiveHover;
+				}
+				else{
+					currentColor = colorData.materialButtonColor;
+					currentColorHover = colorData.materialButtonColorHover;
+				}
+				//Button (Hover)
+				box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, currentColor, 0.2f, false, false, 0.9f, 10000, currentColorHover, texturePanelButtonMixVal);
+
+			}
+			else{
+				glm::vec4 currentColor;
+				glm::vec4 currentColorHover;
+				if(i == currentMaterialIndex){
+					currentColor = colorData.materialButtonColorActive;
+					currentColorHover = colorData.materialButtonColorActiveHover;
+				}
+				else{
+					currentColor = colorData.materialButtonColor;
+					currentColorHover = colorData.materialButtonColorHover;
+				}
+
+				//Button 
+				box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (i * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, currentColor, 0.2f, false, false, 0.9f, 10000, currentColorHover, 0);
+			}
+			if(textureAddButtonEnter){
+				//Hover
+				//uiOut.texturePanelButtonHover = true;
+				if(firstClick){
+					//Pressed
+					//uiOut.texturePanelButtonClicked = true;
+					currentMaterialIndex = i;
+					newModelAdded = true; 
+
+					model.meshes[i].materialIndex = selectedNodeScene;
+				}
+			}
+			//box(0.03f, 0.06f, renderData.panelLoc - screenGapX + 0.3f, 0.8f - (i * 0.125f), "", colorData.buttonColorHover, 0.048f, true, false, 0.6f, 10000, colorData.buttonColorHover, 0); 
+			if(model.meshes[i].materialIndex != 10000)
+				renderText(programs.uiProgram, std::to_string(nodeScenes[model.meshes[i].materialIndex].index),renderData.panelLoc - 1.0f - screenGapX + 0.235f,0.8f - (i * 0.125f) + materialsPanelSlideValue - 0.02,0.00022,colorData.materialIconIndexTextColor,0.99999f,false);
+			
+			glUseProgram(programs.iconsProgram);
+			if(model.meshes[i].materialIndex != 10000)
+				iconBox(0.02f,0.04f,renderData.panelLoc - 1.0f - screenGapX + 0.255f ,0.8f - (i * 0.125f) + materialsPanelSlideValue,0.99f,icons.Material,0,colorData.iconColor,colorData.iconColor);
+			float iconmixVal = 0.0f;
+			if(textureAddButtonEnter)
+				iconmixVal = 0.5f;
+				
+			iconBox(0.015f,0.027f,renderData.panelLoc - 1.0f - screenGapX + 0.3f ,0.8f - (i * 0.125f) + materialsPanelSlideValue,0.99f,icons.Plus,iconmixVal,colorData.iconColor,colorData.iconColorHover);
+			glUseProgram(programs.uiProgram); 
+		}
+		if(!mouseEnteredOnce){
+			texturePanelButtonHover = false;
+		}
+}

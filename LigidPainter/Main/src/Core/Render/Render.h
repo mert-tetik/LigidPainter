@@ -31,16 +31,6 @@ struct ViewUpdateData
 	glm::mat4 view;
 };
 
-struct RenderOutData{
-	glm::vec3 mouseHoverPixel;
-	bool maskPanelMaskHover;
-	bool maskPanelMaskClicked;
-	unsigned int currentBrushMaskTxtr;
-
-	bool texturePanelButtonHover;
-	bool texturePanelButtonClicked;
-	unsigned int chosenMaterialIndex;
-};
 class Render {
 public:
 

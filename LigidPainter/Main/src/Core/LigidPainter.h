@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
@@ -173,10 +174,6 @@ struct RenderData { //GlSet::render
 class Sphere {
 public:
 	std::vector<float> getSphere();
-};
-class MainLoop{
-public:
-	void detectClick(GLFWwindow* window,bool &mousePress,bool &firstClick);
 };
 class LigidPainter {
 public:

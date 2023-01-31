@@ -324,6 +324,7 @@ bool LigidPainter::run()
 
 	renderData.window = window;
 	panelData.modelPanelActive = true; //Active the model panel by default
+	renderOut.mouseHoverPixel = glm::vec3(0);
 
 
 	bool paintRender = false;
@@ -333,6 +334,7 @@ bool LigidPainter::run()
 	double mouseDrawingPosY = 0;
 	bool doChangeStateOfTheAddNodeContextBar = true;
 	float brushSize;
+
 
 	MainLoop mainLoop;
 	while (!glfwWindowShouldClose(window))//Main loop
@@ -344,21 +346,18 @@ bool LigidPainter::run()
 		//util.printRenderingSpeed();
 		util.printError();
 
-		//Check if camera pos changed
-		updateCameraPosChanging();
 
-		renderTheSceneCounter++;
-
-
+		
+		mainLoop.updateCameraPosChanging(callbackData.cameraPos,cameraPosChanging);
 		mainLoop.detectClick(window,mousePress,firstClick);
+		mainLoop.updateRenderTheScene(window,renderTheSceneCounter,renderTheScene);
+		mainLoop.setContextPanelsStates(window,coloringPanel,addNodeContextMenu,textureSelectionPanel);
+		ui.sendTextBoxActiveCharToUI(textBoxActiveChar);
 
 
 
-		const bool mouseInputTaken = glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetMouseButton(window, 2) == GLFW_PRESS;   
-		if(mouseInputTaken){
-			renderTheScene = true;
-			renderTheSceneCounter = 0;
-		}
+
+
 
 		if(addNodeContextMenu.active && !addNodeContextMenu.hover){
 			addNodeContextMenu.active = false;
@@ -379,60 +378,9 @@ bool LigidPainter::run()
 		}
 
 
-		
-		if(glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
-			coloringPanel.active = false;
-			addNodeContextMenu.active = false;
-			textureSelectionPanel.active = false;
-		}
 
-
-
-		ui.sendTextBoxActiveCharToUI(textBoxActiveChar);
-
-
-		//Release textboxes
-		const bool deactivatingTextBoxesCondition = glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS; 
-		if (deactivatingTextBoxesCondition){
-			if(!UIElements[UIexportingFolderNameTextBox].textBox.hover && UIElements[UIexportingFolderNameTextBox].textBox.clicked){
-				UIElements[UIexportingFolderNameTextBox].textBox.clicked = false; 
-				if(exportFileName == ""){
-					exportFileName = "LP_Export";
-					UIElements[UIexportingFolderNameTextBox].textBox.text = exportFileName;
-				}	
-				textBoxActiveChar = 0;
-			}
-			if(!colorPicker.hexValTextBoxEnter){
-				colorPicker.hexValTextBoxActive = false;
-				textBoxActiveChar = 0;
-			}
-			if(!coloringPanel.hexValTextboxHover){
-				coloringPanel.hexValTextboxActive = false;
-				textBoxActiveChar = 0;
-			}
-			if(!txtrCreatingPanel.textBoxHover){
-				txtrCreatingPanel.textBoxActive = false;
-				textBoxActiveChar = 0;
-			}
-		}
-
-
-		//Check if texture displayer button clicked
-		if(textureDisplayer.buttonPressed){
-			textureDisplayer.buttonPressedCounter++;
-			textureDisplayer.buttonPressed = true;
-		}
-		const bool textureDisplayerClickedCondition = textureDisplayer.buttonPressedCounter < 20 && textureDisplayer.buttonPressed && glfwGetMouseButton(window, 0) == GLFW_RELEASE && !textureDisplayer.positionChanged; 
-		if(textureDisplayerClickedCondition){
-			textureDisplayer.buttonClicked = true;
-			textureDisplayer.buttonPressed = false;
-
-		}
-		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
-			textureDisplayer.buttonPressedCounter = 0;
-			textureDisplayer.buttonPressed = false;
-			textureDisplayer.positionChanged = false;
-		}
+		mainLoop.releaseTextBoxes(window,UIElements,exportFileName,textBoxActiveChar,coloringPanel,txtrCreatingPanel,colorPicker);
+		mainLoop.changeTextureDisplayersState(window,textureDisplayer);
 
 
 
@@ -447,36 +395,7 @@ bool LigidPainter::run()
 
 
 
-		//Change color picker's value
-		const bool dropperColorPickingCondition = colorPicker.dropperActive && firstClick;
-		const bool movingSatValPointerCondition = colorPicker.saturationValueBoxClicked && !colorPicker.saturationValuePointerHover;
-		const bool movingHuePointerCondition = colorPicker.hueBarClicked && !colorPicker.saturationValuePointerHover && !colorPicker.huePointerChanging; 
-		
-
-
-		if(dropperColorPickingCondition || movingSatValPointerCondition || movingHuePointerCondition || colorPicker.hexValTextBoxGotInput){
-			if(colorPicker.hexValTextBoxGotInput){
-				updateColorPicker(util.hexToRGBConverter(colorPicker.hexValTextBoxVal),true,true,colorPicker.hueValue,colorPicker.saturationValuePosX,colorPicker.saturationValuePosY,true);//Update colorbox val once color picker hex value textbox value changed
-			}
-			else{
-				if(coloringPanel.dropperActive)
-					updateColorPicker(renderOut.mouseHoverPixel,true,true,coloringPanel.hueBarPosX,coloringPanel.saturationValueBoxPosX,coloringPanel.saturationValueBoxPosY,false);//Update colorbox val once dropper is used or colorbox is clicked
-				else
-					updateColorPicker(renderOut.mouseHoverPixel,true,!colorPicker.hueBarClicked,colorPicker.hueValue,colorPicker.saturationValuePosX,colorPicker.saturationValuePosY,true);//Update colorbox val once dropper is used or colorbox is clicked
-				
-				colorPicker.dropperActive = false;
-				coloringPanel.dropperActive = false;
-				colorPicker.dropperEnter = false;
-			}
-		}
-
-		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE)
-			colorPicker.huePointerChanging = false;
-
-		colorPicker.saturationValueBoxClicked = false;
-		colorPicker.hueBarClicked = false;
-		colorPicker.saturationValuePointerChanging = false;
-
+		mainLoop.changeColorPickersValue(window,colorPicker,coloringPanel,renderOut.mouseHoverPixel,firstClick);
 
 		//Ui actions
 		uiAct.uiActions(window,callbackData,UIElements,colorPicker,textureDisplayer,nodePanel,sndPanel,firstClick);
