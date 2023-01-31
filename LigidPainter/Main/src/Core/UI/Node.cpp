@@ -339,6 +339,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			}
 			material.stateChanged = true;
 			material.nodes.erase(material.nodes.begin() + currentNodeIndex);
+			goto skip;
 		}
 	
 		iconBox(iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2), depth+0.02f , icons.CircularX , 0 , colorData.iconColor, colorData.iconColor);
@@ -567,5 +568,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			}
 		}
 	}
+	
+	skip:;
 }
-
