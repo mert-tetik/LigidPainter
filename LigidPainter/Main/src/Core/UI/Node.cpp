@@ -306,45 +306,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	}
 
 
-
-
-	//Delete the node
-	if(!node.isMainOut){
-		bool deleteButtonEnter = false;
-		if(nodePanel.panelHover && !coloringPanel.active)
-			deleteButtonEnter = isMouseOnButton(window,iconWidth/1.3 , iconWidth*1.7,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2)) + iconWidth*1.7f,mouseX,mouseY,false);
-		if(deleteButtonEnter)
-			nodePanel.pointerCursor = true;
-
-		if(deleteButtonEnter && firstClick){
-			for (int dOutI = 0; dOutI < material.nodes[currentNodeIndex].outputs.size(); dOutI++)
-			{
-				if(material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex != 10000){
-					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex].nodeConnectionIndex = 10000;
-					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex].inputConnectionIndex = 10000;
-					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex].isConnectedToShaderInput = false;
-				}
-			}
-			for (int dInI = 0; dInI < material.nodes[currentNodeIndex].inputs.size(); dInI++)
-			{
-				material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex = 10000;
-				material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex = 10000;
-				material.nodes[currentNodeIndex].inputs[dInI].isConnectedToShaderInput = false;
-			}
-			for (int dOutI = 0; dOutI < material.nodes[currentNodeIndex].outputs.size(); dOutI++)
-			{
-				material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex = 10000;
-				material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex = 10000;
-				material.nodes[currentNodeIndex].outputs[dOutI].isConnectedToShaderInput = false;
-			}
-			material.stateChanged = true;
-			material.nodes.erase(material.nodes.begin() + currentNodeIndex);
-			goto skip;
-		}
-	
-		iconBox(iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2), depth+0.02f , icons.CircularX , 0 , colorData.iconColor, colorData.iconColor);
-	}
-
 	glUseProgram(programs.uiProgram);
 
     //Render the node title
@@ -569,5 +530,41 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		}
 	}
 	
-	skip:;
+	//Delete the node
+	glUseProgram(programs.iconsProgram);
+	
+	if(!node.isMainOut){
+		bool deleteButtonEnter = false;
+		if(nodePanel.panelHover && !coloringPanel.active)
+			deleteButtonEnter = isMouseOnButton(window,iconWidth/1.3 , iconWidth*1.7,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2)) + iconWidth*1.7f,mouseX,mouseY,false);
+		if(deleteButtonEnter)
+			nodePanel.pointerCursor = true;
+
+		if(deleteButtonEnter && firstClick){
+			for (int dOutI = 0; dOutI < material.nodes[currentNodeIndex].outputs.size(); dOutI++)
+			{
+				if(material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex != 10000){
+					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex].nodeConnectionIndex = 10000;
+					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex].inputConnectionIndex = 10000;
+					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex].isConnectedToShaderInput = false;
+				}
+			}
+			for (int dInI = 0; dInI < material.nodes[currentNodeIndex].inputs.size(); dInI++)
+			{
+				material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex = 10000;
+				material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex = 10000;
+				material.nodes[currentNodeIndex].inputs[dInI].isConnectedToShaderInput = false;
+			}
+			for (int dOutI = 0; dOutI < material.nodes[currentNodeIndex].outputs.size(); dOutI++)
+			{
+				material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex = 10000;
+				material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex = 10000;
+				material.nodes[currentNodeIndex].outputs[dOutI].isConnectedToShaderInput = false;
+			}
+			material.stateChanged = true;
+			material.nodes.erase(material.nodes.begin() + currentNodeIndex);
+		}
+	
+		iconBox(iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2), depth+0.02f , icons.CircularX , 0 , colorData.iconColor, colorData.iconColor);
+	}
 }
