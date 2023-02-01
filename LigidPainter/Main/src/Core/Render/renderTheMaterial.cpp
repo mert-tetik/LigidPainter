@@ -42,7 +42,6 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
             glDeleteTextures(1,&material.renderingPipeline[i].outputs[outI].result);
         }
     }
-
     material.renderingPipeline.clear();
 
     GlSet glset;
@@ -80,6 +79,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
             material.nodes[i].renderingIndex = material.renderingPipeline.size()-1; 
         }
     }
+
     for (int i = 0; i < 1000; i++)
     {
         bool isChangesAreMade = false;
@@ -90,8 +90,9 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
             {
                 if(material.nodes[nodeI].inputs[inputI].nodeConnectionIndex != 10000 && material.nodes[nodeI].inputs[inputI].inputConnectionIndex != 10000 && material.nodes[nodeI].renderingIndex == 10000){
                     NodeInput input = material.nodes[nodeI].inputs[inputI];
-
+                    
                     if(material.nodes[input.nodeConnectionIndex].renderingIndex != 10000){
+                        
                         addToPipeline = true;
                     }
                     else{

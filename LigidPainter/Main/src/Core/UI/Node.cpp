@@ -148,7 +148,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				if(material.nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed ){
 					establishConnectionFirstRelease = true;
 				}
-				if(glfwGetMouseButton(window,0) == GLFW_RELEASE && establishConnectionFirstRelease){
+				if(glfwGetMouseButton(window,0) == GLFW_RELEASE && establishConnectionFirstRelease && node.outputs[i].pressed){
 					node.outputs[i].inputConnectionIndex = inputI;
 					node.outputs[i].nodeConnectionIndex = nodeI;
 
@@ -532,7 +532,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	
 	//Delete the node
 	glUseProgram(programs.iconsProgram);
-	
+
 	if(!node.isMainOut){
 		bool deleteButtonEnter = false;
 		if(nodePanel.panelHover && !coloringPanel.active)
@@ -546,23 +546,39 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				if(material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex != 10000){
 					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex].nodeConnectionIndex = 10000;
 					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex].inputConnectionIndex = 10000;
-					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex].isConnectedToShaderInput = false;
 				}
 			}
 			for (int dInI = 0; dInI < material.nodes[currentNodeIndex].inputs.size(); dInI++)
 			{
-				material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex = 10000;
-				material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex = 10000;
-				material.nodes[currentNodeIndex].inputs[dInI].isConnectedToShaderInput = false;
+				if(material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex != 10000){
+					material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].nodeConnectionIndex = 10000;
+					material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].inputConnectionIndex = 10000;
+				}
 			}
-			for (int dOutI = 0; dOutI < material.nodes[currentNodeIndex].outputs.size(); dOutI++)
-			{
-				material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex = 10000;
-				material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex = 10000;
-				material.nodes[currentNodeIndex].outputs[dOutI].isConnectedToShaderInput = false;
+
+			if(material.renderingPipeline.size()){
+				material.renderingPipeline.erase(material.renderingPipeline.begin() + material.nodes[currentNodeIndex].renderingIndex);
 			}
+
 			material.stateChanged = true;
 			material.nodes.erase(material.nodes.begin() + currentNodeIndex);
+
+			for (size_t delI = 0; delI < material.nodes.size(); delI++)
+			{
+				for (size_t delInI = 0; delInI < material.nodes[delI].inputs.size(); delInI++)
+				{
+					if(currentNodeIndex < material.nodes[delI].inputs[delInI].nodeConnectionIndex && material.nodes[delI].inputs[delInI].nodeConnectionIndex != 10000){
+						material.nodes[delI].inputs[delInI].nodeConnectionIndex--;
+					}
+				}
+				for (size_t delOutI = 0; delOutI < material.nodes[delI].outputs.size(); delOutI++)
+				{
+					if(currentNodeIndex < material.nodes[delI].outputs[delOutI].nodeConnectionIndex && material.nodes[delI].outputs[delOutI].nodeConnectionIndex != 10000){
+						material.nodes[delI].outputs[delOutI].nodeConnectionIndex--;
+					}
+				}
+			}
+			
 		}
 	
 		iconBox(iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2), depth+0.02f , icons.CircularX , 0 , colorData.iconColor, colorData.iconColor);
