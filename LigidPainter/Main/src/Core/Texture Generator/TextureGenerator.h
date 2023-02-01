@@ -3,7 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "Core/Model/Model.h"
+#include "Core/Model/model.h"
 
 struct GLFWwindow;
 struct Programs;

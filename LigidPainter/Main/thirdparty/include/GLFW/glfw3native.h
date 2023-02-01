@@ -126,7 +126,7 @@ extern "C" {
  #if defined(GLFW_EXPOSE_NATIVE_GLX)
   /* This is a workaround for the fact that glfw3.h defines GLAPIENTRY because by
    * default it also acts as an OpenGL header
-   * However, glx.h will include Gl.h, which will define it unconditionally
+   * However, glx.h will include gl.h, which will define it unconditionally
    */
   #if defined(GLFW_GLAPIENTRY_DEFINED)
    #undef GLAPIENTRY
@@ -140,7 +140,7 @@ extern "C" {
  #if defined(GLFW_EXPOSE_NATIVE_OSMESA)
   /* This is a workaround for the fact that glfw3.h defines GLAPIENTRY because by
    * default it also acts as an OpenGL header
-   * However, osmesa.h will include Gl.h, which will define it unconditionally
+   * However, osmesa.h will include gl.h, which will define it unconditionally
    */
   #if defined(GLFW_GLAPIENTRY_DEFINED)
    #undef GLAPIENTRY

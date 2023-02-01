@@ -60,14 +60,14 @@
 #include "Core/UI/UserInterface.h"
 #include "Core/Utilities.h"
 #include "Core/Callback.h"
-#include "Core/Gl.h"
+#include "Core/gl.h"
 #include "Core/Load.hpp"
 #include "Core/Render/Render.h"
-#include "Core/Model/Model.h"
+#include "Core/Model/model.h"
 #include "Core/Texture/Texture.h"
 #include "Core/UI/UiActions.h"
-#include "Core/TextureGenerator/TextureGenerator.h"
-#include "Core/MessageBox.h"
+#include "Core/Texture Generator/TextureGenerator.h"
+#include "Core/messageBox.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"

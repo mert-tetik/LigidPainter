@@ -7,7 +7,7 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
-#include "Mesh.h"
+#include "mesh.h"
 
 using namespace std;
 

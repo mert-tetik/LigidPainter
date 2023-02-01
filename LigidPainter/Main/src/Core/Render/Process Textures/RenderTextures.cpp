@@ -7,12 +7,12 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#include "Core/Model/Model.h"
+#include "Core/Model/model.h"
 
 #include "Core/Render/Render.h"
 #include "Core/LigidPainter.h"
 #include "Core/UI/UserInterface.h"
-#include "Core/Gl.h"
+#include "Core/gl.h"
 #include "Core/Texture/Texture.h"
 
 void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screenSizeY, OutShaderData outShaderData,Model &model,bool renderDefault,std::vector<aTexture> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex) {

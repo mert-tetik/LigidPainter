@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 
-#include "Core/Model/Model.h"
+#include "Core/Model/model.h"
 
 #define UIUploadingModelPathTextBox 0
 #define UIuploadingModelPathText 1

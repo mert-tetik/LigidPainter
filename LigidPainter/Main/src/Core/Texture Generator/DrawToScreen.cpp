@@ -8,10 +8,10 @@
 #include <glm/gtx/string_cast.hpp>
 
 #include "Core/LigidPainter.h"
-#include "Core/Gl.h"
+#include "Core/gl.h"
 #include "Core/Texture/Texture.h"
 #include "Core/Render/Render.h"
-#include "Core/TextureGenerator/TextureGenerator.h"
+#include "Core/Texture Generator/TextureGenerator.h"
 
 #include "stb_image_resize.h"
 #include "stb_image.h"

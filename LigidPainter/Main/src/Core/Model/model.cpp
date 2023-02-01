@@ -9,8 +9,8 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
-#include "Core/Model/Mesh.h"
-#include "Core/Model/Model.h"
+#include "Core/Model/mesh.h"
+#include "Core/Model/model.h"
 
 #include <glm/gtc/type_ptr.hpp>
 

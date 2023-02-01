@@ -2,11 +2,11 @@
 
 #include <vector>
 
-#include "Core/Model/Model.h"
+#include "Core/Model/model.h"
 
 #include "Core/Render/Render.h"
 #include "Core/LigidPainter.h"
-#include "Core/Gl.h"
+#include "Core/gl.h"
 
 
 void Render::renderModel(bool backfaceCulling,PBRShaderData &data,Model &model,bool renderDefault, vector<MaterialOut> &modelMaterials,Programs programs,

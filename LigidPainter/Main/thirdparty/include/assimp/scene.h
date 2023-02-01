@@ -52,7 +52,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <assimp/types.h>
 #include <assimp/texture.h>
-#include <assimp/Mesh.h>
+#include <assimp/mesh.h>
 #include <assimp/light.h>
 #include <assimp/camera.h>
 #include <assimp/material.h>
