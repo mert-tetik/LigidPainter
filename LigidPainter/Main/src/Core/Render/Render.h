@@ -8,7 +8,7 @@
 #include "glm/gtx/string_cast.hpp"
 
 #include "Core/LigidPainter.h"
-#include "Core/Model/model.h"
+#include "Core/Model/Model.h"
 #include "Core/UI/UserInterface.h"
 
 struct ExportData

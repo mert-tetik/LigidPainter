@@ -56,7 +56,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <assimp/vector3.h>
-#include <assimp/mesh.h>
+#include <assimp/Mesh.h>
 #include <assimp/ai_assert.h>
 
 #include <functional>

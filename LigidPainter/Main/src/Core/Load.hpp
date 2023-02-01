@@ -18,13 +18,13 @@
 #include "Core/LigidPainter.h"
 #include "Core/Utilities.h"
 #include "Core/UI/UserInterface.h"
-#include "Core/gl.h"
+#include "Core/Gl.h"
 #include "Core/Texture/Texture.h"
 #include "Core/Load.hpp"
 
 #include "Core/ProcessTheNodeFile.hpp"
 
-#include "Core/Texture Generator/TextureGenerator.h"
+#include "Core/TextureGenerator/TextureGenerator.h"
 
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -345,7 +345,7 @@ public:
 
 
 		//Blur program
-		unsigned int blurProgram = gl.createProgram("LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/blur");
+		unsigned int blurProgram = gl.createProgram("LigidPainter/Resources/Shaders/TextureProcessing/TextureGenerator/blur");
 
 
 
@@ -369,7 +369,7 @@ public:
 
 
 		//Saturation Value program
-		unsigned int screenDepthProgram = gl.createProgram("LigidPainter/Resources/Shaders/Texture Processing/screenDepth");
+		unsigned int screenDepthProgram = gl.createProgram("LigidPainter/Resources/Shaders/TextureProcessing/screenDepth");
 
 
 
@@ -384,12 +384,12 @@ public:
 
 
 		//Out program
-		unsigned int outProgram = gl.createProgram("LigidPainter/Resources/Shaders/Texture Processing/out");
+		unsigned int outProgram = gl.createProgram("LigidPainter/Resources/Shaders/TextureProcessing/out");
 
 
 
 		//Out program
-		unsigned int twoDPaintingProgram = gl.createProgram("LigidPainter/Resources/Shaders/Texture Processing/2dPainting");
+		unsigned int twoDPaintingProgram = gl.createProgram("LigidPainter/Resources/Shaders/TextureProcessing/2dPainting");
 
 
 

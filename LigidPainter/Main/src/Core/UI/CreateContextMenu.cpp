@@ -16,12 +16,12 @@
 #include "Core/UI/UserInterface.h"
 #include "Core/Utilities.h"
 #include "Core/Callback.h"
-#include "Core/gl.h"
+#include "Core/Gl.h"
 #include "Core/Render/Render.h"
-#include "Core/Model/model.h"
+#include "Core/Model/Model.h"
 #include "Core/Texture/Texture.h"
 #include "Core/UI/UiActions.h"
-#include "Core/Texture Generator/TextureGenerator.h"
+#include "Core/TextureGenerator/TextureGenerator.h"
 
 ContextMenu UserInterface::createContextMenus(std::vector<Node> appNodes){
     ColorData colorData;

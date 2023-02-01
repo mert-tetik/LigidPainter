@@ -6,11 +6,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Core/Model/model.h"
+#include "Core/Model/Model.h"
 
 #include "Core/Render/Render.h"
 #include "Core/LigidPainter.h"
-#include "Core/gl.h"
+#include "Core/Gl.h"
 #include "Core/Texture/Texture.h"
 
 void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int screenSizeY, ScreenDepthShaderData screenDepthShaderData,Model &model,bool renderDefault,std::vector<MaterialOut> &modelMaterials,Programs programs,int currentMaterialIndex, int maxScreenWidth , int maxScreenHeight,glm::mat4 view,std::vector<aTexture> albedoTextures,int chosenTextureIndex) {

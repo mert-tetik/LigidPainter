@@ -11,7 +11,7 @@
 
 #include "Core/LigidPainter.h"
 #include "Core/UI/UserInterface.h"
-#include "Core/gl.h"
+#include "Core/Gl.h"
 #include "Core/Utilities.h"
 
 float opacity = 0.f;

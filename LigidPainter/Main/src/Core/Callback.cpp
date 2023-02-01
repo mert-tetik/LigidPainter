@@ -11,7 +11,7 @@
 #include "Core/LigidPainter.h"
 #include "Core/UI/UserInterface.h"
 #include "Core/Callback.h"
-#include "Core/gl.h"
+#include "Core/Gl.h"
 #include "Core/UI/UserInterface.h"
 
 

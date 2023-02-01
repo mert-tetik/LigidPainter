@@ -10,7 +10,7 @@
 #include "Core/Render/Render.h"
 #include "Core/UI/UserInterface.h"
 #include "Core/LigidPainter.h"
-#include "Core/gl.h"
+#include "Core/Gl.h"
 #include "Core/Texture/Texture.h"
 
 glm::vec3 Render::getColorPickerValue(unsigned int FBOScreen, ColorPicker &colorPicker,  int screenSizeX,  int screenSizeY, Programs programs, int maxScreenWidth,int maxScreenHeight,SaturationValShaderData &saturationValShaderData) {

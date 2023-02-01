@@ -2,7 +2,7 @@
 
 #include "Core/LigidPainter.h"
 #include "Core/Callback.h"
-#include "Core/gl.h"
+#include "Core/Gl.h"
 #include "Core/UI/UiActions.h"
 
 int uiactionsMaxScreenWidth;

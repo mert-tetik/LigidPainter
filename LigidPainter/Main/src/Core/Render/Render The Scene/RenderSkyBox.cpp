@@ -9,7 +9,7 @@
 
 #include "Core/Render/Render.h"
 #include "Core/LigidPainter.h"
-#include "Core/gl.h"
+#include "Core/Gl.h"
 
 void Render::renderSkyBox(SkyBoxShaderData data,Programs programs) {
 	GlSet gls;

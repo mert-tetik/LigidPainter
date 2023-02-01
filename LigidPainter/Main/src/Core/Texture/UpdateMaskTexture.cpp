@@ -9,10 +9,10 @@
 
 #include "Core/LigidPainter.h"
 #include "Core/UI/UserInterface.h"
-#include "Core/gl.h"
+#include "Core/Gl.h"
 #include "Core/Texture/Texture.h"
 
-#include "Core/Texture Generator/TextureGenerator.h"
+#include "Core/TextureGenerator/TextureGenerator.h"
 
 using namespace std;
 

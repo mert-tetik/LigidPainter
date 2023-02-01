@@ -9,7 +9,7 @@
 
 #include "Core/Render/Render.h"
 #include "Core/LigidPainter.h"
-#include "Core/gl.h"
+#include "Core/Gl.h"
 
 void Render::renderModifiedBrushCursor(float distanceX,int screenWidth,int screenHeight,double mouseXpos,double mouseYpos,glm::vec3 color,int maxScreenWidth,int maxScreenHeight,Programs programs) {
 
