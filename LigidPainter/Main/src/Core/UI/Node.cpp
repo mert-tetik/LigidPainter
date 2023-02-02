@@ -22,9 +22,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	ColorData colorData;
 	Utilities util;
 
-	std::cout << " bsdfNodeI " << material.nodes[1].outputs[0].nodeConnectionIndex << " bsdfOutI " << material.nodes[1].outputs[0].inputConnectionIndex << " shdrNodeI " << material.nodes[0].inputs[0].nodeConnectionIndex << " bsdfInI " << material.nodes[0].inputs[0].inputConnectionIndex << '\n';
-
-
 	nodePanel.pointerCursor = false;
 
 	const float depth = 0.1f;

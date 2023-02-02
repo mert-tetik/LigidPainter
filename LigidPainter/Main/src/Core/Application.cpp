@@ -137,6 +137,7 @@ string customModelName;
 //--------Functions--------\\
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void joystick_callback(int jid, int event);
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -206,6 +207,8 @@ bool LigidPainter::run()
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
+	glfwSetJoystickCallback(joystick_callback);
+
 
 
 
@@ -224,7 +227,7 @@ bool LigidPainter::run()
 	glEnable(GL_MULTISAMPLE);
 
 
-
+	glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);
 
 
 	Load load;
@@ -339,13 +342,12 @@ bool LigidPainter::run()
 	MainLoop mainLoop;
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
-		
 		glfwPollEvents();
-		glfwSwapInterval(1);
 
+		//glfwSwapInterval(1);
 		//util.printRenderingSpeed();
+		
 		util.printError();
-
 
 		
 		mainLoop.updateCameraPosChanging(callbackData.cameraPos,cameraPosChanging);
@@ -610,6 +612,18 @@ bool LigidPainter::run()
 //-------------CALLBACK-------------\\
 
 bool caps = false; //GLFW_MOD_CAPS_LOCK
+void joystick_callback(int jid, int event)
+{
+	std::cout << "hey";
+    if (event == GLFW_CONNECTED)
+    {
+        // The joystick was connected
+    }
+    else if (event == GLFW_DISCONNECTED)
+    {
+        // The joystick was disconnected
+    }
+}
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//TODO : Dynamic textbox
 
