@@ -16,13 +16,14 @@
 #include "Core/Load.hpp"
 #include "Core/Render/Render.h"
 
-bool establishConnectionFirstRelease = false;
-
 void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
 float maxScreenWidth,float maxScreenHeight, NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,
 std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPanel &coloringPanel){
 	ColorData colorData;
 	Utilities util;
+
+	std::cout << " bsdfNodeI " << material.nodes[1].outputs[0].nodeConnectionIndex << " bsdfOutI " << material.nodes[1].outputs[0].inputConnectionIndex << " shdrNodeI " << material.nodes[0].inputs[0].nodeConnectionIndex << " bsdfInI " << material.nodes[0].inputs[0].inputConnectionIndex << '\n';
+
 
 	nodePanel.pointerCursor = false;
 
@@ -145,10 +146,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			for (int inputI = 0; inputI < material.nodes[nodeI].inputs.size(); inputI++)
 			{
 				//Establish connection
-				if(material.nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed ){
-					establishConnectionFirstRelease = true;
-				}
-				if(glfwGetMouseButton(window,0) == GLFW_RELEASE && establishConnectionFirstRelease && node.outputs[i].pressed){
+
+				if(glfwGetMouseButton(window,0) == GLFW_RELEASE && material.nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed){
 					node.outputs[i].inputConnectionIndex = inputI;
 					node.outputs[i].nodeConnectionIndex = nodeI;
 
@@ -163,7 +162,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 					node.outputs[i].connectionPosY = material.nodes[nodeI].inputs[inputI].posY; 
 
 					material.stateChanged = true;
-					establishConnectionFirstRelease = false;
 					break;
 
 				}	
@@ -532,7 +530,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	
 	//Delete the node
 	glUseProgram(programs.iconsProgram);
-
+	
 	if(!node.isMainOut){
 		bool deleteButtonEnter = false;
 		if(nodePanel.panelHover && !coloringPanel.active)
@@ -555,11 +553,18 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 					material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].inputConnectionIndex = 10000;
 				}
 			}
-
-			if(material.renderingPipeline.size()){
-				material.renderingPipeline.erase(material.renderingPipeline.begin() + material.nodes[currentNodeIndex].renderingIndex);
+			for (int dInI = 0; dInI < material.nodes[currentNodeIndex].inputs.size(); dInI++)
+			{
+				material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex = 10000;
+				material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex = 10000;
+				material.nodes[currentNodeIndex].inputs[dInI].isConnectedToShaderInput = false;
 			}
-
+			for (int dOutI = 0; dOutI < material.nodes[currentNodeIndex].outputs.size(); dOutI++)
+			{
+				material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex = 10000;
+				material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex = 10000;
+				material.nodes[currentNodeIndex].outputs[dOutI].isConnectedToShaderInput = false;
+			}
 			material.stateChanged = true;
 			material.nodes.erase(material.nodes.begin() + currentNodeIndex);
 
@@ -578,9 +583,9 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 					}
 				}
 			}
-			
 		}
 	
 		iconBox(iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2), depth+0.02f , icons.CircularX , 0 , colorData.iconColor, colorData.iconColor);
 	}
+
 }

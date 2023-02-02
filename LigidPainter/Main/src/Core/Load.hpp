@@ -641,6 +641,7 @@ public:
 		mainOutInput.element = "none";
 		mainOutInput.nodeConnectionIndex = 1;
 		mainOutInput.inputConnectionIndex = 0;
+		mainOutInput.pressed = false;
 
 		mainOutNode.inputs.push_back(mainOutInput);
 		mainOutNode.isMainOut = true;
