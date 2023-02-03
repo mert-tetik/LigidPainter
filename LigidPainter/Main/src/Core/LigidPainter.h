@@ -192,6 +192,7 @@ public:
 	void texturePanelButton();
 	void paintingPanelButton();
 	void exportPanelButton();
+	void settingsPanelButton();
 	void addMaskTextureButton();
 	void exportDownloadButtonEnter();
 	void exportPathTextBox();
@@ -226,6 +227,7 @@ public:
 	void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatV,float &hueValue,float &saturationValuePosX, float &saturationValuePosY,bool isMainColorPicker);
 
 
+
 };
 struct PanelData {
 	bool movePanel;
@@ -233,5 +235,6 @@ struct PanelData {
 	bool texturePanelActive;
 	bool paintingPanelActive;
 	bool exportPanelActive;
+	bool settingsPanelActive;
 };
 #endif // !MSHPAPP

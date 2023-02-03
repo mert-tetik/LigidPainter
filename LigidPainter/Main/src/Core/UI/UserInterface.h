@@ -36,13 +36,14 @@
 #define UIjpgCheckBox 27
 #define UIpngCheckBox 28
 #define UIdownloadButton 29
-#define UIjpgIcon 30
-#define UIpngIcon 31
-#define UIfolderIcon 32
-#define UIloadPlaneModelButton 33
-#define UIloadSphereModelButton 34
-#define UIplaneIcon 35
-#define UIsphereIcon 36
+#define UIskyboxCheckBox 30
+#define UIjpgIcon 31
+#define UIpngIcon 32
+#define UIfolderIcon 33
+#define UIloadPlaneModelButton 34
+#define UIloadSphereModelButton 35
+#define UIplaneIcon 36
+#define UIsphereIcon 37
 
 struct ColorData //LigidPainter color palette
 {

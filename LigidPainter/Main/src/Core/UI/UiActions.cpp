@@ -84,6 +84,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			ligid.paintingPanelButton();
 		if (callbackData.exportPanelButtonEnter)
 			ligid.exportPanelButton();
+		if (callbackData.settingsPanelButtonEnter)
+			ligid.settingsPanelButton();
 		if (UIElements[UIloadPlaneModelButton].icon.hover)
 			ligid.addPlaneButton();
 		if (UIElements[UIloadSphereModelButton].icon.hover)
@@ -92,6 +94,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			ligid.autoTriangulateCheckBox();
 		if (UIElements[UIbackfaceCullingCheckBox].checkBox.mouseHover)
 			ligid.backfaceCullingCheckBox();
+		if(UIElements[UIskyboxCheckBox].checkBox.mouseHover)
+			UIElements[UIskyboxCheckBox].checkBox.checked = !UIElements[UIskyboxCheckBox].checkBox.checked;
 		if (UIElements[UIuseNegativeCheckBox].checkBox.mouseHover)
 			ligid.useNegativeForDrawingCheckbox();
 		if (UIElements[UIloadModelButton].button.hover)

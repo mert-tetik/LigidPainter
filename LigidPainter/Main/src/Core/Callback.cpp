@@ -41,6 +41,7 @@ bool modelPanelButtonEnter;
 bool texturePanelButtonEnter;
 bool exportPanelButtonEnter;
 bool paintingPanelButtonEnter;
+bool settingsPanelButtonEnter;
 bool maskPanelSliderEnter;
 bool maskPanelEnter;
 bool mainPanelBoundariesEnter;
@@ -59,6 +60,7 @@ CallbckData preapareCallbackData() {
 	callbk.texturePanelButtonEnter = texturePanelButtonEnter;
 	callbk.paintingPanelButtonEnter = paintingPanelButtonEnter;
 	callbk.exportPanelButtonEnter = exportPanelButtonEnter;
+	callbk.settingsPanelButtonEnter = settingsPanelButtonEnter;
 	callbk.cameraPos = cameraPos;
 	callbk.originPos = originPos;
 	callbk.maskPanelSliderEnter = maskPanelSliderEnter;
@@ -184,7 +186,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 			std::string currentType = uiElements[i].type; 
 
 			bool panelCompatibility;
-			if(uiElements[i].panel == 1 && panelData.modelPanelActive || uiElements[i].panel == 2 && panelData.texturePanelActive || uiElements[i].panel == 3 && panelData.paintingPanelActive || uiElements[i].panel == 4 && panelData.exportPanelActive || uiElements[i].panel == 0){
+			if(uiElements[i].panel == 1 && panelData.modelPanelActive || uiElements[i].panel == 2 && panelData.texturePanelActive || uiElements[i].panel == 3 && panelData.paintingPanelActive || uiElements[i].panel == 4 && panelData.exportPanelActive || uiElements[i].panel == 5 && panelData.settingsPanelActive || uiElements[i].panel == 0){
 				panelCompatibility = true;
 			}
 			else{
@@ -282,6 +284,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		texturePanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX, 0.72f, mouseXPos, mouseYPos,true);
 		paintingPanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX, 0.64f, mouseXPos, mouseYPos,true);
 		exportPanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX, 0.56f, mouseXPos, mouseYPos,true);
+		settingsPanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX, 0.48f, mouseXPos, mouseYPos,true);
 	}
 
 	if(colorPicker.dropperActive){
@@ -308,7 +311,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 	else if(sndPanel.plusSignHover || sndPanel.downSignHover || sndPanel.minusSignHover){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
-	else if(modelPanelButtonEnter || texturePanelButtonEnter || paintingPanelButtonEnter || exportPanelButtonEnter){
+	else if(modelPanelButtonEnter || texturePanelButtonEnter || paintingPanelButtonEnter || exportPanelButtonEnter || settingsPanelButtonEnter){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if(nodePanel.pointerCursor){

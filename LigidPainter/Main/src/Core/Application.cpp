@@ -1145,6 +1145,7 @@ void LigidPainter::modelPanelButton() {
 	panelData.texturePanelActive = false;
 	panelData.paintingPanelActive = false;
 	panelData.exportPanelActive = false;
+	panelData.settingsPanelActive = false;
 	doPainting = false;
 }
 void LigidPainter::texturePanelButton() {
@@ -1154,6 +1155,7 @@ void LigidPainter::texturePanelButton() {
 	panelData.texturePanelActive = true;
 	panelData.paintingPanelActive = false;
 	panelData.exportPanelActive = false;
+	panelData.settingsPanelActive = false;
 	doPainting = false;
 }
 void LigidPainter::paintingPanelButton() {
@@ -1162,6 +1164,7 @@ void LigidPainter::paintingPanelButton() {
 	panelData.texturePanelActive = false;
 	panelData.paintingPanelActive = true;
 	panelData.exportPanelActive = false;
+	panelData.settingsPanelActive = false;
 	doPainting = true;
 	
 	if(!albedoTextures.size())
@@ -1174,8 +1177,21 @@ void LigidPainter::exportPanelButton() {
 	panelData.texturePanelActive = false;
 	panelData.paintingPanelActive = false;
 	panelData.exportPanelActive = true;
+	panelData.settingsPanelActive = false;
 	doPainting = false;
 }
+
+void LigidPainter::settingsPanelButton(){
+	nodeScenes[selectedNodeScene].stateChanged = true;
+
+	panelData.modelPanelActive = false;
+	panelData.texturePanelActive = false;
+	panelData.paintingPanelActive = false;
+	panelData.exportPanelActive = false;
+	panelData.settingsPanelActive = true;
+	doPainting = false;
+}
+
 void LigidPainter::addImageButton() {
 	Utilities utilities;
 	GlSet glset;

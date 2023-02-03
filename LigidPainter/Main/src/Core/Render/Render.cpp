@@ -261,7 +261,10 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		currentMaterialIndex = 0; 
 	}
 
+	glClearColor(colorData.viewportBackColor.r,colorData.viewportBackColor.g,colorData.viewportBackColor.b,1);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear before rendering
+
 
 
 	//Get screen and mouse info
@@ -312,7 +315,8 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 	glActiveTexture(GL_TEXTURE13);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
-	renderSkyBox(skyBoxShaderData,renderPrograms);
+	if(UIElements[UIskyboxCheckBox].checkBox.checked)
+		renderSkyBox(skyBoxShaderData,renderPrograms);
 	
 
 

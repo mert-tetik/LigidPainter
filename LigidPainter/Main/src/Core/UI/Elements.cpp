@@ -384,6 +384,17 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     downloadButtonElement.type = "button";
     UIElements.push_back(downloadButtonElement);//30
 
+    UIElement skyboxCheckBoxElement;
+    skyboxCheckBoxElement.checkBox.positionX = -0.03f;
+    skyboxCheckBoxElement.checkBox.positionY = 0.8f;
+    skyboxCheckBoxElement.checkBox.text = "skybox";
+    skyboxCheckBoxElement.checkBox.checked = true;
+    skyboxCheckBoxElement.checkBox.mouseHover = false;
+    skyboxCheckBoxElement.panel = 5;
+    skyboxCheckBoxElement.attachedToMainPanel = true;
+    skyboxCheckBoxElement.type = "checkBox";
+    UIElements.push_back(skyboxCheckBoxElement);//31
+
 
 
 	//-------------ICONS-------------
@@ -402,7 +413,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     jpgIconElement.panel = 4;
     jpgIconElement.attachedToMainPanel = true;
     jpgIconElement.type = "icon";
-    UIElements.push_back(jpgIconElement);//31
+    UIElements.push_back(jpgIconElement);//32
 
     UIElement pngIconElement;
     pngIconElement.icon.positionX = +0.1f;
@@ -417,7 +428,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     pngIconElement.panel = 4;
     pngIconElement.attachedToMainPanel = true;
     pngIconElement.type = "icon";
-    UIElements.push_back(pngIconElement);//32
+    UIElements.push_back(pngIconElement);//33
 
 	UIElement folderIconElement;
     folderIconElement.icon.positionX = 0.1f;
@@ -432,7 +443,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     folderIconElement.panel = 1;
     folderIconElement.attachedToMainPanel = true;
     folderIconElement.type = "icon";
-    UIElements.push_back(folderIconElement);//33
+    UIElements.push_back(folderIconElement);//34
 
     //Load plane button
 	UIElement loadPlaneModelButtonElement;
@@ -449,7 +460,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     loadPlaneModelButtonElement.panel = 1;
     loadPlaneModelButtonElement.attachedToMainPanel = true;
 	loadPlaneModelButtonElement.type = "icon";
-    UIElements.push_back(loadPlaneModelButtonElement);//34
+    UIElements.push_back(loadPlaneModelButtonElement);//35
 
 	//Load sphere button 
 	UIElement loadSphereModelButtonElement;
@@ -466,7 +477,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     loadSphereModelButtonElement.panel = 1;
     loadSphereModelButtonElement.attachedToMainPanel = true;
 	loadSphereModelButtonElement.type = "icon";
-    UIElements.push_back(loadSphereModelButtonElement);//35
+    UIElements.push_back(loadSphereModelButtonElement);//36
 
 	UIElement planeIconElement;
     planeIconElement.icon.positionX = 0.0f;
@@ -481,7 +492,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     planeIconElement.panel = 1;
     planeIconElement.attachedToMainPanel = true;
 	planeIconElement.type = "icon";
-    UIElements.push_back(planeIconElement);//36
+    UIElements.push_back(planeIconElement);//37
 
     UIElement sphereIconElement;
     sphereIconElement.icon.positionX = 0.0f;
@@ -496,7 +507,6 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     sphereIconElement.panel = 1;
     sphereIconElement.attachedToMainPanel = true;
 	sphereIconElement.type = "icon";
-    UIElements.push_back(sphereIconElement);//37
-
+    UIElements.push_back(sphereIconElement);//38
 	return UIElements;
 }

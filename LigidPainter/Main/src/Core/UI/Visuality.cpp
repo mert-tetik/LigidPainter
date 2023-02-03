@@ -153,6 +153,10 @@ void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.56f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
 	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.567f,0.6f,icons.Export,0,colorD.iconColor,colorD.iconColor);
 
+	//Settings panel button
+	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.48f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	//iconBox(0.012f,0.024f,panelLoc - 0.013f,0.567f,0.6f,icons.Export,0,colorD.iconColor,colorD.iconColor);
+
 	glUseProgram(uiPrograms.uiProgram);
 	
 	//Barriers
@@ -1386,7 +1390,6 @@ void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned
 
 	glUseProgram(programs.iconsProgram); 
 
-		#pragma region brushMaskPanel
 		float maskXpos = 0.0f;
 		float maskYpos = 0.0f;
 		for (size_t i = 0; i < maskTextures.size(); i++)
@@ -1443,5 +1446,8 @@ void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned
 				uiOut.maskPanelMaskHover = true;
 			}
 		}
-		#pragma endregion brushMaskPanel
 }
+
+// void UserInterface::listBox(){
+
+// }
