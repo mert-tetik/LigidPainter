@@ -1,0 +1,46 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Channels;
+-color : hex4287f5; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color;
+--element : none;
+--value : 0,0,0;
+
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : R;
+
+-output_1 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : G;
+
+-output_2 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : B;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+void main (){
+    output_0 = vec4(texture2D(input_0,tex_coords).r,0,0,1);
+    output_1 = vec4(0,texture2D(input_0,tex_coords).g,0,1);
+    output_2 = vec4(0,0,texture2D(input_0,tex_coords).b,1);
+}
