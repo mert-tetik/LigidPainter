@@ -383,6 +383,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     downloadButtonElement.attachedToMainPanel = true;
     downloadButtonElement.type = "button";
     UIElements.push_back(downloadButtonElement);//30
+    
 
     //---------------------------SETTINGS PANEL---------------------------
 

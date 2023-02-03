@@ -40,13 +40,14 @@
 #define UIskyBoxExposureRangeBar 31
 #define UIskyBoxRotationRangeBar 32
 #define UIstabilizeFpsCheckBox 33
-#define UIjpgIcon 34
-#define UIpngIcon 35
-#define UIfolderIcon 36
-#define UIloadPlaneModelButton 37
-#define UIloadSphereModelButton 38
-#define UIplaneIcon 39
-#define UIsphereIcon 40
+#define UItextureResolutionListBoxElement 34
+#define UIjpgIcon 35
+#define UIpngIcon 36
+#define UIfolderIcon 37
+#define UIloadPlaneModelButton 38
+#define UIloadSphereModelButton 39
+#define UIplaneIcon 40
+#define UIsphereIcon 41
 
 struct ColorData //LigidPainter color palette
 {
@@ -543,6 +544,7 @@ public:
 	void textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool firstClick,ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures);
 	void modelMaterialPanel(Model &model,Programs programs,RenderData renderData,int screenGapX,float materialsPanelSlideValue,double mouseXpos,double mouseYpos,bool &texturePanelButtonHover,RenderOutData& uiOut,int& currentMaterialIndex,bool firstClick,bool& newModelAdded, float texturePanelButtonMixVal,int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes);
 	void brushMaskTexturePanel(Programs programs,std::vector<unsigned int> &maskTextures,float centerCoords, float screenGapX,float maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData);
+	void listBox(float posX,float posY,float posZ,const char* title,float width, Icons icons,std::vector<const char*> list,bool active,GLFWwindow* window, float mouseXpos,float mouseYpos,bool firstClick,int &chosenIndex);
 
 
 

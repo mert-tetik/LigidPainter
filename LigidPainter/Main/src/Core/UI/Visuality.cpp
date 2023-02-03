@@ -1448,6 +1448,55 @@ void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned
 		}
 }
 
-// void UserInterface::listBox(){
+void UserInterface::listBox(float posX,float posY,float posZ,const char* title,float width,Icons icons,std::vector<const char*> list, bool active,GLFWwindow* window, float mouseXpos,float mouseYpos,bool firstClick,int &chosenIndex){
+	ColorData colorData;
+	
+	if(active){
+		const float contHeight = list.size()/27.5;
+		container(posX,posY-contHeight,posZ,width,contHeight,glm::vec4(0.2),uiPrograms,icons.Circle);
+		for (size_t i = 1; i <= list.size(); i++)
+		{
+			glUseProgram(uiPrograms.uiProgram);
+			bool hover = isMouseOnButton(window,width, 0.03f,posX,posY - i/15.f,mouseXpos,mouseYpos,false);
+			bool pressed = false;
+			
+			if(i-1 == chosenIndex){
+				pressed = true;
+			}
 
-// }
+			if(hover && firstClick){
+				chosenIndex = i-1;
+			}
+
+			glm::vec4 color;
+			if(hover){
+				if(pressed){
+					color = glm::vec4(colorData.LigidPainterThemeColor,0.2f);
+				}
+				else{
+					color = glm::vec4(0.2,0.2,0.2,0.2);
+				}
+			}
+			else{
+				if(pressed){
+					color = glm::vec4(colorData.LigidPainterThemeColor,0.5f);
+				}
+				else{
+					color = glm::vec4(0.2,0.2,0.2,0.2f);
+				}
+			}
+
+			box(width+0.022f, 0.03f, posX,posY - i/15.f, list[i-1], color, width, false, false, posZ+(float)(hover||pressed)/1000.f, 10000, color, 0);
+		}
+		
+	}
+	glUseProgram(uiPrograms.uiProgram);
+	
+	box(width, 0.04f, posX,posY, title, glm::vec4(0.1,0.1,0.1,0.2), width, false, false, posZ+0.0001f, 10000, glm::vec4(0.1,0.1,0.1,0.2), 0);
+	
+	glUseProgram(uiPrograms.iconsProgram);
+	circle(posX-width,posY,posZ+0.0001f,0.025,0.05,icons.Circle,glm::vec4(0.1,0.1,0.1,0.2));
+	circle(posX+width,posY,posZ+0.0001f,0.025,0.05,icons.Circle,glm::vec4(0.1,0.1,0.1,0.2));
+	
+	glUseProgram(uiPrograms.uiProgram);
+}

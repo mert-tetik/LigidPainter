@@ -75,7 +75,7 @@ float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<aTexture> &
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
 ,NodePanel &nodePanel,SndPanel &sndPanel, int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool firstClick
-,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel) {
+,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -326,15 +326,12 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			if(currentType == "text"){	
 				ui.renderText(programs.uiProgram,UIElements[i].text.text, centerCoords - screenGapX + UIElements[i].text.positionX, UIElements[i].text.positionY, UIElements[i].text.scale,colorData.textColor,0.99999f,false);
 			}
-
 			if(currentType == "rangeBar"){
 				ui.rangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY, UIElements[i].rangeBar.value);
 			}
-
 			if(currentType == "textBox"){
 				ui.box(UIElements[i].textBox.width, UIElements[i].textBox.height,centerCoords - screenGapX + UIElements[i].textBox.position_x, UIElements[i].textBox.position_y,UIElements[i].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements[i].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements[i].textBox.transitionMixVal); //Add mask texture button
 			}
-
 			if(currentType == "checkBox"){
 				ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,icons.Circle); //jpg checkbox
 			}
@@ -343,6 +340,9 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			}
 		}
 	}	
+	
+	if(panelData.settingsPanelActive)
+		ui.listBox(centerCoords - screenGapX,0.5f,0.9f,"Texture Resulation",0.1f,icons,{"256","512","1024","2048","4096","8412"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenTextureResIndex);
 
 	alertState = 0;
 

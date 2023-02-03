@@ -180,6 +180,7 @@ int screenHeight;
 Programs programs;
 glm::vec3 drawColor;
 OutShaderData outShaderData;
+int chosenTextureResIndex = 0; //0:256 1:512 2:1024 3:2048 4:4096 5:8412
 
 bool LigidPainter::run()
 {
@@ -462,7 +463,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex);
 		}
 		
 		//double lastTime = glfwGetTime();
@@ -573,7 +574,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
