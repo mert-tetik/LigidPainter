@@ -11,10 +11,13 @@
 #include "Core/LigidPainter.h"
 #include "Core/gl.h"
 
-void Render::renderSkyBox(SkyBoxShaderData data,Programs programs) {
+void Render::renderSkyBox(SkyBoxShaderData data,Programs programs,float exposureVal) {
 	GlSet gls;
 
 	gls.useSkyBoxShader(programs.skyboxProgram,data);
+	
+	const float uniExpo = (exposureVal + 0.11f) * 4.54545454545 * 2 + 0.1;
+	gls.uniform1f(programs.skyboxProgram,"exposure",uniExpo);
 	
 	glDepthMask(GL_FALSE);
 	glDepthFunc(GL_LEQUAL);
@@ -63,5 +66,8 @@ void Render::renderSkyBox(SkyBoxShaderData data,Programs programs) {
 	glDepthFunc(GL_LESS);
 	glDepthMask(GL_TRUE);
 	
+	glUseProgram(programs.PBRProgram);
+	gls.uniform1f(programs.PBRProgram,"skyboxExposure",uniExpo);
+
 	glUseProgram(programs.uiProgram);
 }

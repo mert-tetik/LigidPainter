@@ -80,7 +80,7 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 			chosenTxtr = albedoTextures[chosenTextureIndex].id;
 
 		//Render painted image
-		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0));
+		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0);
 
 		// if (!paintOut)
 		// 	gl.drawArrays(renderVertices, false);
@@ -137,7 +137,7 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		unsigned int chosenTxtr = 0;
 		if(albedoTextures.size() != 0)
 			chosenTxtr = albedoTextures[chosenTextureIndex].id;
-		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0));
+		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0);
 
 		GLubyte* renderedImage = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
 		glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);

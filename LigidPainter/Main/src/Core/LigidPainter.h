@@ -211,6 +211,8 @@ public:
 	void brushBordersRangeBar(double xOffset, int width, int height);
 	void textureDisplayerButton(double xOffset,double yOffset,int width,int height);
 	void textureDisplayerBoundaries(double xOffset,double yOffset,int width,int height);
+	void skyboxExposureRangeBar(double xOffset, int width, int height);
+
 	void paintingDropper();
 	void exportFileNameTextBox();
 	void colorBox();

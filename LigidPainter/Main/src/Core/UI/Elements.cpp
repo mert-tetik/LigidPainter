@@ -384,6 +384,10 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     downloadButtonElement.type = "button";
     UIElements.push_back(downloadButtonElement);//30
 
+    //---------------------------SETTINGS PANEL---------------------------
+
+
+
     UIElement skyboxCheckBoxElement;
     skyboxCheckBoxElement.checkBox.positionX = -0.03f;
     skyboxCheckBoxElement.checkBox.positionY = 0.8f;
@@ -394,6 +398,15 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     skyboxCheckBoxElement.attachedToMainPanel = true;
     skyboxCheckBoxElement.type = "checkBox";
     UIElements.push_back(skyboxCheckBoxElement);//31
+
+    UIElement skyBoxExposureRangeBarElement;
+	skyBoxExposureRangeBarElement.rangeBar.positionX = 0.0f;
+	skyBoxExposureRangeBarElement.rangeBar.positionY = -0.30f+0.1f+0.02f;
+	skyBoxExposureRangeBarElement.rangeBar.value = 0.f;
+	skyBoxExposureRangeBarElement.panel = 5;
+	skyBoxExposureRangeBarElement.attachedToMainPanel = true;
+	skyBoxExposureRangeBarElement.type = "rangeBar";
+    UIElements.push_back(skyBoxExposureRangeBarElement);//32
 
 
 

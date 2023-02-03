@@ -1018,6 +1018,13 @@ void LigidPainter::brushOpacityRangeBar(double xOffset, int width, int height) {
 	UIElements[UIbrushOpacityRangeBar].rangeBar.value -= xOffset / (width / 2.0f);
 	UIElements[UIbrushOpacityRangeBar].rangeBar.value = util.restrictBetween(UIElements[UIbrushOpacityRangeBar].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
 }
+void LigidPainter::skyboxExposureRangeBar(double xOffset, int width, int height) {
+	Utilities util;
+	Texture txtr;
+	//brushOpacityChanged = true; not used
+	UIElements[UIskyBoxExposureRangeBar].rangeBar.value -= xOffset / (width / 2.0f);
+	UIElements[UIskyBoxExposureRangeBar].rangeBar.value = util.restrictBetween(UIElements[UIskyBoxExposureRangeBar].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+}
 void LigidPainter::brushSpacingRangeBar(double xOffset, int width, int height) {
 	Utilities util;
 	Texture txtr;

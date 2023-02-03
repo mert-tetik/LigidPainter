@@ -2,8 +2,6 @@
 
 struct Material { //Will be updated
    sampler2D diffuse;
-   sampler2D specular; //Not used
-   float shininess; //32.0f
 };
 uniform Material material;
 
@@ -26,7 +24,6 @@ uniform sampler2D depthTexture; //Screen rendered with depth color
 uniform sampler2D mirroredDepthTexture; //Screen rendered with depth color
 
 uniform vec3 viewPos;
-uniform vec3 mirroredViewPos;
 
 
 out vec4 color;
@@ -34,6 +31,8 @@ out vec4 color;
 uniform samplerCube bluryskybox;
 uniform samplerCube prefilterMap;
 uniform sampler2D brdfLUT;
+
+uniform float skyboxExposure;
 
 float far = 10.0f;
 float near = 0.1f;
@@ -224,12 +223,12 @@ vec3 getRealisticResult(vec3 paintedDiffuse){
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;	  
     
-    vec3 irradiance = texture(bluryskybox, N).rgb;
+    vec3 irradiance = texture(bluryskybox, N).rgb * skyboxExposure;
     vec3 diffuse      = irradiance * albedo;
     
     // sample both the pre-filter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part.
     const float MAX_REFLECTION_LOD = 4.0;
-    vec3 prefilteredColor = textureLod(prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;    
+    vec3 prefilteredColor = textureLod(prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb * skyboxExposure;    
     vec2 brdf  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
     vec3 specular = prefilteredColor * (F);
 

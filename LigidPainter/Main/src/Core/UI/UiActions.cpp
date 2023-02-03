@@ -17,6 +17,7 @@ bool brushRotationRangeBarPressed;
 bool brushOpacityRangeBarPressed;
 bool brushSpacingRangeBarPressed;
 bool brushBordersRangeBarPressed;
+bool skyboxExposureRangeBarPressed;
 bool colorBoxColorRangeBarPressed;
 bool colorBoxPickerPressed;
 bool maskPanelSliderPressed;
@@ -45,6 +46,9 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		}
 		else if (UIElements[UIbrushBordersRangeBar].rangeBar.hover) {
 			brushBordersRangeBarPressed = true;
+		}
+		else if (UIElements[UIskyBoxExposureRangeBar].rangeBar.hover) {
+			skyboxExposureRangeBarPressed = true;
 		}
 		else if (colorPicker.saturationValuePointerHover) {
 			colorBoxPickerPressed = true;
@@ -146,6 +150,7 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		brushOpacityRangeBarPressed = false;
 		brushSpacingRangeBarPressed = false;
 		brushBordersRangeBarPressed = false;
+		skyboxExposureRangeBarPressed = false;
 		colorBoxPickerPressed = false;
 		colorBoxColorRangeBarPressed = false;
 		textureDisplayer.buttonPressed = false;
@@ -179,6 +184,9 @@ SndPanel &sndPanel){
 	}
 	if (brushBordersRangeBarPressed) {
 		ligid.brushBordersRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
+	}
+	if (skyboxExposureRangeBarPressed) {
+		ligid.skyboxExposureRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
 	}
 	if (colorBoxColorRangeBarPressed) {
 		ligid.colorBoxColorRangeBar(yOffset,screenHeight);//Changes the global variable

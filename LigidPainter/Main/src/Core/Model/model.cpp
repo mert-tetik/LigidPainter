@@ -31,7 +31,7 @@ using namespace std;
     string directory;
 
     // draws the model, and thus all its meshes
-    void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,unsigned int selectedTexture,glm::vec3 viewPos)
+    void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,unsigned int selectedTexture,glm::vec3 viewPos,float skyboxExposureVal)
     {
         if(meshes.size() > 0 && paintingMode){
             glActiveTexture(GL_TEXTURE0);
@@ -60,6 +60,8 @@ using namespace std;
                 glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "prefilterMap"), 16);
                 glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "brdfLUT"), 15);
                 glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "blurySkybox"), 13);
+            	const float uniExpo = (skyboxExposureVal + 0.11f) * 4.54545454545 * 2;
+                glUniform1f(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "skyboxExposure"), uniExpo);
                 glUniform3fv(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "viewPos"),1,&viewPos[0]);
 
 
