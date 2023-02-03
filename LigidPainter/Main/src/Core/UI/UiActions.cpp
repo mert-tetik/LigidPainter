@@ -104,6 +104,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			ligid.backfaceCullingCheckBox();
 		if(UIElements[UIskyboxCheckBox].checkBox.mouseHover)
 			UIElements[UIskyboxCheckBox].checkBox.checked = !UIElements[UIskyboxCheckBox].checkBox.checked;
+		if(UIElements[UIstabilizeFpsCheckBox].checkBox.mouseHover)
+			UIElements[UIstabilizeFpsCheckBox].checkBox.checked = !UIElements[UIstabilizeFpsCheckBox].checkBox.checked;
 		if (UIElements[UIuseNegativeCheckBox].checkBox.mouseHover)
 			ligid.useNegativeForDrawingCheckbox();
 		if (UIElements[UIloadModelButton].button.hover)

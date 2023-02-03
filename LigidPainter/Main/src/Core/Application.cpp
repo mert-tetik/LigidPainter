@@ -343,8 +343,11 @@ bool LigidPainter::run()
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		glfwPollEvents();
-
-		//glfwSwapInterval(1);
+		if(UIElements[UIstabilizeFpsCheckBox].checkBox.checked)
+			glfwSwapInterval(1);
+		else
+			glfwSwapInterval(0);
+		
 		//util.printRenderingSpeed();
 		
 		util.printError();

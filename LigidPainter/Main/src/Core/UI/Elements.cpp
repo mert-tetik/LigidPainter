@@ -416,6 +416,17 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	skyBoxRotationRangeBarElement.attachedToMainPanel = true;
 	skyBoxRotationRangeBarElement.type = "rangeBar";
     UIElements.push_back(skyBoxRotationRangeBarElement);//32
+    
+    UIElement stabilizeFpsCheckBoxElement;
+    stabilizeFpsCheckBoxElement.checkBox.positionX = -0.03f;
+    stabilizeFpsCheckBoxElement.checkBox.positionY = -0.5f;
+    stabilizeFpsCheckBoxElement.checkBox.text = "sync";
+    stabilizeFpsCheckBoxElement.checkBox.checked = true;
+    stabilizeFpsCheckBoxElement.checkBox.mouseHover = false;
+    stabilizeFpsCheckBoxElement.panel = 5;
+    stabilizeFpsCheckBoxElement.attachedToMainPanel = true;
+    stabilizeFpsCheckBoxElement.type = "checkBox";
+    UIElements.push_back(stabilizeFpsCheckBoxElement);//33
 
 
 
