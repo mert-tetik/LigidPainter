@@ -275,7 +275,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                 if(!material.renderingPipeline[nodeI].useModel)
                     glset.drawArrays(renderVertices,false);
                 else
-                    model.meshes[0].Draw();
+                    model.meshes[0].Draw(); //TODO : 
 
 
                 glset.generateMipmap();
