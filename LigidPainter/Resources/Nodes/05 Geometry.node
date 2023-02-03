@@ -1,9 +1,10 @@
 # For ligidtools.com
 # Node extension v1.0
 
-%attributes;
 
-^ 
+%attributes;
+$ #Use the model's texture coords instead of a plane
+
 
 -title : Channels;
 -color : hex4287f5; #rgb122,124,66  #hsv86,45,23

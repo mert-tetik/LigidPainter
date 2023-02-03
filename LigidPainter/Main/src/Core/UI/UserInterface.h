@@ -377,6 +377,8 @@ struct Node{
 	bool isMainOut = false;
 
 	int renderingIndex = 10000;
+
+	bool useModel = false;
 };
 
 struct ContextMenu {

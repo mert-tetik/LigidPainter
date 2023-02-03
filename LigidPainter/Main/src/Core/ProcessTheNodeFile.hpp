@@ -30,6 +30,8 @@ struct ProcessHppNode{
     
     std::vector<std::vector<std::string>> lists;
 
+    bool useModel = false;
+
     std::string code;
 };
 
@@ -60,6 +62,11 @@ ProcessHppNode processNodeFile(std::string filePath){
         completeFile += line;
         line = removeComments(line);
         
+        if(line[0] == '$'){
+            processHppNode.useModel = true;
+            std::cout << "ABAB";
+        }
+        
         if(line[0] == '%'){ //Major tokens
             completeToken = processTheWord(line,1,true,';');
             
@@ -78,6 +85,8 @@ ProcessHppNode processNodeFile(std::string filePath){
                 break;
             }
         }
+
+
 
         if(attributes && mainIndex != stateChanged){ //Subtokens
             processSubToken(line);

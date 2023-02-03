@@ -271,8 +271,13 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                 glReadBuffer(GL_COLOR_ATTACHMENT0 + outI);
                 
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-                glset.drawArrays(renderVertices,false);
+                
+                if(!material.renderingPipeline[nodeI].useModel)
+                    glset.drawArrays(renderVertices,false);
+                else
+                    model.meshes[0].Draw();
+
+
                 glset.generateMipmap();
 
                 GLubyte* data = new GLubyte[1920*1080*4];

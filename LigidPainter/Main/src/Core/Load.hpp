@@ -441,6 +441,10 @@ public:
 		resultNode.upBarColor.b = node.color[2]/255.f;
 		resultNode.upBarColor.a = 1.f;
 
+		resultNode.useModel = node.useModel;
+		if(node.useModel)
+			std::cout <<"ASDASDF";
+
 		float rangeBarCount = 0;
 		//Load inputs
 		for (int i = 0; i < node.inputs.size(); i++)
@@ -557,7 +561,7 @@ public:
 			    	"posScene = projection * view * vec4(aPos, 0.5);\n" 
 				"}\n"
 				"else{\n"
-			    	"posScene = projection * vec4(aPos, 1);\n" 
+			    	"posScene = projection * vec4(tex_coords,0, 1);\n" 
 				"}\n"
 			    "gl_Position = posScene;\n"
 			"}\0";
