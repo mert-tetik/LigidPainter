@@ -408,6 +408,15 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	skyBoxExposureRangeBarElement.type = "rangeBar";
     UIElements.push_back(skyBoxExposureRangeBarElement);//32
 
+    UIElement skyBoxRotationRangeBarElement;
+	skyBoxRotationRangeBarElement.rangeBar.positionX = 0.0f;
+	skyBoxRotationRangeBarElement.rangeBar.positionY = -0.30f;
+	skyBoxRotationRangeBarElement.rangeBar.value = 0.f;
+	skyBoxRotationRangeBarElement.panel = 5;
+	skyBoxRotationRangeBarElement.attachedToMainPanel = true;
+	skyBoxRotationRangeBarElement.type = "rangeBar";
+    UIElements.push_back(skyBoxRotationRangeBarElement);//32
+
 
 
 	//-------------ICONS-------------

@@ -31,7 +31,7 @@ using namespace std;
     string directory;
 
     // draws the model, and thus all its meshes
-    void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,unsigned int selectedTexture,glm::vec3 viewPos,float skyboxExposureVal)
+    void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,unsigned int selectedTexture,glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal)
     {
         if(meshes.size() > 0 && paintingMode){
             glActiveTexture(GL_TEXTURE0);
@@ -49,6 +49,12 @@ using namespace std;
 
         	    glUniformMatrix4fv(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "projection"), 1,GL_FALSE, glm::value_ptr(projection));
         	    glUniformMatrix4fv(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "view"), 1,GL_FALSE, glm::value_ptr(view));
+                
+                const float uniRot = (skyboxRotationVal + 0.11f) * 1636.36363636;
+	            glm::mat4 rotation = glm::mat4(1);
+	            rotation = glm::rotate(rotation, glm::radians(uniRot), glm::vec3(0.0, 1.0, 0.0));
+	            glUniformMatrix4fv(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "skyboxRotation"), 1,GL_FALSE, glm::value_ptr(rotation));
+
                 for (size_t txtI = 0; txtI < modelMaterials[meshes[i].materialIndex].textures.size(); txtI++)
                 {
                     glActiveTexture(GL_TEXTURE20 + txtI);
@@ -60,7 +66,7 @@ using namespace std;
                 glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "prefilterMap"), 16);
                 glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "brdfLUT"), 15);
                 glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "blurySkybox"), 13);
-            	const float uniExpo = (skyboxExposureVal + 0.11f) * 4.54545454545 * 2;
+            	const float uniExpo = (skyboxExposureVal + 0.11f) * 4.54545454545 *2 ;
                 glUniform1f(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "skyboxExposure"), uniExpo);
                 glUniform3fv(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "viewPos"),1,&viewPos[0]);
 
