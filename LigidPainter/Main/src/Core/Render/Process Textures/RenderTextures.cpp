@@ -15,22 +15,45 @@
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"
 
-void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screenSizeY, OutShaderData outShaderData,Model &model,bool renderDefault,std::vector<aTexture> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex) {
+void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screenSizeY, OutShaderData outShaderData,Model &model,bool renderDefault,std::vector<aTexture> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex,int chosenTextureResIndex) {
 	int maxHistoryHold = 20;
 
+	int txtrRes = 256;
+	for (size_t i = 0; i < chosenTextureResIndex; i++)
+	{
+		txtrRes*=2;
+	}
+	
+
 	if(isRenderTexture){
+    	GlSet gl;
 		
+		glActiveTexture(GL_TEXTURE28);
+		unsigned int FBO;
+		gl.genFramebuffers(FBO);
+		gl.bindFramebuffer(FBO);
+
+		unsigned int textureColorbuffer;
+		gl.genTextures(textureColorbuffer);
+		gl.bindTexture(textureColorbuffer);
+		gl.texImage(NULL, txtrRes,txtrRes,GL_RGB);
+		gl.generateMipmap();
+		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+
 		//UNDO
 		Texture txtr;
 		if(albedoTextures.size() > 0){
-			GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, 1080, 1080, 3);
+			GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, txtrRes, txtrRes, 3);
 
 			GlSet glset;
 			glActiveTexture(GL_TEXTURE28);
 			unsigned int orgTexture;
 			glset.genTextures(orgTexture);
 			glset.bindTexture(orgTexture);
-			glset.texImage(originalImage,1080,1080,GL_RGB);
+			glset.texImage(originalImage,txtrRes,txtrRes,GL_RGB);
 			glset.generateMipmap();
 
 			albedoTextures[chosenTextureIndex].undoList.push_back(orgTexture);
@@ -57,16 +80,15 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
 		};
 
-    	GlSet gl;
 		//Setup
-		glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
+		glm::mat4 projection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
 		outShaderData.renderTextureProjection = projection;
 		gl.useOutShader(programs.outProgram, outShaderData);
 
 
 		gl.uniform1i(programs.outProgram, "isTwoDimensional", 0);
-		gl.viewport(1920, 1080);
-		gl.bindFramebuffer(FBOScreen);
+		gl.viewport(txtrRes, txtrRes);
+		gl.bindFramebuffer(FBO);
 		glClearColor(0,0,0,1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//Setup
@@ -85,10 +107,10 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		// if (!paintOut)
 		// 	gl.drawArrays(renderVertices, false);
 
-		GLubyte* renderedImage = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
-		glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
+		GLubyte* renderedImage = new GLubyte[txtrRes * txtrRes * 3 * sizeof(GLubyte)];
+		glReadPixels(0, 0, txtrRes, txtrRes, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
 		gl.activeTexture(GL_TEXTURE0);
-		gl.texImage(renderedImage, 1080, 1080, GL_RGB);
+		gl.texImage(renderedImage, txtrRes, txtrRes, GL_RGB);
 		gl.generateMipmap();
 		delete[]renderedImage;
 		//Render painted image
@@ -97,13 +119,13 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 
 		//Render uv mask
 		gl.uniform1i(programs.outProgram, "whiteRendering", 1);
-		renderTexture(renderVertices,1080, 1080,GL_TEXTURE7,GL_RGB,model,true,modelMaterials,view,albedoTextures,chosenTextureIndex);
+		renderTexture(renderVertices,txtrRes, txtrRes,GL_TEXTURE7,GL_RGB,model,true,modelMaterials,view,albedoTextures,chosenTextureIndex);
 		gl.uniform1i(programs.outProgram, "whiteRendering", 0);
-		//Render uv mask
+		// //Render uv mask
 
-		//interpret the albedo with ui mask texture
+		// //interpret the albedo with ui mask texture
 		gl.uniform1i(programs.outProgram, "interpretWithUvMask", 1);
-		renderTexture(renderVertices,1080, 1080,GL_TEXTURE0,GL_RGB,model, false,modelMaterials,view,albedoTextures,chosenTextureIndex);//Render enlarged texture
+		renderTexture(renderVertices,txtrRes, txtrRes,GL_TEXTURE0,GL_RGB,model, false,modelMaterials,view,albedoTextures,chosenTextureIndex);//Render enlarged texture
 		gl.uniform1i(programs.outProgram, "interpretWithUvMask", 0);
 		//interpret the albedo with ui mask texture
 
@@ -128,7 +150,7 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 
 		gl.uniform1i(programs.outProgram, "isTwoDimensional", 0);
 		gl.viewport(1920, 1080);
-		gl.bindFramebuffer(FBOScreen);
+		gl.bindFramebuffer(txtrRes);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		gl.uniform1i(programs.outProgram,"renderPaintedTxtrMask",0);

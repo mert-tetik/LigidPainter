@@ -180,7 +180,7 @@ int screenHeight;
 Programs programs;
 glm::vec3 drawColor;
 OutShaderData outShaderData;
-int chosenTextureResIndex = 0; //0:256 1:512 2:1024 3:2048 4:4096 5:8412
+int chosenTextureResIndex = 2; //0:256 1:512 2:1024 3:2048 4:4096 5:8412
 
 bool LigidPainter::run()
 {
@@ -1450,7 +1450,15 @@ void LigidPainter::sndPanelDownIcon(){
 		
 		if (albedoPathCheck) {
 			std::string albedoTexturePath = albedoPathCheck;
-			txtr.getTexture(albedoTexturePath,1080,1080,true); //Force albedo's ratio to be 1:1
+			
+			int txtrRes = 256;
+			for (size_t i = 0; i < chosenTextureResIndex; i++)
+			{
+				txtrRes*=2;
+			}
+
+			txtr.getTexture(albedoTexturePath,txtrRes,txtrRes,true); //Force albedo's ratio to be 1:1
+
 			result.id = texture;
 			result.name = "texture_" + std::to_string(albedoTextures.size()); 
 			albedoTextures.push_back(result);

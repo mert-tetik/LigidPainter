@@ -40,14 +40,13 @@
 #define UIskyBoxExposureRangeBar 31
 #define UIskyBoxRotationRangeBar 32
 #define UIstabilizeFpsCheckBox 33
-#define UItextureResolutionListBoxElement 34
-#define UIjpgIcon 35
-#define UIpngIcon 36
-#define UIfolderIcon 37
-#define UIloadPlaneModelButton 38
-#define UIloadSphereModelButton 39
-#define UIplaneIcon 40
-#define UIsphereIcon 41
+#define UIjpgIcon 34
+#define UIpngIcon 35
+#define UIfolderIcon 36
+#define UIloadPlaneModelButton 37
+#define UIloadSphereModelButton 38
+#define UIplaneIcon 39
+#define UIsphereIcon 40
 
 struct ColorData //LigidPainter color palette
 {

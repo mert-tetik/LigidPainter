@@ -207,7 +207,7 @@ std::vector<aTexture> albedoTextures,int chosenTextureIndex){
 	else
 		gl.drawArrays(vertices, false); //Render Model
 
-	GLubyte* renderedTexture = new GLubyte[width * 1080 * 3 * sizeof(GLubyte)];
+	GLubyte* renderedTexture = new GLubyte[width * height * 3 * sizeof(GLubyte)];
 	glReadPixels(0, 0, width, height, channels, GL_UNSIGNED_BYTE, renderedTexture);
 
 	gl.activeTexture(texture);
@@ -302,7 +302,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 
 	if (isRenderTexture || paintRender) {
-		renderTextures(FBOScreen,screenSizeX, screenSizeY,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterials,view,selectedAlbedoTextureIndex);
+		renderTextures(FBOScreen,screenSizeX, screenSizeY,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterials,view,selectedAlbedoTextureIndex,chosenTextureResIndex);
 		
 		//Download enlarged texture
 		

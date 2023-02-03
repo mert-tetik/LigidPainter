@@ -342,7 +342,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	}	
 	
 	if(panelData.settingsPanelActive)
-		ui.listBox(centerCoords - screenGapX,0.5f,0.9f,"Texture Resulation",0.1f,icons,{"256","512","1024","2048","4096","8412"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenTextureResIndex);
+		ui.listBox(centerCoords - screenGapX,0.5f,0.9f,"Texture Resolution",0.1f,icons,{"256","512","1024","2048","4096","8412"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenTextureResIndex);
 
 	alertState = 0;
 
