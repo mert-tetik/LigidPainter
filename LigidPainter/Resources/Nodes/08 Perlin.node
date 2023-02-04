@@ -11,7 +11,7 @@
 --list : none;
 --list_index : none;
 --type : float;
---title : iResolution;
+--title : Scale;
 --element : range;
 --value : 100;
 
@@ -19,12 +19,9 @@
 --list : none;
 --list_index : none;
 --type : float;
---title : iTime;
+--title : Transform;
 --element : range;
 --value : 100,100;
-
-
-
 
 
 -output_0 :

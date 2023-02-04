@@ -1,0 +1,39 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Tissue;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Transform;
+--element : range;
+--value : 100,100;
+
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+float rand(vec2 co){
+  return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+void main(){
+    float t = texture2D(input_0,tex_coords).r+0.2;
+
+    float res = rand(tex_coords*t);
+
+    output_0 = vec4(res,res,res,1);
+}
