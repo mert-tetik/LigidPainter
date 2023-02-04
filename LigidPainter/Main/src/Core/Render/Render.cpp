@@ -148,10 +148,18 @@ void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int sel
 
 
 
-void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName,vector<aTexture> &albedoTextures){
+void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName,vector<aTexture> &albedoTextures,int chosenTextureResIndex){
 
 	//Create the export folder
 	std::string exportPathStr = exportPath;
+
+	
+	int txtrRes = 256;
+	for (size_t i = 0; i < chosenTextureResIndex; i++)
+	{
+		txtrRes*=2;
+	}
+
 
 	if(exportFileName[0] != '/'){
 		exportPathStr.append("/");
@@ -177,14 +185,14 @@ void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* 
 		gl.bindTexture(albedoTextures[i].id);
 
 		//Get the texture array
-    	GLubyte* exportTxtr = txtr.getTextureFromProgram(GL_TEXTURE0,1080,1080,3);
+    	GLubyte* exportTxtr = txtr.getTextureFromProgram(GL_TEXTURE0,txtrRes,txtrRes,3);
 
 		//Export
 		if (JPG) {
-			txtr.downloadTexture(exportPathStr.c_str(), exportFileNameStr.c_str(), 0, 1080, 1080, exportTxtr, 3);
+			txtr.downloadTexture(exportPathStr.c_str(), exportFileNameStr.c_str(), 0, txtrRes, txtrRes, exportTxtr, 3);
 		}
 		else if (PNG) {
-			txtr.downloadTexture(exportPathStr.c_str(), exportFileNameStr.c_str(), 1, 1080, 1080, exportTxtr, 3);
+			txtr.downloadTexture(exportPathStr.c_str(), exportFileNameStr.c_str(), 1, txtrRes, txtrRes, exportTxtr, 3);
 		}
 
 		//Delete the array after exporting
@@ -308,7 +316,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		
 	}
 	if(exportData.exportImage){
-    	exportTexture(UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,exportData.fileName,albedoTextures);
+    	exportTexture(UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,exportData.fileName,albedoTextures,chosenTextureResIndex);
 	}
 
 	
