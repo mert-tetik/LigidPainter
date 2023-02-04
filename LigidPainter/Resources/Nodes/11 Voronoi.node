@@ -1,0 +1,245 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Tissue;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+
+
+
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : scale;
+--element : range;
+--value : 100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : smoothness;
+--element : range;
+--value : 0;
+
+-input_2 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : randomness;
+--element : range;
+--value : 255;
+
+-input_3 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : metric;
+--element : range;
+--value : 100;
+
+
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+//Source :
+//https://github.com/blender/blender/blob/master/source/blender/gpu/shaders/common/gpu_shader_common_hash.glsl
+//blender.org
+
+uint hash_uint2(uint kx, uint ky)
+{
+  uint a, b, c;
+  a = b = c = 0xdeadbeefu + (2u << 2u) + 13u;
+
+    b += ky;
+     a += kx;
+    c ^= b; 
+    c -= (((b) << (14)) | ((b) >> (32 - (14))));
+    a ^= c; 
+    a -= (((c) << (11)) | ((c) >> (32 - (11)))); 
+    b ^= a; 
+    b -= (((a) << (25)) | ((a) >> (32 - (25)))); 
+    c ^= b; 
+    c -= (((b) << (16)) | ((b) >> (32 - (16))));
+    a ^= c; 
+    a -= (((c) << (4)) | ((c) >> (32 - (4))));; 
+    b ^= a; 
+    b -= (((a) << (14)) | ((a) >> (32 - (14)))); 
+    c ^= b; 
+    c -= (((b) << (24)) | ((b) >> (32 - (24))));
+
+  return c;
+}
+
+uint hash_uint3(uint kx, uint ky, uint kz)
+{
+  uint a, b, c;
+  a = b = c = 0xdeadbeefu + (3u << 2u) + 13u;
+
+  c += kz;
+  b += ky;
+  a += kx;
+  c ^= b; 
+    c -= (((b) << (14)) | ((b) >> (32 - (14))));
+    a ^= c; 
+    a -= (((c) << (11)) | ((c) >> (32 - (11)))); 
+    b ^= a; 
+    b -= (((a) << (25)) | ((a) >> (32 - (25)))); 
+    c ^= b; 
+    c -= (((b) << (16)) | ((b) >> (32 - (16))));
+    a ^= c; 
+    a -= (((c) << (4)) | ((c) >> (32 - (4))));; 
+    b ^= a; 
+    b -= (((a) << (14)) | ((a) >> (32 - (14)))); 
+    c ^= b; 
+    c -= (((b) << (24)) | ((b) >> (32 - (24))));
+
+  return c;
+}
+
+float hash_uint2_to_float(uint kx, uint ky)
+{
+  return float(hash_uint2(kx, ky)) / float(0xFFFFFFFFu);
+}
+
+float hash_uint3_to_float(uint kx, uint ky, uint kz)
+{
+  return float(hash_uint3(kx, ky, kz)) / float(0xFFFFFFFFu);
+}
+
+float hash_vec2_to_float(vec2 k)
+{
+  return hash_uint2_to_float(floatBitsToUint(k.x), floatBitsToUint(k.y));
+}
+float hash_vec3_to_float(vec3 k)
+{
+  return hash_uint3_to_float(floatBitsToUint(k.x), floatBitsToUint(k.y), floatBitsToUint(k.z));
+}
+
+
+vec2 hash_vec2_to_vec2(vec2 k)
+{
+  return vec2(hash_vec2_to_float(k), hash_vec3_to_float(vec3(k, 1.0)));
+}
+
+vec3 hash_vec2_to_vec3(vec2 k)
+{
+  return vec3(
+      hash_vec2_to_float(k), hash_vec3_to_float(vec3(k, 1.0)), hash_vec3_to_float(vec3(k, 2.0)));
+}
+
+//Source :
+//https://github.com/blender/blender/blob/master/source/blender/gpu/shaders/material/gpu_shader_material_tex_voronoi.glsl
+/*
+ * Original code is under the MIT License, Copyright (c) 2013 Inigo Quilez.
+ *
+ * Smooth Voronoi:
+ *
+ * - https://wiki.blender.org/wiki/User:OmarSquircleArt/GSoC2019/Documentation/Smooth_Voronoi
+ *
+ * Distance To Edge based on:
+ *
+ * - https://www.iquilezles.org/www/articles/voronoilines/voronoilines.htm
+ * - https://www.shadertoy.com/view/ldl3W8
+ *
+ * With optimization to change -2..2 scan window to -1..1 for better performance,
+ * as explained in https://www.shadertoy.com/view/llG3zy.
+ */
+
+/* **** 1D Voronoi **** */
+
+float voronoi_distance(vec2 a, vec2 b, float metric, float exponent)
+{
+  if (metric == 0.0)  // SHD_VORONOI_EUCLIDEAN
+  {
+    return distance(a, b);
+  }
+  else if (metric == 1.0)  // SHD_VORONOI_MANHATTAN
+  {
+    return abs(a.x - b.x) + abs(a.y - b.y);
+  }
+  else if (metric == 2.0)  // SHD_VORONOI_CHEBYCHEV
+  {
+    return max(abs(a.x - b.x), abs(a.y - b.y));
+  }
+  else if (metric == 3.0)  // SHD_VORONOI_MINKOWSKI
+  {
+    return pow(pow(abs(a.x - b.x), exponent) + pow(abs(a.y - b.y), exponent), 1.0 / exponent);
+  }
+  else {
+    return 0.0;
+  }
+}
+
+
+vec3 node_tex_voronoi_smooth_f1_2d(vec3 coord,
+                                   float w,
+                                   float scale,
+                                   float smoothness,
+                                   float exponent,
+                                   float randomness,
+                                   float metric
+                                   )
+{
+  randomness = clamp(randomness, 0.0, 1.0);
+  smoothness = clamp(smoothness / 2.0, 0.0, 0.5);
+
+  vec2 scaledCoord = coord.xy * scale;
+  vec2 cellPosition = floor(scaledCoord);
+  vec2 localPosition = scaledCoord - cellPosition;
+
+  float smoothDistance = 8.0;
+  vec3 smoothColor = vec3(0.0);
+  vec2 smoothPosition = vec2(0.0);
+  for (int j = -2; j <= 2; j++) {
+    for (int i = -2; i <= 2; i++) {
+      vec2 cellOffset = vec2(i, j);
+      vec2 pointPosition = cellOffset + hash_vec2_to_vec2(cellPosition + cellOffset) * randomness;
+      float distanceToPoint = voronoi_distance(pointPosition, localPosition, metric, exponent);
+      float h = smoothstep(0.0, 1.0, 0.5 + 0.5 * (smoothDistance - distanceToPoint) / smoothness);
+      float correctionFactor = smoothness * h * (1.0 - h);
+      smoothDistance = mix(smoothDistance, distanceToPoint, h) - correctionFactor;
+      correctionFactor /= 1.0 + 3.0 * smoothness;
+      vec3 cellColor = hash_vec2_to_vec3(cellPosition + cellOffset);
+      smoothColor = mix(smoothColor, cellColor, h) - correctionFactor;
+      smoothPosition = mix(smoothPosition, pointPosition, h) - correctionFactor;
+    }
+  }
+  return smoothColor;
+}
+
+void main()
+{
+    float w             = 1;
+    float scale         = texture2D(input_0,tex_coords).r*100;
+    float smoothness    = texture2D(input_1,tex_coords).r*4;
+    float exponent      = 1;
+    float randomness    = texture2D(input_2,tex_coords).r;
+    float metric        = ceil(texture2D(input_3,tex_coords).r*3);
+    
+    vec3 res = node_tex_voronoi_smooth_f1_2d(
+                                            vec3(tex_coords,1)
+                                            ,w         
+                                            ,scale     
+                                            ,smoothness
+                                            ,exponent  
+                                            ,randomness
+                                            ,metric    
+                                            );
+	
+	output_0 = vec4( res, 1.0 );
+}
