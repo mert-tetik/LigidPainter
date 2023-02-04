@@ -113,10 +113,21 @@ public:
 		    "LigidPainter/Resources/Cubemap/Skybox/sky3/nz.png"
 		};
 		unsigned int cubemapTexture3 = loadCubemap(faces3,GL_TEXTURE13);  
+		
+		std::vector<std::string> facesblur
+		{
+		    "LigidPainter/Resources/Cubemap/Skybox/ambient/pxblur.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/ambient/nxblur.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/ambient/nyblur.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/ambient/pyblur.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/ambient/pzblur.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/ambient/nzblur.png"
+		};
+		unsigned int cubemapTextureblur = loadCubemap(facesblur,GL_TEXTURE13);  
 
 	
 		Cubemaps cubemaps;
-		cubemaps.blurycubemap = 0;
+		cubemaps.blurycubemap = cubemapTextureblur;
 		cubemaps.cubemap = cubemapTexture;
 		cubemaps.cubemap2 = cubemapTexture2;
 		cubemaps.cubemap3 = cubemapTexture3;

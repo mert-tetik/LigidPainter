@@ -6,7 +6,7 @@
 $ #Use the model's texture coords instead of a plane
 
 
--title : Channels;
+-title : Geometry;
 -color : hex4287f5; #rgb122,124,66  #hsv86,45,23
 -opacity : 60;
 
