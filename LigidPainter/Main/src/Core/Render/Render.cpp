@@ -328,6 +328,15 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap2);
 	if(chosenSkyboxTexture == 2)
 		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap3);
+	
+	glActiveTexture(GL_TEXTURE16);
+	if(chosenSkyboxTexture == 0)
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered);
+	if(chosenSkyboxTexture == 1)
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered2);
+	if(chosenSkyboxTexture == 2)
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered3);
+
 		
 	if(UIElements[UIskyboxCheckBox].checkBox.checked)
 		renderSkyBox(skyBoxShaderData,renderPrograms,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);

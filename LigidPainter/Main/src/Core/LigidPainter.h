@@ -34,8 +34,11 @@ struct Programs
 };
 struct Cubemaps{
 	unsigned int cubemap;
+	unsigned int prefiltered;
 	unsigned int cubemap2;
+	unsigned int prefiltered2;
 	unsigned int cubemap3;
+	unsigned int prefiltered3;
 
 	unsigned int blurycubemap;
 };

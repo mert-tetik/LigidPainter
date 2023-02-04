@@ -694,7 +694,7 @@ public:
 		return result;
 	}
 
-	unsigned int createPrefilterMap(Programs programs,Cubemaps cubemaps,WindowData windowData){
+	void createPrefilterMap(Programs programs,Cubemaps &cubemaps,WindowData windowData){
 		GlSet glset;
 		
 		//Is required for rendering the skybox
@@ -764,71 +764,85 @@ public:
 		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
 		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
 		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
-		};
+		};	
+		std::vector<unsigned int> prefilterMaps;
+		std::vector<unsigned int> skyboxes;
 
+		skyboxes.push_back(cubemaps.cubemap);
+		skyboxes.push_back(cubemaps.cubemap2);
+		skyboxes.push_back(cubemaps.cubemap3);
 
-		//Create the cube map texture
-		glActiveTexture(GL_TEXTURE28);
-		unsigned int prefilterMap;
-		glGenTextures(1, &prefilterMap);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
-		for (unsigned int i = 0; i < 6; ++i)
+		for (size_t i = 0; i < skyboxes.size(); i++)
 		{
-			//Every side
-    		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
-		}
-
-		//Texture Parameters
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		//Generate mipmap after creating the txtr
-		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-
-
-		//Use the related program for rendering
-		glUseProgram(programs.prefilterMapProgram);
-		//Slot 13 = skybox
-		glset.uniform1i(programs.prefilterMapProgram,"environmentMap",13);
-		glset.uniformMatrix4fv(programs.prefilterMapProgram,"projection",captureProjection);
-
-		//Bind the skybox to the Slot 13
-		glActiveTexture(GL_TEXTURE13);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemaps.cubemap);
-
-		//Bind the framebuffer
-		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-
-		//5 levels will be created
-		unsigned int maxMipLevels = 5;
-		for (unsigned int mip = 0; mip < maxMipLevels; ++mip)
-		{
-			//Every level
-
-		    //resize framebuffer according to mip-level size.
-		    unsigned int mipWidth  = 128 * std::pow(0.5, mip);
-		    unsigned int mipHeight = 128 * std::pow(0.5, mip);
-		    glViewport(0, 0, mipWidth, mipHeight);
-
-			//Adjust the roughness value
-		    float roughness = (float)mip / (float)(maxMipLevels - 1);
-			glset.uniform1f(programs.prefilterMapProgram,"roughness",roughness);
-
-			//Create the texture
-		    for (unsigned int i = 0; i < 6; ++i)
-		    {
+			//Create the cube map texture
+			glActiveTexture(GL_TEXTURE28);
+			unsigned int prefilterMap;
+			glGenTextures(1, &prefilterMap);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+			for (unsigned int txtrI = 0; txtrI < 6; ++txtrI)
+			{
 				//Every side
+    			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + txtrI, 0, GL_RGB16F, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
+			}
 
-				glset.uniformMatrix4fv(programs.prefilterMapProgram,"view",captureViews[i]);
-		        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
-		                               GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterMap, mip);
+			//Texture Parameters
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			//Generate mipmap after creating the txtr
+			glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-		        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		        glset.drawArrays(cube,false);
-		    }
+			prefilterMaps.push_back(prefilterMap);
+
+			//Use the related program for rendering
+			glUseProgram(programs.prefilterMapProgram);
+			//Slot 13 = skybox
+			glset.uniform1i(programs.prefilterMapProgram,"environmentMap",13);
+			glset.uniformMatrix4fv(programs.prefilterMapProgram,"projection",captureProjection);
+
+			//Bind the skybox to the Slot 13
+			glActiveTexture(GL_TEXTURE13);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxes[i]);
+
+			//Bind the framebuffer
+			glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+
+			//5 levels will be created
+			unsigned int maxMipLevels = 5;
+			for (unsigned int mip = 0; mip < maxMipLevels; ++mip)
+			{
+				//Every level
+
+			    //resize framebuffer according to mip-level size.
+			    unsigned int mipWidth  = 128 * std::pow(0.5, mip);
+			    unsigned int mipHeight = 128 * std::pow(0.5, mip);
+			    glViewport(0, 0, mipWidth, mipHeight);
+
+				//Adjust the roughness value
+			    float roughness = (float)mip / (float)(maxMipLevels - 1);
+				glset.uniform1f(programs.prefilterMapProgram,"roughness",roughness);
+
+				//Create the texture
+			    for (unsigned int txtrI = 0; txtrI < 6; ++txtrI)
+			    {
+					//Every side
+
+					glset.uniformMatrix4fv(programs.prefilterMapProgram,"view",captureViews[txtrI]);
+			        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+			                               GL_TEXTURE_CUBE_MAP_POSITIVE_X + txtrI, prefilterMap, mip);
+
+			        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			        glset.drawArrays(cube,false);
+			    }
+			}
 		}
+		
+
+		cubemaps.prefiltered = prefilterMaps[0];
+		cubemaps.prefiltered2 = prefilterMaps[1];
+		cubemaps.prefiltered3 = prefilterMaps[2];
 
 		//Set everything to default
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); 
@@ -840,14 +854,11 @@ public:
 
 		//Bind the result cube map to 16th slote
 		glActiveTexture(GL_TEXTURE16);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMaps[0]);
 
 		//Delete the framebuffer
 		glDeleteFramebuffers(1,&captureFBO);
 		glDeleteRenderbuffers(1,&captureRBO);
-
-		//Return the cube map
-		return prefilterMap;
 	}
 
 	// unsigned int createPrefilterMap(Programs programs,Cubemaps cubemaps,WindowData windowData){
