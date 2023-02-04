@@ -30,9 +30,12 @@ struct Programs
 	unsigned int renderTheTextureProgram; 
 	unsigned int prefilterMapProgram; 
 	unsigned int brdfProgram; 
+	unsigned int blurySkyboxProgram; 
 };
 struct Cubemaps{
 	unsigned int cubemap;
+	unsigned int cubemap2;
+	
 	unsigned int blurycubemap;
 };
 struct LigidCursors{

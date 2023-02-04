@@ -83,28 +83,30 @@ public:
 		Texture txtr;
 		std::vector<std::string> faces
 		{
-		    "LigidPainter/Resources/Cubemap/Skybox/px.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/nx.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/ny.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/py.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/pz.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/nz.png"
+		    "LigidPainter/Resources/Cubemap/Skybox/sky1/px.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky1/nx.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky1/ny.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky1/py.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky1/pz.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky1/nz.png"
 		};
 		unsigned int cubemapTexture = loadCubemap(faces,GL_TEXTURE13);  
-		std::vector<std::string> bluryfaces
+		
+		std::vector<std::string> faces2
 		{
-		    "LigidPainter/Resources/Cubemap/Skybox/pxblur.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/nxblur.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/nyblur.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/pyblur.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/pzblur.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/nzblur.png"
+		    "LigidPainter/Resources/Cubemap/Skybox/sky2/px.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky2/nx.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky2/ny.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky2/py.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky2/pz.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky2/nz.png"
 		};
-		unsigned int cubemapTextureBlury = loadCubemap(bluryfaces,GL_TEXTURE13);
+		unsigned int cubemapTexture2 = loadCubemap(faces2,GL_TEXTURE13);  
 	
 		Cubemaps cubemaps;
-		cubemaps.blurycubemap = cubemapTextureBlury;
+		cubemaps.blurycubemap = 0;
 		cubemaps.cubemap = cubemapTexture;
+		cubemaps.cubemap2 = cubemapTexture2;
 	
 		return cubemaps;
 	}
@@ -405,6 +407,11 @@ public:
 		
 		//BRDF
 		unsigned int brdfProgram = gl.createProgram("LigidPainter/Resources/Shaders/3D/BRDF");
+		
+		
+		
+		//Blury skybox
+		unsigned int blurySkyboxProgram = gl.createProgram("LigidPainter/Resources/Shaders/skyboxblur.frag");
 
 
 
@@ -425,6 +432,7 @@ public:
 		glPrograms.renderTheTextureProgram = renderTheTextureProgram;   
 		glPrograms.prefilterMapProgram = prefilterMapProgram;   
 		glPrograms.brdfProgram = brdfProgram;   
+		glPrograms.blurySkyboxProgram = blurySkyboxProgram;   
 
 		return glPrograms;
 	}
@@ -828,6 +836,10 @@ public:
 		//Return the cube map
 		return prefilterMap;
 	}
+
+	// unsigned int createPrefilterMap(Programs programs,Cubemaps cubemaps,WindowData windowData){
+
+	// }
 
 	void getDefaultNodeScene(std::vector<NodeScene> &nodeScenes,std::vector<Node> appNodes,const char* name){
 		std::vector<Node> mainOutNodes;
