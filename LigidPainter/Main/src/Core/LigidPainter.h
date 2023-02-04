@@ -35,7 +35,8 @@ struct Programs
 struct Cubemaps{
 	unsigned int cubemap;
 	unsigned int cubemap2;
-	
+	unsigned int cubemap3;
+
 	unsigned int blurycubemap;
 };
 struct LigidCursors{

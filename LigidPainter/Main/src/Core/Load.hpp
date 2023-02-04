@@ -102,11 +102,24 @@ public:
 		    "LigidPainter/Resources/Cubemap/Skybox/sky2/nz.png"
 		};
 		unsigned int cubemapTexture2 = loadCubemap(faces2,GL_TEXTURE13);  
+
+		std::vector<std::string> faces3
+		{
+		    "LigidPainter/Resources/Cubemap/Skybox/sky3/px.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky3/nx.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky3/ny.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky3/py.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky3/pz.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky3/nz.png"
+		};
+		unsigned int cubemapTexture3 = loadCubemap(faces3,GL_TEXTURE13);  
+
 	
 		Cubemaps cubemaps;
 		cubemaps.blurycubemap = 0;
 		cubemaps.cubemap = cubemapTexture;
 		cubemaps.cubemap2 = cubemapTexture2;
+		cubemaps.cubemap3 = cubemapTexture3;
 	
 		return cubemaps;
 	}
