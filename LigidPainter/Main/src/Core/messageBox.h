@@ -22,7 +22,8 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
     backColorVec.g = backColor[1];
     backColorVec.b = backColor[2];
 	backColorVec.a = colorData.messageBoxPanelColor.a;
-
+	
+	
     glm::vec4 buttonColorVec;
     buttonColorVec.r = buttonColor[0];
     buttonColorVec.g = buttonColor[1];
