@@ -1501,9 +1501,15 @@ void UserInterface::listBox(float posX,float posY,float posZ,const char* title,f
 	glUseProgram(uiPrograms.uiProgram);
 }
 
-void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mouseY,bool firstClick,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex){
+void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mouseY,bool firstClick,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,int chosenTextureResIndex,int maxScreenWidth,int maxScreenHeight,int screenSizeX,int screenSizeY){
 	ColorData colorData;
 	GlSet glset;
+
+	int txtrRes = 256;
+	for (size_t i = 0; i < chosenTextureResIndex; i++)
+	{
+		txtrRes*=2;
+	}
 
 	const float height = 0.03f;
 	const float depth = 0.8f;
@@ -1543,15 +1549,15 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 		unsigned int textureColorbuffer;
 		glset.genTextures(textureColorbuffer);
 		glset.bindTexture(textureColorbuffer);
-		glset.texImage(NULL, 1920,1080,GL_RGB); //TODO : Use texture quality variable
+		glset.texImage(NULL, txtrRes,txtrRes,GL_RGB); //TODO : Use texture quality variable
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		
+
 		glset.generateMipmap();
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
 
-		//TODO : glViewport(0,0,1920,1080);
+		glViewport(0,0,txtrRes,txtrRes);
 
 		std::vector<float> renderVertices = { 
 			// first triangle
@@ -1586,6 +1592,8 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 		txtr.id = textureColorbuffer;
 		txtr.name = "normalMap"; //TODO : Unique Name
 		albedoTextures.push_back(txtr);
+
+		glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 	}
 
 	//Version text
