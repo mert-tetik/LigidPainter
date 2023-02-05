@@ -1,0 +1,78 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Ramp;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color1;
+--element : color;
+--value : 100,100,100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Color1;
+--element : range;
+--value : 100;
+
+-input_2 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color2;
+--element : color;
+--value : 100,100,100;
+
+-input_3 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Color1;
+--element : range;
+--value : 100;
+
+-input_4 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Fac;
+--element : range;
+--value : 100;
+
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+void main(){
+    vec3 c1 = texture2D(input_0,tex_coords).rgb;
+    float c1Fac = texture2D(input_1,tex_coords).r;
+    
+    vec3 c2 = texture2D(input_2,tex_coords).rgb;
+    float c2Fac = texture2D(input_3,tex_coords).r;
+
+    float fac = texture2D(input_4,tex_coords).r;
+
+    vec3 result;
+    if(c1Fac > c2Fac)
+        result = mix(c1 ,c2 ,fac*(c1Fac-c2Fac));
+    else
+        result = mix(c2 ,c1 ,fac*(c2Fac-c1Fac));
+
+    output_0 = vec4(result,1);
+}

@@ -1500,3 +1500,21 @@ void UserInterface::listBox(float posX,float posY,float posZ,const char* title,f
 	
 	glUseProgram(uiPrograms.uiProgram);
 }
+
+void UserInterface::upBar(Icons icons){
+	ColorData colorData;
+
+	const float height = 0.03f;
+	const float depth = 0.8f;
+	glUseProgram(uiPrograms.uiProgram);
+	//Panel
+	box(1.f, height, 0,1.f-height, "", glm::vec4(0.1,0.1,0.1,0.2), 0, false, false, depth, 10000, glm::vec4(0.1,0.1,0.1,0.2), 0);
+	
+	//Bake Button
+	box(0.03f, height/1.5, 0,1.f-height, "Bake", glm::vec4(0.1,0.1,0.1,0.2), 0.02f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
+
+	checkBox(0 + 0.05f,1.f-height,"Unity",false,false,icons.Circle);
+	
+	//Version text
+	renderText(uiPrograms.uiProgram,"v1.2.0",-0.9f,1.f-height*1.25,0.00022f,glm::vec4(colorData.LigidPainterThemeColor,1),depth+0.001f,false);
+}
