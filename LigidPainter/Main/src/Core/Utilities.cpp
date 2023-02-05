@@ -268,17 +268,37 @@ void Utilities::printError(){
 	}
 }
 
-std::string Utilities::removeExtension(std::string& s){
+std::string Utilities::removeExtension(std::string s){
 	int i = 1;
-	while (s[s.size() - i] != '.')
-	{
-		i++;
-	}
-	for (size_t j = 0; j < i; j++)
-	{
-		s.pop_back();
-	}
-	
+	while (s[s.size() - i] != '.'){i++;}
+	for (size_t j = 0; j < i; j++){s.pop_back();}
+	return s;
+}
 
+std::string Utilities::uniqueName(std::string s,std::vector<std::string> albedoTextures){
+	bool isTheSame = false;
+	for (size_t i = 0; i < albedoTextures.size(); i++)
+	{
+		if(albedoTextures[i] == s){
+			isTheSame = true;
+		}
+	}
+
+	if(isTheSame){
+		for (size_t i = 0; i < 1000; i++)
+		{
+			bool matched = false;
+			for (size_t txtrI = 0; txtrI < albedoTextures.size(); txtrI++)
+			{
+				if(albedoTextures[txtrI] == s + '(' + std::to_string(i) + ')'){
+					matched = true;
+				}
+			}
+			if(!matched){
+				s += '(' + std::to_string(i) + ')';
+				break;
+			}
+		}
+	}
 	return s;
 }

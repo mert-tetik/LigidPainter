@@ -1244,32 +1244,14 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 
 			glDeleteFramebuffers(1,&FBO);
 
-
-			//Rename if necessary
-			bool isTheSame = false;
+			std::vector<std::string> textureNames;
 			for (size_t i = 0; i < albedoTextures.size(); i++)
 			{
-				if(albedoTextures[i].name == txtrCreatingPanel.textBoxVal){
-					isTheSame = true;
-				}
+				textureNames.push_back(albedoTextures[i].name);
 			}
-
-			if(isTheSame){
-				for (size_t i = 0; i < 1000; i++)
-				{
-					bool matched = false;
-					for (size_t txtrI = 0; txtrI < albedoTextures.size(); txtrI++)
-					{
-						if(albedoTextures[txtrI].name == txtrCreatingPanel.textBoxVal + '(' + std::to_string(i) + ')'){
-							matched = true;
-						}
-					}
-					if(!matched){
-						txtrCreatingPanel.textBoxVal += '(' + std::to_string(i) + ')';
-						break;
-					}
-				}
-			}
+			
+			//Rename if necessary
+			txtrCreatingPanel.textBoxVal = util.uniqueName(txtrCreatingPanel.textBoxVal,textureNames);
 
 			txtr.id = texture;
 			txtr.name = txtrCreatingPanel.textBoxVal;

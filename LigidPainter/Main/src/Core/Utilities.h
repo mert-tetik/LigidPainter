@@ -17,7 +17,7 @@ public:
 	float transitionEffect(bool buttonEnter,float mixVal,float phaseDifference);
 	float keepTheRatio(double value1,double value2, double desiredRatio);
 	void printError();
-	std::string removeExtension(std::string& s);
-
+	std::string removeExtension(std::string s);
+	std::string uniqueName(std::string s,std::vector<std::string> albedoTextures);
 };
 #endif

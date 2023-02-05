@@ -1462,7 +1462,17 @@ void LigidPainter::sndPanelDownIcon(){
 			txtr.getTexture(albedoTexturePath,txtrRes,txtrRes,true); //Force albedo's ratio to be 1:1
 			Utilities util;
 			result.id = texture;
+			
+			std::vector<std::string> textureNames;
+			for (size_t i = 0; i < albedoTextures.size(); i++)
+			{
+				textureNames.push_back(albedoTextures[i].name);
+			}
+			
+			//Rename if necessary
 			result.name = util.removeExtension(util.getLastWordBySeparatingWithChar(albedoTexturePath,folderDistinguisher)); 
+			result.name = util.uniqueName(result.name,textureNames);
+			
 			albedoTextures.push_back(result);
 		}
 	}
