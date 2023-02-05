@@ -145,6 +145,10 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				//Establish connection
 
 				if(glfwGetMouseButton(window,0) == GLFW_RELEASE && material.nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed){
+					if(node.outputs[i].nodeConnectionIndex != 10000){
+						material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].nodeConnectionIndex = 10000;
+						material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].inputConnectionIndex = 10000;
+					}
 					node.outputs[i].inputConnectionIndex = inputI;
 					node.outputs[i].nodeConnectionIndex = nodeI;
 
