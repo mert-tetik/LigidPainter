@@ -1486,6 +1486,7 @@ void UserInterface::listBox(float posX,float posY,float posZ,const char* title,f
 void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mouseY,bool firstClick,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,int chosenTextureResIndex,int maxScreenWidth,int maxScreenHeight,int screenSizeX,int screenSizeY){
 	ColorData colorData;
 	GlSet glset;
+	Utilities util;
 
 	int txtrRes = 256;
 	for (size_t i = 0; i < chosenTextureResIndex; i++)
@@ -1572,6 +1573,14 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 		aTexture txtr;
 		txtr.id = textureColorbuffer;
 		txtr.name = "normalMap"; //TODO : Unique Name
+		std::vector<std::string> textureNames;
+		for (size_t i = 0; i < albedoTextures.size(); i++)
+		{
+			textureNames.push_back(albedoTextures[i].name);
+		}
+			
+		//Rename if necessary
+		txtr.name = util.uniqueName(txtr.name,textureNames);
 		albedoTextures.push_back(txtr);
 
 		glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
