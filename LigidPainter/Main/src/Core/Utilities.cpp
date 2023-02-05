@@ -267,3 +267,18 @@ void Utilities::printError(){
 		std::cout << '\n';
 	}
 }
+
+std::string Utilities::removeExtension(std::string& s){
+	int i = 1;
+	while (s[s.size() - i] != '.')
+	{
+		i++;
+	}
+	for (size_t j = 0; j < i; j++)
+	{
+		s.pop_back();
+	}
+	
+
+	return s;
+}

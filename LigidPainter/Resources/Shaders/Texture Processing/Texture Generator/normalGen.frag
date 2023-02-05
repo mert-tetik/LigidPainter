@@ -6,7 +6,7 @@ in vec2 texCoords;
 
 out vec4 color;
 
-#define normalStrength 10.0
+#define normalStrength 5.0
 #define textureOffset 1.0
 
 vec2 stdNormalMap(in vec2 uv) 

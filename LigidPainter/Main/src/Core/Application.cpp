@@ -1345,6 +1345,7 @@ void LigidPainter::sndPanelMinusIcon(){
 				glDeleteTextures(1, &texture);
 
 				albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
+				
 				if(selectedAlbedoTextureIndex)
 					selectedAlbedoTextureIndex--;
 			}
@@ -1459,9 +1460,9 @@ void LigidPainter::sndPanelDownIcon(){
 			}
 
 			txtr.getTexture(albedoTexturePath,txtrRes,txtrRes,true); //Force albedo's ratio to be 1:1
-
+			Utilities util;
 			result.id = texture;
-			result.name = "texture_" + std::to_string(albedoTextures.size()); 
+			result.name = util.removeExtension(util.getLastWordBySeparatingWithChar(albedoTexturePath,folderDistinguisher)); 
 			albedoTextures.push_back(result);
 		}
 	}

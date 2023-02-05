@@ -1570,7 +1570,6 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 			 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
 		};
 
-
 		glUseProgram(uiPrograms.normalGenProgram);
 		
 		glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
