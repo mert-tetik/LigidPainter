@@ -1501,20 +1501,94 @@ void UserInterface::listBox(float posX,float posY,float posZ,const char* title,f
 	glUseProgram(uiPrograms.uiProgram);
 }
 
-void UserInterface::upBar(Icons icons){
+void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mouseY,bool firstClick,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex){
 	ColorData colorData;
+	GlSet glset;
 
 	const float height = 0.03f;
 	const float depth = 0.8f;
 	glUseProgram(uiPrograms.uiProgram);
-	//Panel
-	box(1.f, height, 0,1.f-height, "", glm::vec4(0.1,0.1,0.1,0.2), 0, false, false, depth, 10000, glm::vec4(0.1,0.1,0.1,0.2), 0);
-	
-	//Bake Button
-	box(0.03f, height/1.5, 0,1.f-height, "Bake", glm::vec4(0.1,0.1,0.1,0.2), 0.02f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
 
-	checkBox(0 + 0.05f,1.f-height,"Unity",false,false,icons.Circle);
+	const float materialBakingPos = -0.3f;
+	const float normalMapGenPos = 0.2f;
+
+	//Panel
+	box(1.f, height, 0.f,1.f-height, "", glm::vec4(0.1,0.1,0.1,0.2), 0, false, false, depth, 10000, glm::vec4(0.1,0.1,0.1,0.2), 0);
 	
+	//Material baking
+	//Bake Button 
+	box(0.03f, height/1.5, materialBakingPos,1.f-height, "Bake", glm::vec4(0.1,0.1,0.1,0.2), 0.02f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
+	//Unity checkbox
+	checkBox(materialBakingPos + 0.06f,1.f-height,"Unity",false,false,icons.Circle);
+	//Shader Out checkbox
+	checkBox(materialBakingPos + 0.27f,1.f-height,"Shader Out",false,false,icons.Circle);
+	//MaterialListbox
+	box(0.05f, height/1.5, materialBakingPos+ 0.19f,1.f-height, "", glm::vec4(0.1,0.1,0.1,0.2), 0.02f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
+	glUseProgram(uiPrograms.iconsProgram);
+	iconBox(height/1.5/2,height/1.5,materialBakingPos + 0.14f,1.f-height,depth+0.002f,icons.ArrowDown,0,glm::vec4(1),glm::vec4(1));
+	glUseProgram(uiPrograms.uiProgram);
+
+	//Generate normal map
+	box(0.07f, height/1.5, normalMapGenPos,1.f-height, "Generate Normal", glm::vec4(0.1,0.1,0.1,0.2), 0.07f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
+	const bool generateNormalHover = isMouseOnButton(window,0.07f, height/1.5,normalMapGenPos,1.f-height,mouseX,mouseY,false);
+	if(generateNormalHover && firstClick){
+		glActiveTexture(GL_TEXTURE28);
+		
+		//FBO
+		unsigned int FBO;
+		glset.genFramebuffers(FBO);
+		glset.bindFramebuffer(FBO);
+
+		//Texture
+		unsigned int textureColorbuffer;
+		glset.genTextures(textureColorbuffer);
+		glset.bindTexture(textureColorbuffer);
+		glset.texImage(NULL, 1920,1080,GL_RGB); //TODO : Use texture quality variable
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		
+		glset.generateMipmap();
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+
+		//TODO : glViewport(0,0,1920,1080);
+
+		std::vector<float> renderVertices = { 
+			// first triangle
+			 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+			 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+			 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+			// second triangle	  ,0,0,0,
+			 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+			 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+			 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+		};
+
+
+		glUseProgram(uiPrograms.normalGenProgram);
+		
+		glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
+		
+		glActiveTexture(GL_TEXTURE0);
+		glset.bindTexture(albedoTextures[selectedAlbedoTextureIndex].id);
+
+		glset.uniformMatrix4fv(uiPrograms.normalGenProgram,"renderTextureProjection",renderTextureProjection);
+		glset.uniform1i(uiPrograms.normalGenProgram,"inputTexture",0);
+
+
+		glset.drawArrays(renderVertices,0);
+		glUseProgram(uiPrograms.uiProgram);
+
+		glDeleteFramebuffers(1,&FBO);	
+		glset.bindFramebuffer(0);
+
+		aTexture txtr;
+		txtr.id = textureColorbuffer;
+		txtr.name = "normalMap"; //TODO : Unique Name
+		albedoTextures.push_back(txtr);
+	}
+
 	//Version text
 	renderText(uiPrograms.uiProgram,"v1.2.0",-0.9f,1.f-height*1.25,0.00022f,glm::vec4(colorData.LigidPainterThemeColor,1),depth+0.001f,false);
+	
 }

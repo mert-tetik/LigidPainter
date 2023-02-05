@@ -435,7 +435,13 @@ public:
 		
 		
 		//Blury skybox
-		unsigned int blurySkyboxProgram = gl.createProgram("LigidPainter/Resources/Shaders/skyboxblur.frag");
+		unsigned int blurySkyboxProgram = gl.createProgram("LigidPainter/Resources/Shaders/skyboxblur");
+
+
+
+		//Normal map generator
+		unsigned int normalGenProgram = gl.createProgram("LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/normalGen");
+
 
 
 
@@ -457,6 +463,8 @@ public:
 		glPrograms.prefilterMapProgram = prefilterMapProgram;   
 		glPrograms.brdfProgram = brdfProgram;   
 		glPrograms.blurySkyboxProgram = blurySkyboxProgram;   
+		glPrograms.normalGenProgram = normalGenProgram;   
+
 
 		return glPrograms;
 	}

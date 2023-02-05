@@ -31,6 +31,7 @@ struct Programs
 	unsigned int prefilterMapProgram; 
 	unsigned int brdfProgram; 
 	unsigned int blurySkyboxProgram; 
+	unsigned int normalGenProgram; 
 };
 struct Cubemaps{
 	unsigned int cubemap;
