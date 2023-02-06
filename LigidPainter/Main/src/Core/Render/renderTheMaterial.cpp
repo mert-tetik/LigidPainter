@@ -296,9 +296,9 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     txtr.name = "bake";
                     Utilities util;
                     std::vector<std::string> textureNames;
-			        for (size_t i = 0; i < albedoTextures.size(); i++)
+			        for (size_t nameI = 0; nameI < albedoTextures.size(); nameI++)
 			        {
-				        textureNames.push_back(albedoTextures[i].name);
+				        textureNames.push_back(albedoTextures[nameI].name);
 			        }
 			
                     txtr.name = util.uniqueName(txtr.name,textureNames);
@@ -409,9 +409,9 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     txtr.name = "bake";
                     Utilities util;
                     std::vector<std::string> textureNames;
-			        for (size_t i = 0; i < albedoTextures.size(); i++)
+			        for (size_t nameI = 0; nameI < albedoTextures.size(); nameI++)
 			        {
-				        textureNames.push_back(albedoTextures[i].name);
+				        textureNames.push_back(albedoTextures[nameI].name);
 			        }
 			
                     txtr.name = util.uniqueName(txtr.name,textureNames);

@@ -391,14 +391,21 @@ bool LigidPainter::run()
 		mainLoop.releaseTextBoxes(window,UIElements,exportFileName,textBoxActiveChar,coloringPanel,txtrCreatingPanel,colorPicker);
 		mainLoop.changeTextureDisplayersState(window,textureDisplayer);
 
-		if( firstClick || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
+		if( (firstClick || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) && anyTextureNameActive){
 			anyTextureNameActive = false;
 			for (size_t i = 0; i < albedoTextures.size(); i++)
 			{
-				if(albedoTextures[i].nameTextActive && textureText != "")
+				if(albedoTextures[i].nameTextActive && textureText != "" && textureText != albedoTextures[i].name){
+					std::vector<std::string> textureNames;
+			        for (size_t nameI = 0; nameI < albedoTextures.size(); nameI++)
+			        {
+				        textureNames.push_back(albedoTextures[nameI].name);
+			        }
+                    textureText = util.uniqueName(textureText,textureNames);
 					albedoTextures[i].name = textureText;
+
+				}
 			}
-			
 		}
 
 
