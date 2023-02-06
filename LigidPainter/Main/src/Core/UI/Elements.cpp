@@ -391,7 +391,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyboxCheckBoxElement;
     skyboxCheckBoxElement.checkBox.positionX = -0.03f;
-    skyboxCheckBoxElement.checkBox.positionY = 0.8f;
+    skyboxCheckBoxElement.checkBox.positionY = 0.1f;
     skyboxCheckBoxElement.checkBox.text = "skybox";
     skyboxCheckBoxElement.checkBox.checked = true;
     skyboxCheckBoxElement.checkBox.mouseHover = false;
@@ -402,7 +402,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyBoxExposureRangeBarElement;
 	skyBoxExposureRangeBarElement.rangeBar.positionX = 0.0f;
-	skyBoxExposureRangeBarElement.rangeBar.positionY = -0.30f+0.1f+0.02f;
+	skyBoxExposureRangeBarElement.rangeBar.positionY = -0.32f;
 	skyBoxExposureRangeBarElement.rangeBar.value = 0.f;
 	skyBoxExposureRangeBarElement.panel = 5;
 	skyBoxExposureRangeBarElement.attachedToMainPanel = true;
@@ -411,7 +411,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyBoxRotationRangeBarElement;
 	skyBoxRotationRangeBarElement.rangeBar.positionX = 0.0f;
-	skyBoxRotationRangeBarElement.rangeBar.positionY = -0.30f;
+	skyBoxRotationRangeBarElement.rangeBar.positionY = -0.40f;
 	skyBoxRotationRangeBarElement.rangeBar.value = 0.f;
 	skyBoxRotationRangeBarElement.panel = 5;
 	skyBoxRotationRangeBarElement.attachedToMainPanel = true;
@@ -420,7 +420,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement stabilizeFpsCheckBoxElement;
     stabilizeFpsCheckBoxElement.checkBox.positionX = -0.03f;
-    stabilizeFpsCheckBoxElement.checkBox.positionY = -0.5f;
+    stabilizeFpsCheckBoxElement.checkBox.positionY = 0.27f;
     stabilizeFpsCheckBoxElement.checkBox.text = "sync";
     stabilizeFpsCheckBoxElement.checkBox.checked = true;
     stabilizeFpsCheckBoxElement.checkBox.mouseHover = false;
@@ -428,6 +428,28 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     stabilizeFpsCheckBoxElement.attachedToMainPanel = true;
     stabilizeFpsCheckBoxElement.type = "checkBox";
     UIElements.push_back(stabilizeFpsCheckBoxElement);//33
+
+    UIElement skyBoxExposureTextElement;
+    skyBoxExposureTextElement.text.positionX = -0.11f;
+    skyBoxExposureTextElement.text.positionY = -0.30;
+    skyBoxExposureTextElement.text.text = "Exposure";
+    skyBoxExposureTextElement.text.scale = 0.00022f;
+    skyBoxExposureTextElement.text.color = colorData.textBoxColor;
+    skyBoxExposureTextElement.panel = 5;
+    skyBoxExposureTextElement.attachedToMainPanel = true;
+    skyBoxExposureTextElement.type = "text";
+    UIElements.push_back(skyBoxExposureTextElement);//34
+
+    UIElement skyBoxRotationTextElement;
+    skyBoxRotationTextElement.text.positionX = -0.11f;
+    skyBoxRotationTextElement.text.positionY = -0.38;
+    skyBoxRotationTextElement.text.text = "Rotation";
+    skyBoxRotationTextElement.text.scale = 0.00022f;
+    skyBoxRotationTextElement.text.color = colorData.textBoxColor;
+    skyBoxRotationTextElement.panel = 5;
+    skyBoxRotationTextElement.attachedToMainPanel = true;
+    skyBoxRotationTextElement.type = "text";
+    UIElements.push_back(skyBoxRotationTextElement);//35
 
 
 

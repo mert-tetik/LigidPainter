@@ -350,7 +350,7 @@ bool LigidPainter::run()
 		else
 			glfwSwapInterval(0);
 		
-		//util.printRenderingSpeed();
+		util.printRenderingSpeed();
 		
 		util.printError();
 
