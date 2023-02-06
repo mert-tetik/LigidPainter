@@ -1483,7 +1483,7 @@ void UserInterface::listBox(float posX,float posY,float posZ,const char* title,f
 	glUseProgram(uiPrograms.uiProgram);
 }
 
-void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mouseY,bool firstClick,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,int chosenTextureResIndex,int maxScreenWidth,int maxScreenHeight,int screenSizeX,int screenSizeY,bool& bakeTheMaterial){
+void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mouseY,bool firstClick,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,int chosenTextureResIndex,int maxScreenWidth,int maxScreenHeight,int screenSizeX,int screenSizeY,bool& bakeTheMaterial,NodeScene &material){
 	ColorData colorData;
 	GlSet glset;
 	Utilities util;
@@ -1525,6 +1525,7 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 
 	if(bakeButtonHover && firstClick){
 		bakeTheMaterial = true;
+		material.stateChanged = true;
 	}
 
 	if(generateNormalHover && firstClick){

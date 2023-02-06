@@ -29,7 +29,7 @@ std::vector<float> renderVertices = {
 
 unsigned int lastProgram = 0;
 
-MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY,std::vector<Node>appNodes,int chosenTextureResIndex,bool& bakeTheMaterial){
+MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY,std::vector<Node>appNodes,int chosenTextureResIndex,bool& bakeTheMaterial,std::vector<aTexture> &albedoTextures){
     int txtrRes = 256;
 	for (size_t i = 0; i < chosenTextureResIndex; i++)
 	{
@@ -249,6 +249,56 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
         for (int outI = 0; outI < material.renderingPipeline[nodeI].outputs.size(); outI++)
         {
             if(material.renderingPipeline[nodeI].outputs[outI].isConnectedToShaderInput){
+                if(bakeTheMaterial && material.renderingPipeline[nodeI].marked){
+                    
+                    glActiveTexture(GL_TEXTURE28);
+                
+                    unsigned int copyTxtr;
+                    glset.genTextures(copyTxtr);
+                    glset.bindTexture(copyTxtr);
+
+
+                    glset.texImage(nullptr,txtrRes,txtrRes,GL_RGBA);
+                    glset.generateMipmap();
+
+                    unsigned int copyFBO; 
+                    glset.genFramebuffers(copyFBO);
+                    glset.bindFramebuffer(copyFBO);
+
+    	            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + outI, GL_TEXTURE_2D,  copyTxtr, 0);
+
+                    GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5,GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7 };
+                    glDrawBuffers(8, drawBuffers);
+
+                    glReadBuffer(GL_COLOR_ATTACHMENT0 + outI);
+
+                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+                    model.meshes[0].Draw(); //TODO : 
+
+
+                    glset.generateMipmap();
+
+                    GLubyte* copyData = new GLubyte[txtrRes*txtrRes*4];
+                    glReadPixels(0,0,txtrRes,txtrRes,GL_RGBA,GL_UNSIGNED_BYTE,copyData);
+
+                    glset.texImage(copyData,txtrRes,txtrRes,GL_RGBA);
+                    glset.generateMipmap();
+
+                    delete[] copyData;
+
+                    glset.bindFramebuffer(0);
+                    glset.deleteFramebuffers(copyFBO);
+                    
+                    aTexture txtr;
+                    txtr.id = copyTxtr;
+                    txtr.name = "bake";
+
+                    albedoTextures.push_back(txtr);
+                }
+                
+                
                 resultOut.program = material.renderingPipeline[nodeI].program; 
                 lastProgram = resultOut.program;
                 glset.uniformMatrix4fv(nodeProgram,"projection",perspectiveProjection);
@@ -262,6 +312,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                 unsigned int resultTexture;
                 glset.genTextures(resultTexture);
                 glset.bindTexture(resultTexture);
+                
 
                 glset.texImage(nullptr,txtrRes,txtrRes,GL_RGBA);
                 glset.generateMipmap();
@@ -300,6 +351,57 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
                 material.renderingPipeline[nodeI].outputs[outI].result = resultTexture;
                 
+                
+                if(bakeTheMaterial && material.renderingPipeline[nodeI].marked){
+                    
+                    glActiveTexture(GL_TEXTURE28);
+                
+                    unsigned int copyTxtr;
+                    glset.genTextures(copyTxtr);
+                    glset.bindTexture(copyTxtr);
+
+
+                    glset.texImage(nullptr,txtrRes,txtrRes,GL_RGBA);
+                    glset.generateMipmap();
+
+                    unsigned int copyFBO; 
+                    glset.genFramebuffers(copyFBO);
+                    glset.bindFramebuffer(copyFBO);
+
+    	            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + outI, GL_TEXTURE_2D,  copyTxtr, 0);
+
+                    GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5,GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7 };
+                    glDrawBuffers(8, drawBuffers);
+
+                    glReadBuffer(GL_COLOR_ATTACHMENT0 + outI);
+
+                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+                    if(!material.renderingPipeline[nodeI].useModel)
+                        glset.drawArrays(renderVertices,false);
+                    else
+                        model.meshes[0].Draw(); //TODO : 
+
+
+                    glset.generateMipmap();
+
+                    GLubyte* copyData = new GLubyte[txtrRes*txtrRes*4];
+                    glReadPixels(0,0,txtrRes,txtrRes,GL_RGBA,GL_UNSIGNED_BYTE,copyData);
+
+                    glset.texImage(copyData,txtrRes,txtrRes,GL_RGBA);
+                    glset.generateMipmap();
+
+                    delete[] copyData;
+
+                    glset.bindFramebuffer(0);
+                    glset.deleteFramebuffers(copyFBO);
+                    
+                    aTexture txtr;
+                    txtr.id = copyTxtr;
+                    txtr.name = "bake";
+
+                    albedoTextures.push_back(txtr);
+                }
                 resultOut.textures.clear();
             }
         }

@@ -740,6 +740,8 @@ public:
 		appNodes[0].outputs[0].isConnectedToShaderInput = true;
 		appNodes[0].outputs[0].pressed = false;
 		appNodes[0].outputs[0].connectionHover = false;
+		
+		appNodes[0].marked = true;
 
 		appNodes[0].positionX = -0.55;
 		appNodes[0].positionY =-2.5;

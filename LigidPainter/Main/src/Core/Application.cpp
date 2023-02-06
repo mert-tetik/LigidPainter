@@ -128,7 +128,7 @@ std::vector<Node> appNodes;
 ColoringPanel coloringPanel;
 TextureCreatingPanel txtrCreatingPanel;
 Model model;
-bool bakeTheMaterial;
+bool bakeTheMaterial = false;
 
 
 string modelName;
