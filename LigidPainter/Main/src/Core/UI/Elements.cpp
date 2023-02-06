@@ -402,7 +402,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyBoxExposureRangeBarElement;
 	skyBoxExposureRangeBarElement.rangeBar.positionX = 0.0f;
-	skyBoxExposureRangeBarElement.rangeBar.positionY = -0.32f;
+	skyBoxExposureRangeBarElement.rangeBar.positionY = -0.57f;
 	skyBoxExposureRangeBarElement.rangeBar.value = 0.f;
 	skyBoxExposureRangeBarElement.panel = 5;
 	skyBoxExposureRangeBarElement.attachedToMainPanel = true;
@@ -411,7 +411,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyBoxRotationRangeBarElement;
 	skyBoxRotationRangeBarElement.rangeBar.positionX = 0.0f;
-	skyBoxRotationRangeBarElement.rangeBar.positionY = -0.40f;
+	skyBoxRotationRangeBarElement.rangeBar.positionY = -0.65f;
 	skyBoxRotationRangeBarElement.rangeBar.value = 0.f;
 	skyBoxRotationRangeBarElement.panel = 5;
 	skyBoxRotationRangeBarElement.attachedToMainPanel = true;
@@ -431,7 +431,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyBoxExposureTextElement;
     skyBoxExposureTextElement.text.positionX = -0.11f;
-    skyBoxExposureTextElement.text.positionY = -0.30;
+    skyBoxExposureTextElement.text.positionY = -0.55;
     skyBoxExposureTextElement.text.text = "Exposure";
     skyBoxExposureTextElement.text.scale = 0.00022f;
     skyBoxExposureTextElement.text.color = colorData.textBoxColor;
@@ -442,7 +442,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyBoxRotationTextElement;
     skyBoxRotationTextElement.text.positionX = -0.11f;
-    skyBoxRotationTextElement.text.positionY = -0.38;
+    skyBoxRotationTextElement.text.positionY = -0.63;
     skyBoxRotationTextElement.text.text = "Rotation";
     skyBoxRotationTextElement.text.scale = 0.00022f;
     skyBoxRotationTextElement.text.color = colorData.textBoxColor;
