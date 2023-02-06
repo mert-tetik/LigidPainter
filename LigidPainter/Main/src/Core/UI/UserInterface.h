@@ -381,6 +381,8 @@ struct Node{
 	int renderingIndex = 10000;
 
 	bool useModel = false;
+
+	bool marked = false;
 };
 
 struct ContextMenu {

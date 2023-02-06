@@ -22,7 +22,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	ColorData colorData;
 	Utilities util;
 
-	nodePanel.pointerCursor = false;
 
 	const float depth = 0.1f;
 
@@ -529,9 +528,30 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		}
 	}
 	
-	//Delete the node
+
+	glm::vec4 markColor;
+	if(node.marked){
+		markColor = glm::vec4(colorData.LigidPainterThemeColor,1);
+	}
+	else{
+		markColor = colorData.iconColor;
+	}
 	glUseProgram(programs.iconsProgram);
-	
+
+	//Mark the node
+	iconBox(iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width/1.5f, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2), depth+0.02f , icons.ArrowDown , 0 , markColor, markColor);
+	bool markButtonEnter = false;
+	if(nodePanel.panelHover && !coloringPanel.active)
+		markButtonEnter = isMouseOnButton(window,iconWidth/1.3 , iconWidth*1.7,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width/1.5f - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2)) + iconWidth*1.7f,mouseX,mouseY,false);
+	if(markButtonEnter){
+		nodePanel.pointerCursor = true;
+		if(firstClick){
+			node.marked = !node.marked;
+		}
+	}
+
+
+	//Delete the node
 	if(!node.isMainOut){
 		bool deleteButtonEnter = false;
 		if(nodePanel.panelHover && !coloringPanel.active)

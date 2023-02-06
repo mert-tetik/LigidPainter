@@ -161,7 +161,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		double xOffset = mouseXpos - lastMouseX;
 		double yOffset = mouseYpos - lastMouseY;
 		
-
+		nodePanel.pointerCursor = false;
 		for (size_t i = 0; i < nodeScenes[selectedNodeScene].nodes.size(); i++)
 		{
 			nodeScenes[selectedNodeScene].nodes[i].height = ((nodeScenes[selectedNodeScene].nodes[i].inputs.size() + nodeScenes[selectedNodeScene].nodes[i].rangeBarCount + nodeScenes[selectedNodeScene].nodes[i].outputs.size())/25.f + 0.07 * !nodeScenes[selectedNodeScene].nodes[i].isMainOut) * nodePanel.zoomVal;
