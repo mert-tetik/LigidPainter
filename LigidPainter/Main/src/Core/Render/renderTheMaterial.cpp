@@ -29,7 +29,14 @@ std::vector<float> renderVertices = {
 
 unsigned int lastProgram = 0;
 
-MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY,std::vector<Node>appNodes){
+MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY,std::vector<Node>appNodes,int chosenTextureResIndex,bool& bakeTheMaterial){
+    int txtrRes = 256;
+	for (size_t i = 0; i < chosenTextureResIndex; i++)
+	{
+		txtrRes*=2;
+	}
+    
+    
     MaterialOut resultOut;
     if(lastProgram == 0){
         lastProgram = appNodes[0].program;
@@ -47,7 +54,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
     GlSet glset;
 
-    glset.viewport(1920,1080);
+    glset.viewport(txtrRes,txtrRes);
 
     for (size_t i = 0; i < material.nodes.size(); i++)
     {
@@ -256,7 +263,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                 glset.genTextures(resultTexture);
                 glset.bindTexture(resultTexture);
 
-                glset.texImage(nullptr,1920,1080,GL_RGBA);
+                glset.texImage(nullptr,txtrRes,txtrRes,GL_RGBA);
                 glset.generateMipmap();
                 
                 unsigned int FBO; 
@@ -280,10 +287,10 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
                 glset.generateMipmap();
 
-                GLubyte* data = new GLubyte[1920*1080*4];
-                glReadPixels(0,0,1920,1080,GL_RGBA,GL_UNSIGNED_BYTE,data);
+                GLubyte* data = new GLubyte[txtrRes*txtrRes*4];
+                glReadPixels(0,0,txtrRes,txtrRes,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
-                glset.texImage(data,1920,1080,GL_RGBA);
+                glset.texImage(data,txtrRes,txtrRes,GL_RGBA);
                 glset.generateMipmap();
 
                 delete[] data;
@@ -308,6 +315,6 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
     glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 
-
+    bakeTheMaterial = false;
     return resultOut;
 }

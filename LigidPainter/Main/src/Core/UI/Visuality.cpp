@@ -1483,7 +1483,7 @@ void UserInterface::listBox(float posX,float posY,float posZ,const char* title,f
 	glUseProgram(uiPrograms.uiProgram);
 }
 
-void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mouseY,bool firstClick,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,int chosenTextureResIndex,int maxScreenWidth,int maxScreenHeight,int screenSizeX,int screenSizeY){
+void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mouseY,bool firstClick,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,int chosenTextureResIndex,int maxScreenWidth,int maxScreenHeight,int screenSizeX,int screenSizeY,bool& bakeTheMaterial){
 	ColorData colorData;
 	GlSet glset;
 	Utilities util;
@@ -1520,6 +1520,13 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 	//Generate normal map
 	box(0.07f, height/1.5, normalMapGenPos,1.f-height, "Generate Normal", glm::vec4(0.1,0.1,0.1,0.2), 0.07f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
 	const bool generateNormalHover = isMouseOnButton(window,0.07f, height/1.5,normalMapGenPos,1.f-height,mouseX,mouseY,false);
+
+	const bool bakeButtonHover = isMouseOnButton(window,0.03f, height/1.5,materialBakingPos,1.f-height,mouseX,mouseY,false);
+
+	if(bakeButtonHover && firstClick){
+		bakeTheMaterial = true;
+	}
+
 	if(generateNormalHover && firstClick){
 		glActiveTexture(GL_TEXTURE28);
 		

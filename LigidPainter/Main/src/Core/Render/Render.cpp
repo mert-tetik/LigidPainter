@@ -258,7 +258,7 @@ OutShaderData &outShaderData,Model &model,vector<aTexture> &albedoTextures,bool 
 ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel
 ,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
 std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool firstClick,
-glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture) {
+glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial) {
 	GlSet gls;
 	ColorData colorData;
 	Utilities util;
@@ -357,7 +357,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 	if(model.meshes.size() != 0){
 		if(nodeScenes[selectedNodeScene].stateChanged || newModelAdded){
-			modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,renderMaxScreenWidth,screenSizeX,renderMaxScreenHeight,screenSizeY,appNodes);
+			modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,renderMaxScreenWidth,screenSizeX,renderMaxScreenHeight,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial);
 			nodeScenes[selectedNodeScene].stateChanged = false;
 			newModelAdded = false;
 		}
@@ -378,7 +378,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		renderMaxScreenHeight, saturationValShaderData,currentBrushMaskTexture,materialsPanelSlideValue,UIElements,
 		colorPicker,textureDisplayer,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,
 		nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
-		chosenTextureResIndex,chosenSkyboxTexture);
+		chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial);
 
 
 	colorPicker.updatePickerVal = colorPicker.saturationValueValChanged && !colorPicker.hexValTextBoxGotInput; 
