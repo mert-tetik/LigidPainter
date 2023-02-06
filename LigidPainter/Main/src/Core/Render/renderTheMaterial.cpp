@@ -29,7 +29,7 @@ std::vector<float> renderVertices = {
 
 unsigned int lastProgram = 0;
 
-MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY,std::vector<Node>appNodes,int chosenTextureResIndex,bool& bakeTheMaterial,std::vector<aTexture> &albedoTextures){
+MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY,std::vector<Node>appNodes,int chosenTextureResIndex,bool& bakeTheMaterial,std::vector<aTexture> &albedoTextures,int currentMaterialIndex){
     int txtrRes = 256;
 	for (size_t i = 0; i < chosenTextureResIndex; i++)
 	{
@@ -275,7 +275,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-                    model.meshes[0].Draw(); //TODO : 
+                    model.meshes[currentMaterialIndex].Draw(); 
 
 
                     glset.generateMipmap();
@@ -333,7 +333,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                 if(!material.renderingPipeline[nodeI].useModel)
                     glset.drawArrays(renderVertices,false);
                 else
-                    model.meshes[0].Draw(); //TODO : 
+                    model.meshes[currentMaterialIndex].Draw(); 
 
 
                 glset.generateMipmap();
@@ -380,7 +380,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     if(!material.renderingPipeline[nodeI].useModel)
                         glset.drawArrays(renderVertices,false);
                     else
-                        model.meshes[0].Draw(); //TODO : 
+                        model.meshes[currentMaterialIndex].Draw(); 
 
 
                     glset.generateMipmap();

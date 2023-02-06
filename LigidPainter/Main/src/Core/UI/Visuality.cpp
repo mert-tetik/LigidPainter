@@ -166,11 +166,18 @@ void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
 	}
 
 }
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText) {
 	GlSet glset;
 	ColorData colorData;
 	
 	
+	if(!anyTextureNameActive){
+		for (int i = 0; i < albedoTextures.size(); i++)
+		{
+			albedoTextures[i].nameTextActive = false;
+		}
+	}
+
 	const float panelWidth = 0.2f;
 	const float panelHeigth = 0.88f;
 	
@@ -291,7 +298,22 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 			glUseProgram(programs.uiProgram);
 
-			renderText(programs.uiProgram,albedoTextures[i].name,position_x- textureWidth ,position_y - textureWidth*2.5,0.00017f,colorData.textColor,panelZ+0.02f,false);
+			bool textHover = isMouseOnButton(window,0.06f,0.015f,position_x,position_y - textureWidth*2.5,mouseXpos,mouseYpos,false);
+			
+			if(textHover && firstClick && !anyTextureNameActive){
+				albedoTextures[i].nameTextActive = true;
+				textureText = albedoTextures[i].name;
+				anyTextureNameActive = true;
+			}
+			if(albedoTextures[i].nameTextActive){
+				box(0.06f, 0.015f, position_x,position_y - textureWidth*2.5, textureText, colorData.buttonColor, 0.022f, true, false, panelZ+0.05, 10000, colorD.panelColor, 0.001f);
+
+			}
+			else{
+				renderText(programs.uiProgram,albedoTextures[i].name,position_x- textureWidth ,position_y - textureWidth*2.5,0.00017f,colorData.textColor,panelZ+0.02f,false);
+			}
+
+
 		}
 	}
 

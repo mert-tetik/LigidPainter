@@ -129,6 +129,8 @@ ColoringPanel coloringPanel;
 TextureCreatingPanel txtrCreatingPanel;
 Model model;
 bool bakeTheMaterial = false;
+bool anyTextureNameActive = false;
+std::string textureText;
 
 
 string modelName;
@@ -389,7 +391,15 @@ bool LigidPainter::run()
 		mainLoop.releaseTextBoxes(window,UIElements,exportFileName,textBoxActiveChar,coloringPanel,txtrCreatingPanel,colorPicker);
 		mainLoop.changeTextureDisplayersState(window,textureDisplayer);
 
-
+		if( firstClick || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
+			anyTextureNameActive = false;
+			for (size_t i = 0; i < albedoTextures.size(); i++)
+			{
+				if(albedoTextures[i].nameTextActive && textureText != "")
+					albedoTextures[i].name = textureText;
+			}
+			
+		}
 
 
 		if(!coloringPanel.active){
@@ -464,7 +474,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText);
 		}
 		
 		//double lastTime = glfwGetTime();
@@ -575,7 +585,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -695,6 +705,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		}	
 		if(action == 1 || action == 2){
 			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && txtrCreatingPanel.textBoxVal.size()+textBoxActiveChar){
+				textBoxActiveChar--;
+			}
+			if(glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_PRESS && textBoxActiveChar != 0){
+				textBoxActiveChar++;
+			}
+		}
+	}
+
+	if(anyTextureNameActive){
+		ui.textInput(key,action,caps,textureText,exportFileNameThreshold,window,textBoxActiveChar);
+		
+		if(action == 1 || action == 2){
+			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && textureText.size()+textBoxActiveChar){
 				textBoxActiveChar--;
 			}
 			if(glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_PRESS && textBoxActiveChar != 0){
