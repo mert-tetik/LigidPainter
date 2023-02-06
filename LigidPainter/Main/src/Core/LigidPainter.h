@@ -42,6 +42,8 @@ struct Cubemaps{
 	unsigned int prefiltered3;
 	unsigned int cubemap4;
 	unsigned int prefiltered4;
+	unsigned int cubemap5;
+	unsigned int prefiltered5;
 
 	unsigned int blurycubemap;
 };

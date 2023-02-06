@@ -125,6 +125,17 @@ public:
 		    "LigidPainter/Resources/Cubemap/Skybox/sky4/nz.png"
 		};
 		unsigned int cubemapTexture4 = loadCubemap(faces4,GL_TEXTURE13);  
+
+		std::vector<std::string> faces5
+		{
+		    "LigidPainter/Resources/Cubemap/Skybox/sky5/px.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky5/nx.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky5/ny.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky5/py.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky5/pz.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky5/nz.png"
+		};
+		unsigned int cubemapTexture5 = loadCubemap(faces5,GL_TEXTURE13);  
 		
 		std::vector<std::string> facesblur
 		{
@@ -144,6 +155,7 @@ public:
 		cubemaps.cubemap2 = cubemapTexture2;
 		cubemaps.cubemap3 = cubemapTexture3;
 		cubemaps.cubemap4 = cubemapTexture4;
+		cubemaps.cubemap5 = cubemapTexture5;
 	
 		return cubemaps;
 	}
@@ -804,6 +816,7 @@ public:
 		skyboxes.push_back(cubemaps.cubemap2);
 		skyboxes.push_back(cubemaps.cubemap3);
 		skyboxes.push_back(cubemaps.cubemap4);
+		skyboxes.push_back(cubemaps.cubemap5);
 
 		for (size_t i = 0; i < skyboxes.size(); i++)
 		{
@@ -877,6 +890,7 @@ public:
 		cubemaps.prefiltered2 = prefilterMaps[1];
 		cubemaps.prefiltered3 = prefilterMaps[2];
 		cubemaps.prefiltered4 = prefilterMaps[3];
+		cubemaps.prefiltered5 = prefilterMaps[4];
 
 		//Set everything to default
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); 
