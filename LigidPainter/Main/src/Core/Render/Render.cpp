@@ -332,6 +332,8 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap4);
 	if(chosenSkyboxTexture == 4)
 		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap5);
+	if(chosenSkyboxTexture == 5)
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap6);
 	
 	glActiveTexture(GL_TEXTURE16);
 	if(chosenSkyboxTexture == 0)
@@ -344,6 +346,8 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered4);
 	if(chosenSkyboxTexture == 4)
 		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered5);
+	if(chosenSkyboxTexture == 5)
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered6);
 
 		
 	if(UIElements[UIskyboxCheckBox].checkBox.checked)
