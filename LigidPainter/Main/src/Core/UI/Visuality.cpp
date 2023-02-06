@@ -1498,25 +1498,16 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 	const float depth = 0.8f;
 	glUseProgram(uiPrograms.uiProgram);
 
-	const float materialBakingPos = -0.3f;
-	const float normalMapGenPos = 0.2f;
+	const float materialBakingPos = -0.1f;
+	const float normalMapGenPos = 0.1f;
 
 	//Panel
 	box(1.f, height, 0.f,1.f-height, "", glm::vec4(0.1,0.1,0.1,0.2), 0, false, false, depth, 10000, glm::vec4(0.1,0.1,0.1,0.2), 0);
 	
 	//Material baking
+
 	//Bake Button 
 	box(0.03f, height/1.5, materialBakingPos,1.f-height, "Bake", glm::vec4(0.1,0.1,0.1,0.2), 0.02f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
-	//Unity checkbox
-	checkBox(materialBakingPos + 0.06f,1.f-height,"Unity",false,false,icons.Circle);
-	//Shader Out checkbox
-	checkBox(materialBakingPos + 0.27f,1.f-height,"Shader Out",false,false,icons.Circle);
-	//MaterialListbox
-	box(0.05f, height/1.5, materialBakingPos+ 0.19f,1.f-height, "", glm::vec4(0.1,0.1,0.1,0.2), 0.02f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
-	glUseProgram(uiPrograms.iconsProgram);
-	iconBox(height/1.5/2,height/1.5,materialBakingPos + 0.14f,1.f-height,depth+0.002f,icons.ArrowDown,0,glm::vec4(1),glm::vec4(1));
-	glUseProgram(uiPrograms.uiProgram);
-
 	//Generate normal map
 	box(0.07f, height/1.5, normalMapGenPos,1.f-height, "Generate Normal", glm::vec4(0.1,0.1,0.1,0.2), 0.07f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
 	const bool generateNormalHover = isMouseOnButton(window,0.07f, height/1.5,normalMapGenPos,1.f-height,mouseX,mouseY,false);
