@@ -1612,7 +1612,7 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 	
 }
 
-void UserInterface::selectionBox(bool active,float sPX,float sPY,float dPX,float dPY,float depth){
+std::vector<float> UserInterface::selectionBox(bool active,float sPX,float sPY,float dPX,float dPY,float depth){
 	std::vector<float> box = { 
 		// first triangle
 		 dPX,  sPY, depth,1,1,0,0,0,  // top right
@@ -1630,4 +1630,6 @@ void UserInterface::selectionBox(bool active,float sPX,float sPY,float dPX,float
 
 	if(active)
 		gls.drawArrays(box,false);
+
+	return box;
 }

@@ -70,6 +70,8 @@ int alertDuration = 1;
 
 float sPX = 0,sPY = 0;
 bool showTheSelectionBox = true;
+		std::vector<float> selectionBoxCoords = {};
+
 
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
@@ -192,7 +194,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			}
 			dPX = (mouseXpos/screenSizeX*2 - 1.0f);
 			dPY = ((-mouseYpos/maxScreenHeight*2 + 1.0f));
-			ui.selectionBox(true,sPX,sPY,dPX,dPY,0.3f);
+			selectionBoxCoords = ui.selectionBox(true,sPX,sPY,dPX,dPY,0.3f);
 		}
 		else{
 			sPX = (mouseXpos/screenSizeX*2 - 1.0f);
@@ -200,6 +202,19 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		}
 		if(glfwGetMouseButton(renderData.window,0) == GLFW_RELEASE){
 			showTheSelectionBox = true;
+			for (size_t i = 0; i < nodeScenes[selectedNodeScene].nodes.size(); i++)
+			{
+				if(selectionBoxCoords.size()){
+					if(ui.isMouseOnCoords(renderData.window,((nodeScenes[selectedNodeScene].nodes[i].positionX + nodePanel.panelPositionX) * nodePanel.zoomVal) * (maxScreenWidth/2.f) + maxScreenWidth/2.f,(maxScreenHeight) - (((nodeScenes[selectedNodeScene].nodes[i].positionY + nodePanel.panelPositionY) * nodePanel.zoomVal) * (maxScreenHeight/2.f) + maxScreenHeight/2.f),selectionBoxCoords,false)){
+						nodeScenes[selectedNodeScene].nodes[i].active = true;
+					}
+					else{
+						nodeScenes[selectedNodeScene].nodes[i].active = false;
+					}
+
+				}
+			}
+			
 		}
 		
 		ui.upBar(icons,renderData.window,mouseXpos,mouseYpos,firstClick,albedoTextures,selectedAlbedoTextureIndex,chosenTextureResIndex,maxScreenWidth,maxScreenHeight,screenSizeX,screenSizeY,bakeTheMaterial,nodeScenes[selectedNodeScene]);
