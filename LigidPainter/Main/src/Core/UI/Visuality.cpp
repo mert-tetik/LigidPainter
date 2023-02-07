@@ -1611,3 +1611,23 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 	renderText(uiPrograms.uiProgram,"v1.2.0",-0.9f,1.f-height*1.25,0.00022f,glm::vec4(colorData.LigidPainterThemeColor,1),depth+0.001f,false);
 	
 }
+
+void UserInterface::selectionBox(bool active,float sPX,float sPY,float dPX,float dPY,float depth){
+	std::vector<float> box = { 
+		// first triangle
+		 dPX,  sPY, depth,1,1,0,0,0,  // top right
+		 dPX,  dPY, depth,1,0,0,0,0,  // bottom right
+		 sPX,  sPY, depth,0,1,0,0,0,  // top left 
+		// second triangle
+		 dPX,  dPY, depth,1,0,0,0,0,  // bottom right
+		 sPX,  dPY, depth,0,0,0,0,0,  // bottom left
+		 sPX,  sPY, depth,0,1,0,0,0   // top left
+	};
+	GlSet gls;
+	glUseProgram(uiPrograms.uiProgram);
+	glm::vec4 selectionBoxColor = glm::vec4(1,1,0,1);
+	gls.uniform4fv(uiPrograms.uiProgram,"uiColor",selectionBoxColor);
+
+	if(active)
+		gls.drawArrays(box,false);
+}

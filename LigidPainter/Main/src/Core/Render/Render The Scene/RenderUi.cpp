@@ -68,6 +68,8 @@ int alertState = 0;
 std::string alertMessage = "";
 int alertDuration = 1;
 
+float sPX,sPY;
+
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<aTexture> &albedoTextures,Programs programs
@@ -169,6 +171,18 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			nodeScenes[selectedNodeScene].nodes[i].width = 0.12f * nodePanel.zoomVal;
 			ui.node(nodeScenes[selectedNodeScene].nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodeScenes[selectedNodeScene],nodePanel,textureSelectionPanel,i,albedoTextures,screenGapX,firstClick,coloringPanel);
 		}
+
+		if(glfwGetMouseButton(renderData.window,0) == GLFW_PRESS && nodePanel.panelHover){
+			float dPX,dPY;
+			if(firstClick){
+				sPX = (mouseXpos/screenSizeX*2 - 1.0f);
+				sPY = (-mouseYpos/maxScreenHeight*2 + 1.0f);
+			}
+			dPX = (mouseXpos/screenSizeX*2 - 1.0f);
+			dPY = ((-mouseYpos/maxScreenHeight*2 + 1.0f));
+			ui.selectionBox(true,sPX,sPY,dPX,dPY,0.3f);
+		}
+		
 		ui.upBar(icons,renderData.window,mouseXpos,mouseYpos,firstClick,albedoTextures,selectedAlbedoTextureIndex,chosenTextureResIndex,maxScreenWidth,maxScreenHeight,screenSizeX,screenSizeY,bakeTheMaterial,nodeScenes[selectedNodeScene]);
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , icons,panelData);
 		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal,firstClick,coloringPanel,txtrCreatingPanel,anyTextureNameActive,textureText);
