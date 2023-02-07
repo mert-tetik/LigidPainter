@@ -385,6 +385,8 @@ struct Node{
 	bool useModel = false;
 
 	bool marked = false;
+
+	bool active;
 };
 
 struct ContextMenu {

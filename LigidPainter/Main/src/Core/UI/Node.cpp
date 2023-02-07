@@ -91,7 +91,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 
 
 
-
+	glm::vec4 outlineColor = glm::vec4(1,1,0,1);
 
     //Render the panel
 	glUseProgram(programs.uiProgram);
@@ -101,15 +101,31 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	box(iconWidth,node.height,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth,(node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal,"",node.backColor,0,0,0,depth,10000,node.backColor,0);///Right
 	box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,(node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height + iconWidth*2.f,"",node.upBarColor,0,0,0,depth,10000,node.upBarColor,0);///Top
 	box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,(node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height - iconWidth*2.f,"",node.backColor,0,0,0,depth,10000,node.backColor,0);///Bottom
+	
 	//-Smooth corners
 	glUseProgram(programs.iconsProgram);
 	iconBox(iconWidth , iconWidth*2.f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width -iconWidth, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height + iconWidth*2.f, depth , icons.TL , 0 , node.upBarColor , node.backColor);
 	iconBox(iconWidth , iconWidth*2.f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height + iconWidth*2.f, depth , icons.TR , 0 , node.upBarColor , node.backColor);
 	iconBox(iconWidth , iconWidth*2.f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width -iconWidth, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height - iconWidth*2.f, depth , icons.BL , 0 , node.backColor , node.backColor);
 	iconBox(iconWidth , iconWidth*2.f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height - iconWidth*2.f, depth , icons.BR , 0 , node.backColor , node.backColor);
+	
+	if(node.active){
+		//-Side area outline
+		glUseProgram(programs.uiProgram);
+		box(iconWidth*1.05,node.height,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width -iconWidth,(node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal,"",outlineColor,0,0,0,depth,10000,node.backColor,0);///Left
+		box(iconWidth*1.05,node.height,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth,(node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal,"",outlineColor,0,0,0,depth,10000,node.backColor,0);///Right
+		box(node.width,iconWidth*2.f*1.05,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,(node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height + iconWidth*2.f,"",outlineColor,0,0,0,depth,10000,node.upBarColor,0);///Top
+		box(node.width,iconWidth*2.f*1.05,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,(node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height - iconWidth*2.f,"",outlineColor,0,0,0,depth,10000,node.backColor,0);///Bottom
+	
+		//-Smooth corners outline
+		glUseProgram(programs.iconsProgram);
+		iconBox(iconWidth*1.1 , iconWidth*2.f*1.1 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width -iconWidth, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height + iconWidth*2.f, depth , icons.TL , 0 , outlineColor , node.backColor);
+		iconBox(iconWidth*1.1 , iconWidth*2.f*1.1 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height + iconWidth*2.f, depth , icons.TR , 0 , outlineColor , node.backColor);
+		iconBox(iconWidth*1.1 , iconWidth*2.f*1.1 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width -iconWidth, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height - iconWidth*2.f, depth , icons.BL , 0 , outlineColor , node.backColor);
+		iconBox(iconWidth*1.1 , iconWidth*2.f*1.1 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height - iconWidth*2.f, depth , icons.BR , 0 , outlineColor , node.backColor);
 
-
-
+	}
+    
 
 
 

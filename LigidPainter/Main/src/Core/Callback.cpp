@@ -251,7 +251,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		nodePanel.boundariesHover = ui.isMouseOnNodePanel(window,mainPanelLoc - screenGapX, nodePanel.heigth,mouseXPos,mouseYPos,true);
 
 		//Add node context menu
-		addNodeContextMenu.hover = ui.isMouseOnButton(window, addNodeContextMenu.width+0.02f, addNodeContextMenu.height+0.04f, addNodeContextMenu.positionX - screenGapX/2.f, addNodeContextMenu.positionY, mouseXPos, mouseYPos, false);
+		addNodeContextMenu.hover = ui.isMouseOnButton(window, addNodeContextMenu.width+0.02f, addNodeContextMenu.height+0.04f, addNodeContextMenu.positionX - screenGapX/2.f, addNodeContextMenu.positionY- addNodeContextMenu.height, mouseXPos, mouseYPos, false);
 		for (size_t i = 0; i < addNodeContextMenu.buttons.size(); i++)
 		{
 			addNodeContextMenu.buttons[i].hover = ui.isMouseOnButton(window, addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX - screenGapX/2.f, addNodeContextMenu.buttons[i].positionY + addNodeContextMenu.positionY, mouseXPos, mouseYPos, false);

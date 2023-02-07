@@ -203,8 +203,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 		//Add node context menu
 		if(addNodeContextMenu.active){
-		ui.container(addNodeContextMenu.positionX,addNodeContextMenu.positionY,addNodeContextMenu.positionZ,addNodeContextMenu.width,addNodeContextMenu.height,colorData.nodePanelContextMenuPanelColor,programs,icons.Circle);
-		glUseProgram(programs.uiProgram); 
+			ui.container(addNodeContextMenu.positionX,addNodeContextMenu.positionY - addNodeContextMenu.height,addNodeContextMenu.positionZ,addNodeContextMenu.width,addNodeContextMenu.height,colorData.nodePanelContextMenuPanelColor,programs,icons.Circle);
+			glUseProgram(programs.uiProgram); 
 
 			for (size_t i = 0; i < addNodeContextMenu.buttons.size(); i++)
 			{
@@ -216,7 +216,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 						Node node;
 						node = appNodes[i-1];
 						node.positionX = (mouseXpos/screenSizeX*2 - 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionX;
-						node.positionY = (-mouseYpos/maxScreenHeight*2 + 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionY;						
+						node.positionY = ((-mouseYpos/maxScreenHeight*2 + 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionY);						
 
 						nodeScenes[selectedNodeScene].nodes.push_back(node);
 						addNodeContextMenu.active = false;

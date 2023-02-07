@@ -38,13 +38,14 @@ ContextMenu UserInterface::createContextMenus(std::vector<Node> appNodes){
     title.color = colorData.nodePanelContextMenuButtonColor; 
     title.colorHover = colorData.nodePanelContextMenuButtonColorHover;
     title.positionX = 0;
-    title.positionY = 0.04f*appNodes.size();
+    title.positionY = 0.0;
     title.positionZ = 0.99f;
     title.text = "Add Nodes";
     title.textRatio = 0.052f;
     title.hoverAnimationActive = false;
     addNodeContextMenu.buttons.push_back(title);
-
+    
+    panelHeight += 0.05f;
     for (size_t i = 0; i < appNodes.size(); i++)
     {
         Button button;
@@ -54,15 +55,15 @@ ContextMenu UserInterface::createContextMenus(std::vector<Node> appNodes){
         button.color = colorData.nodePanelContextMenuButtonColor; 
         button.colorHover = colorData.nodePanelContextMenuButtonColorHover;
         button.positionX = 0;
-        button.positionY = 0.02 - (i*0.05);
+        button.positionY = -panelHeight;
         button.positionZ = 0.99f;
         button.text = appNodes[i].title;
         button.textRatio = 0.052f;
         button.hoverAnimationActive = true;
         addNodeContextMenu.buttons.push_back(button);
-        panelHeight += 0.04f;
+        panelHeight += 0.05f;
     }
-	addNodeContextMenu.height = panelHeight;
+	addNodeContextMenu.height = panelHeight/2.f;
     
 
 
