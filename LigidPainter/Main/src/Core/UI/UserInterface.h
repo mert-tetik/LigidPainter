@@ -146,6 +146,13 @@ struct aTexture{
 	std::vector<unsigned int> undoList;
 
 	bool nameTextActive = false;
+
+	bool isTexture = true;
+};
+
+struct Folder{
+	std::vector<aTexture> textures;
+	std::string name;
 };
 
 struct Button{
@@ -420,6 +427,7 @@ struct SndPanel{
 	bool plusSignHover = false;
 	bool minusSignHover = false;
 	bool downSignHover = false;
+	bool folderSignHover = false;
 
 	bool texturePanelButtonHover;
 	bool materialPanelButtonHover;

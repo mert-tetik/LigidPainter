@@ -243,6 +243,7 @@ public:
 	void sndPanelBoundaries(float xOffset, int screenSizeX);
 	void sndPanelPlusIcon();
 	void sndPanelDownIcon();
+	void sndPanelFolderIcon();
 	void sndPanelMinusIcon();
 	void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatV,float &hueValue,float &saturationValuePosX, float &saturationValuePosY,bool isMainColorPicker);
 

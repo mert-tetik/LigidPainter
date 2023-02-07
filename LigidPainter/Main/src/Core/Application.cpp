@@ -1464,6 +1464,23 @@ void LigidPainter::sndPanelPlusIcon(){
 		}
 	}
 }
+void LigidPainter::sndPanelFolderIcon(){
+	Utilities util;
+	
+	aTexture result;
+	result.isTexture = false;
+	result.name = "folder";
+	
+	std::vector<std::string> textureNames;
+	for (size_t i = 0; i < albedoTextures.size(); i++)
+	{
+		textureNames.push_back(albedoTextures[i].name);
+	}
+	
+	result.name = util.uniqueName(result.name,textureNames);
+
+	albedoTextures.push_back(result);
+}
 void LigidPainter::sndPanelDownIcon(){
 	if(!txtrCreatingPanel.active){
 		aTexture result;

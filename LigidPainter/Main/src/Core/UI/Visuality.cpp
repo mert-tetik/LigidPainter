@@ -199,8 +199,10 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	circle(panelLoc - cornerWidth + 0.002f,panelHeigth - cornerWidth + 0.002f,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 
-	if(state == 0)
+	if(state == 0){
 		iconBox(0.015f,0.03f,panelLoc - 0.05f,0.85f,panelZ+0.01f,icons.ArrowDown,0,colorD.iconColor,colorD.iconColorHover);
+		iconBox(0.015f,0.03f,panelLoc - 0.2f,0.85f,panelZ+0.01f,icons.Folder,0,colorD.iconColor,colorD.iconColorHover);
+	}
 	
 	iconBox(0.015f,0.03f,panelLoc - 0.10f,0.85f,panelZ+0.01f,icons.Plus,0,colorD.iconColor,colorD.iconColorHover);
 	iconBox(0.015f,0.03f,panelLoc - 0.15f,0.85f,panelZ+0.01f,icons.Minus,0,colorD.iconColor,colorD.iconColorHover);
@@ -273,8 +275,12 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
 				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		upBotDifMin*10			,0,0,0  // top left
 			};
+			bool isHover = false;
+			bool isPressed = false;
+			
 			if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false) && !clringPanel.active && !txtrCreatingPanel.active){
 				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
+				isHover = true;
 				if(firstClick){
 					glActiveTexture(GL_TEXTURE0);
 					glBindTexture(GL_TEXTURE_2D,albedoTextures[selectedAlbedoTextureIndex].id);
@@ -286,6 +292,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			}
 
 			if(selectedAlbedoTextureIndex == i){
+				isPressed = true;
 				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,1);
 			}
 			else{
@@ -294,6 +301,28 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			glActiveTexture(GL_TEXTURE14);
 			glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
 
+			if(!albedoTextures[i].isTexture){
+				glm::vec4 iconColor = glm::vec4(1);
+
+
+			if(!isHover && !isPressed)
+				iconColor = colorData.materialIconColor;
+
+			else if(isHover && !isPressed)
+				iconColor = colorData.materialIconColorHover;
+			
+			else if(!isHover && isPressed)
+				iconColor = colorData.materialIconColorActive;
+			
+			else if(isHover && isPressed)
+				iconColor = colorData.materialIconColorActiveHover;
+
+				glUseProgram(programs.iconsProgram);
+				glActiveTexture(GL_TEXTURE6);
+				glBindTexture(GL_TEXTURE_2D,icons.Folder);
+				glset.uniform4fv(programs.iconsProgram,"iconColor",iconColor);
+				glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
+			}
 			glset.drawArrays(buttonCoorSq,false);
 
 			glUseProgram(programs.uiProgram);
