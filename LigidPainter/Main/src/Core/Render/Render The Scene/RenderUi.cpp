@@ -68,7 +68,8 @@ int alertState = 0;
 std::string alertMessage = "";
 int alertDuration = 1;
 
-float sPX,sPY;
+float sPX = 0,sPY = 0;
+bool showTheSelectionBox = true;
 
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
@@ -172,7 +173,18 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			ui.node(nodeScenes[selectedNodeScene].nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodeScenes[selectedNodeScene],nodePanel,textureSelectionPanel,i,albedoTextures,screenGapX,firstClick,coloringPanel);
 		}
 
-		if(glfwGetMouseButton(renderData.window,0) == GLFW_PRESS && nodePanel.panelHover){
+		bool anyNodeHover = false;
+		for (size_t i = 0; i < nodeScenes[selectedNodeScene].nodes.size(); i++)
+		{
+			if(nodeScenes[selectedNodeScene].nodes[i].panelHover || nodeScenes[selectedNodeScene].nodes[i].barHover){
+				anyNodeHover = true;
+				break;
+			}
+		}
+		if(firstClick && anyNodeHover){
+			showTheSelectionBox = false;
+		}
+		if(glfwGetMouseButton(renderData.window,0) == GLFW_PRESS && nodePanel.panelHover  && showTheSelectionBox){
 			float dPX,dPY;
 			if(firstClick){
 				sPX = (mouseXpos/screenSizeX*2 - 1.0f);
@@ -181,6 +193,13 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			dPX = (mouseXpos/screenSizeX*2 - 1.0f);
 			dPY = ((-mouseYpos/maxScreenHeight*2 + 1.0f));
 			ui.selectionBox(true,sPX,sPY,dPX,dPY,0.3f);
+		}
+		else{
+			sPX = (mouseXpos/screenSizeX*2 - 1.0f);
+			sPY = (-mouseYpos/maxScreenHeight*2 + 1.0f);
+		}
+		if(glfwGetMouseButton(renderData.window,0) == GLFW_RELEASE){
+			showTheSelectionBox = true;
 		}
 		
 		ui.upBar(icons,renderData.window,mouseXpos,mouseYpos,firstClick,albedoTextures,selectedAlbedoTextureIndex,chosenTextureResIndex,maxScreenWidth,maxScreenHeight,screenSizeX,screenSizeY,bakeTheMaterial,nodeScenes[selectedNodeScene]);

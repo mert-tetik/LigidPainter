@@ -374,6 +374,8 @@ struct Node{
 	bool barHover;
 	bool barPressed;
 
+	bool panelHover;
+
 	int rangeBarCount = 0;
 
 	unsigned int program;
@@ -386,7 +388,7 @@ struct Node{
 
 	bool marked = false;
 
-	bool active;
+	bool active = false;
 };
 
 struct ContextMenu {

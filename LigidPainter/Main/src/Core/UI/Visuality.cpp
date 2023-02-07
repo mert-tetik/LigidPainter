@@ -1625,7 +1625,7 @@ void UserInterface::selectionBox(bool active,float sPX,float sPY,float dPX,float
 	};
 	GlSet gls;
 	glUseProgram(uiPrograms.uiProgram);
-	glm::vec4 selectionBoxColor = glm::vec4(1,1,0,1);
+	glm::vec4 selectionBoxColor = glm::vec4(1,1,0,0.2);
 	gls.uniform4fv(uiPrograms.uiProgram,"uiColor",selectionBoxColor);
 
 	if(active)
