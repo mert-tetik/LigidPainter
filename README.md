@@ -46,3 +46,6 @@ assimp : https://github.com/assimp/assimp
     While message box is active
     ESC = Negative (Close the message box)
     ENTER = Positive (Exit the app if closing message box is active) 
+
+    Node Shortcuts
+    G = Move the selected nodes
