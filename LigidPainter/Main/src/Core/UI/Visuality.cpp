@@ -1520,8 +1520,9 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 	const float depth = 0.8f;
 	glUseProgram(uiPrograms.uiProgram);
 
-	const float materialBakingPos = -0.1f;
-	const float normalMapGenPos = 0.1f;
+	const float materialBakingPos = 0.0f;
+	const float normalMapGenPos = 0.2f;
+	const float noiseGenPos = -0.2f;
 
 	//Panel
 	box(1.f, height, 0.f,1.f-height, "", glm::vec4(0.1,0.1,0.1,0.2), 0, false, false, depth, 10000, glm::vec4(0.1,0.1,0.1,0.2), 0);
@@ -1532,13 +1533,84 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 	box(0.03f, height/1.5, materialBakingPos,1.f-height, "Bake", glm::vec4(0.1,0.1,0.1,0.2), 0.02f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
 	//Generate normal map
 	box(0.07f, height/1.5, normalMapGenPos,1.f-height, "Generate Normal", glm::vec4(0.1,0.1,0.1,0.2), 0.07f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
+	//Generate noisy texture
+	box(0.07f, height/1.5, noiseGenPos,1.f-height, "Generate Noise", glm::vec4(0.1,0.1,0.1,0.2), 0.07f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
+	
+
 	const bool generateNormalHover = isMouseOnButton(window,0.07f, height/1.5,normalMapGenPos,1.f-height,mouseX,mouseY,false);
 
 	const bool bakeButtonHover = isMouseOnButton(window,0.03f, height/1.5,materialBakingPos,1.f-height,mouseX,mouseY,false);
+	
+	const bool noiseButtonHover = isMouseOnButton(window,0.03f, height/1.5,noiseGenPos,1.f-height,mouseX,mouseY,false);
 
 	if(bakeButtonHover && firstClick){
 		bakeTheMaterial = true;
 		material.stateChanged = true;
+	}
+	if(noiseButtonHover && firstClick){
+		glActiveTexture(GL_TEXTURE28);
+		
+		//FBO
+		unsigned int FBO;
+		glset.genFramebuffers(FBO);
+		glset.bindFramebuffer(FBO);
+
+		//Texture
+		unsigned int textureColorbuffer;
+		glset.genTextures(textureColorbuffer);
+		glset.bindTexture(textureColorbuffer);
+		glset.texImage(NULL, txtrRes,txtrRes,GL_RGB); //TODO : Use texture quality variable
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glset.generateMipmap();
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+
+		glViewport(0,0,txtrRes,txtrRes);
+
+		std::vector<float> renderVertices = { 
+			// first triangle
+			 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+			 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+			 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+			// second triangle	  ,0,0,0,
+			 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+			 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+			 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+		};
+
+		glUseProgram(uiPrograms.noisyTextureProgram);
+		
+		glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
+		
+		glActiveTexture(GL_TEXTURE0);
+		glset.bindTexture(albedoTextures[selectedAlbedoTextureIndex].id);
+
+		glset.uniformMatrix4fv(uiPrograms.normalGenProgram,"renderTextureProjection",renderTextureProjection);
+		glset.uniform1i(uiPrograms.normalGenProgram,"inputTexture",0);
+
+
+		glset.drawArrays(renderVertices,0);
+		glUseProgram(uiPrograms.uiProgram);
+
+		glDeleteFramebuffers(1,&FBO);	
+		glset.bindFramebuffer(0);
+
+		aTexture txtr;
+		txtr.id = textureColorbuffer;
+		txtr.name = "noisyMap"; 
+		std::vector<std::string> textureNames;
+		for (size_t i = 0; i < albedoTextures.size(); i++)
+		{
+			textureNames.push_back(albedoTextures[i].name);
+		}
+			
+		//Rename if necessary
+		txtr.name = util.uniqueName(txtr.name,textureNames);
+		albedoTextures.push_back(txtr);
+
+		glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 	}
 
 	if(generateNormalHover && firstClick){
@@ -1593,7 +1665,7 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 
 		aTexture txtr;
 		txtr.id = textureColorbuffer;
-		txtr.name = "normalMap"; //TODO : Unique Name
+		txtr.name = "normalMap"; 
 		std::vector<std::string> textureNames;
 		for (size_t i = 0; i < albedoTextures.size(); i++)
 		{

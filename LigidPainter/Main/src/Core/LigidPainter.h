@@ -32,6 +32,7 @@ struct Programs
 	unsigned int brdfProgram; 
 	unsigned int blurySkyboxProgram; 
 	unsigned int normalGenProgram; 
+	unsigned int noisyTextureProgram; 
 };
 struct Cubemaps{
 	unsigned int cubemap;

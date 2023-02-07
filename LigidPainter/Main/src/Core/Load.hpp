@@ -484,6 +484,12 @@ public:
 
 
 
+		//Normal map generator
+		unsigned int noisyTextureProgram = gl.createProgram("LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/noisyTexture");
+
+
+
+
 		Programs glPrograms;
 
 		glPrograms.blurProgram = blurProgram;
@@ -503,6 +509,7 @@ public:
 		glPrograms.brdfProgram = brdfProgram;   
 		glPrograms.blurySkyboxProgram = blurySkyboxProgram;   
 		glPrograms.normalGenProgram = normalGenProgram;   
+		glPrograms.noisyTextureProgram = noisyTextureProgram;
 
 
 		return glPrograms;
