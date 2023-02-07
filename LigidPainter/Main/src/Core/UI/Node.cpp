@@ -80,7 +80,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
 		node.barPressed = false;
 	}
-	if(node.barPressed && !nodePanel.boundariesPressed){
+	if((node.barPressed && !nodePanel.boundariesPressed) || (node.active && glfwGetKey(window,GLFW_KEY_G) == GLFW_PRESS)){
 		node.positionX += xOffset/maxScreenWidth*2.f / nodePanel.zoomVal;
 		node.positionY -= yOffset/maxScreenHeight*2.f / nodePanel.zoomVal;
 		

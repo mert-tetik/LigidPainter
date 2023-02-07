@@ -70,7 +70,8 @@ int alertDuration = 1;
 
 float sPX = 0,sPY = 0;
 bool showTheSelectionBox = true;
-		std::vector<float> selectionBoxCoords = {};
+std::vector<float> selectionBoxCoords = {};
+bool selectionActive = false;
 
 
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
@@ -176,6 +177,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		}
 
 		bool anyNodeHover = false;
+
 		for (size_t i = 0; i < nodeScenes[selectedNodeScene].nodes.size(); i++)
 		{
 			if(nodeScenes[selectedNodeScene].nodes[i].panelHover || nodeScenes[selectedNodeScene].nodes[i].barHover){
@@ -186,7 +188,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		if(firstClick && anyNodeHover){
 			showTheSelectionBox = false;
 		}
-		if(glfwGetMouseButton(renderData.window,0) == GLFW_PRESS && nodePanel.panelHover  && showTheSelectionBox){
+		if(glfwGetMouseButton(renderData.window,0) == GLFW_PRESS && nodePanel.panelHover && showTheSelectionBox){
 			float dPX,dPY;
 			if(firstClick){
 				sPX = (mouseXpos/screenSizeX*2 - 1.0f);
@@ -195,6 +197,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			dPX = (mouseXpos/screenSizeX*2 - 1.0f);
 			dPY = ((-mouseYpos/maxScreenHeight*2 + 1.0f));
 			selectionBoxCoords = ui.selectionBox(true,sPX,sPY,dPX,dPY,0.3f);
+			selectionActive = true;
 		}
 		else{
 			sPX = (mouseXpos/screenSizeX*2 - 1.0f);
@@ -202,6 +205,9 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		}
 		if(glfwGetMouseButton(renderData.window,0) == GLFW_RELEASE){
 			showTheSelectionBox = true;
+		}
+		if(glfwGetMouseButton(renderData.window,0) == GLFW_RELEASE && selectionActive){
+			selectionActive = false;
 			for (size_t i = 0; i < nodeScenes[selectedNodeScene].nodes.size(); i++)
 			{
 				if(selectionBoxCoords.size()){
