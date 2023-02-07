@@ -1624,9 +1624,9 @@ std::vector<float> UserInterface::selectionBox(bool active,float sPX,float sPY,f
 		 sPX,  sPY, depth,0,1,0,0,0   // top left
 	};
 	GlSet gls;
+	ColorData2 clrData2;
 	glUseProgram(uiPrograms.uiProgram);
-	glm::vec4 selectionBoxColor = glm::vec4(1,1,0,0.2);
-	gls.uniform4fv(uiPrograms.uiProgram,"uiColor",selectionBoxColor);
+	gls.uniform4fv(uiPrograms.uiProgram,"uiColor",clrData2.selectionBoxColor);
 
 	if(active)
 		gls.drawArrays(box,false);

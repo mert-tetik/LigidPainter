@@ -127,6 +127,8 @@ struct ColorData //LigidPainter color palette
 struct ColorData2{
 	glm::vec3 LigidPainterThemeColor = glm::vec3(0.043f,0.635f,0.823f);
 	glm::vec4 textboxCursorColor = glm::vec4(1.f);
+	glm::vec4 nodeOutlineColor = glm::vec4(LigidPainterThemeColor,1.f);
+	glm::vec4 selectionBoxColor = glm::vec4(LigidPainterThemeColor,0.2f);
 };
 
 struct Container{
