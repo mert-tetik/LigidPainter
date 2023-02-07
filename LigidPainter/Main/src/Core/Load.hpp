@@ -233,6 +233,8 @@ public:
 		icons.TR = txtr.getTexture("LigidPainter/Resources/Sprites/TR.jpg",0,0,false);
 		icons.BL = txtr.getTexture("LigidPainter/Resources/Sprites/BL.jpg",0,0,false);
 		icons.BR = txtr.getTexture("LigidPainter/Resources/Sprites/BR.jpg",0,0,false);
+		icons.BLR = txtr.getTexture("LigidPainter/Resources/Sprites/BLR.jpg",0,0,false);
+		icons.BRR = txtr.getTexture("LigidPainter/Resources/Sprites/BRR.jpg",0,0,false);
 		icons.PanelButtonL = txtr.getTexture("LigidPainter/Resources/Sprites/PanelButtonL.jpg",0,0,false);
 		icons.PanelButtonR = txtr.getTexture("LigidPainter/Resources/Sprites/PanelButtonR.jpg",0,0,false);
 		icons.Plus = txtr.getTexture("LigidPainter/Resources/Icons/Plus.jpg",0,0,false);

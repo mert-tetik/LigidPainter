@@ -163,6 +163,8 @@ struct Icons{
 	unsigned int TR;
 	unsigned int BL;
 	unsigned int BR;
+	unsigned int BLR;
+	unsigned int BRR;
 	unsigned int PanelButtonL;
 	unsigned int PanelButtonR;
 	unsigned int Plus;
