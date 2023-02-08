@@ -176,27 +176,29 @@ void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* 
 	
 	for (size_t i = 0; i < albedoTextures.size(); i++) //Export all the albedo textures
 	{
-		//Give a number to the texture name
-		std::string exportFileNameStr = "";
-		exportFileNameStr.append(albedoTextures[i].name);
+		if(albedoTextures[i].isTexture){
+			//Give a number to the texture name
+			std::string exportFileNameStr = "";
+			exportFileNameStr.append(albedoTextures[i].name);
 
-		//Bind the related texture
-		gl.activeTexture(GL_TEXTURE0);
-		gl.bindTexture(albedoTextures[i].id);
+			//Bind the related texture
+			gl.activeTexture(GL_TEXTURE0);
+			gl.bindTexture(albedoTextures[i].id);
 
-		//Get the texture array
-    	GLubyte* exportTxtr = txtr.getTextureFromProgram(GL_TEXTURE0,txtrRes,txtrRes,3);
+			//Get the texture array
+    		GLubyte* exportTxtr = txtr.getTextureFromProgram(GL_TEXTURE0,txtrRes,txtrRes,3);
 
-		//Export
-		if (JPG) {
-			txtr.downloadTexture(exportPathStr.c_str(), exportFileNameStr.c_str(), 0, txtrRes, txtrRes, exportTxtr, 3);
+			//Export
+			if (JPG) {
+				txtr.downloadTexture(exportPathStr.c_str(), exportFileNameStr.c_str(), 0, txtrRes, txtrRes, exportTxtr, 3);
+			}
+			else if (PNG) {
+				txtr.downloadTexture(exportPathStr.c_str(), exportFileNameStr.c_str(), 1, txtrRes, txtrRes, exportTxtr, 3);
+			}
+
+			//Delete the array after exporting
+    		delete[] exportTxtr;
 		}
-		else if (PNG) {
-			txtr.downloadTexture(exportPathStr.c_str(), exportFileNameStr.c_str(), 1, txtrRes, txtrRes, exportTxtr, 3);
-		}
-
-		//Delete the array after exporting
-    	delete[] exportTxtr;
 	}
 }
 
