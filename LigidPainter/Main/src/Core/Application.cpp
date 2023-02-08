@@ -1488,7 +1488,8 @@ void LigidPainter::sndPanelFolderIcon(){
 	albedoTextures.push_back(result);
 }
 void LigidPainter::sndPanelBackIcon(){
-	sndPanel.activeFolderIndex = albedoTextures[sndPanel.activeFolderIndex].folderIndex;
+	if(sndPanel.activeFolderIndex != 10000)
+		sndPanel.activeFolderIndex = albedoTextures[sndPanel.activeFolderIndex].folderIndex;
 }
 void LigidPainter::viewportImageTextbox(){
 		glActiveTexture(GL_TEXTURE0);

@@ -151,7 +151,7 @@ struct aTexture{
 
 	bool isTexture = true;
 
-	int folderIndex = 0;
+	int folderIndex = 10000;
 };
 
 struct Button{
@@ -437,7 +437,7 @@ struct SndPanel{
 
 	int state; //0 = textures , 1 = materials
 
-	int activeFolderIndex = 0;
+	int activeFolderIndex = 10000;
 };
 
 struct NodeScene{
