@@ -367,6 +367,10 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 			 -1.0f,  -1.0f, 0.0f,0,0,0,0,0,  // bottom left
 			 -1.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
 			};
+		
+		gls.uniform1i(renderPrograms.renderTheTextureProgram, "isPressed" ,0);
+		gls.uniform1i(renderPrograms.renderTheTextureProgram, "isHover" ,0);
+		
 		gls.drawArrays(renderVertices,0);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		

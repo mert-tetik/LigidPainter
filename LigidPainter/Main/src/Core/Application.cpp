@@ -286,6 +286,11 @@ bool LigidPainter::run()
 
 
 
+	glActiveTexture(GL_TEXTURE0);
+	glset.genTextures(viewportBGImage);
+	glset.bindTexture(viewportBGImage);
+	txtr.getTexture("LigidPainter/Resources/Images/BGImage.jpg",1920,1080,true);
+
 
 	//Send some data to related cpp files
 	//--Send programs struct
@@ -1486,9 +1491,6 @@ void LigidPainter::sndPanelBackIcon(){
 	sndPanel.activeFolderIndex = albedoTextures[sndPanel.activeFolderIndex].folderIndex;
 }
 void LigidPainter::viewportImageTextbox(){
-	if(!txtrCreatingPanel.active){
-		aTexture result;
-
 		glActiveTexture(GL_TEXTURE0);
 		unsigned int texture;
 		glset.genTextures(texture);
@@ -1516,7 +1518,6 @@ void LigidPainter::viewportImageTextbox(){
 
 			viewportBGImage = texture;
 		}
-	}
 }
 void LigidPainter::sndPanelDownIcon(){
 	if(!txtrCreatingPanel.active){

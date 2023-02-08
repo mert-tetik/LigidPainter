@@ -166,6 +166,8 @@ void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
 	}
 
 }
+
+bool sndpanelMoveTexture = false;
 void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex) {
 	GlSet glset;
 	ColorData colorData;
@@ -225,7 +227,27 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	box(panelWidth+0.05f, 0.5f, panelLoc - panelWidth - cornerWidth, -panelHeigth-0.42f, "", glm::vec4(0), 0.022f, false, false, panelZ+0.05, 10000, colorD.panelColor, 0);
 
 
-	
+
+	if(sndpanelMoveTexture){
+		float posx = (mouseXpos/(maxScreenWidth/2))-1.f;
+		float posy = (2.f - (mouseYpos/(uiMaxScreenHeight/2.f)))-1.f;
+		std::vector<float> renderVertices = { 
+			// first triangle
+			 0.05f + posx,  0.1f+ posy, 1.0f,1,1,0,0,0,  // top right
+			 0.05f+ posx,  -0.1f+ posy, 1.0f,1,0,0,0,0,  // bottom right
+			 -0.05f+ posx,  0.1f+ posy, 1.0f,0,1,0,0,0,  // top left 
+			// second tria0gle	  ,0,0,0,
+			 0.05f+ posx,  -0.1f+ posy, 1.0f,1,0,0,0,0,  // bottom right
+			 -0.05f+ posx,  -0.1f+ posy, 1.0f,0,0,0,0,0,  // bottom left
+			 -0.05f+ posx,  0.1f+ posy, 1.0f,0,1,0,0,0   // top left
+		};
+		glUseProgram(programs.renderTheTextureProgram);
+		glActiveTexture(GL_TEXTURE14);
+		glBindTexture(GL_TEXTURE_2D,albedoTextures[selectedAlbedoTextureIndex].id);
+		glset.uniform1i(programs.renderTheTextureProgram, "isPressed" ,0);
+		glset.uniform1i(programs.renderTheTextureProgram, "isHover" ,0);
+		glset.drawArrays(renderVertices,false);
+	}
 
 	if(state == 0){
 		glUseProgram(programs.uiProgram);
@@ -285,6 +307,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false) && !clringPanel.active && !txtrCreatingPanel.active){
 					glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
 					isHover = true;
+					if(!albedoTextures[i].isTexture && sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE){
+						albedoTextures[selectedAlbedoTextureIndex].folderIndex = i;
+					}
 					if(firstClick){
 						if(albedoTextures[i].isTexture){
 							glActiveTexture(GL_TEXTURE0);
@@ -294,6 +319,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 						else{
 							folderIndex = i;
 						}
+						sndpanelMoveTexture = true;
 					}
 				}
 				else{
@@ -448,7 +474,8 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			renderText(programs.uiProgram,std::to_string(nodeScenes[i].index),position_x - textureWidth ,position_y - textureWidth,0.00042f,colorData.materialIconIndexTextColor,panelZ+0.03f,false);
 		}
 	}
-	
+	if(glfwGetMouseButton(window,0) == GLFW_RELEASE)
+		sndpanelMoveTexture = false;
 	glUseProgram(programs.uiProgram);
 }
 
