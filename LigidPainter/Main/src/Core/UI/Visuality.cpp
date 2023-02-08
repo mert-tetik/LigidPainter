@@ -531,53 +531,59 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 
 	for (size_t i = 0; i < albedoTextures.size(); i++)
 	{
-		if(i % 10 == 0 && i != 0){
-			maskYpos-=0.1f;
-			maskXpos=0.0f;
-		}
-		maskXpos-=0.05f;
-
-		const float startingPoint = textureSelectionPanel.posY;
-
-		const float textureWidth = 0.022f;
-
-		float position_x = textureSelectionPanel.posX - maskXpos - boxWidth - textureWidth*1.2;
-		float position_y = startingPoint + maskYpos + boxWidth - textureWidth*2;
-		//ui.iconBox(0.025f, 0.05f,centerCoords - screenGapX - maskXpos - 0.2f,0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f,1,maskTextures[i],0);
-		
-
-		const float maxTop = startingPoint + textureWidth*2 + boxWidth;
-		const float minBot = -0.8f;
-		
-		float upBotDifMin = std::min(0.05f + position_y,maxTop) - std::min(-0.05f + position_y,maxTop);
-		float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
-
-		glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
-
-		std::vector<float> buttonCoorSq{
-			// first triangle
-			 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		upBotDifMin*10			,0,0,0,  // top right
-			 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
-			-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0,  // top left 
-			// second triangle						   	
-			 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
-			-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
-			-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0  // top left
-		};
-		glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,0);
-		if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2) - screenGapX,mouseYpos,buttonCoorSq,false)){
-			glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
-			if(glfwGetMouseButton(window,0) == GLFW_PRESS){
-				textureSelectionPanel.selectedIndex = i;
-				textureSelectionPanel.selectedTextureName = albedoTextures[i].name;
-				textureSelectionPanel.textureClicked = true;
+		if(albedoTextures[i].isTexture){
+			if(i % 10 == 0 && i != 0){
+				maskYpos-=0.1f;
+				maskXpos=0.0f;
 			}
-		}
-		else{
-			glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,0);
-		}
+			maskXpos-=0.05f;
 
-		glset.drawArrays(buttonCoorSq,false);
+			const float startingPoint = textureSelectionPanel.posY;
+
+			const float textureWidth = 0.022f;
+
+			float position_x = textureSelectionPanel.posX - maskXpos - boxWidth - textureWidth*1.2;
+			float position_y = startingPoint + maskYpos + boxWidth - textureWidth*2;
+			//ui.iconBox(0.025f, 0.05f,centerCoords - screenGapX - maskXpos - 0.2f,0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f,1,maskTextures[i],0);
+
+
+			const float maxTop = startingPoint + textureWidth*2 + boxWidth;
+			const float minBot = -0.8f;
+
+			float upBotDifMin = std::min(0.05f + position_y,maxTop) - std::min(-0.05f + position_y,maxTop);
+			float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
+
+			glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
+
+			std::vector<float> buttonCoorSq{
+				// first triangle
+				 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		upBotDifMin*10			,0,0,0,  // top right
+				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0,  // top left 
+				// second triangle						   	
+				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+				-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
+				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0  // top left
+			};
+			glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,0);
+			if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2) - screenGapX,mouseYpos,buttonCoorSq,false)){
+				glUseProgram(programs.uiProgram);
+				box(0.1f,0.02f,textureSelectionPanel.posX-boxWidth+0.1f,textureSelectionPanel.posY+boxWidth*1.35f,albedoTextures[i].name, clrData.textureSelectionPanelColor ,0,true,0,0.8,10,clrData.textureSelectionPanelColor,0);
+				glUseProgram(programs.renderTheTextureProgram);
+
+				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
+				if(glfwGetMouseButton(window,0) == GLFW_PRESS){
+					textureSelectionPanel.selectedIndex = i;
+					textureSelectionPanel.selectedTextureName = albedoTextures[i].name;
+					textureSelectionPanel.textureClicked = true;
+				}
+			}
+			else{
+				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,0);
+			}
+
+			glset.drawArrays(buttonCoorSq,false);
+		}
 	}
 	glUseProgram(programs.uiProgram);
 }
