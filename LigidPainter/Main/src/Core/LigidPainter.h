@@ -176,6 +176,7 @@ struct Icons{
 	unsigned int CircularX;
 	unsigned int Undo;
 	unsigned int LoadFolder;
+	unsigned int Gear;
 };
 
 struct RenderData { //GlSet::render
