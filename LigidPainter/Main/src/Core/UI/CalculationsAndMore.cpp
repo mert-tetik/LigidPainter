@@ -151,33 +151,33 @@ bool UserInterface::isMouseOnCoords(GLFWwindow*window,double mouseXpos, double m
 	}
 	//Barycentric calculations
 }
-bool UserInterface::isMouseOnNodePanel(GLFWwindow* window,float mainPanelLoc,float height,double mouseXpos,double mouseYpos,bool calculateBoundaries){
+bool UserInterface::isMouseOnNodePanel(GLFWwindow* window,float mainPanelLoc,float height,double mouseXpos,double mouseYpos,bool calculateBoundaries,float sndPanel){
 	std::vector<float> buttonCoor;
-	
 	if(!calculateBoundaries){
 		buttonCoor = std::vector<float>
 		{
 			//first triangle								    //Color - Normal Vectors Will Be Usen For Color Data Of Vertices
-			 -1.0f + 0.05 			,  -1.00f 			, 0.9f,1.0f,1.0f	,1,1,1,  // top right
-			 -1.0f + 0.05			,  -1.00f + height 	, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
-			 mainPanelLoc 	-0.05f	,  -1.00f 			, 0.9f,0.0f,1.0f	,0,0,0,  // top left 
+			 sndPanel + 0.037f  			,  -1.00f 			, 0.9f,1.0f,1.0f	,1,1,1,  // top right
+			 sndPanel + 0.037f 			,  -1.00f + height 	, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
+			 mainPanelLoc 	-0.037f	,  -1.00f 			, 0.9f,0.0f,1.0f	,0,0,0,  // top left 
 			//second triangle
-			 -1.0f + 0.05			,  -1.00f + height	, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
-			 mainPanelLoc 	-0.05f	,  -1.00f + height	, 0.9f,0.0f,0.0f	,0,0,0,  // bottom left
-			 mainPanelLoc 	-0.05f	,  -1.00f 			, 0.9f,0.0f,1.0f	,0,0,0 // top left
+			 sndPanel + 0.037f 		,  -1.00f + height	, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
+			 mainPanelLoc 	-0.037f	,  -1.00f + height	, 0.9f,0.0f,0.0f	,0,0,0,  // bottom left
+			 mainPanelLoc 	-0.037f	,  -1.00f 			, 0.9f,0.0f,1.0f	,0,0,0 // top left
 		};
 	}
 	else{
 		const float trackingRange = 0.06f;
+		
 		buttonCoor = std::vector<float>{
 			//first triangle								    //Color - Normal Vectors Will Be Usen For Color Data Of Vertices
-			 -1.0f + 0.05 			,  -1.00f + (height+0.056f - trackingRange) 			, 0.9f,1.0f,1.0f	,1,1,1,  // top right
-			 -1.0f + 0.05			,  -1.00f + (height+0.056f + trackingRange) 								, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
-			 mainPanelLoc 	-0.05f	,  -1.00f + (height+0.056f - trackingRange) 			, 0.9f,0.0f,1.0f	,0,0,0,  // top left 
+			 sndPanel + 0.037f 			,  -1.00f + (height+0.056f - trackingRange) 			, 0.9f,1.0f,1.0f	,1,1,1,  // top right
+			 sndPanel + 0.037f			,  -1.00f + (height+0.056f + trackingRange) 								, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
+			 mainPanelLoc 	-0.037f	,  -1.00f + (height+0.056f - trackingRange) 			, 0.9f,0.0f,1.0f	,0,0,0,  // top left 
 			//second triangle
-			 -1.0f + 0.05			,  -1.00f + (height+0.056f + trackingRange)								, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
-			 mainPanelLoc 	-0.05f	,  -1.00f + (height+0.056f + trackingRange)								, 0.9f,0.0f,0.0f	,0,0,0,  // bottom left
-			 mainPanelLoc 	-0.05f	,  -1.00f + (height+0.056f - trackingRange) 			, 0.9f,0.0f,1.0f	,0,0,0 // top left
+			 sndPanel + 0.037f			,  -1.00f + (height+0.056f + trackingRange)								, 0.9f,1.0f,0.0f	,0,0,0,  // bottom right
+			 mainPanelLoc 	-0.037f	,  -1.00f + (height+0.056f + trackingRange)								, 0.9f,0.0f,0.0f	,0,0,0,  // bottom left
+			 mainPanelLoc 	-0.037f	,  -1.00f + (height+0.056f - trackingRange) 			, 0.9f,0.0f,1.0f	,0,0,0 // top left
 		};
 		
 	}
@@ -186,7 +186,7 @@ bool UserInterface::isMouseOnNodePanel(GLFWwindow* window,float mainPanelLoc,flo
 	int screenSizeY;
 	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
 
-	float mouseFX = ((float)mouseXpos / (CAMuiMaxScreenWidth / 2));//Screen Coord
+	float mouseFX = ((float)mouseXpos / (CAMuiMaxScreenWidth / 2))-1.0f;//Screen Coord
 
 	float mouseFY = (((float)mouseYpos / (CAMuiMaxScreenHeight / 2))-1.0f)*-1.0f;//Screen Coord
 
