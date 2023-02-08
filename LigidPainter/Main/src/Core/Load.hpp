@@ -247,6 +247,7 @@ public:
 		icons.Undo = txtr.getTexture("LigidPainter/Resources/Icons/Undo.jpg",0,0,false);
 		icons.LoadFolder = txtr.getTexture("LigidPainter/Resources/Icons/AddFolder.jpg",0,0,false);
 		icons.Gear = txtr.getTexture("LigidPainter/Resources/Icons/Gear.jpg",0,0,false);
+		icons.Mark = txtr.getTexture("LigidPainter/Resources/Icons/Mark.jpg",0,0,false);
 	
 		return icons;
 	}
