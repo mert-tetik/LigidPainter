@@ -89,7 +89,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		yOffset = 0;
 	}
 
-	node.panelHover = isMouseOnButton(window,node.width,node.height,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,(node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal,mouseX,mouseY,false);
+	node.panelHover = isMouseOnButton(window,node.width*1.4,node.height,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,(node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal,mouseX,mouseY,false);
 
 	glm::vec4 outlineColor = colorData2.nodeOutlineColor;
 
