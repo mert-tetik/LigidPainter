@@ -1645,7 +1645,7 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 		bakeTheMaterial = true;
 		material.stateChanged = true;
 	}
-	if(noiseButtonHover && firstClick){
+	if(noiseButtonHover && firstClick && albedoTextures.size()){
 		glActiveTexture(GL_TEXTURE28);
 		
 		//FBO
@@ -1711,7 +1711,7 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 		glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 	}
 
-	if(generateNormalHover && firstClick){
+	if(generateNormalHover && firstClick && albedoTextures.size()){
 		glActiveTexture(GL_TEXTURE28);
 		
 		//FBO
