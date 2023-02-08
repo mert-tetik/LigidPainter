@@ -391,7 +391,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyboxCheckBoxElement;
     skyboxCheckBoxElement.checkBox.positionX = -0.03f;
-    skyboxCheckBoxElement.checkBox.positionY = 0.1f;
+    skyboxCheckBoxElement.checkBox.positionY = 0.0f;
     skyboxCheckBoxElement.checkBox.text = "skybox";
     skyboxCheckBoxElement.checkBox.checked = true;
     skyboxCheckBoxElement.checkBox.mouseHover = false;
@@ -402,7 +402,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyBoxExposureRangeBarElement;
 	skyBoxExposureRangeBarElement.rangeBar.positionX = 0.0f;
-	skyBoxExposureRangeBarElement.rangeBar.positionY = -0.57f;
+	skyBoxExposureRangeBarElement.rangeBar.positionY = -0.67f;
 	skyBoxExposureRangeBarElement.rangeBar.value = 0.f;
 	skyBoxExposureRangeBarElement.panel = 5;
 	skyBoxExposureRangeBarElement.attachedToMainPanel = true;
@@ -411,7 +411,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyBoxRotationRangeBarElement;
 	skyBoxRotationRangeBarElement.rangeBar.positionX = 0.0f;
-	skyBoxRotationRangeBarElement.rangeBar.positionY = -0.65f;
+	skyBoxRotationRangeBarElement.rangeBar.positionY = -0.75f;
 	skyBoxRotationRangeBarElement.rangeBar.value = 0.f;
 	skyBoxRotationRangeBarElement.panel = 5;
 	skyBoxRotationRangeBarElement.attachedToMainPanel = true;
@@ -431,7 +431,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyBoxExposureTextElement;
     skyBoxExposureTextElement.text.positionX = -0.11f;
-    skyBoxExposureTextElement.text.positionY = -0.55;
+    skyBoxExposureTextElement.text.positionY = -0.65;
     skyBoxExposureTextElement.text.text = "Exposure";
     skyBoxExposureTextElement.text.scale = 0.00022f;
     skyBoxExposureTextElement.text.color = colorData.textBoxColor;
@@ -442,7 +442,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyBoxRotationTextElement;
     skyBoxRotationTextElement.text.positionX = -0.11f;
-    skyBoxRotationTextElement.text.positionY = -0.63;
+    skyBoxRotationTextElement.text.positionY = -0.73;
     skyBoxRotationTextElement.text.text = "Rotation";
     skyBoxRotationTextElement.text.scale = 0.00022f;
     skyBoxRotationTextElement.text.color = colorData.textBoxColor;
@@ -450,6 +450,29 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     skyBoxRotationTextElement.attachedToMainPanel = true;
     skyBoxRotationTextElement.type = "text";
     UIElements.push_back(skyBoxRotationTextElement);//35
+
+    UIElement imageCheckBoxElement;
+    imageCheckBoxElement.checkBox.positionX = -0.03f;
+    imageCheckBoxElement.checkBox.positionY = 0.16f;
+    imageCheckBoxElement.checkBox.text = "Image";
+    imageCheckBoxElement.checkBox.checked = true;
+    imageCheckBoxElement.checkBox.mouseHover = false;
+    imageCheckBoxElement.panel = 5;
+    imageCheckBoxElement.attachedToMainPanel = true;
+    imageCheckBoxElement.type = "checkBox";
+    UIElements.push_back(imageCheckBoxElement);//36
+
+    UIElement viewportImageTextBoxElement;
+    viewportImageTextBoxElement.textBox.position_x = 0.0f;
+    viewportImageTextBoxElement.textBox.position_y = 0.1f;
+    viewportImageTextBoxElement.textBox.position_z = 0.9f;
+    viewportImageTextBoxElement.textBox.width = 0.12;
+    viewportImageTextBoxElement.textBox.height = 0.03;
+    viewportImageTextBoxElement.textBox.text = "image";
+    viewportImageTextBoxElement.panel = 5;
+    viewportImageTextBoxElement.attachedToMainPanel = true;
+    viewportImageTextBoxElement.type = "textBox";
+    UIElements.push_back(viewportImageTextBoxElement);//37
 
 
 

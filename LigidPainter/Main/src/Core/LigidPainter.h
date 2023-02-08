@@ -246,6 +246,7 @@ public:
 	void sndPanelFolderIcon();
 	void sndPanelMinusIcon();
 	void sndPanelBackIcon();
+	void viewportImageTextbox();
 	void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatV,float &hueValue,float &saturationValuePosX, float &saturationValuePosY,bool isMainColorPicker);
 
 

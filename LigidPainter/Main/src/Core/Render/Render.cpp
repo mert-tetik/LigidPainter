@@ -259,7 +259,7 @@ ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,Co
 ,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
 std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool firstClick,
 glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
-,bool& anyTextureNameActive,std::string &textureText) {
+,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage) {
 	GlSet gls;
 	ColorData colorData;
 	Utilities util;
@@ -352,11 +352,11 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 	
 	
-	if(albedoTextures.size()){
+	if(UIElements[UIimageCheckBoxElement].checkBox.checked){
 		glUseProgram(renderPrograms.renderTheTextureProgram);
 
 		glActiveTexture(GL_TEXTURE14);
-		glBindTexture(GL_TEXTURE_2D,albedoTextures[0].id);
+		glBindTexture(GL_TEXTURE_2D,viewportBGImage);
 		std::vector<float> renderVertices = { 
 			// first triangle
 			 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
@@ -368,6 +368,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 			 -1.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
 			};
 		gls.drawArrays(renderVertices,0);
+		glClear(GL_DEPTH_BUFFER_BIT);
 		
 	}
 	

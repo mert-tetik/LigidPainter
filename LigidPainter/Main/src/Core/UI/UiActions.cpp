@@ -106,10 +106,14 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			UIElements[UIskyboxCheckBox].checkBox.checked = !UIElements[UIskyboxCheckBox].checkBox.checked;
 		if(UIElements[UIstabilizeFpsCheckBox].checkBox.mouseHover)
 			UIElements[UIstabilizeFpsCheckBox].checkBox.checked = !UIElements[UIstabilizeFpsCheckBox].checkBox.checked;
+		if(UIElements[UIimageCheckBoxElement].checkBox.mouseHover)
+			UIElements[UIimageCheckBoxElement].checkBox.checked = !UIElements[UIimageCheckBoxElement].checkBox.checked;
 		if (UIElements[UIuseNegativeCheckBox].checkBox.mouseHover)
 			ligid.useNegativeForDrawingCheckbox();
 		if (UIElements[UIloadModelButton].button.hover)
 			ligid.loadModelButton();
+		if (UIElements[UIviewportImageTextBoxElement].textBox.hover)
+			ligid.viewportImageTextbox();
 		if (colorPicker.dropperEnter)
 			ligid.paintingDropper();
 		if (UIElements[UIexportingPathTextBox].textBox.hover)
