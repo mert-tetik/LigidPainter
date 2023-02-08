@@ -144,6 +144,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			ligid.sndPanelDownIcon();
 		if(sndPanel.folderSignHover)
 			ligid.sndPanelFolderIcon();
+		if(sndPanel.backSignHover)
+			ligid.sndPanelBackIcon();
 		if(sndPanel.minusSignHover)
 			ligid.sndPanelMinusIcon();
 		if(sndPanel.texturePanelButtonHover)

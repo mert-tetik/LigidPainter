@@ -350,9 +350,30 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	if(chosenSkyboxTexture == 5)
 		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered6);
 
+	
+	
+	if(albedoTextures.size()){
+		glUseProgram(renderPrograms.renderTheTextureProgram);
+
+		glActiveTexture(GL_TEXTURE14);
+		glBindTexture(GL_TEXTURE_2D,albedoTextures[0].id);
+		std::vector<float> renderVertices = { 
+			// first triangle
+			 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+			 1.0f,  -1.0f, 0.0f,1,0,0,0,0,  // bottom right
+			 -1.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+			// second tria0gle	  ,0,0,0,
+			 1.0f,  -1.0f, 0.0f,1,0,0,0,0,  // bottom right
+			 -1.0f,  -1.0f, 0.0f,0,0,0,0,0,  // bottom left
+			 -1.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+			};
+		gls.drawArrays(renderVertices,0);
 		
+	}
+	
 	if(UIElements[UIskyboxCheckBox].checkBox.checked)
 		renderSkyBox(skyBoxShaderData,renderPrograms,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
+		
 	
 
 

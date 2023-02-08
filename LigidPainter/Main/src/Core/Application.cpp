@@ -1481,6 +1481,9 @@ void LigidPainter::sndPanelFolderIcon(){
 
 	albedoTextures.push_back(result);
 }
+void LigidPainter::sndPanelBackIcon(){
+	sndPanel.activeFolderIndex = albedoTextures[sndPanel.activeFolderIndex].folderIndex;
+}
 void LigidPainter::sndPanelDownIcon(){
 	if(!txtrCreatingPanel.active){
 		aTexture result;

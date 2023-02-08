@@ -166,7 +166,7 @@ void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
 	}
 
 }
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -200,6 +200,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 
 	if(state == 0){
+		iconBox(0.015f,0.03f,panelLoc - 0.365f,0.85f,panelZ+0.01f,icons.ArrowLeft,0,colorD.iconColor,colorD.iconColorHover);
 		iconBox(0.015f,0.03f,panelLoc - 0.05f,0.85f,panelZ+0.01f,icons.ArrowDown,0,colorD.iconColor,colorD.iconColorHover);
 		iconBox(0.015f,0.03f,panelLoc - 0.2f,0.85f,panelZ+0.01f,icons.Folder,0,colorD.iconColor,colorD.iconColorHover);
 	}
@@ -228,7 +229,8 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 	if(state == 0){
 		glUseProgram(programs.uiProgram);
-		renderText(programs.uiProgram,"Textures",panelLoc-0.35f,0.84f,0.00032f,colorData.textColor,0.99999f,false);
+		if(albedoTextures.size())
+			renderText(programs.uiProgram,albedoTextures[folderIndex].name,panelLoc-0.35f,0.84f,0.00032f,colorData.textColor,0.99999f,false);
 		
 		glUseProgram(programs.renderTheTextureProgram);
 	
@@ -239,110 +241,117 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 		float maskXpos = 0.0f;
 		float maskYpos = 0.0f;
 		//RENDER THE TEXTURES
+		int lC = 0;
 		for (size_t i = 0; i < albedoTextures.size(); i++)
 		{
-			glUseProgram(programs.renderTheTextureProgram);
+			if(albedoTextures[i].folderIndex == folderIndex){
+				glUseProgram(programs.renderTheTextureProgram);
 
-			if(i % 3 == 0 && i != 0){
-				maskYpos-=0.23f;
-				maskXpos=0.0f;
-			}
-			maskXpos-=0.12f;
-
-			const float startingPoint = 0.7f;
-
-			float position_x = panelLoc - maskXpos - panelWidth*2 - 0.04f;
-			float position_y = startingPoint + maskYpos + txtrSlideVal;
-			//ui.iconBox(0.025f, 0.05f,centerCoords - screenGapX - maskXpos - 0.2f,0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f,1,maskTextures[i],0);
-
-			const float textureWidth = 0.05f;
-
-			const float maxTop = startingPoint + textureWidth*2;
-			const float minBot = -0.8f;
-
-			float upBotDifMin = std::min(0.05f + position_y,maxTop) - std::min(-0.05f + position_y,maxTop);
-			float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
-
-
-
-			std::vector<float> buttonCoorSq{
-				// first triangle
-				 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		upBotDifMin*10			,0,0,0,  // top right
-				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
-				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		upBotDifMin*10			,0,0,0,  // top left 
-				// second triangle						   	
-				 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
-				-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
-				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		upBotDifMin*10			,0,0,0  // top left
-			};
-			bool isHover = false;
-			bool isPressed = false;
-			
-			if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false) && !clringPanel.active && !txtrCreatingPanel.active){
-				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
-				isHover = true;
-				if(firstClick){
-					glActiveTexture(GL_TEXTURE0);
-					glBindTexture(GL_TEXTURE_2D,albedoTextures[selectedAlbedoTextureIndex].id);
-					selectedAlbedoTextureIndex = i;
+				if(lC % 3 == 0 && lC != 0){
+					maskYpos-=0.23f;
+					maskXpos=0.0f;
 				}
+				maskXpos-=0.12f;
+
+				const float startingPoint = 0.7f;
+
+				float position_x = panelLoc - maskXpos - panelWidth*2 - 0.04f;
+				float position_y = startingPoint + maskYpos + txtrSlideVal;
+				//ui.iconBox(0.025f, 0.05f,centerCoords - screenGapX - maskXpos - 0.2f,0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f,1,maskTextures[i],0);
+
+				const float textureWidth = 0.05f;
+
+				const float maxTop = startingPoint + textureWidth*2;
+				const float minBot = -0.8f;
+
+				float upBotDifMin = std::min(0.05f + position_y,maxTop) - std::min(-0.05f + position_y,maxTop);
+				float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
+
+
+
+				std::vector<float> buttonCoorSq{
+					// first triangle
+					 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		upBotDifMin*10			,0,0,0,  // top right
+					 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+					-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		upBotDifMin*10			,0,0,0,  // top left 
+					// second triangle						   	
+					 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+					-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
+					-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		upBotDifMin*10			,0,0,0  // top left
+				};
+				bool isHover = false;
+				bool isPressed = false;
+
+				if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false) && !clringPanel.active && !txtrCreatingPanel.active){
+					glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
+					isHover = true;
+					if(firstClick){
+						if(albedoTextures[i].isTexture){
+							glActiveTexture(GL_TEXTURE0);
+							glBindTexture(GL_TEXTURE_2D,albedoTextures[selectedAlbedoTextureIndex].id);
+							selectedAlbedoTextureIndex = i;
+						}
+						else{
+							folderIndex = i;
+						}
+					}
+				}
+				else{
+					glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,0);
+				}
+
+				if(selectedAlbedoTextureIndex == i){
+					isPressed = true;
+					glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,1);
+				}
+				else{
+					glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,0);
+				}
+				glActiveTexture(GL_TEXTURE14);
+				glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
+
+				if(!albedoTextures[i].isTexture){
+					glm::vec4 iconColor = glm::vec4(1);
+
+
+				if(!isHover && !isPressed)
+					iconColor = colorData.materialIconColor;
+
+				else if(isHover && !isPressed)
+					iconColor = colorData.materialIconColorHover;
+
+				else if(!isHover && isPressed)
+					iconColor = colorData.materialIconColorActive;
+
+				else if(isHover && isPressed)
+					iconColor = colorData.materialIconColorActiveHover;
+
+					glUseProgram(programs.iconsProgram);
+					glActiveTexture(GL_TEXTURE6);
+					glBindTexture(GL_TEXTURE_2D,icons.Folder);
+					glset.uniform4fv(programs.iconsProgram,"iconColor",iconColor);
+					glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
+				}
+				glset.drawArrays(buttonCoorSq,false);
+
+				glUseProgram(programs.uiProgram);
+
+				bool textHover = isMouseOnButton(window,0.06f,0.015f,position_x,position_y - textureWidth*2.5,mouseXpos,mouseYpos,false);
+
+				if(textHover && firstClick && !anyTextureNameActive){
+					albedoTextures[i].nameTextActive = true;
+					textureText = albedoTextures[i].name;
+					anyTextureNameActive = true;
+				}
+				if(albedoTextures[i].nameTextActive){
+					box(0.06f, 0.015f, position_x,position_y - textureWidth*2.5, textureText, colorData.buttonColor, 0.022f, true, false, panelZ+0.05, 10000, colorD.panelColor, 0.001f);
+
+				}
+				else{
+					renderText(programs.uiProgram,albedoTextures[i].name,position_x- textureWidth ,position_y - textureWidth*2.5,0.00017f,colorData.textColor,panelZ+0.02f,false);
+				}
+				lC++;
 			}
-			else{
-				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,0);
-			}
-
-			if(selectedAlbedoTextureIndex == i){
-				isPressed = true;
-				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,1);
-			}
-			else{
-				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,0);
-			}
-			glActiveTexture(GL_TEXTURE14);
-			glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
-
-			if(!albedoTextures[i].isTexture){
-				glm::vec4 iconColor = glm::vec4(1);
-
-
-			if(!isHover && !isPressed)
-				iconColor = colorData.materialIconColor;
-
-			else if(isHover && !isPressed)
-				iconColor = colorData.materialIconColorHover;
-			
-			else if(!isHover && isPressed)
-				iconColor = colorData.materialIconColorActive;
-			
-			else if(isHover && isPressed)
-				iconColor = colorData.materialIconColorActiveHover;
-
-				glUseProgram(programs.iconsProgram);
-				glActiveTexture(GL_TEXTURE6);
-				glBindTexture(GL_TEXTURE_2D,icons.Folder);
-				glset.uniform4fv(programs.iconsProgram,"iconColor",iconColor);
-				glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
-			}
-			glset.drawArrays(buttonCoorSq,false);
-
-			glUseProgram(programs.uiProgram);
-
-			bool textHover = isMouseOnButton(window,0.06f,0.015f,position_x,position_y - textureWidth*2.5,mouseXpos,mouseYpos,false);
-			
-			if(textHover && firstClick && !anyTextureNameActive){
-				albedoTextures[i].nameTextActive = true;
-				textureText = albedoTextures[i].name;
-				anyTextureNameActive = true;
-			}
-			if(albedoTextures[i].nameTextActive){
-				box(0.06f, 0.015f, position_x,position_y - textureWidth*2.5, textureText, colorData.buttonColor, 0.022f, true, false, panelZ+0.05, 10000, colorD.panelColor, 0.001f);
-
-			}
-			else{
-				renderText(programs.uiProgram,albedoTextures[i].name,position_x- textureWidth ,position_y - textureWidth*2.5,0.00017f,colorData.textColor,panelZ+0.02f,false);
-			}
-
-
 		}
 	}
 
@@ -1216,7 +1225,7 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 
 	glUseProgram(programs.uiProgram); 
 }
-void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool firstClick,ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures){
+void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool firstClick,ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures,int& activeFolderIndex){
 	ColorData colorData;
 	Utilities util;
 	GlSet glset;
@@ -1273,6 +1282,7 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 	if(txtrCreatingPanel.createButtonHover && firstClick){
 		if(txtrCreatingPanel.textBoxVal != ""){
 			aTexture txtr;
+			txtr.folderIndex = activeFolderIndex;
 			glActiveTexture(GL_TEXTURE28);
 
 			unsigned int texture;
