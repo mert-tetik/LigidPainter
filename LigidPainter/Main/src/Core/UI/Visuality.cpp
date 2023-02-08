@@ -206,7 +206,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	if(state == 0){
 		iconBox(0.015f,0.03f,panelLoc - 0.365f,0.86f,panelZ+0.01f,icons.Undo,0,colorD.iconColor,colorD.iconColorHover);
 		iconBox(0.015f,0.03f,panelLoc - 0.05f,0.85f,panelZ+0.01f,icons.ArrowDown,0,colorD.iconColor,colorD.iconColorHover);
-		iconBox(0.015f,0.03f,panelLoc - 0.2f,0.85f,panelZ+0.01f,icons.Folder,0,colorD.iconColor,colorD.iconColorHover);
+		iconBox(0.015f,0.03f,panelLoc - 0.2f,0.85f,panelZ+0.01f,icons.LoadFolder,0,colorD.iconColor,colorD.iconColorHover);
 	}
 	
 	iconBox(0.015f,0.03f,panelLoc - 0.10f,0.85f,panelZ+0.01f,icons.Plus,0,colorD.iconColor,colorD.iconColorHover);
