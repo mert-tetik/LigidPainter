@@ -244,6 +244,7 @@ public:
 		icons.X = txtr.getTexture("LigidPainter/Resources/Icons/X.jpg",0,0,false);
 		icons.O = txtr.getTexture("LigidPainter/Resources/Icons/O.jpg",0,0,false);
 		icons.CircularX = txtr.getTexture("LigidPainter/Resources/Icons/CircularX.jpg",0,0,false);
+		icons.Undo = txtr.getTexture("LigidPainter/Resources/Icons/Undo.jpg",0,0,false);
 	
 		return icons;
 	}
