@@ -170,7 +170,7 @@ void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
 bool sndpanelMoveTexture = false;
 bool sndpanelFolderPressed = false;
 int sndpanelFolderCounter = 0;
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -258,6 +258,27 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			glset.uniform4fv(programs.iconsProgram,"iconColor",colorData.iconColor);
 			glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
 			glset.drawArrays(renderVertices,false);
+		}
+	}
+	if(albedoTextures.size()){
+
+		if(albedoTextures[selectedAlbedoTextureIndex].isTexture && sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE && nodePanel.panelHover){
+			Node imageNode;
+			imageNode = appNodes[1];
+			imageNode.outputs[0].nodeConnectionIndex = 10000;
+			imageNode.outputs[0].inputConnectionIndex = 10000;
+			imageNode.outputs[0].pressed = false;
+			imageNode.outputs[0].connectionHover = false;
+			imageNode.marked = false;
+			
+			imageNode.inputs[0].selectedTexture = albedoTextures[selectedAlbedoTextureIndex].id;
+			imageNode.inputs[0].selectedTextureName = albedoTextures[selectedAlbedoTextureIndex].name;
+			imageNode.inputs[0].selectedTextureIndex = selectedAlbedoTextureIndex;
+
+			imageNode.positionX = (mouseXpos/maxScreenWidth*2 - 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionX;
+			imageNode.positionY = ((-mouseYpos/uiMaxScreenHeight*2 + 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionY);
+
+			nodeScenes[selectedNodeScene].nodes.push_back(imageNode);
 		}
 	}
 
