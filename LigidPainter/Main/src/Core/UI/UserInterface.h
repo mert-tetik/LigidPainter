@@ -529,8 +529,11 @@ struct RenderOutData{
 };
 struct UpBar{
 	bool generateNormalHover;
+	float generateNormalMixVal;
 	bool bakeButtonHover;
+	float bakeButtonMixVal;
 	bool noiseButtonHover;
+	float noiseButtonMixVal;
 };
 class UserInterface {
 public:

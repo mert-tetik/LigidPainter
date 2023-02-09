@@ -34,7 +34,7 @@ float hexValTextboxMixVal = 0.0f;
 float texturePanelButtonMixVal = 0.0f;
 
 
-void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &colorPicker) {
+void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &colorPicker,UpBar &topBar) {
 	Utilities util;
 
 	const float phaseDifference = 0.1f;
@@ -59,6 +59,10 @@ void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &
  	dropperMixVal = util.transitionEffect(colorPicker.dropperEnter,dropperMixVal,phaseDifference);
 	hexValTextboxMixVal = util.transitionEffect(colorPicker.hexValTextBoxActive,hexValTextboxMixVal,phaseDifference);
  	texturePanelButtonMixVal = util.transitionEffect(texturePanelButtonHover,texturePanelButtonMixVal,phaseDifference);
+
+	topBar.bakeButtonMixVal = util.transitionEffect(topBar.bakeButtonHover,topBar.bakeButtonMixVal,phaseDifference);
+	topBar.generateNormalMixVal = util.transitionEffect(topBar.generateNormalHover,topBar.generateNormalMixVal,phaseDifference);
+	topBar.noiseButtonMixVal = util.transitionEffect(topBar.noiseButtonHover,topBar.noiseButtonMixVal,phaseDifference);
 }
 
 double lastMouseX = 0;
@@ -148,7 +152,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 	float screenGapX = ((float)maxScreenWidth - screenSizeX)/(((float)maxScreenWidth)/2.0f)/2.0f; 
 
-	updateButtonColorMixValues(UIElements,colorPicker);
+	updateButtonColorMixValues(UIElements,colorPicker,topBar);
 
 	//Panel
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive || panelData.settingsPanelActive){ //Disable panel if a message box is active

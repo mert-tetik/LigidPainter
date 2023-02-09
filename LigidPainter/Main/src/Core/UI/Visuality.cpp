@@ -1650,11 +1650,11 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 	//Material baking
 
 	//Bake Button 
-	box(0.03f, height/1.5, materialBakingPos,1.f-height, "Bake", glm::vec4(0.1,0.1,0.1,0.2), 0.02f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
+	box(0.03f, height/1.5, materialBakingPos,1.f-height, "Bake", colorData.buttonColor, 0.02f, false, false, depth+0.001f, 10, colorData.buttonColorHover, topBar.bakeButtonMixVal);
 	//Generate normal map
-	box(0.07f, height/1.5, normalMapGenPos,1.f-height, "Generate Normal", glm::vec4(0.1,0.1,0.1,0.2), 0.07f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
+	box(0.07f, height/1.5, normalMapGenPos,1.f-height, "Generate Normal", colorData.buttonColor, 0.07f, false, false, depth+0.001f, 10, colorData.buttonColorHover, topBar.generateNormalMixVal);
 	//Generate noisy texture
-	box(0.07f, height/1.5, noiseGenPos,1.f-height, "Generate Noise", glm::vec4(0.1,0.1,0.1,0.2), 0.07f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
+	box(0.07f, height/1.5, noiseGenPos,1.f-height, "Generate Noise", colorData.buttonColor, 0.07f, false, false, depth+0.001f, 10, colorData.buttonColorHover, topBar.noiseButtonMixVal);
 	
 
 	topBar.generateNormalHover = isMouseOnButton(window,0.07f, height/1.5,normalMapGenPos,1.f-height,mouseX,mouseY,false);
