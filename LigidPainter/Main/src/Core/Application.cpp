@@ -589,6 +589,7 @@ bool LigidPainter::run()
 			panelData.paintingPanelActive = false;
 			panelData.texturePanelActive = false;
 			panelData.modelPanelActive = false;
+			panelData.settingsPanelActive = false;
 
 		 	while (true)
 		 	{

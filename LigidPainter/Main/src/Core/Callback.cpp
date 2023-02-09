@@ -205,7 +205,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 				}
 			
 				if(currentType == "text"){	
-				
+					
 				}
 	
 				if(currentType == "rangeBar"){
