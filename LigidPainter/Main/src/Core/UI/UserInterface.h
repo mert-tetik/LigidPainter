@@ -318,6 +318,16 @@ struct NodePanel{
 	bool pointerCursor = false;
 };
 
+struct NodeConnection{
+	float connectionPosX = 0;
+	float connectionPosY = 0;
+	int nodeConnectionIndex = 10000;
+	int inputConnectionIndex = 10000;
+
+	bool connectionHover;
+	bool connectionPressed;
+};
+
 struct NodeInput{
 	std::string text;
 	std::string type;
@@ -340,8 +350,6 @@ struct NodeInput{
 	glm::vec3 color = glm::vec3(0);
 	bool coloringPanelActivated;
 	
-	float connectionPosX = 0;
-	float connectionPosY = 0;
 
 	float posX;
 	float posY;
@@ -349,8 +357,14 @@ struct NodeInput{
 	bool connectionHover = false;
 	bool pressed;
 
+	//Input
+	float connectionPosX = 0;
+	float connectionPosY = 0;
 	int nodeConnectionIndex = 10000;
 	int inputConnectionIndex = 10000;
+
+	//Output
+	std::vector<NodeConnection> connections;
 
 	bool isConnectedToShaderInput = false;
 	

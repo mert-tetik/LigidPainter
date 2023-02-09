@@ -158,24 +158,27 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			for (int inputI = 0; inputI < material.nodes[nodeI].inputs.size(); inputI++)
 			{
 				//Establish connection
-
 				if(glfwGetMouseButton(window,0) == GLFW_RELEASE && material.nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed){
 					if(node.outputs[i].nodeConnectionIndex != 10000){
 						material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].nodeConnectionIndex = 10000;
 						material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].inputConnectionIndex = 10000;
 					}
-					node.outputs[i].inputConnectionIndex = inputI;
-					node.outputs[i].nodeConnectionIndex = nodeI;
+
+					NodeConnection connection;
+					connection.connectionPosX = material.nodes[nodeI].inputs[inputI].posX;
+					connection.connectionPosY = material.nodes[nodeI].inputs[inputI].posY;
+					connection.nodeConnectionIndex = nodeI;
+					connection.inputConnectionIndex = inputI;
+					
+					node.outputs[i].connections.push_back(connection);
+
 
 					material.nodes[nodeI].inputs[inputI].inputConnectionIndex = i;
 					material.nodes[nodeI].inputs[inputI].nodeConnectionIndex = currentNodeIndex;
 
 					
 					node.outputs[i].isConnectedToShaderInput = material.nodes[nodeI].isMainOut;
-
 					
-					node.outputs[i].connectionPosX = material.nodes[nodeI].inputs[inputI].posX; 
-					node.outputs[i].connectionPosY = material.nodes[nodeI].inputs[inputI].posY; 
 
 					material.stateChanged = true;
 					break;
@@ -198,33 +201,33 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		}
 		
 		//Prevent zooming in and out bug while moving the connection
-		if((!node.outputs[i].pressed && nodePanel.zoomValChanged)){
-				//Render the connection on top of the default connection circle (hide)
-				node.outputs[i].connectionPosX = (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width +iconWidth*2.f;
-				node.outputs[i].connectionPosY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
+		// if((!node.outputs[i].pressed && nodePanel.zoomValChanged)){
+		// 		//Render the connection on top of the default connection circle (hide)
+		// 		node.outputs[i].connectionPosX = (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width +iconWidth*2.f;
+		// 		node.outputs[i].connectionPosY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
 				
-				//Render the connection on top of the connection circle (show)
-				if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
-					node.outputs[i].connectionPosX = material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
-					node.outputs[i].connectionPosY = material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
-				}
-		}
+		// 		//Render the connection on top of the connection circle (show)
+		// 		if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
+		// 			node.outputs[i].connectionPosX = material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
+		// 			node.outputs[i].connectionPosY = material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
+		// 		}
+		// }
 
 		//If output released (release the connection)
 		if(glfwGetMouseButton(window,0) == GLFW_RELEASE || node.barPressed || anyBarPressed){
 			if(true){
 				//Severe the connection if connection is not released in a input
-				if(!anyInputHover && node.outputs[i].pressed){
-					if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
-						material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].nodeConnectionIndex = 10000;
-						material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].inputConnectionIndex = 10000;
-					}
-					node.outputs[i].nodeConnectionIndex = 10000;
-					node.outputs[i].inputConnectionIndex = 10000;
-					node.outputs[i].isConnectedToShaderInput = false;
+				// if(!anyInputHover && node.outputs[i].pressed){
+				// 	if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
+				// 		material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].nodeConnectionIndex = 10000;
+				// 		material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].inputConnectionIndex = 10000;
+				// 	}
+				// 	node.outputs[i].nodeConnectionIndex = 10000;
+				// 	node.outputs[i].inputConnectionIndex = 10000;
+				// 	node.outputs[i].isConnectedToShaderInput = false;
 
-					material.stateChanged = true;
-				}
+				// 	material.stateChanged = true;
+				// }
 				
 				//Render the connection on top of the default connection circle (hide)
 				if(node.outputs[i].nodeConnectionIndex == 10000 && node.outputs[i].inputConnectionIndex == 10000){
@@ -232,14 +235,15 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 					node.outputs[i].connectionPosY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
 				}
 				
-				//Render the connection on top of the connection circle (show)
-				if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
-					node.outputs[i].connectionPosX = material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
-					node.outputs[i].connectionPosY = material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
-				}
+				// //Render the connection on top of the connection circle (show)
+				// if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
+				// 	node.outputs[i].connectionPosX = material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
+				// 	node.outputs[i].connectionPosY = material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
+				// }
 			}
 			node.outputs[i].pressed = false;
 		}
+
 		//Move the connection (on top of the cursor)
 		if(node.outputs[i].pressed){
 			node.outputs[i].connectionPosX += xOffset/maxScreenWidth*2.f;
@@ -248,8 +252,41 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 
         //Render the connection line
         glUseProgram(programs.uiProgram);
+		for (size_t conI = 0; conI < node.outputs[i].connections.size(); conI++)
+		{
+			//Updating positions is required
+			node.outputs[i].connections[conI].connectionPosX = material.nodes[node.outputs[i].connections[conI].nodeConnectionIndex].inputs[node.outputs[i].connections[conI].inputConnectionIndex].posX;
+			node.outputs[i].connections[conI].connectionPosY = material.nodes[node.outputs[i].connections[conI].nodeConnectionIndex].inputs[node.outputs[i].connections[conI].inputConnectionIndex].posY;
+			
+			node.outputs[i].connections[conI].connectionHover = isMouseOnButton(window , iconWidth/1.5f , iconWidth*1.5f  ,node.outputs[i].connections[conI].connectionPosX- screenGap,node.outputs[i].connections[conI].connectionPosY,mouseX,mouseY,false);
+
+			if(node.outputs[i].connections[conI].connectionHover && firstClick)
+				node.outputs[i].connections[conI].connectionPressed = true;
+
+			if(glfwGetMouseButton(window,0) == GLFW_RELEASE)
+				node.outputs[i].connections[conI].connectionPressed = false;
+
+
+			drawLine((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,depth+0.02f,node.outputs[i].connections[conI].connectionPosX,node.outputs[i].connections[conI].connectionPosY, node.width*200.f ,nodeColor);
+		
+			if(node.outputs[i].connections[conI].connectionPressed){
+				//Severe the connection
+				node.outputs[i].connectionHover = true;
+				node.outputs[i].pressed = true;
+				node.outputs[i].connectionPosX = node.outputs[i].connections[conI].connectionPosX;
+				node.outputs[i].connectionPosY = node.outputs[i].connections[conI].connectionPosY;
+				
+				material.stateChanged = true;
+
+				material.nodes[node.outputs[i].connections[conI].nodeConnectionIndex].inputs[node.outputs[i].connections[conI].inputConnectionIndex].nodeConnectionIndex = 10000;
+				material.nodes[node.outputs[i].connections[conI].nodeConnectionIndex].inputs[node.outputs[i].connections[conI].inputConnectionIndex].inputConnectionIndex = 10000;
+
+				node.outputs[i].connections.erase(node.outputs[i].connections.begin() + conI);
+			}
+		}
+		
 		//TODO : Move the rendering of connection lines to the output element rendering
-		if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000 || node.outputs[i].pressed)//Render the connection lines if output connects to an input or moves
+		if(node.outputs[i].pressed)//Render the connection lines if output connects to an input or moves
 			drawLine((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,depth+0.02f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY, node.width*200.f ,nodeColor);
 		
 

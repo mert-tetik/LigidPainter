@@ -77,7 +77,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
         }
         for (size_t outputI = 0; outputI < material.nodes[i].outputs.size(); outputI++)
         {
-            if(material.nodes[i].outputs[outputI].nodeConnectionIndex != 10000 && material.nodes[i].outputs[outputI].inputConnectionIndex != 10000){
+            if(material.nodes[i].outputs[outputI].connections.size()){
                 nodeHasOutputConnection = true;
             }
         }
