@@ -34,7 +34,7 @@ float hexValTextboxMixVal = 0.0f;
 float texturePanelButtonMixVal = 0.0f;
 
 
-void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &colorPicker,UpBar &topBar) {
+void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &colorPicker,UpBar &topBar,SndPanel &sndpanel) {
 	Utilities util;
 
 	const float phaseDifference = 0.1f;
@@ -63,6 +63,12 @@ void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &
 	topBar.bakeButtonMixVal = util.transitionEffect(topBar.bakeButtonHover,topBar.bakeButtonMixVal,phaseDifference);
 	topBar.generateNormalMixVal = util.transitionEffect(topBar.generateNormalHover,topBar.generateNormalMixVal,phaseDifference);
 	topBar.noiseButtonMixVal = util.transitionEffect(topBar.noiseButtonHover,topBar.noiseButtonMixVal,phaseDifference);
+
+	sndpanel.minusSignMixVal = util.transitionEffect(sndpanel.minusSignHover,sndpanel.minusSignMixVal,phaseDifference);
+	sndpanel.backSignMixVal = util.transitionEffect(sndpanel.backSignHover,sndpanel.backSignMixVal,phaseDifference);
+	sndpanel.downSignMixVal = util.transitionEffect(sndpanel.downSignHover,sndpanel.downSignMixVal,phaseDifference);
+	sndpanel.plusSignMixVal = util.transitionEffect(sndpanel.plusSignHover,sndpanel.plusSignMixVal,phaseDifference);
+	sndpanel.folderSignMixVal = util.transitionEffect(sndpanel.folderSignHover,sndpanel.folderSignMixVal,phaseDifference);
 }
 
 double lastMouseX = 0;
@@ -152,7 +158,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 	float screenGapX = ((float)maxScreenWidth - screenSizeX)/(((float)maxScreenWidth)/2.0f)/2.0f; 
 
-	updateButtonColorMixValues(UIElements,colorPicker,topBar);
+	updateButtonColorMixValues(UIElements,colorPicker,topBar,sndPanel);
 
 	//Panel
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive || panelData.settingsPanelActive){ //Disable panel if a message box is active
@@ -229,7 +235,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		
 		ui.upBar(icons,renderData.window,mouseXpos,mouseYpos,firstClick,albedoTextures,selectedAlbedoTextureIndex,chosenTextureResIndex,maxScreenWidth,maxScreenHeight,screenSizeX,screenSizeY,bakeTheMaterial,nodeScenes[selectedNodeScene],topBar);
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , icons,panelData);
-		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal,firstClick,coloringPanel,txtrCreatingPanel,anyTextureNameActive,textureText,sndPanel.activeFolderIndex,nodePanel,appNodes);
+		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal,firstClick,coloringPanel,txtrCreatingPanel,anyTextureNameActive,textureText,sndPanel.activeFolderIndex,nodePanel,appNodes,sndPanel);
 
 
 		ui.renderAlert(alertMessage,alertDuration,programs.uiProgram,alertState);		

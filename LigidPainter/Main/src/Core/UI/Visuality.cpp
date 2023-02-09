@@ -170,7 +170,7 @@ void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
 bool sndpanelMoveTexture = false;
 bool sndpanelFolderPressed = false;
 int sndpanelFolderCounter = 0;
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -205,13 +205,13 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 	if(state == 0){
 		if(folderIndex != 10000)
-			iconBox(0.015f,0.03f,panelLoc - 0.365f,0.86f,panelZ+0.01f,icons.Undo,0,colorD.iconColor,colorD.iconColorHover);
-		iconBox(0.015f,0.03f,panelLoc - 0.05f,0.85f,panelZ+0.01f,icons.ArrowDown,0,colorD.iconColor,colorD.iconColorHover);
-		iconBox(0.015f,0.03f,panelLoc - 0.2f,0.85f,panelZ+0.01f,icons.LoadFolder,0,colorD.iconColor,colorD.iconColorHover);
+			iconBox(0.015f,0.03f,panelLoc - 0.365f,0.86f,panelZ+0.01f,icons.Undo,sndpnl.backSignMixVal,colorD.iconColor,colorD.iconColorHover);
+		iconBox(0.015f,0.03f,panelLoc - 0.05f,0.85f,panelZ+0.01f,icons.ArrowDown,sndpnl.downSignMixVal,colorD.iconColor,colorD.iconColorHover);
+		iconBox(0.015f,0.03f,panelLoc - 0.2f,0.85f,panelZ+0.01f,icons.LoadFolder,sndpnl.folderSignMixVal,colorD.iconColor,colorD.iconColorHover);
 	}
 	
-	iconBox(0.015f,0.03f,panelLoc - 0.10f,0.85f,panelZ+0.01f,icons.Plus,0,colorD.iconColor,colorD.iconColorHover);
-	iconBox(0.015f,0.03f,panelLoc - 0.15f,0.85f,panelZ+0.01f,icons.Minus,0,colorD.iconColor,colorD.iconColorHover);
+	iconBox(0.015f,0.03f,panelLoc - 0.10f,0.85f,panelZ+0.01f,icons.Plus,sndpnl.plusSignMixVal,colorD.iconColor,colorD.iconColorHover);
+	iconBox(0.015f,0.03f,panelLoc - 0.15f,0.85f,panelZ+0.01f,icons.Minus,sndpnl.minusSignMixVal,colorD.iconColor,colorD.iconColorHover);
 
 	//Texture panel button
 	iconBox(0.017f,0.034f,panelLoc + 0.017f,0.8f,panelZ+0.01f,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
