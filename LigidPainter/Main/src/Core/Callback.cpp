@@ -92,7 +92,7 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 
 CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float maskPanelSliderValue,bool brushMaskPanelMaskHover,
 LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer
-, NodePanel &nodePanel, ContextMenu &addNodeContextMenu, SndPanel &sndPanel,ColoringPanel &coloringPanel)
+, NodePanel &nodePanel, ContextMenu &addNodeContextMenu, SndPanel &sndPanel,ColoringPanel &coloringPanel,UpBar &topBar)
 {
 	CallbckData callbk;
 	
@@ -102,7 +102,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
 	
 	buttonCheck(window, xpos, ypos, panelData,maskPanelSliderValue,brushMaskPanelMaskHover,cursors, texturePanelButtonHover,uiElements,mainPanelLoc,
-	colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel,coloringPanel);	
+	colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel,coloringPanel,topBar);	
 
 	xoffset = xpos - lastX;
 	yoffset = lastY - ypos;
@@ -156,7 +156,7 @@ bool noPanelClick = true;
 
 void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData,float maskPanelSliderValue,bool brushMaskPanelMaskHover,
 LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker, TextureDisplayer &textureDisplayer
-,NodePanel &nodePanel,ContextMenu &addNodeContextMenu,SndPanel &sndPanel,ColoringPanel &coloringPanel) {
+,NodePanel &nodePanel,ContextMenu &addNodeContextMenu,SndPanel &sndPanel,ColoringPanel &coloringPanel,UpBar &topBar) {
 	UserInterface ui;
 
 	float centerDivider;
@@ -318,6 +318,9 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if(nodePanel.pointerCursor){
+		glfwSetCursor(window, cursors.pointerCursor);
+	}
+	else if(topBar.bakeButtonHover || topBar.generateNormalHover || topBar.noiseButtonHover){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if (!panelChangeHover){

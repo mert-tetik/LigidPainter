@@ -82,7 +82,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 ,NodePanel &nodePanel,SndPanel &sndPanel, int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool firstClick
 ,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive
-,std::string &textureText) {
+,std::string &textureText,UpBar &topBar) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -223,10 +223,9 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			
 		}
 		
-		ui.upBar(icons,renderData.window,mouseXpos,mouseYpos,firstClick,albedoTextures,selectedAlbedoTextureIndex,chosenTextureResIndex,maxScreenWidth,maxScreenHeight,screenSizeX,screenSizeY,bakeTheMaterial,nodeScenes[selectedNodeScene]);
+		ui.upBar(icons,renderData.window,mouseXpos,mouseYpos,firstClick,albedoTextures,selectedAlbedoTextureIndex,chosenTextureResIndex,maxScreenWidth,maxScreenHeight,screenSizeX,screenSizeY,bakeTheMaterial,nodeScenes[selectedNodeScene],topBar);
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , icons,panelData);
 		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal,firstClick,coloringPanel,txtrCreatingPanel,anyTextureNameActive,textureText,sndPanel.activeFolderIndex,nodePanel,appNodes);
-
 
 
 		ui.renderAlert(alertMessage,alertDuration,programs.uiProgram,alertState);		

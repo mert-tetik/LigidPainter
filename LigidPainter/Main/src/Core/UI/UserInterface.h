@@ -527,6 +527,11 @@ struct RenderOutData{
 	bool texturePanelButtonClicked;
 	unsigned int chosenMaterialIndex;
 };
+struct UpBar{
+	bool generateNormalHover;
+	bool bakeButtonHover;
+	bool noiseButtonHover;
+};
 class UserInterface {
 public:
 	//Load
@@ -566,7 +571,7 @@ public:
 	void modelMaterialPanel(Model &model,Programs programs,RenderData renderData,int screenGapX,float materialsPanelSlideValue,double mouseXpos,double mouseYpos,bool &texturePanelButtonHover,RenderOutData& uiOut,int& currentMaterialIndex,bool firstClick,bool& newModelAdded, float texturePanelButtonMixVal,int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes);
 	void brushMaskTexturePanel(Programs programs,std::vector<unsigned int> &maskTextures,float centerCoords, float screenGapX,float maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData);
 	void listBox(float posX,float posY,float posZ,const char* title,float width, Icons icons,std::vector<const char*> list,bool active,GLFWwindow* window, float mouseXpos,float mouseYpos,bool firstClick,int &chosenIndex);
-	void upBar(Icons icons,GLFWwindow* window,float mouseX,float mouseY,bool firstClick,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,int chosenTextureResIndex,int maxScreenWidth,int maxScreenHeight,int screenSizeX,int screenSizeY,bool& bakeTheMaterial,NodeScene &material);
+	void upBar(Icons icons,GLFWwindow* window,float mouseX,float mouseY,bool firstClick,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,int chosenTextureResIndex,int maxScreenWidth,int maxScreenHeight,int screenSizeX,int screenSizeY,bool& bakeTheMaterial,NodeScene &material,UpBar &topBar);
 	std::vector<float> selectionBox(bool active,float sPX,float sPY,float dPX,float dPY,float depth);
 
 

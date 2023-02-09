@@ -1625,7 +1625,7 @@ void UserInterface::listBox(float posX,float posY,float posZ,const char* title,f
 	glUseProgram(uiPrograms.uiProgram);
 }
 
-void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mouseY,bool firstClick,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,int chosenTextureResIndex,int maxScreenWidth,int maxScreenHeight,int screenSizeX,int screenSizeY,bool& bakeTheMaterial,NodeScene &material){
+void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mouseY,bool firstClick,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,int chosenTextureResIndex,int maxScreenWidth,int maxScreenHeight,int screenSizeX,int screenSizeY,bool& bakeTheMaterial,NodeScene &material,UpBar &topBar){
 	ColorData colorData;
 	GlSet glset;
 	Utilities util;
@@ -1657,17 +1657,17 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 	box(0.07f, height/1.5, noiseGenPos,1.f-height, "Generate Noise", glm::vec4(0.1,0.1,0.1,0.2), 0.07f, false, false, depth+0.001f, 10, glm::vec4(0.1,0.1,0.1,0.2), 0);
 	
 
-	const bool generateNormalHover = isMouseOnButton(window,0.07f, height/1.5,normalMapGenPos,1.f-height,mouseX,mouseY,false);
+	topBar.generateNormalHover = isMouseOnButton(window,0.07f, height/1.5,normalMapGenPos,1.f-height,mouseX,mouseY,false);
 
-	const bool bakeButtonHover = isMouseOnButton(window,0.03f, height/1.5,materialBakingPos,1.f-height,mouseX,mouseY,false);
+	topBar.bakeButtonHover = isMouseOnButton(window,0.03f, height/1.5,materialBakingPos,1.f-height,mouseX,mouseY,false);
 	
-	const bool noiseButtonHover = isMouseOnButton(window,0.03f, height/1.5,noiseGenPos,1.f-height,mouseX,mouseY,false);
+	topBar.noiseButtonHover = isMouseOnButton(window,0.03f, height/1.5,noiseGenPos,1.f-height,mouseX,mouseY,false);
 
-	if(bakeButtonHover && firstClick){
+	if(topBar.bakeButtonHover && firstClick){
 		bakeTheMaterial = true;
 		material.stateChanged = true;
 	}
-	if(noiseButtonHover && firstClick && albedoTextures.size()){
+	if(topBar.noiseButtonHover && firstClick && albedoTextures.size()){
 		glActiveTexture(GL_TEXTURE28);
 		
 		//FBO
@@ -1733,7 +1733,7 @@ void UserInterface::upBar(Icons icons,GLFWwindow* window,float mouseX,float mous
 		glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 	}
 
-	if(generateNormalHover && firstClick && albedoTextures.size()){
+	if(topBar.generateNormalHover && firstClick && albedoTextures.size()){
 		glActiveTexture(GL_TEXTURE28);
 		
 		//FBO
