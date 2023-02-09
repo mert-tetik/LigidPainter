@@ -191,11 +191,21 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 		if(mirrorUsed){
 			//Update mirrored screen mask texture
 			//setup
-			glset.viewport(1920, 1080);
-			glset.bindFramebuffer(FBOScreen);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glActiveTexture(GL_TEXTURE3);
+			unsigned int FBOMr;
+			glset.genFramebuffers(FBOMr);
+			glset.bindFramebuffer(FBOMr);
+			unsigned int textureColorbuffer;
+			glset.genTextures(textureColorbuffer);
+			glset.bindTexture(textureColorbuffer);
+			glset.texImage(NULL, 1080,1080,GL_RGB);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
 
-			glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
+			glset.viewport(1080, 1080);
+
+			glm::mat4 projection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
 			outShaderData.renderTextureProjection = projection;
 			glset.useOutShader(programs.outProgram,outShaderData);
 
@@ -204,7 +214,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 			//setup
 
 			//Get texture
-			render.renderTexture(textureRenderingVerticesFlipped,1080,1080,GL_TEXTURE3,GL_RED, model, false,modelMaterials,view,{},0);
+			glset.drawArrays(textureRenderingVerticesFlipped,0);
 			//Get texture
 
 			//Finish
