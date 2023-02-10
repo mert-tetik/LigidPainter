@@ -44,6 +44,8 @@ std::vector<glm::vec2> holdLocations;
 
 bool refreshTheScreenMask = false;
 
+unsigned int lastTxtr = 0;
+
 void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int maxScreenWidth,int maxScreenHeight,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view) {
 
 	if(true){
@@ -189,6 +191,9 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 
 
 		if(mirrorUsed){
+			if(lastTxtr)
+				glDeleteTextures(1,&lastTxtr);
+
 			//Update mirrored screen mask texture
 			//setup
 			glActiveTexture(GL_TEXTURE3);
@@ -202,6 +207,8 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+
+			lastTxtr = textureColorbuffer;
 
 			glset.viewport(1080, 1080);
 
@@ -221,10 +228,11 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 			glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 0);
 			//Finish
 			//Update mirrored screen mask texture
-			}
+			glDeleteFramebuffers(1,&FBOMr);
+		}
 
 			glUseProgram(programs.uiProgram);
-		}
+	}
 
 
 	glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
