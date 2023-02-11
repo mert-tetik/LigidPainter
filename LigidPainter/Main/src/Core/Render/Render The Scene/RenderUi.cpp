@@ -161,7 +161,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	updateButtonColorMixValues(UIElements,colorPicker,topBar,sndPanel);
 
 	//Panel
-	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive || panelData.settingsPanelActive){ //Disable panel if a message box is active
+	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive || panelData.settingsPanelActive || panelData.generatorPanelActive){ //Disable panel if a message box is active
 		//If message box is not active
 
 
@@ -367,7 +367,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 
 		bool panelCompatibility;
-		if(UIElements[i].panel == 1 && panelData.modelPanelActive || UIElements[i].panel == 2 && panelData.texturePanelActive || UIElements[i].panel == 3 && panelData.paintingPanelActive || UIElements[i].panel == 4 && panelData.exportPanelActive || UIElements[i].panel == 5 && panelData.settingsPanelActive || UIElements[i].panel == 0){
+		if(UIElements[i].panel == 1 && panelData.modelPanelActive || UIElements[i].panel == 2 && panelData.texturePanelActive || UIElements[i].panel == 3 && panelData.paintingPanelActive || UIElements[i].panel == 4 && panelData.exportPanelActive || UIElements[i].panel == 5 && panelData.settingsPanelActive || UIElements[i].panel == 6 && panelData.generatorPanelActive || UIElements[i].panel == 0){
 			panelCompatibility = true;
 		}
 		else{
@@ -410,6 +410,53 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		}
 	}	
 	
+	if(panelData.generatorPanelActive){
+		const float width = 0.15f;
+		const float height = width * 2.f;
+
+		const float posX = centerCoords - screenGapX;
+		const float posY = 0.6f;
+		const float posZ = 0.9f;
+		
+		std::vector<float> renderVertices = { 
+			// first triangle
+			 width + posX,  height + posY, posZ,1,1,0,0,0,  // top right
+			 width + posX,  -height+ posY, posZ,1,0,0,0,0,  // bottom right
+			 -width + posX,  height+ posY, posZ,0,1,0,0,0,  // top left 
+			 
+			 width + posX,  -height+ posY, posZ,1,0,0,0,0,  // bottom right
+			 -width + posX,  -height+ posY, posZ,0,0,0,0,0,  // bottom left
+			 -width + posX,  height+ posY, posZ,0,1,0,0,0   // top left
+		};
+
+		if(UIElements[UInormalmapCheckBoxElement].checkBox.checked){
+			glUseProgram(programs.normalGenProgram);
+			glm::mat4 renderTextureProjection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+		
+			glActiveTexture(GL_TEXTURE0);
+
+			gl.uniformMatrix4fv(programs.normalGenProgram,"renderTextureProjection",renderTextureProjection);
+			gl.uniform1i(programs.normalGenProgram,"inputTexture",0);
+			float rangeBarVal = (UIElements[UInormalStrengthRangeBarElement].rangeBar.value + 0.11f) * 50.f;
+			gl.uniform1f(programs.normalGenProgram,"normalStrength",rangeBarVal);
+
+		}
+		else if(UIElements[UInoiseCheckBoxElement].checkBox.checked){
+			glUseProgram(programs.noisyTextureProgram);
+
+			glm::mat4 renderTextureProjection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+		
+			glActiveTexture(GL_TEXTURE0);
+
+			gl.uniformMatrix4fv(programs.noisyTextureProgram,"renderTextureProjection",renderTextureProjection);
+			gl.uniform1i(programs.noisyTextureProgram,"inputTexture",0);
+			float rangeBarVal = ((0.22f-(UIElements[UInoiseStrengthRangeBarElement].rangeBar.value + 0.11f))+0.05f)  * 50.f;
+			gl.uniform1f(programs.noisyTextureProgram,"value",rangeBarVal);
+		}
+
+		gl.drawArrays(renderVertices,0);
+	}
+
 	if(panelData.settingsPanelActive){
 		ui.listBox(centerCoords - screenGapX,0.8f,0.9f,"Texture Resolution",0.1f,icons,{"256","512","1024","2048","4096","8412"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenTextureResIndex);
 		ui.listBox(centerCoords - screenGapX,-0.1f,0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture);

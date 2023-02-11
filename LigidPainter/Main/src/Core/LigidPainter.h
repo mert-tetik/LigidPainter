@@ -214,6 +214,7 @@ public:
 	void paintingPanelButton();
 	void exportPanelButton();
 	void settingsPanelButton();
+	void generatorPanelButton();
 	void addMaskTextureButton();
 	void exportDownloadButtonEnter();
 	void exportPathTextBox();
@@ -234,6 +235,8 @@ public:
 	void textureDisplayerBoundaries(double xOffset,double yOffset,int width,int height);
 	void skyboxExposureRangeBar(double xOffset, int width, int height);
 	void skyBoxRotationRangeBar(double xOffset, int width, int height);
+	void normalStrengthRangeBar(double xOffset, int width, int height);
+	void noiseStrengthRangeBar(double xOffset, int width, int height);
 
 	void paintingDropper();
 	void exportFileNameTextBox();
@@ -263,5 +266,6 @@ struct PanelData {
 	bool paintingPanelActive;
 	bool exportPanelActive;
 	bool settingsPanelActive;
+	bool generatorPanelActive;
 };
 #endif // !MSHPAPP

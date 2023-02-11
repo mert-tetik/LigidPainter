@@ -10,6 +10,7 @@ struct CallbckData { //Return from callback
 	bool paintingPanelButtonEnter;
 	bool exportPanelButtonEnter;
 	bool settingsPanelButtonEnter;
+	bool generatorPanelButtonEnter;
 	bool maskPanelSliderEnter;
 	bool maskPanelEnter;
 	bool uiElementEnter;

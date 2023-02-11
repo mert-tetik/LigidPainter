@@ -10,7 +10,7 @@ float rand(vec2 co){
   return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
 
-#define value 6.0
+uniform float value;
 
 
 
@@ -89,7 +89,7 @@ void main( )
     f *= smoothstep( 0.0, 0.005, abs(p.x-0.6) );	
 	
     vec3 rnd = vec3(rand(texCoords),rand(texCoords*0.1),rand(texCoords*0.2));
-    rnd/=value;
+    rnd/=value*2;
     rnd+=1.0 - (1.0/value);
 
     vec3 txtr = texture2D(inputTexture,texCoords).rgb;

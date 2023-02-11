@@ -473,7 +473,72 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     viewportImageTextBoxElement.attachedToMainPanel = true;
     viewportImageTextBoxElement.type = "textBox";
     UIElements.push_back(viewportImageTextBoxElement);//37
+    
+    //---------------------------GENERATOR PANEL---------------------------
+    
 
+    UIElement normalmapCheckBoxElement;
+    normalmapCheckBoxElement.checkBox.positionX = -0.03f;
+    normalmapCheckBoxElement.checkBox.positionY = 0.16f;
+    normalmapCheckBoxElement.checkBox.text = "Normal map";
+    normalmapCheckBoxElement.checkBox.checked = true;
+    normalmapCheckBoxElement.checkBox.mouseHover = false;
+    normalmapCheckBoxElement.panel = 6;
+    normalmapCheckBoxElement.attachedToMainPanel = true;
+    normalmapCheckBoxElement.type = "checkBox";
+    UIElements.push_back(normalmapCheckBoxElement);//38
+
+    UIElement normalStrengthTextElement;
+    normalStrengthTextElement.text.positionX = -0.11f;
+    normalStrengthTextElement.text.positionY = 0.1;
+    normalStrengthTextElement.text.text = "Strength";
+    normalStrengthTextElement.text.scale = 0.00022f;
+    normalStrengthTextElement.text.color = colorData.textBoxColor;
+    normalStrengthTextElement.panel = 6;
+    normalStrengthTextElement.attachedToMainPanel = true;
+    normalStrengthTextElement.type = "text";
+    UIElements.push_back(normalStrengthTextElement);//39
+
+    UIElement normalStrengthRangeBarElement;
+	normalStrengthRangeBarElement.rangeBar.positionX = 0.0f;
+	normalStrengthRangeBarElement.rangeBar.positionY = 0.06f;
+	normalStrengthRangeBarElement.rangeBar.value = 0.f;
+	normalStrengthRangeBarElement.panel = 6;
+	normalStrengthRangeBarElement.attachedToMainPanel = true;
+	normalStrengthRangeBarElement.type = "rangeBar";
+    UIElements.push_back(normalStrengthRangeBarElement);//40
+
+    UIElement noiseCheckBoxElement;
+    noiseCheckBoxElement.checkBox.positionX = -0.03f;
+    noiseCheckBoxElement.checkBox.positionY = -0.16f;
+    noiseCheckBoxElement.checkBox.text = "Noise";
+    noiseCheckBoxElement.checkBox.checked = false;
+    noiseCheckBoxElement.checkBox.mouseHover = false;
+    noiseCheckBoxElement.panel = 6;
+    noiseCheckBoxElement.attachedToMainPanel = true;
+    noiseCheckBoxElement.type = "checkBox";
+    UIElements.push_back(noiseCheckBoxElement);//38
+
+    UIElement noiseStrengthTextElement;
+    noiseStrengthTextElement.text.positionX = -0.11f;
+    noiseStrengthTextElement.text.positionY = -0.22;
+    noiseStrengthTextElement.text.text = "Strength";
+    noiseStrengthTextElement.text.scale = 0.00022f;
+    noiseStrengthTextElement.text.color = colorData.textBoxColor;
+    noiseStrengthTextElement.panel = 6;
+    noiseStrengthTextElement.attachedToMainPanel = true;
+    noiseStrengthTextElement.type = "text";
+    UIElements.push_back(noiseStrengthTextElement);//39
+
+    UIElement noiseStrengthRangeBarElement;
+	noiseStrengthRangeBarElement.rangeBar.positionX = 0.0f;
+	noiseStrengthRangeBarElement.rangeBar.positionY = -0.26f;
+	noiseStrengthRangeBarElement.rangeBar.value = 0.f;
+	noiseStrengthRangeBarElement.panel = 6;
+	noiseStrengthRangeBarElement.attachedToMainPanel = true;
+	noiseStrengthRangeBarElement.type = "rangeBar";
+    UIElements.push_back(noiseStrengthRangeBarElement);//40
+    
 
 
 	//-------------ICONS-------------

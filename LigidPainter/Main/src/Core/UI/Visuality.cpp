@@ -157,6 +157,10 @@ void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.48f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
 	iconBox(0.011f,0.022f,panelLoc - 0.013f,0.485f,0.6f,icons.Gear,0,colorD.iconColor,colorD.iconColor);
 
+	//Generator panel button
+	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.4f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
+	iconBox(0.011f,0.022f,panelLoc - 0.013f,0.405f,0.6f,icons.Gear,0,colorD.iconColor,colorD.iconColor);
+
 	glUseProgram(uiPrograms.uiProgram);
 	
 	//Barriers

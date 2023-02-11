@@ -751,7 +751,9 @@ public:
 		NodeConnection connection;
 		connection.nodeConnectionIndex = 0;
 		connection.inputConnectionIndex = 0;
+		connection.connectionPressed = false;
 
+		appNodes[0].outputs[0].connections.clear();
 		appNodes[0].outputs[0].connections.push_back(connection);
 
 		appNodes[0].outputs[0].isConnectedToShaderInput = true;

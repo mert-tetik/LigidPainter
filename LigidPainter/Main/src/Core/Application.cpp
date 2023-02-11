@@ -590,6 +590,7 @@ bool LigidPainter::run()
 			panelData.texturePanelActive = false;
 			panelData.modelPanelActive = false;
 			panelData.settingsPanelActive = false;
+			panelData.generatorPanelActive = false;
 
 		 	while (true)
 		 	{
@@ -1075,6 +1076,20 @@ void LigidPainter::skyBoxRotationRangeBar(double xOffset, int width, int height)
 	UIElements[UIskyBoxRotationRangeBar].rangeBar.value -= xOffset / (width / 2.0f);
 	UIElements[UIskyBoxRotationRangeBar].rangeBar.value = util.restrictBetween(UIElements[UIskyBoxRotationRangeBar].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
 }
+void LigidPainter::normalStrengthRangeBar(double xOffset, int width, int height) {
+	Utilities util;
+	Texture txtr;
+	//brushOpacityChanged = true; not used
+	UIElements[UInormalStrengthRangeBarElement].rangeBar.value -= xOffset / (width / 2.0f);
+	UIElements[UInormalStrengthRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UInormalStrengthRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+}
+void LigidPainter::noiseStrengthRangeBar(double xOffset, int width, int height) {
+	Utilities util;
+	Texture txtr;
+	//brushOpacityChanged = true; not used
+	UIElements[UInoiseStrengthRangeBarElement].rangeBar.value -= xOffset / (width / 2.0f);
+	UIElements[UInoiseStrengthRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UInoiseStrengthRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+}
 void LigidPainter::brushSpacingRangeBar(double xOffset, int width, int height) {
 	Utilities util;
 	Texture txtr;
@@ -1203,6 +1218,7 @@ void LigidPainter::modelPanelButton() {
 	panelData.paintingPanelActive = false;
 	panelData.exportPanelActive = false;
 	panelData.settingsPanelActive = false;
+	panelData.generatorPanelActive = false;
 	doPainting = false;
 }
 void LigidPainter::texturePanelButton() {
@@ -1213,6 +1229,7 @@ void LigidPainter::texturePanelButton() {
 	panelData.paintingPanelActive = false;
 	panelData.exportPanelActive = false;
 	panelData.settingsPanelActive = false;
+	panelData.generatorPanelActive = false;
 	doPainting = false;
 }
 void LigidPainter::paintingPanelButton() {
@@ -1222,6 +1239,7 @@ void LigidPainter::paintingPanelButton() {
 	panelData.paintingPanelActive = true;
 	panelData.exportPanelActive = false;
 	panelData.settingsPanelActive = false;
+	panelData.generatorPanelActive= false;
 	doPainting = true;
 	
 	if(!albedoTextures.size())
@@ -1235,6 +1253,7 @@ void LigidPainter::exportPanelButton() {
 	panelData.paintingPanelActive = false;
 	panelData.exportPanelActive = true;
 	panelData.settingsPanelActive = false;
+	panelData.generatorPanelActive = false;
 	doPainting = false;
 }
 
@@ -1246,6 +1265,18 @@ void LigidPainter::settingsPanelButton(){
 	panelData.paintingPanelActive = false;
 	panelData.exportPanelActive = false;
 	panelData.settingsPanelActive = true;
+	panelData.generatorPanelActive = false;
+	doPainting = false;
+}
+void LigidPainter::generatorPanelButton(){
+	nodeScenes[selectedNodeScene].stateChanged = true;
+
+	panelData.modelPanelActive = false;
+	panelData.texturePanelActive = false;
+	panelData.paintingPanelActive = false;
+	panelData.exportPanelActive = false;
+	panelData.settingsPanelActive = false;
+	panelData.generatorPanelActive = true;
 	doPainting = false;
 }
 
@@ -1464,6 +1495,7 @@ void LigidPainter::sndPanelPlusIcon(){
 
 			emptyNodeScene.sceneName = "material_" + std::to_string(emptyNodeScene.index); 
 			emptyNodeScene.nodes = mainOutNodes;
+			
 			nodeScenes.push_back(emptyNodeScene);
 
 			MaterialOut mOut;

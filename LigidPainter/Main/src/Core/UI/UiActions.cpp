@@ -19,6 +19,8 @@ bool brushSpacingRangeBarPressed;
 bool brushBordersRangeBarPressed;
 bool skyboxExposureRangeBarPressed;
 bool skyboxRotationRangeBarPressed;
+bool normalStrengthRangeBarPressed;
+bool noiseStrengthRangeBarPressed;
 bool colorBoxColorRangeBarPressed;
 bool colorBoxPickerPressed;
 bool maskPanelSliderPressed;
@@ -53,6 +55,12 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		}
 		else if (UIElements[UIskyBoxRotationRangeBar].rangeBar.hover) {
 			skyboxRotationRangeBarPressed = true;
+		}
+		else if (UIElements[UInormalStrengthRangeBarElement].rangeBar.hover) {
+			normalStrengthRangeBarPressed = true;
+		}
+		else if (UIElements[UInoiseStrengthRangeBarElement].rangeBar.hover) {
+			noiseStrengthRangeBarPressed = true;
 		}
 		else if (colorPicker.saturationValuePointerHover) {
 			colorBoxPickerPressed = true;
@@ -94,6 +102,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			ligid.exportPanelButton();
 		if (callbackData.settingsPanelButtonEnter)
 			ligid.settingsPanelButton();
+		if (callbackData.generatorPanelButtonEnter)
+			ligid.generatorPanelButton();
 		if (UIElements[UIloadPlaneModelButton].icon.hover)
 			ligid.addPlaneButton();
 		if (UIElements[UIloadSphereModelButton].icon.hover)
@@ -104,6 +114,18 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			ligid.backfaceCullingCheckBox();
 		if(UIElements[UIskyboxCheckBox].checkBox.mouseHover)
 			UIElements[UIskyboxCheckBox].checkBox.checked = !UIElements[UIskyboxCheckBox].checkBox.checked;
+
+		if(UIElements[UInormalmapCheckBoxElement].checkBox.mouseHover && !UIElements[UInormalmapCheckBoxElement].checkBox.checked){
+			UIElements[UInormalmapCheckBoxElement].checkBox.checked = !UIElements[UInormalmapCheckBoxElement].checkBox.checked;
+			UIElements[UInoiseCheckBoxElement].checkBox.checked = !UIElements[UInormalmapCheckBoxElement].checkBox.checked;
+
+		}
+		if(UIElements[UInoiseCheckBoxElement].checkBox.mouseHover && !UIElements[UInoiseCheckBoxElement].checkBox.checked){
+			UIElements[UInoiseCheckBoxElement].checkBox.checked = !UIElements[UInoiseCheckBoxElement].checkBox.checked;
+			UIElements[UInormalmapCheckBoxElement].checkBox.checked = !UIElements[UInoiseCheckBoxElement].checkBox.checked;
+
+		}
+		
 		if(UIElements[UIstabilizeFpsCheckBox].checkBox.mouseHover)
 			UIElements[UIstabilizeFpsCheckBox].checkBox.checked = !UIElements[UIstabilizeFpsCheckBox].checkBox.checked;
 		if(UIElements[UIimageCheckBoxElement].checkBox.mouseHover)
@@ -166,6 +188,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		brushBordersRangeBarPressed = false;
 		skyboxExposureRangeBarPressed = false;
 		skyboxRotationRangeBarPressed = false;
+		normalStrengthRangeBarPressed = false;
+		noiseStrengthRangeBarPressed = false;
 		colorBoxPickerPressed = false;
 		colorBoxColorRangeBarPressed = false;
 		textureDisplayer.buttonPressed = false;
@@ -205,6 +229,12 @@ SndPanel &sndPanel){
 	}
 	if (skyboxRotationRangeBarPressed) {
 		ligid.skyBoxRotationRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
+	}
+	if (normalStrengthRangeBarPressed) {
+		ligid.normalStrengthRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
+	}
+	if (noiseStrengthRangeBarPressed) {
+		ligid.noiseStrengthRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
 	}
 	if (colorBoxColorRangeBarPressed) {
 		ligid.colorBoxColorRangeBar(yOffset,screenHeight);//Changes the global variable
