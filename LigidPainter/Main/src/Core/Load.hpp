@@ -748,8 +748,12 @@ public:
 		result.push_back(mainOutNode);
 		
 		//Pull the 01 PBR node 
-		appNodes[0].outputs[0].nodeConnectionIndex = 0;
-		appNodes[0].outputs[0].inputConnectionIndex = 0;
+		NodeConnection connection;
+		connection.nodeConnectionIndex = 0;
+		connection.inputConnectionIndex = 0;
+
+		appNodes[0].outputs[0].connections.push_back(connection);
+
 		appNodes[0].outputs[0].isConnectedToShaderInput = true;
 		appNodes[0].outputs[0].pressed = false;
 		appNodes[0].outputs[0].connectionHover = false;
