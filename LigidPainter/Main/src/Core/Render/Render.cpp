@@ -401,6 +401,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorPicker.pickerValue,renderMaxScreenWidth,renderMaxScreenHeight,renderPrograms);
 
 	renderAxisPointer(axisPointerShaderData,renderPrograms);
+	if(glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_RELEASE)
 	uiOut = renderUi(panelData, renderData, FBOScreen,icons
 		,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,
 		brushBlurVal,outShaderData,model,albedoTextures,renderPrograms,currentMaterialIndex,renderMaxScreenWidth,

@@ -1539,19 +1539,22 @@ void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned
 				-0.03f + position_x,  std::min(std::max(0.06f + position_y,0.55f),0.8f), 1,0,upBotDifMin*10,0,0,0  // top left
 			};
 
-			gl.uniform1i(programs.iconsProgram,"isMaskIcon",1);
-			if(maskTextures[i] == currentBrushMaskTexture){
-				glm::vec4 chosenBrushMaskTextureColor = glm::vec4(colorData.chosenBrushMaskTextureColor,1.0f);
-				gl.uniform4fv(programs.iconsProgram,"iconColor",chosenBrushMaskTextureColor);
+			if(std::min(std::max(0.06f + position_y,0.55f),0.8f) != std::min(std::max(-0.06f + position_y,0.55f),0.8f)){//Prevent rendering all the textures
+				std::cout << i << ' ';
+				gl.uniform1i(programs.iconsProgram,"isMaskIcon",1);
+				if(maskTextures[i] == currentBrushMaskTexture){
+					glm::vec4 chosenBrushMaskTextureColor = glm::vec4(colorData.chosenBrushMaskTextureColor,1.0f);
+					gl.uniform4fv(programs.iconsProgram,"iconColor",chosenBrushMaskTextureColor);
+				}
+				else{
+					gl.uniform4fv(programs.iconsProgram,"iconColor",colorData.brushMaskIconColor);
+				}
+				gl.uniform1f(programs.iconsProgram,"iconMixVal",0);
+				gl.activeTexture(GL_TEXTURE6);
+				gl.bindTexture(maskTextures[i]);
+				gl.drawArrays(buttonCoorSq,false);
+				gl.uniform1i(programs.iconsProgram,"isMaskIcon",0);
 			}
-			else{
-				gl.uniform4fv(programs.iconsProgram,"iconColor",colorData.brushMaskIconColor);
-			}
-			gl.uniform1f(programs.iconsProgram,"iconMixVal",0);
-			gl.activeTexture(GL_TEXTURE6);
-			gl.bindTexture(maskTextures[i]);
-			gl.drawArrays(buttonCoorSq,false);
-			gl.uniform1i(programs.iconsProgram,"isMaskIcon",0);
 
 			
 			if(isMouseOnCoords(window,mouseXpos+screenGapX*(uiMaxScreenWidth/2),mouseYpos,buttonCoorSq,panelData.movePanel)){
