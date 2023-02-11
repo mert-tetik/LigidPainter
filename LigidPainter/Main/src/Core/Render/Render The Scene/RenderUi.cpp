@@ -309,7 +309,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	
 
 
-	if (panelData.paintingPanelActive) {
+	if (panelData.paintingPanelActive && renderData.panelLoc < 1.98f) {
 		glUseProgram(programs.uiProgram); 
 
 		//Color Picker
@@ -338,7 +338,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 
 	//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-	if(panelData.paintingPanelActive){
+	if(panelData.paintingPanelActive && renderData.panelLoc < 1.98f){
 		glUseProgram(programs.uiProgram);
 
 		const float maskPanelRange = ceil((int)maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
@@ -371,6 +371,9 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		else{
 			panelCompatibility = false;
 		}
+		if(renderData.panelLoc > 1.98f)
+			panelCompatibility = false;
+
 		if(panelCompatibility){
 			
 			const int uiIconStartingIndex = 30; 

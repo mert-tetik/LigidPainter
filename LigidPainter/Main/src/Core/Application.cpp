@@ -1353,7 +1353,7 @@ void LigidPainter::mainPanelBoundaries(float xOffset,int screenSizeX){
 	if (enablePanelMovement) {
 		Utilities util;
 		mainPanelLoc -= xOffset / (screenSizeX / 2);
-		mainPanelLoc = util.restrictBetween(mainPanelLoc, 1.98f, 1.6f);//Keep in boundaries
+		mainPanelLoc = util.restrictBetween(mainPanelLoc, 1.99f, 1.6f);//Keep in boundaries
     }
 }
 void LigidPainter::sndPanelBoundaries(float xOffset,int screenSizeX){
