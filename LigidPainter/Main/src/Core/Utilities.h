@@ -19,5 +19,7 @@ public:
 	void printError();
 	std::string removeExtension(std::string s);
 	std::string uniqueName(std::string s,std::vector<std::string> albedoTextures);
+	bool illegalCharCheck(std::string s);
+
 };
 #endif

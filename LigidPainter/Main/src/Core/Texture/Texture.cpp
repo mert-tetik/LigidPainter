@@ -12,7 +12,7 @@
 
 #include "Core/LigidPainter.h"
 #include "Core/UI/UserInterface.h"
-#include "Core/gl.h"
+#include "Core/Utilities.h"
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"
 
@@ -38,50 +38,61 @@ unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, un
 	unsigned int textureID;
 
 	GlSet glset;
+	
+	Utilities util;
+	if(!util.illegalCharCheck(path)){
+		if(!update){
+			glset.genTextures(textureID);
+			glset.bindTexture(textureID);
+		}
+		else{
+			textureID = 0;
+		}
 
-	if(!update){
-		glset.genTextures(textureID);
-		glset.bindTexture(textureID);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		int width, height, nrChannels;
+
+		stbi_set_flip_vertically_on_load(true);
+		unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 3);
+		GLubyte* resizedPixelsX = NULL;
+		if (applyResize) {
+			resizedPixelsX = new GLubyte[desiredWidth * desiredHeight * 3];
+			stbir_resize_uint8(data, width, height, 0, resizedPixelsX, desiredWidth, desiredHeight, 0, 3);
+		}
+
+		if (data != NULL)
+		{
+			if(applyResize)
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, desiredWidth, desiredHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, resizedPixelsX);
+			else
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			glset.generateMipmap();
+		}
+		else
+		{
+			const char* reason = "[unknown reason]";
+			if (stbi_failure_reason())
+			{
+				reason = stbi_failure_reason();
+			}
+			std::cout << "Failed to load texture!" << " Reason : " << reason<< std::endl;
+		}
+
+		stbi_image_free(data);
+		delete(resizedPixelsX);
+		return textureID;
 	}
 	else{
-		textureID = 0;
+		UserInterface ui;
+		ui.alert("ERROR : Texture can't be imported. There are illegal characters in the path.",400);
+		return 0;
 	}
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	int width, height, nrChannels;
-
-	stbi_set_flip_vertically_on_load(true);
-	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 3);
-	GLubyte* resizedPixelsX = NULL;
-	if (applyResize) {
-		resizedPixelsX = new GLubyte[desiredWidth * desiredHeight * 3];
-		stbir_resize_uint8(data, width, height, 0, resizedPixelsX, desiredWidth, desiredHeight, 0, 3);
-	}
-
-	if (data != NULL)
-	{
-		if(applyResize)
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, desiredWidth, desiredHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, resizedPixelsX);
-		else
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glset.generateMipmap();
-	}
-	else
-	{
-		const char* reason = "[unknown reason]";
-		if (stbi_failure_reason())
-		{
-			reason = stbi_failure_reason();
-		}
-		std::cout << "Failed to load texture!" << " Reason : " << reason<< std::endl;
-	}
-
-	stbi_image_free(data);
-	delete(resizedPixelsX);
-	return textureID;
+	
 }
 
 void Texture::downloadTexture(const char* path, const char* name, int format, int width, int height, GLubyte* pixels, int channels) {

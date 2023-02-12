@@ -302,3 +302,12 @@ std::string Utilities::uniqueName(std::string s,std::vector<std::string> albedoT
 	}
 	return s;
 }
+
+bool Utilities::illegalCharCheck(std::string s){
+	for (size_t i = 0; i < s.size(); i++)
+	{
+		if((int)s[i] <= 127 && (int)s[i] >= 0){}
+		else{return true;}
+	}
+	return false;
+}
