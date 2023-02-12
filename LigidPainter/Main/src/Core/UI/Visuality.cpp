@@ -178,7 +178,10 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	GlSet glset;
 	ColorData colorData;
 	
-	
+	int screenWidth;
+	int screenHeight;
+	glfwGetWindowSize(window,&screenWidth,&screenHeight);
+
 	if(!anyTextureNameActive){
 		for (int i = 0; i < albedoTextures.size(); i++)
 		{
@@ -236,10 +239,10 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 		box(panelWidth+0.05f, 0.5f, panelLoc - panelWidth - cornerWidth, panelHeigth+0.42f, "", glm::vec4(0), 0.022f, false, false, panelZ+0.05, 10000, colorD.panelColor, 0);
 		box(panelWidth+0.05f, 0.5f, panelLoc - panelWidth - cornerWidth, -panelHeigth-0.42f, "", glm::vec4(0), 0.022f, false, false, panelZ+0.05, 10000, colorD.panelColor, 0);
 
-
+		const float screenGapXSc = maxScreenWidth-screenWidth;
 
 		if(sndpanelMoveTexture){
-			float posx = (mouseXpos/(maxScreenWidth/2))-1.f;
+			float posx = ((mouseXpos + screenGapXSc/2.f)/(maxScreenWidth/2))-1.f;
 			float posy = (2.f - (mouseYpos/(uiMaxScreenHeight/2.f)))-1.f;
 			std::vector<float> renderVertices = { 
 				// first triangle
@@ -1583,7 +1586,7 @@ void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned
 		}
 }
 
-void UserInterface::listBox(float posX,float posY,float posZ,const char* title,float width,Icons icons,std::vector<const char*> list, bool active,GLFWwindow* window, float mouseXpos,float mouseYpos,bool firstClick,int &chosenIndex){
+void UserInterface::listBox(float posX,float posY,float posZ,const char* title,float width,Icons icons,std::vector<const char*> list, bool active,GLFWwindow* window, float mouseXpos,float mouseYpos,bool firstClick,int &chosenIndex,float screenGapX){
 	ColorData colorData;
 	
 	if(active){
@@ -1592,7 +1595,7 @@ void UserInterface::listBox(float posX,float posY,float posZ,const char* title,f
 		for (size_t i = 1; i <= list.size(); i++)
 		{
 			glUseProgram(uiPrograms.uiProgram);
-			bool hover = isMouseOnButton(window,width, 0.03f,posX,posY - i/15.f,mouseXpos,mouseYpos,false);
+			bool hover = isMouseOnButton(window,width, 0.03f,posX-screenGapX,posY - i/15.f,mouseXpos,mouseYpos,false);
 			bool pressed = false;
 			
 			if(i-1 == chosenIndex){
