@@ -178,6 +178,7 @@ struct Icons{
 	unsigned int LoadFolder;
 	unsigned int Gear;
 	unsigned int Mark;
+	unsigned int TextureGenerator;
 };
 
 struct RenderData { //GlSet::render
@@ -239,6 +240,7 @@ public:
 	void normalStrengthRangeBar(double xOffset, int width, int height);
 	void noiseStrengthRangeBar(double xOffset, int width, int height);
 
+	void bakeButton();
 	void paintingDropper();
 	void exportFileNameTextBox();
 	void colorBox();

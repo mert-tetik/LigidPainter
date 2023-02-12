@@ -88,6 +88,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 				//Check mouse hover
 		if (UIElements[UIaddBrushMaskTextureButton].button.hover)
 			ligid.addMaskTextureButton();
+		if (UIElements[UIbakeButtonElement].button.hover)
+			ligid.bakeButton();
 		if (UIElements[UIUploadingModelPathTextBox].textBox.hover)
 			ligid.modelFilePathTextBox(); 
 		if (UIElements[UIgenerateTextureButtonElement].button.hover)

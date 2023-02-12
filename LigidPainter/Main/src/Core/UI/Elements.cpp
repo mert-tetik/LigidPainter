@@ -555,6 +555,23 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     generateTextureButtonElement.attachedToMainPanel = true;
     generateTextureButtonElement.type = "button";
     UIElements.push_back(generateTextureButtonElement);//41
+    
+    UIElement bakeButtonElement;
+    bakeButtonElement.button.positionX = 0.0f;
+    bakeButtonElement.button.positionY = -0.46f;
+    bakeButtonElement.button.positionZ = 0.9f;
+    bakeButtonElement.button.width = 0.05f;
+    bakeButtonElement.button.height = 0.04f;
+    bakeButtonElement.button.color = colorData.buttonColor;
+    bakeButtonElement.button.colorHover = colorData.buttonColorHover;
+    bakeButtonElement.button.transitionMixVal = 0.0f;
+    bakeButtonElement.button.buttonCurveReduce = 10.0f;
+    bakeButtonElement.button.text = "Bake";
+    bakeButtonElement.button.textRatio = 0.038f;
+    bakeButtonElement.panel = 6;
+    bakeButtonElement.attachedToMainPanel = true;
+    bakeButtonElement.type = "button";
+    UIElements.push_back(bakeButtonElement);//41
 
 	//-------------ICONS-------------
 

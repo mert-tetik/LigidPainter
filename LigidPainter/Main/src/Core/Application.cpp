@@ -1026,6 +1026,10 @@ void LigidPainter::addMaskTextureButton() {
 		txtr.updateMaskTexture(FBOScreen,width,height,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
 	}
 }
+void LigidPainter::bakeButton(){
+	bakeTheMaterial = true;
+	nodeScenes[selectedNodeScene].stateChanged = true;
+}
 void LigidPainter::brushSizeRangeBar(double xOffset,int width){
 	brushValChanged = true;
 	Utilities util;
