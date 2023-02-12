@@ -411,7 +411,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		const float height = width * 2.f;
 
 		const float posX = centerCoords - screenGapX;
-		const float posY = 0.6f;
+		const float posY = 0.5f;
 		const float posZ = 0.9f;
 		
 		std::vector<float> renderVertices = { 

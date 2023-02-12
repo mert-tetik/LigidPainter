@@ -510,7 +510,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement noiseCheckBoxElement;
     noiseCheckBoxElement.checkBox.positionX = -0.03f;
-    noiseCheckBoxElement.checkBox.positionY = -0.16f;
+    noiseCheckBoxElement.checkBox.positionY = -0.06f;
     noiseCheckBoxElement.checkBox.text = "Noise";
     noiseCheckBoxElement.checkBox.checked = false;
     noiseCheckBoxElement.checkBox.mouseHover = false;
@@ -521,7 +521,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement noiseStrengthTextElement;
     noiseStrengthTextElement.text.positionX = -0.11f;
-    noiseStrengthTextElement.text.positionY = -0.22;
+    noiseStrengthTextElement.text.positionY = -0.12;
     noiseStrengthTextElement.text.text = "Strength";
     noiseStrengthTextElement.text.scale = 0.00022f;
     noiseStrengthTextElement.text.color = colorData.textBoxColor;
@@ -532,7 +532,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement noiseStrengthRangeBarElement;
 	noiseStrengthRangeBarElement.rangeBar.positionX = 0.0f;
-	noiseStrengthRangeBarElement.rangeBar.positionY = -0.26f;
+	noiseStrengthRangeBarElement.rangeBar.positionY = -0.16f;
 	noiseStrengthRangeBarElement.rangeBar.value = 0.f;
 	noiseStrengthRangeBarElement.panel = 6;
 	noiseStrengthRangeBarElement.attachedToMainPanel = true;
@@ -541,7 +541,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement generateTextureButtonElement;
     generateTextureButtonElement.button.positionX = 0.0f;
-    generateTextureButtonElement.button.positionY = -0.36f;
+    generateTextureButtonElement.button.positionY = -0.26f;
     generateTextureButtonElement.button.positionZ = 0.9f;
     generateTextureButtonElement.button.width = 0.05f;
     generateTextureButtonElement.button.height = 0.04f;
