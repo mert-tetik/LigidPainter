@@ -34,7 +34,7 @@ float hexValTextboxMixVal = 0.0f;
 float texturePanelButtonMixVal = 0.0f;
 
 
-void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &colorPicker,UpBar &topBar,SndPanel &sndpanel) {
+void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &colorPicker,SndPanel &sndpanel) {
 	Utilities util;
 
 	const float phaseDifference = 0.1f;
@@ -60,9 +60,6 @@ void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &
 	hexValTextboxMixVal = util.transitionEffect(colorPicker.hexValTextBoxActive,hexValTextboxMixVal,phaseDifference);
  	texturePanelButtonMixVal = util.transitionEffect(texturePanelButtonHover,texturePanelButtonMixVal,phaseDifference);
 
-	topBar.bakeButtonMixVal = util.transitionEffect(topBar.bakeButtonHover,topBar.bakeButtonMixVal,phaseDifference);
-	topBar.generateNormalMixVal = util.transitionEffect(topBar.generateNormalHover,topBar.generateNormalMixVal,phaseDifference);
-	topBar.noiseButtonMixVal = util.transitionEffect(topBar.noiseButtonHover,topBar.noiseButtonMixVal,phaseDifference);
 
 	sndpanel.minusSignMixVal = util.transitionEffect(sndpanel.minusSignHover,sndpanel.minusSignMixVal,phaseDifference);
 	sndpanel.backSignMixVal = util.transitionEffect(sndpanel.backSignHover,sndpanel.backSignMixVal,phaseDifference);
@@ -92,7 +89,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 ,NodePanel &nodePanel,SndPanel &sndPanel, int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool firstClick
 ,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive
-,std::string &textureText,UpBar &topBar) {
+,std::string &textureText) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -158,7 +155,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 	float screenGapX = ((float)maxScreenWidth - screenSizeX)/(((float)maxScreenWidth)/2.0f)/2.0f; 
 
-	updateButtonColorMixValues(UIElements,colorPicker,topBar,sndPanel);
+	updateButtonColorMixValues(UIElements,colorPicker,sndPanel);
 
 	//Panel
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive || panelData.settingsPanelActive || panelData.generatorPanelActive){ //Disable panel if a message box is active
@@ -235,7 +232,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			
 		}
 		
-		ui.upBar(icons,renderData.window,mouseXpos,mouseYpos,firstClick,albedoTextures,selectedAlbedoTextureIndex,chosenTextureResIndex,maxScreenWidth,maxScreenHeight,screenSizeX,screenSizeY,bakeTheMaterial,nodeScenes[selectedNodeScene],topBar);
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , icons,panelData);
 		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal,firstClick,coloringPanel,txtrCreatingPanel,anyTextureNameActive,textureText,sndPanel.activeFolderIndex,nodePanel,appNodes,sndPanel);
 
