@@ -29,7 +29,7 @@ assimp : https://github.com/assimp/assimp
 
 ## Shortcuts
     Left CTRL + Z : Undo painting
-    Left CTRL + X : change use negative checkbox's state
+    Left CTRL + X : change invert checkbox's state
     Left CTRL + H : hide or show the texture demonstrator
     Left CTRL + Q + scroll = change brush size range bar value
     Left CTRL + W + scroll = change brush blur range bar value

@@ -145,6 +145,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 			}
 
 		glUseProgram(programs.twoDPaintingProgram);
+		glset.uniform1i(programs.twoDPaintingProgram, "invert" , useNegativeForDrawing);
 		glset.uniform1i(programs.twoDPaintingProgram, "modifiedMaskTexture" , 12);
 		glset.uniformMatrix4fv(programs.twoDPaintingProgram, "renderProjection" , paintingProjection);
 		for (int i = 0; i < holdLocations.size(); i++)

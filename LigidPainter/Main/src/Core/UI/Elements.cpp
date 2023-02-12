@@ -152,7 +152,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElement useNegativeCheckBoxElement;
     useNegativeCheckBoxElement.checkBox.positionX = -0.03f;
     useNegativeCheckBoxElement.checkBox.positionY = 0.45f;
-    useNegativeCheckBoxElement.checkBox.text = "Use Negative";
+    useNegativeCheckBoxElement.checkBox.text = "Invert";
     useNegativeCheckBoxElement.panel = 3;
     useNegativeCheckBoxElement.attachedToMainPanel = true;
     useNegativeCheckBoxElement.type = "checkBox";
@@ -377,7 +377,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     downloadButtonElement.button.colorHover = colorData.buttonColorHover;
     downloadButtonElement.button.transitionMixVal = 0.0f;
     downloadButtonElement.button.buttonCurveReduce = 10.0f;
-    downloadButtonElement.button.text = "Download";
+    downloadButtonElement.button.text = "Export";
     downloadButtonElement.button.textRatio = 0.045f;
     downloadButtonElement.panel = 4;
     downloadButtonElement.attachedToMainPanel = true;
