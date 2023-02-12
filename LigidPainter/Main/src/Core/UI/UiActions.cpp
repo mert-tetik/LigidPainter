@@ -92,6 +92,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			ligid.addMaskTextureButton();
 		if (UIElements[UIUploadingModelPathTextBox].textBox.hover)
 			ligid.modelFilePathTextBox(); 
+		if (UIElements[UIgenerateTextureButtonElement].button.hover)
+			ligid.generateTextureButton(); 
 		if (callbackData.modelPanelButtonEnter)
 			ligid.modelPanelButton();
 		if (callbackData.texturePanelButtonEnter)

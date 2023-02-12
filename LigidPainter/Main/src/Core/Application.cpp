@@ -349,6 +349,8 @@ bool LigidPainter::run()
 	bool doChangeStateOfTheAddNodeContextBar = true;
 	float brushSize;
 
+	screenWidth = windowData.windowMaxWidth;
+	screenHeight = windowData.windowMaxHeight;
 
 	MainLoop mainLoop;
 	while (!glfwWindowShouldClose(window))//Main loop
@@ -1104,6 +1106,77 @@ void LigidPainter::brushBordersRangeBar(double xOffset, int width, int height) {
 	UIElements[UIbrushBordersRangeBar].rangeBar.value -= xOffset / (width / 2.0f);
 	UIElements[UIbrushBordersRangeBar].rangeBar.value = util.restrictBetween(UIElements[UIbrushBordersRangeBar].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
 	txtr.updateMaskTexture(FBOScreen, width, height,UIElements[UIbrushRotationRangeBar].rangeBar.value,true,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
+}
+void LigidPainter::generateTextureButton(){
+	Utilities util;
+
+	int txtrRes = 256;
+	for (size_t i = 0; i < chosenTextureResIndex; i++)
+	{
+		txtrRes*=2;
+	}
+
+	glActiveTexture(GL_TEXTURE28);
+		
+		//FBO
+		unsigned int FBO;
+		glset.genFramebuffers(FBO);
+		glset.bindFramebuffer(FBO);
+
+		//Texture
+		unsigned int textureColorbuffer;
+		glset.genTextures(textureColorbuffer);
+		glset.bindTexture(textureColorbuffer);
+		glset.texImage(NULL, txtrRes,txtrRes,GL_RGB); //TODO : Use texture quality variable
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glset.generateMipmap();
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+
+		glViewport(0,0,txtrRes,txtrRes);
+
+		std::vector<float> renderVertices = { 
+			// first triangle
+			 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+			 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+			 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+			// second triangle	  ,0,0,0,
+			 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+			 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+			 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+		};
+		if(UIElements[UInoiseCheckBoxElement].checkBox.checked)
+			glUseProgram(programs.noisyTextureProgram);
+		if(UIElements[UInormalmapCheckBoxElement].checkBox.checked)
+			glUseProgram(programs.normalGenProgram);
+		
+		glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
+		
+		glset.uniformMatrix4fv(programs.noisyTextureProgram,"renderTextureProjection",renderTextureProjection);
+		glset.uniformMatrix4fv(programs.normalGenProgram,"renderTextureProjection",renderTextureProjection);
+
+		glset.drawArrays(renderVertices,0);
+		glUseProgram(programs.uiProgram);
+
+		glDeleteFramebuffers(1,&FBO);	
+		glset.bindFramebuffer(0);
+
+		aTexture txtr;
+		txtr.id = textureColorbuffer;
+		txtr.name = "noisyMap"; 
+		std::vector<std::string> textureNames;
+		for (size_t i = 0; i < albedoTextures.size(); i++)
+		{
+			textureNames.push_back(albedoTextures[i].name);
+		}
+			
+		//Rename if necessary
+		txtr.name = util.uniqueName(txtr.name,textureNames);
+		albedoTextures.push_back(txtr);
+
+		glViewport(-(windowData.windowMaxWidth - screenWidth)/2, -(windowData.windowMaxHeight - screenHeight), windowData.windowMaxWidth, windowData.windowMaxHeight);
 }
 void LigidPainter::colorBoxColorRangeBar(double yOffset,int height){
 	Utilities util;

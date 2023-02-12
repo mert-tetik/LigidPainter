@@ -539,7 +539,22 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	noiseStrengthRangeBarElement.type = "rangeBar";
     UIElements.push_back(noiseStrengthRangeBarElement);//40
     
-
+    UIElement generateTextureButtonElement;
+    generateTextureButtonElement.button.positionX = 0.0f;
+    generateTextureButtonElement.button.positionY = -0.36f;
+    generateTextureButtonElement.button.positionZ = 0.9f;
+    generateTextureButtonElement.button.width = 0.05f;
+    generateTextureButtonElement.button.height = 0.04f;
+    generateTextureButtonElement.button.color = colorData.buttonColor;
+    generateTextureButtonElement.button.colorHover = colorData.buttonColorHover;
+    generateTextureButtonElement.button.transitionMixVal = 0.0f;
+    generateTextureButtonElement.button.buttonCurveReduce = 10.0f;
+    generateTextureButtonElement.button.text = "Generate";
+    generateTextureButtonElement.button.textRatio = 0.038f;
+    generateTextureButtonElement.panel = 6;
+    generateTextureButtonElement.attachedToMainPanel = true;
+    generateTextureButtonElement.type = "button";
+    UIElements.push_back(generateTextureButtonElement);//41
 
 	//-------------ICONS-------------
 

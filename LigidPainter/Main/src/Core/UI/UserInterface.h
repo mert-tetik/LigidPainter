@@ -50,13 +50,14 @@
 #define UInoiseCheckBoxElement 41
 #define UInoiseStrengthTextElement 42
 #define UInoiseStrengthRangeBarElement 43
-#define UIjpgIcon 44
-#define UIpngIcon 45
-#define UIfolderIcon 46
-#define UIloadPlaneModelButton 47
-#define UIloadSphereModelButton 48
-#define UIplaneIcon 49
-#define UIsphereIcon 50
+#define UIgenerateTextureButtonElement 44
+#define UIjpgIcon 45
+#define UIpngIcon 46
+#define UIfolderIcon 47
+#define UIloadPlaneModelButton 48
+#define UIloadSphereModelButton 49
+#define UIplaneIcon 50
+#define UIsphereIcon 51
 
 struct ColorData //LigidPainter color palette
 {

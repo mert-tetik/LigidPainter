@@ -223,6 +223,7 @@ public:
 	void mirrorXCheckBox();
 	void mirrorYCheckBox();
 	void mirrorZCheckBox();
+	void generateTextureButton();
 	void colorBoxColorRangeBar(double yOffset, int height);
 	void colorBoxPickerButton(double xOffset, double yOffset, int width, int height);
 	void brushSizeRangeBar(double xOffset, int width);
