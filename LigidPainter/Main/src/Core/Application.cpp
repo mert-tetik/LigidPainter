@@ -1505,7 +1505,18 @@ void LigidPainter::sndPanelMinusIcon(){
 				texture = albedoTextures[selectedAlbedoTextureIndex].id;
 				glDeleteTextures(1, &texture);
 
-				albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
+				if(albedoTextures[selectedAlbedoTextureIndex].isTexture)
+					albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
+				else{
+					for (size_t i = 0; i < albedoTextures.size(); i++)
+					{
+						//Delete the elements of the folder
+						if(albedoTextures[i].folderIndex == selectedAlbedoTextureIndex){
+							albedoTextures.erase(albedoTextures.begin() + i);
+						}
+					}
+					albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
+				}
 				
 				if(selectedAlbedoTextureIndex)
 					selectedAlbedoTextureIndex--;

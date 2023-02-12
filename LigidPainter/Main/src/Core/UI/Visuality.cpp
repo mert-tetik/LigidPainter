@@ -1331,7 +1331,7 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 	container(txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle);
 	txtrCreatingPanel.panelHover = isMouseOnButton(window,panelWidth+0.03f,panelHeigth+0.06f,txtrCreatingPanel.panelPosX-screenGapX,txtrCreatingPanel.panelPosY,mouseXpos,mouseYpos,false);
 	
-	if(!txtrCreatingPanel.panelHover && !coloringPanel.panelHover){
+	if(!txtrCreatingPanel.panelHover && !coloringPanel.panelHover && !coloringPanel.active){ 
 		txtrCreatingPanel.color = glm::vec3(0);
 		txtrCreatingPanel.active = false;
 		txtrCreatingPanel.textBoxVal = "texture";
