@@ -666,7 +666,6 @@ bool LigidPainter::run()
 bool caps = false; //GLFW_MOD_CAPS_LOCK
 void joystick_callback(int jid, int event)
 {
-	std::cout << "hey";
     if (event == GLFW_CONNECTED)
     {
         // The joystick was connected

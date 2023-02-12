@@ -64,7 +64,6 @@ ProcessHppNode processNodeFile(std::string filePath){
         
         if(line[0] == '$'){
             processHppNode.useModel = true;
-            std::cout << "ABAB";
         }
         
         if(line[0] == '%'){ //Major tokens

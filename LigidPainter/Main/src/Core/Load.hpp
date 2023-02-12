@@ -533,8 +533,7 @@ public:
 		resultNode.upBarColor.a = 1.f;
 
 		resultNode.useModel = node.useModel;
-		if(node.useModel)
-			std::cout <<"ASDASDF";
+
 
 		float rangeBarCount = 0;
 		//Load inputs
