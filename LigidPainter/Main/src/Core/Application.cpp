@@ -223,12 +223,11 @@ bool LigidPainter::run()
 	glset.setVertexAtribPointer();
 	glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW); 
 
-
+	
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 	glEnable(GL_BLEND);
 	glDepthFunc(GL_LESS);
-	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_MULTISAMPLE);
 
 
@@ -237,6 +236,32 @@ bool LigidPainter::run()
 
 	Load load;
 	programs = load.getProgram();
+
+	glActiveTexture(GL_TEXTURE0);
+	glset.genTextures(viewportBGImage);
+	glset.bindTexture(viewportBGImage);
+	txtr.getTexture("LigidPainter/Resources/Images/BGImage.jpg",1920,1080,true);
+
+	//Loading screen
+	std::vector<float> renderVertices = { 
+		// first triangle
+		 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+		 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+		 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+		// second triangle	  ,0,0,0,
+		 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+		 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+		 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+	};
+	glUseProgram(programs.renderTheTextureProgram);
+	glm::mat4 txtprojection = glm::ortho(0,1,0,1);
+	glset.uniformMatrix4fv(programs.renderTheTextureProgram,"TextProjection",txtprojection);
+	glset.uniform1i(programs.renderTheTextureProgram,"texture",0);
+	glset.drawArrays(renderVertices,0);
+	glfwSwapBuffers(window);
+
+	glEnable(GL_DEPTH_TEST);
+
 	//Load nodes
 	appNodes = load.loadNodes(folderDistinguisher);
 	//Load chars
@@ -285,11 +310,6 @@ bool LigidPainter::run()
 
 
 
-
-	glActiveTexture(GL_TEXTURE0);
-	glset.genTextures(viewportBGImage);
-	glset.bindTexture(viewportBGImage);
-	txtr.getTexture("LigidPainter/Resources/Images/BGImage.jpg",1920,1080,true);
 
 
 	//Send some data to related cpp files
