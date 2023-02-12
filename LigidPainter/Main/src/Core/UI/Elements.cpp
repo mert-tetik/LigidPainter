@@ -454,7 +454,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElement imageCheckBoxElement;
     imageCheckBoxElement.checkBox.positionX = -0.03f;
     imageCheckBoxElement.checkBox.positionY = 0.16f;
-    imageCheckBoxElement.checkBox.text = "Image";
+    imageCheckBoxElement.checkBox.text = "Add Image";
     imageCheckBoxElement.checkBox.checked = true;
     imageCheckBoxElement.checkBox.mouseHover = false;
     imageCheckBoxElement.panel = 5;

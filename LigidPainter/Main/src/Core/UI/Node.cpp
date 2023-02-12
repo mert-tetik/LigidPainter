@@ -159,10 +159,20 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			{
 				//Establish connection
 				if(glfwGetMouseButton(window,0) == GLFW_RELEASE && material.nodes[nodeI].inputs[inputI].connectionHover && node.outputs[i].pressed){
-					if(node.outputs[i].nodeConnectionIndex != 10000){
-						material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].nodeConnectionIndex = 10000;
-						material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].inputConnectionIndex = 10000;
+					if(material.nodes[nodeI].inputs[inputI].nodeConnectionIndex != 10000){
+						for (size_t conI = 0; conI < material.nodes[material.nodes[nodeI].inputs[inputI].nodeConnectionIndex].outputs[material.nodes[nodeI].inputs[inputI].inputConnectionIndex].connections.size(); conI++)
+						{
+							if(material.nodes[material.nodes[nodeI].inputs[inputI].nodeConnectionIndex].outputs[material.nodes[nodeI].inputs[inputI].inputConnectionIndex].connections[conI].nodeConnectionIndex == nodeI){
+								if(material.nodes[material.nodes[nodeI].inputs[inputI].nodeConnectionIndex].outputs[material.nodes[nodeI].inputs[inputI].inputConnectionIndex].connections[conI].inputConnectionIndex == inputI){
+									material.nodes[material.nodes[nodeI].inputs[inputI].nodeConnectionIndex].outputs[material.nodes[nodeI].inputs[inputI].inputConnectionIndex].connections.erase(material.nodes[material.nodes[nodeI].inputs[inputI].nodeConnectionIndex].outputs[material.nodes[nodeI].inputs[inputI].inputConnectionIndex].connections.begin());
+								}
+							}
+						}
 					}
+					// if(node.outputs[i].nodeConnectionIndex != 10000){
+					// 	material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].nodeConnectionIndex = 10000;
+					// 	material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].inputConnectionIndex = 10000;
+					// }
 
 					NodeConnection connection;
 					connection.connectionPosX = material.nodes[nodeI].inputs[inputI].posX;
