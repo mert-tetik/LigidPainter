@@ -1214,8 +1214,10 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 	if(coloringPanel.panelHover && !coloringPanel.dropperActive){
 		coloringPanel.enteredOnce = true;
 	}
-	
-	if(!coloringPanel.panelHover && coloringPanel.enteredOnce && !coloringPanel.dropperActive){
+	if(coloringPanel.hueBarPointerPressed || coloringPanel.saturationValueBoxPointerPressed){
+		coloringPanel.enteredOnce = false;
+	}
+	if(!coloringPanel.panelHover && coloringPanel.enteredOnce && !coloringPanel.dropperActive && !coloringPanel.hueBarPointerPressed && !coloringPanel.saturationValueBoxPointerPressed){
 		coloringPanel.active = false;
 		coloringPanel.enteredOnce = false;
 	}

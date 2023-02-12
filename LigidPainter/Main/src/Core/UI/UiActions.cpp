@@ -8,8 +8,6 @@
 int uiactionsMaxScreenWidth;
 int uiactionsMaxScreenHeight;
 
-bool colorBoxFirstPress = false;
-
 //Range Values
 bool brushSizeRangeBarPressed;
 bool brushBlurRangeBarPressed;
@@ -158,7 +156,7 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			ligid.mirrorYCheckBox();
 		if (UIElements[UImirrorZCheckBox].checkBox.mouseHover)
 			ligid.mirrorZCheckBox();
-		if(colorPicker.saturationValueBoxHover&& colorBoxFirstPress)
+		if(colorPicker.saturationValueBoxHover)
 			ligid.colorBox();
 		if(colorPicker.hueValueBarHover)
 			ligid.hueBar();

@@ -528,7 +528,7 @@ bool LigidPainter::run()
 
 		//Painting
 		const bool distance_spacingCompatibility = glm::distance(glm::vec2(mouseDrawingPosX,mouseDrawingPosY),glm::vec2(mouseXpos,mouseYpos)) > paintingSpacing;
-		const bool paintingCondition = glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && !panelChanging && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !colorPicker.dropperActive && distance_spacingCompatibility; 
+		const bool paintingCondition = glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && !panelChanging && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !colorPicker.dropperActive && distance_spacingCompatibility && !coloringPanel.saturationValueBoxPointerPressed && !coloringPanel.hueBarPointerPressed; 
 		if (paintingCondition){
 
 			mouseDrawingPosX = mouseXpos;

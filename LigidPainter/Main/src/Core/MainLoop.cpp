@@ -93,7 +93,6 @@ void MainLoop::changeTextureDisplayersState(GLFWwindow* window,TextureDisplayer 
 void MainLoop::changeColorPickersValue(GLFWwindow* window,ColorPicker& colorPicker,ColoringPanel& coloringPanel,glm::vec3 mouseHoverPixel,bool firstClick){
 	LigidPainter lp;
 	Utilities util;
-
 	const bool dropperColorPickingCondition = colorPicker.dropperActive && firstClick;
 	const bool movingSatValPointerCondition = colorPicker.saturationValueBoxClicked && !colorPicker.saturationValuePointerHover;
 	const bool movingHuePointerCondition = colorPicker.hueBarClicked && !colorPicker.saturationValuePointerHover && !colorPicker.huePointerChanging; 
