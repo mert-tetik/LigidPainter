@@ -4,7 +4,7 @@
 
 **LigidPainter**  is a free 3D painting software.
 
-<br><br><img src="https://raw.githubusercontent.com/mert-tetik/LigidPainter/main/LigidPainter/Main/src/.gh_resources/ligidPainterSS.jpg" width="600" height="337" alt="LigidPainterSS"><br><br>
+<br><br><img src="https://raw.githubusercontent.com/mert-tetik/LigidPainter/main/LigidPainter/Main/src/.gh_resources/lpss.jpg" width="600" height="337" alt="LigidPainterSS"><br><br>
 
 ## Notes
 Official website : https://www.ligidtools.com/ligidpainter
