@@ -114,7 +114,9 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	glUseProgram(programs.iconsProgram);
 	gl.uniformMatrix4fv(programs.iconsProgram, "Projection", projection);
 	glUseProgram(programs.renderTheTextureProgram);
-	gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
+	gl.uniformMatrix4fv(programs.renderTheTextureProgram, "TextProjection", projection);
+	glUseProgram(programs.curveProgram);
+	gl.uniformMatrix4fv(programs.curveProgram, "TextProjection", projection);
 	glUseProgram(programs.uiProgram);
 	gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
 

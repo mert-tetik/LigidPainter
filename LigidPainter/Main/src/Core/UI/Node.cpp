@@ -276,7 +276,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			if(glfwGetMouseButton(window,0) == GLFW_RELEASE)
 				node.outputs[i].connections[conI].connectionPressed = false;
 
-
+        	glUseProgram(programs.curveProgram);
+			
 			drawLine((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,depth+0.02f,node.outputs[i].connections[conI].connectionPosX,node.outputs[i].connections[conI].connectionPosY, node.width*200.f ,nodeColor);
 		
 			if(node.outputs[i].connections[conI].connectionPressed){
@@ -299,10 +300,9 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		if(node.outputs[i].pressed)//Render the connection lines if output connects to an input or moves
 			drawLine((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,depth+0.02f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY, node.width*200.f ,nodeColor);
 		
-
+        glUseProgram(programs.iconsProgram);
         //Render the output
 		//TODO : Use those values for rendering and tracking
-        glUseProgram(programs.iconsProgram);
 		node.outputs[i].posX = (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f;
 		node.outputs[i].posY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
 		iconBox(iconWidth/1.5f , iconWidth*1.5f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10, depth+0.01f , icons.Circle , 0 , nodeColor , nodeColor);

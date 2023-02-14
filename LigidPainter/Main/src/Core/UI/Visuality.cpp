@@ -1119,53 +1119,80 @@ void UserInterface::nodePanelBarriers(float mainPanelLoc,float sndPanel, float h
 	gl.drawArrays(rightCoor,false);
 }
 
-void UserInterface::drawLine(float posX,float posY, float posZ, float toPosX,float toPosY, float width, glm::vec4 color){
+void UserInterface::drawLine(float posX,float posY,float posZ,float toPosX,float toPosY,float width,glm::vec4 color){
 	GlSet gl;
-	gl.uniform4fv(uiPrograms.uiProgram,"uiColor",color);
+	if(abs(posY-toPosY)/4.f < 0.004f || abs(posX-toPosX)/2.f < 0.02f){
+		if(abs(posX-toPosX)/2.f < 0.02f)
+			width/=10;
+		glUseProgram(uiPrograms.uiProgram);
+		gl.uniform4fv(uiPrograms.uiProgram,"uiColor",color);
+		for (size_t i = 0; i < width; i++)
+		{
+			const float pixel = 10000.f/2.f;
+			std::vector<float> lineCoor{
+				//first triangle								   
+				 posX + i/pixel	,	posY + i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
+				 toPosX + i/pixel	,	toPosY + i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
+			};
+			gl.drawArrays(lineCoor,true);
+			/* code */
+		}
+		for (size_t i = 0; i < width; i++)
+		{
+			const float pixel = 10000.f/2.f;
+			std::vector<float> lineCoor{
+				//first triangle								   
+				 posX - i/pixel	,	posY + i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
+				 toPosX - i/pixel	,	toPosY + i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
+			};
+			gl.drawArrays(lineCoor,true);
+			/* code */
+		}
+		for (size_t i = 0; i < width; i++)
+		{
+			const float pixel = 10000.f/2.f;
+			std::vector<float> lineCoor{
+				//first triangle								   
+				 posX + i/pixel	,	posY - i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
+				 toPosX + i/pixel	,	toPosY - i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
+			};
+			gl.drawArrays(lineCoor,true);
+			/* code */
+		}
+		for (size_t i = 0; i < width; i++)
+		{
+			const float pixel = 10000.f/2.f;
+			std::vector<float> lineCoor{
+				//first triangle								   
+				 posX - i/pixel	,	posY - i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
+				 toPosX - i/pixel	,	toPosY - i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
+			};
+			gl.drawArrays(lineCoor,true);
+			/* code */
+		}
+	}
+	else{
+		glUseProgram(uiPrograms.curveProgram);
+		gl.uniform4fv(uiPrograms.curveProgram,"lineColor",color);
+		
 
-	for (size_t i = 0; i < width; i++)
-	{
-		const float pixel = 10000.f/2.f;
-		std::vector<float> lineCoor{
-			//first triangle								   
-			 posX + i/pixel	,	posY + i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
-			 toPosX + i/pixel	,	toPosY + i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
+			std::vector<float> box = { 
+			// first triangle
+			 toPosX,  posY, posZ,1,1,0,0,0,  // top right
+			 toPosX,  toPosY, posZ,1,0,0,0,0,  // bottom right
+			 posX,  posY, posZ,0,1,0,0,0,  // top left 
+			// second triangle
+			 toPosX,  toPosY, posZ,1,0,0,0,0,  // bottom right
+			 posX,  toPosY, posZ,0,0,0,0,0,  // bottom left
+			 posX,  posY, posZ,0,1,0,0,0   // top left
 		};
-		gl.drawArrays(lineCoor,true);
-		/* code */
-	}
-	for (size_t i = 0; i < width; i++)
-	{
-		const float pixel = 10000.f/2.f;
-		std::vector<float> lineCoor{
-			//first triangle								   
-			 posX - i/pixel	,	posY + i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
-			 toPosX - i/pixel	,	toPosY + i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
-		};
-		gl.drawArrays(lineCoor,true);
-		/* code */
-	}
-	for (size_t i = 0; i < width; i++)
-	{
-		const float pixel = 10000.f/2.f;
-		std::vector<float> lineCoor{
-			//first triangle								   
-			 posX + i/pixel	,	posY - i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
-			 toPosX + i/pixel	,	toPosY - i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
-		};
-		gl.drawArrays(lineCoor,true);
-		/* code */
-	}
-	for (size_t i = 0; i < width; i++)
-	{
-		const float pixel = 10000.f/2.f;
-		std::vector<float> lineCoor{
-			//first triangle								   
-			 posX - i/pixel	,	posY - i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
-			 toPosX - i/pixel	,	toPosY - i/pixel	,posZ	,1.0f,1.0f,1,1,1,  // top right
-		};
-		gl.drawArrays(lineCoor,true);
-		/* code */
+		posX += 1.f;
+		toPosX += 1.f;
+		posY += 1.f;
+		toPosY += 1.f;
+		gl.uniform1f(uiPrograms.curveProgram,"w",abs(posX-toPosX)/2.f);
+		gl.uniform1f(uiPrograms.curveProgram,"h",abs(posY-toPosY)/4.f);
+		gl.drawArrays(box,0);
 	}
 }
 
