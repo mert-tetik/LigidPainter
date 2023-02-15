@@ -22,7 +22,7 @@ void main(){
     float y = sin(uv.x * pi * freq + 3.1) * amp;
     float yr = 1.-abs(uv.y - y) * (h*300);
     // Output to screen
-    if(yr<0.1)
+    if(yr<0.5)
         gl_FragDepth = 1;
     else
         gl_FragDepth = 0.41;

@@ -1,0 +1,98 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Tissue;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Particle Scale;
+--element : range;
+--value : 100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Transform;
+--element : range;
+--value : 100;
+
+-input_2 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Particle Count;
+--element : range;
+--value : 100;
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+
+float rand2D(in vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float dotNoise2D(in float x, in float y, in float fractionalMaxDotSize, in float dDensity)
+{
+    float integer_x = x - fract(x);
+    float fractional_x = x - integer_x;
+
+    float integer_y = y - fract(y);
+    float fractional_y = y - integer_y;
+
+    if (rand2D(vec2(integer_x+1.0, integer_y +1.0)) > dDensity)
+       {return 0.0;}
+
+    float xoffset = (rand2D(vec2(integer_x, integer_y)) -0.5);
+    float yoffset = (rand2D(vec2(integer_x+1.0, integer_y)) - 0.5);
+    float dotSize = 0.5 * fractionalMaxDotSize * max(0.25,rand2D(vec2(integer_x, integer_y+1.0)));
+
+    vec2 truePos = vec2 (0.5 + xoffset * (1.0 - 2.0 * dotSize) , 0.5 + yoffset * (1.0 -2.0 * dotSize));
+
+    float distance = length(truePos - vec2(fractional_x, fractional_y));
+
+    return 1.0 - smoothstep(0.3 * dotSize, 1.0* dotSize, distance);
+
+}
+float DotNoise2D(in vec2 coord, in float wavelength, in float fractionalMaxDotSize, in float dDensity)
+{
+   return dotNoise2D(coord.x/wavelength, coord.y/wavelength, fractionalMaxDotSize, dDensity);
+}
+
+void main(){
+    float splash_speed = 1;
+    float rnorm = 1;
+    float transform = texture2D(input_1,tex_coords).r*5;
+    float droplet_size = texture2D(input_0,tex_coords).r*10+0.01;
+    int steps = int(ceil(texture2D(input_2,tex_coords).r*20));
+
+    float rain = 0;
+    float base_rate = 6.0 + 3.0 * rnorm + 4.0 * (splash_speed - 1.0);
+    float base_density = 0.6 * rnorm + 0.4 * (splash_speed -1.0);
+
+    for(int j = 0; j < steps;j++){
+        vec2 transformedTexCoord = tex_coords + vec2(0.25*j,0.35*j) + vec2(transform); 
+        for(int i = 0; i < 4;i++){
+            float time_fact = (sin(base_rate + (1.570*i)));
+            time_fact = smoothstep(0.0,1.0,time_fact);
+            rain+=DotNoise2D(transformedTexCoord.xy, 0.02 * droplet_size ,0.5, base_density) * time_fact;
+        }
+    }
+
+    output_0 = vec4(vec3(rain),1);
+}
