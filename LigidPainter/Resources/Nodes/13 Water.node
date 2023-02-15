@@ -58,6 +58,8 @@
 -uniforms : tex_coords|normal|posScene|posModel;
 
 %code;
+//Source
+//https://www.shadertoy.com/view/MdlXz8
 
 
 void main() 

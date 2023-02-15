@@ -1,0 +1,213 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Tissue;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color1;
+--element : color;
+--value : 100,100,100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color2;
+--element : color;
+--value : 100,100,100;
+
+-input_2 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Mortar;
+--element : color;
+--value : 100,100,100;
+
+-input_3 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Scale;
+--element : range;
+--value : 100;
+
+-input_4 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Mortar Size;
+--element : range;
+--value : 100;
+
+-input_5 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Offset;
+--element : range;
+--value : 100,100,100;
+
+-input_6 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Bias;
+--element : range;
+--value : 100;
+
+-input_7 : 
+--list : none;
+--list_index : none;
+--type : vec2;
+--title : Brick Scale;
+--element : range;
+--value : 100,100;
+
+
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+int floor_to_int(float x)
+{
+  return int(floor(x));
+}
+
+float integer_noise(int n)
+{
+  /* Integer bit-shifts for these calculations can cause precision problems on macOS.
+   * Using uint resolves these issues. */
+  uint nn;
+  nn = (uint(n) + 1013u) & 0x7fffffffu;
+  nn = (nn >> 13u) ^ nn;
+  nn = (uint(nn * (nn * nn * 60493u + 19990303u)) + 1376312589u) & 0x7fffffffu;
+  return 0.5 * (float(nn) / 1073741824.0);
+}
+
+vec2 calc_brick_texture(vec3 p,
+                        float mortar_size,
+                        float mortar_smooth,
+                        float bias,
+                        float brick_width,
+                        float row_height,
+                        float offset_amount,
+                        int offset_frequency,
+                        float squash_amount,
+                        int squash_frequency)
+{
+  int bricknum, rownum;
+  float offset = 0.0;
+  float x, y;
+
+  rownum = floor_to_int(p.y / row_height);
+
+  if (offset_frequency != 0 && squash_frequency != 0) {
+    brick_width *= (rownum % squash_frequency != 0) ? 1.0 : squash_amount;           /* squash */
+    offset = (rownum % offset_frequency != 0) ? 0.0 : (brick_width * offset_amount); /* offset */
+  }
+
+  bricknum = floor_to_int((p.x + offset) / brick_width);
+
+  x = (p.x + offset) - brick_width * bricknum;
+  y = p.y - row_height * rownum;
+
+  float tint = clamp((integer_noise((rownum << 16) + (bricknum & 0xFFFF)) + bias), 0.0, 1.0);
+
+  float min_dist = min(min(x, y), min(brick_width - x, row_height - y));
+  if (min_dist >= mortar_size) {
+    return vec2(tint, 0.0);
+  }
+  else if (mortar_smooth == 0.0) {
+    return vec2(tint, 1.0);
+  }
+  else {
+    min_dist = 1.0 - min_dist / mortar_size;
+    return vec2(tint, smoothstep(0.0, mortar_smooth, min_dist));
+  }
+}
+
+vec4 node_tex_brick(vec3 co,
+                    vec4 color1,
+                    vec4 color2,
+                    vec4 mortar,
+                    float scale,
+                    float mortar_size,
+                    float mortar_smooth,
+                    float bias,
+                    float brick_width,
+                    float row_height,
+                    float offset_amount,
+                    float offset_frequency,
+                    float squash_amount,
+                    float squash_frequency)
+{
+  vec2 f2 = calc_brick_texture(co * scale,
+                               mortar_size,
+                               mortar_smooth,
+                               bias,
+                               brick_width,
+                               row_height,
+                               offset_amount,
+                               int(offset_frequency),
+                               squash_amount,
+                               int(squash_frequency));
+  float tint = f2.x;
+  float f = f2.y;
+  if (f != 1.0) {
+    float facm = 1.0 - tint;
+    color1 = facm * color1 + tint * color2;
+  }
+  return mix(color1, mortar, f);
+  //fac = f;
+}
+
+void main(){
+    vec3 co = vec3(tex_coords,1);
+    vec4 color1 = texture2D(input_0,tex_coords);
+    vec4 color2 = texture2D(input_1,tex_coords);
+    vec4 mortar = texture2D(input_2,tex_coords);
+    float scale = texture2D(input_3,tex_coords).r*20;
+    float mortar_size = texture2D(input_4,tex_coords).r/10;
+    float mortar_smooth = 0;
+    float bias = texture2D(input_6,tex_coords).r;
+    float brick_width = texture2D(input_7,tex_coords).r;
+    float row_height = texture2D(input_7,tex_coords).g;
+    float offset_amount = texture2D(input_5,tex_coords).r;
+    float offset_frequency = texture2D(input_5,tex_coords).g*10;
+    float squash_amount = texture2D(input_5,tex_coords).b;
+    float squash_frequency = 2;
+
+    vec4 res = node_tex_brick( co,
+                    color1,
+                    color2,
+                    mortar,
+                    scale,
+                    mortar_size,
+                    mortar_smooth,
+                    bias,
+                    brick_width,
+                    row_height,
+                    offset_amount,
+                    offset_frequency,
+                    squash_amount,
+                    squash_frequency);
+
+    output_0 = res;
+}
