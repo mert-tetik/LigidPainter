@@ -1,0 +1,67 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Noise;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Color;
+--element : range;
+--value : 100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Range;
+--element : range;
+--value : 100;
+
+-input_2 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Value Treshold;
+--element : range;
+--value : 100;
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+
+void main(){
+    //Brush indicator here
+    float t = max(texture(input_0, tex_coords),0.0).r;
+    float th = max(texture(input_2, tex_coords),0.0).r/2+0.01;
+
+    float thickness = texture(input_1, tex_coords).r/50.;
+    
+    float tL = max(texture(input_0, tex_coords - vec2(thickness,0)),0.0).r;
+    float tR = max(texture(input_0, tex_coords + vec2(thickness,0)),0.0).r;
+    float tT = max(texture(input_0, tex_coords - vec2(0,thickness)),0.0).r;
+    float tB = max(texture(input_0, tex_coords + vec2(0,thickness)),0.0).r;
+    
+    float res = 0;
+    
+    if(t > th){
+       if(tL < th || tR < th || tT < th || tB < th){
+          res = 1.0;
+       }
+    }
+
+    output_0 = vec4(vec3(res),1); 
+}
