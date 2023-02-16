@@ -10,10 +10,10 @@
 -input_0 : 
 --list : none;
 --list_index : none;
---type : float;
+--type : vec3;
 --title : Color;
---element : range;
---value : 100;
+--element : color;
+--value : 100,100,100;
 
 -input_1 : 
 --list : none;
@@ -42,25 +42,33 @@
 
 %code;
 
+bool isFlat(vec3 val,float tH){
+    if(val.r > 0.5-tH && val.r < 0.5+tH){
+        if(val.g > 0.49-tH && val.r < 0.49+tH){
+            if(val.b > 0.49-tH)
+            return true;
+        }
+    }
+    return false;
+}
 
 void main(){
     //Brush indicator here
-    float t = max(texture(input_0, tex_coords),0.0).r;
+    vec3 t = max(texture(input_0, tex_coords),0.0).rgb;
     float th = max(texture(input_2, tex_coords),0.0).r/2+0.01;
 
     float thickness = texture(input_1, tex_coords).r/50.;
     
-    float tL = max(texture(input_0, tex_coords - vec2(thickness,0)),0.0).r;
-    float tR = max(texture(input_0, tex_coords + vec2(thickness,0)),0.0).r;
-    float tT = max(texture(input_0, tex_coords - vec2(0,thickness)),0.0).r;
-    float tB = max(texture(input_0, tex_coords + vec2(0,thickness)),0.0).r;
+    vec3 tL = max(texture(input_0, tex_coords - vec2(thickness,0)),0.0).rgb;
+    vec3 tR = max(texture(input_0, tex_coords + vec2(thickness,0)),0.0).rgb;
+    vec3 tT = max(texture(input_0, tex_coords - vec2(0,thickness)),0.0).rgb;
+    vec3 tB = max(texture(input_0, tex_coords + vec2(0,thickness)),0.0).rgb;
     
     float res = 0;
-    
-    if(t > th){
-       if(tL < th || tR < th || tT < th || tB < th){
-          res = 1.0;
-       }
+
+    if(isFlat(t,th)){
+        if(isFlat(tL,th) || isFlat(tR,th) || isFlat(tT,th) || isFlat(tB,th))
+            res = 1.0;
     }
 
     output_0 = vec4(vec3(res),1); 
