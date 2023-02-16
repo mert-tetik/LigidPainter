@@ -3,7 +3,7 @@
 
 %attributes;
 
--title : Noise;
+-title : Math;
 -color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
 -opacity : 60;
 
@@ -12,6 +12,17 @@
 --title_1 : Subtract; #returns 1 if selected
 --title_2 : Divide; #returns 2 if selected
 --title_3 : Multiply; #returns 3 if selected
+--title_4 : Sin; #returns 4 if selected
+--title_5 : Cos; #returns 5 if selected
+--title_6 : Floor; #returns 6 if selected
+--title_7 : Ceil; #returns 7 if selected
+--title_8 : Power; #returns 8 if selected
+--title_9 : Natural Logarithm; #returns 9 if selected
+--title_10 : Square Root; #returns 10 if selected
+--title_11 : Inverse Square Root; #returns 11 if selected
+--title_12 : Min; #returns 12 if selected
+--title_13 : Max; #returns 13 if selected
+--title_14 : Tan; #returns 13 if selected
 
 -input_0 : 
 --list : none;
@@ -53,7 +64,29 @@ void main(){
     if(list_0 == 2)
         res = vec3(clr1.r/clr2.r,clr1.g/clr2.g,clr1.b/clr2.b);
     if(list_0 == 3)
-        res = res = vec3(clr1.r*clr2.r,clr1.g*clr2.g,clr1.b*clr2.b);
+        res = vec3(clr1.r*clr2.r,clr1.g*clr2.g,clr1.b*clr2.b);
+    if(list_0 == 4)
+        res = vec3(sin(clr1.r),sin(clr1.g),sin(clr1.b));
+    if(list_0 == 5)
+        res = vec3(cos(clr1.r),cos(clr1.g),cos(clr1.b));
+    if(list_0 == 6)//Floor
+        res = vec3(floor(clr1.r),floor(clr1.g),floor(clr1.b));
+    if(list_0 == 7)//Ceil
+        res = vec3(ceil(clr1.r),ceil(clr1.g),ceil(clr1.b));
+    if(list_0 == 8)//Power
+        res = vec3(pow(clr1.r,clr2.r),pow(clr1.g,clr2.g),pow(clr1.b,clr2.b));
+    if(list_0 == 9)//Natural Logarithm
+        res = vec3(log(clr1.r),log(clr1.g),log(clr1.b));
+    if(list_0 == 10)//Square Root
+        res = vec3(sqrt(clr1.r),sqrt(clr1.g),sqrt(clr1.b));
+    if(list_0 == 11)//Inverse Square Root
+        res = vec3(inversesqrt(clr1.r),inversesqrt(clr1.g),inversesqrt(clr1.b));
+    if(list_0 == 12)//Min
+        res = vec3(min(clr1.r,clr2.r),min(clr1.g,clr2.g),min(clr1.b,clr2.b));
+    if(list_0 == 13)//Max
+        res = vec3(max(clr1.r,clr2.r),max(clr1.g,clr2.g),max(clr1.b,clr2.b));
+    if(list_0 == 14)//Tan
+        res = vec3(tan(clr1.r),tan(clr1.g),tan(clr1.b));
 
     output_0 = vec4(res,1);
 }

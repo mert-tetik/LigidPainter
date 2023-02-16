@@ -544,7 +544,7 @@ public:
 		for (size_t i = 0; i < node.lists.size(); i++)
 		{
 			ListBox listbox;
-			for (size_t ii = 0; ii < node.lists[i].size(); ii++)
+			for (size_t ii = 0; ii < node.lists[i].size()-1; ii++)
 			{
 				listbox.elements.push_back(node.lists[i][ii]);
 			}
