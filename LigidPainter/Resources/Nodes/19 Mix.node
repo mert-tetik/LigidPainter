@@ -1,0 +1,516 @@
+
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Noise;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-list_0 :
+--title_0 : mix_blend;
+--title_1 : mix_add;
+--title_2 : mix_mult;
+--title_3 : mix_screen;
+--title_4 : mix_overlay;
+--title_5 : mix_sub;
+--title_6 : mix_div;
+--title_7 : mix_div_fallback;
+--title_8 : mix_dodge;
+--title_9 : mix_burn;
+--title_10 : mix_hue;
+--title_11 : mix_sat;
+--title_12 : mix_val;
+--title_13 : mix_color;
+--title_14 : mix_soft;
+--title_15 : mix_linear;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color 1;
+--element : color;
+--value : 100,100,100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color 2;
+--element : color;
+--value : 100,100,100;
+
+-input_2 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Fac;
+--element : range;
+--value : 100;
+
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+vec4 rgb_to_hsv(vec4 rgb)
+{
+  float cmax, cmin, h, s, v, cdelta;
+  vec3 c;
+
+  cmax = max(rgb[0], max(rgb[1], rgb[2]));
+  cmin = min(rgb[0], min(rgb[1], rgb[2]));
+  cdelta = cmax - cmin;
+
+  v = cmax;
+  if (cmax != 0.0) {
+    s = cdelta / cmax;
+  }
+  else {
+    s = 0.0;
+    h = 0.0;
+  }
+
+  if (s == 0.0) {
+    h = 0.0;
+  }
+  else {
+    c = (vec3(cmax) - rgb.xyz) / cdelta;
+
+    if (rgb.x == cmax) {
+      h = c[2] - c[1];
+    }
+    else if (rgb.y == cmax) {
+      h = 2.0 + c[0] - c[2];
+    }
+    else {
+      h = 4.0 + c[1] - c[0];
+    }
+
+    h /= 6.0;
+
+    if (h < 0.0) {
+      h += 1.0;
+    }
+  }
+
+  return vec4(h, s, v, rgb.w);
+}
+
+vec4 hsv_to_rgb(vec4 hsv)
+{
+  float i, f, p, q, t, h, s, v;
+  vec3 rgb;
+
+  h = hsv[0];
+  s = hsv[1];
+  v = hsv[2];
+
+  if (s == 0.0) {
+    rgb = vec3(v, v, v);
+  }
+  else {
+    if (h == 1.0) {
+      h = 0.0;
+    }
+
+    h *= 6.0;
+    i = floor(h);
+    f = h - i;
+    rgb = vec3(f, f, f);
+    p = v * (1.0 - s);
+    q = v * (1.0 - (s * f));
+    t = v * (1.0 - (s * (1.0 - f)));
+
+    if (i == 0.0) {
+      rgb = vec3(v, t, p);
+    }
+    else if (i == 1.0) {
+      rgb = vec3(q, v, p);
+    }
+    else if (i == 2.0) {
+      rgb = vec3(p, v, t);
+    }
+    else if (i == 3.0) {
+      rgb = vec3(p, q, v);
+    }
+    else if (i == 4.0) {
+      rgb = vec3(t, p, v);
+    }
+    else {
+      rgb = vec3(v, p, q);
+    }
+  }
+
+  return vec4(rgb, hsv.w);
+}
+
+vec4 mix_blend(float fac, vec4 col1, vec4 col2)
+{
+  vec4 outcol;
+  outcol = mix(col1, col2, fac);
+  outcol.a = col1.a;
+  return outcol;
+}
+
+vec4 mix_add(float fac, vec4 col1, vec4 col2)
+{
+  vec4 outcol;
+  outcol = mix(col1, col1 + col2, fac);
+  outcol.a = col1.a;
+  return outcol;
+}
+
+vec4 mix_mult(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  outcol = mix(col1, col1 * col2, fac);
+  outcol.a = col1.a;
+  return outcol;
+}
+
+vec4 mix_screen(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  float facm = 1.0 - fac;
+
+  outcol = vec4(1.0) - (vec4(facm) + fac * (vec4(1.0) - col2)) * (vec4(1.0) - col1);
+  outcol.a = col1.a;
+  return outcol;
+}
+
+vec4 mix_overlay(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  float facm = 1.0 - fac;
+
+  outcol = col1;
+
+  if (outcol.r < 0.5) {
+    outcol.r *= facm + 2.0 * fac * col2.r;
+  }
+  else {
+    outcol.r = 1.0 - (facm + 2.0 * fac * (1.0 - col2.r)) * (1.0 - outcol.r);
+  }
+
+  if (outcol.g < 0.5) {
+    outcol.g *= facm + 2.0 * fac * col2.g;
+  }
+  else {
+    outcol.g = 1.0 - (facm + 2.0 * fac * (1.0 - col2.g)) * (1.0 - outcol.g);
+  }
+
+  if (outcol.b < 0.5) {
+    outcol.b *= facm + 2.0 * fac * col2.b;
+  }
+  else {
+    outcol.b = 1.0 - (facm + 2.0 * fac * (1.0 - col2.b)) * (1.0 - outcol.b);
+  }
+  return outcol;
+}
+
+vec4 mix_sub(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  outcol = mix(col1, col1 - col2, fac);
+  outcol.a = col1.a;
+  return outcol;
+}
+
+vec4 mix_div(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  float facm = 1.0 - fac;
+
+  outcol = vec4(vec3(0.0), col1.a);
+
+  if (col2.r != 0.0) {
+    outcol.r = facm * col1.r + fac * col1.r / col2.r;
+  }
+  if (col2.g != 0.0) {
+    outcol.g = facm * col1.g + fac * col1.g / col2.g;
+  }
+  if (col2.b != 0.0) {
+    outcol.b = facm * col1.b + fac * col1.b / col2.b;
+  }
+  return outcol;
+}
+
+/* A variant of mix_div that fallback to the first color upon zero division. */
+vec4 mix_div_fallback(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  float facm = 1.0 - fac;
+
+  outcol = col1;
+
+  if (col2.r != 0.0) {
+    outcol.r = facm * outcol.r + fac * outcol.r / col2.r;
+  }
+  if (col2.g != 0.0) {
+    outcol.g = facm * outcol.g + fac * outcol.g / col2.g;
+  }
+  if (col2.b != 0.0) {
+    outcol.b = facm * outcol.b + fac * outcol.b / col2.b;
+  }
+  return outcol;
+}
+
+vec4 mix_diff(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  outcol = mix(col1, abs(col1 - col2), fac);
+  outcol.a = col1.a;
+  return outcol;
+}
+
+vec4 mix_exclusion(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  outcol = max(mix(col1, col1 + col2 - 2.0 * col1 * col2, fac), 0.0);
+  outcol.a = col1.a;
+  return outcol;
+}
+
+vec4 mix_dark(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  outcol.rgb = mix(col1.rgb, min(col1.rgb, col2.rgb), fac);
+  outcol.a = col1.a;
+  return outcol;
+}
+
+vec4 mix_light(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  outcol.rgb = mix(col1.rgb, max(col1.rgb, col2.rgb), fac);
+  outcol.a = col1.a;
+  return outcol;
+}
+
+vec4 mix_dodge(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  outcol = col1;
+
+  if (outcol.r != 0.0) {
+    float tmp = 1.0 - fac * col2.r;
+    if (tmp <= 0.0) {
+      outcol.r = 1.0;
+    }
+    else if ((tmp = outcol.r / tmp) > 1.0) {
+      outcol.r = 1.0;
+    }
+    else {
+      outcol.r = tmp;
+    }
+  }
+  if (outcol.g != 0.0) {
+    float tmp = 1.0 - fac * col2.g;
+    if (tmp <= 0.0) {
+      outcol.g = 1.0;
+    }
+    else if ((tmp = outcol.g / tmp) > 1.0) {
+      outcol.g = 1.0;
+    }
+    else {
+      outcol.g = tmp;
+    }
+  }
+  if (outcol.b != 0.0) {
+    float tmp = 1.0 - fac * col2.b;
+    if (tmp <= 0.0) {
+      outcol.b = 1.0;
+    }
+    else if ((tmp = outcol.b / tmp) > 1.0) {
+      outcol.b = 1.0;
+    }
+    else {
+      outcol.b = tmp;
+    }
+  }
+  return outcol;
+}
+
+vec4 mix_burn(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  float tmp, facm = 1.0 - fac;
+
+  outcol = col1;
+
+  tmp = facm + fac * col2.r;
+  if (tmp <= 0.0) {
+    outcol.r = 0.0;
+  }
+  else if ((tmp = (1.0 - (1.0 - outcol.r) / tmp)) < 0.0) {
+    outcol.r = 0.0;
+  }
+  else if (tmp > 1.0) {
+    outcol.r = 1.0;
+  }
+  else {
+    outcol.r = tmp;
+  }
+
+  tmp = facm + fac * col2.g;
+  if (tmp <= 0.0) {
+    outcol.g = 0.0;
+  }
+  else if ((tmp = (1.0 - (1.0 - outcol.g) / tmp)) < 0.0) {
+    outcol.g = 0.0;
+  }
+  else if (tmp > 1.0) {
+    outcol.g = 1.0;
+  }
+  else {
+    outcol.g = tmp;
+  }
+
+  tmp = facm + fac * col2.b;
+  if (tmp <= 0.0) {
+    outcol.b = 0.0;
+  }
+  else if ((tmp = (1.0 - (1.0 - outcol.b) / tmp)) < 0.0) {
+    outcol.b = 0.0;
+  }
+  else if (tmp > 1.0) {
+    outcol.b = 1.0;
+  }
+  else {
+    outcol.b = tmp;
+  }
+  return outcol;
+}
+
+vec4 mix_hue(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  float facm = 1.0 - fac;
+
+  outcol = col1;
+
+  vec4 hsv, hsv2, tmp;
+  hsv2 = rgb_to_hsv(col2);
+
+  if (hsv2.y != 0.0) {
+    hsv = rgb_to_hsv(outcol);
+    hsv.x = hsv2.x;
+    tmp = hsv_to_rgb(hsv);
+
+    outcol = mix(outcol, tmp, fac);
+    outcol.a = col1.a;
+  }
+  return outcol;
+}
+
+vec4 mix_sat(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  float facm = 1.0 - fac;
+
+  outcol = col1;
+
+  vec4 hsv, hsv2;
+  hsv = rgb_to_hsv(outcol);
+
+  if (hsv.y != 0.0) {
+    hsv2 = rgb_to_hsv(col2);
+
+    hsv.y = facm * hsv.y + fac * hsv2.y;
+    outcol = hsv_to_rgb(hsv);
+  }
+  return outcol;
+}
+
+vec4 mix_val(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  float facm = 1.0 - fac;
+
+  vec4 hsv, hsv2;
+  hsv = rgb_to_hsv(col1);
+  hsv2 = rgb_to_hsv(col2);
+
+  hsv.z = facm * hsv.z + fac * hsv2.z;
+  outcol = hsv_to_rgb(hsv);
+  return outcol;
+}
+
+vec4 mix_color(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  float facm = 1.0 - fac;
+
+  outcol = col1;
+
+  vec4 hsv, hsv2, tmp;
+  hsv2 = rgb_to_hsv(col2);
+
+  if (hsv2.y != 0.0) {
+    hsv = rgb_to_hsv(outcol);
+    hsv.x = hsv2.x;
+    hsv.y = hsv2.y;
+    tmp = hsv_to_rgb(hsv);
+
+    outcol = mix(outcol, tmp, fac);
+    outcol.a = col1.a;
+  }
+  return outcol;
+}
+
+vec4 mix_soft(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  float facm = 1.0 - fac;
+
+  vec4 one = vec4(1.0);
+  vec4 scr = one - (one - col2) * (one - col1);
+  outcol = facm * col1 + fac * ((one - col1) * col2 * col1 + col1 * scr);
+  outcol.a = col1.a;
+  return outcol;
+}
+
+vec4 mix_linear(float fac, vec4 col1, vec4 col2)
+{
+    vec4 outcol;
+  outcol = col1 + fac * (2.0 * (col2 - vec4(0.5)));
+  outcol.a = col1.a;
+  return outcol;
+}
+
+void main(){
+    vec4 color1 = texture2D(input_0,tex_coords).rgba;
+    vec4 color2 = texture2D(input_1,tex_coords).rgba;
+    float fac = texture2D(input_2,tex_coords).r;
+
+    vec4 res;
+
+    if(list_0 == 0){res = mix_blend(fac,color1,color2);} //mix_blend;
+    if(list_0 == 1){res = mix_add(fac,color1,color2);} //mix_add;
+    if(list_0 == 2){res = mix_mult(fac,color1,color2);} //mix_mult;
+    if(list_0 == 3){res = mix_screen(fac,color1,color2);} //mix_screen;
+    if(list_0 == 4){res = mix_overlay(fac,color1,color2);} //mix_overlay;
+    if(list_0 == 5){res = mix_sub(fac,color1,color2);} //mix_sub;
+    if(list_0 == 6){res = mix_div(fac,color1,color2);} //mix_div;
+    if(list_0 == 7){res = mix_div_fallback(fac,color1,color2);} //mix_div_fallback;
+    if(list_0 == 8){res = mix_dodge(fac,color1,color2);} //mix_dodge;
+    if(list_0 == 9){res = mix_burn(fac,color1,color2);} //mix_burn;
+    if(list_0 == 10){res = mix_hue(fac,color1,color2);} //mix_hue;
+    if(list_0 == 11){res = mix_sat(fac,color1,color2);} //mix_sat;
+    if(list_0 == 12){res = mix_val(fac,color1,color2);} //mix_val;
+    if(list_0 == 13){res = mix_color(fac,color1,color2);} //mix_color;
+    if(list_0 == 14){res = mix_soft(fac,color1,color2);} //mix_soft;
+    if(list_0 == 15){res = mix_linear(fac,color1,color2);} //mix_linear;
+    
+    output_0 = vec4(res.rgb,1);
+}
