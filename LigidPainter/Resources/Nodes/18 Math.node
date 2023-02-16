@@ -1,0 +1,59 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Noise;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-list_0 :
+--title_0 : Add; #returns 0 if selected
+--title_1 : Subtract; #returns 1 if selected
+--title_2 : Divide; #returns 2 if selected
+--title_3 : Multiply; #returns 3 if selected
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color 1;
+--element : color;
+--value : 100,100,100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color 2;
+--element : color;
+--value : 100,100,100;
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+void main(){
+    vec3 clr1 = texture2D(input_0,tex_coords).rgb;
+    vec3 clr2 = texture2D(input_1,tex_coords).rgb;
+
+    vec3 res = vec3(0);
+    
+    if(list_0 == 0)
+        res = vec3(clr1.r+clr2.r,clr1.g+clr2.g,clr1.b+clr2.b);
+    if(list_0 == 1)
+        res = vec3(clr1.r-clr2.r,clr1.g-clr2.g,clr1.b-clr2.b);
+    if(list_0 == 2)
+        res = vec3(clr1.r/clr2.r,clr1.g/clr2.g,clr1.b/clr2.b);
+    if(list_0 == 3)
+        res = res = vec3(clr1.r*clr2.r,clr1.g*clr2.g,clr1.b*clr2.b);
+
+    output_0 = vec4(res,1);
+}

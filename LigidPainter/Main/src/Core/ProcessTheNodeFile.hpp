@@ -93,7 +93,7 @@ ProcessHppNode processNodeFile(std::string filePath){
         if(code && mainIndex != stateChanged){
             codeFile += line + '\n';
         }
-        if((inputDefinitions || outputDefinitions)){ //Subsubtokens
+        if((inputDefinitions || outputDefinitions || listDefinitions)){ //Subsubtokens
             processSubsubtoken(line);
         }
 
@@ -364,7 +364,7 @@ private:
                    tokenIsInputOrOutputOrList = true;
                     break;
                 }
-                if(completeToken == "listbox_" + std::to_string(i)){
+                if(completeToken == "list_" + std::to_string(i)){
                    tokenIsInputOrOutputOrList = true;
                     break;
                 }
@@ -530,6 +530,7 @@ private:
     void processSubsubtoken(std::string line){
         if(line[0] == '-' && line[1] == '-'){
                 std::string completeToken = processTheWord(line,2,true,';');
+
                 if(!listDefinitions){
                     //Process the token
                     bool titleToken = false;
@@ -638,10 +639,10 @@ private:
                     for(int i = 0; i < maxSubSubTokenCount; i++){
                         if(completeToken == "title_" + std::to_string(i)){
                             titleIndex = i;
-                            if(titleIndex == processHppNode.lists[currentListIndex].size())
+                            if(titleIndex == processHppNode.lists[currentListIndex].size()-1)
                                 processHppNode.lists[currentListIndex].push_back(completeToken);
                             else{
-                                std::cout << "ERROR : Invalid Index : " << completeToken + std::to_string(i) << std::endl;
+                                std::cout << "ERROR : Invalid Index : " << "title_"  + std::to_string(i) << std::endl;
                             }
                             break;
                         }
@@ -707,6 +708,11 @@ private:
                 in = "in " + uniformData[uniforms[i]] + ' ' + uniforms[i] + ';' + '\n';
             }
             result.append(in);
+        }
+        for (size_t i = 0; i < processHppNode.lists.size(); i++)
+        {
+            std::string uniform = "uniform int list_" + std::to_string(i)+ ';' + '\n';
+            result.append(uniform);
         }
         
         for (size_t i = 0; i < processHppNode.inputs.size(); i++)

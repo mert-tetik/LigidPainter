@@ -541,6 +541,15 @@ public:
 
 		resultNode.useModel = node.useModel;
 
+		for (size_t i = 0; i < node.lists.size(); i++)
+		{
+			ListBox listbox;
+			for (size_t ii = 0; ii < node.lists[i].size(); ii++)
+			{
+				listbox.elements.push_back(node.lists[i][ii]);
+			}
+			resultNode.listBoxes.push_back(listbox);
+		}
 
 		float rangeBarCount = 0;
 		//Load inputs
@@ -551,6 +560,8 @@ public:
 			input.element = node.inputs[i].element;
 			input.text = node.inputs[i].title;
 			input.type = node.inputs[i].type;
+
+			
 			if(input.element == "range"){
 				if(input.type == "float"){
 					input.value.r = stof(node.inputs[i].values[0])/ 255.f;
@@ -610,6 +621,13 @@ public:
 			}
 
 		}
+		if(resultNode.listBoxes.size())
+			rangeBarCount += 1.3f;
+		for (size_t i = 0; i < resultNode.listBoxes.size(); i++)
+		{
+			rangeBarCount += 1.3f;
+		}
+		
 
 		resultNode.rangeBarCount = rangeBarCount;
 		//Load outputs

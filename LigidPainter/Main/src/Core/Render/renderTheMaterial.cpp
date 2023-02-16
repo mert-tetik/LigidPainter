@@ -239,6 +239,12 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
             resultOut.textures.push_back(texture);
         }
 
+        for (size_t listI = 0; listI < material.renderingPipeline[nodeI].listBoxes.size(); listI++)
+        {
+            glset.uniform1i(nodeProgram,("list_" + std::to_string(listI)).c_str(),material.renderingPipeline[nodeI].listBoxes[listI].chosenIndex);
+        }
+        
+        
         glset.uniform1i(nodeProgram,"is3D",0);
 		
         glm::mat4 projection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);

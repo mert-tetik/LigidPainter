@@ -383,7 +383,11 @@ struct NodeInput{
 	bool removeTheResult = true;
 };
 
-
+struct ListBox{
+	std::vector<std::string> elements;
+	int chosenIndex = 0;
+	bool active = false;
+};
 
 struct Node{
 	std::string title;
@@ -392,6 +396,7 @@ struct Node{
 	glm::vec4 backColor;
 	std::vector<NodeInput> inputs;
 	std::vector<NodeInput> outputs;
+	std::vector<ListBox> listBoxes;
 	
 	float unZoomedPositionX; 
 	float unZoomedPositionY; 
