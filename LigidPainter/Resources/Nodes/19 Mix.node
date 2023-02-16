@@ -9,22 +9,22 @@
 -opacity : 60;
 
 -list_0 :
---title_0 : mix_blend;
---title_1 : mix_add;
---title_2 : mix_mult;
---title_3 : mix_screen;
---title_4 : mix_overlay;
---title_5 : mix_sub;
---title_6 : mix_div;
---title_7 : mix_div_fallback;
---title_8 : mix_dodge;
---title_9 : mix_burn;
---title_10 : mix_hue;
---title_11 : mix_sat;
---title_12 : mix_val;
---title_13 : mix_color;
---title_14 : mix_soft;
---title_15 : mix_linear;
+--title_0 : blend;
+--title_1 : add;
+--title_2 : mult;
+--title_3 : screen;
+--title_4 : overlay;
+--title_5 : sub;
+--title_6 : div;
+--title_7 : div_fallback;
+--title_8 : dodge;
+--title_9 : burn;
+--title_10 : hue;
+--title_11 : sat;
+--title_12 : val;
+--title_13 : color;
+--title_14 : soft;
+--title_15 : linear;
 
 -input_0 : 
 --list : none;
