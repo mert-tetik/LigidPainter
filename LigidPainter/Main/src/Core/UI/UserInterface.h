@@ -437,6 +437,8 @@ struct ContextMenu {
 	bool stateChanged;
 	bool active = false;
 
+	int scroll = 0;
+
 	bool hover;
 
 	std::vector<Button> buttons;

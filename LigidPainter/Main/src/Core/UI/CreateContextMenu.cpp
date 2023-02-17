@@ -63,9 +63,7 @@ ContextMenu UserInterface::createContextMenus(std::vector<Node> appNodes){
         addNodeContextMenu.buttons.push_back(button);
         panelHeight += 0.05f;
     }
-	addNodeContextMenu.height = panelHeight/2.f;
+	addNodeContextMenu.height = std::min(panelHeight/2.f,0.25f);
     
-
-
     return addNodeContextMenu;
 }

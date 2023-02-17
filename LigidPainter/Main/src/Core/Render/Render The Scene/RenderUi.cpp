@@ -231,7 +231,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 				}
 			}
-			
 		}
 		
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , icons,panelData);
@@ -269,7 +268,9 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			ui.container(addNodeContextMenu.positionX,addNodeContextMenu.positionY - addNodeContextMenu.height,addNodeContextMenu.positionZ,addNodeContextMenu.width,addNodeContextMenu.height,colorData.nodePanelContextMenuPanelColor,programs,icons.Circle);
 			glUseProgram(programs.uiProgram); 
 
-			for (size_t i = 0; i < addNodeContextMenu.buttons.size(); i++)
+			int indepI = 0;
+
+			for (size_t i = addNodeContextMenu.scroll; i < std::min(addNodeContextMenu.buttons.size(),(size_t)10)+addNodeContextMenu.scroll; i++)
 			{
 				addNodeContextMenu.buttons[i].transitionMixVal = (float)addNodeContextMenu.buttons[i].hover * (float)addNodeContextMenu.buttons[i].hoverAnimationActive;
 
@@ -288,9 +289,17 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 				else{
 					addNodeContextMenu.buttons[i].positionZ = 0.99f;
 				}
-				ui.box(addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[i].positionY, addNodeContextMenu.buttons[i].text, addNodeContextMenu.buttons[i].color, addNodeContextMenu.buttons[i].textRatio, false, false, addNodeContextMenu.buttons[i].positionZ, addNodeContextMenu.buttons[i].buttonCurveReduce, addNodeContextMenu.buttons[i].colorHover, addNodeContextMenu.buttons[i].transitionMixVal); //Add mask texture button	
+				
+				ui.box(addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[indepI].positionY, addNodeContextMenu.buttons[i].text, addNodeContextMenu.buttons[i].color, addNodeContextMenu.buttons[i].textRatio, false, false, addNodeContextMenu.buttons[i].positionZ, addNodeContextMenu.buttons[i].buttonCurveReduce, addNodeContextMenu.buttons[i].colorHover, addNodeContextMenu.buttons[i].transitionMixVal); //Add mask texture button	
+				indepI++;
+			}
+			if(addNodeContextMenu.scroll != addNodeContextMenu.buttons.size()-10){	
+				glUseProgram(programs.iconsProgram);
+				ui.iconBox(0.01f,0.02f,addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[indepI].positionY, 0.9999,icons.ArrowDown,0,colorData.iconColor,colorData.iconColor);
 			}
 		}
+		else
+			addNodeContextMenu.scroll = 0;
 		glUseProgram(programs.uiProgram);
 	}
 
