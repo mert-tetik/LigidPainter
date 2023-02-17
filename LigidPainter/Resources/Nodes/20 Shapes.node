@@ -48,6 +48,22 @@
 --element : range;
 --value : 100,100;
 
+-input_2 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color1;
+--element : color;
+--value : 0,0,0;
+
+-input_3 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color2;
+--element : color;
+--value : 255,255,255;
+
 
 -output_0 :
 --list : none;
@@ -324,6 +340,8 @@ float getResult(vec2 uv){
 void main(){
     vec2 uvtransform = texture2D(input_0,tex_coords).xy*5.;
     vec2 uvscale = texture2D(input_1,tex_coords).xy*10.;
+    vec3 clr1 = texture2D(input_2,tex_coords).rgb;
+    vec3 clr2 = texture2D(input_3,tex_coords).rgb;
 
     float aspect = iResolution.y / iResolution.x;
     
@@ -339,10 +357,7 @@ void main(){
 
     float res = getResult(uv);
 
-    vec4 color1 = vec4 (0.2+0.2*sin(time)
-                     ,0.2+0.2*sin(time*0.789)
-                     ,0.2+0.2*sin(time*0.665), 1.0);
-    vec4 color2 = vec4 (0.9);
+    vec3 clrRes = mix(clr1,clr2,res);
 
-    output_0 = vec4(res,res,res,1);
+    output_0 = vec4(clrRes,1);
 }
