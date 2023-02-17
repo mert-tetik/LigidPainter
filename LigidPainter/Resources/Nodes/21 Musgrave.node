@@ -1,0 +1,857 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Noise;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-list_0 :
+--title_0 : Multifractal;
+--title_1 : Ridged Multifractal;
+--title_2 : Hybrid Multifractal;
+--title_3 : fBm;
+--title_4 : Hetero Terrain;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Scale;
+--element : range;
+--value : 100,100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Detail;
+--element : range;
+--value : 100;
+
+-input_2 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Dimension;
+--element : range;
+--value : 100;
+
+-input_3 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Lacunarity;
+--element : range;
+--value : 100;
+
+-input_4 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Transform;
+--element : range;
+--value : 100;
+
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+//From blender.org
+//gpu_shader_common_hash.glsl
+//gpu_shader_material_noise.glsl
+//gpu_shader_material_tex_musgrave.glsl
+//Current source : https://github.com/blender/blender/blob/main/source/blender/gpu/shaders/material/gpu_shader_material_tex_musgrave.glsl
+
+
+#define rot(x, k) (((x) << (k)) | ((x) >> (32 - (k))))
+
+#define mix(a, b, c) \
+  { \
+    a -= c; \
+    a ^= rot(c, 4); \
+    c += b; \
+    b -= a; \
+    b ^= rot(a, 6); \
+    a += c; \
+    c -= b; \
+    c ^= rot(b, 8); \
+    b += a; \
+    a -= c; \
+    a ^= rot(c, 16); \
+    c += b; \
+    b -= a; \
+    b ^= rot(a, 19); \
+    a += c; \
+    c -= b; \
+    c ^= rot(b, 4); \
+    b += a; \
+  }
+
+#define final(a, b, c) \
+  { \
+    c ^= b; \
+    c -= rot(b, 14); \
+    a ^= c; \
+    a -= rot(c, 11); \
+    b ^= a; \
+    b -= rot(a, 25); \
+    c ^= b; \
+    c -= rot(b, 16); \
+    a ^= c; \
+    a -= rot(c, 4); \
+    b ^= a; \
+    b -= rot(a, 14); \
+    c ^= b; \
+    c -= rot(b, 24); \
+  }
+
+uint hash_uint(uint kx)
+{
+  uint a, b, c;
+  a = b = c = 0xdeadbeefu + (1u << 2u) + 13u;
+
+  a += kx;
+  final(a, b, c);
+
+  return c;
+}
+
+uint hash_uint2(uint kx, uint ky)
+{
+  uint a, b, c;
+  a = b = c = 0xdeadbeefu + (2u << 2u) + 13u;
+
+  b += ky;
+  a += kx;
+  final(a, b, c);
+
+  return c;
+}
+
+uint hash_uint3(uint kx, uint ky, uint kz)
+{
+  uint a, b, c;
+  a = b = c = 0xdeadbeefu + (3u << 2u) + 13u;
+
+  c += kz;
+  b += ky;
+  a += kx;
+  final(a, b, c);
+
+  return c;
+}
+
+uint hash_uint4(uint kx, uint ky, uint kz, uint kw)
+{
+  uint a, b, c;
+  a = b = c = 0xdeadbeefu + (4u << 2u) + 13u;
+
+  a += kx;
+  b += ky;
+  c += kz;
+  mix(a, b, c);
+
+  a += kw;
+  final(a, b, c);
+
+  return c;
+}
+
+#undef rot
+#undef final
+#undef mix
+
+uint hash_int(int kx)
+{
+  return hash_uint(uint(kx));
+}
+
+uint hash_int2(int kx, int ky)
+{
+  return hash_uint2(uint(kx), uint(ky));
+}
+
+uint hash_int3(int kx, int ky, int kz)
+{
+  return hash_uint3(uint(kx), uint(ky), uint(kz));
+}
+
+uint hash_int4(int kx, int ky, int kz, int kw)
+{
+  return hash_uint4(uint(kx), uint(ky), uint(kz), uint(kw));
+}
+
+/* Hashing uint or uint[234] into a float in the range [0, 1]. */
+
+float hash_uint_to_float(uint kx)
+{
+  return float(hash_uint(kx)) / float(0xFFFFFFFFu);
+}
+
+float hash_uint2_to_float(uint kx, uint ky)
+{
+  return float(hash_uint2(kx, ky)) / float(0xFFFFFFFFu);
+}
+
+float hash_uint3_to_float(uint kx, uint ky, uint kz)
+{
+  return float(hash_uint3(kx, ky, kz)) / float(0xFFFFFFFFu);
+}
+
+float hash_uint4_to_float(uint kx, uint ky, uint kz, uint kw)
+{
+  return float(hash_uint4(kx, ky, kz, kw)) / float(0xFFFFFFFFu);
+}
+
+/* Hashing float or vec[234] into a float in the range [0, 1]. */
+
+float hash_float_to_float(float k)
+{
+  return hash_uint_to_float(floatBitsToUint(k));
+}
+
+float hash_vec2_to_float(vec2 k)
+{
+  return hash_uint2_to_float(floatBitsToUint(k.x), floatBitsToUint(k.y));
+}
+
+float hash_vec3_to_float(vec3 k)
+{
+  return hash_uint3_to_float(floatBitsToUint(k.x), floatBitsToUint(k.y), floatBitsToUint(k.z));
+}
+
+float hash_vec4_to_float(vec4 k)
+{
+  return hash_uint4_to_float(
+      floatBitsToUint(k.x), floatBitsToUint(k.y), floatBitsToUint(k.z), floatBitsToUint(k.w));
+}
+
+/* Hashing vec[234] into vec[234] of components in the range [0, 1]. */
+
+vec2 hash_vec2_to_vec2(vec2 k)
+{
+  return vec2(hash_vec2_to_float(k), hash_vec3_to_float(vec3(k, 1.0)));
+}
+
+vec3 hash_vec3_to_vec3(vec3 k)
+{
+  return vec3(
+      hash_vec3_to_float(k), hash_vec4_to_float(vec4(k, 1.0)), hash_vec4_to_float(vec4(k, 2.0)));
+}
+
+vec4 hash_vec4_to_vec4(vec4 k)
+{
+  return vec4(hash_vec4_to_float(k.xyzw),
+              hash_vec4_to_float(k.wxyz),
+              hash_vec4_to_float(k.zwxy),
+              hash_vec4_to_float(k.yzwx));
+}
+
+/* Hashing float or vec[234] into vec3 of components in range [0, 1]. */
+
+vec3 hash_float_to_vec3(float k)
+{
+  return vec3(
+      hash_float_to_float(k), hash_vec2_to_float(vec2(k, 1.0)), hash_vec2_to_float(vec2(k, 2.0)));
+}
+
+vec3 hash_vec2_to_vec3(vec2 k)
+{
+  return vec3(
+      hash_vec2_to_float(k), hash_vec3_to_float(vec3(k, 1.0)), hash_vec3_to_float(vec3(k, 2.0)));
+}
+
+vec3 hash_vec4_to_vec3(vec4 k)
+{
+  return vec3(hash_vec4_to_float(k.xyzw), hash_vec4_to_float(k.zxwy), hash_vec4_to_float(k.wzyx));
+}
+
+/* Other Hash Functions */
+
+float integer_noise(int n)
+{
+  /* Integer bit-shifts for these calculations can cause precision problems on macOS.
+   * Using uint resolves these issues. */
+  uint nn;
+  nn = (uint(n) + 1013u) & 0x7fffffffu;
+  nn = (nn >> 13u) ^ nn;
+  nn = (uint(nn * (nn * nn * 60493u + 19990303u)) + 1376312589u) & 0x7fffffffu;
+  return 0.5 * (float(nn) / 1073741824.0);
+}
+
+float wang_hash_noise(uint s)
+{
+  s = (s ^ 61u) ^ (s >> 16u);
+  s *= 9u;
+  s = s ^ (s >> 4u);
+  s *= 0x27d4eb2du;
+  s = s ^ (s >> 15u);
+
+  return fract(float(s) / 4294967296.0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+float bi_mix(float v0, float v1, float v2, float v3, float x, float y)
+{
+  float x1 = 1.0 - x;
+  return (1.0 - y) * (v0 * x1 + v1 * x) + y * (v2 * x1 + v3 * x);
+}
+
+/* Trilinear Interpolation:
+ *
+ *   v6               v7
+ *     @ + + + + + + @
+ *     +\            +\
+ *     + \           + \
+ *     +  \          +  \
+ *     +   \ v4      +   \ v5
+ *     +    @ + + + +++ + @          z
+ *     +    +        +    +      y   ^
+ *  v2 @ + +++ + + + @ v3 +       \  |
+ *      \   +         \   +        \ |
+ *       \  +          \  +         \|
+ *        \ +           \ +          +---------> x
+ *         \+            \+
+ *          @ + + + + + + @
+ *        v0               v1
+ */
+float tri_mix(float v0,
+              float v1,
+              float v2,
+              float v3,
+              float v4,
+              float v5,
+              float v6,
+              float v7,
+              float x,
+              float y,
+              float z)
+{
+  float x1 = 1.0 - x;
+  float y1 = 1.0 - y;
+  float z1 = 1.0 - z;
+  return z1 * (y1 * (v0 * x1 + v1 * x) + y * (v2 * x1 + v3 * x)) +
+         z * (y1 * (v4 * x1 + v5 * x) + y * (v6 * x1 + v7 * x));
+}
+
+float quad_mix(float v0,
+               float v1,
+               float v2,
+               float v3,
+               float v4,
+               float v5,
+               float v6,
+               float v7,
+               float v8,
+               float v9,
+               float v10,
+               float v11,
+               float v12,
+               float v13,
+               float v14,
+               float v15,
+               float x,
+               float y,
+               float z,
+               float w)
+{
+  return mix(tri_mix(v0, v1, v2, v3, v4, v5, v6, v7, x, y, z),
+             tri_mix(v8, v9, v10, v11, v12, v13, v14, v15, x, y, z),
+             w);
+}
+
+float fade(float t)
+{
+  return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
+}
+
+float negate_if(float value, uint condition)
+{
+  return (condition != 0u) ? -value : value;
+}
+
+float noise_grad(uint hash, float x)
+{
+  uint h = hash & 15u;
+  float g = 1u + (h & 7u);
+  return negate_if(g, h & 8u) * x;
+}
+
+float noise_grad(uint hash, float x, float y)
+{
+  uint h = hash & 7u;
+  float u = h < 4u ? x : y;
+  float v = 2.0 * (h < 4u ? y : x);
+  return negate_if(u, h & 1u) + negate_if(v, h & 2u);
+}
+
+float noise_grad(uint hash, float x, float y, float z)
+{
+  uint h = hash & 15u;
+  float u = h < 8u ? x : y;
+  float vt = ((h == 12u) || (h == 14u)) ? x : z;
+  float v = h < 4u ? y : vt;
+  return negate_if(u, h & 1u) + negate_if(v, h & 2u);
+}
+
+float noise_grad(uint hash, float x, float y, float z, float w)
+{
+  uint h = hash & 31u;
+  float u = h < 24u ? x : y;
+  float v = h < 16u ? y : z;
+  float s = h < 8u ? z : w;
+  return negate_if(u, h & 1u) + negate_if(v, h & 2u) + negate_if(s, h & 4u);
+}
+#define FLOORFRAC(x, x_int, x_fract) { float x_floor = floor(x); x_int = int(x_floor); x_fract = x - x_floor; }
+
+float noise_perlin(float x)
+{
+  int X;
+  float fx;
+
+  FLOORFRAC(x, X, fx);
+
+  float u = fade(fx);
+
+  float r = mix(noise_grad(hash_int(X), fx), noise_grad(hash_int(X + 1), fx - 1.0), u);
+
+  return r;
+}
+
+float noise_perlin(vec2 vec)
+{
+  int X, Y;
+  float fx, fy;
+
+  FLOORFRAC(vec.x, X, fx);
+  FLOORFRAC(vec.y, Y, fy);
+
+  float u = fade(fx);
+  float v = fade(fy);
+
+  float r = bi_mix(noise_grad(hash_int2(X, Y), fx, fy),
+                   noise_grad(hash_int2(X + 1, Y), fx - 1.0, fy),
+                   noise_grad(hash_int2(X, Y + 1), fx, fy - 1.0),
+                   noise_grad(hash_int2(X + 1, Y + 1), fx - 1.0, fy - 1.0),
+                   u,
+                   v);
+
+  return r;
+}
+
+float noise_perlin(vec3 vec)
+{
+  int X, Y, Z;
+  float fx, fy, fz;
+
+  FLOORFRAC(vec.x, X, fx);
+  FLOORFRAC(vec.y, Y, fy);
+  FLOORFRAC(vec.z, Z, fz);
+
+  float u = fade(fx);
+  float v = fade(fy);
+  float w = fade(fz);
+
+  float r = tri_mix(noise_grad(hash_int3(X, Y, Z), fx, fy, fz),
+                    noise_grad(hash_int3(X + 1, Y, Z), fx - 1, fy, fz),
+                    noise_grad(hash_int3(X, Y + 1, Z), fx, fy - 1, fz),
+                    noise_grad(hash_int3(X + 1, Y + 1, Z), fx - 1, fy - 1, fz),
+                    noise_grad(hash_int3(X, Y, Z + 1), fx, fy, fz - 1),
+                    noise_grad(hash_int3(X + 1, Y, Z + 1), fx - 1, fy, fz - 1),
+                    noise_grad(hash_int3(X, Y + 1, Z + 1), fx, fy - 1, fz - 1),
+                    noise_grad(hash_int3(X + 1, Y + 1, Z + 1), fx - 1, fy - 1, fz - 1),
+                    u,
+                    v,
+                    w);
+
+  return r;
+}
+
+float noise_perlin(vec4 vec)
+{
+  int X, Y, Z, W;
+  float fx, fy, fz, fw;
+
+  FLOORFRAC(vec.x, X, fx);
+  FLOORFRAC(vec.y, Y, fy);
+  FLOORFRAC(vec.z, Z, fz);
+  FLOORFRAC(vec.w, W, fw);
+
+  float u = fade(fx);
+  float v = fade(fy);
+  float t = fade(fz);
+  float s = fade(fw);
+
+  float r = quad_mix(
+      noise_grad(hash_int4(X, Y, Z, W), fx, fy, fz, fw),
+      noise_grad(hash_int4(X + 1, Y, Z, W), fx - 1.0, fy, fz, fw),
+      noise_grad(hash_int4(X, Y + 1, Z, W), fx, fy - 1.0, fz, fw),
+      noise_grad(hash_int4(X + 1, Y + 1, Z, W), fx - 1.0, fy - 1.0, fz, fw),
+      noise_grad(hash_int4(X, Y, Z + 1, W), fx, fy, fz - 1.0, fw),
+      noise_grad(hash_int4(X + 1, Y, Z + 1, W), fx - 1.0, fy, fz - 1.0, fw),
+      noise_grad(hash_int4(X, Y + 1, Z + 1, W), fx, fy - 1.0, fz - 1.0, fw),
+      noise_grad(hash_int4(X + 1, Y + 1, Z + 1, W), fx - 1.0, fy - 1.0, fz - 1.0, fw),
+      noise_grad(hash_int4(X, Y, Z, W + 1), fx, fy, fz, fw - 1.0),
+      noise_grad(hash_int4(X + 1, Y, Z, W + 1), fx - 1.0, fy, fz, fw - 1.0),
+      noise_grad(hash_int4(X, Y + 1, Z, W + 1), fx, fy - 1.0, fz, fw - 1.0),
+      noise_grad(hash_int4(X + 1, Y + 1, Z, W + 1), fx - 1.0, fy - 1.0, fz, fw - 1.0),
+      noise_grad(hash_int4(X, Y, Z + 1, W + 1), fx, fy, fz - 1.0, fw - 1.0),
+      noise_grad(hash_int4(X + 1, Y, Z + 1, W + 1), fx - 1.0, fy, fz - 1.0, fw - 1.0),
+      noise_grad(hash_int4(X, Y + 1, Z + 1, W + 1), fx, fy - 1.0, fz - 1.0, fw - 1.0),
+      noise_grad(hash_int4(X + 1, Y + 1, Z + 1, W + 1), fx - 1.0, fy - 1.0, fz - 1.0, fw - 1.0),
+      u,
+      v,
+      t,
+      s);
+
+  return r;
+}
+
+/* Remap the output of noise to a predictable range [-1, 1].
+ * The scale values were computed experimentally by the OSL developers.
+ */
+float noise_scale1(float result)
+{
+  return 0.2500 * result;
+}
+
+float noise_scale2(float result)
+{
+  return 0.6616 * result;
+}
+
+float noise_scale3(float result)
+{
+  return 0.9820 * result;
+}
+
+float noise_scale4(float result)
+{
+  return 0.8344 * result;
+}
+
+/* Safe Signed And Unsigned Noise */
+
+float snoise(float p)
+{
+  float r = noise_perlin(p);
+  return (isinf(r)) ? 0.0 : noise_scale1(r);
+}
+
+float noise(float p)
+{
+  return 0.5 * snoise(p) + 0.5;
+}
+
+float snoise(vec2 p)
+{
+  float r = noise_perlin(p);
+  return (isinf(r)) ? 0.0 : noise_scale2(r);
+}
+
+float noise(vec2 p)
+{
+  return 0.5 * snoise(p) + 0.5;
+}
+
+float snoise(vec3 p)
+{
+  float r = noise_perlin(p);
+  return (isinf(r)) ? 0.0 : noise_scale3(r);
+}
+
+float noise(vec3 p)
+{
+  return 0.5 * snoise(p) + 0.5;
+}
+
+float snoise(vec4 p)
+{
+  float r = noise_perlin(p);
+  return (isinf(r)) ? 0.0 : noise_scale4(r);
+}
+
+float noise(vec4 p)
+{
+  return 0.5 * snoise(p) + 0.5;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+float node_tex_musgrave_fBm_2d(vec3 co,
+                              float w,
+                              float scale,
+                              float detail,
+                              float dimension,
+                              float lac,
+                              float offset,
+                              float gain
+                              )
+{
+  vec2 p = co.xy * scale;
+  float H = max(dimension, 1e-5);
+  float octaves = clamp(detail, 0.0, 15.0);
+  float lacunarity = max(lac, 1e-5);
+
+  float value = 0.0;
+  float pwr = 1.0;
+  float pwHL = pow(lacunarity, -H);
+
+  for (int i = 0; i < int(octaves); i++) {
+    value += snoise(p) * pwr;
+    pwr *= pwHL;
+    p *= lacunarity;
+  }
+
+  float rmd = octaves - floor(octaves);
+  if (rmd != 0.0) {
+    value += rmd * snoise(p) * pwr;
+  }
+
+  return value;
+}
+
+/* 2D Musgrave Multifractal
+ *
+ * H: highest fractal dimension
+ * lacunarity: gap between successive frequencies
+ * octaves: number of frequencies in the fBm
+ */
+
+float node_tex_musgrave_multi_fractal_2d(vec3 co,
+                                        float w,
+                                        float scale,
+                                        float detail,
+                                        float dimension,
+                                        float lac,
+                                        float offset,
+                                        float gain
+                                        )
+{
+  vec2 p = co.xy * scale;
+  float H = max(dimension, 1e-5);
+  float octaves = clamp(detail, 0.0, 15.0);
+  float lacunarity = max(lac, 1e-5);
+
+  float value = 1.0;
+  float pwr = 1.0;
+  float pwHL = pow(lacunarity, -H);
+
+  for (int i = 0; i < int(octaves); i++) {
+    value *= (pwr * snoise(p) + 1.0);
+    pwr *= pwHL;
+    p *= lacunarity;
+  }
+
+  float rmd = octaves - floor(octaves);
+  if (rmd != 0.0) {
+    value *= (rmd * pwr * snoise(p) + 1.0); /* correct? */
+  }
+
+  return value;
+}
+
+/* 2D Musgrave Heterogeneous Terrain
+ *
+ * H: fractal dimension of the roughest area
+ * lacunarity: gap between successive frequencies
+ * octaves: number of frequencies in the fBm
+ * offset: raises the terrain from `sea level'
+ */
+
+float node_tex_musgrave_hetero_terrain_2d(vec3 co,
+                                         float w,
+                                         float scale,
+                                         float detail,
+                                         float dimension,
+                                         float lac,
+                                         float offset,
+                                         float gain
+                                         )
+{
+  vec2 p = co.xy * scale;
+  float H = max(dimension, 1e-5);
+  float octaves = clamp(detail, 0.0, 15.0);
+  float lacunarity = max(lac, 1e-5);
+
+  float pwHL = pow(lacunarity, -H);
+  float pwr = pwHL;
+
+  /* first unscaled octave of function; later octaves are scaled */
+  float value = offset + snoise(p);
+  p *= lacunarity;
+
+  for (int i = 1; i < int(octaves); i++) {
+    float increment = (snoise(p) + offset) * pwr * value;
+    value += increment;
+    pwr *= pwHL;
+    p *= lacunarity;
+  }
+
+  float rmd = octaves - floor(octaves);
+  if (rmd != 0.0) {
+    float increment = (snoise(p) + offset) * pwr * value;
+    value += rmd * increment;
+  }
+
+  return value;
+}
+
+/* 2D Hybrid Additive/Multiplicative Multifractal Terrain
+ *
+ * H: fractal dimension of the roughest area
+ * lacunarity: gap between successive frequencies
+ * octaves: number of frequencies in the fBm
+ * offset: raises the terrain from `sea level'
+ */
+
+float node_tex_musgrave_hybrid_multi_fractal_2d(vec3 co,
+                                               float w,
+                                               float scale,
+                                               float detail,
+                                               float dimension,
+                                               float lac,
+                                               float offset,
+                                               float gain
+                                               )
+{
+  vec2 p = co.xy * scale;
+  float H = max(dimension, 1e-5);
+  float octaves = clamp(detail, 0.0, 15.0);
+  float lacunarity = max(lac, 1e-5);
+
+  float pwHL = pow(lacunarity, -H);
+
+  float pwr = 1.0;
+  float value = 0.0;
+  float weight = 1.0;
+
+  for (int i = 0; (weight > 0.001f) && (i < int(octaves)); i++) {
+    if (weight > 1.0) {
+      weight = 1.0;
+    }
+
+    float signal = (snoise(p) + offset) * pwr;
+    pwr *= pwHL;
+    value += weight * signal;
+    weight *= gain * signal;
+    p *= lacunarity;
+  }
+
+  float rmd = octaves - floor(octaves);
+  if ((rmd != 0.0) && (weight > 0.001f)) {
+    if (weight > 1.0) {
+      weight = 1.0;
+    }
+    float signal = (snoise(p) + offset) * pwr;
+    value += rmd * weight * signal;
+  }
+
+  return value;
+}
+
+/* 2D Ridged Multifractal Terrain
+ *
+ * H: fractal dimension of the roughest area
+ * lacunarity: gap between successive frequencies
+ * octaves: number of frequencies in the fBm
+ * offset: raises the terrain from `sea level'
+ */
+
+float node_tex_musgrave_ridged_multi_fractal_2d(vec3 co,
+                                               float w,
+                                               float scale,
+                                               float detail,
+                                               float dimension,
+                                               float lac,
+                                               float offset,
+                                               float gain
+                                               )
+{
+  vec2 p = co.xy * scale;
+  float H = max(dimension, 1e-5);
+  float octaves = clamp(detail, 0.0, 15.0);
+  float lacunarity = max(lac, 1e-5);
+
+  float pwHL = pow(lacunarity, -H);
+  float pwr = pwHL;
+
+  float signal = offset - abs(snoise(p));
+  signal *= signal;
+  float value = signal;
+  float weight = 1.0;
+
+  for (int i = 1; i < int(octaves); i++) {
+    p *= lacunarity;
+    weight = clamp(signal * gain, 0.0, 1.0);
+    signal = offset - abs(snoise(p));
+    signal *= signal;
+    signal *= weight;
+    value += signal * pwr;
+    pwr *= pwHL;
+  }
+
+  return value;
+}
+
+void main(){
+    float scale = texture2D(input_0,tex_coords).r*20;
+    float detail = texture2D(input_1,tex_coords).r*10;
+    float dimension = texture2D(input_2,tex_coords).r*10;
+    float lacunarity = texture2D(input_3,tex_coords).r*10;
+    float gain = 1.;
+    float offset = 1.;
+    float w = 1.;
+    float transform = texture2D(input_4,tex_coords).r*10;
+
+    vec3 co = vec3(tex_coords+vec2(transform),1);
+
+    float res = 0;
+
+    if(list_0 == 0)//Multifractal
+        res = node_tex_musgrave_multi_fractal_2d(co,w,scale,detail,dimension,lacunarity,offset,gain);
+    if(list_0 == 1)//RidgedMultifractal
+        res = node_tex_musgrave_ridged_multi_fractal_2d(co,w,scale,detail,dimension,lacunarity,offset,gain);
+    if(list_0 == 2)//HybridMultifractal
+        res = node_tex_musgrave_hybrid_multi_fractal_2d(co,w,scale,detail,dimension,lacunarity,offset,gain);
+    if(list_0 == 3)//fBm
+        res = node_tex_musgrave_fBm_2d(co,w,scale,detail,dimension,lacunarity,offset,gain);
+    if(list_0 == 4)//HeteroTerrain
+        res = node_tex_musgrave_hetero_terrain_2d(co,w,scale,detail,dimension,lacunarity,offset,gain);
+
+    output_0 = vec4(vec3(res),1);
+}
