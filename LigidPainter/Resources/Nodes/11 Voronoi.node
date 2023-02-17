@@ -43,6 +43,14 @@
 --element : range;
 --value : 100;
 
+-input_4 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : transform;
+--element : range;
+--value : 100;
+
 
 -output_0 :
 --list : none;
@@ -197,7 +205,9 @@ vec3 node_tex_voronoi_smooth_f1_2d(vec3 coord,
   randomness = clamp(randomness, 0.0, 1.0);
   smoothness = clamp(smoothness / 2.0, 0.0, 0.5);
 
-  vec2 scaledCoord = coord.xy * scale;
+  float transform = texture2D(input_4,tex_coords).r*10;
+
+  vec2 scaledCoord = coord.xy * scale + vec2(transform);
   vec2 cellPosition = floor(scaledCoord);
   vec2 localPosition = scaledCoord - cellPosition;
 
