@@ -686,7 +686,6 @@ public:
 		unsigned int fragShader = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fragShader, 1, &shaderSource, NULL);
 		glCompileShader(fragShader);
-
 		//Test the shader
 		int success;
 		char infoLog[512];
@@ -738,7 +737,6 @@ public:
 			
 			appNodes.push_back(createNode(raw));				
 		}
-	
 		return appNodes;
 	}
 	std::vector<Node> createOutputNode(std::vector<Node> appNodes){	

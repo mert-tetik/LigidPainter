@@ -60,7 +60,8 @@ ProcessHppNode processNodeFile(std::string filePath){
     while(std::getline(filein,line))
     {
         completeFile += line;
-        line = removeComments(line);
+        if(!code)
+            line = removeComments(line);
         
         if(line[0] == '$'){
             processHppNode.useModel = true;
