@@ -522,6 +522,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				renderText(programs.uiProgram,std::to_string(nodeScenes[i].index),position_x - textureWidth ,position_y - textureWidth,0.00042f,colorData.materialIconIndexTextColor,panelZ+0.03f,false);
 			}
 		}
+		if(sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE && sndpnl.backSignHover){
+			albedoTextures[selectedAlbedoTextureIndex].folderIndex = 10000;
+		}
 		if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
 
 			if(sndpanelFolderCounter < 30 && sndpanelFolderPressed){
