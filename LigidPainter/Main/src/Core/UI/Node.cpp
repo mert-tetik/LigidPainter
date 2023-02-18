@@ -643,7 +643,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		if(deleteButtonEnter)
 			nodePanel.pointerCursor = true;
 
-		if(deleteButtonEnter && firstClick){
+		if(deleteButtonEnter && firstClick || (glfwGetKey(window,GLFW_KEY_X) == GLFW_PRESS && node.active)){
 			for (int dOutI = 0; dOutI < material.nodes[currentNodeIndex].outputs.size(); dOutI++)
 			{
 				if(material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex != 10000){
