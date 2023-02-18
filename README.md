@@ -28,9 +28,9 @@ assimp : https://github.com/assimp/assimp
 ```
 
 ## Shortcuts
-    Left CTRL + Z : Undo painting
-    Left CTRL + X : change invert checkbox's state
-    Left CTRL + H : hide or show the texture demonstrator
+    Left CTRL + Z = Undo painting
+    Left CTRL + X = change invert checkbox's state
+    Left CTRL + H = hide or show the texture demonstrator
     Left CTRL + Q + scroll = change brush size range bar value
     Left CTRL + W + scroll = change brush blur range bar value
     Left CTRL + E + scroll = change brush rotation range bar value
@@ -49,3 +49,4 @@ assimp : https://github.com/assimp/assimp
 
     Node Shortcuts
     G = Move the selected nodes
+    Left CTRL + Left Mouse Button = Node connection scissor
