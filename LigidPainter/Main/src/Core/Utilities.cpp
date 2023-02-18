@@ -311,3 +311,10 @@ bool Utilities::illegalCharCheck(std::string s){
 	}
 	return false;
 }
+
+bool ccw(glm::vec2 A,glm::vec2 B,glm::vec2 C){
+    return (C.y-A.y) * (B.x-A.x) > (B.y-A.y) * (C.x-A.x);
+}
+bool Utilities::intersect(glm::vec2 A,glm::vec2 B,glm::vec2 C,glm::vec2 D){
+   	return (bool)(ccw(A,C,D) != ccw(B,C,D) && ccw(A,B,C) != ccw(A,B,D));
+}

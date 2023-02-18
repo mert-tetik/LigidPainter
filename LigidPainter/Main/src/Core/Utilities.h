@@ -20,6 +20,6 @@ public:
 	std::string removeExtension(std::string s);
 	std::string uniqueName(std::string s,std::vector<std::string> albedoTextures);
 	bool illegalCharCheck(std::string s);
-
+	bool intersect(glm::vec2 A,glm::vec2 B,glm::vec2 C,glm::vec2 D);
 };
 #endif

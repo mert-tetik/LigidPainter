@@ -254,36 +254,10 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		if(firstClick && node.outputs[i].connectionHover && !node.outputs[i].pressed){
 			node.outputs[i].pressed = true;
 		}
-		
-		//Prevent zooming in and out bug while moving the connection
-		// if((!node.outputs[i].pressed && nodePanel.zoomValChanged)){
-		// 		//Render the connection on top of the default connection circle (hide)
-		// 		node.outputs[i].connectionPosX = (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width +iconWidth*2.f;
-		// 		node.outputs[i].connectionPosY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
-				
-		// 		//Render the connection on top of the connection circle (show)
-		// 		if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
-		// 			node.outputs[i].connectionPosX = material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posX; 
-		// 			node.outputs[i].connectionPosY = material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].posY; 
-		// 		}
-		// }
 
 		//If output released (release the connection)
 		if(glfwGetMouseButton(window,0) == GLFW_RELEASE || node.barPressed || anyBarPressed){
 			if(true){
-				//Severe the connection if connection is not released in a input
-				// if(!anyInputHover && node.outputs[i].pressed){
-				// 	if(node.outputs[i].nodeConnectionIndex != 10000 && node.outputs[i].inputConnectionIndex != 10000){
-				// 		material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].nodeConnectionIndex = 10000;
-				// 		material.nodes[node.outputs[i].nodeConnectionIndex].inputs[node.outputs[i].inputConnectionIndex].inputConnectionIndex = 10000;
-				// 	}
-				// 	node.outputs[i].nodeConnectionIndex = 10000;
-				// 	node.outputs[i].inputConnectionIndex = 10000;
-				// 	node.outputs[i].isConnectedToShaderInput = false;
-
-				// 	material.stateChanged = true;
-				// }
-				
 				//Render the connection on top of the default connection circle (hide)
 				if(node.outputs[i].nodeConnectionIndex == 10000 && node.outputs[i].inputConnectionIndex == 10000){
 					node.outputs[i].connectionPosX = (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width +iconWidth*2.f;
@@ -391,7 +365,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		iconBox(iconWidth/1.5f , iconWidth*1.5f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width - iconWidth*2.f, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+rangeBarCountInputs)/(20.f/(node.width*16)) - 0.05f * node.width*10, depth+0.01f , icons.Circle , 0 , nodeColor , nodeColor);
 		
         //Process the gap necessary related to the input type after rendering
-		if(node.inputs[i].element == "range"){
+		if(node.inputs[i].element == "range" && node.inputs[i].nodeConnectionIndex == 10000 ){
 			if(node.inputs[i].type == "float"){
 				rangeBarCountInputs += 1;
 			}
@@ -402,10 +376,10 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				rangeBarCountInputs += 3;
 			}
 		}
-		else if(node.inputs[i].element == "image"){
+		else if(node.inputs[i].element == "image" && node.inputs[i].nodeConnectionIndex == 10000){
 			rangeBarCountInputs += 1;
 		}
-		else if(node.inputs[i].element == "color"){
+		else if(node.inputs[i].element == "color" && node.inputs[i].nodeConnectionIndex == 10000){
 			rangeBarCountInputs += 1;
 		}
 
@@ -443,7 +417,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	{
         //Render the input title
 		renderText(programs.uiProgram,node.inputs[i].text,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+0.01f,false);
-		if(node.inputs[i].element == "color"){
+		if(node.inputs[i].element == "color" && node.inputs[i].nodeConnectionIndex == 10000){
 			inputElementIndex++;
 			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].color/255.f,1),0,0,0,depth+0.01,8 / (node.width*6),node.backColor,0);///Bottom
 			bool colorInputHover = false; 
@@ -472,7 +446,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			}
 		}
 
-		if(node.inputs[i].element == "image"){
+		if(node.inputs[i].element == "image" && node.inputs[i].nodeConnectionIndex == 10000){
 			inputElementIndex++;
 			
 			//Select texture
@@ -542,7 +516,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		}
 
         //Render the range bars
-		if(node.inputs[i].element == "range"){
+		if(node.inputs[i].element == "range" && node.inputs[i].nodeConnectionIndex == 10000){
 			inputElementIndex++;
 		
         	//Determine the range bar count
