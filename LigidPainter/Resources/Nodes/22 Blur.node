@@ -1,0 +1,88 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Gradient;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-list_0 :
+--title_0 : gauss;
+--title_1 : box;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color;
+--element : color;
+--value : 100,100,100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Range;
+--element : range;
+--value : 100;
+
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+const float width = 1024;
+const float pi = 3.14159265359;
+const float mean = 0.;
+
+
+vec4 boxBlur(int range){
+    vec3 res = vec3(0);
+    for(int x = 0; x < range*2; x++){
+        for(int y = 0; y < range*2; y++){
+            res += texture2D(input_0,vec2(tex_coords.x+((x-range)/width),tex_coords.y+((y-range)/width))).rgb / pow(range*2,2);
+        }
+    }
+    return vec4(res,1);
+}
+
+const int LOD = 1,         // gaussian done on MIPmap at scale LOD
+          sLOD = 1 << LOD; // tile size = 2^LOD
+
+
+float gaussian(vec2 i,int range) {
+    float sigma = float(range) * .25;
+    return exp( -.5* dot(i/=sigma,i) ) / ( 6.28 * sigma*sigma );
+}
+
+vec4 blur(int range) {
+    vec4 O = vec4(0);  
+    int s = range/sLOD;
+    
+    for ( int i = 0; i < s*s; i++ ) {
+        vec2 d = vec2(i%s, i/s)*float(sLOD) - float(range)/2.;
+        O += gaussian(d,range) * textureLod( input_0, tex_coords + vec2(1./width) * d , float(LOD) );
+    }
+    
+    return O / O.a;
+}
+
+void main(){
+
+    int range = int(texture2D(input_1,tex_coords).r*100) + 1;
+    vec4 res;
+    if(list_0 == 0)
+        res = blur(range);
+    if(list_0 == 1)
+        res = boxBlur(range);
+
+    output_0 = vec4(res.rgb,1);
+}
