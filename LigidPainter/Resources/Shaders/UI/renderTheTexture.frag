@@ -19,26 +19,26 @@ void main(){
             const float cornerThickness = 0.02; 
             //Pressed(negative)
             if(TexCoords.x < cornerThickness || TexCoords.y < cornerThickness || TexCoords.x > 1.0-cornerThickness || TexCoords.y > 1.0-cornerThickness){
-                color = vec4(vec3(vec4(0.043,0.635,0.823,1) - texture2D(texture,TexCoords)),1);
+                color = vec4(vec3(vec4(0.043,0.635,0.823,1) - texture2D(texture,TexCoords)),1*texture2D(texture,TexCoords).a);
             }
             else{
-                color = vec4(texture2D(texture,TexCoords).rgb,1);
+                color = vec4(texture2D(texture,TexCoords).rgb,1*texture2D(texture,TexCoords).a);
             }
         }
     }
     if(isHover == 1){
         if(isPressed == 0){
             //Hover (transparent)
-            color = vec4(vec3(texture2D(texture,TexCoords)),0.5);
+            color = vec4(vec3(texture2D(texture,TexCoords)),0.5*texture2D(texture,TexCoords).a);
         }
         else{ 
             const float cornerThickness = 0.04; 
             //Pressed + hover (transparent + negative)
             if(TexCoords.x < cornerThickness || TexCoords.y < cornerThickness || TexCoords.x > 1.0-cornerThickness || TexCoords.y > 1.0-cornerThickness){
-                color = vec4(vec3(vec4(0.043,0.635,0.823,1) - texture2D(texture,TexCoords)),0.5);
+                color = vec4(vec3(vec4(0.043,0.635,0.823,1) - texture2D(texture,TexCoords)),0.5*texture2D(texture,TexCoords).a);
             }
             else{
-                color = vec4(texture2D(texture,TexCoords).rgb,0.5);
+                color = vec4(texture2D(texture,TexCoords).rgb,0.5*texture2D(texture,TexCoords).a);
             }
         }
     }
