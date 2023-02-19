@@ -16,11 +16,17 @@ void main(){
     
     float pi = 3.1415;
     float freq = 1.;
-    float amp = 0.5;
+    float amp = 0.495;
 
     // Calculate y-pos out of x-pos
     float y = sin(uv.x * pi * freq + 3.1) * amp;
-    float yr = 1.-abs(uv.y - y) * (h*300);
+    
+    float dd = w;
+    if(w>h)
+        dd = h;
+    
+    float yr = 1.-abs(uv.y - y) * (dd*500);
+    
     // Output to screen
     if(yr<0.5)
         gl_FragDepth = 1;

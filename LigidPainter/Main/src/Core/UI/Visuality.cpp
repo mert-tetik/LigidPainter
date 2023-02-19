@@ -1124,9 +1124,7 @@ void UserInterface::nodePanelBarriers(float mainPanelLoc,float sndPanel, float h
 
 void UserInterface::drawLine(float posX,float posY,float posZ,float toPosX,float toPosY,float width,glm::vec4 color){
 	GlSet gl;
-	if(abs(posY-toPosY)/4.f < 0.004f || abs(posX-toPosX)/2.f < 0.02f){
-		if(abs(posX-toPosX)/2.f < 0.02f)
-			width/=10;
+	if(abs(posY-toPosY)/4.f < 0.004f || abs(posX-toPosX)/2.f < 0.004f){
 		glUseProgram(uiPrograms.uiProgram);
 		gl.uniform4fv(uiPrograms.uiProgram,"uiColor",color);
 		for (size_t i = 0; i < width; i++)
