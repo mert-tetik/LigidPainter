@@ -7,6 +7,10 @@
 -color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
 -opacity : 60;
 
+-list_0 :
+--title_0 : No Mirror;
+--title_1 : Mirror;
+
 -input_0 : 
 --list : none;
 --list_index : none;
@@ -43,9 +47,12 @@
 
 void main(){
     float scale = texture2D(input_2,tex_coords).r*100; 
-    vec4 color = texture2D(input_0,tex_coords*scale).rgba;
-    vec3 bgcolor = texture2D(input_1,tex_coords).rgb;
+    vec4 color;
+    
+    color = texture2D(input_0,tex_coords*scale).rgba;
 
+
+    vec3 bgcolor = texture2D(input_1,tex_coords).rgb;
     vec3 res = mix(bgcolor,color.rgb,color.a);
 
     output_0 = vec4(res,1);

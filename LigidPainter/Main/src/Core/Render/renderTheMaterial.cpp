@@ -234,6 +234,17 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
             
             glActiveTexture(GL_TEXTURE20 + inputI);
             glBindTexture(GL_TEXTURE_2D,texture);
+            if( material.renderingPipeline[nodeI].title == "24 Repeat"){
+                if(material.renderingPipeline[nodeI].listBoxes[0].chosenIndex == 0){
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+                } 
+                else{
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+                }
+
+            }
             
             glset.uniform1i(nodeProgram,("input_" + std::to_string(inputI)).c_str(),20+inputI);
             resultOut.textures.push_back(texture);
