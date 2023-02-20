@@ -110,6 +110,7 @@ void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int sel
 	Texture txtr;
 	GlSet glset;
 
+	//TODO : CTRL Z leads to an error after deleting a material
 	if ((glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ)) { //MAX 20
 		if(nodeScenesHistory.size()){
 			currentNodeScene = nodeScenesHistory[nodeScenesHistory.size()-1].arrayIndex;

@@ -1551,6 +1551,7 @@ void LigidPainter::sndPanelMinusIcon(){
 			//Materials
 			bool deletable = true;
 			if(nodeScenes.size() != 1){
+				
 				for (size_t i = 0; i < model.meshes.size(); i++)
 				{
 					if(model.meshes[i].materialIndex == selectedNodeScene){
@@ -1560,6 +1561,11 @@ void LigidPainter::sndPanelMinusIcon(){
 					}
 				}
 				if(deletable){
+					for (size_t i = 0; i < nodeScenesHistory.size(); i++)
+					{	
+						if(nodeScenesHistory[i].arrayIndex == selectedNodeScene)
+							nodeScenesHistory.erase(nodeScenesHistory.begin()+i);
+					}
 					nodeScenes.erase(nodeScenes.begin() + selectedNodeScene);
 					modelMaterials.erase(modelMaterials.begin() + selectedNodeScene);
 					if(selectedNodeScene)
