@@ -242,6 +242,11 @@ bool LigidPainter::run()
 	glset.bindTexture(viewportBGImage);
 	txtr.getTexture("LigidPainter/Resources/Images/BGImage.jpg",1920,1080,true);
 
+	glfwSetWindowAttrib(window,GLFW_DECORATED,GLFW_FALSE);
+	glfwSetWindowSize(window,windowData.windowMaxWidth/3.5,windowData.windowMaxHeight/3.5);
+	glfwSetWindowPos(window,windowData.windowMaxWidth/2-(windowData.windowMaxWidth/7),windowData.windowMaxHeight/2-(windowData.windowMaxHeight/7));
+	glViewport(0,0,windowData.windowMaxWidth/3.5,windowData.windowMaxHeight/3.5);
+
 	//Loading screen
 	std::vector<float> renderVertices = { 
 		// first triangle
@@ -372,8 +377,18 @@ bool LigidPainter::run()
 	screenHeight = windowData.windowMaxHeight;
 
 	MainLoop mainLoop;
+
+	glfwSetWindowAttrib(window,GLFW_DECORATED,GLFW_TRUE);
+	glfwSetWindowSize(window,windowData.windowMaxWidth,windowData.windowMaxWidth);
+		glfwPollEvents();
+	glfwSwapBuffers(window);
+	
+	glfwSetWindowPos(window,0,20);
+	
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
+	
+
 		glfwPollEvents();
 		if(UIElements[UIstabilizeFpsCheckBox].checkBox.checked)
 			glfwSwapInterval(1);
