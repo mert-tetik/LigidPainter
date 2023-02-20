@@ -106,41 +106,50 @@ ViewUpdateData Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos
 
 //------------CtrlZ------------
 bool doCtrlZ;
-void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes) {
+void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &currentNodeScene,std::vector<NodeScene> &nodeScenesHistory) {
 	Texture txtr;
 	GlSet glset;
 
-	if ((glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ && albedoTextures[selectedAlbedoTextureIndex].undoList.size() != 0) && albedoTextures.size()) { //MAX 20
-		//Refresh the screen mask texture (Prevent bugs where might be accur trying undo while in the middle of painting)
-		txtr.refreshScreenDrawingTexture();
-		
-		//Bind the related texture
-		//glset.activeTexture(GL_TEXTURE0);
-		unsigned int currentTexture = albedoTextures[selectedAlbedoTextureIndex].id;
-		for (size_t sceneI = 0; sceneI < nodeScenes.size(); sceneI++)
-		{
-			for (size_t nodeI = 0; nodeI < nodeScenes[sceneI].nodes.size(); nodeI++)
-			{
-				for (size_t inI = 0; inI < nodeScenes[sceneI].nodes[nodeI].inputs.size(); inI++)
-				{
-					if(nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTexture == currentTexture){
-						nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTexture = albedoTextures[selectedAlbedoTextureIndex].undoList[albedoTextures[selectedAlbedoTextureIndex].undoList.size()-1];
-					}
-				}
-			}
+	if ((glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ)) { //MAX 20
+		if(nodeScenesHistory.size()){
+			currentNodeScene = nodeScenesHistory[nodeScenesHistory.size()-1].arrayIndex;
+			nodeScenes[currentNodeScene] = nodeScenesHistory[nodeScenesHistory.size()-1];
+			nodeScenesHistory.erase(nodeScenesHistory.end()-1);
+			nodeScenes[currentNodeScene].stateChanged = false;
 		}
 		
-		glDeleteTextures(1,&currentTexture);
+		if(albedoTextures.size()){
+			if(albedoTextures[selectedAlbedoTextureIndex].undoList.size()){
+				//Refresh the screen mask texture (Prevent bugs where might be accur trying undo while in the middle of painting)
+				txtr.refreshScreenDrawingTexture();
 
-		albedoTextures[selectedAlbedoTextureIndex].id = albedoTextures[selectedAlbedoTextureIndex].undoList[albedoTextures[selectedAlbedoTextureIndex].undoList.size()-1];
+				//Bind the related texture
+				//glset.activeTexture(GL_TEXTURE0);
+				unsigned int currentTexture = albedoTextures[selectedAlbedoTextureIndex].id;
+				for (size_t sceneI = 0; sceneI < nodeScenes.size(); sceneI++)
+				{
+					for (size_t nodeI = 0; nodeI < nodeScenes[sceneI].nodes.size(); nodeI++)
+					{
+						for (size_t inI = 0; inI < nodeScenes[sceneI].nodes[nodeI].inputs.size(); inI++)
+						{
+							if(nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTexture == currentTexture){
+								nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTexture = albedoTextures[selectedAlbedoTextureIndex].undoList[albedoTextures[selectedAlbedoTextureIndex].undoList.size()-1];
+							}
+						}
+					}
+				}
 
-		//Remove the last element
-		albedoTextures[selectedAlbedoTextureIndex].undoList.pop_back();
+				glDeleteTextures(1,&currentTexture);
+
+				albedoTextures[selectedAlbedoTextureIndex].id = albedoTextures[selectedAlbedoTextureIndex].undoList[albedoTextures[selectedAlbedoTextureIndex].undoList.size()-1];
+
+				//Remove the last element
+				albedoTextures[selectedAlbedoTextureIndex].undoList.pop_back();
+			}
+		}
 		doCtrlZ = false;
-
-		
 	}
-	if ((glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) && albedoTextures.size()) {
+	if ((glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE || glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE)) {
 		doCtrlZ = true;
 	}
 }
@@ -252,6 +261,9 @@ RenderOutData uiOut;
 
 glm::vec3 screenHoverPixel;
 
+bool lastMaterialStateChanged = false;
+NodeScene lastNodeScene;
+
 int paintRenderCounter = 0;
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
 Icons &icons,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures, bool renderPlane,bool renderSphere,
@@ -261,7 +273,7 @@ ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,Co
 ,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
 std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool firstClick,
 glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
-,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage) {
+,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory) {
 	GlSet gls;
 	ColorData colorData;
 	Utilities util;
@@ -384,13 +396,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	
 
 
-	if(model.meshes.size() != 0){
-		if(nodeScenes[selectedNodeScene].stateChanged || newModelAdded){
-			modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,renderMaxScreenWidth,screenSizeX,renderMaxScreenHeight,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex);
-			nodeScenes[selectedNodeScene].stateChanged = false;
-			newModelAdded = false;
-		}
-	}
+
 
 	glActiveTexture(GL_TEXTURE13);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
@@ -408,14 +414,27 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		renderMaxScreenHeight, saturationValShaderData,currentBrushMaskTexture,materialsPanelSlideValue,UIElements,
 		colorPicker,textureDisplayer,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,
 		nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
-		chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText);
+		chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory);
 
+	if(nodeScenes[selectedNodeScene].stateChanged && !lastMaterialStateChanged && lastNodeScene.nodes.size())
+    	nodeScenesHistory.push_back(lastNodeScene);
+	
+	lastMaterialStateChanged = nodeScenes[selectedNodeScene].stateChanged;
+	lastNodeScene = nodeScenes[selectedNodeScene];
+
+	if(model.meshes.size() != 0){
+		if(nodeScenes[selectedNodeScene].stateChanged || newModelAdded){
+			modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,renderMaxScreenWidth,screenSizeX,renderMaxScreenHeight,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory);
+			newModelAdded = false;
+		}
+	}
+	nodeScenes[selectedNodeScene].stateChanged = false;
 
 	colorPicker.updatePickerVal = colorPicker.saturationValueValChanged && !colorPicker.hexValTextBoxGotInput; 
 	if (colorPicker.updatePickerVal) { //Get value of color box
 		colorPicker.pickerValue = getColorPickerValue(FBOScreen, colorPicker ,screenSizeX, screenSizeY,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,saturationValShaderData);
 	}
-	ctrlZCheck(renderData.window,albedoTextures,selectedAlbedoTextureIndex,nodeScenes);
+	ctrlZCheck(renderData.window,albedoTextures,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,nodeScenesHistory);
 
 
 

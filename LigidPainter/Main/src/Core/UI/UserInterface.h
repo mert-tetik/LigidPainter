@@ -476,6 +476,8 @@ struct SndPanel{
 };
 
 struct NodeScene{
+	int arrayIndex = 0;
+
 	std::string sceneName;
 	std::vector<Node> nodes;
 
