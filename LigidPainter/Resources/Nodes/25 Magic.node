@@ -1,0 +1,533 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Noise;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-list_0 :
+--title_0 : water;
+--title_1 : kaleidoscope;
+--title_2 : abstract geometric art pattern;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Time;
+--element : range;
+--value : 100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Time;
+--element : color;
+--value : 100,100,100;
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+#define sepsize 1.2
+#define seplight 1.9
+#define sepanim 0.1
+#define caustic_strength 0.008
+#define caustic_roughness 1.3
+#define caustic_chormatic_aberation 0.001
+
+float globalTime;
+
+///////////////// BORROWED FROM "JAYBIRD" /////////////////
+// taken from Simple Water Caustic Pattern : https://www.shadertoy.com/view/3d3yRj
+// 3D simplex noise adapted from https://www.shadertoy.com/view/Ws23RD 
+vec4 mod289(vec4 x)
+{
+    return x - floor(x / 289.0) * 289.0;
+}
+
+vec4 permute(vec4 x)
+{
+    return mod289((x * 34.0 + 1.0) * x);
+}
+
+vec4 snoise(vec3 v)
+{
+    const vec2 C = vec2(1.0 / 6.0, 1.0 / 3.0);
+
+    // First corner
+    vec3 i  = floor(v + dot(v, vec3(C.y)));
+    vec3 x0 = v   - i + dot(i, vec3(C.x));
+
+    // Other corners
+    vec3 g = step(x0.yzx, x0.xyz);
+    vec3 l = 1.0 - g;
+    vec3 i1 = min(g.xyz, l.zxy);
+    vec3 i2 = max(g.xyz, l.zxy);
+
+    vec3 x1 = x0 - i1 + C.x;
+    vec3 x2 = x0 - i2 + C.y;
+    vec3 x3 = x0 - 0.5;
+
+    // Permutations
+    vec4 p =
+      permute(permute(permute(i.z + vec4(0.0, i1.z, i2.z, 1.0))
+                            + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+                            + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+
+    // Gradients: 7x7 points over a square, mapped onto an octahedron.
+    // The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)
+    vec4 j = p - 49.0 * floor(p / 49.0);  // mod(p,7*7)
+
+    vec4 x_ = floor(j / 7.0);
+    vec4 y_ = floor(j - 7.0 * x_);
+
+    vec4 x = (x_ * 2.0 + 0.5) / 7.0 - 1.0;
+    vec4 y = (y_ * 2.0 + 0.5) / 7.0 - 1.0;
+
+    vec4 h = 1.0 - abs(x) - abs(y);
+
+    vec4 b0 = vec4(x.xy, y.xy);
+    vec4 b1 = vec4(x.zw, y.zw);
+
+    vec4 s0 = floor(b0) * 2.0 + 1.0;
+    vec4 s1 = floor(b1) * 2.0 + 1.0;
+    vec4 sh = -step(h, vec4(0.0));
+
+    vec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+    vec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+
+    vec3 g0 = vec3(a0.xy, h.x);
+    vec3 g1 = vec3(a0.zw, h.y);
+    vec3 g2 = vec3(a1.xy, h.z);
+    vec3 g3 = vec3(a1.zw, h.w);
+
+    // Compute noise and gradient at P
+    vec4 m = max(0.6 - vec4(dot(x0, x0), dot(x1, x1), dot(x2, x2), dot(x3, x3)), 0.0);
+    vec4 m2 = m * m;
+    vec4 m3 = m2 * m;
+    vec4 m4 = m2 * m2;
+    vec3 grad =
+      -6.0 * m3.x * x0 * dot(x0, g0) + m4.x * g0 +
+      -6.0 * m3.y * x1 * dot(x1, g1) + m4.y * g1 +
+      -6.0 * m3.z * x2 * dot(x2, g2) + m4.z * g2 +
+      -6.0 * m3.w * x3 * dot(x3, g3) + m4.w * g3;
+    vec4 px = vec4(dot(x0, g0), dot(x1, g1), dot(x2, g2), dot(x3, g3));
+    return 42.0 * vec4(grad, dot(m4, px));
+}
+///////////////// END OF BORROWED CODE /////////////////
+vec4 cloud(vec3 v, int oct)
+{
+    vec4 outp = vec4(0.0);
+    for (int i = 1; i < 64; i++)
+    {
+        if(i >= oct+1) {break;}
+        outp += snoise(vec3(-143*i,842*i,0)+v*vec3(1.,1.,pow(float(i),sepanim))*pow(float(i),sepsize))*(1.0/pow(float(i),seplight));
+    }
+    return outp;
+}
+float caustic(vec2 uv,int octaves,float st)
+{
+    vec4 val = vec4(0.0);
+    for(int i = 0; i < 10; i++)
+    {
+        val = cloud(vec3(uv.xy,globalTime),octaves);
+        uv -= val.xy*st;
+    }
+    return exp(cloud(vec3(uv.xy,globalTime),octaves).w*caustic_roughness - caustic_roughness/2.0);
+}
+
+//https://www.shadertoy.com/view/4lsGWj
+vec4 kaleidoscope(){
+    vec2 uv = (tex_coords.xy-.5) * 7.2;
+
+    float r = 1.0;
+    float a = globalTime*.1;
+    float c = cos(a)*r;
+    float s = sin(a)*r;
+    for ( int i=0; i<32; i++ )
+    {
+    	uv = abs(uv);
+        uv -= .25;
+        uv = uv*c + s*uv.yx*vec2(1,-1);
+    }
+        
+    return .5+.5*sin(globalTime+vec4(13,17,23,1)*texture( input_1, uv*vec2(1,-1)+.5, -1.0 ));
+}
+
+
+
+
+
+
+
+/*
+
+    Abstract Geometric Pattern
+    --------------------------
+
+    Applying a very simple procedure involving multiple colored square overlays 
+    and basic lighting to produce a greeble-like surface in the style of abstract 
+    art... or something to that effect. :)
+    
+    I'd been experimenting with procedural greebled surfaces a while ago, and this 
+    was just a byproduct of that. I wouldn't call it a greebled surface per se, but 
+    if you mapped it onto a 3D surface, it'd have that feel. Thanks to the basic 
+    lighting, it also has a painted feel. On a side note, a lot of wrapped 
+    procedural textures you see have usually been highlighted in a similar wrappable 
+    unidirectional way.
+    
+    The technique is about as simple as it gets: Combine some offset squares to 
+    form a polygon with squared sides. Construct a square grid and render these
+    in each cell. After that, combine a few resultant layers at various frequencies.
+    The method is different, but similar to stacking Voronoi layers.
+    
+    I didn't put a lot of effort into rendering speed, as this is the kind of thing
+    that you should probably prerender into one of the buffers prior to use. By the
+    way, I have a couple of 3D greeble examples that I'll post later.
+    
+    
+    Other examples:
+    // Similar principals, and a nice result. By the way Piyushslayer has
+    // some other really nice examples.
+    Abstract Squircles - piyushslayer 
+    https://www.shadertoy.com/view/Wtc3D8
+    
+
+*/
+
+
+// Just the two palattes - Vibrant: 0, Earth: 1.
+#define PALETTE 0
+
+// Base shape -  Square: 0, Diamond: 1., Hexagon: 2, Octagon: 3, Circle: 4.
+#define SHAPE 0
+
+
+// IQ's vec2 to float hash.
+float hash21(vec2 p){ return fract(sin(dot(p, vec2(27.609, 57.583)))*43758.5453); }
+
+
+// Compact, self-contained version of IQ's 2D value noise function.
+float n2D(vec2 p){
+   
+    // Setup.
+    // Any random integers will work, but this particular
+    // combination works well.
+    const vec2 s = vec2(1, 113);
+    // Unique cell ID and local coordinates.
+    vec2 ip = floor(p); p -= ip;
+    // Vertex IDs.
+    vec4 h = vec4(0., s.x, s.y, s.x + s.y) + dot(ip, s);
+   
+    // Smoothing.
+    p = p*p*(3. - 2.*p);
+    //p *= p*p*(p*(p*6. - 15.) + 10.); // Smoother.
+   
+    // Random values for the square vertices.
+    h = fract(sin(h)*43758.5453);
+   
+    // Interpolation.
+    h.xy = mix(h.xy, h.zw, p.y);
+    return mix(h.x, h.y, p.x); // Output: Range: [0, 1].
+}
+
+// FBM -- Accumulated noise layers of modulated amplitudes and frequencies.
+float fBm(vec2 p){ 
+
+    // Layer the noise.
+    float ns = 0., sum = 0., a = 1.;
+    for(int i = 0; i<5; i++){
+    
+        ns += n2D(p)*a;
+        p *= 2.5;
+        sum += a;
+        a /= 1.5;
+    }
+    
+    return ns/sum; // Range: [0, 1].
+}
+
+/*
+float sBoxS(in vec2 p, in vec2 b, in float rf){
+  
+  vec2 d = abs(p) - b + rf;
+  return min(max(d.x, d.y), 0.) + length(max(d, 0.)) - rf;
+    
+}
+*/
+
+// Shape distance metrics. You could put whatever you feel like here.
+float dist(vec2 p, vec2 b){
+ 
+      
+      #if SHAPE == 0
+      // Square.
+      p = abs(p) - b;
+      return max(p.x, p.y);
+      #elif SHAPE == 1
+      // Diamond.
+      p = abs(p);
+      return (p.x + p.y)*.7071 - mix(b.x, b.y, .5);
+      #elif SHAPE == 2
+      // Hexagon.
+      p = abs(p);
+      return max(p.x*.8660254 + p.y*.5, p.y) - mix(b.x, b.y, .5);
+      #elif SHAPE == 3
+      // Octagon.
+      p = abs(p);
+      return max((p.x + p.y)*.7071, max(p.x, p.y)) - mix(b.x, b.y, .5);
+      #else
+      // Circle.
+      return length(p) - (b.x + b.y)/2.;
+      #endif
+      
+      //p = abs(p) - b;
+      //p = p*.8660254 + p.yx*.5;
+      //return max(p.x, p.y);
+      
+      //p = abs(p)-b;
+      //p = (p + p.yx)*.7071;
+      //return max(p.x, p.y);
+}
+
+
+// The cell shape: This is just a union of four offset shapes, but it could
+// be anything you can dream up. This particular random shape exceeds the
+// boundaries of the cell, so surrounding cells need to be accounted for.
+
+float cellShape(vec2 p, vec2 ip){
+    
+    float d = 1e5;
+    
+    for(int i = 0; i<4; i++){
+    
+        // Four random values.
+        float fi = 1./(1. + float(i));
+        vec4 rnd = vec4(hash21(ip + .15*fi), hash21(ip + .23*fi), 
+                        hash21(ip + .32*fi), hash21(ip + .41*fi));
+        
+        // Offset position.
+        vec2 q = p - (rnd.xy - .5)*1.5;
+    
+        // Render a square, diamond, or whatever.
+        //float shape = sBoxS(q, .1 + rnd.zw*.3, min(rnd.z, rnd.w)*.07);
+        float shape = dist(q, .1 + rnd.zw*.3); // Rectangular dimensions.
+        //float shape = dist(q, vec2(.1 + length(rnd.zw)*.2)); // Square.
+        
+        // Take the minimum (union) of all combined shapes.
+        d = min(d, shape);
+    
+    }
+    
+    // Holes... Didn't work. :)
+    //d = abs(d  + .135) - .135;
+    
+    return d; // Return the random distance, or bound.
+    
+}
+
+
+
+// Constructing the grid pattern: Render a random shape in each cell.
+vec4 gridPattern(vec2 p, float sf){
+    
+    const vec2 sc = vec2(1);
+    
+    vec3 col = vec3(1);
+    
+    float alpha = .9;
+    float d = 1e5;
+    
+    // The cell shapes exceed the cell boundaries, which means covering all 
+    // surrounding cells that the shape covers. In this case, there are 9.
+    for(int i=-1; i<=1; i++){
+        for(int j=-1; j<=1; j++){
+          
+            // Local cell coordinates and cell ID.
+            vec2 cntr = vec2(i, j) - .5;
+            vec2 q = p;
+            vec2 ip = floor(q/sc - cntr) + .5; 
+            q -= ip*sc;
+        
+            // Cell shape.
+            float c = cellShape(q, ip);
+            
+            // Using the cell ID to produce some random number.
+            vec2 rnd = vec2(hash21(ip/23.), hash21(ip/113.)) - .5;
+            rnd.y = smoothstep(.985, .997, sin(rnd.y*6.2831 + globalTime/2.)*.5 + .5);
+            
+            // Feeding the random cell-ID-based value into IQ's cool palette formula
+            // to produce the shape color.
+            #if PALETTE == 1
+            // Earth tones.
+            vec3 cellCol = (.5 + .46*cos(rnd.x*6.2831/2. + vec3(0, 1, 2)))/3.5;
+            // Blinking highlights.
+            cellCol = mix(cellCol, mix(cellCol, cellCol*vec3(1.8, .9, .3), 1.), rnd.y); 
+            #else
+            // Vibrant palette.
+            vec3 cellCol = (.5 + .46*cos(rnd.x*6.2831/2.75 + vec3(0, 1, 2) + 2.2));
+            // Blinking highlights.
+            cellCol = mix(cellCol, mix(cellCol, cellCol.xzy, .6), rnd.y); 
+            #endif
+            
+            // Greyscale.
+            //cellCol = vec3(dot(cellCol, vec3(.299, .587, .114)))/1.5;
+            
+            // Using the shape distance to produce a bit of shading.
+            float sh = max(.5 - c/.1, 0.)*max(1. - dot(q, q)*.5, 0.)*2.5;
+            
+            // Rendering to the canvas. This is the way I like to do it, but you can
+            // use whatever system you're comfortable with. The following are just some
+            // Photoshop type laters: Shadow, outer edge, shaded color and an inner
+            // edge for decoration.
+            col = mix(col, vec3(0), (1. - smoothstep(0., sf*8., abs(c) - .01))*.5*alpha);
+            col = mix(col, vec3(0), (1. - smoothstep(0., sf, abs(c) - .01)));
+            col = mix(col, cellCol*sh, (1. - smoothstep(0., sf, c))*alpha);//
+            col = mix(col, vec3(0), (1. - smoothstep(0., sf, abs(c + .06) - .005)));
+            
+            // Keeping a copy of the minimum overall distance for the layering routine.
+            d = min(d, c);
+
+        }
+    } 
+    
+    // Return the shaded shape color and associated distance.
+    return vec4(col, d);
+    
+}
+
+// Layering the grid pattern above.
+vec3 layeredPattern(vec2 p, vec3 col, float sf){
+    
+
+    // Frequency (associated with scale) and alpha (transparency) values.
+    float freq = 1., alpha = 1.;
+    
+    for(int i=0; i<4; i++){
+    
+        // Random values based on layer count.
+        float fi = 1./(1. + float(i));
+        vec2 rnd = vec2(hash21(vec2(0) + .1*fi), hash21(vec2(0) + .2*fi))*2.;
+        
+        // Render this particular grid layer.
+        
+        // Color and distance value.
+        vec4 gCol = gridPattern((p - rnd)*freq, sf*freq);
+        // Mix a drop shadow, edge and layer color onto the previous layer.
+        col = mix(col, vec3(0), (1. - smoothstep(0., sf*8.*freq, abs(gCol.w) - .01))*.5*alpha);
+        col = mix(col, vec3(0), (1. - smoothstep(0., sf*freq, abs(gCol.w) - .01))*alpha);
+        col = mix(col, gCol.xyz, (1. - smoothstep(0., sf*freq, gCol.w))/freq*alpha);
+        
+        // Increace the frequency
+        freq *= 1.4;
+        alpha *= .92;
+    }
+    
+    /*
+    // Overlayed diagonal stripe pattern.
+    float pat = (abs(fract((p.x - p.y)*64.) - .5)*2. - .125)/64./2.;
+    pat = smoothstep(0., sf, pat)*.5 + .65;
+    col *= pat;
+    */
+    
+    return col; // Overall texture value.
+    
+}
+
+vec4 abstractGeometricArtPattern(){
+    // Screen coordinates: They're already in aspect correct form,
+    // so tranlation and scalar resizing is all that is necessary.
+    vec2 uv = (tex_coords *.5);
+    
+    
+    // Scale and translation.
+    const float sc = 1.5;
+    vec2 p = uv*sc + vec2(1, .25)*globalTime/5.;
+    
+    // Coordinate perturbation.
+    p += vec2(n2D(p*24.), n2D(p*24. + 5.))*.004;
+    
+    // Smoothing factor.
+    float sf = sc;
+    
+    // Background color -- Most of this will be covered with colored shapes.
+    vec3 bg = vec3(.05);
+    
+    // Two layered pattern samples. The second will be used for 
+    // highlighting.
+    float sDist = 3./450.;
+    vec3 col = layeredPattern(p, bg, sf);
+    vec3 col2 = layeredPattern(p - normalize(vec2(1, 1))*sDist, bg, sf);
+    
+    // Two bump values. One from each direction.
+    float b = max(dot(col2 - col, vec3(.299, .587, .114)), 0.)/sDist;
+    float b2 = max(dot(col - col2, vec3(.299, .587, .114)), 0.)/sDist;
+    
+    
+    // Applying some subtle fBm noise.
+    float ns = fBm(p*40.)*.8 + .5;
+    col *= ns;
+
+    
+    // Adding the bump highlights.
+    col = col*(vec3(.2, .4, 1)*b*b*.005 + vec3(1, .15, .05)*b2*.04 + .6);
+
+    
+
+    /*
+    // Subtle diagonal pattern overlay. Not used.
+    float pat = (abs(fract((p.x - p.y)*64.) - .5)*2. - .125)/64./2.;
+    pat = .25 + smoothstep(0., sf, pat);
+    col *= pat;
+    */
+ 
+    /*
+    // Cell borders.
+    vec2 q = abs(fract(p) - .5);
+    float bord = max(q.x, q.y) - .5;
+    col = mix(col, vec3(1), (1. - smoothstep(0., sf*4., abs(bord) - .0025))*.75);
+    col = mix(col, vec3(0), (1. - smoothstep(0., sf, abs(bord) - .0025)));
+    */
+    
+    
+    // Subtle vignette.
+    uv = tex_coords.xy;
+    col *= pow(16.*uv.x*uv.y*(1. - uv.x)*(1. - uv.y) , .0625);
+    // Colored variation.
+    //col = mix(col*vec3(1, .05, .15), col, pow(16.*uv.x*uv.y*(1. - uv.x)*(1. - uv.y) , .125));
+    
+    // Rought gamma correction.
+    return vec4(sqrt(max(col, 0.)), 1);
+}
+
+void main()
+{
+    vec2 iResolution = vec2(1);
+
+    float iTime = texture2D(input_0,tex_coords).r*10;
+    globalTime = iTime;
+
+    vec2 uv = (3. * tex_coords.xy - iResolution.xy) / iResolution.y;
+
+    // Output to screen
+    if(list_0 == 0)
+        output_0 = vec4(caustic(uv,24,caustic_strength+caustic_chormatic_aberation),caustic(uv,24,caustic_strength),caustic(uv,24,caustic_strength-caustic_chormatic_aberation),1.);
+    else if(list_0 == 1)
+        output_0 = kaleidoscope();
+    else if(list_0 == 2)
+        output_0 = abstractGeometricArtPattern();
+        
+    else
+        output_0 = vec4(1);
+}
