@@ -431,6 +431,9 @@ struct ContextMenu {
 	float positionY;
 	float positionZ;
 
+	std::string searchText = "search";
+	bool searchTextboxActive = false;
+
 	float width;
 	float height;
 

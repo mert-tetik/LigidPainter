@@ -302,38 +302,69 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 			int indepI = 0;
 
-			for (size_t i = addNodeContextMenu.scroll; i < std::min(addNodeContextMenu.buttons.size(),(size_t)10)+addNodeContextMenu.scroll; i++)
+			for (size_t i = addNodeContextMenu.scroll; i < addNodeContextMenu.buttons.size(); i++)
 			{
-				addNodeContextMenu.buttons[i].transitionMixVal = (float)addNodeContextMenu.buttons[i].hover * (float)addNodeContextMenu.buttons[i].hoverAnimationActive;
+				if((addNodeContextMenu.searchText == addNodeContextMenu.buttons[i].text || addNodeContextMenu.searchText == "search" && (addNodeContextMenu.scroll < i && i < min(addNodeContextMenu.buttons.size(),(size_t)10)+addNodeContextMenu.scroll))){
+					addNodeContextMenu.buttons[i].transitionMixVal = (float)addNodeContextMenu.buttons[i].hover * (float)addNodeContextMenu.buttons[i].hoverAnimationActive;
 
-				if(addNodeContextMenu.buttons[i].hover && addNodeContextMenu.buttons[i].hoverAnimationActive){
-					addNodeContextMenu.buttons[i].positionZ = 0.999f;
-					if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS && i != 0){
-						Node node;
-						node = appNodes[i-1];
-						node.positionX = (mouseXpos/screenSizeX*2 - 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionX;
-						node.positionY = ((-mouseYpos/maxScreenHeight*2 + 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionY);						
+					if(addNodeContextMenu.buttons[i].hover && addNodeContextMenu.buttons[i].hoverAnimationActive){
+						addNodeContextMenu.buttons[i].positionZ = 0.899f;
+						if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS && i != 0){
+							Node node;
+							node = appNodes[i-1];
+							node.positionX = (mouseXpos/screenSizeX*2 - 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionX;
+							node.positionY = ((-mouseYpos/maxScreenHeight*2 + 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionY);						
 
-						nodeScenesHistory.push_back(nodeScenes[selectedNodeScene]);
-						nodeScenes[selectedNodeScene].nodes.push_back(node);
-						addNodeContextMenu.active = false;
+							nodeScenesHistory.push_back(nodeScenes[selectedNodeScene]);
+							nodeScenes[selectedNodeScene].nodes.push_back(node);
+							addNodeContextMenu.active = false;
+						}
 					}
+					else{
+						addNodeContextMenu.buttons[i].positionZ = 0.8f;
+					}
+					ui.box(addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[indepI].positionY, addNodeContextMenu.buttons[i].text, addNodeContextMenu.buttons[i].color, addNodeContextMenu.buttons[i].textRatio, false, false, addNodeContextMenu.buttons[i].positionZ, addNodeContextMenu.buttons[i].buttonCurveReduce, addNodeContextMenu.buttons[i].colorHover, addNodeContextMenu.buttons[i].transitionMixVal); //Add mask texture button	
+					indepI++;
 				}
-				else{
-					addNodeContextMenu.buttons[i].positionZ = 0.99f;
-				}
-				
-				ui.box(addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[indepI].positionY, addNodeContextMenu.buttons[i].text, addNodeContextMenu.buttons[i].color, addNodeContextMenu.buttons[i].textRatio, false, false, addNodeContextMenu.buttons[i].positionZ, addNodeContextMenu.buttons[i].buttonCurveReduce, addNodeContextMenu.buttons[i].colorHover, addNodeContextMenu.buttons[i].transitionMixVal); //Add mask texture button	
-				indepI++;
 			}
+			const bool searchButtonEnter = ui.isMouseOnButton(renderData.window,addNodeContextMenu.buttons[1].width, addNodeContextMenu.buttons[1].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY - 0.265f*2.05f,mouseXpos,mouseYpos,false); 
+			glm::vec4 selectedTextboxColor;
+			
+			if(searchButtonEnter && firstClick){
+				addNodeContextMenu.searchTextboxActive = !addNodeContextMenu.searchTextboxActive;
+				addNodeContextMenu.searchText = "";
+			}
+			
+			if(!addNodeContextMenu.searchTextboxActive){
+				if(searchButtonEnter)
+					selectedTextboxColor = colorData.buttonColorHover;
+				else
+					selectedTextboxColor = colorData.buttonColor;
+			}
+			else if(addNodeContextMenu.searchTextboxActive){
+				if(searchButtonEnter)
+					selectedTextboxColor = glm::vec4(colorData.LigidPainterThemeColor,0.5f);
+				else
+					selectedTextboxColor = glm::vec4(colorData.LigidPainterThemeColor,1);
+			}
+				 
+			ui.box(addNodeContextMenu.buttons[1].width, addNodeContextMenu.buttons[1].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY - 0.265f*2.05f, addNodeContextMenu.searchText, selectedTextboxColor, 0.05f, addNodeContextMenu.searchTextboxActive, false, 0.99f, addNodeContextMenu.buttons[1].buttonCurveReduce, selectedTextboxColor, addNodeContextMenu.searchTextboxActive); //Add mask texture button	
+			glUseProgram(programs.iconsProgram);
+			if(!addNodeContextMenu.searchTextboxActive)
+				ui.iconBox(0.007f,0.014f,addNodeContextMenu.positionX-addNodeContextMenu.buttons[1].width*0.7, addNodeContextMenu.positionY - 0.265f*2.05f, 0.9999,icons.ArrowDown,0,colorData.iconColor,colorData.iconColor);
+
 			if(addNodeContextMenu.scroll != addNodeContextMenu.buttons.size()-10){	
-				glUseProgram(programs.iconsProgram);
 				ui.iconBox(0.01f,0.02f,addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[indepI].positionY, 0.9999,icons.ArrowDown,0,colorData.iconColor,colorData.iconColor);
 			}
 		}
 		else
 			addNodeContextMenu.scroll = 0;
 		glUseProgram(programs.uiProgram);
+
+		if(!addNodeContextMenu.active){
+			addNodeContextMenu.searchText = "search";
+			addNodeContextMenu.searchTextboxActive = false;
+		}
 	}
 
 

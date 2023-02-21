@@ -773,6 +773,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			}
 		}
 	}
+	
+	if(addNodeContextMenu.active){
+		ui.textInput(key,action,caps,addNodeContextMenu.searchText,15,window,textBoxActiveChar);
+		
+		if(action == 1 || action == 2){
+			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && addNodeContextMenu.searchText.size()+textBoxActiveChar){
+				textBoxActiveChar--;
+			}
+			if(glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_PRESS && textBoxActiveChar != 0){
+				textBoxActiveChar++;
+			}
+		}
+	}
 
 	//------------------SHORTCUTS------------------
 

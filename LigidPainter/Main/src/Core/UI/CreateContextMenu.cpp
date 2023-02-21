@@ -27,7 +27,7 @@ ContextMenu UserInterface::createContextMenus(std::vector<Node> appNodes){
     ColorData colorData;
     ContextMenu addNodeContextMenu; 
     addNodeContextMenu.width = 0.07f;
-	addNodeContextMenu.positionZ = 0.99f;
+	addNodeContextMenu.positionZ = 0.8f;
 
     float panelHeight = 0.f;
 
@@ -63,7 +63,7 @@ ContextMenu UserInterface::createContextMenus(std::vector<Node> appNodes){
         addNodeContextMenu.buttons.push_back(button);
         panelHeight += 0.05f;
     }
-	addNodeContextMenu.height = std::min(panelHeight/2.f,0.25f);
+	addNodeContextMenu.height = std::min(panelHeight/2.f,0.275f);
     
     return addNodeContextMenu;
 }
