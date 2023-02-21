@@ -318,3 +318,28 @@ bool ccw(glm::vec2 A,glm::vec2 B,glm::vec2 C){
 bool Utilities::intersect(glm::vec2 A,glm::vec2 B,glm::vec2 C,glm::vec2 D){
    	return (bool)(ccw(A,C,D) != ccw(B,C,D) && ccw(A,B,C) != ccw(A,B,D));
 }
+
+bool Utilities::isMatch(std::string o,std::string t){
+	int matchCounter = 0;
+	int startIndex = 0;
+	if(t == "")
+		return false;
+	if(t.size() > o.size())
+		return false;
+
+	for (size_t i = 0; i < o.size(); i++)
+	{
+		if(t[0] == o[i]){
+			startIndex = i;
+		}
+	}
+	for (size_t i = 0; i < t.size(); i++)
+	{
+		if(startIndex+i == o.size())
+			return false;
+		if(t[i] == o[i+startIndex]){
+			matchCounter++;
+		}
+	}
+	return matchCounter == t.size();
+}
