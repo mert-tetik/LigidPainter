@@ -55,7 +55,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
     GlSet glset;
 
-    glset.viewport(txtrRes,txtrRes);
+    glset.viewport(1024,1024);
 
     for (size_t i = 0; i < material.nodes.size(); i++)
     {
@@ -268,6 +268,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
         {
             if(material.renderingPipeline[nodeI].outputs[outI].isConnectedToShaderInput){
                 if(bakeTheMaterial && material.renderingPipeline[nodeI].marked){
+                    glset.viewport(txtrRes,txtrRes);
                     
                     glActiveTexture(GL_TEXTURE28);
                 
@@ -333,6 +334,8 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                 goto end;
             }
             else{
+                glset.viewport(1024,1024);
+
                 glActiveTexture(GL_TEXTURE28);
                 
                 unsigned int resultTexture;
@@ -340,7 +343,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                 glset.bindTexture(resultTexture);
                 
 
-                glset.texImage(nullptr,txtrRes,txtrRes,GL_RGBA);
+                glset.texImage(nullptr,1024,1024,GL_RGBA);
                 glset.generateMipmap();
                 
                 unsigned int FBO; 
@@ -364,10 +367,10 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
                 glset.generateMipmap();
 
-                GLubyte* data = new GLubyte[txtrRes*txtrRes*4];
-                glReadPixels(0,0,txtrRes,txtrRes,GL_RGBA,GL_UNSIGNED_BYTE,data);
+                GLubyte* data = new GLubyte[1024*1024*4];
+                glReadPixels(0,0,1024,1024,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
-                glset.texImage(data,txtrRes,txtrRes,GL_RGBA);
+                glset.texImage(data,1024,1024,GL_RGBA);
                 glset.generateMipmap();
 
                 delete[] data;
@@ -379,6 +382,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                 
                 
                 if(bakeTheMaterial && material.renderingPipeline[nodeI].marked){
+                    glset.viewport(txtrRes,txtrRes);
                     
                     glActiveTexture(GL_TEXTURE28);
                 
