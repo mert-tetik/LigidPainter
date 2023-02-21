@@ -63,7 +63,6 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
         material.nodes[i].renderingIndex = 10000;        
     }
     
-
     //Process indexes independant nodes
     for (size_t i = 0; i < material.nodes.size(); i++)
     {
@@ -88,6 +87,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
             material.nodes[i].renderingIndex = material.renderingPipeline.size()-1; 
         }
     }
+
     for (int i = 0; i < 1000; i++)
     {
         bool isChangesAreMade = false;

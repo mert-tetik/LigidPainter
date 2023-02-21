@@ -101,7 +101,7 @@ public:
 		    "LigidPainter/Resources/Cubemap/Skybox/sky2/pz.png",
 		    "LigidPainter/Resources/Cubemap/Skybox/sky2/nz.png"
 		};
-		unsigned int cubemapTexture2 = loadCubemap(faces2,GL_TEXTURE13);  
+		// unsigned int cubemapTexture2 = loadCubemap(faces2,GL_TEXTURE13);  
 
 		std::vector<std::string> faces3
 		{
@@ -112,7 +112,7 @@ public:
 		    "LigidPainter/Resources/Cubemap/Skybox/sky3/pz.png",
 		    "LigidPainter/Resources/Cubemap/Skybox/sky3/nz.png"
 		};
-		unsigned int cubemapTexture3 = loadCubemap(faces3,GL_TEXTURE13);  
+		// unsigned int cubemapTexture3 = loadCubemap(faces3,GL_TEXTURE13);  
 		
 		
 		std::vector<std::string> faces4
@@ -124,7 +124,7 @@ public:
 		    "LigidPainter/Resources/Cubemap/Skybox/sky4/pz.png",
 		    "LigidPainter/Resources/Cubemap/Skybox/sky4/nz.png"
 		};
-		unsigned int cubemapTexture4 = loadCubemap(faces4,GL_TEXTURE13);  
+		// unsigned int cubemapTexture4 = loadCubemap(faces4,GL_TEXTURE13);  
 
 		std::vector<std::string> faces5
 		{
@@ -135,7 +135,7 @@ public:
 		    "LigidPainter/Resources/Cubemap/Skybox/sky5/pz.png",
 		    "LigidPainter/Resources/Cubemap/Skybox/sky5/nz.png"
 		};
-		unsigned int cubemapTexture5 = loadCubemap(faces5,GL_TEXTURE13);  
+		// unsigned int cubemapTexture5 = loadCubemap(faces5,GL_TEXTURE13);  
 
 		std::vector<std::string> faces6
 		{
@@ -146,7 +146,7 @@ public:
 		    "LigidPainter/Resources/Cubemap/Skybox/sky6/pz.png",
 		    "LigidPainter/Resources/Cubemap/Skybox/sky6/nz.png"
 		};
-		unsigned int cubemapTexture6 = loadCubemap(faces6,GL_TEXTURE13);  
+		// unsigned int cubemapTexture6 = loadCubemap(faces6,GL_TEXTURE13);  
 		
 		std::vector<std::string> facesblur
 		{
@@ -157,17 +157,17 @@ public:
 		    "LigidPainter/Resources/Cubemap/Skybox/ambient/pzblur.png",
 		    "LigidPainter/Resources/Cubemap/Skybox/ambient/nzblur.png"
 		};
-		unsigned int cubemapTextureblur = loadCubemap(facesblur,GL_TEXTURE13);  
+		// unsigned int cubemapTextureblur = loadCubemap(facesblur,GL_TEXTURE13);  
 
 	
 		Cubemaps cubemaps;
-		cubemaps.blurycubemap = cubemapTextureblur;
+		// cubemaps.blurycubemap = cubemapTextureblur;
 		cubemaps.cubemap = cubemapTexture;
-		cubemaps.cubemap2 = cubemapTexture2;
-		cubemaps.cubemap3 = cubemapTexture3;
-		cubemaps.cubemap4 = cubemapTexture4;
-		cubemaps.cubemap5 = cubemapTexture5;
-		cubemaps.cubemap6 = cubemapTexture6;
+		// cubemaps.cubemap2 = cubemapTexture2;
+		// cubemaps.cubemap3 = cubemapTexture3;
+		// cubemaps.cubemap4 = cubemapTexture4;
+		// cubemaps.cubemap5 = cubemapTexture5;
+		// cubemaps.cubemap6 = cubemapTexture6;
 	
 		return cubemaps;
 	}

@@ -646,29 +646,24 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		if(deleteButtonEnter && firstClick || (glfwGetKey(window,GLFW_KEY_X) == GLFW_PRESS && node.active)){
 			for (int dOutI = 0; dOutI < material.nodes[currentNodeIndex].outputs.size(); dOutI++)
 			{
-				if(material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex != 10000){
-					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex].nodeConnectionIndex = 10000;
-					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex].inputConnectionIndex = 10000;
+				for (size_t coni = 0; coni < material.nodes[currentNodeIndex].outputs[dOutI].connections.size(); coni++)
+				{
+					if(material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].nodeConnectionIndex != 10000){
+						material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].inputConnectionIndex].nodeConnectionIndex = 10000;
+						material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].inputConnectionIndex].inputConnectionIndex = 10000;
+					}
 				}
 			}
 			for (int dInI = 0; dInI < material.nodes[currentNodeIndex].inputs.size(); dInI++)
 			{
 				if(material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex != 10000){
-					material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].nodeConnectionIndex = 10000;
-					material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].inputConnectionIndex = 10000;
+					for (size_t coni = 0; coni < material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].connections.size(); coni++)
+					{
+						material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].connections[coni].nodeConnectionIndex = 10000;
+						material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].connections[coni].inputConnectionIndex = 10000;
+					}
+					
 				}
-			}
-			for (int dInI = 0; dInI < material.nodes[currentNodeIndex].inputs.size(); dInI++)
-			{
-				material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex = 10000;
-				material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex = 10000;
-				material.nodes[currentNodeIndex].inputs[dInI].isConnectedToShaderInput = false;
-			}
-			for (int dOutI = 0; dOutI < material.nodes[currentNodeIndex].outputs.size(); dOutI++)
-			{
-				material.nodes[currentNodeIndex].outputs[dOutI].nodeConnectionIndex = 10000;
-				material.nodes[currentNodeIndex].outputs[dOutI].inputConnectionIndex = 10000;
-				material.nodes[currentNodeIndex].outputs[dOutI].isConnectedToShaderInput = false;
 			}
 			material.stateChanged = true;
 			material.nodes.erase(material.nodes.begin() + currentNodeIndex);
