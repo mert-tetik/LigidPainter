@@ -662,7 +662,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 						material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].connections[coni].nodeConnectionIndex = 10000;
 						material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].connections[coni].inputConnectionIndex = 10000;
 					}
-					
 				}
 			}
 			material.stateChanged = true;

@@ -304,7 +304,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 			for (size_t i = 0; i < addNodeContextMenu.buttons.size(); i++)
 			{
-				if(((util.isMatch(addNodeContextMenu.buttons[i].text,addNodeContextMenu.searchText) && addNodeContextMenu.searchText != "search") || (addNodeContextMenu.scroll < i && i < min(addNodeContextMenu.buttons.size(),(size_t)10)+addNodeContextMenu.scroll && addNodeContextMenu.searchText == "search"))){
+				if(i == 0||((util.isMatch(addNodeContextMenu.buttons[i].text,addNodeContextMenu.searchText) && addNodeContextMenu.searchText != "search") || (addNodeContextMenu.scroll < i && i < min(addNodeContextMenu.buttons.size(),(size_t)10)+addNodeContextMenu.scroll && addNodeContextMenu.searchText == "search"))){
 					addNodeContextMenu.buttons[i].transitionMixVal = (float)addNodeContextMenu.buttons[i].hover * (float)addNodeContextMenu.buttons[i].hoverAnimationActive;
 
 					if(addNodeContextMenu.buttons[i].hover && addNodeContextMenu.buttons[i].hoverAnimationActive){
@@ -348,13 +348,13 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 					selectedTextboxColor = glm::vec4(colorData.LigidPainterThemeColor,1);
 			}
 				 
-			ui.box(addNodeContextMenu.buttons[1].width, addNodeContextMenu.buttons[1].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY - 0.265f*1.95f, addNodeContextMenu.searchText, selectedTextboxColor, 0.05f, addNodeContextMenu.searchTextboxActive, false, 0.99f, addNodeContextMenu.buttons[1].buttonCurveReduce, selectedTextboxColor, addNodeContextMenu.searchTextboxActive); //Add mask texture button	
+			ui.box(addNodeContextMenu.buttons[1].width, addNodeContextMenu.buttons[1].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY - 0.265f*2.1, addNodeContextMenu.searchText, selectedTextboxColor, 0.05f, addNodeContextMenu.searchTextboxActive, false, 0.99f, addNodeContextMenu.buttons[1].buttonCurveReduce, selectedTextboxColor, addNodeContextMenu.searchTextboxActive); //Add mask texture button	
 			glUseProgram(programs.iconsProgram);
 			if(!addNodeContextMenu.searchTextboxActive)
-				ui.iconBox(0.007f,0.014f,addNodeContextMenu.positionX-addNodeContextMenu.buttons[1].width*0.7, addNodeContextMenu.positionY - 0.265f*1.95f, 0.9999,icons.ArrowDown,0,colorData.iconColor,colorData.iconColor);
+				ui.iconBox(0.007f,0.014f,addNodeContextMenu.positionX-addNodeContextMenu.buttons[1].width*0.7, addNodeContextMenu.positionY - 0.265f*2.1, 0.9999,icons.ArrowDown,0,colorData.iconColor,colorData.iconColor);
 
 			if(addNodeContextMenu.scroll != addNodeContextMenu.buttons.size()-10){	
-				// ui.iconBox(0.01f,0.02f,addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[indepI-1].positionY, 0.9999,icons.ArrowDown,0,colorData.iconColor,colorData.iconColor);
+				ui.iconBox(0.01f,0.02f,addNodeContextMenu.positionX, addNodeContextMenu.positionY - 0.265f*1.87f, 0.9999,icons.ArrowDown,0,colorData.iconColor,colorData.iconColor);
 			}
 		}
 		else
