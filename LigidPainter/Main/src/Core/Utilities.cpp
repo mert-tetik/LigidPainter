@@ -329,6 +329,19 @@ bool Utilities::isMatch(std::string o,std::string t){
 
 	for (size_t i = 0; i < o.size(); i++)
 	{
+		if(isupper(o[i])){
+			o[i]+=32;
+		}
+	}
+	for (size_t i = 0; i < t.size(); i++)
+	{
+		if(isupper(t[i])){
+			t[i]+=32;
+		}
+	}
+
+	for (size_t i = 0; i < o.size(); i++)
+	{
 		if(t[0] == o[i]){
 			startIndex = i;
 		}
