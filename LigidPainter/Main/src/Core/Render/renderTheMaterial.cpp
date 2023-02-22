@@ -164,6 +164,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     }
 
                     glset.texImage(data,1,1,channels);
+                    delete[] data;
                 }
                 else{
                     texture = material.renderingPipeline[material.nodes[material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[material.renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;
@@ -190,6 +191,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                         }
 
                         glset.texImage(data,1,1,channels);
+                        delete[] data;
                     }
                 }
                 else{
@@ -215,6 +217,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     }
 
                     glset.texImage(data,1,1,channels);
+                    delete[] data;
                 }
                 else{
                     texture = material.renderingPipeline[material.nodes[material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[material.renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;

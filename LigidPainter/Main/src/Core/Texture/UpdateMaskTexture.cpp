@@ -205,7 +205,7 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 	glset.bindFramebuffer(0);
 	glViewport(-(maxScreenWidth - screenSize_x)/2, -(maxScreenHeight - screenSize_y), maxScreenWidth, maxScreenHeight);
 
-	delete(rotatedMaskTxtr);
-	delete(horizontalBlurMaskTxtr);
+	delete[]rotatedMaskTxtr;
+	delete[]horizontalBlurMaskTxtr;
 	return verticalBlurMaskTxtr;
 }

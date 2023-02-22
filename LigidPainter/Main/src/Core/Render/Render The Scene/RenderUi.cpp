@@ -242,6 +242,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 				else{
 					for (size_t outi = 0; outi < nodeScenes[selectedNodeScene].nodes[i].outputs.size(); outi++)
 					{
+						int delI = 0;
 						for (size_t coni = 0; coni < nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.size(); coni++)
 						{
 							glm::vec2 conPos1;
@@ -254,11 +255,14 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 							glm::vec2 conPos3 = glm::vec2(sPX,sPY);
 							glm::vec2 conPos4 = glm::vec2(dPX,dPY);
 
-							std::cout << glm::to_string(conPos1) << glm::to_string(conPos2) << glm::to_string(conPos3) << glm::to_string(conPos4) << '\n';
-
 							if(util.intersect(conPos1,conPos2,conPos3,conPos4)){
-								nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.erase(nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.begin() + coni);
+								if(nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni-delI].nodeConnectionIndex != 10000){
+									nodeScenes[selectedNodeScene].nodes[nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni-delI].nodeConnectionIndex].inputs[nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni-delI].inputConnectionIndex].nodeConnectionIndex = 10000;
+									nodeScenes[selectedNodeScene].nodes[nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni-delI].nodeConnectionIndex].inputs[nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni-delI].inputConnectionIndex].inputConnectionIndex = 10000;
+								}
+								nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.erase(nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.begin() + coni-delI);
 								nodeScenes[selectedNodeScene].stateChanged = true;
+								delI++;
 							}
 						}
 					}

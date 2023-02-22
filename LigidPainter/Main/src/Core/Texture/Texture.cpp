@@ -83,7 +83,7 @@ unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, un
 		}
 
 		stbi_image_free(data);
-		delete(resizedPixelsX);
+		delete[] resizedPixelsX;
 		return textureID;
 	}
 	else{

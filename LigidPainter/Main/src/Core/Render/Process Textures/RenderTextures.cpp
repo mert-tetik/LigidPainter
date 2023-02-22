@@ -54,6 +54,7 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 			glset.genTextures(orgTexture);
 			glset.bindTexture(orgTexture);
 			glset.texImage(originalImage,txtrRes,txtrRes,GL_RGB);
+			delete[] originalImage;
 			glset.generateMipmap();
 
 			albedoTextures[chosenTextureIndex].undoList.push_back(orgTexture);
