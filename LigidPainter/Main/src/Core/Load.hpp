@@ -157,11 +157,11 @@ public:
 		    "LigidPainter/Resources/Cubemap/Skybox/ambient/pzblur.png",
 		    "LigidPainter/Resources/Cubemap/Skybox/ambient/nzblur.png"
 		};
-		// unsigned int cubemapTextureblur = loadCubemap(facesblur,GL_TEXTURE13);  
+		unsigned int cubemapTextureblur = loadCubemap(facesblur,GL_TEXTURE13);  
 
 	
 		Cubemaps cubemaps;
-		// cubemaps.blurycubemap = cubemapTextureblur;
+		cubemaps.blurycubemap = cubemapTextureblur;
 		cubemaps.cubemap = cubemapTexture;
 		// cubemaps.cubemap2 = cubemapTexture2;
 		// cubemaps.cubemap3 = cubemapTexture3;

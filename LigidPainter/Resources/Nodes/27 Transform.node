@@ -1,0 +1,56 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Transform;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Transform;
+--element : color;
+--value : 100,100,100;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Transform;
+--element : range;
+--value : 100,100,100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Rotation;
+--element : range;
+--value : 100,100,100;
+
+-input_2 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Scale;
+--element : range;
+--value : 100,100,100;
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+void main(){
+
+    output_0 = vec4(res,res,res,1);
+}

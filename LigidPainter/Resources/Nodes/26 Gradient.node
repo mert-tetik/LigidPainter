@@ -1,0 +1,123 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+$
+
+-title : Gradient;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : State;
+--element : range;
+--value : 100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Rotation;
+--element : range;
+--value : 100,100,100;
+
+-input_2 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Transform;
+--element : range;
+--value : 100,100,100;
+
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+
+mat4 rotationX(float angle ) {
+	return mat4(	1.0,		0,			0,			0,
+			 		0, 	cos(angle),	-sin(angle),		0,
+					0, 	sin(angle),	 cos(angle),		0,
+					0, 			0,			  0, 		1);
+}
+
+mat4 rotationY(float angle ) {
+	return mat4(	cos(angle),		0,		sin(angle),	0,
+			 				0,		1.0,			 0,	0,
+					-sin(angle),	0,		cos(angle),	0,
+							0, 		0,				0,	1);
+}
+
+mat4 rotationZ(float angle ) {
+	return mat4(	cos(angle),		-sin(angle),	0,	0,
+			 		sin(angle),		cos(angle),		0,	0,
+							0,				0,		1,	0,
+							0,				0,		0,	1);
+}
+
+float calc_gradient(vec3 p, int gradient_type)
+{
+  float x, y, z;
+  x = p.x;
+  y = p.y;
+  z = p.z;
+  if (gradient_type == 0) { /* linear */
+    return x;
+  }
+  else if (gradient_type == 1) { /* quadratic */
+    float r = max(x, 0.0);
+    return r * r;
+  }
+  else if (gradient_type == 2) { /* easing */
+    float r = min(max(x, 0.0), 1.0);
+    float t = r * r;
+    return (3.0 * t - 2.0 * t * r);
+  }
+  else if (gradient_type == 3) { /* diagonal */
+    return (x + y) * 0.5;
+  }
+  else if (gradient_type == 4) { /* radial */
+    return atan(y, x) / (3.14159265 * 2) + 0.5;
+  }
+  else {
+    /* Bias a little bit for the case where p is a unit length vector,
+     * to get exactly zero instead of a small random value depending
+     * on float precision. */
+    float r = max(0.999999 - sqrt(x * x + y * y + z * z), 0.0);
+    if (gradient_type == 5) { /* quadratic sphere */
+      return r * r;
+    }
+    else if (gradient_type == 6) { /* sphere */
+      return r;
+    }
+  }
+  return 0.0;
+}
+
+float node_tex_gradient(vec3 co, float gradient_type)
+{
+  float f = calc_gradient(co, int(gradient_type));
+  f = clamp(f, 0.0, 1.0);
+
+  return f;
+}
+
+void main(){
+  float val = texture2D(input_0,tex_coords).r*5;
+  vec3 rotVal = texture2D(input_1,tex_coords).rgb*6.283;
+  vec3 transform = texture2D(input_2,tex_coords).rgb*10;
+  mat4 rotation = rotationX(rotVal.x)*rotationY(rotVal.y)*rotationZ(rotVal.z);
+  float res = node_tex_gradient((vec4(posModel+transform,1)*rotation).xyz,val);
+  output_0 = vec4(vec3(res),1);
+}
