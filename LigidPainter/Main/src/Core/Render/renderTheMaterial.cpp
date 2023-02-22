@@ -30,7 +30,7 @@ std::vector<float> renderVertices = {
 unsigned int lastProgram = 0;
 
 MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY,std::vector<Node>appNodes,int chosenTextureResIndex,bool& bakeTheMaterial,std::vector<aTexture> &albedoTextures,int currentMaterialIndex,std::vector<NodeScene> &nodeScenesHistory){
-    
+    glClearColor(0,0,0,1);
     int txtrRes = 256;
 	for (size_t i = 0; i < chosenTextureResIndex; i++)
 	{

@@ -1,0 +1,58 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Noise;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Normals;
+--element : range;
+--value : 100,100,100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Radius;
+--element : range;
+--value : 100;
+
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+void main(){
+    vec3 clr = texture2D(input_0,tex_coords).rgb;
+    float rad = texture2D(input_1,tex_coords).r/2.;
+
+    vec3 clrR = texture2D(input_0,tex_coords+vec2(rad,0)).rgb;
+    vec3 clrL = texture2D(input_0,tex_coords-vec2(rad,0)).rgb;
+    vec3 clrT = texture2D(input_0,tex_coords+vec2(0,rad)).rgb;
+    vec3 clrB = texture2D(input_0,tex_coords-vec2(0,rad)).rgb;
+
+    float rlD = dot(clrR,clrL);
+    float rtD = dot(clrR,clrT);
+    float btD = dot(clrB,clrT);
+    float blD = dot(clrB,clrL);
+
+    float res = min(rlD,btD);
+    res = min(rtD,res);
+    res = min(blD,res);
+
+
+    output_0 = vec4(vec3(1-res),1);
+}

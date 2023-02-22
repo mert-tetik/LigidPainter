@@ -50,6 +50,6 @@ $ #Use the model's texture coords instead of a plane
 void main (){
     output_0 = vec4(posModel,1);
     output_1 = vec4(tex_coords,0,1);
-    output_2 = vec4(normal,1);
+    output_2 = vec4(abs(normal),1);
     output_3 = vec4(tangent,1);
 }
