@@ -239,12 +239,11 @@ std::vector<aTexture> albedoTextures,int chosenTextureIndex){
 
 glm::vec3 getScreenHoverPixel(double mouseXpos,double mouseYpos, int screenSizeY){
     glm::vec3 screenHoverPixel;
-	GLubyte* screenPixel = new GLubyte[1 * 1 * 3];//Color val
+	GLubyte screenPixel[1 * 1 * 3];//Color val
 	glReadPixels(mouseXpos,(int)((double)screenSizeY - mouseYpos), 1, 1, GL_RGB, GL_UNSIGNED_BYTE, screenPixel);//Read the pixel from the framebuffer
 	screenHoverPixel.r = screenPixel[0];
 	screenHoverPixel.g = screenPixel[1];
 	screenHoverPixel.b = screenPixel[2];
-	delete[] screenPixel;  
     return screenHoverPixel;
 }
 
