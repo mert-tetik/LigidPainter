@@ -692,6 +692,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	//------------------TEXT------------------
 	
+	if(addNodeContextMenu.active){
+		if(addNodeContextMenu.searchText == "search")
+			addNodeContextMenu.searchText = "";
+		addNodeContextMenu.searchTextboxActive = true;
+	}
+
 	renderTheScene = true;
 	renderTheSceneCounter = 0;
 
