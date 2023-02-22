@@ -142,7 +142,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 
 		if(node.listBoxes[i].active){
 			
-			box(node.width,iconWidth*2.f*(node.listBoxes[i].elements.size()+2),(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+1)/(20.f/(node.width*16)) - 0.05f * node.width*10 - iconWidth*2.f*(node.listBoxes[i].elements.size()+2),"",colorData.rangeBarBack,0,0,0,depth+0.05f,10000,node.backColor,0);///Bottom
+			box(node.width,iconWidth*2.35f*(node.listBoxes[i].elements.size()),(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+1)/(20.f/(node.width*16)) - 0.05f * node.width*10 - iconWidth*2.35f*(node.listBoxes[i].elements.size()),"",colorData.rangeBarBack,0,0,0,depth+0.05f,10000,node.backColor,0);///Bottom
+			
 			for (size_t j = 0; j < node.listBoxes[i].elements.size(); j++)
 			{
 				const bool elementHover = isMouseOnButton(window , node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+j+1)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
@@ -162,6 +163,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+j+1)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",color,0,0,0,depth+0.06f,10000,node.backColor,0);///Bottom
 				renderText(programs.uiProgram,node.listBoxes[i].elements[j],(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.2f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+j+1)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+0.07f,false);
 			}
+			box(node.width/1.1,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+1)/(20.f/(node.width*16)) - 0.05f * node.width*10 - (iconWidth*2.35f*(node.listBoxes[i].elements.size()))*2,"",colorData.rangeBarBack,0,0,0,depth+0.05f,8 / (node.width*6),node.backColor,0);///Bottom
+
 			
 		}
 

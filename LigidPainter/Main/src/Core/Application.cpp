@@ -1574,11 +1574,19 @@ void LigidPainter::sndPanelMinusIcon(){
 					}
 				}
 				if(deletable){
+					//TODO : Update history array indexes
 					for (size_t i = 0; i < nodeScenesHistory.size(); i++)
 					{	
 						if(nodeScenesHistory[i].arrayIndex == selectedNodeScene)
 							nodeScenesHistory.erase(nodeScenesHistory.begin()+i);
 					}
+					for (size_t i = 0; i < nodeScenesHistory.size(); i++)
+					{
+						if(selectedNodeScene < nodeScenesHistory[i].arrayIndex){
+							nodeScenesHistory[i].arrayIndex--;
+						}
+					}
+					
 					nodeScenes.erase(nodeScenes.begin() + selectedNodeScene);
 					modelMaterials.erase(modelMaterials.begin() + selectedNodeScene);
 					if(selectedNodeScene)

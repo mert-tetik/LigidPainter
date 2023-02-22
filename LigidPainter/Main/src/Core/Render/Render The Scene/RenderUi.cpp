@@ -304,7 +304,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 			for (size_t i = 0; i < addNodeContextMenu.buttons.size(); i++)
 			{
-				if(i == 0||((util.isMatch(addNodeContextMenu.buttons[i].text,addNodeContextMenu.searchText) && addNodeContextMenu.searchText != "search") || (addNodeContextMenu.scroll < i && i < min(addNodeContextMenu.buttons.size(),(size_t)10)+addNodeContextMenu.scroll && addNodeContextMenu.searchText == "search"))){
+				//TODO : Scroll after search
+				if(indepI <= 9 && (i == 0||((util.isMatch(addNodeContextMenu.buttons[i].text,addNodeContextMenu.searchText) && addNodeContextMenu.searchText != "search") || (addNodeContextMenu.scroll < i && i < min(addNodeContextMenu.buttons.size(),(size_t)10)+addNodeContextMenu.scroll && addNodeContextMenu.searchText == "search")))){
 					addNodeContextMenu.buttons[i].transitionMixVal = (float)addNodeContextMenu.buttons[i].hover * (float)addNodeContextMenu.buttons[i].hoverAnimationActive;
 
 					if(addNodeContextMenu.buttons[i].hover && addNodeContextMenu.buttons[i].hoverAnimationActive){
