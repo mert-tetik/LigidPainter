@@ -214,7 +214,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			if(!glfwGetKey(renderData.window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 				selectionBoxCoords = ui.selectionBox(true,sPX,sPY,dPX,dPY,0.3f);
 			else
-				ui.drawLine(sPX,sPY,0.3f,dPX,dPY,10,glm::vec4(1,0,0,1));
+				ui.drawLine(sPX,sPY,0.3f,dPX,dPY,10,glm::vec4(1,0,0,1),true);
 			selectionActive = true;
 		}
 		else{
@@ -258,6 +258,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 							if(util.intersect(conPos1,conPos2,conPos3,conPos4)){
 								nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.erase(nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.begin() + coni);
+								nodeScenes[selectedNodeScene].stateChanged = true;
 							}
 						}
 					}
