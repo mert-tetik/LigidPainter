@@ -11,19 +11,19 @@
 --list : none;
 --list_index : none;
 --type : vec3;
---title : Transform;
+--title : Source;
 --element : color;
 --value : 100,100,100;
 
--input_0 : 
+-input_1 : 
 --list : none;
 --list_index : none;
 --type : vec3;
---title : Transform;
+--title : Location;
 --element : range;
 --value : 100,100,100;
 
--input_1 : 
+-input_2 : 
 --list : none;
 --list_index : none;
 --type : vec3;
@@ -31,7 +31,7 @@
 --element : range;
 --value : 100,100,100;
 
--input_2 : 
+-input_3 : 
 --list : none;
 --list_index : none;
 --type : vec3;
@@ -50,7 +50,40 @@
 
 %code;
 
-void main(){
+mat4 rotationX(float angle ) {
+	return mat4(	1.0,		0,			0,			0,
+			 		0, 	cos(angle),	-sin(angle),		0,
+					0, 	sin(angle),	 cos(angle),		0,
+					0, 			0,			  0, 		1);
+}
 
-    output_0 = vec4(res,res,res,1);
+mat4 rotationY(float angle ) {
+	return mat4(	cos(angle),		0,		sin(angle),	0,
+			 				0,		1.0,			 0,	0,
+					-sin(angle),	0,		cos(angle),	0,
+							0, 		0,				0,	1);
+}
+
+mat4 rotationZ(float angle ) {
+	return mat4(	cos(angle),		-sin(angle),	0,	0,
+			 		sin(angle),		cos(angle),		0,	0,
+							0,				0,		1,	0,
+							0,				0,		0,	1);
+}
+
+mat4 rotate(vec3 angle){
+    mat4 res = rotationX(angle.x)*rotationY(angle.y)*rotationZ(angle.z);
+    return res;
+}
+
+void main(){
+    vec3 loc = texture2D(input_1,tex_coords).xyz;
+    vec3 rot = texture2D(input_2,tex_coords).xyz;
+    vec3 scale = texture2D(input_3,tex_coords).xyz;
+    
+    mat4 rotMat = rotate(rot);
+
+    vec3 src = texture2D(input_0,(vec4((tex_coords+loc.xy)*scale.xy,1,1)*rotMat).xy).rgb;
+
+    output_0 = vec4(src,1);
 }
