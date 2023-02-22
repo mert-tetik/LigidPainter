@@ -1,0 +1,48 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Pixelate;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Source;
+--element : image;
+--value : 100,100,100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Radius;
+--element : range;
+--value : 210;
+
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+vec3 pixelize(){
+    float radius = texture2D(input_1,tex_coords).r*1024.; 
+    float rad = 1024-radius;
+    vec2 uv = vec2(ceil(tex_coords.x*rad)/rad,ceil(tex_coords.y*rad)/rad);
+
+    vec3 val = texture2D(input_0,uv).rgb;
+    return val;
+}
+void main(){
+    output_0 = vec4(pixelize(),1);
+}
