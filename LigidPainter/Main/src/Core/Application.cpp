@@ -1686,6 +1686,17 @@ void LigidPainter::sndPanelPlusIcon(){
 		}
 	}
 }
+void LigidPainter::sndPanelDuplicateIcon(){
+	if(!txtrCreatingPanel.active){
+		if(sndPanel.state == 0){
+		
+		}
+		else if(sndPanel.state == 1){
+			//TODO : Unique name & index
+			nodeScenes.push_back(nodeScenes[selectedNodeScene]);
+		}
+	}
+}
 void LigidPainter::sndPanelFolderIcon(){
 	Utilities util;
 	

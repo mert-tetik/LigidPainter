@@ -258,16 +258,17 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		//Snd Panel
 		if(sndPanel.state == 0){
 			if(sndPanel.activeFolderIndex != 10000)
-				sndPanel.backSignHover = ui.isMouseOnButton(window, 0.015f,0.03f, sndPanel.position - 0.365f, 0.85f, mouseXPos, mouseYPos, false);
+				sndPanel.backSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.365f, 0.85f, mouseXPos, mouseYPos, false);
 			else
 				sndPanel.backSignHover = false;
 				
-			sndPanel.downSignHover = ui.isMouseOnButton(window, 0.015f,0.03f, sndPanel.position - 0.05f, 0.85f, mouseXPos, mouseYPos, false);
-			sndPanel.folderSignHover = ui.isMouseOnButton(window, 0.015f,0.03f, sndPanel.position - 0.20f, 0.85f, mouseXPos, mouseYPos, false);
+			sndPanel.downSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.05f, 0.85f, mouseXPos, mouseYPos, false);
+			sndPanel.folderSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.17f, 0.85f, mouseXPos, mouseYPos, false);
 		}
 
-		sndPanel.plusSignHover = ui.isMouseOnButton(window, 0.015f,0.03f, sndPanel.position - 0.10f, 0.85f, mouseXPos, mouseYPos, false);
-		sndPanel.minusSignHover = ui.isMouseOnButton(window, 0.015f,0.03f, sndPanel.position - 0.15f, 0.85f, mouseXPos, mouseYPos, false);
+		sndPanel.plusSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.08f, 0.85f, mouseXPos, mouseYPos, false);
+		sndPanel.minusSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.11f, 0.85f, mouseXPos, mouseYPos, false);
+		sndPanel.duplicateSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.14f, 0.85f, mouseXPos, mouseYPos, false);
 		
 		sndPanel.texturePanelButtonHover = ui.isMouseOnButton(window, 0.017f,0.034f, sndPanel.position + 0.015f, 0.8f, mouseXPos, mouseYPos, false);
 		sndPanel.materialPanelButtonHover = ui.isMouseOnButton(window, 0.017f,0.034f, sndPanel.position + 0.015f, 0.72f, mouseXPos, mouseYPos, false);
@@ -313,7 +314,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 	else if(colorPicker.saturationValuePointerHover || colorPicker.hueValuePointerHover || colorPicker.hexValTextBoxEnter){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
-	else if(sndPanel.plusSignHover || sndPanel.downSignHover || sndPanel.minusSignHover || sndPanel.folderSignHover || sndPanel.backSignHover){
+	else if(sndPanel.plusSignHover || sndPanel.downSignHover || sndPanel.minusSignHover || sndPanel.folderSignHover || sndPanel.backSignHover || sndPanel.duplicateSignHover){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
 	else if(modelPanelButtonEnter || texturePanelButtonEnter || paintingPanelButtonEnter || exportPanelButtonEnter || settingsPanelButtonEnter || generatorPanelButtonEnter){

@@ -63,6 +63,7 @@ void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &
 
 	sndpanel.minusSignMixVal = util.transitionEffect(sndpanel.minusSignHover,sndpanel.minusSignMixVal,phaseDifference);
 	sndpanel.backSignMixVal = util.transitionEffect(sndpanel.backSignHover,sndpanel.backSignMixVal,phaseDifference);
+	sndpanel.duplicateSignMixVal = util.transitionEffect(sndpanel.duplicateSignHover,sndpanel.duplicateSignMixVal,phaseDifference);
 	sndpanel.downSignMixVal = util.transitionEffect(sndpanel.downSignHover,sndpanel.downSignMixVal,phaseDifference);
 	sndpanel.plusSignMixVal = util.transitionEffect(sndpanel.plusSignHover,sndpanel.plusSignMixVal,phaseDifference);
 	sndpanel.folderSignMixVal = util.transitionEffect(sndpanel.folderSignHover,sndpanel.folderSignMixVal,phaseDifference);

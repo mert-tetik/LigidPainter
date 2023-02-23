@@ -176,6 +176,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			ligid.sndPanelBackIcon();
 		if(sndPanel.minusSignHover)
 			ligid.sndPanelMinusIcon();
+		if(sndPanel.duplicateSignHover)
+			ligid.sndPanelDuplicateIcon();
 		if(sndPanel.texturePanelButtonHover)
 			sndPanel.state = 0;
 		if(sndPanel.materialPanelButtonHover)

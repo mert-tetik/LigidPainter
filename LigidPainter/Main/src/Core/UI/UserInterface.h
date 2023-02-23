@@ -461,12 +461,15 @@ struct SndPanel{
 	bool downSignHover = false;
 	bool folderSignHover = false;
 	bool backSignHover = false;
+	bool duplicateSignHover = false;
 
 	float plusSignMixVal = false;
 	float minusSignMixVal = false;
 	float downSignMixVal = false;
 	float folderSignMixVal = false;
 	float backSignMixVal = false;
+	float duplicateSignMixVal = false;
+
 
 	bool texturePanelButtonHover;
 	bool materialPanelButtonHover;

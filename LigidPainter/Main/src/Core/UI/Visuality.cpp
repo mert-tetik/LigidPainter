@@ -225,11 +225,12 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			if(folderIndex != 10000)
 				iconBox(0.01f,0.02f,panelLoc - 0.365f,0.86f,panelZ+0.01f,icons.Undo,sndpnl.backSignMixVal,colorD.iconColor,colorD.iconColorHover);
 			iconBox(0.01f,0.02f,panelLoc - 0.05f,0.85f,panelZ+0.01f,icons.ArrowDown,sndpnl.downSignMixVal,colorD.iconColor,colorD.iconColorHover);
-			iconBox(0.01f,0.02f,panelLoc - 0.2f,0.85f,panelZ+0.01f,icons.LoadFolder,sndpnl.folderSignMixVal,colorD.iconColor,colorD.iconColorHover);
+			iconBox(0.01f,0.02f,panelLoc - 0.17f,0.85f,panelZ+0.01f,icons.LoadFolder,sndpnl.folderSignMixVal,colorD.iconColor,colorD.iconColorHover);
 		}
 
-		iconBox(0.01f,0.02f,panelLoc - 0.10f,0.85f,panelZ+0.01f,icons.Plus,sndpnl.plusSignMixVal,colorD.iconColor,colorD.iconColorHover);
-		iconBox(0.01f,0.02f,panelLoc - 0.15f,0.85f,panelZ+0.01f,icons.Minus,sndpnl.minusSignMixVal,colorD.iconColor,colorD.iconColorHover);
+		iconBox(0.01f,0.02f,panelLoc - 0.08f,0.85f,panelZ+0.01f,icons.Plus,sndpnl.plusSignMixVal,colorD.iconColor,colorD.iconColorHover);
+		iconBox(0.01f,0.02f,panelLoc - 0.11f,0.85f,panelZ+0.01f,icons.Minus,sndpnl.minusSignMixVal,colorD.iconColor,colorD.iconColorHover);
+		iconBox(0.01f,0.02f,panelLoc - 0.14f,0.85f,panelZ+0.01f,icons.Mirror,sndpnl.duplicateSignMixVal,colorD.iconColor,colorD.iconColorHover);
 	
 
 
