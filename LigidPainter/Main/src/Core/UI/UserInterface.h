@@ -444,6 +444,7 @@ struct ContextMenu {
 
 	bool hover;
 
+	int selectedButtonIndex = 1;
 	std::vector<Button> buttons;
 };
 

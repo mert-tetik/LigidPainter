@@ -327,6 +327,7 @@ bool Utilities::isMatch(std::string o,std::string t){
 	if(t.size() > o.size())
 		return false;
 
+	//Convert to lowercase
 	for (size_t i = 0; i < o.size(); i++)
 	{
 		if(isupper(o[i])){
@@ -339,6 +340,8 @@ bool Utilities::isMatch(std::string o,std::string t){
 			t[i]+=32;
 		}
 	}
+
+
 
 	for (size_t i = 0; i < o.size(); i++)
 	{

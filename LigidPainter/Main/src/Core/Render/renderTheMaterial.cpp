@@ -315,7 +315,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     
                     aTexture txtr;
                     txtr.id = copyTxtr;
-                    txtr.name = "bake";
+                    txtr.name = material.renderingPipeline[nodeI].outputs[outI].text;;
                     Utilities util;
                     std::vector<std::string> textureNames;
 			        for (size_t nameI = 0; nameI < albedoTextures.size(); nameI++)
@@ -431,7 +431,8 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     
                     aTexture txtr;
                     txtr.id = copyTxtr;
-                    txtr.name = "bake";
+                    txtr.name = material.renderingPipeline[nodeI].outputs[outI].text;;
+
                     Utilities util;
                     std::vector<std::string> textureNames;
 			        for (size_t nameI = 0; nameI < albedoTextures.size(); nameI++)

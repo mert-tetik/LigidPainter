@@ -313,10 +313,11 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 				if(indepI <= 9 && (i == 0||((util.isMatch(addNodeContextMenu.buttons[i].text,addNodeContextMenu.searchText) && addNodeContextMenu.searchText != "search") || (addNodeContextMenu.scroll < i && i < min(addNodeContextMenu.buttons.size(),(size_t)10)+addNodeContextMenu.scroll && addNodeContextMenu.searchText == "search")))){
 					addNodeContextMenu.buttons[i].transitionMixVal = (float)addNodeContextMenu.buttons[i].hover * (float)addNodeContextMenu.buttons[i].hoverAnimationActive;
 
-					if(addNodeContextMenu.buttons[i].hover && addNodeContextMenu.buttons[i].hoverAnimationActive){
+					if((addNodeContextMenu.buttons[i].hover && addNodeContextMenu.buttons[i].hoverAnimationActive) || (addNodeContextMenu.selectedButtonIndex == indepI && glfwGetKey(renderData.window,GLFW_KEY_ENTER) == GLFW_PRESS)){
 						addNodeContextMenu.buttons[i].positionZ = 0.899f;
-						if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS && i != 0){
+						if((glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS && i != 0) || (glfwGetKey(renderData.window,GLFW_KEY_ENTER) == GLFW_PRESS && addNodeContextMenu.selectedButtonIndex == indepI && addNodeContextMenu.selectedButtonIndex != 0)){
 							Node node;
+							std::cout << "res is : " << i << " node index is : " << addNodeContextMenu.selectedButtonIndex << '\n';
 							node = appNodes[i-1];
 							node.positionX = (mouseXpos/screenSizeX*2 - 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionX;
 							node.positionY = ((-mouseYpos/maxScreenHeight*2 + 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionY);						
@@ -329,7 +330,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 					else{
 						addNodeContextMenu.buttons[i].positionZ = 0.8f;
 					}
-					ui.box(addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[indepI].positionY, addNodeContextMenu.buttons[i].text, addNodeContextMenu.buttons[i].color, addNodeContextMenu.buttons[i].textRatio, false, false, addNodeContextMenu.buttons[i].positionZ, addNodeContextMenu.buttons[i].buttonCurveReduce, addNodeContextMenu.buttons[i].colorHover, addNodeContextMenu.buttons[i].transitionMixVal); //Add mask texture button	
+					ui.box(addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[indepI].positionY, addNodeContextMenu.buttons[i].text, addNodeContextMenu.buttons[i].color, addNodeContextMenu.buttons[i].textRatio, false, false, addNodeContextMenu.buttons[i].positionZ + 0.099f * (float)(addNodeContextMenu.selectedButtonIndex == indepI), addNodeContextMenu.buttons[i].buttonCurveReduce, addNodeContextMenu.buttons[i].colorHover, ((bool)addNodeContextMenu.buttons[i].transitionMixVal || addNodeContextMenu.selectedButtonIndex == indepI)); //Add mask texture button	
 					addNodeContextMenu.buttons[i].hover = ui.isMouseOnButton(renderData.window, addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX - screenGapX/2.f, addNodeContextMenu.buttons[indepI].positionY + addNodeContextMenu.positionY, mouseXpos, mouseYpos, false);
 					
 					indepI++;
@@ -365,8 +366,10 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 				ui.iconBox(0.01f,0.02f,addNodeContextMenu.positionX, addNodeContextMenu.positionY - 0.265f*1.87f, 0.9999,icons.ArrowDown,0,colorData.iconColor,colorData.iconColor);
 			}
 		}
-		else
+		else{
 			addNodeContextMenu.scroll = 0;
+			addNodeContextMenu.selectedButtonIndex = 0;
+		}
 		glUseProgram(programs.uiProgram);
 
 		if(!addNodeContextMenu.active){

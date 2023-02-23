@@ -692,10 +692,33 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	//------------------TEXT------------------
 	
-	if(addNodeContextMenu.active){
+	if(addNodeContextMenu.active && key != GLFW_KEY_ENTER && key != GLFW_KEY_LEFT && key != GLFW_KEY_LEFT && key != GLFW_KEY_DOWN && key != GLFW_KEY_UP){
 		if(addNodeContextMenu.searchText == "search")
 			addNodeContextMenu.searchText = "";
 		addNodeContextMenu.searchTextboxActive = true;
+	}
+
+	if(key == GLFW_KEY_UP && (action == 0 || action == 2)){
+		if(addNodeContextMenu.selectedButtonIndex != 0)
+			addNodeContextMenu.selectedButtonIndex--;
+		else{
+			Utilities util;
+			addNodeContextMenu.scroll--;
+			addNodeContextMenu.scroll = util.restrictBetween(addNodeContextMenu.scroll, addNodeContextMenu.buttons.size()-10, 0);
+		}
+	}
+	else if(key == GLFW_KEY_DOWN && (action == 0 || action == 2)){
+		if(addNodeContextMenu.selectedButtonIndex != 9)
+			addNodeContextMenu.selectedButtonIndex++;
+		else{
+			Utilities util;
+			addNodeContextMenu.scroll++;
+			addNodeContextMenu.scroll = util.restrictBetween(addNodeContextMenu.scroll, addNodeContextMenu.buttons.size()-10, 0);
+		}
+		
+	}
+	else if(key != GLFW_KEY_DOWN && key != GLFW_KEY_UP && key != GLFW_KEY_ENTER){
+		addNodeContextMenu.selectedButtonIndex = 0;
 	}
 
 	renderTheScene = true;

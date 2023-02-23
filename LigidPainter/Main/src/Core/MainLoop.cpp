@@ -42,7 +42,6 @@ void MainLoop::updateRenderTheScene(GLFWwindow* window,int &renderTheSceneCounte
 void MainLoop::setContextPanelsStates(GLFWwindow* window,ColoringPanel &coloringPanel, ContextMenu &addNodeContextMenu, TextureSelectionPanel &textureSelectionPanel){
 	if(glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
 		coloringPanel.active = false;
-		addNodeContextMenu.active = false;
 		textureSelectionPanel.active = false;
 	}
 }
