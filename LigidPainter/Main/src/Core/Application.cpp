@@ -1692,8 +1692,43 @@ void LigidPainter::sndPanelDuplicateIcon(){
 		
 		}
 		else if(sndPanel.state == 1){
-			//TODO : Unique name & index
-			nodeScenes.push_back(nodeScenes[selectedNodeScene]);
+			//Materials
+
+			ColorData colorData;
+
+			std::vector<Node> mainOutNodes;
+			Load load;
+			mainOutNodes = load.createOutputNode(appNodes);		
+
+			NodeScene emptyNodeScene;
+			emptyNodeScene = nodeScenes[selectedNodeScene];
+			emptyNodeScene.index = 0;
+			emptyNodeScene.arrayIndex = nodeScenes.size();
+
+			const int maxMaterialSize = 100;
+
+			for (int i = 0; i < maxMaterialSize; i++)
+			{
+				bool numberAvailable = false;
+				for (int nodeSceneIndex = 0; nodeSceneIndex < nodeScenes.size(); nodeSceneIndex++)
+				{
+					if(nodeScenes[nodeSceneIndex].index == i){
+						numberAvailable = true;
+					}
+				}
+				if(!numberAvailable){
+					emptyNodeScene.index = i;
+					break;
+				}
+			}
+
+			emptyNodeScene.sceneName = "material_" + std::to_string(emptyNodeScene.index); 
+			
+			nodeScenes.push_back(emptyNodeScene);
+
+			MaterialOut mOut;
+			mOut.program = 0;
+			modelMaterials.push_back(mOut);
 		}
 	}
 }
