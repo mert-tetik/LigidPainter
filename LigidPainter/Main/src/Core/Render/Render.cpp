@@ -273,7 +273,7 @@ ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,Co
 ,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
 std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool firstClick,
 glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
-,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory) {
+,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter) {
 	GlSet gls;
 	ColorData colorData;
 	Utilities util;
@@ -414,7 +414,8 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		renderMaxScreenHeight, saturationValShaderData,currentBrushMaskTexture,materialsPanelSlideValue,UIElements,
 		colorPicker,textureDisplayer,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,
 		nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
-		chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory);
+		chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
+		,brushMaskTextures,maskPanelEnter);
 
 	if(nodeScenes[selectedNodeScene].stateChanged && !lastMaterialStateChanged && lastNodeScene.nodes.size())
     	nodeScenesHistory.push_back(lastNodeScene);

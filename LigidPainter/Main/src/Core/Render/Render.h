@@ -42,7 +42,7 @@ public:
 	int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene
 	,std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool& newModelAdded,bool firstClick,
 	glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
-	,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory);
+	,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter);
 
 
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
@@ -67,7 +67,7 @@ private:
 	SndPanel &sndPanel,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,
 	int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool firstClick,ColoringPanel& coloringPanel,
 	TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive,std::string &textureText
-	,std::vector<NodeScene> &nodeScenesHistory);
+	,std::vector<NodeScene> &nodeScenesHistory,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter);
 	
 	
 	void renderAxisPointer(AxisPointerShaderData axisPointerShaderData,Programs programs);

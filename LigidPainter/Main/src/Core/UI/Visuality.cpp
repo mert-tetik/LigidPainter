@@ -174,7 +174,7 @@ void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
 bool sndpanelMoveTexture = false;
 bool sndpanelFolderPressed = false;
 int sndpanelFolderCounter = 0;
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -273,8 +273,12 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			}
 		}
 		if(albedoTextures.size()){
-
+			if(albedoTextures[selectedAlbedoTextureIndex].isTexture && sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE && maskPanelEnter){
+				brushMaskTextures.textures.push_back(albedoTextures[selectedAlbedoTextureIndex].id);
+				brushMaskTextures.names.push_back(albedoTextures[selectedAlbedoTextureIndex].name);
+			}
 			if(albedoTextures[selectedAlbedoTextureIndex].isTexture && sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE && nodePanel.panelHover){
+
 				Node imageNode;
 				imageNode = appNodes[1];
 				imageNode.outputs[0].nodeConnectionIndex = 10000;

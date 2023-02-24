@@ -8,10 +8,6 @@ struct WindowData{
 	int windowMaxHeight;
 	GLFWwindow* window;
 };
-struct BrushMaskTextures{
-	std::vector<unsigned int> textures;
-	std::vector<std::string> names;
-};
 
 class GlSet {
 public:
