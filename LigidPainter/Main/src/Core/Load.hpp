@@ -83,12 +83,12 @@ public:
 		Texture txtr;
 		std::vector<std::string> faces
 		{
-		    "LigidPainter/Resources/Cubemap/Skybox/sky1/px.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky1/nx.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky1/ny.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky1/py.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky1/pz.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky1/nz.png"
+		    "LigidPainter/Resources/Cubemap/Skybox/sky1/px.jpg",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky1/nx.jpg",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky1/ny.jpg",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky1/py.jpg",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky1/pz.jpg",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky1/nz.jpg"
 		};
 		unsigned int cubemapTexture = loadCubemap(faces,GL_TEXTURE13);  
 		
@@ -202,24 +202,24 @@ public:
 		Icons icons;
 	
 		glset.activeTexture(GL_TEXTURE6);
-		icons.dropperIcon = txtr.getTexture("LigidPainter/Resources/Icons/Dropper.png",0,0,false);
+		icons.dropperIcon = txtr.getTexture("LigidPainter/Resources/Icons/Dropper.jpg",0,0,false);
 		icons.TDModel = txtr.getTexture("LigidPainter/Resources/Icons/3DModel.jpg",0,0,false);
 		icons.BackfaceCulling = txtr.getTexture("LigidPainter/Resources/Icons/BackfaceCulling.jpg",0,0,false);
-		icons.ColorPicker = txtr.getTexture("LigidPainter/Resources/Icons/ColorPicker.png",0,0,false);
+		icons.ColorPicker = txtr.getTexture("LigidPainter/Resources/Icons/ColorPicker.jpg",0,0,false);
 		icons.Export = txtr.getTexture("LigidPainter/Resources/Icons/Export.jpg",0,0,false);
-		icons.Folder = txtr.getTexture("LigidPainter/Resources/Icons/Folder.png",0,0,false);
-		icons.ImportMask = txtr.getTexture("LigidPainter/Resources/Icons/ImportMask.png",0,0,false);
+		icons.Folder = txtr.getTexture("LigidPainter/Resources/Icons/Folder.jpg",0,0,false);
+		icons.ImportMask = txtr.getTexture("LigidPainter/Resources/Icons/ImportMask.jpg",0,0,false);
 		icons.ImportModel = txtr.getTexture("LigidPainter/Resources/Icons/ImportModel.jpg",0,0,false);
 		icons.ImportTexture = txtr.getTexture("LigidPainter/Resources/Icons/ImportTexture.jpg",0,0,false);
-		icons.JpgFile = txtr.getTexture("LigidPainter/Resources/Icons/JpgFile.png",0,0,false);
-		icons.MaskGausBlur = txtr.getTexture("LigidPainter/Resources/Icons/MaskGausBlur.png",0,0,false);
-		icons.MaskOpacity = txtr.getTexture("LigidPainter/Resources/Icons/MaskOpacity.png",0,0,false);
-		icons.MaskRotation = txtr.getTexture("LigidPainter/Resources/Icons/MaskRotation.png",0,0,false);
-		icons.MaskScale = txtr.getTexture("LigidPainter/Resources/Icons/MaskScale.png",0,0,false);
-		icons.MaskSpacing = txtr.getTexture("LigidPainter/Resources/Icons/MaskSpacing.png",0,0,false);
+		icons.JpgFile = txtr.getTexture("LigidPainter/Resources/Icons/JpgFile.jpg",0,0,false);
+		icons.MaskGausBlur = txtr.getTexture("LigidPainter/Resources/Icons/MaskGausBlur.jpg",0,0,false);
+		icons.MaskOpacity = txtr.getTexture("LigidPainter/Resources/Icons/MaskOpacity.jpg",0,0,false);
+		icons.MaskRotation = txtr.getTexture("LigidPainter/Resources/Icons/MaskRotation.jpg",0,0,false);
+		icons.MaskScale = txtr.getTexture("LigidPainter/Resources/Icons/MaskScale.jpg",0,0,false);
+		icons.MaskSpacing = txtr.getTexture("LigidPainter/Resources/Icons/MaskSpacing.jpg",0,0,false);
 		icons.Mirror = txtr.getTexture("LigidPainter/Resources/Icons/Mirror.jpg",0,0,false);
-		icons.Panel = txtr.getTexture("LigidPainter/Resources/Icons/Panel.png",0,0,false);
-		icons.PngFile = txtr.getTexture("LigidPainter/Resources/Icons/PngFile.png",0,0,false);
+		icons.Panel = txtr.getTexture("LigidPainter/Resources/Icons/Panel.jpg",0,0,false);
+		icons.PngFile = txtr.getTexture("LigidPainter/Resources/Icons/PngFile.jpg",0,0,false);
 		icons.Sphere = txtr.getTexture("LigidPainter/Resources/Icons/Sphere.jpg",0,0,false);
 		icons.Triangulate = txtr.getTexture("LigidPainter/Resources/Icons/Triangulate.jpg",0,0,false);
 		icons.ArrowRight = txtr.getTexture("LigidPainter/Resources/Icons/ArrowRight.jpg",0,0,false);

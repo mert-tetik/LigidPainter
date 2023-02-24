@@ -23,7 +23,6 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 	{
 		txtrRes*=2;
 	}
-	
 
 	if(isRenderTexture){
     	GlSet gl;
@@ -46,28 +45,30 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		//UNDO
 		Texture txtr;
 		if(albedoTextures.size() > 0){
-			GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, txtrRes, txtrRes, 3);
+			 GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, txtrRes, txtrRes, 3);
 
-			GlSet glset;
-			glActiveTexture(GL_TEXTURE28);
-			unsigned int orgTexture;
-			glset.genTextures(orgTexture);
-			glset.bindTexture(orgTexture);
-			glset.texImage(originalImage,txtrRes,txtrRes,GL_RGB);
-			delete[] originalImage;
-			glset.generateMipmap();
+			 GlSet glset;
+			 glActiveTexture(GL_TEXTURE28);
+			 
+			 unsigned int orgTexture;
+			 glset.genTextures(orgTexture);
+			 glset.bindTexture(orgTexture);
+			 glset.texImage(originalImage,txtrRes,txtrRes,GL_RGB);
+			 glset.generateMipmap();
 
-			albedoTextures[chosenTextureIndex].undoList.push_back(orgTexture);
+			 delete[] originalImage;
 
-    		//Delete the first element from undoList if undoList's count is greated than max history holding value which is 20
-			if (albedoTextures[chosenTextureIndex].undoList.size() > maxHistoryHold){
-				//Delete the texture
-				unsigned int undoTexture = albedoTextures[chosenTextureIndex].undoList[0];
-				glDeleteTextures(0,&undoTexture);
+			 albedoTextures[chosenTextureIndex].undoList.push_back(orgTexture);
 
-				//Remove the element
-				albedoTextures[chosenTextureIndex].undoList.erase(albedoTextures[chosenTextureIndex].undoList.begin());
-			}
+    		 //Delete the first element from undoList if undoList's count is greated than max history holding value which is 20
+			 if (albedoTextures[chosenTextureIndex].undoList.size() > maxHistoryHold){
+			 	//Delete the texture
+			 	unsigned int undoTexture = albedoTextures[chosenTextureIndex].undoList[0];
+			 	glDeleteTextures(1,&undoTexture);
+
+			 	//Remove the element
+			 	albedoTextures[chosenTextureIndex].undoList.erase(albedoTextures[chosenTextureIndex].undoList.begin());
+			 }
 		}
 
 		std::vector<float> renderVertices = { //Render backside of the uv
@@ -108,12 +109,11 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		// if (!paintOut)
 		// 	gl.drawArrays(renderVertices, false);
 
-		GLubyte* renderedImage = new GLubyte[txtrRes * txtrRes * 3 * sizeof(GLubyte)];
-		glReadPixels(0, 0, txtrRes, txtrRes, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
+		std::vector<GLubyte> renderedImage(txtrRes * txtrRes * 3 * sizeof(GLubyte));
+		glReadPixels(0, 0, txtrRes, txtrRes, GL_RGB, GL_UNSIGNED_BYTE, &renderedImage[0]);
 		gl.activeTexture(GL_TEXTURE0);
-		gl.texImage(renderedImage, txtrRes, txtrRes, GL_RGB);
+		gl.texImage(&renderedImage[0], txtrRes, txtrRes, GL_RGB);
 		gl.generateMipmap();
-		delete[]renderedImage;
 		//Render painted image
 
 		txtr.refreshScreenDrawingTexture();
@@ -139,6 +139,9 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 
 		//Finish
 		glUseProgram(programs.uiProgram);
+
+		glDeleteTextures(1,&textureColorbuffer);
+		glDeleteFramebuffers(1,&FBO);
 	}
 	else if(paintRender){
 		GlSet gl;

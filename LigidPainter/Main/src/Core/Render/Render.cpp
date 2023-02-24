@@ -227,7 +227,7 @@ std::vector<aTexture> albedoTextures,int chosenTextureIndex){
 	else
 		gl.drawArrays(vertices, false); //Render Model
 
-	std::vector<GLubyte> renderedTexture;
+	std::vector<GLubyte> renderedTexture(width*height*3);
 	glReadPixels(0, 0, width, height, channels, GL_UNSIGNED_BYTE, &renderedTexture[0]);
 
 	gl.activeTexture(texture);

@@ -16,7 +16,7 @@
 
 using namespace std;
 
-GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData, Programs programs, int maxScreenWidth, int maxScreenHeight) { //rotationValue = rotationBarValue
+std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData, Programs programs, int maxScreenWidth, int maxScreenHeight) { //rotationValue = rotationBarValue
 	GlSet glset;
 	UserInterface ui;
 	TextureGenerator txtrGen;
@@ -105,11 +105,11 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 
 	//Rotation
 	glset.drawArrays(centerVertices, false);
-	GLubyte* rotatedMaskTxtr = new GLubyte[size * size * 3 ];
-	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, rotatedMaskTxtr);
+	std::vector<GLubyte> rotatedMaskTxtr(size * size * 3);
+	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, &rotatedMaskTxtr[0]);
 
 	glset.activeTexture(GL_TEXTURE12);
-	glset.texImage(rotatedMaskTxtr, size, size, GL_RGB);
+	glset.texImage(&rotatedMaskTxtr[0], size, size, GL_RGB);
 	glset.generateMipmap();
 	//Rotation
 
@@ -166,11 +166,11 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 	else
 		glset.drawArrays(cornerVertices, false);
 
-	GLubyte* horizontalBlurMaskTxtr = new GLubyte[size * size * 3];
-	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, horizontalBlurMaskTxtr);
+	std::vector<GLubyte> horizontalBlurMaskTxtr(size * size * 3);
+	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, &horizontalBlurMaskTxtr[0]);
 
 	glset.activeTexture(GL_TEXTURE12);
-	glset.texImage(horizontalBlurMaskTxtr, size, size, GL_RGB);
+	glset.texImage(&horizontalBlurMaskTxtr[0], size, size, GL_RGB);
 	glset.generateMipmap();
 	//Horizontal Blur
 
@@ -187,11 +187,11 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 		else
 			glset.drawArrays(cornerVertices, false);
 
-	GLubyte* verticalBlurMaskTxtr = new GLubyte[size * size * 3 ];
-	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, verticalBlurMaskTxtr);
+	std::vector<GLubyte> verticalBlurMaskTxtr(size * size * 3);
+	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, &verticalBlurMaskTxtr[0]);
 
 	glset.activeTexture(GL_TEXTURE12);
-	glset.texImage(verticalBlurMaskTxtr, size, size, GL_RGB);
+	glset.texImage(&verticalBlurMaskTxtr[0], size, size, GL_RGB);
 	glset.generateMipmap();
 
 	//Verical blur
@@ -205,7 +205,5 @@ GLubyte* Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, i
 	glset.bindFramebuffer(0);
 	glViewport(-(maxScreenWidth - screenSize_x)/2, -(maxScreenHeight - screenSize_y), maxScreenWidth, maxScreenHeight);
 
-	delete[]rotatedMaskTxtr;
-	delete[]horizontalBlurMaskTxtr;
 	return verticalBlurMaskTxtr;
 }

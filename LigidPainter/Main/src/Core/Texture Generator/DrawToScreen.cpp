@@ -30,9 +30,6 @@ std::vector<float> textureRenderingVerticesFlipped = {
 	 0.0f,  1.0f, 0.0f,1,1,0,0,0   // top left
 };
 
-GLubyte* resizedPixels = new GLubyte[50 * 50 * 3]; //Resized mask texture
-GLubyte* renderedImage;
-//Check if values changed
 
 //Check if values changed
 double lastMouseXPosIn = 0;
@@ -101,19 +98,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 
 	//----------------------SET BRUSH TEXTURE----------------------\\
 						  (Interpreted with blur value)
-	if ((brushValChanged)) {
-		delete[]resizedPixels;
-		delete[]renderedImage;
-		//Setup
-		resizedPixels = new GLubyte[540 * 540 * 3];
 
-		renderedImage = txtr.updateMaskTexture(FBOScreen, screenSizeX,screenSizeY, rotationValue,false,brushBorderRangeBarValue,brushBlurVal,outShaderData,programs,maxScreenWidth,maxScreenHeight);
-		//Resize
-		if (true) {
-			stbir_resize_uint8(renderedImage, 540, 540, 0, resizedPixels, 540, 540, 0, 3); //Resize (causes lags)
-		}
-		//Resize
-	}
 	if (lastMouseXPosIn - mouseXposIn != 0 || lastMouseYPosIn - mouseYposIn != 0) {
 
 		//----------------------PAINTING----------------------\\

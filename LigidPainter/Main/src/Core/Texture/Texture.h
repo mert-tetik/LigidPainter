@@ -26,7 +26,7 @@ public:
 	TextureData getTextureData(const char* path);
 	ScreenPaintingReturnData createScreenPaintTexture(GLubyte*& screenTexture, GLFWwindow* screen);
 	void refreshScreenDrawingTexture();
-	GLubyte* updateMaskTexture(unsigned int FBOScreen, int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData,Programs programs,int maxScreenWidth, int maxScreenHeight);
+	std::vector<GLubyte> updateMaskTexture(unsigned int FBOScreen, int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData,Programs programs,int maxScreenWidth, int maxScreenHeight);
 	void sendProgramsToTextures(Programs appPrograms);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void refreshScreenTxtr();
