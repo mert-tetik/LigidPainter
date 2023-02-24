@@ -198,6 +198,18 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	
 	glUseProgram(programs.uiProgram);
 	
+	//Slider
+	box(0.007f, panelHeigth - cornerWidth, panelLoc - panelWidth*2 + cornerWidth/2.5f , +0.014f, "", colorD.panelColorSnd, 0.022f, false, false, panelZ+0.01, 10000, colorD.panelColor, 0);
+	float slideVal = 0;
+	if(sndpnl.state == 0)
+		slideVal = sndpnl.texturePanelSlideVal;
+	if(sndpnl.state == 1)
+		slideVal = sndpnl.materialPanelSlideVal;
+		
+	slideVal /= 10;
+	
+	box(0.007f, 0.014f, panelLoc - panelWidth*2 + cornerWidth/2.5f , max(-slideVal + (panelHeigth - cornerWidth), -(panelHeigth - cornerWidth-0.014f)), "", colorD.panelHoldColor, 0.022f, false, false, panelZ+0.02, 10000, colorD.panelColor, 0);
+	
 	
 	box(panelWidth, panelHeigth - cornerWidth, panelLoc - panelWidth - cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 	
@@ -278,7 +290,6 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				brushMaskTextures.names.push_back(albedoTextures[selectedAlbedoTextureIndex].name);
 			}
 			if(albedoTextures[selectedAlbedoTextureIndex].isTexture && sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE && nodePanel.panelHover){
-
 				Node imageNode;
 				imageNode = appNodes[1];
 				imageNode.outputs[0].nodeConnectionIndex = 10000;
