@@ -1689,7 +1689,47 @@ void LigidPainter::sndPanelPlusIcon(){
 void LigidPainter::sndPanelDuplicateIcon(){
 	if(!txtrCreatingPanel.active){
 		if(sndPanel.state == 0){
-		
+			if(albedoTextures.size()){
+				Texture txtr;
+				int txtrRes = 256;
+				for (size_t i = 0; i < chosenTextureResIndex; i++)
+				{
+					txtrRes*=2;
+				}
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D,albedoTextures[selectedAlbedoTextureIndex].id);
+
+				GLubyte* txtrData = txtr.getTextureFromProgram(GL_TEXTURE0,txtrRes,txtrRes,4);
+
+				glActiveTexture(GL_TEXTURE0);
+				unsigned int texture;
+				glGenTextures(1,&texture);
+				glBindTexture(GL_TEXTURE_2D,texture);
+				glset.texImage(txtrData,txtrRes,txtrRes,GL_RGBA);
+				glset.generateMipmap();
+
+
+				aTexture atxtr = albedoTextures[selectedAlbedoTextureIndex];
+				Utilities util;
+
+				std::vector<std::string> albedoTxtrStr;
+				for (size_t i = 0; i < albedoTextures.size(); i++)
+				{
+					albedoTxtrStr.push_back(albedoTextures[i].name);
+				}
+
+
+				atxtr.name = util.uniqueName(atxtr.name,albedoTxtrStr);
+				atxtr.id = texture;
+
+				albedoTextures.push_back(atxtr);
+
+				delete[]txtrData;
+			}
+			else{
+				UserInterface ui;
+				ui.alert("Warning! Duplication request is ignored. There are no texture to duplicate.",200);
+			}
 		}
 		else if(sndPanel.state == 1){
 			//Materials
