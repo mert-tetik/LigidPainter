@@ -227,13 +227,12 @@ std::vector<aTexture> albedoTextures,int chosenTextureIndex){
 	else
 		gl.drawArrays(vertices, false); //Render Model
 
-	GLubyte* renderedTexture = new GLubyte[width * height * 3 * sizeof(GLubyte)];
-	glReadPixels(0, 0, width, height, channels, GL_UNSIGNED_BYTE, renderedTexture);
+	std::vector<GLubyte> renderedTexture;
+	glReadPixels(0, 0, width, height, channels, GL_UNSIGNED_BYTE, &renderedTexture[0]);
 
 	gl.activeTexture(texture);
-	gl.texImage(renderedTexture, width, height, channels);
+	gl.texImage(&renderedTexture[0], width, height, channels);
 	gl.generateMipmap();
-	delete[]renderedTexture;
 }
 
 

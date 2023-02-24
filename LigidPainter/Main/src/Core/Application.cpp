@@ -42,8 +42,8 @@
 
 #include<iostream>
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
+#include "../../thirdparty/include/glad/glad.h"
+#include "../../thirdparty/include/GLFW/glfw3.h"
 
 #include <string>
 #include <fstream>
@@ -51,34 +51,36 @@
 #include <vector>
 #include <map>
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "glm/gtx/string_cast.hpp"
+#include "../../thirdparty/include/glm/glm.hpp"
+#include "../../thirdparty/include/glm/gtc/matrix_transform.hpp"
+#include "../../thirdparty/include/glm/gtc/type_ptr.hpp"
+#include "../../thirdparty/include/glm/gtx/string_cast.hpp"
 
-#include "Core/LigidPainter.h"
-#include "Core/UI/UserInterface.h"
-#include "Core/Utilities.h"
-#include "Core/Callback.h"
-#include "Core/gl.h"
-#include "Core/Load.hpp"
-#include "Core/Render/Render.h"
-#include "Core/Model/model.h"
-#include "Core/Texture/Texture.h"
-#include "Core/UI/UiActions.h"
-#include "Core/Texture Generator/TextureGenerator.h"
-#include "Core/messageBox.h"
+#include "LigidPainter.h"
+#include "UI/UserInterface.h"
+#include "Utilities.h"
+#include "Callback.h"
+#include "gl.h"
+#include "Load.hpp"
+#include "Render/Render.h"
+#include "Model/model.h"
+#include "Texture/Texture.h"
+#include "UI/UiActions.h"
+#include "Texture Generator/TextureGenerator.h"
+#include "messageBox.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "../../thirdparty/stb_image.h"
 
 #define STBI_MSC_SECURE_CRT
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+#include "../../thirdparty/stb_image_write.h"
 
-#include "tinyfiledialogs.h"
+#include "../../thirdparty/tinyfiledialogs.h"
+#include "../../thirdparty/include/qrcodegen.hpp"
 
 using namespace std;
+using namespace qrcodegen;
 
 GlSet glset;
 WindowData windowData;
@@ -186,6 +188,27 @@ glm::vec3 drawColor;
 OutShaderData outShaderData;
 int chosenTextureResIndex = 2; //0:256 1:512 2:1024 3:2048 4:4096 5:8412
 int chosenSkyboxTexture = 0;
+
+std::vector<std::vector<bool>> printQr(const QrCode &qr) {
+	std::vector<std::vector<bool>> qrv;
+
+	const int quality = 5; 
+
+	int border = 4;
+	for (int y = -border; y < qr.getSize() + border; y++) {
+		for (size_t qy = 0; qy < quality; qy++)
+		{
+			qrv.push_back({});
+			for (int x = -border; x < qr.getSize() + border; x++) {
+				for (size_t qx = 0; qx < quality; qx++)
+				{
+					qrv[y+border].push_back(qr.getModule(x, y) ? true : false);
+				}
+			}
+		}
+	}
+	return qrv;
+}
 
 bool LigidPainter::run()
 {
@@ -303,6 +326,7 @@ bool LigidPainter::run()
 	modelMaterials.push_back(mOut);
 	//Set context
 	glfwMakeContextCurrent(window);
+	
 	//Create screen painting mask Texture
 	GLubyte* screenTexture = new GLubyte[(windowData.windowMaxWidth) * (windowData.windowMaxHeight)];
 	ScreenPaintingReturnData screenPaintingReturnData; 
@@ -383,6 +407,37 @@ bool LigidPainter::run()
 	glfwSetWindowSize(window,windowData.windowMaxWidth,windowData.windowMaxWidth);
 	glfwPollEvents();
 	glfwSetWindowPos(window,0,20);
+
+
+	// Simple operation
+	QrCode qr0 = QrCode::encodeText("https://github.com/nayuki/QR-Code-generator/blob/master/cpp/QrCodeGeneratorDemo.cpp", QrCode::Ecc::MEDIUM);
+	std::vector<std::vector<bool>> qr = printQr(qr0);  // See QrCodeGeneratorDemo
+	
+	std::vector<GLubyte> qrData;
+
+	for (size_t y = 0; y < qr.size(); y++)
+	{
+		for (size_t x = 0; x < qr[y].size(); x++)
+		{
+			if(qr[y][x]){
+				qrData.push_back(255);
+			}
+			else{
+				qrData.push_back(0);
+			}
+		}
+	}
+	
+	glActiveTexture(GL_TEXTURE0);
+	unsigned int qrTxtr;
+	glset.genTextures(qrTxtr);
+	glset.bindTexture(qrTxtr);
+	glset.texImage(&qrData[0],qr.size(),qr.size(),GL_RED);
+	glset.generateMipmap();
+	aTexture aqrTxtr;
+	aqrTxtr.id = qrTxtr;
+	aqrTxtr.name = "aaa";
+	albedoTextures.push_back(aqrTxtr);
 	
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
