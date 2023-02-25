@@ -8,9 +8,6 @@
 -opacity : 60;
 
 
-
-
-
 -input_0 : 
 --list : none;
 --list_index : none;
@@ -56,7 +53,13 @@
 --list : none;
 --list_index : none;
 --type : vec3;
---title : Texture;
+--title : Color;
+
+-output_1 :
+--list : none;
+--list_index : none;
+--type : float;
+--title : Distance;
 
 
 -uniforms : tex_coords|normal|posScene|posModel;
@@ -193,7 +196,7 @@ float voronoi_distance(vec2 a, vec2 b, float metric, float exponent)
 }
 
 
-vec3 node_tex_voronoi_smooth_f1_2d(vec3 coord,
+vec3 node_tex_voronoi_smooth_f1_2d_color(vec3 coord,
                                    float w,
                                    float scale,
                                    float smoothness,
@@ -228,7 +231,45 @@ vec3 node_tex_voronoi_smooth_f1_2d(vec3 coord,
       smoothPosition = mix(smoothPosition, pointPosition, h) - correctionFactor;
     }
   }
-  return smoothColor;
+    return smoothColor;
+}
+
+float node_tex_voronoi_smooth_f1_2d_dist(vec3 coord,
+                                   float w,
+                                   float scale,
+                                   float smoothness,
+                                   float exponent,
+                                   float randomness,
+                                   float metric
+                                   )
+{
+  randomness = clamp(randomness, 0.0, 1.0);
+  smoothness = clamp(smoothness / 2.0, 0.0, 0.5);
+
+  float transform = texture2D(input_4,tex_coords).r*10;
+
+  vec2 scaledCoord = coord.xy * scale + vec2(transform);
+  vec2 cellPosition = floor(scaledCoord);
+  vec2 localPosition = scaledCoord - cellPosition;
+
+  float smoothDistance = 8.0;
+  vec3 smoothColor = vec3(0.0);
+  vec2 smoothPosition = vec2(0.0);
+  for (int j = -2; j <= 2; j++) {
+    for (int i = -2; i <= 2; i++) {
+      vec2 cellOffset = vec2(i, j);
+      vec2 pointPosition = cellOffset + hash_vec2_to_vec2(cellPosition + cellOffset) * randomness;
+      float distanceToPoint = voronoi_distance(pointPosition, localPosition, metric, exponent);
+      float h = smoothstep(0.0, 1.0, 0.5 + 0.5 * (smoothDistance - distanceToPoint) / smoothness);
+      float correctionFactor = smoothness * h * (1.0 - h);
+      smoothDistance = mix(smoothDistance, distanceToPoint, h) - correctionFactor;
+      correctionFactor /= 1.0 + 3.0 * smoothness;
+      vec3 cellColor = hash_vec2_to_vec3(cellPosition + cellOffset);
+      smoothColor = mix(smoothColor, cellColor, h) - correctionFactor;
+      smoothPosition = mix(smoothPosition, pointPosition, h) - correctionFactor;
+    }
+  }
+  return smoothDistance;
 }
 
 void main()
@@ -240,7 +281,16 @@ void main()
     float randomness    = texture2D(input_2,tex_coords).r;
     float metric        = ceil(texture2D(input_3,tex_coords).r*3);
     
-    vec3 res = node_tex_voronoi_smooth_f1_2d(
+    vec3 res = node_tex_voronoi_smooth_f1_2d_color(
+                                            vec3(tex_coords,1)
+                                            ,w         
+                                            ,scale     
+                                            ,smoothness
+                                            ,exponent  
+                                            ,randomness
+                                            ,metric    
+                                            );
+    float resDist = node_tex_voronoi_smooth_f1_2d_dist(
                                             vec3(tex_coords,1)
                                             ,w         
                                             ,scale     
@@ -250,5 +300,6 @@ void main()
                                             ,metric    
                                             );
 	
-	output_0 = vec4( res, 1.0 );
+	output_0 = vec4( res, 1.0);
+	output_1 = vec4( vec3(resDist), 1.0);
 }
