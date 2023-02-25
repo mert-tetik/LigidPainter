@@ -51,3 +51,4 @@ assimp : https://github.com/assimp/assimp
     G = Move the selected nodes
     X = Delete the selected nodes
     Left CTRL + Left Mouse Button = Node connection scissor
+    Left CTRL + D = Duplicate the selected nodes
