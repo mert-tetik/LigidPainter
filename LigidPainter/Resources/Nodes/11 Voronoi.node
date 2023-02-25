@@ -290,6 +290,7 @@ void main()
                                             ,randomness
                                             ,metric    
                                             );
+                                            
     float resDist = node_tex_voronoi_smooth_f1_2d_dist(
                                             vec3(tex_coords,1)
                                             ,w         
