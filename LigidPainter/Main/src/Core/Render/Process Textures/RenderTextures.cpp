@@ -16,7 +16,7 @@
 #include "Core/Texture/Texture.h"
 
 void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screenSizeY, OutShaderData outShaderData,Model &model,bool renderDefault,std::vector<aTexture> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex,int chosenTextureResIndex) {
-	int maxHistoryHold = 20;
+	int maxHistoryHold = 10;
 
 	int txtrRes = 256;
 	for (size_t i = 0; i < chosenTextureResIndex; i++)
@@ -25,6 +25,8 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 	}
 
 	if(isRenderTexture){
+		glEnable(GL_DEPTH_TEST); 
+		glDepthFunc(GL_LESS);
     	GlSet gl;
 		
 		glActiveTexture(GL_TEXTURE28);

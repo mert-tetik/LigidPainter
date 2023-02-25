@@ -1,0 +1,108 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Noise;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Transform;
+--element : color;
+--value : 100,100,100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : wrinkles;
+--element : range;
+--value : 100;
+
+-input_2 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : frequency;
+--element : range;
+--value : 100;
+
+-input_3 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : subFrequency;
+--element : range;
+--value : 100;
+
+-input_4 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : foldingDepth;
+--element : range;
+--value : 100;
+
+-input_5 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : move;
+--element : range;
+--value : 100;
+
+-input_6 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : scale;
+--element : range;
+--value : 100;
+
+
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+const bool distribute = true;
+
+
+void main(){
+    float wrinkles =  texture2D(input_1,tex_coords).r*50.;
+    float frequency =  texture2D(input_2,tex_coords).r*10.;
+    float subFrequency = texture2D(input_3,tex_coords).r*20;
+    float foldingDepth =  texture2D(input_4,tex_coords).r;
+    float move =  texture2D(input_5,tex_coords).r;
+    float scale = texture2D(input_6,tex_coords).r*10;
+    
+    vec2 uv = tex_coords * scale;
+    float t = move;
+	
+    uv.y += 0.03*sin(subFrequency*uv.x-t);//Bent via sin
+    
+    float support = sin(wrinkles*(uv.x+uv.y));
+    float shuffle = cos(3.0*uv.x+5.0*uv.y);
+    
+    float f = sin(frequency * (uv.x+uv.y+shuffle+t)+support);
+    f = 0.6+foldingDepth*f;
+    
+    vec3 clr;
+    if(distribute)
+        clr = texture(input_0,f/50.*tex_coords).rgb;
+    else
+        clr = texture(input_0,((tex_coords+(f*5.)))).rgb;
+    
+    output_0 = vec4(clr*f,1);
+}

@@ -21,7 +21,7 @@
 --type : vec3;
 --title : Location;
 --element : range;
---value : 100,100,100;
+--value : 0,0,0;
 
 -input_2 : 
 --list : none;
@@ -29,7 +29,7 @@
 --type : vec3;
 --title : Rotation;
 --element : range;
---value : 100,100,100;
+--value : 0,0,0;
 
 -input_3 : 
 --list : none;
@@ -79,7 +79,7 @@ mat4 rotate(vec3 angle){
 void main(){
     vec3 loc = texture2D(input_1,tex_coords).xyz;
     vec3 rot = texture2D(input_2,tex_coords).xyz;
-    vec3 scale = texture2D(input_3,tex_coords).xyz;
+    vec3 scale = texture2D(input_3,tex_coords).xyz * 10.;
     
     mat4 rotMat = rotate(rot);
 

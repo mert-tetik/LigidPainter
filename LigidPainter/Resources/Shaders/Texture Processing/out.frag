@@ -97,10 +97,10 @@ vec3 getPaintedDiffuse(){
          mirroredDiffuseDrawMix = diffuseDrawMix;
    }
    
-   if(intensity > 0.00001)
+   if(intensity > 0.01)
       gl_FragDepth = 0.1;
    else{
-      gl_FragDepth = 0.5;
+      gl_FragDepth = 0.9;
    }
 
    return mirroredDiffuseDrawMix;
