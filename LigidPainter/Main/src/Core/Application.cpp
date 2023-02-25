@@ -229,7 +229,10 @@ bool LigidPainter::run()
 	windowData = glset.getWindow();
 	window = windowData.window;
 
-
+		glfwSetWindowAttrib(window,GLFW_DECORATED,GLFW_FALSE);
+	glfwSetWindowSize(window,windowData.windowMaxWidth/3.5,windowData.windowMaxHeight/3.5);
+	glfwSetWindowPos(window,windowData.windowMaxWidth/2-(windowData.windowMaxWidth/7),windowData.windowMaxHeight/2-(windowData.windowMaxHeight/7));
+	glViewport(0,0,windowData.windowMaxWidth/3.5,windowData.windowMaxHeight/3.5);
 
 	//Set Callbacks
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
@@ -266,10 +269,7 @@ bool LigidPainter::run()
 	glset.bindTexture(viewportBGImage);
 	txtr.getTexture("LigidPainter/Resources/Images/BGImage.jpg",1920,1080,true);
 
-	glfwSetWindowAttrib(window,GLFW_DECORATED,GLFW_FALSE);
-	glfwSetWindowSize(window,windowData.windowMaxWidth/3.5,windowData.windowMaxHeight/3.5);
-	glfwSetWindowPos(window,windowData.windowMaxWidth/2-(windowData.windowMaxWidth/7),windowData.windowMaxHeight/2-(windowData.windowMaxHeight/7));
-	glViewport(0,0,windowData.windowMaxWidth/3.5,windowData.windowMaxHeight/3.5);
+
 
 	//Loading screen
 	std::vector<float> renderVertices = { 
