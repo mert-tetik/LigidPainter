@@ -144,7 +144,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		if(node.listBoxes[i].active){
 			
 			box(node.width,iconWidth*2.35f*(node.listBoxes[i].elements.size()),(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+1)/(20.f/(node.width*16)) - 0.05f * node.width*10 - iconWidth*2.35f*(node.listBoxes[i].elements.size()),"",colorData.rangeBarBack,0,0,0,depth+0.05f,10000,node.backColor,0);///Bottom
-			bool listPanelHover = isMouseOnButton(window,node.width,iconWidth*2.35f*(node.listBoxes[i].elements.size()),(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+1)/(20.f/(node.width*16)) - 0.05f * node.width*10 - iconWidth*2.35f*(node.listBoxes[i].elements.size()),mouseX,mouseY,false);
+			bool listPanelHover = isMouseOnButton(window,node.width,(iconWidth*2.35f*(node.listBoxes[i].elements.size()))+0.1f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+1)/(20.f/(node.width*16)) - 0.05f * node.width*10 - iconWidth*2.35f*(node.listBoxes[i].elements.size()),mouseX,mouseY,false);
 			if(!listPanelHover && !listButtonHover){
 				node.listBoxes[i].active = false;
 			}
