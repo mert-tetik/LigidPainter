@@ -18,7 +18,7 @@
 
 void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
 float maxScreenWidth,float maxScreenHeight, NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,
-std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPanel &coloringPanel){
+std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPanel &coloringPanel,bool &duplicateNodeCall,std::vector<Node> &duplicatedNodes){
 	ColorData colorData;
 	ColorData2 colorData2;
 	Utilities util;
@@ -641,8 +641,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	}
 
 
-	//Delete the node
 	if(!node.isMainOut){
+		//Delete the node
 		bool deleteButtonEnter = false;
 		if(nodePanel.panelHover && !coloringPanel.active)
 			deleteButtonEnter = isMouseOnButton(window,iconWidth/1.3 , iconWidth*1.7,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2)) + iconWidth*1.7f,mouseX,mouseY,false);
@@ -691,6 +691,36 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		}
 	
 		iconBox(iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2), depth+0.02f , icons.CircularX , 0 , colorData.iconColor, colorData.iconColor);
+	
+		//Duplicate the node
+		if(node.active){
+			if(duplicateNodeCall){
+				Node duplicatedNode;
+				duplicatedNode = node;
+				duplicatedNode.positionY+=0.1f;
+				duplicatedNode.active = false;
+				for (size_t douti = 0; douti < duplicatedNode.outputs.size(); douti++)
+				{
+					for (size_t dconi = 0; dconi < duplicatedNode.outputs[douti].connections.size(); dconi++)
+					{
+						if(!duplicatedNode.outputs[0].isConnectedToShaderInput){
+							duplicatedNode.outputs[douti].connections[dconi].nodeConnectionIndex += (((int)material.nodes.size()) - duplicatedNode.outputs[douti].connections[dconi].nodeConnectionIndex); 
+						}
+						else{
+							duplicatedNode.outputs[douti].connections.erase(duplicatedNode.outputs[douti].connections.begin() + dconi); 
+							duplicatedNode.outputs[douti].isConnectedToShaderInput = false; 
+						}
+					}
+					
+				}
+				for (size_t dinI = 0; dinI < duplicatedNode.inputs.size(); dinI++)
+				{
+					if(duplicatedNode.inputs[dinI].nodeConnectionIndex != 10000)
+						duplicatedNode.inputs[dinI].nodeConnectionIndex += (((int)material.nodes.size()) - duplicatedNode.inputs[dinI].nodeConnectionIndex);
+				}
+				material.stateChanged = true;
+				duplicatedNodes.push_back(duplicatedNode);
+			}
+		}
 	}
-
 }

@@ -49,4 +49,5 @@ assimp : https://github.com/assimp/assimp
 
     Node Shortcuts
     G = Move the selected nodes
+    X = Delete the selected nodes
     Left CTRL + Left Mouse Button = Node connection scissor
