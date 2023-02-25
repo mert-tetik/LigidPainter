@@ -7,6 +7,10 @@
 -color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
 -opacity : 60;
 
+-list_0 :
+--title_0 : distributen't;
+--title_1 : distribute;
+
 -input_0 : 
 --list : none;
 --list_index : none;
@@ -76,10 +80,11 @@
 
 %code;
 
-const bool distribute = true;
 
 
 void main(){
+    bool distribute = list_0;
+    
     float wrinkles =  texture2D(input_1,tex_coords).r*50.;
     float frequency =  texture2D(input_2,tex_coords).r*10.;
     float subFrequency = texture2D(input_3,tex_coords).r*20;
