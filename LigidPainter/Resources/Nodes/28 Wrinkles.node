@@ -83,18 +83,68 @@ $
 
 %code;
 
+vec4 wrinkle3D(
+    float wrinkles,
+    float frequency,
+    float subFrequency,
+    float foldingDepth,
+    float move,
+    float scale,
+    bool distribute
+){
+    vec3 uv = posModel * scale;
+    float t = move;
+	
+    uv.y += 0.03*sin(subFrequency*uv.x-t);//Bent via sin
+    
+    float support = sin(wrinkles*(uv.x+uv.y+uv.z));
+    float shuffle = cos((3.0*uv.x)+(3.0*uv.z)+(5.0*uv.y));
+    
+    float f = sin(frequency * (uv.x+uv.y+uv.z+shuffle+t)+support);
+    f = 0.6+foldingDepth*f;
+    
+    vec3 clr;
+    if(distribute)
+        clr = texture2D(input_0,f/50.*tex_coords).rgb;
+    else
+        clr = texture2D(input_0,((tex_coords+(f*5.)))).rgb;
 
+    return vec4(clr,f);
+}
+
+vec4 wrinkle2D(
+    float wrinkles,
+    float frequency,
+    float subFrequency,
+    float foldingDepth,
+    float move,
+    float scale,
+    bool distribute
+){
+    vec2 uv = tex_coords * scale;
+    float t = move;
+	
+    uv.y += 0.03*sin(subFrequency*uv.x-t);//Bent via sin
+    
+    float support = sin(wrinkles*(uv.x+uv.y));
+    float shuffle = cos((3.0*uv.x)+(5.0*uv.y));
+    
+    float f = sin(frequency * (uv.x+uv.y+shuffle+t)+support);
+    f = 0.6+foldingDepth*f;
+    
+    vec3 clr;
+    if(distribute)
+        clr = texture2D(input_0,f/50.*uv).rgb;
+    else
+        clr = texture2D(input_0,((uv+(f*5.)))).rgb;
+
+    return vec4(clr,f);
+}
 
 void main(){
     bool distribute = bool(list_0);
     
-    vec2 uvO;
-    if(list_1 == 0)
-        uvO = posModel.xy;
-    if(list_1 == 1)
-        uvO = tex_coords;
-
-
+    vec2 uvO = tex_coords;
 
     float wrinkles =  texture2D(input_1,uvO).r*50.;
     float frequency =  texture2D(input_2,uvO).r*10.;
@@ -103,22 +153,29 @@ void main(){
     float move =  texture2D(input_5,uvO).r;
     float scale = texture2D(input_6,uvO).r*10;
     
-    vec2 uv = uvO * scale;
-    float t = move;
-	
-    uv.y += 0.03*sin(subFrequency*uv.x-t);//Bent via sin
+    vec4 clr;
+    if(list_1 == 0){
+        clr = wrinkle3D(
+            wrinkles,
+            frequency,
+            subFrequency,
+            foldingDepth,
+            move,
+            scale,
+            distribute
+        );
+    }
+    if(list_1 == 1){
+        clr = wrinkle2D(
+            wrinkles,
+            frequency,
+            subFrequency,
+            foldingDepth,
+            move,
+            scale,
+            distribute
+        );
+    }
     
-    float support = sin(wrinkles*(uv.x+uv.y));
-    float shuffle = cos(3.0*uv.x+5.0*uv.y);
-    
-    float f = sin(frequency * (uv.x+uv.y+shuffle+t)+support);
-    f = 0.6+foldingDepth*f;
-    
-    vec3 clr;
-    if(distribute)
-        clr = texture(input_0,f/50.*uvO).rgb;
-    else
-        clr = texture(input_0,((uvO+(f*5.)))).rgb;
-    
-    output_0 = vec4(clr*f,1);
+    output_0 = vec4(clr.rgb*clr.a,1);
 }

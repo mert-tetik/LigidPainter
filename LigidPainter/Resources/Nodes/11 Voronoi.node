@@ -2,11 +2,15 @@
 # Node extension v1.0
 
 %attributes;
+$
 
 -title : Tissue;
 -color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
 -opacity : 60;
 
+-list_0 :
+--title_0 : 3d;
+--title_1 : 2d;
 
 -input_0 : 
 --list : none;
@@ -70,27 +74,67 @@
 //https://github.com/blender/blender/blob/master/source/blender/gpu/shaders/common/gpu_shader_common_hash.glsl
 //blender.org
 
+#define rot(x, k) (((x) << (k)) | ((x) >> (32 - (k))))
+
+#define mix(a, b, c) \
+  { \
+    a -= c; \
+    a ^= rot(c, 4); \
+    c += b; \
+    b -= a; \
+    b ^= rot(a, 6); \
+    a += c; \
+    c -= b; \
+    c ^= rot(b, 8); \
+    b += a; \
+    a -= c; \
+    a ^= rot(c, 16); \
+    c += b; \
+    b -= a; \
+    b ^= rot(a, 19); \
+    a += c; \
+    c -= b; \
+    c ^= rot(b, 4); \
+    b += a; \
+  }
+
+#define final(a, b, c) \
+  { \
+    c ^= b; \
+    c -= rot(b, 14); \
+    a ^= c; \
+    a -= rot(c, 11); \
+    b ^= a; \
+    b -= rot(a, 25); \
+    c ^= b; \
+    c -= rot(b, 16); \
+    a ^= c; \
+    a -= rot(c, 4); \
+    b ^= a; \
+    b -= rot(a, 14); \
+    c ^= b; \
+    c -= rot(b, 24); \
+  }
+
+uint hash_uint(uint kx)
+{
+  uint a, b, c;
+  a = b = c = 0xdeadbeefu + (1u << 2u) + 13u;
+
+  a += kx;
+  final(a, b, c);
+
+  return c;
+}
+
 uint hash_uint2(uint kx, uint ky)
 {
   uint a, b, c;
   a = b = c = 0xdeadbeefu + (2u << 2u) + 13u;
 
-    b += ky;
-     a += kx;
-    c ^= b; 
-    c -= (((b) << (14)) | ((b) >> (32 - (14))));
-    a ^= c; 
-    a -= (((c) << (11)) | ((c) >> (32 - (11)))); 
-    b ^= a; 
-    b -= (((a) << (25)) | ((a) >> (32 - (25)))); 
-    c ^= b; 
-    c -= (((b) << (16)) | ((b) >> (32 - (16))));
-    a ^= c; 
-    a -= (((c) << (4)) | ((c) >> (32 - (4))));; 
-    b ^= a; 
-    b -= (((a) << (14)) | ((a) >> (32 - (14)))); 
-    c ^= b; 
-    c -= (((b) << (24)) | ((b) >> (32 - (24))));
+  b += ky;
+  a += kx;
+  final(a, b, c);
 
   return c;
 }
@@ -103,22 +147,56 @@ uint hash_uint3(uint kx, uint ky, uint kz)
   c += kz;
   b += ky;
   a += kx;
-  c ^= b; 
-    c -= (((b) << (14)) | ((b) >> (32 - (14))));
-    a ^= c; 
-    a -= (((c) << (11)) | ((c) >> (32 - (11)))); 
-    b ^= a; 
-    b -= (((a) << (25)) | ((a) >> (32 - (25)))); 
-    c ^= b; 
-    c -= (((b) << (16)) | ((b) >> (32 - (16))));
-    a ^= c; 
-    a -= (((c) << (4)) | ((c) >> (32 - (4))));; 
-    b ^= a; 
-    b -= (((a) << (14)) | ((a) >> (32 - (14)))); 
-    c ^= b; 
-    c -= (((b) << (24)) | ((b) >> (32 - (24))));
+  final(a, b, c);
 
   return c;
+}
+
+uint hash_uint4(uint kx, uint ky, uint kz, uint kw)
+{
+  uint a, b, c;
+  a = b = c = 0xdeadbeefu + (4u << 2u) + 13u;
+
+  a += kx;
+  b += ky;
+  c += kz;
+  mix(a, b, c);
+
+  a += kw;
+  final(a, b, c);
+
+  return c;
+}
+
+#undef rot
+#undef final
+#undef mix
+
+uint hash_int(int kx)
+{
+  return hash_uint(uint(kx));
+}
+
+uint hash_int2(int kx, int ky)
+{
+  return hash_uint2(uint(kx), uint(ky));
+}
+
+uint hash_int3(int kx, int ky, int kz)
+{
+  return hash_uint3(uint(kx), uint(ky), uint(kz));
+}
+
+uint hash_int4(int kx, int ky, int kz, int kw)
+{
+  return hash_uint4(uint(kx), uint(ky), uint(kz), uint(kw));
+}
+
+/* Hashing uint or uint[234] into a float in the range [0, 1]. */
+
+float hash_uint_to_float(uint kx)
+{
+  return float(hash_uint(kx)) / float(0xFFFFFFFFu);
 }
 
 float hash_uint2_to_float(uint kx, uint ky)
@@ -131,25 +209,96 @@ float hash_uint3_to_float(uint kx, uint ky, uint kz)
   return float(hash_uint3(kx, ky, kz)) / float(0xFFFFFFFFu);
 }
 
+float hash_uint4_to_float(uint kx, uint ky, uint kz, uint kw)
+{
+  return float(hash_uint4(kx, ky, kz, kw)) / float(0xFFFFFFFFu);
+}
+
+/* Hashing float or vec[234] into a float in the range [0, 1]. */
+
+float hash_float_to_float(float k)
+{
+  return hash_uint_to_float(floatBitsToUint(k));
+}
+
 float hash_vec2_to_float(vec2 k)
 {
   return hash_uint2_to_float(floatBitsToUint(k.x), floatBitsToUint(k.y));
 }
+
 float hash_vec3_to_float(vec3 k)
 {
   return hash_uint3_to_float(floatBitsToUint(k.x), floatBitsToUint(k.y), floatBitsToUint(k.z));
 }
 
+float hash_vec4_to_float(vec4 k)
+{
+  return hash_uint4_to_float(
+      floatBitsToUint(k.x), floatBitsToUint(k.y), floatBitsToUint(k.z), floatBitsToUint(k.w));
+}
+
+/* Hashing vec[234] into vec[234] of components in the range [0, 1]. */
 
 vec2 hash_vec2_to_vec2(vec2 k)
 {
   return vec2(hash_vec2_to_float(k), hash_vec3_to_float(vec3(k, 1.0)));
 }
 
+vec3 hash_vec3_to_vec3(vec3 k)
+{
+  return vec3(
+      hash_vec3_to_float(k), hash_vec4_to_float(vec4(k, 1.0)), hash_vec4_to_float(vec4(k, 2.0)));
+}
+
+vec4 hash_vec4_to_vec4(vec4 k)
+{
+  return vec4(hash_vec4_to_float(k.xyzw),
+              hash_vec4_to_float(k.wxyz),
+              hash_vec4_to_float(k.zwxy),
+              hash_vec4_to_float(k.yzwx));
+}
+
+/* Hashing float or vec[234] into vec3 of components in range [0, 1]. */
+
+vec3 hash_float_to_vec3(float k)
+{
+  return vec3(
+      hash_float_to_float(k), hash_vec2_to_float(vec2(k, 1.0)), hash_vec2_to_float(vec2(k, 2.0)));
+}
+
 vec3 hash_vec2_to_vec3(vec2 k)
 {
   return vec3(
       hash_vec2_to_float(k), hash_vec3_to_float(vec3(k, 1.0)), hash_vec3_to_float(vec3(k, 2.0)));
+}
+
+vec3 hash_vec4_to_vec3(vec4 k)
+{
+  return vec3(hash_vec4_to_float(k.xyzw), hash_vec4_to_float(k.zxwy), hash_vec4_to_float(k.wzyx));
+}
+
+/* Other Hash Functions */
+
+float integer_noise(int n)
+{
+  /* Integer bit-shifts for these calculations can cause precision problems on macOS.
+   * Using uint resolves these issues. */
+  uint nn;
+  nn = (uint(n) + 1013u) & 0x7fffffffu;
+  nn = (nn >> 13u) ^ nn;
+  nn = (uint(nn * (nn * nn * 60493u + 19990303u)) + 1376312589u) & 0x7fffffffu;
+  return 0.5 * (float(nn) / 1073741824.0);
+}
+
+float wang_hash_noise(uint s)
+{
+  s = (s ^ 61u) ^ (s >> 16u);
+  s *= 9u;
+  s = s ^ (s >> 4u);
+  s *= 0x27d4eb2du;
+  s = s ^ (s >> 15u);
+
+  return fract(float(s) / 4294967296.0);
 }
 
 //Source :
@@ -172,7 +321,7 @@ vec3 hash_vec2_to_vec3(vec2 k)
 
 /* **** 1D Voronoi **** */
 
-float voronoi_distance(vec2 a, vec2 b, float metric, float exponent)
+float voronoi_distance2d(vec2 a, vec2 b, float metric, float exponent)
 {
   if (metric == 0.0)  // SHD_VORONOI_EUCLIDEAN
   {
@@ -194,9 +343,33 @@ float voronoi_distance(vec2 a, vec2 b, float metric, float exponent)
     return 0.0;
   }
 }
+float voronoi_distance3d(vec3 a, vec3 b, float metric, float exponent)
+{
+  if (metric == 0.0)  // SHD_VORONOI_EUCLIDEAN
+  {
+    return distance(a, b);
+  }
+  else if (metric == 1.0)  // SHD_VORONOI_MANHATTAN
+  {
+    return abs(a.x - b.x) + abs(a.y - b.y) + abs(a.z - b.z);
+  }
+  else if (metric == 2.0)  // SHD_VORONOI_CHEBYCHEV
+  {
+    return max(abs(a.x - b.x), max(abs(a.y - b.y), abs(a.z - b.z)));
+  }
+  else if (metric == 3.0)  // SHD_VORONOI_MINKOWSKI
+  {
+    return pow(pow(abs(a.x - b.x), exponent) + pow(abs(a.y - b.y), exponent) +
+                   pow(abs(a.z - b.z), exponent),
+               1.0 / exponent);
+  }
+  else {
+    return 0.0;
+  }
+}
 
 
-vec3 node_tex_voronoi_smooth_f1_2d_color(vec3 coord,
+vec4 node_tex_voronoi_smooth_f1_2d_color(vec3 coord,
                                    float w,
                                    float scale,
                                    float smoothness,
@@ -221,7 +394,7 @@ vec3 node_tex_voronoi_smooth_f1_2d_color(vec3 coord,
     for (int i = -2; i <= 2; i++) {
       vec2 cellOffset = vec2(i, j);
       vec2 pointPosition = cellOffset + hash_vec2_to_vec2(cellPosition + cellOffset) * randomness;
-      float distanceToPoint = voronoi_distance(pointPosition, localPosition, metric, exponent);
+      float distanceToPoint = voronoi_distance2d(pointPosition, localPosition, metric, exponent);
       float h = smoothstep(0.0, 1.0, 0.5 + 0.5 * (smoothDistance - distanceToPoint) / smoothness);
       float correctionFactor = smoothness * h * (1.0 - h);
       smoothDistance = mix(smoothDistance, distanceToPoint, h) - correctionFactor;
@@ -231,46 +404,51 @@ vec3 node_tex_voronoi_smooth_f1_2d_color(vec3 coord,
       smoothPosition = mix(smoothPosition, pointPosition, h) - correctionFactor;
     }
   }
-    return smoothColor;
+    return vec4(smoothColor,smoothDistance);
 }
-
-float node_tex_voronoi_smooth_f1_2d_dist(vec3 coord,
-                                   float w,
-                                   float scale,
-                                   float smoothness,
-                                   float exponent,
-                                   float randomness,
-                                   float metric
-                                   )
+vec4 node_tex_voronoi_smooth_f1_3d_color(vec3 coord,
+                                  float w,
+                                  float scale,
+                                  float smoothness,
+                                  float exponent,
+                                  float randomness,
+                                  float metric
+                                  )
 {
   randomness = clamp(randomness, 0.0, 1.0);
   smoothness = clamp(smoothness / 2.0, 0.0, 0.5);
 
   float transform = texture2D(input_4,tex_coords).r*10;
 
-  vec2 scaledCoord = coord.xy * scale + vec2(transform);
-  vec2 cellPosition = floor(scaledCoord);
-  vec2 localPosition = scaledCoord - cellPosition;
+  vec3 scaledCoord = coord * scale + transform;
+  vec3 cellPosition = floor(scaledCoord);
+  vec3 localPosition = scaledCoord - cellPosition;
 
   float smoothDistance = 8.0;
   vec3 smoothColor = vec3(0.0);
-  vec2 smoothPosition = vec2(0.0);
-  for (int j = -2; j <= 2; j++) {
-    for (int i = -2; i <= 2; i++) {
-      vec2 cellOffset = vec2(i, j);
-      vec2 pointPosition = cellOffset + hash_vec2_to_vec2(cellPosition + cellOffset) * randomness;
-      float distanceToPoint = voronoi_distance(pointPosition, localPosition, metric, exponent);
-      float h = smoothstep(0.0, 1.0, 0.5 + 0.5 * (smoothDistance - distanceToPoint) / smoothness);
-      float correctionFactor = smoothness * h * (1.0 - h);
-      smoothDistance = mix(smoothDistance, distanceToPoint, h) - correctionFactor;
-      correctionFactor /= 1.0 + 3.0 * smoothness;
-      vec3 cellColor = hash_vec2_to_vec3(cellPosition + cellOffset);
-      smoothColor = mix(smoothColor, cellColor, h) - correctionFactor;
-      smoothPosition = mix(smoothPosition, pointPosition, h) - correctionFactor;
+  vec3 smoothPosition = vec3(0.0);
+  for (int k = -1; k <= 1; k++) {
+    for (int j = -1; j <= 1; j++) {
+      for (int i = -1; i <= 1; i++) {
+        vec3 cellOffset = vec3(i, j, k);
+        vec3 pointPosition = cellOffset +
+                             hash_vec3_to_vec3(cellPosition + cellOffset) * randomness;
+        float distanceToPoint = voronoi_distance3d(pointPosition, localPosition, metric, exponent);
+        float h = smoothstep(
+            0.0, 1.0, 0.5 + 0.5 * (smoothDistance - distanceToPoint) / smoothness);
+        float correctionFactor = smoothness * h * (1.0 - h);
+        smoothDistance = mix(smoothDistance, distanceToPoint, h) - correctionFactor;
+        correctionFactor /= 1.0 + 3.0 * smoothness;
+        vec3 cellColor = hash_vec3_to_vec3(cellPosition + cellOffset);
+        smoothColor = mix(smoothColor, cellColor, h) - correctionFactor;
+        smoothPosition = mix(smoothPosition, pointPosition, h) - correctionFactor;
+      }
     }
   }
-  return smoothDistance;
+      return vec4(smoothColor,smoothDistance);
+
 }
+
 
 void main()
 {
@@ -280,27 +458,32 @@ void main()
     float exponent      = 1;
     float randomness    = texture2D(input_2,tex_coords).r;
     float metric        = ceil(texture2D(input_3,tex_coords).r*3);
-    
-    vec3 res = node_tex_voronoi_smooth_f1_2d_color(
-                                            vec3(tex_coords,1)
-                                            ,w         
-                                            ,scale     
-                                            ,smoothness
-                                            ,exponent  
-                                            ,randomness
-                                            ,metric    
-                                            );
-                                            
-    float resDist = node_tex_voronoi_smooth_f1_2d_dist(
-                                            vec3(tex_coords,1)
-                                            ,w         
-                                            ,scale     
-                                            ,smoothness
-                                            ,exponent  
-                                            ,randomness
-                                            ,metric    
-                                            );
+
+    vec4 res;
+    if(list_0 == 0){
+      res = node_tex_voronoi_smooth_f1_3d_color(
+                                              posModel
+                                              ,w         
+                                              ,scale     
+                                              ,smoothness
+                                              ,exponent  
+                                              ,randomness
+                                              ,metric    
+                                              );
+    }
+    if(list_0 == 1){
+      res = node_tex_voronoi_smooth_f1_2d_color    (
+                                              vec3(tex_coords,1)
+                                              ,w         
+                                              ,scale     
+                                              ,smoothness
+                                              ,exponent  
+                                              ,randomness
+                                              ,metric    
+                                              );
+    }
+
 	
-	output_0 = vec4( res, 1.0);
-	output_1 = vec4( vec3(resDist), 1.0);
+	output_0 = vec4( res.rgb, 1.0);
+	output_1 = vec4( vec3(res.a), 1.0);
 }
