@@ -2,11 +2,6 @@
 # Node extension v1.0
 
 %attributes;
-$
-
--list_0 :
---title_0 : 2d;
---title_1 : 3d;
 
 -title : Image Texture;
 -color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
@@ -32,11 +27,5 @@ $
 %code;
 
 void main (){
-    vec2 uv;
-    if(list_0 == 0)
-        uv = posModel.xy;
-    if(list_0 == 1)
-        uv = tex_coords;
-
-    output_0 = vec4(texture2D(input_0,uv).rgb,1);
+    output_0 = vec4(texture2D(input_0,tex_coords).rgb,1);
 }

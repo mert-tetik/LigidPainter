@@ -249,6 +249,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                 }
 
             }
+            glset.uniformMatrix4fv(nodeProgram,"view",view);
             
             glset.uniform1i(nodeProgram,("input_" + std::to_string(inputI)).c_str(),20+inputI);
             resultOut.textures.push_back(texture);

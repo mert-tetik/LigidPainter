@@ -1,0 +1,68 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+$
+
+-title : Texture Coordinate;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Source;
+--element : image;
+--value : 100,100,100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Update Slider;
+--element : range;
+--value : 100;
+
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : UV;
+
+-output_1 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Model;
+
+-output_2 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Camera;
+
+-output_3 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Normals;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+
+void main(){
+    vec3 uv = texture2D(input_0,tex_coords).rgb;
+    vec3 model = texture2D(input_0,posModel.xy).rgb;
+    vec3 camera = texture2D(input_0,posScene.xy).rgb;
+    vec3 normalr = texture2D(input_0,normal.xy).rgb;
+
+    output_0 = vec4(uv,1);
+    output_1 = vec4(model,1);
+    output_2 = vec4(camera,1);
+    output_3 = vec4(normalr,1);
+}

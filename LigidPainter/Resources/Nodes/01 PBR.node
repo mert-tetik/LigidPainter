@@ -188,7 +188,7 @@ vec3 getRealisticResult(){
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < 4; ++i) 
+    for(int i = 0; i < 0; ++i) 
     {
       vec3 lightPosX;
 

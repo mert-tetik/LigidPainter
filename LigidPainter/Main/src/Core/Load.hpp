@@ -672,13 +672,15 @@ public:
 			    "posModel = aPos;\n"
 			    "tex_coords = aTexCoords;\n"
 			    "normal = aNormal;\n"
+				"vec4 res;\n"
 				"if(is3D == 1){\n"
-			    	"posScene = projection * view * vec4(aPos, 0.5);\n" 
+			    	"res = projection * view * vec4(aPos, 0.5);\n" 
 				"}\n"
 				"else{\n"
-			    	"posScene = projection * vec4(tex_coords,0, 1);\n" 
+			    	"res = projection * vec4(tex_coords,0, 1);\n" 
 				"}\n"
-			    "gl_Position = posScene;\n"
+				"posScene = projection * view * vec4(aPos, 0.5);\n"
+			    "gl_Position = res;\n"
 			"}\0";
 
 		//Compile the fragment shader
