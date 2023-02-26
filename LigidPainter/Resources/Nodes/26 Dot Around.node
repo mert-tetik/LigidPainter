@@ -1,0 +1,87 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+$
+
+-title : Dot Around;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Normals;
+--element : color;
+--value : 100,100,100;
+
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : rad;
+--element : range;
+--value : 40;
+
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+void main(){
+    vec3 clr = texture2D(input_0,tex_coords).rgb;
+    float rad = texture2D(input_1,tex_coords).r/100.;
+    
+    bool stop = false; 
+    const float quality = 20;
+    
+    float rlD = 1;
+    float rtD = 1;
+    float btD = 1;
+    float blD = 1;
+
+    bool clrRB = true;
+    bool clrLB = true;
+    bool clrTB = true;
+    bool clrBB = true;
+
+    vec3 clrR = texture2D(input_0,tex_coords+vec2(rad,0)).rgb;
+    if(clrR.r < 0.5 && clrR.g < 0.5 && clrR.b < 0.5){
+        clrRB = false;
+    }
+    vec3 clrL = texture2D(input_0,tex_coords-vec2(rad,0)).rgb;
+    if(clrL.r < 0.5 && clrL.g < 0.5 && clrL.b < 0.5){
+        clrLB = false;
+    }
+    vec3 clrT = texture2D(input_0,tex_coords+vec2(0,rad)).rgb;
+    if(clrT.r < 0.5 && clrT.g < 0.5 && clrT.b < 0.5){
+        clrTB = false;
+    }
+    vec3 clrB = texture2D(input_0,tex_coords-vec2(0,rad)).rgb;
+    if(clrB.r < 0.5 && clrB.g < 0.5 && clrB.b < 0.5){
+        clrBB = false;
+    }
+    
+    if(clrRB && clrLB)
+    rlD = dot(clrR,clrL);
+    if(clrRB && clrTB)
+    rtD = dot(clrR,clrT);
+    if(clrBB && clrTB)
+    btD = dot(clrB,clrT);
+    if(clrBB && clrLB)
+    blD = dot(clrB,clrL);
+
+    float res = min(rlD,btD);
+    res = min(rtD,res);
+    res = min(blD,res);
+    
+    output_0 = vec4(vec3(1-res),1);
+}

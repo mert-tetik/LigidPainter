@@ -431,21 +431,16 @@ private:
                             }
                         }
                         if(completeToken == "list_" + std::to_string(i)){
-                            if(processHppNode.inputs.size() < i){
-                                std::cout << "ERROR : Wrong index : " << completeToken << std::endl;
-                            }
-                            else{
-                                std::vector<std::string> list;
-                                //Default input values
-                                list.push_back("list_" + std::to_string(i));
-                                processHppNode.lists.push_back(list);
+                            std::vector<std::string> list;
+                            //Default input values
+                            list.push_back("list_" + std::to_string(i));
+                            processHppNode.lists.push_back(list);
 
-                                listDefinitions = true;
-                                inputDefinitions = false;
-                                outputDefinitions = false;
+                            listDefinitions = true;
+                            inputDefinitions = false;
+                            outputDefinitions = false;
 
-                                currentListIndex = i;
-                            }
+                            currentListIndex = i;
                         }
 
                         if(completeToken == "output_" + std::to_string(i)){

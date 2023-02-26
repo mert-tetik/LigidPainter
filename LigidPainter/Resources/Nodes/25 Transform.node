@@ -12,7 +12,7 @@
 --list_index : none;
 --type : vec3;
 --title : Source;
---element : color;
+--element : image;
 --value : 100,100,100;
 
 -input_1 : 

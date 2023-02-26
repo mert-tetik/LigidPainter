@@ -4,7 +4,7 @@
 %attributes;
 
 -title : Gradient;
--color : hex4287f5; #rgb122,124,66  #hsv86,45,23
+-color : hexb74efc; #rgb122,124,66  #hsv86,45,23
 -opacity : 60;
 
 -list_0 :
@@ -16,7 +16,7 @@
 --list_index : none;
 --type : vec3;
 --title : Color;
---element : color;
+--element : image;
 --value : 100,100,100;
 
 -input_1 : 
