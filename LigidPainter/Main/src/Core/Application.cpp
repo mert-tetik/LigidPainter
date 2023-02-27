@@ -259,9 +259,6 @@ bool LigidPainter::run()
 	glEnable(GL_MULTISAMPLE);
 
 
-	glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);
-
-
 	Load load;
 	programs = load.getProgram();
 

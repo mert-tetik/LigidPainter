@@ -702,13 +702,13 @@ void main( )
 	vec4 res;
 	
 	if(list_0 == 0)//model
-		res = node_noise_texture_3d(posModel,1,scale,detail,roughness,distortion);
+		res = node_noise_texture_3d(posModel+transform,1,scale,detail,roughness,distortion);
 	if(list_0 == 1)//uv
-		res = node_noise_texture_2d(vec3(tex_coords,1),1,scale,detail,roughness,distortion);
+		res = node_noise_texture_2d(vec3(tex_coords+transform,1),1,scale,detail,roughness,distortion);
 	if(list_0 == 2)//normals
-		res = node_noise_texture_3d(normal,1,scale,detail,roughness,distortion);
+		res = node_noise_texture_3d(normal+transform,1,scale,detail,roughness,distortion);
 	if(list_0 == 3)//camera
-		res = node_noise_texture_3d(posScene.xyz,1,scale,detail,roughness,distortion);
+		res = node_noise_texture_3d(posScene.xyz+transform,1,scale,detail,roughness,distortion);
 
 	output_0 = vec4(res.rgb, 1.0 );
 	output_1 = vec4(vec3(res.a), 1.0 );

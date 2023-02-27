@@ -511,6 +511,32 @@ vec4 abstractGeometricArtPattern(){
     return vec4(sqrt(max(col, 0.)), 1);
 }
 
+
+
+float calametricDot(vec2 h,vec2 c,float g){
+    return (0.356*sin(dot(h,c))) * g;
+}
+
+vec3 colorizedCalammetric(vec2 uv){
+    vec3 clrX = vec3(sin(uv.x),cos(uv.x),tan(uv.x));
+    vec3 clrY = vec3(cos(uv.y),cos(uv.y),sin(uv.y));
+
+    return clrX * clrY;
+}
+
+vec3 getCalametration(){
+    float b;
+    vec2 uv = tex_coords;
+    vec2 c = vec2(0.865,0.354);
+    uv *= calametricDot(uv,c,1);
+
+    vec3 res = colorizedCalammetric(uv);
+
+    return res;
+}
+
+
+
 void main()
 {
     vec2 iResolution = vec2(1);
@@ -524,7 +550,7 @@ void main()
     if(list_0 == 0)
         output_0 = vec4(caustic(uv,24,caustic_strength+caustic_chormatic_aberation),caustic(uv,24,caustic_strength),caustic(uv,24,caustic_strength-caustic_chormatic_aberation),1.);
     else if(list_0 == 1)
-        output_0 = kaleidoscope();
+        output_0 = vec4(getCalametration(),1);
     else if(list_0 == 2)
         output_0 = abstractGeometricArtPattern();
         
