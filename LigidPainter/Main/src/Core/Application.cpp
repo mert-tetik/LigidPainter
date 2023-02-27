@@ -1001,6 +1001,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 {
+	coloringPanel.active = false;
+
 	renderTheScene = true;
 	renderTheSceneCounter = 0;
 

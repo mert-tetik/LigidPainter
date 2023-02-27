@@ -11,7 +11,7 @@
 --list : none;
 --list_index : none;
 --type : float;
---title : Transform;
+--title : Scale;
 --element : range;
 --value : 100,100;
 
@@ -20,20 +20,35 @@
 --list : none;
 --list_index : none;
 --type : vec3;
---title : Texture;
+--title : Color;
+
+-output_1 :
+--list : none;
+--list_index : none;
+--type : float;
+--title : Value;
 
 
 -uniforms : tex_coords|normal|posScene|posModel;
 
 %code;
 
-float rand(vec2 co){
-  return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+vec3 hash3( uint n ) 
+{
+    // integer hash copied from Hugo Elias
+	n = (n << 13U) ^ n;
+    n = n * (n * n * 15731U + 789221U) + 1376312589U;
+    uvec3 k = n * uvec3(n,n*16807U,n*48271U);
+    return vec3( k & uvec3(0x7fffffffU))/float(0x7fffffff);
 }
-void main(){
-    float t = texture2D(input_0,tex_coords).r+0.2;
 
-    float res = rand(tex_coords*t);
 
-    output_0 = vec4(res,res,res,1);
+void main()
+{
+  float scale = texture2D(input_0,tex_coords).r*1024;
+  uvec2 p = uvec2(tex_coords*scale);
+
+	vec3 c = hash3( p.x + 1920U*p.y + (1920U*1080U)*uint(1) );
+	output_0 = vec4(c,1.0);
+	output_1 = vec4(vec3(c.r),1.0);
 }

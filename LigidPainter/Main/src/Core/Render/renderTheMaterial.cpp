@@ -55,7 +55,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
     GlSet glset;
 
-    glset.viewport(1024,1024);
+    glset.viewport(512,512);
 
     for (size_t i = 0; i < material.nodes.size(); i++)
     {
@@ -338,7 +338,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                 goto end;
             }
             else{
-                glset.viewport(1024,1024);
+                glset.viewport(512,512);
 
                 glActiveTexture(GL_TEXTURE28);
                 
@@ -347,7 +347,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                 glset.bindTexture(resultTexture);
                 
 
-                glset.texImage(nullptr,1024,1024,GL_RGBA);
+                glset.texImage(nullptr,512,512,GL_RGBA);
                 glset.generateMipmap();
                 
                 unsigned int FBO; 
@@ -371,10 +371,10 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
                 glset.generateMipmap();
 
-                GLubyte* data = new GLubyte[1024*1024*4];
-                glReadPixels(0,0,1024,1024,GL_RGBA,GL_UNSIGNED_BYTE,data);
+                GLubyte* data = new GLubyte[512*512*4];
+                glReadPixels(0,0,512,512,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
-                glset.texImage(data,1024,1024,GL_RGBA);
+                glset.texImage(data,512,512,GL_RGBA);
                 glset.generateMipmap();
 
                 delete[] data;
