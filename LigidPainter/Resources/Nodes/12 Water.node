@@ -19,7 +19,7 @@
 --list : none;
 --list_index : none;
 --type : vec3;
---title : lcolor;
+--title : color 2;
 --element : color;
 --value : 255,255,255;
 
@@ -27,7 +27,7 @@
 --list : none;
 --list_index : none;
 --type : float;
---title : time;
+--title : move;
 --element : range;
 --value : 100;
 
@@ -35,7 +35,7 @@
 --list : none;
 --list_index : none;
 --type : float;
---title : MAX_ITER;
+--title : Layers;
 --element : range;
 --value : 100;
 
