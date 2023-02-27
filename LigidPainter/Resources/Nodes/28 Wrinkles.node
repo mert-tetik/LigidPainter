@@ -13,8 +13,10 @@ $
 --title_1 : distribute;
 
 -list_1 :
---title_0 : 3d;
---title_1 : 2d;
+--title_0 : model;
+--title_1 : uv;
+--title_2 : normals;
+--title_3 : camera;
 
 -input_0 : 
 --list : none;
@@ -84,6 +86,7 @@ $
 %code;
 
 vec4 wrinkle3D(
+    vec3 coord,
     float wrinkles,
     float frequency,
     float subFrequency,
@@ -92,7 +95,7 @@ vec4 wrinkle3D(
     float scale,
     bool distribute
 ){
-    vec3 uv = posModel * scale;
+    vec3 uv = coord * scale;
     float t = move;
 	
     uv.y += 0.03*sin(subFrequency*uv.x-t);//Bent via sin
@@ -156,6 +159,7 @@ void main(){
     vec4 clr;
     if(list_1 == 0){
         clr = wrinkle3D(
+            posModel,
             wrinkles,
             frequency,
             subFrequency,
@@ -167,6 +171,30 @@ void main(){
     }
     if(list_1 == 1){
         clr = wrinkle2D(
+            wrinkles,
+            frequency,
+            subFrequency,
+            foldingDepth,
+            move,
+            scale,
+            distribute
+        );
+    }
+    if(list_1 == 2){
+        clr = wrinkle3D(
+            normal,
+            wrinkles,
+            frequency,
+            subFrequency,
+            foldingDepth,
+            move,
+            scale,
+            distribute
+        );
+    }
+    if(list_1 == 3){
+        clr = wrinkle3D(
+            posScene.xyz,
             wrinkles,
             frequency,
             subFrequency,
