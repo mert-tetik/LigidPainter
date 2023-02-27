@@ -9,8 +9,10 @@ $
 -opacity : 60;
 
 -list_0 :
---title_0 : 3d;
---title_1 : 2d;
+--title_0 : model;
+--title_1 : uv;
+--title_2 : normals;
+--title_3 : camera;
 
 -input_0 : 
 --list : none;
@@ -474,6 +476,28 @@ void main()
     if(list_0 == 1){
       res = node_tex_voronoi_smooth_f1_2d_color    (
                                               vec3(tex_coords,1)
+                                              ,w         
+                                              ,scale     
+                                              ,smoothness
+                                              ,exponent  
+                                              ,randomness
+                                              ,metric    
+                                              );
+    }
+    if(list_0 == 2){
+      res = node_tex_voronoi_smooth_f1_3d_color    (
+                                              normal
+                                              ,w         
+                                              ,scale     
+                                              ,smoothness
+                                              ,exponent  
+                                              ,randomness
+                                              ,metric    
+                                              );
+    }
+    if(list_0 == 3){
+      res = node_tex_voronoi_smooth_f1_3d_color    (
+                                              posScene.xyz
                                               ,w         
                                               ,scale     
                                               ,smoothness
