@@ -60,11 +60,10 @@
 %code;
 //Source
 //https://www.shadertoy.com/view/MdlXz8
-
+// by David Hoskins.
 
 void main() 
 {
-    vec2 iResolution = vec2(1);
     vec3 color = texture2D(input_0,tex_coords).rgb;
     vec3 lcolor = texture2D(input_1,tex_coords).rgb;
     float iTime = texture2D(input_2,tex_coords).r;
@@ -77,8 +76,8 @@ void main()
     MAX_ITER*=20;
 
 	float time = iTime * .5+23.0;
-    // uv should be the 0-1 uv of texture...
-	vec2 uv = scaledTexCoord.xy / iResolution.xy;
+ 
+	vec2 uv = scaledTexCoord.xy;
     
 
     vec2 p = mod(uv*6.28318530718, 6.28318530718)-250.0;

@@ -7,7 +7,7 @@ $ #Use the model's texture coords instead of a plane
 
 
 -title : Geometry;
--color : hex4287f5; #rgb122,124,66  #hsv86,45,23
+-color : hexebd834; #rgb122,124,66  #hsv86,45,23
 -opacity : 60;
 
 -input_0 : 

@@ -16,7 +16,7 @@
 --title_4 : overlay;
 --title_5 : sub;
 --title_6 : div;
---title_7 : div_fallback;
+--title_7 : div fallback;
 --title_8 : dodge;
 --title_9 : burn;
 --title_10 : hue;
