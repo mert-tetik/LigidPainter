@@ -58,17 +58,15 @@ float noise (vec2 st) {
             (d - b) * u.x * u.y;
 }
 
-void main() {
-    vec2 res = texture2D(input_0,tex_coords).rg;
-
-    vec2 st = gl_FragCoord.xy/res.xy;
-
-    // Scale the coordinate system to see
-    // some noise in action
+float tissue(){
+    vec2 st = gl_FragCoord.xy;
     vec2 pos = vec2(st*5.0);
-
-    // Use the noise function
     float n = noise(pos);
 
+    return n;
+}
+
+void main() {
+    float n = tissue();
     output_0 = vec4(vec3(n), 1.0);
 }
