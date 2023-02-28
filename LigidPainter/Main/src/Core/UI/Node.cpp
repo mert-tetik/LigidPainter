@@ -147,7 +147,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			{
 				for (size_t j = 0; j < 6; j++)
 				{
-					listElementI++;
 					if(node.listBoxes[i].elements.size() == listElementI)
 						break;
 
@@ -170,6 +169,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 
 					box(node.width*1.12,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + (x)/(20.f/(node.width*40)) ,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+j+1)/(20.f/(node.width*13)) - 0.05f * node.width*10 - iconWidth*1,"",color,0,0,0,depth+0.06f,10000,node.backColor,0);///Bottom
 					renderText(programs.uiProgram,node.listBoxes[i].elements[listElementI],(node.positionX + nodePanel.panelPositionX ) * nodePanel.zoomVal - node.width/1.2f + (x)/(20.f/(node.width*40)),((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+j+1)/(20.f/(node.width*13)) - 0.05f * node.width*10 - iconWidth*2.,node.width/300.f,colorData.textColor,depth+0.07f,false);
+					listElementI++;
 				}
 			
 			}

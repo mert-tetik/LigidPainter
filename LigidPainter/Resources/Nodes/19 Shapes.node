@@ -31,6 +31,7 @@
 --title_20 : weave4;
 --title_21 : truchetTiny70s;
 --title_22 : weaveInt;
+--title_23 : tissue;
 
 -input_0 : 
 --list : none;
@@ -282,6 +283,48 @@ float demo(vec2 u){
    return weaveInt(u);
 }
 
+// 2D Random
+float tissrandom (in vec2 st) {
+    return fract(sin(dot(st.xy,
+                         vec2(12.9898,78.233)))
+                 * 43758.5453123);
+}
+
+// 2D Noise based on Morgan McGuire @morgan3d
+// https://www.shadertoy.com/view/4dS3Wd
+float tissnoise (vec2 st) {
+    vec2 i = floor(st);
+    vec2 f = fract(st);
+
+    // Four corners in 2D of a tile
+    float a = tissrandom(i);
+    float b = tissrandom(i + vec2(1.0, 0.0));
+    float c = tissrandom(i + vec2(0.0, 1.0));
+    float d = tissrandom(i + vec2(1.0, 1.0));
+
+    // Smooth Interpolation
+
+    // Cubic Hermine Curve.  Same as SmoothStep()
+    vec2 u = f*f*(3.0-2.0*f);
+    // u = smoothstep(0.,1.,f);
+
+    // Mix 4 coorners percentages
+    return mix(a, b, u.x) +
+            (c - a)* u.y * (1.0 - u.x) +
+            (d - b) * u.x * u.y;
+}
+
+float tissue(){
+        vec2 uvtransform = texture2D(input_0,tex_coords).xy*5.;
+    vec2 uvscale = texture2D(input_1,tex_coords).xy*10.;
+
+    vec2 st = gl_FragCoord.xy * uvscale + uvtransform;
+    vec2 pos = vec2(st*5.0);
+    float n = tissnoise(pos);
+
+    return n;
+}
+
 float getResult(vec2 uv){
     float res;
     
@@ -331,6 +374,8 @@ float getResult(vec2 uv){
         res = truchetTiny70s(uv, iTime*0.1);
     else if (list_0 ==22) 
         res = weaveInt(uv);
+    else if (list_0 ==23) 
+        res = tissue();
     else                 
         res = demo(uv);
 
