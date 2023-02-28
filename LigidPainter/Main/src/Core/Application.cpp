@@ -408,7 +408,7 @@ bool LigidPainter::run()
 
 
 	// Simple operation
-	QrCode qr0 = QrCode::encodeText("https://www.google.com/search?q=Cavaliere+R&sxsrf=AJOqlzV_l9GO-FPHntnv8Ou3cuRTzuI-Sg:1677453368533&source=lnms&tbm=isch&sa=X&ved=2ahUKEwifoqLhqLT9AhWmc_EDHdYvD3AQ_AUoAXoECAEQAw&biw=2046&bih=1085&dpr=0.9", QrCode::Ecc::MEDIUM);
+	QrCode qr0 = QrCode::encodeText("https://www.ligidtools.com/ligidpainter", QrCode::Ecc::MEDIUM);
 	std::vector<std::vector<bool>> qr = printQr(qr0);  // See QrCodeGeneratorDemo
 	
 	std::vector<GLubyte> qrData;

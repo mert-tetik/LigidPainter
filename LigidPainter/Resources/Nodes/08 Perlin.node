@@ -17,10 +17,10 @@ $
 -input_0 : 
 --list : none;
 --list_index : none;
---type : float;
+--type : vec3;
 --title : Scale;
 --element : range;
---value : 100;
+--value : 100,100,100;
 
 -input_1 : 
 --list : none;
@@ -648,7 +648,7 @@ vec3 random_vec3_offset(float seed)
 
 vec4 node_noise_texture_2d(vec3 co,
                            float w,
-                           float scale,
+                           vec2 scale,
                            float detail,
                            float roughness,
                            float distortion
@@ -669,7 +669,7 @@ vec4 node_noise_texture_2d(vec3 co,
 
 vec4 node_noise_texture_3d(vec3 co,
                            float w,
-                           float scale,
+                           vec3 scale,
                            float detail,
                            float roughness,
                            float distortion
@@ -693,7 +693,7 @@ vec4 node_noise_texture_3d(vec3 co,
 
 void main( )
 {
-	float scale = texture2D(input_0,tex_coords).r*10;
+	vec3 scale = texture2D(input_0,tex_coords).rgb*20;
 	float transform = texture2D(input_1,tex_coords).r*10;
 	float detail = texture2D(input_2,tex_coords).r*10;
 	float roughness = texture2D(input_3,tex_coords).r;
@@ -704,7 +704,7 @@ void main( )
 	if(list_0 == 0)//model
 		res = node_noise_texture_3d(posModel+transform,1,scale,detail,roughness,distortion);
 	if(list_0 == 1)//uv
-		res = node_noise_texture_2d(vec3(tex_coords+transform,1),1,scale,detail,roughness,distortion);
+		res = node_noise_texture_2d(vec3(tex_coords+transform,1),1,scale.xy,detail,roughness,distortion);
 	if(list_0 == 2)//normals
 		res = node_noise_texture_3d(normal+transform,1,scale,detail,roughness,distortion);
 	if(list_0 == 3)//camera

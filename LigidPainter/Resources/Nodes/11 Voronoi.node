@@ -17,10 +17,10 @@ $
 -input_0 : 
 --list : none;
 --list_index : none;
---type : float;
+--type : vec3;
 --title : scale;
 --element : range;
---value : 100;
+--value : 100,100,100;
 
 -input_1 : 
 --list : none;
@@ -373,7 +373,7 @@ float voronoi_distance3d(vec3 a, vec3 b, float metric, float exponent)
 
 vec4 node_tex_voronoi_smooth_f1_2d_color(vec3 coord,
                                    float w,
-                                   float scale,
+                                   vec2 scale,
                                    float smoothness,
                                    float exponent,
                                    float randomness,
@@ -410,7 +410,7 @@ vec4 node_tex_voronoi_smooth_f1_2d_color(vec3 coord,
 }
 vec4 node_tex_voronoi_smooth_f1_3d_color(vec3 coord,
                                   float w,
-                                  float scale,
+                                  vec3 scale,
                                   float smoothness,
                                   float exponent,
                                   float randomness,
@@ -455,7 +455,7 @@ vec4 node_tex_voronoi_smooth_f1_3d_color(vec3 coord,
 void main()
 {
     float w             = 1;
-    float scale         = texture2D(input_0,tex_coords).r*100;
+    vec3 scale         = texture2D(input_0,tex_coords).rgb*100;
     float smoothness    = texture2D(input_1,tex_coords).r*4;
     float exponent      = 1;
     float randomness    = texture2D(input_2,tex_coords).r;
@@ -477,7 +477,7 @@ void main()
       res = node_tex_voronoi_smooth_f1_2d_color    (
                                               vec3(tex_coords,1)
                                               ,w         
-                                              ,scale     
+                                              ,vec2(scale)     
                                               ,smoothness
                                               ,exponent  
                                               ,randomness
