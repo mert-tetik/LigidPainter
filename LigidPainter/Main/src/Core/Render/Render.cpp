@@ -268,7 +268,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 Icons &icons,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures, bool renderPlane,bool renderSphere,
 PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,
 OutShaderData &outShaderData,Model &model,vector<aTexture> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
-ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel
+ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps& cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel
 ,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
 std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool firstClick,
 glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
@@ -337,32 +337,12 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	
 
 	glActiveTexture(GL_TEXTURE13);
-	if(chosenSkyboxTexture == 0)
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
-	if(chosenSkyboxTexture == 1)
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap2);
-	if(chosenSkyboxTexture == 2)
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap3);
-	if(chosenSkyboxTexture == 3)
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap4);
-	if(chosenSkyboxTexture == 4)
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap5);
-	if(chosenSkyboxTexture == 5)
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap6);
+	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
+
 	
 	glActiveTexture(GL_TEXTURE16);
-	if(chosenSkyboxTexture == 0)
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered);
-	if(chosenSkyboxTexture == 1)
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered2);
-	if(chosenSkyboxTexture == 2)
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered3);
-	if(chosenSkyboxTexture == 3)
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered4);
-	if(chosenSkyboxTexture == 4)
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered5);
-	if(chosenSkyboxTexture == 5)
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered6);
+	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered);
+
 
 	
 	
@@ -415,7 +395,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		colorPicker,textureDisplayer,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,
 		nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
 		chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
-		,brushMaskTextures,maskPanelEnter,duplicateNodeCall);
+		,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps);
 
 	if(nodeScenes[selectedNodeScene].stateChanged && !lastMaterialStateChanged && lastNodeScene.nodes.size())
     	nodeScenesHistory.push_back(lastNodeScene);

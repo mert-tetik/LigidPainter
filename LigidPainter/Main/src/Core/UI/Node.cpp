@@ -434,6 +434,94 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	{
         //Render the input title
 		renderText(programs.uiProgram,node.inputs[i].text,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+0.01f,false);
+		
+		if(node.inputs[i].element == "ramp"){
+			box(iconWidth*3,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX-node.width/4.f) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height/4.) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].rampClr[node.inputs[i].selectedRampIndex]/255.f,1),0,0,0,depth+0.01,8 / (node.width*6),node.backColor,0);///Bottom
+			bool clrHover = false;
+			bool plusHover = false;
+			bool minusHover = false;
+			if(nodePanel.panelHover && !coloringPanel.active){
+				
+				clrHover = isMouseOnButton(window,iconWidth*3,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX-node.width/4.f) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height/4.) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+				plusHover = isMouseOnButton(window,iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/8., ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height/2) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+				minusHover = isMouseOnButton(window,iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/8., ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height/6) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+			}
+			if(clrHover||plusHover||minusHover)
+				nodePanel.pointerCursor = true;
+			else
+				nodePanel.pointerCursor = false;
+
+			if(clrHover && firstClick && !node.inputs[i].coloringPanelActivated){
+				node.inputs[i].coloringPanelActivated = true;
+				coloringPanel.active = true;
+				
+				coloringPanel.hexVal = util.rgbToHexGenerator(node.inputs[i].color);
+				coloringPanel.newHexValTextboxEntry = true;
+				coloringPanel.result = node.inputs[i].rampClr[node.inputs[i].selectedRampIndex];
+				coloringPanel.panelPosX = mouseX/(maxScreenWidth/2.f) - 1.0f + screenGapX ;
+				coloringPanel.panelPosY = -mouseY/maxScreenHeight*2.f + 1.0f;
+			}
+
+			if(!coloringPanel.active)
+				node.inputs[i].coloringPanelActivated = false;
+
+			if(node.inputs[i].coloringPanelActivated){
+				node.inputs[i].rampClr[node.inputs[i].selectedRampIndex] = coloringPanel.result;
+				material.stateChanged = true;
+			}
+
+			if(plusHover && firstClick){
+				node.inputs[i].rampPos.push_back(0.0);
+				node.inputs[i].rampPress.push_back(false);
+				node.inputs[i].rampClr.push_back(glm::vec3(0));
+				node.inputs[i].selectedRampIndex = node.inputs[i].rampPos.size()-1; 
+			}
+			
+			
+			
+			
+			for (size_t rampi = 0; rampi < node.inputs[i].rampPos.size(); rampi++)
+			{
+				box(iconWidth*1.5,iconWidth,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY + (node.inputs[i].rampPos[rampi]-0.5)/1.2) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].rampClr[rampi]/glm::vec3(255.),1),0,0,0,depth+0.01,10000,node.backColor,0);
+				bool rampPointHover = isMouseOnButton(window,iconWidth,iconWidth,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY+(node.inputs[i].rampPos[rampi]-0.5)/1.2) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+				if(rampPointHover && firstClick){
+					node.inputs[i].selectedRampIndex = rampi;
+					node.inputs[i].rampPress[rampi] = true;
+				}
+				if(node.inputs[i].rampPress[rampi]){
+					node.inputs[i].rampPos[rampi] -= yOffset/(nodePanel.zoomVal*200);
+					node.inputs[i].rampPos[rampi] = util.restrictBetween(node.inputs[i].rampPos[rampi],1.f,0.001f);
+				}
+				if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
+					node.inputs[i].rampPress[rampi] = false;
+				}
+			}
+
+			glUseProgram(programs.rampProgram);
+			for (size_t rampi = 0; rampi < 10; rampi++)
+			{
+				GlSet gl;
+				std::string targetPoint = "point1D[" + std::to_string(rampi) + "]";
+				std::string targetColor = "color1D[" + std::to_string(rampi) + "]";
+				if(rampi < node.inputs[i].rampPos.size()){
+					std::cout << node.inputs[i].rampPos[rampi] << ' ';
+					gl.uniform1f(programs.rampProgram,targetPoint.c_str(),node.inputs[i].rampPos[rampi]);
+					gl.uniform3fv(programs.rampProgram,targetColor.c_str(),node.inputs[i].rampClr[rampi]);
+				}
+				else{
+					gl.uniform1f(programs.rampProgram,targetPoint.c_str(),5.0f);
+					gl.uniform3fv(programs.rampProgram,targetColor.c_str(),glm::vec3(0));
+				}
+			}
+			
+			box(iconWidth,iconWidth*20.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,depth+0.01,10000,node.backColor,0);
+
+			glUseProgram(programs.iconsProgram);
+
+			iconBox(iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/8., ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height/2) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+0.02,icons.Plus,0,colorData.iconColor,glm::vec4(0));
+			iconBox(iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/8., ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height/6) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+0.02,icons.Minus,0,colorData.iconColor,glm::vec4(0));
+		}
+		
 		if(node.inputs[i].element == "color" && node.inputs[i].nodeConnectionIndex == 10000){
 			inputElementIndex++;
 			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].color/255.f,1),0,0,0,depth+0.01,8 / (node.width*6),node.backColor,0);///Bottom

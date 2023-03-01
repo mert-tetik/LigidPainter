@@ -24,6 +24,7 @@
 #include "Core/Utilities.h"
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"
+#include "Core/Load.hpp"
 
 #include "tinyfiledialogs.h"
 
@@ -86,13 +87,13 @@ bool selectionActive = false;
 
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
 const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
-float brushBlurVal,OutShaderData &outShaderData, Model &model,vector<aTexture> &albedoTextures,Programs programs
+float brushBlurVal,OutShaderData &outShaderData, Model &model,std::vector<aTexture> &albedoTextures,Programs programs
 ,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
 ,NodePanel &nodePanel,SndPanel &sndPanel, int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool firstClick
 ,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive
-,std::string &textureText,std::vector<NodeScene> &nodeScenesHistory,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall) {
+,std::string &textureText,std::vector<NodeScene> &nodeScenesHistory,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -114,6 +115,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	centerDivider = 2.0f;
 	centerSum = 0;
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+	glUseProgram(programs.rampProgram);
+	gl.uniformMatrix4fv(programs.rampProgram, "TextProjection", projection);
 	glUseProgram(programs.iconsProgram);
 	gl.uniformMatrix4fv(programs.iconsProgram, "Projection", projection);
 	glUseProgram(programs.renderTheTextureProgram);
@@ -546,10 +549,30 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 		gl.drawArrays(renderVertices,0);
 	}
-
+	bool skyboxlistStateChanged = false;
 	if(panelData.settingsPanelActive){
 		ui.listBox(centerCoords - screenGapX,0.8f,0.9f,"Texture Resolution",0.1f,icons,{"256","512","1024","2048","4096","8412"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenTextureResIndex,screenGapX);
-		ui.listBox(centerCoords - screenGapX,-0.1f,0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture,screenGapX);
+		skyboxlistStateChanged = ui.listBox(centerCoords - screenGapX,-0.1f,0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture,screenGapX);
+	}
+	
+	if(skyboxlistStateChanged){
+		Load load;
+		glDeleteTextures(1,&cubemaps.cubemap);
+		glDeleteTextures(1,&cubemaps.prefiltered);
+
+		std::vector<std::string> faces
+		{
+		    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/px.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/nx.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/ny.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/py.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/pz.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/nz.png"
+		};
+		unsigned int cubemapTexture = load.loadCubemap(faces,GL_TEXTURE13);  
+		cubemaps.cubemap = cubemapTexture;
+		unsigned int prefilteredMap = load.createPrefilterMap(programs,cubemaps,maxScreenWidth,maxScreenHeight);
+		cubemaps.prefiltered = prefilteredMap;
 	}
 
 	alertState = 0;

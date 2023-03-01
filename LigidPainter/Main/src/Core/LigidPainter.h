@@ -34,6 +34,7 @@ struct Programs
 	unsigned int normalGenProgram; 
 	unsigned int noisyTextureProgram; 
 	unsigned int curveProgram; 
+	unsigned int rampProgram; 
 };
 struct Cubemaps{
 	unsigned int cubemap;

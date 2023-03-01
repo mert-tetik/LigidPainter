@@ -311,7 +311,7 @@ bool LigidPainter::run()
 	//Load context menus
 	addNodeContextMenu = ui.createContextMenus(appNodes);
 	//Load the prefilter map
-	load.createPrefilterMap(programs,cubemaps,windowData);
+	cubemaps.prefiltered = load.createPrefilterMap(programs,cubemaps,windowData.windowMaxWidth,windowData.windowMaxHeight);
 	//Load general rendering FBO
 	FBOScreen = load.createScreenFrameBufferObject(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	//Get BRDF Look Up Texture
@@ -448,7 +448,7 @@ bool LigidPainter::run()
 		
 		util.printRenderingSpeed();
 		
-		util.printError();
+		//util.printError();
 
 		
 		mainLoop.updateCameraPosChanging(callbackData.cameraPos,cameraPosChanging);

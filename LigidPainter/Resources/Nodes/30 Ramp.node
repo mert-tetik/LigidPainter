@@ -1,0 +1,32 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : Noise;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Scale;
+--element : ramp;
+--value : 100,100;
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color;
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+
+void main()
+{
+
+}

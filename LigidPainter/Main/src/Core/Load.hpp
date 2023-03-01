@@ -92,62 +92,6 @@ public:
 		};
 		unsigned int cubemapTexture = loadCubemap(faces,GL_TEXTURE13);  
 		
-		std::vector<std::string> faces2
-		{
-		    "LigidPainter/Resources/Cubemap/Skybox/sky2/px.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky2/nx.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky2/ny.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky2/py.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky2/pz.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky2/nz.png"
-		};
-		// unsigned int cubemapTexture2 = loadCubemap(faces2,GL_TEXTURE13);  
-
-		std::vector<std::string> faces3
-		{
-		    "LigidPainter/Resources/Cubemap/Skybox/sky3/px.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky3/nx.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky3/ny.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky3/py.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky3/pz.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky3/nz.png"
-		};
-		// unsigned int cubemapTexture3 = loadCubemap(faces3,GL_TEXTURE13);  
-		
-		
-		std::vector<std::string> faces4
-		{
-		    "LigidPainter/Resources/Cubemap/Skybox/sky4/px.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky4/nx.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky4/ny.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky4/py.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky4/pz.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky4/nz.png"
-		};
-		// unsigned int cubemapTexture4 = loadCubemap(faces4,GL_TEXTURE13);  
-
-		std::vector<std::string> faces5
-		{
-		    "LigidPainter/Resources/Cubemap/Skybox/sky5/px.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky5/nx.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky5/ny.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky5/py.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky5/pz.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky5/nz.png"
-		};
-		// unsigned int cubemapTexture5 = loadCubemap(faces5,GL_TEXTURE13);  
-
-		std::vector<std::string> faces6
-		{
-		    "LigidPainter/Resources/Cubemap/Skybox/sky6/px.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky6/nx.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky6/ny.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky6/py.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky6/pz.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky6/nz.png"
-		};
-		// unsigned int cubemapTexture6 = loadCubemap(faces6,GL_TEXTURE13);  
-		
 		std::vector<std::string> facesblur
 		{
 		    "LigidPainter/Resources/Cubemap/Skybox/ambient/pxblur.png",
@@ -497,6 +441,12 @@ public:
 		
 		//Curve 
 		unsigned int curveProgram = gl.createProgram("LigidPainter/Resources/Shaders/UI/curve");
+		
+		
+		
+		
+		//Ramp 
+		unsigned int rampProgram = gl.createProgram("LigidPainter/Resources/Shaders/UI/ramp");
 
 
 
@@ -522,6 +472,7 @@ public:
 		glPrograms.normalGenProgram = normalGenProgram;   
 		glPrograms.noisyTextureProgram = noisyTextureProgram;
 		glPrograms.curveProgram = curveProgram;
+		glPrograms.rampProgram = rampProgram;
 
 
 		return glPrograms;
@@ -618,6 +569,10 @@ public:
 				resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
 				resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
 				resultNode.inputs[i].rangeBarsPointerPressed.push_back(false);
+			}
+
+			if(input.element == "ramp"){
+				rangeBarCount += 1.3f*8;
 			}
 
 		}
@@ -796,7 +751,7 @@ public:
 		return result;
 	}
 
-	void createPrefilterMap(Programs programs,Cubemaps &cubemaps,WindowData windowData){
+	unsigned int createPrefilterMap(Programs programs,Cubemaps &cubemaps,int windowMaxWidth, int windowMaxHeight){
 		GlSet glset;
 		
 		//Is required for rendering the skybox
@@ -867,18 +822,8 @@ public:
 		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
 		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
 		};	
-		std::vector<unsigned int> prefilterMaps;
-		std::vector<unsigned int> skyboxes;
 
-		skyboxes.push_back(cubemaps.cubemap);
-		skyboxes.push_back(cubemaps.cubemap2);
-		skyboxes.push_back(cubemaps.cubemap3);
-		skyboxes.push_back(cubemaps.cubemap4);
-		skyboxes.push_back(cubemaps.cubemap5);
-		skyboxes.push_back(cubemaps.cubemap6);
 
-		for (size_t i = 0; i < skyboxes.size(); i++)
-		{
 			//Create the cube map texture
 			glActiveTexture(GL_TEXTURE28);
 			unsigned int prefilterMap;
@@ -899,7 +844,6 @@ public:
 			//Generate mipmap after creating the txtr
 			glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-			prefilterMaps.push_back(prefilterMap);
 
 			//Use the related program for rendering
 			glUseProgram(programs.prefilterMapProgram);
@@ -909,7 +853,7 @@ public:
 
 			//Bind the skybox to the Slot 13
 			glActiveTexture(GL_TEXTURE13);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxes[i]);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, cubemaps.cubemap);
 
 			//Bind the framebuffer
 			glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
@@ -942,19 +886,10 @@ public:
 			        glset.drawArrays(cube,false);
 			    }
 			}
-		}
 		
-
-		cubemaps.prefiltered = prefilterMaps[0];
-		cubemaps.prefiltered2 = prefilterMaps[1];
-		cubemaps.prefiltered3 = prefilterMaps[2];
-		cubemaps.prefiltered4 = prefilterMaps[3];
-		cubemaps.prefiltered5 = prefilterMaps[4];
-		cubemaps.prefiltered6 = prefilterMaps[5];
-
 		//Set everything to default
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); 
-		glViewport(0, 0, windowData.windowMaxWidth, windowData.windowMaxHeight);
+		glViewport(0, 0, windowMaxWidth, windowMaxHeight);
 
 		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
@@ -962,11 +897,13 @@ public:
 
 		//Bind the result cube map to 16th slote
 		glActiveTexture(GL_TEXTURE16);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMaps[0]);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
 
 		//Delete the framebuffer
 		glDeleteFramebuffers(1,&captureFBO);
 		glDeleteRenderbuffers(1,&captureRBO);
+
+		return prefilterMap;
 	}
 
 	// unsigned int createPrefilterMap(Programs programs,Cubemaps cubemaps,WindowData windowData){

@@ -1,8 +1,6 @@
 #ifndef LGDGL_H
 #define LGDGL_H
 
-
-	
 struct WindowData{
 	int windowMaxWidth;
 	int windowMaxHeight;

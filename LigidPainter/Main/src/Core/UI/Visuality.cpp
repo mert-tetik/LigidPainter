@@ -1632,9 +1632,9 @@ void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned
 		}
 }
 
-void UserInterface::listBox(float posX,float posY,float posZ,const char* title,float width,Icons icons,std::vector<const char*> list, bool active,GLFWwindow* window, float mouseXpos,float mouseYpos,bool firstClick,int &chosenIndex,float screenGapX){
+bool UserInterface::listBox(float posX,float posY,float posZ,const char* title,float width,Icons icons,std::vector<const char*> list, bool active,GLFWwindow* window, float mouseXpos,float mouseYpos,bool firstClick,int &chosenIndex,float screenGapX){
 	ColorData colorData;
-	
+	bool stateChanged = false;
 	if(active){
 		const float contHeight = list.size()/27.5;
 		container(posX,posY-contHeight,posZ,width,contHeight,glm::vec4(0.2),uiPrograms,icons.Circle);
@@ -1650,6 +1650,7 @@ void UserInterface::listBox(float posX,float posY,float posZ,const char* title,f
 
 			if(hover && firstClick){
 				chosenIndex = i-1;
+				stateChanged = true;
 			}
 
 			glm::vec4 color;
@@ -1683,6 +1684,8 @@ void UserInterface::listBox(float posX,float posY,float posZ,const char* title,f
 	circle(posX+width,posY,posZ+0.0001f,0.025,0.05,icons.Circle,glm::vec4(0.1,0.1,0.1,0.2));
 	
 	glUseProgram(uiPrograms.uiProgram);
+
+	return stateChanged;
 }
 
 std::vector<float> UserInterface::selectionBox(bool active,float sPX,float sPY,float dPX,float dPY,float depth){
