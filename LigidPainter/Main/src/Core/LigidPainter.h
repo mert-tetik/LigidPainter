@@ -181,6 +181,7 @@ struct Icons{
 	unsigned int Gear;
 	unsigned int Mark;
 	unsigned int TextureGenerator;
+	unsigned int Pointer;
 };
 
 struct RenderData { //GlSet::render

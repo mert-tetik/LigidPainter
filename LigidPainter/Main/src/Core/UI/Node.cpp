@@ -455,7 +455,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				node.inputs[i].coloringPanelActivated = true;
 				coloringPanel.active = true;
 				
-				coloringPanel.hexVal = util.rgbToHexGenerator(node.inputs[i].color);
+				coloringPanel.hexVal = util.rgbToHexGenerator(node.inputs[i].rampClr[node.inputs[i].selectedRampIndex]);
 				coloringPanel.newHexValTextboxEntry = true;
 				coloringPanel.result = node.inputs[i].rampClr[node.inputs[i].selectedRampIndex];
 				coloringPanel.panelPosX = mouseX/(maxScreenWidth/2.f) - 1.0f + screenGapX ;
@@ -485,11 +485,12 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			
 			
 			
-			
+			glUseProgram(programs.iconsProgram);
+			glDepthFunc(GL_LEQUAL);
 			for (size_t rampi = 0; rampi < node.inputs[i].rampPos.size(); rampi++)
 			{
-				box(iconWidth*1.5,iconWidth,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY + (node.inputs[i].rampPos[rampi]-0.5)/1.2) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].rampClr[rampi]/glm::vec3(255.),1),0,0,0,depth+0.01,10000,node.backColor,0);
-				bool rampPointHover = isMouseOnButton(window,iconWidth,iconWidth,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY+(node.inputs[i].rampPos[rampi]-0.5)/1.2) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+				iconBox(iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width/1.6, ((node.positionY + nodePanel.panelPositionY + (node.inputs[i].rampPos[rampi]-0.5)/1.2) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+0.01,icons.Pointer,0,glm::vec4(node.inputs[i].rampClr[rampi]/glm::vec3(255.),1),glm::vec4(0));
+				bool rampPointHover = isMouseOnButton(window,iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width/1.6, ((node.positionY + nodePanel.panelPositionY+(node.inputs[i].rampPos[rampi]-0.5)/1.2) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
 				if(rampPointHover && firstClick){
 					node.inputs[i].selectedRampIndex = rampi;
 					node.inputs[i].rampPress[rampi] = true;
@@ -497,12 +498,13 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				if(node.inputs[i].rampPress[rampi]){
 					material.stateChanged = true;
 					node.inputs[i].rampPos[rampi] -= yOffset/(nodePanel.zoomVal*200);
-					node.inputs[i].rampPos[rampi] = util.restrictBetween(node.inputs[i].rampPos[rampi],1.f,0.001f);
+					node.inputs[i].rampPos[rampi] = util.restrictBetween(node.inputs[i].rampPos[rampi],0.98f,0.02f);
 				}
 				if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
 					node.inputs[i].rampPress[rampi] = false;
 				}
 			}
+			glDepthFunc(GL_LESS);
 
 			glUseProgram(programs.rampProgram);
 			for (size_t rampi = 0; rampi < 10; rampi++)
