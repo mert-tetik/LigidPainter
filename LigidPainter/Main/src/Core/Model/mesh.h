@@ -90,12 +90,11 @@ public:
         // }
         
         // draw mesh
+        glBindBuffer(1,VBO);
         glBindVertexArray(VAO);
 
         glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
         
-        glBindVertexArray(0);
-
         // always good practice to set everything back to defaults once configured.
     }
 
@@ -111,9 +110,9 @@ private:
         glGenBuffers(1, &VBO);
         glGenBuffers(1, &EBO);
 
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBindVertexArray(VAO);
         // load data into vertex buffers
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
         // A great thing about structs is that their memory layout is sequential for all its items.
         // The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
         // again translates to 3/2 floats which translates to a byte array.
@@ -145,7 +144,6 @@ private:
 		// weights
 		glEnableVertexAttribArray(6);
 		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, m_Weights));
-        glBindVertexArray(0);
     }
 };
 #endif

@@ -10,7 +10,8 @@
 
 
 void Render::renderModel(bool backfaceCulling,PBRShaderData &data,Model &model,bool renderDefault, vector<MaterialOut> &modelMaterials,Programs programs,
-int currentMaterialIndex,glm::mat4 view,bool paintingMode,std::vector<aTexture> albedoTextures,int chosenTextureIndex,glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal) {
+int currentMaterialIndex,glm::mat4 view,bool paintingMode,std::vector<aTexture> albedoTextures,int chosenTextureIndex,glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal
+,Objects &objects) {
 	glDepthFunc(GL_LESS); 
 
     GlSet gl;
@@ -33,4 +34,8 @@ int currentMaterialIndex,glm::mat4 view,bool paintingMode,std::vector<aTexture> 
 	glUseProgram(programs.uiProgram);
 	glDepthFunc(GL_LESS); 
     //glDrawBuffer(GL_COLOR_ATTACHMENT0);
+
+	glUseProgram(programs.uiProgram);
+	glBindBuffer(GL_ARRAY_BUFFER, objects.VBO);
+	glBindVertexArray(objects.VAO);
 }

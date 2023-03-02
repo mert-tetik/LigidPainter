@@ -6,9 +6,13 @@ uniform mat4 TextProjection;
 
 out vec2 TexCoords;
 
+uniform vec3 pos;
+uniform mat4 scale;
 
 void main() {
    TexCoords = aTexCoords;
 
-   gl_Position = TextProjection * vec4(aPos, 1.0);
+   vec3 scaledPos = vec3(scale * vec4(aPos,1));
+
+   gl_Position = TextProjection * vec4(scaledPos+pos, 1.0);
 }

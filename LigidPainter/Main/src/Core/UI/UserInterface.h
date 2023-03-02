@@ -141,6 +141,13 @@ struct ColorData2{
 	glm::vec4 selectionBoxColor = glm::vec4(LigidPainterThemeColor,0.2f);
 };
 
+struct Objects{
+	unsigned int VBO;
+	unsigned int VAO;
+	unsigned int sqrVBO;
+	unsigned int sqrVAO;
+};
+
 struct Container{
 	float width;
 	float height;
@@ -647,6 +654,7 @@ public:
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void sendMaxWindowSizeToCalculationsAndMore(int maxScreenWidth,int maxScreenHeight);
 	void sendTextBoxActiveCharToUI(int textBoxActiveChar);
+	void sendObjectsToUI(Objects aobjects);
 };
 class MainLoop{
 public:

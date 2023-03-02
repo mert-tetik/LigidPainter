@@ -93,7 +93,7 @@ GLFWwindow* window;
 	char folderDistinguisher = '/'; 
 #endif
 
-unsigned int VBO, VAO, FBOScreen;
+unsigned int FBOScreen;
 
 bool firstClick = false;
 bool mousePress = false;
@@ -135,6 +135,7 @@ bool bakeTheMaterial = false;
 bool anyTextureNameActive = false;
 std::string textureText;
 unsigned int viewportBGImage = 0;
+Objects objects;
 
 
 string modelName;
@@ -245,8 +246,36 @@ bool LigidPainter::run()
 
 
 
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glGenBuffers(1, &objects.sqrVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, objects.sqrVBO);
+	glGenVertexArrays(1,&objects.sqrVAO);
+	glBindVertexArray(objects.sqrVAO);
+	
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+	
+	std::vector<float> sqrCoor{
+		// first triangle
+		 1,  1., 0,1,0,0,0,0,  // top right
+		 1, -1., 0,1,1,0,0,0,  // bottom right
+		-1,  1., 0,0,0,0,0,0,  // top left 
+		 
+		 1, -1., 0,1,1,0,0,0,  // bottom right
+		-1, -1., 0,0,1,0,0,0,  // bottom left
+		-1,  1., 0,0,0,0,0,0  // top left
+	};
+
+	glBufferData(GL_ARRAY_BUFFER,sqrCoor.size() * sizeof(float), &sqrCoor[0],GL_DYNAMIC_DRAW);
+
+
+	glGenBuffers(1, &objects.VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, objects.VBO);
+	glGenVertexArrays(1,&objects.VAO);
+	glBindVertexArray(objects.VAO);
 	glUseProgram(programs.uiProgram);
 	glset.setVertexAtribPointer();
 	glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW); 
@@ -348,6 +377,7 @@ bool LigidPainter::run()
 	//--Send max window size
 	callback.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	ui.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
+	ui.sendObjectsToUI(objects);
 	uiAct.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	render.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	txtr.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
@@ -575,7 +605,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects);
 		}
 		duplicateNodeCall = false;
 		
@@ -689,7 +719,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -1569,14 +1599,9 @@ void LigidPainter::loadModelButton() {
 		// for (size_t i = 0; i < model.meshes.size(); i++) 
 		// {
 		// }
-
-		//After loading the model get back to previous state
 		glUseProgram(programs.uiProgram);
-		glBindVertexArray(VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-
-		//Make sure GL_ARRAY_BUFFER is capable of rendering ui
+		glBindBuffer(GL_ARRAY_BUFFER, objects.VBO);
+		glBindVertexArray(objects.VAO);
 	}
 	else{
 		//If model file path is inappropriate add one

@@ -20,6 +20,8 @@ Programs uiPrograms;
 
 ColorData colorD;
 
+Objects uiObjects;
+
 int uiMaxScreenWidth;
 int uiMaxScreenHeight;
 
@@ -35,77 +37,24 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	//parameter z = position_z
 	GlSet glset;
 
-	//std::vector<float> buttonCoorSq{
-	//	// first triangle
-	//	 width + position_x,  height + position_y, z,1,1,0,0,0,  // top right
-	//	 width + position_x, -height + position_y, z,1,0,0,0,0,  // bottom right
-	//	-width + position_x,  height + position_y, z,0,1,0,0,0,  // top left 
-	//	// second triangle						   
-	//	 width + position_x, -height + position_y, z,1,0,0,0,0,  // bottom right
-	//	-width + position_x, -height + position_y, z,0,0,0,0,0,  // bottom left
-	//	-width + position_x,  height + position_y, z,0,1,0,0,0  // top left
-	//};
-
-	std::vector<float> buttonCoor{
-		  position_x +  width + 0.08651f/ buttonCurveReduce 	, position_y + height / 1.29802f , z , 1 , 0.874506f 	, 0, 0, 1, 	//R / 2
-		  position_x + -width							    	, position_y + height			 , z , 0 , 1.0f	     	, 0, 0, 1,	//L / 1
-		  position_x + -width - 0.08651f / buttonCurveReduce	, position_y + height / 1.29802f , z , 0 , 0.874506f 	, 0, 0, 1,	//L / 2
-		  position_x +  width + 0.15074f / buttonCurveReduce	, position_y + -height / 3.88978f, z , 1 , 0.375f	 	, 0, 0, 1, 	//R / 6
-		  position_x + -width - 0.15800f / buttonCurveReduce	, position_y + 0				 , z , 0 , 0.5f		 	, 0, 0, 1,	//L / M
-		  position_x + -width - 0.15074f / buttonCurveReduce	, position_y + -height / 3.88978f, z , 0 , 0.375f	 	, 0, 0, 1,	//L / 6
-		  position_x +  width + 0.15074f / buttonCurveReduce	, position_y + height / 3.88978f , z , 1 , 0.624971f	, 0, 0, 1, 	//R / 4
-		  position_x + -width - 0.13064f / buttonCurveReduce	, position_y + height / 2.00794f , z , 0 , 0.749012f	, 0, 0, 1,	//L / 3
-		  position_x + -width - 0.15074f / buttonCurveReduce	, position_y + height / 3.88978f , z , 0 , 0.624971f	, 0, 0, 1,	//L / 4
-		  position_x +  width + 0.08651f / buttonCurveReduce	, position_y + -height / 1.29802f, z , 1 , 0.125f		, 0, 0, 1,	//R / 8
-		  position_x + -width - 0.13064f / buttonCurveReduce	, position_y + -height / 2.00794f, z , 0 , 0.25f		, 0, 0, 1,	//L / 7
-		  position_x + -width - 0.08651f / buttonCurveReduce	, position_y + -height / 1.29802f, z , 0 , 0.125f		, 0, 0, 1,	//L / 8
-		  position_x +  width									, position_y -height			 , z , 1 , 0.0f			, 0, 0, 1,	//R / 9
-		  position_x + -width - 0.08651f / buttonCurveReduce	, position_y + -height / 1.29802f, z , 0 , 0.125f		, 0, 0, 1,	//L / 8
-		  position_x + -width									, position_y -height			 , z , 0 , 0.0f			, 0, 0, 1,	//L / 9
-		  position_x +  width + 0.13064f / buttonCurveReduce	, position_y + -height / 2.00794f, z , 1 , 0.25f		, 0, 0, 1,	//R / 7
-		  position_x + -width - 0.15074f / buttonCurveReduce	, position_y + -height / 3.88978f, z , 0 , 0.375f		, 0, 0, 1,	//L / 6
-		  position_x + -width - 0.13064f / buttonCurveReduce	, position_y + -height / 2.00794f, z , 0 , 0.25f		, 0, 0, 1,	//L / 7
-		  position_x +  width + 0.15800f / buttonCurveReduce	, position_y + -0				 , z , 1 , 0.5f			, 0, 0, 1,	//R / M
-		  position_x + -width - 0.15074f / buttonCurveReduce	, position_y + height / 3.88978f , z , 0 , 0.624971f	, 0, 0, 1,	//L / 4
-		  position_x + -width - 0.15800f / buttonCurveReduce	, position_y + 0				 , z , 0 , 0.5f			, 0, 0, 1,	//L / M
-		  position_x +  width + 0.13064f / buttonCurveReduce	, position_y + height / 2.00794f , z , 1 , 0.749012f	, 0, 0, 1,	//R / 3
-		  position_x + -width - 0.08651f / buttonCurveReduce	, position_y + height / 1.29802f , z , 0 , 0.874506f	, 0, 0, 1,	//L / 2
-		  position_x + -width - 0.13064f / buttonCurveReduce	, position_y + height / 2.00794f , z , 0 , 0.749012f	, 0, 0, 1,	//L / 3
-		  position_x +  width + 0.08651f / buttonCurveReduce	, position_y + height / 1.29802f , z , 1 , 0.874506f	, 0, 0, 1,	//R / 2
-		  position_x +  width									, position_y + height			 , z , 1 , 1.0f			, 0, 0, 1,	//R / 1
-		  position_x + -width									, position_y + height			 , z , 0 , 1.0f			, 0, 0, 1,	//L / 1
-		  position_x +  width + 0.15074f / buttonCurveReduce	, position_y + -height / 3.88978f, z , 1 , 0.375f		, 0, 0, 1,	//R / 6
-		  position_x +  width + 0.15800f / buttonCurveReduce	, position_y + -0				 , z , 1 , 0.5f			, 0, 0, 1,	//R / M
-		  position_x + -width - 0.15800f / buttonCurveReduce	, position_y + 0				 , z , 0 , 0.5f			, 0, 0, 1,	//L / M
-		  position_x +  width + 0.15074f / buttonCurveReduce	, position_y + height / 3.88978f , z , 1 , 0.624971f	, 0, 0, 1,	//R / 4
-		  position_x +  width + 0.13064f / buttonCurveReduce	, position_y + height / 2.00794f , z , 1 , 0.749012f	, 0, 0, 1,	//R / 3
-		  position_x + -width - 0.13064f / buttonCurveReduce	, position_y + height / 2.00794f , z , 0 , 0.749012f	, 0, 0, 1,	//L / 3
-		  position_x +  width + 0.08651f / buttonCurveReduce	, position_y + -height / 1.29802f, z , 1 , 0.125f		, 0, 0, 1,	//R / 8
-		  position_x +  width + 0.13064f / buttonCurveReduce	, position_y + -height / 2.00794f, z , 1 , 0.25f		, 0, 0, 1,	//R / 7
-		  position_x + -width - 0.13064f / buttonCurveReduce	, position_y + -height / 2.00794f, z , 0 , 0.25f		, 0, 0, 1,	//L / 7
-		  position_x +  width									, position_y -height		 	 , z , 1 , 0.0f			, 0, 0, 1,	//R / 9
-		  position_x +  width + 0.08651f / buttonCurveReduce	, position_y + -height / 1.29802f, z , 1 , 0.125f		, 0, 0, 1,	//R / 8
-		  position_x + -width - 0.08651f / buttonCurveReduce	, position_y + -height / 1.29802f, z , 0 , 0.125f		, 0, 0, 1,	//L / 8
-		  position_x +  width + 0.13064f / buttonCurveReduce	, position_y + -height / 2.00794f, z , 1 , 0.25f		, 0, 0, 1,	//R / 7
-		  position_x +  width + 0.15074f / buttonCurveReduce	, position_y + -height / 3.88978f, z , 1 , 0.375f		, 0, 0, 1,	//R / 6
-		  position_x + -width - 0.15074f / buttonCurveReduce	, position_y + -height / 3.88978f, z , 0 , 0.375f		, 0, 0, 1,	//L / 6
-		  position_x +  width + 0.15800f / buttonCurveReduce	, position_y + -0				 , z , 1 , 0.5f			, 0, 0, 1,	//R / M
-		  position_x +  width + 0.15074f / buttonCurveReduce	, position_y + height / 3.88978f , z , 1 , 0.624971f	, 0, 0, 1,	//R / 4
-		  position_x + -width - 0.15074f / buttonCurveReduce	, position_y + height / 3.88978f , z , 0 , 0.624971f	, 0, 0, 1,	//L / 4
-		  position_x +  width + 0.13064f / buttonCurveReduce	, position_y + height / 2.00794f , z , 1 , 0.749012f	, 0, 0, 1,	//R / 3
-		  position_x +  width + 0.08651f / buttonCurveReduce	, position_y + height / 1.29802f , z , 1 , 0.874506f	, 0, 0, 1,	//R / 2
-		  position_x + -width - 0.08651f / buttonCurveReduce	, position_y + height / 1.29802f , z , 0 , 0.874506f	, 0, 0, 1,	//L / 2
-	}; 	
+	glm::mat4 scale = glm::mat4(1);
+	scale = glm::scale(scale,glm::vec3(width,height,1));
+	glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scale);
+	
+	glm::vec3 pos = glm::vec3(position_x,position_y,z);
+	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
 
 	glset.uniform1i(uiPrograms.uiProgram,"isUiTextureUsed",isMaskImageBox);
-
 	glset.uniform4fv(uiPrograms.uiProgram,"uiColor",color);
 	glset.uniform4fv(uiPrograms.uiProgram, "uiTransitionColor", colorTransitionColor);
-
 	glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", mixVal);
 
-	glset.drawArrays(buttonCoor, false);
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.sqrVBO);
+	glBindVertexArray(uiObjects.sqrVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
 	ColorData colorData;
+
 
 	if (!isTextBox) {
 		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,false);
@@ -113,6 +62,12 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	else {
 		renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,mixVal > 0.f);
 	}
+
+	scale = glm::mat4(1);
+	pos = glm::vec3(0);
+	glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scale);
+	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+
 	glset.uniform1i(uiPrograms.uiProgram, "isUiTextureUsed", 0);
 }
 
@@ -925,6 +880,8 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 			textCursorPhaseCounter = 0;
 	}
 
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.sqrVBO);
+	glBindVertexArray(uiObjects.sqrVAO);
 
 	glset.activeTexture(GL_TEXTURE2);
 
@@ -944,34 +901,31 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 		float w = ch.Size.x * scale * 0.8f;
 		float h = ch.Size.y * scale;
 
-		std::vector <float> vertices = {
-			 xpos,     ypos + h + 0.004f, 	  z  ,0.0f, 0.0f,	0,0,0,
-			 xpos,     ypos,      			  z  ,0.0f, 1.0f,	0,0,0,
-			 xpos + w, ypos,      			  z  ,1.0f, 1.0f,	0,0,0,
-			
-			 xpos,     ypos + h + 0.004f, 	  z  ,0.0f, 0.0f,	0,0,0,
-			 xpos + w, ypos,      			  z  ,1.0f, 1.0f,	0,0,0,
-			 xpos + w, ypos + h+  0.004f, 	  z  ,1.0f, 0.0f,	0,0,0
-		};
-		std::vector <float> curVert = {
-			 xpos+w,     			ypos-0.002f + h + 0.014f, 	  z+0.001f  ,0.0f, 0.0f,	0,0,0,
-			 xpos+w,     			ypos-0.002f,      			  z+0.001f  ,0.0f, 1.0f,	0,0,0,
-			 xpos+w + 0.003f, 		ypos-0.002f,      			  z+0.001f  ,1.0f, 1.0f,	0,0,0,
-			
-			 xpos+w,     			ypos-0.002f + h + 0.014f, 	  z+0.001f  ,0.0f, 0.0f,	0,0,0,
-			 xpos+w + 0.003f, 		ypos-0.002f,      			  z+0.001f  ,1.0f, 1.0f,	0,0,0,
-			 xpos+w + 0.003f, 		ypos-0.002f + h+  0.014f, 	  z+0.001f  ,1.0f, 0.0f,	0,0,0
-		};
+		glm::mat4 scalemat = glm::mat4(1);
+		scalemat = glm::scale(scalemat,glm::vec3(w,h,1));
+		glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
+		
+		glm::vec3 pos = glm::vec3(xpos + w,ypos + h,z);
+		glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
 
 		glset.bindTexture(ch.TextureID);
-		glset.drawArrays(vertices, false);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		
+
 		if(active){
 			if(counter == text.size()+uiTextBoxActiveChar-1 && textCursorPhaseCounter < maxCharCountSize/2){
 				glset.uniform1i(program,"isText", 0);
 				glset.uniform1i(program, "isTextF", 0);
 				glset.uniform4fv(program, "uiColor", colorData2.textboxCursorColor);
 				glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0);
-				glset.drawArrays(curVert, false);
+				
+				scalemat = glm::mat4(1);
+				scalemat = glm::scale(scalemat,glm::vec3(w-0.003f,h,1));
+				glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
+				pos = glm::vec3(xpos + 0.003f,ypos,z);
+				glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+				glDrawArrays(GL_TRIANGLES, 0, 6);
+				
 				glset.uniform1i(program, "isTextF", 1);
 				glset.uniform1i(program,"isText", 1);
 				glset.uniform4fv(program, "uiColor", color);
@@ -984,7 +938,13 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 	glset.uniform1i(program, "isTextF", 0);
 	glset.uniform1i(program, "isText", 0);
 
+	glm::mat4 scalemat = glm::mat4(1);
+	glm::vec3 pos = glm::vec3(0);
+	glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
+	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
 
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
+	glBindVertexArray(uiObjects.VAO);
 }
 
 
@@ -1708,4 +1668,8 @@ std::vector<float> UserInterface::selectionBox(bool active,float sPX,float sPY,f
 		gls.drawArrays(box,false);
 
 	return box;
+}
+
+void UserInterface::sendObjectsToUI(Objects aobjects){
+	uiObjects = aobjects;
 }
