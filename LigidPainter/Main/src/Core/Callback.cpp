@@ -285,12 +285,12 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		textureDisplayer.buttonHover = ui.isMouseOnButton(window, 0.02f,0.045f,(textureDisplayer.buttonPosX+0.005f)-1.0f,textureDisplayer.buttonPosY-0.01f, mouseXPos, mouseYPos, 0);		
 
 
-		modelPanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX, 0.8f, mouseXPos, mouseYPos,true);
-		texturePanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX, 0.72f, mouseXPos, mouseYPos,true);
-		paintingPanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX, 0.64f, mouseXPos, mouseYPos,true);
-		exportPanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX, 0.56f, mouseXPos, mouseYPos,true);
-		settingsPanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX, 0.48f, mouseXPos, mouseYPos,true);
-		generatorPanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX, 0.4f, mouseXPos, mouseYPos,true);
+		modelPanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX * 2., 0.8f, mouseXPos, mouseYPos,true);
+		texturePanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX * 2., 0.72f, mouseXPos, mouseYPos,true);
+		paintingPanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX * 2., 0.64f, mouseXPos, mouseYPos,true);
+		exportPanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX * 2., 0.56f, mouseXPos, mouseYPos,true);
+		settingsPanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX * 2., 0.48f, mouseXPos, mouseYPos,true);
+		generatorPanelButtonEnter = ui.isMouseOnButton(window, 0.02f,0.034f,mainPanelLoc- screenGapX * 2., 0.4f, mouseXPos, mouseYPos,true);
 	}
 
 	if(colorPicker.dropperActive){
