@@ -27,6 +27,8 @@ int uiMaxScreenHeight;
 
 int uiTextBoxActiveChar;
 
+unsigned int circleIcon;
+
 void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec4 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec4 colorTransitionColor, float mixVal) {
 	
 	//buttonCurveReduce = 10 | normal  
@@ -69,6 +71,13 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
 
 	glset.uniform1i(uiPrograms.uiProgram, "isUiTextureUsed", 0);
+
+	if(buttonCurveReduce <= 200){
+		glUseProgram(uiPrograms.iconsProgram);
+		iconBox(height,height*1.3,position_x-width,position_y,z,circleIcon,mixVal,color,colorTransitionColor);
+		iconBox(height,height*1.3,position_x+width,position_y,z,circleIcon,mixVal,color,colorTransitionColor);
+		glUseProgram(uiPrograms.uiProgram);
+	}
 }
 
 void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
@@ -902,10 +911,10 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 		float h = ch.Size.y * scale;
 
 		glm::mat4 scalemat = glm::mat4(1);
-		scalemat = glm::scale(scalemat,glm::vec3(w,h,1));
+		scalemat = glm::scale(scalemat,glm::vec3(w/1.5,h/1.5,1));
 		glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
 		
-		glm::vec3 pos = glm::vec3(xpos + w,ypos + h,z);
+		glm::vec3 pos = glm::vec3(xpos + w/1.5,ypos + h/1.5,z);
 		glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
 
 		glset.bindTexture(ch.TextureID);
@@ -1670,6 +1679,7 @@ std::vector<float> UserInterface::selectionBox(bool active,float sPX,float sPY,f
 	return box;
 }
 
-void UserInterface::sendObjectsToUI(Objects aobjects){
+void UserInterface::sendObjectsToUI(Objects aobjects,unsigned int acircleIcon){
 	uiObjects = aobjects;
+	circleIcon = acircleIcon;
 }

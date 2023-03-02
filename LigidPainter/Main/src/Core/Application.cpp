@@ -377,7 +377,7 @@ bool LigidPainter::run()
 	//--Send max window size
 	callback.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	ui.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
-	ui.sendObjectsToUI(objects);
+	ui.sendObjectsToUI(objects,icons.Circle);
 	uiAct.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	render.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	txtr.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);

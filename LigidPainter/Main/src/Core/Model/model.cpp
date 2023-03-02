@@ -30,6 +30,13 @@ using namespace std;
     vector<Mesh>    meshes;
     string directory;
 
+    unsigned int mVAO;
+    unsigned int mVBO;
+
+    void Model::sendObjectsToModel(unsigned int aVAO,unsigned int aVBO){
+
+    }
+
     // draws the model, and thus all its meshes
     void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,unsigned int selectedTexture,glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal)
     {

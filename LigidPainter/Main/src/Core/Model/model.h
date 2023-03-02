@@ -30,7 +30,8 @@ public:
     
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void loadModel(std::string const &path,bool triangulate);
-
+    void sendObjectsToModel(unsigned int aVAO,unsigned int aVBO);
+    
 private:
     void processNode(aiNode *node, const aiScene *scene);
 
