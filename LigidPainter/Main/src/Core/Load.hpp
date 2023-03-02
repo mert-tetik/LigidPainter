@@ -741,6 +741,7 @@ public:
 		appNodes[0].outputs[0].pressed = false;
 		appNodes[0].outputs[0].connectionHover = false;
 		
+		appNodes[0].stateChanged = true;
 		appNodes[0].marked = true;
 
 		appNodes[0].positionX = -0.55;

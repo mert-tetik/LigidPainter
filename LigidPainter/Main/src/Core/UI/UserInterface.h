@@ -434,6 +434,8 @@ struct Node{
 	bool marked = false;
 
 	bool active = false;
+
+	bool stateChanged = false;
 };
 
 struct ContextMenu {

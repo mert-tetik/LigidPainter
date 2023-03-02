@@ -44,10 +44,12 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
     }
     for (size_t i = 0; i < material.renderingPipeline.size(); i++)
     {
-        //Removal of the previous output textures
-        for (size_t outI = 0; outI < material.renderingPipeline[i].outputs.size(); outI++)
-        {
-            glDeleteTextures(1,&material.renderingPipeline[i].outputs[outI].result);
+        if(material.renderingPipeline[i].stateChanged){
+            //Removal of the previous output textures
+            for (size_t outI = 0; outI < material.renderingPipeline[i].outputs.size(); outI++)
+            {
+                glDeleteTextures(1,&material.renderingPipeline[i].outputs[outI].result);
+            }
         }
     }
 
@@ -66,26 +68,29 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
     //Process indexes independant nodes
     for (size_t i = 0; i < material.nodes.size(); i++)
     {
-        bool nodeHasOutputConnection = false;
-        bool nodeHasInputConnection = false;
-        
-        for (size_t inputI = 0; inputI < material.nodes[i].inputs.size(); inputI++)
-        {
-            if(material.nodes[i].inputs[inputI].nodeConnectionIndex != 10000 && material.nodes[i].inputs[inputI].inputConnectionIndex != 10000){
-                nodeHasInputConnection = true;
+        if(material.nodes[i].stateChanged){
+            bool nodeHasOutputConnection = false;
+            bool nodeHasInputConnection = false;
+
+            for (size_t inputI = 0; inputI < material.nodes[i].inputs.size(); inputI++)
+            {
+                if(material.nodes[i].inputs[inputI].nodeConnectionIndex != 10000 && material.nodes[i].inputs[inputI].inputConnectionIndex != 10000){
+                    nodeHasInputConnection = true;
+                }
+            }
+            for (size_t outputI = 0; outputI < material.nodes[i].outputs.size(); outputI++)
+            {
+                if(material.nodes[i].outputs[outputI].connections.size()){
+                    nodeHasOutputConnection = true;
+                }
+            }
+
+            if(!nodeHasInputConnection){
+                material.renderingPipeline.push_back(material.nodes[i]);
+                material.nodes[i].renderingIndex = material.renderingPipeline.size()-1; 
             }
         }
-        for (size_t outputI = 0; outputI < material.nodes[i].outputs.size(); outputI++)
-        {
-            if(material.nodes[i].outputs[outputI].connections.size()){
-                nodeHasOutputConnection = true;
-            }
-        }
-        
-        if(!nodeHasInputConnection){
-            material.renderingPipeline.push_back(material.nodes[i]);
-            material.nodes[i].renderingIndex = material.renderingPipeline.size()-1; 
-        }
+
     }
 
     for (int i = 0; i < 1000; i++)
@@ -93,26 +98,29 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
         bool isChangesAreMade = false;
         for (int nodeI = 0; nodeI < material.nodes.size(); nodeI++)
         {
-            bool addToPipeline = false;
-            for (int inputI = 0; inputI < material.nodes[nodeI].inputs.size(); inputI++)
-            {
-                if(material.nodes[nodeI].inputs[inputI].nodeConnectionIndex != 10000 && material.nodes[nodeI].inputs[inputI].inputConnectionIndex != 10000 && material.nodes[nodeI].renderingIndex == 10000){
-                    NodeInput input = material.nodes[nodeI].inputs[inputI];
+            if(material.nodes[nodeI].stateChanged){
+                bool addToPipeline = false;
+                for (int inputI = 0; inputI < material.nodes[nodeI].inputs.size(); inputI++)
+                {
+                    if(material.nodes[nodeI].inputs[inputI].nodeConnectionIndex != 10000 && material.nodes[nodeI].inputs[inputI].inputConnectionIndex != 10000 && material.nodes[nodeI].renderingIndex == 10000){
+                        NodeInput input = material.nodes[nodeI].inputs[inputI];
 
-                    if(material.nodes[input.nodeConnectionIndex].renderingIndex != 10000){
-                        addToPipeline = true;
-                    }
-                    else{
-                        addToPipeline = false;
-                        break;
+                        if(material.nodes[input.nodeConnectionIndex].renderingIndex != 10000){
+                            addToPipeline = true;
+                        }
+                        else{
+                            addToPipeline = false;
+                            break;
+                        }
                     }
                 }
+                if(addToPipeline){
+                    material.renderingPipeline.push_back(material.nodes[nodeI]);
+                    material.nodes[nodeI].renderingIndex = material.renderingPipeline.size()-1; 
+                    isChangesAreMade = true;
+                }
             }
-            if(addToPipeline){
-                material.renderingPipeline.push_back(material.nodes[nodeI]);
-                material.nodes[nodeI].renderingIndex = material.renderingPipeline.size()-1; 
-                isChangesAreMade = true;
-            }
+
         }
         if(!isChangesAreMade){
             break;

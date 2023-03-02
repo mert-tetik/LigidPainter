@@ -273,6 +273,11 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 								}
 								nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.erase(nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.begin() + (coni));
 								nodeScenes[selectedNodeScene].stateChanged = true;
+								for (size_t severei = 0; severei < nodeScenes[selectedNodeScene].nodes.size(); severei++)
+								{
+									nodeScenes[selectedNodeScene].nodes[severei].stateChanged = true;
+								}
+								
 								coni--;
 							}
 						}
@@ -328,8 +333,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 						addNodeContextMenu.buttons[i].positionZ = 0.899f;
 						if((glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS && i != 0) || (glfwGetKey(renderData.window,GLFW_KEY_ENTER) == GLFW_PRESS && addNodeContextMenu.selectedButtonIndex == indepI && addNodeContextMenu.selectedButtonIndex != 0)){
 							Node node;
-							std::cout << "res is : " << i << " node index is : " << addNodeContextMenu.selectedButtonIndex << '\n';
 							node = appNodes[i-1];
+							node.stateChanged = true;
 							node.positionX = (mouseXpos/screenSizeX*2 - 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionX;
 							node.positionY = ((-mouseYpos/maxScreenHeight*2 + 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionY);						
 

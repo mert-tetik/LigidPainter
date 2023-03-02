@@ -165,6 +165,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 						node.listBoxes[i].chosenIndex = listElementI;
 						node.listBoxes[i].active = false;
 						material.stateChanged = true;
+						node.stateChanged = true;
+
 					}
 
 					box(node.width*1.12,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + (x)/(20.f/(node.width*40)) ,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+j+1)/(20.f/(node.width*13)) - 0.05f * node.width*10 - iconWidth*1,"",color,0,0,0,depth+0.06f,10000,node.backColor,0);///Bottom
@@ -468,6 +470,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			if(node.inputs[i].coloringPanelActivated){
 				node.inputs[i].rampClr[node.inputs[i].selectedRampIndex] = coloringPanel.result;
 				material.stateChanged = true;
+				node.stateChanged = true;
 			}
 
 			if(minusHover && firstClick && node.inputs[i].rampPos.size()){
@@ -487,16 +490,23 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			
 			glUseProgram(programs.iconsProgram);
 			glDepthFunc(GL_LEQUAL);
+			bool pressingDone = false;
 			for (size_t rampi = 0; rampi < node.inputs[i].rampPos.size(); rampi++)
 			{
+				if(node.inputs[i].selectedRampIndex == rampi){
+					iconBox(iconWidth*1.1,iconWidth*2*1.1,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width/1.6, ((node.positionY + nodePanel.panelPositionY + (node.inputs[i].rampPos[rampi]-0.5)/1.2) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+0.01,icons.Pointer,0,glm::vec4(colorData.LigidPainterThemeColor,1),glm::vec4(0));
+				}
 				iconBox(iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width/1.6, ((node.positionY + nodePanel.panelPositionY + (node.inputs[i].rampPos[rampi]-0.5)/1.2) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+0.01,icons.Pointer,0,glm::vec4(node.inputs[i].rampClr[rampi]/glm::vec3(255.),1),glm::vec4(0));
 				bool rampPointHover = isMouseOnButton(window,iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width/1.6, ((node.positionY + nodePanel.panelPositionY+(node.inputs[i].rampPos[rampi]-0.5)/1.2) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
 				if(rampPointHover && firstClick){
 					node.inputs[i].selectedRampIndex = rampi;
 					node.inputs[i].rampPress[rampi] = true;
 				}
-				if(node.inputs[i].rampPress[rampi]){
+				if(node.inputs[i].rampPress[rampi] && !pressingDone){
+					pressingDone = true;
 					material.stateChanged = true;
+					node.stateChanged = true;
+
 					node.inputs[i].rampPos[rampi] -= yOffset/(nodePanel.zoomVal*200);
 					node.inputs[i].rampPos[rampi] = util.restrictBetween(node.inputs[i].rampPos[rampi],0.98f,0.02f);
 				}
@@ -522,7 +532,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				}
 			}
 			
-			box(iconWidth,iconWidth*20.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,depth+0.01,10000,node.backColor,0);
+			iconBox(iconWidth,iconWidth*20.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+0.01,0,0,glm::vec4(0),glm::vec4(0));
 
 			glUseProgram(programs.iconsProgram);
 
@@ -556,6 +566,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			if(node.inputs[i].coloringPanelActivated){
 				node.inputs[i].color = coloringPanel.result;
 				material.stateChanged = true;
+				node.stateChanged = true;
 			}
 		}
 
@@ -592,6 +603,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 
 			if(node.inputs[i].removeTextureButtonHover && firstClick){
 				material.stateChanged = true;
+				node.stateChanged = true;
+
 				node.inputs[i].selectedTextureIndex = 10000;
 				node.inputs[i].selectedTextureName = "none";
 				node.inputs[i].selectedTexture = 0;
@@ -601,6 +614,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 
 			if(textureSelectionPanel.active && textureSelectionPanel.textureClicked && node.inputs[i].textureSelectingState){
 				material.stateChanged = true;
+				node.stateChanged = true;
+
 				node.inputs[i].selectedTextureIndex = textureSelectionPanel.selectedIndex;
 				node.inputs[i].selectedTextureName = textureSelectionPanel.selectedTextureName;
 				node.inputs[i].selectedTexture = albedoTextures[textureSelectionPanel.selectedIndex].id;
@@ -703,6 +718,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				if(node.inputs[i].rangeBarsPointerPressed[k] && !anyConnectionPressed){
         	        //Adjust the corresponding values
 					material.stateChanged = true;
+					node.stateChanged = true;
+
 					if(k == 0){
 						node.inputs[i].value.x += xOffset/(nodePanel.zoomVal*200);
 						node.inputs[i].value.x = util.restrictBetween(node.inputs[i].value.x,1.f,0.001f);
@@ -778,6 +795,15 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				}
 			}
 			material.stateChanged = true;
+			node.stateChanged = true;
+
+			//Delete the texture outputs of the node
+			for (size_t delTxtri = 0; delTxtri < node.outputs.size(); delTxtri++)
+			{
+				glDeleteTextures(1,&node.outputs[delTxtri].result);
+			}
+			
+
 			material.nodes.erase(material.nodes.begin() + currentNodeIndex);
 
 			for (size_t delI = 0; delI < material.nodes.size(); delI++)
@@ -826,6 +852,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 						duplicatedNode.inputs[dinI].nodeConnectionIndex += (((int)material.nodes.size()) - duplicatedNode.inputs[dinI].nodeConnectionIndex);
 				}
 				material.stateChanged = true;
+				node.stateChanged = true;
+
 				duplicatedNodes.push_back(duplicatedNode);
 			}
 		}
