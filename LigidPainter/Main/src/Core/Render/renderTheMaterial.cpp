@@ -132,6 +132,17 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
             unsigned int texture;
 
+            if(material.renderingPipeline[nodeI].inputs[inputI].element == "ramp"){
+                if(material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
+                    glActiveTexture(GL_TEXTURE28);
+                    glGenTextures(1, &texture);
+                    glBindTexture(GL_TEXTURE_2D,texture);
+
+                    glset.texImage(nullptr,1,1,1);
+                }
+                else
+                    texture = material.renderingPipeline[material.nodes[material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex].renderingIndex].outputs[material.renderingPipeline[nodeI].inputs[inputI].inputConnectionIndex].result;                    
+            }
             if(material.renderingPipeline[nodeI].inputs[inputI].element == "range"){
                 if(material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
                     glActiveTexture(GL_TEXTURE28);
@@ -251,6 +262,23 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
             }
             glset.uniformMatrix4fv(nodeProgram,"view",view);
             
+            if(material.renderingPipeline[nodeI].inputs[inputI].element == "ramp"){
+                for (size_t rampi = 0; rampi < 10; rampi++)
+			    {
+			    	GlSet gl;
+			    	std::string targetPoint = "point1D[" + std::to_string(rampi) + "]";
+			    	std::string targetColor = "color1D[" + std::to_string(rampi) + "]";
+			    	if(rampi < material.renderingPipeline[nodeI].inputs[inputI].rampPos.size()){
+			    		gl.uniform1f(nodeProgram,targetPoint.c_str(),material.renderingPipeline[nodeI].inputs[inputI].rampPos[rampi]);
+			    		gl.uniform3fv(nodeProgram,targetColor.c_str(),material.renderingPipeline[nodeI].inputs[inputI].rampClr[rampi]);
+			    	}
+			    	else{
+			    		gl.uniform1f(nodeProgram,targetPoint.c_str(),5.0f);
+			    		gl.uniform3fv(nodeProgram,targetColor.c_str(),glm::vec3(0));
+			    	}
+			    }
+            }
+
             glset.uniform1i(nodeProgram,("input_" + std::to_string(inputI)).c_str(),20+inputI);
             resultOut.textures.push_back(texture);
         }

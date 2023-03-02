@@ -470,6 +470,12 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				material.stateChanged = true;
 			}
 
+			if(minusHover && firstClick && node.inputs[i].rampPos.size()){
+				node.inputs[i].rampPos.erase(node.inputs[i].rampPos.begin() + node.inputs[i].selectedRampIndex);
+				node.inputs[i].rampClr.erase(node.inputs[i].rampClr.begin() + node.inputs[i].selectedRampIndex);
+				node.inputs[i].rampPress.erase(node.inputs[i].rampPress.begin() + node.inputs[i].selectedRampIndex);
+				node.inputs[i].selectedRampIndex = node.inputs[i].rampPos.size()-1; 
+			}
 			if(plusHover && firstClick){
 				node.inputs[i].rampPos.push_back(0.0);
 				node.inputs[i].rampPress.push_back(false);
@@ -489,6 +495,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 					node.inputs[i].rampPress[rampi] = true;
 				}
 				if(node.inputs[i].rampPress[rampi]){
+					material.stateChanged = true;
 					node.inputs[i].rampPos[rampi] -= yOffset/(nodePanel.zoomVal*200);
 					node.inputs[i].rampPos[rampi] = util.restrictBetween(node.inputs[i].rampPos[rampi],1.f,0.001f);
 				}
@@ -504,7 +511,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				std::string targetPoint = "point1D[" + std::to_string(rampi) + "]";
 				std::string targetColor = "color1D[" + std::to_string(rampi) + "]";
 				if(rampi < node.inputs[i].rampPos.size()){
-					std::cout << node.inputs[i].rampPos[rampi] << ' ';
 					gl.uniform1f(programs.rampProgram,targetPoint.c_str(),node.inputs[i].rampPos[rampi]);
 					gl.uniform3fv(programs.rampProgram,targetColor.c_str(),node.inputs[i].rampClr[rampi]);
 				}
