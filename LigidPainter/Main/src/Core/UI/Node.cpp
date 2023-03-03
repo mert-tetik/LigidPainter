@@ -29,7 +29,20 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 
 	const float iconWidth = node.width/6.f;
 
-	//TODO : Check in one for loop
+	//Remove the connection if connected to it's node
+	for (size_t i = 0; i < node.outputs.size(); i++)
+	{
+		for (size_t coni = 0; coni < node.outputs[i].connections.size(); coni++)
+		{
+			if(node.outputs[i].connections[coni].nodeConnectionIndex == currentNodeIndex){
+				material.nodes[node.outputs[i].connections[coni].nodeConnectionIndex].inputs[node.outputs[i].connections[coni].inputConnectionIndex].nodeConnectionIndex = 10000;
+				material.nodes[node.outputs[i].connections[coni].nodeConnectionIndex].inputs[node.outputs[i].connections[coni].inputConnectionIndex].inputConnectionIndex = 10000;
+				node.outputs[i].connections.erase(node.outputs[i].connections.begin() + coni);
+			}
+		}
+		
+	}
+	
 	//Check if any of the node's bar is pressed
 	bool anyBarPressed = false;
 	for (int nodeI = 0; nodeI < material.nodes.size(); nodeI++)
@@ -836,7 +849,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 					for (size_t dconi = 0; dconi < duplicatedNode.outputs[douti].connections.size(); dconi++)
 					{
 						if(!duplicatedNode.outputs[0].isConnectedToShaderInput){
-							duplicatedNode.outputs[douti].connections[dconi].nodeConnectionIndex += (((int)material.nodes.size()) - duplicatedNode.outputs[douti].connections[dconi].nodeConnectionIndex); 
+							duplicatedNode.outputs[douti].connections[dconi].nodeConnectionIndex += (((int)material.nodes.size()) - duplicatedNode.outputs[douti].connections[dconi].nodeConnectionIndex);
 						}
 						else{
 							duplicatedNode.outputs[douti].connections.erase(duplicatedNode.outputs[douti].connections.begin() + dconi); 
