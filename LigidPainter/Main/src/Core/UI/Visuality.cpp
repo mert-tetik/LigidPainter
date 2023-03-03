@@ -74,8 +74,8 @@ void UserInterface::box(float width, float height, float position_x, float posit
 
 	if(buttonCurveReduce <= 200){
 		glUseProgram(uiPrograms.iconsProgram);
-		iconBox(height,height*1.3,position_x-width,position_y,z,circleIcon,mixVal,color,colorTransitionColor);
-		iconBox(height,height*1.3,position_x+width,position_y,z,circleIcon,mixVal,color,colorTransitionColor);
+		iconBox((height/2.)*1.3,height*1.3,position_x-width,position_y,z,circleIcon,mixVal,color,colorTransitionColor);
+		iconBox((height/2.)*1.3,height*1.3,position_x+width,position_y,z,circleIcon,mixVal,color,colorTransitionColor);
 		glUseProgram(uiPrograms.uiProgram);
 	}
 }

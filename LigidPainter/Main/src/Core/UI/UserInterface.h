@@ -635,7 +635,7 @@ public:
 
 
 	
-	void node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,
+	bool node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,
 	float maxScreenHeight,NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,std::vector<aTexture> albedoTextures,
 	float screenGapX,bool firstClick,ColoringPanel &coloringPanel,bool &duplicateNodeCall,std::vector<Node> &duplicatedNodes);
 

@@ -16,13 +16,14 @@
 #include "Core/Load.hpp"
 #include "Core/Render/Render.h"
 
-void UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
+bool UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
 float maxScreenWidth,float maxScreenHeight, NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,
 std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPanel &coloringPanel,bool &duplicateNodeCall,std::vector<Node> &duplicatedNodes){
 	ColorData colorData;
 	ColorData2 colorData2;
 	Utilities util;
 
+	bool deleted = false;
 
 	const float depth = 0.1f;
 
@@ -778,10 +779,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			{
 				for (size_t coni = 0; coni < material.nodes[currentNodeIndex].outputs[dOutI].connections.size(); coni++)
 				{
-					if(material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].nodeConnectionIndex != 10000){
-						material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].inputConnectionIndex].nodeConnectionIndex = 10000;
-						material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].inputConnectionIndex].inputConnectionIndex = 10000;
-					}
+					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].inputConnectionIndex].nodeConnectionIndex = 10000;
+					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].inputConnectionIndex].inputConnectionIndex = 10000;
 				}
 			}
 			for (int dInI = 0; dInI < material.nodes[currentNodeIndex].inputs.size(); dInI++)
@@ -789,8 +788,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				if(material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex != 10000){
 					for (size_t coni = 0; coni < material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].connections.size(); coni++)
 					{
-						material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].connections[coni].nodeConnectionIndex = 10000;
-						material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].connections[coni].inputConnectionIndex = 10000;
+						material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].connections.erase(material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].connections.begin()+coni);
 					}
 				}
 			}
@@ -805,6 +803,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			
 
 			material.nodes.erase(material.nodes.begin() + currentNodeIndex);
+			deleted = true;
 
 			for (size_t delI = 0; delI < material.nodes.size(); delI++)
 			{
@@ -858,4 +857,5 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			}
 		}
 	}
+	return deleted;
 }
