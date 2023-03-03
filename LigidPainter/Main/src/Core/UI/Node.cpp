@@ -521,7 +521,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 					material.stateChanged = true;
 					node.stateChanged = true;
 
-					node.inputs[i].rampPos[rampi] -= yOffset/(nodePanel.zoomVal*200);
+					node.inputs[i].rampPos[rampi] -= yOffset/(maxScreenHeight/4.);
 					node.inputs[i].rampPos[rampi] = util.restrictBetween(node.inputs[i].rampPos[rampi],0.98f,0.02f);
 				}
 				if(glfwGetMouseButton(window,0) == GLFW_RELEASE){

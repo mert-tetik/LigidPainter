@@ -20,7 +20,7 @@ $
 --list : none;
 --list_index : none;
 --type : float;
---title : rad;
+--title : Radius;
 --element : range;
 --value : 40;
 
