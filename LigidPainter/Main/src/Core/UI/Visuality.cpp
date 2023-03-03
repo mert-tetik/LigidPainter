@@ -912,10 +912,10 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 		float h = ch.Size.y * scale;
 
 		glm::mat4 scalemat = glm::mat4(1);
-		scalemat = glm::scale(scalemat,glm::vec3(w/1.5,h/1.5,1));
+		scalemat = glm::scale(scalemat,glm::vec3(w/1.7,h/1.7,1));
 		glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
 		
-		glm::vec3 pos = glm::vec3(xpos + w/1.5,ypos + h/1.5,z);
+		glm::vec3 pos = glm::vec3(xpos + w/1.7,ypos + h/1.7,z);
 		glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
 
 		glset.bindTexture(ch.TextureID);
@@ -930,9 +930,9 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 				glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0);
 				
 				scalemat = glm::mat4(1);
-				scalemat = glm::scale(scalemat,glm::vec3(w-0.003f,h,1));
+				scalemat = glm::scale(scalemat,glm::vec3(0.001f,0.02,1));
 				glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
-				pos = glm::vec3(xpos + 0.003f,ypos,z);
+				pos = glm::vec3(xpos + w/1.7*2.,y+0.01,z);
 				glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
 				glDrawArrays(GL_TRIANGLES, 0, 6);
 				
