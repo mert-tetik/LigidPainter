@@ -381,6 +381,7 @@ bool LigidPainter::run()
 	uiAct.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	render.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	txtr.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
+	model.sendObjectsToModel(objects.VAO,objects.VBO);
 
 
 

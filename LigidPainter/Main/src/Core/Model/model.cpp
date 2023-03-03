@@ -34,7 +34,8 @@ using namespace std;
     unsigned int mVBO;
 
     void Model::sendObjectsToModel(unsigned int aVAO,unsigned int aVBO){
-
+        mVAO = aVAO;
+        mVBO = aVBO;
     }
 
     // draws the model, and thus all its meshes
@@ -77,7 +78,6 @@ using namespace std;
                 glUniform1f(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "skyboxExposure"), uniExpo);
                 glUniform3fv(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "viewPos"),1,&viewPos[0]);
 
-
                 meshes[i].Draw();
             }
             else if(useOpacity){
@@ -88,6 +88,8 @@ using namespace std;
                 }
             }
         }
+	    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+	    glBindVertexArray(mVAO);
 
     }
     

@@ -34,8 +34,4 @@ int currentMaterialIndex,glm::mat4 view,bool paintingMode,std::vector<aTexture> 
 	glUseProgram(programs.uiProgram);
 	glDepthFunc(GL_LESS); 
     //glDrawBuffer(GL_COLOR_ATTACHMENT0);
-
-	glUseProgram(programs.uiProgram);
-	glBindBuffer(GL_ARRAY_BUFFER, objects.VBO);
-	glBindVertexArray(objects.VAO);
 }
