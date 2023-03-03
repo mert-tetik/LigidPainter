@@ -14,6 +14,8 @@ uniform int isMaskIcon; //Revert colors while rendering mask icons
 void main(){
     if(isMaskIcon == 1){
         color = vec4(iconColor.rgb, texture2D(icon,TexCoords).r-0.02); //Revert colors while rendering mask icons
+        gl_FragDepth = 0.05;
+
     }
     else if(isMaskIcon == 0){
         if((1.-texture2D(icon,TexCoords).r) < 0.05)
