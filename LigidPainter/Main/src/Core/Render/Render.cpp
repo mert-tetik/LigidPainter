@@ -382,11 +382,12 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
 
 	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects);
+	renderAxisPointer(axisPointerShaderData,renderPrograms);
 	
+	glClear(GL_DEPTH_BUFFER_BIT);
 	if(renderData.doPainting)
 		renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorPicker.pickerValue,renderMaxScreenWidth,renderMaxScreenHeight,renderPrograms);
 
-	renderAxisPointer(axisPointerShaderData,renderPrograms);
 	if(glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_RELEASE)
 	uiOut = renderUi(panelData, renderData, FBOScreen,icons
 		,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,
