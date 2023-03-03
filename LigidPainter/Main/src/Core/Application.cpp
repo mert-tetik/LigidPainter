@@ -1214,10 +1214,10 @@ void LigidPainter::textureDisplayerButton(double xOffset,double yOffset,int widt
 
 	textureDisplayer.positionChanged = true;
 
-	textureDisplayer.buttonPosX -= xOffset / (double)(windowData.windowMaxWidth / 2.0f);
+	textureDisplayer.buttonPosX -= xOffset / (double)(screenWidth / 2.0f);
 	textureDisplayer.buttonPosX = util.restrictBetween(textureDisplayer.buttonPosX,2.0f,0.0f);
 
-	textureDisplayer.buttonPosY += yOffset / (double)(windowData.windowMaxHeight / 2.0f);
+	textureDisplayer.buttonPosY += yOffset / (double)(screenHeight / 2.0f);
 	textureDisplayer.buttonPosY = util.restrictBetween(textureDisplayer.buttonPosY,0.97f,-1.0f);
 
 }

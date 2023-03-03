@@ -235,10 +235,10 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			dPX = 0;
 			dPY = 0;
 			if(firstClick){
-				sPX = (mouseXpos/screenSizeX*2 - 1.0f);
+				sPX = (mouseXpos/maxScreenWidth*2 - 1.0f + screenGapX);
 				sPY = (-mouseYpos/maxScreenHeight*2 + 1.0f);
 			}
-			dPX = (mouseXpos/screenSizeX*2 - 1.0f);
+			dPX = (mouseXpos/maxScreenWidth*2 - 1.0f + screenGapX);
 			dPY = ((-mouseYpos/maxScreenHeight*2 + 1.0f));
 			if(!glfwGetKey(renderData.window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 				selectionBoxCoords = ui.selectionBox(true,sPX,sPY,dPX,dPY,0.3f);
@@ -367,7 +367,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 						addNodeContextMenu.buttons[i].positionZ = 0.8f;
 					}
 					ui.box(addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY + addNodeContextMenu.buttons[indepI].positionY, addNodeContextMenu.buttons[i].text, addNodeContextMenu.buttons[i].color, addNodeContextMenu.buttons[i].textRatio, false, false, addNodeContextMenu.buttons[i].positionZ + 0.099f * (float)(addNodeContextMenu.selectedButtonIndex == indepI), addNodeContextMenu.buttons[i].buttonCurveReduce, addNodeContextMenu.buttons[i].colorHover, ((bool)addNodeContextMenu.buttons[i].transitionMixVal || addNodeContextMenu.selectedButtonIndex == indepI)); //Add mask texture button	
-					addNodeContextMenu.buttons[i].hover = ui.isMouseOnButton(renderData.window, addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX - screenGapX/2.f, addNodeContextMenu.buttons[indepI].positionY + addNodeContextMenu.positionY, mouseXpos, mouseYpos, false);
+					addNodeContextMenu.buttons[i].hover = ui.isMouseOnButton(renderData.window, addNodeContextMenu.buttons[i].width, addNodeContextMenu.buttons[i].height, addNodeContextMenu.positionX - screenGapX, addNodeContextMenu.buttons[indepI].positionY + addNodeContextMenu.positionY, mouseXpos, mouseYpos, false);
 					
 					indepI++;
 				}

@@ -458,9 +458,9 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			bool minusHover = false;
 			if(nodePanel.panelHover && !coloringPanel.active){
 				
-				clrHover = isMouseOnButton(window,iconWidth*3,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX-node.width/4.f) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height/4.) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
-				plusHover = isMouseOnButton(window,iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/8., ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height/2) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
-				minusHover = isMouseOnButton(window,iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/8., ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height/6) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+				clrHover = isMouseOnButton(window,iconWidth*3,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX-node.width/4.f) * nodePanel.zoomVal- screenGap, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height/4.) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+				plusHover = isMouseOnButton(window,iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/8.- screenGap, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height/2) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+				minusHover = isMouseOnButton(window,iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/8.- screenGap, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height/6) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
 			}
 			if(clrHover||plusHover||minusHover)
 				nodePanel.pointerCursor = true;
@@ -487,7 +487,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				node.stateChanged = true;
 			}
 
-			if(minusHover && firstClick && node.inputs[i].rampPos.size()){
+			if(minusHover && firstClick && node.inputs[i].rampPos.size()-2){
 				node.inputs[i].rampPos.erase(node.inputs[i].rampPos.begin() + node.inputs[i].selectedRampIndex);
 				node.inputs[i].rampClr.erase(node.inputs[i].rampClr.begin() + node.inputs[i].selectedRampIndex);
 				node.inputs[i].rampPress.erase(node.inputs[i].rampPress.begin() + node.inputs[i].selectedRampIndex);
@@ -511,7 +511,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 					iconBox(iconWidth*1.1,iconWidth*2*1.1,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width/1.6, ((node.positionY + nodePanel.panelPositionY + (node.inputs[i].rampPos[rampi]-0.5)/1.2) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+0.01,icons.Pointer,0,glm::vec4(colorData.LigidPainterThemeColor,1),glm::vec4(0));
 				}
 				iconBox(iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width/1.6, ((node.positionY + nodePanel.panelPositionY + (node.inputs[i].rampPos[rampi]-0.5)/1.2) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+0.01,icons.Pointer,0,glm::vec4(node.inputs[i].rampClr[rampi]/glm::vec3(255.),1),glm::vec4(0));
-				bool rampPointHover = isMouseOnButton(window,iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width/1.6, ((node.positionY + nodePanel.panelPositionY+(node.inputs[i].rampPos[rampi]-0.5)/1.2) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+				bool rampPointHover = isMouseOnButton(window,iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width/1.6 - screenGap, ((node.positionY + nodePanel.panelPositionY+(node.inputs[i].rampPos[rampi]-0.5)/1.2) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
 				if(rampPointHover && firstClick){
 					node.inputs[i].selectedRampIndex = rampi;
 					node.inputs[i].rampPress[rampi] = true;
