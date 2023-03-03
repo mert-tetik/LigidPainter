@@ -74,7 +74,8 @@ void UserInterface::box(float width, float height, float position_x, float posit
 
 	if(buttonCurveReduce <= 200){
 		glUseProgram(uiPrograms.iconsProgram);
-		iconBox((height/2.)*1.3,height*1.3,position_x-width,position_y,z,circleIcon,mixVal,color,colorTransitionColor);
+		if(width != 0.)
+			iconBox((height/2.)*1.3,height*1.3,position_x-width,position_y,z,circleIcon,mixVal,color,colorTransitionColor);
 		iconBox((height/2.)*1.3,height*1.3,position_x+width,position_y,z,circleIcon,mixVal,color,colorTransitionColor);
 		glUseProgram(uiPrograms.uiProgram);
 	}
@@ -618,7 +619,7 @@ void UserInterface::textureDisplayer(float width,float height, float position_x,
 		 position_x, -height +position_y, z,0,0,0,0,0,  // bottom left
 		 position_x,  position_y, z,0,1,0,0,0  // top left
 	};
-	box(0.005f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDisplayerButtonColor,0,0,0,1,10,glm::vec4(0,0,0,1),0);
+	box(0.0f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDisplayerButtonColor,0,0,0,1,10,glm::vec4(0,0,0,1),0);
 
 	glset.uniform1i(uiPrograms.uiProgram,"drawTxtrDemonstrator",1);
 	glset.drawArrays(buttonCoorSq,false);
@@ -674,7 +675,7 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 }
 
 void UserInterface::circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture, glm::vec4 color){
-	iconBox(width,height,positionX,positionY,positionZ,circleTexture,0,color,glm::vec4(0));
+	iconBox(width,height,positionX,positionY,positionZ,circleIcon,0,color,glm::vec4(0));
 }
 
 void UserInterface::colorBox(float position_x, float position_y,float valueX, float valueY,Icons icons) {
