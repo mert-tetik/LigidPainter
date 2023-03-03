@@ -842,7 +842,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			if(duplicateNodeCall){
 				Node duplicatedNode;
 				duplicatedNode = node;
-				duplicatedNode.positionY+=0.1f;
+				duplicatedNode.positionY+=0.2f;
 				duplicatedNode.active = false;
 				for (size_t douti = 0; douti < duplicatedNode.outputs.size(); douti++)
 				{
