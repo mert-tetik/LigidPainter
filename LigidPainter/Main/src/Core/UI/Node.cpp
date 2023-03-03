@@ -278,7 +278,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
         //Check if output pressed
 		if(!anyConnectionPressed){//Prevent multiple selection
 			if(nodePanel.panelHover && !coloringPanel.active)
-				node.outputs[i].connectionHover = isMouseOnButton(window , iconWidth/1.5f , iconWidth*1.5f  ,node.outputs[i].connectionPosX- screenGap,node.outputs[i].connectionPosY,mouseX,mouseY,false);
+				node.outputs[i].connectionHover = isMouseOnButton(window , iconWidth , iconWidth*2.f  ,node.outputs[i].connectionPosX- screenGap,node.outputs[i].connectionPosY,mouseX,mouseY,false);
 			else
 				node.outputs[i].connectionHover = false;
 		}
@@ -320,7 +320,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			node.outputs[i].connections[conI].connectionPosX = material.nodes[node.outputs[i].connections[conI].nodeConnectionIndex].inputs[node.outputs[i].connections[conI].inputConnectionIndex].posX;
 			node.outputs[i].connections[conI].connectionPosY = material.nodes[node.outputs[i].connections[conI].nodeConnectionIndex].inputs[node.outputs[i].connections[conI].inputConnectionIndex].posY;
 			
-			node.outputs[i].connections[conI].connectionHover = isMouseOnButton(window , iconWidth/1.5f , iconWidth*1.5f  ,node.outputs[i].connections[conI].connectionPosX- screenGap,node.outputs[i].connections[conI].connectionPosY,mouseX,mouseY,false);
+			node.outputs[i].connections[conI].connectionHover = isMouseOnButton(window , iconWidth , iconWidth*2.f  ,node.outputs[i].connections[conI].connectionPosX- screenGap,node.outputs[i].connections[conI].connectionPosY,mouseX,mouseY,false);
 
 			if(node.outputs[i].connections[conI].connectionHover && firstClick)
 				node.outputs[i].connections[conI].connectionPressed = true;

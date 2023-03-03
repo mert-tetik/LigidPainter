@@ -214,9 +214,23 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 				break;
 			}
 		}
+		for (size_t i = 0; i < nodeScenes[selectedNodeScene].nodes.size(); i++)
+		{
+			for (size_t outi = 0; outi < nodeScenes[selectedNodeScene].nodes[i].outputs.size(); outi++)
+			{
+				if(nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connectionHover){
+					anyNodeHover = true;
+					break;
+				}
+			}
+			
+		}
 		if(firstClick && anyNodeHover){
 			showTheSelectionBox = false;
 		}
+		if(firstClick && !nodePanel.panelHover)
+			showTheSelectionBox = false;
+
 		if(glfwGetMouseButton(renderData.window,0) == GLFW_PRESS && nodePanel.panelHover && showTheSelectionBox){
 			dPX = 0;
 			dPY = 0;
