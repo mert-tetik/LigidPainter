@@ -383,7 +383,7 @@ bool LigidPainter::run()
 	txtr.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	model.sendObjectsToModel(objects.VAO,objects.VBO);
 
-	glfwSetWindowSizeLimits(window,windowData.windowMaxWidth/1.7,0,1000000,1000000);
+	glfwSetWindowSizeLimits(window,windowData.windowMaxWidth/1.7,0,windowData.windowMaxWidth,windowData.windowMaxHeight);
 
 
 
