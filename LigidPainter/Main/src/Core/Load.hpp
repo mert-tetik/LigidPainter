@@ -94,12 +94,12 @@ public:
 		
 		std::vector<std::string> facesblur
 		{
-		    "LigidPainter/Resources/Cubemap/Skybox/ambient/pxblur.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/ambient/nxblur.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/ambient/nyblur.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/ambient/pyblur.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/ambient/pzblur.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/ambient/nzblur.png"
+		    "LigidPainter/Resources/Cubemap/Skybox/ambient/pxb.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/ambient/nxb.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/ambient/nyb.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/ambient/pyb.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/ambient/pzb.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/ambient/nzb.png"
 		};
 		unsigned int cubemapTextureblur = loadCubemap(facesblur,GL_TEXTURE13);  
 
