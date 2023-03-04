@@ -627,7 +627,8 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 
 			float upBotDifMin = std::min(0.05f + position_y,maxTop) - std::min(-0.05f + position_y,maxTop);
 			float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
-
+			
+			glActiveTexture(GL_TEXTURE14);
 			glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
 
 			std::vector<float> buttonCoorSq{
