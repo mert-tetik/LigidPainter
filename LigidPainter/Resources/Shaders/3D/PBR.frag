@@ -146,7 +146,7 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 vec3 getRealisticResult(vec3 paintedDiffuse){
    vec3 albedo = paintedDiffuse;
    float metallic = 0.0;
-   float roughness = 0.5;
+   float roughness = 0.3;
    float ao = 1;
 
    
@@ -169,7 +169,7 @@ vec3 getRealisticResult(vec3 paintedDiffuse){
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < 4; ++i) 
+    for(int i = 0; i < 0; ++i) 
     {
       vec3 lightPosX;
 
@@ -224,7 +224,7 @@ vec3 getRealisticResult(vec3 paintedDiffuse){
     kD *= 1.0 - metallic;	  
     
     vec3 irradiance = texture(bluryskybox, N).rgb * skyboxExposure;
-    vec3 diffuse      = irradiance * albedo;
+    vec3 diffuse      = skyboxExposure * albedo;
     
     // sample both the pre-filter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part.
     const float MAX_REFLECTION_LOD = 4.0;
@@ -247,5 +247,5 @@ void main() {
     vec3 paintedDiffuse = getPaintedDiffuse();
     vec3 result = getRealisticResult(paintedDiffuse);
 
-    color = vec4(result,opacity);
+    color = vec4(result,1.0);
 }

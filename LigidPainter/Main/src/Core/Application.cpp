@@ -1103,11 +1103,13 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 			nodePanel.zoomValChanged = true;
 			nodePanel.zoomVal = util.restrictBetween(nodePanel.zoomVal, 2.0f, 0.01f);//Keep in boundaries
 		}
-		else if(callbackData.mainPanelEnter && panelData.texturePanelActive && model.meshes.size() >= 4){
+		else if(callbackData.mainPanelEnter && panelData.texturePanelActive){
 			//Materials
-			materialsPanelSlideValue += scrollx/10.0f;
-			if(materialsPanelSlideValue < 0.0f)
-				materialsPanelSlideValue = 0.0f;
+			if(model.meshes.size() >= 4){
+				materialsPanelSlideValue += scrollx/10.0f;
+				if(materialsPanelSlideValue < 0.0f)
+					materialsPanelSlideValue = 0.0f;
+			}
 		}
 		else if (!paintingMode && !mainPanelHover) {
 			callbackData = callback.scroll_callback(window, scroll, scrollx);

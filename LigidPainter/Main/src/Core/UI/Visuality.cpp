@@ -1091,7 +1091,7 @@ void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Pr
 	glUseProgram(programs.iconsProgram);
 	
 	if(nodeScenes.size() != 0)
-		circle((nodePanelRight + nodePanelLeft)/2 - 0.025,nodePanelTop+0.04f,0.999f,0.015f,0.03f,icons.Material,colorData.iconColor); //Left
+		iconBox(0.015f,0.03f,(nodePanelRight + nodePanelLeft)/2 - 0.025,nodePanelTop+0.04f,0.999f,icons.Material,0,colorData.iconColor,colorData.iconColor);
 	
 	circle(nodePanelLeft+0.001f,nodePanelTop-0.001f,nodePanelZ,0.05f,0.1f,icons.Circle,colorData.nodePanelColorSnd); //Left
 	circle(nodePanelRight-0.001f,nodePanelTop-0.001f,nodePanelZ,0.05f,0.1f,icons.Circle,colorData.nodePanelColorSnd); //Right
