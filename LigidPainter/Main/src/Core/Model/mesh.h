@@ -46,6 +46,11 @@ public:
     std::string materialName;
     int materialIndex;
 
+    void sendObjectsToMesh(unsigned int aVBO,unsigned int aVAO){
+        oVBO = aVBO;
+        oVAO = aVAO;
+    }
+
     // constructor
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<TextureMs> textures,std::string materialName,int materialIndex)
     {
@@ -94,6 +99,8 @@ public:
         glBindVertexArray(VAO);
 
         glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
+        glBindBuffer(1,oVBO);
+        glBindVertexArray(oVAO);
         
         // always good practice to set everything back to defaults once configured.
     }
@@ -101,6 +108,7 @@ public:
 private:
     // render data 
     unsigned int VBO, EBO;
+    unsigned int oVBO, oVAO;
 
     // initializes all the buffer objects/arrays
     void setupMesh()

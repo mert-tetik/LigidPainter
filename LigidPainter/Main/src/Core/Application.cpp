@@ -63,6 +63,7 @@
 #include "gl.h"
 #include "Load.hpp"
 #include "Render/Render.h"
+#include "Model/mesh.h"
 #include "Model/model.h"
 #include "Texture/Texture.h"
 #include "UI/UiActions.h"
@@ -1598,6 +1599,7 @@ void LigidPainter::loadModelButton() {
 		newModelAdded = true;
 
 
+		model.meshes[0].sendObjectsToMesh(objects.VAO,objects.VAO);
 
 		// for (size_t i = 0; i < model.meshes.size(); i++) 
 		// {

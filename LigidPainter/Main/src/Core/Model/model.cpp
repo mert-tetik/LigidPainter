@@ -49,7 +49,7 @@ using namespace std;
         }
 
         for(unsigned int i = 0; i < meshes.size(); i++){
-            if(!paintingMode){
+            if(!paintingMode && modelMaterials[meshes[i].materialIndex].program != 0){
 	            glUseProgram(modelMaterials[meshes[i].materialIndex].program);
 
                 glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
@@ -90,7 +90,6 @@ using namespace std;
         }
 	    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	    glBindVertexArray(mVAO);
-
     }
     
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.

@@ -188,7 +188,7 @@ vec3 getRealisticResult(){
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < 0; ++i) 
+    for(int i = 0; i < 2; ++i) 
     {
       vec3 lightPosX;
 
@@ -245,7 +245,7 @@ vec3 getRealisticResult(){
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;	  
     
-    vec3 irradiance = texture(blurySkybox, N).rgb * skyboxExposure;
+    vec3 irradiance = texture(blurySkybox, N).rgb * 2. * skyboxExposure;
     vec3 diffuse      = irradiance * albedo;
     
     // sample both the pre-filter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part.
