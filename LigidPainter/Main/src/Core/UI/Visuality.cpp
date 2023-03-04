@@ -141,7 +141,10 @@ void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
 bool sndpanelMoveTexture = false;
 bool sndpanelFolderPressed = false;
 int sndpanelFolderCounter = 0;
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter) {
+
+bool sndpanelSliderPressed = false;
+
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter,float yOffset) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -194,6 +197,28 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 		}
 	}
 
+	if(firstClick && isMouseOnButton(window,0.007f,slidePHeight,panelLoc - panelWidth*2 + cornerWidth/2.5f,max(-slideVal + (panelHeigth - cornerWidth), -(panelHeigth - cornerWidth-0.014f)) - slidePHeight,mouseXpos,mouseYpos,false)){
+		sndpanelSliderPressed = true;
+	}
+	if(sndpanelSliderPressed){
+		if(!sndpnl.state){
+			txtrSlideVal += yOffset/(uiMaxScreenHeight/2);
+			if(txtrSlideVal < 0.f)
+					txtrSlideVal = 0.001f;
+		}
+		if(sndpnl.state){
+			materialSlideVal += yOffset/(uiMaxScreenHeight/2);
+			if(materialSlideVal < 0.f)
+				materialSlideVal = 0.001f;
+		}
+		slideVal += (yOffset/(uiMaxScreenHeight/2))*slidePHeight;
+		if(slideVal < 0.f)
+			slideVal = 0.001f;
+	}
+	if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
+		sndpanelSliderPressed = false;
+	}
+
 	if(slidePHeight + slideVal/2.f > 0.82f){
 		slideVal = (+0.82 - slidePHeight)*2;
 		if(!sndpnl.state)
@@ -205,7 +230,6 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 
 	box(0.007f, slidePHeight, panelLoc - panelWidth*2 + cornerWidth/2.5f , max(-slideVal + (panelHeigth - cornerWidth), -(panelHeigth - cornerWidth-0.014f)) - slidePHeight, "", colorD.panelHoldColor, 0.022f, false, false, panelZ+0.02, 10000, colorD.panelColor, 0);
-	//21
 	
 	
 	box(panelWidth, panelHeigth - cornerWidth, panelLoc - panelWidth - cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
