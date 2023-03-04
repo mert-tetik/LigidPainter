@@ -84,6 +84,10 @@ void main()
         res = vec3(source.g);
     else if(RBRatio > 5 && GBRatio > 5 && arnd(RGRatio,0.8,10.0) && list_5 == 0) //Blue
         res = vec3(source.b);
+    else if(arnd(RBRatio,0.8,2.) && arnd(GBRatio,0.8,2.) && arnd(RGRatio,0.8,2.) && list_7 == 0) //White
+        res = vec3(source.r);
+    else if(source.r < 0.025 && source.g < 0.025 && source.b < 0.025 && list_8 == 0) //Black
+        res = vec3(1);
 
     output_0 = vec4(res,1.0);
 }
