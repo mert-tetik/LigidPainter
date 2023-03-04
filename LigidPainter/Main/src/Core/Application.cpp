@@ -261,13 +261,13 @@ bool LigidPainter::run()
 	
 	std::vector<float> sqrCoor{
 		// first triangle
-		 1,  1., 0,1,0,0,0,0,  // top right
-		 1, -1., 0,1,1,0,0,0,  // bottom right
-		-1,  1., 0,0,0,0,0,0,  // top left 
-		 
-		 1, -1., 0,1,1,0,0,0,  // bottom right
-		-1, -1., 0,0,1,0,0,0,  // bottom left
-		-1,  1., 0,0,0,0,0,0  // top left
+		 1,  1., 0,	1,1,	0,0,0,  // top right
+		 1, -1., 0,	1,0,	0,0,0,  // bottom right
+		-1,  1., 0,	0,1,	0,0,0,  // top left 
+		 		
+		 1, -1., 0,	1,0,	0,0,0,  // bottom right
+		-1, -1., 0,	0,0,	0,0,0,  // bottom left
+		-1,  1., 0,	0,1,	0,0,0  // top left
 	};
 
 	glBufferData(GL_ARRAY_BUFFER,sqrCoor.size() * sizeof(float), &sqrCoor[0],GL_DYNAMIC_DRAW);

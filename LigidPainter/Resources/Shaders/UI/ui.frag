@@ -65,7 +65,9 @@ void main() {
       else 
       {
          //Text here
-         vec4 sampled = vec4(uiColor.rgb, texture(text, TexCoords).r);
+         vec2 uv = TexCoords;
+         uv.y = 1. - uv.y;
+         vec4 sampled = vec4(uiColor.rgb, texture(text, uv).r);
          color = vec4(textColor,1) * sampled * uiColor.a;
       }
    }
