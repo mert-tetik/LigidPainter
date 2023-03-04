@@ -139,7 +139,7 @@ void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
 bool sndpanelMoveTexture = false;
 bool sndpanelFolderPressed = false;
 int sndpanelFolderCounter = 0;
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float txtrSlideVal,float materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -163,16 +163,46 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	
 	glUseProgram(programs.uiProgram);
 	
+	
+
 	//Slider
 	box(0.007f, panelHeigth - cornerWidth, panelLoc - panelWidth*2 + cornerWidth/2.5f , +0.014f, "", colorD.panelColorSnd, 0.022f, false, false, panelZ+0.01, 10000, colorD.panelColor, 0);
+	int elementSize = 0;
 	float slideVal = 0;
-	if(sndpnl.state == 0)
+	if(sndpnl.state == 0){
 		slideVal = sndpnl.texturePanelSlideVal;
-	if(sndpnl.state == 1)
+		elementSize = albedoTextures.size();
+	}
+	if(sndpnl.state == 1){
 		slideVal = sndpnl.materialPanelSlideVal;
+		elementSize = nodeScenes.size();
+	}
 		
-	slideVal /= 10;
-	box(0.007f, 0.014f, panelLoc - panelWidth*2 + cornerWidth/2.5f , max(-slideVal + (panelHeigth - cornerWidth), -(panelHeigth - cornerWidth-0.014f)), "", colorD.panelHoldColor, 0.022f, false, false, panelZ+0.02, 10000, colorD.panelColor, 0);
+	float slidePHeight = (panelHeigth - cornerWidth) * (7.f/(max((float)albedoTextures.size()/3.f,7.f))); 
+	slideVal *= slidePHeight;
+	
+	if(sndpnl.state == 0){
+		if(albedoTextures.size() > 21 && albedoTextures.size() <= 27){
+			slidePHeight -= 0.1f;
+		}
+	}
+	if(sndpnl.state == 1){
+		if(nodeScenes.size() > 21 && nodeScenes.size() <= 27){
+			slidePHeight -= 0.1f;
+		}
+	}
+
+	if(slidePHeight + slideVal/2.f > 0.82f){
+		slideVal = (+0.82 - slidePHeight)*2;
+		if(!sndpnl.state)
+			txtrSlideVal = slideVal/slidePHeight;
+		if(sndpnl.state)
+			materialSlideVal = slideVal/slidePHeight;
+	}
+	
+
+
+	box(0.007f, slidePHeight, panelLoc - panelWidth*2 + cornerWidth/2.5f , max(-slideVal + (panelHeigth - cornerWidth), -(panelHeigth - cornerWidth-0.014f)) - slidePHeight, "", colorD.panelHoldColor, 0.022f, false, false, panelZ+0.02, 10000, colorD.panelColor, 0);
 	//21
 	
 	
@@ -627,16 +657,31 @@ void UserInterface::textureDisplayer(float width,float height, float position_x,
 	glset.uniform1i(uiPrograms.uiProgram,"drawTxtrDemonstrator",0);
 }
 
-void UserInterface::verticalRangeBar(float positionX,float positionY,float height,float value){
+bool vertRGBarPressed = false;
+bool UserInterface::verticalRangeBar(float positionX,float positionY,float height,float &orgvalue,float value,GLFWwindow* window,float mouseX,float mouseY,float yOffset,bool firstClick,int textureSize){
 	ColorData colorData;
 
 	//Pointer 
 	box(0.0f, 0.015f, positionX, positionY - value, "",colorData.maskPanelSliderColor, 0.095f, false, false, 0.9f, 20, glm::vec4(0), 0); //Mask panel slider
-		
+	if(isMouseOnButton(window,0.015f,0.015f,positionX,positionY-value,mouseX,mouseY,false) && firstClick)
+		vertRGBarPressed = true;
+	
+	if(vertRGBarPressed){
+		Utilities util;
+		orgvalue -= yOffset/(uiMaxScreenHeight/2);
+		const float maskPanelRange = ceil(textureSize/3.f) / 8.33333333333 - (0.8f - 0.55f); 
+		orgvalue = util.restrictBetween(orgvalue, 0.0f, -maskPanelRange/4.f);//Keep in boundaries
+	}
+	
+	if(glfwGetMouseButton(window,0) == GLFW_RELEASE)
+		vertRGBarPressed = false;
+
 	//Background
 	box(0.008f, height, positionX, positionY - height, "",colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 10000, glm::vec4(0), 0); 
 	box(0.0f, 0.015f, positionX, positionY , "", colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 20, glm::vec4(0), 0); 
 	box(0.0f, 0.015f, positionX, positionY - height*2.f, "", colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 20, glm::vec4(0), 0); 
+
+	return false;
 }
 
 
@@ -1536,7 +1581,7 @@ void UserInterface::modelMaterialPanel(Model &model,Programs programs,RenderData
 		}
 }
 
-void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned int> &maskTextures,float centerCoords, float screenGapX,float maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData){
+void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned int> &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData){
 	ColorData colorData;
 	GlSet gl;
 	Texture txtr;

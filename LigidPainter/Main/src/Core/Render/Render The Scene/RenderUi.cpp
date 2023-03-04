@@ -86,7 +86,7 @@ bool selectionActive = false;
 
 
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
-const char* exportFileName,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
+const char* exportFileName,float &maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 float brushBlurVal,OutShaderData &outShaderData, Model &model,std::vector<aTexture> &albedoTextures,Programs programs
 ,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
@@ -165,7 +165,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	float screenGapX = ((float)maxScreenWidth - screenSizeX)/(((float)maxScreenWidth)/2.0f)/2.0f; 
 
 	updateButtonColorMixValues(UIElements,colorPicker,sndPanel);
-
+	double xOffset = mouseXpos - lastMouseX;
+	double yOffset = mouseYpos - lastMouseY;	
 	//Panel
 	if(panelData.exportPanelActive || panelData.modelPanelActive || panelData.paintingPanelActive || panelData.texturePanelActive || panelData.settingsPanelActive || panelData.generatorPanelActive){ //Disable panel if a message box is active
 		//If message box is not active
@@ -180,9 +181,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons,nodeScenes,selectedNodeScene);
 		ui.nodePanelBarriers(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth);
-		
-		double xOffset = mouseXpos - lastMouseX;
-		double yOffset = mouseYpos - lastMouseY;
+		 
 		
 		std::vector<Node> duplicatedNodes;
 
@@ -318,10 +317,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 		if(coloringPanel.active)
 			ui.coloringPanel(coloringPanel,programs,icons,renderData.window,saturationValShaderData,projection,mouseXpos,mouseYpos,firstClick,xOffset,yOffset,FBOScreen,colorPicker,screenGapX);
-
-		lastMouseX = mouseXpos;
-		lastMouseY = mouseYpos;
-
 
 
 
@@ -462,8 +457,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		glUseProgram(programs.uiProgram);
 
 		const float maskPanelRange = ceil((int)maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
-		
-		ui.verticalRangeBar( renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f,0.8f,0.125,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f));
+		ui.verticalRangeBar( renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f,0.8f,0.125,maskPanelSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.textures.size());
 
 		ui.box(0.035f, 0.07f, centerCoords - screenGapX - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0);
 	}
@@ -601,7 +595,9 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	}
 
 	alertState = 0;
-
+	
+	lastMouseX = mouseXpos;
+	lastMouseY = mouseYpos;
 
 	uiOut.currentBrushMaskTxtr = currentBrushMaskTexture;
 	return uiOut;

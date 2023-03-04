@@ -265,7 +265,7 @@ NodeScene lastNodeScene;
 
 int paintRenderCounter = 0;
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
-Icons &icons,float maskPanelSliderValue,std::vector<unsigned int> &maskTextures, bool renderPlane,bool renderSphere,
+Icons &icons,float &maskPanelSliderValue,std::vector<unsigned int> &maskTextures, bool renderPlane,bool renderSphere,
 PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,
 OutShaderData &outShaderData,Model &model,vector<aTexture> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
 ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps& cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel
@@ -374,9 +374,6 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		renderSkyBox(skyBoxShaderData,renderPrograms,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
 		
 	
-
-
-
 
 	glActiveTexture(GL_TEXTURE13);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
