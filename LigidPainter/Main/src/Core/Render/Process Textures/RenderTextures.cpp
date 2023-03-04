@@ -15,6 +15,7 @@
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"
 
+int lastTxtrRes = 1024;
 void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screenSizeY, OutShaderData outShaderData,Model &model,bool renderDefault,std::vector<aTexture> &albedoTextures,bool paintOut,bool isRenderTexture,bool paintRender,bool firstPaint,int currentMaterialIndex,Programs programs, int maxScreenWidth , int maxScreenHeight,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,int chosenTextureIndex,int chosenTextureResIndex) {
 	int maxHistoryHold = 10;
 
@@ -23,6 +24,9 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 	{
 		txtrRes*=2;
 	}
+	bool txtrResChanged = false;
+	if(txtrRes != lastTxtrRes)
+		txtrResChanged = true;
 
 	if(isRenderTexture){
 		glEnable(GL_DEPTH_TEST); 
@@ -46,7 +50,7 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 
 		//UNDO
 		Texture txtr;
-		if(albedoTextures.size() > 0){
+		if(albedoTextures.size() > 0 && !txtrResChanged){
 			 GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, txtrRes, txtrRes, 3);
 
 			 GlSet glset;
@@ -181,5 +185,5 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 	}
 	
-
+	lastTxtrRes = txtrRes;
 }

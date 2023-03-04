@@ -735,7 +735,7 @@ void UserInterface::colorBox(float position_x, float position_y,float valueX, fl
 	glset.drawArrays(boxCoor,false);
 
 	glUseProgram(uiPrograms.iconsProgram);
-	circle(position_x + valueX, position_y + valueY,0.91f,0.01f,0.02f,icons.O,colorData.colorBoxIndicatorColor);
+	iconBox(0.01f,0.02f,position_x + valueX, position_y + valueY,0.91f,icons.O,0,colorData.colorBoxIndicatorColor,colorData.colorBoxIndicatorColor);
 	glUseProgram(uiPrograms.uiProgram);
 	//box(0.0f, 0.01f, position_x + valueX, position_y + valueY, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 22,glm::vec4(0),0);
 }
