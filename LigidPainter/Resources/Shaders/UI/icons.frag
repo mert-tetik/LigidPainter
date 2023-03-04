@@ -18,10 +18,12 @@ void main(){
 
     }
     else if(isMaskIcon == 0){
-        if((1.-texture2D(icon,TexCoords).r) < 0.05)
+        vec2 uv = TexCoords;
+        uv.y = 1. - uv.y;
+        if((1.-texture2D(icon,uv).r) < 0.05)
             gl_FragDepth = 1.;
         else 
             gl_FragDepth = gl_FragCoord.z;
-        color = vec4(mix(iconColor.rgb,iconColorHover.rgb,iconMixVal), (1.0 - texture2D(icon,TexCoords).r) * iconColor.a); 
+        color = vec4(mix(iconColor.rgb,iconColorHover.rgb,iconMixVal), (1.0 - texture2D(icon,uv).r) * iconColor.a); 
     }
 }

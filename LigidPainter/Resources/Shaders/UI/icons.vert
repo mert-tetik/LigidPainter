@@ -6,8 +6,13 @@ layout(location = 2) in vec2 aTexCoords;
 out vec2 TexCoords;
 uniform mat4 Projection;
 
+uniform vec3 pos;
+uniform mat4 scale;
+
 void main(){
     
     TexCoords = aTexCoords;
-    gl_Position = Projection * vec4(aPos, 1.0);
+    
+    vec3 scaledPos = vec3(scale * vec4(aPos,1));
+    gl_Position = Projection * vec4(scaledPos+pos, 1.0);
 }

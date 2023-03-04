@@ -58,10 +58,10 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	ColorData colorData;
 
 
-	if (!isTextBox) {
+	if (!isTextBox && text != "") {
 		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,false);
 	}
-	else {
+	else if(text != ""){
 		renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,mixVal > 0.f);
 	}
 
@@ -79,6 +79,8 @@ void UserInterface::box(float width, float height, float position_x, float posit
 		iconBox((height/2.)*1.3,height*1.3,position_x+width,position_y,z,circleIcon,mixVal,color,colorTransitionColor);
 		glUseProgram(uiPrograms.uiProgram);
 	}
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
+	glBindVertexArray(uiObjects.VAO);
 }
 
 void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
@@ -422,7 +424,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 					glUseProgram(programs.uiProgram);
 
-					bool textHover = isMouseOnButton(window,0.06f,0.015f,position_x,position_y - textureWidth*2.5,mouseXpos,mouseYpos,false);
+					bool textHover = isMouseOnButton(window,0.06f,0.015f,position_x-screenGapX,position_y - textureWidth*2.5,mouseXpos,mouseYpos,false);
 
 					if(textHover && firstClick && !anyTextureNameActive){
 						albedoTextures[i].nameTextActive = true;
@@ -431,7 +433,6 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 					}
 					if(albedoTextures[i].nameTextActive){
 						box(0.06f, 0.015f, position_x,position_y - textureWidth*2.5, textureText, colorData.buttonColor, 0.022f, true, false, panelZ+0.05, 10000, colorD.panelColor, 0.001f);
-
 					}
 					else{
 						renderText(programs.uiProgram,albedoTextures[i].name,position_x- textureWidth ,position_y - textureWidth*2.5,0.00017f,colorData.textColor,panelZ+0.02f,false);
@@ -658,12 +659,12 @@ void UserInterface::textureDisplayer(float width,float height, float position_x,
 }
 
 bool vertRGBarPressed = false;
-bool UserInterface::verticalRangeBar(float positionX,float positionY,float height,float &orgvalue,float value,GLFWwindow* window,float mouseX,float mouseY,float yOffset,bool firstClick,int textureSize){
+bool UserInterface::verticalRangeBar(float positionX,float positionY,float height,float &orgvalue,float value,GLFWwindow* window,float mouseX,float mouseY,float yOffset,bool firstClick,int textureSize,float screenGapX){
 	ColorData colorData;
 
 	//Pointer 
 	box(0.0f, 0.015f, positionX, positionY - value, "",colorData.maskPanelSliderColor, 0.095f, false, false, 0.9f, 20, glm::vec4(0), 0); //Mask panel slider
-	if(isMouseOnButton(window,0.015f,0.015f,positionX,positionY-value,mouseX,mouseY,false) && firstClick)
+	if(isMouseOnButton(window,0.015f,0.015f,positionX-screenGapX,positionY-value,mouseX,mouseY,false) && firstClick)
 		vertRGBarPressed = true;
 	
 	if(vertRGBarPressed){
@@ -698,16 +699,6 @@ void UserInterface::numericModifier(float position_x,float position_y,unsigned i
 }
 
 void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover){
-	std::vector<float> buttonCoorSq{
-		// first triangle
-		 width + position_x,  height + position_y, z,1,1,0,0,0,  // top right
-		 width + position_x, -height + position_y, z,1,0,0,0,0,  // bottom right
-		-width + position_x,  height + position_y, z,0,1,0,0,0,  // top left 
-		// second triangle						   
-		 width + position_x, -height + position_y, z,1,0,0,0,0,  // bottom right
-		-width + position_x, -height + position_y, z,0,0,0,0,0,  // bottom left
-		-width + position_x,  height + position_y, z,0,1,0,0,0  // top left
-	};
 	GlSet glset;
 	ColorData clrData;
 
@@ -717,7 +708,7 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 	glset.uniform1f(uiPrograms.iconsProgram,"iconMixVal",mixVal);
 	glset.activeTexture(GL_TEXTURE6);
 	glset.bindTexture(icon);
-	glset.drawArrays(buttonCoorSq,false);
+	box(width,height,position_x,position_y,"",color,0,0,0,z,100000,colorHover,mixVal);
 }
 
 void UserInterface::circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture, glm::vec4 color){

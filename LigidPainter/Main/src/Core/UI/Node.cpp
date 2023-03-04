@@ -151,7 +151,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	for (size_t i = 0; i < node.listBoxes.size(); i++)
 	{
 		glUseProgram(programs.uiProgram);
-		bool listButtonHover = isMouseOnButton(window,node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+		bool listButtonHover = isMouseOnButton(window,node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
 
 		if(node.listBoxes[i].active){
 			
@@ -164,7 +164,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 					if(node.listBoxes[i].elements.size() == listElementI)
 						break;
 
-					const bool elementHover = isMouseOnButton(window , node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + (x)/(20.f/(node.width*40)),((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+j+1)/(20.f/(node.width*13)) - 0.05f * node.width*10 - iconWidth*1,mouseX,mouseY,false);
+					const bool elementHover = isMouseOnButton(window , node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + (x)/(20.f/(node.width*40)) - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+j+1)/(20.f/(node.width*13)) - 0.05f * node.width*10 - iconWidth*1,mouseX,mouseY,false);
 					
 					if(elementHover)
 						noButtonHover = false;
@@ -200,7 +200,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 
 
 		glUseProgram(programs.iconsProgram);
-		const bool downHover = isMouseOnButton(window , iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.2f, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*13)) - 0.05f * node.width*10,mouseX,mouseY,false);
+		const bool downHover = isMouseOnButton(window , iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.2f - screenGap, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*13)) - 0.05f * node.width*10,mouseX,mouseY,false);
 		
 		if(downHover && firstClick && nodePanel.panelHover)
 			node.listBoxes[i].active = !node.listBoxes[i].active;
