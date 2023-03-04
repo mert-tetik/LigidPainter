@@ -151,7 +151,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	for (size_t i = 0; i < node.listBoxes.size(); i++)
 	{
 		glUseProgram(programs.uiProgram);
-		bool listButtonHover = isMouseOnButton(window,node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
+		bool listButtonHover = isMouseOnButton(window,node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10,mouseX,mouseY,false);
 
 		if(node.listBoxes[i].active){
 			
@@ -164,7 +164,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 					if(node.listBoxes[i].elements.size() == listElementI)
 						break;
 
-					const bool elementHover = isMouseOnButton(window , node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + (x)/(20.f/(node.width*40)) - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+j+1)/(20.f/(node.width*13)) - 0.05f * node.width*10 - iconWidth*1,mouseX,mouseY,false);
+					const bool elementHover = isMouseOnButton(window , node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + (x)/(20.f/(node.width*40)) - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - ((j+0.5) / (20.f/(node.width*14))) - 0.05f * node.width*10 - iconWidth*2,mouseX,mouseY,false);
 					
 					if(elementHover)
 						noButtonHover = false;
@@ -183,29 +183,29 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 
 					}
 
-					box(node.width*1.12,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + (x)/(20.f/(node.width*40)) ,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+j+1)/(20.f/(node.width*13)) - 0.05f * node.width*10 - iconWidth*1,"",color,0,0,0,depth+0.06f,10000,node.backColor,0);///Bottom
-					renderText(programs.uiProgram,node.listBoxes[i].elements[listElementI],(node.positionX + nodePanel.panelPositionX ) * nodePanel.zoomVal - node.width/1.2f + (x)/(20.f/(node.width*40)),((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+j+1)/(20.f/(node.width*13)) - 0.05f * node.width*10 - iconWidth*2.,node.width/300.f,colorData.textColor,depth+0.07f,false);
+					box(node.width*1.12,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + (x)/(20.f/(node.width*40)) ,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - ((j+0.5) / (20.f/(node.width*14))) - 0.05f * node.width*10 - iconWidth*2,"",color,0,0,0,depth+0.06f,10000,node.backColor,0);///Bottom
+					renderText(programs.uiProgram,node.listBoxes[i].elements[listElementI],(node.positionX + nodePanel.panelPositionX ) * nodePanel.zoomVal - node.width/1.2f + (x)/(20.f/(node.width*40)),((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - ((j+0.5) / (20.f/(node.width*14))) - 0.05f * node.width*10 - iconWidth*2,node.width/300.f,colorData.textColor,depth+0.07f,false);
 					listElementI++;
 				}
 			
 			}
-			box(node.width*1.12,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10 - iconWidth*2,"",colorData.buttonColor,0,0,0,depth+0.03f,10000,node.backColor,0);///Bottom
+			box(node.width*1.12,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10 - iconWidth*2,"",colorData.buttonColor,0,0,0,depth+0.03f,10000,node.backColor,0);///Bottom
 			if(noButtonHover && !listButtonHover){
 				node.listBoxes[i].active = false;
 			}
 		}
 
-		box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.buttonColor,0,0,0,depth+0.03f,8 / (node.width*6),node.backColor,0);///Bottom
-		renderText(programs.uiProgram,node.listBoxes[i].elements[node.listBoxes[i].chosenIndex],(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.4f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+0.04f,false);
+		box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10,"",colorData.buttonColor,0,0,0,depth+0.03f,8 / (node.width*6),node.backColor,0);///Bottom
+		renderText(programs.uiProgram,node.listBoxes[i].elements[node.listBoxes[i].chosenIndex],(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.4f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+0.04f,false);
 
 
 		glUseProgram(programs.iconsProgram);
-		const bool downHover = isMouseOnButton(window , iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.2f - screenGap, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*13)) - 0.05f * node.width*10,mouseX,mouseY,false);
+		const bool downHover = isMouseOnButton(window , iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.2f - screenGap, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10,mouseX,mouseY,false);
 		
 		if(downHover && firstClick && nodePanel.panelHover)
 			node.listBoxes[i].active = !node.listBoxes[i].active;
 			
-		iconBox(iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.2f, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10, depth+0.04f , icons.ArrowDown , 0 , colorData.iconColor, colorData.iconColor);
+		iconBox(iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.2f, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10, depth+0.04f , icons.ArrowDown , 0 , colorData.iconColor, colorData.iconColor);
 		
 		ioIndex++;
 	}
@@ -294,7 +294,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				//Render the connection on top of the default connection circle (hide)
 				if(node.outputs[i].nodeConnectionIndex == 10000 && node.outputs[i].inputConnectionIndex == 10000){
 					node.outputs[i].connectionPosX = (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width +iconWidth*2.f;
-					node.outputs[i].connectionPosY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
+					node.outputs[i].connectionPosY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10;
 				}
 				
 				// //Render the connection on top of the connection circle (show)
@@ -330,7 +330,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 
         	glUseProgram(programs.curveProgram);
 			
-			drawLine((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,depth+0.02f,node.outputs[i].connections[conI].connectionPosX,node.outputs[i].connections[conI].connectionPosY, node.width*200.f ,nodeColor,false);
+			drawLine((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10,depth+0.02f,node.outputs[i].connections[conI].connectionPosX,node.outputs[i].connections[conI].connectionPosY, node.width*200.f ,nodeColor,false);
 		
 			if(node.outputs[i].connections[conI].connectionPressed){
 				//Severe the connection
@@ -350,18 +350,22 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		
 		//TODO : Move the rendering of connection lines to the output element rendering
 		if(node.outputs[i].pressed)//Render the connection lines if output connects to an input or moves
-			drawLine((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10,depth+0.02f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY, node.width*200.f ,nodeColor,false);
+			drawLine((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10,depth+0.02f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY, node.width*200.f ,nodeColor,false);
 		
         glUseProgram(programs.iconsProgram);
         //Render the output
 		//TODO : Use those values for rendering and tracking
 		node.outputs[i].posX = (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f;
-		node.outputs[i].posY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10;
-		iconBox(iconWidth/1.5f , iconWidth*1.5f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*15)) - 0.05f * node.width*10, depth+0.01f , icons.Circle , 0 , nodeColor , nodeColor);
-		ioIndex++;
+		node.outputs[i].posY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10;
+		iconBox(iconWidth/1.5f , iconWidth*1.5f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width + iconWidth*2.f, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10, depth+0.01f , icons.Circle , 0 , nodeColor , nodeColor);
+        glUseProgram(programs.uiProgram);
+		renderText(programs.uiProgram,node.outputs[i].text,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width - (node.outputs[i].text.size()/60.f)*node.width*8.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+0.01f,false);
 	}
 
+	ioIndex+=node.outputs.size();
+	
 
+    glUseProgram(programs.iconsProgram);
 
 
 
@@ -426,15 +430,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	
 
 
-
-
-
-
-    //-----RENDER THE OUTPUT ELEMENTS-----
-	for (size_t i = 0; i < node.outputs.size(); i++)
-	{
-		renderText(programs.uiProgram,node.outputs[i].text,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width - (node.outputs[i].text.size()/60.f)*node.width*8.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - i/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+0.01f,false);
-	}
 		
 
 

@@ -1,0 +1,89 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-list_0 :
+--title_0 : Red;
+--title_1 : None;
+
+-list_1 :
+--title_0 : Orange;
+--title_1 : None;
+
+-list_2 :
+--title_0 : Yellow;
+--title_1 : None;
+
+-list_3 :
+--title_0 : Green;
+--title_1 : None;
+
+-list_4 :
+--title_0 : Cyan;
+--title_1 : None;
+
+-list_5 :
+--title_0 : Blue;
+--title_1 : None;
+
+-list_6 :
+--title_0 : Pink;
+--title_1 : None;
+
+-list_7 :
+--title_0 : White;
+--title_1 : None;
+
+-list_8 :
+--title_0 : Black;
+--title_1 : None;
+
+-title : Color Id;
+-color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color ID;
+--element : color;
+--value : 100,100,100;
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Color;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+bool arnd(float val,float min,float max){
+    return val > min && val < max;
+}
+
+void main()
+{
+    vec3 source = texture2D(input_0,tex_coords).rgb;
+	vec3 res = vec3(0);
+
+    source += vec3(0.001);
+    
+    float RGRatio = max(source.r,source.g) / min(source.r,source.g); 
+    float RBRatio = max(source.r,source.b) / min(source.r,source.b); 
+    float GBRatio = max(source.b,source.g) / min(source.b,source.g); 
+
+    if(RGRatio > 5 && RBRatio > 5 && arnd(GBRatio,0.8,10.0) && list_0 == 0) //Red
+        res = vec3(source.r);
+    else if(RGRatio > 5 && GBRatio > 5 && arnd(RBRatio,0.8,10.0) && list_3 == 0) //Green
+        res = vec3(source.g);
+    else if(RBRatio > 5 && GBRatio > 5 && arnd(RGRatio,0.8,10.0) && list_5 == 0) //Blue
+        res = vec3(source.b);
+
+    output_0 = vec4(res,1.0);
+}

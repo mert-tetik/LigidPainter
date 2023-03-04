@@ -318,6 +318,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				imageNode.outputs[0].pressed = false;
 				imageNode.outputs[0].connectionHover = false;
 				imageNode.marked = false;
+				imageNode.stateChanged = true;
 				imageNode.active = true;
 
 				imageNode.inputs[0].selectedTexture = albedoTextures[selectedAlbedoTextureIndex].id;
