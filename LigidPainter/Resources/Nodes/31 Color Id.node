@@ -36,8 +36,8 @@
 --title_1 : None;
 
 -list_8 :
---title_0 : Black;
---title_1 : None;
+--title_0 : None;
+--title_1 : Black;
 
 -title : Color Id;
 -color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
@@ -64,30 +64,77 @@
 %code;
 
 bool arnd(float val,float min,float max){
-    return val > min && val < max;
+    return val >= min && val <= max;
 }
+vec3 RGBToHSVGenerator(vec3 rgbData){
+	float maxV = max(max(rgbData.r,rgbData.g),rgbData.b);
+	float minV = min(min(rgbData.r,rgbData.g),rgbData.b);
+	float hue;
+	float saturation;
+	float value;
 
+	value = maxV/255.0;
+	if(maxV > 0){
+		saturation = 1.0f - float(minV)/float(maxV);
+	}
+	else if(maxV == 0){
+		saturation = 0;
+	}
+    if (maxV == rgbData.r) {
+        hue = (rgbData.g - rgbData.b) / (maxV - minV);
+
+    } else if (maxV == rgbData.g) {
+        hue = 2.0f + (rgbData.b - rgbData.r) / (maxV - minV);
+
+    } else {
+        hue = 4.0f + (rgbData.r - rgbData.g) / (maxV - minV);
+    }
+    hue = hue * 60.0;
+    if (hue < 0){
+		hue = hue + 360.0;	
+	} 
+	
+	if (minV == maxV) {
+        hue = 0;
+    }
+	vec3 hsvVal = vec3(round(hue),saturation,value);
+	return hsvVal;
+}
 void main()
 {
     vec3 source = texture2D(input_0,tex_coords).rgb;
-	vec3 res = vec3(0);
+   
+    vec3 hsv = RGBToHSVGenerator(source*255);
 
-    source += vec3(0.001);
+    vec3 res;
     
-    float RGRatio = max(source.r,source.g) / min(source.r,source.g); 
-    float RBRatio = max(source.r,source.b) / min(source.r,source.b); 
-    float GBRatio = max(source.b,source.g) / min(source.b,source.g); 
+    if(list_0== 0 && (arnd(hsv.r,0,15) || arnd(hsv.r,345,360)) && hsv.g > 0.5) //Red
+        res = vec3(source.r);
 
-    if(RGRatio > 5 && RBRatio > 5 && arnd(GBRatio,0.8,10.0) && list_0 == 0) //Red
-        res = vec3(source.r);
-    else if(RGRatio > 5 && GBRatio > 5 && arnd(RBRatio,0.8,10.0) && list_3 == 0) //Green
+    else if(list_3== 0 && arnd(hsv.r,75,150) && hsv.g > 0.5) //Green
         res = vec3(source.g);
-    else if(RBRatio > 5 && GBRatio > 5 && arnd(RGRatio,0.8,10.0) && list_5 == 0) //Blue
+ 
+    else if(list_5== 0 && arnd(hsv.r,210,260) && hsv.g > 0.5) //Blue
         res = vec3(source.b);
-    else if(arnd(RBRatio,0.8,2.) && arnd(GBRatio,0.8,2.) && arnd(RGRatio,0.8,2.) && list_7 == 0) //White
+
+    else if(list_2== 0 && arnd(hsv.r,50,65) && hsv.g > 0.5) //Yellow
+        res = vec3((source.r+source.g)/2.);
+
+    else if(list_6== 0 && arnd(hsv.r,280,340) && hsv.g > 0.5) //Pink
+        res = vec3((source.r+source.b)/2.);
+    
+    else if(list_4== 0 && arnd(hsv.r,170,180) && hsv.g > 0.5) //Cyan
+        res = vec3((source.b+source.g)/2.);
+
+    else if(list_1== 0 && arnd(hsv.r,25,40) && hsv.g > 0.5) //Orange
+        res = vec3((source.r+source.g)/2.);
+
+    if(list_7== 0 && hsv.b > 0.1 && hsv.g < 0.1) //White
         res = vec3(source.r);
-    else if(source.r < 0.025 && source.g < 0.025 && source.b < 0.025 && list_8 == 0) //Black
-        res = vec3(1);
+
+    if(list_8== 1 && hsv.b < 0.1 && hsv.g < 0.1) //Black
+        res = vec3(1-source.r);
+	
 
     output_0 = vec4(res,1.0);
 }
