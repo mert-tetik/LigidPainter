@@ -70,6 +70,10 @@ bool UserInterface::textInput(int key, int action,bool caps,std::string &text,in
 
 bool UserInterface::textInputHex(int key, int action, std::string &text, int &activeChar){
     bool valueChanged = false;
+	    if(key >= 320 && key <=329){
+		//Numpad Optimization
+		key -= 272;
+	}
     if((action == 0 || action == 2) && activeChar > -6){ 
         if(isdigit((char)key)){
 	    	//Add decimal numbers
