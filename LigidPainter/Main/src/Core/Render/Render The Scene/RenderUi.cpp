@@ -372,7 +372,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 							nodeScenes[selectedNodeScene].nodes[i].active = true;
 						}
 						else{
-							nodeScenes[selectedNodeScene].nodes[i].active = false;
+							if(!glfwGetKey(renderData.window,GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+								nodeScenes[selectedNodeScene].nodes[i].active = false;
 						}
 					}
 				}
