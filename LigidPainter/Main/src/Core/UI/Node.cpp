@@ -815,51 +815,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			nodePanel.pointerCursor = true;
 
 		if(deleteButtonEnter && firstClick || (glfwGetKey(window,GLFW_KEY_X) == GLFW_PRESS && node.active)){
-			for (int dOutI = 0; dOutI < material.nodes[currentNodeIndex].outputs.size(); dOutI++)
-			{
-				for (size_t coni = 0; coni < material.nodes[currentNodeIndex].outputs[dOutI].connections.size(); coni++)
-				{
-					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].inputConnectionIndex].nodeConnectionIndex = 10000;
-					material.nodes[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].nodeConnectionIndex].inputs[material.nodes[currentNodeIndex].outputs[dOutI].connections[coni].inputConnectionIndex].inputConnectionIndex = 10000;
-				}
-			}
-			for (int dInI = 0; dInI < material.nodes[currentNodeIndex].inputs.size(); dInI++)
-			{
-				if(material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex != 10000){
-					for (size_t coni = 0; coni < material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].connections.size(); coni++)
-					{
-						material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].connections.erase(material.nodes[material.nodes[currentNodeIndex].inputs[dInI].nodeConnectionIndex].outputs[material.nodes[currentNodeIndex].inputs[dInI].inputConnectionIndex].connections.begin()+coni);
-					}
-				}
-			}
-			material.stateChanged = true;
-			node.stateChanged = true;
-
-			//Delete the texture outputs of the node
-			for (size_t delTxtri = 0; delTxtri < node.outputs.size(); delTxtri++)
-			{
-				glDeleteTextures(1,&node.outputs[delTxtri].result);
-			}
-			
-
-			material.nodes.erase(material.nodes.begin() + currentNodeIndex);
 			deleted = true;
-
-			for (size_t delI = 0; delI < material.nodes.size(); delI++)
-			{
-				for (size_t delInI = 0; delInI < material.nodes[delI].inputs.size(); delInI++)
-				{
-					if(currentNodeIndex < material.nodes[delI].inputs[delInI].nodeConnectionIndex && material.nodes[delI].inputs[delInI].nodeConnectionIndex != 10000){
-						material.nodes[delI].inputs[delInI].nodeConnectionIndex--;
-					}
-				}
-				for (size_t delOutI = 0; delOutI < material.nodes[delI].outputs.size(); delOutI++)
-				{
-					if(currentNodeIndex < material.nodes[delI].outputs[delOutI].nodeConnectionIndex && material.nodes[delI].outputs[delOutI].nodeConnectionIndex != 10000){
-						material.nodes[delI].outputs[delOutI].nodeConnectionIndex--;
-					}
-				}
-			}
 		}
 	
 		iconBox(iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2), depth+0.02f , icons.CircularX , 0 , colorData.iconColor, colorData.iconColor);

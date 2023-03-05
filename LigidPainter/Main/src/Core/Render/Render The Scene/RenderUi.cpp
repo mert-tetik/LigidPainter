@@ -184,6 +184,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		 
 		
 		std::vector<Node> duplicatedNodes;
+		std::vector<int> deletedNodeIndexes;
 
 		nodePanel.pointerCursor = false;
 		for (size_t i = 0; i < nodeScenes[selectedNodeScene].nodes.size(); i++)
@@ -193,9 +194,85 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 				nodeScenes[selectedNodeScene].nodes[i].width = 0.12f * nodePanel.zoomVal;
 				bool deleted = ui.node(nodeScenes[selectedNodeScene].nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodeScenes[selectedNodeScene],nodePanel,textureSelectionPanel,i,albedoTextures,screenGapX,firstClick,coloringPanel,duplicateNodeCall,duplicatedNodes);
 				if(deleted)
-					i--;
+					deletedNodeIndexes.push_back(i);
 			}
 		}
+		for (size_t i = 0; i < deletedNodeIndexes.size(); i++)
+		{
+
+			//Remove related connections
+			for (int dOutI = 0; dOutI <  nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].outputs.size(); dOutI++)
+			{
+				for (size_t coni = 0; coni <  nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].outputs[dOutI].connections.size(); coni++)
+				{
+					 nodeScenes[selectedNodeScene].nodes[ nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].outputs[dOutI].connections[coni].nodeConnectionIndex].inputs[ nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].outputs[dOutI].connections[coni].inputConnectionIndex].nodeConnectionIndex = 10000;
+					 nodeScenes[selectedNodeScene].nodes[ nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].outputs[dOutI].connections[coni].nodeConnectionIndex].inputs[ nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].outputs[dOutI].connections[coni].inputConnectionIndex].inputConnectionIndex = 10000;
+				}
+			}
+			for (int dInI = 0; dInI <  nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].inputs.size(); dInI++)
+			{
+				if( nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].inputs[dInI].nodeConnectionIndex != 10000){
+					for (size_t coni = 0; coni <  nodeScenes[selectedNodeScene].nodes[ nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].inputs[dInI].nodeConnectionIndex].outputs[ nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].inputs[dInI].inputConnectionIndex].connections.size(); coni++)
+					{
+						 nodeScenes[selectedNodeScene].nodes[ nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].inputs[dInI].nodeConnectionIndex].outputs[ nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].inputs[dInI].inputConnectionIndex].connections.erase( nodeScenes[selectedNodeScene].nodes[ nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].inputs[dInI].nodeConnectionIndex].outputs[ nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].inputs[dInI].inputConnectionIndex].connections.begin()+coni);
+					}
+				}
+			}
+			
+			//Remove it's own connections
+			for (size_t inI = 0; inI < nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].inputs.size(); inI++)
+			{
+				nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].inputs[inI].nodeConnectionIndex = 10000;
+				nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].inputs[inI].inputConnectionIndex = 10000;
+			}
+			for (size_t outI = 0; outI < nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].outputs.size(); outI++)
+			{
+				nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].outputs[outI].connections.clear();
+			}
+			
+
+			nodeScenes[selectedNodeScene].stateChanged = true;
+
+
+			//Delete the texture outputs of the node
+			for (size_t delTxtri = 0; delTxtri < nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].outputs.size(); delTxtri++)
+			{
+				glDeleteTextures(1,&nodeScenes[selectedNodeScene].nodes[deletedNodeIndexes[i]].outputs[delTxtri].result);
+			}
+		}
+		for (size_t i = 0; i < deletedNodeIndexes.size(); i++)
+		{
+			nodeScenes[selectedNodeScene].nodes.erase( nodeScenes[selectedNodeScene].nodes.begin() + deletedNodeIndexes[i]);
+			
+			for (size_t delI = 0; delI < deletedNodeIndexes.size(); delI++)
+			{
+				if(deletedNodeIndexes[i] < deletedNodeIndexes[delI])
+					deletedNodeIndexes[delI]--;
+			}
+			
+			for (size_t delI = 0; delI <  nodeScenes[selectedNodeScene].nodes.size(); delI++)
+			{
+				for (size_t delInI = 0; delInI <  nodeScenes[selectedNodeScene].nodes[delI].inputs.size(); delInI++)
+				{
+					if(deletedNodeIndexes[i] < nodeScenes[selectedNodeScene].nodes[delI].inputs[delInI].nodeConnectionIndex &&  nodeScenes[selectedNodeScene].nodes[delI].inputs[delInI].nodeConnectionIndex != 10000){
+						 nodeScenes[selectedNodeScene].nodes[delI].inputs[delInI].nodeConnectionIndex--;
+					}
+				}
+				for (size_t delOutI = 0; delOutI <  nodeScenes[selectedNodeScene].nodes[delI].outputs.size(); delOutI++)
+				{
+						 for (size_t delConi = 0; delConi < nodeScenes[selectedNodeScene].nodes[delI].outputs[delOutI].connections.size(); delConi++)
+						 {
+							if(deletedNodeIndexes[i] <  nodeScenes[selectedNodeScene].nodes[delI].outputs[delOutI].connections[delConi].nodeConnectionIndex){
+						 		nodeScenes[selectedNodeScene].nodes[delI].outputs[delOutI].connections[delConi].nodeConnectionIndex--;
+						 }						 
+					}
+				}
+			}
+		}
+		
+		deletedNodeIndexes.clear();
+		
+
 		for (size_t i = 0; i < duplicatedNodes.size(); i++)
 		{
 			for (size_t rI = 0; rI < duplicatedNodes.size(); rI++)
