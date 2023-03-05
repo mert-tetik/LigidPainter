@@ -814,7 +814,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 		if(deleteButtonEnter)
 			nodePanel.pointerCursor = true;
 
-		if(deleteButtonEnter && firstClick || (glfwGetKey(window,GLFW_KEY_X) == GLFW_PRESS && node.active)){
+		if(deleteButtonEnter && firstClick || (glfwGetKey(window,GLFW_KEY_X) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && node.active)){
 			deleted = true;
 		}
 	
