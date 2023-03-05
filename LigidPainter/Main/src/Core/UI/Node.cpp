@@ -871,25 +871,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 				duplicatedNode = node;
 				duplicatedNode.positionY+=0.2f;
 				duplicatedNode.active = false;
-				for (size_t douti = 0; douti < duplicatedNode.outputs.size(); douti++)
-				{
-					for (size_t dconi = 0; dconi < duplicatedNode.outputs[douti].connections.size(); dconi++)
-					{
-						if(!duplicatedNode.outputs[0].isConnectedToShaderInput){
-							duplicatedNode.outputs[douti].connections[dconi].nodeConnectionIndex += (((int)material.nodes.size()) - duplicatedNode.outputs[douti].connections[dconi].nodeConnectionIndex);
-						}
-						else{
-							duplicatedNode.outputs[douti].connections.erase(duplicatedNode.outputs[douti].connections.begin() + dconi); 
-							duplicatedNode.outputs[douti].isConnectedToShaderInput = false; 
-						}
-					}
-					
-				}
-				for (size_t dinI = 0; dinI < duplicatedNode.inputs.size(); dinI++)
-				{
-					if(duplicatedNode.inputs[dinI].nodeConnectionIndex != 10000)
-						duplicatedNode.inputs[dinI].nodeConnectionIndex += (((int)material.nodes.size()) - duplicatedNode.inputs[dinI].nodeConnectionIndex);
-				}
+				duplicatedNode.dupI = currentNodeIndex;
 				material.stateChanged = true;
 				node.stateChanged = true;
 

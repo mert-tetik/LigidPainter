@@ -398,6 +398,7 @@ struct NodeInput{
 	std::vector<glm::vec3> rampClr = {glm::vec3(0),glm::vec3(255.)};
 	std::vector<float> rampPress = {0,0};
 	int selectedRampIndex = 0;
+
 };
 
 struct ListBox{
@@ -443,6 +444,9 @@ struct Node{
 	bool active = false;
 
 	bool stateChanged = false;
+
+	int dupI = 0;
+
 };
 
 struct ContextMenu {

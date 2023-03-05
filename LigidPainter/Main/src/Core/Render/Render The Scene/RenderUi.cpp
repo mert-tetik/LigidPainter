@@ -198,8 +198,40 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		}
 		for (size_t i = 0; i < duplicatedNodes.size(); i++)
 		{
+			for (size_t rI = 0; rI < duplicatedNodes.size(); rI++)
+			{
+				for (size_t outI = 0; outI < duplicatedNodes[rI].outputs.size(); outI++)
+				{
+					for (size_t conI = 0; conI < duplicatedNodes[rI].outputs[outI].connections.size(); conI++)
+					{
+						if(duplicatedNodes[rI].outputs[outI].connections[conI].nodeConnectionIndex == duplicatedNodes[i].dupI)
+							duplicatedNodes[rI].outputs[outI].connections[conI].nodeConnectionIndex = nodeScenes[selectedNodeScene].nodes.size()+i;
+					}
+				}
+				for (size_t inI = 0; inI < duplicatedNodes[rI].inputs.size(); inI++)
+				{
+					if(duplicatedNodes[rI].inputs[inI].nodeConnectionIndex == duplicatedNodes[i].dupI)
+						duplicatedNodes[rI].inputs[inI].nodeConnectionIndex = nodeScenes[selectedNodeScene].nodes.size()+i;
+				}
+			}
+			duplicatedNodes[i].dupI = 0;
+		}
+		for (size_t i = 0; i < duplicatedNodes.size(); i++)
+		{
+			for (size_t outI = 0; outI < duplicatedNodes[i].outputs.size(); outI++)
+			{
+				for (size_t conI = 0; conI < duplicatedNodes[i].outputs[outI].connections.size(); conI++)
+				{
+					if(duplicatedNodes[i].outputs[outI].connections[conI].nodeConnectionIndex < nodeScenes[selectedNodeScene].nodes.size())
+						duplicatedNodes[i].outputs[outI].connections.erase(duplicatedNodes[i].outputs[outI].connections.begin()+conI);
+				}
+			}
+
+		}
+		for (size_t i = 0; i < duplicatedNodes.size(); i++){
 			nodeScenes[selectedNodeScene].nodes.push_back(duplicatedNodes[i]);
 		}
+		
 		duplicatedNodes.clear();
 		
 
