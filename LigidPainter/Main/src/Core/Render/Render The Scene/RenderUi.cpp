@@ -178,16 +178,17 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		//Texture demonstrator	
 		ui.textureDisplayer(textureDisplayer.ndWidth,textureDisplayer.ndHeight,textureDisplayer.buttonPosX - 1.0f +screenGapX,textureDisplayer.buttonPosY,1.f); 
 
-
-		ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons,nodeScenes,selectedNodeScene);
-		ui.nodePanelBarriers(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth);
+		if(!panelData.paintingPanelActive){
+			ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons,nodeScenes,selectedNodeScene);
+			ui.nodePanelBarriers(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth);
+		}
 		 
 		
 		std::vector<Node> duplicatedNodes;
 		std::vector<int> deletedNodeIndexes;
 
 		nodePanel.pointerCursor = false;
-		for (size_t i = 0; i < nodeScenes[selectedNodeScene].nodes.size(); i++)
+		for (size_t i = 0; i < nodeScenes[selectedNodeScene].nodes.size() * !(float)panelData.paintingPanelActive; i++)
 		{
 			if(nodePanel.heigth > 0.02){
 				nodeScenes[selectedNodeScene].nodes[i].height = ((nodeScenes[selectedNodeScene].nodes[i].inputs.size() + nodeScenes[selectedNodeScene].nodes[i].rangeBarCount + nodeScenes[selectedNodeScene].nodes[i].outputs.size())/25.f + 0.07 * !nodeScenes[selectedNodeScene].nodes[i].isMainOut) * nodePanel.zoomVal;

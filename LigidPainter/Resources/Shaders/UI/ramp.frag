@@ -16,18 +16,18 @@ vec3 getGradient(vec2 uv)
     float co2 = 0.;
     
     float minVal = 1.;
-    vec3 minI = vec3(0,1,0);
+    int minI;
     float maxVal = 0.;
-    vec3 maxI = vec3(0,1,0);
+    int maxI;
     for(int i = 0; i < 10;i++){
         if(point1D[i] < 2. && point1D[i] > 0.01){
             if(minVal > point1D[i]){
                 minVal = point1D[i];
-                minI = color1D[i]/255.;
+                minI = i;
             }
             if(maxVal < point1D[i]){
                 maxVal = point1D[i];
-                maxI = color1D[i]/255.;
+                maxI = i;
             }
             if(co1 > point1D[i] && uv.y <= point1D[i]){//Smaller
                 co1 = point1D[i];
@@ -42,9 +42,9 @@ vec3 getGradient(vec2 uv)
     }
     //Causes visual glitch
     if(uv.y < minVal)
-        return minI;
+        return color1D[minI]/255.;
     if(uv.y > maxVal)
-        return maxI;
+        return color1D[maxI]/255.;
 
     float coDiff = co2-co1;
     return mix(clr1,clr2,(uv.y-co1)/coDiff);
