@@ -1683,6 +1683,8 @@ void LigidPainter::sndPanelMinusIcon(){
 			}
 		}
 		else if(sndPanel.state == 1){
+			nodeScenesHistory.clear();
+
 			//Materials
 			bool deletable = true;
 			if(nodeScenes.size() != 1){
@@ -1740,6 +1742,8 @@ void LigidPainter::sndPanelPlusIcon(){
 		}
 		else if(sndPanel.state == 1){
 			//Materials
+
+			nodeScenesHistory.clear();
 
 			ColorData colorData;
 
@@ -1826,7 +1830,7 @@ void LigidPainter::sndPanelDuplicateIcon(){
 		}
 		else if(sndPanel.state == 1){
 			//Materials
-
+			nodeScenesHistory.clear();
 			ColorData colorData;
 
 			std::vector<Node> mainOutNodes;

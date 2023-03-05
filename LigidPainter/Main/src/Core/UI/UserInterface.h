@@ -605,7 +605,7 @@ public:
 
 	//Visuality
 	void panel(float panelLoc, Icons icons,PanelData panelData);
-	void sndPanel(int state,float panelLoc , Programs programs , Icons icons , std::vector<aTexture> &albedoTextures,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth,int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter,float yOffset);
+	void sndPanel(int state,float panelLoc , Programs programs , Icons icons , std::vector<aTexture> &albedoTextures,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth,int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory);
 	void nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,Icons icons,std::vector<NodeScene> nodeScenes,int selectedNodeScene);
 	void nodePanelBarriers(float mainPanelLoc,float sndPanel, float height);
 

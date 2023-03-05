@@ -106,20 +106,20 @@ ViewUpdateData Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos
 
 //------------CtrlZ------------
 bool doCtrlZ;
-void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &currentNodeScene,std::vector<NodeScene> &nodeScenesHistory) {
+void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &currentNodeScene,std::vector<NodeScene> &nodeScenesHistory,bool paintingPanelActive) {
 	Texture txtr;
 	GlSet glset;
 
 	//TODO : CTRL Z leads to an error after deleting a material
 	if ((glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ)) { //MAX 20
-		if(nodeScenesHistory.size()){
+		if(nodeScenesHistory.size() && !paintingPanelActive){
 			currentNodeScene = nodeScenesHistory[nodeScenesHistory.size()-1].arrayIndex;
 			nodeScenes[currentNodeScene] = nodeScenesHistory[nodeScenesHistory.size()-1];
 			nodeScenesHistory.erase(nodeScenesHistory.end()-1);
 			nodeScenes[currentNodeScene].stateChanged = false;
 		}
 		
-		if(albedoTextures.size()){
+		if(albedoTextures.size() && paintingPanelActive){
 			if(albedoTextures[selectedAlbedoTextureIndex].undoList.size()){
 				//Refresh the screen mask texture (Prevent bugs where might be accur trying undo while in the middle of painting)
 				txtr.refreshScreenDrawingTexture();
@@ -413,7 +413,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	if (colorPicker.updatePickerVal) { //Get value of color box
 		colorPicker.pickerValue = getColorPickerValue(FBOScreen, colorPicker ,screenSizeX, screenSizeY,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,saturationValShaderData);
 	}
-	ctrlZCheck(renderData.window,albedoTextures,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,nodeScenesHistory);
+	ctrlZCheck(renderData.window,albedoTextures,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,nodeScenesHistory,panelData.paintingPanelActive);
 
 
 
