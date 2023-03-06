@@ -452,9 +452,13 @@ bool LigidPainter::run()
 		for (size_t x = 0; x < qr[y].size(); x++)
 		{
 			if(qr[y][x]){
-				qrData.push_back(255);
+				qrData.push_back(colorData.LigidPainterThemeColor.r * 255);
+				qrData.push_back(colorData.LigidPainterThemeColor.g * 255);
+				qrData.push_back(colorData.LigidPainterThemeColor.b * 255);
 			}
 			else{
+				qrData.push_back(0);
+				qrData.push_back(0);
 				qrData.push_back(0);
 			}
 		}
@@ -464,7 +468,7 @@ bool LigidPainter::run()
 	unsigned int qrTxtr;
 	glset.genTextures(qrTxtr);
 	glset.bindTexture(qrTxtr);
-	glset.texImage(&qrData[0],qr.size(),qr.size(),GL_RED);
+	glset.texImage(&qrData[0],qr.size(),qr.size(),GL_RGB);
 	glset.generateMipmap();
 	aTexture aqrTxtr;
 	aqrTxtr.id = qrTxtr;

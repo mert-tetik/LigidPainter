@@ -567,7 +567,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     bakeButtonElement.button.transitionMixVal = 0.0f;
     bakeButtonElement.button.buttonCurveReduce = 10.0f;
     bakeButtonElement.button.text = "Bake";
-    bakeButtonElement.button.textRatio = 0.038f;
+    bakeButtonElement.button.textRatio = 0.025f;
     bakeButtonElement.panel = 6;
     bakeButtonElement.attachedToMainPanel = true;
     bakeButtonElement.type = "button";

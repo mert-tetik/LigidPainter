@@ -1383,7 +1383,7 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 		coloringPanel.hueBarPointerPressed = true;
 
 	if(coloringPanel.hueBarPointerPressed){
-		coloringPanel.hueBarPosX -= yOffset/uiMaxScreenWidth*2;
+		coloringPanel.hueBarPosX -= yOffset/(uiMaxScreenHeight/2);
 		coloringPanel.hueBarPosX = util.restrictBetween(coloringPanel.hueBarPosX, 0.180f, -0.180f);//Keep in boundaries
 		coloringPanel.pickerValueChanged = true;
 	}
