@@ -248,9 +248,10 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		
 			maskPanelEnter = ui.isMouseOnButton(window, 0.15f, 0.15f, mainPanelLoc / centerDivider + centerSum - screenGapX, 0.675f, mouseXPos, mouseYPos, movePanel);
 		}
-
-		nodePanel.panelHover = ui.isMouseOnNodePanel(window,mainPanelLoc - screenGapX - 1.f, nodePanel.heigth,mouseXPos,mouseYPos,false,sndPanel.position);
-		nodePanel.boundariesHover = ui.isMouseOnNodePanel(window,mainPanelLoc - screenGapX - 1.f, nodePanel.heigth,mouseXPos,mouseYPos,true,sndPanel.position);
+		if(!panelData.paintingPanelActive){
+			nodePanel.panelHover = ui.isMouseOnNodePanel(window,mainPanelLoc - screenGapX - 1.f, nodePanel.heigth,mouseXPos,mouseYPos,false,sndPanel.position);
+			nodePanel.boundariesHover = ui.isMouseOnNodePanel(window,mainPanelLoc - screenGapX - 1.f, nodePanel.heigth,mouseXPos,mouseYPos,true,sndPanel.position);
+		}
 
 		//Add node context menu
 		addNodeContextMenu.hover = ui.isMouseOnButton(window, addNodeContextMenu.width+0.02f, addNodeContextMenu.height+0.04f, addNodeContextMenu.positionX - screenGapX/2.f, addNodeContextMenu.positionY- addNodeContextMenu.height, mouseXPos, mouseYPos, false);

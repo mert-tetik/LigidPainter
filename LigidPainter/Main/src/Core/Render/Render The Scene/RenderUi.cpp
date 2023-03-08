@@ -334,84 +334,87 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			}
 			
 		}
-		if(firstClick && anyNodeHover){
-			showTheSelectionBox = false;
-		}
-		if(firstClick && !nodePanel.panelHover)
-			showTheSelectionBox = false;
-
-		if(glfwGetMouseButton(renderData.window,0) == GLFW_PRESS && nodePanel.panelHover && showTheSelectionBox){
-			dPX = 0;
-			dPY = 0;
-			if(firstClick){
-				sPX = (mouseXpos/maxScreenWidth*2 - 1.0f + screenGapX);
-				sPY = (-mouseYpos/maxScreenHeight*2 + 1.0f);
+		if(!panelData.paintingPanelActive){
+			if(firstClick && anyNodeHover){
+				showTheSelectionBox = false;
 			}
-			dPX = (mouseXpos/maxScreenWidth*2 - 1.0f + screenGapX);
-			dPY = ((-mouseYpos/maxScreenHeight*2 + 1.0f));
-			if(!glfwGetKey(renderData.window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-				selectionBoxCoords = ui.selectionBox(true,sPX,sPY,dPX,dPY,0.3f);
-			else
-				ui.drawLine(sPX,sPY,0.3f,dPX,dPY,10,glm::vec4(1,0,0,1),true);
-			selectionActive = true;
-		}
-		else{
-			//sPX = (mouseXpos/screenSizeX*2 - 1.0f);
-			//sPY = (-mouseYpos/maxScreenHeight*2 + 1.0f);
-		}
-		if(glfwGetMouseButton(renderData.window,0) == GLFW_RELEASE){
-			showTheSelectionBox = true;
-		}
-		if(glfwGetMouseButton(renderData.window,0) == GLFW_RELEASE && selectionActive){
-			selectionActive = false;
-			for (size_t i = 0; i < nodeScenes[selectedNodeScene].nodes.size(); i++)
-			{
-				if(!glfwGetKey(renderData.window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
-					
-					if(selectionBoxCoords.size()){
-						if(ui.isMouseOnCoords(renderData.window,((nodeScenes[selectedNodeScene].nodes[i].positionX + nodePanel.panelPositionX) * nodePanel.zoomVal) * (maxScreenWidth/2.f) + maxScreenWidth/2.f,(maxScreenHeight) - (((nodeScenes[selectedNodeScene].nodes[i].positionY + nodePanel.panelPositionY) * nodePanel.zoomVal) * (maxScreenHeight/2.f) + maxScreenHeight/2.f),selectionBoxCoords,false)){
-							nodeScenes[selectedNodeScene].nodes[i].active = true;
-						}
-						else{
-							if(!glfwGetKey(renderData.window,GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-								nodeScenes[selectedNodeScene].nodes[i].active = false;
+			if(firstClick && !nodePanel.panelHover)
+				showTheSelectionBox = false;
+
+			if(glfwGetMouseButton(renderData.window,0) == GLFW_PRESS && nodePanel.panelHover && showTheSelectionBox){
+				dPX = 0;
+				dPY = 0;
+				if(firstClick){
+					sPX = (mouseXpos/maxScreenWidth*2 - 1.0f + screenGapX);
+					sPY = (-mouseYpos/maxScreenHeight*2 + 1.0f);
+				}
+				dPX = (mouseXpos/maxScreenWidth*2 - 1.0f + screenGapX);
+				dPY = ((-mouseYpos/maxScreenHeight*2 + 1.0f));
+				if(!glfwGetKey(renderData.window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+					selectionBoxCoords = ui.selectionBox(true,sPX,sPY,dPX,dPY,0.3f);
+				else
+					ui.drawLine(sPX,sPY,0.3f,dPX,dPY,10,glm::vec4(1,0,0,1),true);
+				selectionActive = true;
+			}
+			else{
+				//sPX = (mouseXpos/screenSizeX*2 - 1.0f);
+				//sPY = (-mouseYpos/maxScreenHeight*2 + 1.0f);
+			}
+			if(glfwGetMouseButton(renderData.window,0) == GLFW_RELEASE){
+				showTheSelectionBox = true;
+			}
+			if(glfwGetMouseButton(renderData.window,0) == GLFW_RELEASE && selectionActive){
+				selectionActive = false;
+				for (size_t i = 0; i < nodeScenes[selectedNodeScene].nodes.size(); i++)
+				{
+					if(!glfwGetKey(renderData.window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
+
+						if(selectionBoxCoords.size()){
+							if(ui.isMouseOnCoords(renderData.window,((nodeScenes[selectedNodeScene].nodes[i].positionX + nodePanel.panelPositionX) * nodePanel.zoomVal) * (maxScreenWidth/2.f) + maxScreenWidth/2.f,(maxScreenHeight) - (((nodeScenes[selectedNodeScene].nodes[i].positionY + nodePanel.panelPositionY) * nodePanel.zoomVal) * (maxScreenHeight/2.f) + maxScreenHeight/2.f),selectionBoxCoords,false)){
+								nodeScenes[selectedNodeScene].nodes[i].active = true;
+							}
+							else{
+								if(!glfwGetKey(renderData.window,GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+									nodeScenes[selectedNodeScene].nodes[i].active = false;
+							}
 						}
 					}
-				}
-				else{
-					for (size_t outi = 0; outi < nodeScenes[selectedNodeScene].nodes[i].outputs.size(); outi++)
-					{
-						for (size_t coni = 0; coni < nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.size(); coni++)
+					else{
+						for (size_t outi = 0; outi < nodeScenes[selectedNodeScene].nodes[i].outputs.size(); outi++)
 						{
-							glm::vec2 conPos1;
-							conPos1.x = nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni].connectionPosX;
-							conPos1.y = nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni].connectionPosY;
-							glm::vec2 conPos2;
-							conPos2.x = nodeScenes[selectedNodeScene].nodes[i].outputs[outi].posX;
-							conPos2.y = nodeScenes[selectedNodeScene].nodes[i].outputs[outi].posY;
+							for (size_t coni = 0; coni < nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.size(); coni++)
+							{
+								glm::vec2 conPos1;
+								conPos1.x = nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni].connectionPosX;
+								conPos1.y = nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni].connectionPosY;
+								glm::vec2 conPos2;
+								conPos2.x = nodeScenes[selectedNodeScene].nodes[i].outputs[outi].posX;
+								conPos2.y = nodeScenes[selectedNodeScene].nodes[i].outputs[outi].posY;
 
-							glm::vec2 conPos3 = glm::vec2(sPX,sPY);
-							glm::vec2 conPos4 = glm::vec2(dPX,dPY);
+								glm::vec2 conPos3 = glm::vec2(sPX,sPY);
+								glm::vec2 conPos4 = glm::vec2(dPX,dPY);
 
-							if(util.intersect(conPos1,conPos2,conPos3,conPos4)){
-								if(nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni].nodeConnectionIndex != 10000){
-									nodeScenes[selectedNodeScene].nodes[nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni].nodeConnectionIndex].inputs[nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni].inputConnectionIndex].nodeConnectionIndex = 10000;
-									nodeScenes[selectedNodeScene].nodes[nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni].nodeConnectionIndex].inputs[nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni].inputConnectionIndex].inputConnectionIndex = 10000;
+								if(util.intersect(conPos1,conPos2,conPos3,conPos4)){
+									if(nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni].nodeConnectionIndex != 10000){
+										nodeScenes[selectedNodeScene].nodes[nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni].nodeConnectionIndex].inputs[nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni].inputConnectionIndex].nodeConnectionIndex = 10000;
+										nodeScenes[selectedNodeScene].nodes[nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni].nodeConnectionIndex].inputs[nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections[coni].inputConnectionIndex].inputConnectionIndex = 10000;
+									}
+									nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.erase(nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.begin() + (coni));
+									nodeScenes[selectedNodeScene].stateChanged = true;
+									for (size_t severei = 0; severei < nodeScenes[selectedNodeScene].nodes.size(); severei++)
+									{
+										nodeScenes[selectedNodeScene].nodes[severei].stateChanged = true;
+									}
+
+									coni--;
 								}
-								nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.erase(nodeScenes[selectedNodeScene].nodes[i].outputs[outi].connections.begin() + (coni));
-								nodeScenes[selectedNodeScene].stateChanged = true;
-								for (size_t severei = 0; severei < nodeScenes[selectedNodeScene].nodes.size(); severei++)
-								{
-									nodeScenes[selectedNodeScene].nodes[severei].stateChanged = true;
-								}
-								
-								coni--;
 							}
 						}
 					}
 				}
 			}
 		}
+
 		
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , icons,panelData);
 		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal,firstClick,coloringPanel,txtrCreatingPanel,anyTextureNameActive,textureText,sndPanel.activeFolderIndex,nodePanel,appNodes,sndPanel,brushMaskTextures,maskPanelEnter,yOffset,nodeScenesHistory);
