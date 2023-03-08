@@ -23,7 +23,24 @@ using namespace std;
 std::string Utilities::readFile(const char* path) {
 	string fullText;
 	fstream my_file;
-	my_file.open(path, ios::in);
+
+	FILE* f;
+	if( 0 != fopen_s(&f, path, "rb") ) {
+		std::cout << "ÜST DÜZEU HATA" << std::endl;
+		f = 0;
+	}
+	long length;
+	if(f) {
+		fseek(f, 0, SEEK_END);
+		length = ftell(f);
+		fseek(f, 0, SEEK_SET);
+		fullText.resize(length + 1);
+		fread(fullText.data(), 1, length, f);
+		fclose(f);
+	}
+	std::cout << "Loaded: " << path << fullText.size() << std::endl;
+
+	/* my_file.open(path, ios::beg);
 	if (my_file.is_open()) {
 		char mychar;
 		while (my_file) {
@@ -32,7 +49,7 @@ std::string Utilities::readFile(const char* path) {
 				fullText += mychar;
 		}
 	}
-	my_file.close();
+	my_file.close(); */
 	return fullText;
 }
 string Utilities::getLastWordBySeparatingWithChar(string s, char del)

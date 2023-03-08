@@ -42,11 +42,13 @@ public:
 ProcessHppNode processNodeFile(std::string filePath){
     
     
-    std::fstream filein;
-    filein.open(filePath);
+    std::fstream filein(filePath, std::ios::in);
 
     if(!filein.is_open()){
-        std::cout << "Unable to open the file";
+        std::cout << "Unable to open the file\n";
+        std::cerr << "Error: " << strerror(errno) << std::endl;
+    } else {
+        std::cout << "Loaded " << filePath << std::endl;
     }
 
     std::string completeFile;
