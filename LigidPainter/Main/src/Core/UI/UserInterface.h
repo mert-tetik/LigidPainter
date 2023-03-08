@@ -223,7 +223,7 @@ struct CheckBox{
 	float positionX;
 	float positionY;
 	std::string text;
-	bool mouseHover;
+	bool mouseHover = false;
 	bool checked = false;
 };
 struct TextBox{

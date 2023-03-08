@@ -36,6 +36,30 @@ if (WIN32)
    target_compile_definitions(Ligid PRIVATE CRT)
 endif (WIN32)
    
+#Installer
+install(TARGETS Ligid)
+install(FILES
+   ${CMAKE_SOURCE_DIR}/freetype.dll
+   ${CMAKE_SOURCE_DIR}/assimp-vc142-mt.dll
+   DESTINATION bin)
+install(DIRECTORY
+${CMAKE_SOURCE_DIR}/LigidPainter/Resources DESTINATION bin/LigidPainter)
+
+
+set(CPACK_PACKAGE_NAME LigidPainter)#App name
+set(CPACK_PACKAGE_VENDOR LigidTools)#Publisher name
+
+#Shortcut
+set(CPACK_PACKAGE_EXECUTABLES Ligid;LigidPainter)
+set(CPACK_CREATE_DESKTOP_LINKS Ligid)
+
+set(CPACK_PACKAGE_VERSION_MAJOR 1)
+set(CPACK_PACKAGE_VERSION_MINOR 1)
+set(CPACK_PACKAGE_VERSION_PATCH 1)
+set(CPACK_GENERATOR WIX)
+
+include(CPack)
+
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/thirdparty/include/)
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/thirdparty)
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/src)
