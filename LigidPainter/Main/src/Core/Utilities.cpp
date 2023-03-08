@@ -364,6 +364,7 @@ bool Utilities::isMatch(std::string o,std::string t){
 	{
 		if(t[0] == o[i]){
 			startIndex = i;
+			break;
 		}
 	}
 	for (size_t i = 0; i < t.size(); i++)

@@ -460,7 +460,8 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 						box(0.06f, 0.015f, position_x,position_y - textureWidth*2.5, textureText, colorData.buttonColor, 0.022f, true, false, panelZ+0.05, 10000, colorD.panelColor, 0.001f);
 					}
 					else{
-						renderText(programs.uiProgram,albedoTextures[i].name,position_x- textureWidth ,position_y - textureWidth*2.5,0.00017f,colorData.textColor,panelZ+0.02f,false);
+						Utilities util;
+						renderText(programs.uiProgram,util.cropString(albedoTextures[i].name,15),position_x- textureWidth ,position_y - textureWidth*2.5,0.00017f,colorData.textColor,panelZ+0.02f,false);
 					}
 					lC++;
 				}

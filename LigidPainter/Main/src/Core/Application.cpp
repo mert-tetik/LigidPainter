@@ -472,7 +472,7 @@ bool LigidPainter::run()
 	glset.generateMipmap();
 	aTexture aqrTxtr;
 	aqrTxtr.id = qrTxtr;
-	aqrTxtr.name = "aaa";
+	aqrTxtr.name = "LigidTools.com";
 	albedoTextures.push_back(aqrTxtr);
 	
 	while (!glfwWindowShouldClose(window))//Main loop

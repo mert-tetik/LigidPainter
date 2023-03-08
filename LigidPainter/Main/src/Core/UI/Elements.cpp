@@ -422,7 +422,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     stabilizeFpsCheckBoxElement.checkBox.positionX = -0.03f;
     stabilizeFpsCheckBoxElement.checkBox.positionY = 0.27f;
     stabilizeFpsCheckBoxElement.checkBox.text = "sync";
-    stabilizeFpsCheckBoxElement.checkBox.checked = true;
+    stabilizeFpsCheckBoxElement.checkBox.checked = false;
     stabilizeFpsCheckBoxElement.checkBox.mouseHover = false;
     stabilizeFpsCheckBoxElement.panel = 5;
     stabilizeFpsCheckBoxElement.attachedToMainPanel = true;

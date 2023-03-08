@@ -62,7 +62,7 @@ set(CPACK_WIX_UI_BANNER  ${CMAKE_SOURCE_DIR}/Installer/Banner.jpg)#On top of the
 set(CPACK_WIX_UI_DIALOG  ${CMAKE_SOURCE_DIR}/Installer/Dialog.jpg)#Background image
 
 
-#set(CPACK_DEBIAN_PACKAGE_MAINTAINER "LigidTools Mert Tetik <${CPACK_PACKAGE_CONTACT}>")
+#set(CPACK_DEBIAN_PACKAGE_MAINTAINER "LigidTools <${CPACK_PACKAGE_CONTACT}>")
 
 #Shortcut
 set(CPACK_PACKAGE_EXECUTABLES Ligid;LigidPainter)
