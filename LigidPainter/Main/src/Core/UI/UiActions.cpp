@@ -158,12 +158,19 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			ligid.mirrorYCheckBox();
 		if (UIElements[UImirrorZCheckBox].checkBox.mouseHover)
 			ligid.mirrorZCheckBox();
-		if(colorPicker.saturationValueBoxHover)
+		if(colorPicker.saturationValueBoxHover){
 			ligid.colorBox();
-		if(colorPicker.hueValueBarHover)
+			colorBoxPickerPressed = true; 
+		}
+		if(colorPicker.hueValueBarHover){
 			ligid.hueBar();
-		if(colorPicker.hexValTextBoxEnter)
+			colorBoxColorRangeBarPressed = true;
+		}
+		
+		if(colorPicker.hexValTextBoxEnter){
 			ligid.hexValTextbox();
+
+		}
 		if(UIElements[UIloadCustomModelButton].button.hover)
 			ligid.loadCustomModel();
 		if(sndPanel.plusSignHover)
