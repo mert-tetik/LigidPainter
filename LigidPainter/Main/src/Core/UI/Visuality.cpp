@@ -1273,7 +1273,7 @@ void UserInterface::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
 	sendMaxWindowSizeToCalculationsAndMore(maxScreenWidth,maxScreenHeight);
 }
 
-void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,unsigned int FBOscreen,ColorPicker &colorPicker,float screenGapX){
+void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,unsigned int FBOscreen,ColorPicker &colorPicker,float screenGapX,glm::vec3 screenHoverPixel){
 	const float depth = 0.8f;
 
 	const float panelWidth = 0.2f;
@@ -1304,12 +1304,16 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 
 	//Color Picker
 	glm::vec3 hueResult = hueBar(coloringPanel.panelPosX + 0.02f, coloringPanel.panelPosY, coloringPanel.hueBarPosX, FBOscreen,window,orthoProjection,true); 
+	coloringPanel.hueBarHover = isMouseOnButton(window,0.01,0.2f,coloringPanel.panelPosX + 0.02f - screenGapX, coloringPanel.panelPosY,mouseXpos,mouseYpos,false);
 	
 	saturationValShaderData.boxColor = hueResult/255.f;
 	saturationValShaderData.renderTextureProjection = orthoProjection;
 
 	glset.useSaturationValBoxShader(programs.saturationValBoxProgram,saturationValShaderData);
 	colorBox(coloringPanel.panelPosX - 0.1f, coloringPanel.panelPosY, coloringPanel.saturationValueBoxPosX, coloringPanel.saturationValueBoxPosY,icons);
+
+	coloringPanel.colorBoxHover = isMouseOnButton(window,0.1f,0.2f,coloringPanel.panelPosX - 0.1f - screenGapX,coloringPanel.panelPosY,mouseXpos,mouseYpos,false);
+
 
 	int screenSizeX;
 	int screenSizeY;
@@ -1337,6 +1341,14 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 		lp.updateColorPicker(util.hexToRGBConverter(coloringPanel.hexVal),true,true,coloringPanel.hueBarPosX,coloringPanel.saturationValueBoxPosX,coloringPanel.saturationValueBoxPosY,false);
 		coloringPanel.newHexValTextboxEntry = false;
 	}
+	if(coloringPanel.colorBoxHover && firstClick && !coloringPanel.saturationValueBoxPointerHover){
+		LigidPainter lp;
+		lp.updateColorPicker(screenHoverPixel,false,true,coloringPanel.hueBarPosX,coloringPanel.saturationValueBoxPosX,coloringPanel.saturationValueBoxPosY,false);
+	}
+	if(coloringPanel.hueBarHover && firstClick && !coloringPanel.hueBarPointerHover){
+		LigidPainter lp;
+		lp.updateColorPicker(screenHoverPixel,true,false,coloringPanel.hueBarPosX,coloringPanel.saturationValueBoxPosX,coloringPanel.saturationValueBoxPosY,false);
+	}
 	if(coloringPanel.pickerValueChanged){
 		coloringPanel.hexVal = util.rgbToHexGenerator(coloringPanel.result);
 		coloringPanel.pickerValueChanged = false;
@@ -1361,7 +1373,7 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 
 
 	coloringPanel.saturationValueBoxPointerHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX - 0.1f + coloringPanel.saturationValueBoxPosX - screenGapX ,coloringPanel.panelPosY+coloringPanel.saturationValueBoxPosY,mouseXpos,mouseYpos,false);
-	coloringPanel.hueBarPointerHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX + 0.02f - screenGapX,coloringPanel.panelPosY + coloringPanel.hueBarPosX,mouseXpos,mouseYpos,false);
+	coloringPanel.hueBarPointerHover = isMouseOnButton(window,0.02f,0.02f,coloringPanel.panelPosX + 0.02f - screenGapX,coloringPanel.panelPosY + coloringPanel.hueBarPosX,mouseXpos,mouseYpos,false);
 
 
 
