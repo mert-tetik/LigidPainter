@@ -29,12 +29,18 @@ set(GLFW_INSTALL OFF)
 
 set(NMGFX_FIND_GLFW OFF)
 
-add_executable(Ligid
-   ${LIGID_SOURCES})
 
 if (WIN32)
-   target_compile_definitions(Ligid PRIVATE CRT)
+   add_executable(Ligid
+      ${LIGID_SOURCES} ${PROJECT_SOURCE_DIR}/Resources/Icons/logo-1080x.ico)
+      target_compile_definitions(Ligid PRIVATE CRT)
+      
+else()
+   add_executable(Ligid
+      ${LIGID_SOURCES})
+
 endif (WIN32)
+
    
 #Installer
 install(TARGETS Ligid)
@@ -48,6 +54,15 @@ ${CMAKE_SOURCE_DIR}/LigidPainter/Resources DESTINATION bin/LigidPainter)
 
 set(CPACK_PACKAGE_NAME LigidPainter)#App name
 set(CPACK_PACKAGE_VENDOR LigidTools)#Publisher name
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE.txt)#The license
+set(CPACK_RESOURCE_FILE_WELCOME ${CMAKE_SOURCE_DIR}/Installer/Welcome.txt)#The welcome text
+set(CPACK_PACKAGE_ICON,${PROJECT_SOURCE_DIR}/Resources/Icons/logo-1080x.ico)
+set(CPACK_WIX_PRODUCT_ICON,${PROJECT_SOURCE_DIR}/Resources/Icons/logo-1080x.ico)
+set(CPACK_WIX_UI_BANNER  ${CMAKE_SOURCE_DIR}/Installer/Banner.jpg)#On top of the screen
+set(CPACK_WIX_UI_DIALOG  ${CMAKE_SOURCE_DIR}/Installer/Dialog.jpg)#Background image
+
+
+#set(CPACK_DEBIAN_PACKAGE_MAINTAINER "LigidTools Mert Tetik <${CPACK_PACKAGE_CONTACT}>")
 
 #Shortcut
 set(CPACK_PACKAGE_EXECUTABLES Ligid;LigidPainter)
