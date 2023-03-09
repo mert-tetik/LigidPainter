@@ -18,7 +18,7 @@
 
 bool UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
 float maxScreenWidth,float maxScreenHeight, NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,
-std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPanel &coloringPanel,bool &duplicateNodeCall,std::vector<Node> &duplicatedNodes){
+std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringPanel &coloringPanel,bool &duplicateNodeCall,std::vector<Node> &duplicatedNodes){
 	ColorData colorData;
 	ColorData2 colorData2;
 	Utilities util;
@@ -497,6 +497,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			if(clrHover && firstClick && !node.inputs[i].coloringPanelActivated){
 				node.inputs[i].coloringPanelActivated = true;
 				coloringPanel.active = true;
+				firstClick = false;
 				
 				coloringPanel.hexVal = util.rgbToHexGenerator(node.inputs[i].rampClr[node.inputs[i].selectedRampIndex]);
 				coloringPanel.newHexValTextboxEntry = true;
@@ -593,6 +594,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			if(colorInputHover && firstClick && !node.inputs[i].coloringPanelActivated){
 				node.inputs[i].coloringPanelActivated = true;
 				coloringPanel.active = true;
+				firstClick = false;
 				
 				coloringPanel.hexVal = util.rgbToHexGenerator(node.inputs[i].color);
 				coloringPanel.newHexValTextboxEntry = true;

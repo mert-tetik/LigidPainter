@@ -144,7 +144,7 @@ int sndpanelFolderCounter = 0;
 
 bool sndpanelSliderPressed = false;
 
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool &firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -686,7 +686,7 @@ void UserInterface::textureDisplayer(float width,float height, float position_x,
 }
 
 bool vertRGBarPressed = false;
-bool UserInterface::verticalRangeBar(float positionX,float positionY,float height,float &orgvalue,float value,GLFWwindow* window,float mouseX,float mouseY,float yOffset,bool firstClick,int textureSize,float screenGapX){
+bool UserInterface::verticalRangeBar(float positionX,float positionY,float height,float &orgvalue,float value,GLFWwindow* window,float mouseX,float mouseY,float yOffset,bool &firstClick,int textureSize,float screenGapX){
 	ColorData colorData;
 
 	//Pointer 
@@ -1103,13 +1103,13 @@ void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Pr
 	gl.uniform4fv(uiPrograms.uiProgram,"uiColor",colorData.nodePanelColorSnd);
 	gl.drawArrays(topCoor,false);
 
-	if(nodeScenes.size() != 0)
-		renderText(programs.uiProgram,nodeScenes[selectedNodeScene].sceneName,(nodePanelRight + nodePanelLeft)/2,nodePanelTop + 0.025f,0.00025f,colorData.textColor,0.99999f,false);
+	if(nodeScenes.size())
+		renderText(programs.uiProgram,nodeScenes[selectedNodeScene].sceneName,(nodePanelRight + nodePanelLeft)/2,nodePanelTop + 0.025f,0.00025f,colorData.textColor,0.7f,false);
 
 	glUseProgram(programs.iconsProgram);
 	
-	if(nodeScenes.size() != 0)
-		iconBox(0.015f,0.03f,(nodePanelRight + nodePanelLeft)/2 - 0.025,nodePanelTop+0.04f,0.999f,icons.Material,0,colorData.iconColor,colorData.iconColor);
+	if(nodeScenes.size())
+		iconBox(0.015f,0.03f,(nodePanelRight + nodePanelLeft)/2 - 0.025,nodePanelTop+0.04f,0.7f,icons.Material,0,colorData.iconColor,colorData.iconColor);
 	
 	circle(nodePanelLeft+0.001f,nodePanelTop-0.001f,nodePanelZ,0.05f,0.1f,icons.Circle,colorData.nodePanelColorSnd); //Left
 	circle(nodePanelRight-0.001f,nodePanelTop-0.001f,nodePanelZ,0.05f,0.1f,icons.Circle,colorData.nodePanelColorSnd); //Right
@@ -1274,7 +1274,7 @@ void UserInterface::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
 	sendMaxWindowSizeToCalculationsAndMore(maxScreenWidth,maxScreenHeight);
 }
 
-void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool firstClick,float xOffset,float yOffset,unsigned int FBOscreen,ColorPicker &colorPicker,float screenGapX,glm::vec3 screenHoverPixel){
+void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool &firstClick,float xOffset,float yOffset,unsigned int FBOscreen,ColorPicker &colorPicker,float screenGapX,glm::vec3 screenHoverPixel){
 	const float depth = 0.8f;
 
 	const float panelWidth = 0.2f;
@@ -1298,6 +1298,8 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 	if(!coloringPanel.panelHover && coloringPanel.enteredOnce && !coloringPanel.dropperActive && !coloringPanel.hueBarPointerPressed && !coloringPanel.saturationValueBoxPointerPressed){
 		coloringPanel.active = false;
 		coloringPanel.enteredOnce = false;
+		coloringPanel.saturationValueBoxPointerPressed = false;
+		coloringPanel.hueBarPointerPressed = false;
 	}
 
 
@@ -1335,7 +1337,8 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 		coloringPanel.hexValTextboxActive = true;
 	}
 
-
+	coloringPanel.saturationValueBoxPointerHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX - 0.1f + coloringPanel.saturationValueBoxPosX - screenGapX ,coloringPanel.panelPosY+coloringPanel.saturationValueBoxPosY,mouseXpos,mouseYpos,false);
+	coloringPanel.hueBarPointerHover = isMouseOnButton(window,0.02f,0.02f,coloringPanel.panelPosX + 0.02f - screenGapX,coloringPanel.panelPosY + coloringPanel.hueBarPosX,mouseXpos,mouseYpos,false);
 
 	if(coloringPanel.newHexValTextboxEntry){
 		LigidPainter lp;
@@ -1372,16 +1375,13 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 	}
 	
 
-
-	coloringPanel.saturationValueBoxPointerHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX - 0.1f + coloringPanel.saturationValueBoxPosX - screenGapX ,coloringPanel.panelPosY+coloringPanel.saturationValueBoxPosY,mouseXpos,mouseYpos,false);
-	coloringPanel.hueBarPointerHover = isMouseOnButton(window,0.02f,0.02f,coloringPanel.panelPosX + 0.02f - screenGapX,coloringPanel.panelPosY + coloringPanel.hueBarPosX,mouseXpos,mouseYpos,false);
-
-
-
 	if(coloringPanel.saturationValueBoxPointerHover && firstClick)
 		coloringPanel.saturationValueBoxPointerPressed = true;
 		
-
+	if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
+		coloringPanel.saturationValueBoxPointerPressed = false;
+		coloringPanel.hueBarPointerPressed = false;
+	}
 	if(coloringPanel.saturationValueBoxPointerPressed){
 		coloringPanel.saturationValueBoxPosX += xOffset/uiMaxScreenWidth*2;
 		coloringPanel.saturationValueBoxPosX = util.restrictBetween(coloringPanel.saturationValueBoxPosX, 0.099f, -0.1f);//Keep in boundaries
@@ -1389,7 +1389,6 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 		coloringPanel.saturationValueBoxPosY = util.restrictBetween(coloringPanel.saturationValueBoxPosY, 0.199f, -0.2f);//Keep in boundaries
 		coloringPanel.pickerValueChanged = true;
 	}
-
 
 
 	if(coloringPanel.hueBarPointerHover && firstClick)
@@ -1401,16 +1400,9 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 		coloringPanel.pickerValueChanged = true;
 	}
 
-
-
-	if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
-		coloringPanel.saturationValueBoxPointerPressed = false;
-		coloringPanel.hueBarPointerPressed = false;
-	}
-
 	glUseProgram(programs.uiProgram); 
 }
-void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool firstClick,ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures,int& activeFolderIndex){
+void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool &firstClick,ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures,int& activeFolderIndex){
 	ColorData colorData;
 	Utilities util;
 	GlSet glset;
@@ -1522,7 +1514,7 @@ void UserInterface::sendTextBoxActiveCharToUI(int textBoxActiveChar){
 	uiTextBoxActiveChar = textBoxActiveChar;
 }
 
-void UserInterface::modelMaterialPanel(Model &model,Programs programs,RenderData renderData,float screenGapX,float materialsPanelSlideValue,double mouseXpos,double mouseYpos,bool &texturePanelButtonHover,RenderOutData& uiOut,int& currentMaterialIndex,bool firstClick,bool& newModelAdded, float texturePanelButtonMixVal,int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes){
+void UserInterface::modelMaterialPanel(Model &model,Programs programs,RenderData renderData,float screenGapX,float materialsPanelSlideValue,double mouseXpos,double mouseYpos,bool &texturePanelButtonHover,RenderOutData& uiOut,int& currentMaterialIndex,bool &firstClick,bool& newModelAdded, float texturePanelButtonMixVal,int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes){
 	ColorData colorData;
 
 	bool mouseEnteredOnce = false;
@@ -1611,7 +1603,7 @@ void UserInterface::modelMaterialPanel(Model &model,Programs programs,RenderData
 		}
 }
 
-void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned int> &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData){
+void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned int> &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool &firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData){
 	ColorData colorData;
 	GlSet gl;
 	Texture txtr;
@@ -1678,7 +1670,7 @@ void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned
 		}
 }
 
-bool UserInterface::listBox(float posX,float posY,float posZ,const char* title,float width,Icons icons,std::vector<const char*> list, bool active,GLFWwindow* window, float mouseXpos,float mouseYpos,bool firstClick,int &chosenIndex,float screenGapX){
+bool UserInterface::listBox(float posX,float posY,float posZ,const char* title,float width,Icons icons,std::vector<const char*> list, bool active,GLFWwindow* window, float mouseXpos,float mouseYpos,bool &firstClick,int &chosenIndex,float screenGapX){
 	ColorData colorData;
 	bool stateChanged = false;
 	if(active){

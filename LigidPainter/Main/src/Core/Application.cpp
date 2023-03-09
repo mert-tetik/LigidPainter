@@ -167,7 +167,7 @@ double mouseXpos;
 double mouseYpos;
 bool doScrollAfterCallInPaintingMode; //Prevent painting size change after scrolling
 bool exportImage;//To let render function know if exporting called
-bool doPainting = true;//Prevent painting & hide the painting cursor
+bool doPainting = false;//Prevent painting & hide the painting cursor
 bool mainPanelHover = false;
 bool enablePanelMovement = true; 
 bool backfaceCullingChecked = true;
@@ -476,6 +476,8 @@ bool LigidPainter::run()
 	aqrTxtr.name = "LigidTools.com";
 	albedoTextures.push_back(aqrTxtr);
 	
+	addSphereButton();
+
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		
@@ -1152,8 +1154,8 @@ void LigidPainter::updateColorPicker(glm::vec3 RGBval,bool changeHue,bool change
 			colorPicker.updateHueVal = true;
 	}
 	if(changeSatVal){
-		saturationValuePosX = ((hsvVal.g / 1342.10526316f) - 0.095f); //0.095
-		saturationValuePosY = (hsvVal.b / 653.846153846f) - 0.195f; //0.195
+		saturationValuePosX = ((hsvVal.g / 1342.10526316f) - 0.099f); //0.095
+		saturationValuePosY = (hsvVal.b / 653.846153846f) - 0.199f; //0.195
 	}
 }
 
