@@ -460,6 +460,11 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 						if((glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS && i != 0) || (glfwGetKey(renderData.window,GLFW_KEY_ENTER) == GLFW_PRESS && addNodeContextMenu.selectedButtonIndex == indepI && addNodeContextMenu.selectedButtonIndex != 0)){
 							Node node;
 							node = appNodes[i-1];
+							for (size_t nodeAI = 0; nodeAI < nodeScenes[selectedNodeScene].nodes.size(); nodeAI++)
+							{
+								nodeScenes[selectedNodeScene].nodes[nodeAI].active = false;
+							}
+							
 							node.active = true;
 							selectionActive = false;
 							showTheSelectionBox = false;
