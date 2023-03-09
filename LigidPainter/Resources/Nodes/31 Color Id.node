@@ -40,7 +40,7 @@
 --title_1 : Black;
 
 -title : Color Id;
--color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
+-color : hexb74efc; #rgb122,124,66  #hsv86,45,23
 -opacity : 60;
 
 
