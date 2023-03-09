@@ -843,5 +843,10 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 	else if(glfwGetKey(window,GLFW_KEY_I) != GLFW_PRESS || glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) != GLFW_PRESS){
 		node.doInvert = true;
 	}
+	//Select all the nodes
+	if(glfwGetKey(window,GLFW_KEY_A) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
+		node.active = true;
+	}
+
 	return deleted;
 }
