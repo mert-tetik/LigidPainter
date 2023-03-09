@@ -447,6 +447,7 @@ struct Node{
 
 	int dupI = 0;
 
+	bool doInvert = true;
 };
 
 struct ContextMenu {

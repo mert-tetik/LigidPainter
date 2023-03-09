@@ -52,3 +52,4 @@ assimp : https://github.com/assimp/assimp
     Left CTRL + X = Delete the selected nodes
     Left CTRL + Left Mouse Button = Node connection scissor
     Left CTRL + D = Duplicate the selected nodes
+    Left CTRL + I = Invert selected nodes

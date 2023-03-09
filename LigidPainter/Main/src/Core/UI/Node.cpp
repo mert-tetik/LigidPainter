@@ -835,5 +835,13 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool firstClick,ColoringPa
 			}
 		}
 	}
+	//Invert the selected nodes
+	if(glfwGetKey(window,GLFW_KEY_I) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && node.doInvert){
+		node.doInvert = false;
+		node.active = !node.active;
+	}
+	else if(glfwGetKey(window,GLFW_KEY_I) != GLFW_PRESS || glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) != GLFW_PRESS){
+		node.doInvert = true;
+	}
 	return deleted;
 }
