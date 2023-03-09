@@ -94,7 +94,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool firstClick
 ,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive
 ,std::string &textureText,std::vector<NodeScene> &nodeScenesHistory,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps
-,Objects &objects,glm::vec3 screenHoverPixel) {
+,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -685,7 +685,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	bool skyboxlistStateChanged = false;
 	if(panelData.settingsPanelActive){
 		ui.listBox(centerCoords - screenGapX,0.8f,0.9f,"Texture Resolution",0.1f,icons,{"256","512","1024","2048","4096"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenTextureResIndex,screenGapX);
-		skyboxlistStateChanged = ui.listBox(centerCoords - screenGapX,-0.1f,0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture,screenGapX);
+		ui.listBox(centerCoords - screenGapX,0.33f,0.9f,"Node Resolution",0.1f,icons,{"256","512","1024","2048"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenNodeResIndex,screenGapX);
+		skyboxlistStateChanged = ui.listBox(centerCoords - screenGapX,-0.2f,0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture,screenGapX);
 	}
 	
 	if(skyboxlistStateChanged){

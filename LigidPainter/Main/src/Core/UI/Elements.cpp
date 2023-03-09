@@ -387,11 +387,11 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     //---------------------------SETTINGS PANEL---------------------------
 
-
+    const float pressYSettingsPanel = 0.1f;
 
     UIElement skyboxCheckBoxElement;
-    skyboxCheckBoxElement.checkBox.positionX = -0.03f;
-    skyboxCheckBoxElement.checkBox.positionY = 0.0f;
+    skyboxCheckBoxElement.checkBox.positionX = 0.03f;
+    skyboxCheckBoxElement.checkBox.positionY = -0.02f-pressYSettingsPanel;
     skyboxCheckBoxElement.checkBox.text = "skybox";
     skyboxCheckBoxElement.checkBox.checked = true;
     skyboxCheckBoxElement.checkBox.mouseHover = false;
@@ -402,7 +402,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyBoxExposureRangeBarElement;
 	skyBoxExposureRangeBarElement.rangeBar.positionX = 0.0f;
-	skyBoxExposureRangeBarElement.rangeBar.positionY = -0.67f;
+	skyBoxExposureRangeBarElement.rangeBar.positionY = -0.67f-pressYSettingsPanel;
 	skyBoxExposureRangeBarElement.rangeBar.value = 0.f;
 	skyBoxExposureRangeBarElement.panel = 5;
 	skyBoxExposureRangeBarElement.attachedToMainPanel = true;
@@ -411,7 +411,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyBoxRotationRangeBarElement;
 	skyBoxRotationRangeBarElement.rangeBar.positionX = 0.0f;
-	skyBoxRotationRangeBarElement.rangeBar.positionY = -0.75f;
+	skyBoxRotationRangeBarElement.rangeBar.positionY = -0.75f-pressYSettingsPanel;
 	skyBoxRotationRangeBarElement.rangeBar.value = 0.f;
 	skyBoxRotationRangeBarElement.panel = 5;
 	skyBoxRotationRangeBarElement.attachedToMainPanel = true;
@@ -420,7 +420,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement stabilizeFpsCheckBoxElement;
     stabilizeFpsCheckBoxElement.checkBox.positionX = -0.03f;
-    stabilizeFpsCheckBoxElement.checkBox.positionY = 0.27f;
+    stabilizeFpsCheckBoxElement.checkBox.positionY = 0.98f-pressYSettingsPanel;
     stabilizeFpsCheckBoxElement.checkBox.text = "sync";
     stabilizeFpsCheckBoxElement.checkBox.checked = false;
     stabilizeFpsCheckBoxElement.checkBox.mouseHover = false;
@@ -431,7 +431,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyBoxExposureTextElement;
     skyBoxExposureTextElement.text.positionX = -0.11f;
-    skyBoxExposureTextElement.text.positionY = -0.65;
+    skyBoxExposureTextElement.text.positionY = -0.65-pressYSettingsPanel;
     skyBoxExposureTextElement.text.text = "Exposure";
     skyBoxExposureTextElement.text.scale = 0.00022f;
     skyBoxExposureTextElement.text.color = colorData.textBoxColor;
@@ -442,7 +442,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement skyBoxRotationTextElement;
     skyBoxRotationTextElement.text.positionX = -0.11f;
-    skyBoxRotationTextElement.text.positionY = -0.73;
+    skyBoxRotationTextElement.text.positionY = -0.73-pressYSettingsPanel;
     skyBoxRotationTextElement.text.text = "Rotation";
     skyBoxRotationTextElement.text.scale = 0.00022f;
     skyBoxRotationTextElement.text.color = colorData.textBoxColor;
@@ -452,8 +452,8 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(skyBoxRotationTextElement);//35
 
     UIElement imageCheckBoxElement;
-    imageCheckBoxElement.checkBox.positionX = -0.03f;
-    imageCheckBoxElement.checkBox.positionY = 0.16f;
+    imageCheckBoxElement.checkBox.positionX = -0.09f;
+    imageCheckBoxElement.checkBox.positionY = -0.02f-pressYSettingsPanel;
     imageCheckBoxElement.checkBox.text = "Image";
     imageCheckBoxElement.checkBox.checked = true;
     imageCheckBoxElement.checkBox.mouseHover = false;
@@ -464,7 +464,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement viewportImageTextBoxElement;
     viewportImageTextBoxElement.textBox.position_x = 0.0f;
-    viewportImageTextBoxElement.textBox.position_y = 0.1f;
+    viewportImageTextBoxElement.textBox.position_y = 0.05f-pressYSettingsPanel;
     viewportImageTextBoxElement.textBox.position_z = 0.9f;
     viewportImageTextBoxElement.textBox.width = 0.12;
     viewportImageTextBoxElement.textBox.height = 0.03;
