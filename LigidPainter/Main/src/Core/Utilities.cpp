@@ -38,7 +38,7 @@ std::string Utilities::readFile(const char* path) {
 		fread(fullText.data(), 1, length, f);
 		fclose(f);
 	}
-	std::cout << "Loaded: " << path << fullText.size() << std::endl;
+	std::cout << "Loaded " << path << std::endl;
 
 	/* my_file.open(path, ios::beg);
 	if (my_file.is_open()) {

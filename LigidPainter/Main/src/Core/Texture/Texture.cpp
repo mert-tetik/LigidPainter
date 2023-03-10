@@ -70,6 +70,8 @@ unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, un
 			else
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			glset.generateMipmap();
+
+			std::cout << "Loaded " << path << std::endl;
 		}
 		else
 		{
@@ -80,6 +82,7 @@ unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, un
 			}
 			std::cout << "Failed to load texture!" << " Reason : " << reason<< std::endl;
 		}
+		
 
 		stbi_image_free(data);
 		delete[] resizedPixelsX;

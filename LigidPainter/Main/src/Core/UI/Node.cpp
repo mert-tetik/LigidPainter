@@ -344,8 +344,15 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 			node.outputs[i].connectionPosY -= yOffset/maxScreenHeight*2.f;
 		}
 
-        //Render the connection line
+		glUseProgram(programs.iconsProgram);
+        //Render the output
+		//TODO : Use those values for rendering and tracking
+		node.outputs[i].posX = (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f;
+		node.outputs[i].posY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10;
+		iconBox(iconWidth/1.5f , iconWidth*1.5f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width + iconWidth*2.f, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10, depth+0.01f , icons.Circle , 0 , nodeColor , nodeColor);
         glUseProgram(programs.uiProgram);
+        //Render the connection line
+
 		for (size_t conI = 0; conI < node.outputs[i].connections.size(); conI++)
 		{
 			//Updating positions is required
@@ -379,18 +386,12 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 				node.outputs[i].connections.erase(node.outputs[i].connections.begin() + conI);
 			}
 		}
+        glUseProgram(programs.uiProgram);
 		
 		//TODO : Move the rendering of connection lines to the output element rendering
 		if(node.outputs[i].pressed)//Render the connection lines if output connects to an input or moves
 			drawLine((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10,depth+0.02f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY, node.width*200.f ,nodeColor,false);
 		
-        glUseProgram(programs.iconsProgram);
-        //Render the output
-		//TODO : Use those values for rendering and tracking
-		node.outputs[i].posX = (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f;
-		node.outputs[i].posY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10;
-		iconBox(iconWidth/1.5f , iconWidth*1.5f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width + iconWidth*2.f, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10, depth+0.01f , icons.Circle , 0 , nodeColor , nodeColor);
-        glUseProgram(programs.uiProgram);
 		renderText(programs.uiProgram,node.outputs[i].text,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width - (node.outputs[i].text.size()/60.f)*node.width*8.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+0.01f,false);
 	}
 

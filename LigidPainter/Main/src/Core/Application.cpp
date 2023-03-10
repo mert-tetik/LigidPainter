@@ -489,8 +489,7 @@ bool LigidPainter::run()
 		
 		util.printRenderingSpeed();
 		
-		//util.printError();
-
+		// util.printError();
 		
 		mainLoop.updateCameraPosChanging(callbackData.cameraPos,cameraPosChanging);
 		mainLoop.detectClick(window,mousePress,firstClick);

@@ -63,6 +63,7 @@ public:
 	                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
 	            );
 	            stbi_image_free(data);
+				std::cout << "Loaded " << faces[i] << std::endl;
 	        }
 	        else
 	        {
@@ -132,6 +133,9 @@ public:
 		GLFWcursor* dropperCursor = glfwCreateCursor(images,0,30);
 		stbi_image_free(images[0].pixels);
 	
+		std::cout << "Loaded Cursors" << std::endl; 
+
+
 		LigidCursors cursors;
 		cursors.pointerCursor = pointerCursor;
 		cursors.defaultCursor = defaultCursor;
@@ -237,7 +241,8 @@ public:
 		FT_Init_FreeType(&ft);
 		//glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
 		FT_Face face;
-		if (FT_New_Face(ft, "LigidPainter/Resources/fonts/arial.ttf", 0, &face)) {
+		std::string fontFile = "arial.ttf";
+		if (FT_New_Face(ft, ("LigidPainter/Resources/fonts/" + fontFile).c_str(), 0, &face)) {
 			std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
 		}
 		else {
@@ -287,6 +292,7 @@ public:
 				chars.insert(std::pair<char, character>(c, Character));
 			}
 			glBindTexture(GL_TEXTURE_2D, 0);
+			std::cout << "Loaded " << fontFile << std::endl; 
 		}
 	
 		sendCharsToUI(chars);
