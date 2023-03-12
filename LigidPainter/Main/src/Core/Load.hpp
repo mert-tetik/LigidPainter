@@ -487,7 +487,7 @@ public:
 	Node createNode(std::string nodeName){
 		processNode process;
 		ProcessHppNode node;
-		node = process.processNodeFile(".\\LigidPainter\\Resources\\Nodes\\" + nodeName + ".node");
+		node = process.processNodeFile("./LigidPainter/Resources/Nodes/" + nodeName + ".node");
 
 		Node resultNode;
 		resultNode.title = node.title;
@@ -739,6 +739,16 @@ public:
 		connection.nodeConnectionIndex = 0;
 		connection.inputConnectionIndex = 0;
 		connection.connectionPressed = false;
+
+		Node pbrNode;
+		for (size_t i = 0; i < appNodes.size(); i++)
+		{
+			if(appNodes[i].title == "01 PBR"){
+				pbrNode = appNodes[i];
+				break;
+			}
+		}
+		
 
 		appNodes[0].outputs[0].connections.clear();
 		appNodes[0].outputs[0].connections.push_back(connection);

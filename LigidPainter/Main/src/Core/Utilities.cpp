@@ -24,33 +24,31 @@ std::string Utilities::readFile(const char* path) {
 	string fullText;
 	fstream my_file;
 
-	FILE* f;
-	if( 0 != fopen_s(&f, path, "rb") ) {
-		std::cout << "ÜST DÜZEU HATA" << std::endl;
-		f = 0;
-	}
-	long length;
-	if(f) {
-		fseek(f, 0, SEEK_END);
-		length = ftell(f);
-		fseek(f, 0, SEEK_SET);
-		fullText.resize(length + 1);
-		fread(fullText.data(), 1, length, f);
-		fclose(f);
-	}
-	std::cout << "Loaded " << path << std::endl;
+    std::fstream filein(path, std::ios::in);
 
-	/* my_file.open(path, ios::beg);
-	if (my_file.is_open()) {
-		char mychar;
-		while (my_file) {
-			mychar = my_file.get();
-			if((int)mychar <= 127 && (int)mychar >= 0) //extract non-ascii characters
-				fullText += mychar;
+    if(!filein.is_open()){
+        std::cout << "Unable to open the file\n";
+        std::cerr << "Error: " << strerror(errno) << std::endl;
+    } 
+	else {
+        std::cout << "Loaded " << path << std::endl;
+    }
+
+	std::string res;			
+	std::string line;
+    while(std::getline(filein,line)){
+		std::string processStr;
+		for (size_t i = 0; i < line.size(); i++)
+		{
+			if((int)line[i] <= 127 && (int)line[i] >= 0) //extract non-ascii characters
+				processStr+=line[i];
 		}
+		res += processStr;
+		res += '\n';
+		line.clear();
 	}
-	my_file.close(); */
-	return fullText;
+
+	return res;
 }
 string Utilities::getLastWordBySeparatingWithChar(string s, char del)
 {

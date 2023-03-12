@@ -155,10 +155,17 @@ WindowData GlSet::getWindow() {
 	glfwInit();
 	//glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-	int samples = 8;
+    glfwInit();
+	
+	const int samples = 8;
 	glfwWindowHint(GLFW_SAMPLES, samples);
-
-	GLFWwindow* window = glfwCreateWindow(3845,2165, "LigidPainter", NULL, NULL);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    #ifdef __APPLE__
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	#endif
+	GLFWwindow* window = glfwCreateWindow(38450,21650, "LigidPainter", NULL, NULL);
 
 	//glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
 	

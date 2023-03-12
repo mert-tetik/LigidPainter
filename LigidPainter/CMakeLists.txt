@@ -16,9 +16,20 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 
 if(UNIX)
+   if(APPLE)
+      #Appearently fixes numerious glfw3 linker errors
+      #Might be deleted if causes any problems
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINKER_FLAGS} -I/usr/local/lib -framework Cocoa -framework IOKit -framework CoreVideo -framework OpenGL -lglfw3")
+   endif(APPLE)
    find_package(glfw3 REQUIRED)
    find_package(X11 REQUIRED)
-endif(UNIX)
+   
+   if(APPLE)
+      find_package(BZIP2 REQUIRED) #Worked in macos (assimp)
+   endif(APPLE)
+   
+   find_package(ZLIB REQUIRED) #Worked in ubuntu & macos (assimp)
+endif(UNIX) 
 
 add_definitions(-DCMAKE_HAS_X)
 
@@ -26,7 +37,6 @@ set(GLFW_BUILD_EXAMPLES OFF)
 set(GLFW_BUILD_TESTS OFF)
 set(GLFW_BUILD_DOCS OFF)
 set(GLFW_INSTALL OFF)
-
 set(NMGFX_FIND_GLFW OFF)
 
 
@@ -85,4 +95,10 @@ target_link_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/thirdparty/lib/
 include_directories(${X11_INCLUDE_DIR})
 include_directories(${GLFW_INCLUDE_DIRS})
 
-target_link_libraries(Ligid PRIVATE freetype assimp glfw3 ${X11_LIBRARIES} ${GLFW_LIBRARIES})
+if(APPLE)
+   target_link_libraries(Ligid PRIVATE freetype assimp glfw3 ${X11_LIBRARIES} ${GLFW_LIBRARIES} ${ZLIB_LIBRARY} ${BZIP2_LIBRARY}) #Unix & Apple conditions are kinda same 
+elseif(UNIX)
+   target_link_libraries(Ligid PRIVATE freetype assimp glfw3 ZLIB::ZLIB ${X11_LIBRARIES} ${GLFW_LIBRARIES})
+elseif(WIN32)
+   target_link_libraries(Ligid PRIVATE freetype assimp glfw3)
+endif(APPLE)

@@ -571,7 +571,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 				}
 				else{
 					gl.uniform1f(programs.rampProgram,targetPoint.c_str(),5.0f);
-					gl.uniform3fv(programs.rampProgram,targetColor.c_str(),glm::vec3(0));
+					glm::vec3 emptyVec3 = glm::vec3(0);
+					gl.uniform3fv(programs.rampProgram,targetColor.c_str(),emptyVec3);
 				}
 			}
 			
