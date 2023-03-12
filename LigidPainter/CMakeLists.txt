@@ -39,13 +39,12 @@ set(NMGFX_FIND_GLFW OFF)
 
 if (WIN32)
    add_executable(Ligid
-      ${LIGID_SOURCES} ${PROJECT_SOURCE_DIR}/Resources/Icons/logo-1080x.ico)
+      ${LIGID_SOURCES} ${CMAKE_SOURCE_DIR}/Installer/AppIcon.rc)
       target_compile_definitions(Ligid PRIVATE CRT)
       
 else()
    add_executable(Ligid
       ${LIGID_SOURCES})
-
 endif (WIN32)
 
    

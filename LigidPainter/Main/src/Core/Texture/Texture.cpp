@@ -80,7 +80,7 @@ unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, un
 			{
 				reason = stbi_failure_reason();
 			}
-			std::cout << "Failed to load texture!" << " Reason : " << reason<< std::endl;
+			std::cout << "Failed to load texture! " << path << " Reason : " << reason<< std::endl;
 		}
 		
 
