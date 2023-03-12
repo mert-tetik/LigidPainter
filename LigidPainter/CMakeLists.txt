@@ -24,11 +24,8 @@ if(UNIX)
    find_package(glfw3 REQUIRED)
    find_package(X11 REQUIRED)
    
-   if(APPLE)
-      find_package(BZIP2 REQUIRED) #Worked in macos (assimp)
-   endif(APPLE)
-   
-   find_package(ZLIB REQUIRED) #Worked in ubuntu & macos (assimp)
+   find_package(BZip2 REQUIRED) #Worked in ubuntu & macosx (assimp)
+   find_package(ZLIB REQUIRED) #Worked in ubuntu & macosx (assimp)
 endif(UNIX) 
 
 add_definitions(-DCMAKE_HAS_X)
@@ -95,10 +92,8 @@ target_link_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/Main/thirdparty/lib/
 include_directories(${X11_INCLUDE_DIR})
 include_directories(${GLFW_INCLUDE_DIRS})
 
-if(APPLE)
-   target_link_libraries(Ligid PRIVATE freetype assimp glfw3 ${X11_LIBRARIES} ${GLFW_LIBRARIES} ${ZLIB_LIBRARY} ${BZIP2_LIBRARY}) #Unix & Apple conditions are kinda same 
-elseif(UNIX)
-   target_link_libraries(Ligid PRIVATE freetype assimp glfw3 ZLIB::ZLIB ${X11_LIBRARIES} ${GLFW_LIBRARIES})
+if(UNIX)
+   target_link_libraries(Ligid PRIVATE freetype assimp glfw3 ZLIB::ZLIB BZip2::BZip2 ${X11_LIBRARIES} ${GLFW_LIBRARIES})
 elseif(WIN32)
    target_link_libraries(Ligid PRIVATE freetype assimp glfw3)
-endif(APPLE)
+endif(UNIX)
