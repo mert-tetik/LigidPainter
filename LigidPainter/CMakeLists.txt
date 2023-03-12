@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.8)
-project(LigidPainter VERSION 1.1.5)
+project(LigidPainter VERSION 1.2)
 
 file(GLOB_RECURSE LIGID_SOURCES
    ${PROJECT_SOURCE_DIR}/*.cpp
