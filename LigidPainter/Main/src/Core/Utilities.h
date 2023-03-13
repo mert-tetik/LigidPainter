@@ -22,6 +22,6 @@ public:
 	bool illegalCharCheck(std::string s);
 	bool intersect(glm::vec2 A,glm::vec2 B,glm::vec2 C,glm::vec2 D);
 	bool isMatch(std::string o,std::string t);
-
+	unsigned int createQRCode(const char* path,glm::vec3 color);
 };
 #endif

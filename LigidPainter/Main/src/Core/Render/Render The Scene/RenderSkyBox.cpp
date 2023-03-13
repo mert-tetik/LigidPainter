@@ -77,3 +77,26 @@ void Render::renderSkyBox(SkyBoxShaderData data,Programs programs,float exposure
 
 	glUseProgram(programs.uiProgram);
 }
+
+void Render::renderBackgroundImage(unsigned int renderTheTextureProgram, unsigned int viewportBGImage){
+	glUseProgram(renderTheTextureProgram);
+
+	glActiveTexture(GL_TEXTURE14);
+	glBindTexture(GL_TEXTURE_2D,viewportBGImage);
+	std::vector<float> renderVertices = { 
+		// first triangle
+		 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+		 1.0f,  -1.0f, 0.0f,1,0,0,0,0,  // bottom right
+		 -1.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+		// second tria0gle	  ,0,0,0,
+		 1.0f,  -1.0f, 0.0f,1,0,0,0,0,  // bottom right
+		 -1.0f,  -1.0f, 0.0f,0,0,0,0,0,  // bottom left
+		 -1.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+	};
+	GlSet gls;
+	gls.uniform1i(renderTheTextureProgram, "isPressed" ,0);
+	gls.uniform1i(renderTheTextureProgram, "isHover" ,0);
+		
+	gls.drawArrays(renderVertices,0);
+	glClear(GL_DEPTH_BUFFER_BIT);
+}

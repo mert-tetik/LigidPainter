@@ -274,22 +274,17 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::v
 glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
 ,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter
 ,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex) {
+	
+	//SETUP
 	GlSet gls;
 	ColorData colorData;
 	Utilities util;
-
 	colorPicker.pickerValue = util.hexToRGBConverter(colorPicker.hexValTextBoxVal);
-
 	if(model.meshes.size()-1 < currentMaterialIndex){
 		currentMaterialIndex = 0; 
 	}
-
 	glClearColor(colorData.viewportBackColor.r,colorData.viewportBackColor.g,colorData.viewportBackColor.b,1);
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear before rendering
-
-
-
 	//Get screen and mouse info
 	int screenSizeX;
 	int screenSizeY;
@@ -297,94 +292,50 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	double mouseXpos;
 	double mouseYpos;
 	glfwGetCursorPos(renderData.window, &mouseXpos, &mouseYpos);
+	//-------------------------
 
 
+	//Process Textures
 	//Render depth once painting started
-	if (renderData.paintingMode) { 
-		renderDepthCounter++;
-	}
-	else {
-		renderDepthCounter = 0;
-	}
+	if (renderData.paintingMode) renderDepthCounter++;
+	else renderDepthCounter = 0;
 	if (renderDepthCounter == 1) {//Get depth texture
 		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex, renderMaxScreenWidth , renderMaxScreenHeight,view,albedoTextures,selectedAlbedoTextureIndex);
 	}
-
-
 	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || (glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
-	
-	bool firstPaint = false; //Take the texture to the undo list
-	
-	if(paintRender)
-		paintRenderCounter++;
-	if(isRenderTexture)
-		paintRenderCounter = 0;
-	
-	if(paintRenderCounter == 1)
-		firstPaint = true;
-
-
 	if (isRenderTexture || paintRender) {
-		renderTextures(FBOScreen,screenSizeX, screenSizeY,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,firstPaint,currentMaterialIndex,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterials,view,selectedAlbedoTextureIndex,chosenTextureResIndex);
-		
-		//Download enlarged texture
-		
+		renderTextures(FBOScreen,screenSizeX, screenSizeY,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,currentMaterialIndex,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterials,view,selectedAlbedoTextureIndex,chosenTextureResIndex);
 	}
 	if(exportData.exportImage){
     	exportTexture(UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,exportData.fileName,albedoTextures,chosenTextureResIndex);
 	}
+	//---------------------------
 
 	
-
+	//Background (skybox or an image)
 	glActiveTexture(GL_TEXTURE13);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
-
-	
 	glActiveTexture(GL_TEXTURE16);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered);
-
-
-	
-	
-	if(UIElements[UIimageCheckBoxElement].checkBox.checked){
-		glUseProgram(renderPrograms.renderTheTextureProgram);
-
-		glActiveTexture(GL_TEXTURE14);
-		glBindTexture(GL_TEXTURE_2D,viewportBGImage);
-		std::vector<float> renderVertices = { 
-			// first triangle
-			 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
-			 1.0f,  -1.0f, 0.0f,1,0,0,0,0,  // bottom right
-			 -1.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
-			// second tria0gle	  ,0,0,0,
-			 1.0f,  -1.0f, 0.0f,1,0,0,0,0,  // bottom right
-			 -1.0f,  -1.0f, 0.0f,0,0,0,0,0,  // bottom left
-			 -1.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
-			};
-		
-		gls.uniform1i(renderPrograms.renderTheTextureProgram, "isPressed" ,0);
-		gls.uniform1i(renderPrograms.renderTheTextureProgram, "isHover" ,0);
-		
-		gls.drawArrays(renderVertices,0);
-		glClear(GL_DEPTH_BUFFER_BIT);
-		
-	}
-	
+	if(UIElements[UIimageCheckBoxElement].checkBox.checked)
+		renderBackgroundImage(renderPrograms.renderTheTextureProgram, viewportBGImage);
 	if(UIElements[UIskyboxCheckBox].checkBox.checked)
 		renderSkyBox(skyBoxShaderData,renderPrograms,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
-		
+	//---------------------------------	
 	
 
+	//3D-------------------------
 	glActiveTexture(GL_TEXTURE13);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
-
 	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects);
 	renderAxisPointer(axisPointerShaderData,renderPrograms);
+	//-------------------------
 	
+
+	//UI
 	glClear(GL_DEPTH_BUFFER_BIT);
 	if(renderData.doPainting)
 		renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorPicker.pickerValue,renderMaxScreenWidth,renderMaxScreenHeight,renderPrograms);
-
 	if(glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_RELEASE)
 	uiOut = renderUi(panelData, renderData, FBOScreen,icons
 		,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,
@@ -394,12 +345,16 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
 		chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
 		,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex);
+	//-------------------------
 
+
+	//If nodes are changed send the current nodescene data to nodescene history array
 	if(nodeScenes[selectedNodeScene].stateChanged && !lastMaterialStateChanged && lastNodeScene.nodes.size())
     	nodeScenesHistory.push_back(lastNodeScene);
-	
 	lastMaterialStateChanged = nodeScenes[selectedNodeScene].stateChanged;
 	lastNodeScene = nodeScenes[selectedNodeScene];
+	//----------------------
+
 
 	if(model.meshes.size() != 0){
 		if(nodeScenes[selectedNodeScene].stateChanged || newModelAdded){
@@ -409,14 +364,16 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	}
 	nodeScenes[selectedNodeScene].stateChanged = false;
 
+
 	colorPicker.updatePickerVal = colorPicker.saturationValueValChanged && !colorPicker.hexValTextBoxGotInput; 
 	if (colorPicker.updatePickerVal) { //Get value of color box
 		colorPicker.pickerValue = getColorPickerValue(FBOScreen, colorPicker ,screenSizeX, screenSizeY,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,saturationValShaderData);
 	}
+
+	//CTRLZ
 	ctrlZCheck(renderData.window,albedoTextures,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,nodeScenesHistory,panelData.paintingPanelActive);
 
-
-
+	
 	if(colorPicker.dropperActive || colorPicker.saturationValueBoxHover || colorPicker.hueValueBarHover || coloringPanel.colorBoxHover || coloringPanel.hueBarHover){
 		screenHoverPixel = getScreenHoverPixel(mouseXpos,mouseYpos,screenSizeY);
 	}

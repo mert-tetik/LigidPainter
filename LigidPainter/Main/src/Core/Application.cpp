@@ -78,10 +78,9 @@
 #include "../../thirdparty/stb_image_write.h"
 
 #include "../../thirdparty/tinyfiledialogs.h"
-#include "../../thirdparty/include/qrcodegen.hpp"
+
 
 using namespace std;
-using namespace qrcodegen;
 
 GlSet glset;
 WindowData windowData;
@@ -193,26 +192,6 @@ int chosenNodeResIndex = 1; //0:256 1:512 2:1024 3:2048
 int chosenSkyboxTexture = 0;
 bool duplicateNodeCall = false;
 
-std::vector<std::vector<bool>> printQr(const QrCode &qr) {
-	std::vector<std::vector<bool>> qrv;
-
-	const int quality = 5; 
-
-	int border = 4;
-	for (int y = -border; y < qr.getSize() + border; y++) {
-		for (size_t qy = 0; qy < quality; qy++)
-		{
-			qrv.push_back({});
-			for (int x = -border; x < qr.getSize() + border; x++) {
-				for (size_t qx = 0; qx < quality; qx++)
-				{
-					qrv[y+border].push_back(qr.getModule(x, y) ? true : false);
-				}
-			}
-		}
-	}
-	return qrv;
-}
 
 bool LigidPainter::run()
 {
@@ -416,12 +395,9 @@ bool LigidPainter::run()
 	//
 	axisPointerShaderData.projection = perspectiveProjection;
 
-
-
 	renderData.window = window;
 	panelData.modelPanelActive = true; //Active the model panel by default
 	renderOut.mouseHoverPixel = glm::vec3(0);
-
 
 	bool paintRender = false;
 	int paintRenderCounter = 0;
@@ -441,36 +417,8 @@ bool LigidPainter::run()
 	glfwPollEvents();
 	glfwSetWindowPos(window,0,20);
 
+	unsigned int qrTxtr = util.createQRCode("https://ligidtools.com/ligidpainter",colorData.LigidPainterThemeColor);
 
-	// Simple operation
-	QrCode qr0 = QrCode::encodeText("https://www.ligidtools.com/ligidpainter", QrCode::Ecc::MEDIUM);
-	std::vector<std::vector<bool>> qr = printQr(qr0);  // See QrCodeGeneratorDemo
-	
-	std::vector<GLubyte> qrData;
-
-	for (size_t y = 0; y < qr.size(); y++)
-	{
-		for (size_t x = 0; x < qr[y].size(); x++)
-		{
-			if(qr[y][x]){
-				qrData.push_back(colorData.LigidPainterThemeColor.r * 255);
-				qrData.push_back(colorData.LigidPainterThemeColor.g * 255);
-				qrData.push_back(colorData.LigidPainterThemeColor.b * 255);
-			}
-			else{
-				qrData.push_back(0);
-				qrData.push_back(0);
-				qrData.push_back(0);
-			}
-		}
-	}
-	
-	glActiveTexture(GL_TEXTURE0);
-	unsigned int qrTxtr;
-	glset.genTextures(qrTxtr);
-	glset.bindTexture(qrTxtr);
-	glset.texImage(&qrData[0],qr.size(),qr.size(),GL_RGB);
-	glset.generateMipmap();
 	aTexture aqrTxtr;
 	aqrTxtr.id = qrTxtr;
 	aqrTxtr.name = "LigidTools.com";
