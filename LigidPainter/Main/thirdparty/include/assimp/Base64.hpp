@@ -39,36 +39,52 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ---------------------------------------------------------------------------
 */
 
-/** @file ai_assert.h
- *  @brief Declares the assimp-specific assertion handler.
- */
-
 #pragma once
-#ifndef AI_ASSERT_H_INC
-#define AI_ASSERT_H_INC
+#ifndef AI_BASE64_HPP_INC
+#define AI_BASE64_HPP_INC
 
-#include <assimp/defs.h>
-
-#if defined(ASSIMP_BUILD_DEBUG)
+#include <stdint.h>
+#include <vector>
+#include <string>
 
 namespace Assimp {
+namespace Base64 {
 
-/// @brief Assert violation behavior can be customized: see AssertHandler.h.
-/// @param failedExpression     The expression to validate.
-/// @param file                 The file location    
-/// @param line                 The line number
-ASSIMP_API void aiAssertViolation(const char* failedExpression, const char* file, int line);
+/// @brief Will encode the given character buffer from UTF64 to ASCII
+/// @param in           The UTF-64 buffer.
+/// @param inLength     The size of the buffer
+/// @param out          The encoded ASCII string.
+void Encode(const uint8_t *in, size_t inLength, std::string &out);
 
-}
-#endif
+/// @brief Will encode the given character buffer from UTF64 to ASCII.
+/// @param in   A vector, which contains the buffer for encoding.
+/// @param out  The encoded ASCII string.
+void Encode(const std::vector<uint8_t>& in, std::string &out);
 
-// Define assertion resolinig
-#if defined(ASSIMP_BUILD_DEBUG)
-#   define ai_assert(expression) (void)((!!(expression)) || (Assimp::aiAssertViolation(#expression, __FILE__, __LINE__), 0))
-#   define ai_assert_entry() ai_assert(false)
-#else
-#   define  ai_assert(expression)
-#   define  ai_assert_entry()
-#endif // ASSIMP_BUILD_DEBUG
+/// @brief Will encode the given character buffer from UTF64 to ASCII.
+/// @param in   A vector, which contains the buffer for encoding.
+/// @return The encoded ASCII string.
+std::string Encode(const std::vector<uint8_t>& in);
 
-#endif // AI_ASSERT_H_INC
+/// @brief Will decode the given character buffer from ASCII to UTF64.
+/// @param in           The ASCII buffer to decode.
+/// @param inLength     The size of the buffer.
+/// @param out          The decoded buffer.
+/// @return The new buffer size.
+size_t Decode(const char *in, size_t inLength, uint8_t *&out);
+
+/// @brief Will decode the given character buffer from ASCII to UTF64.
+/// @param in   The ASCII buffer to decode as a std::string.
+/// @param out  The decoded buffer.
+/// @return The new buffer size.
+size_t Decode(const std::string& in, std::vector<uint8_t>& out);
+
+/// @brief Will decode the given character buffer from ASCII to UTF64.
+/// @param in   The ASCII string.
+/// @return The decoded buffer in a vector.
+std::vector<uint8_t> Decode(const std::string& in);
+
+} // namespace Base64
+} // namespace Assimp
+
+#endif // AI_BASE64_HPP_INC

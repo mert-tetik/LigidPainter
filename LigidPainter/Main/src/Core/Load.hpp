@@ -750,21 +750,21 @@ public:
 		}
 		
 
-		appNodes[0].outputs[0].connections.clear();
-		appNodes[0].outputs[0].connections.push_back(connection);
+		pbrNode.outputs[0].connections.clear();
+		pbrNode.outputs[0].connections.push_back(connection);
 
-		appNodes[0].outputs[0].isConnectedToShaderInput = true;
-		appNodes[0].outputs[0].pressed = false;
-		appNodes[0].outputs[0].connectionHover = false;
+		pbrNode.outputs[0].isConnectedToShaderInput = true;
+		pbrNode.outputs[0].pressed = false;
+		pbrNode.outputs[0].connectionHover = false;
 		
-		appNodes[0].stateChanged = true;
-		appNodes[0].marked = true;
+		pbrNode.stateChanged = true;
+		pbrNode.marked = true;
 
-		appNodes[0].positionX = -0.55;
-		appNodes[0].positionY =-2.5;
+		pbrNode.positionX = -0.55;
+		pbrNode.positionY =-2.5;
 
 		//Add to material
-		result.push_back(appNodes[0]);
+		result.push_back(pbrNode);
 
 		return result;
 	}
