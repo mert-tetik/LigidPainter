@@ -678,11 +678,11 @@ void UserInterface::textureDisplayer(float width,float height, float position_x,
 		 position_x, -height +position_y, z,0,0,0,0,0,  // bottom left
 		 position_x,  position_y, z,0,1,0,0,0  // top left
 	};
-	box(0.0f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDisplayerButtonColor,0,0,0,1,10,glm::vec4(0,0,0,1),0);
 
 	glset.uniform1i(uiPrograms.uiProgram,"drawTxtrDemonstrator",1);
 	glset.drawArrays(buttonCoorSq,false);
 	glset.uniform1i(uiPrograms.uiProgram,"drawTxtrDemonstrator",0);
+	box(0.0f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDisplayerButtonColor,0,0,0,1,10,glm::vec4(0,0,0,1),0);
 }
 
 bool vertRGBarPressed = false;

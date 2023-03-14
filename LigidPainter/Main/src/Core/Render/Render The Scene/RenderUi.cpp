@@ -174,9 +174,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		//Panel changing buttons
 		glUseProgram(programs.uiProgram);
 
-		//Texture demonstrator	
-		ui.textureDisplayer(textureDisplayer.ndWidth,textureDisplayer.ndHeight,textureDisplayer.buttonPosX - 1.0f +screenGapX,textureDisplayer.buttonPosY,1.f); 
-
 		if(!panelData.paintingPanelActive){
 			ui.nodePanel(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth,programs,icons,nodeScenes,selectedNodeScene);
 			ui.nodePanelBarriers(renderData.panelLoc-  screenGapX -1.0f,sndPanel.position + screenGapX,nodePanel.heigth);
@@ -712,6 +709,9 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		unsigned int prefilteredMap = load.createPrefilterMap(programs,cubemaps,maxScreenWidth,maxScreenHeight);
 		cubemaps.prefiltered = prefilteredMap;
 	}
+	glUseProgram(programs.uiProgram);
+	ui.textureDisplayer(textureDisplayer.ndWidth,textureDisplayer.ndHeight,textureDisplayer.buttonPosX - 1.0f +screenGapX,textureDisplayer.buttonPosY,0.999f); 
+
 
 	alertState = 0;
 	

@@ -95,7 +95,7 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 numericModifierArrowColor = glm::vec4(0.6f, 0.6f, 0.6f,0.5f);
 	glm::vec4 numericModifierArrowHoverColor = glm::vec4(0.95f, 0.95f, 0.95f,0.5f);
 
-	glm::vec4 textureDisplayerButtonColor = glm::vec4(LigidPainterThemeColor,0.5f);
+	glm::vec4 textureDisplayerButtonColor = glm::vec4(LigidPainterThemeColor,1.f);
 
 	glm::vec4 buttonMaskTxtrPanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 	glm::vec3 chosenBrushMaskTextureColor = glm::vec3(LigidPainterThemeColor);

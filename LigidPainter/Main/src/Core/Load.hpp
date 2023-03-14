@@ -47,6 +47,7 @@ public:
 
 	unsigned int loadCubemap(std::vector<std::string> faces,unsigned int textureSlot)
 	{
+
 		GlSet glset;
 		glset.activeTexture(textureSlot);
 	    unsigned int textureID;
@@ -54,12 +55,29 @@ public:
 	    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 	
 	    int width, height, nrChannels;
+		unsigned int cubePos;
 	    for (unsigned int i = 0; i < faces.size(); i++)
 	    {
+			
+			if(i == 0)
+				cubePos = GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+			if(i == 1)
+				cubePos = GL_TEXTURE_CUBE_MAP_NEGATIVE_X;
+			if(i == 2)
+				cubePos = GL_TEXTURE_CUBE_MAP_POSITIVE_Y;
+			if(i == 3)
+				cubePos = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y;
+			if(i == 4)
+				cubePos = GL_TEXTURE_CUBE_MAP_POSITIVE_Z;
+			if(i == 5)
+				cubePos = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z;
+
+
 	        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-	        if (data)
+	        if (data )
 	        {
-	            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
+
+	            glTexImage2D(cubePos, 
 	                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
 	            );
 	            stbi_image_free(data);
@@ -78,6 +96,7 @@ public:
 	    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	
 	    return textureID;
+		//px,nx,ny,py,pz,nz
 	}
 	
 	Cubemaps loadCubemaps(){
