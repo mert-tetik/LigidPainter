@@ -2552,7 +2552,7 @@ GLFWAPI void glfwWindowHintString(int hint, const char* value);
  *  [hard constraints](@ref window_hints_hard).  This includes the size of the
  *  window, especially for full screen windows.  To query the actual attributes
  *  of the created window, framebuffer and context, see @ref
- *  glfwGetWindowAttrib, @ref glfwGetWindowSize and @ref glfwGetFramebufferSize.
+ *  glfwGetWindowAttrib, @ref glfwGetFramebufferSize and @ref glfwGetFramebufferSize.
  *
  *  To create a full screen window, you need to specify the monitor the window
  *  will cover.  If no monitor is specified, the window will be windowed mode.
@@ -2928,7 +2928,7 @@ GLFWAPI void glfwSetWindowPos(GLFWwindow* window, int xpos, int ypos);
  *
  *  @ingroup window
  */
-GLFWAPI void glfwGetWindowSize(GLFWwindow* window, int* width, int* height);
+GLFWAPI void glfwGetFramebufferSize(GLFWwindow* window, int* width, int* height);
 
 /*! @brief Sets the size limits of the specified window.
  *
@@ -3047,7 +3047,7 @@ GLFWAPI void glfwSetWindowAspectRatio(GLFWwindow* window, int numer, int denom);
  *  @thread_safety This function must only be called from the main thread.
  *
  *  @sa @ref window_size
- *  @sa @ref glfwGetWindowSize
+ *  @sa @ref glfwGetFramebufferSize
  *  @sa @ref glfwSetWindowMonitor
  *
  *  @since Added in version 1.0.
@@ -3061,7 +3061,7 @@ GLFWAPI void glfwSetWindowSize(GLFWwindow* window, int width, int height);
  *
  *  This function retrieves the size, in pixels, of the framebuffer of the
  *  specified window.  If you wish to retrieve the size of the window in screen
- *  coordinates, see @ref glfwGetWindowSize.
+ *  coordinates, see @ref glfwGetFramebufferSize.
  *
  *  Any or all of the size arguments may be `NULL`.  If an error occurs, all
  *  non-`NULL` size arguments will be set to zero.

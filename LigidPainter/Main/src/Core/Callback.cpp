@@ -101,7 +101,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 	//Get window size
 	int screenSizeX;
 	int screenSizeY;
-	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
+	glfwGetFramebufferSize(window, &screenSizeX, &screenSizeY);
 	
 	buttonCheck(window, xpos, ypos, panelData,maskPanelSliderValue,brushMaskPanelMaskHover,cursors, texturePanelButtonHover,uiElements,mainPanelLoc,
 	colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel,coloringPanel);	
@@ -175,7 +175,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 
 	int screenSizeX;
 	int screenSizeY;
-	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
+	glfwGetFramebufferSize(window,&screenSizeX,&screenSizeY);
 
 	float screenGapX = ((float)callbackMaxScreenWidth - screenSizeX)/(((float)callbackMaxScreenWidth)/2.0f); 
 

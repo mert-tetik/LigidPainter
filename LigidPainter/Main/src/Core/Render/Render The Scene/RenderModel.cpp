@@ -23,6 +23,7 @@ int currentMaterialIndex,glm::mat4 view,bool paintingMode,std::vector<aTexture> 
 		gl.cullFace(GL_BACK);
 	}
 	
+	
 	//gl.meshDataToShaders();
 	unsigned int chosenTxtr = 0;
 	if(albedoTextures.size() != 0)

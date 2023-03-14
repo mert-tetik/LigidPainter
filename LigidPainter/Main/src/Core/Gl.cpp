@@ -173,7 +173,7 @@ WindowData GlSet::getWindow() {
 
 	int windowMaxWidth;
 	int windowMaxHeight;
-	glfwGetWindowSize(window,&windowMaxWidth,&windowMaxHeight);
+	glfwGetFramebufferSize(window,&windowMaxWidth,&windowMaxHeight);
 
 	Utilities util;
 	const float windowRatio = 16.0f/9.0f;

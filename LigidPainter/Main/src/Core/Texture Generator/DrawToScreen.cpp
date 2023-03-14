@@ -59,7 +59,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 
 	int screenSizeX;
 	int screenSizeY;
-	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
+	glfwGetFramebufferSize(window,&screenSizeX,&screenSizeY);
 	//Get context data
 
 

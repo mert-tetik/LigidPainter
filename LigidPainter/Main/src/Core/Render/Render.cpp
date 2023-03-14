@@ -288,7 +288,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	//Get screen and mouse info
 	int screenSizeX;
 	int screenSizeY;
-	glfwGetWindowSize(renderData.window, &screenSizeX, &screenSizeY);
+	glfwGetFramebufferSize(renderData.window, &screenSizeX, &screenSizeY);
 	double mouseXpos;
 	double mouseYpos;
 	glfwGetCursorPos(renderData.window, &mouseXpos, &mouseYpos);
@@ -373,7 +373,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	//CTRLZ
 	ctrlZCheck(renderData.window,albedoTextures,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,nodeScenesHistory,panelData.paintingPanelActive);
 
-	
+
 	if(colorPicker.dropperActive || colorPicker.saturationValueBoxHover || colorPicker.hueValueBarHover || coloringPanel.colorBoxHover || coloringPanel.hueBarHover){
 		screenHoverPixel = getScreenHoverPixel(mouseXpos,mouseYpos,screenSizeY);
 	}

@@ -150,7 +150,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	
 	int screenWidth;
 	int screenHeight;
-	glfwGetWindowSize(window,&screenWidth,&screenHeight);
+	glfwGetFramebufferSize(window,&screenWidth,&screenHeight);
 
 	if(!anyTextureNameActive){
 		for (int i = 0; i < albedoTextures.size(); i++)
@@ -855,7 +855,7 @@ glm::vec3 UserInterface::hueBar(float position_x, float position_y,float value,u
 		glset.bindFramebuffer(0);
 		int screenSizeX;
 		int screenSizeY;
-		glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
+		glfwGetFramebufferSize(window, &screenSizeX, &screenSizeY);
 		glViewport(-(uiMaxScreenWidth - screenSizeX)/2, -(uiMaxScreenHeight - screenSizeY), uiMaxScreenWidth, uiMaxScreenHeight);
 	}
 
@@ -1320,7 +1320,7 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 
 	int screenSizeX;
 	int screenSizeY;
-	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
+	glfwGetFramebufferSize(window,&screenSizeX,&screenSizeY);
 
 	Render render;
 	ColorPicker cp;

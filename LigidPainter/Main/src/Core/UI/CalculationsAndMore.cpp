@@ -24,10 +24,10 @@ bool UserInterface::isMouseOnPanelChangeButton(GLFWwindow* window, float positio
 		-0.025f + position_x, -0.02f + position_y, 0.9f,0,0,0,0,0,  // bottom left
 		-0.025f + position_x,  0.02f + position_y, 0.9f,0,0,0,0,0  // top left
 	};
-	//glfwGetWindowSize();
+	//glfwGetFramebufferSize();
 	int screenSizeX;
 	int screenSizeY;
-	glfwGetWindowSize(window, &screenSizeX, &screenSizeY);
+	glfwGetFramebufferSize(window, &screenSizeX, &screenSizeY);
 
 	float mouseFX = ((float)mouseXpos / (CAMuiMaxScreenWidth/2)); //Screen Coord
 	float mouseFY = (((float)mouseYpos / (CAMuiMaxScreenHeight / 2)) - 1.0f) * -1.0f; //Screen Coord
@@ -74,7 +74,7 @@ bool UserInterface::isMouseOnButton(GLFWwindow* window, float width, float heigh
 	};
 	int screenSizeX;
 	int screenSizeY;
-	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
+	glfwGetFramebufferSize(window,&screenSizeX,&screenSizeY);
 	float mouseFX;
 	if (!isPanelMoving) {
 		mouseFX = ((float)mouseXpos / (CAMuiMaxScreenWidth / 2)) - 1.0f;//Screen Coord
@@ -114,7 +114,7 @@ bool UserInterface::isMouseOnButton(GLFWwindow* window, float width, float heigh
 bool UserInterface::isMouseOnCoords(GLFWwindow*window,double mouseXpos, double mouseYpos,std::vector<float> buttonCoor,bool isPanelMoving){ //Return true if mouse hover on the given coordinates
 	int screenSizeX;
 	int screenSizeY;
-	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
+	glfwGetFramebufferSize(window,&screenSizeX,&screenSizeY);
 
 	float mouseFX;
 	if (!isPanelMoving) {
@@ -184,7 +184,7 @@ bool UserInterface::isMouseOnNodePanel(GLFWwindow* window,float mainPanelLoc,flo
 
 	int screenSizeX;
 	int screenSizeY;
-	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
+	glfwGetFramebufferSize(window,&screenSizeX,&screenSizeY);
 
 	float mouseFX = ((float)mouseXpos / (CAMuiMaxScreenWidth / 2))-1.0f;//Screen Coord
 

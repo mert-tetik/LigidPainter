@@ -927,7 +927,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	
 	int width;
 	int height;
-	glfwGetWindowSize(window,&width,&height);
+	glfwGetFramebufferSize(window,&width,&height);
 	
 	//Get mouse position offset
 	xOffset = (lastXpos - xpos) / ((double)windowData.windowMaxWidth / (double)width);
@@ -999,7 +999,7 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 	LigidPainter ligid;
 	int screenSizeX;
 	int screenSizeY;
-	glfwGetWindowSize(window,&screenSizeX,&screenSizeY);
+	glfwGetFramebufferSize(window,&screenSizeX,&screenSizeY);
 
 	//Ctrl + q = change brush size range bar value
 	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS && panelData.paintingPanelActive){
@@ -1084,7 +1084,7 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 void LigidPainter::updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatVal,float &hueValue,float &saturationValuePosX, float &saturationValuePosY,bool isMainColorPicker){
 	int width;
 	int height;
-	glfwGetWindowSize(window,&width,&height);
+	glfwGetFramebufferSize(window,&width,&height);
 	
 	Utilities util;
 	
@@ -1112,7 +1112,7 @@ void LigidPainter::addMaskTextureButton() {
 	//Needed for updating mask texture
 	int width;
 	int height;
-	glfwGetWindowSize(window, &width, &height);
+	glfwGetFramebufferSize(window, &width, &height);
 
 	GlSet glset;
 	Texture txtr;
