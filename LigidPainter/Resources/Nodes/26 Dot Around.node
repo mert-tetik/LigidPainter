@@ -37,8 +37,8 @@ $
 %code;
 
 void main(){
-    vec3 clr = texture2D(input_0,tex_coords).rgb;
-    float rad = texture2D(input_1,tex_coords).r/100.;
+    vec3 clr = texture(input_0,tex_coords).rgb;
+    float rad = texture(input_1,tex_coords).r/100.;
     
     bool stop = false; 
     const float quality = 20;
@@ -53,19 +53,19 @@ void main(){
     bool clrTB = true;
     bool clrBB = true;
 
-    vec3 clrR = texture2D(input_0,tex_coords+vec2(rad,0)).rgb;
+    vec3 clrR = texture(input_0,tex_coords+vec2(rad,0)).rgb;
     if(clrR.r < 0.5 && clrR.g < 0.5 && clrR.b < 0.5){
         clrRB = false;
     }
-    vec3 clrL = texture2D(input_0,tex_coords-vec2(rad,0)).rgb;
+    vec3 clrL = texture(input_0,tex_coords-vec2(rad,0)).rgb;
     if(clrL.r < 0.5 && clrL.g < 0.5 && clrL.b < 0.5){
         clrLB = false;
     }
-    vec3 clrT = texture2D(input_0,tex_coords+vec2(0,rad)).rgb;
+    vec3 clrT = texture(input_0,tex_coords+vec2(0,rad)).rgb;
     if(clrT.r < 0.5 && clrT.g < 0.5 && clrT.b < 0.5){
         clrTB = false;
     }
-    vec3 clrB = texture2D(input_0,tex_coords-vec2(0,rad)).rgb;
+    vec3 clrB = texture(input_0,tex_coords-vec2(0,rad)).rgb;
     if(clrB.r < 0.5 && clrB.g < 0.5 && clrB.b < 0.5){
         clrBB = false;
     }

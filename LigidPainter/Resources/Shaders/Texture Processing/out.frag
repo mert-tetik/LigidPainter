@@ -39,10 +39,10 @@ float linearizeDepth(float depth){
 bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMirrored is true
    float drawZ;
    if(!isMirrored){
-      drawZ = texture2D(depthTexture, uv.xy).b;
+      drawZ = texture(depthTexture, uv.xy).b;
    }
    else{
-      drawZ = texture2D(mirroredDepthTexture, uv.xy).b; 
+      drawZ = texture(mirroredDepthTexture, uv.xy).b; 
    }
 
 
@@ -74,12 +74,12 @@ vec3 getPaintedDiffuse(){
    float mirroredIntensity = 0.0;
 
    if(isPainted(screenPos,false)) {
-      intensity = texture2D(screenMaskTexture, screenPos.xy).r;
+      intensity = texture(screenMaskTexture, screenPos.xy).r;
    }
 
 
    if(isPainted(mirroredScreenPos, true)) {
-      mirroredIntensity = texture2D((mirroredScreenMaskTexture), mirroredScreenPos.xy).r;
+      mirroredIntensity = texture((mirroredScreenMaskTexture), mirroredScreenPos.xy).r;
    }
    
     // ambient
@@ -134,20 +134,20 @@ void main() {
                }
                else{
                   //Paint around
-                  if(texture2D(uvMask,vec2(TexCoords.x - 0.004,TexCoords.y)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
-                     color = vec4(texture2D(material.diffuse,vec2(TexCoords.x - 0.004,TexCoords.y)));
+                  if(texture(uvMask,vec2(TexCoords.x - 0.004,TexCoords.y)).r > 0.95 && texture(uvMask,TexCoords).r < 0.95){
+                     color = vec4(texture(material.diffuse,vec2(TexCoords.x - 0.004,TexCoords.y)));
                   }
-                  else if(texture2D(uvMask,vec2(TexCoords.x + 0.004,TexCoords.y)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
-                     color = vec4(texture2D(material.diffuse,vec2(TexCoords.x + 0.004,TexCoords.y)));
+                  else if(texture(uvMask,vec2(TexCoords.x + 0.004,TexCoords.y)).r > 0.95 && texture(uvMask,TexCoords).r < 0.95){
+                     color = vec4(texture(material.diffuse,vec2(TexCoords.x + 0.004,TexCoords.y)));
                   }
-                  else if(texture2D(uvMask,vec2(TexCoords.x,TexCoords.y - 0.004)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
-                     color = vec4(texture2D(material.diffuse,vec2(TexCoords.x ,TexCoords.y - 0.004)));
+                  else if(texture(uvMask,vec2(TexCoords.x,TexCoords.y - 0.004)).r > 0.95 && texture(uvMask,TexCoords).r < 0.95){
+                     color = vec4(texture(material.diffuse,vec2(TexCoords.x ,TexCoords.y - 0.004)));
                   }
-                  else if(texture2D(uvMask,vec2(TexCoords.x,TexCoords.y + 0.004)).r > 0.95 && texture2D(uvMask,TexCoords).r < 0.95){
-                     color = vec4(texture2D(material.diffuse,vec2(TexCoords.x ,TexCoords.y + 0.004)));
+                  else if(texture(uvMask,vec2(TexCoords.x,TexCoords.y + 0.004)).r > 0.95 && texture(uvMask,TexCoords).r < 0.95){
+                     color = vec4(texture(material.diffuse,vec2(TexCoords.x ,TexCoords.y + 0.004)));
                   }
                   else{
-                     color = vec4(texture2D(material.diffuse,TexCoords));
+                     color = vec4(texture(material.diffuse,TexCoords));
                   }
                }
                

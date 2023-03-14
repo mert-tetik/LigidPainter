@@ -1047,14 +1047,14 @@ float node_tex_musgrave_ridged_multi_fractal_3d(vec3 co,
 }
 
 void main(){
-    float scale = texture2D(input_0,tex_coords).r*20;
-    float detail = texture2D(input_1,tex_coords).r*10;
-    float dimension = texture2D(input_2,tex_coords).r*10;
-    float lacunarity = texture2D(input_3,tex_coords).r*10;
+    float scale = texture(input_0,tex_coords).r*20;
+    float detail = texture(input_1,tex_coords).r*10;
+    float dimension = texture(input_2,tex_coords).r*10;
+    float lacunarity = texture(input_3,tex_coords).r*10;
     float gain = 1.;
     float offset = 1.;
     float w = 1.;
-    float transform = texture2D(input_4,tex_coords).r*10;
+    float transform = texture(input_4,tex_coords).r*10;
 
     vec3 co = vec3(tex_coords+vec2(transform),1);
 

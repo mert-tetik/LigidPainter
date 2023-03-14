@@ -48,7 +48,7 @@ vec4 boxBlur(int range){
     vec3 res = vec3(0);
     for(int x = 0; x < range*2; x++){
         for(int y = 0; y < range*2; y++){
-            res += texture2D(input_0,vec2(tex_coords.x+((x-range)/width),tex_coords.y+((y-range)/width))).rgb / pow(range*2,2);
+            res += texture(input_0,vec2(tex_coords.x+((x-range)/width),tex_coords.y+((y-range)/width))).rgb / pow(range*2,2);
         }
     }
     return vec4(res,1);
@@ -77,7 +77,7 @@ vec4 blur(int range) {
 
 void main(){
 
-    int range = int(texture2D(input_1,tex_coords).r*100) + 1;
+    int range = int(texture(input_1,tex_coords).r*100) + 1;
     vec4 res;
     if(list_0 == 0)
         res = blur(range);

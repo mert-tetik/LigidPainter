@@ -27,5 +27,5 @@
 %code;
 
 void main (){
-    output_0 = vec4(texture2D(input_0,tex_coords).rgb,1);
+    output_0 = vec4(texture(input_0,tex_coords).rgb,1);
 }

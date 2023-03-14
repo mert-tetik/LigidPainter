@@ -489,9 +489,9 @@ vec4 mix_linear(float fac, vec4 col1, vec4 col2)
 }
 
 void main(){
-    vec4 color1 = texture2D(input_0,tex_coords).rgba;
-    vec4 color2 = texture2D(input_1,tex_coords).rgba;
-    float fac = texture2D(input_2,tex_coords).r;
+    vec4 color1 = texture(input_0,tex_coords).rgba;
+    vec4 color2 = texture(input_1,tex_coords).rgba;
+    float fac = texture(input_2,tex_coords).r;
 
     vec4 res;
 

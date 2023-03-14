@@ -56,10 +56,10 @@ $
 
 
 void main(){
-    vec3 uv = texture2D(input_0,tex_coords).rgb;
-    vec3 model = texture2D(input_0,posModel.xy).rgb;
-    vec3 camera = texture2D(input_0,posScene.xy).rgb;
-    vec3 normalr = texture2D(input_0,normal.xy).rgb;
+    vec3 uv = texture(input_0,tex_coords).rgb;
+    vec3 model = texture(input_0,posModel.xy).rgb;
+    vec3 camera = texture(input_0,posScene.xy).rgb;
+    vec3 normalr = texture(input_0,normal.xy).rgb;
 
     output_0 = vec4(uv,1);
     output_1 = vec4(model,1);

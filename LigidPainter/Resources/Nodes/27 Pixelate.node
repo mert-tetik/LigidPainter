@@ -35,11 +35,11 @@
 %code;
 
 vec3 pixelize(){
-    float radius = texture2D(input_1,tex_coords).r*1024.; 
+    float radius = texture(input_1,tex_coords).r*1024.; 
     float rad = 1024-radius;
     vec2 uv = vec2(ceil(tex_coords.x*rad)/rad,ceil(tex_coords.y*rad)/rad);
 
-    vec3 val = texture2D(input_0,uv).rgb;
+    vec3 val = texture(input_0,uv).rgb;
     return val;
 }
 void main(){

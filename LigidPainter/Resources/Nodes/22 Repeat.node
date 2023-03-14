@@ -46,13 +46,13 @@
 %code;
 
 void main(){
-    float scale = texture2D(input_2,tex_coords).r*100; 
+    float scale = texture(input_2,tex_coords).r*100; 
     vec4 color;
     
-    color = texture2D(input_0,tex_coords*scale).rgba;
+    color = texture(input_0,tex_coords*scale).rgba;
 
 
-    vec3 bgcolor = texture2D(input_1,tex_coords).rgb;
+    vec3 bgcolor = texture(input_1,tex_coords).rgb;
     vec3 res = mix(bgcolor,color.rgb,color.a);
 
     output_0 = vec4(res,1);

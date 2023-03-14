@@ -92,7 +92,7 @@ vec3 RGBToHSV(vec3 rgbData){
 }
 
 void main (){
-    vec3 rgb = texture2D(input_0,tex_coords).rgb;
+    vec3 rgb = texture(input_0,tex_coords).rgb;
     vec3 hsv = RGBToHSV(rgb);
 
     output_0 = vec4(rgb.r,0,0,1);

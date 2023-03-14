@@ -342,7 +342,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			glUseProgram(programs.renderTheTextureProgram);
 
 			glActiveTexture(GL_TEXTURE14);
-			glset.uniform1i(uiPrograms.renderTheTextureProgram, "texture" ,14);
+			glset.uniform1i(uiPrograms.renderTheTextureProgram, "txtr" ,14);
 
 
 			float maskXpos = 0.0f;
@@ -599,7 +599,7 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 	glUseProgram(programs.renderTheTextureProgram);
 	
 	glActiveTexture(GL_TEXTURE14);
-	glset.uniform1i(uiPrograms.renderTheTextureProgram, "texture" ,14);
+	glset.uniform1i(uiPrograms.renderTheTextureProgram, "txtr" ,14);
 
 
 	float maskXpos = 0.0f;
@@ -1418,7 +1418,7 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 	if(!txtrCreatingPanel.panelHover && !coloringPanel.panelHover && !coloringPanel.active){ 
 		txtrCreatingPanel.color = glm::vec3(0);
 		txtrCreatingPanel.active = false;
-		txtrCreatingPanel.textBoxVal = "texture";
+		txtrCreatingPanel.textBoxVal = "txtr";
 	}
 
 	glUseProgram(programs.uiProgram);
@@ -1496,7 +1496,7 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 
 			albedoTextures.push_back(txtr);
 
-			txtrCreatingPanel.textBoxVal = "texture";
+			txtrCreatingPanel.textBoxVal = "txtr";
 			txtrCreatingPanel.color = glm::vec3(0);
 			txtrCreatingPanel.active = false;
 		}

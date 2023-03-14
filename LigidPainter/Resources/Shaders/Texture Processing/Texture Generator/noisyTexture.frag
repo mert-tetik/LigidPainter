@@ -92,7 +92,7 @@ void main( )
     rnd/=value*2;
     rnd+=1.0 - (1.0/value);
 
-    vec3 txtr = texture2D(inputTexture,texCoords).rgb;
+    vec3 txtr = texture(inputTexture,texCoords).rgb;
     f /= value;
     f += 1.0 - (1.0/value);
     
@@ -104,7 +104,7 @@ void main( )
 
 // void main()
 // {
-//     vec3 txtr = texture2D(inputTexture,texCoords).rgb;
+//     vec3 txtr = texture(inputTexture,texCoords).rgb;
     
 
 

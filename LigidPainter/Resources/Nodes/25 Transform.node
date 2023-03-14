@@ -77,13 +77,13 @@ mat4 rotate(vec3 angle){
 }
 
 void main(){
-    vec3 loc = texture2D(input_1,tex_coords).xyz;
-    vec3 rot = texture2D(input_2,tex_coords).xyz;
-    vec3 scale = texture2D(input_3,tex_coords).xyz * 10.;
+    vec3 loc = texture(input_1,tex_coords).xyz;
+    vec3 rot = texture(input_2,tex_coords).xyz;
+    vec3 scale = texture(input_3,tex_coords).xyz * 10.;
     
     mat4 rotMat = rotate(rot);
 
-    vec3 src = texture2D(input_0,(vec4((tex_coords+loc.xy)*scale.xy,1,1)*rotMat).xy).rgb;
+    vec3 src = texture(input_0,(vec4((tex_coords+loc.xy)*scale.xy,1,1)*rotMat).xy).rgb;
 
     output_0 = vec4(src,1);
 }

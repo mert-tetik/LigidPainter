@@ -383,7 +383,7 @@ vec4 node_tex_voronoi_smooth_f1_2d_color(vec3 coord,
   randomness = clamp(randomness, 0.0, 1.0);
   smoothness = clamp(smoothness / 2.0, 0.0, 0.5);
 
-  float transform = texture2D(input_4,tex_coords).r*10;
+  float transform = texture(input_4,tex_coords).r*10;
 
   vec2 scaledCoord = coord.xy * scale + vec2(transform);
   vec2 cellPosition = floor(scaledCoord);
@@ -420,7 +420,7 @@ vec4 node_tex_voronoi_smooth_f1_3d_color(vec3 coord,
   randomness = clamp(randomness, 0.0, 1.0);
   smoothness = clamp(smoothness / 2.0, 0.0, 0.5);
 
-  float transform = texture2D(input_4,tex_coords).r*10;
+  float transform = texture(input_4,tex_coords).r*10;
 
   vec3 scaledCoord = coord * scale + transform;
   vec3 cellPosition = floor(scaledCoord);
@@ -455,11 +455,11 @@ vec4 node_tex_voronoi_smooth_f1_3d_color(vec3 coord,
 void main()
 {
     float w             = 1;
-    vec3 scale         = texture2D(input_0,tex_coords).rgb*100;
-    float smoothness    = texture2D(input_1,tex_coords).r*4;
+    vec3 scale         = texture(input_0,tex_coords).rgb*100;
+    float smoothness    = texture(input_1,tex_coords).r*4;
     float exponent      = 1;
-    float randomness    = texture2D(input_2,tex_coords).r;
-    float metric        = ceil(texture2D(input_3,tex_coords).r*3);
+    float randomness    = texture(input_2,tex_coords).r;
+    float metric        = ceil(texture(input_3,tex_coords).r*3);
 
     vec4 res;
     if(list_0 == 0){

@@ -64,12 +64,12 @@
 
 void main() 
 {
-    vec3 color = texture2D(input_0,tex_coords).rgb;
-    vec3 lcolor = texture2D(input_1,tex_coords).rgb;
-    float iTime = texture2D(input_2,tex_coords).r;
+    vec3 color = texture(input_0,tex_coords).rgb;
+    vec3 lcolor = texture(input_1,tex_coords).rgb;
+    float iTime = texture(input_2,tex_coords).r;
     iTime*=10;
-    float MAX_ITER = texture2D(input_3,tex_coords).r;
-    float scale = texture2D(input_4,tex_coords).r*10+0.1;
+    float MAX_ITER = texture(input_3,tex_coords).r;
+    float scale = texture(input_4,tex_coords).r*10+0.1;
     
     vec2 scaledTexCoord = tex_coords*vec2(scale);
     

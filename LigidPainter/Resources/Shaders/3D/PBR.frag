@@ -43,10 +43,10 @@ float linearizeDepth(float depth){
 bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMirrored is true
    float drawZ;
    if(!isMirrored){
-      drawZ = texture2D(depthTexture, uv.xy).b;
+      drawZ = texture(depthTexture, uv.xy).b;
    }
    else{
-      drawZ = texture2D(mirroredDepthTexture, uv.xy).b; 
+      drawZ = texture(mirroredDepthTexture, uv.xy).b; 
    }
 
 
@@ -75,11 +75,11 @@ vec3 getPaintedDiffuse(){
    float mirroredIntensity = 0.0;
    if(isPainted(screenPos,false)) 
    {
-      intensity = texture2D(screenMaskTexture, screenPos.xy).r;
+      intensity = texture(screenMaskTexture, screenPos.xy).r;
    }
    if(isPainted(mirroredScreenPos, true)) 
    {
-      mirroredIntensity = texture2D((mirroredScreenMaskTexture), mirroredScreenPos.xy).r;
+      mirroredIntensity = texture((mirroredScreenMaskTexture), mirroredScreenPos.xy).r;
    }
    
     // ambient

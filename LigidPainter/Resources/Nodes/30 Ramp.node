@@ -68,7 +68,7 @@ vec3 getGradient(vec2 uv)
 }
 void main()
 {
-    float fac = texture2D(input_0,tex_coords).r;
+    float fac = texture(input_0,tex_coords).r;
     vec2 uv = tex_coords;
     
     vec3 grad = getGradient(vec2(fac));

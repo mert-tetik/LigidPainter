@@ -12,9 +12,9 @@ in vec3 color;
 void main(){
     float intensity;
     if(invert == 0)
-        intensity = texture2D(modifiedMaskTexture,texCoords).r;
+        intensity = texture(modifiedMaskTexture,texCoords).r;
     else
-        intensity = 1.0 - texture2D(modifiedMaskTexture,texCoords).r;
+        intensity = 1.0 - texture(modifiedMaskTexture,texCoords).r;
 
     fragColor = vec4(vec3(intensity * color),intensity);
 }

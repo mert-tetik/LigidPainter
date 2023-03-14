@@ -693,11 +693,11 @@ vec4 node_noise_texture_3d(vec3 co,
 
 void main( )
 {
-	vec3 scale = texture2D(input_0,tex_coords).rgb*20;
-	float transform = texture2D(input_1,tex_coords).r*10;
-	float detail = texture2D(input_2,tex_coords).r*10;
-	float roughness = texture2D(input_3,tex_coords).r;
-	float distortion = texture2D(input_4,tex_coords).r*10;
+	vec3 scale = texture(input_0,tex_coords).rgb*20;
+	float transform = texture(input_1,tex_coords).r*10;
+	float detail = texture(input_2,tex_coords).r*10;
+	float roughness = texture(input_3,tex_coords).r;
+	float distortion = texture(input_4,tex_coords).r*10;
 
 	vec4 res;
 	

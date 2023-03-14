@@ -313,8 +313,8 @@ float tissnoise (vec2 st) {
 }
 
 float tissue(){
-        vec2 uvtransform = texture2D(input_0,tex_coords).xy*5.;
-    vec2 uvscale = texture2D(input_1,tex_coords).xy*10.;
+        vec2 uvtransform = texture(input_0,tex_coords).xy*5.;
+    vec2 uvscale = texture(input_1,tex_coords).xy*10.;
 
     vec2 st = gl_FragCoord.xy * uvscale + uvtransform;
     vec2 pos = vec2(st*5.0);
@@ -377,10 +377,10 @@ float getResult(vec2 uv){
 }
 
 void main(){
-    vec2 uvtransform = texture2D(input_0,tex_coords).xy*5.;
-    vec2 uvscale = texture2D(input_1,tex_coords).xy*10.;
-    vec3 clr1 = texture2D(input_2,tex_coords).rgb;
-    vec3 clr2 = texture2D(input_3,tex_coords).rgb;
+    vec2 uvtransform = texture(input_0,tex_coords).xy*5.;
+    vec2 uvscale = texture(input_1,tex_coords).xy*10.;
+    vec3 clr1 = texture(input_2,tex_coords).rgb;
+    vec3 clr2 = texture(input_3,tex_coords).rgb;
 
     float aspect = iResolution.y / iResolution.x;
     

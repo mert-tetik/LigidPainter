@@ -108,9 +108,9 @@ vec4 wrinkle3D(
     
     vec3 clr;
     if(distribute)
-        clr = texture2D(input_0,f/50.*tex_coords).rgb;
+        clr = texture(input_0,f/50.*tex_coords).rgb;
     else
-        clr = texture2D(input_0,((tex_coords+(f*5.)))).rgb;
+        clr = texture(input_0,((tex_coords+(f*5.)))).rgb;
 
     return vec4(clr,f);
 }
@@ -137,9 +137,9 @@ vec4 wrinkle2D(
     
     vec3 clr;
     if(distribute)
-        clr = texture2D(input_0,f/50.*uv).rgb;
+        clr = texture(input_0,f/50.*uv).rgb;
     else
-        clr = texture2D(input_0,((uv+(f*5.)))).rgb;
+        clr = texture(input_0,((uv+(f*5.)))).rgb;
 
     return vec4(clr,f);
 }
@@ -149,12 +149,12 @@ void main(){
     
     vec2 uvO = tex_coords;
 
-    float wrinkles =  texture2D(input_1,uvO).r*50.;
-    float frequency =  texture2D(input_2,uvO).r*10.;
-    float subFrequency = texture2D(input_3,uvO).r*20;
-    float foldingDepth =  texture2D(input_4,uvO).r;
-    float move =  texture2D(input_5,uvO).r;
-    float scale = texture2D(input_6,uvO).r*10;
+    float wrinkles =  texture(input_1,uvO).r*50.;
+    float frequency =  texture(input_2,uvO).r*10.;
+    float subFrequency = texture(input_3,uvO).r*20;
+    float foldingDepth =  texture(input_4,uvO).r;
+    float move =  texture(input_5,uvO).r;
+    float scale = texture(input_6,uvO).r*10;
     
     vec4 clr;
     if(list_1 == 0){

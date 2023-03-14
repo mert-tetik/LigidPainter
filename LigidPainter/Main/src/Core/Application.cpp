@@ -293,7 +293,7 @@ bool LigidPainter::run()
 	glUseProgram(programs.renderTheTextureProgram);
 	glm::mat4 txtprojection = glm::ortho(0,1,0,1);
 	glset.uniformMatrix4fv(programs.renderTheTextureProgram,"TextProjection",txtprojection);
-	glset.uniform1i(programs.renderTheTextureProgram,"texture",0);
+	glset.uniform1i(programs.renderTheTextureProgram,"txtr",0);
 	glset.drawArrays(renderVertices,0);
 	glfwSwapBuffers(window);
 

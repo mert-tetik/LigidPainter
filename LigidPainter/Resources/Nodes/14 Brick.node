@@ -180,18 +180,18 @@ vec4 node_tex_brick(vec3 co,
 
 void main(){
     vec3 co = vec3(tex_coords,1);
-    vec4 color1 = texture2D(input_0,tex_coords);
-    vec4 color2 = texture2D(input_1,tex_coords);
-    vec4 mortar = texture2D(input_2,tex_coords);
-    float scale = texture2D(input_3,tex_coords).r*20;
-    float mortar_size = texture2D(input_4,tex_coords).r/10;
+    vec4 color1 = texture(input_0,tex_coords);
+    vec4 color2 = texture(input_1,tex_coords);
+    vec4 mortar = texture(input_2,tex_coords);
+    float scale = texture(input_3,tex_coords).r*20;
+    float mortar_size = texture(input_4,tex_coords).r/10;
     float mortar_smooth = 0;
-    float bias = texture2D(input_6,tex_coords).r;
-    float brick_width = texture2D(input_7,tex_coords).r;
-    float row_height = texture2D(input_7,tex_coords).g;
-    float offset_amount = texture2D(input_5,tex_coords).r;
-    float offset_frequency = texture2D(input_5,tex_coords).g*10;
-    float squash_amount = texture2D(input_5,tex_coords).b;
+    float bias = texture(input_6,tex_coords).r;
+    float brick_width = texture(input_7,tex_coords).r;
+    float row_height = texture(input_7,tex_coords).g;
+    float offset_amount = texture(input_5,tex_coords).r;
+    float offset_frequency = texture(input_5,tex_coords).g*10;
+    float squash_amount = texture(input_5,tex_coords).b;
     float squash_frequency = 2;
 
     vec4 res = node_tex_brick( co,

@@ -147,10 +147,10 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }   
 vec3 getRealisticResult(){
-   vec3 albedo = texture2D(input_0,tex_coords).rgb;
-   float roughness = texture2D(input_1,tex_coords).r+0.01;
-   float metallic = texture2D(input_2,tex_coords).r;
-   float ao = texture2D(input_4,tex_coords).r;
+   vec3 albedo = texture(input_0,tex_coords).rgb;
+   float roughness = texture(input_1,tex_coords).r+0.01;
+   float metallic = texture(input_2,tex_coords).r;
+   float ao = texture(input_4,tex_coords).r;
 
    
    vec3 lightPos1 = vec3(-10.0,  10.0, 10.0);
@@ -268,10 +268,10 @@ vec3 getRealisticResult(){
 void main() {
     vec3 result = getRealisticResult();
 
-    float alpha = texture2D(input_7,tex_coords).r;
+    float alpha = texture(input_7,tex_coords).r;
     
-    float emissionStr = texture2D(input_6,tex_coords).r;
-    vec3 emission = texture2D(input_5,tex_coords).rgb;
+    float emissionStr = texture(input_6,tex_coords).r;
+    vec3 emission = texture(input_5,tex_coords).rgb;
 
     float maxRG = max(emission.r , emission.g);
     emissionStr = emissionStr * max(maxRG,emission.b);

@@ -45,7 +45,7 @@ vec3 hash3( uint n )
 
 void main()
 {
-  float scale = texture2D(input_0,tex_coords).r*1024;
+  float scale = texture(input_0,tex_coords).r*1024;
   uvec2 p = uvec2(tex_coords*scale);
 
 	vec3 c = hash3( p.x + 1920U*p.y + (1920U*1080U)*uint(1) );

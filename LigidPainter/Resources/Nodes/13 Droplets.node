@@ -77,9 +77,9 @@ float DotNoise2D(in vec2 coord, in float wavelength, in float fractionalMaxDotSi
 void main(){
     float splash_speed = 1;
     float rnorm = 1;
-    float transform = texture2D(input_1,tex_coords).r*5;
-    float droplet_size = texture2D(input_0,tex_coords).r*10+0.01;
-    int steps = int(ceil(texture2D(input_2,tex_coords).r*20));
+    float transform = texture(input_1,tex_coords).r*5;
+    float droplet_size = texture(input_0,tex_coords).r*10+0.01;
+    int steps = int(ceil(texture(input_2,tex_coords).r*20));
 
     float rain = 0;
     float base_rate = 6.0 + 3.0 * rnorm + 4.0 * (splash_speed - 1.0);

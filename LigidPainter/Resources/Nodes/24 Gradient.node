@@ -114,9 +114,9 @@ float node_tex_gradient(vec3 co, float gradient_type)
 }
 
 void main(){
-  float val = texture2D(input_0,tex_coords).r*5;
-  vec3 rotVal = texture2D(input_1,tex_coords).rgb*6.283;
-  vec3 transform = texture2D(input_2,tex_coords).rgb*10;
+  float val = texture(input_0,tex_coords).r*5;
+  vec3 rotVal = texture(input_1,tex_coords).rgb*6.283;
+  vec3 transform = texture(input_2,tex_coords).rgb*10;
   mat4 rotation = rotationX(rotVal.x)*rotationY(rotVal.y)*rotationZ(rotVal.z);
   float res = node_tex_gradient((vec4(posModel+transform,1)*rotation).xyz,val);
   output_0 = vec4(vec3(res),1);

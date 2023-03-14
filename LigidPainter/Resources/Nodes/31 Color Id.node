@@ -102,7 +102,7 @@ vec3 RGBToHSVGenerator(vec3 rgbData){
 }
 void main()
 {
-    vec3 source = texture2D(input_0,tex_coords).rgb;
+    vec3 source = texture(input_0,tex_coords).rgb;
    
     vec3 hsv = RGBToHSVGenerator(source*255);
 

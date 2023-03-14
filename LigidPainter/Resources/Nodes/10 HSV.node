@@ -161,11 +161,11 @@ vec3 RGBToHSVGenerator(vec3 rgbData){
 }
 
 void main(){   
-    vec3 color = texture2D(input_0,tex_coords).rgb;
+    vec3 color = texture(input_0,tex_coords).rgb;
     
-    float h = (texture2D(input_1,tex_coords).r-0.5)*20;
-    float s = texture2D(input_2,tex_coords).r;
-    float v = texture2D(input_3,tex_coords).r;
+    float h = (texture(input_1,tex_coords).r-0.5)*20;
+    float s = texture(input_2,tex_coords).r;
+    float v = texture(input_3,tex_coords).r;
     
     vec3 hsvVal;
 
