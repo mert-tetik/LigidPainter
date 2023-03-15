@@ -201,8 +201,13 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 			}
 
 			if(panelCompatibility){
+				
+				float slideVal = 0;
+				if(panelData.paintingPanelActive)
+					slideVal = panelData.paintingPanelSlideVal;
+
 				if(currentType == "button"){
-					uiElementEnter = ui.isMouseOnButton(window, uiElements[i].button.width + 0.02f, uiElements[i].button.height, centerCoords - screenGapX + uiElements[i].button.positionX, uiElements[i].button.positionY, mouseXPos, mouseYPos, movePanel);
+					uiElementEnter = ui.isMouseOnButton(window, uiElements[i].button.width + 0.02f, uiElements[i].button.height, centerCoords - screenGapX + uiElements[i].button.positionX, uiElements[i].button.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
 					uiElements[i].button.hover = uiElementEnter;
 				}
 			
@@ -211,22 +216,22 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 				}
 	
 				if(currentType == "rangeBar"){
-					uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].rangeBar.positionX + uiElements[i].rangeBar.value, uiElements[i].rangeBar.positionY, mouseXPos, mouseYPos, movePanel);
+					uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].rangeBar.positionX + uiElements[i].rangeBar.value, uiElements[i].rangeBar.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
 					uiElements[i].rangeBar.hover = uiElementEnter;
 				}
 	
 				if(currentType == "textBox"){
-					uiElementEnter = ui.isMouseOnButton(window, uiElements[i].textBox.width, uiElements[i].textBox.height, centerCoords - screenGapX + uiElements[i].textBox.position_x, uiElements[i].textBox.position_y, mouseXPos, mouseYPos, movePanel);
+					uiElementEnter = ui.isMouseOnButton(window, uiElements[i].textBox.width, uiElements[i].textBox.height, centerCoords - screenGapX + uiElements[i].textBox.position_x, uiElements[i].textBox.position_y + slideVal, mouseXPos, mouseYPos, movePanel);
 					uiElements[i].textBox.hover = uiElementEnter;
 				}
 	
 				if(currentType == "checkBox"){
-					uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].checkBox.positionX, uiElements[i].checkBox.positionY, mouseXPos, mouseYPos, movePanel);
+					uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].checkBox.positionX, uiElements[i].checkBox.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
 					uiElements[i].checkBox.mouseHover = uiElementEnter;
 				}
 				if(currentType == "icon"){
 					if(uiElements[i].icon.clickable){
-						uiElementEnter = ui.isMouseOnButton(window, uiElements[i].icon.width/1.5, uiElements[i].icon.height/1.5, centerCoords - screenGapX + uiElements[i].icon.positionX, uiElements[i].icon.positionY, mouseXPos, mouseYPos, movePanel);
+						uiElementEnter = ui.isMouseOnButton(window, uiElements[i].icon.width/1.5, uiElements[i].icon.height/1.5, centerCoords - screenGapX + uiElements[i].icon.positionX, uiElements[i].icon.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
 						uiElements[i].icon.hover = uiElementEnter;
 					}
 				}
@@ -238,15 +243,15 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		}
 
 		if(panelData.paintingPanelActive){
-			colorPicker.saturationValuePointerHover = ui.isMouseOnButton(window,0.015f, 0.03f, mainPanelLoc / centerDivider + centerSum - screenGapX - 0.02f + colorPicker.saturationValuePosX, -0.55f + colorPicker.saturationValuePosY, mouseXPos, mouseYPos, movePanel);
-			colorPicker.hueValuePointerHover = ui.isMouseOnButton(window, 0.01f, 0.01f, mainPanelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f + colorPicker.hueValue, mouseXPos, mouseYPos, movePanel);
-			colorPicker.hexValTextBoxEnter =  ui.isMouseOnButton(window, 0.04f, 0.03f, mainPanelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.81f, mouseXPos, mouseYPos, movePanel);
-			colorPicker.dropperEnter = ui.isMouseOnButton(window, 0.015f,0.03f, mainPanelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.81f, mouseXPos, mouseYPos,movePanel);
+			colorPicker.saturationValuePointerHover = ui.isMouseOnButton(window,0.015f, 0.03f, mainPanelLoc / centerDivider + centerSum - screenGapX - 0.02f + colorPicker.saturationValuePosX, -0.55f + colorPicker.saturationValuePosY + panelData.paintingPanelSlideVal, mouseXPos, mouseYPos, movePanel);
+			colorPicker.hueValuePointerHover = ui.isMouseOnButton(window, 0.01f, 0.01f, mainPanelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f + colorPicker.hueValue+ panelData.paintingPanelSlideVal, mouseXPos, mouseYPos, movePanel);
+			colorPicker.hexValTextBoxEnter =  ui.isMouseOnButton(window, 0.04f, 0.03f, mainPanelLoc / centerDivider + centerSum - screenGapX - 0.008f,-0.81f+ panelData.paintingPanelSlideVal, mouseXPos, mouseYPos, movePanel);
+			colorPicker.dropperEnter = ui.isMouseOnButton(window, 0.015f,0.03f, mainPanelLoc / centerDivider + centerSum - screenGapX + 0.08f, -0.81f+ panelData.paintingPanelSlideVal, mouseXPos, mouseYPos,movePanel);
 			
-			colorPicker.saturationValueBoxHover = ui.isMouseOnButton(window, 0.1f, 0.2f, mainPanelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.55f, mouseXPos, mouseYPos, movePanel);		
-			colorPicker.hueValueBarHover = ui.isMouseOnButton(window, 0.01f, 0.18f, mainPanelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f, mouseXPos, mouseYPos, movePanel);
+			colorPicker.saturationValueBoxHover = ui.isMouseOnButton(window, 0.1f, 0.2f, mainPanelLoc / centerDivider + centerSum - screenGapX - 0.02f, -0.55f+ panelData.paintingPanelSlideVal, mouseXPos, mouseYPos, movePanel);		
+			colorPicker.hueValueBarHover = ui.isMouseOnButton(window, 0.01f, 0.18f, mainPanelLoc / centerDivider + centerSum - screenGapX + 0.1f, -0.55f+ panelData.paintingPanelSlideVal, mouseXPos, mouseYPos, movePanel);
 		
-			maskPanelEnter = ui.isMouseOnButton(window, 0.15f, 0.15f, mainPanelLoc / centerDivider + centerSum - screenGapX, 0.675f, mouseXPos, mouseYPos, movePanel);
+			maskPanelEnter = ui.isMouseOnButton(window, 0.15f, 0.15f, mainPanelLoc / centerDivider + centerSum - screenGapX, 0.675f+ panelData.paintingPanelSlideVal, mouseXPos, mouseYPos, movePanel);
 		}
 		if(!panelData.paintingPanelActive){
 			nodePanel.panelHover = ui.isMouseOnNodePanel(window,mainPanelLoc - screenGapX - 1.f, nodePanel.heigth,mouseXPos,mouseYPos,false,sndPanel.position);

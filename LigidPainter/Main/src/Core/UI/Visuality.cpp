@@ -1603,7 +1603,7 @@ void UserInterface::modelMaterialPanel(Model &model,Programs programs,RenderData
 		}
 }
 
-void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned int> &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool &firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData){
+void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned int> &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool &firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData,float posY){
 	ColorData colorData;
 	GlSet gl;
 	Texture txtr;
@@ -1620,22 +1620,25 @@ void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned
 			}
 			maskXpos-=0.08f;
 			float position_x = centerCoords - screenGapX - maskXpos - 0.175f;
-			float position_y = 0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f;
+			float position_y = posY+ maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f;
+
+			const float panelRange = 0.25f;
+
 			//ui.iconBox(0.025f, 0.05f,centerCoords - screenGapX - maskXpos - 0.2f,0.8f + maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f,1,maskTextures[i],0);
-			float upBotDifMin = std::min(0.05f + position_y,0.8f) - std::min(-0.05f + position_y,0.8f);
-			float upBotDifMax = std::max(0.05f + position_y,0.55f) - std::max(-0.05f + position_y,0.55f);
+			float upBotDifMin = std::min(0.05f + position_y,posY) - std::min(-0.05f + position_y,posY);
+			float upBotDifMax = std::max(0.05f + position_y,posY-panelRange) - std::max(-0.05f + position_y,posY-panelRange);
 			std::vector<float> buttonCoorSq{
 				// first trianglev 
-				 0.03f + position_x,  std::min(std::max(0.06f + position_y,0.55f),0.8f), 1,1,upBotDifMin*10,0,0,0,  // top right
-				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,0.55f),0.8f), 1,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
-				-0.03f + position_x,  std::min(std::max(0.06f + position_y,0.55f),0.8f), 1,0,upBotDifMin*10,0,0,0,  // top left 
+				 0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 1,1,upBotDifMin*10,0,0,0,  // top right
+				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 1,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
+				-0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 1,0,upBotDifMin*10,0,0,0,  // top left 
 				// second triangle						   
-				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,0.55f),0.8f), 1,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
-				-0.03f + position_x,  std::min(std::max(-0.06f + position_y,0.55f),0.8f), 1,0,1.0f-upBotDifMax*10,0,0,0,  // bottom left
-				-0.03f + position_x,  std::min(std::max(0.06f + position_y,0.55f),0.8f), 1,0,upBotDifMin*10,0,0,0  // top left
+				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 1,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
+				-0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 1,0,1.0f-upBotDifMax*10,0,0,0,  // bottom left
+				-0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 1,0,upBotDifMin*10,0,0,0  // top left
 			};
 
-			if(std::min(std::max(0.06f + position_y,0.55f),0.8f) != std::min(std::max(-0.06f + position_y,0.55f),0.8f)){//Prevent rendering all the textures
+			if(std::min(std::max(0.06f + position_y,posY-panelRange),posY) != std::min(std::max(-0.06f + position_y,posY-panelRange),posY)){//Prevent rendering all the textures
 				gl.uniform1i(programs.iconsProgram,"isMaskIcon",1);
 				if(maskTextures[i] == currentBrushMaskTexture){
 					glm::vec4 chosenBrushMaskTextureColor = glm::vec4(colorData.chosenBrushMaskTextureColor,1.0f);

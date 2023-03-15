@@ -146,6 +146,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			UIElements[UIexportingFolderNameTextBox].textBox.clicked = !UIElements[UIexportingFolderNameTextBox].textBox.clicked; 
 			ligid.exportFileNameTextBox();
 		}
+		if (UIElements[UIpaintThroughCheckBoxElement].checkBox.mouseHover)
+			UIElements[UIpaintThroughCheckBoxElement].checkBox.checked = !UIElements[UIpaintThroughCheckBoxElement].checkBox.checked; 
 		if (UIElements[UIdownloadButton].button.hover)
 			ligid.exportDownloadButtonEnter();
 		if (UIElements[UIjpgCheckBox].checkBox.mouseHover)

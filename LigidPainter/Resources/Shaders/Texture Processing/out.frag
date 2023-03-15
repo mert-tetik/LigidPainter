@@ -25,6 +25,8 @@ in vec2 TexCoords;
 in vec3 Normal;
 in vec3 Pos;
 
+uniform int paintThrough; 
+
 in vec4 projectedPos;
 in vec4 mirroredProjectedPos;
 
@@ -54,7 +56,8 @@ bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMir
    //    direction = viewPos - Pos;
    // }
    // float dotProd = dot(normalize(direction),normalize(Normal));
-
+   if(paintThrough == 1)
+      return true;
  
    if(true){
       return abs(drawZ - linearizeDepth(uv.z)/far) < 0.0025;

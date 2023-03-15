@@ -327,6 +327,10 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	//3D-------------------------
 	glActiveTexture(GL_TEXTURE13);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
+	glUseProgram(renderPrograms.PBRProgram);
+	gls.uniform1i(renderPrograms.PBRProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
+	glUseProgram(renderPrograms.outProgram);
+	gls.uniform1i(renderPrograms.outProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
 	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects);
 	renderAxisPointer(axisPointerShaderData,renderPrograms);
 	//-------------------------

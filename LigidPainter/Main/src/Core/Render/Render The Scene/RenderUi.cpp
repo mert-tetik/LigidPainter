@@ -546,24 +546,24 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		if(colorPicker.updateHueVal)
 			colorPicker.hueColorValue = ui.hueBar(centerCoords - screenGapX + 0.1f, -0.55f, colorPicker.hueValue, FBOScreen, renderData.window,projection,colorPicker.updateHueVal); 
 		else
-			ui.hueBar(centerCoords - screenGapX + 0.1f, -0.55f, colorPicker.hueValue, FBOScreen, renderData.window,projection,colorPicker.updateHueVal); 
+			ui.hueBar(centerCoords - screenGapX + 0.1f, -0.55f+panelData.paintingPanelSlideVal, colorPicker.hueValue, FBOScreen, renderData.window,projection,colorPicker.updateHueVal); 
 
 
 		saturationValShaderData.boxColor = colorPicker.hueColorValue / 255.0f;
 		saturationValShaderData.renderTextureProjection = projection;
 		gl.useSaturationValBoxShader(programs.saturationValBoxProgram,saturationValShaderData);
-		ui.colorBox(centerCoords - screenGapX - 0.02f, -0.55f, colorPicker.saturationValuePosX, colorPicker.saturationValuePosY,icons);
+		ui.colorBox(centerCoords - screenGapX - 0.02f, -0.55f+panelData.paintingPanelSlideVal, colorPicker.saturationValuePosX, colorPicker.saturationValuePosY,icons);
 		
-		ui.box(0.04f, 0.03f, centerCoords - screenGapX - 0.008f,-0.81f, util.rgbToHexGenerator(colorPicker.pickerValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
+		ui.box(0.04f, 0.03f, centerCoords - screenGapX - 0.008f,-0.81f+panelData.paintingPanelSlideVal, util.rgbToHexGenerator(colorPicker.pickerValue), colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, hexValTextboxMixVal);//Hex val textbox
 		
 		glUseProgram(programs.iconsProgram);
-		ui.iconBox(0.02*1.2,0.0364f*1.2,centerCoords - screenGapX - 0.095f,-0.81f,0.9f,icons.Circle,0,colorData.panelColorSnd,glm::vec4(0));
-		ui.iconBox(0.02,0.0364f,centerCoords - screenGapX - 0.095f,-0.81f,0.91f,icons.Circle,0,glm::vec4(colorPicker.pickerValue / glm::vec3(255),1.0f),glm::vec4(0));
-		ui.iconBox(0.02f,0.03f,centerCoords - screenGapX + 0.08f, -0.81f,0.9f,icons.dropperIcon,dropperMixVal,colorData.iconColor,colorData.iconColorHover);
+		ui.iconBox(0.02*1.2,0.0364f*1.2,centerCoords - screenGapX - 0.095f,-0.81f+panelData.paintingPanelSlideVal,0.9f,icons.Circle,0,colorData.panelColorSnd,glm::vec4(0));
+		ui.iconBox(0.02,0.0364f,centerCoords - screenGapX - 0.095f,-0.81f+panelData.paintingPanelSlideVal,0.91f,icons.Circle,0,glm::vec4(colorPicker.pickerValue / glm::vec3(255),1.0f),glm::vec4(0));
+		ui.iconBox(0.02f,0.03f,centerCoords - screenGapX + 0.08f, -0.81f+panelData.paintingPanelSlideVal,0.9f,icons.dropperIcon,dropperMixVal,colorData.iconColor,colorData.iconColorHover);
 	}
 		
 	if (panelData.paintingPanelActive) { //Icons
-		ui.brushMaskTexturePanel(programs,maskTextures,centerCoords,screenGapX,maskPanelSliderValue,currentBrushMaskTexture,firstClick,renderData.window,mouseXpos,mouseYpos,FBOScreen,panelData,screenSizeX,screenSizeY,uiOut,UIElements,brushBlurVal,outShaderData);
+		ui.brushMaskTexturePanel(programs,maskTextures,centerCoords,screenGapX,maskPanelSliderValue,currentBrushMaskTexture,firstClick,renderData.window,mouseXpos,mouseYpos,FBOScreen,panelData,screenSizeX,screenSizeY,uiOut,UIElements,brushBlurVal,outShaderData,0.8f + panelData.paintingPanelSlideVal);
 	}
 
 
@@ -572,9 +572,9 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		glUseProgram(programs.uiProgram);
 
 		const float maskPanelRange = ceil((int)maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
-		ui.verticalRangeBar( renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f,0.8f,0.125,maskPanelSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.textures.size(),screenGapX);
+		ui.verticalRangeBar( renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,maskPanelSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.textures.size(),screenGapX);
 
-		ui.box(0.035f, 0.07f, centerCoords - screenGapX - 0.1f, 0.42f, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0);
+		ui.box(0.035f, 0.07f, centerCoords - screenGapX - 0.1f, 0.42f+panelData.paintingPanelSlideVal, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0);
 	}
 
 	bool usingUiProgram = false;
@@ -604,7 +604,11 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			panelCompatibility = false;
 
 		if(panelCompatibility){
+			float slideVal = 0.0f;
 			
+			if(panelData.paintingPanelActive)
+				slideVal = panelData.paintingPanelSlideVal;
+
 			const int uiIconStartingIndex = 30; 
 			if(i < uiIconStartingIndex && !usingUiProgram){
 				glUseProgram(programs.uiProgram);
@@ -616,23 +620,22 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			}
 
 			if(currentType == "button"){
-				ui.box(UIElements[i].button.width, UIElements[i].button.height, centerCoords - screenGapX + UIElements[i].button.positionX, UIElements[i].button.positionY, UIElements[i].button.text, UIElements[i].button.color, UIElements[i].button.textRatio, false, false, UIElements[i].button.positionZ, UIElements[i].button.buttonCurveReduce, UIElements[i].button.colorHover, UIElements[i].button.transitionMixVal); //Add mask texture button
+				ui.box(UIElements[i].button.width, UIElements[i].button.height, centerCoords - screenGapX + UIElements[i].button.positionX, UIElements[i].button.positionY+slideVal, UIElements[i].button.text, UIElements[i].button.color, UIElements[i].button.textRatio, false, false, UIElements[i].button.positionZ, UIElements[i].button.buttonCurveReduce, UIElements[i].button.colorHover, UIElements[i].button.transitionMixVal); //Add mask texture button
 			}
-			
 			if(currentType == "text"){	
-				ui.renderText(programs.uiProgram,UIElements[i].text.text, centerCoords - screenGapX + UIElements[i].text.positionX, UIElements[i].text.positionY, UIElements[i].text.scale,colorData.textColor,0.99999f,false);
+				ui.renderText(programs.uiProgram,UIElements[i].text.text, centerCoords - screenGapX + UIElements[i].text.positionX, UIElements[i].text.positionY+slideVal, UIElements[i].text.scale,colorData.textColor,0.99999f,false);
 			}
 			if(currentType == "rangeBar"){
-				ui.rangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY, UIElements[i].rangeBar.value);
+				ui.rangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY+slideVal, UIElements[i].rangeBar.value);
 			}
 			if(currentType == "textBox"){
-				ui.box(UIElements[i].textBox.width, UIElements[i].textBox.height,centerCoords - screenGapX + UIElements[i].textBox.position_x, UIElements[i].textBox.position_y,UIElements[i].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements[i].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements[i].textBox.transitionMixVal); //Add mask texture button
+				ui.box(UIElements[i].textBox.width, UIElements[i].textBox.height,centerCoords - screenGapX + UIElements[i].textBox.position_x, UIElements[i].textBox.position_y+slideVal,UIElements[i].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements[i].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements[i].textBox.transitionMixVal); //Add mask texture button
 			}
 			if(currentType == "checkBox"){
-				ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,icons.Circle); //jpg checkbox
+				ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY+slideVal, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,icons.Circle); //jpg checkbox
 			}
 			if(currentType == "icon"){
-				ui.iconBox(UIElements[i].icon.width,UIElements[i].icon.height,centerCoords - screenGapX + UIElements[i].icon.positionX ,UIElements[i].icon.positionY,UIElements[i].icon.positionZ,UIElements[i].icon.icon, UIElements[i].icon.mixVal , UIElements[i].icon.color , UIElements[i].icon.colorHover);
+				ui.iconBox(UIElements[i].icon.width,UIElements[i].icon.height,centerCoords - screenGapX + UIElements[i].icon.positionX ,UIElements[i].icon.positionY+slideVal,UIElements[i].icon.positionZ,UIElements[i].icon.icon, UIElements[i].icon.mixVal , UIElements[i].icon.color , UIElements[i].icon.colorHover);
 			}
 		}
 	}	

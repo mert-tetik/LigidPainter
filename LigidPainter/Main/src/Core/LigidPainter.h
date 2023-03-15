@@ -271,6 +271,7 @@ struct PanelData {
 	bool modelPanelActive;
 	bool texturePanelActive;
 	bool paintingPanelActive;
+	float paintingPanelSlideVal = 0.0f;
 	bool exportPanelActive;
 	bool settingsPanelActive;
 	bool generatorPanelActive;

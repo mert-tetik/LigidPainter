@@ -573,6 +573,21 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     bakeButtonElement.type = "button";
     UIElements.push_back(bakeButtonElement);//41
 
+
+
+    //---------PAINTING PANEL----------
+
+    UIElement paintThroughCheckBoxElement;
+    paintThroughCheckBoxElement.checkBox.positionX = -0.03f;
+    paintThroughCheckBoxElement.checkBox.positionY = -0.95f;
+    paintThroughCheckBoxElement.checkBox.text = "Paint Through";
+    paintThroughCheckBoxElement.checkBox.checked = false;
+    paintThroughCheckBoxElement.checkBox.mouseHover = false;
+    paintThroughCheckBoxElement.panel = 3;
+    paintThroughCheckBoxElement.attachedToMainPanel = true;
+    paintThroughCheckBoxElement.type = "checkBox";
+    UIElements.push_back(paintThroughCheckBoxElement);//38
+
 	//-------------ICONS-------------
 
 

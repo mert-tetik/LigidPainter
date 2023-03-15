@@ -25,12 +25,13 @@ uniform sampler2D mirroredDepthTexture; //Screen rendered with depth color
 
 uniform vec3 viewPos;
 
-
 out vec4 color;
 
 uniform samplerCube bluryskybox;
 uniform samplerCube prefilterMap;
 uniform sampler2D brdfLUT;
+
+uniform int paintThrough; 
 
 uniform float skyboxExposure;
 
@@ -58,7 +59,8 @@ bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMir
    //    direction = viewPos - Pos;
    // }
    // float dotProd = dot(normalize(direction),normalize(Normal));
-
+   if(paintThrough == 1)
+      return true;
  
    if(true){
       return abs(drawZ - linearizeDepth(uv.z)/far) < 0.005;
