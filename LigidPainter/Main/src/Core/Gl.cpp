@@ -162,8 +162,14 @@ WindowData GlSet::getWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	int resX; 
+	int resY;
+	resX = 100000; 
+	resY = 100000; 
     #ifdef __APPLE__
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		resX = 1920;
+		resY = 1080;
 	#endif
 	GLFWwindow* window = glfwCreateWindow(38450,21650, "LigidPainter", NULL, NULL);
 
@@ -171,17 +177,20 @@ WindowData GlSet::getWindow() {
 	
 	glfwMakeContextCurrent(window);
 
-	int windowMaxWidth;
-	int windowMaxHeight;
-	glfwGetFramebufferSize(window,&windowMaxWidth,&windowMaxHeight);
 
 	Utilities util;
 	const float windowRatio = 16.0f/9.0f;
 	const float maxRatioDifference = 0.2; 
 
-
+	int windowMaxWidth;
+	int windowMaxHeight;
+	#ifdef __APPLE__
+		windowMaxWidth = 1920;
+		windowMaxHeight = 1080;
+	#endif
 	//Adjust the ratio
 	#ifndef __APPLE__
+	glfwGetFramebufferSize(window,&windowMaxWidth,&windowMaxHeight);
 	if(windowMaxWidth >= windowMaxHeight){
 
 		if(abs(((double)windowMaxWidth / (double)windowMaxHeight) - windowRatio) > maxRatioDifference)
