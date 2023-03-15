@@ -331,7 +331,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 }
 void Callback::framebuffer_size_callback(GLFWwindow* window, int width, int height) //Protect screen ratio
 {
-	glfwSetWindowSize(window, width, height);
+	// glfwSetWindowSize(window, width, height);
 	glViewport(-(callbackMaxScreenWidth - width)/2, -(callbackMaxScreenHeight - height), callbackMaxScreenWidth, callbackMaxScreenHeight);
 
 	screenX = width;

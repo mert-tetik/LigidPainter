@@ -181,6 +181,7 @@ WindowData GlSet::getWindow() {
 
 
 	//Adjust the ratio
+	#ifndef __APPLE__
 	if(windowMaxWidth >= windowMaxHeight){
 
 		if(abs(((double)windowMaxWidth / (double)windowMaxHeight) - windowRatio) > maxRatioDifference)
@@ -191,8 +192,8 @@ WindowData GlSet::getWindow() {
 		if(abs(((double)windowMaxHeight / (double)windowMaxWidth) - windowRatio) > maxRatioDifference)
 			windowMaxHeight = util.keepTheRatio(windowMaxWidth,windowMaxHeight,windowRatio);
 	}
-
-	glfwSetWindowSize(window,windowMaxWidth,windowMaxHeight);
+		glfwSetWindowSize(window,windowMaxWidth,windowMaxHeight);
+	#endif
 
 	GLFWimage images[1];
 	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/logo-1080x.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
