@@ -212,16 +212,14 @@ bool LigidPainter::run()
 	windowData = glset.getWindow();
 	window = windowData.window;
 
-	#ifndef __APPLE__
-		glfwSetWindowAttrib(window,GLFW_DECORATED,GLFW_FALSE);
-		glfwSetWindowSize(window,windowData.windowMaxWidth/3.5,windowData.windowMaxHeight/3.5);
-		glfwSetWindowPos(window,windowData.windowMaxWidth/2-(windowData.windowMaxWidth/7),windowData.windowMaxHeight/2-(windowData.windowMaxHeight/7));
-	#endif
+	glfwSetWindowAttrib(window,GLFW_DECORATED,GLFW_FALSE);
+	glfwSetWindowSize(window,windowData.windowMaxWidth/3.5,windowData.windowMaxHeight/3.5);
+	glfwSetWindowPos(window,windowData.windowMaxWidth/2-(windowData.windowMaxWidth/7),windowData.windowMaxHeight/2-(windowData.windowMaxHeight/7));
 	
 	glViewport(0,0,windowData.windowMaxWidth/3.5,windowData.windowMaxHeight/3.5);
 
 	//Set Callbacks
-	glfwSetWindowSizeCallback(window, framebuffer_size_callback); 
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
@@ -367,9 +365,7 @@ bool LigidPainter::run()
 	txtr.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	model.sendObjectsToModel(objects.VAO,objects.VBO);
 
-	#ifndef __APPLE__
 	glfwSetWindowSizeLimits(window,windowData.windowMaxWidth/1.7,0,windowData.windowMaxWidth,windowData.windowMaxHeight);
-	#endif 
 
 
 
@@ -417,11 +413,9 @@ bool LigidPainter::run()
 
 	MainLoop mainLoop;
 	
-	#ifndef __APPLE__
-		glfwSetWindowAttrib(window,GLFW_DECORATED,GLFW_TRUE);
-		glfwSetWindowSize(window,windowData.windowMaxWidth,windowData.windowMaxWidth);
-		glfwSetWindowPos(window,0,20);
-	#endif
+	glfwSetWindowAttrib(window,GLFW_DECORATED,GLFW_TRUE);
+	glfwSetWindowSize(window,windowData.windowMaxWidth,windowData.windowMaxWidth);
+	glfwSetWindowPos(window,0,20);
 	
 	glfwPollEvents();
 
