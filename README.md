@@ -27,6 +27,10 @@ https://www.ligidtools.com/building-ligid-painter
     Left CTRL + TAB + W = Switch to texture panel
     Left CTRL + TAB + R = Switch to export panel
     Left CTRL + TAB + T = Switch to painting panel
+    Left CTRL + 1 = Stabilize camera on x axis
+    Left CTRL + 2 = Stabilize camera on z axis
+    Left CTRL + 3 = Stabilize camera on -x axis
+    Left CTRL + 4 = Stabilize camera on -z axis
 
     While message box is active
     ESC = Negative (Close the message box)

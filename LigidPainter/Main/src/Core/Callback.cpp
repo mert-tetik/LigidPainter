@@ -13,6 +13,7 @@
 #include "Core/Callback.h"
 #include "Core/gl.h"
 #include "Core/UI/UserInterface.h"
+#include "Core/Utilities.h"
 
 
 int callbackMaxScreenWidth;
@@ -73,7 +74,30 @@ CallbckData preapareCallbackData() {
 
 	return callbk;
 }
-
+void Callback::key_callback(int key, int action,GLFWwindow* window){
+	Utilities util;
+	float originCameraDistance = glm::distance(originPos,cameraPos);
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_1,0,0) && action == 1){
+		cameraPos.x = originCameraDistance;
+		cameraPos.y = 0;
+		cameraPos.z = 0;
+	}
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_3,0,0) && action == 1){
+		cameraPos.x = -originCameraDistance;
+		cameraPos.y = 0;
+		cameraPos.z = 0;
+	}
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_2,0,0) && action == 1){
+		cameraPos.z = originCameraDistance;
+		cameraPos.y = 0;
+		cameraPos.x = 0;
+	}
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_4,0,0) && action == 1){
+		cameraPos.z = -originCameraDistance;
+		cameraPos.y = 0;
+		cameraPos.x = 0;
+	}
+}
 CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double scrollx) {
 	float originCameraDistance = glm::distance(originPos,cameraPos)/10;
 	CallbckData callbk;

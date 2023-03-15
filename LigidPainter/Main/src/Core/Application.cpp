@@ -900,6 +900,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_R,0) && action == 1){
 		lp.exportPanelButton();
 	}
+	Callback cb;
+	cb.key_callback(key,action,window);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
