@@ -83,7 +83,7 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	glBindVertexArray(uiObjects.VAO);
 }
 
-void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
+void UserInterface::panel(float panelLoc, Icons icons,PanelData &panelData) {
 	GlSet glset;
 
 	const float panelWidth = 0.2f;
@@ -104,29 +104,37 @@ void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
 	circle(panelLoc + cornerWidth - 0.002f, panelHeigth - cornerWidth + 0.002f,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 	circle(panelLoc + cornerWidth,-panelHeigth + cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 
+	Utilities util;
+	panelData.modelPanelMixval = util.transitionEffect(panelData.modelPanelActive,panelData.modelPanelMixval,0.1f);
+	panelData.texturePanelMixval = util.transitionEffect(panelData.texturePanelActive,panelData.texturePanelMixval,0.1f);
+	panelData.exportPanelMixval = util.transitionEffect(panelData.exportPanelActive,panelData.exportPanelMixval,0.1f);
+	panelData.paintingPanelMixval = util.transitionEffect(panelData.paintingPanelActive,panelData.paintingPanelMixval,0.1f);
+	panelData.settingsPanelMixval = util.transitionEffect(panelData.settingsPanelActive,panelData.settingsPanelMixval,0.1f);
+	panelData.generatorPanelMixval = util.transitionEffect(panelData.generatorPanelActive,panelData.generatorPanelMixval,0.1f);
+
 	//Texture panel button
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.8f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.01f,0.02f,panelLoc - 0.013f,0.808f,0.6f,icons.TDModel,panelData.modelPanelActive,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
+	iconBox(0.01f,0.02f,panelLoc - 0.013f,0.808f,0.6f,icons.TDModel,panelData.modelPanelMixval,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 	
 	//Material panel button
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.72f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.725f,0.6f,icons.Material,panelData.texturePanelActive,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
+	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.725f,0.6f,icons.Material,panelData.texturePanelMixval,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 
 	//Painting panel button
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.64f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.647f,0.6f,icons.Painting,panelData.paintingPanelActive,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
+	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.647f,0.6f,icons.Painting,panelData.paintingPanelMixval,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 
 	//Export panel button
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.56f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.567f,0.6f,icons.Export,panelData.exportPanelActive,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
+	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.567f,0.6f,icons.Export,panelData.exportPanelMixval,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 
 	//Settings panel button
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.48f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.011f,0.022f,panelLoc - 0.013f,0.485f,0.6f,icons.Gear,panelData.settingsPanelActive,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
+	iconBox(0.011f,0.022f,panelLoc - 0.013f,0.485f,0.6f,icons.Gear,panelData.settingsPanelMixval,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 
 	//Generator panel button
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.4f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.011f,0.022f,panelLoc - 0.013f,0.405f,0.6f,icons.TextureGenerator,panelData.generatorPanelActive,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
+	iconBox(0.011f,0.022f,panelLoc - 0.013f,0.405f,0.6f,icons.TextureGenerator,panelData.generatorPanelMixval,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 
 	glUseProgram(uiPrograms.uiProgram);
 	
@@ -241,14 +249,18 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	glUseProgram(programs.iconsProgram);
 	circle(panelLoc - cornerWidth + 0.002f,panelHeigth - cornerWidth + 0.002f,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
 	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+	
+	Utilities util;
+	sndpnl.texturePanelButtonMixval = util.transitionEffect(1-sndpnl.state,sndpnl.texturePanelButtonMixval,0.1f);
+	sndpnl.materialPanelButtonMixval = util.transitionEffect(sndpnl.state,sndpnl.materialPanelButtonMixval,0.1f);
 
 	//Texture panel button
 	iconBox(0.017f,0.034f,panelLoc + 0.017f,0.8f,panelZ+0.01f,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.01f,0.02f,panelLoc + 0.013f,0.808f,panelZ+0.02f,icons.Texture,1-sndpnl.state,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
+	iconBox(0.01f,0.02f,panelLoc + 0.013f,0.808f,panelZ+0.02f,icons.Texture,sndpnl.texturePanelButtonMixval,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 	
 	//Material panel button
 	iconBox(0.017f,0.034f,panelLoc + 0.017f,0.72f,panelZ+0.01f,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.012f,0.024f,panelLoc + 0.013f,0.725f,panelZ+0.02f,icons.Material,sndpnl.state,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
+	iconBox(0.012f,0.024f,panelLoc + 0.013f,0.725f,panelZ+0.02f,icons.Material,sndpnl.materialPanelButtonMixval,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 	
 	if(panelLoc > -0.98f){
 
@@ -1734,7 +1746,7 @@ void UserInterface::modelMaterialPanel(Model &model,Programs programs,RenderData
 		}
 }
 
-void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned int> &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool &firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData,float posY){
+void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned int> &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool &firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData &panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData,float posY){
 	ColorData colorData;
 	GlSet gl;
 	Texture txtr;

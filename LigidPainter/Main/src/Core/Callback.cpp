@@ -116,7 +116,7 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 	return callbk;
 }
 
-CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData panelData, float maskPanelSliderValue,bool brushMaskPanelMaskHover,
+CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData &panelData, float maskPanelSliderValue,bool brushMaskPanelMaskHover,
 LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer
 , NodePanel &nodePanel, ContextMenu &addNodeContextMenu, SndPanel &sndPanel,ColoringPanel &coloringPanel)
 {
@@ -180,7 +180,7 @@ bool panelChangeHover = false;
 bool panelClickTaken = false;
 bool noPanelClick = true;
 
-void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData panelData,float maskPanelSliderValue,bool brushMaskPanelMaskHover,
+void Callback::buttonCheck(GLFWwindow* window, double mouseXPos,double mouseYPos,PanelData &panelData,float maskPanelSliderValue,bool brushMaskPanelMaskHover,
 LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker, TextureDisplayer &textureDisplayer
 ,NodePanel &nodePanel,ContextMenu &addNodeContextMenu,SndPanel &sndPanel,ColoringPanel &coloringPanel) {
 	UserInterface ui;

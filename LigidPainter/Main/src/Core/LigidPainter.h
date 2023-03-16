@@ -269,12 +269,24 @@ public:
 };
 struct PanelData {
 	bool movePanel;
+	
 	bool modelPanelActive;
+	float modelPanelMixval = 0.f;
+	
 	bool texturePanelActive;
+	float texturePanelMixval = 0.f;
+	
 	bool paintingPanelActive;
+	float paintingPanelMixval = 0.f;
 	float paintingPanelSlideVal = 0.0f;
+	
 	bool exportPanelActive;
+	float exportPanelMixval = 0.f;
+	
 	bool settingsPanelActive;
+	float settingsPanelMixval = 0.f;
+	
 	bool generatorPanelActive;
+	float generatorPanelMixval = 0.f;
 };
 #endif // !MSHPAPP
