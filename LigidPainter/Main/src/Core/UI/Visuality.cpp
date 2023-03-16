@@ -483,12 +483,18 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 						if(isMouseOnButton(window,textureWidth/1.1,textureWidth/3.f,position_x,position_y,mouseXpos,mouseYpos,false)){
 							selectRCHover = true;
 							if(firstClick){
-								selectedAlbedoTextureIndex = i;
+								if(albedoTextures[i].isTexture)//Select the texture
+									selectedAlbedoTextureIndex = i;
+								else //Open the folder
+									folderIndex = i;
 								sndpanelMoveTexture = false;
 							}
 						}	
-						box(textureWidth/1.2,textureWidth/3.f,position_x,position_y,"Select",colorData.buttonColor,0.025f,false,false,panelZ+0.03f,10,colorData.buttonColorHover,selectRCHover);
-			
+						if(albedoTextures[i].isTexture)
+							box(textureWidth/1.2,textureWidth/3.f,position_x,position_y,"Select",colorData.buttonColor,0.025f,false,false,panelZ+0.03f,10,colorData.buttonColorHover,selectRCHover);
+						else
+							box(textureWidth/1.2,textureWidth/3.f,position_x,position_y,"Open",colorData.buttonColor,0.025f,false,false,panelZ+0.03f,10,colorData.buttonColorHover,selectRCHover);
+						
 						bool subSelectRCHover = false;
 						if(isMouseOnButton(window,textureWidth/1.1,textureWidth/3.f,position_x,position_y-textureWidth,mouseXpos,mouseYpos,false)){
 							subSelectRCHover = true;
@@ -497,7 +503,8 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 								sndpanelMoveTexture = false;
 							}
 						}	
-						box(textureWidth/1.2,textureWidth/3.f,position_x,position_y-textureWidth,"SubSelect",colorData.buttonColor,0.04f,false,false,panelZ+0.03f,10,colorData.buttonColorHover,subSelectRCHover);
+						if(albedoTextures[i].isTexture)
+							box(textureWidth/1.2,textureWidth/3.f,position_x,position_y-textureWidth,"SubSelect",colorData.buttonColor,0.04f,false,false,panelZ+0.03f,10,colorData.buttonColorHover,subSelectRCHover);
 
 						if(isMouseOnButton(window,textureWidth/1.1,textureWidth/3.f,position_x,position_y+textureWidth,mouseXpos,mouseYpos,false)){
 							removeRCHover = true;
@@ -549,14 +556,18 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 									}
 								}
 								else if(albedoTextures[i].isTrashFolder){
-									alert("Warning! Trash folder can't be deleted.",200);
+									alert("Warning! This is THE TRASH folder.",200);
 									folderIndex = 10000;
 									sndpanelFolderPressed = false;
 									sndpanelMoveTexture = false;
 								}
 							}
 						}	
-						box(textureWidth/1.2,textureWidth/3.f,position_x,position_y+textureWidth,"Remove",colorData.buttonColor,0.032f,false,false,panelZ+0.03f,10,colorData.buttonColorHover,removeRCHover);
+						if(albedoTextures[i].folderIndex == 0)
+							box(textureWidth/1.2,textureWidth/3.f,position_x,position_y+textureWidth,"Remove",colorData.buttonColor,0.032f,false,false,panelZ+0.03f,10,colorData.buttonColorHover,removeRCHover);
+						else
+							box(textureWidth/1.2,textureWidth/3.f,position_x,position_y+textureWidth,"To Trash",colorData.buttonColor,0.035f,false,false,panelZ+0.03f,10,colorData.buttonColorHover,removeRCHover);
+						
 						glUseProgram(programs.renderTheTextureProgram);
 					}
 					lC++;
