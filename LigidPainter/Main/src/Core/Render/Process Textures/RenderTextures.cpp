@@ -41,7 +41,7 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		unsigned int textureColorbuffer;
 		gl.genTextures(textureColorbuffer);
 		gl.bindTexture(textureColorbuffer);
-		gl.texImage(NULL, txtrRes,txtrRes,GL_RGB);
+		gl.texImage(NULL, txtrRes,txtrRes,GL_RGBA);
 		gl.generateMipmap();
 		
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -51,7 +51,7 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		//UNDO
 		Texture txtr;
 		if(albedoTextures.size() > 0 && !txtrResChanged){
-			 GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, txtrRes, txtrRes, 3);
+			 GLubyte* originalImage = txtr.getTextureFromProgram(GL_TEXTURE0, txtrRes, txtrRes, 4);
 
 			 GlSet glset;
 			 glActiveTexture(GL_TEXTURE28);
@@ -59,7 +59,7 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 			 unsigned int orgTexture;
 			 glset.genTextures(orgTexture);
 			 glset.bindTexture(orgTexture);
-			 glset.texImage(originalImage,txtrRes,txtrRes,GL_RGB);
+			 glset.texImage(originalImage,txtrRes,txtrRes,GL_RGBA);
 			 glset.generateMipmap();
 
 			 delete[] originalImage;
@@ -115,10 +115,10 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		// if (!paintOut)
 		// 	gl.drawArrays(renderVertices, false);
 
-		std::vector<GLubyte> renderedImage(txtrRes * txtrRes * 3 * sizeof(GLubyte));
-		glReadPixels(0, 0, txtrRes, txtrRes, GL_RGB, GL_UNSIGNED_BYTE, &renderedImage[0]);
+		std::vector<GLubyte> renderedImage(txtrRes * txtrRes * 4 * sizeof(GLubyte));
+		glReadPixels(0, 0, txtrRes, txtrRes, GL_RGBA, GL_UNSIGNED_BYTE, &renderedImage[0]);
 		gl.activeTexture(GL_TEXTURE0);
-		gl.texImage(&renderedImage[0], txtrRes, txtrRes, GL_RGB);
+		gl.texImage(&renderedImage[0], txtrRes, txtrRes, GL_RGBA);
 		gl.generateMipmap();
 		//Render painted image
 
@@ -126,13 +126,13 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 
 		//Render uv mask
 		gl.uniform1i(programs.outProgram, "whiteRendering", 1);
-		renderTexture(renderVertices,txtrRes, txtrRes,GL_TEXTURE7,GL_RGB,model,true,modelMaterials,view,albedoTextures,chosenTextureIndex);
+		renderTexture(renderVertices,txtrRes, txtrRes,GL_TEXTURE7,GL_RGBA,model,true,modelMaterials,view,albedoTextures,chosenTextureIndex);
 		gl.uniform1i(programs.outProgram, "whiteRendering", 0);
 		// //Render uv mask
 
 		// //interpret the albedo with ui mask texture
 		gl.uniform1i(programs.outProgram, "interpretWithUvMask", 1);
-		renderTexture(renderVertices,txtrRes, txtrRes,GL_TEXTURE0,GL_RGB,model, false,modelMaterials,view,albedoTextures,chosenTextureIndex);//Render enlarged texture
+		renderTexture(renderVertices,txtrRes, txtrRes,GL_TEXTURE0,GL_RGBA,model, false,modelMaterials,view,albedoTextures,chosenTextureIndex);//Render enlarged texture
 		gl.uniform1i(programs.outProgram, "interpretWithUvMask", 0);
 		//interpret the albedo with ui mask texture
 
@@ -171,11 +171,11 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 			chosenTxtr = albedoTextures[chosenTextureIndex].id;
 		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0);
 
-		GLubyte* renderedImage = new GLubyte[1080 * 1080 * 3 * sizeof(GLubyte)];
-		glReadPixels(0, 0, 1080, 1080, GL_RGB, GL_UNSIGNED_BYTE, renderedImage);
+		GLubyte* renderedImage = new GLubyte[1080 * 1080 * 4 * sizeof(GLubyte)];
+		glReadPixels(0, 0, 1080, 1080, GL_RGBA, GL_UNSIGNED_BYTE, renderedImage);
 		
 		gl.activeTexture(GL_TEXTURE0);
-		gl.texImage(renderedImage, 1080, 1080, GL_RGB);
+		gl.texImage(renderedImage, 1080, 1080, GL_RGBA);
 		gl.generateMipmap();
 		
 		delete[]renderedImage;
@@ -184,6 +184,4 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 
 		glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
 	}
-	
-	lastTxtrRes = txtrRes;
 }
