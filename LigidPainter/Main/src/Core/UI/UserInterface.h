@@ -171,6 +171,8 @@ struct aTexture{
 	bool nameTextActive = false;
 
 	bool isTexture = true;
+	
+	bool isTrashFolder = false;
 
 	int folderIndex = 10000;
 };

@@ -298,8 +298,13 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			}
 			else{
 				glUseProgram(programs.iconsProgram);
+				
 				glActiveTexture(GL_TEXTURE6);
-				glBindTexture(GL_TEXTURE_2D,icons.Folder);
+				if(albedoTextures[selectedAlbedoTextureIndex].isTrashFolder)
+					glBindTexture(GL_TEXTURE_2D,icons.CircularX);
+				else
+					glBindTexture(GL_TEXTURE_2D,icons.Folder);
+				
 				glset.uniform4fv(programs.iconsProgram,"iconColor",colorData.iconColor);
 				glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
 				glset.drawArrays(renderVertices,false);
@@ -441,7 +446,10 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 						glUseProgram(programs.iconsProgram);
 						glActiveTexture(GL_TEXTURE6);
-						glBindTexture(GL_TEXTURE_2D,icons.Folder);
+						if(albedoTextures[i].isTrashFolder)
+							glBindTexture(GL_TEXTURE_2D,icons.CircularX);
+						else
+							glBindTexture(GL_TEXTURE_2D,icons.Folder);
 						glset.uniform4fv(programs.iconsProgram,"iconColor",iconColor);
 						glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
 					}
@@ -451,7 +459,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 					bool textHover = isMouseOnButton(window,0.06f,0.015f,position_x-screenGapX,position_y - textureWidth*2.5,mouseXpos,mouseYpos,false);
 
-					if(textHover && firstClick && !anyTextureNameActive){
+					if(textHover && firstClick && !anyTextureNameActive && albedoTextures[i].isTrashFolder == false){
 						albedoTextures[i].nameTextActive = true;
 						textureText = albedoTextures[i].name;
 						anyTextureNameActive = true;

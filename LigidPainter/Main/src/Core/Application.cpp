@@ -421,12 +421,19 @@ bool LigidPainter::run()
 
 	unsigned int qrTxtr = util.createQRCode("https://ligidtools.com/ligidpainter",colorData.LigidPainterThemeColor);
 
+	aTexture trashFolder;
+	trashFolder.name = "Trash";
+	trashFolder.isTexture = false;
+	trashFolder.isTrashFolder = true;
+	albedoTextures.push_back(trashFolder);
+	
 	aTexture aqrTxtr;
 	aqrTxtr.id = qrTxtr;
 	aqrTxtr.name = "LigidTools.com";
 	albedoTextures.push_back(aqrTxtr);
 	
 	addSphereButton();
+
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
@@ -1635,31 +1642,41 @@ void LigidPainter::sndPanelMinusIcon(){
 	UserInterface ui;
 
 	if(!txtrCreatingPanel.active){
-		if(sndPanel.state == 0){
-			//Textures
-			if(albedoTextures.size()){
-				unsigned int texture;
-				texture = albedoTextures[selectedAlbedoTextureIndex].id;
-				glDeleteTextures(1, &texture);
+		if(!albedoTextures[selectedAlbedoTextureIndex].isTrashFolder){
+			if(sndPanel.state == 0){
+				//Textures
+				if(albedoTextures.size()){
 
-				if(albedoTextures[selectedAlbedoTextureIndex].isTexture)
-					albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
-				else{
-					for (size_t i = 0; i < albedoTextures.size(); i++)
-					{
-						//Delete the elements of the folder
-						if(albedoTextures[i].folderIndex == selectedAlbedoTextureIndex){
-							albedoTextures.erase(albedoTextures.begin() + i);
+					if(albedoTextures[selectedAlbedoTextureIndex].isTexture){
+						if(albedoTextures[selectedAlbedoTextureIndex].folderIndex == 0){
+							albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
+							unsigned int texture;
+							texture = albedoTextures[selectedAlbedoTextureIndex].id;
+							glDeleteTextures(1, &texture);
 						}
+						else
+							albedoTextures[selectedAlbedoTextureIndex].folderIndex = 0;
 					}
-					albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
+					else{
+						for (size_t i = 0; i < albedoTextures.size(); i++)
+						{
+							//Delete the elements of the folder
+							if(albedoTextures[i].folderIndex == selectedAlbedoTextureIndex){
+								albedoTextures.erase(albedoTextures.begin() + i);
+							}
+						}
+						albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
+					}
+
+					if(selectedAlbedoTextureIndex)
+						selectedAlbedoTextureIndex--;
 				}
-				
-				if(selectedAlbedoTextureIndex)
-					selectedAlbedoTextureIndex--;
+				else{
+					ui.alert("Warning! Deleting request is ignored. There are no textures to delete.",200);
+				}
 			}
 			else{
-				ui.alert("Warning! Deleting request is ignored. There are no texture to delete.",200);
+				ui.alert("Warning! Trash folder can't be deleted.",200);
 			}
 		}
 		else if(sndPanel.state == 1){
