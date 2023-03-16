@@ -1087,10 +1087,9 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 			}
 		}
 		else if(callbackData.mainPanelEnter && panelData.paintingPanelActive){
-			//MACOS
-			//panelData.paintingPanelSlideVal += scrollx/10.0f;
-			//if(panelData.paintingPanelSlideVal < 0.0f)
-				//panelData.paintingPanelSlideVal = 0.0f;
+			panelData.paintingPanelSlideVal += scrollx/10.0f;
+			if(panelData.paintingPanelSlideVal < 0.0f)
+				panelData.paintingPanelSlideVal = 0.0f;
 		}
 		else if (!paintingMode && !mainPanelHover) {
 			callbackData = callback.scroll_callback(window, scroll, scrollx);
