@@ -174,6 +174,8 @@ struct aTexture{
 	
 	bool isTrashFolder = false;
 
+	bool rightClicked = false;
+
 	int folderIndex = 10000;
 };
 

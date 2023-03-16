@@ -126,7 +126,7 @@ BrushMaskTextures brushMaskTextures;
 std::vector<aTexture> albedoTextures;
 std::vector<MaterialOut> modelMaterials;
 bool newModelAdded = false;
-int selectedAlbedoTextureIndex;
+int selectedAlbedoTextureIndex = 0;
 std::vector<Node> appNodes;
 ColoringPanel coloringPanel;
 TextureCreatingPanel txtrCreatingPanel;
@@ -1649,10 +1649,10 @@ void LigidPainter::sndPanelMinusIcon(){
 
 					if(albedoTextures[selectedAlbedoTextureIndex].isTexture){
 						if(albedoTextures[selectedAlbedoTextureIndex].folderIndex == 0){
+							Texture txtr;
+							txtr.deleteOpenglTexture(albedoTextures[selectedAlbedoTextureIndex]);
 							albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
-							unsigned int texture;
-							texture = albedoTextures[selectedAlbedoTextureIndex].id;
-							glDeleteTextures(1, &texture);
+
 						}
 						else
 							albedoTextures[selectedAlbedoTextureIndex].folderIndex = 0;
@@ -1660,9 +1660,14 @@ void LigidPainter::sndPanelMinusIcon(){
 					else{
 						for (size_t i = 0; i < albedoTextures.size(); i++)
 						{
+							Texture txtr;
+							if(albedoTextures[i].isTexture)
+								txtr.deleteOpenglTexture(albedoTextures[i]);
+
 							//Delete the elements of the folder
 							if(albedoTextures[i].folderIndex == selectedAlbedoTextureIndex){
 								albedoTextures.erase(albedoTextures.begin() + i);
+								i--;
 							}
 						}
 						albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);

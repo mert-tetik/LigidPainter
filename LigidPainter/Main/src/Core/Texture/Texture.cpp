@@ -201,6 +201,13 @@ void Texture::refreshScreenDrawingTexture() {
 	glset.generateMipmap();
 	delete[] screenTextureM;
 }
+void Texture::deleteOpenglTexture(aTexture texture){
+	glDeleteTextures(1,&texture.id);
+	for (size_t i = 0; i < texture.undoList.size(); i++)
+	{
+		glDeleteTextures(1,&texture.undoList[i]);
+	}
+}
 
 void Texture::sendProgramsToTextures(Programs apptxtrPrograms){
 	txtrPrograms = apptxtrPrograms;

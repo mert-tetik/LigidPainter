@@ -1,6 +1,8 @@
 #ifndef LGDTEXTURE_H
 #define LGDTEXTURE_H
 
+#include <Core/UI/UserInterface.h>
+
 struct TextureData {
 	unsigned int width;
 	unsigned int height;
@@ -30,7 +32,6 @@ public:
 	void sendProgramsToTextures(Programs appPrograms);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void refreshScreenTxtr();
-
-
+	void deleteOpenglTexture(aTexture texture);
 };
 #endif

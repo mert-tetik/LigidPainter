@@ -397,6 +397,8 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 					if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false) && !clringPanel.active && !txtrCreatingPanel.active){
 						glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
 						isHover = true;
+						if(glfwGetMouseButton(window,1) == GLFW_PRESS)
+							albedoTextures[i].rightClicked = true;
 						if(!albedoTextures[i].isTexture && sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE){
 							if(selectedAlbedoTextureIndex != i)
 								albedoTextures[selectedAlbedoTextureIndex].folderIndex = i;
@@ -415,6 +417,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 						}
 					}
 					else{
+						albedoTextures[i].rightClicked = false;
 						glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,0);
 					}
 
@@ -455,6 +458,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 					}
 					glset.drawArrays(buttonCoorSq,false);
 
+
 					glUseProgram(programs.uiProgram);
 
 					bool textHover = isMouseOnButton(window,0.06f,0.015f,position_x-screenGapX,position_y - textureWidth*2.5,mouseXpos,mouseYpos,false);
@@ -470,6 +474,90 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 					else{
 						Utilities util;
 						renderText(programs.uiProgram,util.cropString(albedoTextures[i].name,15),position_x- textureWidth ,position_y - textureWidth*2.5,0.00017f,colorData.textColor,panelZ+0.02f,false);
+					}
+					if(albedoTextures[i].rightClicked){
+						glUseProgram(programs.uiProgram);
+						bool removeRCHover = false;
+
+						bool selectRCHover = false;
+						if(isMouseOnButton(window,textureWidth/1.1,textureWidth/3.f,position_x,position_y,mouseXpos,mouseYpos,false)){
+							selectRCHover = true;
+							if(firstClick){
+								selectedAlbedoTextureIndex = i;
+								sndpanelMoveTexture = false;
+							}
+						}	
+						box(textureWidth/1.2,textureWidth/3.f,position_x,position_y,"Select",colorData.buttonColor,0.025f,false,false,panelZ+0.03f,10,colorData.buttonColorHover,selectRCHover);
+			
+						bool subSelectRCHover = false;
+						if(isMouseOnButton(window,textureWidth/1.1,textureWidth/3.f,position_x,position_y-textureWidth,mouseXpos,mouseYpos,false)){
+							subSelectRCHover = true;
+							if(firstClick){
+								//TODO : Subselect function here
+								sndpanelMoveTexture = false;
+							}
+						}	
+						box(textureWidth/1.2,textureWidth/3.f,position_x,position_y-textureWidth,"SubSelect",colorData.buttonColor,0.04f,false,false,panelZ+0.03f,10,colorData.buttonColorHover,subSelectRCHover);
+
+						if(isMouseOnButton(window,textureWidth/1.1,textureWidth/3.f,position_x,position_y+textureWidth,mouseXpos,mouseYpos,false)){
+							removeRCHover = true;
+							if(firstClick){
+								if(albedoTextures[i].isTexture){
+									if(albedoTextures[i].folderIndex == 0){
+										//Delete texture
+										Texture txtr;
+										txtr.deleteOpenglTexture(albedoTextures[i]);
+										albedoTextures.erase(albedoTextures.begin()+i);
+										if(selectedAlbedoTextureIndex == i)
+											selectedAlbedoTextureIndex--;
+										i--;
+										lC--;
+										sndpanelMoveTexture = false;
+									}
+									else{
+										albedoTextures[i].folderIndex = 0;
+									}
+								}
+								else if(!albedoTextures[i].isTrashFolder){
+									if(albedoTextures[i].folderIndex == 0){
+										//Delete the folder
+										for (size_t delI = 0; delI < albedoTextures.size(); delI++)
+										{
+											//Delete the elements of the folder
+											if(albedoTextures[delI].folderIndex == i){
+												if(albedoTextures[delI].isTexture){
+													Texture txtr;
+													txtr.deleteOpenglTexture(albedoTextures[delI]);
+												}
+												albedoTextures.erase(albedoTextures.begin() + delI);
+												delI--;
+												i--;
+												lC--;
+											}
+										}
+										albedoTextures.erase(albedoTextures.begin() + i);
+										selectedAlbedoTextureIndex = 0;
+										folderIndex = 10000;
+										sndpanelFolderPressed = false;
+										sndpanelMoveTexture = false;
+										i--;
+										lC--;
+									}
+									else{
+										//Move folder into trash
+										albedoTextures[0].folderIndex = 0;
+									}
+								}
+								else if(albedoTextures[i].isTrashFolder){
+									alert("Warning! Trash folder can't be deleted.",200);
+									folderIndex = 10000;
+									sndpanelFolderPressed = false;
+									sndpanelMoveTexture = false;
+								}
+							}
+						}	
+						box(textureWidth/1.2,textureWidth/3.f,position_x,position_y+textureWidth,"Remove",colorData.buttonColor,0.032f,false,false,panelZ+0.03f,10,colorData.buttonColorHover,removeRCHover);
+						glUseProgram(programs.renderTheTextureProgram);
 					}
 					lC++;
 				}
