@@ -1804,7 +1804,7 @@ void LigidPainter::sndPanelDuplicateIcon(){
 				unsigned int texture;
 				glGenTextures(1,&texture);
 				glBindTexture(GL_TEXTURE_2D,texture);
-				glset.texImage(txtrData,txtrRes,txtrRes,GL_RGBA);
+				glset.texImage(txtrData,txtrRes,txtrRes,GL_RGB);
 				glset.generateMipmap();
 
 

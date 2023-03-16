@@ -217,6 +217,7 @@ public:
 		icons.Mark = txtr.getTexture("LigidPainter/Resources/Icons/Mark.jpg",0,0,false);
 		icons.TextureGenerator = txtr.getTexture("LigidPainter/Resources/Icons/TextureGenerator.jpg",0,0,false);
 		icons.Pointer = txtr.getTexture("LigidPainter/Resources/Icons/Pointer.jpg",0,0,false);
+		icons.Trash = txtr.getTexture("LigidPainter/Resources/Icons/Trash.jpg",0,0,false);
 	
 		return icons;
 	}

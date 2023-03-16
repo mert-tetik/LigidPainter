@@ -301,7 +301,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				
 				glActiveTexture(GL_TEXTURE6);
 				if(albedoTextures[selectedAlbedoTextureIndex].isTrashFolder)
-					glBindTexture(GL_TEXTURE_2D,icons.CircularX);
+					glBindTexture(GL_TEXTURE_2D,icons.Trash);
 				else
 					glBindTexture(GL_TEXTURE_2D,icons.Folder);
 				
@@ -403,7 +403,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 							if(selectedAlbedoTextureIndex != i)
 								albedoTextures[selectedAlbedoTextureIndex].folderIndex = i;
 						}
-						if(firstClick){
+						if(firstClick && !albedoTextures[i].rightClicked){
 							if(albedoTextures[i].isTexture){
 								glActiveTexture(GL_TEXTURE0);
 								glBindTexture(GL_TEXTURE_2D,albedoTextures[selectedAlbedoTextureIndex].id);
@@ -450,7 +450,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 						glUseProgram(programs.iconsProgram);
 						glActiveTexture(GL_TEXTURE6);
 						if(albedoTextures[i].isTrashFolder)
-							glBindTexture(GL_TEXTURE_2D,icons.CircularX);
+							glBindTexture(GL_TEXTURE_2D,icons.Trash);
 						else
 							glBindTexture(GL_TEXTURE_2D,icons.Folder);
 						glset.uniform4fv(programs.iconsProgram,"iconColor",iconColor);
@@ -483,6 +483,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 						if(isMouseOnButton(window,textureWidth/1.1,textureWidth/3.f,position_x,position_y,mouseXpos,mouseYpos,false)){
 							selectRCHover = true;
 							if(firstClick){
+								albedoTextures[i].rightClicked = false;
 								if(albedoTextures[i].isTexture)//Select the texture
 									selectedAlbedoTextureIndex = i;
 								else //Open the folder
@@ -499,6 +500,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 						if(isMouseOnButton(window,textureWidth/1.1,textureWidth/3.f,position_x,position_y-textureWidth,mouseXpos,mouseYpos,false)){
 							subSelectRCHover = true;
 							if(firstClick){
+								albedoTextures[i].rightClicked = false;
 								//TODO : Subselect function here
 								sndpanelMoveTexture = false;
 							}
@@ -509,6 +511,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 						if(isMouseOnButton(window,textureWidth/1.1,textureWidth/3.f,position_x,position_y+textureWidth,mouseXpos,mouseYpos,false)){
 							removeRCHover = true;
 							if(firstClick){
+								albedoTextures[i].rightClicked = false;
 								if(albedoTextures[i].isTexture){
 									if(albedoTextures[i].folderIndex == 0){
 										//Delete texture
@@ -552,7 +555,10 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 									}
 									else{
 										//Move folder into trash
-										albedoTextures[0].folderIndex = 0;
+										albedoTextures[i].folderIndex = 0;
+										selectedAlbedoTextureIndex = 0;
+										sndpanelFolderPressed = false;
+										sndpanelMoveTexture = false;
 									}
 								}
 								else if(albedoTextures[i].isTrashFolder){
