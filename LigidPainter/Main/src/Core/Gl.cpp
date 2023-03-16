@@ -165,32 +165,16 @@ WindowData GlSet::getWindow() {
     #ifdef __APPLE__
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	#endif
-	GLFWwindow* window = glfwCreateWindow(38450,21650, "LigidPainter", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1920,1080, "LigidPainter", NULL, NULL);
 
 	//glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
 	
 	glfwMakeContextCurrent(window);
 
-
-	Utilities util;
-	const float windowRatio = 16.0f/9.0f;
-	const float maxRatioDifference = 0.3; 
-
 	int windowMaxWidth;
 	int windowMaxHeight;
 	//Adjust the ratio
 	glfwGetFramebufferSize(window,&windowMaxWidth,&windowMaxHeight);
-	if(windowMaxWidth >= windowMaxHeight){
-
-		if(abs(((double)windowMaxWidth / (double)windowMaxHeight) - windowRatio) > maxRatioDifference)
-			windowMaxWidth = util.keepTheRatio(windowMaxWidth,windowMaxHeight,windowRatio);
-	}
-	else{
-
-		if(abs(((double)windowMaxHeight / (double)windowMaxWidth) - windowRatio) > maxRatioDifference)
-			windowMaxHeight = util.keepTheRatio(windowMaxWidth,windowMaxHeight,windowRatio);
-	}
-		glfwSetWindowSize(window,windowMaxWidth,windowMaxHeight);
 
 	GLFWimage images[1];
 	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/logo-1080x.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 

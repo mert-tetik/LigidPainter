@@ -365,7 +365,7 @@ bool LigidPainter::run()
 	txtr.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	model.sendObjectsToModel(objects.VAO,objects.VBO);
 
-	glfwSetWindowSizeLimits(window,windowData.windowMaxWidth/1.7,0,windowData.windowMaxWidth,windowData.windowMaxHeight);
+	glfwSetWindowSizeLimits(window,windowData.windowMaxWidth/1.7,0,10000,10000);
 
 
 
@@ -414,7 +414,7 @@ bool LigidPainter::run()
 	MainLoop mainLoop;
 	
 	glfwSetWindowAttrib(window,GLFW_DECORATED,GLFW_TRUE);
-	glfwSetWindowSize(window,windowData.windowMaxWidth,windowData.windowMaxWidth);
+	glfwSetWindowSize(window,windowData.windowMaxWidth,windowData.windowMaxHeight);
 	glfwSetWindowPos(window,0,20);
 	
 	glfwPollEvents();
@@ -906,6 +906,23 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
+	if(width > windowData.windowMaxWidth)
+		windowData.windowMaxWidth = width;
+	if(height > windowData.windowMaxHeight)
+		windowData.windowMaxHeight = height;
+
+	Callback clback;
+	UserInterface ui;
+	UiActions uiAct;
+	Render render;
+	Texture txtr;
+
+	clback.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
+	ui.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
+	uiAct.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
+	render.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
+	txtr.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
+
 	renderTheScene = true;
 	renderTheSceneCounter = 0;
 

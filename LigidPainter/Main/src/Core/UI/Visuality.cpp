@@ -735,7 +735,27 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 	glset.uniform1f(uiPrograms.iconsProgram,"iconMixVal",mixVal);
 	glset.activeTexture(GL_TEXTURE6);
 	glset.bindTexture(icon);
-	box(width,height,position_x,position_y,"",color,0,0,0,z,100000,colorHover,mixVal);
+
+	glm::mat4 scale = glm::mat4(1);
+	scale = glm::scale(scale,glm::vec3(width,height,1));
+	glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scale);
+	
+	glm::vec3 pos = glm::vec3(position_x,position_y,z);
+	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.sqrVBO);
+	glBindVertexArray(uiObjects.sqrVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	ColorData colorData;
+
+	scale = glm::mat4(1);
+	pos = glm::vec3(0);
+	glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scale);
+	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+	
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
+	glBindVertexArray(uiObjects.VAO);
 }
 
 void UserInterface::circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture, glm::vec4 color){
