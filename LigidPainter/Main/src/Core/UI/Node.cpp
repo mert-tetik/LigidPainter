@@ -17,7 +17,7 @@
 #include "Core/Render/Render.h"
 
 bool UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,
-float maxScreenWidth,float maxScreenHeight, NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,
+float removeThisParam,float removeThisParam2, NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,
 std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringPanel &coloringPanel,bool &duplicateNodeCall,std::vector<Node> &duplicatedNodes){
 	ColorData colorData;
 	ColorData2 colorData2;
@@ -96,8 +96,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 		node.barPressed = false;
 	}
 	if((node.barPressed && !nodePanel.boundariesPressed) || (node.active && glfwGetKey(window,GLFW_KEY_G) == GLFW_PRESS)){
-		node.positionX += xOffset/maxScreenWidth*2.f / nodePanel.zoomVal;
-		node.positionY -= yOffset/maxScreenHeight*2.f / nodePanel.zoomVal;
+		node.positionX += xOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->width*2.f / nodePanel.zoomVal;
+		node.positionY -= yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height*2.f / nodePanel.zoomVal;
 		
 		xOffset = 0;
 		yOffset = 0;
@@ -340,8 +340,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 
 		//Move the connection (on top of the cursor)
 		if(node.outputs[i].pressed){
-			node.outputs[i].connectionPosX += xOffset/maxScreenWidth*2.f;
-			node.outputs[i].connectionPosY -= yOffset/maxScreenHeight*2.f;
+			node.outputs[i].connectionPosX += xOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->width*2.f;
+			node.outputs[i].connectionPosY -= yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height*2.f;
 		}
 
 		glUseProgram(programs.iconsProgram);
@@ -503,8 +503,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 				coloringPanel.hexVal = util.rgbToHexGenerator(node.inputs[i].rampClr[node.inputs[i].selectedRampIndex]);
 				coloringPanel.newHexValTextboxEntry = true;
 				coloringPanel.result = node.inputs[i].rampClr[node.inputs[i].selectedRampIndex];
-				coloringPanel.panelPosX = mouseX/(maxScreenWidth/2.f) - 1.0f + screenGapX ;
-				coloringPanel.panelPosY = -mouseY/maxScreenHeight*2.f + 1.0f;
+				coloringPanel.panelPosX = mouseX/(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2.f) - 1.0f + screenGapX ;
+				coloringPanel.panelPosY = -mouseY/glfwGetVideoMode(glfwGetPrimaryMonitor())->height*2.f + 1.0f;
 			}
 
 			if(!coloringPanel.active)
@@ -550,7 +550,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 					material.stateChanged = true;
 					node.stateChanged = true;
 
-					node.inputs[i].rampPos[rampi] -= yOffset/(maxScreenHeight/4.);
+					node.inputs[i].rampPos[rampi] -= yOffset/(glfwGetVideoMode(glfwGetPrimaryMonitor())->height/4.);
 					node.inputs[i].rampPos[rampi] = util.restrictBetween(node.inputs[i].rampPos[rampi],0.98f,0.02f);
 				}
 				if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
@@ -601,8 +601,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 				coloringPanel.hexVal = util.rgbToHexGenerator(node.inputs[i].color);
 				coloringPanel.newHexValTextboxEntry = true;
 				coloringPanel.result = node.inputs[i].color;
-				coloringPanel.panelPosX = mouseX/(maxScreenWidth/2.f) - 1.0f + screenGapX ;
-				coloringPanel.panelPosY = -mouseY/maxScreenHeight*2.f + 1.0f;
+				coloringPanel.panelPosX = mouseX/(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2.f) - 1.0f + screenGapX ;
+				coloringPanel.panelPosY = -mouseY/glfwGetVideoMode(glfwGetPrimaryMonitor())->height*2.f + 1.0f;
 			}
 
 			if(!coloringPanel.active)

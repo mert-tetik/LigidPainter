@@ -353,6 +353,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     jpgCheckBoxElement.checkBox.positionX = -0.11f;
     jpgCheckBoxElement.checkBox.positionY = 0.4f;
     jpgCheckBoxElement.checkBox.text = "";
+    jpgCheckBoxElement.checkBox.checked = true;
     jpgCheckBoxElement.panel = 4;
     jpgCheckBoxElement.attachedToMainPanel = true;
     jpgCheckBoxElement.type = "checkBox";
@@ -587,6 +588,34 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     paintThroughCheckBoxElement.attachedToMainPanel = true;
     paintThroughCheckBoxElement.type = "checkBox";
     UIElements.push_back(paintThroughCheckBoxElement);//38
+
+    UIElement maskPaintingCheckBoxElement;
+    maskPaintingCheckBoxElement.checkBox.positionX = -0.36f;
+    maskPaintingCheckBoxElement.checkBox.positionY = 0.9f;
+    maskPaintingCheckBoxElement.checkBox.text = "M";
+    maskPaintingCheckBoxElement.checkBox.checked = true;
+    maskPaintingCheckBoxElement.panel = 3;
+    maskPaintingCheckBoxElement.attachedToMainPanel = false;
+    maskPaintingCheckBoxElement.type = "checkBox";
+    UIElements.push_back(maskPaintingCheckBoxElement);//23
+
+	UIElement colorPaintingCheckBoxElement;
+    colorPaintingCheckBoxElement.checkBox.positionX = -0.30f;
+    colorPaintingCheckBoxElement.checkBox.positionY = 0.9f;
+    colorPaintingCheckBoxElement.checkBox.text = "C";
+    colorPaintingCheckBoxElement.panel = 3;
+    colorPaintingCheckBoxElement.attachedToMainPanel = false;
+    colorPaintingCheckBoxElement.type = "checkBox";
+    UIElements.push_back(colorPaintingCheckBoxElement);//24
+
+	UIElement normalmapPaintingCheckBoxElement;
+    normalmapPaintingCheckBoxElement.checkBox.positionX = -0.24f;
+    normalmapPaintingCheckBoxElement.checkBox.positionY = 0.9f;
+    normalmapPaintingCheckBoxElement.checkBox.text = "N";
+    normalmapPaintingCheckBoxElement.panel = 3;
+    normalmapPaintingCheckBoxElement.attachedToMainPanel = false;
+    normalmapPaintingCheckBoxElement.type = "checkBox";
+    UIElements.push_back(normalmapPaintingCheckBoxElement);//25
 
 	//-------------ICONS-------------
 

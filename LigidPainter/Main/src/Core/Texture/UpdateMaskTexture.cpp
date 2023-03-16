@@ -16,7 +16,7 @@
 
 using namespace std;
 
-std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData, Programs programs, int maxScreenWidth, int maxScreenHeight) { //rotationValue = rotationBarValue
+std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData, Programs programs, int removeThisParam, int removeThisParam2) { //rotationValue = rotationBarValue
 	GlSet glset;
 	UserInterface ui;
 	TextureGenerator txtrGen;
@@ -203,7 +203,7 @@ std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int scr
 
 
 	glset.bindFramebuffer(0);
-	glViewport(-(maxScreenWidth - screenSize_x)/2, -(maxScreenHeight - screenSize_y), maxScreenWidth, maxScreenHeight);
+	glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSize_x)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenSize_y), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 
 	return verticalBlurMaskTxtr;
 }

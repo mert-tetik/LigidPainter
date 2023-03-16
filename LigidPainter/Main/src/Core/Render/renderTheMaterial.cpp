@@ -500,7 +500,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
     resultOut.program = lastProgram;
     glset.uniform1i(resultOut.program,"is3D",1);
 
-    glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
+    glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenSizeY), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 
     bakeTheMaterial = false;
     return resultOut;

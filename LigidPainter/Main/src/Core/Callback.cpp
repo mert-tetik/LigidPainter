@@ -16,8 +16,6 @@
 #include "Core/Utilities.h"
 
 
-int callbackMaxScreenWidth;
-int callbackMaxScreenHeight;
 
 //Camera 
 float yaw = -90.0f;
@@ -201,7 +199,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 	int screenSizeY;
 	glfwGetFramebufferSize(window,&screenSizeX,&screenSizeY);
 
-	float screenGapX = ((float)callbackMaxScreenWidth - screenSizeX)/(((float)callbackMaxScreenWidth)/2.0f); 
+	float screenGapX = ((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/(((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width)/2.0f); 
 
 
 	if(!colorPicker.dropperActive){
@@ -361,13 +359,8 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 void Callback::framebuffer_size_callback(GLFWwindow* window, int width, int height) //Protect screen ratio
 {
 	// glfwSetWindowSize(window, width, height);
-	glViewport(-(callbackMaxScreenWidth - width)/2, -(callbackMaxScreenHeight - height), callbackMaxScreenWidth, callbackMaxScreenHeight);
+	glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - width)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - height), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 
 	screenX = width;
 	screenY = height;
-}
-
-void Callback::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
-	callbackMaxScreenHeight = maxScreenHeight;
-	callbackMaxScreenWidth = maxScreenWidth;
 }

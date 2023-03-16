@@ -105,7 +105,7 @@ bool paintingMode = false; //True if painting started, False if camera position 
 const char* modelFilePath;
 const char* customModelFilePath;
 string albedoTexturePath = "albedoImage.png";
-string maskTexturePath = "./LigidPainter/Resources/Textures/PlainCircle.png";
+string maskTexturePath = "./LigidPainter/Resources/Textures/Mask/PlainCircle.png";
 string exportPath = "";
 string exportFolder = "Choose Destination Path";
 string exportFileName = "LP_Export";
@@ -213,10 +213,10 @@ bool LigidPainter::run()
 	window = windowData.window;
 
 	glfwSetWindowAttrib(window,GLFW_DECORATED,GLFW_FALSE);
-	glfwSetWindowSize(window,windowData.windowMaxWidth/3.5,windowData.windowMaxHeight/3.5);
-	glfwSetWindowPos(window,windowData.windowMaxWidth/2-(windowData.windowMaxWidth/7),windowData.windowMaxHeight/2-(windowData.windowMaxHeight/7));
+	glfwSetWindowSize(window,glfwGetVideoMode(glfwGetPrimaryMonitor())->width/3.5,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/3.5);
+	glfwSetWindowPos(window,glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/7),glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2-(glfwGetVideoMode(glfwGetPrimaryMonitor())->height/7));
 	
-	glViewport(0,0,windowData.windowMaxWidth/3.5,windowData.windowMaxHeight/3.5);
+	glViewport(0,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width/3.5,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/3.5);
 
 	//Set Callbacks
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
@@ -322,9 +322,9 @@ bool LigidPainter::run()
 	//Load context menus
 	addNodeContextMenu = ui.createContextMenus(appNodes);
 	//Load the prefilter map
-	cubemaps.prefiltered = load.createPrefilterMap(programs,cubemaps,windowData.windowMaxWidth,windowData.windowMaxHeight);
+	cubemaps.prefiltered = load.createPrefilterMap(programs,cubemaps,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 	//Load general rendering FBO
-	FBOScreen = load.createScreenFrameBufferObject(windowData.windowMaxWidth,windowData.windowMaxHeight);
+	FBOScreen = load.createScreenFrameBufferObject(glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 	//Get BRDF Look Up Texture
 	unsigned int BRDFLUTxtr = load.getBrdflutTexture();
 	//Create the default node scene(material)
@@ -337,7 +337,7 @@ bool LigidPainter::run()
 	glfwMakeContextCurrent(window);
 	
 	//Create screen painting mask Texture
-	GLubyte* screenTexture = new GLubyte[(windowData.windowMaxWidth) * (windowData.windowMaxHeight)];
+	GLubyte* screenTexture = new GLubyte[(glfwGetVideoMode(glfwGetPrimaryMonitor())->width) * (glfwGetVideoMode(glfwGetPrimaryMonitor())->height)];
 	ScreenPaintingReturnData screenPaintingReturnData; 
 	screenPaintingReturnData = txtr.createScreenPaintTexture(screenTexture,window);
 	delete[] screenTexture;
@@ -357,15 +357,11 @@ bool LigidPainter::run()
 	render.sendProgramsToRender(programs);
 	txtr.sendProgramsToTextures(programs);
 	//--Send max window size
-	callback.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
-	ui.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 	ui.sendObjectsToUI(objects,icons.Circle);
-	uiAct.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
-	render.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
-	txtr.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
+
 	model.sendObjectsToModel(objects.VAO,objects.VBO);
 
-	glfwSetWindowSizeLimits(window,windowData.windowMaxWidth/1.7,0,10000,10000);
+	glfwSetWindowSizeLimits(window,glfwGetVideoMode(glfwGetPrimaryMonitor())->width/1.7,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 
 
 
@@ -408,13 +404,13 @@ bool LigidPainter::run()
 	bool doChangeStateOfTheAddNodeContextBar = true;
 	float brushSize;
 
-	screenWidth = windowData.windowMaxWidth;
-	screenHeight = windowData.windowMaxHeight;
+	screenWidth = glfwGetVideoMode(glfwGetPrimaryMonitor())->width;
+	screenHeight = glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
 
 	MainLoop mainLoop;
 	
 	glfwSetWindowAttrib(window,GLFW_DECORATED,GLFW_TRUE);
-	glfwSetWindowSize(window,windowData.windowMaxWidth,windowData.windowMaxHeight);
+	glfwSetWindowSize(window,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 	glfwSetWindowPos(window,0,20);
 	
 	glfwPollEvents();
@@ -599,7 +595,7 @@ bool LigidPainter::run()
 			mouseDrawingPosY = mouseYpos;
 
 			//Paint
-			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,windowData.windowMaxWidth,windowData.windowMaxHeight,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view);
+			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view);
 			paintRenderCounter++;
 			if(paintRenderCounter == 50000){
 				paintRender = true;
@@ -694,7 +690,7 @@ bool LigidPainter::run()
 				float messageBoxButtonColor[3] = {colorData.messageBoxButtonColor.r,colorData.messageBoxButtonColor.g,colorData.messageBoxButtonColor.r};
 
 				//render the message box
-				int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,"LigidPainter will be closed. Do you want to proceed?",-0.21f,0.0f,messageBoxBackColor,messageBoxButtonColor,(float)windowData.windowMaxWidth, (float)screenWidth,programs.iconsProgram,icons,programs); //0 = Yes //1 = No //2 = None
+				int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,"LigidPainter will be closed. Do you want to proceed?",-0.21f,0.0f,messageBoxBackColor,messageBoxButtonColor,(float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width, (float)screenWidth,programs.iconsProgram,icons,programs); //0 = Yes //1 = No //2 = None
 
 				//Process the message box input
 				if(result == 0 || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
@@ -913,22 +909,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-	if(width > windowData.windowMaxWidth)
-		windowData.windowMaxWidth = width;
-	if(height > windowData.windowMaxHeight)
-		windowData.windowMaxHeight = height;
-
 	Callback clback;
 	UserInterface ui;
 	UiActions uiAct;
 	Render render;
 	Texture txtr;
-
-	clback.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
-	ui.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
-	uiAct.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
-	render.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
-	txtr.sendMaxWindowSize(windowData.windowMaxWidth,windowData.windowMaxHeight);
 
 	renderTheScene = true;
 	renderTheSceneCounter = 0;
@@ -958,13 +943,13 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	glfwGetFramebufferSize(window,&width,&height);
 	
 	//Get mouse position offset
-	xOffset = (lastXpos - xpos) / ((double)windowData.windowMaxWidth / (double)width);
-	yOffset = (lastYpos - ypos) / ((double)windowData.windowMaxHeight / (double)height);
+	xOffset = (lastXpos - xpos) / ((double)glfwGetVideoMode(glfwGetPrimaryMonitor())->width / (double)width);
+	yOffset = (lastYpos - ypos) / ((double)glfwGetVideoMode(glfwGetPrimaryMonitor())->height / (double)height);
 	lastXpos = xpos;
 	lastYpos = ypos;
 	
 
-	float screenGapX = ((float)windowData.windowMaxWidth - (float)width); 
+	float screenGapX = ((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width - (float)width); 
 
 
 
@@ -1094,9 +1079,10 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 			}
 		}
 		else if(callbackData.mainPanelEnter && panelData.paintingPanelActive){
-			panelData.paintingPanelSlideVal += scrollx/10.0f;
-			if(panelData.paintingPanelSlideVal < 0.0f)
-				panelData.paintingPanelSlideVal = 0.0f;
+			//MACOS
+			// panelData.paintingPanelSlideVal += scrollx/10.0f;
+			// if(panelData.paintingPanelSlideVal < 0.0f)
+			// 	panelData.paintingPanelSlideVal = 0.0f;
 		}
 		else if (!paintingMode && !mainPanelHover) {
 			callbackData = callback.scroll_callback(window, scroll, scrollx);
@@ -1167,7 +1153,7 @@ void LigidPainter::addMaskTextureButton() {
 		brushMaskTextures.textures.push_back(txtr.getTexture(maskTexturePath,0,0,false));
 		brushMaskTextures.names.push_back(maskTexturePath);
 
-		txtr.updateMaskTexture(FBOScreen,width,height,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
+		txtr.updateMaskTexture(FBOScreen,width,height,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 	}
 }
 void LigidPainter::bakeButton(){
@@ -1195,7 +1181,7 @@ void LigidPainter::brushBlurRangeBar(double xOffset,int width,int height,bool re
 	UIElements[UIbrushBlurRangeBar].rangeBar.value = util.restrictBetween(UIElements[UIbrushBlurRangeBar].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
 	brushBlurVal = ((UIElements[UIbrushBlurRangeBar].rangeBar.value + 0.11f) * 545.454545455f) + 1.0f; //Max 120
 
-	txtr.updateMaskTexture(FBOScreen,width,height, UIElements[UIbrushRotationRangeBar].rangeBar.value,renderTiny,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
+	txtr.updateMaskTexture(FBOScreen,width,height, UIElements[UIbrushRotationRangeBar].rangeBar.value,renderTiny,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 
 }
 void LigidPainter::textureDisplayerButton(double xOffset,double yOffset,int width,int height) {
@@ -1222,7 +1208,7 @@ void LigidPainter::brushRotationRangeBar(double xOffset, int width, int height){
 	brushValChanged = true;
 	UIElements[UIbrushRotationRangeBar].rangeBar.value -= xOffset / (width / 2.0f);
 	UIElements[UIbrushRotationRangeBar].rangeBar.value = util.restrictBetween(UIElements[UIbrushRotationRangeBar].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
-	txtr.updateMaskTexture(FBOScreen, width, height,UIElements[UIbrushRotationRangeBar].rangeBar.value,true,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
+	txtr.updateMaskTexture(FBOScreen, width, height,UIElements[UIbrushRotationRangeBar].rangeBar.value,true,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 }
 void LigidPainter::brushOpacityRangeBar(double xOffset, int width, int height) {
 	Utilities util;
@@ -1272,7 +1258,7 @@ void LigidPainter::brushBordersRangeBar(double xOffset, int width, int height) {
 	brushValChanged = true;
 	UIElements[UIbrushBordersRangeBar].rangeBar.value -= xOffset / (width / 2.0f);
 	UIElements[UIbrushBordersRangeBar].rangeBar.value = util.restrictBetween(UIElements[UIbrushBordersRangeBar].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
-	txtr.updateMaskTexture(FBOScreen, width, height,UIElements[UIbrushRotationRangeBar].rangeBar.value,true,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,windowData.windowMaxWidth,windowData.windowMaxHeight);
+	txtr.updateMaskTexture(FBOScreen, width, height,UIElements[UIbrushRotationRangeBar].rangeBar.value,true,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 }
 void LigidPainter::generateTextureButton(){
 	Utilities util;
@@ -1343,7 +1329,7 @@ void LigidPainter::generateTextureButton(){
 		txtr.name = util.uniqueName(txtr.name,textureNames);
 		albedoTextures.push_back(txtr);
 
-		glViewport(-(windowData.windowMaxWidth - screenWidth)/2, -(windowData.windowMaxHeight - screenHeight), windowData.windowMaxWidth, windowData.windowMaxHeight);
+		glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenWidth)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenHeight), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 }
 void LigidPainter::colorBoxColorRangeBar(double yOffset,int height){
 	Utilities util;

@@ -56,7 +56,7 @@ void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int scre
 
 	glUseProgram(programs.uiProgram);
 	
-	glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
+	glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenSizeY), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 
 	gl.bindFramebuffer(0);
 }

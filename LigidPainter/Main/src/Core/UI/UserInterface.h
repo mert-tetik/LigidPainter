@@ -53,13 +53,16 @@
 #define UIgenerateTextureButtonElement 44
 #define UIbakeButtonElement 45
 #define UIpaintThroughCheckBoxElement 46
-#define UIjpgIcon 47
-#define UIpngIcon 48
-#define UIfolderIcon 49
-#define UIloadPlaneModelButton 50
-#define UIloadSphereModelButton 51
-#define UIplaneIcon 52
-#define UIsphereIcon 53
+#define UImaskPaintingCheckBoxElement 47
+#define UIcolorPaintingCheckBoxElement 48
+#define UInormalmapPaintingCheckBoxElement 49
+#define UIjpgIcon 50
+#define UIpngIcon 51
+#define UIfolderIcon 52
+#define UIloadPlaneModelButton 53
+#define UIloadSphereModelButton 54
+#define UIplaneIcon 55
+#define UIsphereIcon 56
 
 struct ColorData //LigidPainter color palette
 {

@@ -89,7 +89,7 @@ bool selectionActive = false;
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
 const char* exportFileName,float &maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 float brushBlurVal,OutShaderData &outShaderData, Model &model,std::vector<aTexture> &albedoTextures,Programs programs
-,int &currentMaterialIndex,int maxScreenWidth,int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
+,int &currentMaterialIndex,int removeThisParam,int removeThisParam2, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
 ,NodePanel &nodePanel,SndPanel &sndPanel, int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool &firstClick
@@ -161,7 +161,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	}
 
 
-	float screenGapX = ((float)maxScreenWidth - screenSizeX)/(((float)maxScreenWidth)/2.0f)/2.0f; 
+	float screenGapX = ((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/(((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width)/2.0f)/2.0f; 
 
 	updateButtonColorMixValues(UIElements,colorPicker,sndPanel);
 	double xOffset = mouseXpos - lastMouseX;
@@ -189,7 +189,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			if(nodePanel.heigth > 0.02){
 				nodeScenes[selectedNodeScene].nodes[i].height = ((nodeScenes[selectedNodeScene].nodes[i].inputs.size() + nodeScenes[selectedNodeScene].nodes[i].rangeBarCount + nodeScenes[selectedNodeScene].nodes[i].outputs.size())/25.f + 0.07 * !nodeScenes[selectedNodeScene].nodes[i].isMainOut) * nodePanel.zoomVal;
 				nodeScenes[selectedNodeScene].nodes[i].width = 0.12f * nodePanel.zoomVal;
-				bool deleted = ui.node(nodeScenes[selectedNodeScene].nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,maxScreenWidth,maxScreenHeight,nodeScenes[selectedNodeScene],nodePanel,textureSelectionPanel,i,albedoTextures,screenGapX,firstClick,coloringPanel,duplicateNodeCall,duplicatedNodes);
+				bool deleted = ui.node(nodeScenes[selectedNodeScene].nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,nodeScenes[selectedNodeScene],nodePanel,textureSelectionPanel,i,albedoTextures,screenGapX,firstClick,coloringPanel,duplicateNodeCall,duplicatedNodes);
 				if(deleted)
 					deletedNodeIndexes.push_back(i);
 			}
@@ -341,11 +341,11 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 				dPX = 0;
 				dPY = 0;
 				if(firstClick){
-					sPX = (mouseXpos/maxScreenWidth*2 - 1.0f + screenGapX);
-					sPY = (-mouseYpos/maxScreenHeight*2 + 1.0f);
+					sPX = (mouseXpos/glfwGetVideoMode(glfwGetPrimaryMonitor())->width*2 - 1.0f + screenGapX);
+					sPY = (-mouseYpos/glfwGetVideoMode(glfwGetPrimaryMonitor())->height*2 + 1.0f);
 				}
-				dPX = (mouseXpos/maxScreenWidth*2 - 1.0f + screenGapX);
-				dPY = ((-mouseYpos/maxScreenHeight*2 + 1.0f));
+				dPX = (mouseXpos/glfwGetVideoMode(glfwGetPrimaryMonitor())->width*2 - 1.0f + screenGapX);
+				dPY = ((-mouseYpos/glfwGetVideoMode(glfwGetPrimaryMonitor())->height*2 + 1.0f));
 				if(!glfwGetKey(renderData.window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 					selectionBoxCoords = ui.selectionBox(true,sPX,sPY,dPX,dPY,0.3f);
 				else
@@ -354,7 +354,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			}
 			else{
 				//sPX = (mouseXpos/screenSizeX*2 - 1.0f);
-				//sPY = (-mouseYpos/maxScreenHeight*2 + 1.0f);
+				//sPY = (-mouseYpos/glfwGetVideoMode(glfwGetPrimaryMonitor())->height*2 + 1.0f);
 			}
 			if(glfwGetMouseButton(renderData.window,0) == GLFW_RELEASE){
 				showTheSelectionBox = true;
@@ -366,7 +366,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 					if(!glfwGetKey(renderData.window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
 
 						if(selectionBoxCoords.size()){
-							if(ui.isMouseOnCoords(renderData.window,((nodeScenes[selectedNodeScene].nodes[i].positionX + nodePanel.panelPositionX) * nodePanel.zoomVal) * (maxScreenWidth/2.f) + maxScreenWidth/2.f,(maxScreenHeight) - (((nodeScenes[selectedNodeScene].nodes[i].positionY + nodePanel.panelPositionY) * nodePanel.zoomVal) * (maxScreenHeight/2.f) + maxScreenHeight/2.f),selectionBoxCoords,false)){
+							if(ui.isMouseOnCoords(renderData.window,((nodeScenes[selectedNodeScene].nodes[i].positionX + nodePanel.panelPositionX) * nodePanel.zoomVal) * (glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2.f) + glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2.f,(glfwGetVideoMode(glfwGetPrimaryMonitor())->height) - (((nodeScenes[selectedNodeScene].nodes[i].positionY + nodePanel.panelPositionY) * nodePanel.zoomVal) * (glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2.f) + glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2.f),selectionBoxCoords,false)){
 								nodeScenes[selectedNodeScene].nodes[i].active = true;
 							}
 							else{
@@ -413,7 +413,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 		
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , icons,panelData);
-		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,maxScreenWidth,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal,firstClick,coloringPanel,txtrCreatingPanel,anyTextureNameActive,textureText,sndPanel.activeFolderIndex,nodePanel,appNodes,sndPanel,brushMaskTextures,maskPanelEnter,yOffset,nodeScenesHistory);
+		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal,firstClick,coloringPanel,txtrCreatingPanel,anyTextureNameActive,textureText,sndPanel.activeFolderIndex,nodePanel,appNodes,sndPanel,brushMaskTextures,maskPanelEnter,yOffset,nodeScenesHistory);
 
 
 		ui.renderAlert(alertMessage,alertDuration,programs.uiProgram,alertState);		
@@ -432,7 +432,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 
 		if(textureSelectionPanel.active)
-			ui.textureSelectionPanel(textureSelectionPanel,albedoTextures,programs,renderData.window,mouseXpos,mouseYpos,screenGapX, maxScreenWidth,icons.Circle);
+			ui.textureSelectionPanel(textureSelectionPanel,albedoTextures,programs,renderData.window,mouseXpos,mouseYpos,screenGapX, glfwGetVideoMode(glfwGetPrimaryMonitor())->width,icons.Circle);
 
 
 
@@ -466,7 +466,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 							showTheSelectionBox = false;
 							node.stateChanged = true;
 							node.positionX = (mouseXpos/screenSizeX*2 - 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionX;
-							node.positionY = ((-mouseYpos/maxScreenHeight*2 + 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionY);						
+							node.positionY = ((-mouseYpos/glfwGetVideoMode(glfwGetPrimaryMonitor())->height*2 + 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionY);						
 
 							nodeScenesHistory.push_back(nodeScenes[selectedNodeScene]);
 							nodeScenes[selectedNodeScene].nodes.push_back(node);
@@ -531,8 +531,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 
 	if(addNodeContextMenu.stateChanged){
-		addNodeContextMenu.positionX = mouseXpos/(maxScreenWidth/2.f) - 1.0f + screenGapX ;
-		addNodeContextMenu.positionY = -mouseYpos/maxScreenHeight*2.f + 1.0f;
+		addNodeContextMenu.positionX = mouseXpos/(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2.f) - 1.0f + screenGapX ;
+		addNodeContextMenu.positionY = -mouseYpos/glfwGetVideoMode(glfwGetPrimaryMonitor())->height*2.f + 1.0f;
 	}
 
 	
@@ -709,7 +709,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		};
 		unsigned int cubemapTexture = load.loadCubemap(faces,GL_TEXTURE13);  
 		cubemaps.cubemap = cubemapTexture;
-		unsigned int prefilteredMap = load.createPrefilterMap(programs,cubemaps,maxScreenWidth,maxScreenHeight);
+		unsigned int prefilteredMap = load.createPrefilterMap(programs,cubemaps,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 		cubemaps.prefiltered = prefilteredMap;
 	}
 	glUseProgram(programs.uiProgram);

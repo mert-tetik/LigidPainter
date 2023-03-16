@@ -27,8 +27,6 @@
 using namespace std;
 
 Programs txtrPrograms;
-int textureMaxScreenWidth;
-int textureMaxScreenHeight;
 
 unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, unsigned int desiredHeight,bool update) {
 	//Leave desiredWidth 0 if no resize wanted
@@ -139,7 +137,7 @@ TextureData Texture::getTextureData(const char* path) {
 }
 ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTexture,GLFWwindow* window) {
 	ScreenPaintingReturnData screenPaintingReturnData; 
-	std::fill_n(screenTexture, (textureMaxScreenWidth)* (textureMaxScreenHeight), 0);
+	std::fill_n(screenTexture, (glfwGetVideoMode(glfwGetPrimaryMonitor())->width)* (glfwGetVideoMode(glfwGetPrimaryMonitor())->height), 0);
 	GlSet glset;
 
 	//Normal screen painting texture
@@ -153,7 +151,7 @@ ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTextu
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, textureMaxScreenWidth, textureMaxScreenHeight, 0, GL_RED, GL_UNSIGNED_BYTE, screenTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height, 0, GL_RED, GL_UNSIGNED_BYTE, screenTexture);
 	glset.generateMipmap();
 
 
@@ -186,10 +184,10 @@ void Texture::refreshScreenDrawingTexture() {
 	refreshScreenTxtr();
 
 	GlSet glset;
-	GLubyte* screenTextureX = new GLubyte[(textureMaxScreenWidth) * (textureMaxScreenHeight)];
-	std::fill_n(screenTextureX, (textureMaxScreenWidth) * (textureMaxScreenHeight), 0);
+	GLubyte* screenTextureX = new GLubyte[(glfwGetVideoMode(glfwGetPrimaryMonitor())->width) * (glfwGetVideoMode(glfwGetPrimaryMonitor())->height)];
+	std::fill_n(screenTextureX, (glfwGetVideoMode(glfwGetPrimaryMonitor())->width) * (glfwGetVideoMode(glfwGetPrimaryMonitor())->height), 0);
 	glset.activeTexture(GL_TEXTURE4);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, textureMaxScreenWidth, textureMaxScreenHeight, 0, GL_RED, GL_UNSIGNED_BYTE, screenTextureX);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height, 0, GL_RED, GL_UNSIGNED_BYTE, screenTextureX);
 	glset.generateMipmap();
 	delete[] screenTextureX;
 
@@ -213,6 +211,4 @@ void Texture::sendProgramsToTextures(Programs apptxtrPrograms){
 	txtrPrograms = apptxtrPrograms;
 }
 void Texture::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
-	textureMaxScreenHeight = maxScreenHeight;
-	textureMaxScreenWidth = maxScreenWidth;
 }

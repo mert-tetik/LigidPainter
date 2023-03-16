@@ -37,9 +37,6 @@ int currentMaterialIndex = 0;
 
 Programs renderPrograms;
 
-int renderMaxScreenWidth;
-int renderMaxScreenHeight;
-
 //--------------------RENDER UI --------------------\\
 
 
@@ -306,11 +303,11 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	if (renderData.paintingMode) renderDepthCounter++;
 	else renderDepthCounter = 0;
 	if (renderDepthCounter == 1) {//Get depth texture
-		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex, renderMaxScreenWidth , renderMaxScreenHeight,view,albedoTextures,selectedAlbedoTextureIndex);
+		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex, glfwGetVideoMode(glfwGetPrimaryMonitor())->width , glfwGetVideoMode(glfwGetPrimaryMonitor())->height,view,albedoTextures,selectedAlbedoTextureIndex);
 	}
 	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || (glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
 	if (isRenderTexture || paintRender) {
-		renderTextures(FBOScreen,screenSizeX, screenSizeY,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,currentMaterialIndex,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,modelMaterials,view,selectedAlbedoTextureIndex,chosenTextureResIndex);
+		renderTextures(FBOScreen,screenSizeX, screenSizeY,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,currentMaterialIndex,renderPrograms,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,modelMaterials,view,selectedAlbedoTextureIndex,chosenTextureResIndex);
 	}
 	if(exportData.exportImage){
     	exportTexture(UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,exportData.fileName,albedoTextures,chosenTextureResIndex);
@@ -345,12 +342,12 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	//UI
 	glClear(GL_DEPTH_BUFFER_BIT);
 	if(renderData.doPainting)
-		renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorPicker.pickerValue,renderMaxScreenWidth,renderMaxScreenHeight,renderPrograms);
+		renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorPicker.pickerValue,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,renderPrograms);
 	if(glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_RELEASE)
 	uiOut = renderUi(panelData, renderData, FBOScreen,icons
 		,exportData.fileName, maskPanelSliderValue,maskTextures,mouseXpos,mouseYpos,screenSizeX,screenSizeY,
-		brushBlurVal,outShaderData,model,albedoTextures,renderPrograms,currentMaterialIndex,renderMaxScreenWidth,
-		renderMaxScreenHeight, saturationValShaderData,currentBrushMaskTexture,materialsPanelSlideValue,UIElements,
+		brushBlurVal,outShaderData,model,albedoTextures,renderPrograms,currentMaterialIndex,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,
+		glfwGetVideoMode(glfwGetPrimaryMonitor())->height, saturationValShaderData,currentBrushMaskTexture,materialsPanelSlideValue,UIElements,
 		colorPicker,textureDisplayer,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,
 		nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
 		chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
@@ -368,7 +365,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 	if(model.meshes.size() != 0){
 		if(nodeScenes[selectedNodeScene].stateChanged || newModelAdded){
-			modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,renderMaxScreenWidth,screenSizeX,renderMaxScreenHeight,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex);
+			modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex);
 			newModelAdded = false;
 		}
 	}
@@ -377,7 +374,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 	colorPicker.updatePickerVal = colorPicker.saturationValueValChanged && !colorPicker.hexValTextBoxGotInput; 
 	if (colorPicker.updatePickerVal) { //Get value of color box
-		colorPicker.pickerValue = getColorPickerValue(FBOScreen, colorPicker ,screenSizeX, screenSizeY,renderPrograms,renderMaxScreenWidth,renderMaxScreenHeight,saturationValShaderData);
+		colorPicker.pickerValue = getColorPickerValue(FBOScreen, colorPicker ,screenSizeX, screenSizeY,renderPrograms,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,saturationValShaderData);
 	}
 
 	//CTRLZ
@@ -404,6 +401,4 @@ void Render::sendProgramsToRender(Programs apprenderPrograms){
 	renderPrograms = apprenderPrograms;
 }
 void Render::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
-	renderMaxScreenHeight = maxScreenHeight;
-	renderMaxScreenWidth = maxScreenWidth;
 }

@@ -229,7 +229,7 @@ public:
 		std::vector<unsigned int> maskTextures;
 		std::vector<std::string> maskTextureNames;
 	
-		const char* path = "./LigidPainter/Resources/Textures";
+		const char* path = "./LigidPainter/Resources/Textures/Mask";
 	
 	
 		for (const auto & entry : std::filesystem::directory_iterator(path)){

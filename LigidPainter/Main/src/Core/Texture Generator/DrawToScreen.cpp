@@ -43,7 +43,7 @@ bool refreshTheScreenMask = false;
 
 unsigned int lastTxtr = 0;
 
-void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int maxScreenWidth,int maxScreenHeight,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view) {
+void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int removeThisParam2,int removeThisParam,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view) {
 
 	if(true){
 		holdLocations.clear();
@@ -84,12 +84,12 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 	};
 
 	glm::mat4 paintingProjection;
-	paintingProjection = glm::ortho(0.0f,(float)maxScreenWidth,(float)maxScreenHeight,0.0f);
+	paintingProjection = glm::ortho(0.0f,(float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width,(float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height,0.0f);
 
 
-	float screenGapX = ((float)maxScreenWidth - (float)screenSizeX)/2.0f;
+	float screenGapX = ((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width - (float)screenSizeX)/2.0f;
 
-	float screenGapY = ((float)maxScreenHeight - (float)screenSizeY);
+	float screenGapY = ((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height - (float)screenSizeY);
 
 	GlSet glset;
 	Texture txtr;
@@ -144,7 +144,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 
 		glActiveTexture(GL_TEXTURE4);
 
-		glViewport(0,0,maxScreenWidth,maxScreenHeight);
+		glViewport(0,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 
 		// glset.blendFunc(GL_ONE_MINUS_SRC_COLOR, GL_DST_ALPHA);
 		glBlendEquationSeparate(GL_MAX,GL_FUNC_REVERSE_SUBTRACT);
@@ -221,7 +221,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 	}
 
 
-	glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
+	glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenSizeY), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 	glset.bindFramebuffer(0);
 	
 	lastMouseXPosIn = mouseXposIn;

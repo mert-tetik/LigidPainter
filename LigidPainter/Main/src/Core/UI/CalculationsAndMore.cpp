@@ -10,8 +10,6 @@
 #include "Core/LigidPainter.h"
 #include "Core/UI/UserInterface.h"
 
-int CAMuiMaxScreenWidth;
-int CAMuiMaxScreenHeight;
 
 bool UserInterface::isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, double mouseXpos, double mouseYpos) { //Button with different shape used in order to switch between panels
 	std::vector<float> buttonCoor{
@@ -29,8 +27,8 @@ bool UserInterface::isMouseOnPanelChangeButton(GLFWwindow* window, float positio
 	int screenSizeY;
 	glfwGetFramebufferSize(window, &screenSizeX, &screenSizeY);
 
-	float mouseFX = ((float)mouseXpos / (CAMuiMaxScreenWidth/2)); //Screen Coord
-	float mouseFY = (((float)mouseYpos / (CAMuiMaxScreenHeight / 2)) - 1.0f) * -1.0f; //Screen Coord
+	float mouseFX = ((float)mouseXpos / (glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2)); //Screen Coord
+	float mouseFY = (((float)mouseYpos / (glfwGetVideoMode(glfwGetPrimaryMonitor())->height / 2)) - 1.0f) * -1.0f; //Screen Coord
 
 	//Barycentric calculations
 	for (size_t i = 0; i < 2; i++)
@@ -77,13 +75,13 @@ bool UserInterface::isMouseOnButton(GLFWwindow* window, float width, float heigh
 	glfwGetFramebufferSize(window,&screenSizeX,&screenSizeY);
 	float mouseFX;
 	if (!isPanelMoving) {
-		mouseFX = ((float)mouseXpos / (CAMuiMaxScreenWidth / 2)) - 1.0f;//Screen Coord
+		mouseFX = ((float)mouseXpos / (glfwGetVideoMode(glfwGetPrimaryMonitor())->width / 2)) - 1.0f;//Screen Coord
 	}
 	else {
-		mouseFX = ((float)mouseXpos / (CAMuiMaxScreenWidth / 2));//Screen Coord
+		mouseFX = ((float)mouseXpos / (glfwGetVideoMode(glfwGetPrimaryMonitor())->width / 2));//Screen Coord
 
 	}
-	float mouseFY = (((float)mouseYpos / (CAMuiMaxScreenHeight / 2))-1.0f)*-1.0f;//Screen Coord
+	float mouseFY = (((float)mouseYpos / (glfwGetVideoMode(glfwGetPrimaryMonitor())->height / 2))-1.0f)*-1.0f;//Screen Coord
 
 	//Barycentric calculations
 	for (size_t i = 0; i < 2; i++)
@@ -118,13 +116,13 @@ bool UserInterface::isMouseOnCoords(GLFWwindow*window,double mouseXpos, double m
 
 	float mouseFX;
 	if (!isPanelMoving) {
-		mouseFX = ((float)mouseXpos / (CAMuiMaxScreenWidth / 2)) - 1.0f;//Screen Coord
+		mouseFX = ((float)mouseXpos / (glfwGetVideoMode(glfwGetPrimaryMonitor())->width / 2)) - 1.0f;//Screen Coord
 	}
 	else {
-		mouseFX = ((float)mouseXpos / (CAMuiMaxScreenWidth / 2));//Screen Coord
+		mouseFX = ((float)mouseXpos / (glfwGetVideoMode(glfwGetPrimaryMonitor())->width / 2));//Screen Coord
 
 	}
-	float mouseFY = (((float)mouseYpos / (CAMuiMaxScreenHeight / 2))-1.0f)*-1.0f;//Screen Coord
+	float mouseFY = (((float)mouseYpos / (glfwGetVideoMode(glfwGetPrimaryMonitor())->height / 2))-1.0f)*-1.0f;//Screen Coord
 
 	//Barycentric calculations
 	for (size_t i = 0; i < 2; i++)
@@ -186,9 +184,9 @@ bool UserInterface::isMouseOnNodePanel(GLFWwindow* window,float mainPanelLoc,flo
 	int screenSizeY;
 	glfwGetFramebufferSize(window,&screenSizeX,&screenSizeY);
 
-	float mouseFX = ((float)mouseXpos / (CAMuiMaxScreenWidth / 2))-1.0f;//Screen Coord
+	float mouseFX = ((float)mouseXpos / (glfwGetVideoMode(glfwGetPrimaryMonitor())->width / 2))-1.0f;//Screen Coord
 
-	float mouseFY = (((float)mouseYpos / (CAMuiMaxScreenHeight / 2))-1.0f)*-1.0f;//Screen Coord
+	float mouseFY = (((float)mouseYpos / (glfwGetVideoMode(glfwGetPrimaryMonitor())->height / 2))-1.0f)*-1.0f;//Screen Coord
 
 	//Barycentric calculations
 	for (size_t i = 0; i < 2; i++)
@@ -217,6 +215,4 @@ bool UserInterface::isMouseOnNodePanel(GLFWwindow* window,float mainPanelLoc,flo
 
 
 void UserInterface::sendMaxWindowSizeToCalculationsAndMore(int maxScreenWidth,int maxScreenHeight){
-	CAMuiMaxScreenHeight = maxScreenHeight;
-	CAMuiMaxScreenWidth = maxScreenWidth;
 }

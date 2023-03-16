@@ -22,8 +22,6 @@ ColorData colorD;
 
 Objects uiObjects;
 
-int uiMaxScreenWidth;
-int uiMaxScreenHeight;
 
 int uiTextBoxActiveChar;
 
@@ -152,7 +150,7 @@ int sndpanelFolderCounter = 0;
 
 bool sndpanelSliderPressed = false;
 
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float maxScreenWidth, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool &firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float removeThisParam, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool &firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -210,16 +208,16 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	}
 	if(sndpanelSliderPressed){
 		if(!sndpnl.state){
-			txtrSlideVal += yOffset/(uiMaxScreenHeight/2);
+			txtrSlideVal += yOffset/(glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2);
 			if(txtrSlideVal < 0.f)
 					txtrSlideVal = 0.001f;
 		}
 		if(sndpnl.state){
-			materialSlideVal += yOffset/(uiMaxScreenHeight/2);
+			materialSlideVal += yOffset/(glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2);
 			if(materialSlideVal < 0.f)
 				materialSlideVal = 0.001f;
 		}
-		slideVal += (yOffset/(uiMaxScreenHeight/2))*slidePHeight;
+		slideVal += (yOffset/(glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2))*slidePHeight;
 		if(slideVal < 0.f)
 			slideVal = 0.001f;
 	}
@@ -283,11 +281,11 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 		box(panelWidth+0.05f, 0.5f, panelLoc - panelWidth - cornerWidth, panelHeigth+0.42f, "", glm::vec4(0), 0.022f, false, false, panelZ+0.05, 10000, colorD.panelColor, 0);
 		box(panelWidth+0.05f, 0.5f, panelLoc - panelWidth - cornerWidth, -panelHeigth-0.42f, "", glm::vec4(0), 0.022f, false, false, panelZ+0.05, 10000, colorD.panelColor, 0);
 
-		const float screenGapXSc = maxScreenWidth-screenWidth;
+		const float screenGapXSc = glfwGetVideoMode(glfwGetPrimaryMonitor())->width-screenWidth;
 
 		if(sndpanelMoveTexture){
-			float posx = ((mouseXpos + screenGapXSc/2.f)/(maxScreenWidth/2))-1.f;
-			float posy = (2.f - (mouseYpos/(uiMaxScreenHeight/2.f)))-1.f;
+			float posx = ((mouseXpos + screenGapXSc/2.f)/(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2))-1.f;
+			float posy = (2.f - (mouseYpos/(glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2.f)))-1.f;
 			std::vector<float> renderVertices = { 
 				// first triangle
 				 0.05f + posx,  0.1f+ posy, 1.0f,1,1,0,0,0,  // top right
@@ -341,7 +339,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				imageNode.inputs[0].selectedTextureIndex = selectedAlbedoTextureIndex;
 
 				imageNode.positionX = (mouseXpos/screenWidth*2 - 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionX;
-				imageNode.positionY = ((-mouseYpos/uiMaxScreenHeight*2 + 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionY);
+				imageNode.positionY = ((-mouseYpos/glfwGetVideoMode(glfwGetPrimaryMonitor())->height*2 + 1.0f) / nodePanel.zoomVal - nodePanel.panelPositionY);
 
 				nodeScenes[selectedNodeScene].nodes.push_back(imageNode);
 			}
@@ -404,7 +402,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 					bool isHover = false;
 					bool isPressed = false;
 
-					if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false) && !clringPanel.active && !txtrCreatingPanel.active){
+					if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2),mouseYpos,buttonCoorSq,false) && !clringPanel.active && !txtrCreatingPanel.active){
 						glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
 						isHover = true;
 						if(glfwGetMouseButton(window,1) == GLFW_PRESS)
@@ -636,7 +634,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				bool isPressed;
 
 				glm::vec4 iconColor;
-				if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2),mouseYpos,buttonCoorSq,false)){
+				if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2),mouseYpos,buttonCoorSq,false)){
 					isHover = true;
 	
 					if(firstClick){
@@ -704,7 +702,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 }
 
-void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<aTexture> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth,unsigned int circleTexture){
+void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<aTexture> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int removeThisParam,unsigned int circleTexture){
 	ColorData clrData;
 	GlSet glset;
 
@@ -766,7 +764,7 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 				-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	1,	0,		upBotDifMin*10			,0,0,0  // top left
 			};
 			glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,0);
-			if(isMouseOnCoords(window,mouseXpos+screenGapX*(maxScreenWidth/2) - screenGapX,mouseYpos,buttonCoorSq,false)){
+			if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2) - screenGapX,mouseYpos,buttonCoorSq,false)){
 				glUseProgram(programs.uiProgram);
 				box(0.1f,0.02f,textureSelectionPanel.posX-boxWidth+0.1f,textureSelectionPanel.posY+boxWidth*1.35f,albedoTextures[i].name, clrData.textureSelectionPanelColor ,0,true,0,0.8,10,clrData.textureSelectionPanelColor,0);
 				glUseProgram(programs.renderTheTextureProgram);
@@ -812,14 +810,12 @@ bool vertRGBarPressed = false;
 bool UserInterface::verticalRangeBar(float positionX,float positionY,float height,float &orgvalue,float value,GLFWwindow* window,float mouseX,float mouseY,float yOffset,bool &firstClick,int textureSize,float screenGapX){
 	ColorData colorData;
 
-	//Pointer 
-	box(0.0f, 0.015f, positionX, positionY - value, "",colorData.maskPanelSliderColor, 0.095f, false, false, 0.9f, 20, glm::vec4(0), 0); //Mask panel slider
 	if(isMouseOnButton(window,0.015f,0.015f,positionX-screenGapX,positionY-value,mouseX,mouseY,false) && firstClick)
 		vertRGBarPressed = true;
 	
 	if(vertRGBarPressed){
 		Utilities util;
-		orgvalue -= yOffset/(uiMaxScreenHeight/2);
+		orgvalue -= yOffset/(glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2);
 		const float maskPanelRange = ceil(textureSize/3.f) / 8.33333333333 - (0.8f - 0.55f); 
 		orgvalue = util.restrictBetween(orgvalue, 0.0f, -maskPanelRange/4.f);//Keep in boundaries
 	}
@@ -831,6 +827,9 @@ bool UserInterface::verticalRangeBar(float positionX,float positionY,float heigh
 	box(0.008f, height, positionX, positionY - height, "",colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 10000, glm::vec4(0), 0); 
 	box(0.0f, 0.015f, positionX, positionY , "", colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 20, glm::vec4(0), 0); 
 	box(0.0f, 0.015f, positionX, positionY - height*2.f, "", colorData.maskPanelSliderBackgroundColor, 0.095f, false, false, 0.9f, 20, glm::vec4(0), 0); 
+
+	//Pointer 
+	box(0.0f, 0.015f, positionX, positionY - value, "",colorData.maskPanelSliderColor, 0.095f, false, false, 0.91f, 20, glm::vec4(0), 0); //Mask panel slider
 
 	return false;
 }
@@ -861,10 +860,10 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 
 	glm::mat4 scale = glm::mat4(1);
 	scale = glm::scale(scale,glm::vec3(width,height,1));
-	glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scale);
+	glset.uniformMatrix4fv(uiPrograms.iconsProgram,"scale",scale);
 	
 	glm::vec3 pos = glm::vec3(position_x,position_y,z);
-	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+	glset.uniform3fv(uiPrograms.iconsProgram,"pos",pos);
 
 	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.sqrVBO);
 	glBindVertexArray(uiObjects.sqrVAO);
@@ -874,8 +873,8 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 
 	scale = glm::mat4(1);
 	pos = glm::vec3(0);
-	glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scale);
-	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+	glset.uniformMatrix4fv(uiPrograms.iconsProgram,"scale",scale);
+	glset.uniform3fv(uiPrograms.iconsProgram,"pos",pos);
 	
 	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
 	glBindVertexArray(uiObjects.VAO);
@@ -999,7 +998,7 @@ glm::vec3 UserInterface::hueBar(float position_x, float position_y,float value,u
 		int screenSizeX;
 		int screenSizeY;
 		glfwGetFramebufferSize(window, &screenSizeX, &screenSizeY);
-		glViewport(-(uiMaxScreenWidth - screenSizeX)/2, -(uiMaxScreenHeight - screenSizeY), uiMaxScreenWidth, uiMaxScreenHeight);
+		glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenSizeY), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 	}
 
 
@@ -1411,10 +1410,8 @@ void Load::sendCharsToUI(std::map<char, character> theseCharacters){
 void UserInterface::sendProgramsToUserInterface(Programs appuiPrograms){
 	uiPrograms = appuiPrograms;
 }
-void UserInterface::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
-	uiMaxScreenHeight = maxScreenHeight;
-	uiMaxScreenWidth = maxScreenWidth;
-	sendMaxWindowSizeToCalculationsAndMore(maxScreenWidth,maxScreenHeight);
+void UserInterface::sendMaxWindowSize(int removeThisParam,int maxScreenHeight){
+	sendMaxWindowSizeToCalculationsAndMore(glfwGetVideoMode(glfwGetPrimaryMonitor())->width,maxScreenHeight);
 }
 
 void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool &firstClick,float xOffset,float yOffset,unsigned int FBOscreen,ColorPicker &colorPicker,float screenGapX,glm::vec3 screenHoverPixel){
@@ -1470,7 +1467,7 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 	cp.hueColorValue = hueResult;
 	cp.saturationValuePosX = coloringPanel.saturationValueBoxPosX;
 	cp.saturationValuePosY = coloringPanel.saturationValueBoxPosY;
-	coloringPanel.result = render.getColorPickerValue(FBOscreen,cp,screenSizeX,screenSizeY,programs,uiMaxScreenWidth,uiMaxScreenHeight,saturationValShaderData);
+	coloringPanel.result = render.getColorPickerValue(FBOscreen,cp,screenSizeX,screenSizeY,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,saturationValShaderData);
 	
 	box(0.04f, 0.03f, coloringPanel.panelPosX + 0.125f,coloringPanel.panelPosY+0.15f, coloringPanel.hexVal, colorData.textBoxColor, 0, true, false, 0.9f, 10, colorData.textBoxColorClicked, (float)coloringPanel.hexValTextboxActive);//Hex val textbox
 	
@@ -1526,9 +1523,9 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 		coloringPanel.hueBarPointerPressed = false;
 	}
 	if(coloringPanel.saturationValueBoxPointerPressed){
-		coloringPanel.saturationValueBoxPosX += xOffset/uiMaxScreenWidth*2;
+		coloringPanel.saturationValueBoxPosX += xOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->width*2;
 		coloringPanel.saturationValueBoxPosX = util.restrictBetween(coloringPanel.saturationValueBoxPosX, 0.099f, -0.1f);//Keep in boundaries
-		coloringPanel.saturationValueBoxPosY -= yOffset/uiMaxScreenHeight*2;
+		coloringPanel.saturationValueBoxPosY -= yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height*2;
 		coloringPanel.saturationValueBoxPosY = util.restrictBetween(coloringPanel.saturationValueBoxPosY, 0.199f, -0.2f);//Keep in boundaries
 		coloringPanel.pickerValueChanged = true;
 	}
@@ -1538,7 +1535,7 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 		coloringPanel.hueBarPointerPressed = true;
 
 	if(coloringPanel.hueBarPointerPressed){
-		coloringPanel.hueBarPosX -= yOffset/(uiMaxScreenHeight/2);
+		coloringPanel.hueBarPosX -= yOffset/(glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2);
 		coloringPanel.hueBarPosX = util.restrictBetween(coloringPanel.hueBarPosX, 0.180f, -0.180f);//Keep in boundaries
 		coloringPanel.pickerValueChanged = true;
 	}
@@ -1798,11 +1795,11 @@ void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned
 			}
 
 			
-			if(isMouseOnCoords(window,mouseXpos+screenGapX*(uiMaxScreenWidth/2),mouseYpos,buttonCoorSq,panelData.movePanel)){
+			if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2),mouseYpos,buttonCoorSq,panelData.movePanel)){
 				if(firstClick){
 					gl.activeTexture(GL_TEXTURE1);
 					gl.bindTexture(maskTextures[i]);
-					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,uiMaxScreenWidth,uiMaxScreenHeight);
+					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 					glUseProgram(programs.iconsProgram); 
 					
 					uiOut.maskPanelMaskClicked = true;

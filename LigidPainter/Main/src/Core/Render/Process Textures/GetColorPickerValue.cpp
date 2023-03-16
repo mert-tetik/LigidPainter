@@ -45,7 +45,7 @@ glm::vec3 Render::getColorPickerValue(unsigned int FBOScreen, ColorPicker &color
 
 	//Finish
 	gl.bindFramebuffer(0);
-	glViewport(-(maxScreenWidth - screenSizeX)/2, -(maxScreenHeight - screenSizeY), maxScreenWidth, maxScreenHeight);
+	glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenSizeY), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 
 	glUseProgram(programs.uiProgram);
 

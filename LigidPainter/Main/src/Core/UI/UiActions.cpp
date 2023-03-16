@@ -5,8 +5,6 @@
 #include "Core/gl.h"
 #include "Core/UI/UiActions.h"
 
-int uiactionsMaxScreenWidth;
-int uiactionsMaxScreenHeight;
 
 //Range Values
 bool brushSizeRangeBarPressed;
@@ -148,6 +146,23 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		}
 		if (UIElements[UIpaintThroughCheckBoxElement].checkBox.mouseHover)
 			UIElements[UIpaintThroughCheckBoxElement].checkBox.checked = !UIElements[UIpaintThroughCheckBoxElement].checkBox.checked; 
+		
+		if (UIElements[UImaskPaintingCheckBoxElement].checkBox.mouseHover){
+			UIElements[UImaskPaintingCheckBoxElement].checkBox.checked = true; 
+			UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked = false; 
+			UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked = false; 
+		}
+		if (UIElements[UIcolorPaintingCheckBoxElement].checkBox.mouseHover){
+			UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked = true; 
+			UIElements[UImaskPaintingCheckBoxElement].checkBox.checked = false; 
+			UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked = false; 
+		}
+		if (UIElements[UInormalmapPaintingCheckBoxElement].checkBox.mouseHover){
+			UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked = true; 
+			UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked = false; 
+			UIElements[UImaskPaintingCheckBoxElement].checkBox.checked = false; 
+		}
+		
 		if (UIElements[UIdownloadButton].button.hover)
 			ligid.exportDownloadButtonEnter();
 		if (UIElements[UIjpgCheckBox].checkBox.mouseHover)
@@ -262,7 +277,7 @@ SndPanel &sndPanel){
 		ligid.textureDisplayerBoundaries(xOffset,yOffset,screenWidth,screenHeight);//Changes the global variable
 	}
 	if(maskPanelSliderPressed){
-		ligid.maskPanelSlider(yOffset,uiactionsMaxScreenHeight);//Changes the global variable
+		ligid.maskPanelSlider(yOffset,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);//Changes the global variable
 	}
 	if(mainPanelBoundariesPressed){
 		ligid.mainPanelBoundaries(xOffset,screenWidth);
@@ -284,6 +299,4 @@ SndPanel &sndPanel){
 }
 
 void UiActions::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
-	uiactionsMaxScreenHeight = maxScreenHeight;
-	uiactionsMaxScreenWidth = maxScreenWidth;
 }
