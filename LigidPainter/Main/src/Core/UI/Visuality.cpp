@@ -106,27 +106,27 @@ void UserInterface::panel(float panelLoc, Icons icons,PanelData panelData) {
 
 	//Texture panel button
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.8f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.01f,0.02f,panelLoc - 0.013f,0.808f,0.6f,icons.TDModel,0,colorD.iconColor,colorD.iconColor);
+	iconBox(0.01f,0.02f,panelLoc - 0.013f,0.808f,0.6f,icons.TDModel,panelData.modelPanelActive,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 	
 	//Material panel button
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.72f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.725f,0.6f,icons.Material,0,colorD.iconColor,colorD.iconColor);
+	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.725f,0.6f,icons.Material,panelData.texturePanelActive,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 
 	//Painting panel button
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.64f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.647f,0.6f,icons.Painting,0,colorD.iconColor,colorD.iconColor);
+	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.647f,0.6f,icons.Painting,panelData.paintingPanelActive,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 
 	//Export panel button
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.56f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.567f,0.6f,icons.Export,0,colorD.iconColor,colorD.iconColor);
+	iconBox(0.012f,0.024f,panelLoc - 0.013f,0.567f,0.6f,icons.Export,panelData.exportPanelActive,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 
 	//Settings panel button
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.48f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.011f,0.022f,panelLoc - 0.013f,0.485f,0.6f,icons.Gear,0,colorD.iconColor,colorD.iconColor);
+	iconBox(0.011f,0.022f,panelLoc - 0.013f,0.485f,0.6f,icons.Gear,panelData.settingsPanelActive,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 
 	//Generator panel button
 	iconBox(0.017f,0.034f,panelLoc - 0.017f,0.4f,panelZ+0.01f,icons.PanelButtonR,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.011f,0.022f,panelLoc - 0.013f,0.405f,0.6f,icons.TextureGenerator,0,colorD.iconColor,colorD.iconColor);
+	iconBox(0.011f,0.022f,panelLoc - 0.013f,0.405f,0.6f,icons.TextureGenerator,panelData.generatorPanelActive,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 
 	glUseProgram(uiPrograms.uiProgram);
 	
@@ -231,7 +231,6 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 	box(0.007f, slidePHeight, panelLoc - panelWidth*2 + cornerWidth/2.5f , max(-slideVal + (panelHeigth - cornerWidth), -(panelHeigth - cornerWidth-0.014f)) - slidePHeight, "", colorD.panelHoldColor, 0.022f, false, false, panelZ+0.02, 10000, colorD.panelColor, 0);
 	
-	
 	box(panelWidth, panelHeigth - cornerWidth, panelLoc - panelWidth - cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 	
 	box(panelWidth, cornerWidth, panelLoc - panelWidth - cornerWidth, panelHeigth, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
@@ -245,12 +244,11 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 	//Texture panel button
 	iconBox(0.017f,0.034f,panelLoc + 0.017f,0.8f,panelZ+0.01f,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.01f,0.02f,panelLoc + 0.013f,0.808f,panelZ+0.02f,icons.Texture,0,colorD.iconColor,colorD.iconColor);
-
-
+	iconBox(0.01f,0.02f,panelLoc + 0.013f,0.808f,panelZ+0.02f,icons.Texture,1-sndpnl.state,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
+	
 	//Material panel button
 	iconBox(0.017f,0.034f,panelLoc + 0.017f,0.72f,panelZ+0.01f,icons.PanelButtonL,0,colorD.panelHoldColor,colorD.panelHoldColor);
-	iconBox(0.012f,0.024f,panelLoc + 0.013f,0.725f,panelZ+0.02f,icons.Material,0,colorD.iconColor,colorD.iconColor);
+	iconBox(0.012f,0.024f,panelLoc + 0.013f,0.725f,panelZ+0.02f,icons.Material,sndpnl.state,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 	
 	if(panelLoc > -0.98f){
 
