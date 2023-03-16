@@ -1598,7 +1598,7 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 			unsigned int texture;
 			glset.genTextures(texture);
 			glset.bindTexture(texture);
-			glset.texImage(nullptr,1080,1080,GL_RGB);
+			glset.texImage(nullptr,1080,1080,GL_RGBA);
 			glset.generateMipmap();
 
 			unsigned int FBO;

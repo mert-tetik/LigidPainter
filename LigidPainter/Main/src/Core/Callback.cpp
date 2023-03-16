@@ -295,13 +295,13 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 			sndPanel.downSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.05f, 0.85f, mouseXPos, mouseYPos, false);
 			sndPanel.folderSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.17f, 0.85f, mouseXPos, mouseYPos, false);
 		}
-
-		sndPanel.plusSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.08f, 0.85f, mouseXPos, mouseYPos, false);
-		sndPanel.minusSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.11f, 0.85f, mouseXPos, mouseYPos, false);
-		sndPanel.duplicateSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.14f, 0.85f, mouseXPos, mouseYPos, false);
-		
-		sndPanel.texturePanelButtonHover = ui.isMouseOnButton(window, 0.017f,0.034f, sndPanel.position + 0.015f, 0.8f, mouseXPos, mouseYPos, false);
-		sndPanel.materialPanelButtonHover = ui.isMouseOnButton(window, 0.017f,0.034f, sndPanel.position + 0.015f, 0.72f, mouseXPos, mouseYPos, false);
+		if(!coloringPanel.active){
+			sndPanel.plusSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.08f, 0.85f, mouseXPos, mouseYPos, false);
+			sndPanel.minusSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.11f, 0.85f, mouseXPos, mouseYPos, false);
+			sndPanel.duplicateSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.14f, 0.85f, mouseXPos, mouseYPos, false);
+			sndPanel.texturePanelButtonHover = ui.isMouseOnButton(window, 0.017f,0.034f, sndPanel.position + 0.015f, 0.8f, mouseXPos, mouseYPos, false);
+			sndPanel.materialPanelButtonHover = ui.isMouseOnButton(window, 0.017f,0.034f, sndPanel.position + 0.015f, 0.72f, mouseXPos, mouseYPos, false);
+		}
 
 		sndPanel.boundariesHover = ui.isMouseOnButton(window, 0.02f,0.88,sndPanel.position,0.0f, mouseXPos, mouseYPos, 0);
 
