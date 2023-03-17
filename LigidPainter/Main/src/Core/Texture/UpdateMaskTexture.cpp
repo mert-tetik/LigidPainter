@@ -203,7 +203,8 @@ std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int scr
 
 
 	glset.bindFramebuffer(0);
-	glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSize_x)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenSize_y), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+	LigidPainter lp;
+	lp.setViewportToDefault();
 
 	return verticalBlurMaskTxtr;
 }

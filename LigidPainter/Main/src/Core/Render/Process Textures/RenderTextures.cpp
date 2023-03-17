@@ -141,7 +141,8 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 
 		//Finish
 		gl.bindFramebuffer(0);
-		glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenSizeY), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+		LigidPainter lp;
+		lp.setViewportToDefault();
 
 		//Finish
 		glUseProgram(programs.uiProgram);
@@ -182,6 +183,7 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		gl.bindFramebuffer(0);
 		txtr.refreshScreenDrawingTexture();
 
-		glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenSizeY), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+		LigidPainter lp;
+		lp.setViewportToDefault();
 	}
 }

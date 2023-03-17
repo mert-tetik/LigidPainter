@@ -998,7 +998,8 @@ glm::vec3 UserInterface::hueBar(float position_x, float position_y,float value,u
 		int screenSizeX;
 		int screenSizeY;
 		glfwGetFramebufferSize(window, &screenSizeX, &screenSizeY);
-		glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenSizeY), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+		LigidPainter lp;
+		lp.setViewportToDefault();
 	}
 
 

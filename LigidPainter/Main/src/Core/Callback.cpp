@@ -359,7 +359,8 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 void Callback::framebuffer_size_callback(GLFWwindow* window, int width, int height) //Protect screen ratio
 {
 	// glfwSetWindowSize(window, width, height);
-	glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - width)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - height), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+	LigidPainter lp;
+	lp.setViewportToDefault();
 
 	screenX = width;
 	screenY = height;

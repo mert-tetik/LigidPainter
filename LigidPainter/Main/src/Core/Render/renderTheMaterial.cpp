@@ -500,7 +500,8 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
     resultOut.program = lastProgram;
     glset.uniform1i(resultOut.program,"is3D",1);
 
-    glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenSizeY), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+    LigidPainter lp;
+	lp.setViewportToDefault();
 
     bakeTheMaterial = false;
     return resultOut;

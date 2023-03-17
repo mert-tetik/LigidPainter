@@ -221,7 +221,8 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 	}
 
 
-	glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenSizeY), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+	LigidPainter lp;
+	lp.setViewportToDefault();
 	glset.bindFramebuffer(0);
 	
 	lastMouseXPosIn = mouseXposIn;

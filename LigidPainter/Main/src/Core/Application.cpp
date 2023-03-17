@@ -144,6 +144,7 @@ string customModelName;
 //--------Functions--------\\
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void monitor_callback(GLFWmonitor* monitor, int action);
 void joystick_callback(int jid, int event);
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -219,7 +220,8 @@ bool LigidPainter::run()
 	glViewport(0,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width/3.5,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/3.5);
 
 	//Set Callbacks
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); 
+	glfwSetMonitorCallback(monitor_callback); 
+	glfwSetWindowSizeCallback(window, framebuffer_size_callback); 
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
@@ -430,10 +432,26 @@ bool LigidPainter::run()
 	
 	addSphereButton();
 
+	bool monitorUsed = false;
+
+	bool f11done = false;
+
+	int whileCounter = 0;
+
+
+	//Is used for f11
+	GLFWmonitor* lastmonitor;
+	int lastWidth;
+	int lastHeight;
+	int lastPosx;
+	int lastPosy;
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
-		
+		whileCounter++;
+		if(whileCounter > 1000)
+			whileCounter = 0;
+
 		glfwPollEvents();
 		if(UIElements[UIstabilizeFpsCheckBox].checkBox.checked)
 			glfwSwapInterval(1);
@@ -450,9 +468,31 @@ bool LigidPainter::run()
 		mainLoop.setContextPanelsStates(window,coloringPanel,addNodeContextMenu,textureSelectionPanel);
 		ui.sendTextBoxActiveCharToUI(textBoxActiveChar);
 
+		LigidPainter lp;
+		if(whileCounter % 10 == 0)
+			lp.setViewportToDefault();
 
-
-
+		if(glfwGetKey(window,GLFW_KEY_F11) == GLFW_PRESS){
+			
+			if(!f11done){
+				if(!monitorUsed){
+					lastmonitor = glfwGetWindowMonitor(window);
+					glfwGetWindowSize(window,&lastWidth,&lastHeight);
+					glfwGetWindowPos(window,&lastPosx,&lastPosy);
+					
+					monitorUsed = true;
+					glfwSetWindowMonitor(window,glfwGetPrimaryMonitor(),0,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->refreshRate);
+				}
+				else{
+					monitorUsed = false;
+					glfwSetWindowMonitor(window,lastmonitor,lastPosx,lastPosy,lastWidth,lastHeight,glfwGetVideoMode(glfwGetPrimaryMonitor())->refreshRate);
+				}
+			}
+			f11done = true;
+		}
+		else{
+			f11done = false;
+		}
 
 
 		if(addNodeContextMenu.active && !addNodeContextMenu.hover){
@@ -735,6 +775,21 @@ void joystick_callback(int jid, int event)
         // The joystick was disconnected
     }
 }
+void monitor_callback(GLFWmonitor* monitor, int action){
+	if (action == GLFW_CONNECTED)
+    {
+        //Monitor connected
+		LigidPainter lp;
+		lp.setViewportToDefault();
+	}
+    else if (action == GLFW_DISCONNECTED)
+    {
+        //Monitor disconnected
+		LigidPainter lp;
+		lp.setViewportToDefault();
+	}
+}
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	//TODO : Dynamic textbox
 
@@ -923,6 +978,17 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 	screenWidth = width;
 	screenHeight = height;
+}
+
+void LigidPainter::setViewportToDefault(){
+	GLFWvidmode videomode;
+
+	#ifdef __APPLE__
+		//glViewport(0, 0, screenWidth,screenHeight);
+		glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenWidth)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenHeight), glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+	#else
+		glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenWidth)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenHeight), glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+	#endif
 }
 
 double lastXpos;
@@ -1328,8 +1394,8 @@ void LigidPainter::generateTextureButton(){
 		//Rename if necessary
 		txtr.name = util.uniqueName(txtr.name,textureNames);
 		albedoTextures.push_back(txtr);
-
-		glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenWidth)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenHeight), glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+		
+		setViewportToDefault();
 }
 void LigidPainter::colorBoxColorRangeBar(double yOffset,int height){
 	Utilities util;
