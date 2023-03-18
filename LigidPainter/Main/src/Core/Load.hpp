@@ -228,6 +228,7 @@ public:
 	
 		std::vector<aTexture> maskTextures;
 		std::vector<aTexture> clrTextures;
+		std::vector<aTexture> normalTextures;
 	
 		const char* maskpath = "./LigidPainter/Resources/Textures/Mask";
 
@@ -257,10 +258,26 @@ public:
 		 		}
 		 	}
 		}
+
+		const char* normalpath = "./LigidPainter/Resources/Textures/NormalMap";
+
+		for (const auto & entry : std::filesystem::directory_iterator(normalpath)){
+			glset.activeTexture(GL_TEXTURE1);//Raw mask
+			std::string fileName = entry.path().string();
+			if(fileName.size() > 3){
+		 		if(fileName[fileName.size()-1] != 't' && fileName[fileName.size()-2] != 'x' && fileName[fileName.size()-3] != 't'){
+		 			aTexture brushTxtr;
+					brushTxtr.id = txtr.getTexture(fileName,0,0,false);
+					brushTxtr.name = fileName;
+					normalTextures.push_back(brushTxtr);
+		 		}
+		 	}
+		}
 	
 		BrushTexture brushTextures;
 		brushTextures.maskTextures = maskTextures;
 		brushTextures.colorTextures = clrTextures;
+		brushTextures.normalTextures = normalTextures;
 		return brushTextures;
 	}
 	

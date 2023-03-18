@@ -169,7 +169,7 @@ ScreenPaintingReturnData Texture::createScreenPaintTexture(GLubyte* &screenTextu
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1080, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, mirroredScreenTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1080, 1080, 0, GL_RGBA, GL_UNSIGNED_BYTE, mirroredScreenTexture);
 	glset.generateMipmap();
 
 	delete(mirroredScreenTexture);

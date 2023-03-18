@@ -392,6 +392,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 		if(node.outputs[i].pressed)//Render the connection lines if output connects to an input or moves
 			drawLine((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10,depth+0.02f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY, node.width*200.f ,nodeColor,false);
 		
+        glUseProgram(programs.uiProgram);
+		
 		renderText(programs.uiProgram,node.outputs[i].text,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width - (node.outputs[i].text.size()/60.f)*node.width*8.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+0.01f,false);
 	}
 

@@ -1766,6 +1766,8 @@ void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTe
 			brushmasktextures = maskTextures.maskTextures;
 		if(state == 1)
 			brushmasktextures = maskTextures.colorTextures;
+		if(state == 2)
+			brushmasktextures = maskTextures.normalTextures;
 
 		unsigned int masktxtrprogram;
 			masktxtrprogram = programs.renderTheTextureProgram;
