@@ -96,8 +96,10 @@ GLFWwindow* window;
 unsigned int FBOScreen;
 
 bool firstClick = false;
+bool firstClickR = false;
 bool mousePress = false;
 bool doubleClick = false;
+bool doubleClickR = false;
 
 bool cameraPosChanging = true;
 bool paintingMode = false; //True if painting started, False if camera position changed after painting
@@ -196,9 +198,11 @@ bool duplicateNodeCall = false;
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-	std::cout << button << ' ' << action << ' ' << mods << '\n';
+	std::cout << button << ' ';
     if(action == 1 && button == 0)
 		firstClick = true;
+    if(action == 1 && button == 1)
+		firstClickR = true;
 }
 
 bool LigidPainter::run()
@@ -462,6 +466,7 @@ bool LigidPainter::run()
 	int mouseClickPosy = 0;
 
 	bool moveCamera = false;
+	bool zoomInOutCamera = false;
 	
 	double lastTime = glfwGetTime();
 
@@ -503,7 +508,7 @@ bool LigidPainter::run()
 		if(countTheClicks){
 			if (currentTime - lastTime >= 0.02) {
 				clickCounter++;
-				lastTime += 0.02;
+				lastTime = glfwGetTime();
 			}
 		}
 		if(clickCounter > 20)
@@ -516,6 +521,37 @@ bool LigidPainter::run()
 		}
 		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
 			moveCamera = false;
+		}
+		
+		if(firstClickR){
+			clickCounter = 0;
+			if(countTheClicks && glm::distance(glm::vec2(mouseClickPosx,mouseClickPosy),glm::vec2(mouseXpos,mouseYpos)) < 30){
+				countTheClicks = false;
+				doubleClickR = true;
+			}
+			else{
+				mouseClickPosx = mouseXpos;
+				mouseClickPosy = mouseYpos;
+				countTheClicks = true;	
+			}
+		}
+		
+		if(countTheClicks){
+			if (currentTime - lastTime >= 0.02) {
+				clickCounter++;
+				lastTime = glfwGetTime();
+			}
+		}
+		if(clickCounter > 20)
+			countTheClicks = false;
+		
+		if(doubleClickR)
+			txtr.refreshScreenDrawingTexture();
+		if(doubleClickR){
+			zoomInOutCamera = true;
+		}
+		if(glfwGetMouseButton(window, 1) == GLFW_RELEASE){
+			zoomInOutCamera = false;
 		}
 
 
@@ -684,7 +720,7 @@ bool LigidPainter::run()
 		//Painting
 		const bool distance_spacingCompatibility = glm::distance(glm::vec2(mouseDrawingPosX,mouseDrawingPosY),glm::vec2(mouseXpos,mouseYpos)) > paintingSpacing;
 		const bool paintingCondition = glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && !panelChanging && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !colorPicker.dropperActive && distance_spacingCompatibility && !coloringPanel.saturationValueBoxPointerPressed && !coloringPanel.hueBarPointerPressed; 
-		if (paintingCondition && !moveCamera){
+		if (paintingCondition && !moveCamera && (glfwGetKey(window,GLFW_KEY_Z) == GLFW_RELEASE) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE){
 
 			mouseDrawingPosX = mouseXpos;
 			mouseDrawingPosY = mouseYpos;
@@ -699,6 +735,17 @@ bool LigidPainter::run()
 
 			brushValChanged = false; //After updating the brush mask texture set brushValChanged to false so brush mask texture won't be updated repeatedly 
 			paintingMode = true;
+		}
+
+		if (doScrollAfterCallInPaintingMode || zoomInOutCamera || (glfwGetKey(window,GLFW_KEY_Z) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE)) //Do a scroll after texture update using holdScroll
+		{
+			float scrollVal;
+			if(doScrollAfterCallInPaintingMode)
+				scrollVal = holdScrollVal;
+			if(zoomInOutCamera || (glfwGetKey(window,GLFW_KEY_Z) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE))
+				scrollVal = mouseYpos - lastMouseYpos;
+			callbackData = callback.scroll_callback(window, 0, scrollVal);
+			doScrollAfterCallInPaintingMode = false;
 		}
 
 		panelChanging = false;
@@ -718,7 +765,7 @@ bool LigidPainter::run()
 
 
 
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel,coloringPanel,moveCamera);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel,coloringPanel,moveCamera,zoomInOutCamera);
 
 
 		mirrorClick = false;
@@ -726,11 +773,7 @@ bool LigidPainter::run()
 		if ((cameraPosChanging && paintingMode) || glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE) { //Changing camera position or painting a stroke ends painting, than updates painted texture
 			paintingMode = false;
 		}
-		if (doScrollAfterCallInPaintingMode) //Do a scroll after texture update using holdScroll
-		{
-			callbackData = callback.scroll_callback(window, 0, holdScrollVal);
-			doScrollAfterCallInPaintingMode = false;
-		}
+
 		if (glfwGetMouseButton(window, 1) == GLFW_RELEASE) { //Camera position changed
 			cameraPosChanging = false;
 		}
@@ -746,6 +789,8 @@ bool LigidPainter::run()
 		nodePanel.zoomValChanged = false;
 		doubleClick = false;
 		firstClick = false;
+		doubleClickR = false;
+		firstClickR = false;
 		//Exit message box
 		if(glfwWindowShouldClose(window)){
 			bool noButtonClick = true;

@@ -99,10 +99,10 @@ void Callback::key_callback(int key, int action,GLFWwindow* window){
 CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double scrollx) {
 	float originCameraDistance = glm::distance(originPos,cameraPos)/10;
 	CallbckData callbk;
-	if (scrollx == 1 && radius > 1) {
+	if (scrollx > 0 && radius > 1) {
 		radius-=originCameraDistance;
 	}
-	else if (scrollx == -1) {
+	else if (scrollx < 0) {
 		radius+=originCameraDistance;
 	}
 	//Zoom in-out
@@ -117,7 +117,7 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 
 CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData &panelData, float maskPanelSliderValue,bool brushMaskPanelMaskHover,
 LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer
-, NodePanel &nodePanel, ContextMenu &addNodeContextMenu, SndPanel &sndPanel,ColoringPanel &coloringPanel,bool moveCamera)
+, NodePanel &nodePanel, ContextMenu &addNodeContextMenu, SndPanel &sndPanel,ColoringPanel &coloringPanel,bool moveCamera,bool zoomInOutCamera)
 {
 	CallbckData callbk;
 	
@@ -133,7 +133,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 	yoffset = lastY - ypos;
 	lastX = xpos;
 	lastY = ypos;
-	if (glfwGetMouseButton(window, 1) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+	if ((glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetMouseButton(window, 0) == GLFW_PRESS || moveCamera) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && !zoomInOutCamera && glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) {
 		xoffset *= sensitivity;
 		yoffset *= sensitivity;
 
@@ -147,7 +147,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		cameraPos.y -= cos(glm::radians(pitch)) * yoffset * (sensitivity / 2);
 		originPos.y -= cos(glm::radians(pitch)) * yoffset * (sensitivity / 2);
 	}
-	else if (glfwGetMouseButton(window, 1) == GLFW_PRESS || moveCamera) {
+	else if ((glfwGetMouseButton(window, 1) == GLFW_PRESS || moveCamera) && !zoomInOutCamera && glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) {
 
 		xoffset *= sensitivity;
 		yoffset *= sensitivity;
