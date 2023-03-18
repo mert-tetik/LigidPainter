@@ -109,6 +109,7 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		if(albedoTextures.size() != 0)
 			chosenTxtr = albedoTextures[chosenTextureIndex].id;
 
+		gl.drawArrays(renderVertices,0);
 		//Render painted image
 		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0);
 
