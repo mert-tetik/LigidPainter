@@ -651,18 +651,6 @@ bool LigidPainter::run()
 		lastMouseYpos = mouseYpos;
 
 
-		//BRUSHUPDATE
-		//Update brush mask texture file's name once the brush mask texture changed
-		// if(renderOut.maskPanelMaskClicked){
-		// 	for (size_t i = 0; i < brushMaskTextures.textures.size(); i++)
-		// 	{
-		// 		if(brushMaskTextures.textures[i] == renderOut.currentBrushMaskTxtr){
-		// 			//Restrict brush mask texture's name (20 chars)
-		// 			std::string maskTextureName = util.getLastWordBySeparatingWithChar(brushMaskTextures.names[i],folderDistinguisher);  
-		// 			UIElements[UImaskTextureFileNameText].text.text = util.cropString(maskTextureName,20); 
-		// 		}
-		// 	}
-		// }
 		if(renderOut.maskPanelMaskClicked){
 			//If a new mask texture is selected from mask texture panel set brushValChanged to true to update brush mask texture 
 			brushValChanged = true;
@@ -1193,7 +1181,7 @@ void LigidPainter::updateColorPicker(glm::vec3 RGBval,bool changeHue,bool change
 
 //-----------------------------UI ACTIONS-----------------------------\\
 
-void LigidPainter::addMaskTextureButton() {
+void LigidPainter:: addMaskTextureButton() {
 	//Needed for updating mask texture
 	int width;
 	int height;
@@ -1216,9 +1204,19 @@ void LigidPainter::addMaskTextureButton() {
 		brushValChanged = true;
 		glset.activeTexture(GL_TEXTURE1);
 
-		//BRUSHUPDATE
-		//brushMaskTextures.textures.push_back(txtr.getTexture(maskTexturePath,0,0,false));
-		//brushMaskTextures.names.push_back(maskTexturePath);
+		aTexture brushTxtr;
+		brushTxtr.id = txtr.getTexture(maskTexturePath,0,0,false);
+		brushTxtr.name = maskTexturePath;
+
+		if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked){
+			brushMaskTextures.maskTextures.push_back(brushTxtr);
+		}
+		if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked){
+			brushMaskTextures.colorTextures.push_back(brushTxtr);
+		}
+		if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked){
+			brushMaskTextures.normalTextures.push_back(brushTxtr);
+		}
 
 		txtr.updateMaskTexture(FBOScreen,width,height,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 	}

@@ -1826,6 +1826,9 @@ void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTe
 			
 			if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2),mouseYpos,buttonCoorSq,panelData.movePanel)){
 				if(firstClick){
+					Utilities util;
+					UIElements[UImaskTextureFileNameText].text.text = util.cropString(brushmasktextures[i].name,20);
+					
 					gl.activeTexture(GL_TEXTURE1);
 					gl.bindTexture(brushmasktextures[i].id);
 					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
