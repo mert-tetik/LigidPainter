@@ -215,6 +215,7 @@ void GlSet::usePBRShader(unsigned int program,PBRShaderData data){
 	uniform3fv(program,"mirroredViewPos",data.mirroredViewPos);
 	uniform1i(program,"bluryskybox",data.bluryskybox);
 	uniform1i(program,"material.diffuse",data.materialDiffuse);
+	uniform1i(program,"subSelectedTexture",17);
 }
 
 void GlSet::useSkyBoxShader(unsigned int program, SkyBoxShaderData data){

@@ -149,7 +149,7 @@ bool sndpanelFolderPressed = false;
 int sndpanelFolderCounter = 0;
 
 bool sndpanelSliderPressed = false;
-
+int subselectedIndex = 10000;
 void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float removeThisParam, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool &firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushTexture &brushMaskTextures,bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory) {
 	GlSet glset;
 	ColorData colorData;
@@ -405,6 +405,19 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 					bool isPressed = false;
 
 					if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2),mouseYpos,buttonCoorSq,false) && !clringPanel.active && !txtrCreatingPanel.active){
+						if(firstClick && glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
+							if(selectedAlbedoTextureIndex != i){
+								glActiveTexture(GL_TEXTURE17);
+								subselectedIndex = i;
+								glset.bindTexture(albedoTextures[i].id);
+							}
+							else{
+								glActiveTexture(GL_TEXTURE17);
+								subselectedIndex = 10000;
+								glset.bindTexture(albedoTextures[i].id);
+							}	
+
+						}
 						glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
 						isHover = true;
 						if(glfwGetMouseButton(window,1) == GLFW_PRESS)
@@ -413,7 +426,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 							if(selectedAlbedoTextureIndex != i)
 								albedoTextures[selectedAlbedoTextureIndex].folderIndex = i;
 						}
-						if(firstClick && !albedoTextures[i].rightClicked){
+						if(firstClick && !albedoTextures[i].rightClicked && glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE){
 							if(albedoTextures[i].isTexture){
 								glActiveTexture(GL_TEXTURE0);
 								glBindTexture(GL_TEXTURE_2D,albedoTextures[selectedAlbedoTextureIndex].id);
@@ -440,22 +453,26 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 					}
 					glActiveTexture(GL_TEXTURE14);
 					glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
+					glset.uniform1i(uiPrograms.renderTheTextureProgram, "subSelected" ,i == subselectedIndex);
+					if(i == subselectedIndex)
+						glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,1);
+
 
 					if(!albedoTextures[i].isTexture){
 						glm::vec4 iconColor = glm::vec4(1);
 
 
-					if(!isHover && !isPressed)
-						iconColor = colorData.materialIconColor;
+						if(!isHover && !isPressed)
+							iconColor = colorData.materialIconColor;
 
-					else if(isHover && !isPressed)
-						iconColor = colorData.materialIconColorHover;
+						else if(isHover && !isPressed)
+							iconColor = colorData.materialIconColorHover;
 
-					else if(!isHover && isPressed)
-						iconColor = colorData.materialIconColorActive;
+						else if(!isHover && isPressed)
+							iconColor = colorData.materialIconColorActive;
 
-					else if(isHover && isPressed)
-						iconColor = colorData.materialIconColorActiveHover;
+						else if(isHover && isPressed)
+							iconColor = colorData.materialIconColorActiveHover;
 
 						glUseProgram(programs.iconsProgram);
 						glActiveTexture(GL_TEXTURE6);
@@ -511,8 +528,17 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 							subSelectRCHover = true;
 							if(firstClick){
 								albedoTextures[i].rightClicked = false;
-								//TODO : Subselect function here
 								sndpanelMoveTexture = false;
+								if(selectedAlbedoTextureIndex != i){
+									glActiveTexture(GL_TEXTURE17);
+									subselectedIndex = i;
+									glset.bindTexture(albedoTextures[i].id);
+								}
+								else{
+									glActiveTexture(GL_TEXTURE17);
+									subselectedIndex = 10000;
+									glset.bindTexture(albedoTextures[i].id);
+								}					
 							}
 						}	
 						if(albedoTextures[i].isTexture)

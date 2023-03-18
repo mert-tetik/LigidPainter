@@ -432,3 +432,20 @@ unsigned int Utilities::createQRCode(const char* path,glm::vec3 color){
 
 	return qrTxtr;
 }
+
+std::vector<std::string> Utilities::seperateFilePaths(std::string paths,char seperator){
+	std::vector<std::string> pathVector;
+
+	std::string path;
+	for (size_t i = 0; i < paths.size(); i++)
+	{
+		if(paths[i] == seperator){
+			pathVector.push_back(path);
+			path = "";	
+		}
+		else
+			path += paths[i];
+	}
+	pathVector.push_back(path);
+	return pathVector;	
+} 

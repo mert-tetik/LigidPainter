@@ -7,6 +7,7 @@ in vec2 TexCoords;
 uniform int isHover;
 uniform int isPressed;
 
+uniform int subSelected;
 
 uniform int isMask;
 uniform int maskUseColor;
@@ -15,6 +16,11 @@ uniform sampler2D txtr;
 
 void main(){
     if(isMask == 0){
+        vec3 selectionColor;
+        if(subSelected == 0)
+            selectionColor = vec3(0.043,0.635,0.823);
+        if(subSelected == 1)
+            selectionColor = vec3(1) - vec3(0.043,0.635,0.823);
 
           if(isHover == 0){
             if(isPressed == 0){
@@ -25,7 +31,7 @@ void main(){
                 const float cornerThickness = 0.02; 
                 //Pressed(negative)
                 if(TexCoords.x < cornerThickness || TexCoords.y < cornerThickness || TexCoords.x > 1.0-cornerThickness || TexCoords.y > 1.0-cornerThickness){
-                    color = vec4(vec3(vec4(0.043,0.635,0.823,1) - texture(txtr,TexCoords)),1*texture(txtr,TexCoords).a);
+                    color = vec4(vec3(vec4(selectionColor,1) - texture(txtr,TexCoords)),1*texture(txtr,TexCoords).a);
                 }
                 else{
                     color = vec4(texture(txtr,TexCoords).rgb,1*texture(txtr,TexCoords).a);
@@ -41,7 +47,7 @@ void main(){
                 const float cornerThickness = 0.04; 
                 //Pressed + hover (transparent + negative)
                 if(TexCoords.x < cornerThickness || TexCoords.y < cornerThickness || TexCoords.x > 1.0-cornerThickness || TexCoords.y > 1.0-cornerThickness){
-                    color = vec4(vec3(vec4(0.043,0.635,0.823,1) - texture(txtr,TexCoords)),0.5*texture(txtr,TexCoords).a);
+                    color = vec4(vec3(vec4(selectionColor,1) - texture(txtr,TexCoords)),0.5*texture(txtr,TexCoords).a);
                 }
                 else{
                     color = vec4(texture(txtr,TexCoords).rgb,0.5*texture(txtr,TexCoords).a);

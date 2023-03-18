@@ -19,6 +19,7 @@
 //GL_TEXTURE14 = texture rendering for the ui
 //GL_TEXTURE15 = BRDF
 //GL_TEXTURE16 = prefilteredMap
+//GL_TEXTURE17 = subSelectedTexture
 
 //GL_TEXTURE 20 - 27 Is reserved for nodes
 //GL_TEXTURE28 = Empty
@@ -387,7 +388,6 @@ bool LigidPainter::run()
 	glset.uniform3fv(programs.uiProgram,"textColor",textClr);
 	glset.uniform1i(programs.uiProgram, "text", 2);
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
-
 
 	ExportData exportData;
 	PBRShaderData pbrShaderData;
@@ -2074,44 +2074,47 @@ void LigidPainter::viewportImageTextbox(){
 }
 void LigidPainter::sndPanelDownIcon(){
 	if(!txtrCreatingPanel.active){
-		aTexture result;
-
-		glActiveTexture(GL_TEXTURE0);
-		unsigned int texture;
-		glset.genTextures(texture);
-		glset.bindTexture(texture);
 
 		//Load texture
 		Texture txtr;
 		//Filters
 		char const* lFilterPatterns[2] = { "*.jpg", "*.png" };
 		//File dialog
-		auto albedoPathCheck = tinyfd_openFileDialog("Select Image", "", 2, lFilterPatterns, "", false);
-		
+		auto albedoPathCheck = tinyfd_openFileDialog("Select Image", "", 2, lFilterPatterns, "", true);
 		if (albedoPathCheck) {
 			std::string albedoTexturePath = albedoPathCheck;
+			Utilities util;
+			std::vector<std::string> albedoTexturePaths = util.seperateFilePaths(albedoTexturePath,'|');
 			
 			int txtrRes = 256;
 			for (size_t i = 0; i < chosenTextureResIndex; i++)
 			{
 				txtrRes*=2;
 			}
-
-			txtr.getTexture(albedoTexturePath,txtrRes,txtrRes,true); //Force albedo's ratio to be 1:1
-			Utilities util;
-			result.id = texture;
-			
-			std::vector<std::string> textureNames;
-			for (size_t i = 0; i < albedoTextures.size(); i++)
+			for (size_t i = 0; i < albedoTexturePaths.size(); i++)
 			{
-				textureNames.push_back(albedoTextures[i].name);
+				aTexture result;
+				
+				glActiveTexture(GL_TEXTURE0);
+
+				
+				result.id = txtr.getTexture(albedoTexturePaths[i],txtrRes,txtrRes,false); //Force albedo's ratio to be 1:1
+				
+				Utilities util;
+				 
+				std::vector<std::string> textureNames;
+				for (size_t i = 0; i < albedoTextures.size(); i++)
+				{
+					textureNames.push_back(albedoTextures[i].name);
+				}
+
+				//Rename if necessary
+				result.name = util.removeExtension(util.getLastWordBySeparatingWithChar(albedoTexturePaths[i],folderDistinguisher)); 
+				result.name = util.uniqueName(result.name,textureNames);
+
+				albedoTextures.push_back(result);
 			}
 			
-			//Rename if necessary
-			result.name = util.removeExtension(util.getLastWordBySeparatingWithChar(albedoTexturePath,folderDistinguisher)); 
-			result.name = util.uniqueName(result.name,textureNames);
-			
-			albedoTextures.push_back(result);
 		}
 	}
 }
