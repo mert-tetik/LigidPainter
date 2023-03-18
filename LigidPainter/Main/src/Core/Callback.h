@@ -23,7 +23,7 @@ struct CallbckData { //Return from callback
 class Callback {
 public:
 	CallbckData scroll_callback(GLFWwindow* window, double scroll, double scrollx);
-	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData &panelData, float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,NodePanel &nodePanel,ContextMenu &addNodeContextMenu,SndPanel &sndPanel,ColoringPanel &coloringPanel);
+	CallbckData mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData &panelData, float maskPanelSliderValue,bool brushMaskPanelMaskHover,LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,NodePanel &nodePanel,ContextMenu &addNodeContextMenu,SndPanel &sndPanel,ColoringPanel &coloringPanel,bool moveCamera);
 	void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 	void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void key_callback(int key,int action,GLFWwindow* window);

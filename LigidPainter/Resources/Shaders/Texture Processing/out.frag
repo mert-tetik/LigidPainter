@@ -21,6 +21,7 @@ uniform sampler2D uvMask;
 uniform int interpretWithUvMask;
 
 uniform int maskMode;
+uniform int normalPainting;
 
 
 in vec2 TexCoords;
@@ -82,8 +83,14 @@ vec3 getPaintedDiffuse(){
       if(maskMode == 1)
          intensity = texture(screenMaskTexture, screenPos.xy).r;
       else{
-         if(texture(screenMaskTexture, screenPos.xy).r > 0.02f || texture(screenMaskTexture, screenPos.xy).g > 0.02f || texture(screenMaskTexture, screenPos.xy).b > 0.02f)
-            intensity = 1.0;
+         if(normalPainting == 1){
+            if(texture(screenMaskTexture, screenPos.xy).r > 0.7f || texture(screenMaskTexture, screenPos.xy).g > 0.7f || texture(screenMaskTexture, screenPos.xy).b > 0.7f)
+               intensity = 1.0;
+         }
+         else{
+            if(texture(screenMaskTexture, screenPos.xy).r > 0.02f || texture(screenMaskTexture, screenPos.xy).g > 0.02f || texture(screenMaskTexture, screenPos.xy).b > 0.02f)
+               intensity = 1.0;
+         }
       }
    }
 
@@ -92,8 +99,14 @@ vec3 getPaintedDiffuse(){
       if(maskMode == 1)
          mirroredIntensity = texture((mirroredScreenMaskTexture), mirroredScreenPos.xy).r;
       else{
-         if(texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).r > 0.02f || texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).g > 0.02f || texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).b > 0.02f)
-            mirroredIntensity = 1.0;
+         if(normalPainting == 1){
+            if(texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).r > 0.7f || texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).g > 0.7f || texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).b > 0.7f)
+               mirroredIntensity = 1.0;
+         }
+         else{
+            if(texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).r > 0.02f || texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).g > 0.02f || texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).b > 0.02f)
+               mirroredIntensity = 1.0;
+         }
       }
    }
    

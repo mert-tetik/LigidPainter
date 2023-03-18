@@ -114,9 +114,10 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 	return callbk;
 }
 
+
 CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData &panelData, float maskPanelSliderValue,bool brushMaskPanelMaskHover,
 LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElements,float mainPanelLoc,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer
-, NodePanel &nodePanel, ContextMenu &addNodeContextMenu, SndPanel &sndPanel,ColoringPanel &coloringPanel)
+, NodePanel &nodePanel, ContextMenu &addNodeContextMenu, SndPanel &sndPanel,ColoringPanel &coloringPanel,bool moveCamera)
 {
 	CallbckData callbk;
 	
@@ -146,7 +147,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		cameraPos.y -= cos(glm::radians(pitch)) * yoffset * (sensitivity / 2);
 		originPos.y -= cos(glm::radians(pitch)) * yoffset * (sensitivity / 2);
 	}
-	else if (glfwGetMouseButton(window, 1) == GLFW_PRESS) {
+	else if (glfwGetMouseButton(window, 1) == GLFW_PRESS || moveCamera) {
 
 		xoffset *= sensitivity;
 		yoffset *= sensitivity;

@@ -97,6 +97,7 @@ unsigned int FBOScreen;
 
 bool firstClick = false;
 bool mousePress = false;
+bool doubleClick = false;
 
 bool cameraPosChanging = true;
 bool paintingMode = false; //True if painting started, False if camera position changed after painting
@@ -193,6 +194,12 @@ int chosenNodeResIndex = 1; //0:256 1:512 2:1024 3:2048
 int chosenSkyboxTexture = 0;
 bool duplicateNodeCall = false;
 
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	std::cout << button << ' ' << action << ' ' << mods << '\n';
+    if(action == 1 && button == 0)
+		firstClick = true;
+}
 
 bool LigidPainter::run()
 {
@@ -226,6 +233,8 @@ bool LigidPainter::run()
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 	glfwSetJoystickCallback(joystick_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
+
 
 
 
@@ -446,6 +455,17 @@ bool LigidPainter::run()
 	int lastPosx;
 	int lastPosy;
 
+
+	bool countTheClicks = false;
+	int clickCounter = 0;
+	int mouseClickPosx = 0;
+	int mouseClickPosy = 0;
+
+	bool moveCamera = false;
+	
+	double lastTime = glfwGetTime();
+
+
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		whileCounter++;
@@ -461,9 +481,44 @@ bool LigidPainter::run()
 		util.printRenderingSpeed();
 		
 		// util.printError();
-		
+	
 		mainLoop.updateCameraPosChanging(callbackData.cameraPos,cameraPosChanging);
-		mainLoop.detectClick(window,mousePress,firstClick);
+		//mainLoop.detectClick(window,mousePress,firstClick);
+		if(firstClick){
+			clickCounter = 0;
+			if(countTheClicks && glm::distance(glm::vec2(mouseClickPosx,mouseClickPosy),glm::vec2(mouseXpos,mouseYpos)) < 30){
+				countTheClicks = false;
+				doubleClick = true;
+			}
+			else{
+				mouseClickPosx = mouseXpos;
+				mouseClickPosy = mouseYpos;
+				countTheClicks = true;	
+			}
+		}
+		
+		double currentTime = glfwGetTime();
+		
+		
+		if(countTheClicks){
+			if (currentTime - lastTime >= 0.02) {
+				clickCounter++;
+				lastTime += 0.02;
+			}
+		}
+		if(clickCounter > 20)
+			countTheClicks = false;
+		
+		if(doubleClick)
+			txtr.refreshScreenDrawingTexture();
+		if(doubleClick){
+			moveCamera = true;
+		}
+		if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
+			moveCamera = false;
+		}
+
+
 		mainLoop.updateRenderTheScene(window,renderTheSceneCounter,renderTheScene);
 		mainLoop.setContextPanelsStates(window,coloringPanel,addNodeContextMenu,textureSelectionPanel);
 		ui.sendTextBoxActiveCharToUI(textBoxActiveChar);
@@ -629,7 +684,7 @@ bool LigidPainter::run()
 		//Painting
 		const bool distance_spacingCompatibility = glm::distance(glm::vec2(mouseDrawingPosX,mouseDrawingPosY),glm::vec2(mouseXpos,mouseYpos)) > paintingSpacing;
 		const bool paintingCondition = glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && !panelChanging && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !colorPicker.dropperActive && distance_spacingCompatibility && !coloringPanel.saturationValueBoxPointerPressed && !coloringPanel.hueBarPointerPressed; 
-		if (paintingCondition){
+		if (paintingCondition && !moveCamera){
 
 			mouseDrawingPosX = mouseXpos;
 			mouseDrawingPosY = mouseYpos;
@@ -663,7 +718,7 @@ bool LigidPainter::run()
 
 
 
-			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel,coloringPanel);
+			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel,coloringPanel,moveCamera);
 
 
 		mirrorClick = false;
@@ -689,7 +744,8 @@ bool LigidPainter::run()
 		addNodeContextMenu.stateChanged = false;
 		
 		nodePanel.zoomValChanged = false;
-
+		doubleClick = false;
+		firstClick = false;
 		//Exit message box
 		if(glfwWindowShouldClose(window)){
 			bool noButtonClick = true;
@@ -1133,10 +1189,9 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 			}
 		}
 		else if(callbackData.mainPanelEnter && panelData.paintingPanelActive){
-			//MACOS
-			// panelData.paintingPanelSlideVal += scrollx/10.0f;
-			// if(panelData.paintingPanelSlideVal < 0.0f)
-			// 	panelData.paintingPanelSlideVal = 0.0f;
+			 panelData.paintingPanelSlideVal += scrollx/10.0f;
+			 if(panelData.paintingPanelSlideVal < 0.0f)
+			 	panelData.paintingPanelSlideVal = 0.0f;
 		}
 		else if (!paintingMode && !mainPanelHover) {
 			callbackData = callback.scroll_callback(window, scroll, scrollx);
