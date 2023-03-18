@@ -170,7 +170,7 @@ public:
 	
 		glset.activeTexture(GL_TEXTURE6);
 		icons.dropperIcon = txtr.getTexture("LigidPainter/Resources/Icons/Dropper.jpg",0,0,false);
-		icons.TDModel = txtr.getTexture("LigidPainter/Resources/Icons/3DModel.jpg",0,0,false);
+		icons.TDModel = txtr.getTexture("LigidPainter/Resources/Icons/3DModel.li",0,0,false);
 		icons.BackfaceCulling = txtr.getTexture("LigidPainter/Resources/Icons/BackfaceCulling.jpg",0,0,false);
 		icons.ColorPicker = txtr.getTexture("LigidPainter/Resources/Icons/ColorPicker.jpg",0,0,false);
 		icons.Export = txtr.getTexture("LigidPainter/Resources/Icons/Export.jpg",0,0,false);
@@ -222,32 +222,46 @@ public:
 		return icons;
 	}
 	
-	BrushMaskTextures loadBrushMaskTextures(){
+	BrushTexture loadBrushMaskTextures(){
 		GlSet glset;
 		Texture txtr;
 	
-		std::vector<unsigned int> maskTextures;
-		std::vector<std::string> maskTextureNames;
+		std::vector<aTexture> maskTextures;
+		std::vector<aTexture> clrTextures;
 	
-		const char* path = "./LigidPainter/Resources/Textures/Mask";
-	
-	
-		for (const auto & entry : std::filesystem::directory_iterator(path)){
+		const char* maskpath = "./LigidPainter/Resources/Textures/Mask";
+
+		for (const auto & entry : std::filesystem::directory_iterator(maskpath)){
 			glset.activeTexture(GL_TEXTURE1);//Raw mask
 			std::string fileName = entry.path().string();
 			if(fileName.size() > 3){
 		 		if(fileName[fileName.size()-1] != 't' && fileName[fileName.size()-2] != 'x' && fileName[fileName.size()-3] != 't'){
-		 			maskTextures.push_back(txtr.getTexture(fileName,0,0,false));
-		 			maskTextureNames.push_back(fileName);
+		 			aTexture brushTxtr;
+					brushTxtr.id = txtr.getTexture(fileName,0,0,false);
+					brushTxtr.name = fileName;
+					maskTextures.push_back(brushTxtr);
+		 		}
+		 	}
+		}
+		const char* colorpath = "./LigidPainter/Resources/Textures/Sticker";
+
+		for (const auto & entry : std::filesystem::directory_iterator(colorpath)){
+			glset.activeTexture(GL_TEXTURE1);//Raw mask
+			std::string fileName = entry.path().string();
+			if(fileName.size() > 3){
+		 		if(fileName[fileName.size()-1] != 't' && fileName[fileName.size()-2] != 'x' && fileName[fileName.size()-3] != 't'){
+		 			aTexture brushTxtr;
+					brushTxtr.id = txtr.getTexture(fileName,0,0,false);
+					brushTxtr.name = fileName;
+					clrTextures.push_back(brushTxtr);
 		 		}
 		 	}
 		}
 	
-		BrushMaskTextures brushMasks;
-		brushMasks.names = maskTextureNames;
-		brushMasks.textures = maskTextures;
-	
-		return brushMasks;
+		BrushTexture brushTextures;
+		brushTextures.maskTextures = maskTextures;
+		brushTextures.colorTextures = clrTextures;
+		return brushTextures;
 	}
 	
 	
@@ -990,7 +1004,7 @@ public:
 		unsigned int textureColorbuffer;
 		gl.genTextures(textureColorbuffer);
 		gl.bindTexture(textureColorbuffer);
-		gl.texImage(NULL, 1920,1080,GL_RGB);
+		gl.texImage(NULL, 1920,1080,GL_RGBA);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);

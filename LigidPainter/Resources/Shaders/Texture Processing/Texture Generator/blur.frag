@@ -27,9 +27,10 @@ void main(){
 
     for(int i = 0; i < kernel_sizeF; i++) {
             if(isRenderVerticalBlur == 0)
-                color += texture(inputTexture, centerTexCoords + vec2(pixelSize*(i - (kernel_sizeF / 2)),0)) * oneDimensionalGaussF1[i];
+                color += vec4(texture(inputTexture, centerTexCoords + vec2(pixelSize*(i - (kernel_sizeF / 2)),0)).rgb * oneDimensionalGaussF1[i],1);
             else
-                color += texture(inputTexture, centerTexCoords + vec2(0,pixelSize*(i - (kernel_sizeF / 2)))) * oneDimensionalGaussF1[i];
+                color += vec4(texture(inputTexture, centerTexCoords + vec2(0,pixelSize*(i - (kernel_sizeF / 2)))).rgb * oneDimensionalGaussF1[i],1);
     }
+    color.a = 1;
     
 }

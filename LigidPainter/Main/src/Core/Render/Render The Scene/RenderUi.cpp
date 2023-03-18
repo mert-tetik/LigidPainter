@@ -87,14 +87,14 @@ bool selectionActive = false;
 
 
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
-const char* exportFileName,float &maskPanelSliderValue,std::vector<unsigned int> &maskTextures,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
+const char* exportFileName,float &maskPanelSliderValue,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 float brushBlurVal,OutShaderData &outShaderData, Model &model,std::vector<aTexture> &albedoTextures,Programs programs
 ,int &currentMaterialIndex,int removeThisParam,int removeThisParam2, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
 ,NodePanel &nodePanel,SndPanel &sndPanel, int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool &firstClick
 ,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive
-,std::string &textureText,std::vector<NodeScene> &nodeScenesHistory,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps
+,std::string &textureText,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps
 ,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex) {
 
 	ColorData colorData;
@@ -563,7 +563,16 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	}
 		
 	if (panelData.paintingPanelActive) { //Icons
-		ui.brushMaskTexturePanel(programs,maskTextures,centerCoords,screenGapX,maskPanelSliderValue,currentBrushMaskTexture,firstClick,renderData.window,mouseXpos,mouseYpos,FBOScreen,panelData,screenSizeX,screenSizeY,uiOut,UIElements,brushBlurVal,outShaderData,0.8f + panelData.paintingPanelSlideVal);
+		int state = 0;
+		
+		if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked)
+			state = 0;
+		if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked)
+			state = 1;
+		if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked)	
+			state = 2;
+
+		ui.brushMaskTexturePanel(programs,brushMaskTextures,centerCoords,screenGapX,maskPanelSliderValue,currentBrushMaskTexture,firstClick,renderData.window,mouseXpos,mouseYpos,FBOScreen,panelData,screenSizeX,screenSizeY,uiOut,UIElements,brushBlurVal,outShaderData,0.8f + panelData.paintingPanelSlideVal,state);
 	}
 
 
@@ -571,8 +580,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	if(panelData.paintingPanelActive && renderData.panelLoc < 1.98f){
 		glUseProgram(programs.uiProgram);
 
-		const float maskPanelRange = ceil((int)maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
-		ui.verticalRangeBar( renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,maskPanelSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.textures.size(),screenGapX);
+		const float maskPanelRange = ceil((int)brushMaskTextures.maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
+		ui.verticalRangeBar( renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,maskPanelSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.maskTextures.size(),screenGapX);
 
 		ui.box(0.035f, 0.07f, centerCoords - screenGapX - 0.1f, 0.42f+panelData.paintingPanelSlideVal, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0);
 	}

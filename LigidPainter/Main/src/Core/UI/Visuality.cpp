@@ -150,7 +150,7 @@ int sndpanelFolderCounter = 0;
 
 bool sndpanelSliderPressed = false;
 
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float removeThisParam, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool &firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushMaskTextures &brushMaskTextures,bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float removeThisParam, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool &firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushTexture &brushMaskTextures,bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -320,8 +320,10 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 		}
 		if(albedoTextures.size()){
 			if(albedoTextures[selectedAlbedoTextureIndex].isTexture && sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE && maskPanelEnter){
-				brushMaskTextures.textures.push_back(albedoTextures[selectedAlbedoTextureIndex].id);
-				brushMaskTextures.names.push_back(albedoTextures[selectedAlbedoTextureIndex].name);
+				aTexture brushMaskTxtr;
+				brushMaskTxtr.id = albedoTextures[selectedAlbedoTextureIndex].id;
+				brushMaskTxtr.name = albedoTextures[selectedAlbedoTextureIndex].name;
+				brushMaskTextures.maskTextures.push_back(brushMaskTxtr);
 			}
 			if(albedoTextures[selectedAlbedoTextureIndex].isTexture && sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE && nodePanel.panelHover){
 				Node imageNode;
@@ -1744,16 +1746,34 @@ void UserInterface::modelMaterialPanel(Model &model,Programs programs,RenderData
 		}
 }
 
-void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned int> &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool &firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData &panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData,float posY){
+void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool &firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData &panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData,float posY,int state){
 	ColorData colorData;
 	GlSet gl;
 	Texture txtr;
-
-	glUseProgram(programs.iconsProgram); 
+		glUseProgram(uiPrograms.PBRProgram);
+		gl.uniform1i(uiPrograms.PBRProgram,"maskMode",state == 0);
+		glUseProgram(uiPrograms.outProgram);
+		gl.uniform1i(uiPrograms.outProgram,"maskMode",state == 0);
+		glUseProgram(uiPrograms.renderTheTextureProgram);
+		gl.uniform1i(uiPrograms.renderTheTextureProgram,"isMask",true);
+		gl.uniform1i(uiPrograms.renderTheTextureProgram,"maskUseColor",state != 0);
 
 		float maskXpos = 0.0f;
 		float maskYpos = 0.0f;
-		for (size_t i = 0; i < maskTextures.size(); i++)
+		
+		std::vector<aTexture> brushmasktextures;
+		if(state == 0)
+			brushmasktextures = maskTextures.maskTextures;
+		if(state == 1)
+			brushmasktextures = maskTextures.colorTextures;
+
+		unsigned int masktxtrprogram;
+			masktxtrprogram = programs.renderTheTextureProgram;
+
+		glUseProgram(masktxtrprogram); 
+		
+		
+		for (size_t i = 0; i < brushmasktextures.size(); i++)
 		{
 			if(i % 3 == 0 && i != 0){
 				maskYpos-=0.15f;
@@ -1761,7 +1781,7 @@ void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned
 			}
 			maskXpos-=0.08f;
 			float position_x = centerCoords - screenGapX - maskXpos - 0.175f;
-			float position_y = posY+ maskYpos - maskPanelSliderValue*(maskTextures.size()/4) - 0.05f;
+			float position_y = posY+ maskYpos - maskPanelSliderValue*(brushmasktextures.size()/4) - 0.05f;
 
 			const float panelRange = 0.25f;
 
@@ -1781,30 +1801,38 @@ void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned
 
 			if(std::min(std::max(0.06f + position_y,posY-panelRange),posY) != std::min(std::max(-0.06f + position_y,posY-panelRange),posY)){//Prevent rendering all the textures
 				gl.uniform1i(programs.iconsProgram,"isMaskIcon",1);
-				if(maskTextures[i] == currentBrushMaskTexture){
+				if(brushmasktextures[i].id == currentBrushMaskTexture){
 					glm::vec4 chosenBrushMaskTextureColor = glm::vec4(colorData.chosenBrushMaskTextureColor,1.0f);
-					gl.uniform4fv(programs.iconsProgram,"iconColor",chosenBrushMaskTextureColor);
+					gl.uniform1i(masktxtrprogram,"isPressed",1);
 				}
 				else{
-					gl.uniform4fv(programs.iconsProgram,"iconColor",colorData.brushMaskIconColor);
+					gl.uniform1i(masktxtrprogram,"isPressed",0);
+				//	gl.uniform4fv(programs.iconsProgram,"iconColor",colorData.brushMaskIconColor);
 				}
-				gl.uniform1f(programs.iconsProgram,"iconMixVal",0);
-				gl.activeTexture(GL_TEXTURE6);
-				gl.bindTexture(maskTextures[i]);
+				//gl.uniform1f(programs.iconsProgram,"iconMixVal",0);
+					glUseProgram(masktxtrprogram); 
+				
+				//if(state == 0)
+				//	gl.activeTexture(GL_TEXTURE6);
+					gl.activeTexture(GL_TEXTURE14);
+			
+				gl.uniform1i(uiPrograms.renderTheTextureProgram, "txtr" ,14);
+
+				gl.bindTexture(brushmasktextures[i].id);
 				gl.drawArrays(buttonCoorSq,false);
-				gl.uniform1i(programs.iconsProgram,"isMaskIcon",0);
+				//gl.uniform1i(programs.iconsProgram,"isMaskIcon",0);
 			}
 
 			
 			if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2),mouseYpos,buttonCoorSq,panelData.movePanel)){
 				if(firstClick){
 					gl.activeTexture(GL_TEXTURE1);
-					gl.bindTexture(maskTextures[i]);
+					gl.bindTexture(brushmasktextures[i].id);
 					txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
-					glUseProgram(programs.iconsProgram); 
+					glUseProgram(masktxtrprogram); 
 					
 					uiOut.maskPanelMaskClicked = true;
-					currentBrushMaskTexture = maskTextures[i];
+					currentBrushMaskTexture = brushmasktextures[i].id;
 				}
 				else{
 					uiOut.maskPanelMaskClicked = false;
@@ -1812,6 +1840,8 @@ void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<unsigned
 				uiOut.maskPanelMaskHover = true;
 			}
 		}
+
+	gl.uniform1i(uiPrograms.renderTheTextureProgram,"isMask",false);
 }
 
 bool UserInterface::listBox(float posX,float posY,float posZ,const char* title,float width,Icons icons,std::vector<const char*> list, bool active,GLFWwindow* window, float mouseXpos,float mouseYpos,bool &firstClick,int &chosenIndex,float screenGapX){

@@ -20,6 +20,8 @@ uniform int whiteRendering;
 uniform sampler2D uvMask;
 uniform int interpretWithUvMask;
 
+uniform int maskMode;
+
 
 in vec2 TexCoords;
 in vec3 Normal;
@@ -77,34 +79,51 @@ vec3 getPaintedDiffuse(){
    float mirroredIntensity = 0.0;
 
    if(isPainted(screenPos,false)) {
-      intensity = texture(screenMaskTexture, screenPos.xy).r;
+      if(maskMode == 1)
+         intensity = texture(screenMaskTexture, screenPos.xy).r;
+      else{
+         if(texture(screenMaskTexture, screenPos.xy).r > 0.02f || texture(screenMaskTexture, screenPos.xy).g > 0.02f || texture(screenMaskTexture, screenPos.xy).b > 0.02f)
+            intensity = 1.0;
+      }
    }
 
 
    if(isPainted(mirroredScreenPos, true)) {
-      mirroredIntensity = texture((mirroredScreenMaskTexture), mirroredScreenPos.xy).r;
+      if(maskMode == 1)
+         mirroredIntensity = texture((mirroredScreenMaskTexture), mirroredScreenPos.xy).r;
+      else{
+         if(texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).r > 0.02f || texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).g > 0.02f || texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).b > 0.02f)
+            mirroredIntensity = 1.0;
+      }
    }
    
     // ambient
    vec3 diffuseClr = vec3(texture(material.diffuse, TexCoords));
    vec3 diffuseDrawMix;
    
-   diffuseDrawMix = mix(diffuseClr, drawColor, intensity);
+   if(maskMode == 1)
+      diffuseDrawMix = mix(diffuseClr, drawColor, intensity);
+   else
+      diffuseDrawMix = mix(diffuseClr, texture((screenMaskTexture), screenPos.xy).rgb, intensity);
+
 
    vec3 mirroredDiffuseDrawMix;
 
    if(useMirror == 1){
+      if(maskMode == 1)
          mirroredDiffuseDrawMix = mix(diffuseDrawMix, drawColor, mirroredIntensity);
+      else
+         mirroredDiffuseDrawMix = mix(diffuseDrawMix, texture((mirroredScreenMaskTexture), mirroredScreenPos.xy).rgb, mirroredIntensity);
    }
    else{
          mirroredDiffuseDrawMix = diffuseDrawMix;
    }
    
-   if(intensity > 0.01)
-      gl_FragDepth = 0.1;
-   else{
-      gl_FragDepth = 0.9;
-   }
+   // if(intensity > 0.01)
+   //    gl_FragDepth = 0.1;
+   // else{
+   //    gl_FragDepth = 0.9;
+   // }
 
    return mirroredDiffuseDrawMix;
 }

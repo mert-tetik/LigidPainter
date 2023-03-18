@@ -23,7 +23,7 @@ std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int scr
 
 	glset.viewport(1080, 1080);
 
-	float rotation = ((brushRotationRangeBarValue +0.11f) * 4.54545454545f) * 360.0f; // -0.11 - 0.11 --> 0 - 360
+	float rotation = ((brushRotationRangeBarValue +0.11f) * 4.54545454545f) * 460.0f; // -0.11 - 0.11 --> 0 - 360
 
 	float scaleVal = ((brushBorderRangeBarValue+0.11f)/2.0f * 8.18181818182f) + 0.3f;
 	float scaleValTiny = scaleVal/4.0f;
@@ -105,11 +105,11 @@ std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int scr
 
 	//Rotation
 	glset.drawArrays(centerVertices, false);
-	std::vector<GLubyte> rotatedMaskTxtr(size * size * 3);
-	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, &rotatedMaskTxtr[0]);
+	std::vector<GLubyte> rotatedMaskTxtr(size * size * 4);
+	glReadPixels(0, 0, size, size, GL_RGBA, GL_UNSIGNED_BYTE, &rotatedMaskTxtr[0]);
 
 	glset.activeTexture(GL_TEXTURE12);
-	glset.texImage(&rotatedMaskTxtr[0], size, size, GL_RGB);
+	glset.texImage(&rotatedMaskTxtr[0], size, size, GL_RGBA);
 	glset.generateMipmap();
 	//Rotation
 
@@ -166,11 +166,11 @@ std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int scr
 	else
 		glset.drawArrays(cornerVertices, false);
 
-	std::vector<GLubyte> horizontalBlurMaskTxtr(size * size * 3);
-	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, &horizontalBlurMaskTxtr[0]);
+	std::vector<GLubyte> horizontalBlurMaskTxtr(size * size * 4);
+	glReadPixels(0, 0, size, size, GL_RGBA, GL_UNSIGNED_BYTE, &horizontalBlurMaskTxtr[0]);
 
 	glset.activeTexture(GL_TEXTURE12);
-	glset.texImage(&horizontalBlurMaskTxtr[0], size, size, GL_RGB);
+	glset.texImage(&horizontalBlurMaskTxtr[0], size, size, GL_RGBA);
 	glset.generateMipmap();
 	//Horizontal Blur
 
@@ -187,11 +187,11 @@ std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int scr
 		else
 			glset.drawArrays(cornerVertices, false);
 
-	std::vector<GLubyte> verticalBlurMaskTxtr(size * size * 3);
-	glReadPixels(0, 0, size, size, GL_RGB, GL_UNSIGNED_BYTE, &verticalBlurMaskTxtr[0]);
+	std::vector<GLubyte> verticalBlurMaskTxtr(size * size * 4);
+	glReadPixels(0, 0, size, size, GL_RGBA, GL_UNSIGNED_BYTE, &verticalBlurMaskTxtr[0]);
 
 	glset.activeTexture(GL_TEXTURE12);
-	glset.texImage(&verticalBlurMaskTxtr[0], size, size, GL_RGB);
+	glset.texImage(&verticalBlurMaskTxtr[0], size, size, GL_RGBA);
 	glset.generateMipmap();
 
 	//Verical blur

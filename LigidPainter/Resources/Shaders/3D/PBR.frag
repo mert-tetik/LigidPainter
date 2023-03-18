@@ -18,6 +18,8 @@ uniform sampler2D mirroredScreenMaskTexture;
 uniform int useMirror;
 uniform vec3 drawColor;
 
+uniform int maskMode;
+
 uniform float opacity;
 
 uniform sampler2D depthTexture; //Screen rendered with depth color
@@ -75,26 +77,54 @@ vec3 getPaintedDiffuse(){
 
    float intensity = 0.0;
    float mirroredIntensity = 0.0;
-   if(isPainted(screenPos,false)) 
-   {
-      intensity = texture(screenMaskTexture, screenPos.xy).r;
+
+   if(isPainted(screenPos,false)) {
+      if(maskMode == 1)
+         intensity = texture(screenMaskTexture, screenPos.xy).r;
+      else{
+         if(texture(screenMaskTexture, screenPos.xy).r > 0.02f || texture(screenMaskTexture, screenPos.xy).g > 0.02f || texture(screenMaskTexture, screenPos.xy).b > 0.02f)
+            intensity = 1.0;
+      }
    }
-   if(isPainted(mirroredScreenPos, true)) 
-   {
-      mirroredIntensity = texture((mirroredScreenMaskTexture), mirroredScreenPos.xy).r;
+
+
+   if(isPainted(mirroredScreenPos, true)) {
+      if(maskMode == 1)
+         mirroredIntensity = texture((mirroredScreenMaskTexture), mirroredScreenPos.xy).r;
+      else{
+         if(texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).r > 0.02f || texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).g > 0.02f || texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).b > 0.02f)
+            mirroredIntensity = 1.0;
+      }
    }
    
     // ambient
    vec3 diffuseClr = vec3(texture(material.diffuse, TexCoords));
-   vec3 diffuseDrawMix = mix(diffuseClr, drawColor, intensity);
+   vec3 diffuseDrawMix;
+   
+   if(maskMode == 1)
+      diffuseDrawMix = mix(diffuseClr, drawColor, intensity);
+   else
+      diffuseDrawMix = mix(diffuseClr, texture((screenMaskTexture), screenPos.xy).rgb, intensity);
+
+
    vec3 mirroredDiffuseDrawMix;
+
    if(useMirror == 1){
-      mirroredDiffuseDrawMix = mix(diffuseDrawMix, drawColor, mirroredIntensity);
+      if(maskMode == 1)
+         mirroredDiffuseDrawMix = mix(diffuseDrawMix, drawColor, mirroredIntensity);
+      else
+         mirroredDiffuseDrawMix = mix(diffuseDrawMix, texture((mirroredScreenMaskTexture), mirroredScreenPos.xy).rgb, mirroredIntensity);
    }
    else{
-      mirroredDiffuseDrawMix = diffuseDrawMix;
+         mirroredDiffuseDrawMix = diffuseDrawMix;
    }
    
+   // if(intensity > 0.01)
+   //    gl_FragDepth = 0.1;
+   // else{
+   //    gl_FragDepth = 0.9;
+   // }
+
    return mirroredDiffuseDrawMix;
 }
 

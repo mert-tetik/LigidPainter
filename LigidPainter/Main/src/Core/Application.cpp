@@ -122,7 +122,7 @@ std::vector<NodeScene> nodeScenes;
 std::vector<NodeScene> nodeScenesHistory;
 int selectedNodeScene = 0;
 TextureSelectionPanel textureSelectionPanel;
-BrushMaskTextures brushMaskTextures;
+BrushTexture brushMaskTextures;
 std::vector<aTexture> albedoTextures;
 std::vector<MaterialOut> modelMaterials;
 bool newModelAdded = false;
@@ -339,7 +339,7 @@ bool LigidPainter::run()
 	glfwMakeContextCurrent(window);
 	
 	//Create screen painting mask Texture
-	GLubyte* screenTexture = new GLubyte[(glfwGetVideoMode(glfwGetPrimaryMonitor())->width) * (glfwGetVideoMode(glfwGetPrimaryMonitor())->height)];
+	GLubyte* screenTexture = new GLubyte[(glfwGetVideoMode(glfwGetPrimaryMonitor())->width) * (glfwGetVideoMode(glfwGetPrimaryMonitor())->height)*4];
 	ScreenPaintingReturnData screenPaintingReturnData; 
 	screenPaintingReturnData = txtr.createScreenPaintTexture(screenTexture,window);
 	delete[] screenTexture;
@@ -608,7 +608,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex);
 		}
 		duplicateNodeCall = false;
 		
@@ -651,17 +651,18 @@ bool LigidPainter::run()
 		lastMouseYpos = mouseYpos;
 
 
+		//BRUSHUPDATE
 		//Update brush mask texture file's name once the brush mask texture changed
-		if(renderOut.maskPanelMaskClicked){
-			for (size_t i = 0; i < brushMaskTextures.textures.size(); i++)
-			{
-				if(brushMaskTextures.textures[i] == renderOut.currentBrushMaskTxtr){
-					//Restrict brush mask texture's name (20 chars)
-					std::string maskTextureName = util.getLastWordBySeparatingWithChar(brushMaskTextures.names[i],folderDistinguisher);  
-					UIElements[UImaskTextureFileNameText].text.text = util.cropString(maskTextureName,20); 
-				}
-			}
-		}
+		// if(renderOut.maskPanelMaskClicked){
+		// 	for (size_t i = 0; i < brushMaskTextures.textures.size(); i++)
+		// 	{
+		// 		if(brushMaskTextures.textures[i] == renderOut.currentBrushMaskTxtr){
+		// 			//Restrict brush mask texture's name (20 chars)
+		// 			std::string maskTextureName = util.getLastWordBySeparatingWithChar(brushMaskTextures.names[i],folderDistinguisher);  
+		// 			UIElements[UImaskTextureFileNameText].text.text = util.cropString(maskTextureName,20); 
+		// 		}
+		// 	}
+		// }
 		if(renderOut.maskPanelMaskClicked){
 			//If a new mask texture is selected from mask texture panel set brushValChanged to true to update brush mask texture 
 			brushValChanged = true;
@@ -722,7 +723,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,brushMaskTextures.textures,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -983,8 +984,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 void LigidPainter::setViewportToDefault(){
 	GLFWvidmode videomode;
 
-	#ifdef __APPLE__
-		//glViewport(0, 0, screenWidth,screenHeight);
+	#ifdef __APPLE__//2560 1664
 		glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenWidth)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenHeight), glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 	#else
 		glViewport(-(glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenWidth)/2, -(glfwGetVideoMode(glfwGetPrimaryMonitor())->height - screenHeight), glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
@@ -1108,7 +1108,7 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 		if(callbackData.maskPanelEnter){
 			//Brush mask panel scroll
 			maskPanelSliderValue += (float)(scrollx / 40.0);
-			const float maskPanelRange = ceil((int)brushMaskTextures.textures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
+			const float maskPanelRange = ceil((int)brushMaskTextures.maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
 			maskPanelSliderValue = util.restrictBetween(maskPanelSliderValue, 0.0f, -maskPanelRange/4.f);//Keep in boundaries
 		}
 		if(addNodeContextMenu.active){
@@ -1216,8 +1216,9 @@ void LigidPainter::addMaskTextureButton() {
 		brushValChanged = true;
 		glset.activeTexture(GL_TEXTURE1);
 
-		brushMaskTextures.textures.push_back(txtr.getTexture(maskTexturePath,0,0,false));
-		brushMaskTextures.names.push_back(maskTexturePath);
+		//BRUSHUPDATE
+		//brushMaskTextures.textures.push_back(txtr.getTexture(maskTexturePath,0,0,false));
+		//brushMaskTextures.names.push_back(maskTexturePath);
 
 		txtr.updateMaskTexture(FBOScreen,width,height,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 	}
