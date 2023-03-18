@@ -414,8 +414,10 @@ unsigned int Utilities::createQRCode(const char* path,glm::vec3 color){
 				qrData.push_back(color.r * 255);
 				qrData.push_back(color.g * 255);
 				qrData.push_back(color.b * 255);
+				qrData.push_back(255);
 			}
 			else{
+				qrData.push_back(0);
 				qrData.push_back(0);
 				qrData.push_back(0);
 				qrData.push_back(0);
@@ -427,7 +429,7 @@ unsigned int Utilities::createQRCode(const char* path,glm::vec3 color){
 	unsigned int qrTxtr;
 	glGenTextures(1,&qrTxtr);
 	glBindTexture(GL_TEXTURE_2D,qrTxtr);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, qr.size(), qr.size(), 0, GL_RGB, GL_UNSIGNED_BYTE, &qrData[0]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, qr.size(), qr.size(), 0, GL_RGBA, GL_UNSIGNED_BYTE, &qrData[0]);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	return qrTxtr;
