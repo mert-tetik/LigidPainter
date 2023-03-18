@@ -31,6 +31,7 @@ https://www.ligidtools.com/building-ligid-painter
     Left CTRL + 2 = Stabilize camera on z axis
     Left CTRL + 3 = Stabilize camera on -x axis
     Left CTRL + 4 = Stabilize camera on -z axis
+    Z + Vertical mouse move = Zoom in & out
 
     While message box is active
     ESC = Negative (Close the message box)

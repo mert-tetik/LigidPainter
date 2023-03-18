@@ -109,8 +109,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	uiOut.texturePanelButtonClicked = false;
 	uiOut.texturePanelButtonHover = false;
 
-
-
 	float centerDivider;
 	float centerSum;
 	centerDivider = 2.0f;
@@ -127,7 +125,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	glUseProgram(programs.uiProgram);
 	gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
 	float centerCoords = (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
-
 
 	//Texture demonstrator transition animation
 	if(textureDisplayer.buttonClicked){

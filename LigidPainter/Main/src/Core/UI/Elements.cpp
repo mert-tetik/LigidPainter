@@ -301,6 +301,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     mirrorXCheckBoxElement.checkBox.text = "X";
     mirrorXCheckBoxElement.panel = 3;
     mirrorXCheckBoxElement.attachedToMainPanel = false;
+    mirrorXCheckBoxElement.focusMode = true;
     mirrorXCheckBoxElement.type = "checkBox";
     UIElements.push_back(mirrorXCheckBoxElement);//23
 
@@ -310,6 +311,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     mirrorYCheckBoxElement.checkBox.text = "Y";
     mirrorYCheckBoxElement.panel = 3;
     mirrorYCheckBoxElement.attachedToMainPanel = false;
+    mirrorYCheckBoxElement.focusMode = true;
     mirrorYCheckBoxElement.type = "checkBox";
     UIElements.push_back(mirrorYCheckBoxElement);//24
 
@@ -319,6 +321,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     mirrorZCheckBoxElement.checkBox.text = "Z";
     mirrorZCheckBoxElement.panel = 3;
     mirrorZCheckBoxElement.attachedToMainPanel = false;
+    mirrorZCheckBoxElement.focusMode = true;
     mirrorZCheckBoxElement.type = "checkBox";
     UIElements.push_back(mirrorZCheckBoxElement);//25
 	
@@ -590,29 +593,32 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(paintThroughCheckBoxElement);//38
 
     UIElement maskPaintingCheckBoxElement;
-    maskPaintingCheckBoxElement.checkBox.positionX = -0.36f;
+    maskPaintingCheckBoxElement.checkBox.positionX = -0.38f;
     maskPaintingCheckBoxElement.checkBox.positionY = 0.9f;
     maskPaintingCheckBoxElement.checkBox.text = "M";
     maskPaintingCheckBoxElement.checkBox.checked = true;
     maskPaintingCheckBoxElement.panel = 3;
+    maskPaintingCheckBoxElement.focusMode = true;
     maskPaintingCheckBoxElement.attachedToMainPanel = false;
     maskPaintingCheckBoxElement.type = "checkBox";
     UIElements.push_back(maskPaintingCheckBoxElement);//23
 
 	UIElement colorPaintingCheckBoxElement;
-    colorPaintingCheckBoxElement.checkBox.positionX = -0.30f;
+    colorPaintingCheckBoxElement.checkBox.positionX = -0.32f;
     colorPaintingCheckBoxElement.checkBox.positionY = 0.9f;
     colorPaintingCheckBoxElement.checkBox.text = "C";
     colorPaintingCheckBoxElement.panel = 3;
+    colorPaintingCheckBoxElement.focusMode = true;
     colorPaintingCheckBoxElement.attachedToMainPanel = false;
     colorPaintingCheckBoxElement.type = "checkBox";
     UIElements.push_back(colorPaintingCheckBoxElement);//24
 
 	UIElement normalmapPaintingCheckBoxElement;
-    normalmapPaintingCheckBoxElement.checkBox.positionX = -0.24f;
+    normalmapPaintingCheckBoxElement.checkBox.positionX = -0.26f;
     normalmapPaintingCheckBoxElement.checkBox.positionY = 0.9f;
     normalmapPaintingCheckBoxElement.checkBox.text = "N";
     normalmapPaintingCheckBoxElement.panel = 3;
+    normalmapPaintingCheckBoxElement.focusMode = true;
     normalmapPaintingCheckBoxElement.attachedToMainPanel = false;
     normalmapPaintingCheckBoxElement.type = "checkBox";
     UIElements.push_back(normalmapPaintingCheckBoxElement);//25
@@ -636,6 +642,16 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	subSelectedImagePowerRangeBarTextElement.attachedToMainPanel = true;
 	subSelectedImagePowerRangeBarTextElement.type = "text";
     UIElements.push_back(subSelectedImagePowerRangeBarTextElement);//12
+
+    UIElement focusModeCheckBoxElement;
+    focusModeCheckBoxElement.checkBox.positionX = -0.57f;
+    focusModeCheckBoxElement.checkBox.positionY = 0.9f;
+    focusModeCheckBoxElement.checkBox.text = "Focus Mode";
+    focusModeCheckBoxElement.panel = 3;
+    focusModeCheckBoxElement.attachedToMainPanel = false;
+    focusModeCheckBoxElement.focusMode = true;
+    focusModeCheckBoxElement.type = "checkBox";
+    UIElements.push_back(focusModeCheckBoxElement);//25
 
 	//-------------ICONS-------------
 

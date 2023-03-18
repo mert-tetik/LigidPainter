@@ -118,6 +118,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			ligid.backfaceCullingCheckBox();
 		if(UIElements[UIskyboxCheckBox].checkBox.mouseHover)
 			UIElements[UIskyboxCheckBox].checkBox.checked = !UIElements[UIskyboxCheckBox].checkBox.checked;
+		if(UIElements[UIfocusModeCheckBox].checkBox.mouseHover)
+			UIElements[UIfocusModeCheckBox].checkBox.checked = !UIElements[UIfocusModeCheckBox].checkBox.checked;
 
 		if(UIElements[UInormalmapCheckBoxElement].checkBox.mouseHover && !UIElements[UInormalmapCheckBoxElement].checkBox.checked){
 			UIElements[UInormalmapCheckBoxElement].checkBox.checked = !UIElements[UInormalmapCheckBoxElement].checkBox.checked;

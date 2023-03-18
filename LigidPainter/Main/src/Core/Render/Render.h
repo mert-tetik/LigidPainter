@@ -45,7 +45,6 @@ public:
 	,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
 	,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex);
 
-
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void sendProgramsToRender(Programs appPrograms);
 	ViewUpdateData updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos,bool mirrorX,bool mirrorY,bool mirrorZ);//TODO : This function is not related
@@ -60,6 +59,7 @@ private:
 	MaterialOut renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY,std::vector<Node>appNodes,int chosenTextureResIndex,bool& bakeTheMaterial,std::vector<aTexture> &albedoTextures,int currentMaterialIndex,std::vector<NodeScene> &nodeScenesHistory,int chosenNodeResIndex);
 
 	
+	void renderFocusModeUI(Programs programs,RenderData &renderData,std::vector<UIElement> UIElements,Icons icons);
 	RenderOutData renderUi(PanelData& panelData, RenderData &renderData, unsigned int FBOScreen, Icons &icons,const char* exportFileName,
 	float &maskPanelSliderValue,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,float brushBlurVal,
 	OutShaderData &outShaderData,Model &model,std::vector<aTexture> &albedoTextures,Programs programs,int &currentMaterialIndex,int maxScreenWidth,

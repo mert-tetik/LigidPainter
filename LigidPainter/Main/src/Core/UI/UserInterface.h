@@ -58,13 +58,14 @@
 #define UInormalmapPaintingCheckBoxElement 49
 #define UIsubSelectedImagePowerRangeBarElement 50
 #define UIsubSelectedImagePowerRangeBarTextElement 51
-#define UIjpgIcon 52
-#define UIpngIcon 53
-#define UIfolderIcon 54
-#define UIloadPlaneModelButton 55
-#define UIloadSphereModelButton 56
-#define UIplaneIcon 57
-#define UIsphereIcon 58
+#define UIfocusModeCheckBox 52
+#define UIjpgIcon 53
+#define UIpngIcon 54
+#define UIfolderIcon 55
+#define UIloadPlaneModelButton 56
+#define UIloadSphereModelButton 57
+#define UIplaneIcon 58
+#define UIsphereIcon 59
 
 struct ColorData //LigidPainter color palette
 {
@@ -267,6 +268,7 @@ struct UIElement{
 	const char* type;
 	bool attachedToMainPanel;
 	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
+	bool focusMode = false;
 };
 
 
