@@ -431,10 +431,14 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 								glActiveTexture(GL_TEXTURE0);
 								glBindTexture(GL_TEXTURE_2D,albedoTextures[selectedAlbedoTextureIndex].id);
 								selectedAlbedoTextureIndex = i;
+								if(subselectedIndex == i)
+									subselectedIndex = 1000;
 							}
 							else{
 								sndpanelFolderPressed = true;
 								selectedAlbedoTextureIndex = i;
+								if(subselectedIndex == i)
+									subselectedIndex = 1000;
 							}
 							sndpanelMoveTexture = true;
 						}
@@ -511,8 +515,12 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 							selectRCHover = true;
 							if(firstClick){
 								albedoTextures[i].rightClicked = false;
-								if(albedoTextures[i].isTexture)//Select the texture
+								if(albedoTextures[i].isTexture){
+								//Select the texture
 									selectedAlbedoTextureIndex = i;
+									if(subselectedIndex == i)
+										subselectedIndex = 1000;
+								}
 								else //Open the folder
 									folderIndex = i;
 								sndpanelMoveTexture = false;

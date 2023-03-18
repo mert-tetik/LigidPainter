@@ -38,6 +38,7 @@ uniform int paintThrough;
 uniform float skyboxExposure;
 
 uniform sampler2D subSelectedTexture;
+uniform float subSelectedImagePower;
 
 float far = 10.0f;
 float near = 0.1f;
@@ -178,7 +179,7 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }   
 vec3 getRealisticResult(vec3 paintedDiffuse){
-   vec3 albedo = mix(paintedDiffuse,texture(subSelectedTexture,TexCoords).rgb,0.1);
+   vec3 albedo = mix(paintedDiffuse,texture(subSelectedTexture,TexCoords).rgb,subSelectedImagePower);
    float metallic = 0.0;
    float roughness = 0.3;
    float ao = 1;

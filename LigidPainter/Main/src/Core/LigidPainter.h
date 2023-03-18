@@ -237,6 +237,7 @@ public:
 	void brushOpacityRangeBar(double xOffset, int width, int height);
 	void brushSpacingRangeBar(double xOffset, int width, int height);
 	void brushBordersRangeBar(double xOffset, int width, int height);
+	void subSelectedImagePowerRangeBar(double xOffset, int width, int height);
 	void textureDisplayerButton(double xOffset,double yOffset,int width,int height);
 	void textureDisplayerBoundaries(double xOffset,double yOffset,int width,int height);
 	void skyboxExposureRangeBar(double xOffset, int width, int height);

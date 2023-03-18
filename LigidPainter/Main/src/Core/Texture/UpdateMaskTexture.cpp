@@ -141,7 +141,7 @@ std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int scr
 
 	
 
-	std::vector<float> oneDimensionalGaussian = txtrGen.gaussianFunc(min(brushBlurVal,120.0f),0.0f);
+	std::vector<float> oneDimensionalGaussian = txtrGen.gaussianFunc(min(brushBlurVal+1.f,120.0f),0.0f);
 
 
 

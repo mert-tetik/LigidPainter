@@ -22,6 +22,7 @@ bool colorBoxPickerPressed;
 bool maskPanelSliderPressed;
 bool mainPanelBoundariesPressed;
 bool nodePanelBoundariesPressed;
+bool subSelectedImagePowerRangeBarPressed;
 //
 
 void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vector<UIElement> &UIElements, ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,NodePanel &nodePanel,SndPanel &sndPanel,bool &firstClick) {
@@ -57,6 +58,9 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		}
 		else if (UIElements[UInoiseStrengthRangeBarElement].rangeBar.hover) {
 			noiseStrengthRangeBarPressed = true;
+		}
+		else if (UIElements[UIsubSelectedImagePowerRangeBarElement].rangeBar.hover) {
+			subSelectedImagePowerRangeBarPressed = true;
 		}
 		else if (colorPicker.saturationValuePointerHover) {
 			colorBoxPickerPressed = true;
@@ -210,6 +214,7 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
     if(glfwGetMouseButton(window, 0) == GLFW_RELEASE){
 		brushSizeRangeBarPressed = false;
 		brushBlurRangeBarPressed = false;
+		subSelectedImagePowerRangeBarPressed = false;
 		brushRotationRangeBarPressed = false;
 		brushOpacityRangeBarPressed = false;
 		brushSpacingRangeBarPressed = false;
@@ -252,6 +257,9 @@ SndPanel &sndPanel){
 	if (brushBordersRangeBarPressed) {
 		ligid.brushBordersRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
 	}
+	if (subSelectedImagePowerRangeBarPressed) {
+		ligid.subSelectedImagePowerRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
+	}
 	if (skyboxExposureRangeBarPressed) {
 		ligid.skyboxExposureRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
 	}
@@ -288,7 +296,7 @@ SndPanel &sndPanel){
 	if(sndPanel.boundariesPressed){
 		ligid.sndPanelBoundaries(xOffset,screenWidth);
 	}
-    if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed|| brushBordersRangeBarPressed || textureDisplayer.buttonPressed || textureDisplayer.cornerPressed || maskPanelSliderPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
+    if (colorBoxPickerPressed || colorBoxColorRangeBarPressed || subSelectedImagePowerRangeBarPressed || brushBlurRangeBarPressed || brushSizeRangeBarPressed || brushRotationRangeBarPressed || brushOpacityRangeBarPressed || brushSpacingRangeBarPressed|| brushBordersRangeBarPressed || textureDisplayer.buttonPressed || textureDisplayer.cornerPressed || maskPanelSliderPressed) { //Set cursor as hidden and restrict panel movement if any of the rangebars value is changing
         hideCursor = true;
 	}
 	else {

@@ -470,7 +470,8 @@ bool LigidPainter::run()
 	
 	double lastTime = glfwGetTime();
 
-
+	subSelectedImagePowerRangeBar(0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+	
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		whileCounter++;
@@ -1424,6 +1425,15 @@ void LigidPainter::brushBordersRangeBar(double xOffset, int width, int height) {
 	UIElements[UIbrushBordersRangeBar].rangeBar.value -= xOffset / (width / 2.0f);
 	UIElements[UIbrushBordersRangeBar].rangeBar.value = util.restrictBetween(UIElements[UIbrushBordersRangeBar].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
 	txtr.updateMaskTexture(FBOScreen, width, height,UIElements[UIbrushRotationRangeBar].rangeBar.value,true,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+}
+void LigidPainter::subSelectedImagePowerRangeBar(double xOffset, int width, int height) {
+	Utilities util;
+	Texture txtr;
+	brushValChanged = true;
+	UIElements[UIsubSelectedImagePowerRangeBarElement].rangeBar.value -= xOffset / (width / 2.0f);
+	UIElements[UIsubSelectedImagePowerRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UIsubSelectedImagePowerRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+	glUseProgram(programs.PBRProgram);
+	glset.uniform1f(programs.PBRProgram,"subSelectedImagePower",(UIElements[UIsubSelectedImagePowerRangeBarElement].rangeBar.value+0.11f)*4.54545454545);
 }
 void LigidPainter::generateTextureButton(){
 	Utilities util;

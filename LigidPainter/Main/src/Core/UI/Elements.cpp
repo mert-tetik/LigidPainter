@@ -617,6 +617,26 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     normalmapPaintingCheckBoxElement.type = "checkBox";
     UIElements.push_back(normalmapPaintingCheckBoxElement);//25
 
+    UIElement subSelectedImagePowerRangeBarElement;
+	subSelectedImagePowerRangeBarElement.rangeBar.positionX = 0.0f;
+	subSelectedImagePowerRangeBarElement.rangeBar.positionY = -0.9f;
+	subSelectedImagePowerRangeBarElement.rangeBar.value = 0.0f;
+	subSelectedImagePowerRangeBarElement.panel = 3;
+	subSelectedImagePowerRangeBarElement.attachedToMainPanel = true;
+	subSelectedImagePowerRangeBarElement.type = "rangeBar";
+    UIElements.push_back(subSelectedImagePowerRangeBarElement);//12
+
+    UIElement subSelectedImagePowerRangeBarTextElement;
+	subSelectedImagePowerRangeBarTextElement.text.positionX = -0.11f;
+	subSelectedImagePowerRangeBarTextElement.text.positionY = -0.87f;
+	subSelectedImagePowerRangeBarTextElement.text.text = "Subselected texture power";
+    subSelectedImagePowerRangeBarTextElement.text.scale = 0.00022f;
+    subSelectedImagePowerRangeBarTextElement.text.color = colorData.textColor;
+	subSelectedImagePowerRangeBarTextElement.panel = 3;
+	subSelectedImagePowerRangeBarTextElement.attachedToMainPanel = true;
+	subSelectedImagePowerRangeBarTextElement.type = "text";
+    UIElements.push_back(subSelectedImagePowerRangeBarTextElement);//12
+
 	//-------------ICONS-------------
 
 
