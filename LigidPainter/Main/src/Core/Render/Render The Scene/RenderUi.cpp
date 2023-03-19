@@ -606,7 +606,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		else{
 			panelCompatibility = false;
 		}
-		if(renderData.panelLoc > 1.98f)
+		if(renderData.panelLoc > 1.98f && !UIElements[i].focusMode)
 			panelCompatibility = false;
 
 		if(panelCompatibility){

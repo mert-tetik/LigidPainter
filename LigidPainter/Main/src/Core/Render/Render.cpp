@@ -266,6 +266,7 @@ glm::vec3 screenHoverPixel;
 bool lastMaterialStateChanged = false;
 NodeScene lastNodeScene;
 
+
 int paintRenderCounter = 0;
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
 Icons &icons,float &maskPanelSliderValue, bool renderPlane,bool renderSphere,
@@ -335,6 +336,8 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	glUseProgram(renderPrograms.outProgram);
 	gls.uniform1i(renderPrograms.outProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
 	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects);
+
+	
 	renderAxisPointer(axisPointerShaderData,renderPrograms);
 	//-------------------------
 	

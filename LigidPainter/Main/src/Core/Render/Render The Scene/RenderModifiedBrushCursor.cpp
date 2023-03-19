@@ -34,6 +34,5 @@ void Render::renderModifiedBrushCursor(float distanceX,int screenWidth,int scree
 
 	glset.drawArrays(paintingSquare, false);
 	
-
 	glset.uniform1i(programs.uiProgram, "drawBrushIndicator", 0);
 }
