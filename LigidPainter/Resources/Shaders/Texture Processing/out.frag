@@ -192,10 +192,10 @@ void main() {
     else{
        //Mirrored mask texture here
        if(verticalMirror == 0){
-          color = texture(screenMaskTexture, vec2(1.0 - TexCoords.x,TexCoords.y));
+          color = vec4(texture(screenMaskTexture, vec2(1.0 - TexCoords.x,TexCoords.y)).rgb,1);
        }
        else{
-          color = texture(screenMaskTexture, vec2(TexCoords.x , 1.0 - TexCoords.y));
+          color = vec4(texture(screenMaskTexture, vec2(TexCoords.x , 1.0 - TexCoords.y)).rgb,1);
        }
     }
 }
