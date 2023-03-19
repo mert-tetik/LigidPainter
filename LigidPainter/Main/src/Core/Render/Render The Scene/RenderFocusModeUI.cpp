@@ -28,8 +28,9 @@
 
 #include "tinyfiledialogs.h"
 
-
-void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vector<UIElement> UIElements,Icons icons) {
+double lastMouseXFocused = 0;
+double lastMouseYFocused = 0;
+void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vector<UIElement> UIElements,Icons icons,ColoringPanel &coloringPanel,SaturationValShaderData saturationValShaderData,double mouseXpos,double mouseYpos,bool firstClick,unsigned int FBOScreen,ColorPicker &colorPicker,glm::vec3 screenHoverPixel,glm::vec3 &drawColor) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -114,5 +115,23 @@ void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vec
 			}
 		}
 	}	
+	if(glfwGetMouseButton(renderData.window,2) == GLFW_PRESS){
+		coloringPanel.active = true;
+		coloringPanel.panelPosX = mouseXpos/(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2.f) - 1.0f + screenGapX ;
+		coloringPanel.panelPosY = -mouseYpos/glfwGetVideoMode(glfwGetPrimaryMonitor())->height*2.f + 1.0f;
+	}
+	
+	double xOffset = mouseXpos - lastMouseXFocused;
+	double yOffset = mouseYpos - lastMouseYFocused;	
+
+	lastMouseXFocused = mouseXpos;
+	lastMouseYFocused = mouseYpos;
+
+	if(coloringPanel.active){
+		ui.coloringPanel(coloringPanel,programs,icons,renderData.window,saturationValShaderData,projection,mouseXpos,mouseYpos,firstClick,xOffset,yOffset,FBOScreen,colorPicker,screenGapX,screenHoverPixel);
+		drawColor = coloringPanel.result/glm::vec3(255.f); 
+		colorPicker.pickerValue = coloringPanel.result;
+	}
+
 }
 //--------------------RENDER UI --------------------\\

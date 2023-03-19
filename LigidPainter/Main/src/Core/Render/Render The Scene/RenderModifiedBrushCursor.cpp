@@ -28,7 +28,7 @@ void Render::renderModifiedBrushCursor(float distanceX,int screenWidth,int scree
 		(-sizeX / glfwGetVideoMode(glfwGetPrimaryMonitor())->width / 1.0f + (float)mouseXpos / glfwGetVideoMode(glfwGetPrimaryMonitor())->width / 0.5f - 1.0f)+screenGapX,  sizeX / maxScreenHeight / 1.0f - (float)mouseYpos / maxScreenHeight / 0.5f + 1.0f , 0.0f,0,1,0,0,0  // top left
 	};
 
-	glm::vec4 result = glm::vec4(color / glm::vec3(255.0f),0.2f);
+	glm::vec4 result = glm::vec4(color,0.2f);
 	glset.uniform4fv(programs.uiProgram, "uiColor", result);
 	glset.uniform1i(programs.uiProgram, "currentTexture", 0);
 

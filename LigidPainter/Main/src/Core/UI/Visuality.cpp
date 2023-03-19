@@ -1780,6 +1780,10 @@ void UserInterface::modelMaterialPanel(Model &model,Programs programs,RenderData
 		}
 }
 
+int lastBrushMaskTexturePanelState = 0;
+int state1Index = 0;
+int state2Index = 0;
+int state3Index = 0;
 void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool &firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData &panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData,float posY,int state){
 	ColorData colorData;
 	GlSet gl;
@@ -1798,6 +1802,8 @@ void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTe
 
 		float maskXpos = 0.0f;
 		float maskYpos = 0.0f;
+
+
 		
 		std::vector<aTexture> brushmasktextures;
 		if(state == 0)
@@ -1812,6 +1818,31 @@ void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTe
 
 		glUseProgram(masktxtrprogram); 
 		
+
+		if(state != lastBrushMaskTexturePanelState){
+			//Update mask texture after changing state
+			int selectedMaskIndex = 0;
+			if(state == 0)
+				selectedMaskIndex = state1Index;
+			if(state == 1)
+				selectedMaskIndex = state2Index;
+			if(state == 2)
+				selectedMaskIndex = state3Index;
+			
+			Utilities util;
+			UIElements[UImaskTextureFileNameText].text.text = util.cropString(brushmasktextures[selectedMaskIndex].name,20);
+			
+			gl.activeTexture(GL_TEXTURE1);
+			gl.bindTexture(brushmasktextures[selectedMaskIndex].id);
+			txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+			glUseProgram(masktxtrprogram); 
+			
+			uiOut.maskPanelMaskClicked = true;
+			currentBrushMaskTexture = brushmasktextures[selectedMaskIndex].id;
+		}
+
+		lastBrushMaskTexturePanelState = state;
+
 		
 		for (size_t i = 0; i < brushmasktextures.size(); i++)
 		{
@@ -1876,6 +1907,12 @@ void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTe
 					
 					uiOut.maskPanelMaskClicked = true;
 					currentBrushMaskTexture = brushmasktextures[i].id;
+					if(state == 0)
+						state1Index = i;
+					if(state == 1)
+						state2Index = i;
+					if(state == 2)
+						state3Index = i;
 				}
 				else{
 					uiOut.maskPanelMaskClicked = false;

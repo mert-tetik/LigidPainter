@@ -276,7 +276,7 @@ ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps& cubemaps,C
 std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool &firstClick,
 glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
 ,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
-,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex) {
+,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor) {
 	
 	//SETUP
 	GlSet gls;
@@ -342,8 +342,11 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	//UI
 	glClear(GL_DEPTH_BUFFER_BIT);
 	if(renderData.doPainting)
-		renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, colorPicker.pickerValue,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,renderPrograms);
+		renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, drawColor,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,renderPrograms);
 	if(glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_RELEASE)
+	if(!panelData.paintingPanelActive){
+		UIElements[UIfocusModeCheckBox].checkBox.checked = false;
+	}
 	if(!UIElements[UIfocusModeCheckBox].checkBox.checked){
 		uiOut = renderUi(panelData, renderData, FBOScreen,icons
 			,exportData.fileName, maskPanelSliderValue,mouseXpos,mouseYpos,screenSizeX,screenSizeY,
@@ -355,7 +358,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 			,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex);
 	} 
 	else{
-		renderFocusModeUI(renderPrograms,renderData,UIElements,icons);
+		renderFocusModeUI(renderPrograms,renderData,UIElements,icons,coloringPanel,saturationValShaderData,mouseXpos,mouseYpos,firstClick,FBOScreen,colorPicker,screenHoverPixel,drawColor);
 	}
 	//-------------------------
 
