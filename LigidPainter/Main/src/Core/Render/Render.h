@@ -59,9 +59,9 @@ private:
 	MaterialOut renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY,std::vector<Node>appNodes,int chosenTextureResIndex,bool& bakeTheMaterial,std::vector<aTexture> &albedoTextures,int currentMaterialIndex,std::vector<NodeScene> &nodeScenesHistory,int chosenNodeResIndex);
 
 	
-	void renderFocusModeUI(Programs programs,RenderData &renderData,std::vector<UIElement> UIElements,Icons icons,ColoringPanel &coloringPanel,
+	void renderFocusModeUI(Programs programs,RenderData &renderData,std::vector<UIElement> &UIElements,Icons icons,ColoringPanel &coloringPanel,
 	SaturationValShaderData saturationValShaderData,double mouseXpos,double mouseYpos,bool firstClick,unsigned int FBOScreen,ColorPicker &colorPicker,
-	glm::vec3 screenHoverPixel,glm::vec3 &drawColor,std::vector<UIElement> &UIElements);
+	glm::vec3 screenHoverPixel,glm::vec3 &drawColor,OutShaderData &outShaderData);
 
 	RenderOutData renderUi(PanelData& panelData, RenderData &renderData, unsigned int FBOScreen, Icons &icons,const char* exportFileName,
 	float &maskPanelSliderValue,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,float brushBlurVal,

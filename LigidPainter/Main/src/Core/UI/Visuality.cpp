@@ -1051,13 +1051,13 @@ glm::vec3 UserInterface::hueBar(float position_x, float position_y,float value,u
 
 	return hueValue;
 }
-void UserInterface::rangeBar(float position_x, float position_y,float value) {
+void UserInterface::rangeBar(float position_x, float position_y,float value,float divideWidth) {
 	ColorData colorData;
 	GlSet gl;
 
-	box(0, 0.015f, position_x+value, position_y, "", colorData.rangeBarFront, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Value Square
-	box((value+0.11f) / 2, 0.0075f, position_x+(value+0.11f) / 2 - 0.11f, position_y, "", colorData.rangeBarSlide, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Range Rectangle
-	box(0.11f, 0.0075f, position_x, position_y, "", colorData.rangeBarBack, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Range Rectangle
+	box(0, 0.015f, position_x+value/divideWidth, position_y, "", colorData.rangeBarFront, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Value Square
+	box(((value+0.11f)/divideWidth) / 2, 0.0075f, position_x+((value+0.11f)/divideWidth) / 2 - 0.11f/divideWidth, position_y, "", colorData.rangeBarSlide, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Range Rectangle
+	box(0.11f/divideWidth, 0.0075f, position_x, position_y, "", colorData.rangeBarBack, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Range Rectangle
 
 }
 void UserInterface::panelChangeButton(float position_x, float position_y) {
@@ -1451,7 +1451,7 @@ void UserInterface::sendMaxWindowSize(int removeThisParam,int maxScreenHeight){
 	sendMaxWindowSizeToCalculationsAndMore(glfwGetVideoMode(glfwGetPrimaryMonitor())->width,maxScreenHeight);
 }
 
-void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool &firstClick,float xOffset,float yOffset,unsigned int FBOscreen,ColorPicker &colorPicker,float screenGapX,glm::vec3 screenHoverPixel){
+bool UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool &firstClick,float xOffset,float yOffset,unsigned int FBOscreen,ColorPicker &colorPicker,float screenGapX,glm::vec3 screenHoverPixel,std::vector<UIElement> &UIElements,bool modifyBrush){
 	const float depth = 0.8f;
 
 	const float panelWidth = 0.2f;
@@ -1461,6 +1461,7 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 	GlSet glset;
 	Utilities util;
 
+	bool brushChanged = false;
 
 	container(coloringPanel.panelPosX,coloringPanel.panelPosY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle);
 	
@@ -1544,6 +1545,36 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 
 	iconBox(0.023f,0.0325f,coloringPanel.panelPosX + 0.18f, coloringPanel.panelPosY-0.18,0.9f,icons.dropperIcon,0,colorData.iconColor,colorData.iconColorHover);
 	coloringPanel.dropperHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX + 0.18f - screenGapX,coloringPanel.panelPosY-0.18,mouseXpos,mouseYpos,false);
+	
+	//BRUSH
+	if(modifyBrush){
+		rangeBar(coloringPanel.panelPosX + 0.125f, coloringPanel.panelPosY, UIElements[UIbrushSizeRangeBar].rangeBar.value,2.f);
+		if(isMouseOnButton(window,0.015f/2.f,0.015f,coloringPanel.panelPosX + 0.125f - screenGapX + UIElements[UIbrushSizeRangeBar].rangeBar.value/2.f, coloringPanel.panelPosY,mouseXpos,mouseYpos,false)){
+			if(firstClick)
+				coloringPanel.brushSizeRangeBarPressed = true;	
+		}
+
+		rangeBar(coloringPanel.panelPosX + 0.125f, coloringPanel.panelPosY-0.05f, UIElements[UIbrushBlurRangeBar].rangeBar.value,2.f);
+		if(isMouseOnButton(window,0.015f/2.f,0.015f,coloringPanel.panelPosX + 0.125f - screenGapX + UIElements[UIbrushBlurRangeBar].rangeBar.value/2.f, coloringPanel.panelPosY-0.05f,mouseXpos,mouseYpos,false)){
+			if(firstClick)
+				coloringPanel.brushBlurRangeBarPressed = true;	
+		}
+
+		if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
+			coloringPanel.brushSizeRangeBarPressed = false;	
+			coloringPanel.brushBlurRangeBarPressed = false;	
+		}
+
+		if(coloringPanel.brushSizeRangeBarPressed){
+			UIElements[UIbrushSizeRangeBar].rangeBar.value += (xOffset / (screenSizeX / 2)) * 2;
+			UIElements[UIbrushSizeRangeBar].rangeBar.value = util.restrictBetween(UIElements[UIbrushSizeRangeBar].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+		}
+		if(coloringPanel.brushBlurRangeBarPressed){
+			brushChanged = true;
+			UIElements[UIbrushBlurRangeBar].rangeBar.value += (xOffset / (screenSizeX / 2)) * 2;
+			UIElements[UIbrushBlurRangeBar].rangeBar.value = util.restrictBetween(UIElements[UIbrushBlurRangeBar].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+		}
+	}
 
 	if(coloringPanel.dropperHover && firstClick){
 		coloringPanel.dropperActive = true;
@@ -1578,6 +1609,8 @@ void UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 	}
 
 	glUseProgram(programs.uiProgram); 
+
+	return brushChanged;
 }
 void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool &firstClick,ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures,int& activeFolderIndex){
 	ColorData colorData;

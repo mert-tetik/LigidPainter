@@ -30,7 +30,7 @@
 
 double lastMouseXFocused = 0;
 double lastMouseYFocused = 0;
-void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vector<UIElement> UIElements,Icons icons,ColoringPanel &coloringPanel,SaturationValShaderData saturationValShaderData,double mouseXpos,double mouseYpos,bool firstClick,unsigned int FBOScreen,ColorPicker &colorPicker,glm::vec3 screenHoverPixel,glm::vec3 &drawColor) {
+void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vector<UIElement> &UIElements,Icons icons,ColoringPanel &coloringPanel,SaturationValShaderData saturationValShaderData,double mouseXpos,double mouseYpos,bool firstClick,unsigned int FBOScreen,ColorPicker &colorPicker,glm::vec3 screenHoverPixel,glm::vec3 &drawColor,OutShaderData &outShaderData) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -102,7 +102,7 @@ void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vec
 				ui.renderText(programs.uiProgram,UIElements[i].text.text, centerCoords - screenGapX + UIElements[i].text.positionX, UIElements[i].text.positionY+slideVal, UIElements[i].text.scale,colorData.textColor,0.99999f,false);
 			}
 			if(currentType == "rangeBar"){
-				ui.rangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY+slideVal, UIElements[i].rangeBar.value);
+				ui.rangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY+slideVal, UIElements[i].rangeBar.value,1.f);
 			}
 			if(currentType == "textBox"){
 				ui.box(UIElements[i].textBox.width, UIElements[i].textBox.height,centerCoords - screenGapX + UIElements[i].textBox.position_x, UIElements[i].textBox.position_y+slideVal,UIElements[i].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements[i].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements[i].textBox.transitionMixVal); //Add mask texture button
@@ -128,9 +128,14 @@ void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vec
 	lastMouseYFocused = mouseYpos;
 
 	if(coloringPanel.active){
-		ui.coloringPanel(coloringPanel,programs,icons,renderData.window,saturationValShaderData,projection,mouseXpos,mouseYpos,firstClick,xOffset,yOffset,FBOScreen,colorPicker,screenGapX,screenHoverPixel);
+		bool brushChanged = ui.coloringPanel(coloringPanel,programs,icons,renderData.window,saturationValShaderData,projection,mouseXpos,mouseYpos,firstClick,xOffset,yOffset,FBOScreen,colorPicker,screenGapX,screenHoverPixel,UIElements,true);
 		drawColor = coloringPanel.result/glm::vec3(255.f); 
 		colorPicker.pickerValue = coloringPanel.result;
+		
+		float brushBlurVal = ((UIElements[UIbrushBlurRangeBar].rangeBar.value + 0.11f) * 545.454545455f) + 1.0f; //Max 120
+		if(brushChanged){
+			txtr.updateMaskTexture(FBOScreen,screenSizeX,screenSizeY, UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+		}
 	}
 
 }
