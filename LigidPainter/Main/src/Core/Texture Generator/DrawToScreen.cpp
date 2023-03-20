@@ -43,7 +43,7 @@ bool refreshTheScreenMask = false;
 
 unsigned int lastTxtr = 0;
 
-void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool mirrorUsed, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int removeThisParam2,int removeThisParam,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view) {
+void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int removeThisParam2,int removeThisParam,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view) {
 
 	if(true){
 		holdLocations.clear();
@@ -175,8 +175,31 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 
 		glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
 
+		bool mirrorx = true;
+		bool mirrory = true;
+		bool mirrorz = true;
 
-		if(mirrorUsed){
+		int loopSize = 0;
+		std::vector<glm::vec3> vectors;
+
+		if(mirrorx)
+			vectors.push_back(glm::vec3(1,0,0));
+		if(mirrory)
+			vectors.push_back(glm::vec3(0,1,0));
+		if(mirrorz)
+			vectors.push_back(glm::vec3(0,0,1));
+		
+		if(mirrorx && mirrory)
+			vectors.push_back(glm::vec3(1,1,0));
+		if(mirrory && mirrorz)
+			vectors.push_back(glm::vec3(0,1,1));
+		if(mirrorz && mirrory)
+			vectors.push_back(glm::vec3(0,1,1));
+
+		if(mirrorx && mirrory && mirrorz)
+			vectors.push_back(glm::vec3(1,1,1));
+
+		if(true){
 			if(lastTxtr)
 				glDeleteTextures(1,&lastTxtr);
 
@@ -217,7 +240,6 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 			//Update mirrored screen mask texture
 			glDeleteFramebuffers(1,&FBOMr);
 		}
-
 			glUseProgram(programs.uiProgram);
 	}
 

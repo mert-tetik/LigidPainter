@@ -199,7 +199,6 @@ void GlSet::usePBRShader(unsigned int program,PBRShaderData data){
 
 	//Vert
 	uniformMatrix4fv(program,"view",data.view);
-	uniformMatrix4fv(program,"mirroredView",data.mirroredView);
 	uniformMatrix4fv(program,"projection",data.projection);
 
 	//Frag
@@ -207,12 +206,10 @@ void GlSet::usePBRShader(unsigned int program,PBRShaderData data){
 	uniform1i(program,"brdfLUT",15);
 	uniform1i(program,"prefilterMap",16);
 	uniform1i(program,"mirroredScreenMaskTexture",data.mirroredScreenMaskTexture);
-	uniform1i(program,"useMirror",data.useMirror);
 	uniform3fv(program,"drawColor",data.drawColor);
 	uniform1i(program,"depthTexture",data.depthTexture);
 	uniform1i(program,"mirroredDepthTexture",data.mirroredDepthTexture);
 	uniform3fv(program,"viewPos",data.viewPos);
-	uniform3fv(program,"mirroredViewPos",data.mirroredViewPos);
 	uniform1i(program,"bluryskybox",data.bluryskybox);
 	uniform1i(program,"material.diffuse",data.materialDiffuse);
 	uniform1i(program,"subSelectedTexture",17);
@@ -256,7 +253,6 @@ void GlSet::useScreenDepthShader(unsigned int program, ScreenDepthShaderData dat
 
 	//Vert
 	uniformMatrix4fv(program,"view",data.view);
-	uniformMatrix4fv(program,"mirroredView",data.mirroredView);
 	uniformMatrix4fv(program,"projection",data.projection);
 	uniform1i(program,"renderMirrored",data.renderMirrored);
 }
@@ -279,7 +275,6 @@ void GlSet::useOutShader(unsigned int program, OutShaderData data){
 
 	//Vert
 	uniformMatrix4fv(program,"view",data.view);
-	uniformMatrix4fv(program,"mirroredView",data.mirroredView);
 	uniformMatrix4fv(program,"projection",data.projection);
 	uniformMatrix4fv(program,"renderTextureProjection",data.renderTextureProjection);
 	uniformMatrix4fv(program,"renderTrans",data.renderTrans);
@@ -289,7 +284,6 @@ void GlSet::useOutShader(unsigned int program, OutShaderData data){
 	//Frag
 	uniform1i(program,"screenMaskTexture",data.screenMaskTexture);
 	uniform1i(program,"mirroredScreenMaskTexture",data.mirroredScreenMaskTexture);
-	uniform1i(program,"useMirror",data.useMirror);
 	uniform1i(program,"isRenderScreenMaskMode",data.isRenderScreenMaskMode);
 	uniform1i(program,"paintedTxtrMask",11);
 	uniform1i(program,"verticalMirror",data.verticalMirror);
@@ -303,5 +297,4 @@ void GlSet::useOutShader(unsigned int program, OutShaderData data){
 	uniform1i(program,"interpretWithUvMask",data.interpretWithUvMask);
 	uniform3fv(program,"drawColor",data.drawColor);
 	uniform3fv(program,"viewPos",data.viewPos);
-	uniform3fv(program,"mirroredViewPos",data.mirroredViewPos);
 }

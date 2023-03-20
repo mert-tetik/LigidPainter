@@ -87,10 +87,6 @@ ViewUpdateData Render::updateViewMatrix(glm::vec3 cameraPos, glm::vec3 originPos
 
 	glm::vec3 mirroredCameraPos = cameraPos * mirrorVec;
 
-	gl.uniform3fv(renderPrograms.uiProgram, "mirroredViewPos", mirroredCameraPos);
-
-	gl.uniformMatrix4fv(renderPrograms.uiProgram, "mirroredView", mirroredView);
-
 	ViewUpdateData viewUpdateData;
 
 	viewUpdateData.cameraPos = cameraPos;
@@ -333,11 +329,14 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
 	glUseProgram(renderPrograms.PBRProgram);
 	gls.uniform1i(renderPrograms.PBRProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
+	gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosX",UIElements[UImirrorXRangeBarElement].rangeBar.value * 10.f);
+	gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosY",UIElements[UImirrorYRangeBarElement].rangeBar.value * 10.f);
+	gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosZ",UIElements[UImirrorZRangeBarElement].rangeBar.value * 10.f);
+	
 	glUseProgram(renderPrograms.outProgram);
 	gls.uniform1i(renderPrograms.outProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
 	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects);
 
-	
 	renderAxisPointer(axisPointerShaderData,renderPrograms);
 	//-------------------------
 	

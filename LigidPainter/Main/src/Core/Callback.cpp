@@ -343,7 +343,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 			if(currentType == "text"){	
 			}
 			if(currentType == "rangeBar"){
-				uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].rangeBar.positionX + uiElements[i].rangeBar.value, uiElements[i].rangeBar.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
+				uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].rangeBar.positionX/uiElements[i].rangeBar.widthDivider + uiElements[i].rangeBar.value, uiElements[i].rangeBar.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
 				uiElements[i].rangeBar.hover = uiElementEnter;
 			}
 			if(currentType == "textBox"){

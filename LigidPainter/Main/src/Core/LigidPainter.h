@@ -244,6 +244,7 @@ public:
 	void skyBoxRotationRangeBar(double xOffset, int width, int height);
 	void normalStrengthRangeBar(double xOffset, int width, int height);
 	void noiseStrengthRangeBar(double xOffset, int width, int height);
+	void mirrorRangeBars(double xOffset, int width, int height,bool x,bool y,bool z);
 
 	void bakeButton();
 	void paintingDropper();

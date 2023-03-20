@@ -10,12 +10,10 @@ in vec3 Normal;
 in vec3 Pos;
 
 in vec4 projectedPos;
-in vec4 mirroredProjectedPos;
 
 uniform sampler2D screenMaskTexture;
 uniform sampler2D mirroredScreenMaskTexture;
 
-uniform int useMirror;
 uniform vec3 drawColor;
 
 uniform int maskMode;
@@ -39,6 +37,10 @@ uniform float skyboxExposure;
 
 uniform sampler2D subSelectedTexture;
 uniform float subSelectedImagePower;
+
+uniform float mirrorOriginPosX;
+uniform float mirrorOriginPosY;
+uniform float mirrorOriginPosZ;
 
 float far = 10.0f;
 float near = 0.1f;
@@ -76,7 +78,6 @@ bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMir
 vec3 getPaintedDiffuse(){
       //Painting
    vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
-   vec3 mirroredScreenPos = mirroredProjectedPos.xyz / mirroredProjectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
 
    float intensity = 0.0;
    float mirroredIntensity = 0.0;
@@ -90,16 +91,6 @@ vec3 getPaintedDiffuse(){
       }
    }
 
-
-   if(isPainted(mirroredScreenPos, true)) {
-      if(maskMode == 1)
-         mirroredIntensity = texture((mirroredScreenMaskTexture), mirroredScreenPos.xy).r;
-      else{
-         if(texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).r > 0.02f || texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).g > 0.02f || texture(mirroredScreenMaskTexture, mirroredScreenPos.xy).b > 0.02f)
-            mirroredIntensity = 1.0;
-      }
-   }
-   
     // ambient
    vec3 diffuseClr = vec3(texture(material.diffuse, TexCoords));
    vec3 diffuseDrawMix;
@@ -110,17 +101,6 @@ vec3 getPaintedDiffuse(){
       diffuseDrawMix = mix(diffuseClr, texture((screenMaskTexture), screenPos.xy).rgb, intensity);
 
 
-   vec3 mirroredDiffuseDrawMix;
-
-   if(useMirror == 1){
-      if(maskMode == 1)
-         mirroredDiffuseDrawMix = mix(diffuseDrawMix, drawColor, mirroredIntensity);
-      else
-         mirroredDiffuseDrawMix = mix(diffuseDrawMix, texture((mirroredScreenMaskTexture), mirroredScreenPos.xy).rgb, mirroredIntensity);
-   }
-   else{
-         mirroredDiffuseDrawMix = diffuseDrawMix;
-   }
    
    // if(intensity > 0.01)
    //    gl_FragDepth = 0.1;
@@ -128,7 +108,7 @@ vec3 getPaintedDiffuse(){
    //    gl_FragDepth = 0.9;
    // }
 
-   return mirroredDiffuseDrawMix;
+   return diffuseDrawMix;
 }
 
    const float PI = 3.14159265359;
@@ -178,8 +158,6 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 {
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }   
-
-float mirrorPosX = 0.1;
 
 vec3 getRealisticResult(vec3 paintedDiffuse){
    vec3 albedo = mix(paintedDiffuse,texture(subSelectedTexture,TexCoords).rgb,subSelectedImagePower);
@@ -278,7 +256,11 @@ vec3 getRealisticResult(vec3 paintedDiffuse){
 
    result = pow(result,vec3(1.0/2.2));
    
-   if(Pos.x > mirrorPosX-0.1 && Pos.x < mirrorPosX+0.01)
+   if(Pos.x > mirrorOriginPosX-0.005 && Pos.x < mirrorOriginPosX+0.005)
+      return vec3(1,0,0);
+   if(Pos.y > mirrorOriginPosY-0.005 && Pos.y < mirrorOriginPosY+0.005)
+      return vec3(1,0,0);
+   if(Pos.z > mirrorOriginPosZ-0.005 && Pos.z < mirrorOriginPosZ+0.005)
       return vec3(1,0,0);
    return result;
 }

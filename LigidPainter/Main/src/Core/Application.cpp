@@ -728,7 +728,7 @@ bool LigidPainter::run()
 			mouseDrawingPosY = mouseYpos;
 
 			//Paint
-			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,mirrorUsed,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view);
+			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view);
 			paintRenderCounter++;
 			if(paintRenderCounter == 50000){
 				paintRender = true;
@@ -1790,6 +1790,23 @@ void LigidPainter::sndPanelBoundaries(float xOffset,int screenSizeX){
 		Utilities util;
 		sndPanel.position -= xOffset / (screenSizeX / 2);
 		sndPanel.position = util.restrictBetween(sndPanel.position, -0.6f, -0.99f);//Keep in boundaries
+    }
+}
+void LigidPainter::mirrorRangeBars(double xOffset, int width, int height,bool x,bool y,bool z){
+	if (x) {
+		Utilities util;
+		UIElements[UImirrorXRangeBarElement].rangeBar.value -= xOffset / (width / 2) *1.7;
+		UIElements[UImirrorXRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UImirrorXRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+    }
+	if (y) {
+		Utilities util;
+		UIElements[UImirrorYRangeBarElement].rangeBar.value -= xOffset / (width / 2) *1.7;
+		UIElements[UImirrorYRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UImirrorYRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+    }
+	if (z) {
+		Utilities util;
+		UIElements[UImirrorZRangeBarElement].rangeBar.value -= xOffset / (width / 2) *1.7;
+		UIElements[UImirrorZRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UImirrorZRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
     }
 }
 void LigidPainter::nodePanelBoundaries(float yOffset,float screenHeight){

@@ -59,13 +59,16 @@
 #define UIsubSelectedImagePowerRangeBarElement 50
 #define UIsubSelectedImagePowerRangeBarTextElement 51
 #define UIfocusModeCheckBox 52
-#define UIjpgIcon 53
-#define UIpngIcon 54
-#define UIfolderIcon 55
-#define UIloadPlaneModelButton 56
-#define UIloadSphereModelButton 57
-#define UIplaneIcon 58
-#define UIsphereIcon 59
+#define UImirrorXRangeBarElement 53
+#define UImirrorYRangeBarElement 54
+#define UImirrorZRangeBarElement 55
+#define UIjpgIcon 56
+#define UIpngIcon 57
+#define UIfolderIcon 58
+#define UIloadPlaneModelButton 59
+#define UIloadSphereModelButton 60
+#define UIplaneIcon 61
+#define UIsphereIcon 62
 
 struct ColorData //LigidPainter color palette
 {
@@ -201,6 +204,7 @@ struct RangeBar{
 	float positionY;
 	float value;
 	bool hover = false;
+	float widthDivider = 1;
 };
 
 struct Icon{

@@ -23,6 +23,9 @@ bool maskPanelSliderPressed;
 bool mainPanelBoundariesPressed;
 bool nodePanelBoundariesPressed;
 bool subSelectedImagePowerRangeBarPressed;
+bool mirrorXRangeBarPressed;
+bool mirrorYRangeBarPressed;
+bool mirrorZRangeBarPressed;
 //
 
 void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vector<UIElement> &UIElements, ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,NodePanel &nodePanel,SndPanel &sndPanel,bool &firstClick) {
@@ -61,6 +64,15 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		}
 		else if (UIElements[UIsubSelectedImagePowerRangeBarElement].rangeBar.hover) {
 			subSelectedImagePowerRangeBarPressed = true;
+		}
+		else if (UIElements[UImirrorXRangeBarElement].rangeBar.hover) {
+			mirrorXRangeBarPressed = true;
+		}
+		else if (UIElements[UImirrorYRangeBarElement].rangeBar.hover) {
+			mirrorYRangeBarPressed = true;
+		}
+		else if (UIElements[UImirrorZRangeBarElement].rangeBar.hover) {
+			mirrorZRangeBarPressed = true;
 		}
 		else if (colorPicker.saturationValuePointerHover) {
 			colorBoxPickerPressed = true;
@@ -234,6 +246,9 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		nodePanelBoundariesPressed = false;
 		nodePanel.boundariesPressed = false;
 		sndPanel.boundariesPressed = false;
+		mirrorXRangeBarPressed = false;
+		mirrorYRangeBarPressed = false;
+		mirrorZRangeBarPressed = false;
 	}
 }
 bool UiActions::updateRangeValues(GLFWwindow* window, double xOffset,double yOffset, int screenWidth, int screenHeight,TextureDisplayer &textureDisplayer,
@@ -258,6 +273,9 @@ SndPanel &sndPanel){
 	}
 	if (brushBordersRangeBarPressed) {
 		ligid.brushBordersRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
+	}
+	if(mirrorXRangeBarPressed || mirrorYRangeBarPressed || mirrorZRangeBarPressed){
+		ligid.mirrorRangeBars(xOffset, screenWidth,screenHeight,mirrorXRangeBarPressed, mirrorYRangeBarPressed, mirrorZRangeBarPressed);
 	}
 	if (subSelectedImagePowerRangeBarPressed) {
 		ligid.subSelectedImagePowerRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
