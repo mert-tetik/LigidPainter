@@ -204,8 +204,8 @@ void GlSet::usePBRShader(unsigned int program,PBRShaderData data){
 	//Frag
 	uniform1i(program,"screenMaskTexture",data.screenMaskTexture);
 	uniform1i(program,"brdfLUT",15);
+	uniform1i(program,"previous3DMaskTxtrs",8);
 	uniform1i(program,"prefilterMap",16);
-	uniform1i(program,"mirroredScreenMaskTexture",data.mirroredScreenMaskTexture);
 	uniform3fv(program,"drawColor",data.drawColor);
 	uniform1i(program,"depthTexture",data.depthTexture);
 	uniform1i(program,"mirroredDepthTexture",data.mirroredDepthTexture);
@@ -254,7 +254,6 @@ void GlSet::useScreenDepthShader(unsigned int program, ScreenDepthShaderData dat
 	//Vert
 	uniformMatrix4fv(program,"view",data.view);
 	uniformMatrix4fv(program,"projection",data.projection);
-	uniform1i(program,"renderMirrored",data.renderMirrored);
 }
 void GlSet::useHueShader(unsigned int program, HueShaderData data){
 	glUseProgram(program);
@@ -283,10 +282,8 @@ void GlSet::useOutShader(unsigned int program, OutShaderData data){
 
 	//Frag
 	uniform1i(program,"screenMaskTexture",data.screenMaskTexture);
-	uniform1i(program,"mirroredScreenMaskTexture",data.mirroredScreenMaskTexture);
 	uniform1i(program,"isRenderScreenMaskMode",data.isRenderScreenMaskMode);
 	uniform1i(program,"paintedTxtrMask",11);
-	uniform1i(program,"verticalMirror",data.verticalMirror);
 	uniform1i(program,"depthTexture",data.depthTexture);
 	uniform1i(program,"mirroredDepthTexture",data.mirroredDepthTexture);
 	uniform1i(program,"renderDepth",data.renderDepth);

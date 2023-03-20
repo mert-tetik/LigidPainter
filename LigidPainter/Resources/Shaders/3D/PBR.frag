@@ -12,7 +12,6 @@ in vec3 Pos;
 in vec4 projectedPos;
 
 uniform sampler2D screenMaskTexture;
-uniform sampler2D mirroredScreenMaskTexture;
 
 uniform vec3 drawColor;
 
@@ -41,6 +40,8 @@ uniform float subSelectedImagePower;
 uniform float mirrorOriginPosX;
 uniform float mirrorOriginPosY;
 uniform float mirrorOriginPosZ;
+
+uniform sampler2D previous3DMaskTxtrs;
 
 float far = 10.0f;
 float near = 0.1f;
@@ -161,6 +162,7 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 
 vec3 getRealisticResult(vec3 paintedDiffuse){
    vec3 albedo = mix(paintedDiffuse,texture(subSelectedTexture,TexCoords).rgb,subSelectedImagePower);
+   albedo = mix(albedo,drawColor,texture(previous3DMaskTxtrs,TexCoords).r);
    float metallic = 0.0;
    float roughness = 0.3;
    float ao = 1;

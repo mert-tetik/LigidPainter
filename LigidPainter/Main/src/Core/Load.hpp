@@ -358,15 +358,7 @@ public:
 		GlSet glset;
 		Texture txtr;
 		InitializedTextures textures;
-		glset.activeTexture(GL_TEXTURE9);
-		unsigned int depthTexture;
-		glset.genTextures(depthTexture);
-		glset.bindTexture(depthTexture);
-	
-		glset.activeTexture(GL_TEXTURE8);
-		unsigned int mirroredDepthTexture;
-		glset.genTextures(mirroredDepthTexture);
-		glset.bindTexture(mirroredDepthTexture);
+
 	
 		glset.activeTexture(GL_TEXTURE7);//Albedo
 		unsigned int enlargedTexture;
@@ -394,9 +386,7 @@ public:
 		txtr.getTexture(maskTexturePath,0,0,false);
 	
 		textures.albedoTxtr = albedoTxtr;
-		textures.depthTexture = depthTexture;
 		textures.enlargedTexture = enlargedTexture;
-		textures.mirroredDepthTexture = mirroredDepthTexture;
 	
 		textures.modifiedMaskTexture = modifiedMaskTexture;
 		textures.rawMaskTexture = rawMaskTexture;

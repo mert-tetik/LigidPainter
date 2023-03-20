@@ -11,7 +11,7 @@
 //GL_TEXTURE5 = 1920x1080 Screen Texture
 //GL_TEXTURE6 = Icons
 //GL_TEXTURE7 = UV mask texture (used for painting over boundaries)
-//GL_TEXTURE8 = Mirrored Depth texture
+//GL_TEXTURE8 = None
 //GL_TEXTURE9 = Depth texture
 //GL_TEXTURE10 = 1080x1080 Screen Texture
 //GL_TEXTURE12 = Modified mask texture
@@ -141,7 +141,8 @@ bool anyTextureNameActive = false;
 std::string textureText;
 unsigned int viewportBGImage = 0;
 Objects objects;
-
+std::vector<MirrorParam> mirrorParams;
+unsigned int depthTextureID;
 
 string modelName;
 string customModelName; 
@@ -200,7 +201,6 @@ bool duplicateNodeCall = false;
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-	std::cout << button << ' ';
     if(action == 1 && button == 0)
 		firstClick = true;
     if(action == 1 && button == 1)
@@ -365,7 +365,7 @@ bool LigidPainter::run()
 
 
 
-
+	glset.genTextures(depthTextureID);
 
 
 	//Send some data to related cpp files
@@ -691,7 +691,6 @@ bool LigidPainter::run()
 		outShaderData.screenMaskTexture = 4; //
 		outShaderData.useMirror = mirrorUsed;
 		outShaderData.uvMask = 7;
-		outShaderData.verticalMirror = verticalMirror; //
 		outShaderData.view = viewUpdateData.view;
 		outShaderData.viewPos = viewUpdateData.cameraPos;
 
@@ -701,7 +700,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos, callbackData.originPos);
 		}
 		duplicateNodeCall = false;
 		
@@ -728,7 +727,7 @@ bool LigidPainter::run()
 			mouseDrawingPosY = mouseYpos;
 
 			//Paint
-			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view);
+			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view,mirrorParams,callbackData.cameraPos, callbackData.originPos);
 			paintRenderCounter++;
 			if(paintRenderCounter == 50000){
 				paintRender = true;
@@ -814,7 +813,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos, callbackData.originPos);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -1566,47 +1565,63 @@ void LigidPainter::exportExtPNGCheckBox() {
 	}
 }
 void LigidPainter::mirrorXCheckBox() {
-	mirrorClick = true;
-	if (UIElements[UImirrorXCheckBox].checkBox.checked  == false) {
-		mirrorUsed = true;
-		UIElements[UImirrorXCheckBox].checkBox.checked  = true;
-		UIElements[UImirrorYCheckBox].checkBox.checked  = false;
-		UIElements[UImirrorZCheckBox].checkBox.checked  = false;
-		verticalMirror = false;
+	UIElements[UImirrorXCheckBox].checkBox.checked = !UIElements[UImirrorXCheckBox].checkBox.checked;
+
+	Utilities util;
+	//todo : checking that to false causes errors
+	for (size_t i = 0; i < mirrorParams.size(); i++)
+	{
+		glDeleteTextures(1,&mirrorParams[i].depthTexture);
 	}
-	else {
-		mirrorUsed = false;
-		UIElements[UImirrorXCheckBox].checkBox.checked  = false;
+	
+	mirrorParams.clear();
+	std::vector<glm::vec3> positions = util.getMirrorVectors(UIElements[UImirrorXCheckBox].checkBox.checked,UIElements[UImirrorYCheckBox].checkBox.checked,UIElements[UImirrorZCheckBox].checkBox.checked);
+	for (size_t i = 0; i < positions.size(); i++)
+	{
+		MirrorParam mirror;
+		glGenTextures(1,&mirror.depthTexture);
+		mirror.pos = positions[i];
+		mirrorParams.push_back(mirror);
 	}
 
 }
 void LigidPainter::mirrorYCheckBox() {
-	mirrorClick = true;
-	if (UIElements[UImirrorYCheckBox].checkBox.checked  == false) {
-		mirrorUsed = true;
-		UIElements[UImirrorYCheckBox].checkBox.checked  = true;
-		UIElements[UImirrorXCheckBox].checkBox.checked  = false;
-		UIElements[UImirrorZCheckBox].checkBox.checked  = false;
-		verticalMirror = true;
+	UIElements[UImirrorYCheckBox].checkBox.checked = !UIElements[UImirrorYCheckBox].checkBox.checked;
+
+	Utilities util;
+	for (size_t i = 0; i < mirrorParams.size(); i++)
+	{
+		glDeleteTextures(1,&mirrorParams[i].depthTexture);
 	}
-	else {
-		mirrorUsed = false;
-		UIElements[UImirrorYCheckBox].checkBox.checked  = false;
+	mirrorParams.clear();
+	std::vector<glm::vec3> positions = util.getMirrorVectors(UIElements[UImirrorXCheckBox].checkBox.checked,UIElements[UImirrorYCheckBox].checkBox.checked,UIElements[UImirrorZCheckBox].checkBox.checked);
+	for (size_t i = 0; i < positions.size(); i++)
+	{
+		MirrorParam mirror;
+		glGenTextures(1,&mirror.depthTexture);
+		mirror.pos = positions[i];
+		mirrorParams.push_back(mirror);
 	}
+	
 }
 void LigidPainter::mirrorZCheckBox() {
-	mirrorClick = true;
-	if (UIElements[UImirrorZCheckBox].checkBox.checked  == false) {
-		mirrorUsed = true;
-		UIElements[UImirrorZCheckBox].checkBox.checked  = true;
-		UIElements[UImirrorYCheckBox].checkBox.checked  = false;
-		UIElements[UImirrorXCheckBox].checkBox.checked  = false;
-		verticalMirror = false;
+	UIElements[UImirrorZCheckBox].checkBox.checked = !UIElements[UImirrorZCheckBox].checkBox.checked;
+
+	Utilities util;
+	for (size_t i = 0; i < mirrorParams.size(); i++)
+	{
+		glDeleteTextures(1,&mirrorParams[i].depthTexture);
 	}
-	else {
-		mirrorUsed = false;
-		UIElements[UImirrorZCheckBox].checkBox.checked  = false;
+	mirrorParams.clear();
+	std::vector<glm::vec3> positions = util.getMirrorVectors(UIElements[UImirrorXCheckBox].checkBox.checked,UIElements[UImirrorYCheckBox].checkBox.checked,UIElements[UImirrorZCheckBox].checkBox.checked);
+	for (size_t i = 0; i < positions.size(); i++)
+	{
+		MirrorParam mirror;
+		glGenTextures(1,&mirror.depthTexture);
+		mirror.pos = positions[i];
+		mirrorParams.push_back(mirror);
 	}
+
 }
 void LigidPainter::exportDownloadButtonEnter() {
 	exportImage = true;

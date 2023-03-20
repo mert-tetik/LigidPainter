@@ -273,7 +273,10 @@ ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps& cubemaps,C
 std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool &firstClick,
 glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
 ,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
-,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor) {
+,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
+,glm::vec3 cameraPos, glm::vec3 originPos) {
+	
+
 	
 	//SETUP
 	GlSet gls;
@@ -294,13 +297,16 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	glfwGetCursorPos(renderData.window, &mouseXpos, &mouseYpos);
 	//-------------------------
 
+	glActiveTexture(GL_TEXTURE9);
+	glBindTexture(GL_TEXTURE_2D,depthTextureID);
+	glActiveTexture(GL_TEXTURE28);
 
 	//Process Textures
 	//Render depth once painting started
 	if (renderData.paintingMode) renderDepthCounter++;
 	else renderDepthCounter = 0;
 	if (renderDepthCounter == 1) {//Get depth texture
-		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex, glfwGetVideoMode(glfwGetPrimaryMonitor())->width , glfwGetVideoMode(glfwGetPrimaryMonitor())->height,view,albedoTextures,selectedAlbedoTextureIndex);
+		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex, glfwGetVideoMode(glfwGetPrimaryMonitor())->width , glfwGetVideoMode(glfwGetPrimaryMonitor())->height,view,albedoTextures,selectedAlbedoTextureIndex,mirrorParams,depthTextureID,cameraPos, originPos);
 	}
 	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || (glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
 	if (isRenderTexture || paintRender) {
@@ -335,6 +341,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	
 	glUseProgram(renderPrograms.outProgram);
 	gls.uniform1i(renderPrograms.outProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
+ 
 	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects);
 
 	renderAxisPointer(axisPointerShaderData,renderPrograms);

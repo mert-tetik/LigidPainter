@@ -451,3 +451,25 @@ std::vector<std::string> Utilities::seperateFilePaths(std::string paths,char sep
 	pathVector.push_back(path);
 	return pathVector;	
 } 
+
+std::vector<glm::vec3> Utilities::getMirrorVectors(bool x,bool y,bool z){
+	std::vector<glm::vec3> vectors;
+	if(x)
+		vectors.push_back(glm::vec3(-1,1,1));
+	if(y)
+		vectors.push_back(glm::vec3(1,-1,1));
+	if(z)
+		vectors.push_back(glm::vec3(1,1,-1));
+	
+	if(x && y)
+		vectors.push_back(glm::vec3(-1,-1,1));
+	if(y && z)
+		vectors.push_back(glm::vec3(1,-1,-1));
+	if(z && x)
+		vectors.push_back(glm::vec3(-1,1,-1));
+	
+	if(x && y && z)
+		vectors.push_back(glm::vec3(-1,-1,-1));
+
+	return vectors;
+}

@@ -8,7 +8,7 @@ uniform Material material;
 uniform sampler2D screenMaskTexture;
 uniform sampler2D mirroredScreenMaskTexture;
 uniform int isRenderScreenMaskMode;
-uniform int verticalMirror;
+uniform int tdMaskRendering;
 uniform vec3 drawColor;
 uniform sampler2D depthTexture; 
 uniform sampler2D mirroredDepthTexture; 
@@ -22,6 +22,9 @@ uniform int interpretWithUvMask;
 uniform int maskMode;
 uniform int normalPainting;
 
+uniform int mirrormaskrenderingX;
+uniform int mirrormaskrenderingY;
+uniform int mirrormaskrenderingZ;
 
 in vec2 TexCoords;
 in vec3 Normal;
@@ -32,6 +35,8 @@ uniform int paintThrough;
 in vec4 projectedPos;
 
 out vec4 color;
+
+uniform sampler2D previous3DMaskTxtrs;
 
 float far = 10.0;
 float near = 0.1;
@@ -75,6 +80,9 @@ vec3 getPaintedDiffuse(){
 
    float intensity = 0.0;
    float mirroredIntensity = 0.0;
+
+   //if(texture(previous3DMaskTxtrs,TexCoords).r > 0.05)
+      //return vec3(texture(previous3DMaskTxtrs,TexCoords).r);
 
    if(isPainted(screenPos,false)) {
       if(maskMode == 1)
@@ -152,12 +160,26 @@ void main() {
        }
     }
     else{
-       //Mirrored mask texture here
-       if(verticalMirror == 0){
-          color = vec4(texture(screenMaskTexture, vec2(1.0 - TexCoords.x,TexCoords.y)).rgb,1);
-       }
-       else{
-          color = vec4(texture(screenMaskTexture, vec2(TexCoords.x , 1.0 - TexCoords.y)).rgb,1);
-       }
-    }
+      if(tdMaskRendering == 0){
+         //Mirrored mask texture here
+         if((mirrormaskrenderingX == 1 && mirrormaskrenderingY == 1) || (mirrormaskrenderingX== 1 && mirrormaskrenderingZ== 1) || (mirrormaskrenderingY== 1 && mirrormaskrenderingZ== 1))
+            color = vec4(texture(screenMaskTexture, vec2(1.0 - TexCoords.x,1. - TexCoords.y)).rgb,1);
+         else if(mirrormaskrenderingX== 1 || mirrormaskrenderingZ== 1)
+            color = vec4(texture(screenMaskTexture, vec2(1.0 - TexCoords.x,TexCoords.y)).rgb,1);
+         else if(mirrormaskrenderingY== 1)
+            color = vec4(texture(screenMaskTexture, vec2(TexCoords.x , 1.0 - TexCoords.y)).rgb,1);
+      }
+      else{
+            vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
+
+            float intensity = 0.0;
+
+            if(isPainted(screenPos,false)){
+               intensity = texture(screenMaskTexture, screenPos.xy).r;
+            }
+            vec3 res = mix(texture(previous3DMaskTxtrs,TexCoords).rgb,vec3(intensity),intensity);
+
+            color = vec4(res,1);
+      }
+   }
 }

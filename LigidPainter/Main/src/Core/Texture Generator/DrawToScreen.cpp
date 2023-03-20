@@ -20,14 +20,14 @@
 using namespace std;
 
 std::vector<float> textureRenderingVerticesFlipped = {
-	// first triangle
-	 1.0f,  1.0f, 0.0f,0,1,0,0,0,  // top right
-	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom right
-	 0.0f,  1.0f, 0.0f,1,1,0,0,0,  // top left 
-	// second triangle	  ,0,0,0,
-	 1.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom right
-	 0.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom left
-	 0.0f,  1.0f, 0.0f,1,1,0,0,0   // top left
+		// first triangle
+		 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+		 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+		 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+		// second triangle	  ,0,0,0,
+		 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+		 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+		 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
 };
 
 
@@ -43,7 +43,7 @@ bool refreshTheScreenMask = false;
 
 unsigned int lastTxtr = 0;
 
-void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int removeThisParam2,int removeThisParam,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view) {
+void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int removeThisParam2,int removeThisParam,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view,std::vector<MirrorParam> &mirrorParams,glm::vec3 cameraPos,glm::vec3 originPos) {
 
 	if(true){
 		holdLocations.clear();
@@ -175,74 +175,97 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 
 		glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
 
-		bool mirrorx = true;
-		bool mirrory = true;
-		bool mirrorz = true;
-
 		int loopSize = 0;
-		std::vector<glm::vec3> vectors;
 
-		if(mirrorx)
-			vectors.push_back(glm::vec3(1,0,0));
-		if(mirrory)
-			vectors.push_back(glm::vec3(0,1,0));
-		if(mirrorz)
-			vectors.push_back(glm::vec3(0,0,1));
+		if(mirrorParams.size()){
+			for (size_t i = 0; i < mirrorParams.size(); i++)
+			{
+				//std::cout << "i : "<< i << '\n';
+				//if(lastTxtr)
+				//glDeleteTextures(1,&lastTxtr);
+
+				//Update mirrored screen mask texture
+				//setup
+				glActiveTexture(GL_TEXTURE3);
+				unsigned int FBOMr;
+				glset.genFramebuffers(FBOMr);
+				glset.bindFramebuffer(FBOMr);
+				unsigned int textureColorbuffer;
+				glset.genTextures(textureColorbuffer);
+				glset.bindTexture(textureColorbuffer);
+				glset.texImage(NULL, 1080,1080,GL_RGBA);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+				glset.generateMipmap();
+
+				glset.viewport(1080, 1080);
+
+				glm::mat4 projection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
+				outShaderData.renderTextureProjection = projection;
+				glset.useOutShader(programs.outProgram,outShaderData);
+
+				glset.uniform1i(programs.outProgram, "isTwoDimensional", 0);
+				glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 1);
+				glset.uniform1i(programs.outProgram, "mirrormaskrenderingX", mirrorParams[i].pos.x*-1);
+				glset.uniform1i(programs.outProgram, "mirrormaskrenderingY", mirrorParams[i].pos.y*-1);
+				glset.uniform1i(programs.outProgram, "mirrormaskrenderingZ", mirrorParams[i].pos.z*-1);
+				//setup
+
+				//Get texture
+				glset.drawArrays(textureRenderingVerticesFlipped,0);
+				//Get texture
+				glset.uniform1i(programs.outProgram, "screenMaskTexture", 3);
+
+				glDeleteFramebuffers(1,&FBOMr);
+
+				//Finish
+				//Finish
+				//Update mirrored screen mask texture
+
+				glset.uniform1i(programs.outProgram, "tdMaskRendering", 1);
+				glset.uniform1i(programs.outProgram, "previous3DMaskTxtrs", 28);
+				glActiveTexture(GL_TEXTURE9);
+				glset.bindTexture(mirrorParams[i].depthTexture);
+				glActiveTexture(GL_TEXTURE8);
+				unsigned int FBOMr2;
+				glset.genFramebuffers(FBOMr2);
+				glset.bindFramebuffer(FBOMr2);
+				unsigned int textureColorbuffer2;
+				glset.genTextures(textureColorbuffer2);
+				glset.bindTexture(textureColorbuffer2);
+				mirrorParams[i].renderID = textureColorbuffer2;
+				glset.texImage(NULL, 1080,1080,GL_RGBA);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer2, 0);
+				
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				
+				glActiveTexture(GL_TEXTURE28);
+				glset.bindTexture(0);
+				if(i != 0){
+					glset.bindTexture(mirrorParams[i-1].renderID);
+				}
+
+				glm::mat4 mirroredView;
+				mirroredView = glm::lookAt(cameraPos * mirrorParams[i].pos, originPos * mirrorParams[i].pos, glm::vec3(0.0, 1.0, 0.0));
 		
-		if(mirrorx && mirrory)
-			vectors.push_back(glm::vec3(1,1,0));
-		if(mirrory && mirrorz)
-			vectors.push_back(glm::vec3(0,1,1));
-		if(mirrorz && mirrory)
-			vectors.push_back(glm::vec3(0,1,1));
+				glset.uniformMatrix4fv(programs.outProgram,"view",mirroredView);
 
-		if(mirrorx && mirrory && mirrorz)
-			vectors.push_back(glm::vec3(1,1,1));
+				std::vector<MaterialOut> emptyMaterials = {};
+				//TODO : Draw selected mesh
+				model.Draw(0,programs.PBRProgram,false,modelMaterials,view,true,0,glm::vec3(0),0,0);
 
-		if(true){
-			if(lastTxtr)
-				glDeleteTextures(1,&lastTxtr);
-
-			//Update mirrored screen mask texture
-			//setup
-			glActiveTexture(GL_TEXTURE3);
-			unsigned int FBOMr;
-			glset.genFramebuffers(FBOMr);
-			glset.bindFramebuffer(FBOMr);
-			unsigned int textureColorbuffer;
-			glset.genTextures(textureColorbuffer);
-			glset.bindTexture(textureColorbuffer);
-			glset.texImage(NULL, 1080,1080,GL_RGBA);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-			glset.generateMipmap();
-
-			lastTxtr = textureColorbuffer;
-
-			glset.viewport(1080, 1080);
-
-			glm::mat4 projection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
-			outShaderData.renderTextureProjection = projection;
-			glset.useOutShader(programs.outProgram,outShaderData);
-
-			glset.uniform1i(programs.outProgram, "isTwoDimensional", 0);
-			glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 1);
-			//setup
-
-			//Get texture
-			glset.drawArrays(textureRenderingVerticesFlipped,0);
-			//Get texture
-
-			//Finish
+				glset.uniform1i(programs.outProgram, "tdMaskRendering", 0);
+				
+				glset.uniform1i(programs.outProgram, "screenMaskTexture", 4);
+			}
 			glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 0);
-			//Finish
-			//Update mirrored screen mask texture
-			glDeleteFramebuffers(1,&FBOMr);
 		}
-			glUseProgram(programs.uiProgram);
 	}
 
+	glset.uniformMatrix4fv(programs.outProgram,"view",view);
 
 	LigidPainter lp;
 	lp.setViewportToDefault();

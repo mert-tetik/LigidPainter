@@ -24,5 +24,6 @@ public:
 	bool isMatch(std::string o,std::string t);
 	unsigned int createQRCode(const char* path,glm::vec3 color);
 	std::vector<std::string> seperateFilePaths(std::string paths,char seperator);
+	std::vector<glm::vec3> getMirrorVectors(bool x,bool y,bool z);
 };
 #endif

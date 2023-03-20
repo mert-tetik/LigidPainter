@@ -197,6 +197,11 @@ struct RenderData { //GlSet::render
 	unsigned int depthTexture;
 	bool paintingMode;
 };
+struct MirrorParam{
+	glm::vec3 pos;
+	unsigned int depthTexture;
+	unsigned int renderID;
+};
 class Sphere {
 public:
 	std::vector<float> getSphere();
