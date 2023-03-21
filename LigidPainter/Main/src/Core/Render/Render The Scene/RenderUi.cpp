@@ -591,7 +591,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	{
 		std::string currentType = UIElements[i].type;
 				
-		if(UIElements[i].attachedToMainPanel == false){
+		if(!UIElements[i].attachedToMainPanel || UIElements[i].focusMode){
 			centerCoords =  renderData.panelLoc - 1.0f;
 		}
 		else{

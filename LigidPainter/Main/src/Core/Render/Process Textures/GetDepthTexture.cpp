@@ -47,7 +47,7 @@ void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int scre
 	for (size_t i = 0; i < mirrorParams.size(); i++)
 	{
 		glm::mat4 mirroredView;
-		mirroredView = glm::lookAt((cameraPos - glm::vec3(xMirrorPos,yMirrorPos,zMirrorPos)) * mirrorParams[i].pos, (originPos-glm::vec3(xMirrorPos,yMirrorPos,zMirrorPos)) * mirrorParams[i].pos, glm::vec3(0.0, 1.0, 0.0));
+		mirroredView = glm::lookAt((cameraPos - glm::vec3(xMirrorPos*(mirrorParams[i].pos.x == -1),yMirrorPos*(mirrorParams[i].pos.y == -1),zMirrorPos *(mirrorParams[i].pos.z == -1))) * mirrorParams[i].pos, (originPos-glm::vec3(xMirrorPos*(mirrorParams[i].pos.x == -1),yMirrorPos*(mirrorParams[i].pos.y == -1),zMirrorPos*(mirrorParams[i].pos.z == -1))) * mirrorParams[i].pos, glm::vec3(0.0, 1.0, 0.0));
 		
 		gl.uniformMatrix4fv(programs.screenDepthProgram,"view",mirroredView);
 	

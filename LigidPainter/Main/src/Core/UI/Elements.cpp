@@ -654,9 +654,9 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(focusModeCheckBoxElement);//25
 
     UIElement mirrorXRangeBarElement;
-	mirrorXRangeBarElement.rangeBar.positionX = -0.3f;
-	mirrorXRangeBarElement.rangeBar.positionY = 0.86f;
-	mirrorXRangeBarElement.rangeBar.widthDivider = 1.7f;
+	mirrorXRangeBarElement.rangeBar.positionX = -0.1f;
+	mirrorXRangeBarElement.rangeBar.positionY = 0.85f;
+	mirrorXRangeBarElement.rangeBar.widthDivider = 2.f;
 	mirrorXRangeBarElement.rangeBar.value = 0.0f;
 	mirrorXRangeBarElement.panel = 3;
 	mirrorXRangeBarElement.attachedToMainPanel = true;
@@ -665,9 +665,9 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(mirrorXRangeBarElement);//12
     
     UIElement mirrorYRangeBarElement;
-	mirrorYRangeBarElement.rangeBar.positionX = -0.3f;
-	mirrorYRangeBarElement.rangeBar.positionY = 0.82f;
-	mirrorYRangeBarElement.rangeBar.widthDivider = 1.7f;
+	mirrorYRangeBarElement.rangeBar.positionX = -0.1f;
+	mirrorYRangeBarElement.rangeBar.positionY = 0.81f;
+	mirrorYRangeBarElement.rangeBar.widthDivider = 2.f;
 	mirrorYRangeBarElement.rangeBar.value = 0.0f;
 	mirrorYRangeBarElement.panel = 3;
 	mirrorYRangeBarElement.attachedToMainPanel = true;
@@ -676,9 +676,9 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(mirrorYRangeBarElement);//12
     
     UIElement mirrorZRangeBarElement;
-	mirrorZRangeBarElement.rangeBar.positionX = -0.3f;
-	mirrorZRangeBarElement.rangeBar.positionY = 0.78f;
-	mirrorZRangeBarElement.rangeBar.widthDivider = 1.7f;
+	mirrorZRangeBarElement.rangeBar.positionX = -0.1f;
+	mirrorZRangeBarElement.rangeBar.positionY = 0.77f;
+	mirrorZRangeBarElement.rangeBar.widthDivider = 2.f;
 	mirrorZRangeBarElement.rangeBar.value = 0.0f;
 	mirrorZRangeBarElement.panel = 3;
 	mirrorZRangeBarElement.attachedToMainPanel = true;

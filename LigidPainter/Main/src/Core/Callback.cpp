@@ -219,7 +219,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 					}
 					float centerCoords = (mainPanelLoc + std::max(mainPanelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
 
-					if(uiElements[i].attachedToMainPanel == false){
+					if(!uiElements[i].attachedToMainPanel || uiElements[i].focusMode){
 						centerCoords =  mainPanelLoc - 1.0f;
 					}
 
@@ -239,7 +239,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 					}
 
 					if(currentType == "rangeBar"){
-						uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].rangeBar.positionX + uiElements[i].rangeBar.value, uiElements[i].rangeBar.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
+						uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].rangeBar.positionX + uiElements[i].rangeBar.value/uiElements[i].rangeBar.widthDivider, uiElements[i].rangeBar.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
 						uiElements[i].rangeBar.hover = uiElementEnter;
 					}
 
@@ -329,7 +329,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 			std::string currentType = uiElements[i].type; 
 
 			float centerCoords = (mainPanelLoc + std::max(mainPanelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
-			if(uiElements[i].attachedToMainPanel == false){
+			if(!uiElements[i].attachedToMainPanel || uiElements[i].focusMode){
 				centerCoords =  mainPanelLoc - 1.0f;
 			}
 			if(uiElements[i].focusMode){
@@ -343,7 +343,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 			if(currentType == "text"){	
 			}
 			if(currentType == "rangeBar"){
-				uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].rangeBar.positionX/uiElements[i].rangeBar.widthDivider + uiElements[i].rangeBar.value, uiElements[i].rangeBar.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
+				uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].rangeBar.positionX + uiElements[i].rangeBar.value/uiElements[i].rangeBar.widthDivider, uiElements[i].rangeBar.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
 				uiElements[i].rangeBar.hover = uiElementEnter;
 			}
 			if(currentType == "textBox"){
