@@ -431,6 +431,8 @@ unsigned int Utilities::createQRCode(const char* path,glm::vec3 color){
 	glBindTexture(GL_TEXTURE_2D,qrTxtr);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, qr.size(), qr.size(), 0, GL_RGBA, GL_UNSIGNED_BYTE, &qrData[0]);
 	glGenerateMipmap(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE28);
+
 
 	return qrTxtr;
 }

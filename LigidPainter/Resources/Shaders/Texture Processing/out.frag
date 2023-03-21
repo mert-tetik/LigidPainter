@@ -102,7 +102,7 @@ vec3 getPaintedDiffuse(){
 
 
    if(texture(tdRenderedMaskTexture,TexCoords).r > 0.02)
-      return mix(diffuseClr, drawColor, texture(tdRenderedMaskTexture,TexCoords).r);
+      return mix(diffuseDrawMix, drawColor, texture(tdRenderedMaskTexture,TexCoords).r);
    
    return diffuseDrawMix;
 }

@@ -294,6 +294,7 @@ bool LigidPainter::run()
 	glset.genTextures(viewportBGImage);
 	glset.bindTexture(viewportBGImage);
 	txtr.getTexture("LigidPainter/Resources/Images/BGImage.jpg",1920,1080,true);
+	glActiveTexture(GL_TEXTURE28);
 
 
 
@@ -2064,6 +2065,7 @@ void LigidPainter::sndPanelDuplicateIcon(){
 			modelMaterials.push_back(mOut);
 		}
 	}
+	glActiveTexture(GL_TEXTURE28);
 }
 void LigidPainter::sndPanelFolderIcon(){
 	Utilities util;
@@ -2114,6 +2116,7 @@ void LigidPainter::viewportImageTextbox(){
 
 			viewportBGImage = texture;
 		}
+		glActiveTexture(GL_TEXTURE28);
 }
 void LigidPainter::sndPanelDownIcon(){
 	if(!txtrCreatingPanel.active){
@@ -2156,6 +2159,7 @@ void LigidPainter::sndPanelDownIcon(){
 				result.name = util.uniqueName(result.name,textureNames);
 
 				albedoTextures.push_back(result);
+				glActiveTexture(GL_TEXTURE28);
 			}
 			
 		}

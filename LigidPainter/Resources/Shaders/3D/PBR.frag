@@ -58,15 +58,6 @@ bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMir
       drawZ = texture(mirroredDepthTexture, uv.xy).b; 
    }
 
-
-   // vec3 direction;
-   // if(isMirrored){
-   //    direction = mirroredViewPos - Pos;
-   // }
-   // else{
-   //    direction = viewPos - Pos;
-   // }
-   // float dotProd = dot(normalize(direction),normalize(Normal));
    if(paintThrough == 1)
       return true;
  
@@ -102,8 +93,8 @@ vec3 getPaintedDiffuse(){
       diffuseDrawMix = mix(diffuseClr, texture((screenMaskTexture), screenPos.xy).rgb, intensity);
 
 
-  // if(texture(tdRenderedMaskTexture,TexCoords).r > 0.02)
-  //    return mix(diffuseClr, drawColor, texture(tdRenderedMaskTexture,TexCoords).r);
+  if(texture(tdRenderedMaskTexture,TexCoords).r > 0.02)
+      return mix(diffuseDrawMix, drawColor, texture(tdRenderedMaskTexture,TexCoords).r);
    
    return diffuseDrawMix;
 }

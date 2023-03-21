@@ -675,6 +675,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			gl.uniform1i(programs.normalGenProgram,"inputTexture",0);
 			float rangeBarVal = (UIElements[UInormalStrengthRangeBarElement].rangeBar.value + 0.11f) * 50.f;
 			gl.uniform1f(programs.normalGenProgram,"normalStrength",rangeBarVal);
+			glActiveTexture(GL_TEXTURE28);
 
 		}
 		else if(UIElements[UInoiseCheckBoxElement].checkBox.checked){
@@ -688,6 +689,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			gl.uniform1i(programs.noisyTextureProgram,"inputTexture",0);
 			float rangeBarVal = ((0.22f-(UIElements[UInoiseStrengthRangeBarElement].rangeBar.value + 0.11f))+0.05f)  * 50.f;
 			gl.uniform1f(programs.noisyTextureProgram,"value",rangeBarVal);
+			glActiveTexture(GL_TEXTURE28);
 		}
 
 		gl.drawArrays(renderVertices,0);

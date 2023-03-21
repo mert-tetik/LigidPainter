@@ -111,6 +111,7 @@ void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int sel
 			nodeScenes[currentNodeScene] = nodeScenesHistory[nodeScenesHistory.size()-1];
 			nodeScenesHistory.erase(nodeScenesHistory.end()-1);
 			nodeScenes[currentNodeScene].stateChanged = false;
+			glActiveTexture(GL_TEXTURE28);
 		}
 		
 		if(albedoTextures.size() && paintingPanelActive){
@@ -202,6 +203,7 @@ void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* 
 
 			//Delete the array after exporting
     		delete[] exportTxtr;
+			glActiveTexture(GL_TEXTURE28);
 		}
 	}
 }

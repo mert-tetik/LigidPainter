@@ -46,6 +46,7 @@ using namespace std;
             glBindTexture(GL_TEXTURE_2D,selectedTexture);
             glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 1.0f);
             meshes[chosenMaterialIndex].Draw(); 
+    		glActiveTexture(GL_TEXTURE28);
         }
 
         for(unsigned int i = 0; i < meshes.size(); i++){
@@ -86,6 +87,7 @@ using namespace std;
                     glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 0.3f);
                     meshes[i].Draw();
                 }
+        		glActiveTexture(GL_TEXTURE28);
             }
         }
 	    glBindBuffer(GL_ARRAY_BUFFER, mVBO);

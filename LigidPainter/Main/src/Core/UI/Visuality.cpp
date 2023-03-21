@@ -435,6 +435,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 								selectedAlbedoTextureIndex = i;
 								if(subselectedIndex == i)
 									subselectedIndex = 1000;
+								glActiveTexture(GL_TEXTURE28);
 							}
 							else{
 								sndpanelFolderPressed = true;
