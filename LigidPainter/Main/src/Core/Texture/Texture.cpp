@@ -184,6 +184,14 @@ void Texture::refreshScreenDrawingTexture() {
 	refreshScreenTxtr();
 
 	GlSet glset;
+
+	GLubyte* screenTexture3M = new GLubyte[(glfwGetVideoMode(glfwGetPrimaryMonitor())->width) * (glfwGetVideoMode(glfwGetPrimaryMonitor())->height * 4)];
+	std::fill_n(screenTexture3M, (glfwGetVideoMode(glfwGetPrimaryMonitor())->width) * (glfwGetVideoMode(glfwGetPrimaryMonitor())->height * 4), 0);
+	glset.activeTexture(GL_TEXTURE8);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, screenTexture3M);
+	glset.generateMipmap();
+	delete[] screenTexture3M;
+	
 	GLubyte* screenTextureX = new GLubyte[(glfwGetVideoMode(glfwGetPrimaryMonitor())->width) * (glfwGetVideoMode(glfwGetPrimaryMonitor())->height * 4)];
 	std::fill_n(screenTextureX, (glfwGetVideoMode(glfwGetPrimaryMonitor())->width) * (glfwGetVideoMode(glfwGetPrimaryMonitor())->height * 4), 0);
 	glset.activeTexture(GL_TEXTURE4);

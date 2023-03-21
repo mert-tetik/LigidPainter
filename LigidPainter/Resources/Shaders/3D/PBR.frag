@@ -41,7 +41,7 @@ uniform float mirrorOriginPosX;
 uniform float mirrorOriginPosY;
 uniform float mirrorOriginPosZ;
 
-uniform sampler2D previous3DMaskTxtrs;
+uniform sampler2D tdRenderedMaskTexture;
 
 float far = 10.0f;
 float near = 0.1f;
@@ -102,17 +102,13 @@ vec3 getPaintedDiffuse(){
       diffuseDrawMix = mix(diffuseClr, texture((screenMaskTexture), screenPos.xy).rgb, intensity);
 
 
+  // if(texture(tdRenderedMaskTexture,TexCoords).r > 0.02)
+  //    return mix(diffuseClr, drawColor, texture(tdRenderedMaskTexture,TexCoords).r);
    
-   // if(intensity > 0.01)
-   //    gl_FragDepth = 0.1;
-   // else{
-   //    gl_FragDepth = 0.9;
-   // }
-
    return diffuseDrawMix;
 }
 
-   const float PI = 3.14159265359;
+const float PI = 3.14159265359;
 
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
@@ -162,7 +158,6 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 
 vec3 getRealisticResult(vec3 paintedDiffuse){
    vec3 albedo = mix(paintedDiffuse,texture(subSelectedTexture,TexCoords).rgb,subSelectedImagePower);
-   albedo = mix(albedo,drawColor,texture(previous3DMaskTxtrs,TexCoords).r);
    float metallic = 0.0;
    float roughness = 0.3;
    float ao = 1;

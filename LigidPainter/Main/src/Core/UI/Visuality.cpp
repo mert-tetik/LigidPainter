@@ -410,11 +410,13 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 								glActiveTexture(GL_TEXTURE17);
 								subselectedIndex = i;
 								glset.bindTexture(albedoTextures[i].id);
+								glActiveTexture(GL_TEXTURE28);
 							}
 							else{
 								glActiveTexture(GL_TEXTURE17);
 								subselectedIndex = 10000;
 								glset.bindTexture(albedoTextures[i].id);
+								glActiveTexture(GL_TEXTURE28);
 							}	
 
 						}
@@ -541,11 +543,13 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 									glActiveTexture(GL_TEXTURE17);
 									subselectedIndex = i;
 									glset.bindTexture(albedoTextures[i].id);
+									glActiveTexture(GL_TEXTURE28);
 								}
 								else{
 									glActiveTexture(GL_TEXTURE17);
 									subselectedIndex = 10000;
 									glset.bindTexture(albedoTextures[i].id);
+									glActiveTexture(GL_TEXTURE28);
 								}					
 							}
 						}	

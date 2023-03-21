@@ -37,6 +37,7 @@ in vec4 projectedPos;
 out vec4 color;
 
 uniform sampler2D previous3DMaskTxtrs;
+uniform sampler2D tdRenderedMaskTexture;
 
 float far = 10.0;
 float near = 0.1;
@@ -81,21 +82,12 @@ vec3 getPaintedDiffuse(){
    float intensity = 0.0;
    float mirroredIntensity = 0.0;
 
-   //if(texture(previous3DMaskTxtrs,TexCoords).r > 0.05)
-      //return vec3(texture(previous3DMaskTxtrs,TexCoords).r);
-
    if(isPainted(screenPos,false)) {
       if(maskMode == 1)
          intensity = texture(screenMaskTexture, screenPos.xy).r;
       else{
-         if(normalPainting == 1){
-            if(texture(screenMaskTexture, screenPos.xy).r > 0.7f || texture(screenMaskTexture, screenPos.xy).g > 0.7f || texture(screenMaskTexture, screenPos.xy).b > 0.7f)
-               intensity = 1.0;
-         }
-         else{
-            if(texture(screenMaskTexture, screenPos.xy).r > 0.02f || texture(screenMaskTexture, screenPos.xy).g > 0.02f || texture(screenMaskTexture, screenPos.xy).b > 0.02f)
-               intensity = 1.0;
-         }
+         if(texture(screenMaskTexture, screenPos.xy).r > 0.02f || texture(screenMaskTexture, screenPos.xy).g > 0.02f || texture(screenMaskTexture, screenPos.xy).b > 0.02f)
+            intensity = 1.0;
       }
    }
 
@@ -108,6 +100,10 @@ vec3 getPaintedDiffuse(){
    else
       diffuseDrawMix = mix(diffuseClr, texture((screenMaskTexture), screenPos.xy).rgb, intensity);
 
+
+   if(texture(tdRenderedMaskTexture,TexCoords).r > 0.02)
+      return mix(diffuseClr, drawColor, texture(tdRenderedMaskTexture,TexCoords).r);
+   
    return diffuseDrawMix;
 }
 

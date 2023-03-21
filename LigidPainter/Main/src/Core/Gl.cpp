@@ -204,7 +204,7 @@ void GlSet::usePBRShader(unsigned int program,PBRShaderData data){
 	//Frag
 	uniform1i(program,"screenMaskTexture",data.screenMaskTexture);
 	uniform1i(program,"brdfLUT",15);
-	uniform1i(program,"previous3DMaskTxtrs",8);
+	uniform1i(program,"tdRenderedMaskTexture",8);
 	uniform1i(program,"prefilterMap",16);
 	uniform3fv(program,"drawColor",data.drawColor);
 	uniform1i(program,"depthTexture",data.depthTexture);
@@ -293,5 +293,6 @@ void GlSet::useOutShader(unsigned int program, OutShaderData data){
 	uniform1i(program,"uvMask",data.uvMask);
 	uniform1i(program,"interpretWithUvMask",data.interpretWithUvMask);
 	uniform3fv(program,"drawColor",data.drawColor);
+	uniform1i(program,"tdRenderedMaskTexture",8);
 	uniform3fv(program,"viewPos",data.viewPos);
 }

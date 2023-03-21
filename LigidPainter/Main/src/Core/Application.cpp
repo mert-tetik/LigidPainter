@@ -11,7 +11,7 @@
 //GL_TEXTURE5 = 1920x1080 Screen Texture
 //GL_TEXTURE6 = Icons
 //GL_TEXTURE7 = UV mask texture (used for painting over boundaries)
-//GL_TEXTURE8 = None
+//GL_TEXTURE8 = 3D Rendered mask texture
 //GL_TEXTURE9 = Depth texture
 //GL_TEXTURE10 = 1080x1080 Screen Texture
 //GL_TEXTURE12 = Modified mask texture
@@ -727,7 +727,7 @@ bool LigidPainter::run()
 			mouseDrawingPosY = mouseYpos;
 
 			//Paint
-			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view,mirrorParams,callbackData.cameraPos, callbackData.originPos);
+			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view,mirrorParams,callbackData.cameraPos, callbackData.originPos,UIElements[UImirrorXRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorYRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorZRangeBarElement].rangeBar.value*40.f);
 			paintRenderCounter++;
 			if(paintRenderCounter == 50000){
 				paintRender = true;

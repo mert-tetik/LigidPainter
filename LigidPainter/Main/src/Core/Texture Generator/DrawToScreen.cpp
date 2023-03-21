@@ -43,7 +43,7 @@ bool refreshTheScreenMask = false;
 
 unsigned int lastTxtr = 0;
 
-void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int removeThisParam2,int removeThisParam,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view,std::vector<MirrorParam> &mirrorParams,glm::vec3 cameraPos,glm::vec3 originPos) {
+void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int removeThisParam2,int removeThisParam,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view,std::vector<MirrorParam> &mirrorParams,glm::vec3 cameraPos,glm::vec3 originPos,float xMirrorPos,float yMirrorPos,float zMirrorPos) {
 
 	if(true){
 		holdLocations.clear();
@@ -155,7 +155,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 
 		if(refreshTheScreenMask){
 			glClear(GL_DEPTH_BUFFER_BIT);
-			refreshTheScreenMask = false;
+			refreshTheScreenMask = true;
 		}
 		
 		glBufferSubData(GL_ARRAY_BUFFER , 0 , paintingMaskCoords.size() * sizeof(float) , &paintingMaskCoords[0]);
@@ -180,6 +180,10 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 		if(mirrorParams.size()){
 			for (size_t i = 0; i < mirrorParams.size(); i++)
 			{
+				glDeleteTextures(1,&mirrorParams[i].renderID);
+			}
+			for (size_t i = 0; i < mirrorParams.size(); i++)
+			{
 				//std::cout << "i : "<< i << '\n';
 				//if(lastTxtr)
 				//glDeleteTextures(1,&lastTxtr);
@@ -190,6 +194,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				unsigned int FBOMr;
 				glset.genFramebuffers(FBOMr);
 				glset.bindFramebuffer(FBOMr);
+				//TODO : Delete these textures
 				unsigned int textureColorbuffer;
 				glset.genTextures(textureColorbuffer);
 				glset.bindTexture(textureColorbuffer);
@@ -217,14 +222,14 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				//Get texture
 				glset.uniform1i(programs.outProgram, "screenMaskTexture", 3);
 
-				glDeleteFramebuffers(1,&FBOMr);
+				glset.deleteFramebuffers(FBOMr);
 
 				//Finish
 				//Finish
 				//Update mirrored screen mask texture
 
 				glset.uniform1i(programs.outProgram, "tdMaskRendering", 1);
-				glset.uniform1i(programs.outProgram, "previous3DMaskTxtrs", 28);
+				glset.uniform1i(programs.outProgram, "previous3DMaskTxtrs", 29);
 				glActiveTexture(GL_TEXTURE9);
 				glset.bindTexture(mirrorParams[i].depthTexture);
 				glActiveTexture(GL_TEXTURE8);
@@ -242,14 +247,14 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				
-				glActiveTexture(GL_TEXTURE28);
+				glActiveTexture(GL_TEXTURE29);
 				glset.bindTexture(0);
 				if(i != 0){
 					glset.bindTexture(mirrorParams[i-1].renderID);
 				}
 
 				glm::mat4 mirroredView;
-				mirroredView = glm::lookAt(cameraPos * mirrorParams[i].pos, originPos * mirrorParams[i].pos, glm::vec3(0.0, 1.0, 0.0));
+				mirroredView = glm::lookAt((cameraPos-glm::vec3(xMirrorPos,yMirrorPos,zMirrorPos)) * mirrorParams[i].pos, (originPos-glm::vec3(xMirrorPos,yMirrorPos,zMirrorPos)) * mirrorParams[i].pos, glm::vec3(0.0, 1.0, 0.0));
 		
 				glset.uniformMatrix4fv(programs.outProgram,"view",mirroredView);
 
@@ -260,10 +265,13 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				glset.uniform1i(programs.outProgram, "tdMaskRendering", 0);
 				
 				glset.uniform1i(programs.outProgram, "screenMaskTexture", 4);
+
+				glset.deleteFramebuffers(FBOMr2);
 			}
 			glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 0);
 		}
 	}
+
 
 	glset.uniformMatrix4fv(programs.outProgram,"view",view);
 

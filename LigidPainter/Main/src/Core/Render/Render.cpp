@@ -106,6 +106,7 @@ void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int sel
 	//TODO : CTRL Z leads to an error after deleting a material
 	if ((glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS && doCtrlZ)) { //MAX 20
 		if(nodeScenesHistory.size() && !paintingPanelActive){
+			glActiveTexture(GL_TEXTURE0);
 			currentNodeScene = nodeScenesHistory[nodeScenesHistory.size()-1].arrayIndex;
 			nodeScenes[currentNodeScene] = nodeScenesHistory[nodeScenesHistory.size()-1];
 			nodeScenesHistory.erase(nodeScenesHistory.end()-1);
@@ -306,7 +307,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	if (renderData.paintingMode) renderDepthCounter++;
 	else renderDepthCounter = 0;
 	if (renderDepthCounter == 1) {//Get depth texture
-		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex, glfwGetVideoMode(glfwGetPrimaryMonitor())->width , glfwGetVideoMode(glfwGetPrimaryMonitor())->height,view,albedoTextures,selectedAlbedoTextureIndex,mirrorParams,depthTextureID,cameraPos, originPos);
+		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex, glfwGetVideoMode(glfwGetPrimaryMonitor())->width , glfwGetVideoMode(glfwGetPrimaryMonitor())->height,view,albedoTextures,selectedAlbedoTextureIndex,mirrorParams,depthTextureID,cameraPos, originPos,UIElements[UImirrorXRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorYRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorZRangeBarElement].rangeBar.value*40.f);
 	}
 	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || (glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
 	if (isRenderTexture || paintRender) {
@@ -335,9 +336,9 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
 	glUseProgram(renderPrograms.PBRProgram);
 	gls.uniform1i(renderPrograms.PBRProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
-	gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosX",UIElements[UImirrorXRangeBarElement].rangeBar.value * 10.f);
-	gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosY",UIElements[UImirrorYRangeBarElement].rangeBar.value * 10.f);
-	gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosZ",UIElements[UImirrorZRangeBarElement].rangeBar.value * 10.f);
+	gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosX",UIElements[UImirrorXRangeBarElement].rangeBar.value * 10.f + ((float)!UIElements[UImirrorXCheckBox].checkBox.checked*100000.f));
+	gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosY",UIElements[UImirrorYRangeBarElement].rangeBar.value * 10.f + ((float)!UIElements[UImirrorYCheckBox].checkBox.checked*100000.f));
+	gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosZ",UIElements[UImirrorZRangeBarElement].rangeBar.value * 10.f + ((float)! UIElements[UImirrorZCheckBox].checkBox.checked*100000.f));
 	
 	glUseProgram(renderPrograms.outProgram);
 	gls.uniform1i(renderPrograms.outProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
