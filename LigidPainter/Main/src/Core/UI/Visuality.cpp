@@ -755,8 +755,7 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 		textureSelectionPanel.active = false;
 	}
 
-	container(textureSelectionPanel.posX,textureSelectionPanel.posY,0.99999f,boxWidth,boxWidth,clrData.textureSelectionPanelColor,programs,circleTexture);
-	//box(boxWidth,boxWidth,textureSelectionPanel.posX,textureSelectionPanel.posY,"", clrData.textureSelectionPanelColor ,0,0,0,0.99999,10000,clrData.textureSelectionPanelColor,0);
+	container(textureSelectionPanel.posX,textureSelectionPanel.posY,0.95f,boxWidth,boxWidth,clrData.textureSelectionPanelColor,programs,circleTexture);
 
 	glUseProgram(programs.renderTheTextureProgram);
 	
@@ -807,7 +806,7 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 			glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,0);
 			if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2) - screenGapX,mouseYpos,buttonCoorSq,false)){
 				glUseProgram(programs.uiProgram);
-				box(0.1f,0.02f,textureSelectionPanel.posX-boxWidth+0.1f,textureSelectionPanel.posY+boxWidth*1.35f,albedoTextures[i].name, clrData.textureSelectionPanelColor ,0,true,0,0.8,10,clrData.textureSelectionPanelColor,0);
+				box(0.1f,0.02f,textureSelectionPanel.posX-boxWidth+0.1f,textureSelectionPanel.posY+boxWidth*1.1f,albedoTextures[i].name, glm::vec4(0),0,true,0,0.96,10,clrData.textureSelectionPanelColor,0);
 				glUseProgram(programs.renderTheTextureProgram);
 
 				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
