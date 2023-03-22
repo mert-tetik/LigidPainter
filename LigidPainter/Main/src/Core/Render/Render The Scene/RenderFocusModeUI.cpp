@@ -71,7 +71,7 @@ void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vec
 	{
 		std::string currentType = UIElements[i].type;
 				
-		if(UIElements[i].attachedToMainPanel == false){
+		if(!UIElements[i].attachedToMainPanel || UIElements[i].focusMode){
 			centerCoords =  renderData.panelLoc - 1.0f;
 		}
 		else{
@@ -91,7 +91,6 @@ void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vec
 
 		if(panelCompatibility && UIElements[i].focusMode){
 			float slideVal = 0.0f;
-			
 			const int uiIconStartingIndex = 30; 
 			glUseProgram(programs.uiProgram);
 
@@ -102,7 +101,7 @@ void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vec
 				ui.renderText(programs.uiProgram,UIElements[i].text.text, centerCoords - screenGapX + UIElements[i].text.positionX, UIElements[i].text.positionY+slideVal, UIElements[i].text.scale,colorData.textColor,0.99999f,false);
 			}
 			if(currentType == "rangeBar"){
-				ui.rangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY+slideVal, UIElements[i].rangeBar.value,1.f);
+				ui.rangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY+slideVal, UIElements[i].rangeBar.value,UIElements[i].rangeBar.widthDivider);
 			}
 			if(currentType == "textBox"){
 				ui.box(UIElements[i].textBox.width, UIElements[i].textBox.height,centerCoords - screenGapX + UIElements[i].textBox.position_x, UIElements[i].textBox.position_y+slideVal,UIElements[i].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements[i].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements[i].textBox.transitionMixVal); //Add mask texture button

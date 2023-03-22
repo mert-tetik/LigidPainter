@@ -533,7 +533,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	}
 
 	
-	
+	ui.box(0.22f, 0.07f, 0.85f, 0.97, "", glm::vec4(0), 0.075f, false, false, 1.0f, 10000, glm::vec4(0), 0);
+	ui.box(0.22f, 0.07f, 0.85f, -0.97, "", glm::vec4(0), 0.075f, false, false, 1.0f, 10000, glm::vec4(0), 0);
 
 
 	if (panelData.paintingPanelActive && renderData.panelLoc < 1.98f) {
@@ -585,7 +586,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 	bool usingUiProgram = false;
 	bool usingIconProgram = false;
-
 	
 	for (size_t i = 0; i < UIElements.size(); i++)
 	{
@@ -612,18 +612,10 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		if(panelCompatibility){
 			float slideVal = 0.0f;
 			
-			if(panelData.paintingPanelActive)
+			if(panelData.paintingPanelActive && !UIElements[i].focusMode)
 				slideVal = panelData.paintingPanelSlideVal;
 
-			const int uiIconStartingIndex = 30; 
-			if(i < uiIconStartingIndex && !usingUiProgram){
 				glUseProgram(programs.uiProgram);
-				usingUiProgram = true;
-			}
-			else if(i >= uiIconStartingIndex && !usingIconProgram){
-				glUseProgram(programs.iconsProgram);
-				usingIconProgram = true;
-			}
 
 			if(currentType == "button"){
 				ui.box(UIElements[i].button.width, UIElements[i].button.height, centerCoords - screenGapX + UIElements[i].button.positionX, UIElements[i].button.positionY+slideVal, UIElements[i].button.text, UIElements[i].button.color, UIElements[i].button.textRatio, false, false, UIElements[i].button.positionZ, UIElements[i].button.buttonCurveReduce, UIElements[i].button.colorHover, UIElements[i].button.transitionMixVal); //Add mask texture button
@@ -641,6 +633,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 				ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY+slideVal, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,icons.Circle); //jpg checkbox
 			}
 			if(currentType == "icon"){
+				glUseProgram(programs.iconsProgram);
 				ui.iconBox(UIElements[i].icon.width,UIElements[i].icon.height,centerCoords - screenGapX + UIElements[i].icon.positionX ,UIElements[i].icon.positionY+slideVal,UIElements[i].icon.positionZ,UIElements[i].icon.icon, UIElements[i].icon.mixVal , UIElements[i].icon.color , UIElements[i].icon.colorHover);
 			}
 		}

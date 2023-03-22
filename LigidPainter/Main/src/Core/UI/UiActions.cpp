@@ -100,8 +100,10 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			sndPanel.boundariesPressed = true;
 		}
 				//Check mouse hover
-		if (UIElements[UIaddBrushMaskTextureButton].button.hover)
+		if (UIElements[UIaddBrushMaskTextureIcon].icon.hover)
 			ligid.addMaskTextureButton();
+		if (UIElements[UIselectBrushMaskTextureIcon].icon.hover)
+			ligid.selectBrushMaskTexture();
 		if (UIElements[UIbakeButtonElement].button.hover)
 			ligid.bakeButton();
 		if (UIElements[UIUploadingModelPathTextBox].textBox.hover)

@@ -132,9 +132,9 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
      //---------------------------PAINTING PANEL---------------------------
 
-    UIElement addBrushMaskTextureButtonElement;
+    UIElement addBrushMaskTextureButtonElement;//Removed
     addBrushMaskTextureButtonElement.button.positionX = 0.0f;
-    addBrushMaskTextureButtonElement.button.positionY = 0.85f;
+    addBrushMaskTextureButtonElement.button.positionY = 1000000000000.f;
     addBrushMaskTextureButtonElement.button.positionZ = 0.9f;
     addBrushMaskTextureButtonElement.button.width = 0.1f;
     addBrushMaskTextureButtonElement.button.height = 0.04f;
@@ -797,5 +797,37 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     sphereIconElement.attachedToMainPanel = true;
 	sphereIconElement.type = "icon";
     UIElements.push_back(sphereIconElement);//38
+    
+    UIElement addBrushMaskTextureIconElement;
+    addBrushMaskTextureIconElement.icon.positionX = 0.1f;
+    addBrushMaskTextureIconElement.icon.positionY = 0.85f;
+    addBrushMaskTextureIconElement.icon.positionZ = 0.99f;
+    addBrushMaskTextureIconElement.icon.width = 0.015;
+    addBrushMaskTextureIconElement.icon.height = 0.03f;
+    addBrushMaskTextureIconElement.icon.color = colorData.iconColor;
+    addBrushMaskTextureIconElement.icon.colorHover = colorData.iconColorHover;
+    addBrushMaskTextureIconElement.icon.mixVal = 0.0f;
+    addBrushMaskTextureIconElement.icon.icon = icons.Plus;
+    addBrushMaskTextureIconElement.icon.clickable = true;
+    addBrushMaskTextureIconElement.panel = 3;
+    addBrushMaskTextureIconElement.attachedToMainPanel = true;
+	addBrushMaskTextureIconElement.type = "icon";
+    UIElements.push_back(addBrushMaskTextureIconElement);//38
+    
+    UIElement selectBrushMaskTextureIconElement;
+    selectBrushMaskTextureIconElement.icon.positionX = 0.05f;
+    selectBrushMaskTextureIconElement.icon.positionY = 0.85f;
+    selectBrushMaskTextureIconElement.icon.positionZ = 0.99f;
+    selectBrushMaskTextureIconElement.icon.width = 0.015f;
+    selectBrushMaskTextureIconElement.icon.height = 0.03;
+    selectBrushMaskTextureIconElement.icon.color = colorData.iconColor;
+    selectBrushMaskTextureIconElement.icon.colorHover = colorData.iconColorHover;
+    selectBrushMaskTextureIconElement.icon.mixVal = 0.0f;
+    selectBrushMaskTextureIconElement.icon.icon = icons.AddTexture;
+    selectBrushMaskTextureIconElement.icon.clickable = true;
+    selectBrushMaskTextureIconElement.panel = 3;
+    selectBrushMaskTextureIconElement.attachedToMainPanel = true;
+	selectBrushMaskTextureIconElement.type = "icon";
+    UIElements.push_back(selectBrushMaskTextureIconElement);//38
 	return UIElements;
 }

@@ -226,7 +226,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 					if(panelCompatibility){
 
 						float slideVal = 0;
-						if(panelData.paintingPanelActive)
+						if(panelData.paintingPanelActive && !uiElements[i].focusMode)
 							slideVal = panelData.paintingPanelSlideVal;
 
 					if(currentType == "button"){
@@ -334,7 +334,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 			}
 			if(uiElements[i].focusMode){
 				float slideVal = 0;
-				if(panelData.paintingPanelActive)
+				if(panelData.paintingPanelActive && !uiElements[i].focusMode)
 					slideVal = panelData.paintingPanelSlideVal;
 			if(currentType == "button"){
 				uiElementEnter = ui.isMouseOnButton(window, uiElements[i].button.width + 0.02f, uiElements[i].button.height, centerCoords - screenGapX + uiElements[i].button.positionX, uiElements[i].button.positionY + slideVal, mouseXPos, mouseYPos, movePanel);

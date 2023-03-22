@@ -92,8 +92,11 @@ vec3 getPaintedDiffuse(){
    else
       diffuseDrawMix = mix(diffuseClr, texture((screenMaskTexture), screenPos.xy).rgb, intensity);
 
-
-  if(texture(tdRenderedMaskTexture,TexCoords).r > 0.02)
+   if(maskMode != 1){
+      if(texture(tdRenderedMaskTexture,TexCoords).r > 0.02 || texture(tdRenderedMaskTexture,TexCoords).g > 0.02 || texture(tdRenderedMaskTexture,TexCoords).b > 0.02)
+         return (texture(tdRenderedMaskTexture,TexCoords).rgb);
+   } 
+   else
       return mix(diffuseDrawMix, drawColor, texture(tdRenderedMaskTexture,TexCoords).r);
    
    return diffuseDrawMix;
@@ -244,12 +247,14 @@ vec3 getRealisticResult(vec3 paintedDiffuse){
 
    result = pow(result,vec3(1.0/2.2));
    
-   if(Pos.x > mirrorOriginPosX-0.005 && Pos.x < mirrorOriginPosX+0.005)
-      return vec3(1,0,0);
-   if(Pos.y > mirrorOriginPosY-0.005 && Pos.y < mirrorOriginPosY+0.005)
-      return vec3(1,0,0);
-   if(Pos.z > mirrorOriginPosZ-0.005 && Pos.z < mirrorOriginPosZ+0.005)
-      return vec3(1,0,0);
+   const float mirrorLineWidth = 0.003;
+
+   if(Pos.x > mirrorOriginPosX-mirrorLineWidth && Pos.x < mirrorOriginPosX+mirrorLineWidth)
+      return vec3(0.043,0.635,0.823);
+   if(Pos.y > mirrorOriginPosY-mirrorLineWidth && Pos.y < mirrorOriginPosY+mirrorLineWidth)
+      return vec3(0.043,0.635,0.823);
+   if(Pos.z > mirrorOriginPosZ-mirrorLineWidth && Pos.z < mirrorOriginPosZ+mirrorLineWidth)
+      return vec3(0.043,0.635,0.823);
    return result;
 }
 

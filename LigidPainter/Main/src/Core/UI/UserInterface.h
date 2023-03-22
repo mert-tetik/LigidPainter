@@ -69,6 +69,8 @@
 #define UIloadSphereModelButton 60
 #define UIplaneIcon 61
 #define UIsphereIcon 62
+#define UIaddBrushMaskTextureIcon 63
+#define UIselectBrushMaskTextureIcon 64
 
 struct ColorData //LigidPainter color palette
 {

@@ -184,6 +184,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 			}
 			for (size_t i = 0; i < mirrorParams.size(); i++)
 			{
+				glClearColor(0,0,0,1);
 				//std::cout << "i : "<< i << '\n';
 				//if(lastTxtr)
 				//glDeleteTextures(1,&lastTxtr);

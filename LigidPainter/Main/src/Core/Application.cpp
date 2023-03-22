@@ -206,6 +206,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     if(action == 1 && button == 1)
 		firstClickR = true;
 }
+	bool brushMaskTextureSelectionPanelActive = false;
 
 bool LigidPainter::run()
 {
@@ -474,6 +475,7 @@ bool LigidPainter::run()
 
 	subSelectedImagePowerRangeBar(0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 	
+
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		whileCounter++;
@@ -507,7 +509,46 @@ bool LigidPainter::run()
 		
 		double currentTime = glfwGetTime();
 		
-		
+		if(brushMaskTextureSelectionPanelActive){
+			if(textureSelectionPanel.textureClicked){
+				//TODOA
+				brushMaskTextureSelectionPanelActive = false;
+				textureSelectionPanel.active = false;
+				
+				int txtrRes = 256;
+				for (size_t i = 0; i < chosenTextureResIndex; i++)
+				{
+					txtrRes*=2;
+				}
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D,albedoTextures[textureSelectionPanel.selectedIndex].id);
+
+				GLubyte* txtrData = txtr.getTextureFromProgram(GL_TEXTURE0,txtrRes,txtrRes,4);
+
+				glActiveTexture(GL_TEXTURE0);
+				unsigned int texture;
+				glGenTextures(1,&texture);
+				glBindTexture(GL_TEXTURE_2D,texture);
+				glset.texImage(txtrData,txtrRes,txtrRes,GL_RGBA);
+				glset.generateMipmap();
+
+				aTexture atxtr = albedoTextures[selectedAlbedoTextureIndex];
+				Utilities util;
+
+				atxtr.name = atxtr.name;
+				atxtr.id = texture;
+
+				if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked)
+					brushMaskTextures.maskTextures.push_back(atxtr);
+				else if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked)
+					brushMaskTextures.colorTextures.push_back(atxtr);
+				else if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked)
+					brushMaskTextures.normalTextures.push_back(atxtr);
+				
+				textureSelectionPanel.textureClicked = false;
+			}
+		}
+
 		if(countTheClicks){
 			if (currentTime - lastTime >= 0.02) {
 				clickCounter++;
@@ -1435,6 +1476,12 @@ void LigidPainter::subSelectedImagePowerRangeBar(double xOffset, int width, int 
 	UIElements[UIsubSelectedImagePowerRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UIsubSelectedImagePowerRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
 	glUseProgram(programs.PBRProgram);
 	glset.uniform1f(programs.PBRProgram,"subSelectedImagePower",(UIElements[UIsubSelectedImagePowerRangeBarElement].rangeBar.value+0.11f)*4.54545454545);
+}
+void LigidPainter::selectBrushMaskTexture(){
+	textureSelectionPanel.active = true;
+	textureSelectionPanel.posX = 0.65f;
+	textureSelectionPanel.posY = 0.65f;
+	brushMaskTextureSelectionPanelActive = true;
 }
 void LigidPainter::generateTextureButton(){
 	Utilities util;
