@@ -150,7 +150,7 @@ int sndpanelFolderCounter = 0;
 
 bool sndpanelSliderPressed = false;
 int subselectedIndex = 10000;
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float removeThisParam, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool &firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushTexture &brushMaskTextures,bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float removeThisParam, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool &firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushTexture &brushMaskTextures,bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory,int brushMaskTexturesState,int chosenTextureResIndex) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -320,10 +320,37 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 		}
 		if(albedoTextures.size()){
 			if(albedoTextures[selectedAlbedoTextureIndex].isTexture && sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE && maskPanelEnter){
-				aTexture brushMaskTxtr;
-				brushMaskTxtr.id = albedoTextures[selectedAlbedoTextureIndex].id;
-				brushMaskTxtr.name = albedoTextures[selectedAlbedoTextureIndex].name;
-				brushMaskTextures.maskTextures.push_back(brushMaskTxtr);
+				
+				int txtrRes = 256;
+				for (size_t i = 0; i < chosenTextureResIndex; i++)
+				{
+					txtrRes*=2;
+				}
+
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D,albedoTextures[selectedAlbedoTextureIndex].id);
+				Texture txtr;
+				GLubyte* txtrData = txtr.getTextureFromProgram(GL_TEXTURE0,txtrRes,txtrRes,4);
+
+				glActiveTexture(GL_TEXTURE0);
+				unsigned int texture;
+				glGenTextures(1,&texture);
+				glBindTexture(GL_TEXTURE_2D,texture);
+				glset.texImage(txtrData,txtrRes,txtrRes,GL_RGBA);
+				glset.generateMipmap();
+
+				aTexture atxtr = albedoTextures[selectedAlbedoTextureIndex];
+				Utilities util;
+
+				atxtr.name = atxtr.name;
+				atxtr.id = texture;
+
+				if(brushMaskTexturesState == 0)
+					brushMaskTextures.maskTextures.push_back(atxtr);
+				if(brushMaskTexturesState == 1)
+					brushMaskTextures.colorTextures.push_back(atxtr);
+				if(brushMaskTexturesState == 2)
+					brushMaskTextures.normalTextures.push_back(atxtr);
 			}
 			if(albedoTextures[selectedAlbedoTextureIndex].isTexture && sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE && nodePanel.panelHover){
 				Node imageNode;

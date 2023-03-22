@@ -410,7 +410,15 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 		
 		ui.panel(renderData.panelLoc-  screenGapX -1.0f , icons,panelData);
-		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal,firstClick,coloringPanel,txtrCreatingPanel,anyTextureNameActive,textureText,sndPanel.activeFolderIndex,nodePanel,appNodes,sndPanel,brushMaskTextures,maskPanelEnter,yOffset,nodeScenesHistory);
+		int brushMaskTexturesState;
+		if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked)
+			brushMaskTexturesState = 0;
+		else if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked)
+			brushMaskTexturesState = 1;
+		else if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked)
+			brushMaskTexturesState = 2;
+		
+		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal,firstClick,coloringPanel,txtrCreatingPanel,anyTextureNameActive,textureText,sndPanel.activeFolderIndex,nodePanel,appNodes,sndPanel,brushMaskTextures,maskPanelEnter,yOffset,nodeScenesHistory,brushMaskTexturesState,chosenTextureResIndex);
 
 
 		ui.renderAlert(alertMessage,alertDuration,programs.uiProgram,alertState);		
