@@ -452,7 +452,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 						if(glfwGetMouseButton(window,1) == GLFW_PRESS)
 							albedoTextures[i].rightClicked = true;
 						if(!albedoTextures[i].isTexture && sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE){
-							if(selectedAlbedoTextureIndex != i)
+							if(selectedAlbedoTextureIndex != i && !albedoTextures[selectedAlbedoTextureIndex].isTrashFolder)
 								albedoTextures[selectedAlbedoTextureIndex].folderIndex = i;
 						}
 						if(firstClick && !albedoTextures[i].rightClicked && glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE){
