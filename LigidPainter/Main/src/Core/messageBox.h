@@ -35,7 +35,7 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
 
 
 
-	ui.container(+0.f, 0.f,0.899f,0.25f, 0.22f,backColorVec,programs,icons.Circle);
+	ui.container(+0.f, 0.f,0.899f,0.25f, 0.22f,backColorVec,programs,icons.Circle,glm::vec4(0),0);
 	glUseProgram(programs.uiProgram);
 				
 	//Buttons

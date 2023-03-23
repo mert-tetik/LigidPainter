@@ -99,8 +99,8 @@ void UserInterface::panel(float panelLoc, Icons icons,PanelData &panelData) {
 	box(cornerWidth, panelHeigth - cornerWidth, panelLoc + cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 	
 	glUseProgram(uiPrograms.iconsProgram);
-	circle(panelLoc + cornerWidth - 0.002f, panelHeigth - cornerWidth + 0.002f,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
-	circle(panelLoc + cornerWidth,-panelHeigth + cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+	circle(panelLoc + cornerWidth - 0.002f, panelHeigth - cornerWidth + 0.002f,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor,glm::vec4(0),0);
+	circle(panelLoc + cornerWidth,-panelHeigth + cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor,glm::vec4(0),0);
 
 	Utilities util;
 	panelData.modelPanelMixval = util.transitionEffect(panelData.modelPanelActive,panelData.modelPanelMixval,0.1f);
@@ -245,8 +245,8 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	box(cornerWidth, panelHeigth - cornerWidth, panelLoc - cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 
 	glUseProgram(programs.iconsProgram);
-	circle(panelLoc - cornerWidth + 0.002f,panelHeigth - cornerWidth + 0.002f,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
-	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor);
+	circle(panelLoc - cornerWidth + 0.002f,panelHeigth - cornerWidth + 0.002f,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor,glm::vec4(0),0);
+	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor,glm::vec4(0),0);
 	
 	Utilities util;
 	sndpnl.texturePanelButtonMixval = util.transitionEffect(1-sndpnl.state,sndpnl.texturePanelButtonMixval,0.1f);
@@ -782,7 +782,7 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 		textureSelectionPanel.active = false;
 	}
 
-	container(textureSelectionPanel.posX,textureSelectionPanel.posY,0.95f,boxWidth,boxWidth,clrData.textureSelectionPanelColor,programs,circleTexture);
+	container(textureSelectionPanel.posX,textureSelectionPanel.posY,0.95f,boxWidth,boxWidth,clrData.textureSelectionPanelColor,programs,circleTexture,glm::vec4(0),0);
 
 	glUseProgram(programs.renderTheTextureProgram);
 	
@@ -947,8 +947,8 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 	glBindVertexArray(uiObjects.VAO);
 }
 
-void UserInterface::circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture, glm::vec4 color){
-	iconBox(width,height,positionX,positionY,positionZ,circleIcon,0,color,glm::vec4(0));
+void UserInterface::circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture, glm::vec4 color,glm::vec4 transitionColor, float mixVal){
+	iconBox(width,height,positionX,positionY,positionZ,circleIcon,mixVal,color,transitionColor);
 }
 
 void UserInterface::colorBox(float position_x, float position_y,float valueX, float valueY,Icons icons) {
@@ -1234,20 +1234,20 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 
 
 
-void UserInterface::container(float positionX,float positionY,float positionZ,float width, float height,glm::vec4 color,Programs &programs,unsigned int circleTexture){
+void UserInterface::container(float positionX,float positionY,float positionZ,float width, float height,glm::vec4 color,Programs &programs,unsigned int circleTexture,glm::vec4 transitionColor,float mixVal){
 	glUseProgram(programs.uiProgram);
-	box(width,height,positionX,positionY,"", color,0,0,0,positionZ,10000,glm::vec4(0),0);
+	box(width,height,positionX,positionY,"", color,0,0,0,positionZ,10000,transitionColor,mixVal);
 	
-	box(0.03f,height,positionX - width + 0.006f,positionY,"", color,0,0,0,positionZ,10000,glm::vec4(0),0); //Left
-	box(0.03f,height,positionX + width - 0.006f,positionY,"", color,0,0,0,positionZ,10000,glm::vec4(0),0); //Right
-	box(width,0.06f,positionX,positionY + height - 0.012 ,"", color,0,0,0,positionZ,10000,glm::vec4(0),0); //Top
-	box(width,0.06f,positionX,positionY - height + 0.012 ,"", color,0,0,0,positionZ,10000,glm::vec4(0),0); //Bottom
+	box(0.03f,height,positionX - width + 0.006f,positionY,"", color,0,0,0,positionZ,10000,transitionColor,mixVal); //Left
+	box(0.03f,height,positionX + width - 0.006f,positionY,"", color,0,0,0,positionZ,10000,transitionColor,mixVal); //Right
+	box(width,0.06f,positionX,positionY + height - 0.012 ,"", color,0,0,0,positionZ,10000,transitionColor,mixVal); //Top
+	box(width,0.06f,positionX,positionY - height + 0.012 ,"", color,0,0,0,positionZ,10000,transitionColor,mixVal); //Bottom
 
 	glUseProgram(programs.iconsProgram);
-	circle(positionX - width,positionY + height,positionZ,0.03f,0.06f,circleTexture,color);//Left top
-	circle(positionX - width,positionY - height,positionZ,0.03f,0.06f,circleTexture,color);//Left bot
-	circle(positionX + width,positionY + height,positionZ,0.03f,0.06f,circleTexture,color);//Right top
-	circle(positionX + width,positionY - height,positionZ,0.03f,0.06f,circleTexture,color);//Right bot
+	circle(positionX - width,positionY + height,positionZ,0.03f,0.06f,circleTexture,color,transitionColor,mixVal);//Left top
+	circle(positionX - width,positionY - height,positionZ,0.03f,0.06f,circleTexture,color,transitionColor,mixVal);//Left bot
+	circle(positionX + width,positionY + height,positionZ,0.03f,0.06f,circleTexture,color,transitionColor,mixVal);//Right top
+	circle(positionX + width,positionY - height,positionZ,0.03f,0.06f,circleTexture,color,transitionColor,mixVal);//Right bot
 }
 void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,Icons icons,std::vector<NodeScene> nodeScenes,int selectedNodeScene){
 	
@@ -1321,8 +1321,8 @@ void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Pr
 	if(nodeScenes.size())
 		iconBox(0.015f,0.03f,(nodePanelRight + nodePanelLeft)/2 - 0.025,nodePanelTop+0.04f,0.7f,icons.Material,0,colorData.iconColor,colorData.iconColor);
 	
-	circle(nodePanelLeft+0.001f,nodePanelTop-0.001f,nodePanelZ,0.05f,0.1f,icons.Circle,colorData.nodePanelColorSnd); //Left
-	circle(nodePanelRight-0.001f,nodePanelTop-0.001f,nodePanelZ,0.05f,0.1f,icons.Circle,colorData.nodePanelColorSnd); //Right
+	circle(nodePanelLeft+0.001f,nodePanelTop-0.001f,nodePanelZ,0.05f,0.1f,icons.Circle,colorData.nodePanelColorSnd,glm::vec4(0),0); //Left
+	circle(nodePanelRight-0.001f,nodePanelTop-0.001f,nodePanelZ,0.05f,0.1f,icons.Circle,colorData.nodePanelColorSnd,glm::vec4(0),0); //Right
 	
 	glUseProgram(programs.uiProgram);
 }
@@ -1494,7 +1494,7 @@ bool UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 
 	bool brushChanged = false;
 
-	container(coloringPanel.panelPosX,coloringPanel.panelPosY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle);
+	container(coloringPanel.panelPosX,coloringPanel.panelPosY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle,glm::vec4(0),0);
 	
 	coloringPanel.panelHover = isMouseOnButton(window,panelWidth+0.03f,panelHeigth+0.06f,coloringPanel.panelPosX - screenGapX,coloringPanel.panelPosY,mouseXpos,mouseYpos,false);
 	
@@ -1653,7 +1653,7 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 	const float panelWidth = 0.15f;
 	const float panelHeigth = 0.12f;
 
-	container(txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle);
+	container(txtrCreatingPanel.panelPosX,txtrCreatingPanel.panelPosY,depth,panelWidth,panelHeigth,colorData.panelColor,programs,icons.Circle,glm::vec4(0),0);
 	txtrCreatingPanel.panelHover = isMouseOnButton(window,panelWidth+0.03f,panelHeigth+0.06f,txtrCreatingPanel.panelPosX-screenGapX,txtrCreatingPanel.panelPosY,mouseXpos,mouseYpos,false);
 	
 	if(!txtrCreatingPanel.panelHover && !coloringPanel.panelHover && !coloringPanel.active){ 
@@ -1993,7 +1993,7 @@ bool UserInterface::listBox(float posX,float posY,float posZ,const char* title,f
 	bool stateChanged = false;
 	if(active){
 		const float contHeight = list.size()/27.5;
-		container(posX,posY-contHeight,posZ,width,contHeight,glm::vec4(0.2),uiPrograms,icons.Circle);
+		container(posX,posY-contHeight,posZ,width,contHeight,glm::vec4(0.2),uiPrograms,icons.Circle,glm::vec4(0),0);
 		for (size_t i = 1; i <= list.size(); i++)
 		{
 			glUseProgram(uiPrograms.uiProgram);
@@ -2036,8 +2036,8 @@ bool UserInterface::listBox(float posX,float posY,float posZ,const char* title,f
 	box(width, 0.04f, posX,posY, title, glm::vec4(0.1,0.1,0.1,0.2), width, false, false, posZ+0.0001f, 10000, glm::vec4(0.1,0.1,0.1,0.2), 0);
 	
 	glUseProgram(uiPrograms.iconsProgram);
-	circle(posX-width,posY,posZ+0.0001f,0.025,0.05,icons.Circle,glm::vec4(0.1,0.1,0.1,0.2));
-	circle(posX+width,posY,posZ+0.0001f,0.025,0.05,icons.Circle,glm::vec4(0.1,0.1,0.1,0.2));
+	circle(posX-width,posY,posZ+0.0001f,0.025,0.05,icons.Circle,glm::vec4(0.1,0.1,0.1,0.2),glm::vec4(0),0);
+	circle(posX+width,posY,posZ+0.0001f,0.025,0.05,icons.Circle,glm::vec4(0.1,0.1,0.1,0.2),glm::vec4(0),0);
 	
 	glUseProgram(uiPrograms.uiProgram);
 

@@ -277,7 +277,7 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::v
 glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
 ,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
 ,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
-,glm::vec3 cameraPos, glm::vec3 originPos) {
+,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen) {
 	
 
 	
@@ -300,110 +300,163 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	glfwGetCursorPos(renderData.window, &mouseXpos, &mouseYpos);
 	//-------------------------
 
-	glActiveTexture(GL_TEXTURE9);
-	glBindTexture(GL_TEXTURE_2D,depthTextureID);
-	glActiveTexture(GL_TEXTURE28);
+	if(glfwGetKey(renderData.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		startScreen = false;
 
-	//Process Textures
-	//Render depth once painting started
-	if (renderData.paintingMode) renderDepthCounter++;
-	else renderDepthCounter = 0;
-	if (renderDepthCounter == 1) {//Get depth texture
-		getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex, glfwGetVideoMode(glfwGetPrimaryMonitor())->width , glfwGetVideoMode(glfwGetPrimaryMonitor())->height,view,albedoTextures,selectedAlbedoTextureIndex,mirrorParams,depthTextureID,cameraPos, originPos,UIElements[UImirrorXRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorYRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorZRangeBarElement].rangeBar.value*40.f);
-	}
-	bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || (glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
-	if (isRenderTexture || paintRender) {
-		renderTextures(FBOScreen,screenSizeX, screenSizeY,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,currentMaterialIndex,renderPrograms,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,modelMaterials,view,selectedAlbedoTextureIndex,chosenTextureResIndex);
-	}
-	if(exportData.exportImage){
-    	exportTexture(UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,exportData.fileName,albedoTextures,chosenTextureResIndex);
-	}
-	//---------------------------
+	if(!startScreen){
+		glActiveTexture(GL_TEXTURE9);
+		glBindTexture(GL_TEXTURE_2D,depthTextureID);
+		glActiveTexture(GL_TEXTURE28);
 
+		//Process Textures
+		//Render depth once painting started
+		if (renderData.paintingMode) renderDepthCounter++;
+		else renderDepthCounter = 0;
+		if (renderDepthCounter == 1) {//Get depth texture
+			getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex, glfwGetVideoMode(glfwGetPrimaryMonitor())->width , glfwGetVideoMode(glfwGetPrimaryMonitor())->height,view,albedoTextures,selectedAlbedoTextureIndex,mirrorParams,depthTextureID,cameraPos, originPos,UIElements[UImirrorXRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorYRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorZRangeBarElement].rangeBar.value*40.f);
+		}
+		bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || (glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
+		if (isRenderTexture || paintRender) {
+			renderTextures(FBOScreen,screenSizeX, screenSizeY,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,currentMaterialIndex,renderPrograms,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,modelMaterials,view,selectedAlbedoTextureIndex,chosenTextureResIndex);
+		}
+		if(exportData.exportImage){
+    		exportTexture(UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,exportData.fileName,albedoTextures,chosenTextureResIndex);
+		}
+		//---------------------------
+
+
+		//Background (skybox or an image)
+		glActiveTexture(GL_TEXTURE13);
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
+		glActiveTexture(GL_TEXTURE16);
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered);
+		if(UIElements[UIimageCheckBoxElement].checkBox.checked)
+			renderBackgroundImage(renderPrograms.renderTheTextureProgram, viewportBGImage);
+		if(UIElements[UIskyboxCheckBox].checkBox.checked)
+			renderSkyBox(skyBoxShaderData,renderPrograms,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
+		//---------------------------------	
+
+
+		//3D-------------------------
+		glActiveTexture(GL_TEXTURE13);
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
+		glUseProgram(renderPrograms.PBRProgram);
+		gls.uniform1i(renderPrograms.PBRProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
+		gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosX",UIElements[UImirrorXRangeBarElement].rangeBar.value * 10.f + ((float)!UIElements[UImirrorXCheckBox].checkBox.checked*100000.f));
+		gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosY",UIElements[UImirrorYRangeBarElement].rangeBar.value * 10.f + ((float)!UIElements[UImirrorYCheckBox].checkBox.checked*100000.f));
+		gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosZ",UIElements[UImirrorZRangeBarElement].rangeBar.value * 10.f + ((float)! UIElements[UImirrorZCheckBox].checkBox.checked*100000.f));
+
+		glUseProgram(renderPrograms.outProgram);
+		gls.uniform1i(renderPrograms.outProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
 	
-	//Background (skybox or an image)
-	glActiveTexture(GL_TEXTURE13);
-	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
-	glActiveTexture(GL_TEXTURE16);
-	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered);
-	if(UIElements[UIimageCheckBoxElement].checkBox.checked)
-		renderBackgroundImage(renderPrograms.renderTheTextureProgram, viewportBGImage);
-	if(UIElements[UIskyboxCheckBox].checkBox.checked)
-		renderSkyBox(skyBoxShaderData,renderPrograms,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
-	//---------------------------------	
-	
+		renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects);
 
-	//3D-------------------------
-	glActiveTexture(GL_TEXTURE13);
-	glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
-	glUseProgram(renderPrograms.PBRProgram);
-	gls.uniform1i(renderPrograms.PBRProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
-	gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosX",UIElements[UImirrorXRangeBarElement].rangeBar.value * 10.f + ((float)!UIElements[UImirrorXCheckBox].checkBox.checked*100000.f));
-	gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosY",UIElements[UImirrorYRangeBarElement].rangeBar.value * 10.f + ((float)!UIElements[UImirrorYCheckBox].checkBox.checked*100000.f));
-	gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosZ",UIElements[UImirrorZRangeBarElement].rangeBar.value * 10.f + ((float)! UIElements[UImirrorZCheckBox].checkBox.checked*100000.f));
-	
-	glUseProgram(renderPrograms.outProgram);
-	gls.uniform1i(renderPrograms.outProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
- 
-	renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects);
-
-	renderAxisPointer(axisPointerShaderData,renderPrograms);
-	//-------------------------
-	
-
-	//UI
-	glClear(GL_DEPTH_BUFFER_BIT);
-	if(renderData.doPainting)
-		renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, drawColor,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,renderPrograms);
-	if(glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_RELEASE)
-	if(!panelData.paintingPanelActive){
-		UIElements[UIfocusModeCheckBox].checkBox.checked = false;
-	}
-	if(!UIElements[UIfocusModeCheckBox].checkBox.checked){
-		uiOut = renderUi(panelData, renderData, FBOScreen,icons
-			,exportData.fileName, maskPanelSliderValue,mouseXpos,mouseYpos,screenSizeX,screenSizeY,
-			brushBlurVal,outShaderData,model,albedoTextures,renderPrograms,currentMaterialIndex,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,
-			glfwGetVideoMode(glfwGetPrimaryMonitor())->height, saturationValShaderData,currentBrushMaskTexture,materialsPanelSlideValue,UIElements,
-			colorPicker,textureDisplayer,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,
-			nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
-			chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
-			,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex);
-	} 
-	else{
-		renderFocusModeUI(renderPrograms,renderData,UIElements,icons,coloringPanel,saturationValShaderData,mouseXpos,mouseYpos,firstClick,FBOScreen,colorPicker,
-		screenHoverPixel,drawColor,outShaderData);
-	}
-	//-------------------------
+		renderAxisPointer(axisPointerShaderData,renderPrograms);
+		//-------------------------
 
 
-	//If nodes are changed send the current nodescene data to nodescene history array
-	if(nodeScenes[selectedNodeScene].stateChanged && !lastMaterialStateChanged && lastNodeScene.nodes.size())
-    	nodeScenesHistory.push_back(lastNodeScene);
-	lastMaterialStateChanged = nodeScenes[selectedNodeScene].stateChanged;
-	lastNodeScene = nodeScenes[selectedNodeScene];
-	//----------------------
+		//UI
+		glClear(GL_DEPTH_BUFFER_BIT);
+		if(renderData.doPainting)
+			renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, drawColor,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,renderPrograms);
+		if(glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_RELEASE)
+		if(!panelData.paintingPanelActive){
+			UIElements[UIfocusModeCheckBox].checkBox.checked = false;
+		}
+		if(!UIElements[UIfocusModeCheckBox].checkBox.checked){
+			uiOut = renderUi(panelData, renderData, FBOScreen,icons
+				,exportData.fileName, maskPanelSliderValue,mouseXpos,mouseYpos,screenSizeX,screenSizeY,
+				brushBlurVal,outShaderData,model,albedoTextures,renderPrograms,currentMaterialIndex,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,
+				glfwGetVideoMode(glfwGetPrimaryMonitor())->height, saturationValShaderData,currentBrushMaskTexture,materialsPanelSlideValue,UIElements,
+				colorPicker,textureDisplayer,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,
+				nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
+				chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
+				,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex);
+		} 
+		else{
+			renderFocusModeUI(renderPrograms,renderData,UIElements,icons,coloringPanel,saturationValShaderData,mouseXpos,mouseYpos,firstClick,FBOScreen,colorPicker,
+			screenHoverPixel,drawColor,outShaderData);
+		}
+		//-------------------------
 
 
-	if(model.meshes.size() != 0){
-		if(nodeScenes[selectedNodeScene].stateChanged || newModelAdded){
-			modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex);
-			newModelAdded = false;
+		//If nodes are changed send the current nodescene data to nodescene history array
+		if(nodeScenes[selectedNodeScene].stateChanged && !lastMaterialStateChanged && lastNodeScene.nodes.size())
+    		nodeScenesHistory.push_back(lastNodeScene);
+		lastMaterialStateChanged = nodeScenes[selectedNodeScene].stateChanged;
+		lastNodeScene = nodeScenes[selectedNodeScene];
+		//----------------------
+
+
+		if(model.meshes.size() != 0){
+			if(nodeScenes[selectedNodeScene].stateChanged || newModelAdded){
+				modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex);
+				newModelAdded = false;
+			}
+		}
+		nodeScenes[selectedNodeScene].stateChanged = false;
+
+
+		colorPicker.updatePickerVal = colorPicker.saturationValueValChanged && !colorPicker.hexValTextBoxGotInput; 
+		if (colorPicker.updatePickerVal) { //Get value of color box
+			colorPicker.pickerValue = getColorPickerValue(FBOScreen, colorPicker ,screenSizeX, screenSizeY,renderPrograms,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,saturationValShaderData);
+		}
+
+		//CTRLZ
+		ctrlZCheck(renderData.window,albedoTextures,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,nodeScenesHistory,panelData.paintingPanelActive);
+
+
+		if(colorPicker.dropperActive || colorPicker.saturationValueBoxHover || colorPicker.hueValueBarHover || coloringPanel.colorBoxHover || coloringPanel.hueBarHover){
+			screenHoverPixel = getScreenHoverPixel(mouseXpos,mouseYpos,screenSizeY);
 		}
 	}
-	nodeScenes[selectedNodeScene].stateChanged = false;
+	else{
+		gls.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+		glActiveTexture(GL_TEXTURE13);
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
+		glActiveTexture(GL_TEXTURE16);
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered);
+		renderSkyBox(skyBoxShaderData,renderPrograms,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
 
-	colorPicker.updatePickerVal = colorPicker.saturationValueValChanged && !colorPicker.hexValTextBoxGotInput; 
-	if (colorPicker.updatePickerVal) { //Get value of color box
-		colorPicker.pickerValue = getColorPickerValue(FBOScreen, colorPicker ,screenSizeX, screenSizeY,renderPrograms,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,saturationValShaderData);
-	}
+		UserInterface ui;
+		glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+		glUseProgram(renderPrograms.uiProgram);
+		gls.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
+		glUseProgram(renderPrograms.iconsProgram);
+		gls.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
+	
+		float new2DProjectMixVal = 0.f;
+		if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,-0.4f,0.0f,mouseXpos,mouseYpos,false)){
+			new2DProjectMixVal = 1.f;
+		}
+		ui.container(-0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,new2DProjectMixVal);
+		glUseProgram(renderPrograms.iconsProgram);
+		ui.iconBox(0.07,0.14f,-0.4f,0.1f,1.f,icons.Texture,0.f,colorData.iconColor,colorData.iconColor);
+		glUseProgram(renderPrograms.uiProgram);
+		ui.renderText(renderPrograms.uiProgram,"New 2D Project",-0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
 
-	//CTRLZ
-	ctrlZCheck(renderData.window,albedoTextures,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,nodeScenesHistory,panelData.paintingPanelActive);
-
-
-	if(colorPicker.dropperActive || colorPicker.saturationValueBoxHover || colorPicker.hueValueBarHover || coloringPanel.colorBoxHover || coloringPanel.hueBarHover){
-		screenHoverPixel = getScreenHoverPixel(mouseXpos,mouseYpos,screenSizeY);
+		float new3DProjectMixVal = 0.f;
+		if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.f,0.0f,mouseXpos,mouseYpos,false)){
+			new3DProjectMixVal = 1.f;
+			if(firstClick)
+				startScreen = false;
+		}
+		ui.container(-0.0f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,new3DProjectMixVal);
+		glUseProgram(renderPrograms.iconsProgram);
+		ui.iconBox(0.07,0.14f,0.0f,0.1f,1.f,icons.TDModel,0.f,colorData.iconColor,colorData.iconColor);
+		glUseProgram(renderPrograms.uiProgram);
+		ui.renderText(renderPrograms.uiProgram,"New 3D Project",0.0f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
+		
+		float importProjectMixVal = 0.f;
+		if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.4f,0.0f,mouseXpos,mouseYpos,false)){
+			importProjectMixVal = 1.f;
+		}
+		ui.container(0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,importProjectMixVal);
+		glUseProgram(renderPrograms.iconsProgram);
+		ui.iconBox(0.07,0.14f,0.4f,0.1f,1.f,icons.ImportModel,0.f,colorData.iconColor,colorData.iconColor);
+		glUseProgram(renderPrograms.uiProgram);
+		ui.renderText(renderPrograms.uiProgram,"Import Project",0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
 	}
  
 	RenderOutData renderOut;
