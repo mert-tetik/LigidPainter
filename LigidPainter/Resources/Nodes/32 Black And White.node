@@ -1,0 +1,36 @@
+# For ligidtools.com
+# Node extension v1.0
+
+%attributes;
+
+-title : BlackAndWhite;
+-color : hexb74efc; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
+
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Source;
+--element : color;
+--value : 100,100,100;
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
+void main(){
+    vec3 color = texture(input_0,tex_coords).rgb; 
+    
+    float maxVal = max(color.r,color.g);
+    maxVal = max(maxVal,color.b);
+
+    output_0 = vec4(vec3(maxVal),1);
+}
