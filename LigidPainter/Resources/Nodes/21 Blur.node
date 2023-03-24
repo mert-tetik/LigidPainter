@@ -64,7 +64,7 @@ float gaussian(vec2 i,int range) {
 }
 
 vec4 blur(int range) {
-    vec4 O = vec4(0);  
+    vec4 O = vec4(0); 
     int s = range/sLOD;
     
     for ( int i = 0; i < s*s; i++ ) {

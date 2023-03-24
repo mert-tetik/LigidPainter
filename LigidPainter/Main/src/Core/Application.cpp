@@ -71,6 +71,7 @@
 #include "UI/UiActions.h"
 #include "Texture Generator/TextureGenerator.h"
 #include "messageBox.h"
+#include "ProjectFile/WriteLigidFile.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../thirdparty/stb_image.h"
@@ -475,7 +476,7 @@ bool LigidPainter::run()
 	double lastTime = glfwGetTime();
 
 	subSelectedImagePowerRangeBar(0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
-	
+
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
@@ -1810,6 +1811,9 @@ void LigidPainter::loadModelButton() {
 		else if(customModelFilePath != "")
 			model.loadModel(customModelFilePath,UIElements[UIautoTriangulateCheckBox].checkBox.checked);
 
+			
+		LigidFile ligidFile;
+		model = ligidFile.writeTheFile("./MyProject.ligid",model,albedoTextures);
 
 		newModelAdded = true;
 
