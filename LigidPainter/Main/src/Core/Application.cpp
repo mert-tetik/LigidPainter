@@ -71,7 +71,7 @@
 #include "UI/UiActions.h"
 #include "Texture Generator/TextureGenerator.h"
 #include "messageBox.h"
-#include "ProjectFile/WriteLigidFile.hpp"
+#include "ProjectFile/WRLigidFile.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../thirdparty/stb_image.h"
@@ -448,7 +448,7 @@ bool LigidPainter::run()
 	aqrTxtr.name = "LigidTools.com";
 	albedoTextures.push_back(aqrTxtr);
 	
-	addSphereButton();
+	//addSphereButton();
 
 	bool monitorUsed = false;
 
@@ -1813,10 +1813,10 @@ void LigidPainter::loadModelButton() {
 
 			
 		LigidFile ligidFile;
-		model = ligidFile.writeTheFile("./MyProject.ligid",model,albedoTextures);
+		ligidFile.writeTheFile("./MyProject.ligid",model,albedoTextures,nodeScenes);
+		//ligidFile.readTheFile("./MyProject.ligid");
 
 		newModelAdded = true;
-
 
 		model.meshes[0].sendObjectsToMesh(objects.VAO,objects.VAO);
 

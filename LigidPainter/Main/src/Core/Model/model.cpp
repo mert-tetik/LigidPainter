@@ -94,6 +94,11 @@ using namespace std;
 	    glBindVertexArray(mVAO);
     }
     
+    void Model::uploadModel(Model uploadedModel){
+        meshes.clear();
+        meshes.push_back(uploadedModel.meshes[0]);
+    }
+    
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void Model::loadModel(string const &path,bool triangulate)
     {
@@ -203,29 +208,6 @@ using namespace std;
         // process materials
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];   
 
-        //cout << "Materials are : " << material->GetName().C_Str() << '\n'; 
-        
-        // we assume a convention for sampler names in the shaders. Each diffuse TextureMs should be named
-        // as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER. 
-        // Same applies to other TextureMs as the following list summarizes:
-        // diffuse: texture_diffuseN
-        // specular: texture_specularN
-        // normal: texture_normalN
-
-        // // 1. diffuse maps
-        // vector<TextureMs> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-        // textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        // // 2. specular maps
-        // vector<TextureMs> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-        // textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-        // // 3. normal maps
-        // std::vector<TextureMs> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-        // textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-        // // 4. height maps
-        // std::vector<TextureMs> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-        //textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-        
-        // return a mesh object created from the extracted mesh data
         materialName = material->GetName().C_Str();
 
 

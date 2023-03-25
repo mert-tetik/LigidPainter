@@ -24,6 +24,7 @@
 #include "Core/Utilities.h"
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"
+#include "Core/ProjectFile/WRLigidFile.hpp"
 
 #include "stb_image.h"
 #include "stb_image_write.h"
@@ -300,9 +301,6 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	glfwGetCursorPos(renderData.window, &mouseXpos, &mouseYpos);
 	//-------------------------
 
-	if(glfwGetKey(renderData.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		startScreen = false;
-
 	if(!startScreen){
 		glActiveTexture(GL_TEXTURE9);
 		glBindTexture(GL_TEXTURE_2D,depthTextureID);
@@ -451,6 +449,11 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		float importProjectMixVal = 0.f;
 		if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.4f,0.0f,mouseXpos,mouseYpos,false)){
 			importProjectMixVal = 1.f;
+			if(firstClick){
+				startScreen = false;
+				LigidFile ligidFile;
+				ligidFile.readTheFile("./MyProject.ligid",model,albedoTextures);
+			}
 		}
 		ui.container(0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,importProjectMixVal);
 		glUseProgram(renderPrograms.iconsProgram);
