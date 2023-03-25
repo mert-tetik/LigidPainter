@@ -651,8 +651,6 @@ bool LigidPainter::run()
 			doChangeStateOfTheAddNodeContextBar = true;
 		}
 
-
-
 		mainLoop.releaseTextBoxes(window,UIElements,exportFileName,textBoxActiveChar,coloringPanel,txtrCreatingPanel,colorPicker);
 		mainLoop.changeTextureDisplayersState(window,textureDisplayer);
 
@@ -668,7 +666,6 @@ bool LigidPainter::run()
 			        }
                     textureText = util.uniqueName(textureText,textureNames);
 					albedoTextures[i].name = textureText;
-
 				}
 			}
 		}

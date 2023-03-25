@@ -410,9 +410,11 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 		UserInterface ui;
 		glUseProgram(renderPrograms.uiProgram);
-		ui.renderText(renderPrograms.uiProgram,"Save",-0.05f,0.95f,0.00022f,colorData.textColor,0.9f,false);
 		//TODO : Screengapx
+		glm::vec4 saveButtonColor = colorData.textColor;
 		if(ui.isMouseOnButton(renderData.window,0.025f,0.02f,-0.05f,0.95f,mouseXpos,mouseYpos,false)){
+			saveButtonColor = glm::vec4(colorData.LigidPainterThemeColor,1);
+
 			nodePanel.pointerCursor = true;
 			if(firstClick){
 				char* projectFilePathCheck;
@@ -433,7 +435,11 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 				}
 			}
 		}
+		ui.renderText(renderPrograms.uiProgram,"Save",-0.05f,0.95f,0.00022f,saveButtonColor,0.9f,false);
+		
+		glm::vec4 loadButtonColor = colorData.textColor;
 		if(ui.isMouseOnButton(renderData.window,0.025f,0.02f,0.05f,0.95f,mouseXpos,mouseYpos,false)){
+			loadButtonColor = glm::vec4(colorData.LigidPainterThemeColor,1);
 			nodePanel.pointerCursor = true;
 			if(firstClick){
 				if(tinyfd_messageBox("Warning!","Another projected will be loaded. Unsaved data will be lost.","okcancel","warning",0)){
@@ -450,7 +456,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 				}
 			}
 		}
-		ui.renderText(renderPrograms.uiProgram,"Load",0.05f,0.95f,0.00022f,colorData.textColor,0.9f,false);
+		ui.renderText(renderPrograms.uiProgram,"Load",0.05f,0.95f,0.00022f,loadButtonColor,0.9f,false);
 	}
 	else{
 		gls.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
