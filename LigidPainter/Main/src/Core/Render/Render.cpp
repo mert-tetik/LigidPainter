@@ -450,9 +450,15 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.4f,0.0f,mouseXpos,mouseYpos,false)){
 			importProjectMixVal = 1.f;
 			if(firstClick){
-				startScreen = false;
-				LigidFile ligidFile;
-				ligidFile.readTheFile("./MyProject.ligid",model,albedoTextures);
+				char const* lFilterPatterns[2] = { "*.ligid" };
+				//File dialog
+				auto path = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
+				
+				if(path){
+					LigidFile ligidFile;
+					ligidFile.readTheFile(path,model,albedoTextures);
+					startScreen = false;
+				}
 			}
 		}
 		ui.container(0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,importProjectMixVal);

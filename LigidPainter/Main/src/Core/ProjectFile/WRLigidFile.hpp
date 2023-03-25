@@ -34,6 +34,7 @@
 
 
 //TODO : Multiple meshes
+//TODO : Get nodes & materials
 
 class LigidFile{
 public:
