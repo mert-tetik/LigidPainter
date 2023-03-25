@@ -278,7 +278,7 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::v
 glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
 ,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
 ,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
-,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen) {
+,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath) {
 	
 
 	
@@ -407,6 +407,50 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		if(colorPicker.dropperActive || colorPicker.saturationValueBoxHover || colorPicker.hueValueBarHover || coloringPanel.colorBoxHover || coloringPanel.hueBarHover){
 			screenHoverPixel = getScreenHoverPixel(mouseXpos,mouseYpos,screenSizeY);
 		}
+
+		UserInterface ui;
+		glUseProgram(renderPrograms.uiProgram);
+		ui.renderText(renderPrograms.uiProgram,"Save",-0.05f,0.95f,0.00022f,colorData.textColor,0.9f,false);
+		//TODO : Screengapx
+		if(ui.isMouseOnButton(renderData.window,0.025f,0.02f,-0.05f,0.95f,mouseXpos,mouseYpos,false)){
+			nodePanel.pointerCursor = true;
+			if(firstClick){
+				char* projectFilePathCheck;
+				if(projectFilePath == ""){
+					//File dialog
+					char const* lFilterPatterns[1] = { "*.ligid" };
+					projectFilePathCheck = tinyfd_saveFileDialog("Save The Project","", 1, lFilterPatterns, "");
+				}
+
+				if(projectFilePath != ""){
+					LigidFile ligidFile;
+					ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes);
+				}
+				else if(projectFilePathCheck){
+					LigidFile ligidFile;
+					projectFilePath = projectFilePathCheck;
+					ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes);
+				}
+			}
+		}
+		if(ui.isMouseOnButton(renderData.window,0.025f,0.02f,0.05f,0.95f,mouseXpos,mouseYpos,false)){
+			nodePanel.pointerCursor = true;
+			if(firstClick){
+				if(tinyfd_messageBox("Warning!","Another projected will be loaded. Unsaved data will be lost.","okcancel","warning",0)){
+					char const* lFilterPatterns[1] = { "*.ligid" };
+					//File dialog
+					auto path = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
+
+					if(path){
+						LigidFile ligidFile;
+						ligidFile.readTheFile(path,model,albedoTextures);
+						projectFilePath = path;
+						startScreen = false;
+					}
+				}
+			}
+		}
+		ui.renderText(renderPrograms.uiProgram,"Load",0.05f,0.95f,0.00022f,colorData.textColor,0.9f,false);
 	}
 	else{
 		gls.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -450,13 +494,14 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.4f,0.0f,mouseXpos,mouseYpos,false)){
 			importProjectMixVal = 1.f;
 			if(firstClick){
-				char const* lFilterPatterns[2] = { "*.ligid" };
+				char const* lFilterPatterns[1] = { "*.ligid" };
 				//File dialog
 				auto path = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
 				
 				if(path){
 					LigidFile ligidFile;
 					ligidFile.readTheFile(path,model,albedoTextures);
+					projectFilePath = path;
 					startScreen = false;
 				}
 			}
