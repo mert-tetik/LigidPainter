@@ -153,6 +153,7 @@ string customModelName;
 //--------Functions--------\\
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void drop_callback(GLFWwindow* window, int count, const char** paths);
 void monitor_callback(GLFWmonitor* monitor, int action);
 void joystick_callback(int jid, int event);
 void scroll_callback(GLFWwindow* window, double scroll, double scrollx);
@@ -244,6 +245,7 @@ bool LigidPainter::run()
 	glfwSetScrollCallback(window, scroll_callback);
 	glfwSetJoystickCallback(joystick_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetDropCallback(window,drop_callback);
 
 
 
@@ -1111,6 +1113,45 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 	Callback cb;
 	cb.key_callback(key,action,window);
+}
+
+void drop_callback(GLFWwindow* window, int count, const char** paths){
+	//Load texture
+	Texture txtr;
+		std::vector<std::string> albedoTexturePaths;
+		for (size_t i = 0; i < count; i++)
+		{
+			albedoTexturePaths.push_back(paths[i]);
+		}
+		
+		
+		int txtrRes = 256;
+		for (size_t i = 0; i < chosenTextureResIndex; i++)
+		{
+			txtrRes*=2;
+		}
+		for (size_t i = 0; i < albedoTexturePaths.size(); i++)
+		{
+			aTexture result;
+			
+			glActiveTexture(GL_TEXTURE0);
+			
+			result.id = txtr.getTexture(albedoTexturePaths[i],txtrRes,txtrRes,false); //Force albedo's ratio to be 1:1
+			
+			Utilities util;
+			 
+			std::vector<std::string> textureNames;
+			for (size_t i = 0; i < albedoTextures.size(); i++)
+			{
+				textureNames.push_back(albedoTextures[i].name);
+			}
+			//Rename if necessary
+			result.name = util.removeExtension(util.getLastWordBySeparatingWithChar(albedoTexturePaths[i],folderDistinguisher)); 
+			result.name = util.uniqueName(result.name,textureNames);
+			albedoTextures.push_back(result);
+			glActiveTexture(GL_TEXTURE28);
+		}
+		
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
