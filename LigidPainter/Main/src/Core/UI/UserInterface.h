@@ -364,8 +364,12 @@ struct NodeConnection{
 struct NodeInput{
 	std::string text;
 	std::string type;
-	
 	std::string element;
+	std::string selectedTextureName = "none";
+	std::vector<NodeConnection> connections; //Output
+	std::vector<float> rampPos = {0.02,0.98};
+	std::vector<glm::vec3> rampClr = {glm::vec3(0),glm::vec3(255.)};
+	std::vector<float> rampPress = {0,0};
 
 	glm::vec4 value = glm::vec4(0.001);
 	
@@ -376,7 +380,6 @@ struct NodeInput{
 	bool addTextureButtonHover;
 	bool removeTextureButtonHover;
 	int selectedTextureIndex = 10000;
-	std::string selectedTextureName = "none";
 	unsigned int selectedTexture = 0;
 
 	//Color element
@@ -396,9 +399,6 @@ struct NodeInput{
 	int nodeConnectionIndex = 10000;
 	int inputConnectionIndex = 10000;
 
-	//Output
-	std::vector<NodeConnection> connections;
-
 	bool isConnectedToShaderInput = false;
 	
 	bool textureSelectingState = false;
@@ -407,9 +407,6 @@ struct NodeInput{
 
 	bool removeTheResult = true;
 
-	std::vector<float> rampPos = {0.02,0.98};
-	std::vector<glm::vec3> rampClr = {glm::vec3(0),glm::vec3(255.)};
-	std::vector<float> rampPress = {0,0};
 	int selectedRampIndex = 0;
 
 };

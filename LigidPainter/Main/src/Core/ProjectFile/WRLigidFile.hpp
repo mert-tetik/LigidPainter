@@ -422,7 +422,11 @@ private:
         }
     }
 
+    //Nodescene key -> nodescene count
+    //Rendering pipeline is ignored
     void writeNodeScenes(std::ofstream &wf,std::vector<NodeScene> nodeScenes){
+        
+        
         uint64_t nodeSC1 = 0x0A78DA67; 
         uint64_t nodeSC2 = 0xF99C3CA7; 
         uint64_t nodeSC3 = 0x36CB89A5;
@@ -433,9 +437,148 @@ private:
         uint64_t nodeSceneSize = nodeScenes.size();
         wf.write(reinterpret_cast<char*>(&nodeSceneSize),sizeof(uint64_t));
 
-        for (size_t i = 0; i < nodeScenes.size(); i++)
+        //Node Scene
+        for (size_t sceneI = 0; sceneI < nodeScenes.size(); sceneI++)
         {
-            wf.write(reinterpret_cast<char*>(&nodeScenes[i]),sizeof(NodeScene));
+
+            //Scene name size
+            uint64_t sceneNameSize = nodeScenes[sceneI].sceneName.size();
+            wf.write(reinterpret_cast<char*>(&sceneNameSize),sizeof(uint64_t));
+            //Scene name
+            for (size_t i = 0; i < nodeScenes[sceneI].sceneName.size(); i++)
+            {
+                wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].sceneName[i]),sizeof(char));
+            }
+            
+            
+            uint64_t nodeSize = nodeScenes[sceneI].nodes.size();
+            wf.write(reinterpret_cast<char*>(&nodeSize),sizeof(uint64_t));
+            
+            
+            //Scene Nodes
+            for (size_t nodeI = 0; nodeI < nodeScenes[sceneI].nodes.size(); nodeI++)
+            {
+                //Node's itself
+
+                //Inputs
+                for (size_t inI = 0; inI < nodeScenes[sceneI].nodes[nodeI].inputs.size(); inI++)
+                {
+                    //Input's itself
+
+                    //Input text
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].text.size(); i++)
+                    {
+                        /* code */
+                    }
+                    //Input type
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].type.size(); i++)
+                    {
+                        /* code */
+                    }
+                    //Input element
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].element.size(); i++)
+                    {
+                        /* code */
+                    }
+                    //Input element
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTextureName.size(); i++)
+                    {
+                        /* code */
+                    }
+                    //Node Connections
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].connections.size(); i++)
+                    {
+                        /* code */
+                    }
+                    //Ramp node positions
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampPos.size(); i++)
+                    {
+                        /* code */
+                    }
+                    //Ramp node colors
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampClr.size(); i++)
+                    {
+                        /* code */
+                    }
+                    //Ramp node pressing states
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampPress.size(); i++)
+                    {
+                        /* code */
+                    }
+                }
+
+                //Outputs
+                for (size_t outI = 0; outI < nodeScenes[sceneI].nodes[nodeI].outputs.size(); outI++)
+                {
+                    //Output's itself
+
+                    //Output text
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].text.size(); i++)
+                    {
+                        /* code */
+                    }
+                    //Output type
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].type.size(); i++)
+                    {
+                        /* code */
+                    }
+                    //Output element
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].element.size(); i++)
+                    {
+                        /* code */
+                    }
+                    //Output element
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].selectedTextureName.size(); i++)
+                    {
+                        /* code */
+                    }
+                    //Output Connections
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].connections.size(); i++)
+                    {
+                        /* code */
+                    }
+                    //Ramp node positions
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampPos.size(); i++)
+                    {
+                        /* code */
+                    }
+                    //Ramp node colors
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampClr.size(); i++)
+                    {
+                        /* code */
+                    }
+                    //Ramp node pressing states
+                    for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampPress.size(); i++)
+                    {
+                        /* code */
+                    }
+                }
+
+                //Listboxes
+                for (size_t listI = 0; listI < nodeScenes[sceneI].nodes[nodeI].listBoxes.size(); listI++)
+                {
+                    wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].active),sizeof(bool));
+                    wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].chosenIndex),sizeof(int));
+                    //Listbox elements
+                    for (size_t elementI = 0; elementI < nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].elements.size(); elementI++)
+                    {
+                        //List box element titles
+                        for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].elements[elementI].size(); i++)
+                        {
+                            wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].elements[elementI][i]),sizeof(char));
+                        }
+                    }
+                }
+
+                //Node title size
+                uint64_t nodeTitleSize = nodeScenes[sceneI].nodes[nodeI].title.size();
+                wf.write(reinterpret_cast<char*>(&nodeTitleSize),sizeof(uint64_t));
+                //Title
+                for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].title.size(); i++)
+                {
+                    wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].title[i]),sizeof(char));
+                }
+            }
         }   
     }
 };
