@@ -449,7 +449,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 					if(path){
 						LigidFile ligidFile;
-						ligidFile.readTheFile(path,model,albedoTextures);
+						ligidFile.readTheFile(path,model,albedoTextures,nodeScenes);
 						projectFilePath = path;
 						startScreen = false;
 					}
@@ -506,7 +506,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 				
 				if(path){
 					LigidFile ligidFile;
-					ligidFile.readTheFile(path,model,albedoTextures);
+					ligidFile.readTheFile(path,model,albedoTextures,nodeScenes);
 					projectFilePath = path;
 					startScreen = false;
 				}

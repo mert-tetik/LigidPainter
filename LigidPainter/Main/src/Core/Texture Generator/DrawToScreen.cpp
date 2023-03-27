@@ -146,8 +146,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 
 		glViewport(0,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 
-		// glset.blendFunc(GL_ONE_MINUS_SRC_COLOR, GL_DST_ALPHA);
-		glBlendEquationSeparate(GL_MAX,GL_FUNC_REVERSE_SUBTRACT);
+		glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
 		
 		glset.blendFunc( GL_SRC_ALPHA, GL_ONE);
 

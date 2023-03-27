@@ -25,6 +25,8 @@
 
 %code;
 
+//TODO : FIX MAX COLOR VAL
+
 uniform float point1D[10];
 uniform vec3 color1D[10];
 
@@ -34,11 +36,11 @@ vec3 getGradient(vec2 uv)
     vec3 clr2 = vec3(0,0,0);
     
     float co1 = 1.;
-    float co2 = 0.;
+    float co2 = 1.;
     
-    float minVal = 1.;
+    float minVal = 1.01;
     vec3 minI;
-    float maxVal = 0.;
+    float maxVal = -0.01;
     vec3 maxI;
     for(int i = 0; i < 10;i++){
         if(point1D[i] < 2. && point1D[i] > 0.01){
@@ -50,12 +52,12 @@ vec3 getGradient(vec2 uv)
                 maxVal = point1D[i];
                 maxI = color1D[i]/255.;
             }
-            if(co1 > point1D[i] && uv.y < point1D[i]){//Smaller
+            if(co1 >= point1D[i] && uv.y <= point1D[i]){//Smaller
                 co1 = point1D[i];
                 clr1 = color1D[i]/255.;
         
             }
-            if(co2 < point1D[i] && uv.y > point1D[i]){//Bigger
+            if(co2 <= point1D[i] && uv.y >= point1D[i]){//Bigger
                 co2 = point1D[i];        
                 clr2 = color1D[i]/255.;
             }
@@ -69,6 +71,7 @@ vec3 getGradient(vec2 uv)
 void main()
 {
     float fac = texture(input_0,tex_coords).r;
+    
     vec2 uv = tex_coords;
     
     vec3 grad = getGradient(vec2(fac));

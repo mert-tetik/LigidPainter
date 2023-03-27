@@ -3,6 +3,9 @@
 out vec4 fragColor;
 
 uniform sampler2D modifiedMaskTexture;
+uniform sampler2D backTxtr;
+uniform float mousex;
+uniform float mousey;
 
 uniform int invert;
 

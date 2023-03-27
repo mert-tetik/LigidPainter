@@ -51,7 +51,7 @@ public:
 
         return model;
     }
-    void readTheFile(const char* path,Model &model,std::vector<aTexture> &textures){
+    void readTheFile(const char* path,Model &model,std::vector<aTexture> &textures, std::vector<NodeScene> &nodeScenes){
         ifstream rf;
         std::cout << "READING";
 
@@ -68,11 +68,12 @@ public:
             int indiceKeysCounter = 0;
             int textureKeysCounter = 0;
             int textureElementKeysCounter = 0;
+            int nodeScenesKeyCounter = 0;
 
             int counter = 0;
             while(rf.read(reinterpret_cast<char*>(&c),sizeof(uint64_t))){
                 
-                updateCounters(c,modelKeysCounter,verticeKeysCounter,indiceKeysCounter,textureKeysCounter,textureElementKeysCounter);
+                updateCounters(c,modelKeysCounter,verticeKeysCounter,indiceKeysCounter,textureKeysCounter,textureElementKeysCounter,nodeScenesKeyCounter);
                 
                 //3D Model (Is not necessary)
                 if(modelKeysCounter == 3){
@@ -102,28 +103,77 @@ public:
                     textureElementKeysCounter = 0;
                     readTextureElements(rf,textures);
                 }
+                
+                //Node Scenes
+                if(nodeScenesKeyCounter == 3){
+                    nodeScenesKeyCounter = 0;
+                    readNodeScenes(rf,nodeScenes);
+                }
 
                 counter++;
             }
             model.meshes.push_back(Mesh(vertices, indices, {},"",0));
             finishTheModel(model);
         }
+        std::cout << "\n READING ENDED";
         rf.close();
     }
 private:
     //--------------------READ THE FILE--------------------
     struct sTexture{
 	    unsigned int id;
-
 	    bool nameTextActive = false;
-
 	    bool isTexture = true;
-    
 	    bool isTrashFolder = false;
-
 	    bool rightClicked = false;
-
 	    int folderIndex = 10000;
+    };
+    struct sNode{
+    	glm::vec4 upBarColor;
+    	glm::vec4 backColor;
+    	float unZoomedPositionX; 
+    	float unZoomedPositionY; 
+    	float positionX; 
+    	float positionY;
+    	float width;
+    	float height;
+    	bool barHover;
+    	bool barPressed;
+    	bool panelHover;
+    	int rangeBarCount = 0;
+    	unsigned int program;
+    	bool isMainOut = false;
+    	int renderingIndex = 10000;
+    	bool useModel = false;
+    	bool marked = false;
+    	bool active = false;
+    	bool stateChanged = false;
+    	int dupI = 0;
+    	bool doInvert = true;
+    };
+    struct sNodeInput{
+	    //Texture element
+	    bool addTextureButtonHover;
+	    bool removeTextureButtonHover;
+	    int selectedTextureIndex = 10000;
+	    unsigned int selectedTexture = 0;
+	    //Color element
+	    glm::vec3 color = glm::vec3(0);
+	    bool coloringPanelActivated;
+	    float posX;
+	    float posY;
+	    bool connectionHover = false;
+	    bool pressed;
+	    //Input
+	    float connectionPosX = 0;
+	    float connectionPosY = 0;
+	    int nodeConnectionIndex = 10000;
+	    int inputConnectionIndex = 10000;
+	    bool isConnectedToShaderInput = false;
+	    bool textureSelectingState = false;
+	    unsigned int result;
+	    bool removeTheResult = true;
+	    int selectedRampIndex = 0;
     };
 
     bool startReadingTheProjectFile(const char* path,std::ifstream &rf){
@@ -145,7 +195,7 @@ private:
         return true;
     }
     
-    void updateCounters(uint64_t c,int &modelKeysCounter,int &verticeKeysCounter,int &indiceKeysCounter,int &textureKeysCounter, int &textureElementKeysCounter){
+    void updateCounters(uint64_t c,int &modelKeysCounter,int &verticeKeysCounter,int &indiceKeysCounter,int &textureKeysCounter, int &textureElementKeysCounter,int &nodeScenesKeyCounter){
         uint64_t modelKeys[3] =  {0xB2911B6A, 0x6825EA68, 0x59EF9DF5};
         uint64_t verticeKeys[3] =  {0x1DCEC243, 0xD25EF96B, 0xF6A94C0C};
         uint64_t indiceKeys[3] =  {0x3600353C, 0xB3ACAD02, 0x6C23DE2C};
@@ -177,6 +227,11 @@ private:
             textureElementKeysCounter++;
         else{
             textureElementKeysCounter = 0;
+        }
+        if(c == nodeSceneKeys[nodeScenesKeyCounter])
+            nodeScenesKeyCounter++;
+        else{
+            nodeScenesKeyCounter = 0;
         }
     }
 
@@ -274,15 +329,358 @@ private:
         textures = generatedTextureArray;
     }
 
-
     void finishTheModel(Model &model){
         model.meshes[0].materialIndex = 0;
         model.meshes[0].materialName = "loadedMaterial";
 
         model.uploadModel(model);
     }
+    int ccc = 0;
+    void ff(){
+        std::cout << "HERE :" << ccc << ' ';
+        ccc++;
+    }
+
+    void readNodeScenes(std::ifstream &rf,std::vector<NodeScene> &nodeScenes){
+        
+        nodeScenes.clear();
+
+        uint64_t nodeSceneSize;
+        rf.read(reinterpret_cast<char*>(&nodeSceneSize),sizeof(uint64_t));
+        //Node Scene
+        for (size_t sceneI = 0; sceneI < nodeSceneSize; sceneI++)
+        {
+            NodeScene scene;
+            nodeScenes.push_back(scene);
+        
+            //Scene name
+            uint64_t sceneNameSize;
+            rf.read(reinterpret_cast<char*>(&sceneNameSize),sizeof(uint64_t));
+            for (size_t i = 0; i < sceneNameSize; i++)
+            {
+                char ch;
+                rf.read(reinterpret_cast<char*>(&ch),sizeof(char));
+                nodeScenes[sceneI].sceneName.push_back(ch);
+            }
+            
+            //Scene Nodes
+            uint64_t nodeSize;
+            rf.read(reinterpret_cast<char*>(&nodeSize),sizeof(uint64_t));
+            for (size_t nodeI = 0; nodeI < nodeSize; nodeI++)
+            {
 
 
+                Node node;
+                nodeScenes[sceneI].nodes.push_back(node);
+                ff();
+
+                //Node's itself
+                sNode snode;
+                rf.read(reinterpret_cast<char*>(&snode),sizeof(sNode));
+                nodeScenes[sceneI].nodes[nodeI].upBarColor = snode.upBarColor;
+    	        nodeScenes[sceneI].nodes[nodeI].backColor = snode.backColor;
+    	        nodeScenes[sceneI].nodes[nodeI].unZoomedPositionX = snode.unZoomedPositionX; 
+    	        nodeScenes[sceneI].nodes[nodeI].unZoomedPositionY = snode.unZoomedPositionY; 
+    	        nodeScenes[sceneI].nodes[nodeI].positionX = snode.positionX; 
+    	        nodeScenes[sceneI].nodes[nodeI].positionY = snode.positionY;
+    	        nodeScenes[sceneI].nodes[nodeI].width = snode.width;
+    	        nodeScenes[sceneI].nodes[nodeI].height = snode.height;
+    	        nodeScenes[sceneI].nodes[nodeI].barHover = snode.barHover;
+    	        nodeScenes[sceneI].nodes[nodeI].barPressed = snode.barPressed;
+    	        nodeScenes[sceneI].nodes[nodeI].panelHover = snode.panelHover;
+    	        nodeScenes[sceneI].nodes[nodeI].rangeBarCount = snode.rangeBarCount;
+    	        nodeScenes[sceneI].nodes[nodeI].program = snode.program;
+    	        nodeScenes[sceneI].nodes[nodeI].isMainOut = snode.isMainOut;
+    	        nodeScenes[sceneI].nodes[nodeI].renderingIndex = snode.renderingIndex;
+    	        nodeScenes[sceneI].nodes[nodeI].useModel = snode.useModel;
+    	        nodeScenes[sceneI].nodes[nodeI].marked = snode.marked;
+    	        nodeScenes[sceneI].nodes[nodeI].active = snode.active;
+    	        nodeScenes[sceneI].nodes[nodeI].stateChanged = snode.stateChanged;
+    	        nodeScenes[sceneI].nodes[nodeI].dupI = snode.dupI;
+    	        nodeScenes[sceneI].nodes[nodeI].doInvert = snode.doInvert;
+                ff();
+
+                //Inputs
+                uint64_t nodeInputSize;
+                rf.read(reinterpret_cast<char*>(&nodeInputSize),sizeof(uint64_t));
+                for (size_t inI = 0; inI < nodeInputSize; inI++)
+                {
+                    NodeInput nodeIn;
+                    nodeScenes[sceneI].nodes[nodeI].inputs.push_back(nodeIn);
+
+
+                    //Input's itself
+                    sNodeInput sIn;
+                    rf.read(reinterpret_cast<char*>(&sIn),sizeof(sNodeInput));
+
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].addTextureButtonHover = sIn.addTextureButtonHover;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].removeTextureButtonHover = sIn.removeTextureButtonHover;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTextureIndex = sIn.selectedTextureIndex;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTexture = sIn.selectedTexture;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].color = sIn.color;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].coloringPanelActivated = sIn.coloringPanelActivated;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].posX = sIn.posX;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].posY = sIn.posY;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].connectionHover = sIn.connectionHover;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].pressed = sIn.pressed;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].connectionPosX = sIn.connectionPosX;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].connectionPosY = sIn.connectionPosY;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].nodeConnectionIndex = sIn.nodeConnectionIndex;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].inputConnectionIndex = sIn.inputConnectionIndex;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].isConnectedToShaderInput = sIn.isConnectedToShaderInput;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].textureSelectingState = sIn.textureSelectingState;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].result = sIn.result;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].removeTheResult = sIn.removeTheResult;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedRampIndex = sIn.selectedRampIndex;
+
+                    //inputs text
+                    uint64_t nodeOutputTextSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputTextSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputTextSize; i++)
+                    {
+                        char ch;
+                        rf.read(reinterpret_cast<char*>(&ch),sizeof(char));
+                        nodeScenes[sceneI].nodes[nodeI].inputs[inI].text.push_back(ch);
+                    }
+                    //inputs type
+                    uint64_t nodeOutputTypeSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputTypeSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputTypeSize; i++)
+                    {
+                        char ch;
+                        rf.read(reinterpret_cast<char*>(&ch),sizeof(char));
+                        nodeScenes[sceneI].nodes[nodeI].inputs[inI].type.push_back(ch);
+                    }
+                    //inputs element
+                    uint64_t nodeOutputElementSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputElementSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputElementSize; i++)
+                    {
+                        char ch;
+                        rf.read(reinterpret_cast<char*>(&ch),sizeof(char));
+                        nodeScenes[sceneI].nodes[nodeI].inputs[inI].element.push_back(ch);
+                    }
+                    //inputs texture
+                    uint64_t nodeOutputTextureSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputTextureSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputTextureSize; i++)
+                    {
+                        char ch;
+                        rf.read(reinterpret_cast<char*>(&ch),sizeof(char));
+                        nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTextureName.push_back(ch);
+                    }
+                    //inputs Connections
+                    uint64_t nodeOutputConnectionSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputConnectionSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputConnectionSize; i++)
+                    {
+                        NodeConnection nodeCn;
+                        rf.read(reinterpret_cast<char*>(&nodeCn),sizeof(NodeConnection));
+                        nodeScenes[sceneI].nodes[nodeI].inputs[inI].connections.push_back(nodeCn);
+                    }
+                    //Ramp node positions
+                    uint64_t nodeOutputRampPositionSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputRampPositionSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputRampPositionSize; i++)
+                    {
+                        float rampPos;
+                        rf.read(reinterpret_cast<char*>(&rampPos),sizeof(float));
+                        nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampPos.push_back(rampPos);
+                    }
+                    //Ramp node colors
+                    uint64_t nodeOutputRampColorSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputRampColorSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputRampColorSize; i++)
+                    {
+                        glm::vec3 color;
+                        rf.read(reinterpret_cast<char*>(&color),sizeof(glm::vec3));
+                        nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampClr.push_back(color);
+                    }
+                    //Ramp node pressing states
+                    uint64_t nodeOutputRampPressedStateSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputRampPressedStateSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputRampPressedStateSize; i++)
+                    {
+                        bool b;
+                        rf.read(reinterpret_cast<char*>(&b),sizeof(bool));
+                        nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampPress.push_back(b);
+                    }
+                    uint64_t rangeBarsPointerPressedSize;
+                    rf.read(reinterpret_cast<char*>(&rangeBarsPointerPressedSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < rangeBarsPointerPressedSize; i++)
+                    {
+                        nodeScenes[sceneI].nodes[nodeI].inputs[inI].rangeBarsPointerPressed.push_back(false);                        
+                    }
+                }
+                ff();
+
+                //Outputs
+                uint64_t nodeOutputSize;
+                rf.read(reinterpret_cast<char*>(&nodeOutputSize),sizeof(uint64_t));
+                for (size_t outI = 0; outI < nodeOutputSize; outI++)
+                {
+                    NodeInput nodeOut;
+                    nodeScenes[sceneI].nodes[nodeI].outputs.push_back(nodeOut);
+                    //Output's itself
+                    sNodeInput sOut;
+
+                    rf.read(reinterpret_cast<char*>(&sOut),sizeof(sNodeInput));
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].addTextureButtonHover = sOut.addTextureButtonHover;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].removeTextureButtonHover = sOut.removeTextureButtonHover;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].selectedTextureIndex = sOut.selectedTextureIndex;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].selectedTexture = sOut.selectedTexture;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].color = sOut.color;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].coloringPanelActivated = sOut.coloringPanelActivated;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].posX = sOut.posX;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].posY = sOut.posY;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].connectionHover = sOut.connectionHover;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].pressed = sOut.pressed;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].connectionPosX = sOut.connectionPosX;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].connectionPosY = sOut.connectionPosY;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].nodeConnectionIndex = sOut.nodeConnectionIndex;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].inputConnectionIndex = sOut.inputConnectionIndex;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].isConnectedToShaderInput = sOut.isConnectedToShaderInput;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].textureSelectingState = sOut.textureSelectingState;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].result = sOut.result;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].removeTheResult = sOut.removeTheResult;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].selectedRampIndex = sOut.selectedRampIndex;
+                    
+                    //Output text
+                    uint64_t nodeOutputTextSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputTextSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputTextSize; i++)
+                    {
+                        char ch;
+                        rf.read(reinterpret_cast<char*>(&ch),sizeof(char));
+                        nodeScenes[sceneI].nodes[nodeI].outputs[outI].text.push_back(ch);
+                    }
+                    //Output type
+                    uint64_t nodeOutputTypeSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputTypeSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputTypeSize; i++)
+                    {
+                        char ch;
+                        rf.read(reinterpret_cast<char*>(&ch),sizeof(char));
+                        nodeScenes[sceneI].nodes[nodeI].outputs[outI].type.push_back(ch);
+                    }
+                    //Output element
+                    uint64_t nodeOutputElementSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputElementSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputElementSize; i++)
+                    {
+                        char ch;
+                        rf.read(reinterpret_cast<char*>(&ch),sizeof(char));
+                        nodeScenes[sceneI].nodes[nodeI].outputs[outI].element.push_back(ch);
+                    }
+                    //Output texture
+                    uint64_t nodeOutputTextureSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputTextureSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputTextureSize; i++)
+                    {
+                        char ch;
+                        rf.read(reinterpret_cast<char*>(&ch),sizeof(char));
+                        nodeScenes[sceneI].nodes[nodeI].outputs[outI].selectedTextureName.push_back(ch);
+                    }
+                    //Output Connections
+                    uint64_t nodeOutputConnectionSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputConnectionSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputConnectionSize; i++)
+                    {
+                        NodeConnection nc;
+                        rf.read(reinterpret_cast<char*>(&nc),sizeof(NodeConnection));
+                        nodeScenes[sceneI].nodes[nodeI].outputs[outI].connections.push_back(nc);
+                    }
+                    //Ramp node positions
+                    uint64_t nodeOutputRampPositionSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputRampPositionSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputRampPositionSize; i++)
+                    {
+                        //TODO : FIX RAMP NODE
+                        float rampPos;
+                        rf.read(reinterpret_cast<char*>(&rampPos),sizeof(float));
+                        nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampPos.push_back(rampPos);                        
+                    }
+                    //Ramp node colors
+                    uint64_t nodeOutputRampColorSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputRampColorSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputRampColorSize; i++)
+                    {
+                        glm::vec3 clr;
+                        rf.read(reinterpret_cast<char*>(&clr),sizeof(glm::vec3));
+                        nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampClr.push_back(clr);                        
+                    }
+                    //Ramp node pressing states
+                    uint64_t nodeOutputRampPressedStateSize;
+                    rf.read(reinterpret_cast<char*>(&nodeOutputRampPressedStateSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < nodeOutputRampPressedStateSize; i++)
+                    {
+                        bool b;
+                        rf.read(reinterpret_cast<char*>(&b),sizeof(bool));
+                        nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampPress.push_back(b);                        
+                    }
+
+                    //rangeBarsPointerPressedSize
+                    uint64_t rangeBarsPointerPressedSize;
+                    rf.read(reinterpret_cast<char*>(&rangeBarsPointerPressedSize),sizeof(uint64_t));
+                    for (size_t i = 0; i < rangeBarsPointerPressedSize; i++)
+                    {
+                        nodeScenes[sceneI].nodes[nodeI].outputs[outI].rangeBarsPointerPressed.push_back(false);                        
+                    }
+                    
+                }
+                ff();
+
+                //Listboxes
+                uint64_t nodeListboxSize;
+                rf.read(reinterpret_cast<char*>(&nodeListboxSize),sizeof(uint64_t));
+                for (size_t listI = 0; listI < nodeListboxSize; listI++)
+                {
+                    ListBox lbox;
+                    nodeScenes[sceneI].nodes[nodeI].listBoxes.push_back(lbox);                        
+
+                    bool active;
+                    int chosenIndex;
+                    rf.read(reinterpret_cast<char*>(&active),sizeof(bool));
+                    rf.read(reinterpret_cast<char*>(&chosenIndex),sizeof(int));
+                    nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].active = active;
+                    nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].chosenIndex = chosenIndex;
+                    
+                    //Listbox elements
+                    uint64_t nodeListboxElementSize;
+                    rf.read(reinterpret_cast<char*>(&nodeListboxElementSize),sizeof(uint64_t));
+                    for (size_t elementI = 0; elementI < nodeListboxElementSize; elementI++)
+                    {
+                        std::string listelement;
+                        nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].elements.push_back(listelement);
+
+                        //List box element titles
+                        uint64_t nodeListboxElementTextSize;
+                        rf.read(reinterpret_cast<char*>(&nodeListboxElementTextSize),sizeof(uint64_t));
+                        for (size_t i = 0; i < nodeListboxElementTextSize; i++)
+                        {
+                            char ch;
+                            rf.read(reinterpret_cast<char*>(&ch),sizeof(char));
+                            nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].elements[elementI].push_back(ch);
+                        }
+                    }
+                }
+                ff();
+
+
+                //Node title size
+                uint64_t nodeTitleSize;
+                rf.read(reinterpret_cast<char*>(&nodeTitleSize),sizeof(uint64_t));
+                //Title
+                for (size_t i = 0; i < nodeTitleSize; i++)
+                {
+                    char ch;
+                    rf.read(reinterpret_cast<char*>(&ch),sizeof(char));
+                    nodeScenes[sceneI].nodes[nodeI].title.push_back(ch);
+                }
+
+            }
+        }   
+    }
 
     //--------------------CREATE THE FILE--------------------
 
@@ -441,128 +839,242 @@ private:
         for (size_t sceneI = 0; sceneI < nodeScenes.size(); sceneI++)
         {
 
-            //Scene name size
+            //Scene name
             uint64_t sceneNameSize = nodeScenes[sceneI].sceneName.size();
             wf.write(reinterpret_cast<char*>(&sceneNameSize),sizeof(uint64_t));
-            //Scene name
             for (size_t i = 0; i < nodeScenes[sceneI].sceneName.size(); i++)
             {
                 wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].sceneName[i]),sizeof(char));
             }
             
-            
+            //Scene Nodes
             uint64_t nodeSize = nodeScenes[sceneI].nodes.size();
             wf.write(reinterpret_cast<char*>(&nodeSize),sizeof(uint64_t));
-            
-            
-            //Scene Nodes
             for (size_t nodeI = 0; nodeI < nodeScenes[sceneI].nodes.size(); nodeI++)
             {
                 //Node's itself
+                sNode snode;
+                snode.upBarColor = nodeScenes[sceneI].nodes[nodeI].upBarColor;
+    	        snode.backColor = nodeScenes[sceneI].nodes[nodeI].backColor;
+    	        snode.unZoomedPositionX = nodeScenes[sceneI].nodes[nodeI].unZoomedPositionX; 
+    	        snode.unZoomedPositionY = nodeScenes[sceneI].nodes[nodeI].unZoomedPositionY; 
+    	        snode.positionX = nodeScenes[sceneI].nodes[nodeI].positionX; 
+    	        snode.positionY = nodeScenes[sceneI].nodes[nodeI].positionY;
+    	        snode.width = nodeScenes[sceneI].nodes[nodeI].width;
+    	        snode.height = nodeScenes[sceneI].nodes[nodeI].height;
+    	        snode.barHover = nodeScenes[sceneI].nodes[nodeI].barHover;
+    	        snode.barPressed = nodeScenes[sceneI].nodes[nodeI].barPressed;
+    	        snode.panelHover = nodeScenes[sceneI].nodes[nodeI].panelHover;
+    	        snode.rangeBarCount = nodeScenes[sceneI].nodes[nodeI].rangeBarCount;
+    	        snode.program = nodeScenes[sceneI].nodes[nodeI].program;
+    	        snode.isMainOut = nodeScenes[sceneI].nodes[nodeI].isMainOut;
+    	        snode.renderingIndex = nodeScenes[sceneI].nodes[nodeI].renderingIndex;
+    	        snode.useModel = nodeScenes[sceneI].nodes[nodeI].useModel;
+    	        snode.marked = nodeScenes[sceneI].nodes[nodeI].marked;
+    	        snode.active = nodeScenes[sceneI].nodes[nodeI].active;
+    	        snode.stateChanged = nodeScenes[sceneI].nodes[nodeI].stateChanged;
+    	        snode.dupI = nodeScenes[sceneI].nodes[nodeI].dupI;
+    	        snode.doInvert = nodeScenes[sceneI].nodes[nodeI].doInvert;
+                wf.write(reinterpret_cast<char*>(&snode),sizeof(sNode));
 
                 //Inputs
+                uint64_t nodeInputSize = nodeScenes[sceneI].nodes[nodeI].inputs.size();
+                wf.write(reinterpret_cast<char*>(&nodeInputSize),sizeof(uint64_t));
                 for (size_t inI = 0; inI < nodeScenes[sceneI].nodes[nodeI].inputs.size(); inI++)
                 {
                     //Input's itself
+                    sNodeInput sIn;
+	                sIn.addTextureButtonHover = nodeScenes[sceneI].nodes[nodeI].inputs[inI].addTextureButtonHover;
+	                sIn.removeTextureButtonHover = nodeScenes[sceneI].nodes[nodeI].inputs[inI].removeTextureButtonHover;
+	                sIn.selectedTextureIndex = nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTextureIndex;
+	                sIn.selectedTexture = nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTexture;
+	                sIn.color = nodeScenes[sceneI].nodes[nodeI].inputs[inI].color;
+	                sIn.coloringPanelActivated = nodeScenes[sceneI].nodes[nodeI].inputs[inI].coloringPanelActivated;
+	                sIn.posX = nodeScenes[sceneI].nodes[nodeI].inputs[inI].posX;
+	                sIn.posY = nodeScenes[sceneI].nodes[nodeI].inputs[inI].posY;
+	                sIn.connectionHover = nodeScenes[sceneI].nodes[nodeI].inputs[inI].connectionHover;
+	                sIn.pressed = nodeScenes[sceneI].nodes[nodeI].inputs[inI].pressed;
+	                sIn.connectionPosX = nodeScenes[sceneI].nodes[nodeI].inputs[inI].connectionPosX;
+	                sIn.connectionPosY = nodeScenes[sceneI].nodes[nodeI].inputs[inI].connectionPosY;
+	                sIn.nodeConnectionIndex = nodeScenes[sceneI].nodes[nodeI].inputs[inI].nodeConnectionIndex;
+	                sIn.inputConnectionIndex = nodeScenes[sceneI].nodes[nodeI].inputs[inI].inputConnectionIndex;
+	                sIn.isConnectedToShaderInput = nodeScenes[sceneI].nodes[nodeI].inputs[inI].isConnectedToShaderInput;
+	                sIn.textureSelectingState = nodeScenes[sceneI].nodes[nodeI].inputs[inI].textureSelectingState;
+	                sIn.result = nodeScenes[sceneI].nodes[nodeI].inputs[inI].result;
+	                sIn.removeTheResult = nodeScenes[sceneI].nodes[nodeI].inputs[inI].removeTheResult;
+	                sIn.selectedRampIndex = nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedRampIndex;
 
-                    //Input text
+                    wf.write(reinterpret_cast<char*>(&sIn),sizeof(sNodeInput));
+
+                    //inputs text
+                    uint64_t nodeOutputTextSize = nodeScenes[sceneI].nodes[nodeI].inputs[inI].text.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputTextSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].text.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].inputs[inI].text[i]),sizeof(char));
                     }
-                    //Input type
+                    //inputs type
+                    uint64_t nodeOutputTypeSize = nodeScenes[sceneI].nodes[nodeI].inputs[inI].type.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputTypeSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].type.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].inputs[inI].type[i]),sizeof(char));
                     }
-                    //Input element
+                    //inputs element
+                    uint64_t nodeOutputElementSize = nodeScenes[sceneI].nodes[nodeI].inputs[inI].element.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputElementSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].element.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].inputs[inI].element[i]),sizeof(char));
                     }
-                    //Input element
+                    //inputs texture
+                    uint64_t nodeOutputTextureSize = nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTextureName.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputTextureSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTextureName.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTextureName[i]),sizeof(char));
                     }
-                    //Node Connections
+                    //inputs Connections
+                    uint64_t nodeOutputConnectionSize = nodeScenes[sceneI].nodes[nodeI].inputs[inI].connections.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputConnectionSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].connections.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].inputs[inI].connections[i]),sizeof(NodeConnection));
                     }
                     //Ramp node positions
+                    uint64_t nodeOutputRampPositionSize = nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampPos.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputRampPositionSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampPos.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampPos[i]),sizeof(float));
                     }
                     //Ramp node colors
+                    uint64_t nodeOutputRampColorSize = nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampClr.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputRampColorSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampClr.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampClr[i]),sizeof(glm::vec3));
                     }
                     //Ramp node pressing states
+                    uint64_t nodeOutputRampPressedStateSize = nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampPress.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputRampPressedStateSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampPress.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].inputs[inI].rampPress[i]),sizeof(bool));
                     }
+ 
+                    //rangeBarsPointerPressedSize
+                    uint64_t rangeBarsPointerPressedSize = nodeScenes[sceneI].nodes[nodeI].inputs[inI].rangeBarsPointerPressed.size();
+                    wf.write(reinterpret_cast<char*>(&rangeBarsPointerPressedSize),sizeof(uint64_t));
                 }
 
                 //Outputs
+                uint64_t nodeOutputSize = nodeScenes[sceneI].nodes[nodeI].outputs.size();
+                wf.write(reinterpret_cast<char*>(&nodeOutputSize),sizeof(uint64_t));
                 for (size_t outI = 0; outI < nodeScenes[sceneI].nodes[nodeI].outputs.size(); outI++)
                 {
                     //Output's itself
+                    sNodeInput sOut;
+	                sOut.addTextureButtonHover = nodeScenes[sceneI].nodes[nodeI].outputs[outI].addTextureButtonHover;
+	                sOut.removeTextureButtonHover = nodeScenes[sceneI].nodes[nodeI].outputs[outI].removeTextureButtonHover;
+	                sOut.selectedTextureIndex = nodeScenes[sceneI].nodes[nodeI].outputs[outI].selectedTextureIndex;
+	                sOut.selectedTexture = nodeScenes[sceneI].nodes[nodeI].outputs[outI].selectedTexture;
+	                sOut.color = nodeScenes[sceneI].nodes[nodeI].outputs[outI].color;
+	                sOut.coloringPanelActivated = nodeScenes[sceneI].nodes[nodeI].outputs[outI].coloringPanelActivated;
+	                sOut.posX = nodeScenes[sceneI].nodes[nodeI].outputs[outI].posX;
+	                sOut.posY = nodeScenes[sceneI].nodes[nodeI].outputs[outI].posY;
+	                sOut.connectionHover = nodeScenes[sceneI].nodes[nodeI].outputs[outI].connectionHover;
+	                sOut.pressed = nodeScenes[sceneI].nodes[nodeI].outputs[outI].pressed;
+	                sOut.connectionPosX = nodeScenes[sceneI].nodes[nodeI].outputs[outI].connectionPosX;
+	                sOut.connectionPosY = nodeScenes[sceneI].nodes[nodeI].outputs[outI].connectionPosY;
+	                sOut.nodeConnectionIndex = nodeScenes[sceneI].nodes[nodeI].outputs[outI].nodeConnectionIndex;
+	                sOut.inputConnectionIndex = nodeScenes[sceneI].nodes[nodeI].outputs[outI].inputConnectionIndex;
+	                sOut.isConnectedToShaderInput = nodeScenes[sceneI].nodes[nodeI].outputs[outI].isConnectedToShaderInput;
+	                sOut.textureSelectingState = nodeScenes[sceneI].nodes[nodeI].outputs[outI].textureSelectingState;
+	                sOut.result = nodeScenes[sceneI].nodes[nodeI].outputs[outI].result;
+	                sOut.removeTheResult = nodeScenes[sceneI].nodes[nodeI].outputs[outI].removeTheResult;
+	                sOut.selectedRampIndex = nodeScenes[sceneI].nodes[nodeI].outputs[outI].selectedRampIndex;
 
+                    wf.write(reinterpret_cast<char*>(&sOut),sizeof(sNodeInput));
+                    
                     //Output text
+                    uint64_t nodeOutputTextSize = nodeScenes[sceneI].nodes[nodeI].outputs[outI].text.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputTextSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].text.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].outputs[outI].text[i]),sizeof(char));
                     }
                     //Output type
+                    uint64_t nodeOutputTypeSize = nodeScenes[sceneI].nodes[nodeI].outputs[outI].type.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputTypeSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].type.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].outputs[outI].type[i]),sizeof(char));
                     }
                     //Output element
+                    uint64_t nodeOutputElementSize = nodeScenes[sceneI].nodes[nodeI].outputs[outI].element.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputElementSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].element.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].outputs[outI].element[i]),sizeof(char));
                     }
-                    //Output element
+                    //Output texture
+                    uint64_t nodeOutputTextureSize = nodeScenes[sceneI].nodes[nodeI].outputs[outI].selectedTextureName.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputTextureSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].selectedTextureName.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].outputs[outI].selectedTextureName[i]),sizeof(char));
                     }
                     //Output Connections
+                    uint64_t nodeOutputConnectionSize = nodeScenes[sceneI].nodes[nodeI].outputs[outI].connections.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputConnectionSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].connections.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].outputs[outI].connections[i]),sizeof(NodeConnection));
                     }
                     //Ramp node positions
+                    uint64_t nodeOutputRampPositionSize = nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampPos.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputRampPositionSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampPos.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampPos[i]),sizeof(float));
                     }
                     //Ramp node colors
+                    uint64_t nodeOutputRampColorSize = nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampClr.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputRampColorSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampClr.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampClr[i]),sizeof(glm::vec3));
                     }
                     //Ramp node pressing states
+                    uint64_t nodeOutputRampPressedStateSize = nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampPress.size();
+                    wf.write(reinterpret_cast<char*>(&nodeOutputRampPressedStateSize),sizeof(uint64_t));
                     for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampPress.size(); i++)
                     {
-                        /* code */
+                        wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].outputs[outI].rampPress[i]),sizeof(bool));
                     }
+                    
+                    //rangeBarsPointerPressedSize
+                    uint64_t rangeBarsPointerPressedSize = nodeScenes[sceneI].nodes[nodeI].outputs[outI].rangeBarsPointerPressed.size();
+                    wf.write(reinterpret_cast<char*>(&rangeBarsPointerPressedSize),sizeof(uint64_t));
                 }
 
                 //Listboxes
+                uint64_t nodeListboxSize = nodeScenes[sceneI].nodes[nodeI].listBoxes.size();
+                wf.write(reinterpret_cast<char*>(&nodeListboxSize),sizeof(uint64_t));
                 for (size_t listI = 0; listI < nodeScenes[sceneI].nodes[nodeI].listBoxes.size(); listI++)
                 {
                     wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].active),sizeof(bool));
                     wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].chosenIndex),sizeof(int));
+                    
                     //Listbox elements
+                    uint64_t nodeListboxElementSize = nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].elements.size();
+                    wf.write(reinterpret_cast<char*>(&nodeListboxElementSize),sizeof(uint64_t));
                     for (size_t elementI = 0; elementI < nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].elements.size(); elementI++)
                     {
                         //List box element titles
+                        uint64_t nodeListboxElementTextSize = nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].elements[elementI].size();
+                        wf.write(reinterpret_cast<char*>(&nodeListboxElementTextSize),sizeof(uint64_t));
                         for (size_t i = 0; i < nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].elements[elementI].size(); i++)
                         {
                             wf.write(reinterpret_cast<char*>(&nodeScenes[sceneI].nodes[nodeI].listBoxes[listI].elements[elementI][i]),sizeof(char));
