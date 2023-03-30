@@ -510,7 +510,7 @@ bool LigidPainter::run()
 			paintOverTexture = albedoTextures[textureSelectionPanel.selectedIndex];
 			textureSelectionPanel.active = false;
 			selectingPaintOverTexture = false;
-			UIElements[UIselectPaintOverTextureNameTextElement].text.text = paintOverTexture.name;
+			UIElements[UIselectPaintOverTextureNameTextElement].text.text = util.cropString(paintOverTexture.name,13);
 		}
 
 		mainLoop.updateCameraPosChanging(callbackData.cameraPos,cameraPosChanging);

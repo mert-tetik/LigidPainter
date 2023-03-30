@@ -626,7 +626,9 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		glset.uniform1f(programs.dynamicPaintingProgram,"hardness",(UIElements[UIbrushBlurRangeBar].rangeBar.value-0.09f)*4.5454545*50);
 		glset.uniform1f(programs.dynamicPaintingProgram,"opacity",(UIElements[UIbrushOpacityRangeBar].rangeBar.value + 0.11)*4.5454545);
 
-		ui.box(0.08f,0.02,(renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum,-0.0f + panelData.paintingPanelSlideVal,"", colorData.buttonColor,0.f,0,0,10,0.99f,colorData.buttonColor,0.f);
+		//Paint over texture name
+		glUseProgram(programs.uiProgram);
+		ui.box(0.09f,0.03,((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum) - 0.045f,-0.25f + panelData.paintingPanelSlideVal,"", colorData.buttonColor,0.f,0,0,0.8f,0.8f,colorData.buttonColor,0.f);
 	}
 
 	bool usingUiProgram = false;
