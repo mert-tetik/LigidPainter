@@ -371,6 +371,9 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 			glUseProgram(renderPrograms.outProgram);
 			glUniform2f(glGetUniformLocation(renderPrograms.outProgram , "paintOverPos"),paintOverLayerPos.x, paintOverLayerPos.y);
 			glUniform2f(glGetUniformLocation(renderPrograms.outProgram , "paintOverScale"),paintOverLayerScale.x, paintOverLayerScale.y);
+			glUseProgram(renderPrograms.PBRProgram);
+			glUniform2f(glGetUniformLocation(renderPrograms.PBRProgram , "paintOverPos"),paintOverLayerPos.x, paintOverLayerPos.y);
+			glUniform2f(glGetUniformLocation(renderPrograms.PBRProgram , "paintOverScale"),paintOverLayerScale.x, paintOverLayerScale.y);
 			
 			glUseProgram(renderPrograms.paintOverProgram);
 			gls.uniformMatrix4fv(renderPrograms.paintOverProgram,"TextProjection",projection);
@@ -410,12 +413,8 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		
 		glUseProgram(renderPrograms.uiProgram);
 		if(renderData.doPainting){
-			if(!UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked)
-				renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, drawColor,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,renderPrograms);
-			else{
-				
-			}
-
+			gls.uniform1i(renderPrograms.uiProgram,"drawCircle",UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked);
+			renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, drawColor,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,renderPrograms);
 		}
 		if(glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_RELEASE)
 		if(!panelData.paintingPanelActive){

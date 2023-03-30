@@ -45,6 +45,8 @@ uniform sampler2D tdRenderedMaskTexture;
 uniform sampler2D paintOverTxtr;
 
 uniform int doPaintOver;
+uniform vec2 paintOverScale;
+uniform vec2 paintOverPos;
 
 float far = 10.0f;
 float near = 0.1f;
@@ -71,6 +73,7 @@ bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMir
 
 
 vec3 getPaintedDiffuse(){
+   vec3 diffuseClr = vec3(texture(material.diffuse, TexCoords));
       
       //Painting
    vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
@@ -78,8 +81,13 @@ vec3 getPaintedDiffuse(){
    vec3 paintingColor;
    if(doPaintOver == 0)
       paintingColor = drawColor;
-   else
-      paintingColor =  texture(paintOverTxtr,screenPos.xy).rgb;
+   else{
+      vec4 src = texture(paintOverTxtr,screenPos.xy*paintOverScale + paintOverPos);
+      paintingColor =  src.rgb;
+      if(src.a < 0.05)
+         return diffuseClr;
+   }
+      
 
    float intensity = 0.0;
 
@@ -93,7 +101,6 @@ vec3 getPaintedDiffuse(){
    }
 
     // ambient
-   vec3 diffuseClr = vec3(texture(material.diffuse, TexCoords));
    vec3 diffuseDrawMix;
    
    if(maskMode == 1)
