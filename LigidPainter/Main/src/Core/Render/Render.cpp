@@ -409,8 +409,14 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 		
 		glUseProgram(renderPrograms.uiProgram);
-		if(renderData.doPainting)
-			renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, drawColor,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,renderPrograms);
+		if(renderData.doPainting){
+			if(!UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked)
+				renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, drawColor,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,renderPrograms);
+			else{
+				
+			}
+
+		}
 		if(glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_RELEASE)
 		if(!panelData.paintingPanelActive){
 			UIElements[UIfocusModeCheckBox].checkBox.checked = false;

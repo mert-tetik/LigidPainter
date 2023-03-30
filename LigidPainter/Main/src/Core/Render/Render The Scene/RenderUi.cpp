@@ -542,9 +542,9 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		addNodeContextMenu.positionY = -mouseYpos/glfwGetVideoMode(glfwGetPrimaryMonitor())->height*2.f + 1.0f;
 	}
 
-	
-	ui.box(0.22f, 0.07f, 0.85f, 0.97, "", glm::vec4(0), 0.075f, false, false, 1.0f, 10000, glm::vec4(0), 0);
-	ui.box(0.22f, 0.07f, 0.85f, -0.97, "", glm::vec4(0), 0.075f, false, false, 1.0f, 10000, glm::vec4(0), 0);
+	//! Main panel barriers
+	ui.box(0.18f, 0.07f, (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum, 0.97, "", glm::vec4(0), 0.075f, false, false, 1.0f, 10000, glm::vec4(0), 0);
+	ui.box(0.18f, 0.07f, (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum, -0.97, "", glm::vec4(0), 0.075f, false, false, 1.0f, 10000, glm::vec4(0), 0);
 
 
 	if (panelData.paintingPanelActive && renderData.panelLoc < 1.98f) {
@@ -591,6 +591,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		const float maskPanelRange = ceil((int)brushMaskTextures.maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
 		ui.verticalRangeBar((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,maskPanelSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.maskTextures.size(),screenGapX);
 
+		//Display brush texture
 		ui.box(0.035f, 0.07f, centerCoords - screenGapX - 0.1f, 0.42f+panelData.paintingPanelSlideVal, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0);
 		
 	}
@@ -598,6 +599,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		glUseProgram(programs.dynamicPaintingProgram);
 		GlSet glset;
 		glset.uniformMatrix4fv(programs.dynamicPaintingProgram,"renderProjection",projection);
+		
+		
 		glset.uniform1f(programs.dynamicPaintingProgram,"radius",(UIElements[UIbrushSizeRangeBar].rangeBar.value+0.11f)*1000);
 		glset.uniform1f(programs.dynamicPaintingProgram,"hardness",(UIElements[UIbrushBlurRangeBar].rangeBar.value-0.09f)*4.5454545*50);
 		glset.uniform1f(programs.dynamicPaintingProgram,"opacity",(UIElements[UIbrushOpacityRangeBar].rangeBar.value + 0.11)*4.5454545);
@@ -605,7 +608,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		glset.uniform1i(programs.dynamicPaintingProgram, "bgtxtr" , 4);
 		glset.uniform1i(programs.dynamicPaintingProgram, "displayingTheBrush" , 1);
 		glUniform2f(glGetUniformLocation(programs.dynamicPaintingProgram , "positions[0]"), 0.5f, 0.5f);
-		//ui.box(0.05f, 0.10f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.7f + panelData.paintingPanelSlideVal, "" ,glm::vec4(1), 0.f , false, false, 0.9f, 1000, glm::vec4(0), 0); //Add mask texture button
 		glm::vec2 brushDisplayerScale = glm::vec2(0.06f,0.12f);
 		glm::vec2 brushDisplayerPos = glm::vec2((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum,0.5f + panelData.paintingPanelSlideVal);
 		std::vector<float> brushDisplayer = { 
@@ -624,7 +626,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		glset.uniform1f(programs.dynamicPaintingProgram,"hardness",(UIElements[UIbrushBlurRangeBar].rangeBar.value-0.09f)*4.5454545*50);
 		glset.uniform1f(programs.dynamicPaintingProgram,"opacity",(UIElements[UIbrushOpacityRangeBar].rangeBar.value + 0.11)*4.5454545);
 
-		ui.box(0.08f,0.02,(renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum,-0.2f + panelData.paintingPanelSlideVal,"", colorData.buttonColor,0.f,0,0,10,0.9f,colorData.buttonColor,0.f);
+		ui.box(0.08f,0.02,(renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum,-0.0f + panelData.paintingPanelSlideVal,"", colorData.buttonColor,0.f,0,0,10,0.99f,colorData.buttonColor,0.f);
 	}
 
 	bool usingUiProgram = false;

@@ -135,12 +135,6 @@ void UserInterface::panel(float panelLoc, Icons icons,PanelData &panelData) {
 	iconBox(0.011f,0.022f,panelLoc - 0.013f,0.405f,0.6f,icons.TextureGenerator,panelData.generatorPanelMixval,colorD.iconColor,glm::vec4(colorD.LigidPainterThemeColor,1));
 
 	glUseProgram(uiPrograms.uiProgram);
-	
-	//Barriers
-	if(panelData.texturePanelActive){
-		box(panelWidth*1.2, cornerWidth*2, panelLoc + panelWidth + cornerWidth, panelHeigth + cornerWidth*2, "", glm::vec4(0), 0.022f, false, false, 1.f, 10000, glm::vec4(0), 0);
-		box(panelWidth*1.2, cornerWidth*2, panelLoc + panelWidth + cornerWidth, -panelHeigth - cornerWidth*2, "", glm::vec4(0), 0.022f, false, false, 1.f, 10000, glm::vec4(0), 0);
-	}
 
 }
 
