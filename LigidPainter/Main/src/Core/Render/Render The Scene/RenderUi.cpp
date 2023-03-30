@@ -417,6 +417,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			brushMaskTexturesState = 1;
 		else if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked)
 			brushMaskTexturesState = 2;
+		else 
+			brushMaskTexturesState = 0;
 		
 		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal,firstClick,coloringPanel,txtrCreatingPanel,anyTextureNameActive,textureText,sndPanel.activeFolderIndex,nodePanel,appNodes,sndPanel,brushMaskTextures,maskPanelEnter,yOffset,nodeScenesHistory,brushMaskTexturesState,chosenTextureResIndex);
 
@@ -568,7 +570,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		ui.iconBox(0.02f,0.03f,centerCoords - screenGapX + 0.08f, -0.81f+panelData.paintingPanelSlideVal,0.9f,icons.dropperIcon,dropperMixVal,colorData.iconColor,colorData.iconColorHover);
 	}
 		
-	if (panelData.paintingPanelActive) { //Icons
+	if (panelData.paintingPanelActive && !UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked) { //Icons
 		int state = 0;
 		
 		if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked)
@@ -583,13 +585,46 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 
 	//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-	if(panelData.paintingPanelActive && renderData.panelLoc < 1.98f){
+	if(panelData.paintingPanelActive && renderData.panelLoc < 1.98f && !UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked){
 		glUseProgram(programs.uiProgram);
 
 		const float maskPanelRange = ceil((int)brushMaskTextures.maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
-		ui.verticalRangeBar( renderData.panelLoc / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,maskPanelSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.maskTextures.size(),screenGapX);
+		ui.verticalRangeBar((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,maskPanelSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.maskTextures.size(),screenGapX);
 
 		ui.box(0.035f, 0.07f, centerCoords - screenGapX - 0.1f, 0.42f+panelData.paintingPanelSlideVal, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0);
+		
+	}
+	if(panelData.paintingPanelActive && renderData.panelLoc < 1.98f && UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked){
+		glUseProgram(programs.dynamicPaintingProgram);
+		GlSet glset;
+		glset.uniformMatrix4fv(programs.dynamicPaintingProgram,"renderProjection",projection);
+		glset.uniform1f(programs.dynamicPaintingProgram,"radius",(UIElements[UIbrushSizeRangeBar].rangeBar.value+0.11f)*1000);
+		glset.uniform1f(programs.dynamicPaintingProgram,"hardness",(UIElements[UIbrushBlurRangeBar].rangeBar.value-0.09f)*4.5454545*50);
+		glset.uniform1f(programs.dynamicPaintingProgram,"opacity",(UIElements[UIbrushOpacityRangeBar].rangeBar.value + 0.11)*4.5454545);
+		glset.uniform1i(programs.dynamicPaintingProgram, "posCount" , 1);
+		glset.uniform1i(programs.dynamicPaintingProgram, "bgtxtr" , 4);
+		glset.uniform1i(programs.dynamicPaintingProgram, "displayingTheBrush" , 1);
+		glUniform2f(glGetUniformLocation(programs.dynamicPaintingProgram , "positions[0]"), 0.5f, 0.5f);
+		//ui.box(0.05f, 0.10f, renderData.panelLoc / centerDivider + centerSum - screenGapX, 0.7f + panelData.paintingPanelSlideVal, "" ,glm::vec4(1), 0.f , false, false, 0.9f, 1000, glm::vec4(0), 0); //Add mask texture button
+		glm::vec2 brushDisplayerScale = glm::vec2(0.06f,0.12f);
+		glm::vec2 brushDisplayerPos = glm::vec2((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum,0.5f + panelData.paintingPanelSlideVal);
+		std::vector<float> brushDisplayer = { 
+			// first triangle
+			 brushDisplayerScale.x + brushDisplayerPos.x,  brushDisplayerScale.y + brushDisplayerPos.y, 0.9f,1,1,0,0,0,  // top right
+			 brushDisplayerScale.x + brushDisplayerPos.x, -brushDisplayerScale.y + brushDisplayerPos.y, 0.9f,1,0,0,0,0,  // bottom right
+			-brushDisplayerScale.x + brushDisplayerPos.x,  brushDisplayerScale.y + brushDisplayerPos.y, 0.9f,0,1,0,0,0,  // top left
+
+			 brushDisplayerScale.x + brushDisplayerPos.x, -brushDisplayerScale.y + brushDisplayerPos.y, 0.9f,1,0,0,0,0,  // bottom right
+			-brushDisplayerScale.x + brushDisplayerPos.x, -brushDisplayerScale.y + brushDisplayerPos.y, 0.9f,0,0,0,0,0,  // bottom left
+			-brushDisplayerScale.x + brushDisplayerPos.x,  brushDisplayerScale.y + brushDisplayerPos.y, 0.9f,0,1,0,0,0   // top left
+		};
+		glset.drawArrays(brushDisplayer,0);
+		glset.uniform1i(programs.dynamicPaintingProgram, "displayingTheBrush" , 0);
+		glset.uniform1f(programs.dynamicPaintingProgram,"radius",(UIElements[UIbrushSizeRangeBar].rangeBar.value+0.11f)*300);
+		glset.uniform1f(programs.dynamicPaintingProgram,"hardness",(UIElements[UIbrushBlurRangeBar].rangeBar.value-0.09f)*4.5454545*50);
+		glset.uniform1f(programs.dynamicPaintingProgram,"opacity",(UIElements[UIbrushOpacityRangeBar].rangeBar.value + 0.11)*4.5454545);
+
+		ui.box(0.08f,0.02,(renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum,-0.2f + panelData.paintingPanelSlideVal,"", colorData.buttonColor,0.f,0,0,10,0.9f,colorData.buttonColor,0.f);
 	}
 
 	bool usingUiProgram = false;
@@ -616,8 +651,10 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		}
 		if(renderData.panelLoc > 1.98f && !UIElements[i].focusMode)
 			panelCompatibility = false;
+		if(!UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked && (i == UIpaintOverCheckBoxElement || (i == UIdisplayPaintOverTextureCheckBoxElement) || (i == UIselectPaintOverTextureNameTextElement) || (i == UIselectPaintOverTextureIconElement)))
+			panelCompatibility = false;
 
-		if(panelCompatibility){
+		if(panelCompatibility && !(UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked && (i == UIbrushBordersRangeBar|| i == UIbrushBordersText || i == UIbrushRotationRangeBar|| i == UIbrushRotationText || i == UIbrushSpacingRangeBar || i == UIbrushSpacingText || i == UIuseNegativeCheckBox || i == UIaddBrushMaskTextureIcon ||  i == UIselectBrushMaskTextureIcon || i == UImaskTextureFileNameText))){
 			float slideVal = 0.0f;
 			
 			if(panelData.paintingPanelActive && !UIElements[i].focusMode)

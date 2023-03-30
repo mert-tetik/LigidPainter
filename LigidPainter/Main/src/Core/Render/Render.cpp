@@ -266,6 +266,11 @@ glm::vec3 screenHoverPixel;
 bool lastMaterialStateChanged = false;
 NodeScene lastNodeScene;
 
+double renderlastMouseXpos;
+double renderlastMouseYpos;
+
+glm::vec2 paintOverLayerPos = glm::vec2(0.f);
+glm::vec2 paintOverLayerScale = glm::vec2(1.f);
 
 int paintRenderCounter = 0;
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
@@ -278,7 +283,7 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::v
 glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
 ,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
 ,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
-,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath) {
+,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture) {
 	
 
 	
@@ -334,27 +339,76 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 			renderSkyBox(skyBoxShaderData,renderPrograms,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
 		//---------------------------------	
 
+		glActiveTexture(GL_TEXTURE17);
+		gls.bindTexture(paintOverTexture.id);
 
 		//3D-------------------------
 		glActiveTexture(GL_TEXTURE13);
 		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
 		glUseProgram(renderPrograms.PBRProgram);
 		gls.uniform1i(renderPrograms.PBRProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
+		gls.uniform1i(renderPrograms.PBRProgram,"doPaintOver",(int)UIElements[UIpaintOverCheckBoxElement].checkBox.checked);
 		gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosX",UIElements[UImirrorXRangeBarElement].rangeBar.value * 10.f + ((float)!UIElements[UImirrorXCheckBox].checkBox.checked*100000.f));
 		gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosY",UIElements[UImirrorYRangeBarElement].rangeBar.value * 10.f + ((float)!UIElements[UImirrorYCheckBox].checkBox.checked*100000.f));
 		gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosZ",UIElements[UImirrorZRangeBarElement].rangeBar.value * 10.f + ((float)! UIElements[UImirrorZCheckBox].checkBox.checked*100000.f));
 
 		glUseProgram(renderPrograms.outProgram);
 		gls.uniform1i(renderPrograms.outProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
+		gls.uniform1i(renderPrograms.outProgram,"doPaintOver",(int)UIElements[UIpaintOverCheckBoxElement].checkBox.checked);
 	
 		renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects);
 
 		renderAxisPointer(axisPointerShaderData,renderPrograms);
 		//-------------------------
 
-
+		
 		//UI
 		glClear(GL_DEPTH_BUFFER_BIT);
+		if((glfwGetKey(renderData.window,GLFW_KEY_F3) == GLFW_PRESS || (UIElements[UIdisplayPaintOverTextureCheckBoxElement].checkBox.checked && UIElements[UIpaintOverCheckBoxElement].checkBox.checked)) && panelData.paintingPanelActive && (UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked || UIElements[UImaskPaintingCheckBoxElement].checkBox.checked)){
+			glm::mat4 projection;
+			projection = glm::ortho(0,1,0,1);
+			
+			glUseProgram(renderPrograms.outProgram);
+			glUniform2f(glGetUniformLocation(renderPrograms.outProgram , "paintOverPos"),paintOverLayerPos.x, paintOverLayerPos.y);
+			glUniform2f(glGetUniformLocation(renderPrograms.outProgram , "paintOverScale"),paintOverLayerScale.x, paintOverLayerScale.y);
+			
+			glUseProgram(renderPrograms.paintOverProgram);
+			gls.uniformMatrix4fv(renderPrograms.paintOverProgram,"TextProjection",projection);
+			gls.uniform1i(renderPrograms.paintOverProgram,"txtr",0);
+			gls.uniform1f(renderPrograms.paintOverProgram,"opacity",0.3f);
+			glActiveTexture(GL_TEXTURE0);
+			gls.bindTexture(paintOverTexture.id);
+			glUniform2f(glGetUniformLocation(renderPrograms.paintOverProgram , "pos"),paintOverLayerPos.x, paintOverLayerPos.y);
+			glUniform2f(glGetUniformLocation(renderPrograms.paintOverProgram , "scale"),paintOverLayerScale.x, paintOverLayerScale.y);
+			std::vector<float> renderVertices = { 
+				// first triangle
+				 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+				 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+				 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+				// second triangle	  ,0,0,0,
+				 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+				 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+				 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+			};
+			gls.drawArrays(renderVertices,0);
+			double xOffset = mouseXpos - renderlastMouseXpos;
+			double yOffset = mouseYpos - renderlastMouseYpos;
+			if(glfwGetMouseButton(renderData.window,0) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_F3) == GLFW_PRESS){
+				paintOverLayerPos.x -= xOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->width;
+				paintOverLayerPos.y += yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
+			}
+			if(glfwGetMouseButton(renderData.window,1) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_F3) == GLFW_PRESS){
+				paintOverLayerScale.x += yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
+				paintOverLayerScale.y += yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
+			}
+			if(glfwGetKey(renderData.window,GLFW_KEY_R) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_F3) == GLFW_PRESS){
+				paintOverLayerScale = glm::vec2(0);
+				paintOverLayerPos = glm::vec2(0);
+			}
+		}
+
+		
+		glUseProgram(renderPrograms.uiProgram);
 		if(renderData.doPainting)
 			renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, drawColor,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,renderPrograms);
 		if(glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_RELEASE)
@@ -518,7 +572,8 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		glUseProgram(renderPrograms.uiProgram);
 		ui.renderText(renderPrograms.uiProgram,"Import Project",0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
 	}
- 
+ 	renderlastMouseXpos = mouseXpos;
+	renderlastMouseYpos = mouseYpos;
 	RenderOutData renderOut;
 	renderOut.mouseHoverPixel = screenHoverPixel;
 	renderOut.maskPanelMaskClicked = uiOut.maskPanelMaskClicked;

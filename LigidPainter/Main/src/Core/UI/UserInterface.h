@@ -53,24 +53,29 @@
 #define UIgenerateTextureButtonElement 44
 #define UIbakeButtonElement 45
 #define UIpaintThroughCheckBoxElement 46
-#define UImaskPaintingCheckBoxElement 47
-#define UIcolorPaintingCheckBoxElement 48
-#define UInormalmapPaintingCheckBoxElement 49
-#define UIsubSelectedImagePowerRangeBarElement 50
-#define UIsubSelectedImagePowerRangeBarTextElement 51
-#define UIfocusModeCheckBox 52
-#define UImirrorXRangeBarElement 53
-#define UImirrorYRangeBarElement 54
-#define UImirrorZRangeBarElement 55
-#define UIjpgIcon 56
-#define UIpngIcon 57
-#define UIfolderIcon 58
-#define UIloadPlaneModelButton 59
-#define UIloadSphereModelButton 60
-#define UIplaneIcon 61
-#define UIsphereIcon 62
-#define UIaddBrushMaskTextureIcon 63
-#define UIselectBrushMaskTextureIcon 64
+#define UIpaintOverCheckBoxElement 47
+#define UIdisplayPaintOverTextureCheckBoxElement 48
+#define UIselectPaintOverTextureIconElement 49
+#define UIselectPaintOverTextureNameTextElement 50
+#define UIdynamicPaintingCheckBoxElement 51
+#define UImaskPaintingCheckBoxElement 52
+#define UIcolorPaintingCheckBoxElement 53
+#define UInormalmapPaintingCheckBoxElement 54
+#define UIsubSelectedImagePowerRangeBarElement 55
+#define UIsubSelectedImagePowerRangeBarTextElement 56
+#define UIfocusModeCheckBox 57
+#define UImirrorXRangeBarElement 58
+#define UImirrorYRangeBarElement 59
+#define UImirrorZRangeBarElement 60
+#define UIjpgIcon 61
+#define UIpngIcon 62
+#define UIfolderIcon 63
+#define UIloadPlaneModelButton 64
+#define UIloadSphereModelButton 65
+#define UIplaneIcon 66
+#define UIsphereIcon 67
+#define UIaddBrushMaskTextureIcon 68
+#define UIselectBrushMaskTextureIcon 69
 
 struct ColorData //LigidPainter color palette
 {

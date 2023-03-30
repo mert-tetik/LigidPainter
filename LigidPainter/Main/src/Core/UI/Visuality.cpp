@@ -1605,6 +1605,10 @@ bool UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 			UIElements[UIbrushBlurRangeBar].rangeBar.value += (xOffset / (screenSizeX / 2)) * 2;
 			UIElements[UIbrushBlurRangeBar].rangeBar.value = util.restrictBetween(UIElements[UIbrushBlurRangeBar].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
 		}
+		glUseProgram(programs.dynamicPaintingProgram);
+		GlSet glset;
+		glset.uniform1f(programs.dynamicPaintingProgram,"radius",(UIElements[UIbrushSizeRangeBar].rangeBar.value+0.11f)*1000);
+		glset.uniform1f(programs.dynamicPaintingProgram,"hardness",(UIElements[UIbrushBlurRangeBar].rangeBar.value-0.09f)*4.5454545*50);
 	}
 
 	if(coloringPanel.dropperHover && firstClick){

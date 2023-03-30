@@ -214,7 +214,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	//Brush rotation range bar
     UIElement brushRotationTextElement;
     brushRotationTextElement.text.positionX = -0.11f;
-    brushRotationTextElement.text.positionY = -0.005f+0.1f-0.035f;
+    brushRotationTextElement.text.positionY = -0.135f+0.12f-0.035f;
     brushRotationTextElement.text.text = "Rotation";
     brushRotationTextElement.text.scale = 0.00022f;
     brushRotationTextElement.text.color = colorData.textBoxColor;
@@ -225,7 +225,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
 	UIElement brushRotationRangeBarElement;
 	brushRotationRangeBarElement.rangeBar.positionX = 0.0f;
-	brushRotationRangeBarElement.rangeBar.positionY = -0.04f+0.06f+0.02f;
+	brushRotationRangeBarElement.rangeBar.positionY = -0.17f+0.08f+0.02f;
 	brushRotationRangeBarElement.rangeBar.value = -0.11f;
 	brushRotationRangeBarElement.panel = 3;
 	brushRotationRangeBarElement.attachedToMainPanel = true;
@@ -235,7 +235,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	//Brush opacity range bar
     UIElement brushOpacityTextElement;
     brushOpacityTextElement.text.positionX = -0.11f;
-    brushOpacityTextElement.text.positionY = -0.135f+0.12f-0.035f;
+    brushOpacityTextElement.text.positionY =-0.005f+0.1f-0.035f;
     brushOpacityTextElement.text.text = "Opacity";
     brushOpacityTextElement.text.scale = 0.00022f;
     brushOpacityTextElement.text.color = colorData.textBoxColor;
@@ -246,7 +246,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
 	UIElement brushOpacityRangeBarElement;
 	brushOpacityRangeBarElement.rangeBar.positionX = 0.0f;
-	brushOpacityRangeBarElement.rangeBar.positionY = -0.17f+0.08f+0.02f;
+	brushOpacityRangeBarElement.rangeBar.positionY = -0.04f+0.06f+0.02f;
 	brushOpacityRangeBarElement.rangeBar.value = 0.11f;
 	brushOpacityRangeBarElement.panel = 3;
 	brushOpacityRangeBarElement.attachedToMainPanel = true;
@@ -591,7 +591,67 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     paintThroughCheckBoxElement.attachedToMainPanel = true;
     paintThroughCheckBoxElement.type = "checkBox";
     UIElements.push_back(paintThroughCheckBoxElement);//38
+    
+    UIElement paintOverCheckBoxElement;
+    paintOverCheckBoxElement.checkBox.positionX = -0.09f;
+    paintOverCheckBoxElement.checkBox.positionY = -0.1f;
+    paintOverCheckBoxElement.checkBox.text = "Paint Over";
+    paintOverCheckBoxElement.checkBox.checked = false;
+    paintOverCheckBoxElement.checkBox.mouseHover = false;
+    paintOverCheckBoxElement.panel = 3;
+    paintOverCheckBoxElement.attachedToMainPanel = true;
+    paintOverCheckBoxElement.type = "checkBox";
+    UIElements.push_back(paintOverCheckBoxElement);//38
+    
+    UIElement displayPaintOverTextureCheckBoxElement;
+    displayPaintOverTextureCheckBoxElement.checkBox.positionX = -0.09f;
+    displayPaintOverTextureCheckBoxElement.checkBox.positionY = -0.15f;
+    displayPaintOverTextureCheckBoxElement.checkBox.text = "Display the texture";
+    displayPaintOverTextureCheckBoxElement.checkBox.checked = false;
+    displayPaintOverTextureCheckBoxElement.checkBox.mouseHover = false;
+    displayPaintOverTextureCheckBoxElement.panel = 3;
+    displayPaintOverTextureCheckBoxElement.attachedToMainPanel = true;
+    displayPaintOverTextureCheckBoxElement.type = "checkBox";
+    UIElements.push_back(displayPaintOverTextureCheckBoxElement);//38
 
+    UIElement selectPaintOverTextureIconElement;
+    selectPaintOverTextureIconElement.icon.positionX = -0.09f;
+    selectPaintOverTextureIconElement.icon.positionY = -0.2f;
+    selectPaintOverTextureIconElement.icon.positionZ = 0.9f;
+    selectPaintOverTextureIconElement.icon.width = 0.015f;
+    selectPaintOverTextureIconElement.icon.height = 0.03f;
+    selectPaintOverTextureIconElement.icon.color = colorData.iconColor;
+    selectPaintOverTextureIconElement.icon.colorHover = colorData.iconColorHover;
+    selectPaintOverTextureIconElement.icon.mixVal = 0.0f;
+    selectPaintOverTextureIconElement.icon.clickable = true;
+    selectPaintOverTextureIconElement.icon.icon = icons.AddTexture;
+    selectPaintOverTextureIconElement.panel = 3;
+    selectPaintOverTextureIconElement.attachedToMainPanel = true;
+    selectPaintOverTextureIconElement.type = "icon";
+    UIElements.push_back(selectPaintOverTextureIconElement);//32
+
+    UIElement selectPaintOverTextureNameTextElement;
+	selectPaintOverTextureNameTextElement.text.positionX = -0.07f;
+	selectPaintOverTextureNameTextElement.text.positionY = -0.2f;
+	selectPaintOverTextureNameTextElement.text.text = "";
+    selectPaintOverTextureNameTextElement.text.scale = 0.00022f;
+    selectPaintOverTextureNameTextElement.text.color = colorData.textColor;
+	selectPaintOverTextureNameTextElement.panel = 3;
+	selectPaintOverTextureNameTextElement.attachedToMainPanel = true;
+	selectPaintOverTextureNameTextElement.type = "text";
+    UIElements.push_back(selectPaintOverTextureNameTextElement);//12
+
+    UIElement dynamicPaintingCheckBoxElement;
+    dynamicPaintingCheckBoxElement.checkBox.positionX = -0.44f;
+    dynamicPaintingCheckBoxElement.checkBox.positionY = 0.9f;
+    dynamicPaintingCheckBoxElement.checkBox.text = "D";
+    dynamicPaintingCheckBoxElement.checkBox.checked = false;
+    dynamicPaintingCheckBoxElement.panel = 3;
+    dynamicPaintingCheckBoxElement.focusMode = true;
+    dynamicPaintingCheckBoxElement.attachedToMainPanel = false;
+    dynamicPaintingCheckBoxElement.type = "checkBox";
+    UIElements.push_back(dynamicPaintingCheckBoxElement);//23
+    
     UIElement maskPaintingCheckBoxElement;
     maskPaintingCheckBoxElement.checkBox.positionX = -0.38f;
     maskPaintingCheckBoxElement.checkBox.positionY = 0.9f;
@@ -603,7 +663,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     maskPaintingCheckBoxElement.type = "checkBox";
     UIElements.push_back(maskPaintingCheckBoxElement);//23
 
-	UIElement colorPaintingCheckBoxElement;
+    UIElement colorPaintingCheckBoxElement;
     colorPaintingCheckBoxElement.checkBox.positionX = -0.32f;
     colorPaintingCheckBoxElement.checkBox.positionY = 0.9f;
     colorPaintingCheckBoxElement.checkBox.text = "C";
@@ -644,7 +704,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(subSelectedImagePowerRangeBarTextElement);//12
 
     UIElement focusModeCheckBoxElement;
-    focusModeCheckBoxElement.checkBox.positionX = -0.57f;
+    focusModeCheckBoxElement.checkBox.positionX = -0.63f;
     focusModeCheckBoxElement.checkBox.positionY = 0.9f;
     focusModeCheckBoxElement.checkBox.text = "Focus Mode";
     focusModeCheckBoxElement.panel = 3;

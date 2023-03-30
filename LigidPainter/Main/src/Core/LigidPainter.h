@@ -35,6 +35,8 @@ struct Programs
 	unsigned int noisyTextureProgram; 
 	unsigned int curveProgram; 
 	unsigned int rampProgram; 
+	unsigned int dynamicPaintingProgram; 
+	unsigned int paintOverProgram;
 };
 struct Cubemaps{
 	unsigned int cubemap;
@@ -272,7 +274,7 @@ public:
 	void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatV,float &hueValue,float &saturationValuePosX, float &saturationValuePosY,bool isMainColorPicker);
 	void setViewportToDefault();
 	void selectBrushMaskTexture();
-
+	void selectingPaintOverTextureIcon(); 
 
 };
 struct PanelData {

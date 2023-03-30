@@ -202,6 +202,8 @@ int chosenTextureResIndex = 2; //0:256 1:512 2:1024 3:2048 4:4096 5:8412
 int chosenNodeResIndex = 1; //0:256 1:512 2:1024 3:2048 
 int chosenSkyboxTexture = 0;
 bool duplicateNodeCall = false;
+aTexture paintOverTexture;
+bool selectingPaintOverTexture;
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
@@ -480,6 +482,10 @@ bool LigidPainter::run()
 
 	subSelectedImagePowerRangeBar(0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 
+	glUseProgram(programs.dynamicPaintingProgram);
+	glset.uniform1f(programs.dynamicPaintingProgram,"radius",(UIElements[UIbrushSizeRangeBar].rangeBar.value+0.11f)*300);
+	glset.uniform1f(programs.dynamicPaintingProgram,"hardness",(UIElements[UIbrushBlurRangeBar].rangeBar.value-0.09f)*4.5454545*50);
+	glset.uniform1f(programs.dynamicPaintingProgram,"opacity",(UIElements[UIbrushOpacityRangeBar].rangeBar.value + 0.11)*4.5454545);
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
@@ -496,7 +502,17 @@ bool LigidPainter::run()
 		util.printRenderingSpeed();
 		
 		// util.printError();
-	
+		if(selectingPaintOverTexture && !textureSelectionPanel.active)
+			selectingPaintOverTexture = false;
+
+		if(selectingPaintOverTexture && textureSelectionPanel.textureClicked){
+			textureSelectionPanel.textureClicked = false;
+			paintOverTexture = albedoTextures[textureSelectionPanel.selectedIndex];
+			textureSelectionPanel.active = false;
+			selectingPaintOverTexture = false;
+			UIElements[UIselectPaintOverTextureNameTextElement].text.text = paintOverTexture.name;
+		}
+
 		mainLoop.updateCameraPosChanging(callbackData.cameraPos,cameraPosChanging);
 		//mainLoop.detectClick(window,mousePress,firstClick);
 		if(firstClick){
@@ -762,7 +778,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos, callbackData.originPos,startScreen,projectFilePath);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos, callbackData.originPos,startScreen,projectFilePath,paintOverTexture);
 		}
 		duplicateNodeCall = false;
 		
@@ -783,13 +799,13 @@ bool LigidPainter::run()
 		//Painting
 		const bool distance_spacingCompatibility = glm::distance(glm::vec2(mouseDrawingPosX,mouseDrawingPosY),glm::vec2(mouseXpos,mouseYpos)) > paintingSpacing;
 		const bool paintingCondition = glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && !panelChanging && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !colorPicker.dropperActive && distance_spacingCompatibility && !coloringPanel.saturationValueBoxPointerPressed && !coloringPanel.hueBarPointerPressed; 
-		if (paintingCondition && !moveCamera && (glfwGetKey(window,GLFW_KEY_Z) == GLFW_RELEASE) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE){
+		if (paintingCondition && !moveCamera && (glfwGetKey(window,GLFW_KEY_Z) == GLFW_RELEASE) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_F3) == GLFW_RELEASE){
 
 			mouseDrawingPosX = mouseXpos;
 			mouseDrawingPosY = mouseYpos;
 
 			//Paint
-			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view,mirrorParams,callbackData.cameraPos, callbackData.originPos,UIElements[UImirrorXRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorYRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorZRangeBarElement].rangeBar.value*40.f);
+			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view,mirrorParams,callbackData.cameraPos, callbackData.originPos,UIElements[UImirrorXRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorYRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorZRangeBarElement].rangeBar.value*40.f,UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked);
 			paintRenderCounter++;
 			if(paintRenderCounter == 50000){
 				paintRender = true;
@@ -875,7 +891,7 @@ bool LigidPainter::run()
 		 		glfwPollEvents();
 
 				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos, callbackData.originPos,startScreen,projectFilePath);
+		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos, callbackData.originPos,startScreen,projectFilePath,paintOverTexture);
 		 		
 				
 				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
@@ -1432,6 +1448,8 @@ void LigidPainter::brushSizeRangeBar(double xOffset,int width){
 	Utilities util;
 	UIElements[UIbrushSizeRangeBar].rangeBar.value -= xOffset / (width / 2);
 	UIElements[UIbrushSizeRangeBar].rangeBar.value = util.restrictBetween(UIElements[UIbrushSizeRangeBar].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+	glUseProgram(programs.dynamicPaintingProgram);
+	glset.uniform1f(programs.dynamicPaintingProgram,"radius",(UIElements[UIbrushSizeRangeBar].rangeBar.value+0.11f)*300);
 }
 void LigidPainter::colorBox(){
 	colorPicker.saturationValueBoxClicked = true;
@@ -1449,7 +1467,9 @@ void LigidPainter::brushBlurRangeBar(double xOffset,int width,int height,bool re
 	brushBlurVal = ((UIElements[UIbrushBlurRangeBar].rangeBar.value + 0.11f) * 545.454545455f) + 1.0f; //Max 120
 
 	txtr.updateMaskTexture(FBOScreen,width,height, UIElements[UIbrushRotationRangeBar].rangeBar.value,renderTiny,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
-
+	
+	glUseProgram(programs.dynamicPaintingProgram);
+	glset.uniform1f(programs.dynamicPaintingProgram,"hardness",(UIElements[UIbrushBlurRangeBar].rangeBar.value-0.09f)*4.5454545*50);
 }
 void LigidPainter::textureDisplayerButton(double xOffset,double yOffset,int width,int height) {
 	panelChanging = true;
@@ -1483,6 +1503,9 @@ void LigidPainter::brushOpacityRangeBar(double xOffset, int width, int height) {
 	//brushOpacityChanged = true; not used
 	UIElements[UIbrushOpacityRangeBar].rangeBar.value -= xOffset / (width / 2.0f);
 	UIElements[UIbrushOpacityRangeBar].rangeBar.value = util.restrictBetween(UIElements[UIbrushOpacityRangeBar].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+
+	glUseProgram(programs.dynamicPaintingProgram);
+	glset.uniform1f(programs.dynamicPaintingProgram,"opacity",(UIElements[UIbrushOpacityRangeBar].rangeBar.value + 0.11)*4.5454545);
 }
 void LigidPainter::skyboxExposureRangeBar(double xOffset, int width, int height) {
 	Utilities util;
@@ -1630,7 +1653,12 @@ void LigidPainter::colorBoxPickerButton(double xOffset, double yOffset, int widt
 	colorPicker.saturationValuePosY = util.restrictBetween(colorPicker.saturationValuePosY, 0.199f, -0.2f);//Keep in boundaries
 	colorPicker.saturationValueValChanged = true;
 }
-
+void LigidPainter::selectingPaintOverTextureIcon(){
+	selectingPaintOverTexture = true;
+	textureSelectionPanel.posX = 0.65f;
+	textureSelectionPanel.posY = -0.3f;
+	textureSelectionPanel.active = true;
+}
 void LigidPainter::modelFilePathTextBox() {
 	Utilities utilities;
 

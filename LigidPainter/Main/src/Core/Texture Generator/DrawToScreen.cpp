@@ -43,7 +43,7 @@ bool refreshTheScreenMask = false;
 
 unsigned int lastTxtr = 0;
 
-void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int removeThisParam2,int removeThisParam,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view,std::vector<MirrorParam> &mirrorParams,glm::vec3 cameraPos,glm::vec3 originPos,float xMirrorPos,float yMirrorPos,float zMirrorPos) {
+void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int removeThisParam2,int removeThisParam,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view,std::vector<MirrorParam> &mirrorParams,glm::vec3 cameraPos,glm::vec3 originPos,float xMirrorPos,float yMirrorPos,float zMirrorPos,bool dynamicPainting) {
 
 	if(true){
 		holdLocations.clear();
@@ -82,6 +82,16 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 	     distanceX/2.0f,   distanceX/2.0f, 0.0f	,1,0,	drawColor.r,drawColor.g,drawColor.b,  // bottom left
 	     distanceX/2.0f,  -distanceX/2.0f, 0.0f	,1,1,	drawColor.r,drawColor.g,drawColor.b   // top left
 	};
+	std::vector<float> screenVertices = { 
+		// first triangle
+		 (float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width,  (float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height, 0.0f,1,1,0,0,0,  // top right
+		 (float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+		 0.0f,  (float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height, 0.0f,0,1,0,0,0,  // top left 
+		// second triangle	  ,0,0,0,
+		 (float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+		 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+		 0.0f,  (float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height, 0.0f,0,1,0,0,0   // top left
+	};
 
 	glm::mat4 paintingProjection;
 	paintingProjection = glm::ortho(0.0f,(float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width,(float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height,0.0f);
@@ -109,9 +119,6 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 		float xposDif = (mouseXpos - lastMouseXPos) / differenceBetweenMousePoints;
 		float yposDif = (mouseYpos - lastMouseYPos) / differenceBetweenMousePoints;
 
-		if (differenceBetweenMousePoints <= 10 || !fillBetween) {
-			differenceBetweenMousePoints = 1;
-		}
 			for (size_t i = 0; i < differenceBetweenMousePoints; i++)
 			{
 				if (differenceBetweenMousePoints > 10) {
@@ -140,39 +147,45 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 			std::string target = "transform[" + std::to_string(i) + "]";
 			glset.uniform3f(programs.twoDPaintingProgram , target.c_str() , holdLocations[i].x , holdLocations[i].y , z);
 		}
+		glUseProgram(programs.dynamicPaintingProgram);
+		glset.uniformMatrix4fv(programs.dynamicPaintingProgram, "renderProjection" , paintingProjection);
+		glset.uniform1i(programs.dynamicPaintingProgram, "posCount" , holdLocations.size());
+		for (int i = 0; i < holdLocations.size(); i++)
+		{
+			std::string target = "positions[" + std::to_string(i) + "]";
+			glUniform2f(glGetUniformLocation(programs.dynamicPaintingProgram , target.c_str()), holdLocations[i].x/(float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width , holdLocations[i].y/(float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+		}
 
 
 		glActiveTexture(GL_TEXTURE4);
-
 		glViewport(0,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
-
-		glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
-		
-		glset.blendFunc( GL_SRC_ALPHA, GL_ONE);
-
 		glset.bindFramebuffer(FBO);
 
-		if(refreshTheScreenMask){
-			glClear(GL_DEPTH_BUFFER_BIT);
-			refreshTheScreenMask = true;
+		if(!dynamicPainting){
+			glUseProgram(programs.twoDPaintingProgram);
+			glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);		
+			glset.blendFunc( GL_SRC_ALPHA, GL_ONE);
+			if(refreshTheScreenMask){
+				glClear(GL_DEPTH_BUFFER_BIT);
+				refreshTheScreenMask = true;
+			}
+			glBufferSubData(GL_ARRAY_BUFFER , 0 , paintingMaskCoords.size() * sizeof(float) , &paintingMaskCoords[0]);
+			glEnable(GL_DEPTH_TEST);
+			glDepthMask(GL_TRUE);
+			glDepthFunc(GL_ALWAYS);
+			glDrawArraysInstanced(GL_TRIANGLES , 0 , 6 , holdLocations.size());
+			glset.activeTexture(GL_TEXTURE4);
+			glset.generateMipmap();
+			glset.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glDepthFunc(GL_LESS);
+			glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
 		}
-		
-		glBufferSubData(GL_ARRAY_BUFFER , 0 , paintingMaskCoords.size() * sizeof(float) , &paintingMaskCoords[0]);
-
-		glEnable(GL_DEPTH_TEST);
-		glDepthMask(GL_TRUE);
-		glDepthFunc(GL_ALWAYS);
-
-		glDrawArraysInstanced(GL_TRIANGLES , 0 , 6 , holdLocations.size());
-
-		glset.activeTexture(GL_TEXTURE4);
-		glset.generateMipmap();
-		glset.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
-		glDepthFunc(GL_LESS);
-
-		glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
+		else{
+			glDepthFunc(GL_ALWAYS);
+			glset.drawArrays(screenVertices,false);
+			glset.generateMipmap();
+			glDepthFunc(GL_LESS);
+		}
 
 		int loopSize = 0;
 

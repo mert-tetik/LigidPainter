@@ -499,6 +499,18 @@ public:
 
 
 
+		//Dynamic painting program
+		unsigned int dynamicPaintingProgram = gl.createProgram("./LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/dynamicPainting");
+		
+		
+		
+		
+		//Dynamic painting program
+		unsigned int paintOverProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/paintover");
+
+
+
+
 		Programs glPrograms;
 
 		glPrograms.blurProgram = blurProgram;
@@ -521,6 +533,8 @@ public:
 		glPrograms.noisyTextureProgram = noisyTextureProgram;
 		glPrograms.curveProgram = curveProgram;
 		glPrograms.rampProgram = rampProgram;
+		glPrograms.dynamicPaintingProgram = dynamicPaintingProgram;
+		glPrograms.paintOverProgram = paintOverProgram;
 
 
 		return glPrograms;

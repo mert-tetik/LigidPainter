@@ -167,20 +167,44 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		if (UIElements[UIpaintThroughCheckBoxElement].checkBox.mouseHover)
 			UIElements[UIpaintThroughCheckBoxElement].checkBox.checked = !UIElements[UIpaintThroughCheckBoxElement].checkBox.checked; 
 		
+		if (UIElements[UIpaintOverCheckBoxElement].checkBox.mouseHover)
+			UIElements[UIpaintOverCheckBoxElement].checkBox.checked = !UIElements[UIpaintOverCheckBoxElement].checkBox.checked; 
+		if (UIElements[UIdisplayPaintOverTextureCheckBoxElement].checkBox.mouseHover)
+			UIElements[UIdisplayPaintOverTextureCheckBoxElement].checkBox.checked = !UIElements[UIdisplayPaintOverTextureCheckBoxElement].checkBox.checked; 
+		if (UIElements[UIselectPaintOverTextureIconElement].icon.hover)
+			ligid.selectingPaintOverTextureIcon();
+		
+		if (UIElements[UIdynamicPaintingCheckBoxElement].checkBox.mouseHover){
+			UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked = true; 
+			UIElements[UImaskPaintingCheckBoxElement].checkBox.checked = false; 
+			UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked = false; 
+			UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked = false; 
+			UIElements[UIbrushBlurText].text.text = "Hardness";
+			UIElements[UIbrushSizeText].text.text = "Radius";
+		}
 		if (UIElements[UImaskPaintingCheckBoxElement].checkBox.mouseHover){
 			UIElements[UImaskPaintingCheckBoxElement].checkBox.checked = true; 
 			UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked = false; 
 			UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked = false; 
+			UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked = false; 
+			UIElements[UIbrushBlurText].text.text = "Blur";
+			UIElements[UIbrushSizeText].text.text = "Size";
 		}
 		if (UIElements[UIcolorPaintingCheckBoxElement].checkBox.mouseHover){
 			UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked = true; 
 			UIElements[UImaskPaintingCheckBoxElement].checkBox.checked = false; 
 			UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked = false; 
+			UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked = false; 
+			UIElements[UIbrushBlurText].text.text = "Blur";
+			UIElements[UIbrushSizeText].text.text = "Size";
 		}
 		if (UIElements[UInormalmapPaintingCheckBoxElement].checkBox.mouseHover){
 			UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked = true; 
 			UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked = false; 
 			UIElements[UImaskPaintingCheckBoxElement].checkBox.checked = false; 
+			UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked = false; 
+			UIElements[UIbrushBlurText].text.text = "Blur";
+			UIElements[UIbrushSizeText].text.text = "Size";
 		}
 		
 		if (UIElements[UIdownloadButton].button.hover)

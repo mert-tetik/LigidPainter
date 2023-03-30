@@ -204,6 +204,7 @@ void GlSet::usePBRShader(unsigned int program,PBRShaderData data){
 	//Frag
 	uniform1i(program,"screenMaskTexture",data.screenMaskTexture);
 	uniform1i(program,"brdfLUT",15);
+	uniform1i(program,"paintOverTxtr",17);
 	uniform1i(program,"tdRenderedMaskTexture",8);
 	uniform1i(program,"prefilterMap",16);
 	uniform3fv(program,"drawColor",data.drawColor);
@@ -284,6 +285,7 @@ void GlSet::useOutShader(unsigned int program, OutShaderData data){
 	uniform1i(program,"screenMaskTexture",data.screenMaskTexture);
 	uniform1i(program,"isRenderScreenMaskMode",data.isRenderScreenMaskMode);
 	uniform1i(program,"paintedTxtrMask",11);
+	uniform1i(program,"paintOverTxtr",17);
 	uniform1i(program,"depthTexture",data.depthTexture);
 	uniform1i(program,"mirroredDepthTexture",data.mirroredDepthTexture);
 	uniform1i(program,"renderDepth",data.renderDepth);
