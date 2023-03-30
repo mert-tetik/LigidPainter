@@ -397,15 +397,19 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 			double xOffset = mouseXpos - renderlastMouseXpos;
 			double yOffset = mouseYpos - renderlastMouseYpos;
 			if(glfwGetMouseButton(renderData.window,0) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_F3) == GLFW_PRESS){
-				paintOverLayerPos.x -= xOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->width;
-				paintOverLayerPos.y += yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
+				if(!glfwGetKey(renderData.window,GLFW_KEY_Y) == GLFW_PRESS)
+					paintOverLayerPos.x -= xOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->width;
+				if(!glfwGetKey(renderData.window,GLFW_KEY_X) == GLFW_PRESS)
+					paintOverLayerPos.y += yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
 			}
 			if(glfwGetMouseButton(renderData.window,1) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_F3) == GLFW_PRESS){
+				if(!glfwGetKey(renderData.window,GLFW_KEY_Y) == GLFW_PRESS)
 				paintOverLayerScale.x += yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
+				if(!glfwGetKey(renderData.window,GLFW_KEY_X) == GLFW_PRESS)
 				paintOverLayerScale.y += yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
 			}
 			if(glfwGetKey(renderData.window,GLFW_KEY_R) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_F3) == GLFW_PRESS){
-				paintOverLayerScale = glm::vec2(0);
+				paintOverLayerScale = glm::vec2(1);
 				paintOverLayerPos = glm::vec2(0);
 			}
 		}

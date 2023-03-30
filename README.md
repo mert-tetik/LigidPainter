@@ -33,6 +33,13 @@ https://www.ligidtools.com/building-ligid-painter
     Left CTRL + 4 = Stabilize camera on -z axis
     Z + Vertical mouse move = Zoom in & out
 
+    Over Painting Texture
+    F3 - Show and Modify the texture
+    F3 + Left Mouse = Transform  (Press X or Y to lock to the X or Y axis)
+    F3 + Right Mouse = Scale (Press X or Y to lock to the X or Y axis)
+    F3 + R = Reset the transform
+    
+
     While message box is active
     ESC = Negative (Close the message box)
     ENTER = Positive (Exit the app if closing message box is active) 
