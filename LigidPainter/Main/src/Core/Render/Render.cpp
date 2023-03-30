@@ -179,7 +179,7 @@ void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* 
 	GlSet gl;
 	Texture txtr;
 
-	
+	//TODO : Fix texture exporting
 	for (size_t i = 0; i < albedoTextures.size(); i++) //Export all the albedo textures
 	{
 		if(albedoTextures[i].isTexture){
@@ -305,6 +305,8 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	double mouseYpos;
 	glfwGetCursorPos(renderData.window, &mouseXpos, &mouseYpos);
 	//-------------------------
+	float screenGapX = ((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/(((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width)/2.0f)/2.0f; 
+
 
 	if(!startScreen){
 		glActiveTexture(GL_TEXTURE9);
@@ -473,9 +475,8 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 		UserInterface ui;
 		glUseProgram(renderPrograms.uiProgram);
-		//TODO : Screengapx
 		glm::vec4 saveButtonColor = colorData.textColor;
-		if(ui.isMouseOnButton(renderData.window,0.025f,0.02f,-0.05f,0.95f,mouseXpos,mouseYpos,false)){
+		if(ui.isMouseOnButton(renderData.window,0.025f,0.02f,-0.05f-screenGapX,0.95f,mouseXpos,mouseYpos,false)){
 			saveButtonColor = glm::vec4(colorData.LigidPainterThemeColor,1);
 
 			nodePanel.pointerCursor = true;
@@ -501,11 +502,11 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		ui.renderText(renderPrograms.uiProgram,"Save",-0.05f,0.95f,0.00022f,saveButtonColor,0.9f,false);
 		
 		glm::vec4 loadButtonColor = colorData.textColor;
-		if(ui.isMouseOnButton(renderData.window,0.025f,0.02f,0.05f,0.95f,mouseXpos,mouseYpos,false)){
+		if(ui.isMouseOnButton(renderData.window,0.025f,0.02f,0.05f-screenGapX,0.95f,mouseXpos,mouseYpos,false)){
 			loadButtonColor = glm::vec4(colorData.LigidPainterThemeColor,1);
 			nodePanel.pointerCursor = true;
 			if(firstClick){
-				if(tinyfd_messageBox("Warning!","Another projected will be loaded. Unsaved data will be lost.","okcancel","warning",0)){
+				if(tinyfd_messageBox("Warning!","Another project will be loaded. Unsaved data will be lost.","okcancel","warning",0)){
 					char const* lFilterPatterns[1] = { "*.ligid" };
 					//File dialog
 					auto path = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
@@ -537,30 +538,28 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		glUseProgram(renderPrograms.iconsProgram);
 		gls.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
 	
-		float new2DProjectMixVal = 0.f;
-		if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,-0.4f,0.0f,mouseXpos,mouseYpos,false)){
-			new2DProjectMixVal = 1.f;
-		}
-		ui.container(-0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,new2DProjectMixVal);
+		// float new2DProjectMixVal = 0.f;
+		// if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,-0.4f,0.0f,mouseXpos,mouseYpos,false)){
+		// 	new2DProjectMixVal = 1.f;
+		// }
+		ui.container(-0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColorHover,renderPrograms,icons.Circle,colorData.buttonColorHover,0);
 		glUseProgram(renderPrograms.iconsProgram);
 		ui.iconBox(0.07,0.14f,-0.4f,0.1f,1.f,icons.Texture,0.f,colorData.iconColor,colorData.iconColor);
 		glUseProgram(renderPrograms.uiProgram);
 		ui.renderText(renderPrograms.uiProgram,"New 2D Project",-0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
+		ui.renderText(renderPrograms.uiProgram,"Will be available",-0.4f-0.06f,-0.3f,0.00022f,glm::vec4(colorData.LigidPainterThemeColor,1),1.f,false);
+		ui.renderText(renderPrograms.uiProgram,"on the next release",-0.42f-0.06f,-0.32f,0.00022f,glm::vec4(colorData.LigidPainterThemeColor,1),1.f,false);
 
 		float new3DProjectMixVal = 0.f;
-		if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.f,0.0f,mouseXpos,mouseYpos,false)){
+		float importProjectMixVal = 0.f;
+		if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
+			nodePanel.pointerCursor = true;
 			new3DProjectMixVal = 1.f;
 			if(firstClick)
 				startScreen = false;
 		}
-		ui.container(-0.0f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,new3DProjectMixVal);
-		glUseProgram(renderPrograms.iconsProgram);
-		ui.iconBox(0.07,0.14f,0.0f,0.1f,1.f,icons.TDModel,0.f,colorData.iconColor,colorData.iconColor);
-		glUseProgram(renderPrograms.uiProgram);
-		ui.renderText(renderPrograms.uiProgram,"New 3D Project",0.0f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
-		
-		float importProjectMixVal = 0.f;
-		if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.4f,0.0f,mouseXpos,mouseYpos,false)){
+		else if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.4f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
+			nodePanel.pointerCursor = true;
 			importProjectMixVal = 1.f;
 			if(firstClick){
 				char const* lFilterPatterns[1] = { "*.ligid" };
@@ -575,6 +574,15 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 				}
 			}
 		}
+		else{
+			nodePanel.pointerCursor = false;
+		}
+		ui.container(-0.0f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,new3DProjectMixVal);
+		glUseProgram(renderPrograms.iconsProgram);
+		ui.iconBox(0.07,0.14f,0.0f,0.1f,1.f,icons.TDModel,0.f,colorData.iconColor,colorData.iconColor);
+		glUseProgram(renderPrograms.uiProgram);
+		ui.renderText(renderPrograms.uiProgram,"New 3D Project",0.0f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
+		
 		ui.container(0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,importProjectMixVal);
 		glUseProgram(renderPrograms.iconsProgram);
 		ui.iconBox(0.07,0.14f,0.4f,0.1f,1.f,icons.ImportModel,0.f,colorData.iconColor,colorData.iconColor);

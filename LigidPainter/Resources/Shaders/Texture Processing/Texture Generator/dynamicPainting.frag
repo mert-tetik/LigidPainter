@@ -45,8 +45,9 @@ vec4 linear2gamma_premultalpha( vec4 c )
 void main()
 {   
     //TODO : Update ratio (1.7)
-    float bufferRatio = 1.7;
-    vec2 uv = vec2(texCoords.x*bufferRatio,texCoords.y);//TODO : Fix tha shi
+    const float ratio =1.77777777778;
+ 
+    vec2 uv = vec2(texCoords.x*ratio,texCoords.y);
     float bg = texture(bgtxtr,vec2(texCoords.x * 1000,1-texCoords.y*1000)).r;
         vec4 fRes;
         
@@ -55,7 +56,9 @@ void main()
             vec4 currentColor = vec4(1);
 
             vec2 lastPoint = positions[i]*1000;
+            lastPoint.x *= ratio;
             vec2 currentPoint = positions[i]*1000;
+            currentPoint.x *= ratio;
             vec4 fragColor = vec4(bg); 
 
 

@@ -454,7 +454,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 			for (size_t i = 0; i < addNodeContextMenu.buttons.size(); i++)
 			{
-				//TODO : Scroll after search
 				if(indepI <= 9 && (i == 0||((util.isMatch(addNodeContextMenu.buttons[i].text,addNodeContextMenu.searchText) && addNodeContextMenu.searchText != "search") || (addNodeContextMenu.scroll < i && i < min(addNodeContextMenu.buttons.size(),(size_t)10)+addNodeContextMenu.scroll && addNodeContextMenu.searchText == "search")))){
 					addNodeContextMenu.buttons[i].transitionMixVal = (float)addNodeContextMenu.buttons[i].hover * (float)addNodeContextMenu.buttons[i].hoverAnimationActive;
 
@@ -628,7 +627,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 		//Paint over texture name
 		glUseProgram(programs.uiProgram);
-		ui.box(0.09f,0.03,((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum) - 0.045f,-0.25f + panelData.paintingPanelSlideVal,"", colorData.buttonColor,0.f,0,0,0.8f,0.8f,colorData.buttonColor,0.f);
+		ui.box(0.09f,0.03,((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum) - 0.035f,-0.25f + panelData.paintingPanelSlideVal,"", colorData.buttonColor,0.f,0,0,0.8f,0.8f,colorData.buttonColor,0.f);
 	}
 
 	bool usingUiProgram = false;

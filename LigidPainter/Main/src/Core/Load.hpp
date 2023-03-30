@@ -103,12 +103,12 @@ public:
 		Texture txtr;
 		std::vector<std::string> faces
 		{
-		    "LigidPainter/Resources/Cubemap/Skybox/sky1/px.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky1/nx.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky1/ny.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky1/py.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky1/pz.png",
-		    "LigidPainter/Resources/Cubemap/Skybox/sky1/nz.png"
+		    "LigidPainter/Resources/Cubemap/Skybox/sky2/px.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky2/nx.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky2/ny.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky2/py.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky2/pz.png",
+		    "LigidPainter/Resources/Cubemap/Skybox/sky2/nz.png"
 		};
 		unsigned int cubemapTexture = loadCubemap(faces,GL_TEXTURE13);  
 		

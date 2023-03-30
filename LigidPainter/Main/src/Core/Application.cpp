@@ -1,6 +1,4 @@
 //Application.cpp
-//Note : Main loop is there
-//Every element is called from there
 
 
 //GL_TEXTURE0 = Albedo texture
@@ -41,6 +39,18 @@
 //Left CTRL + TAB + T = Switch to painting panel
 //Left CTRL + TAB + R = Switch to export panel
 
+//TODO List 
+//? Fix node lagging
+//? CTRL SHIFT S
+//? Fix 3 axis mirror & paint over
+//? Dynamic painting performance if possible
+//? Fix texture displayer hover
+//? Replace mirror range bars
+//? Update all the textures after changing the project resolution (ask before)
+//? Baking texture resolution
+//? Default selected & subselected textures
+//? Fix Message box hover
+//? Painting panel scroll
 
 #include<iostream>
 
@@ -200,7 +210,7 @@ glm::vec3 drawColor;
 OutShaderData outShaderData;
 int chosenTextureResIndex = 2; //0:256 1:512 2:1024 3:2048 4:4096 5:8412
 int chosenNodeResIndex = 1; //0:256 1:512 2:1024 3:2048 
-int chosenSkyboxTexture = 0;
+int chosenSkyboxTexture = 1;
 bool duplicateNodeCall = false;
 aTexture paintOverTexture;
 bool selectingPaintOverTexture;

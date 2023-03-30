@@ -615,7 +615,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(displayPaintOverTextureCheckBoxElement);//38
 
     UIElement selectPaintOverTextureIconElement;
-    selectPaintOverTextureIconElement.icon.positionX = -0.09f;
+    selectPaintOverTextureIconElement.icon.positionX = -0.08f;
     selectPaintOverTextureIconElement.icon.positionY = -0.25f;
     selectPaintOverTextureIconElement.icon.positionZ = 0.9f;
     selectPaintOverTextureIconElement.icon.width = 0.015f;
@@ -631,7 +631,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(selectPaintOverTextureIconElement);//32
 
     UIElement selectPaintOverTextureNameTextElement;
-	selectPaintOverTextureNameTextElement.text.positionX = -0.07f;
+	selectPaintOverTextureNameTextElement.text.positionX = -0.06f;
 	selectPaintOverTextureNameTextElement.text.positionY = -0.25f;
 	selectPaintOverTextureNameTextElement.text.text = "";
     selectPaintOverTextureNameTextElement.text.scale = 0.00022f;

@@ -133,7 +133,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 	yoffset = lastY - ypos;
 	lastX = xpos;
 	lastY = ypos;
-	if ((glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetMouseButton(window, 0) == GLFW_PRESS || moveCamera) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && !zoomInOutCamera && glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) {
+	if ((glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetMouseButton(window, 0) == GLFW_PRESS || moveCamera) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && !zoomInOutCamera && glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_F3) == GLFW_RELEASE) {
 		xoffset *= sensitivity;
 		yoffset *= sensitivity;
 
@@ -147,7 +147,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		cameraPos.y -= cos(glm::radians(pitch)) * yoffset * (sensitivity / 2);
 		originPos.y -= cos(glm::radians(pitch)) * yoffset * (sensitivity / 2);
 	}
-	else if ((glfwGetMouseButton(window, 1) == GLFW_PRESS || moveCamera) && !zoomInOutCamera && glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE) {
+	else if ((glfwGetMouseButton(window, 1) == GLFW_PRESS || moveCamera) && !zoomInOutCamera && glfwGetKey(window, GLFW_KEY_Z) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_F3) == GLFW_RELEASE) {
 
 		xoffset *= sensitivity;
 		yoffset *= sensitivity;
