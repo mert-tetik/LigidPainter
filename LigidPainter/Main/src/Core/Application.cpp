@@ -41,7 +41,6 @@
 //TODO Dynamic painting performance if possible
 //TODO Replace mirror range bars
 //TODO Update all the textures after changing the project resolution (ask before)
-//TODO Baking texture resolution
 //TODO Default selected & subselected textures
 //TODO Fix Message box hover
 //TODO Required icons
@@ -49,7 +48,8 @@
 //TODO Start screen images
 //TODO Fix ui coliding
 //TODO Painting panel & texture mask panel scroll
-//TODO Colorfull painting
+//TODO Fix Colorfull painting
+//TODO Default node spawning location
 
 #include<iostream>
 

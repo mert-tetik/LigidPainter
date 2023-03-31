@@ -32,12 +32,19 @@ unsigned int lastProgram = 0;
 MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY,std::vector<Node>appNodes,int chosenTextureResIndex,bool& bakeTheMaterial,std::vector<aTexture> &albedoTextures,int currentMaterialIndex,std::vector<NodeScene> &nodeScenesHistory,int chosenNodeResIndex){
     glClearColor(0,0,0,1);
     int txtrRes = 256;
-	for (size_t i = 0; i < chosenNodeResIndex; i++)
+
+    int nodeTxtrResIndex;
+    if(bakeTheMaterial)
+        nodeTxtrResIndex = chosenTextureResIndex;
+    else 
+        nodeTxtrResIndex = chosenNodeResIndex;
+
+	for (size_t i = 0; i < nodeTxtrResIndex; i++)
 	{
 		txtrRes*=2;
 	}
     int nodeRes = 256;
-	for (size_t i = 0; i < chosenNodeResIndex; i++)
+	for (size_t i = 0; i < nodeTxtrResIndex; i++)
 	{
 		nodeRes*=2;
 	}
