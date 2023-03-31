@@ -42,7 +42,6 @@
 //TODO Replace mirror range bars
 //TODO Update all the textures after changing the project resolution (ask before)
 //TODO Default selected & subselected textures
-//TODO Fix Message box hover
 //TODO Required icons
 //TODO Change texture extension
 //TODO Start screen images

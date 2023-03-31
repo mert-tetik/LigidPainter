@@ -31,7 +31,7 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
 	buttonColorVec.a = colorData.messageBoxButtonColor.a;
 
 
-	float screenGapX = ((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width - (float)screenSizeX)/(((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height)/2.0f)/2.0f; 
+	float screenGapX = ((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/(((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width)/2.0f)/2.0f; 
 
 
 
