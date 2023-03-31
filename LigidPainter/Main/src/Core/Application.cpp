@@ -1332,7 +1332,7 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 			const float maskPanelRange = ceil((int)brushMaskTextures.maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
 			maskPanelSliderValue = util.restrictBetween(maskPanelSliderValue, 0.0f, -maskPanelRange/4.f);//Keep in boundaries
 		}
-		if(addNodeContextMenu.active){
+		else if(addNodeContextMenu.active){
 			if(scrollx > 0)
 				addNodeContextMenu.scroll --;
 			if(scrollx < 0)
