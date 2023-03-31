@@ -1,6 +1,3 @@
-//Application.cpp
-
-
 //GL_TEXTURE0 = Albedo texture
 //GL_TEXTURE1 = Mask texture
 //GL_TEXTURE2 = Chars
@@ -39,18 +36,20 @@
 //Left CTRL + TAB + T = Switch to painting panel
 //Left CTRL + TAB + R = Switch to export panel
 
-//TODO List 
-//? Fix node lagging
-//? CTRL SHIFT S
-//? Fix 3 axis mirror & paint over
-//? Dynamic painting performance if possible
-//? Fix texture displayer hover
-//? Replace mirror range bars
-//? Update all the textures after changing the project resolution (ask before)
-//? Baking texture resolution
-//? Default selected & subselected textures
-//? Fix Message box hover
-//? Painting panel scroll
+//TODO Fix node lagging
+//TODO CTRL SHIFT S
+//TODO Fix 3 axis mirror & paint over
+//TODO Dynamic painting performance if possible
+//TODO Fix texture displayer hover
+//TODO Replace mirror range bars
+//TODO Update all the textures after changing the project resolution (ask before)
+//TODO Baking texture resolution
+//TODO Default selected & subselected textures
+//TODO Fix Message box hover
+//TODO Painting panel scroll
+//TODO Required icons
+//TODO Change texture extension
+//TODO Start screen images
 
 #include<iostream>
 
@@ -709,13 +708,12 @@ bool LigidPainter::run()
 
 		if(glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS){
 			char* projectFilePathCheck;
-			if(projectFilePath == ""){
+			if(projectFilePath == "" || glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
 				//File dialog
 				char const* lFilterPatterns[1] = { "*.ligid" };
 				projectFilePathCheck = tinyfd_saveFileDialog("Save The Project","", 1, lFilterPatterns, "");
 			}
-
-			if(projectFilePath != ""){
+			if(projectFilePath != "" && glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE){
 				LigidFile ligidFile;
 				ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes);
 			}

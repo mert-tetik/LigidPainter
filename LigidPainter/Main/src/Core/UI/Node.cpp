@@ -260,7 +260,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 		}
 
 
-		//TODO : Check this algorithm
 		//Check if mouse is hover any of the inputs
 		int inputIndex;
 		for (int nodeI = 0; nodeI < material.nodes.size(); nodeI++)
@@ -346,7 +345,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 
 		glUseProgram(programs.iconsProgram);
         //Render the output
-		//TODO : Use those values for rendering and tracking
 		node.outputs[i].posX = (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f;
 		node.outputs[i].posY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10;
 		iconBox(iconWidth/1.5f , iconWidth*1.5f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width + iconWidth*2.f, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10, depth+0.01f , icons.Circle , 0 , nodeColor , nodeColor);
@@ -388,7 +386,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 		}
         glUseProgram(programs.uiProgram);
 		
-		//TODO : Move the rendering of connection lines to the output element rendering
 		if(node.outputs[i].pressed)//Render the connection lines if output connects to an input or moves
 			drawLine((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal+node.width +iconWidth*2.f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*15)) - 0.05f * node.width*10,depth+0.02f,node.outputs[i].connectionPosX,node.outputs[i].connectionPosY, node.width*200.f ,nodeColor,false);
 		
