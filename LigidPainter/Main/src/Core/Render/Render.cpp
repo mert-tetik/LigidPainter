@@ -307,6 +307,12 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	//-------------------------
 	float screenGapX = ((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/(((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width)/2.0f)/2.0f; 
 
+	//Panel scroll restrictions
+	if(UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked)
+		panelData.paintingPanelSlideVal = 0.18;
+	else if(panelData.paintingPanelSlideVal > 0.18){
+		panelData.paintingPanelSlideVal = 0.18;
+	}
 
 	if(!startScreen){
 		glActiveTexture(GL_TEXTURE9);

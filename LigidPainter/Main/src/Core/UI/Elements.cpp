@@ -582,8 +582,8 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     //---------PAINTING PANEL----------
 
     UIElement paintThroughCheckBoxElement;
-    paintThroughCheckBoxElement.checkBox.positionX = -0.03f;
-    paintThroughCheckBoxElement.checkBox.positionY = -0.95f;
+    paintThroughCheckBoxElement.checkBox.positionX = -0.06f;
+    paintThroughCheckBoxElement.checkBox.positionY = -1.05f;
     paintThroughCheckBoxElement.checkBox.text = "Paint Through";
     paintThroughCheckBoxElement.checkBox.checked = false;
     paintThroughCheckBoxElement.checkBox.mouseHover = false;
@@ -685,7 +685,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement subSelectedImagePowerRangeBarElement;
 	subSelectedImagePowerRangeBarElement.rangeBar.positionX = 0.0f;
-	subSelectedImagePowerRangeBarElement.rangeBar.positionY = -0.9f;
+	subSelectedImagePowerRangeBarElement.rangeBar.positionY = -0.95f;
 	subSelectedImagePowerRangeBarElement.rangeBar.value = 0.0f;
 	subSelectedImagePowerRangeBarElement.panel = 3;
 	subSelectedImagePowerRangeBarElement.attachedToMainPanel = true;
@@ -694,7 +694,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement subSelectedImagePowerRangeBarTextElement;
 	subSelectedImagePowerRangeBarTextElement.text.positionX = -0.11f;
-	subSelectedImagePowerRangeBarTextElement.text.positionY = -0.87f;
+	subSelectedImagePowerRangeBarTextElement.text.positionY = -0.92f;
 	subSelectedImagePowerRangeBarTextElement.text.text = "Subselected texture power";
     subSelectedImagePowerRangeBarTextElement.text.scale = 0.00022f;
     subSelectedImagePowerRangeBarTextElement.text.color = colorData.textColor;

@@ -608,7 +608,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		glset.uniform1i(programs.dynamicPaintingProgram, "displayingTheBrush" , 1);
 		glUniform2f(glGetUniformLocation(programs.dynamicPaintingProgram , "positions[0]"), 0.5f, 0.5f);
 		glm::vec2 brushDisplayerScale = glm::vec2(0.06f,0.12f);
-		glm::vec2 brushDisplayerPos = glm::vec2((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum,0.5f + panelData.paintingPanelSlideVal);
+		glm::vec2 brushDisplayerPos = glm::vec2((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum,0.5f + panelData.paintingPanelSlideVal) - screenGapX;
 		std::vector<float> brushDisplayer = { 
 			// first triangle
 			 brushDisplayerScale.x + brushDisplayerPos.x,  brushDisplayerScale.y + brushDisplayerPos.y, 0.9f,1,1,0,0,0,  // top right
@@ -627,7 +627,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 		//Paint over texture name
 		glUseProgram(programs.uiProgram);
-		ui.box(0.09f,0.03,((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum) - 0.035f,-0.25f + panelData.paintingPanelSlideVal,"", colorData.buttonColor,0.f,0,0,0.8f,0.8f,colorData.buttonColor,0.f);
+		ui.box(0.09f,0.03,((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum) - 0.0f - screenGapX,-0.25f + panelData.paintingPanelSlideVal,"", colorData.buttonColor,0.f,0,0,0.8f,0.8f,colorData.buttonColor,0.f);
 	}
 
 	bool usingUiProgram = false;

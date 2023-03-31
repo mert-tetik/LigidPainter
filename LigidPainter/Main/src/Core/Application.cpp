@@ -36,6 +36,7 @@
 //Left CTRL + TAB + T = Switch to painting panel
 //Left CTRL + TAB + R = Switch to export panel
 
+//TODO Update painting uniforms (dynamic painting)
 //TODO Fix node lagging
 //TODO Fix 3 axis mirror & paint over
 //TODO Dynamic painting performance if possible
@@ -49,6 +50,8 @@
 //TODO Required icons
 //TODO Change texture extension
 //TODO Start screen images
+//TODO Fix ui coliding
+//TODO Painting - Fix opacity
 
 #include<iostream>
 
