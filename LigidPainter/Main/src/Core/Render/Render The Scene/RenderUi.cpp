@@ -568,7 +568,14 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		ui.iconBox(0.02,0.0364f,centerCoords - screenGapX - 0.095f,-0.81f+panelData.paintingPanelSlideVal,0.91f,icons.Circle,0,glm::vec4(colorPicker.pickerValue / glm::vec3(255),1.0f),glm::vec4(0));
 		ui.iconBox(0.02f,0.03f,centerCoords - screenGapX + 0.08f, -0.81f+panelData.paintingPanelSlideVal,0.9f,icons.dropperIcon,dropperMixVal,colorData.iconColor,colorData.iconColorHover);
 	}
+		glUseProgram(programs.PBRProgram);
+		gl.uniform1i(programs.PBRProgram,"maskMode",UIElements[UImaskPaintingCheckBoxElement].checkBox.checked || UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked);
+		gl.uniform1i(programs.PBRProgram,"normalPainting",UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked);
 		
+		glUseProgram(programs.outProgram);
+		gl.uniform1i(programs.outProgram,"maskMode",UIElements[UImaskPaintingCheckBoxElement].checkBox.checked || UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked);
+		gl.uniform1i(programs.outProgram,"normalPainting",UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked);
+	
 	if (panelData.paintingPanelActive && !UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked) { //Icons
 		int state = 0;
 		

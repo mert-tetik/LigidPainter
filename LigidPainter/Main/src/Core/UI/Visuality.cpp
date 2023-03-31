@@ -1850,14 +1850,6 @@ void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTe
 	ColorData colorData;
 	GlSet gl;
 	Texture txtr;
-		glUseProgram(uiPrograms.PBRProgram);
-		gl.uniform1i(uiPrograms.PBRProgram,"maskMode",state == 0);
-		gl.uniform1i(uiPrograms.PBRProgram,"normalPainting",state == 2);
-		
-		glUseProgram(uiPrograms.outProgram);
-		gl.uniform1i(uiPrograms.outProgram,"maskMode",state == 0);
-		gl.uniform1i(uiPrograms.outProgram,"normalPainting",state == 2);
-		
 		glUseProgram(uiPrograms.renderTheTextureProgram);
 		gl.uniform1i(uiPrograms.renderTheTextureProgram,"isMask",true);
 		gl.uniform1i(uiPrograms.renderTheTextureProgram,"maskUseColor",state != 0);
