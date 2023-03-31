@@ -36,7 +36,6 @@
 //Left CTRL + TAB + T = Switch to painting panel
 //Left CTRL + TAB + R = Switch to export panel
 
-//TODO Update painting uniforms (dynamic painting)
 //TODO Fix node lagging
 //TODO Fix 3 axis mirror & paint over
 //TODO Dynamic painting performance if possible
@@ -46,12 +45,12 @@
 //TODO Baking texture resolution
 //TODO Default selected & subselected textures
 //TODO Fix Message box hover
-//TODO Painting panel scroll
 //TODO Required icons
 //TODO Change texture extension
 //TODO Start screen images
 //TODO Fix ui coliding
 //TODO Painting - Fix opacity
+//TODO Painting panel & texture mask panel scroll
 
 #include<iostream>
 
@@ -498,6 +497,9 @@ bool LigidPainter::run()
 	glset.uniform1f(programs.dynamicPaintingProgram,"hardness",(UIElements[UIbrushBlurRangeBar].rangeBar.value-0.09f)*4.5454545*50);
 	glset.uniform1f(programs.dynamicPaintingProgram,"opacity",(UIElements[UIbrushOpacityRangeBar].rangeBar.value + 0.11)*4.5454545);
 
+	bool firstStroke = false;
+
+
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		whileCounter++;
@@ -805,17 +807,21 @@ bool LigidPainter::run()
 		colorPicker.saturationValueValChanged = false;
 		colorPicker.hexValTextBoxGotInput = false;
 
+		if(firstClick)
+			firstStroke = true;
 
 		//Painting
 		const bool distance_spacingCompatibility = glm::distance(glm::vec2(mouseDrawingPosX,mouseDrawingPosY),glm::vec2(mouseXpos,mouseYpos)) > paintingSpacing;
-		const bool paintingCondition = glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && !panelChanging && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !colorPicker.dropperActive && distance_spacingCompatibility && !coloringPanel.saturationValueBoxPointerPressed && !coloringPanel.hueBarPointerPressed; 
+		const bool paintingCondition = glfwGetMouseButton(window, 0) == GLFW_PRESS && doPainting && !panelChanging && glfwGetMouseButton(window, 1) == GLFW_RELEASE && !colorPicker.dropperActive && (distance_spacingCompatibility) && !coloringPanel.saturationValueBoxPointerPressed && !coloringPanel.hueBarPointerPressed; 
 		if (paintingCondition && !moveCamera && (glfwGetKey(window,GLFW_KEY_Z) == GLFW_RELEASE) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_F3) == GLFW_RELEASE){
+			firstStroke = false;
+			
 
 			mouseDrawingPosX = mouseXpos;
 			mouseDrawingPosY = mouseYpos;
 
 			//Paint
-			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view,mirrorParams,callbackData.cameraPos, callbackData.originPos,UIElements[UImirrorXRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorYRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorZRangeBarElement].rangeBar.value*40.f,UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked);
+			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view,mirrorParams,callbackData.cameraPos, callbackData.originPos,UIElements[UImirrorXRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorYRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorZRangeBarElement].rangeBar.value*40.f,UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked,firstStroke);
 			paintRenderCounter++;
 			if(paintRenderCounter == 50000){
 				paintRender = true;

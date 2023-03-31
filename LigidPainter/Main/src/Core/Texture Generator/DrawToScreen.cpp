@@ -43,7 +43,8 @@ bool refreshTheScreenMask = false;
 
 unsigned int lastTxtr = 0;
 
-void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int removeThisParam2,int removeThisParam,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view,std::vector<MirrorParam> &mirrorParams,glm::vec3 cameraPos,glm::vec3 originPos,float xMirrorPos,float yMirrorPos,float zMirrorPos,bool dynamicPainting) {
+
+void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int removeThisParam2,int removeThisParam,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view,std::vector<MirrorParam> &mirrorParams,glm::vec3 cameraPos,glm::vec3 originPos,float xMirrorPos,float yMirrorPos,float zMirrorPos,bool dynamicPainting,bool firstClick) {
 
 	if(true){
 		holdLocations.clear();
@@ -109,10 +110,12 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 	//----------------------SET BRUSH TEXTURE----------------------\\
 						  (Interpreted with blur value)
 
-	if (lastMouseXPosIn - mouseXposIn != 0 || lastMouseYPosIn - mouseYposIn != 0) {
-
+	if ((lastMouseXPosIn - mouseXposIn != 0 || lastMouseYPosIn - mouseYposIn != 0) || firstClick) {
+		
+		glm::vec2 fstrokeLocation = glm::vec2(mouseXpos + screenGapX , mouseYpos);
+		holdLocations.push_back(fstrokeLocation);
+		
 		//----------------------PAINTING----------------------\\
-
 
 		int differenceBetweenMousePoints = glm::distance(glm::vec2(mouseXpos, mouseYpos), glm::vec2(lastMouseXPos, lastMouseYPos));
 
@@ -121,7 +124,8 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 
 			for (size_t i = 0; i < differenceBetweenMousePoints; i++)
 			{
-				if (differenceBetweenMousePoints > 10) {
+				////differenceBetweenMousePoints > 10
+				if (true) {
 					mouseXpos -= xposDif;
 					mouseYpos -= yposDif;
 				}
