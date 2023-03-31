@@ -37,7 +37,6 @@
 //Left CTRL + TAB + R = Switch to export panel
 
 //TODO Fix node lagging
-//TODO CTRL SHIFT S
 //TODO Fix 3 axis mirror & paint over
 //TODO Dynamic painting performance if possible
 //TODO Fix texture displayer hover
@@ -1236,7 +1235,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 	//Texture demonstrator corner hover
 	float range = 0.05f;
-	if(xpos > ((textureDisplayer.buttonPosX + textureDisplayer.width) - range) * width/2 && xpos < ((textureDisplayer.buttonPosX + textureDisplayer.width) + range) * width/2 && height - ypos > ((textureDisplayer.buttonPosY+1.0f - textureDisplayer.height) - range) * height/2 && height - ypos < ((textureDisplayer.buttonPosY+1.0f - textureDisplayer.height) + range) * height/2 ){
+	if(xpos-screenGapX/2 > ((textureDisplayer.buttonPosX + textureDisplayer.width) - range) * width/2 && xpos-screenGapX/2 < ((textureDisplayer.buttonPosX + textureDisplayer.width) + range) * width/2 && height - ypos > ((textureDisplayer.buttonPosY+1.0f - textureDisplayer.height) - range) * height/2 && height - ypos < ((textureDisplayer.buttonPosY+1.0f - textureDisplayer.height) + range) * height/2 ){
 		textureDisplayer.cornerHover = true;
 	}
 	else{
