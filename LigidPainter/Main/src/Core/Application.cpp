@@ -39,7 +39,6 @@
 //TODO Fix node lagging
 //TODO Fix 3 axis mirror & paint over
 //TODO Dynamic painting performance if possible
-//TODO Fix texture displayer hover
 //TODO Replace mirror range bars
 //TODO Update all the textures after changing the project resolution (ask before)
 //TODO Baking texture resolution
@@ -49,8 +48,8 @@
 //TODO Change texture extension
 //TODO Start screen images
 //TODO Fix ui coliding
-//TODO Painting - Fix opacity
 //TODO Painting panel & texture mask panel scroll
+//TODO Colorfull painting
 
 #include<iostream>
 

@@ -48,6 +48,8 @@ uniform int doPaintOver;
 uniform vec2 paintOverScale;
 uniform vec2 paintOverPos;
 
+uniform float paintingOpacity;
+
 float far = 10.0f;
 float near = 0.1f;
 float linearizeDepth(float depth){
@@ -99,6 +101,9 @@ vec3 getPaintedDiffuse(){
             intensity = 1.0;
       }
    }
+
+   intensity*=paintingOpacity;
+
 
     // ambient
    vec3 diffuseDrawMix;
