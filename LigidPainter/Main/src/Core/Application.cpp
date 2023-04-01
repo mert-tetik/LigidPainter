@@ -89,6 +89,7 @@
 
 #include "../../thirdparty/tinyfiledialogs.h"
 
+#define LIBAL_OPENAL_IMPLEMENTATION
 #include "LibAL.h"
 
 using namespace std;
@@ -503,44 +504,25 @@ bool LigidPainter::run()
 
 	if(!LibAL_start())
 		std::cout << "ERROR : Initializing libal\n";
+	unsigned int sound1;
 
-	char* soundData;
+	LibAL_genAudio(sound1);
+
+	char* bufferData;
 	uint8_t channels;
 	int32_t sampleRate;
 	uint8_t bitsPerSample;
-	ALsizei ssize;
-	if(!LibAL_readWAVFile("LigidPainter/Resources/Sounds/CantinaBand3.wav",soundData,channels,sampleRate,bitsPerSample,ssize))
-		std::cout << "ERROR : Reading the wav file";
+	ALsizei size;
+
+	LibAL_readWAVFile("LigidPainter/Resources/Sounds/CantinaBand3.wav",bufferData,channels,sampleRate,bitsPerSample,size);
 	
-	char* soundData2;
-	uint8_t channels2;
-	int32_t sampleRate2;
-	uint8_t bitsPerSample2;
-	ALsizei ssize2;
-	if(!LibAL_readWAVFile("LigidPainter/Resources/Sounds/StarWars60.wav",soundData2,channels2,sampleRate2,bitsPerSample2,ssize2))
-		std::cout << "ERROR : Reading the wav file";
+	LibAL_writeWAVFile("LigidPainter/Resources/Sounds/CantinaBand.wav",bufferData,channels,sampleRate,bitsPerSample,size);
 
 
-	unsigned int theSound;
-	LibAL_genAudio(theSound);
-	
-	unsigned int theSound2;
-	LibAL_genAudio(theSound2);
-
-	soundData = LibAL_invertSoundData(soundData,ssize);
-	soundData2 = LibAL_invertSoundData(soundData2,ssize2);
-
-	LibAL_modifyAudioViaData(channels,bitsPerSample,soundData,ssize,sampleRate,theSound);
-	LibAL_modifyAudioViaData(channels2,bitsPerSample2,soundData2,ssize2,sampleRate2,theSound2);
-
-	if(!LibAL_playAudioObject(theSound))
-		std::cout << "ERROR : Playing the sound";
-	
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 
-		if(glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS)
-			LibAL_stopPlaying();
+
 
 		whileCounter++;
 		if(whileCounter > 1000)
@@ -972,8 +954,6 @@ bool LigidPainter::run()
 
 		}
 	}
-	if(!LibAL_playAudioObjectLoop(theSound2))
-		std::cout << "ERROR : Playing the sound";
 
 	//Close the program
 	glfwDestroyWindow(window);

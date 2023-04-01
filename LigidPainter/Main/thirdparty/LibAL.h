@@ -1,114 +1,369 @@
 /* 
+!SINGLE HEADER OPENAL LIBRARY & AUDIO FILE IMPORTER
 !MIT License
 !OpenAL binaries are needed
+?You can compile the source code by cloning their github repo
+?OpenAL Version : [2023-02-06] makemhr-0de7ea4
+?https://github.com/kcat/openal-soft
 !Define LibALmaxAudios as the max audio size that will be generated (Default value is 2000)
+!Define LIBAL_OPENAL_IMPLEMENTATION if you want to use OpenAL (you don't have to unless you just need file importer)
 !This header contains OpenAL include files
 
 !Examples :
     !--OpenGL Examples:
-        **This exxample plays the audio as the app starts
+        **This example plays 2 audios at the same time as the app starts
         ?--------------------------
-            Initialize opengl or smt...
+            #define LIBAL_OPENAL_IMPLEMENTATION
+            #define LibALmaxAudios 2 
+            //2 Since I used only 2 audio objects here. Defining that as 1000 or higher will be much better
+            #include "./LibAL.h"
+            int main(){
+                
+                initialize opengl or smt...
+                
+                
+                if(!LibAL_start())
+		            std::cout << "ERROR : Initializing LibAL " << LibALerrorMsg << std::endl;
+	            
+                unsigned int sound1;//These are objects
+	            unsigned int sound2;
 
-            if(!LibAL_start())
-                std::cout << "ERROR : LibAL couldn't initialized" << std::endl;
+	            LibAL_genAudio(sound1);//Before using them you have to declare that they are audio objects
+	            LibAL_genAudio(sound2);
+                !Don't try changing the values of the objects
 
-            char* soundData;
-	        uint8_t channels;
-	        int32_t sampleRate;
-	        uint8_t bitsPerSample;
-	        ALsizei size;
+	            LibAL_modifyAudioViaPath("./sound1.wav","wav",sound1);
+	            LibAL_modifyAudioViaPath("./sound2.wav","wav",sound2);
 
-            if(!LibAL_readWAVFile("./ExampleSound.wav",soundData,channels,sampleRate,bitsPerSample,size))
-		        std::cout << "ERROR : Reading the wav file" << std::endl;
-            
-            //Very cool app opening sfx
-            LibAL_playAudioData(channels,bitsPerSample,soundData,ssize,sampleRate);
+	            LibAL_playAudioObject(sound2);
+	            LibAL_playAudioObject(sound1);
 
-            while (!glfwWindowShouldClose(window)) //Main loop
-	        {
-                if(glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS)
-			        LibAL_stopPlaying();
+                while (!glfwWindowShouldClose(window)){
+                    
+                    Render triangles...
+                
+                }    
 
-                Draw smt...
+                LibAL_end();
+
+                return 0;
             }
-
-            LibAL_end();
         ?--------------------------
 
         **This example shows the use of multiple conditional sounds
         ?---------------------------------------
-            Initialize opengl or smt...
-
-	        if(!LibAL_start())
-	        	std::cout << "ERROR : Initializing libal\n";
-
-	        unsigned int theSound,theSound2;
-	        
-            LibAL_genAudio(theSound);
-	        LibAL_genAudio(theSound2);
-
-	        if(!LibAL_modifyAudioViaPath("./sound1.wav","wav",theSound))
-	        	std::cout << "ERROR : Modifying sound1 file";
-
-	        if(!LibAL_modifyAudioViaPath("./sound2.wav","wav",theSound2))
-	        	std::cout << "ERROR : Modifying sound2 file";
-
-
-            while (!glfwWindowShouldClose(window)) //Main loop
-	        {
-                if(playerDidSmtGood)
-		            LibAL_playAudioObject(theSound);
+            #define LIBAL_OPENAL_IMPLEMENTATION
+            #define LibALmaxAudios 2 
+            //2 Since I used only 2 audio objects here. Defining that as 1000 or higher will be much better
+            #include "./LibAL.h"
+            int main(){
                 
-                if(playerDidSmtBad)
-		            LibAL_playAudioObject(theSound2);
+                initialize opengl or smt...
+                
+                
+                if(!LibAL_start())
+		            std::cout << "ERROR : Initializing LibAL\n";
+	            
+                unsigned int sound1;//These are objects
+	            unsigned int sound2;
 
-                if(silenceNeeded)
-                    LibAL_stopPlaying();
+	            LibAL_genAudio(sound1);//Before using them you have to declare that they are audio objects
+	            LibAL_genAudio(sound2);
+                !Don't try changing the values of the objects
 
-                Draw smt...
+	            LibAL_modifyAudioViaPath("./sound1.wav","wav",sound1);
+	            LibAL_modifyAudioViaPath("./sound2.wav","wav",sound2);
+
+	            LibAL_playAudioObject(sound2);
+	            LibAL_playAudioObject(sound1);
+
+                while (!glfwWindowShouldClose(window)){
+                    
+                    if(playerDidSmtGood){
+                        if(LibAL_isPlaying(sound2))
+                            LibAL_stopPlaying(sound2);//You don't have to stop the previous sound since you can play multiple sounds but personally I woldn't want these 2 sound to collide
+		                LibAL_stopPlaying(sound1); //Prevent consecutive calls
+                        LibAL_playAudioObject(sound1);
+                    }
+                
+                    if(playerDidSmtBad){
+                        if(LibAL_isPlaying(sound1))
+                            LibAL_stopPlaying(sound1);//You don't have to stop the previous sound since you can play multiple sounds but personally I woldn't want these 2 sound to collide
+		                LibAL_stopPlaying(sound2);  //Prevent consecutive calls
+                        LibAL_playAudioObject(sound2);
+                    }
+
+                    if(silenceNeeded)
+                        LibAL_silence(); //You might want to silence all the objects manually
+
+                    Draw triangles...
+                
+                }    
+
+                LibAL_end();
+                
+                return 0;
             }
-
-            LibAL_end();
         
         ?----------------------------------------
         
+        **This example shows the use of audio object arrays
+        ?----------------------------------------
+            #define LIBAL_OPENAL_IMPLEMENTATION
+            #define LibALmaxAudios 100 
+            #include "./LibAL.h"
+            int main(){
+                
+                initialize opengl or smt...
+                
+                std::vector<std::string> characterVoiceFilePaths = {
+                    "./taunt1.wav",
+                    "./taunt2.wav",
+                    "./taunt3.wav",
+                    "./scream1.wav",
+                    "./scream2.wav",
+                    "./scream3.wav",
+                    "./laugh1.wav",
+                    "./laugh2.wav",
+                    "./frightened1.wav",
+                    "./frightened2.wav",
+                    "./voiceLine1.wav",
+                    "./voiceLine2.wav",
+                    "./voiceLine3.wav",
+                    "./voiceLine4.wav",
+                    "./voiceLine5.wav",
+                }
+                std::vector<unsigned int> characterVoiceFileObjects;
+
+                if(!LibAL_start())
+		            std::cout << "ERROR : Initializing LibAL\n";
+
+
+                for (size_t i = 0; i < characterVoiceFilePaths.size(); i++)
+                {
+                    unsigned int voice;
+	                LibAL_genAudio(voice);
+    	            LibAL_modifyAudioViaPath(characterVoiceFilePaths[i],"wav",voice);
+                    characterVoiceFileObjects.push_back(voice);
+
+                }            
+    
+                //*Render all the voice lines one by one
+
+                int index = 0;
+                LibAL_playAudioObject(characterVoiceFileObjects[0]);
+
+                while (!glfwWindowShouldClose(window)){
+                    
+                    if(!LibAL_isPlaying(characterVoiceFileObjects[index])){
+                        index++;
+                        LibAL_playAudioObject(characterVoiceFileObjects[index]);
+                    }
+
+                    Render triangles...
+                }    
+
+                LibAL_end();
+
+                return 0;
+            }
+        ?----------------------------------------
+
+        **This example shows how you can modify objects without LibAL's file importer 
+        ?----------------------------------------
+            #define LIBAL_OPENAL_IMPLEMENTATION
+            #define LibALmaxAudios 
+            //1 Since I used only 1 audio objects here. Defining that as 1000 or higher will be much better
+            #include "./LibAL.h"
+            int main(){
+                
+                initialize opengl or smt...
+                
+                
+                if(!LibAL_start())
+		            std::cout << "ERROR : Initializing LibAL" << std::endl;
+	            
+                unsigned int sound;
+                LibAL_genAudio(sound);
+
+	            LibAL_genAudio(sound);
+                std::string path = "./voice.wav";
+                char* bufferData;
+                std::uint8_t channels;
+                std::int32_t& sampleRate;
+                std::uint8_t bitsPerSample;
+                ALsizei size;
+                
+	            if(!LibAL_readWAVFile(path,bufferData,channels,sampleRate,bitsPerSample,size)){ //You can use your own importer
+                    std::cout << "ERROR : Reading wav file";
+                }
+
+                LibAL_modifyAudioViaData(channels,bitsPerSample,bufferData,size,sampleRate,sound);
+
+	            LibAL_playAudioObject(sound);
+
+                while (!glfwWindowShouldClose(window)){
+                    
+                    Render triangles...
+                }    
+
+                LibAL_end();
+
+                return 0;
+            }
+        
+        ?----------------------------------------
+
+        **This example shows how you can manipulate audios via LibAL 
+        ?----------------------------------------
+            #define LIBAL_OPENAL_IMPLEMENTATION
+            #define LibALmaxAudios 1 
+
+            #include "./LibAL.h"
+            int main(){
+                
+                initialize opengl or smt...
+                
+                
+                if(!LibAL_start())
+		            std::cout << "ERROR : Initializing LibAL\n";
+	            
+                unsigned int sound;
+
+	            LibAL_genAudio(sound);
+
+	            LibAL_modifyAudioViaPath("./sound.wav","wav",sound);
+
+                LibAL_invertSoundData(sound); //Invert the sound | dnuos eht trevnI
+
+                //*LibAL_modifySourceViaData(float pitch,float gain,float position[3],float velocity[3],unsigned int ID)
+                LibAL_modifySourceViaData(pitchval,gainval,{0,0,0},{0,0,0},sound);
+                //*Default pitch & gain is 1
+                ///? or
+                LibAL_modifyBufferViaData({1,0,0},{100,100,100});//Audio will be come from left side of the headset in slow mo
+
+	            LibAL_playAudioObject(sound);
+
+                while (!glfwWindowShouldClose(window)){
+                    Render triangles...
+                }    
+
+                LibAL_end();
+
+                return 0;
+            }
+        ?----------------------------------------
+        
+        **This example shows how you can pause and start playing a sound 
+        ?----------------------------------------
+            #define LIBAL_OPENAL_IMPLEMENTATION
+            #define LibALmaxAudios 1 
+
+            #include "./LibAL.h"
+            int main(){
+                
+                initialize opengl or smt...
+                
+                
+                if(!LibAL_start())
+		            std::cout << "ERROR : Initializing LibAL\n";
+	            
+                unsigned int sound;
+
+	            LibAL_genAudio(sound);
+
+	            LibAL_modifyAudioViaPath("./sound.wav","wav",sound);
+
+	            LibAL_playAudioObject(sound);
+
+                while (!glfwWindowShouldClose(window)){
+                    if(KEY_A == CLICKED) //Pause & play the sound object once the key a is clicked 
+                    {
+                        if(!LibAL_isPaused(sound))
+                            LibAL_pausePlaying(sound);
+                        else{
+                            LibAL_startPlaying(sound);
+                        }
+                    }  
+                }    
+
+                LibAL_end();
+
+                return 0;
+            }
+        
+        ?----------------------------------------
+        
+        **This example is for those who only wants to use the importer and not the OpenAL 😡😡
+        ?----------------------------------------
+            //#define LIBAL_OPENAL_IMPLEMENTATION //Just don't define LIBAL_OPENAL_IMPLEMENTATION
+            #define LibALmaxAudios 1 
+
+            #include "./LibAL.h"
+            int main(){
+                
+                initialize opengl or smt...
+
+                std::string path = "./voice.wav";
+                char* bufferData;
+                std::uint8_t channels;
+                std::int32_t& sampleRate;
+                std::uint8_t bitsPerSample;
+                size_t size;
+                
+	            if(!LibAL_readWAVFile(path,bufferData,channels,sampleRate,bitsPerSample,size)){ //You can use your own importer
+                    std::cout << "ERROR : Reading wav file";
+                }
+
+                aSoundRendererThatIsOtherThanOpenAL.playSoundblabla(path,bufferData,channels,sampleRate,bitsPerSample,size); //😡
+
+                while (!glfwWindowShouldClose(window)){
+                    
+                }    
+
+                LibAL_end();
+
+                return 0;
+            }
+        
+        ?----------------------------------------
     !--Console Example: 
-    **This example plays the audio than closes the console
+
+        **This example plays the audio than returns from main function
+    
         ?----------------------------------------
-            if(!LibAL_start())
-                std::cout << "ERROR : LibAL couldn't initialized" << std::endl;
+            #define LIBAL_OPENAL_IMPLEMENTATION
+            #define LibALmaxAudios 1 
 
-            char* soundData;
-	        uint8_t channels;
-	        int32_t sampleRate;
-	        uint8_t bitsPerSample;
-	        ALsizei size;
+            #include "./LibAL.h"
+            int main(){
+                
+                initialize opengl or smt...
+                
+                
+                if(!LibAL_start())
+		            std::cout << "ERROR : Initializing LibAL\n";
+	            
+                unsigned int sound;
 
-            if(!LibAL_readWAVFile("./ExampleSound.wav",soundData,channels,sampleRate,bitsPerSample,size))
-		        std::cout << "ERROR : Reading the wav file" << std::endl;
-            
-            LibAL_playAudioDataLoop(channels,bitsPerSample,soundData,ssize,sampleRate);
+	            LibAL_genAudio(sound);
 
-            LibAL_end();
+	            LibAL_modifyAudioViaPath("./sound.wav","wav",sound);
 
-            return 0; //Return from main func
+	            LibAL_playAudioObjectLoop(sound);
+
+                LibAL_end();
+
+                return 0;
+            }
         ?----------------------------------------
         
-    TODO CreateObjectViaFilePath
-    TODO MultipleSources
-    TODO Manage colliding
-    TODO Sound manipulation
-    TODO Loading other files
-    TODO Get errors
-    TODO Source manipulation
-    TODO Hide irrevelant things
-    TODO Remove std elements
     TODO Reading mp3 file
-    TODO Seperate openal
-
+    TODO Allign parameters
 */
 
+
+#ifdef LIBAL_OPENAL_IMPLEMENTATION
 
 
 #ifndef LIBAL
@@ -134,8 +389,9 @@
 
 #include <stdio.h>
 
-#ifndef AL_AL_H
-#define AL_AL_H
+#ifdef AL_AL_H
+#error LibAL already provides OpenAL include files. Remove the al.h include.
+#endif //AL_AL_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -807,7 +1063,6 @@ typedef void          (AL_APIENTRY *LPALDISTANCEMODEL)(ALenum distanceModel);
 }  /* extern "C" */
 #endif
 
-#endif /* AL_AL_H */
 
 //-------------------------------------------------------------------------------------
 //---------------------------------------- al. h----------------------------------------
@@ -847,8 +1102,9 @@ typedef void          (AL_APIENTRY *LPALDISTANCEMODEL)(ALenum distanceModel);
 
 
 
-#ifndef AL_ALC_H
-#define AL_ALC_H
+#ifdef AL_ALC_H
+#error LibAL already provides OpenAL include files. Remove the alc.h include.
+#endif //AL_ALC_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -1120,8 +1376,6 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
 } /* extern "C" */
 #endif
 
-#endif /* AL_ALC_H */
-
 
 
 
@@ -1167,36 +1421,11 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
 
 //TODO : Warning about OpenAL headers
 
-    char* errorMsg; //! If any error occurs the error message will be stored there
+    std::string LibALerrorMsg; //! If any error occurs the error message will be stored there
 
-    char* nameTheAlError(ALCenum error){
-        if(error == AL_INVALID_ENUM)
-            return "AL_INVALID_ENUM";
-        if(error == AL_INVALID_NAME)
-            return "AL_INVALID_NAME";
-        if(error == AL_INVALID_OPERATION)
-            return "AL_INVALID_OPERATION";
-        if(error == AL_INVALID_VALUE)
-            return "AL_INVALID_VALUE";
-        if(error == AL_OUT_OF_MEMORY)
-            return "AL_OUT_OF_MEMORY";
-    }
-    int checkAlError(){
-        //* 0 : An error occured , 1 : No errors
-        ALCenum error;
-        error = alGetError();
-        if (error != AL_NO_ERROR) {	
-            errorMsg = nameTheAlError(error);
-            return 0;		
-    	}
-        return 1;
-    }
+    //TODO Specialize errors 
 
-    //TODO Specialize errors
-
-    #define ALErrorCheck()if(!checkAlError()) return 0 
-
-    static inline ALenum to_al_format(short channels, short samples)
+    static inline ALenum LibALtoAlFormat(short channels, short samples)
     {
         //From https://github.com/ffainelli/openal-example/blob/master/openal-example.c#L5
 
@@ -1217,39 +1446,31 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
     		return -1;
     	}
     }
-    struct Audio
+    static struct LibALAudio
     {
         std::uint8_t channels = 0;
         std::uint8_t bitsPerSample = 0; 
         char* bufferData = {};
         ALsizei dataSize = 0;
         int32_t sampleRate = 0;
+        ALuint source;
+        ALint source_state;
+        ALuint buffer;
     };
-
-    ALboolean enumeration;
-	const ALCchar *devices;
-	const ALCchar *defaultDeviceName;
-    char *bufferData;
-    ALCdevice *device;
-    ALvoid *data;
-    ALCcontext *context;
-    ALsizei size, freq;
-    ALenum format;
-    ALuint buffer, source;
-    ALboolean loop = AL_FALSE;
-    ALint source_state;
+    ALCdevice* LibALdevice;
+    ALCcontext * LibALContext;
     #ifndef LibALmaxAudios
         #define LibALmaxAudios 2000
     #endif 
-    Audio audios[LibALmaxAudios];
-    int audioIndex = 0;
+    LibALAudio LibALaudios[LibALmaxAudios];
+    int LibALaudioIndex = 0;
 
-    std::int32_t convert_to_int(char* buffer, std::size_t len)
+    std::int32_t LibALConvertToInt(char* buffer, std::size_t len)
     {
         std::int32_t a = 0;
         
         // // if(std::endian::native == std::endian::little)
-            std::memcpy(&a, buffer, len);
+        std::memcpy(&a, buffer, len);
         
         // // else{
         // //     for(std::size_t i = 0; i < len; ++i)
@@ -1258,120 +1479,49 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
         return a;
     }
 
-    bool load_wav_file_header(std::ifstream& file,std::uint8_t& channels,std::int32_t& sampleRate,std::uint8_t& bitsPerSample,ALsizei& size)
-    {
-        char buff[4];
-        if(!file.is_open())
-            return false;
 
-        // the RIFF
-        if(!file.read(buff, 4))
-        {
-            return false;
-        }
-        if(std::strncmp(buff, "RIFF", 4) != 0)
-        {
-            return false;
-        }
+        /// Plays the audio with given parameters in a while loop until the audio stops playing
+    int LibALplayAudioDataLoop(char* &bufferData, std::uint8_t& channels,std::int32_t& sampleRate,std::uint8_t& bitsPerSample,ALsizei& size,unsigned int ID){
 
-        // the size of the file
-        if(!file.read(buff, 4))
-        {
-            return false;
-        }
+        if(LibALaudios[ID].source_state != AL_PLAYING)
+            alSourceUnqueueBuffers(LibALaudios[ID].source, 1, &LibALaudios[ID].buffer);
+        
+        alBufferData(LibALaudios[ID].buffer, LibALtoAlFormat(channels, bitsPerSample),
+		            bufferData, 
+                    size, 
+                    sampleRate);
 
-        // the WAVE
-        if(!file.read(buff, 4))
-        {
-            return false;
-        }
-        if(std::strncmp(buff, "WAVE", 4) != 0)
-        {
-            return false;
-        }
+        alSourcei(LibALaudios[ID].source, AL_BUFFER, LibALaudios[ID].buffer);
+	    alSourcePlay(LibALaudios[ID].source);
 
-        // "fmt/0"
-        if(!file.read(buff, 4))
-        {
-            return false;
-        }
 
-        // this is always 16, the size of the fmt data chunk
-        if(!file.read(buff, 4))
-        {
-            return false;
-        }
+        //Don't return from the function until the audio stops playing
+	    alGetSourcei(LibALaudios[ID].source, AL_SOURCE_STATE, &LibALaudios[ID].source_state);
+	    while (LibALaudios[ID].source_state == AL_PLAYING) {
+	    	alGetSourcei(LibALaudios[ID].source, AL_SOURCE_STATE, &LibALaudios[ID].source_state);
+	    }
 
-        // PCM should be 1?
-        if(!file.read(buff, 2))
-        {
-            return false;
-        }
-
-        // the number of channels
-        if(!file.read(buff, 2))
-        {
-            return false;
-        }
-        channels = convert_to_int(buff, 2);
-
-        // sample rate
-        if(!file.read(buff, 4))
-        {
-            return false;
-        }
-        sampleRate = convert_to_int(buff, 4);
-
-        // (sampleRate * bitsPerSample * channels) / 8
-        if(!file.read(buff, 4))
-        {
-            return false;
-        }
-
-        // ?? dafaq
-        if(!file.read(buff, 2))
-        {
-            return false;
-        }
-
-        // bitsPerSample
-        if(!file.read(buff, 2))
-        {
-            return false;
-        }
-        bitsPerSample = convert_to_int(buff, 2);
-
-        // data chunk header "data"
-        if(!file.read(buff, 4))
-        {
-            return false;
-        }
-        if(std::strncmp(buff, "data", 4) != 0)
-        {
-            return false;
-        }
-
-        // size of data
-        if(!file.read(buff, 4))
-        {
-            return false;
-        }
-        size = convert_to_int(buff, 4);
-
-        /* cannot be at the end of file */
-        if(file.eof())
-        {
-            return false;
-        }
-        if(file.fail())
-        {
-            return false;
-        }
-
-        return true;
+        return 1;
     }
+    
+    ///Plays the audio with given parameters
+    int LibALplayAudioData(char* &bufferData, std::uint8_t& channels,std::int32_t& sampleRate,std::uint8_t& bitsPerSample,ALsizei& size,unsigned int ID){
+
+        if(LibALaudios[ID].source_state != AL_PLAYING)
+            alSourceUnqueueBuffers(LibALaudios[ID].source, 1, &LibALaudios[ID].buffer);
+        
+        alBufferData(LibALaudios[ID].buffer, LibALtoAlFormat(channels, bitsPerSample),
+		            bufferData, 
+                    size, 
+                    sampleRate);
+
+        
+        alSourcei(LibALaudios[ID].source, AL_BUFFER, LibALaudios[ID].buffer);
+	    alSourcePlay(LibALaudios[ID].source);
 
 
+        return 1;
+    }
 
 
     //--------------------------------------------------------------------------------------
@@ -1381,25 +1531,24 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
     //!START & END 
     
     int LibAL_start(){ //* 0 : An error occured , 1 : LibAL started succesfully
-        //Get device, create the buffer & the source
+        //Get device, create the buffer
 
         //! Get the default device
-        defaultDeviceName = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
-	    device = alcOpenDevice(defaultDeviceName);
-	    if (!device) {
-	    	errorMsg = "Unable to open default device";
+        const ALCchar* defaultDeviceName = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
+	    LibALdevice = alcOpenDevice(defaultDeviceName);
+	    if (!LibALdevice) {
+	    	LibALerrorMsg = "Unable to open default device";
 	    	return 0;
 	    }
-
-	    ALErrorCheck();//Return from the function with 0 if any AL error occurs
+        
 
         //! Create the AL Context
-        context = alcCreateContext(device, NULL);
-	    if (!alcMakeContextCurrent(context)) {
-	    	errorMsg = "Failed to make default context";
+        LibALContext = alcCreateContext(LibALdevice, NULL);
+	    if (!alcMakeContextCurrent(LibALContext)) {
+	    	LibALerrorMsg = "Failed to make default context";
 	    	return 0;
 	    }
-        ALErrorCheck();
+
 
         //! set orientation
 
@@ -1416,19 +1565,6 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
         alListenerfv(AL_ORIENTATION, listenerOri);
         //-- Don't change the values
 
-        //Generate the source
-	    alGenSources((ALuint)1, &source);
-        
-        //No need to explenation 
-	    alSourcef(source, AL_PITCH, 1);
-	    alSourcef(source, AL_GAIN, 1);
-	    alSource3f(source, AL_POSITION, 0, 0, 0);
-	    alSource3f(source, AL_VELOCITY, 0, 0, 0);
-	    alSourcei(source, AL_LOOPING, AL_FALSE);
-
-        //! Generate the buffer
-	    alGenBuffers(1, &buffer);
-        ALErrorCheck();
 
         return 1;
     }
@@ -1437,66 +1573,27 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
         //Destroy the context
         //Clear the arrays
 
-	    alDeleteSources(1, &source);
-	    alDeleteBuffers(1, &buffer);
-	    device = alcGetContextsDevice(context);
-	    alcMakeContextCurrent(NULL);
-	    alcDestroyContext(context);
-	    alcCloseDevice(device);
-        //TODO : Clear the audios array 
-        audioIndex = 0;
+        //TODO : Rewrite 
+	    // alDeleteSources(1, &source);
+	    // alDeleteBuffers(1, &buffer);
+	    // device = alcGetContextsDevice(LibALContext);
+	    // alcMakeContextCurrent(NULL);
+	    // alcDestroyContext(LibALContext);
+	    // alcCloseDevice(device);
+        // LibALaudioIndex = 0;
     }
     
 
 
     //! PLAY
 
-    /// Plays the audio with given parameters in a while loop until the audio stops playing
-    int LibAL_playAudioDataLoop(char* &bufferData, std::uint8_t& channels,std::int32_t& sampleRate,std::uint8_t& bitsPerSample,ALsizei& size){
-
-        if(source_state != AL_PLAYING)
-            alSourceUnqueueBuffers(source, 1, &buffer);
-        
-        alBufferData(buffer, to_al_format(channels, bitsPerSample),
-		            bufferData, 
-                    size, 
-                    sampleRate);
-
-        alSourcei(source, AL_BUFFER, buffer);
-	    alSourcePlay(source);
-
-        //Don't return from the function until the audio stops playing
-	    alGetSourcei(source, AL_SOURCE_STATE, &source_state);
-	    while (source_state == AL_PLAYING) {
-	    	alGetSourcei(source, AL_SOURCE_STATE, &source_state);
-	    }
-
-        return 1;
-    }
-    
-    ///Plays the audio with given parameters
-    int LibAL_playAudioData(char* &bufferData, std::uint8_t& channels,std::int32_t& sampleRate,std::uint8_t& bitsPerSample,ALsizei& size){
-
-        if(source_state != AL_PLAYING)
-            alSourceUnqueueBuffers(source, 1, &buffer);
-        
-        alBufferData(buffer, to_al_format(channels, bitsPerSample),
-		            bufferData, 
-                    size, 
-                    sampleRate);
-        
-        alSourcei(source, AL_BUFFER, buffer);
-	    alSourcePlay(source);
-
-        return 1;
-    }
 
     // Plays the audio with given object id's elements in a while loop until the audio stops playing
     int LibAL_playAudioObjectLoop(unsigned int ID){
-        if(!LibAL_playAudioDataLoop(audios[ID].bufferData, audios[ID].channels,
-		            audios[ID].sampleRate, 
-                    audios[ID].bitsPerSample, 
-                    audios[ID].dataSize)){
+        if(!LibALplayAudioDataLoop(LibALaudios[ID].bufferData, LibALaudios[ID].channels,
+		            LibALaudios[ID].sampleRate, 
+                    LibALaudios[ID].bitsPerSample, 
+                    LibALaudios[ID].dataSize,ID)){
                         return 0;
                     }
 
@@ -1506,10 +1603,10 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
     // Plays the audio with given object id's elements
     int LibAL_playAudioObject(unsigned int ID){
 
-        if(!LibAL_playAudioData(audios[ID].bufferData, audios[ID].channels,
-		            audios[ID].sampleRate, 
-                    audios[ID].bitsPerSample, 
-                    audios[ID].dataSize)){
+        if(!LibALplayAudioData(LibALaudios[ID].bufferData, LibALaudios[ID].channels,
+		            LibALaudios[ID].sampleRate, 
+                    LibALaudios[ID].bitsPerSample, 
+                    LibALaudios[ID].dataSize,ID)){
                         return 0;
                     }
         
@@ -1521,21 +1618,40 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
 
 
     //Stops playing the source
-    void LibAL_stopPlaying(){
-        //TODO Will take object parameter after multiple sound implementation
-        alSourceStop(source);
+    void LibAL_stopPlaying(unsigned int ID){
+        alSourceStop(LibALaudios[ID].source);
     }
-
-    char* LibAL_invertSoundData(char* data,ALsizei dataSize){
-        char* res = data;
-
-        for (size_t i = 0; i < dataSize; i++)
+    void LibAL_pausePlaying(unsigned int ID){
+        alSourcePause(LibALaudios[ID].source);
+    }
+    void LibAL_startPlaying(unsigned int ID){
+        alSourcePlay(LibALaudios[ID].source);
+    }
+    void LibAL_silence(){
+        for (size_t i = 0; i < LibALmaxAudios; i++)
         {
-            res[i] = data[dataSize-i]; 
+            alSourceStop(LibALaudios[i].source);
         }
-        return res;
     }
 
+    void LibAL_invertSoundData(unsigned int ID){
+        char* res = LibALaudios[ID].bufferData;
+
+        for (size_t i = 0; i < LibALaudios[ID].dataSize; i++)
+        {
+            res[i] = LibALaudios[ID].bufferData[LibALaudios[ID].dataSize-i]; 
+        }
+    }
+
+    bool LibAL_isPlaying(unsigned int ID){
+        return LibALaudios[ID].source_state == AL_PLAYING;
+    }
+    bool LibAL_isPaused(unsigned int ID){
+        return LibALaudios[ID].source_state == AL_PAUSED;
+    }
+    bool LibAL_isStopped(unsigned int ID){
+        return LibALaudios[ID].source_state == AL_STOPPED;
+    }
 
     //! Reading files
 
@@ -1546,9 +1662,121 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
         
         if(!in.is_open())
         {
+            LibALerrorMsg  = "Couldn't open the file : " + path;
             return 0;
         }
-        if(!load_wav_file_header(in, channels, sampleRate, bitsPerSample, size))
+
+        bool properFile = true;
+
+        char buff[4];
+        if(!in.is_open())
+            properFile = false;
+
+        // the RIFF
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+        if(std::strncmp(buff, "RIFF", 4) != 0)
+        {
+            properFile = false;
+        }
+
+        // the size of the file
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+
+        // the WAVE
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+        if(std::strncmp(buff, "WAVE", 4) != 0)
+        {
+            properFile = false;
+        }
+
+        // "fmt/0"
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+
+        // this is always 16, the size of the fmt data chunk
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+
+        // PCM should be 1?
+        if(!in.read(buff, 2))
+        {
+            properFile = false;
+        }
+
+        // the number of channels
+        if(!in.read(buff, 2))
+        {
+            properFile = false;
+        }
+        channels = LibALConvertToInt(buff, 2);
+
+        // sample rate
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+        sampleRate = LibALConvertToInt(buff, 4);
+
+        // (sampleRate * bitsPerSample * channels) / 8
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+
+        // ?? dafaq
+        if(!in.read(buff, 2))
+        {
+            properFile = false;
+        }
+
+        // bitsPerSample
+        if(!in.read(buff, 2))
+        {
+            properFile = false;
+        }
+        bitsPerSample = LibALConvertToInt(buff, 2);
+
+        // data chunk header "data"
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+        if(std::strncmp(buff, "data", 4) != 0)
+        {
+            properFile = false;
+        }
+
+        // size of data
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+        size = LibALConvertToInt(buff, 4);
+
+        /* cannot be at the end of file */
+        if(in.eof())
+        {
+            properFile = false;
+        }
+        if(in.fail())
+        {
+            properFile = false;
+        }
+
+        if(!properFile)
         {
             return 0;
         }
@@ -1558,45 +1786,81 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
         in.read(bufferData, size);
     }
 
-
     //! Audio objects
 
 
     //Generate an audio object
     int LibAL_genAudio(unsigned int & ID){
-        if(audioIndex == LibALmaxAudios-1){
+        if(LibALaudioIndex == LibALmaxAudios-1){
             return 0;
         }
 
-        ID = audioIndex;
+        //Generate the source
+        ALuint source,buffer;
+	    alGenSources((ALuint)1, &source);
         
-        Audio audio;
+	    alGenBuffers(1, &buffer);
+
+        //Create the source
+	    alSourcef(source, AL_PITCH, 1);
+	    alSourcef(source, AL_GAIN, 1);
+	    alSource3f(source, AL_POSITION, 0, 0, 0);
+	    alSource3f(source, AL_VELOCITY, 0, 0, 0);
+	    alSourcei(source, AL_LOOPING, AL_FALSE);
+
+        ID = LibALaudioIndex;
+        
+        LibALAudio audio;
         audio.bitsPerSample = 0;
         audio.bufferData  = {};
         audio.channels = 0;
         audio.dataSize = 0;
         audio.sampleRate = 0;
-        audios[audioIndex] = audio;
-        audioIndex++;
+        audio.source = source;
+        audio.buffer = buffer;
+        LibALaudios[LibALaudioIndex] = audio;
+        LibALaudioIndex++;
     
         return 1;
     }
     
     //Modify the generated audio object via given parameters
     int LibAL_modifyAudioViaData(std::uint8_t channels,std::uint8_t bitsPerSample, char* bufferData,ALsizei dataSize,int32_t sampleRate,unsigned int ID){
-        audios[ID].bitsPerSample = bitsPerSample;
-        audios[ID].bufferData  = bufferData;
-        audios[ID].channels = channels;
-        audios[ID].dataSize = dataSize;
-        audios[ID].sampleRate = sampleRate;
+        LibALaudios[ID].bitsPerSample = bitsPerSample;
+        LibALaudios[ID].bufferData  = bufferData;
+        LibALaudios[ID].channels = channels;
+        LibALaudios[ID].dataSize = dataSize;
+        LibALaudios[ID].sampleRate = sampleRate;
     
+        return 1;
+    }
+
+    int LibAL_modifySourceViaData(float pitch,float gain,float position[3],float velocity[3],unsigned int ID){
+       
+        alSourcef(LibALaudios[ID].source, AL_PITCH, pitch);
+	    alSourcef(LibALaudios[ID].source, AL_GAIN, gain);
+	    alSource3f(LibALaudios[ID].source, AL_POSITION, position[0], position[1], position[2]);
+	    alSource3f(LibALaudios[ID].source, AL_VELOCITY, velocity[0], velocity[1], velocity[2]);
+
+        return 1;
+    }
+
+    int LibAL_modifyBufferViaData(float position[3],float velocity[3]){
+       
+        //Where the sound will be come from
+	    alListener3f(AL_POSITION, position[0], position[1], position[2]); 
+        //-- 1.f,0.f,0.f = Left side of the headset 
+
+        //Velocity
+        alListener3f(AL_VELOCITY, velocity[0], velocity[1], velocity[2]);
+	    //-- Seting three of the params as 100.f gives a nice slow mo
         return 1;
     }
 
     //Modify the audio object via path
     //Reads the path and modifies the object
     //Format will be : "wav" for the ".wav" file format
-    int LibAL_modifyAudioViaPath(std::string path,const char* format,unsigned int ID){
+    int LibAL_modifyAudioViaPath(std::string path,std::string format,unsigned int ID){
         
         char* soundData;
 	    uint8_t channels;
@@ -1608,37 +1872,198 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
             if(!LibAL_readWAVFile(path,soundData,channels,sampleRate,bitsPerSample,dataSize))
                 return 0;
         }
+        else{
+            return 0;
+        }
             
-        audios[ID].bitsPerSample = bitsPerSample;
-        audios[ID].bufferData  = bufferData;
-        audios[ID].channels = channels;
-        audios[ID].dataSize = dataSize;
-        audios[ID].sampleRate = sampleRate;
+        LibAL_modifyAudioViaData(channels,bitsPerSample,soundData,dataSize,sampleRate,ID);
     
         return 1;
     }
     
     int LibAL_deleteAudio(unsigned int &ID){
-        Audio audio;
-        audios[ID].bitsPerSample = 0;
-        audios[ID].bufferData  = {};
-        audios[ID].channels = 0;
-        audios[ID].dataSize = 0;
-        audios[ID].sampleRate = 0;
-
-        ID = 0;
+        //TODO LibALaudioIndex 
         
+        LibALAudio audio;
+        LibALaudios[ID].bitsPerSample = 0;
+        LibALaudios[ID].bufferData  = {};
+        LibALaudios[ID].channels = 0;
+        LibALaudios[ID].dataSize = 0;
+        LibALaudios[ID].sampleRate = 0;
+        alDeleteBuffers(1,&LibALaudios[ID].buffer);
+        alDeleteSources(1,&LibALaudios[ID].source);
+        ID = 0;
         return 1;
     }
 
+    void printOpenALErrors(){
+        
+        ALCenum error; 
 
-    //! Replacing
+        while(error = alGetError())
+        { 
+            if (error != AL_NO_ERROR) 
+            { 
+                if(error == AL_INVALID_ENUM)
+                    std::cout << "AL_INVALID_ENUM";
+                if(error == AL_INVALID_NAME)
+                    std::cout << "AL_INVALID_NAME";
+                if(error == AL_INVALID_OPERATION)
+                    std::cout << "AL_INVALID_OPERATION";
+                if(error == AL_INVALID_VALUE)
+                    std::cout << "AL_INVALID_VALUE";
+                if(error == AL_OUT_OF_MEMORY)
+                    std::cout << "AL_OUT_OF_MEMORY";
+            }
+        }
+    }
+#endif //LIBAL
+#else
+#include <string.h>
+#include <bit>
+#include <fstream>
 
-    //TODO : More options
-
-    //Replace the source used for playing sounds
-    void LibAL_replaceSource(ALuint givenSource){
-        source = givenSource;
+std::int32_t LibALConvertToInt(char* buffer, std::size_t len)
+    {
+        std::int32_t a = 0;
+        
+        // // if(std::endian::native == std::endian::little)
+            std::memcpy(&a, buffer, len);
+        
+        // // else{
+        // //     for(std::size_t i = 0; i < len; ++i)
+        // //         reinterpret_cast<char*>(&a)[3 - i] = buffer[i];
+        // // }
+        return a;
     }
 
-#endif //LIBAL
+
+    int LibAL_readWAVFile(const std::string& path,char* &bufferData, std::uint8_t& channels,std::int32_t& sampleRate,std::uint8_t& bitsPerSample,size_t& size){
+
+        std::ifstream in(path, std::ios::binary);
+        
+        if(!in.is_open())
+        {
+            return 0;
+        }
+
+        bool properFile = true;
+
+        char buff[4];
+        if(!in.is_open())
+            properFile = false;
+
+        // the RIFF
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+        if(std::strncmp(buff, "RIFF", 4) != 0)
+        {
+            properFile = false;
+        }
+
+        // the size of the file
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+
+        // the WAVE
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+        if(std::strncmp(buff, "WAVE", 4) != 0)
+        {
+            properFile = false;
+        }
+
+        // "fmt/0"
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+
+        // this is always 16, the size of the fmt data chunk
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+
+        // PCM should be 1?
+        if(!in.read(buff, 2))
+        {
+            properFile = false;
+        }
+
+        // the number of channels
+        if(!in.read(buff, 2))
+        {
+            properFile = false;
+        }
+        channels = LibALConvertToInt(buff, 2);
+
+        // sample rate
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+        sampleRate = LibALConvertToInt(buff, 4);
+
+        // (sampleRate * bitsPerSample * channels) / 8
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+
+        // ?? dafaq
+        if(!in.read(buff, 2))
+        {
+            properFile = false;
+        }
+
+        // bitsPerSample
+        if(!in.read(buff, 2))
+        {
+            properFile = false;
+        }
+        bitsPerSample = LibALConvertToInt(buff, 2);
+
+        // data chunk header "data"
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+        if(std::strncmp(buff, "data", 4) != 0)
+        {
+            properFile = false;
+        }
+
+        // size of data
+        if(!in.read(buff, 4))
+        {
+            properFile = false;
+        }
+        size = LibALConvertToInt(buff, 4);
+
+        /* cannot be at the end of file */
+        if(in.eof())
+        {
+            properFile = false;
+        }
+        if(in.fail())
+        {
+            properFile = false;
+        }
+
+        if(!properFile)
+        {
+            return 0;
+        }
+
+        bufferData = new char[size];
+
+        in.read(bufferData, size);
+    }
+#endif //LIBAL_OPENAL_IMPLEMENTATION
