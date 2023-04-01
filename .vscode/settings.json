@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.embeddedhtml": "html",
         "algorithm": "cpp",
         "any": "cpp",
         "array": "cpp",
@@ -83,6 +84,7 @@
         "stack": "cpp",
         "thread": "cpp",
         "unordered_set": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "bit": "cpp"
     }
 }

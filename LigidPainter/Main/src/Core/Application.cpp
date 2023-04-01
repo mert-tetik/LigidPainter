@@ -46,8 +46,7 @@
 //TODO Change texture extension
 //TODO Start screen images
 //TODO Fix ui coliding
-//TODO Painting panel & texture mask panel scroll
-//TODO Fix Colorfull painting
+//TODO Fix Colorfull painting (maybe)
 //TODO Default node spawning location
 
 #include<iostream>
@@ -90,6 +89,7 @@
 
 #include "../../thirdparty/tinyfiledialogs.h"
 
+#include "LibAL.h"
 
 using namespace std;
 
@@ -362,7 +362,10 @@ bool LigidPainter::run()
 	//Get BRDF Look Up Texture
 	unsigned int BRDFLUTxtr = load.getBrdflutTexture();
 	//Create the default node scene(material)
-	load.getDefaultNodeScene(nodeScenes,appNodes,"material_0");
+	////load.getDefaultNodeScene(nodeScenes,appNodes,"material_0");
+	sndPanel.state = 1;
+	sndPanelPlusIcon();
+	sndPanel.state = 0;
 	//Create the default material out (for model)
 	MaterialOut mOut;
 	mOut.program = 0;
@@ -498,8 +501,47 @@ bool LigidPainter::run()
 	bool firstStroke = false;
 
 
+	if(!LibAL_start())
+		std::cout << "ERROR : Initializing libal\n";
+
+	char* soundData;
+	uint8_t channels;
+	int32_t sampleRate;
+	uint8_t bitsPerSample;
+	ALsizei ssize;
+	if(!LibAL_readWAVFile("LigidPainter/Resources/Sounds/CantinaBand3.wav",soundData,channels,sampleRate,bitsPerSample,ssize))
+		std::cout << "ERROR : Reading the wav file";
+	
+	char* soundData2;
+	uint8_t channels2;
+	int32_t sampleRate2;
+	uint8_t bitsPerSample2;
+	ALsizei ssize2;
+	if(!LibAL_readWAVFile("LigidPainter/Resources/Sounds/StarWars60.wav",soundData2,channels2,sampleRate2,bitsPerSample2,ssize2))
+		std::cout << "ERROR : Reading the wav file";
+
+
+	unsigned int theSound;
+	LibAL_genAudio(theSound);
+	
+	unsigned int theSound2;
+	LibAL_genAudio(theSound2);
+
+	soundData = LibAL_invertSoundData(soundData,ssize);
+	soundData2 = LibAL_invertSoundData(soundData2,ssize2);
+
+	LibAL_modifyAudioViaData(channels,bitsPerSample,soundData,ssize,sampleRate,theSound);
+	LibAL_modifyAudioViaData(channels2,bitsPerSample2,soundData2,ssize2,sampleRate2,theSound2);
+
+	if(!LibAL_playAudioObject(theSound))
+		std::cout << "ERROR : Playing the sound";
+	
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
+
+		if(glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS)
+			LibAL_stopPlaying();
+
 		whileCounter++;
 		if(whileCounter > 1000)
 			whileCounter = 0;
@@ -660,7 +702,6 @@ bool LigidPainter::run()
 		else{
 			f11done = false;
 		}
-
 
 		if(addNodeContextMenu.active && !addNodeContextMenu.hover){
 			addNodeContextMenu.active = false;
@@ -931,7 +972,9 @@ bool LigidPainter::run()
 
 		}
 	}
-	
+	if(!LibAL_playAudioObjectLoop(theSound2))
+		std::cout << "ERROR : Playing the sound";
+
 	//Close the program
 	glfwDestroyWindow(window);
 	glfwTerminate();

@@ -84,6 +84,8 @@ bool showTheSelectionBox = true;
 std::vector<float> selectionBoxCoords = {};
 bool selectionActive = false;
 
+int previousTextureResIndex;
+
 
 
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
@@ -743,12 +745,43 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		gl.drawArrays(renderVertices,0);
 	}
 	bool skyboxlistStateChanged = false;
+	bool resolutionChanged = false;
 	if(panelData.settingsPanelActive){
-		ui.listBox(centerCoords - screenGapX,0.8f,0.9f,"Texture Resolution",0.1f,icons,{"256","512","1024","2048","4096"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenTextureResIndex,screenGapX);
+		resolutionChanged = ui.listBox(centerCoords - screenGapX,0.8f,0.9f,"Texture Resolution",0.1f,icons,{"256","512","1024","2048","4096"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenTextureResIndex,screenGapX);
 		ui.listBox(centerCoords - screenGapX,0.33f,0.9f,"Node Resolution",0.1f,icons,{"256","512","1024","2048"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenNodeResIndex,screenGapX);
 		skyboxlistStateChanged = ui.listBox(centerCoords - screenGapX,-0.2f,0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture,screenGapX);
 	}
 	
+	//TODO Replace tinyfd
+	if(resolutionChanged && tinyfd_messageBox("Warning!","All the texture will be compressed into the chosen resolution","okcancel","warning",0) && tinyfd_messageBox("Warning!","You re really sure arent u","okcancel","warning",0)){
+		for (size_t i = 0; i < albedoTextures.size(); i++)
+		{
+			if(albedoTextures[i].isTexture){
+				int txtrRes = 256;
+				for (size_t i = 0; i < previousTextureResIndex; i++)
+				{
+					txtrRes*=2;
+				}
+
+				glActiveTexture(GL_TEXTURE28);
+				glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
+				Texture texture;
+				GLubyte* data = texture.getTextureFromProgram(GL_TEXTURE28,txtrRes,txtrRes,4);
+				int desiredRes = 256;
+				for (size_t i = 0; i < chosenTextureResIndex; i++)
+				{
+					desiredRes*=2;
+				}
+				GLubyte* resizedData = new GLubyte[desiredRes*desiredRes*4];
+				stbir_resize_uint8(data, txtrRes, txtrRes, 0, resizedData, desiredRes, desiredRes, 0, 4);
+				gl.texImage(resizedData,desiredRes,desiredRes,GL_RGBA);
+				gl.generateMipmap();
+				delete[] resizedData;
+			}
+		}
+	}
+	previousTextureResIndex = chosenTextureResIndex;
+
 	if(skyboxlistStateChanged){
 		Load load;
 		glDeleteTextures(1,&cubemaps.cubemap);

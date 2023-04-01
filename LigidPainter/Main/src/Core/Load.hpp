@@ -782,7 +782,7 @@ public:
 		mainOutNode.inputs.push_back(mainOutInput);
 		mainOutNode.isMainOut = true;
 		mainOutNode.positionX = 0;
-		mainOutNode.positionY = -1.5;
+		mainOutNode.positionY = -0.f;
 		mainOutNode.rangeBarCount = 0;
 		mainOutNode.upBarColor = glm::vec4(0,0,0,1);
 
@@ -816,7 +816,7 @@ public:
 		pbrNode.marked = true;
 
 		pbrNode.positionX = -0.55;
-		pbrNode.positionY =-2.5;
+		pbrNode.positionY =-0.f;
 
 		//Add to material
 		result.push_back(pbrNode);
@@ -992,6 +992,8 @@ public:
 		emptyNodeScene.sceneName = name;
 		emptyNodeScene.nodes = mainOutNodes;
 		emptyNodeScene.stateChanged = true;
+		emptyNodeScene.nodes[0].positionX = 0;
+		emptyNodeScene.nodes[0].positionY = 0;
 		nodeScenes.push_back(emptyNodeScene);
 	}
 	unsigned int getPaintingFBO(WindowData windowData,unsigned int screenPaintingTexture){

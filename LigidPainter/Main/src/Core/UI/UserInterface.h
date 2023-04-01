@@ -347,7 +347,7 @@ struct NodePanel{
 	bool boundariesHover;
 	bool boundariesPressed;
 
-	float zoomVal = 0.5f;
+	float zoomVal = 0.4f;
 	bool zoomValChanged = false;
 
 	float panelPositionX = 0.0;
@@ -431,10 +431,11 @@ struct Node{
 	std::vector<NodeInput> outputs;
 	std::vector<ListBox> listBoxes;
 	
-	float unZoomedPositionX; 
-	float unZoomedPositionY; 
-	float positionX; 
-	float positionY;
+	float unZoomedPositionX = 0.f; 
+	float unZoomedPositionY = 0.f; 
+
+	float positionX = 0.f; 
+	float positionY = 0.f;
 
 	float width;
 	float height;
