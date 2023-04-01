@@ -1794,7 +1794,7 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
         if(LibALaudioIndex == LibALmaxAudios-1){
             return 0;
         }
-
+//a
         //Generate the source
         ALuint source,buffer;
 	    alGenSources((ALuint)1, &source);
