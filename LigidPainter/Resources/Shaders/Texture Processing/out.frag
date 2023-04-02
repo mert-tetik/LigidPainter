@@ -45,6 +45,8 @@ uniform vec2 paintOverPos;
 
 uniform float paintingOpacity;
 
+uniform vec3 mirroredScreenMaskCamPos;
+
 float far = 10.0;
 float near = 0.1;
 float linearizeDepth(float depth){
@@ -180,17 +182,30 @@ void main() {
     else{
       if(tdMaskRendering == 0){
          //Mirrored mask texture here
-         if((mirrormaskrenderingX == 1 && mirrormaskrenderingY == 1) || (mirrormaskrenderingX== 1 && mirrormaskrenderingZ== 1) || (mirrormaskrenderingY== 1 && mirrormaskrenderingZ== 1))
-            color = vec4(texture(screenMaskTexture, vec2(1.0 - TexCoords.x,1. - TexCoords.y)).rgb,1);
-         else if(mirrormaskrenderingX== 1 || mirrormaskrenderingZ== 1)
-            color = vec4(texture(screenMaskTexture, vec2(1.0 - TexCoords.x,TexCoords.y)).rgb,1);
-         else if(mirrormaskrenderingY== 1)
-            color = vec4(texture(screenMaskTexture, vec2(TexCoords.x , 1.0 - TexCoords.y)).rgb,1);
+            float uvx = TexCoords.x;
+            float uvy = TexCoords.y;
+            
+            if(mirroredScreenMaskCamPos.x > mirroredScreenMaskCamPos.z){
+               if(mirrormaskrenderingX == 1)
+                  uvx = 1.-uvx;
+               if(mirrormaskrenderingY == 1)
+                  uvy = 1.-uvy;
+            }
+            else {
+               if(mirrormaskrenderingZ == 1)
+                  uvx = 1.-uvx;
+               if(mirrormaskrenderingY == 1)
+                  uvy = 1.-uvy;
+            }
+
+
+            color = vec4(texture(screenMaskTexture, vec2(uvx , uvy)).rgb,1);
       }
       else{
             vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
 
             float intensity = 0.0;
+            
 
             if(isPainted(screenPos,false)){
                if(maskMode == 1)

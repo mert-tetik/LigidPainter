@@ -87,6 +87,7 @@ bool selectionActive = false;
 int previousTextureResIndex;
 
 
+bool textureResolutionChanged = false;
 
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
 const char* exportFileName,float &maskPanelSliderValue,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
@@ -97,7 +98,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool &firstClick
 ,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive
 ,std::string &textureText,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps
-,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex) {
+,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,int &messageBoxRes) {
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -752,32 +753,43 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		skyboxlistStateChanged = ui.listBox(centerCoords - screenGapX,-0.2f,0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture,screenGapX);
 	}
 	
-	//TODO Replace tinyfd
-	if(resolutionChanged && tinyfd_messageBox("Warning!","All the texture will be compressed into the chosen resolution","okcancel","warning",0) && tinyfd_messageBox("Warning!","You re really sure arent u","okcancel","warning",0)){
-		for (size_t i = 0; i < albedoTextures.size(); i++)
-		{
-			if(albedoTextures[i].isTexture){
-				int txtrRes = 256;
-				for (size_t i = 0; i < previousTextureResIndex; i++)
-				{
-					txtrRes*=2;
-				}
+	if(resolutionChanged || textureResolutionChanged){
+		
+		textureResolutionChanged = true;
+		if(messageBoxRes == 0)
+			ui.showMessageBox("Textures will be compressed into the chosen resolution");
+		
 
-				glActiveTexture(GL_TEXTURE28);
-				glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
-				Texture texture;
-				GLubyte* data = texture.getTextureFromProgram(GL_TEXTURE28,txtrRes,txtrRes,4);
-				int desiredRes = 256;
-				for (size_t i = 0; i < chosenTextureResIndex; i++)
-				{
-					desiredRes*=2;
+		if(messageBoxRes == 1){
+			for (size_t i = 0; i < albedoTextures.size(); i++)
+			{
+				if(albedoTextures[i].isTexture){
+					int txtrRes = 256;
+					for (size_t i = 0; i < previousTextureResIndex; i++)
+					{
+						txtrRes*=2;
+					}
+
+					glActiveTexture(GL_TEXTURE28);
+					glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
+					Texture texture;
+					unsigned char* data = texture.getTextureFromProgram(GL_TEXTURE28,txtrRes,txtrRes,4);
+					int desiredRes = 256;
+					for (size_t i = 0; i < chosenTextureResIndex; i++)
+					{
+						desiredRes*=2;
+					}
+					unsigned char* resizedData = new unsigned char[desiredRes*desiredRes*4];
+					stbir_resize_uint8(data, txtrRes, txtrRes, 0, resizedData, desiredRes, desiredRes, 0, 4);
+					gl.texImage(resizedData,desiredRes,desiredRes,GL_RGBA);
+					gl.generateMipmap();
+					delete[] resizedData;
 				}
-				GLubyte* resizedData = new GLubyte[desiredRes*desiredRes*4];
-				stbir_resize_uint8(data, txtrRes, txtrRes, 0, resizedData, desiredRes, desiredRes, 0, 4);
-				gl.texImage(resizedData,desiredRes,desiredRes,GL_RGBA);
-				gl.generateMipmap();
-				delete[] resizedData;
 			}
+		}
+		if(messageBoxRes != 0){
+			messageBoxRes = 0;
+			textureResolutionChanged = false;
 		}
 	}
 	previousTextureResIndex = chosenTextureResIndex;
