@@ -194,10 +194,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 		int loopSize = 0;
 
 		if(mirrorParams.size()){
-			for (size_t i = 0; i < mirrorParams.size(); i++)
-			{
-				glDeleteTextures(1,&mirrorParams[i].renderID);
-			}
+			glDeleteTextures(1,&mirrorParams[mirrorParams.size()-1].renderID);
 			for (size_t i = 0; i < mirrorParams.size(); i++)
 			{
 				glClearColor(0,0,0,1);
@@ -211,10 +208,10 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				unsigned int FBOMr;
 				glset.genFramebuffers(FBOMr);
 				glset.bindFramebuffer(FBOMr);
-				//TODO : Delete these textures
 				unsigned int textureColorbuffer;
 				glset.genTextures(textureColorbuffer);
 				glset.bindTexture(textureColorbuffer);
+				mirrorParams[i].renderID1 = textureColorbuffer;
 				glset.texImage(NULL, 1080,1080,GL_RGBA);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -239,8 +236,9 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				glset.drawArrays(textureRenderingVerticesFlipped,0);
 				//Get texture
 				glset.uniform1i(programs.outProgram, "screenMaskTexture", 3);
+				
+				glDeleteFramebuffers(1,&FBOMr);
 
-				glset.deleteFramebuffers(FBOMr);
 
 				//Finish
 				//Finish
@@ -284,8 +282,18 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				
 				glset.uniform1i(programs.outProgram, "screenMaskTexture", 4);
 
-				glset.deleteFramebuffers(FBOMr2);
+				glDeleteFramebuffers(1,&FBOMr2);
+			 	glDeleteTextures(1,&textureColorbuffer);
 			}
+
+
+			for (size_t i = 0; i < mirrorParams.size(); i++)
+			{	
+				if(i != mirrorParams.size()-1)
+					glDeleteTextures(1,&mirrorParams[i].renderID);
+			}
+
+
 			glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 0);
 		}
 	}

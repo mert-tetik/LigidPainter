@@ -203,6 +203,7 @@ struct MirrorParam{
 	glm::vec3 pos;
 	unsigned int depthTexture;
 	unsigned int renderID;
+	unsigned int renderID1;
 };
 class Sphere {
 public:

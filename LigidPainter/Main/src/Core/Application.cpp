@@ -37,7 +37,7 @@
 //Left CTRL + TAB + R = Switch to export panel
 
 //TODO Fix node lagging
-//TODO Fix 3 axis mirror & paint over & memory leak
+//TODO Fix mirror paint over
 //TODO Replace mirror range bars
 //TODO Replace tinyfd messageboxes
 //TODO Default selected & subselected textures
@@ -1759,6 +1759,8 @@ void LigidPainter::mirrorXCheckBox() {
 	Utilities util;
 	for (size_t i = 0; i < mirrorParams.size(); i++)
 	{
+		glDeleteTextures(1,&mirrorParams[i].renderID1);
+		glDeleteTextures(1,&mirrorParams[i].renderID);
 		glDeleteTextures(1,&mirrorParams[i].depthTexture);
 	}
 	
@@ -1779,6 +1781,8 @@ void LigidPainter::mirrorYCheckBox() {
 	Utilities util;
 	for (size_t i = 0; i < mirrorParams.size(); i++)
 	{
+		glDeleteTextures(1,&mirrorParams[i].renderID1);
+		glDeleteTextures(1,&mirrorParams[i].renderID);
 		glDeleteTextures(1,&mirrorParams[i].depthTexture);
 	}
 	mirrorParams.clear();
@@ -1798,6 +1802,8 @@ void LigidPainter::mirrorZCheckBox() {
 	Utilities util;
 	for (size_t i = 0; i < mirrorParams.size(); i++)
 	{
+		glDeleteTextures(1,&mirrorParams[i].renderID1);
+		glDeleteTextures(1,&mirrorParams[i].renderID);
 		glDeleteTextures(1,&mirrorParams[i].depthTexture);
 	}
 	mirrorParams.clear();
