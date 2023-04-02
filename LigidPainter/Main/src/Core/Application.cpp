@@ -37,10 +37,9 @@
 //Left CTRL + TAB + R = Switch to export panel
 
 //TODO Fix node lagging
-//TODO Fix 3 axis mirror & paint over
-//TODO Dynamic painting performance if possible
+//TODO Fix 3 axis mirror & paint over & memory leak
 //TODO Replace mirror range bars
-//TODO Update all the textures after changing the project resolution (ask before)
+//TODO Replace tinyfd messageboxes
 //TODO Default selected & subselected textures
 //TODO Required icons
 //TODO Change texture extension
@@ -516,8 +515,6 @@ bool LigidPainter::run()
 
 	LibAL_readWAVFile("LigidPainter/Resources/Sounds/CantinaBand3.wav",bufferData,channels,sampleRate,bitsPerSample,size);
 	
-	LibAL_writeWAVFile("LigidPainter/Resources/Sounds/CantinaBand.wav",bufferData,channels,sampleRate,bitsPerSample,size);
-
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
