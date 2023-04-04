@@ -136,6 +136,7 @@ private:
     };
     struct sNodeInput{
 	    //Texture element
+    	glm::vec4 value;
 	    bool addTextureButtonHover;
 	    bool removeTextureButtonHover;
 	    int selectedTextureIndex = 10000;
@@ -217,6 +218,9 @@ private:
             std::vector<Vertex> vertices;
             std::vector<unsigned int> indices;
 
+            uint64_t materialIndex;
+            rf.read(reinterpret_cast<char*>(&materialIndex),sizeof(uint64_t));
+
             uint64_t meshNameSize;
             rf.read(reinterpret_cast<char*>(&meshNameSize),sizeof(uint64_t));
             
@@ -250,7 +254,7 @@ private:
                 rf.read(reinterpret_cast<char*>(&index),sizeof(unsigned int));
                 indices.push_back(index);
             }
-            model.meshes.push_back(Mesh(vertices, indices, {},materialName,0));
+            model.meshes.push_back(Mesh(vertices, indices, {},materialName,materialIndex));
         }
         
     }
@@ -429,6 +433,7 @@ private:
 	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].result = sIn.result;
 	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].removeTheResult = sIn.removeTheResult;
 	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedRampIndex = sIn.selectedRampIndex;
+	                nodeScenes[sceneI].nodes[nodeI].inputs[inI].value = sIn.value;
 
                     //inputs text
                     uint64_t nodeOutputTextSize;
@@ -541,6 +546,7 @@ private:
 	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].result = sOut.result;
 	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].removeTheResult = sOut.removeTheResult;
 	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].selectedRampIndex = sOut.selectedRampIndex;
+	                nodeScenes[sceneI].nodes[nodeI].outputs[outI].value = sOut.value;
                     
                     //Output text
                     uint64_t nodeOutputTextSize;
@@ -714,6 +720,8 @@ private:
         
         for (size_t meshI = 0; meshI < model.meshes.size(); meshI++)
         {
+            wf.write(reinterpret_cast<char*>(&model.meshes[meshI].materialIndex),sizeof(uint64_t));
+            
             uint64_t meshNameSize = model.meshes[meshI].materialName.size();
             wf.write(reinterpret_cast<char*>(&meshNameSize),sizeof(uint64_t));
             
@@ -906,6 +914,7 @@ private:
 	                sIn.result = nodeScenes[sceneI].nodes[nodeI].inputs[inI].result;
 	                sIn.removeTheResult = nodeScenes[sceneI].nodes[nodeI].inputs[inI].removeTheResult;
 	                sIn.selectedRampIndex = nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedRampIndex;
+	                sIn.value = nodeScenes[sceneI].nodes[nodeI].inputs[inI].value;
 
                     wf.write(reinterpret_cast<char*>(&sIn),sizeof(sNodeInput));
 
@@ -997,6 +1006,7 @@ private:
 	                sOut.result = nodeScenes[sceneI].nodes[nodeI].outputs[outI].result;
 	                sOut.removeTheResult = nodeScenes[sceneI].nodes[nodeI].outputs[outI].removeTheResult;
 	                sOut.selectedRampIndex = nodeScenes[sceneI].nodes[nodeI].outputs[outI].selectedRampIndex;
+	                sOut.value = nodeScenes[sceneI].nodes[nodeI].outputs[outI].value;
 
                     wf.write(reinterpret_cast<char*>(&sOut),sizeof(sNodeInput));
                     
