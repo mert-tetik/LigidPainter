@@ -271,6 +271,10 @@ double renderlastMouseYpos;
 glm::vec2 paintOverLayerPos = glm::vec2(0.f);
 glm::vec2 paintOverLayerScale = glm::vec2(1.f);
 
+float startMenuNew3DProjectMixVal = 0.f;
+float startMenuImportProjectMixVal = 0.f;
+
+
 int paintRenderCounter = 0;
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
 Icons &icons,float &maskPanelSliderValue, bool renderPlane,bool renderSphere,
@@ -559,6 +563,10 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 		float new3DProjectMixVal = 0.f;
 		float importProjectMixVal = 0.f;
+		
+		startMenuNew3DProjectMixVal = util.transitionEffect(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.f-screenGapX,0.0f,mouseXpos,mouseYpos,false),startMenuNew3DProjectMixVal,0.1f);
+		startMenuImportProjectMixVal = util.transitionEffect(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.4f-screenGapX,0.0f,mouseXpos,mouseYpos,false),startMenuImportProjectMixVal,0.1f);
+		
 		if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
 			nodePanel.pointerCursor = true;
 			new3DProjectMixVal = 1.f;
@@ -584,13 +592,14 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		else{
 			nodePanel.pointerCursor = false;
 		}
-		ui.container(-0.0f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,new3DProjectMixVal);
+	
+		ui.container(-0.0f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,startMenuNew3DProjectMixVal);
 		glUseProgram(renderPrograms.iconsProgram);
 		ui.iconBox(0.07,0.14f,0.0f,0.1f,1.f,icons.TDModel,0.f,colorData.iconColor,colorData.iconColor);
 		glUseProgram(renderPrograms.uiProgram);
 		ui.renderText(renderPrograms.uiProgram,"New 3D Project",0.0f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
 		
-		ui.container(0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,importProjectMixVal);
+		ui.container(0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,startMenuImportProjectMixVal);
 		glUseProgram(renderPrograms.iconsProgram);
 		ui.iconBox(0.07,0.14f,0.4f,0.1f,1.f,icons.ImportModel,0.f,colorData.iconColor,colorData.iconColor);
 		glUseProgram(renderPrograms.uiProgram);

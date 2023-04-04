@@ -101,7 +101,10 @@ void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vec
 				ui.renderText(programs.uiProgram,UIElements[i].text.text, centerCoords - screenGapX + UIElements[i].text.positionX, UIElements[i].text.positionY+slideVal, UIElements[i].text.scale,colorData.textColor,0.99999f,false);
 			}
 			if(currentType == "rangeBar"){
-				ui.rangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY+slideVal, UIElements[i].rangeBar.value,UIElements[i].rangeBar.widthDivider);
+				if(!UIElements[i].rangeBar.isConstant)
+					ui.rangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY+slideVal, UIElements[i].rangeBar.value,UIElements[i].rangeBar.widthDivider);
+				else
+					ui.constRangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY+slideVal, UIElements[i].rangeBar.value,icons);
 			}
 			if(currentType == "textBox"){
 				ui.box(UIElements[i].textBox.width, UIElements[i].textBox.height,centerCoords - screenGapX + UIElements[i].textBox.position_x, UIElements[i].textBox.position_y+slideVal,UIElements[i].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements[i].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements[i].textBox.transitionMixVal); //Add mask texture button
@@ -110,6 +113,7 @@ void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vec
 				ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY+slideVal, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,icons.Circle); //jpg checkbox
 			}
 			if(currentType == "icon"){
+				glUseProgram(programs.iconsProgram);
 				ui.iconBox(UIElements[i].icon.width,UIElements[i].icon.height,centerCoords - screenGapX + UIElements[i].icon.positionX ,UIElements[i].icon.positionY+slideVal,UIElements[i].icon.positionZ,UIElements[i].icon.icon, UIElements[i].icon.mixVal , UIElements[i].icon.color , UIElements[i].icon.colorHover);
 			}
 		}
