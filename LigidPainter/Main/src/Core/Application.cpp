@@ -745,12 +745,12 @@ bool LigidPainter::run()
 			}
 			if(projectFilePath != "" && glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE){
 				LigidFile ligidFile;
-				ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes);
+				ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes,chosenTextureResIndex);
 			}
 			else if(projectFilePathCheck){
 				LigidFile ligidFile;
 				projectFilePath = projectFilePathCheck;
-				ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes);
+				ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes,chosenTextureResIndex);
 			}
 		}
 

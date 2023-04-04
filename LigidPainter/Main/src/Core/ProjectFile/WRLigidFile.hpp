@@ -34,16 +34,15 @@
 
 
 //TODO : Multiple meshes
-//TODO : Get nodes & materials
 
 class LigidFile{
 public:
-    Model writeTheFile(const char* path,Model model,std::vector<aTexture> textures,std::vector<NodeScene> nodeScenes){
+    Model writeTheFile(const char* path,Model model,std::vector<aTexture> textures,std::vector<NodeScene> nodeScenes,int textureResIndex){
 
         std::ofstream wf = createTheProjectFile(path);
 
         writeModelData(wf,model);
-        writeTextures(wf,textures);
+        writeTextures(wf,textures,textureResIndex);
         drawTextureElements(wf,textures);
         writeNodeScenes(wf,nodeScenes);
 
@@ -262,7 +261,7 @@ private:
         uint64_t textureCount = 0;
         rf.read(reinterpret_cast<char*>(&textureCount),sizeof(uint64_t));
         uint64_t resolution = 0;
-        rf.read(reinterpret_cast<char*>(&resolution),sizeof(uint64_t));//1024
+        rf.read(reinterpret_cast<char*>(&resolution),sizeof(uint64_t));
         
         uint64_t pixelCount = resolution*resolution;
 
@@ -750,7 +749,13 @@ private:
         }
     }
 
-    void writeTextures(std::ofstream &wf,std::vector<aTexture> textures){
+    void writeTextures(std::ofstream &wf,std::vector<aTexture> textures,int textureResIndex){
+        int txtrRes = 256;
+	    for (size_t i = 0; i < chosenTextureResIndex; i++)
+	    {
+	    	txtrRes*=2;
+	    }
+
         uint64_t txtr1 = 0xA7F8F642; 
         uint64_t txtr2 = 0x99CAD11E; 
         uint64_t txtr3 = 0x6F5E55A8;
@@ -768,7 +773,7 @@ private:
 
         uint64_t textureElementSize = texturesSize;
         wf.write(reinterpret_cast<char*>(&textureElementSize),sizeof(uint64_t));
-        uint64_t textureResolutionSize = 1024;
+        uint64_t textureResolutionSize = txtrRes;
         wf.write(reinterpret_cast<char*>(&textureResolutionSize),sizeof(uint64_t));
         
         //----Get the texture data
@@ -779,8 +784,8 @@ private:
             if(textures[i].isTexture){
                 glActiveTexture(GL_TEXTURE28);
                 glBindTexture(GL_TEXTURE_2D,textures[i].id);
-                GLubyte* data = txtr.getTextureFromProgram(GL_TEXTURE28,1024,1024,4);
-                for (size_t wh = 0; wh < 1024*1024*4; wh++)
+                GLubyte* data = txtr.getTextureFromProgram(GL_TEXTURE28,txtrRes,txtrRes,4);
+                for (size_t wh = 0; wh < txtrRes*txtrRes*4; wh++)
                 {
                     wf.write(reinterpret_cast<char*>(&data[wh]),sizeof(GLubyte));
                 }

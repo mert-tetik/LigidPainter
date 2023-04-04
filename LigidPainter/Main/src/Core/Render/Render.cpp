@@ -501,12 +501,12 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 				if(projectFilePath != ""){
 					LigidFile ligidFile;
-					ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes);
+					ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes,chosenTextureResIndex);
 				}
 				else if(projectFilePathCheck){
 					LigidFile ligidFile;
 					projectFilePath = projectFilePathCheck;
-					ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes);
+					ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes,chosenTextureResIndex);
 				}
 			}
 		}
