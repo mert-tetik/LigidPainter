@@ -33,5 +33,7 @@ public:
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void refreshScreenTxtr();
 	void deleteOpenglTexture(aTexture texture);
+	GLubyte* resizeTexture(GLubyte* data,int w,int h,int ow,int oh);
+	
 };
 #endif

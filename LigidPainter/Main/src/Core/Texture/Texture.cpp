@@ -220,3 +220,37 @@ void Texture::sendProgramsToTextures(Programs apptxtrPrograms){
 }
 void Texture::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
 }
+
+GLubyte* Texture::resizeTexture(GLubyte* data,int w,int h,int ow,int oh){
+	GLubyte resizedQr[1024*1024*4];
+	stbir_resize_uint8(data, w, h, 0,resizedQr,ow, oh, 0, 4);
+	
+	glActiveTexture(GL_TEXTURE28);
+	unsigned int theTxtr;
+	glGenTextures(1,&theTxtr);
+
+	
+	unsigned int FBO;
+	glGenFramebuffers(1,&FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+	//fbtexture2d
+	
+	//rendervertices
+
+	//renderthevertices
+
+	//glreadpixels
+
+	glViewport(0,0,ow,oh);
+
+	glUseProgram(txtrPrograms.renderTheTextureProgram);
+
+
+
+	LigidPainter lp;
+	lp.setViewportToDefault();
+	
+	glBindFramebuffer(GL_FRAMEBUFFER,0);
+	glDeleteFramebuffers(1,&FBO);
+	return resizedQr;
+}

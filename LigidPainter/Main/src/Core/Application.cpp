@@ -38,14 +38,12 @@
 
 //TODO Fix node lagging
 //TODO Fix mirror paint over
-//TODO Replace mirror range bars
 //TODO Replace tinyfd messageboxes
 //TODO Default selected & subselected textures
 //TODO Required icons
 //TODO Change texture extension
-//TODO Start screen images
+//TODO Update
 //TODO Fix ui coliding
-//TODO Fix Colorfull painting (maybe)
 //TODO Resize qr 
 //TODO Default node spawning location
 
@@ -307,6 +305,14 @@ bool LigidPainter::run()
 	glDepthFunc(GL_LESS);
 	glEnable(GL_MULTISAMPLE);
 
+	// if(!LibAL_start())
+	// 	std::cout << "ERROR : Initializing libal\n";
+	
+	// unsigned int sound1;
+	// LibAL_genAudio(sound1);
+	// LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/StarWars60.wav","wav",sound1);
+	// LibAL_playAudioObject(sound1);
+
 
 	Load load;
 	programs = load.getProgram();
@@ -456,7 +462,7 @@ bool LigidPainter::run()
 	
 	glfwPollEvents();
 
-	unsigned int qrTxtr = util.createQRCode("https://ligidtools.com/ligidpainter",colorData.LigidPainterThemeColor);
+	//unsigned int qrTxtr = util.createQRCode("https://ligidtools.com/ligidpainter",colorData.LigidPainterThemeColor);
 
 	aTexture trashFolder;
 	trashFolder.name = "Trash";
@@ -464,10 +470,10 @@ bool LigidPainter::run()
 	trashFolder.isTrashFolder = true;
 	albedoTextures.push_back(trashFolder);
 	
-	aTexture aqrTxtr;
-	aqrTxtr.id = qrTxtr;
-	aqrTxtr.name = "LigidTools.com";
-	albedoTextures.push_back(aqrTxtr);
+	//aTexture aqrTxtr;
+	//aqrTxtr.id = qrTxtr;
+	//aqrTxtr.name = "LigidTools.com";
+	//albedoTextures.push_back(aqrTxtr);
 	
 	//addSphereButton();
 
@@ -506,24 +512,21 @@ bool LigidPainter::run()
 	bool firstStroke = false;
 
 
-	if(!LibAL_start())
-		std::cout << "ERROR : Initializing libal\n";
-	unsigned int sound1;
-
-	LibAL_genAudio(sound1);
-
-	char* bufferData;
-	uint8_t channels;
-	int32_t sampleRate;
-	uint8_t bitsPerSample;
-	ALsizei size;
-
-	LibAL_readWAVFile("LigidPainter/Resources/Sounds/CantinaBand3.wav",bufferData,channels,sampleRate,bitsPerSample,size);
 	
 
+	//char* bufferData;
+	//uint8_t channels;
+	//int32_t sampleRate;
+	//uint8_t bitsPerSample;
+	//ALsizei size;
+
+	//LibAL_readWAVFile("LigidPainter/Resources/Sounds/CantinaBand3.wav",bufferData,channels,sampleRate,bitsPerSample,size);
+	
+	//LibAL_invertSoundData(sound1);
+
+	
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
-
 
 
 		whileCounter++;
@@ -2003,17 +2006,17 @@ void LigidPainter::mirrorRangeBars(double xOffset, int width, int height,bool x,
 	if (x) {
 		Utilities util;
 		UIElements[UImirrorXRangeBarElement].rangeBar.value -= xOffset / (width / 2) *1.7;
-		UIElements[UImirrorXRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UImirrorXRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+		//UIElements[UImirrorXRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UImirrorXRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
     }
 	if (y) {
 		Utilities util;
 		UIElements[UImirrorYRangeBarElement].rangeBar.value -= xOffset / (width / 2) *1.7;
-		UIElements[UImirrorYRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UImirrorYRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+		//UIElements[UImirrorYRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UImirrorYRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
     }
 	if (z) {
 		Utilities util;
 		UIElements[UImirrorZRangeBarElement].rangeBar.value -= xOffset / (width / 2) *1.7;
-		UIElements[UImirrorZRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UImirrorZRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+		//UIElements[UImirrorZRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UImirrorZRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
     }
 }
 void LigidPainter::nodePanelBoundaries(float yOffset,float screenHeight){

@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 
+#include "Core/LigidPainter.h"
 #include "Core/Model/model.h"
 
 #define UIUploadingModelPathTextBox 0
@@ -148,6 +149,8 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 materialIconIndexTextColor = glm::vec4(0.1f,0.1f,0.1f,1.0);
 
 	glm::vec3 alertColor = glm::vec3(0.76,0.17,0.17);
+
+	glm::vec4 rangeBarTextColor = glm::vec4(0.02f,0.02f,0.02f,0.8f);
 	
 };
 
@@ -212,6 +215,7 @@ struct RangeBar{
 	float value;
 	bool hover = false;
 	float widthDivider = 1;
+	bool isConstant = false;
 };
 
 struct Icon{
@@ -648,6 +652,7 @@ public:
 	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked,unsigned int circleTxtr);
 	void panelChangeButton(float position_x, float position_y);
 	void rangeBar(float position_x, float position_y, float value,float divideWidth);
+	void constRangeBar(float position_x, float position_y,float value,Icons icons);
 	void colorBox(float position_x, float position_y, float valueX, float valueY,Icons icons);
 	glm::vec3 hueBar(float position_x, float position_y,float value, unsigned int FBO,GLFWwindow* window,glm::mat4 projection,bool updateHueVal);
 	void decorationSquare(float position_x, float position_y);

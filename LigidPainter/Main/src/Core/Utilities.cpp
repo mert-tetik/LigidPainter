@@ -17,6 +17,9 @@
 
 #include "stb_image.h"
 #include "stb_image_write.h"
+#include "stb_image_resize.h"
+
+#include "Core/Texture/Texture.h"
 
 using namespace std;
 
@@ -424,12 +427,20 @@ unsigned int Utilities::createQRCode(const char* path,glm::vec3 color){
 			}
 		}
 	}
+	GLubyte qrd[300*300*4];
+	for (size_t i = 0; i < qrData.size(); i++)
+	{
+		qrd[i] = qrData[i];
+	}
 	
 	glActiveTexture(GL_TEXTURE0);
 	unsigned int qrTxtr;
 	glGenTextures(1,&qrTxtr);
 	glBindTexture(GL_TEXTURE_2D,qrTxtr);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, qr.size(), qr.size(), 0, GL_RGBA, GL_UNSIGNED_BYTE, &qrData[0]);
+	Texture txtr;
+	GLubyte* resizedQr = txtr.resizeTexture(qrd,qr.size(),qr.size(),1024,1024); 
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, resizedQr);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE28);
 
