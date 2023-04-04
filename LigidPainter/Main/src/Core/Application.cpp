@@ -42,9 +42,7 @@
 //TODO Default selected & subselected textures
 //TODO Required icons
 //TODO Change texture extension
-//TODO Update
 //TODO Fix ui coliding
-//TODO Resize qr 
 //TODO Default node spawning location
 
 #include<iostream>
@@ -211,9 +209,18 @@ int chosenSkyboxTexture = 1;
 bool duplicateNodeCall = false;
 aTexture paintOverTexture;
 bool selectingPaintOverTexture;
+Cubemaps cubemaps;
+LigidCursors cursors;
+Icons icons;
 
-bool showTheMessageBox = false;
-std::string messageBoxTxt;
+
+
+ExportData exportData;
+PBRShaderData pbrShaderData;
+SkyBoxShaderData skyBoxShaderData;
+ScreenDepthShaderData screenDepthShaderData;
+AxisPointerShaderData axisPointerShaderData;
+
 int messageBoxRes = 0; //0 : ignore / 1 : yes / -1 : no
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -352,13 +359,10 @@ bool LigidPainter::run()
 	//Load brush mask textures
 	brushMaskTextures = load.loadBrushMaskTextures();
 	//Load cubemaps both blury and not blury
-	Cubemaps cubemaps;
 	cubemaps = load.loadCubemaps();
 	//Load icons
-	Icons icons;
 	icons = load.loadIcons();
 	//Load cursors
-	LigidCursors cursors;
 	cursors = load.loadCursors();
 	//Create textures
 	textures = load.initTextures(maskTexturePath.c_str());
@@ -421,11 +425,7 @@ bool LigidPainter::run()
 	glset.uniform1i(programs.uiProgram, "text", 2);
 	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
 
-	ExportData exportData;
-	PBRShaderData pbrShaderData;
-	SkyBoxShaderData skyBoxShaderData;
-	ScreenDepthShaderData screenDepthShaderData;
-	AxisPointerShaderData axisPointerShaderData;
+
 	//
 	pbrShaderData.bluryskybox = 13;
 	pbrShaderData.depthTexture = 9;
@@ -816,7 +816,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos, callbackData.originPos,startScreen,projectFilePath,paintOverTexture,messageBoxRes);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos, callbackData.originPos,startScreen,projectFilePath,paintOverTexture);
 		}
 		duplicateNodeCall = false;
 		
@@ -915,61 +915,8 @@ bool LigidPainter::run()
 		firstClickR = false;
 		
 		if(glfwWindowShouldClose(window) && !startScreen){
-			messageBoxTxt = "LigidPainter will be closed. Do you want to proceed?";
-			showTheMessageBox = true;
-		}
-			
-		//Message box
-		if(showTheMessageBox){
-			
-			showTheMessageBox = false;
-
-			bool noButtonClick = true;
-			bool clickTaken = false;
-
-			panelData.exportPanelActive = false;
-			panelData.paintingPanelActive = false;
-			panelData.texturePanelActive = false;
-			panelData.modelPanelActive = false;
-			panelData.settingsPanelActive = false;
-			panelData.generatorPanelActive = false;
-
-		 	while (true)
-		 	{
-				//Disable painting
-				doPainting = false; 
-				renderData.doPainting = doPainting;
-
-		 		glfwPollEvents();
-
-				//Keep rendering the backside
-		 		renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view,modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos, callbackData.originPos,startScreen,projectFilePath,paintOverTexture,messageBoxRes);
-		 		
-				
-				float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
-
-				float messageBoxButtonColor[3] = {colorData.messageBoxButtonColor.r,colorData.messageBoxButtonColor.g,colorData.messageBoxButtonColor.r};
-
-				//render the message box
-				int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,messageBoxTxt.c_str(),-0.21f,0.0f,messageBoxBackColor,messageBoxButtonColor,(float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width, (float)screenWidth,programs.iconsProgram,icons,programs); //0 = Yes //1 = No //2 = None
-
-				//Process the message box input
-				if(result == 0 || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
-					messageBoxRes = 1;
-					panelData.modelPanelActive = true;
-					break; 
-				}
-				else if(result == 1 || glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
-					messageBoxRes = -1;
-					panelData.modelPanelActive = true;
-					glfwSetWindowShouldClose(window,GLFW_FALSE);
-					break;
-				}
-
-				
-				glfwSwapBuffers(window);
-		 	}
-
+			if(!ligidMessageBox("LigidPainter will be closed. Do you want to proceed?"))
+				glfwSetWindowShouldClose(window,GLFW_FALSE);
 		}
 	}
 
@@ -980,7 +927,54 @@ bool LigidPainter::run()
 }
 
 
+int LigidPainter::ligidMessageBox(std::string message){
+	bool noButtonClick = true;
+	bool clickTaken = false;
+	panelData.exportPanelActive = false;
+	panelData.paintingPanelActive = false;
+	panelData.texturePanelActive = false;
+	panelData.modelPanelActive = false;
+	panelData.settingsPanelActive = false;
+	panelData.generatorPanelActive = false;
+	
+	ColorData colorData;
+	Render render;
+	while (true)
+	{
+		//Disable painting
+		doPainting = false; 
+		//renderData.doPainting = doPainting;
+		glfwPollEvents();
+		//Keep rendering the backside
+		glClearColor(colorData.viewportBackColor.r,colorData.viewportBackColor.g,colorData.viewportBackColor.b,1);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear before rendering
 
+		glset.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		glActiveTexture(GL_TEXTURE13);
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
+		glActiveTexture(GL_TEXTURE16);
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered);
+		render.renderSkyBox(skyBoxShaderData,programs,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
+		
+		
+		float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
+		float messageBoxButtonColor[3] = {colorData.messageBoxButtonColor.r,colorData.messageBoxButtonColor.g,colorData.messageBoxButtonColor.r};
+		//render the message box
+		int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,message.c_str(),-0.21f,0.0f,messageBoxBackColor,messageBoxButtonColor,(float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width, (float)screenWidth,programs.iconsProgram,icons,programs); //0 = Yes //1 = No //2 = None
+		//Process the message box input
+		if(result == 0 || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
+			panelData.modelPanelActive = true;
+			return 1;
+		}
+		else if(result == 1 || glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+			panelData.modelPanelActive = true;
+			return 0;
+		}
+		
+		glfwSwapBuffers(window);
+	}
+}
 
 
 
@@ -1239,11 +1233,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 	screenWidth = width;
 	screenHeight = height;
-}
-
-void UserInterface::showMessageBox(std::string message){
-	messageBoxTxt = message;
-	showTheMessageBox = true;
 }
 
 void LigidPainter::setViewportToDefault(){

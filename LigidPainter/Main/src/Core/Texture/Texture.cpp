@@ -112,7 +112,7 @@ void Texture::downloadTexture(const char* path, const char* name, int format, in
 	}
 }
 
-GLubyte* Texture::getTextureFromProgram(int texture, int width, int height,int channels) {
+GLubyte* Texture::getTextureFromProgram(unsigned int texture, int width, int height,int channels) {
 	GLubyte* pixels = new GLubyte[width * height * channels * sizeof(GLubyte)*2];
 	glActiveTexture(texture);
 	if (channels == 3) {
@@ -222,35 +222,47 @@ void Texture::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
 }
 
 GLubyte* Texture::resizeTexture(GLubyte* data,int w,int h,int ow,int oh){
-	GLubyte resizedQr[1024*1024*4];
-	stbir_resize_uint8(data, w, h, 0,resizedQr,ow, oh, 0, 4);
 	
-	glActiveTexture(GL_TEXTURE28);
-	unsigned int theTxtr;
-	glGenTextures(1,&theTxtr);
+	// glViewport(0,0,ow,oh);
+
+	// glActiveTexture(GL_TEXTURE28);
+	// unsigned int bufferTxtr;
+	// glGenTextures(1,&bufferTxtr);
+
+	// unsigned int FBO;
+	// glGenFramebuffers(1,&FBO);
+	// glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+	// glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferTxtr, 0);
 
 	
-	unsigned int FBO;
-	glGenFramebuffers(1,&FBO);
-	glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-	//fbtexture2d
+	// std::vector<float> renderVertices = { 
+	// 	// first triangle
+	// 	 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+	// 	 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+	// 	 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+	// 	// second triangle	  ,0,0,0,
+	// 	 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+	// 	 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+	// 	 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+	// };
+
+	// GlSet gl;
+
+	// glActiveTexture(GL_TEXTURE13);
 	
-	//rendervertices
+	// gl.drawArrays(renderVertices,false);
 
-	//renderthevertices
+	// glReadPixels(0,0,);
 
-	//glreadpixels
 
-	glViewport(0,0,ow,oh);
-
-	glUseProgram(txtrPrograms.renderTheTextureProgram);
+	// glUseProgram(txtrPrograms.renderTheTextureProgram);
 
 
 
-	LigidPainter lp;
-	lp.setViewportToDefault();
+	// LigidPainter lp;
+	// lp.setViewportToDefault();
 	
-	glBindFramebuffer(GL_FRAMEBUFFER,0);
-	glDeleteFramebuffers(1,&FBO);
-	return resizedQr;
+	// glBindFramebuffer(GL_FRAMEBUFFER,0);
+	// glDeleteFramebuffers(1,&FBO);
+	return {};
 }

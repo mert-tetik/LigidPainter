@@ -276,6 +276,8 @@ public:
 	void setViewportToDefault();
 	void selectBrushMaskTexture();
 	void selectingPaintOverTextureIcon(); 
+	int ligidMessageBox(std::string message);
+
 
 };
 struct PanelData {

@@ -24,7 +24,7 @@ class Texture {
 public:
 	unsigned int getTexture(std::string path, unsigned int desiredWidth, unsigned int desiredHeight,bool update);
 	void downloadTexture(const char* path, const char* name, int format, int width, int height, GLubyte* pixels, int channels);
-	GLubyte* getTextureFromProgram(int texture, int width, int height, int channels);
+	GLubyte* getTextureFromProgram(unsigned int texture, int width, int height, int channels);
 	TextureData getTextureData(const char* path);
 	ScreenPaintingReturnData createScreenPaintTexture(GLubyte*& screenTexture, GLFWwindow* screen);
 	void refreshScreenDrawingTexture();

@@ -286,7 +286,7 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::v
 glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
 ,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
 ,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
-,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,int &messageBoxRes) {
+,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture) {
 	
 
 	
@@ -445,7 +445,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 				colorPicker,textureDisplayer,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,
 				nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
 				chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
-				,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex,messageBoxRes);
+				,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex);
 		} 
 		else{
 			renderFocusModeUI(renderPrograms,renderData,UIElements,icons,coloringPanel,saturationValShaderData,mouseXpos,mouseYpos,firstClick,FBOScreen,colorPicker,
@@ -517,7 +517,9 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 			loadButtonColor = glm::vec4(colorData.LigidPainterThemeColor,1);
 			nodePanel.pointerCursor = true;
 			if(firstClick){
-				if(tinyfd_messageBox("Warning!","Another project will be loaded. Unsaved data will be lost.","okcancel","warning",0)){
+				LigidPainter lp;
+				if(lp.ligidMessageBox("Another project will be loaded. Unsaved data will be lost.")){
+					glUseProgram(renderPrograms.uiProgram);
 					char const* lFilterPatterns[1] = { "*.ligid" };
 					//File dialog
 					auto path = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
