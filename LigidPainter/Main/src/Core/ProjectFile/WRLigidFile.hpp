@@ -332,11 +332,6 @@ private:
     void finishTheModel(Model &model){
         model.uploadModel(model);
     }
-    int ccc = 0;
-    void ff(){
-        std::cout << "HERE :" << ccc << ' ';
-        ccc++;
-    }
 
     void readNodeScenes(std::ifstream &rf,std::vector<NodeScene> &nodeScenes){
         
@@ -373,7 +368,7 @@ private:
 
                 Node node;
                 nodeScenes[sceneI].nodes.push_back(node);
-                ff();
+                
 
                 //Node's itself
                 sNode snode;
@@ -399,7 +394,7 @@ private:
     	        nodeScenes[sceneI].nodes[nodeI].stateChanged = snode.stateChanged;
     	        nodeScenes[sceneI].nodes[nodeI].dupI = snode.dupI;
     	        nodeScenes[sceneI].nodes[nodeI].doInvert = snode.doInvert;
-                ff();
+                
 
                 //Inputs
                 uint64_t nodeInputSize;
@@ -514,7 +509,7 @@ private:
                         nodeScenes[sceneI].nodes[nodeI].inputs[inI].rangeBarsPointerPressed.push_back(false);                        
                     }
                 }
-                ff();
+                
 
                 //Outputs
                 uint64_t nodeOutputSize;
@@ -631,7 +626,7 @@ private:
                     }
                     
                 }
-                ff();
+                
 
                 //Listboxes
                 uint64_t nodeListboxSize;
@@ -667,7 +662,7 @@ private:
                         }
                     }
                 }
-                ff();
+                
 
 
                 //Node title size

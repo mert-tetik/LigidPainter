@@ -283,5 +283,5 @@ void main() {
     vec3 paintedDiffuse = getPaintedDiffuse();
     vec3 result = getRealisticResult(paintedDiffuse);
 
-    color = vec4(result,1.0);
+    color = vec4(result,opacity);
 }
