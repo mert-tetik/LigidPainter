@@ -96,7 +96,12 @@ using namespace std;
     
     void Model::uploadModel(Model uploadedModel){
         meshes.clear();
-        meshes.push_back(uploadedModel.meshes[0]);
+        
+        for (size_t i = 0; i < uploadedModel.meshes.size(); i++)
+        {
+            meshes.push_back(uploadedModel.meshes[i]);
+        }
+        
     }
     
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.

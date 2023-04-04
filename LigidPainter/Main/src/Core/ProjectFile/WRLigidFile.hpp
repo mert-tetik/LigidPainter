@@ -19,11 +19,6 @@
 
 //3D Model code 0xB2911B6A 0x6825EA68 0x59EF9DF5
 
-//Vertices code 0x1DCEC243 0xD25EF96B 0xF6A94C0C + size of the vertices 
-//Example : 0x1DCEC243 0xD25EF96B 0xF6A94C0C 0x003D0900 (same goes for the indices)
-
-//Indices code 0x3600353C 0xB3ACAD02 0x6C23DE2C + size of the indices
-
 //Texture code 0xA7F8F642 0x99CAD11E 0x6F5E55A8 + size of the texture elements + texture resolution
 //Example : 0xA7F8F642 0x99CAD11E 0x6F5E55A8 0x0000000a 0x00000400
 
@@ -48,18 +43,17 @@ public:
 
         wf.close();
 
+        UserInterface ui;
+        ui.alert("Ligid project file is saved successfully",300);
         return model;
     }
     void readTheFile(const char* path,Model &model,std::vector<aTexture> &textures, std::vector<NodeScene> &nodeScenes){
         ifstream rf;
-        std::cout << "READING";
 
         if(startReadingTheProjectFile(path,rf)){
             //3D Model
             textures.clear();
             model.meshes.clear();
-            std::vector<Vertex> vertices;
-            std::vector<unsigned int> indices;
             
             uint64_t c;
             int modelKeysCounter = 0;
@@ -77,18 +71,7 @@ public:
                 //3D Model (Is not necessary)
                 if(modelKeysCounter == 3){
                     modelKeysCounter = 0;
-                }
-
-                //Vertices
-                if(verticeKeysCounter == 3){
-                    verticeKeysCounter = 0;
-                    readVertices(rf,vertices);
-                }
-
-                //Indices
-                if(indiceKeysCounter == 3){
-                    indiceKeysCounter = 0;
-                    readIndices(rf,indices);
+                    readVertices(rf,model);
                 }
 
                 //Textures
@@ -111,10 +94,11 @@ public:
 
                 counter++;
             }
-            model.meshes.push_back(Mesh(vertices, indices, {},"",0));
+            //model.meshes.push_back(Mesh(vertices, indices, {},"",0));
             finishTheModel(model);
         }
-        std::cout << "\n READING ENDED";
+        UserInterface ui;
+        ui.alert("Ligid project file is loaded successfully",300);
         rf.close();
     }
 private:
@@ -196,8 +180,6 @@ private:
     
     void updateCounters(uint64_t c,int &modelKeysCounter,int &verticeKeysCounter,int &indiceKeysCounter,int &textureKeysCounter, int &textureElementKeysCounter,int &nodeScenesKeyCounter){
         uint64_t modelKeys[3] =  {0xB2911B6A, 0x6825EA68, 0x59EF9DF5};
-        uint64_t verticeKeys[3] =  {0x1DCEC243, 0xD25EF96B, 0xF6A94C0C};
-        uint64_t indiceKeys[3] =  {0x3600353C, 0xB3ACAD02, 0x6C23DE2C};
         uint64_t textureKeys[3] =  {0xA7F8F642, 0x99CAD11E, 0x6F5E55A8};
         uint64_t textureElementKeys[3] =  {0xB7A58C82 ,0xF7F7B273 ,0x3C82A6FF};
         uint64_t nodeSceneKeys[3] =  {0x0A78DA67, 0xF99C3CA7, 0x36CB89A5};
@@ -206,16 +188,6 @@ private:
             modelKeysCounter++;
         else{
             modelKeysCounter = 0;
-        }
-        if(c == verticeKeys[verticeKeysCounter])
-            verticeKeysCounter++;
-        else{
-            verticeKeysCounter = 0;
-        }
-        if(c == indiceKeys[indiceKeysCounter])
-            indiceKeysCounter++;
-        else{
-            indiceKeysCounter = 0;
         }
         if(c == textureKeys[textureKeysCounter])
             textureKeysCounter++;
@@ -234,28 +206,53 @@ private:
         }
     }
 
-    void readVertices(std::ifstream &rf,std::vector<Vertex> &vertices){
-        uint64_t verticeCount = 0;
-        rf.read(reinterpret_cast<char*>(&verticeCount),sizeof(uint64_t));
+    void readVertices(std::ifstream &rf,Model &model){
+        //Mesh size
+        uint64_t meshSize;
+        rf.read(reinterpret_cast<char*>(&meshSize),sizeof(uint64_t));
         
-        for (size_t i = 0; i < verticeCount; i++)
+        for (size_t meshI = 0; meshI < meshSize; meshI++)
         {
-            Vertex vertex;
-            rf.read(reinterpret_cast<char*>(&vertex),sizeof(Vertex));
-            vertices.push_back(vertex);
+            std::string materialName;
+            std::vector<Vertex> vertices;
+            std::vector<unsigned int> indices;
+
+            uint64_t meshNameSize;
+            rf.read(reinterpret_cast<char*>(&meshNameSize),sizeof(uint64_t));
+            
+            for (size_t nameI = 0; nameI < meshNameSize; nameI++)
+            {
+                char c;
+                rf.read(reinterpret_cast<char*>(&c),sizeof(char));
+                materialName.push_back(c);
+            }
+
+            //--------Vertices
+            //Write the size
+            uint64_t vertSize;
+            rf.read(reinterpret_cast<char*>(&vertSize),sizeof(uint64_t));
+
+            for (size_t verticeI = 0; verticeI < vertSize; verticeI++)
+            {
+                Vertex vert;
+                rf.read(reinterpret_cast<char*>(&vert),sizeof(Vertex));
+                vertices.push_back(vert);
+            }
+            
+            //--------Indices
+            //Write the size
+            uint64_t indiceSize;
+            rf.read(reinterpret_cast<char*>(&indiceSize),sizeof(uint64_t));
+            
+            for (size_t indiceI = 0; indiceI < indiceSize; indiceI++)
+            {
+                unsigned int index;
+                rf.read(reinterpret_cast<char*>(&index),sizeof(unsigned int));
+                indices.push_back(index);
+            }
+            model.meshes.push_back(Mesh(vertices, indices, {},materialName,0));
         }
-    }
-    void readIndices(std::ifstream &rf,std::vector<unsigned int> &indices){
-        uint64_t indiceCount = 0;
-        rf.read(reinterpret_cast<char*>(&indiceCount),sizeof(uint64_t));
         
-        
-        for (size_t i = 0; i < indiceCount; i++)
-        {
-            unsigned int index;
-            rf.read(reinterpret_cast<char*>(&index),sizeof(unsigned int));
-            indices.push_back(index);
-        }
     }
     void readTexture(std::ifstream &rf,std::vector<aTexture>&textures){
         uint64_t textureCount = 0;
@@ -329,9 +326,6 @@ private:
     }
 
     void finishTheModel(Model &model){
-        model.meshes[0].materialIndex = 0;
-        model.meshes[0].materialName = "loadedMaterial";
-
         model.uploadModel(model);
     }
     int ccc = 0;
@@ -350,8 +344,12 @@ private:
         for (size_t sceneI = 0; sceneI < nodeSceneSize; sceneI++)
         {
             NodeScene scene;
-            nodeScenes.push_back(scene);
+            
+            rf.read(reinterpret_cast<char*>(&scene.index),sizeof(uint64_t));
+            rf.read(reinterpret_cast<char*>(&scene.arrayIndex),sizeof(uint64_t));
         
+            nodeScenes.push_back(scene);
+            
             //Scene name
             uint64_t sceneNameSize;
             rf.read(reinterpret_cast<char*>(&sceneNameSize),sizeof(uint64_t));
@@ -705,26 +703,26 @@ private:
         uint64_t model1 = 0xB2911B6A;  
         uint64_t model2 = 0x6825EA68;  
         uint64_t model3 = 0x59EF9DF5; 
-
-        uint64_t vert1 = 0x1DCEC243;    
-        uint64_t vert2 = 0xD25EF96B;   
-        uint64_t vert3 = 0xF6A94C0C;  
-        
-        uint64_t indice1 = 0x3600353C; 
-        uint64_t indice2 = 0xB3ACAD02; 
-        uint64_t indice3 = 0x6C23DE2C;
         
         wf.write(reinterpret_cast<char*>(&model1),sizeof(uint64_t));
         wf.write(reinterpret_cast<char*>(&model2),sizeof(uint64_t));
         wf.write(reinterpret_cast<char*>(&model3),sizeof(uint64_t));
 
+        //Mesh size
+        uint64_t meshSize = model.meshes.size();
+        wf.write(reinterpret_cast<char*>(&meshSize),sizeof(uint64_t));
         
         for (size_t meshI = 0; meshI < model.meshes.size(); meshI++)
         {
+            uint64_t meshNameSize = model.meshes[meshI].materialName.size();
+            wf.write(reinterpret_cast<char*>(&meshNameSize),sizeof(uint64_t));
+            
+            for (size_t nameI = 0; nameI < model.meshes[meshI].materialName.size(); nameI++)
+            {
+                wf.write(reinterpret_cast<char*>(&model.meshes[meshI].materialName[nameI]),sizeof(char));
+            }
+
             //--------Vertices
-            wf.write(reinterpret_cast<char*>(&vert1),sizeof(uint64_t));
-            wf.write(reinterpret_cast<char*>(&vert2),sizeof(uint64_t));
-            wf.write(reinterpret_cast<char*>(&vert3),sizeof(uint64_t));
             //Write the size
             uint64_t vertSize = model.meshes[meshI].vertices.size();
             wf.write(reinterpret_cast<char*>(&vertSize),sizeof(uint64_t));
@@ -735,9 +733,6 @@ private:
             }
             
             //--------Indices
-             wf.write(reinterpret_cast<char*>(&indice1),sizeof(uint64_t));
-             wf.write(reinterpret_cast<char*>(&indice2),sizeof(uint64_t));
-             wf.write(reinterpret_cast<char*>(&indice3),sizeof(uint64_t));
             //Write the size
             uint64_t indiceSize = model.meshes[meshI].indices.size();
             wf.write(reinterpret_cast<char*>(&indiceSize),sizeof(uint64_t));
@@ -751,7 +746,7 @@ private:
 
     void writeTextures(std::ofstream &wf,std::vector<aTexture> textures,int textureResIndex){
         int txtrRes = 256;
-	    for (size_t i = 0; i < chosenTextureResIndex; i++)
+	    for (size_t i = 0; i < textureResIndex; i++)
 	    {
 	    	txtrRes*=2;
 	    }
@@ -777,7 +772,6 @@ private:
         wf.write(reinterpret_cast<char*>(&textureResolutionSize),sizeof(uint64_t));
         
         //----Get the texture data
-        //TODO : Get the width & height
         Texture txtr;
         for (size_t i = 0; i < textures.size(); i++)
         {
@@ -843,6 +837,10 @@ private:
         //Node Scene
         for (size_t sceneI = 0; sceneI < nodeScenes.size(); sceneI++)
         {
+            uint64_t nodeScI = nodeScenes[sceneI].index;
+            uint64_t nodeScAI = nodeScenes[sceneI].arrayIndex;
+            wf.write(reinterpret_cast<char*>(&nodeScI),sizeof(uint64_t));
+            wf.write(reinterpret_cast<char*>(&nodeScAI),sizeof(uint64_t));
 
             //Scene name
             uint64_t sceneNameSize = nodeScenes[sceneI].sceneName.size();
