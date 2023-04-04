@@ -37,6 +37,7 @@ struct Programs
 	unsigned int rampProgram; 
 	unsigned int dynamicPaintingProgram; 
 	unsigned int paintOverProgram;
+	unsigned int textureDisplayer;
 };
 struct Cubemaps{
 	unsigned int cubemap;

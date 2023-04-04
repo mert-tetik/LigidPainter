@@ -511,6 +511,14 @@ public:
 
 
 
+		//Texture Displayer program
+		unsigned int textureDisplayer = gl.createProgram("./LigidPainter/Resources/Shaders/UI/textureDisplayer");
+		
+		
+		
+		
+		
+		
 		Programs glPrograms;
 
 		glPrograms.blurProgram = blurProgram;
@@ -535,6 +543,7 @@ public:
 		glPrograms.rampProgram = rampProgram;
 		glPrograms.dynamicPaintingProgram = dynamicPaintingProgram;
 		glPrograms.paintOverProgram = paintOverProgram;
+		glPrograms.textureDisplayer = textureDisplayer;
 
 
 		return glPrograms;

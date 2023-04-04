@@ -16,42 +16,13 @@ uniform float uiTransitionMixVal;
 
 uniform int drawBrushIndicator;
 uniform int drawCircle;
-uniform int drawTxtrDemonstrator;
-uniform sampler2D currentTexture;
 
 layout(location = 0) out vec4 color;
 
 
-#define patternCount 23.0
 
-#define PI 3.141592
-
-#define pi acos(-1.)
-#define dd(a) dot(a,a)
-#define sat(a) clamp(a,0.,1.)
-#define aA(z) (z/min(iResolution.x,iResolution.y))
-
-
-float mi(vec2 a){return min(a.x,a.y);}
-float mi(vec3 a){return min(a.x,mi(a.yz));}
-float ma(vec2 a){return max(a.x,a.y);}
-float mu(vec2 a){return a.x*a.y;}
-float ad(vec2 a){return a.x+a.y;}
-float su(vec2 a){return a.x-a.y;}
-float sq2(float a){return a*a;}
-float CheckerSignMuFract(vec2 u)
-{
-    return sign(mu(.5-fract(u)));
-}
 
 void main() {
-   if(drawTxtrDemonstrator == 1){
-      float checker = CheckerSignMuFract(TexCoords*15.f);
-      checker+=1.5;
-
-      color = vec4(mix(vec3(checker),texture(currentTexture, TexCoords).rgb,texture(currentTexture, TexCoords).a) ,1.0); 
-   }
-   else{
       if(isTextF == 0) {
             if(isUiTextureUsed == 0) 
             {
@@ -117,6 +88,4 @@ void main() {
          vec4 sampled = vec4(uiColor.rgb, texture(text, uv).r);
          color = vec4(textColor,1) * sampled * uiColor.a;
       }
-   }
-
 }

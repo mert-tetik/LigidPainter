@@ -122,6 +122,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	gl.uniformMatrix4fv(programs.renderTheTextureProgram, "TextProjection", projection);
 	glUseProgram(programs.curveProgram);
 	gl.uniformMatrix4fv(programs.curveProgram, "TextProjection", projection);
+	glUseProgram(programs.textureDisplayer);
+	gl.uniformMatrix4fv(programs.textureDisplayer, "TextProjection", projection);
 	glUseProgram(programs.uiProgram);
 	gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
 	float centerCoords = (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
