@@ -430,8 +430,10 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		
 		glUseProgram(renderPrograms.uiProgram);
 		if(renderData.doPainting){
-			gls.uniform1i(renderPrograms.uiProgram,"drawCircle",UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked);
+			glUseProgram(renderPrograms.brushCursor);
+			gls.uniform1i(renderPrograms.brushCursor,"drawCircle",UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked);
 			renderModifiedBrushCursor(renderData.brushSizeIndicator, screenSizeX, screenSizeY, mouseXpos, mouseYpos, drawColor,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,renderPrograms);
+			glUseProgram(renderPrograms.uiProgram);
 		}
 		if(glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_RELEASE)
 		if(!panelData.paintingPanelActive){

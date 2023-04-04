@@ -17,7 +17,6 @@ void Render::renderModifiedBrushCursor(float distanceX,int screenWidth,int scree
 	float screenGapX = ((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width - (float)screenWidth)/(((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width)/2.0f)/2.0f; 
 	
 	GlSet glset;
-	glset.uniform1i(programs.uiProgram, "drawBrushIndicator", 1);
 	std::vector<float> paintingSquare{
 		// first triangle
 		( sizeX / glfwGetVideoMode(glfwGetPrimaryMonitor())->width / 1.0f + (float)mouseXpos / glfwGetVideoMode(glfwGetPrimaryMonitor())->width / 0.5f - 1.0f)+screenGapX,  sizeX / maxScreenHeight / 1.0f - (float)mouseYpos / maxScreenHeight / 0.5f + 1.0f , 0.0f,1,1,0,0,0,  // top right
@@ -29,9 +28,8 @@ void Render::renderModifiedBrushCursor(float distanceX,int screenWidth,int scree
 	};
 
 	glm::vec4 result = glm::vec4(color,0.2f);
-	glset.uniform4fv(programs.uiProgram, "uiColor", result);
+	glset.uniform4fv(programs.brushCursor, "uiColor", result);
 
 	glset.drawArrays(paintingSquare, false);
 	
-	glset.uniform1i(programs.uiProgram, "drawBrushIndicator", 0);
 }

@@ -38,6 +38,7 @@ struct Programs
 	unsigned int dynamicPaintingProgram; 
 	unsigned int paintOverProgram;
 	unsigned int textureDisplayer;
+	unsigned int brushCursor;
 };
 struct Cubemaps{
 	unsigned int cubemap;

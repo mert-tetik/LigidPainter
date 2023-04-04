@@ -517,6 +517,8 @@ public:
 		
 		
 		
+		//brushCursor program
+		unsigned int brushCursor = gl.createProgram("./LigidPainter/Resources/Shaders/UI/brushCursor");
 		
 		
 		Programs glPrograms;
@@ -544,6 +546,7 @@ public:
 		glPrograms.dynamicPaintingProgram = dynamicPaintingProgram;
 		glPrograms.paintOverProgram = paintOverProgram;
 		glPrograms.textureDisplayer = textureDisplayer;
+		glPrograms.brushCursor = brushCursor;
 
 
 		return glPrograms;

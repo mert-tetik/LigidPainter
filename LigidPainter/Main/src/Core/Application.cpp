@@ -417,6 +417,8 @@ bool LigidPainter::run()
 
 
 
+	glUseProgram(programs.brushCursor);
+	glset.uniform1i(programs.brushCursor, "modifiedMaskTexture", 12);
 	glUseProgram(programs.iconsProgram);
 	glset.uniform1i(programs.iconsProgram, "icon", 6);
 	glUseProgram(programs.uiProgram);
