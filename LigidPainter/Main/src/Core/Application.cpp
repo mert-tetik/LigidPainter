@@ -865,7 +865,8 @@ bool LigidPainter::run()
 				scrollVal = holdScrollVal;
 			if(zoomInOutCamera || (glfwGetKey(window,GLFW_KEY_Z) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE))
 				scrollVal = mouseYpos - lastMouseYpos;
-			callbackData = callback.scroll_callback(window, 0, scrollVal);
+			if(!startScreen)
+				callbackData = callback.scroll_callback(window, 0, scrollVal);
 			doScrollAfterCallInPaintingMode = false;
 		}
 
@@ -885,7 +886,7 @@ bool LigidPainter::run()
 		textureDisplayer.buttonClicked = false;
 
 
-
+		if(!startScreen)
 			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel,coloringPanel,moveCamera,zoomInOutCamera);
 
 
