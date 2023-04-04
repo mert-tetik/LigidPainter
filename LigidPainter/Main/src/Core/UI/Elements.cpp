@@ -644,18 +644,34 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElement dynamicPaintingCheckBoxElement;
     dynamicPaintingCheckBoxElement.checkBox.positionX = -0.44f;
     dynamicPaintingCheckBoxElement.checkBox.positionY = 0.9f;
-    dynamicPaintingCheckBoxElement.checkBox.text = "D";
+    dynamicPaintingCheckBoxElement.checkBox.text = "";
     dynamicPaintingCheckBoxElement.checkBox.checked = false;
     dynamicPaintingCheckBoxElement.panel = 3;
     dynamicPaintingCheckBoxElement.focusMode = true;
     dynamicPaintingCheckBoxElement.attachedToMainPanel = false;
     dynamicPaintingCheckBoxElement.type = "checkBox";
     UIElements.push_back(dynamicPaintingCheckBoxElement);//23
+
+    UIElement dynamicPaintingIconElement;
+    dynamicPaintingIconElement.icon.positionX = -0.415f;
+    dynamicPaintingIconElement.icon.positionY = 0.9f;
+    dynamicPaintingIconElement.icon.positionZ = 0.95f;
+    dynamicPaintingIconElement.icon.width = 0.015f;
+    dynamicPaintingIconElement.icon.height = 0.03f;
+    dynamicPaintingIconElement.icon.color = colorData.buttonColor;
+    dynamicPaintingIconElement.icon.colorHover = colorData.buttonColorHover;
+    dynamicPaintingIconElement.icon.mixVal = 0.0f;
+    dynamicPaintingIconElement.icon.icon = icons.MaskGausBlur;
+    dynamicPaintingIconElement.focusMode = true;
+    dynamicPaintingIconElement.panel = 3;
+    dynamicPaintingIconElement.attachedToMainPanel = false;
+	dynamicPaintingIconElement.type = "icon";
+    UIElements.push_back(dynamicPaintingIconElement);//35
     
     UIElement maskPaintingCheckBoxElement;
     maskPaintingCheckBoxElement.checkBox.positionX = -0.38f;
     maskPaintingCheckBoxElement.checkBox.positionY = 0.9f;
-    maskPaintingCheckBoxElement.checkBox.text = "M";
+    maskPaintingCheckBoxElement.checkBox.text = "";
     maskPaintingCheckBoxElement.checkBox.checked = true;
     maskPaintingCheckBoxElement.panel = 3;
     maskPaintingCheckBoxElement.focusMode = true;
@@ -663,25 +679,73 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     maskPaintingCheckBoxElement.type = "checkBox";
     UIElements.push_back(maskPaintingCheckBoxElement);//23
 
+    UIElement maskPaintingIconElement;
+    maskPaintingIconElement.icon.positionX = -0.355f;
+    maskPaintingIconElement.icon.positionY = 0.9f;
+    maskPaintingIconElement.icon.positionZ = 0.95f;
+    maskPaintingIconElement.icon.width = 0.015f;
+    maskPaintingIconElement.icon.height = 0.03f;
+    maskPaintingIconElement.icon.color = colorData.buttonColor;
+    maskPaintingIconElement.icon.colorHover = colorData.buttonColorHover;
+    maskPaintingIconElement.icon.mixVal = 0.0f;
+    maskPaintingIconElement.icon.icon = icons.ColorPicker;
+    maskPaintingIconElement.focusMode = true;;
+    maskPaintingIconElement.panel = 3;
+    maskPaintingIconElement.attachedToMainPanel = false;
+	maskPaintingIconElement.type = "icon";
+    UIElements.push_back(maskPaintingIconElement);//35
+
     UIElement colorPaintingCheckBoxElement;
     colorPaintingCheckBoxElement.checkBox.positionX = -0.32f;
     colorPaintingCheckBoxElement.checkBox.positionY = 0.9f;
-    colorPaintingCheckBoxElement.checkBox.text = "C";
+    colorPaintingCheckBoxElement.checkBox.text = "";
     colorPaintingCheckBoxElement.panel = 3;
     colorPaintingCheckBoxElement.focusMode = true;
     colorPaintingCheckBoxElement.attachedToMainPanel = false;
     colorPaintingCheckBoxElement.type = "checkBox";
     UIElements.push_back(colorPaintingCheckBoxElement);//24
 
+    UIElement colorPaintingIconElement;
+    colorPaintingIconElement.icon.positionX = -0.295f;
+    colorPaintingIconElement.icon.positionY = 0.9f;
+    colorPaintingIconElement.icon.positionZ = 0.95f;
+    colorPaintingIconElement.icon.width = 0.015f;
+    colorPaintingIconElement.icon.height = 0.03f;
+    colorPaintingIconElement.icon.color = glm::vec4(0.1f,0.9f,0.0f,1.f);
+    colorPaintingIconElement.icon.colorHover = colorData.buttonColorHover;
+    colorPaintingIconElement.icon.mixVal = 0.0f;
+    colorPaintingIconElement.icon.icon = icons.ColorPicker;
+    colorPaintingIconElement.focusMode = true;
+    colorPaintingIconElement.panel = 3;
+    colorPaintingIconElement.attachedToMainPanel = false;
+	colorPaintingIconElement.type = "icon";
+    UIElements.push_back(colorPaintingIconElement);//35
+
 	UIElement normalmapPaintingCheckBoxElement;
     normalmapPaintingCheckBoxElement.checkBox.positionX = -0.26f;
     normalmapPaintingCheckBoxElement.checkBox.positionY = 0.9f;
-    normalmapPaintingCheckBoxElement.checkBox.text = "N";
+    normalmapPaintingCheckBoxElement.checkBox.text = "";
     normalmapPaintingCheckBoxElement.panel = 3;
     normalmapPaintingCheckBoxElement.focusMode = true;
     normalmapPaintingCheckBoxElement.attachedToMainPanel = false;
     normalmapPaintingCheckBoxElement.type = "checkBox";
     UIElements.push_back(normalmapPaintingCheckBoxElement);//25
+
+    UIElement normalPaintingIconElement;
+    normalPaintingIconElement.icon.positionX = -0.235f;
+    normalPaintingIconElement.icon.positionY = 0.9f;
+    normalPaintingIconElement.icon.positionZ = 0.95f;
+    normalPaintingIconElement.icon.width = 0.015f;
+    normalPaintingIconElement.icon.height = 0.03f;
+    normalPaintingIconElement.icon.color = glm::vec4(128.f/255.f,127.f/255.f,255.f/255.f,1.f);
+    normalPaintingIconElement.icon.colorHover = colorData.buttonColorHover;
+    normalPaintingIconElement.icon.mixVal = 0.0f;
+    normalPaintingIconElement.icon.icon = icons.ColorPicker;
+    normalPaintingIconElement.focusMode = true;
+    normalPaintingIconElement.panel = 3;
+    normalPaintingIconElement.attachedToMainPanel = false;
+	normalPaintingIconElement.type = "icon";
+    UIElements.push_back(normalPaintingIconElement);//35
 
     UIElement subSelectedImagePowerRangeBarElement;
 	subSelectedImagePowerRangeBarElement.rangeBar.positionX = 0.0f;

@@ -179,7 +179,7 @@ public:
 		icons.ImportModel = txtr.getTexture("LigidPainter/Resources/Icons/ImportModel.jpg",0,0,false);
 		icons.ImportTexture = txtr.getTexture("LigidPainter/Resources/Icons/ImportTexture.jpg",0,0,false);
 		icons.JpgFile = txtr.getTexture("LigidPainter/Resources/Icons/JpgFile.jpg",0,0,false);
-		icons.MaskGausBlur = txtr.getTexture("LigidPainter/Resources/Icons/MaskGausBlur.jpg",0,0,false);
+		icons.MaskGausBlur = txtr.getTexture("LigidPainter/Resources/Icons/MaskGausBlur.png",0,0,false);
 		icons.MaskOpacity = txtr.getTexture("LigidPainter/Resources/Icons/MaskOpacity.jpg",0,0,false);
 		icons.MaskRotation = txtr.getTexture("LigidPainter/Resources/Icons/MaskRotation.jpg",0,0,false);
 		icons.MaskScale = txtr.getTexture("LigidPainter/Resources/Icons/MaskScale.jpg",0,0,false);
