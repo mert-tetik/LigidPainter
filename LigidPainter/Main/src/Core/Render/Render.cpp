@@ -559,7 +559,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		// }
 		ui.container(-0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColorHover,renderPrograms,icons.Circle,colorData.buttonColorHover,0);
 		glUseProgram(renderPrograms.iconsProgram);
-		ui.iconBox(0.07,0.14f,-0.4f,0.1f,1.f,icons.Texture,0.f,colorData.iconColor,colorData.iconColor);
+		ui.iconBox(0.07,0.14f,-0.4f,0.1f,1.f,icons.TwoDProject,0.f,colorData.iconColor,colorData.iconColor);
 		glUseProgram(renderPrograms.uiProgram);
 		ui.renderText(renderPrograms.uiProgram,"New 2D Project",-0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
 		ui.renderText(renderPrograms.uiProgram,"Will be available",-0.4f-0.06f,-0.3f,0.00022f,glm::vec4(colorData.LigidPainterThemeColor,1),1.f,false);
@@ -599,13 +599,13 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	
 		ui.container(-0.0f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,startMenuNew3DProjectMixVal);
 		glUseProgram(renderPrograms.iconsProgram);
-		ui.iconBox(0.07,0.14f,0.0f,0.1f,1.f,icons.TDModel,0.f,colorData.iconColor,colorData.iconColor);
+		ui.iconBox(0.07,0.14f,0.0f,0.1f,1.f,icons.ThreeDProject,0.f,colorData.iconColor,colorData.iconColor);
 		glUseProgram(renderPrograms.uiProgram);
 		ui.renderText(renderPrograms.uiProgram,"New 3D Project",0.0f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
 		
 		ui.container(0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,startMenuImportProjectMixVal);
 		glUseProgram(renderPrograms.iconsProgram);
-		ui.iconBox(0.07,0.14f,0.4f,0.1f,1.f,icons.ImportModel,0.f,colorData.iconColor,colorData.iconColor);
+		ui.iconBox(0.07,0.14f,0.4f,0.1f,1.f,icons.ImportProject,0.f,colorData.iconColor,colorData.iconColor);
 		glUseProgram(renderPrograms.uiProgram);
 		ui.renderText(renderPrograms.uiProgram,"Import Project",0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
 	}

@@ -187,6 +187,9 @@ struct Icons{
 	unsigned int TextureGenerator;
 	unsigned int Pointer;
 	unsigned int Trash;
+	unsigned int ThreeDProject;
+	unsigned int TwoDProject;
+	unsigned int ImportProject;
 };
 
 struct RenderData { //GlSet::render

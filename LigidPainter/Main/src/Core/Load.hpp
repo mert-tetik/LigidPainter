@@ -218,6 +218,9 @@ public:
 		icons.TextureGenerator = txtr.getTexture("LigidPainter/Resources/Icons/TextureGenerator.jpg",0,0,false);
 		icons.Pointer = txtr.getTexture("LigidPainter/Resources/Icons/Pointer.jpg",0,0,false);
 		icons.Trash = txtr.getTexture("LigidPainter/Resources/Icons/Trash.jpg",0,0,false);
+		icons.ThreeDProject = txtr.getTexture("LigidPainter/Resources/Icons/3DProject.jpg",0,0,false);
+		icons.TwoDProject = txtr.getTexture("LigidPainter/Resources/Icons/2DProject.jpg",0,0,false);
+		icons.ImportProject = txtr.getTexture("LigidPainter/Resources/Icons/ImportProject.jpg",0,0,false);
 	
 		return icons;
 	}
