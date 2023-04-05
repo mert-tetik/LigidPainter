@@ -546,8 +546,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	}
 
 	//! Main panel barriers
-	ui.box(0.18f, 0.07f, (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum, 0.97, "", glm::vec4(0), 0.075f, false, false, 1.0f, 10000, glm::vec4(0), 0);
-	ui.box(0.18f, 0.07f, (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum, -0.97, "", glm::vec4(0), 0.075f, false, false, 1.0f, 10000, glm::vec4(0), 0);
+	ui.box(0.18f, 0.07f, (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum, 0.97, "", glm::vec4(0), 0.075f, false, false, 0.9999f, 10000, glm::vec4(0), 0);
+	ui.box(0.18f, 0.07f, (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum, -0.97, "", glm::vec4(0), 0.075f, false, false, 0.9999, 10000, glm::vec4(0), 0);
 
 
 	if (panelData.paintingPanelActive && renderData.panelLoc < 1.98f) {
@@ -814,7 +814,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		cubemaps.prefiltered = prefilteredMap;
 	}
 	glUseProgram(programs.uiProgram);
-	ui.textureDisplayer(textureDisplayer.ndWidth,textureDisplayer.ndHeight,textureDisplayer.buttonPosX - 1.0f +screenGapX,textureDisplayer.buttonPosY,0.999f); 
+	ui.textureDisplayer(textureDisplayer.ndWidth,textureDisplayer.ndHeight,textureDisplayer.buttonPosX - 1.0f +screenGapX,textureDisplayer.buttonPosY,0.999999f); 
 
 
 	alertState = 0;

@@ -165,6 +165,10 @@ struct ColorData2{
 	glm::vec4 selectionBoxColor = glm::vec4(LigidPainterThemeColor,0.2f);
 };
 
+struct Audios{
+	unsigned int MessageBox;
+};
+
 struct Objects{
 	unsigned int VBO;
 	unsigned int VAO;

@@ -39,7 +39,6 @@
 //TODO Fix node lagging
 //TODO Fix mirror paint over
 //TODO Default selected & subselected textures
-//TODO Required icons
 //TODO Change texture extension
 //TODO Fix ui coliding
 //TODO Default node spawning location
@@ -54,6 +53,8 @@
 #include <sstream>
 #include <vector>
 #include <map>
+#include <thread>
+#include <chrono>
 
 #include "../../thirdparty/include/glm/glm.hpp"
 #include "../../thirdparty/include/glm/gtc/matrix_transform.hpp"
@@ -211,7 +212,7 @@ bool selectingPaintOverTexture;
 Cubemaps cubemaps;
 LigidCursors cursors;
 Icons icons;
-
+Audios audios;
 
 
 ExportData exportData;
@@ -311,14 +312,13 @@ bool LigidPainter::run()
 	glDepthFunc(GL_LESS);
 	glEnable(GL_MULTISAMPLE);
 
-	// if(!LibAL_start())
-	// 	std::cout << "ERROR : Initializing libal\n";
+	if(!LibAL_start())
+		std::cout << "ERROR : Initializing libal\n";
 	
-	// unsigned int sound1;
-	// LibAL_genAudio(sound1);
-	// LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/StarWars60.wav","wav",sound1);
-	// LibAL_playAudioObject(sound1);
-
+	LibAL_genAudio(audios.MessageBox);
+	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/MessageBox.wav","wav",audios.MessageBox)){
+		std::cout << "ERROR : Modifying audio object messagebox via libal " << LibALerrorMsg << '\n';
+	}
 
 	Load load;
 	programs = load.getProgram();
@@ -512,20 +512,6 @@ bool LigidPainter::run()
 
 	bool firstStroke = false;
 
-
-	
-
-	//char* bufferData;
-	//uint8_t channels;
-	//int32_t sampleRate;
-	//uint8_t bitsPerSample;
-	//ALsizei size;
-
-	//LibAL_readWAVFile("LigidPainter/Resources/Sounds/CantinaBand3.wav",bufferData,channels,sampleRate,bitsPerSample,size);
-	
-	//LibAL_invertSoundData(sound1);
-
-	
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 
@@ -938,8 +924,15 @@ int LigidPainter::ligidMessageBox(std::string message,float messagePosX,std::str
 	panelData.settingsPanelActive = false;
 	panelData.generatorPanelActive = false;
 	
+	using namespace std::chrono_literals;
+
 	ColorData colorData;
 	Render render;
+	LibAL_stopPlaying(audios.MessageBox);
+	LibAL_playAudioObject(audios.MessageBox);
+	
+	std::this_thread::sleep_for(200ms);
+	
 	while (true)
 	{
 		//Disable painting

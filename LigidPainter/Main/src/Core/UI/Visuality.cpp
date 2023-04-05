@@ -1072,7 +1072,7 @@ glm::vec3 UserInterface::hueBar(float position_x, float position_y,float value,u
 	//Finish
 	glset.drawArrays(boxCoor, false); //Render color rectangle displayer
 	glUseProgram(uiPrograms.uiProgram);
-	box(0.01f, 0.005f, position_x, position_y + value, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 1.0f, 10000, glm::vec4(0), 0); //Value indicator
+	box(0.01f, 0.005f, position_x, position_y + value, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 0.999f, 10000, glm::vec4(0), 0); //Value indicator
 
 
 	return hueValue;
@@ -1945,13 +1945,13 @@ void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTe
 			float upBotDifMax = std::max(0.05f + position_y,posY-panelRange) - std::max(-0.05f + position_y,posY-panelRange);
 			std::vector<float> buttonCoorSq{
 				// first trianglev 
-				 0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 1,1,upBotDifMin*10,0,0,0,  // top right
-				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 1,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
-				-0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 1,0,upBotDifMin*10,0,0,0,  // top left 
+				 0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 0.999f,1,upBotDifMin*10,0,0,0,  // top right
+				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 0.999f,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
+				-0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 0.999f,0,upBotDifMin*10,0,0,0,  // top left 
 				// second triangle						   
-				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 1,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
-				-0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 1,0,1.0f-upBotDifMax*10,0,0,0,  // bottom left
-				-0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 1,0,upBotDifMin*10,0,0,0  // top left
+				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 0.999f,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
+				-0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 0.999f,0,1.0f-upBotDifMax*10,0,0,0,  // bottom left
+				-0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 0.999f,0,upBotDifMin*10,0,0,0  // top left
 			};
 
 			if(std::min(std::max(0.06f + position_y,posY-panelRange),posY) != std::min(std::max(-0.06f + position_y,posY-panelRange),posY)){//Prevent rendering all the textures

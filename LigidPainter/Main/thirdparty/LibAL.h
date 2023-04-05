@@ -1666,124 +1666,122 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
             return 0;
         }
 
-        bool properFile = true;
-
         char buff[4];
-        if(!in.is_open())
-            properFile = false;
 
         // the RIFF
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
         if(std::strncmp(buff, "RIFF", 4) != 0)
         {
-            properFile = false;
+            LibALerrorMsg  = "RIFF IS NOT FOUND : " + path;
+            return 0;
         }
 
         // the size of the file
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
 
         // the WAVE
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
         if(std::strncmp(buff, "WAVE", 4) != 0)
         {
-            properFile = false;
+            LibALerrorMsg  = "WAVE IS NOT FOUND : " + path;
+            return 0;
         }
 
         // "fmt/0"
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
 
         // this is always 16, the size of the fmt data chunk
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
 
         // PCM should be 1?
         if(!in.read(buff, 2))
         {
-            properFile = false;
+            return 0;
         }
 
         // the number of channels
         if(!in.read(buff, 2))
         {
-            properFile = false;
+            return 0;
         }
         channels = LibALConvertToInt(buff, 2);
 
         // sample rate
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
         sampleRate = LibALConvertToInt(buff, 4);
 
         // (sampleRate * bitsPerSample * channels) / 8
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
 
         // ?? dafaq
         if(!in.read(buff, 2))
         {
-            properFile = false;
+            return 0;
         }
 
         // bitsPerSample
         if(!in.read(buff, 2))
         {
-            properFile = false;
+            return 0;
         }
         bitsPerSample = LibALConvertToInt(buff, 2);
 
         // data chunk header "data"
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
         if(std::strncmp(buff, "data", 4) != 0)
         {
-            properFile = false;
+            LibALerrorMsg  = "data IS NOT FOUND : " + path;
+            return 0;
         }
 
         // size of data
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
         size = LibALConvertToInt(buff, 4);
 
         /* cannot be at the end of file */
         if(in.eof())
         {
-            properFile = false;
+            LibALerrorMsg  = "END OF THE DATA : " + path;
+            return 0;
         }
         if(in.fail())
         {
-            properFile = false;
-        }
-
-        if(!properFile)
-        {
+            LibALerrorMsg  = "STREAM FAIL : " + path;
             return 0;
         }
 
         bufferData = new char[size];
 
         in.read(bufferData, size);
+
+        return 1;
     }
 
     //! Audio objects
@@ -1868,13 +1866,8 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
 	    uint8_t bitsPerSample;
 	    ALsizei dataSize;
         
-        if(format == "wav"){
-            if(!LibAL_readWAVFile(path,soundData,channels,sampleRate,bitsPerSample,dataSize))
-                return 0;
-        }
-        else{
+        if(!LibAL_readWAVFile(path,soundData,channels,sampleRate,bitsPerSample,dataSize))
             return 0;
-        }
             
         LibAL_modifyAudioViaData(channels,bitsPerSample,soundData,dataSize,sampleRate,ID);
     
@@ -1951,110 +1944,110 @@ std::int32_t LibALConvertToInt(char* buffer, std::size_t len)
 
         char buff[4];
         if(!in.is_open())
-            properFile = false;
+            return 0;
 
         // the RIFF
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
         if(std::strncmp(buff, "RIFF", 4) != 0)
         {
-            properFile = false;
+            return 0;
         }
 
         // the size of the file
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
 
         // the WAVE
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
         if(std::strncmp(buff, "WAVE", 4) != 0)
         {
-            properFile = false;
+            return 0;
         }
 
         // "fmt/0"
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
 
         // this is always 16, the size of the fmt data chunk
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
 
         // PCM should be 1?
         if(!in.read(buff, 2))
         {
-            properFile = false;
+            return 0;
         }
 
         // the number of channels
         if(!in.read(buff, 2))
         {
-            properFile = false;
+            return 0;
         }
         channels = LibALConvertToInt(buff, 2);
 
         // sample rate
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
         sampleRate = LibALConvertToInt(buff, 4);
 
         // (sampleRate * bitsPerSample * channels) / 8
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
 
         // ?? dafaq
         if(!in.read(buff, 2))
         {
-            properFile = false;
+            return 0;
         }
 
         // bitsPerSample
         if(!in.read(buff, 2))
         {
-            properFile = false;
+            return 0;
         }
         bitsPerSample = LibALConvertToInt(buff, 2);
 
         // data chunk header "data"
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
         if(std::strncmp(buff, "data", 4) != 0)
         {
-            properFile = false;
+            return 0;
         }
 
         // size of data
         if(!in.read(buff, 4))
         {
-            properFile = false;
+            return 0;
         }
         size = LibALConvertToInt(buff, 4);
 
         /* cannot be at the end of file */
         if(in.eof())
         {
-            properFile = false;
+            return 0;
         }
         if(in.fail())
         {
-            properFile = false;
+            return 0;
         }
 
         if(!properFile)
