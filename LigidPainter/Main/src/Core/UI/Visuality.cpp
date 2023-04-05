@@ -262,6 +262,10 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			iconBox(0.01f,0.02f,panelLoc - 0.05f,0.85f,panelZ+0.01f,icons.ArrowDown,sndpnl.downSignMixVal,colorD.iconColor,colorD.iconColorHover);
 			iconBox(0.01f,0.02f,panelLoc - 0.17f,0.85f,panelZ+0.01f,icons.LoadFolder,sndpnl.folderSignMixVal,colorD.iconColor,colorD.iconColorHover);
 		}
+		else{
+			iconBox(0.01f,0.02f,panelLoc - 0.17f,0.85f,panelZ+0.01f,icons.Material,sndpnl.folderSignMixVal,colorD.iconColor,colorD.iconColorHover);
+			iconBox(0.01f,0.02f,panelLoc - 0.05f,0.85f,panelZ+0.01f,icons.Material,sndpnl.downSignMixVal,colorD.iconColor,colorD.iconColorHover);
+		}
 
 		iconBox(0.01f,0.02f,panelLoc - 0.08f,0.85f,panelZ+0.01f,icons.Plus,sndpnl.plusSignMixVal,colorD.iconColor,colorD.iconColorHover);
 		iconBox(0.01f,0.02f,panelLoc - 0.11f,0.85f,panelZ+0.01f,icons.Minus,sndpnl.minusSignMixVal,colorD.iconColor,colorD.iconColorHover);

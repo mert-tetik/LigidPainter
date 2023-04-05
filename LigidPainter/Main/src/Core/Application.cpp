@@ -36,10 +36,19 @@
 //Left CTRL + TAB + T = Switch to painting panel
 //Left CTRL + TAB + R = Switch to export panel
 
-////TODO Fix node lagging
-////TODO Fix mirror paint over
+//TODO Fix node lagging
+//TODO Fix mirror paint over
+//TODO Fix mirror backside painting
+//TODO Material masking
 //TODO Change texture extension
-//TODO Default node spawning location
+//TODO RTX Support
+
+//TODO 2D Painting
+// - Lasso Tool 
+// - Quick Selection
+// - Brush
+// - Eraser
+// - Text tool
 
 #include<iostream>
 
@@ -73,6 +82,7 @@
 #include "Texture Generator/TextureGenerator.h"
 #include "messageBox.h"
 #include "ProjectFile/WRLigidFile.hpp"
+#include "ProjectFile/WRLigidMaterialFile.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../thirdparty/stb_image.h"
@@ -2288,20 +2298,56 @@ void LigidPainter::sndPanelDuplicateIcon(){
 }
 void LigidPainter::sndPanelFolderIcon(){
 	Utilities util;
-	
-	aTexture result;
-	result.isTexture = false;
-	result.name = "folder";
-	
-	std::vector<std::string> textureNames;
-	for (size_t i = 0; i < albedoTextures.size(); i++)
-	{
-		textureNames.push_back(albedoTextures[i].name);
-	}
-	
-	result.name = util.uniqueName(result.name,textureNames);
+	if(sndPanel.state == 0){
+		aTexture result;
+		result.isTexture = false;
+		result.name = "folder";
 
-	albedoTextures.push_back(result);
+		std::vector<std::string> textureNames;
+		for (size_t i = 0; i < albedoTextures.size(); i++)
+		{
+			textureNames.push_back(albedoTextures[i].name);
+		}
+
+		result.name = util.uniqueName(result.name,textureNames);
+
+		albedoTextures.push_back(result);
+	}
+	else{
+		MaterialFile materialFile;
+		char const* lFilterPatterns[1] = { "*.material" };
+		char* materialFilePath = tinyfd_openFileDialog("Save The Material","", 1, lFilterPatterns, "",0);
+		NodeScene material;
+		
+		if(materialFilePath)
+			material = materialFile.readTheFile(materialFilePath);
+
+		nodeScenesHistory.clear();
+
+		material.index = 0;
+		material.arrayIndex = nodeScenes.size();
+		const int maxMaterialSize = 100;
+		for (int i = 0; i < maxMaterialSize; i++)
+		{
+			bool numberAvailable = false;
+			for (int nodeSceneIndex = 0; nodeSceneIndex < nodeScenes.size(); nodeSceneIndex++)
+			{
+				if(nodeScenes[nodeSceneIndex].index == i){
+					numberAvailable = true;
+				}
+			}
+			if(!numberAvailable){
+				material.index = i;
+				break;
+			}
+		}
+		material.sceneName = "material_" + std::to_string(material.index); 
+		
+		nodeScenes.push_back(material);
+		MaterialOut mOut;
+		mOut.program = 0;
+		modelMaterials.push_back(mOut);
+	}
 }
 void LigidPainter::sndPanelBackIcon(){
 	if(sndPanel.activeFolderIndex != 10000)
@@ -2338,7 +2384,7 @@ void LigidPainter::viewportImageTextbox(){
 		glActiveTexture(GL_TEXTURE28);
 }
 void LigidPainter::sndPanelDownIcon(){
-	if(!txtrCreatingPanel.active){
+	if(!txtrCreatingPanel.active && sndPanel.state == 0){
 
 		//Load texture
 		Texture txtr;
@@ -2382,6 +2428,13 @@ void LigidPainter::sndPanelDownIcon(){
 			}
 			
 		}
+	}
+	else if(sndPanel.state == 1){
+		MaterialFile materialFile;
+		char const* lFilterPatterns[1] = { "*.material" };
+		char* materialFilePath = tinyfd_saveFileDialog("Save The Material","", 1, lFilterPatterns, "");
+		if(materialFilePath)
+			materialFile.writeTheFile(materialFilePath,nodeScenes[selectedNodeScene]);
 	}
 }
 

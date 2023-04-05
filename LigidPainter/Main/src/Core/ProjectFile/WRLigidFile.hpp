@@ -1,3 +1,6 @@
+#ifndef LIGID_WRITE_READ_PROJECT_FILE 
+#define LIGID_WRITE_READ_PROJECT_FILE
+
 #include <iostream>
 #include <ostream>
 #include <fstream>
@@ -1102,3 +1105,5 @@ private:
         }   
     }
 };
+
+#endif //LIGID_WRITE_READ_PROJECT_FILE

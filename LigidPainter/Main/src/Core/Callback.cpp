@@ -294,6 +294,10 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 					sndPanel.downSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.05f, 0.85f, mouseXPos, mouseYPos, false);
 					sndPanel.folderSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.17f, 0.85f, mouseXPos, mouseYPos, false);
 				}
+				else{
+					sndPanel.folderSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.17f, 0.85f, mouseXPos, mouseYPos, false);
+					sndPanel.downSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.05f, 0.85f, mouseXPos, mouseYPos, false);
+				}
 				if(!coloringPanel.active){
 					sndPanel.plusSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.08f, 0.85f, mouseXPos, mouseYPos, false);
 					sndPanel.minusSignHover = ui.isMouseOnButton(window, 0.01f,0.02f, sndPanel.position - 0.11f, 0.85f, mouseXPos, mouseYPos, false);
