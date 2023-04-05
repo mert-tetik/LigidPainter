@@ -486,7 +486,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		UserInterface ui;
 		glUseProgram(renderPrograms.uiProgram);
 		glm::vec4 saveButtonColor = colorData.textColor;
-		if(ui.isMouseOnButton(renderData.window,0.025f,0.02f,-0.05f-screenGapX,0.95f,mouseXpos,mouseYpos,false)){
+		if(ui.isMouseOnButton(renderData.window,0.025f,0.02f,-0.03f-screenGapX,0.95f,mouseXpos,mouseYpos,false)){
 			saveButtonColor = glm::vec4(colorData.LigidPainterThemeColor,1);
 
 			nodePanel.pointerCursor = true;
@@ -512,7 +512,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		ui.renderText(renderPrograms.uiProgram,"Save",-0.05f,0.95f,0.00022f,saveButtonColor,0.9f,false);
 		
 		glm::vec4 loadButtonColor = colorData.textColor;
-		if(ui.isMouseOnButton(renderData.window,0.025f,0.02f,0.05f-screenGapX,0.95f,mouseXpos,mouseYpos,false)){
+		if(ui.isMouseOnButton(renderData.window,0.025f,0.02f,0.07f-screenGapX,0.95f,mouseXpos,mouseYpos,false)){
 			loadButtonColor = glm::vec4(colorData.LigidPainterThemeColor,1);
 			nodePanel.pointerCursor = true;
 			if(firstClick){
@@ -559,22 +559,22 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		ui.iconBox(0.07,0.14f,-0.4f,0.1f,1.f,icons.TwoDProject,0.f,colorData.iconColor,colorData.iconColor);
 		glUseProgram(renderPrograms.uiProgram);
 		ui.renderText(renderPrograms.uiProgram,"New 2D Project",-0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
-		ui.renderText(renderPrograms.uiProgram,"Will be available",-0.4f-0.06f,-0.3f,0.00022f,glm::vec4(colorData.LigidPainterThemeColor,1),1.f,false);
+		ui.renderText(renderPrograms.uiProgram,"Will be available",-0.4f-0.07f,-0.3f,0.00022f,glm::vec4(colorData.LigidPainterThemeColor,1),1.f,false);
 		ui.renderText(renderPrograms.uiProgram,"on the next release",-0.42f-0.06f,-0.32f,0.00022f,glm::vec4(colorData.LigidPainterThemeColor,1),1.f,false);
 
 		float new3DProjectMixVal = 0.f;
 		float importProjectMixVal = 0.f;
 		
-		startMenuNew3DProjectMixVal = util.transitionEffect(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.f-screenGapX,0.0f,mouseXpos,mouseYpos,false),startMenuNew3DProjectMixVal,0.1f);
-		startMenuImportProjectMixVal = util.transitionEffect(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.4f-screenGapX,0.0f,mouseXpos,mouseYpos,false),startMenuImportProjectMixVal,0.1f);
+		startMenuNew3DProjectMixVal = util.transitionEffect(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.f-screenGapX,0.0f,mouseXpos,mouseYpos,false),startMenuNew3DProjectMixVal,0.05f);
+		startMenuImportProjectMixVal = util.transitionEffect(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.4f-screenGapX,0.0f,mouseXpos,mouseYpos,false),startMenuImportProjectMixVal,0.05f);
 		
-		if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
+		if(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
 			nodePanel.pointerCursor = true;
 			new3DProjectMixVal = 1.f;
 			if(firstClick)
 				startScreen = false;
 		}
-		else if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,0.4f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
+		else if(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.4f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
 			nodePanel.pointerCursor = true;
 			importProjectMixVal = 1.f;
 			if(firstClick){
