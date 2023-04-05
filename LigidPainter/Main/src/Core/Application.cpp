@@ -1250,6 +1250,13 @@ double lastXpos;
 double lastYpos;
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+	if(startScreen){
+		if(nodePanel.pointerCursor)
+			glfwSetCursor(window, cursors.pointerCursor);
+		else
+			glfwSetCursor(window, cursors.defaultCursor);
+	}
+
 	renderTheScene = true;
 	renderTheSceneCounter = 0;
 
