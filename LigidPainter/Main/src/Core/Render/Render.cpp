@@ -349,8 +349,6 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 			renderSkyBox(skyBoxShaderData,renderPrograms,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
 		//---------------------------------	
 
-		glActiveTexture(GL_TEXTURE17);
-		gls.bindTexture(paintOverTexture.id);
 
 		//3D-------------------------
 		glActiveTexture(GL_TEXTURE13);

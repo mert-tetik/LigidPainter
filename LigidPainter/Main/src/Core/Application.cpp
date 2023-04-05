@@ -36,9 +36,8 @@
 //Left CTRL + TAB + T = Switch to painting panel
 //Left CTRL + TAB + R = Switch to export panel
 
-//TODO Fix node lagging
-//TODO Fix mirror paint over
-//TODO Default selected & subselected textures
+////TODO Fix node lagging
+////TODO Fix mirror paint over
 //TODO Change texture extension
 //TODO Default node spawning location
 
@@ -115,7 +114,7 @@ bool paintingMode = false; //True if painting started, False if camera position 
 const char* modelFilePath;
 const char* customModelFilePath;
 string albedoTexturePath = "albedoImage.png";
-string maskTexturePath = "./LigidPainter/Resources/Textures/Mask/PlainCircle.png";
+string maskTexturePath = "./LigidPainter/Resources/Textures/Mask/mask16.jpg";
 string exportPath = "";
 string exportFolder = "Choose Destination Path";
 string exportFileName = "LP_Export";
@@ -136,7 +135,7 @@ BrushTexture brushMaskTextures;
 std::vector<aTexture> albedoTextures;
 std::vector<MaterialOut> modelMaterials;
 bool newModelAdded = false;
-int selectedAlbedoTextureIndex = 0;
+int selectedAlbedoTextureIndex = 1;
 std::vector<Node> appNodes;
 ColoringPanel coloringPanel;
 TextureCreatingPanel txtrCreatingPanel;
@@ -511,9 +510,45 @@ bool LigidPainter::run()
 
 	bool firstStroke = false;
 
+	aTexture defAlbTxtr1,defAlbTxtr2;
+	glGenTextures(1,&defAlbTxtr1.id);
+	glGenTextures(1,&defAlbTxtr2.id);
+	
+	GLubyte* defAlbTxtrData = new GLubyte[1024 * 1024 * 4];
+	std::fill_n(defAlbTxtrData, 1024 * 1024 * 4, 255);
+	
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,defAlbTxtr1.id);
+	glset.texImage(defAlbTxtrData,1024,1024,GL_RGBA);
+	glset.generateMipmap();
+	albedoTextures.push_back(defAlbTxtr1);
+
+	glActiveTexture(GL_TEXTURE17);
+	glBindTexture(GL_TEXTURE_2D,defAlbTxtr2.id);
+	
+	
+	glset.texImage(defAlbTxtrData,1024,1024,GL_RGBA);
+	glset.generateMipmap();
+	albedoTextures.push_back(defAlbTxtr2);
+
+	delete[] defAlbTxtrData;
+
+	glActiveTexture(GL_TEXTURE28);
+	int defaultNodePosCorrectorCounter = 0;
+	bool didDefaultNodesMakeToTheCenter = false;
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
+		if(!startScreen && !didDefaultNodesMakeToTheCenter)
+			defaultNodePosCorrectorCounter++;
 
+		if(defaultNodePosCorrectorCounter < 200){
+			didDefaultNodesMakeToTheCenter = true;
+			nodeScenes[0].nodes[1].positionX = -0.5f;
+			nodeScenes[0].nodes[1].positionY = -2.1f;
+			
+			nodeScenes[0].nodes[0].positionX = 0.f;
+			nodeScenes[0].nodes[0].positionY = -1.6f;
+		}
 
 		whileCounter++;
 		if(whileCounter > 1000)

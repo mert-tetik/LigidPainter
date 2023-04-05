@@ -143,7 +143,7 @@ bool sndpanelFolderPressed = false;
 int sndpanelFolderCounter = 0;
 
 bool sndpanelSliderPressed = false;
-int subselectedIndex = 10000;
+int subselectedIndex = 2;
 void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float removeThisParam, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool &firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushTexture &brushMaskTextures,bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory,int brushMaskTexturesState,int chosenTextureResIndex) {
 	GlSet glset;
 	ColorData colorData;
@@ -862,7 +862,7 @@ void UserInterface::textureDisplayer(float width,float height, float position_x,
 	};
 
 	glUseProgram(uiPrograms.textureDisplayer);
-	glset.uniform1i(uiPrograms.textureDisplayer, "currentTexture", 0);
+	glset.uniform1i(uiPrograms.textureDisplayer, "currentTexture", 8);
 	glset.drawArrays(buttonCoorSq,false);
 	glUseProgram(uiPrograms.uiProgram);
 	box(0.0f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDisplayerButtonColor,0,0,0,1,10,glm::vec4(0,0,0,1),0);

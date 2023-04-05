@@ -31,7 +31,10 @@ void main(){
                 const float cornerThickness = 0.02; 
                 //Pressed(negative)
                 if(TexCoords.x < cornerThickness || TexCoords.y < cornerThickness || TexCoords.x > 1.0-cornerThickness || TexCoords.y > 1.0-cornerThickness){
-                    color = vec4(vec3(vec4(selectionColor,1) - texture(txtr,TexCoords)),1*texture(txtr,TexCoords).a);
+                    if(texture(txtr,TexCoords).r == texture(txtr,TexCoords).g && texture(txtr,TexCoords).r == texture(txtr,TexCoords).b)
+                        color = vec4(selectionColor,1);
+                    else
+                        color = vec4(vec3(vec4(selectionColor,1) - texture(txtr,TexCoords)),1*texture(txtr,TexCoords).a);
                 }
                 else{
                     color = vec4(texture(txtr,TexCoords).rgb,1*texture(txtr,TexCoords).a);
@@ -47,7 +50,10 @@ void main(){
                 const float cornerThickness = 0.04; 
                 //Pressed + hover (transparent + negative)
                 if(TexCoords.x < cornerThickness || TexCoords.y < cornerThickness || TexCoords.x > 1.0-cornerThickness || TexCoords.y > 1.0-cornerThickness){
-                    color = vec4(vec3(vec4(selectionColor,1) - texture(txtr,TexCoords)),0.5*texture(txtr,TexCoords).a);
+                    if(texture(txtr,TexCoords).r == texture(txtr,TexCoords).g && texture(txtr,TexCoords).r == texture(txtr,TexCoords).b)
+                        color = vec4(selectionColor,1);
+                    else
+                        color = vec4(vec3(vec4(selectionColor,1) - texture(txtr,TexCoords)),0.5*texture(txtr,TexCoords).a);
                 }
                 else{
                     color = vec4(texture(txtr,TexCoords).rgb,0.5*texture(txtr,TexCoords).a);

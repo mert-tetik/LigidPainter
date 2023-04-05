@@ -757,7 +757,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		skyboxlistStateChanged = ui.listBox(centerCoords - screenGapX,-0.2f,0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture,screenGapX);
 	}
 	
-	if(resolutionChanged){
+	if(resolutionChanged && chosenNodeResIndex != previousTextureResIndex){
 		LigidPainter lp;
 		if(lp.ligidMessageBox("Textures will be compressed into the chosen resolution.",-0.224f,"Do you want to proceed?",-0.1f)){
 			for (size_t i = 0; i < albedoTextures.size(); i++)
