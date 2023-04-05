@@ -275,8 +275,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				glset.uniformMatrix4fv(programs.outProgram,"view",mirroredView);
 
 				std::vector<MaterialOut> emptyMaterials = {};
-				//TODO : Draw selected mesh
-				model.Draw(0,programs.PBRProgram,false,modelMaterials,view,true,0,glm::vec3(0),0,0);
+				model.Draw(0,programs.PBRProgram,false,modelMaterials,view,true,0,glm::vec3(0),0,0,true);
 
 				glset.uniform1i(programs.outProgram, "tdMaskRendering", 0);
 				

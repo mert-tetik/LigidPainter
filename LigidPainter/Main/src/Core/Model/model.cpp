@@ -39,7 +39,8 @@ using namespace std;
     }
 
     // draws the model, and thus all its meshes
-    void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,unsigned int selectedTexture,glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal)
+    void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,unsigned int selectedTexture,
+    glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal,bool renderOnlyTheChosenMesh)
     {
         if(meshes.size() > 0 && paintingMode){
             glActiveTexture(GL_TEXTURE0);
@@ -81,7 +82,7 @@ using namespace std;
 
                 meshes[i].Draw();
             }
-            else if(useOpacity){
+            else if(useOpacity && !renderOnlyTheChosenMesh){
                 glActiveTexture(GL_TEXTURE0);
 	            if(i != chosenMaterialIndex){
                     glUniform1f(glGetUniformLocation(PBRProgram, "opacity"), 0.3f);

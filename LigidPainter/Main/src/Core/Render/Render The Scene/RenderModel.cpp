@@ -28,7 +28,7 @@ int currentMaterialIndex,glm::mat4 view,bool paintingMode,std::vector<aTexture> 
 	unsigned int chosenTxtr = 0;
 	if(albedoTextures.size() != 0)
 		chosenTxtr = albedoTextures[chosenTextureIndex].id;
-	model.Draw(currentMaterialIndex,programs.PBRProgram,true,modelMaterials,view,paintingMode,chosenTxtr,viewPos,skyboxExposureVal,skyboxRotationVal);
+	model.Draw(currentMaterialIndex,programs.PBRProgram,true,modelMaterials,view,paintingMode,chosenTxtr,viewPos,skyboxExposureVal,skyboxRotationVal,false);
 
 	gl.disable(GL_CULL_FACE); //Disable backface culling if enabled
 

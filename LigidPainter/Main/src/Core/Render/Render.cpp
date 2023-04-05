@@ -218,7 +218,7 @@ std::vector<aTexture> albedoTextures,int chosenTextureIndex){
 		chosenTxtr = albedoTextures[chosenTextureIndex].id;
 
 	if(useModel)
-		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0);
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0,true);
 	else
 		gl.drawArrays(vertices, false); //Render Model
 
