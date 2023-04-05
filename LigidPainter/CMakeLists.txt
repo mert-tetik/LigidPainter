@@ -52,7 +52,8 @@ endif (WIN32)
 install(TARGETS Ligid)
 install(FILES
    ${CMAKE_SOURCE_DIR}/freetype.dll
-   ${CMAKE_SOURCE_DIR}/assimp-vc142-mt.dll
+   ${CMAKE_SOURCE_DIR}/assimp-vc142-mtd.dll
+   ${CMAKE_SOURCE_DIR}/OpenAL32.dll
    DESTINATION bin)
 install(DIRECTORY
 ${CMAKE_SOURCE_DIR}/LigidPainter/Resources DESTINATION bin/LigidPainter)
