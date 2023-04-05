@@ -759,7 +759,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	
 	if(resolutionChanged){
 		LigidPainter lp;
-		if(lp.ligidMessageBox("Textures will be compressed into the chosen resolution")){
+		if(lp.ligidMessageBox("Textures will be compressed into the chosen resolution.",-0.224f,"Do you want to proceed?",-0.1f)){
 			for (size_t i = 0; i < albedoTextures.size(); i++)
 			{
 				if(albedoTextures[i].isTexture){

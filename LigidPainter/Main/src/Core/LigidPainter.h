@@ -278,7 +278,7 @@ public:
 	void setViewportToDefault();
 	void selectBrushMaskTexture();
 	void selectingPaintOverTextureIcon(); 
-	int ligidMessageBox(std::string message);
+	int ligidMessageBox(std::string message,float messagePosX,std::string bMessage,float bMessagePosX);
 
 
 };

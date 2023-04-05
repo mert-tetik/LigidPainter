@@ -916,7 +916,7 @@ bool LigidPainter::run()
 		firstClickR = false;
 		
 		if(glfwWindowShouldClose(window) && !startScreen){
-			if(!ligidMessageBox("LigidPainter will be closed. Do you want to proceed?"))
+			if(!ligidMessageBox("LigidPainter will be closed. Do you want to proceed?",-0.21f,"",0))
 				glfwSetWindowShouldClose(window,GLFW_FALSE);
 		}
 	}
@@ -928,7 +928,7 @@ bool LigidPainter::run()
 }
 
 
-int LigidPainter::ligidMessageBox(std::string message){
+int LigidPainter::ligidMessageBox(std::string message,float messagePosX,std::string bMessage,float bMessagePosX){
 	bool noButtonClick = true;
 	bool clickTaken = false;
 	panelData.exportPanelActive = false;
@@ -962,7 +962,7 @@ int LigidPainter::ligidMessageBox(std::string message){
 		float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
 		float messageBoxButtonColor[3] = {colorData.messageBoxButtonColor.r,colorData.messageBoxButtonColor.g,colorData.messageBoxButtonColor.r};
 		//render the message box
-		int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,message.c_str(),-0.21f,0.0f,messageBoxBackColor,messageBoxButtonColor,(float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width, (float)screenWidth,programs.iconsProgram,icons,programs); //0 = Yes //1 = No //2 = None
+		int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,message.c_str(),messagePosX,0.0f,messageBoxBackColor,messageBoxButtonColor,(float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width, (float)screenWidth,programs.iconsProgram,icons,programs,bMessage,bMessagePosX); //0 = Yes //1 = No //2 = None
 		//Process the message box input
 		if(result == 0 || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
 			panelData.modelPanelActive = true;

@@ -14,7 +14,7 @@ bool clickTakenMsgBox = false;
 float yesBtnMixVal = 0.f;
 float noBtnMixVal = 0.f;
 
-int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcursor* defaultCursor,GLFWcursor* buttonHoverCursor,unsigned int icon,unsigned int uiProgram,const char * text, float textXpos,float textYpos,float backColor[3],float buttonColor[3],float renderMaxScreenWidth,float screenSizeX,unsigned int iconsProgram,Icons icons,Programs programs){
+int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcursor* defaultCursor,GLFWcursor* buttonHoverCursor,unsigned int icon,unsigned int uiProgram,const char * text, float textXpos,float textYpos,float backColor[3],float buttonColor[3],float renderMaxScreenWidth,float screenSizeX,unsigned int iconsProgram,Icons icons,Programs programs,std::string bMessage,float bMessagePosX){
     UserInterface ui;
 	ColorData colorData;
 	Utilities util;
@@ -83,6 +83,7 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
 
 	//Text
 	ui.renderText(uiProgram, text, textXpos, textYpos , 0.00022f,colorData.textColor,0.89999f,false);
+	ui.renderText(uiProgram, bMessage, bMessagePosX, -0.05f , 0.00022f,colorData.textColor,0.89999f,false);
 
 	//LigidPainter icon
 	glUseProgram(iconsProgram);

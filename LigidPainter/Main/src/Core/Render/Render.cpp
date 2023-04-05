@@ -520,7 +520,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 			nodePanel.pointerCursor = true;
 			if(firstClick){
 				LigidPainter lp;
-				if(lp.ligidMessageBox("Another project will be loaded. Unsaved data will be lost.")){
+				if(lp.ligidMessageBox("Another project will be loaded. Unsaved data will be lost.",-0.23f,"Do you want to proceed?",-0.1f)){
 					glUseProgram(renderPrograms.uiProgram);
 					char const* lFilterPatterns[1] = { "*.ligid" };
 					//File dialog
