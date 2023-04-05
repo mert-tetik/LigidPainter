@@ -1064,7 +1064,6 @@ glm::vec3 UserInterface::hueBar(float position_x, float position_y,float value,u
 		lp.setViewportToDefault();
 	}
 
-
 	hueShaderData.useTexCoords = 0;
 	hueShaderData.renderTextureProjection = projection;
 	glset.useHueShader(uiPrograms.hueProgram,hueShaderData);

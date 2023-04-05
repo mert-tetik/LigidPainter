@@ -21,6 +21,7 @@ bool start = false;
 void UserInterface::renderAlert(std::string message,int duration,unsigned int uiProgram,int state){
     ColorData colorData;
     //TODO : Focus mode alert
+    //TODO : Fix wrong positioning when the message is short
     Utilities util;
 
     if(state == 1){

@@ -40,7 +40,6 @@
 //TODO Fix mirror paint over
 //TODO Default selected & subselected textures
 //TODO Change texture extension
-//TODO Fix ui coliding
 //TODO Default node spawning location
 
 #include<iostream>
