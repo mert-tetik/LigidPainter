@@ -11,10 +11,14 @@
 bool noButtonClickMsgBox = true;
 bool clickTakenMsgBox = false;
 
+float yesBtnMixVal = 0.f;
+float noBtnMixVal = 0.f;
 
 int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcursor* defaultCursor,GLFWcursor* buttonHoverCursor,unsigned int icon,unsigned int uiProgram,const char * text, float textXpos,float textYpos,float backColor[3],float buttonColor[3],float renderMaxScreenWidth,float screenSizeX,unsigned int iconsProgram,Icons icons,Programs programs){
     UserInterface ui;
 	ColorData colorData;
+	Utilities util;
+
 	int result = 2;
 
     glm::vec4 backColorVec;
@@ -30,21 +34,23 @@ int lgdMessageBox(GLFWwindow* window, double mouseXpos,double mouseYpos,GLFWcurs
     buttonColorVec.b = buttonColor[2];
 	buttonColorVec.a = colorData.messageBoxButtonColor.a;
 
-
 	float screenGapX = ((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/(((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width)/2.0f)/2.0f; 
-
-
 
 	ui.container(+0.f, 0.f,0.899f,0.25f, 0.22f,backColorVec,programs,icons.Circle,glm::vec4(0),0);
 	glUseProgram(programs.uiProgram);
-				
-	//Buttons
-	ui.box(0.04f, 0.04f, -0.1f, -0.15f, "Yes", buttonColorVec, 0.015f, false, false, 0.8999f, 10, buttonColorVec, 0);//Load model button
-	ui.box(0.04f, 0.04f, +0.1f, -0.15f, "No", buttonColorVec, 0.012f, false, false, 0.8999f, 10, buttonColorVec, 0);//Load model button
-
-
+	
+	
 	bool resultYesHover = ui.isMouseOnButton(window, 0.05f, 0.04f, -0.1f-screenGapX, -0.15f, mouseXpos, mouseYpos, false);//Yes button hover
 	bool resultNoHover = ui.isMouseOnButton(window, 0.05f, 0.04f,  +0.1f-screenGapX, -0.15f, mouseXpos, mouseYpos, false);//No button hover
+	
+	yesBtnMixVal = util.transitionEffect(resultYesHover,yesBtnMixVal,0.1f);
+	noBtnMixVal = util.transitionEffect(resultNoHover,noBtnMixVal,0.1f);
+
+	//Buttons
+	ui.box(0.04f, 0.04f, -0.1f, -0.15f, "Yes", colorData.buttonColor, 0.015f, false, false, 0.8999f, 10, colorData.buttonColorHover, yesBtnMixVal);//
+	ui.box(0.04f, 0.04f, +0.1f, -0.15f, "No", colorData.buttonColor, 0.012f, false, false, 0.8999f, 10, colorData.buttonColorHover, noBtnMixVal);//
+
+
 
 	//Make sure first click is done inside
 	if (glfwGetMouseButton(window, 0) == GLFW_PRESS && !clickTakenMsgBox) {

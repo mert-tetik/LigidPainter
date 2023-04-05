@@ -38,7 +38,6 @@
 
 //TODO Fix node lagging
 //TODO Fix mirror paint over
-//TODO Replace tinyfd messageboxes
 //TODO Default selected & subselected textures
 //TODO Required icons
 //TODO Change texture extension
