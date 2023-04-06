@@ -364,7 +364,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosY",UIElements[UImirrorYRangeBarElement].rangeBar.value * 10.f + ((float)!UIElements[UImirrorYCheckBox].checkBox.checked*100000.f));
 		gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosZ",UIElements[UImirrorZRangeBarElement].rangeBar.value * 10.f + ((float)! UIElements[UImirrorZCheckBox].checkBox.checked*100000.f));
 
-		if(materialDisplayUpdaterCounter > 0){
+		if(materialDisplayUpdaterCounter > 200){
 			//TODO : Update only selected one
 			for (size_t i = 0; i < nodeScenes.size(); i++)
 			{
@@ -391,7 +391,10 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 				glm::mat4 displayMatrix = glm::mat4(0);
 				displayMatrix = glm::lookAt(glm::vec3(6.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
 				
-				spherModel.Draw(0,renderPrograms.PBRProgram,false,modelMaterials,displayMatrix,false,0,viewPos,0,0,false);
+				std::vector<MaterialOut> matDisplays;
+				matDisplays.push_back(modelMaterials[i]);
+
+				spherModel.Draw(0,renderPrograms.PBRProgram,false,matDisplays,displayMatrix,false,0,glm::vec3(6.f,0.f,0.f),0,0,false);
 				
 				gls.bindFramebuffer(0);
 				gls.deleteFramebuffers(dFBO);
