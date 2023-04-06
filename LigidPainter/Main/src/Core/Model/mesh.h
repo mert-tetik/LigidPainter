@@ -39,6 +39,7 @@ struct TextureMs {
 class Mesh {
 public:
     // mesh Data
+    std::vector<unsigned int> submeshes;
     std::vector<Vertex>       vertices;
     std::vector<unsigned int> indices;
     std::vector<TextureMs>      textures;

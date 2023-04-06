@@ -14,6 +14,8 @@ uniform int maskUseColor;
 
 uniform sampler2D txtr;
 
+uniform int renderMaterials;
+
 void main(){
     if(isMask == 0){
         vec3 selectionColor;
@@ -108,6 +110,6 @@ void main(){
         }
     }
 
-    if(texture(txtr,TexCoords).r < 0.06 && texture(txtr,TexCoords).g > 0.94 && texture(txtr,TexCoords).b < 0.06)
+    if(renderMaterials == 1 && texture(txtr,TexCoords).r < 0.3 && texture(txtr,TexCoords).g > 0.7 && texture(txtr,TexCoords).b < 0.3)
         color = vec4(0);
 }   

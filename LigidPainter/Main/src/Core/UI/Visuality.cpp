@@ -687,13 +687,13 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 				std::vector<float> buttonCoorSq{
 					// first triangle
-					 textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		upBotDifMin*10			,0,0,0,  // top right
-					 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
-					-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		upBotDifMin*10			,0,0,0,  // top left 
-					// second triangle						   
-					 textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
-					-textureWidth + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
-					-textureWidth + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		upBotDifMin*10			,0,0,0  // top left
+					 textureWidth*1.6f + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		upBotDifMin*10			,0,0,0,  // top right
+					 textureWidth*1.6f + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+					-textureWidth*1.6f + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		upBotDifMin*10			,0,0,0,  // top left 
+					// second tri*1.6fangle						   
+					 textureWidth*1.6f + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	1,		1.0f-upBotDifMax*10		,0,0,0,  // bottom right
+					-textureWidth*1.6f + position_x,  std::min(std::max(-textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		1.0f-upBotDifMax*10		,0,0,0,  // bottom left
+					-textureWidth*1.6f + position_x,  std::min(std::max( textureWidth*2 + position_y,minBot),maxTop), 	panelZ+0.02f,	0,		upBotDifMin*10			,0,0,0  // top left
 				};
 				ColorData colorData;
 				bool isHover;
@@ -738,9 +738,10 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				glUseProgram(programs.renderTheTextureProgram);
 				glActiveTexture(GL_TEXTURE14);
 				glBindTexture(GL_TEXTURE_2D,nodeScenes[i].renderedTexture);
-				//glset.uniform4fv(programs.iconsProgram,"iconColor",iconColor);
+				glset.uniform1i(programs.renderTheTextureProgram,"renderMaterials",1);
 				//glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
 				glset.drawArrays(buttonCoorSq,false);
+				glset.uniform1i(programs.renderTheTextureProgram,"renderMaterials",0);
 
 				glUseProgram(programs.uiProgram);
 				renderText(programs.uiProgram,nodeScenes[i].sceneName,position_x- textureWidth ,position_y - textureWidth*2,0.00022f,colorData.textColor,panelZ+0.03f,false);
@@ -1789,6 +1790,8 @@ void UserInterface::sendTextBoxActiveCharToUI(int textBoxActiveChar){
 void UserInterface::modelMaterialPanel(Model &model,Programs programs,RenderData renderData,float screenGapX,float materialsPanelSlideValue,double mouseXpos,double mouseYpos,bool &texturePanelButtonHover,RenderOutData& uiOut,int& currentMaterialIndex,bool &firstClick,bool& newModelAdded, float texturePanelButtonMixVal,int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes){
 	ColorData colorData;
 
+	
+
 	bool mouseEnteredOnce = false;
 		glUseProgram(programs.uiProgram); 
 
@@ -1850,9 +1853,9 @@ void UserInterface::modelMaterialPanel(Model &model,Programs programs,RenderData
 				if(firstClick){
 					//Pressed
 					//uiOut.texturePanelButtonClicked = true;
+					
 					currentMaterialIndex = i;
 					newModelAdded = true; 
-
 					model.meshes[i].materialIndex = selectedNodeScene;
 				}
 			}

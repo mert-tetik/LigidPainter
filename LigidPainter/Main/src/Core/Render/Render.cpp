@@ -273,7 +273,7 @@ glm::vec2 paintOverLayerScale = glm::vec2(1.f);
 float startMenuNew3DProjectMixVal = 0.f;
 float startMenuImportProjectMixVal = 0.f;
 
-int materialDisplayUpdaterCounter = 0;
+int materialDisplayUpdaterCounter = 201;
 
 int paintRenderCounter = 0;
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
