@@ -42,6 +42,7 @@
 //TODO Material masking
 //TODO Change texture extension
 //TODO RTX Support
+//TODO Light source rotation from 3D Model displayer
 
 //TODO 2D Painting
 // - Lasso Tool 
@@ -221,6 +222,7 @@ Cubemaps cubemaps;
 LigidCursors cursors;
 Icons icons;
 Audios audios;
+Model sphereModel;
 
 
 ExportData exportData;
@@ -419,6 +421,7 @@ bool LigidPainter::run()
 	ui.sendObjectsToUI(objects,icons.Circle);
 
 	model.sendObjectsToModel(objects.VAO,objects.VBO);
+	sphereModel.sendObjectsToModel(objects.VAO,objects.VBO);
 
 	glfwSetWindowSizeLimits(window,glfwGetVideoMode(glfwGetPrimaryMonitor())->width/1.7,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 
@@ -547,6 +550,13 @@ bool LigidPainter::run()
 	int defaultNodePosCorrectorCounter = 0;
 	bool didDefaultNodesMakeToTheCenter = false;
 
+
+	sphereModel.loadModel("./LigidPainter/Resources/3D Models/triangulatedHalfSphere.obj",true);
+	sphereModel.meshes[0].sendObjectsToMesh(objects.VAO,objects.VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, objects.VBO);
+	glBindVertexArray(objects.VAO);
+
+	addSphereButton();
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
@@ -851,7 +861,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos, callbackData.originPos,startScreen,projectFilePath,paintOverTexture);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos, callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel);
 		}
 		duplicateNodeCall = false;
 		
