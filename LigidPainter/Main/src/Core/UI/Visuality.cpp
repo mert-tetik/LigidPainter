@@ -735,11 +735,11 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 
 
-				glUseProgram(programs.iconsProgram);
-				glActiveTexture(GL_TEXTURE6);
-				glBindTexture(GL_TEXTURE_2D,icons.Material);
-				glset.uniform4fv(programs.iconsProgram,"iconColor",iconColor);
-				glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
+				glUseProgram(programs.renderTheTextureProgram);
+				glActiveTexture(GL_TEXTURE14);
+				glBindTexture(GL_TEXTURE_2D,nodeScenes[i].renderedTexture);
+				//glset.uniform4fv(programs.iconsProgram,"iconColor",iconColor);
+				//glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
 				glset.drawArrays(buttonCoorSq,false);
 
 				glUseProgram(programs.uiProgram);
@@ -866,7 +866,7 @@ void UserInterface::textureDisplayer(float width,float height, float position_x,
 	};
 
 	glUseProgram(uiPrograms.textureDisplayer);
-	glset.uniform1i(uiPrograms.textureDisplayer, "currentTexture", 8);
+	glset.uniform1i(uiPrograms.textureDisplayer, "currentTexture", 0);
 	glset.drawArrays(buttonCoorSq,false);
 	glUseProgram(uiPrograms.uiProgram);
 	box(0.0f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDisplayerButtonColor,0,0,0,1,10,glm::vec4(0,0,0,1),0);

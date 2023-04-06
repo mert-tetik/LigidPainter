@@ -1009,6 +1009,17 @@ public:
 		emptyNodeScene.stateChanged = true;
 		emptyNodeScene.nodes[0].positionX = 0;
 		emptyNodeScene.nodes[0].positionY = 0;
+
+		GlSet glset;
+		glActiveTexture(GL_TEXTURE28);
+		unsigned int renderTexture;
+		glset.genTextures(renderTexture);
+		glset.bindTexture(renderTexture);
+		glset.texImage(nullptr,100,100,GL_RGBA);
+		glset.generateMipmap();
+
+		emptyNodeScene.renderedTexture = renderTexture;
+
 		nodeScenes.push_back(emptyNodeScene);
 	}
 	unsigned int getPaintingFBO(WindowData windowData,unsigned int screenPaintingTexture){

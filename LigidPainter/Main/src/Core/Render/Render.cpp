@@ -273,6 +273,7 @@ glm::vec2 paintOverLayerScale = glm::vec2(1.f);
 float startMenuNew3DProjectMixVal = 0.f;
 float startMenuImportProjectMixVal = 0.f;
 
+int materialDisplayUpdaterCounter = 0;
 
 int paintRenderCounter = 0;
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
@@ -350,6 +351,8 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		//---------------------------------	
 
 
+
+
 		//3D-------------------------
 		glActiveTexture(GL_TEXTURE13);
 		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
@@ -367,6 +370,47 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		gls.uniform1i(renderPrograms.outProgram,"doPaintOver",(int)UIElements[UIpaintOverCheckBoxElement].checkBox.checked);
 	
 		renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects);
+		if(materialDisplayUpdaterCounter > 0 && model.meshes.size()){
+			//TODO : Update only selected one
+			for (size_t i = 0; i < nodeScenes.size(); i++)
+			{
+				glActiveTexture(GL_TEXTURE28);
+
+				unsigned int dFBO;
+				gls.genFramebuffers(dFBO);
+				gls.bindFramebuffer(dFBO);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, nodeScenes[i].renderedTexture, 0);
+
+				unsigned int RBO;
+				gls.genRenderbuffers(RBO);
+				gls.bindRenderBuffer(RBO);
+				glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, 100, 100);
+				glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
+
+				glClearColor(0,1,0,1);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				glViewport(0,0,100,100);
+				
+				glUseProgram(renderPrograms.PBRProgram);
+				gls.uniform1f(renderPrograms.PBRProgram,"opacity",1.f);
+
+				glm::mat4 displayMatrix = glm::mat4(0);
+				displayMatrix = glm::lookAt(glm::vec3(6.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+				
+				model.Draw(0,renderPrograms.PBRProgram,false,modelMaterials,displayMatrix,false,0,glm::vec3(0),0,0,false);
+				
+				gls.bindFramebuffer(0);
+				gls.deleteFramebuffers(dFBO);
+				glUseProgram(renderPrograms.uiProgram);
+				LigidPainter lp;
+				lp.setViewportToDefault();
+
+				glDeleteRenderbuffers(1,&RBO);
+			}
+			
+			materialDisplayUpdaterCounter = 0;	
+		}
+		materialDisplayUpdaterCounter++;
 
 		renderAxisPointer(axisPointerShaderData,renderPrograms);
 		//-------------------------

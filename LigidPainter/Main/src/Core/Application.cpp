@@ -546,6 +546,8 @@ bool LigidPainter::run()
 	glActiveTexture(GL_TEXTURE28);
 	int defaultNodePosCorrectorCounter = 0;
 	bool didDefaultNodesMakeToTheCenter = false;
+
+
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		if(!startScreen && !didDefaultNodesMakeToTheCenter)
@@ -559,6 +561,8 @@ bool LigidPainter::run()
 			nodeScenes[0].nodes[0].positionX = 0.f;
 			nodeScenes[0].nodes[0].positionY = -1.6f;
 		}
+
+		
 
 		whileCounter++;
 		if(whileCounter > 1000)
@@ -2201,6 +2205,15 @@ void LigidPainter::sndPanelPlusIcon(){
 			emptyNodeScene.sceneName = "material_" + std::to_string(emptyNodeScene.index); 
 			emptyNodeScene.nodes = mainOutNodes;
 			
+			glActiveTexture(GL_TEXTURE28);
+			unsigned int renderTexture;
+			glset.genTextures(renderTexture);
+			glset.bindTexture(renderTexture);
+			glset.texImage(nullptr,100,100,GL_RGBA);
+			glset.generateMipmap();
+
+			emptyNodeScene.renderedTexture = renderTexture;
+			
 			nodeScenes.push_back(emptyNodeScene);
 
 			MaterialOut mOut;
@@ -2287,6 +2300,15 @@ void LigidPainter::sndPanelDuplicateIcon(){
 
 			emptyNodeScene.sceneName = "material_" + std::to_string(emptyNodeScene.index); 
 			
+			glActiveTexture(GL_TEXTURE28);
+			unsigned int renderTexture;
+			glset.genTextures(renderTexture);
+			glset.bindTexture(renderTexture);
+			glset.texImage(nullptr,100,100,GL_RGBA);
+			glset.generateMipmap();
+
+			emptyNodeScene.renderedTexture = renderTexture;
+
 			nodeScenes.push_back(emptyNodeScene);
 
 			MaterialOut mOut;
@@ -2343,6 +2365,15 @@ void LigidPainter::sndPanelFolderIcon(){
 		}
 		material.sceneName = "material_" + std::to_string(material.index); 
 		
+		glActiveTexture(GL_TEXTURE28);
+		unsigned int renderTexture;
+		glset.genTextures(renderTexture);
+		glset.bindTexture(renderTexture);
+		glset.texImage(nullptr,100,100,GL_RGBA);
+		glset.generateMipmap();
+
+		material.renderedTexture = renderTexture;
+
 		nodeScenes.push_back(material);
 		MaterialOut mOut;
 		mOut.program = 0;

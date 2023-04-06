@@ -546,6 +546,8 @@ struct NodeScene{
 
 	int index;
 	bool stateChanged = true;
+
+	unsigned int renderedTexture;
 };
 
 struct TextureSelectionPanel{

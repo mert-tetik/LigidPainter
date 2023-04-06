@@ -107,4 +107,7 @@ void main(){
                 color = vec4(texture(txtr,TexCoords).r); 
         }
     }
+
+    if(texture(txtr,TexCoords).r < 0.06 && texture(txtr,TexCoords).g > 0.94 && texture(txtr,TexCoords).b < 0.06)
+        color = vec4(0);
 }   

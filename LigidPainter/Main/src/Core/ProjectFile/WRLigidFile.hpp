@@ -350,6 +350,16 @@ private:
             rf.read(reinterpret_cast<char*>(&scene.index),sizeof(uint64_t));
             rf.read(reinterpret_cast<char*>(&scene.arrayIndex),sizeof(uint64_t));
         
+            GlSet gls;
+            glActiveTexture(GL_TEXTURE28);
+			unsigned int renderTexture;
+			gls.genTextures(renderTexture);
+			gls.bindTexture(renderTexture);
+			gls.texImage(nullptr,100,100,GL_RGBA);
+			gls.generateMipmap();
+
+			scene.renderedTexture = renderTexture;
+
             nodeScenes.push_back(scene);
             
             //Scene name
