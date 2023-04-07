@@ -1573,14 +1573,23 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
         //Destroy the context
         //Clear the arrays
 
-        //TODO : Rewrite 
-	    // alDeleteSources(1, &source);
-	    // alDeleteBuffers(1, &buffer);
-	    // device = alcGetContextsDevice(LibALContext);
-	    // alcMakeContextCurrent(NULL);
-	    // alcDestroyContext(LibALContext);
-	    // alcCloseDevice(device);
-        // LibALaudioIndex = 0;
+        ALCdevice* device = alcGetContextsDevice(LibALContext);
+	    alcCloseDevice(device);
+	    
+        alcMakeContextCurrent(NULL);
+	    alcDestroyContext(LibALContext);
+        for (size_t i = 0; i < LibALmaxAudios; i++)
+        {
+            alDeleteSources(1,&LibALaudios[i].buffer);
+            alDeleteBuffers(1,&LibALaudios[i].buffer);
+            LibALaudios[i].bitsPerSample = NULL;
+            LibALaudios[i].bufferData = nullptr;
+            LibALaudios[i].channels = NULL;
+            LibALaudios[i].dataSize = NULL;
+            LibALaudios[i].sampleRate = NULL;
+            LibALaudios[i].source_state = NULL;
+        }
+        LibALaudioIndex = 0;
     }
     
 
