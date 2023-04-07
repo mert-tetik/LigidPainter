@@ -743,9 +743,11 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 				}
 
 				float pointPosVal = val / (1.f/(node.width*2.f)) - node.width;
-
+				
 				//Range bar
 				box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+0.01f,8 / (node.width*6),node.backColor,0);///Bottom
+				//Display the value
+				renderText(programs.uiProgram,std::to_string(val),(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10 - node.width/10.f,node.width/300.f,colorData.textColor,depth+0.015f,false);
 				//Pointer
 				box(0,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + pointPosVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,depth+0.02f,8 / (node.width*4.5),node.backColor,0);///Top
 
