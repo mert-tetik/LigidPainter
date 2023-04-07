@@ -46,6 +46,10 @@
 //TODO Move folders into trash folder before deleting forever
 //TODO Material deletion - don't remove the material object from the vector
 
+//TODO Hold a texture inside of the nodescene structure
+//TODO Once a material be rendered the result in 2d will be held in that texture
+//TODO The material of the mesh will be consist of it's submeshes and will be rendered without pbr calculations
+
 //TODO 2D Painting
 // - Lasso Tool 
 // - Quick Selection

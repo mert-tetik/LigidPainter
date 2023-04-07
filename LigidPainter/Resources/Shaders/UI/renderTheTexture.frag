@@ -16,13 +16,40 @@ uniform sampler2D txtr;
 
 uniform int renderMaterials;
 
+const float PI = 3.14159265;
+    
+// from https://iquilezles.org/articles/distfunctions
+float udRoundBox( vec2 p, vec2 b, float r )
+{
+    return length(max(abs(p)-b+r,0.0))-r;
+}
+
+float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
+{
+    // setup
+    float t = 0.2 + 0.2 * sin(mod(0.75, 2.0 * PI) - 0.5 * PI);
+    float iRadius = (0.05 + t)*1080;
+    vec2 halfRes = vec2(0.5*1080);
+
+    // compute box
+    float b = udRoundBox( uv.xy*1080 - halfRes, halfRes, iRadius );
+    
+    // colorize (red / black )
+	vec3 c = mix( vec3(1.0,0.0,0.0), vec3(0.0,0.0,0.0), smoothstep(0.0,1.0,b) );
+        
+    return c.r;
+}
+
 void main(){
+    const float thickness = 0.03;
+    
+    vec3 selectionColor;
+    if(subSelected == 0)
+        selectionColor = vec3(0.043,0.635,0.823);
+    if(subSelected == 1)
+        selectionColor = vec3(1) - vec3(0.043,0.635,0.823);
+
     if(isMask == 0){
-        vec3 selectionColor;
-        if(subSelected == 0)
-            selectionColor = vec3(0.043,0.635,0.823);
-        if(subSelected == 1)
-            selectionColor = vec3(1) - vec3(0.043,0.635,0.823);
 
           if(isHover == 0){
             if(isPressed == 0){
@@ -67,7 +94,6 @@ void main(){
         if(isPressed == 1){
             float maskTxtr = max(texture(txtr, TexCoords),0.0).r;
 
-            const float thickness = 0.03;
             
             float maskTxtrLeft; 
             float maskTxtrRight; 
@@ -112,4 +138,8 @@ void main(){
 
     if(renderMaterials == 1 && texture(txtr,TexCoords).r < 0.3 && texture(txtr,TexCoords).g > 0.7 && texture(txtr,TexCoords).b < 0.3)
         color = vec4(0);
+
+    if(roundUp(TexCoords) < 0.05){
+        color.a = 0.;
+    }
 }   
