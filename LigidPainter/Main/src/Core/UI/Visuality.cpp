@@ -613,6 +613,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 													Texture txtr;
 													txtr.deleteOpenglTexture(albedoTextures[delI]);
 												}
+												else{
+													//TODO : Delete that folder's elements
+												}
 												albedoTextures.erase(albedoTextures.begin() + delI);
 												delI--;
 												i--;

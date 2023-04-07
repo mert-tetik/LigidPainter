@@ -1668,117 +1668,148 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
 
         char buff[4];
 
-        // the RIFF
+        //------------------- RIFF file description header 
         if(!in.read(buff, 4))
         {
+            LibALerrorMsg = "Error reading the binary file";
             return 0;
         }
         if(std::strncmp(buff, "RIFF", 4) != 0)
         {
-            LibALerrorMsg  = "RIFF IS NOT FOUND : " + path;
+            LibALerrorMsg  = "This is not a wav file (riff is not found) : " + path;
             return 0;
         }
+        //-------------------
 
+
+        //------------------- Size of the file
         if(!in.read(buff, 4))
         {
+            LibALerrorMsg = "Error reading the binary file";
             return 0;
         }
+        //-------------------
 
-        // the WAVE
+
+        //------------------- WAVE file description header
         if(!in.read(buff, 4))
         {
+            LibALerrorMsg = "Error reading the binary file";
             return 0;
         }
         if(std::strncmp(buff, "WAVE", 4) != 0)
         {
-            LibALerrorMsg  = "WAVE IS NOT FOUND : " + path;
+            LibALerrorMsg  = "This is not a wav file (wave is not found) : " + path;
             return 0;
         }
-
-        // "fmt/0"
+        //-------------------
+        
+        
+        //------------------- fmt\0 description header
         if(!in.read(buff, 4))
         {
+            LibALerrorMsg = "Error reading the binary file";
             return 0;
         }
-
-        // this is always 16, the size of the fmt data chunk
+        //-------------------
+        
+        
+        //------------------- Size of WAV section chunk
         if(!in.read(buff, 4))
         {
+            LibALerrorMsg = "Error reading the binary file";
             return 0;
         }
+        //-------------------
 
-        // PCM should be 1?
+
+        //------------------- WAV type format
         if(!in.read(buff, 2))
         {
+            LibALerrorMsg = "Error reading the binary file";
             return 0;
         }
-
-        // the number of channels
+        //-------------------
+        
+        
+        //------------------- mono/stereo flag
         if(!in.read(buff, 2))
         {
+            LibALerrorMsg = "Error reading the binary file";
             return 0;
         }
         channels = LibALConvertToInt(buff, 2);
-
-        // sample rate
+        //-------------------
+        
+        
+        //------------------- Sample frequency
         if(!in.read(buff, 4))
         {
+            LibALerrorMsg = "Error reading the binary file";
             return 0;
         }
-        sampleRate = LibALConvertToInt(buff, 4);
-
-        // (sampleRate * bitsPerSample * channels) / 8
+        sampleRate = LibALConvertToInt(buff, 2);
+        //-------------------
+        
+        
+        //------------------- byte/sec (audio data rate in byte/sec)
         if(!in.read(buff, 4))
         {
+            LibALerrorMsg = "Error reading the binary file";
             return 0;
         }
+        //-------------------
+        
 
-        // ?? dafaq
+        //------------------- Block alignment
         if(!in.read(buff, 2))
         {
+            LibALerrorMsg = "Error reading the binary file";
             return 0;
         }
-
-        // bitsPerSample
+        //-------------------
+        
+        
+        //------------------- Bits per sample
         if(!in.read(buff, 2))
         {
+            LibALerrorMsg = "Error reading the binary file";
             return 0;
         }
         bitsPerSample = LibALConvertToInt(buff, 2);
-
-        // data chunk header "data"
-        if(!in.read(buff, 4))
+        //-------------------
+        
+        //------------------- Data description header
+        int c = 0;
+        while (std::strncmp(buff, "data", 4) == 0)
         {
-            return 0;
+            if(!in.read(buff, 4))
+            {
+                LibALerrorMsg = "Error reading the binary file";
+                return 0;
+            }
+            c++;
+            if(c > 20){
+                LibALerrorMsg  = "Error reading wav file : locating the data description header : " + path;
+                return 0;
+            }
         }
-        if(std::strncmp(buff, "data", 4) != 0)
-        {
-            LibALerrorMsg  = "data IS NOT FOUND : " + path;
-            return 0;
-        }
-
-        // size of data
+        //-------------------
+        
+        
+        //------------------- Size of data
         if(!in.read(buff, 4))
         {
             return 0;
         }
         size = LibALConvertToInt(buff, 4);
+        //-------------------
 
-        /* cannot be at the end of file */
-        if(in.eof())
-        {
-            LibALerrorMsg  = "END OF THE DATA : " + path;
-            return 0;
-        }
-        if(in.fail())
-        {
-            LibALerrorMsg  = "STREAM FAIL : " + path;
-            return 0;
-        }
 
+        //------------------- Audio data
         bufferData = new char[size];
-
         in.read(bufferData, size);
+        //-------------------
 
         return 1;
     }
@@ -1791,7 +1822,6 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
         if(LibALaudioIndex == LibALmaxAudios-1){
             return 0;
         }
-//a
         //Generate the source
         ALuint source,buffer;
 	    alGenSources((ALuint)1, &source);

@@ -44,7 +44,6 @@
 //TODO RTX Support
 //TODO Light source rotation from 3D Model displayer
 //TODO Move folders into trash folder before deleting forever
-//TODO Fix switch between colorfull & mask
 
 //TODO 2D Painting
 // - Lasso Tool 
@@ -328,7 +327,7 @@ bool LigidPainter::run()
 		std::cout << "ERROR : Initializing libal\n";
 	
 	LibAL_genAudio(audios.MessageBox);
-	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/MessageBox.wav","wav",audios.MessageBox)){
+	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/Water.wav","wav",audios.MessageBox)){
 		std::cout << "ERROR : Modifying audio object messagebox via libal " << LibALerrorMsg << '\n';
 	}
 
