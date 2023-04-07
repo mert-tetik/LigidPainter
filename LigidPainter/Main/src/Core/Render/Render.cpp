@@ -354,6 +354,8 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 
 
 		//3D-------------------------
+		glActiveTexture(GL_TEXTURE18);
+		gls.bindTexture(paintOverTexture.id);
 		glActiveTexture(GL_TEXTURE13);
 		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
 		glUseProgram(renderPrograms.PBRProgram);

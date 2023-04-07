@@ -359,7 +359,7 @@
         ?----------------------------------------
         
     TODO Reading mp3 file
-    TODO Allign parameters
+    TODO Align parameters
 */
 
 
@@ -1679,7 +1679,6 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
             return 0;
         }
 
-        // the size of the file
         if(!in.read(buff, 4))
         {
             return 0;

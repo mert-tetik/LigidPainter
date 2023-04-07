@@ -43,6 +43,8 @@
 //TODO Change texture extension
 //TODO RTX Support
 //TODO Light source rotation from 3D Model displayer
+//TODO Move folders into trash folder before deleting forever
+//TODO Fix switch between colorfull & mask
 
 //TODO 2D Painting
 // - Lasso Tool 
@@ -524,6 +526,8 @@ bool LigidPainter::run()
 	bool firstStroke = false;
 
 	aTexture defAlbTxtr1,defAlbTxtr2;
+	defAlbTxtr1.name = "defaultSelectedTexture";
+	defAlbTxtr2.name = "defaultSubselectedTexture";
 	glGenTextures(1,&defAlbTxtr1.id);
 	glGenTextures(1,&defAlbTxtr2.id);
 	

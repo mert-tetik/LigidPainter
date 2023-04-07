@@ -1853,9 +1853,16 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 			{
 				GlSet glset;
 				//TODO : Default mask texture for each submesh
-				box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue, model.meshes[i].submeshes[sI].name, colorData.buttonColor, 0.2f, false, false, 0.9f, 10000,  colorData.buttonColorHover, 0);
+				bool submeshButtonHover = false;
+				if(isMouseOnButton(renderData.window,0.2f,0.06f,renderData.panelLoc - 1.0f - screenGapX*2.f + 0.205f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,mouseXpos,mouseYpos,false)){
+					submeshButtonHover = true;
+				}
+				box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue, model.meshes[i].submeshes[sI].name, colorData.buttonColor, 0.2f, false, false, 0.9f, 10000,  colorData.buttonColorHover, submeshButtonHover);
 				
 				glUseProgram(programs.renderTheTextureProgram);
+				glset.uniform1i(programs.renderTheTextureProgram,"isPressed",1);
+				glset.uniform1i(programs.renderTheTextureProgram,"isHover",0);
+				glset.uniform1i(programs.renderTheTextureProgram,"subSelected",0);
 				glActiveTexture(GL_TEXTURE14);
 				glset.bindTexture(model.meshes[i].submeshes[sI].maskTexture);
 
@@ -1879,16 +1886,18 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 				}
 
 				glUseProgram(programs.iconsProgram);
-				if(isMouseOnButton(renderData.window,0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX + 0.3f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,mouseXpos,mouseYpos,false)){
+				bool addMaskTxtrIconHover = false;
+				if(isMouseOnButton(renderData.window,0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX*2.f + 0.3f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,mouseXpos,mouseYpos,false)){
+					addMaskTxtrIconHover = true;
 					if(firstClick){
 						model.meshes[i].submeshes[sI].textureSelectionState = true;
 						textureSelectionPanel.active = true;
-						textureSelectionPanel.posX = renderData.panelLoc - 1.0f - screenGapX + 0.05f;
+						textureSelectionPanel.posX = renderData.panelLoc - 1.0f - screenGapX + 0.07f;
 						textureSelectionPanel.posY = 0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue;
 					}
 				}
 				
-				iconBox(0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX + 0.3f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.91f,icons.AddTexture,0.f,colorData.iconColor,colorData.iconColorHover);
+				iconBox(0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX + 0.3f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.91f,icons.AddTexture,addMaskTxtrIconHover,colorData.iconColor,colorData.iconColorHover);
 				glUseProgram(programs.uiProgram);
 			}
 			if(textureAddButtonEnter){
