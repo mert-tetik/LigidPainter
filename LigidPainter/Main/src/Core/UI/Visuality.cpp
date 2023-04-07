@@ -1861,7 +1861,8 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 					submeshButtonHover = true;
 				}
 				box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue, model.meshes[i].submeshes[sI].name, colorData.buttonColor, 0.2f, false, false, 0.9f, 10000,  colorData.buttonColorHover, submeshButtonHover);
-				
+				renderText(programs.uiProgram,std::to_string(model.meshes[i].submeshes[sI].materialIndex),renderData.panelLoc - 1.0f - screenGapX + 0.155f,0.78f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.00022f,colorData.textColor,0.92f,false);
+
 				glUseProgram(programs.renderTheTextureProgram);
 				glset.uniform1i(programs.renderTheTextureProgram,"isPressed",1);
 				glset.uniform1i(programs.renderTheTextureProgram,"isHover",0);
@@ -1899,8 +1900,19 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 						textureSelectionPanel.posY = 0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue;
 					}
 				}
-				
 				iconBox(0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX + 0.3f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.91f,icons.AddTexture,addMaskTxtrIconHover,colorData.iconColor,colorData.iconColorHover);
+				
+				
+				bool addMaterialIconHover = false;
+				if(isMouseOnButton(renderData.window,0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX*2.f + 0.21f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,mouseXpos,mouseYpos,false)){
+					addMaterialIconHover = true;
+					if(firstClick){
+						model.meshes[i].submeshes[sI].materialIndex = selectedNodeScene;
+					}
+				}
+				iconBox(0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX + 0.165f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.91f,icons.Material,0,colorData.iconColor,colorData.iconColorHover);
+				iconBox(0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX + 0.21f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.91f,icons.ArrowDown,addMaterialIconHover,colorData.iconColor,colorData.iconColorHover);
+				
 				glUseProgram(programs.uiProgram);
 			}
 			if(textureAddButtonEnter){
