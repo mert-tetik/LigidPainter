@@ -52,3 +52,4 @@ https://www.ligidtools.com/  -ligid-painter
     Left CTRL + D = Duplicate the selected nodes
     Left CTRL + I = Invert selected nodes
     Left CTRL + A = Select all the nodes
+    Left CTRL + W = Hide the elements of the selected node

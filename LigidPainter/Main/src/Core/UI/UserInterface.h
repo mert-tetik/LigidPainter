@@ -477,6 +477,7 @@ struct Node{
 	bool doInvert = true;
 
 	bool hide = false;
+	bool hideDone = false;
 };
 
 struct ContextMenu {

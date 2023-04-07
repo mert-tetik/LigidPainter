@@ -869,6 +869,17 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 	if(glfwGetKey(window,GLFW_KEY_A) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
 		node.active = true;
 	}
+	
+	//Hide the node
+	if(glfwGetKey(window,GLFW_KEY_W) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
+		if(!node.hideDone && node.active){
+			node.hide = !node.hide;
+			node.hideDone = true;
+		}
+	}
+	else{
+		node.hideDone = false;
+	}
 
 	return deleted;
 }
