@@ -188,7 +188,10 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		for (size_t i = 0; i < nodeScenes[selectedNodeScene].nodes.size() * !(float)panelData.paintingPanelActive; i++)
 		{
 			if(nodePanel.heigth > 0.02){
-				nodeScenes[selectedNodeScene].nodes[i].height = ((nodeScenes[selectedNodeScene].nodes[i].inputs.size() + nodeScenes[selectedNodeScene].nodes[i].rangeBarCount + nodeScenes[selectedNodeScene].nodes[i].outputs.size())/25.f + 0.07 * !nodeScenes[selectedNodeScene].nodes[i].isMainOut) * nodePanel.zoomVal;
+				if(nodeScenes[selectedNodeScene].nodes[i].hide)
+					nodeScenes[selectedNodeScene].nodes[i].height = ((nodeScenes[selectedNodeScene].nodes[i].inputs.size() + nodeScenes[selectedNodeScene].nodes[i].outputs.size())/25.f + 0.07 * !nodeScenes[selectedNodeScene].nodes[i].isMainOut) * nodePanel.zoomVal;
+				else
+					nodeScenes[selectedNodeScene].nodes[i].height = ((nodeScenes[selectedNodeScene].nodes[i].inputs.size() + nodeScenes[selectedNodeScene].nodes[i].rangeBarCount + nodeScenes[selectedNodeScene].nodes[i].outputs.size())/25.f + 0.07 * !nodeScenes[selectedNodeScene].nodes[i].isMainOut) * nodePanel.zoomVal;
 				nodeScenes[selectedNodeScene].nodes[i].width = 0.12f * nodePanel.zoomVal;
 				bool deleted = ui.node(nodeScenes[selectedNodeScene].nodes[i],programs,icons,renderData.window,mouseXpos,mouseYpos,xOffset,yOffset,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,nodeScenes[selectedNodeScene],nodePanel,textureSelectionPanel,i,albedoTextures,screenGapX,firstClick,coloringPanel,duplicateNodeCall,duplicatedNodes);
 				if(deleted)

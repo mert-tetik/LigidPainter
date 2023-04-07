@@ -148,7 +148,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 	if(node.listBoxes.size())
 		ioIndex++;
 	
-	for (size_t i = 0; i < node.listBoxes.size(); i++)
+	for (size_t i = 0; i < node.listBoxes.size() * !node.hide; i++)
 	{
 		glUseProgram(programs.uiProgram);
 		bool listButtonHover = isMouseOnButton(window,node.width,iconWidth*2.1f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10,mouseX,mouseY,false);
@@ -431,27 +431,33 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 		node.inputs[i].posX = (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width - iconWidth*2.f;
 		node.inputs[i].posY = ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+rangeBarCountInputs)/(20.f/(node.width*16)) - 0.05f * node.width*10;
 
+		glUseProgram(programs.iconsProgram);
 		iconBox(iconWidth/1.5f , iconWidth*1.5f , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width - iconWidth*2.f, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+rangeBarCountInputs)/(20.f/(node.width*16)) - 0.05f * node.width*10, depth+0.01f , icons.Circle , 0 , nodeColor , nodeColor);
 		
+		//Render the input title
+		glUseProgram(programs.uiProgram);
+		renderText(programs.uiProgram,node.inputs[i].text,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+rangeBarCountInputs)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+0.01f,false);
+
         //Process the gap necessary related to the input type after rendering
-		if(node.inputs[i].element == "range" && node.inputs[i].nodeConnectionIndex == 10000 ){
-			if(node.inputs[i].type == "float"){
+		if(!node.hide){
+			if(node.inputs[i].element == "range" && node.inputs[i].nodeConnectionIndex == 10000 ){
+				if(node.inputs[i].type == "float"){
+					rangeBarCountInputs += 1;
+				}
+				if(node.inputs[i].type == "vec2"){
+					rangeBarCountInputs += 2;
+				}
+				if(node.inputs[i].type == "vec3"){
+					rangeBarCountInputs += 3;
+				}
+			}
+			else if(node.inputs[i].element == "image" && node.inputs[i].nodeConnectionIndex == 10000){
 				rangeBarCountInputs += 1;
 			}
-			if(node.inputs[i].type == "vec2"){
-				rangeBarCountInputs += 2;
-			}
-			if(node.inputs[i].type == "vec3"){
-				rangeBarCountInputs += 3;
+			else if(node.inputs[i].element == "color" && node.inputs[i].nodeConnectionIndex == 10000){
+				rangeBarCountInputs += 1;
 			}
 		}
-		else if(node.inputs[i].element == "image" && node.inputs[i].nodeConnectionIndex == 10000){
-			rangeBarCountInputs += 1;
-		}
-		else if(node.inputs[i].element == "color" && node.inputs[i].nodeConnectionIndex == 10000){
-			rangeBarCountInputs += 1;
-		}
-
 	}
 
 
@@ -473,11 +479,8 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 	bool isRangeBarPointerHover = false;
 	
     //-----RENDER THE INPUT ELEMENTS-----
-	for (size_t i = 0; i < node.inputs.size(); i++)
-	{
-        //Render the input title
-		renderText(programs.uiProgram,node.inputs[i].text,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal-node.width,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+0.01f,false);
-		
+	for (size_t i = 0; i < node.inputs.size()*!node.hide; i++)
+	{	
 		if(node.inputs[i].element == "ramp"){
 			box(iconWidth*3,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX-node.width/4.f) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height/4.) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].rampClr[node.inputs[i].selectedRampIndex]/255.f,1),0,0,0,depth+0.01,8 / (node.width*6),node.backColor,0);///Bottom
 			bool clrHover = false;
@@ -785,7 +788,25 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 		}
 	}
 	
+	glUseProgram(programs.iconsProgram);
 
+	//Hide the node elements
+	if(!node.isMainOut){
+		iconBox(iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2), depth+0.02f , icons.ArrowDown , node.hide , colorData.iconColor, glm::vec4(colorData.LigidPainterThemeColor,1));
+		
+		bool hideButtonEnter = false;
+		if(nodePanel.panelHover && !coloringPanel.active)
+			hideButtonEnter = isMouseOnButton(window,iconWidth/1.3 , iconWidth*1.7,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width - screenGap,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2)) + iconWidth*1.7f,mouseX,mouseY,false);
+		if(hideButtonEnter){
+			nodePanel.pointerCursor = true;
+			if(firstClick){
+				node.hide = !node.hide;
+			}
+		}
+	}
+
+
+	//Mark the node
 	glm::vec4 markColor;
 	if(node.marked){
 		markColor = glm::vec4(colorData.LigidPainterThemeColor,1);
@@ -793,9 +814,6 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 	else{
 		markColor = colorData.iconColor;
 	}
-	glUseProgram(programs.iconsProgram);
-
-	//Mark the node
 	if(!node.isMainOut){
 		iconBox(iconWidth/1.3 , iconWidth*1.7 , (node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width/1.5f, (node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height - (iconWidth + node.height*2), depth+0.02f , icons.Mark , 0 , markColor, markColor);
 		bool markButtonEnter = false;
