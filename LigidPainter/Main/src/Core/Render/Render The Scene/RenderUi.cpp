@@ -536,7 +536,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 
 	if (panelData.texturePanelActive) {
-		ui.modelMaterialPanel(model,programs,renderData,screenGapX,materialsPanelSlideValue,mouseXpos,mouseYpos,texturePanelButtonHover,uiOut,currentMaterialIndex,firstClick,newModelAdded,texturePanelButtonMixVal,selectedNodeScene,icons,nodeScenes);
+		ui.modelMaterialPanel(model,programs,renderData,screenGapX,materialsPanelSlideValue,mouseXpos,mouseYpos,texturePanelButtonHover,uiOut,currentMaterialIndex,firstClick,newModelAdded,texturePanelButtonMixVal,selectedNodeScene,icons,nodeScenes,albedoTextures,textureSelectionPanel);
 	}
 
 

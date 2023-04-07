@@ -813,6 +813,47 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	mirrorZRangeBarElement.type = "rangeBar";
     UIElements.push_back(mirrorZRangeBarElement);//12
 
+    UIElement albedoChannelCheckBoxElement;
+    albedoChannelCheckBoxElement.checkBox.positionX = -0.05f;
+    albedoChannelCheckBoxElement.checkBox.positionY = -1.15f;
+    albedoChannelCheckBoxElement.checkBox.checked = true;
+    albedoChannelCheckBoxElement.checkBox.text = "Albedo";
+    albedoChannelCheckBoxElement.panel = 3;
+    albedoChannelCheckBoxElement.attachedToMainPanel = true;
+    albedoChannelCheckBoxElement.focusMode = false;
+    albedoChannelCheckBoxElement.type = "checkBox";
+    UIElements.push_back(albedoChannelCheckBoxElement);//25
+
+    UIElement roughnessChannelCheckBoxElement;
+    roughnessChannelCheckBoxElement.checkBox.positionX = -0.05f;
+    roughnessChannelCheckBoxElement.checkBox.positionY = -1.2f;
+    roughnessChannelCheckBoxElement.checkBox.text = "Roughness";
+    roughnessChannelCheckBoxElement.panel = 3;
+    roughnessChannelCheckBoxElement.attachedToMainPanel = true;
+    roughnessChannelCheckBoxElement.focusMode = false;
+    roughnessChannelCheckBoxElement.type = "checkBox";
+    UIElements.push_back(roughnessChannelCheckBoxElement);//25
+    
+    UIElement metallicChannelCheckBoxElement;
+    metallicChannelCheckBoxElement.checkBox.positionX = -0.05f;
+    metallicChannelCheckBoxElement.checkBox.positionY = -1.25f;
+    metallicChannelCheckBoxElement.checkBox.text = "Metallic";
+    metallicChannelCheckBoxElement.panel = 3;
+    metallicChannelCheckBoxElement.attachedToMainPanel = true;
+    metallicChannelCheckBoxElement.focusMode = false;
+    metallicChannelCheckBoxElement.type = "checkBox";
+    UIElements.push_back(metallicChannelCheckBoxElement);//25
+    
+    UIElement normalChannelCheckBoxElement;
+    normalChannelCheckBoxElement.checkBox.positionX = -0.05f;
+    normalChannelCheckBoxElement.checkBox.positionY = -1.3f;
+    normalChannelCheckBoxElement.checkBox.text = "Normal";
+    normalChannelCheckBoxElement.panel = 3;
+    normalChannelCheckBoxElement.attachedToMainPanel = true;
+    normalChannelCheckBoxElement.focusMode = false;
+    normalChannelCheckBoxElement.type = "checkBox";
+    UIElements.push_back(normalChannelCheckBoxElement);//25
+
 	//-------------ICONS-------------
 
 

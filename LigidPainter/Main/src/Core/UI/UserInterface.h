@@ -72,15 +72,19 @@
 #define UImirrorXRangeBarElement 62
 #define UImirrorYRangeBarElement 63
 #define UImirrorZRangeBarElement 64
-#define UIjpgIcon 65
-#define UIpngIcon 66
-#define UIfolderIcon 67
-#define UIloadPlaneModelButton 68
-#define UIloadSphereModelButton 69
-#define UIplaneIcon 70
-#define UIsphereIcon 71
-#define UIaddBrushMaskTextureIcon 72
-#define UIselectBrushMaskTextureIcon 73
+#define UIalbedoChannelCheckBoxElement 65
+#define UIroughnessChannelCheckBoxElement 66
+#define UImetallicChannelCheckBoxElement 67
+#define UInormalChannelCheckBoxElement 68
+#define UIjpgIcon 69
+#define UIpngIcon 70
+#define UIfolderIcon 71
+#define UIloadPlaneModelButton 72
+#define UIloadSphereModelButton 73
+#define UIplaneIcon 74
+#define UIsphereIcon 75
+#define UIaddBrushMaskTextureIcon 76
+#define UIselectBrushMaskTextureIcon 77
 
 struct ColorData //LigidPainter color palette
 {
@@ -677,7 +681,7 @@ public:
 	bool coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool &firstClick,float xOffset,float yOffset,
 	unsigned int FBOscreen,ColorPicker &colorPicker,float screenGapX,glm::vec3 screenHoverPixel,std::vector<UIElement>&UIElements,bool modifyBrush);
 	void textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool &firstClick,ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures,int& activeFolderIndex);
-	void modelMaterialPanel(Model &model,Programs programs,RenderData renderData,float screenGapX,float materialsPanelSlideValue,double mouseXpos,double mouseYpos,bool &texturePanelButtonHover,RenderOutData& uiOut,int& currentMaterialIndex,bool &firstClick,bool& newModelAdded, float texturePanelButtonMixVal,int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes);
+	void modelMaterialPanel(Model &model,Programs programs,RenderData renderData,float screenGapX,float materialsPanelSlideValue,double mouseXpos,double mouseYpos,bool &texturePanelButtonHover,RenderOutData& uiOut,int& currentMaterialIndex,bool &firstClick,bool& newModelAdded, float texturePanelButtonMixVal,int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector<aTexture> &albedoTextures,TextureSelectionPanel &textureSelectionPanel);
 	void brushMaskTexturePanel(Programs programs,BrushTexture &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool &firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData &panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData, float posY,int state);
 	bool listBox(float posX,float posY,float posZ,const char* title,float width, Icons icons,std::vector<const char*> list,bool active,GLFWwindow* window, float mouseXpos,float mouseYpos,bool &firstClick,int &chosenIndex,float screenGapX);
 	std::vector<float> selectionBox(bool active,float sPX,float sPY,float dPX,float dPY,float depth);

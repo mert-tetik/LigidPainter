@@ -50,6 +50,8 @@ uniform vec2 paintOverPos;
 
 uniform float paintingOpacity;
 
+uniform int channelState;
+
 float far = 10.0f;
 float near = 0.1f;
 float linearizeDepth(float depth){
@@ -172,9 +174,24 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 }   
 
 vec3 getRealisticResult(vec3 paintedDiffuse){
-   vec3 albedo = mix(paintedDiffuse,texture(subSelectedTexture,TexCoords).rgb,subSelectedImagePower);
-   float metallic = 0.0;
-   float roughness = 0.3;
+   vec3 albedo; 
+   if(channelState == 0)
+      albedo = mix(paintedDiffuse,texture(subSelectedTexture,TexCoords).rgb,subSelectedImagePower);
+   else
+      albedo = vec3(0.0);
+
+   float metallic;
+   if(channelState == 1)
+      metallic = mix(paintedDiffuse,texture(subSelectedTexture,TexCoords).rgb,subSelectedImagePower).r;
+   else
+      metallic = (0.0);
+   
+   float roughness;
+   if(channelState == 2)
+      roughness = mix(paintedDiffuse,texture(subSelectedTexture,TexCoords).rgb,subSelectedImagePower).r;
+   else
+      roughness = (0.3);
+      
    float ao = 1;
 
    

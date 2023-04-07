@@ -126,6 +126,32 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			ligid.addPlaneButton();
 		if (UIElements[UIloadSphereModelButton].icon.hover)
 			ligid.addSphereButton();
+		
+		if (UIElements[UIalbedoChannelCheckBoxElement].checkBox.mouseHover){
+			UIElements[UIalbedoChannelCheckBoxElement].checkBox.checked = true; 
+			UIElements[UIroughnessChannelCheckBoxElement].checkBox.checked = false; 
+			UIElements[UImetallicChannelCheckBoxElement].checkBox.checked = false; 
+			UIElements[UInormalChannelCheckBoxElement].checkBox.checked = false; 
+		}
+		if (UIElements[UIroughnessChannelCheckBoxElement].checkBox.mouseHover){
+			UIElements[UIroughnessChannelCheckBoxElement].checkBox.checked = true; 
+			UIElements[UIalbedoChannelCheckBoxElement].checkBox.checked = false; 
+			UIElements[UImetallicChannelCheckBoxElement].checkBox.checked = false; 
+			UIElements[UInormalChannelCheckBoxElement].checkBox.checked = false; 
+		}
+		if (UIElements[UImetallicChannelCheckBoxElement].checkBox.mouseHover){
+			UIElements[UImetallicChannelCheckBoxElement].checkBox.checked = true; 
+			UIElements[UIroughnessChannelCheckBoxElement].checkBox.checked = false; 
+			UIElements[UIalbedoChannelCheckBoxElement].checkBox.checked = false; 
+			UIElements[UInormalChannelCheckBoxElement].checkBox.checked = false; 
+		}
+		if (UIElements[UInormalChannelCheckBoxElement].checkBox.mouseHover){
+			UIElements[UInormalChannelCheckBoxElement].checkBox.checked = true; 
+			UIElements[UIroughnessChannelCheckBoxElement].checkBox.checked = false; 
+			UIElements[UImetallicChannelCheckBoxElement].checkBox.checked = false; 
+			UIElements[UIalbedoChannelCheckBoxElement].checkBox.checked = false; 
+		}
+
 		if (UIElements[UIautoTriangulateCheckBox].checkBox.mouseHover)
 			ligid.autoTriangulateCheckBox();
 		if (UIElements[UIbackfaceCullingCheckBox].checkBox.mouseHover)

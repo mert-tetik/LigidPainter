@@ -314,7 +314,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	if(UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked)
 		panelData.paintingPanelSlideVal = 0.18;
 	else if(panelData.paintingPanelSlideVal > 0.18){
-		panelData.paintingPanelSlideVal = 0.18;
+		//panelData.paintingPanelSlideVal = 0.18;
 	}
 
 	if(!startScreen){
@@ -357,6 +357,14 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		glActiveTexture(GL_TEXTURE13);
 		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
 		glUseProgram(renderPrograms.PBRProgram);
+		int channelState = 0;
+		if(UIElements[UIroughnessChannelCheckBoxElement].checkBox.checked)
+			channelState = 1;
+		if(UIElements[UImetallicChannelCheckBoxElement].checkBox.checked)
+			channelState = 2;
+		if(UIElements[UInormalChannelCheckBoxElement].checkBox.checked)
+			channelState = 3;
+		gls.uniform1i(renderPrograms.PBRProgram,"channelState",channelState);
 		gls.uniform1f(renderPrograms.PBRProgram,"paintingOpacity",(UIElements[UIbrushOpacityRangeBar].rangeBar.value+0.11f)*4.545454545f);
 		gls.uniform1i(renderPrograms.PBRProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
 		gls.uniform1i(renderPrograms.PBRProgram,"doPaintOver",(int)UIElements[UIpaintOverCheckBoxElement].checkBox.checked);

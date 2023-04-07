@@ -35,11 +35,16 @@ struct TextureMs {
     string type;
     string path;
 };
+struct SubMeshMs{
+    unsigned int maskTexture = 0;
+    string name; 
+    bool textureSelectionState = false;
+};
 
 class Mesh {
 public:
     // mesh Data
-    std::vector<unsigned int> submeshes;
+    std::vector<SubMeshMs> submeshes;
     std::vector<Vertex>       vertices;
     std::vector<unsigned int> indices;
     std::vector<TextureMs>      textures;
