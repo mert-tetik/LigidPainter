@@ -8,6 +8,8 @@ uniform Material material;
 in vec2 TexCoords;
 in vec3 Normal;
 in vec3 Pos;
+in vec3 Tangent;
+in vec3 Bitangent;
 
 in vec4 projectedPos;
 
@@ -191,7 +193,28 @@ vec3 getRealisticResult(vec3 paintedDiffuse){
       roughness = mix(paintedDiffuse,texture(subSelectedTexture,TexCoords).rgb,subSelectedImagePower).r;
    else
       roughness = (0.3);
-      
+   
+   vec3 normal;
+   if(channelState == 3)
+      normal = mix(paintedDiffuse,texture(subSelectedTexture,TexCoords).rgb,subSelectedImagePower).rgb;
+   else
+      normal = vec3(128./255.,127./255.,255./255.);
+
+
+    vec3 T = normalize(vec3(vec4(Tangent, 0.0)));
+    vec3 aN = normalize(vec3(vec4(Normal, 0.0)));
+    T = normalize(T - dot(T, aN) * aN);
+    vec3 B = cross(aN, T);
+    
+    mat3 TBN = transpose(mat3(T, B, aN));    
+    
+    vec3 tangentViewPos  = TBN * viewPos;
+    vec3 tangentPosModel  = TBN * Pos;
+
+    vec3 N = normal;
+
+    N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
+
    float ao = 1;
 
    
@@ -203,8 +226,7 @@ vec3 getRealisticResult(vec3 paintedDiffuse){
    vec3 lightColorX = vec3(300.0f, 300.0f, 300.0f);
 
 
-    vec3 N = Normal;
-    vec3 V = normalize(viewPos - Pos);
+    vec3 V = normalize(tangentViewPos - tangentPosModel);
     vec3 R = reflect(-V, N); 
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
@@ -227,10 +249,12 @@ vec3 getRealisticResult(vec3 paintedDiffuse){
       if(i == 3)
          lightPosX = lightPos4;
 
+         vec3 tangentLightPos = TBN * lightPosX;
+
         // calculate per-light radiance
-        vec3 L = normalize(lightPosX - Pos);
+        vec3 L = normalize(tangentLightPos - tangentPosModel);
         vec3 H = normalize(V + L);
-        float distance = length(lightPosX - Pos);
+        float distance = length(tangentLightPos - tangentPosModel);
         float attenuation = 1.0 / (distance * distance);
         vec3 radiance = lightColorX * attenuation;
 

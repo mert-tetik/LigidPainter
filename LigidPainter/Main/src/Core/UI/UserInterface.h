@@ -193,15 +193,10 @@ struct aTexture{
 	unsigned int id;
 	std::string name;
 	std::vector<unsigned int> undoList;
-
 	bool nameTextActive = false;
-
 	bool isTexture = true;
-	
 	bool isTrashFolder = false;
-
 	bool rightClicked = false;
-
 	int folderIndex = 10000;
 };
 

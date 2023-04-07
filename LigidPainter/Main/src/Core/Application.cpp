@@ -1729,7 +1729,7 @@ void LigidPainter::generateTextureButton(){
 
 		aTexture txtr;
 		txtr.id = textureColorbuffer;
-		txtr.name = "noisyMap"; 
+		txtr.name = "generatedTexture"; 
 		std::vector<std::string> textureNames;
 		for (size_t i = 0; i < albedoTextures.size(); i++)
 		{
