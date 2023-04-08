@@ -10,8 +10,8 @@
 
 
 void Render::renderModel(bool backfaceCulling,PBRShaderData &data,Model &model,bool renderDefault, vector<MaterialOut> &modelMaterials,Programs programs,
-int currentMaterialIndex,glm::mat4 view,bool paintingMode,std::vector<aTexture> albedoTextures,int chosenTextureIndex,glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal
-,Objects &objects) {
+int currentMaterialIndex,glm::mat4 view,bool paintingMode,std::vector<aTexture> albedoTextures,int chosenTextureIndex,glm::vec3 viewPos,float skyboxExposureVal,
+float skyboxRotationVal,Objects &objects,std::vector<NodeScene> nodeScenes) {
 	glDepthFunc(GL_LESS); 
 
     GlSet gl;
@@ -28,8 +28,14 @@ int currentMaterialIndex,glm::mat4 view,bool paintingMode,std::vector<aTexture> 
 	unsigned int chosenTxtr = 0;
 	if(albedoTextures.size() != 0)
 		chosenTxtr = albedoTextures[chosenTextureIndex].id;
-		
-	model.Draw(currentMaterialIndex,programs.PBRProgram,true,modelMaterials,view,paintingMode,chosenTxtr,viewPos,skyboxExposureVal,skyboxRotationVal,false);
+	
+	std::vector<unsigned int> materialOutputs;
+	for (size_t i = 0; i < nodeScenes.size(); i++)
+	{
+		materialOutputs.push_back(nodeScenes[i].outTexture);
+	}
+	
+	model.Draw(currentMaterialIndex,programs.PBRProgram,true,modelMaterials,view,paintingMode,chosenTxtr,viewPos,skyboxExposureVal,skyboxRotationVal,false,materialOutputs,programs.materialResult);
 
 	gl.disable(GL_CULL_FACE); //Disable backface culling if enabled
 

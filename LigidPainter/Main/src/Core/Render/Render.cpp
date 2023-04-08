@@ -218,7 +218,7 @@ std::vector<aTexture> albedoTextures,int chosenTextureIndex){
 		chosenTxtr = albedoTextures[chosenTextureIndex].id;
 
 	if(useModel)
-		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0,true);
+		model.Draw(currentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0,true,{},0);
 	else
 		gl.drawArrays(vertices, false); //Render Model
 
@@ -407,7 +407,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 				std::vector<MaterialOut> matDisplays;
 				matDisplays.push_back(modelMaterials[i]);
 
-				spherModel.Draw(0,renderPrograms.PBRProgram,false,matDisplays,displayMatrix,false,0,glm::vec3(6.f,0.f,0.f),0,0,false);
+				spherModel.Draw(0,renderPrograms.PBRProgram,false,matDisplays,displayMatrix,false,0,glm::vec3(6.f,0.f,0.f),0,0,false,{},0);
 				
 				gls.bindFramebuffer(0);
 				gls.deleteFramebuffers(dFBO);
@@ -427,7 +427,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		gls.uniform1i(renderPrograms.outProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
 		gls.uniform1i(renderPrograms.outProgram,"doPaintOver",(int)UIElements[UIpaintOverCheckBoxElement].checkBox.checked);
 	
-		renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects);
+		renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects,nodeScenes);
 
 		renderAxisPointer(axisPointerShaderData,renderPrograms);
 		//-------------------------

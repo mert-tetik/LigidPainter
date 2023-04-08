@@ -23,6 +23,7 @@ void main(){
         float mask = texture(maskTextures,vec3(TexCoords,i)).r;
         vec3 material = texture(materials,vec3(TexCoords,i)).rgb;
         
+        result = mix(result,material,mask);
         result += material*mask;
     }
 

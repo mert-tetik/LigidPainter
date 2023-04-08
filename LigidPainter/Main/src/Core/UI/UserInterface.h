@@ -552,7 +552,8 @@ struct NodeScene{
 	int index;
 	bool stateChanged = true;
 
-	unsigned int renderedTexture;
+	unsigned int renderedTexture; //Material display
+	unsigned int outTexture; //Material texture result
 };
 
 struct TextureSelectionPanel{

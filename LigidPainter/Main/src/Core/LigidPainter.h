@@ -39,6 +39,7 @@ struct Programs
 	unsigned int paintOverProgram;
 	unsigned int textureDisplayer;
 	unsigned int brushCursor;
+	unsigned int materialResult;
 };
 struct Cubemaps{
 	unsigned int cubemap;

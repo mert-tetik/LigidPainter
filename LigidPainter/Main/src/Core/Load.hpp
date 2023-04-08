@@ -524,6 +524,14 @@ public:
 		unsigned int brushCursor = gl.createProgram("./LigidPainter/Resources/Shaders/UI/brushCursor");
 		
 		
+		
+		
+		//materialResult program
+		unsigned int materialResult = gl.createProgram("./LigidPainter/Resources/Shaders/3D/materialResult");
+		
+		
+
+		
 		Programs glPrograms;
 
 		glPrograms.blurProgram = blurProgram;
@@ -550,6 +558,7 @@ public:
 		glPrograms.paintOverProgram = paintOverProgram;
 		glPrograms.textureDisplayer = textureDisplayer;
 		glPrograms.brushCursor = brushCursor;
+		glPrograms.materialResult = materialResult;
 
 
 		return glPrograms;
@@ -1019,6 +1028,14 @@ public:
 		glset.generateMipmap();
 
 		emptyNodeScene.renderedTexture = renderTexture;
+
+		unsigned int outTexture;
+		glset.genTextures(outTexture);
+		glset.bindTexture(outTexture);
+		glset.texImage(nullptr,1024,1024,GL_RGBA);
+		glset.generateMipmap();
+
+		emptyNodeScene.outTexture = outTexture;
 
 		nodeScenes.push_back(emptyNodeScene);
 	}

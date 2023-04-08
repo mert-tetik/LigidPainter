@@ -50,6 +50,8 @@
 //TODO Once a material be rendered the result in 2d will be held in that texture
 //TODO The material of the mesh will be consist of it's submeshes and will be rendered without pbr calculations
 
+//TODO Load audios from load.hpp
+
 //TODO SFX
 //Once a texture is generated or nodes are baked
 //Once an alert is displayed
@@ -591,6 +593,16 @@ bool LigidPainter::run()
 	glBindVertexArray(objects.VAO);
 
 	addSphereButton();
+
+	glActiveTexture(GL_TEXTURE30);
+    unsigned int materials;
+    glGenTextures(1,&materials);
+    glBindTexture(GL_TEXTURE_3D,materials);
+    
+    glActiveTexture(GL_TEXTURE31);
+    unsigned int maskTextures;
+    glGenTextures(1,&maskTextures);
+    glBindTexture(GL_TEXTURE_3D,maskTextures);
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
@@ -2264,6 +2276,14 @@ void LigidPainter::sndPanelPlusIcon(){
 
 			emptyNodeScene.renderedTexture = renderTexture;
 			
+			unsigned int outTexture;
+			glset.genTextures(outTexture);
+			glset.bindTexture(outTexture);
+			glset.texImage(nullptr,1024,1024,GL_RGBA);
+			glset.generateMipmap();
+
+			emptyNodeScene.outTexture = outTexture;
+			
 			nodeScenes.push_back(emptyNodeScene);
 
 			MaterialOut mOut;
@@ -2359,6 +2379,14 @@ void LigidPainter::sndPanelDuplicateIcon(){
 
 			emptyNodeScene.renderedTexture = renderTexture;
 
+			unsigned int outTexture;
+			glset.genTextures(outTexture);
+			glset.bindTexture(outTexture);
+			glset.texImage(nullptr,1024,1024,GL_RGBA);
+			glset.generateMipmap();
+
+			emptyNodeScene.outTexture = outTexture;
+
 			nodeScenes.push_back(emptyNodeScene);
 
 			MaterialOut mOut;
@@ -2423,6 +2451,14 @@ void LigidPainter::sndPanelFolderIcon(){
 		glset.generateMipmap();
 
 		material.renderedTexture = renderTexture;
+
+		unsigned int outTexture;
+		glset.genTextures(outTexture);
+		glset.bindTexture(outTexture);
+		glset.texImage(nullptr,1024,1024,GL_RGBA);
+		glset.generateMipmap();
+
+		material.outTexture = outTexture;
 
 		nodeScenes.push_back(material);
 		MaterialOut mOut;

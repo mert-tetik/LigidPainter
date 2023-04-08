@@ -14,13 +14,13 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <map>
 #include <vector>
+#include <cstdlib>
 
 using namespace std;
 
@@ -40,7 +40,7 @@ using namespace std;
 
     // draws the model, and thus all its meshes
     void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,unsigned int selectedTexture,
-    glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal,bool renderOnlyTheChosenMesh)
+    glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal,bool renderOnlyTheChosenMesh, std::vector<unsigned int> materialOutputs,unsigned int materialResultProgram)
     {
         if(meshes.size() > 0 && paintingMode){
             glActiveTexture(GL_TEXTURE0);
@@ -80,7 +80,61 @@ using namespace std;
                 glUniform1f(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "skyboxExposure"), uniExpo);
                 glUniform3fv(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "viewPos"),1,&viewPos[0]);
 
-                meshes[i].Draw();
+
+                if(meshes[i].submeshes.size() <= 1){
+                    meshes[i].Draw();
+                }
+                else{
+                    glUseProgram(materialResultProgram);
+
+                    glUniformMatrix4fv(glGetUniformLocation(materialResultProgram, "projection"), 1,GL_FALSE, glm::value_ptr(projection));
+        	        glUniformMatrix4fv(glGetUniformLocation(materialResultProgram, "view"), 1,GL_FALSE, glm::value_ptr(view));
+
+
+                    //TODO : Preventing creating those textures every frame
+                    for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++)
+                    {
+                        glActiveTexture(GL_TEXTURE28);
+                        glBindTexture(GL_TEXTURE_2D,materialOutputs[meshes[i].submeshes[sI].materialIndex]); 
+
+                        int sidelength;
+                        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &sidelength);
+
+                        void* new_array = malloc(sidelength * sidelength * 4 * sizeof(GLubyte));
+
+                        glGetTexImage(GL_TEXTURE_2D,  0, GL_RGBA, GL_UNSIGNED_BYTE,(void*)(new_array));
+
+                        glActiveTexture(GL_TEXTURE30);
+
+                        glTexImage3D(GL_TEXTURE_3D,0,GL_RGBA,1024,1024,sI,0,GL_RGBA,GL_UNSIGNED_BYTE,new_array);
+                        glGenerateMipmap(GL_TEXTURE_3D);
+                    }
+                    glUniform1i(glGetUniformLocation(materialResultProgram, "materials"), 30);
+
+                    for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++)
+                    {
+                        if(meshes[i].submeshes[sI].maskTexture){
+                            glActiveTexture(GL_TEXTURE28);
+                            glBindTexture(GL_TEXTURE_2D,meshes[i].submeshes[sI].maskTexture); 
+
+                            int sidelength;
+                            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &sidelength);
+                            void* new_array = malloc(sidelength * sidelength * 4 * sizeof(GLubyte));
+                            glGetTexImage(GL_TEXTURE_2D,  0, GL_RGBA, GL_UNSIGNED_BYTE,(void*)(new_array));
+
+                            glActiveTexture(GL_TEXTURE31);
+
+                            glTexImage3D(GL_TEXTURE_3D,0,GL_RGBA,1024,1024,sI,0,GL_RGBA,GL_UNSIGNED_BYTE,new_array);
+                            glGenerateMipmap(GL_TEXTURE_3D);
+                        }
+                    }
+                    glUniform1i(glGetUniformLocation(materialResultProgram, "maskTextures"), 31);
+
+
+                    glUniform1i(glGetUniformLocation(materialResultProgram, "submeshCount"), meshes[i].submeshes.size());
+
+                    meshes[i].Draw();
+                }
             }
             else if(useOpacity && !renderOnlyTheChosenMesh){
                 glActiveTexture(GL_TEXTURE0);

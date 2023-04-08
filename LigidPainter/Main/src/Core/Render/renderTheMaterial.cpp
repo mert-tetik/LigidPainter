@@ -39,7 +39,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
     else 
         nodeTxtrResIndex = chosenNodeResIndex;
 
-	for (size_t i = 0; i < nodeTxtrResIndex; i++)
+	for (size_t i = 0; i < chosenTextureResIndex; i++)
 	{
 		txtrRes*=2;
 	}
@@ -321,6 +321,9 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
         {
             if(material.renderingPipeline[nodeI].outputs[outI].isConnectedToShaderInput){
                 if(bakeTheMaterial && material.renderingPipeline[nodeI].marked){
+                    
+                    //Bakes the PBR node
+
                     glset.viewport(txtrRes,txtrRes);
                     
                     glActiveTexture(GL_TEXTURE28);
@@ -376,6 +379,46 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     txtr.name = util.uniqueName(txtr.name,textureNames);
 
                     albedoTextures.push_back(txtr);
+                }
+                if(true){
+                    
+                    //Output the material
+
+                    glset.viewport(txtrRes,txtrRes);
+                    
+                    glActiveTexture(GL_TEXTURE28);
+                
+                    unsigned int copyFBO; 
+                    glset.genFramebuffers(copyFBO);
+                    glset.bindFramebuffer(copyFBO);
+
+    	            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + outI, GL_TEXTURE_2D, material.outTexture, 0);
+
+                    GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5,GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7 };
+                    glDrawBuffers(8, drawBuffers);
+
+                    glReadBuffer(GL_COLOR_ATTACHMENT0 + outI);
+
+                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+                    model.meshes[currentMaterialIndex].Draw(); 
+
+
+                    glset.generateMipmap();
+
+                    GLubyte* copyData = new GLubyte[txtrRes*txtrRes*4];
+                    glReadPixels(0,0,txtrRes,txtrRes,GL_RGBA,GL_UNSIGNED_BYTE,copyData);
+
+                    glset.texImage(copyData,txtrRes,txtrRes,GL_RGBA);
+                    glset.generateMipmap();
+
+                    std::cout << "txtrres was : " << txtrRes<<'\n'; 
+
+                    delete[] copyData;
+
+                    glset.bindFramebuffer(0);
+                    glset.deleteFramebuffers(copyFBO);
                 }
                 
                 

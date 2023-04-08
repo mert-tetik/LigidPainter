@@ -1882,11 +1882,16 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 		 			-maskW+maskPos.x,  maskW*2.f+maskPos.y, 0.91f,0,1,0,0,0   // top left
 				};
 				glset.drawArrays(maskVertices,false);
-				
+
+				if(!textureSelectionPanel.active){
+					model.meshes[i].submeshes[sI].textureSelectionState = false;
+				}
+
 				if(textureSelectionPanel.active && textureSelectionPanel.textureClicked && model.meshes[i].submeshes[sI].textureSelectionState){
 					model.meshes[i].submeshes[sI].maskTexture = albedoTextures[textureSelectionPanel.selectedIndex].id;
 					textureSelectionPanel.active = false; 
 					textureSelectionPanel.textureClicked = false;
+					model.meshes[i].submeshes[sI].textureSelectionState = false;
 				}
 
 				glUseProgram(programs.iconsProgram);

@@ -360,6 +360,14 @@ private:
 
 			scene.renderedTexture = renderTexture;
 
+            unsigned int outTexture;
+		    gls.genTextures(outTexture);
+		    gls.bindTexture(outTexture);
+		    gls.texImage(nullptr,1024,1024,GL_RGBA);
+		    gls.generateMipmap();
+
+		    scene.outTexture = outTexture;
+
             nodeScenes.push_back(scene);
             
             //Scene name

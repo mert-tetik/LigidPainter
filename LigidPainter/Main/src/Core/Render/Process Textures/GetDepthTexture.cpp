@@ -31,7 +31,7 @@ void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int scre
 	if(albedoTextures.size() != 0)
 		chosenTxtr = albedoTextures[chosenTextureIndex].id;
 	
-	model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0,true);
+	model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0,true,{},0);
 
 	GLubyte* screen = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
 	gl.activeTexture(GL_TEXTURE9);
@@ -51,7 +51,7 @@ void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int scre
 		
 		gl.uniformMatrix4fv(programs.screenDepthProgram,"view",mirroredView);
 	
-		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0,true);
+		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0,true,{},0);
 		//TODO : Use framebuffers
 		GLubyte* screenMirrored = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
 		gl.activeTexture(GL_TEXTURE28);
