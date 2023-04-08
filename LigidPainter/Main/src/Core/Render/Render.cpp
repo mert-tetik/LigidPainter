@@ -10,6 +10,7 @@
 #include <map>
 #include <filesystem>
 
+#include "Core/LigidPainter.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -19,20 +20,19 @@
 #include "Core/Model/model.h"
 
 #include "Core/Render/Render.h"
-#include "Core/LigidPainter.h"
 #include "Core/UI/UserInterface.h"
 #include "Core/Utilities.h"
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"
 #include "Core/ProjectFile/WRLigidFile.hpp"
 
+
 #include "stb_image.h"
 #include "stb_image_write.h"
 
+#include "LibAL.h"
+
 #include "tinyfiledialogs.h"
-
-
-
 
 int currentMaterialIndex = 0;
 
@@ -286,7 +286,7 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::v
 glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
 ,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
 ,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
-,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel) {
+,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios) {
 	
 
 	
@@ -629,8 +629,10 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		if(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
 			nodePanel.pointerCursor = true;
 			new3DProjectMixVal = 1.f;
-			if(firstClick)
+			if(firstClick){
+				LibAL_playAudioObject(audios.Login);
 				startScreen = false;
+			}
 		}
 		else if(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.4f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
 			nodePanel.pointerCursor = true;

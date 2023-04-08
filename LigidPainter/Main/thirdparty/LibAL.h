@@ -363,6 +363,31 @@
 */
 
 
+    std::int32_t LibALConvertToInt(char* buffer, std::size_t len);
+    int LibALplayAudioDataLoop(char* &bufferData, std::uint8_t& channels,std::int32_t& sampleRate,std::uint8_t& bitsPerSample,size_t& size,unsigned int ID);
+    int LibALplayAudioData(char* &bufferData, std::uint8_t& channels,std::int32_t& sampleRate,std::uint8_t& bitsPerSample,size_t& size,unsigned int ID);
+    int LibAL_start();
+    void LibAL_end();
+    int LibAL_playAudioObjectLoop(unsigned int ID);
+    int LibAL_playAudioObject(unsigned int ID);
+    void LibAL_stopPlaying(unsigned int ID);
+    void LibAL_pausePlaying(unsigned int ID);
+    void LibAL_startPlaying(unsigned int ID);
+    void LibAL_silence();
+    void LibAL_invertSoundData(unsigned int ID);
+    bool LibAL_isPlaying(unsigned int ID);
+    bool LibAL_isPaused(unsigned int ID);
+    bool LibAL_isStopped(unsigned int ID);
+    int LibAL_readWAVFile(const std::string& path,char* &bufferData, std::uint8_t& channels,std::int32_t& sampleRate,std::uint8_t& bitsPerSample,size_t& size);
+    int LibAL_genAudio(unsigned int & ID);
+    int LibAL_modifyAudioViaData(std::uint8_t channels,std::uint8_t bitsPerSample, char* bufferData,size_t dataSize,int32_t sampleRate,unsigned int ID);
+    int LibAL_modifySourceViaData(float pitch,float gain,float position[3],float velocity[3],unsigned int ID);
+    int LibAL_modifyBufferViaData(float position[3],float velocity[3]);
+    int LibAL_modifyAudioViaPath(std::string path,std::string format,unsigned int ID);
+    int LibAL_deleteAudio(unsigned int &ID);
+    void printOpenALErrors();
+       
+
 #ifdef LIBAL_OPENAL_IMPLEMENTATION
 
 
@@ -1420,6 +1445,7 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
 #include <bit>
 
 //TODO : Warning about OpenAL headers
+//TODO : Fix including in multiple files 
 
     std::string LibALerrorMsg; //! If any error occurs the error message will be stored there
 
@@ -1950,151 +1976,7 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
     }
 #endif //LIBAL
 #else
-#include <string.h>
-#include <bit>
-#include <fstream>
-
-std::int32_t LibALConvertToInt(char* buffer, std::size_t len)
-    {
-        std::int32_t a = 0;
-        
-        // // if(std::endian::native == std::endian::little)
-            std::memcpy(&a, buffer, len);
-        
-        // // else{
-        // //     for(std::size_t i = 0; i < len; ++i)
-        // //         reinterpret_cast<char*>(&a)[3 - i] = buffer[i];
-        // // }
-        return a;
-    }
 
 
-    int LibAL_readWAVFile(const std::string& path,char* &bufferData, std::uint8_t& channels,std::int32_t& sampleRate,std::uint8_t& bitsPerSample,size_t& size){
 
-        std::ifstream in(path, std::ios::binary);
-        
-        if(!in.is_open())
-        {
-            return 0;
-        }
-
-        bool properFile = true;
-
-        char buff[4];
-        if(!in.is_open())
-            return 0;
-
-        // the RIFF
-        if(!in.read(buff, 4))
-        {
-            return 0;
-        }
-        if(std::strncmp(buff, "RIFF", 4) != 0)
-        {
-            return 0;
-        }
-
-        // the size of the file
-        if(!in.read(buff, 4))
-        {
-            return 0;
-        }
-
-        // the WAVE
-        if(!in.read(buff, 4))
-        {
-            return 0;
-        }
-        if(std::strncmp(buff, "WAVE", 4) != 0)
-        {
-            return 0;
-        }
-
-        // "fmt/0"
-        if(!in.read(buff, 4))
-        {
-            return 0;
-        }
-
-        // this is always 16, the size of the fmt data chunk
-        if(!in.read(buff, 4))
-        {
-            return 0;
-        }
-
-        // PCM should be 1?
-        if(!in.read(buff, 2))
-        {
-            return 0;
-        }
-
-        // the number of channels
-        if(!in.read(buff, 2))
-        {
-            return 0;
-        }
-        channels = LibALConvertToInt(buff, 2);
-
-        // sample rate
-        if(!in.read(buff, 4))
-        {
-            return 0;
-        }
-        sampleRate = LibALConvertToInt(buff, 4);
-
-        // (sampleRate * bitsPerSample * channels) / 8
-        if(!in.read(buff, 4))
-        {
-            return 0;
-        }
-
-        // ?? dafaq
-        if(!in.read(buff, 2))
-        {
-            return 0;
-        }
-
-        // bitsPerSample
-        if(!in.read(buff, 2))
-        {
-            return 0;
-        }
-        bitsPerSample = LibALConvertToInt(buff, 2);
-
-        // data chunk header "data"
-        if(!in.read(buff, 4))
-        {
-            return 0;
-        }
-        if(std::strncmp(buff, "data", 4) != 0)
-        {
-            return 0;
-        }
-
-        // size of data
-        if(!in.read(buff, 4))
-        {
-            return 0;
-        }
-        size = LibALConvertToInt(buff, 4);
-
-        /* cannot be at the end of file */
-        if(in.eof())
-        {
-            return 0;
-        }
-        if(in.fail())
-        {
-            return 0;
-        }
-
-        if(!properFile)
-        {
-            return 0;
-        }
-
-        bufferData = new char[size];
-
-        in.read(bufferData, size);
-    }
 #endif //LIBAL_OPENAL_IMPLEMENTATION

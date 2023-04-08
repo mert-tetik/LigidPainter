@@ -80,6 +80,8 @@
 #include "../../thirdparty/include/glm/gtc/type_ptr.hpp"
 #include "../../thirdparty/include/glm/gtx/string_cast.hpp"
 
+
+
 #include "LigidPainter.h"
 #include "UI/UserInterface.h"
 #include "Utilities.h"
@@ -96,6 +98,9 @@
 #include "ProjectFile/WRLigidFile.hpp"
 #include "ProjectFile/WRLigidMaterialFile.hpp"
 
+#define LIBAL_OPENAL_IMPLEMENTATION
+#include "LibAL.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../thirdparty/stb_image.h"
 
@@ -104,9 +109,6 @@
 #include "../../thirdparty/stb_image_write.h"
 
 #include "../../thirdparty/tinyfiledialogs.h"
-
-#define LIBAL_OPENAL_IMPLEMENTATION
-#include "LibAL.h"
 
 using namespace std;
 
@@ -337,8 +339,13 @@ bool LigidPainter::run()
 		std::cout << "ERROR : Initializing libal\n";
 	
 	LibAL_genAudio(audios.MessageBox);
-	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/Water.wav","wav",audios.MessageBox)){
-		std::cout << "ERROR : Modifying audio object messagebox via libal " << LibALerrorMsg << '\n';
+	LibAL_genAudio(audios.Login);
+
+	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/MessageBox.wav","wav",audios.MessageBox)){
+		std::cout << "ERROR : Modifying audio object MessageBox.wav  " << LibALerrorMsg << '\n';
+	}
+	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/Login.wav","wav",audios.Login)){
+		std::cout << "ERROR : Modifying audio object Login.wav  " << LibALerrorMsg << '\n';
 	}
 
 	Load load;
@@ -874,7 +881,13 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos, callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel);
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData
+										,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker
+										,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene
+										,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,
+										txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory
+										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
+										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios);
 		}
 		duplicateNodeCall = false;
 		
@@ -1002,7 +1015,7 @@ int LigidPainter::ligidMessageBox(std::string message,float messagePosX,std::str
 	LibAL_stopPlaying(audios.MessageBox);
 	LibAL_playAudioObject(audios.MessageBox);
 	
-	std::this_thread::sleep_for(50ms);
+	//std::this_thread::sleep_for(50ms);
 	
 	while (true)
 	{
