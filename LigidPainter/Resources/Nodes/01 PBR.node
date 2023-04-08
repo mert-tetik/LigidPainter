@@ -65,7 +65,7 @@
 --list_index : none;
 --type : vec3;
 --title : Emission;
---element : range;
+--element : color;
 --value : 0,0,0;
 
 
