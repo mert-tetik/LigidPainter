@@ -506,7 +506,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		} 
 		else{
 			renderFocusModeUI(renderPrograms,renderData,UIElements,icons,coloringPanel,saturationValShaderData,mouseXpos,mouseYpos,firstClick,FBOScreen,colorPicker,
-			screenHoverPixel,drawColor,outShaderData);
+								screenHoverPixel,drawColor,outShaderData);
 		}
 		//-------------------------
 

@@ -26,6 +26,7 @@ float udRoundBox( vec2 p, vec2 b, float r )
 
 float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
 {
+    //TODO : Check if round corners effect texture rendering+
     // setup
     float t = 0.2 + 0.2 * sin(mod(0.75, 2.0 * PI) - 0.5 * PI);
     float iRadius = (0.05 + t)*1080;

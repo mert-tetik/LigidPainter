@@ -52,6 +52,31 @@ float noise( in vec2 p )
 	vec3  n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));
     return dot( n, vec3(70.0) );
 }
+const float PI = 3.14159265;
+
+// from https://iquilezles.org/articles/distfunctions
+float udRoundBox( vec2 p, vec2 b, float r )
+{
+    return length(max(abs(p)-b+r,0.0))-r;
+}
+
+float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
+{
+    //TODO : Check if round corners effect texture rendering+
+    // setup
+    float t = 0.2 + 0.2 * sin(mod(0.75, 2.0 * PI) - 0.5 * PI);
+    float iRadius = (0.05 + t)*1080;
+    vec2 halfRes = vec2(0.5*1080);
+
+    // compute box
+    float b = udRoundBox( uv.xy*1080 - halfRes, halfRes, iRadius );
+    
+    // colorize (red / black )
+	vec3 c = mix( vec3(1.0,0.0,0.0), vec3(0.0,0.0,0.0), smoothstep(0.0,1.0,b) );
+        
+    return c.r;
+}
+
 
 // -----------------------------------------------
 
@@ -100,6 +125,8 @@ void main( )
     txtr *= rnd;
 
 	color = vec4(txtr, 1.0 );
+    if(roundUp(texCoords)<0.05)
+        color.a = 0;
 }
 
 // void main()

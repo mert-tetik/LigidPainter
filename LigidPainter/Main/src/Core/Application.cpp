@@ -997,7 +997,7 @@ int LigidPainter::ligidMessageBox(std::string message,float messagePosX,std::str
 	LibAL_stopPlaying(audios.MessageBox);
 	LibAL_playAudioObject(audios.MessageBox);
 	
-	std::this_thread::sleep_for(100ms);
+	std::this_thread::sleep_for(50ms);
 	
 	while (true)
 	{
