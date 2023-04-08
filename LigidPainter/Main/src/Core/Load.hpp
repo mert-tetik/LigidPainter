@@ -74,7 +74,7 @@ public:
 
 
 	        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-	        if (data )
+	        if (data)
 	        {
 
 	            glTexImage2D(cubePos, 

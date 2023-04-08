@@ -48,7 +48,7 @@ float circle(vec2 uv, vec2 pos, float rad) {
 }
 
 float getCircle() {
-
+    //TODO : Change the ratio
 	vec2 uv = TexCoords.xy*vec2(1920,1080);
 	vec2 center = vec2(1920,1080) * 0.5;
 	float radius = 0.4 * 1080;

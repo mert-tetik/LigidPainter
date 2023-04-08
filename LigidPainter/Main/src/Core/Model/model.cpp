@@ -22,6 +22,8 @@
 #include <vector>
 #include <cstdlib>
 
+int rndrC = 0;
+
 using namespace std;
 
 
@@ -69,7 +71,7 @@ using namespace std;
                 {
                     glActiveTexture(GL_TEXTURE20 + txtI);
                     glBindTexture(GL_TEXTURE_2D,modelMaterials[meshes[i].materialIndex].textures[txtI]);
-
+    
             	    glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, ("input_" + std::to_string(txtI)).c_str()), 20+txtI);
                 }
                 glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "is3D"), 1);
@@ -80,56 +82,62 @@ using namespace std;
                 glUniform1f(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "skyboxExposure"), uniExpo);
                 glUniform3fv(glGetUniformLocation(modelMaterials[meshes[i].materialIndex].program, "viewPos"),1,&viewPos[0]);
 
-
+        
                 if(meshes[i].submeshes.size() <= 1){
                     meshes[i].Draw();
                 }
                 else{
+                    rndrC++;
                     glUseProgram(materialResultProgram);
 
                     glUniformMatrix4fv(glGetUniformLocation(materialResultProgram, "projection"), 1,GL_FALSE, glm::value_ptr(projection));
         	        glUniformMatrix4fv(glGetUniformLocation(materialResultProgram, "view"), 1,GL_FALSE, glm::value_ptr(view));
 
-
-                    //TODO : Preventing creating those textures every frame
+                    vector<GLubyte> materialTextures(1024 * 1024 * 4 * meshes[i].submeshes.size(), 0);
                     for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++)
                     {
-                        glActiveTexture(GL_TEXTURE28);
-                        glBindTexture(GL_TEXTURE_2D,materialOutputs[meshes[i].submeshes[sI].materialIndex]); 
+                        if(materialOutputs[meshes[i].submeshes[sI].materialIndex]){
+                            glActiveTexture(GL_TEXTURE28);
+                            glBindTexture(GL_TEXTURE_2D,materialOutputs[meshes[i].submeshes[sI].materialIndex]); 
 
-                        int sidelength;
-                        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &sidelength);
-
-                        void* new_array = malloc(sidelength * sidelength * 4 * sizeof(GLubyte));
-
-                        glGetTexImage(GL_TEXTURE_2D,  0, GL_RGBA, GL_UNSIGNED_BYTE,(void*)(new_array));
-
+                            vector<GLubyte> new_array(1024 * 1024 * 4);
+                            glGetTexImage(GL_TEXTURE_2D,  0, GL_RGBA, GL_UNSIGNED_BYTE,&new_array[0]);
+                            materialTextures.insert( materialTextures.begin()+(1024 * 1024 * 4 * i), new_array.begin(), new_array.end());
+                        }
+                    }
+                    if(rndrC % 100 == 0){
                         glActiveTexture(GL_TEXTURE30);
-
-                        glTexImage3D(GL_TEXTURE_3D,0,GL_RGBA,1024,1024,sI,0,GL_RGBA,GL_UNSIGNED_BYTE,new_array);
+                        glTexImage3D(GL_TEXTURE_3D,0,GL_RGBA,1024,1024,meshes[i].submeshes.size(),0,GL_RGBA,GL_UNSIGNED_BYTE,&materialTextures[0]);
+                        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
                         glGenerateMipmap(GL_TEXTURE_3D);
                     }
                     glUniform1i(glGetUniformLocation(materialResultProgram, "materials"), 30);
 
+
+
+                    vector<GLubyte> maskTextures(1024 * 1024 * 4 * meshes[i].submeshes.size(), 0);
+                    
                     for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++)
                     {
                         if(meshes[i].submeshes[sI].maskTexture){
                             glActiveTexture(GL_TEXTURE28);
                             glBindTexture(GL_TEXTURE_2D,meshes[i].submeshes[sI].maskTexture); 
 
-                            int sidelength;
-                            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &sidelength);
-                            void* new_array = malloc(sidelength * sidelength * 4 * sizeof(GLubyte));
-                            glGetTexImage(GL_TEXTURE_2D,  0, GL_RGBA, GL_UNSIGNED_BYTE,(void*)(new_array));
-
-                            glActiveTexture(GL_TEXTURE31);
-
-                            glTexImage3D(GL_TEXTURE_3D,0,GL_RGBA,1024,1024,sI,0,GL_RGBA,GL_UNSIGNED_BYTE,new_array);
-                            glGenerateMipmap(GL_TEXTURE_3D);
+                            vector<GLubyte> new_array(1024 * 1024 * 4);
+                            glGetTexImage(GL_TEXTURE_2D,  0, GL_RGBA, GL_UNSIGNED_BYTE,&new_array[0]);
+                            maskTextures.insert( maskTextures.begin()+(1024 * 1024 * 4 * i), new_array.begin(), new_array.end());
                         }
                     }
+                    if(rndrC % 100 == 0){
+                        glActiveTexture(GL_TEXTURE31);
+                        glTexImage3D(GL_TEXTURE_3D,0,GL_RGBA,1024,1024,meshes[i].submeshes.size(),0,GL_RGBA,GL_UNSIGNED_BYTE,&maskTextures[0]);
+                        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                        glGenerateMipmap(GL_TEXTURE_3D);
+                    }
+                    
                     glUniform1i(glGetUniformLocation(materialResultProgram, "maskTextures"), 31);
-
 
                     glUniform1i(glGetUniformLocation(materialResultProgram, "submeshCount"), meshes[i].submeshes.size());
 

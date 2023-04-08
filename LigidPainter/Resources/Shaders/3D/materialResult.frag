@@ -20,11 +20,11 @@ void main(){
     vec3 result;
 
     for(int i = 0; i < submeshCount; i++) {
-        float mask = texture(maskTextures,vec3(TexCoords,i)).r;
-        vec3 material = texture(materials,vec3(TexCoords,i)).rgb;
+        float mask = texture(maskTextures,vec3(TexCoords,   float(i)/float(submeshCount))).r;
+        vec3 material = texture(materials,vec3(TexCoords,   float(i)/float(submeshCount))).rgb;
         
         result = mix(result,material,mask);
-        result += material*mask;
+        //result += material;
     }
 
     fragColor = vec4(result,1);
