@@ -17,8 +17,6 @@ uniform int displayingTheBrush;
 
 uniform sampler2D bgtxtr;
 
-
-
 const float PI = 3.14159265;
 float udRoundBox( vec2 p, vec2 b, float r )
 {
@@ -83,14 +81,14 @@ void main()
         fRes += fragColor;
     }
 
-    if(displayingTheBrush == 1)
+    if(displayingTheBrush == 1){
         outClr = vec4(vec3((fRes.a)*100),1.);
+        if(roundUp(texCoords) < 0.05){
+            outClr.a = 0.;
+        }
+    }
      else
         outClr = fRes*opacity;
-
-    if(roundUp(texCoords) < 0.05){
-        outClr.a = 0.;
-    }
 }
 
 

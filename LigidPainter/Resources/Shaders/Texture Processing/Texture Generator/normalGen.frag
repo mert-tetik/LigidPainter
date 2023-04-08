@@ -10,6 +10,8 @@ uniform float normalStrength;
 #define textureOffset 1.0
 
 const float PI = 3.14159265;
+
+uniform int displayingMode;
     
 // from https://iquilezles.org/articles/distfunctions
 float udRoundBox( vec2 p, vec2 b, float r )
@@ -46,7 +48,10 @@ void main()
     normal *= normalStrength;
     normal += 0.5;
     
-    color = vec4(normal, 1., 1.);   
-    if(roundUp(texCoords) < 0.05)
-        color.a = 0.;
+    color = vec4(normal, 1., 1.);  
+
+    if(displayingMode == 1){
+        if(roundUp(texCoords) < 0.05)
+            color.a = 0.;
+    } 
 }

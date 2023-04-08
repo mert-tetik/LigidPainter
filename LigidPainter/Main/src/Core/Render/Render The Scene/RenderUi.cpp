@@ -731,6 +731,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 			gl.uniformMatrix4fv(programs.normalGenProgram,"renderTextureProjection",renderTextureProjection);
 			gl.uniform1i(programs.normalGenProgram,"inputTexture",0);
+			gl.uniform1i(programs.normalGenProgram,"displayingMode",1);
 			float rangeBarVal = (UIElements[UInormalStrengthRangeBarElement].rangeBar.value + 0.11f) * 50.f;
 			gl.uniform1f(programs.normalGenProgram,"normalStrength",rangeBarVal);
 			glActiveTexture(GL_TEXTURE28);
@@ -745,12 +746,15 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 			gl.uniformMatrix4fv(programs.noisyTextureProgram,"renderTextureProjection",renderTextureProjection);
 			gl.uniform1i(programs.noisyTextureProgram,"inputTexture",0);
+			gl.uniform1i(programs.noisyTextureProgram,"displayingMode",1);
 			float rangeBarVal = ((0.22f-(UIElements[UInoiseStrengthRangeBarElement].rangeBar.value + 0.11f))+0.05f)  * 50.f;
 			gl.uniform1f(programs.noisyTextureProgram,"value",rangeBarVal);
 			glActiveTexture(GL_TEXTURE28);
 		}
 
 		gl.drawArrays(renderVertices,0);
+		gl.uniform1i(programs.noisyTextureProgram,"displayingMode",0);
+		gl.uniform1i(programs.normalGenProgram,"displayingMode",0);
 	}
 	bool skyboxlistStateChanged = false;
 	bool resolutionChanged = false;

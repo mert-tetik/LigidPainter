@@ -6,6 +6,8 @@ in vec2 texCoords;
 
 out vec4 color;
 
+uniform int displayingMode;
+
 float rand(vec2 co){
   return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
@@ -125,8 +127,11 @@ void main( )
     txtr *= rnd;
 
 	color = vec4(txtr, 1.0 );
-    if(roundUp(texCoords)<0.05)
-        color.a = 0;
+
+    if(displayingMode == 1){
+        if(roundUp(texCoords)<0.05)
+            color.a = 0;
+    }
 }
 
 // void main()

@@ -50,6 +50,11 @@
 //TODO Once a material be rendered the result in 2d will be held in that texture
 //TODO The material of the mesh will be consist of it's submeshes and will be rendered without pbr calculations
 
+//TODO SFX
+//Once a texture is generated or nodes are baked
+//Once an alert is displayed
+//Start screen buttons
+
 //TODO 2D Painting
 // - Lasso Tool 
 // - Quick Selection
