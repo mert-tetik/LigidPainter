@@ -28,6 +28,8 @@
 
 #include "tinyfiledialogs.h"
 
+#include "LibAL.h"
+
 bool texturePanelButtonHover = false;
 
 float dropperMixVal = 0.0f;
@@ -86,6 +88,8 @@ bool selectionActive = false;
 
 int previousTextureResIndex;
 
+Audios uiAudios;
+
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
 const char* exportFileName,float &maskPanelSliderValue,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 float brushBlurVal,OutShaderData &outShaderData, Model &model,std::vector<aTexture> &albedoTextures,Programs programs
@@ -95,7 +99,8 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool &firstClick
 ,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive
 ,std::string &textureText,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps
-,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex) {
+,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios) {
+	uiAudios = audios;
 
 	ColorData colorData;
 	glm::mat4 projection;
@@ -835,6 +840,9 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 //--------------------RENDER UI --------------------\\
 
 void UserInterface::alert(std::string message,int duration){
+	LibAL_stopPlaying(uiAudios.Alert);
+	LibAL_playAudioObject(uiAudios.Alert);
+	
 	alertState = 1;
 	alertMessage = message;
 	alertDuration = duration;

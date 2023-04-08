@@ -1536,10 +1536,10 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
         if(LibALaudios[ID].source_state != AL_PLAYING)
             alSourceUnqueueBuffers(LibALaudios[ID].source, 1, &LibALaudios[ID].buffer);
         
-        alBufferData(LibALaudios[ID].buffer, LibALtoAlFormat(channels, bitsPerSample),
-		            bufferData, 
-                    size, 
-                    sampleRate);
+        //alBufferData(LibALaudios[ID].buffer, LibALtoAlFormat(channels, bitsPerSample),
+		//            bufferData, 
+        //            size, 
+        //            sampleRate);
 
         
         alSourcei(LibALaudios[ID].source, AL_BUFFER, LibALaudios[ID].buffer);
@@ -1833,10 +1833,7 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
         
         
         //------------------- Size of data
-        if(!in.read(buff, 4))
-        {
-            return 0;
-        }
+
         size = LibALConvertToInt(buff, 4);
         //-------------------
 
@@ -1844,6 +1841,8 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
         //------------------- Audio data
         bufferData = new char[size];
         in.read(bufferData, size);
+
+        std::cout << "Size is :" << size << '\n'; 
         //-------------------
 
         return 1;
@@ -1862,6 +1861,7 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
 	    alGenSources((ALuint)1, &source);
         
 	    alGenBuffers(1, &buffer);
+        
 
         //Create the source
 	    alSourcef(source, AL_PITCH, 1);
@@ -1888,6 +1888,11 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
     
     //Modify the generated audio object via given parameters
     int LibAL_modifyAudioViaData(std::uint8_t channels,std::uint8_t bitsPerSample, char* bufferData,ALsizei dataSize,int32_t sampleRate,unsigned int ID){
+        alBufferData(LibALaudios[ID].buffer, LibALtoAlFormat(channels, bitsPerSample),
+		    bufferData, 
+            dataSize, 
+            sampleRate);
+        
         LibALaudios[ID].bitsPerSample = bitsPerSample;
         LibALaudios[ID].bufferData  = bufferData;
         LibALaudios[ID].channels = channels;

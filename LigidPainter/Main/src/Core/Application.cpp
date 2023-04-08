@@ -335,11 +335,16 @@ bool LigidPainter::run()
 	glDepthFunc(GL_LESS);
 	glEnable(GL_MULTISAMPLE);
 
+
+
+	//LIBAL
 	if(!LibAL_start())
 		std::cout << "ERROR : Initializing libal\n";
 	
 	LibAL_genAudio(audios.MessageBox);
 	LibAL_genAudio(audios.Login);
+	LibAL_genAudio(audios.ButtonEnter);
+	LibAL_genAudio(audios.Alert);
 
 	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/MessageBox.wav","wav",audios.MessageBox)){
 		std::cout << "ERROR : Modifying audio object MessageBox.wav  " << LibALerrorMsg << '\n';
@@ -347,6 +352,15 @@ bool LigidPainter::run()
 	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/Login.wav","wav",audios.Login)){
 		std::cout << "ERROR : Modifying audio object Login.wav  " << LibALerrorMsg << '\n';
 	}
+	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/ButtonEnter.wav","wav",audios.ButtonEnter)){
+		std::cout << "ERROR : Modifying audio object ButtonEnter.wav  " << LibALerrorMsg << '\n';
+	}
+	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/Alert.wav","wav",audios.Alert)){
+		std::cout << "ERROR : Modifying audio object Alert.wav  " << LibALerrorMsg << '\n';
+	}
+
+
+
 
 	Load load;
 	programs = load.getProgram();
@@ -1015,7 +1029,7 @@ int LigidPainter::ligidMessageBox(std::string message,float messagePosX,std::str
 	LibAL_stopPlaying(audios.MessageBox);
 	LibAL_playAudioObject(audios.MessageBox);
 	
-	//std::this_thread::sleep_for(50ms);
+	std::this_thread::sleep_for(100ms);
 	
 	while (true)
 	{

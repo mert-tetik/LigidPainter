@@ -275,6 +275,9 @@ float startMenuImportProjectMixVal = 0.f;
 
 int materialDisplayUpdaterCounter = 201;
 
+bool enteredOnce = true;
+
+
 int paintRenderCounter = 0;
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
 Icons &icons,float &maskPanelSliderValue, bool renderPlane,bool renderSphere,
@@ -502,7 +505,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 				colorPicker,textureDisplayer,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,
 				nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
 				chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
-				,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex);
+				,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex,audios);
 		} 
 		else{
 			renderFocusModeUI(renderPrograms,renderData,UIElements,icons,coloringPanel,saturationValShaderData,mouseXpos,mouseYpos,firstClick,FBOScreen,colorPicker,
@@ -593,6 +596,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		ui.renderText(renderPrograms.uiProgram,"Load",0.05f,0.95f,0.00022f,loadButtonColor,0.9f,false);
 	}
 	else{
+		
 		gls.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glActiveTexture(GL_TEXTURE13);
@@ -627,6 +631,12 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		startMenuImportProjectMixVal = util.transitionEffect(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.4f-screenGapX,0.0f,mouseXpos,mouseYpos,false),startMenuImportProjectMixVal,0.05f);
 		
 		if(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
+			if(enteredOnce){
+				LibAL_stopPlaying(audios.ButtonEnter);
+				LibAL_playAudioObject(audios.ButtonEnter);
+				enteredOnce = false;
+			}
+			
 			nodePanel.pointerCursor = true;
 			new3DProjectMixVal = 1.f;
 			if(firstClick){
@@ -635,6 +645,12 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 			}
 		}
 		else if(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.4f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
+			if(enteredOnce){
+				LibAL_stopPlaying(audios.ButtonEnter);
+				LibAL_playAudioObject(audios.ButtonEnter);
+				enteredOnce = false;
+			}
+			
 			nodePanel.pointerCursor = true;
 			importProjectMixVal = 1.f;
 			if(firstClick){
@@ -646,11 +662,13 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 					LigidFile ligidFile;
 					ligidFile.readTheFile(path,model,albedoTextures,nodeScenes);
 					projectFilePath = path;
+					LibAL_playAudioObject(audios.Login);
 					startScreen = false;
 				}
 			}
 		}
 		else{
+			enteredOnce = true;
 			nodePanel.pointerCursor = false;
 		}
 	

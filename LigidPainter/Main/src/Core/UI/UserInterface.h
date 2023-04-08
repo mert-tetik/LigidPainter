@@ -172,6 +172,8 @@ struct ColorData2{
 struct Audios{
 	unsigned int MessageBox;
 	unsigned int Login;
+	unsigned int ButtonEnter;
+	unsigned int Alert;
 };
 
 struct Objects{
