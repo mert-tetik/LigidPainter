@@ -41,6 +41,24 @@ float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
     return c.r;
 }
 
+float circle(vec2 uv, vec2 pos, float rad) {
+	float d = length(pos - uv) - rad;
+	float t = clamp(d, 0.0, 1.0);
+	return 1.-t;
+}
+
+float getCircle() {
+
+	vec2 uv = TexCoords.xy*vec2(1920,1080);
+	vec2 center = vec2(1920,1080) * 0.5;
+	float radius = 0.4 * 1080;
+    if(isPressed == 1){
+	    radius = 0.435 * 1080;
+    }
+
+    return circle(uv, center, radius);
+}
+
 void main(){
     const float thickness = 0.03;
     
@@ -137,7 +155,7 @@ void main(){
         }
     }
 
-    if(renderMaterials == 1 && texture(txtr,TexCoords).r < 0.3 && texture(txtr,TexCoords).g > 0.7 && texture(txtr,TexCoords).b < 0.3)
+    if(getCircle() < 0.05 && renderMaterials == 1)
         color = vec4(0);
 
     if(roundUp(TexCoords) < 0.05){

@@ -702,7 +702,6 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				bool isHover;
 				bool isPressed;
 
-				glm::vec4 iconColor;
 				if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2),mouseYpos,buttonCoorSq,false)){
 					isHover = true;
 	
@@ -722,25 +721,11 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 					isPressed = false;
 				}
 
-
-
-				if(!isHover && !isPressed)
-					iconColor = colorData.materialIconColor;
-
-				else if(isHover && !isPressed)
-					iconColor = colorData.materialIconColorHover;
-
-				else if(!isHover && isPressed)
-					iconColor = colorData.materialIconColorActive;
-
-				else if(isHover && isPressed)
-					iconColor = colorData.materialIconColorActiveHover;
-
-
-
 				glUseProgram(programs.renderTheTextureProgram);
 				glActiveTexture(GL_TEXTURE14);
 				glBindTexture(GL_TEXTURE_2D,nodeScenes[i].renderedTexture);
+				glset.uniform1i(programs.renderTheTextureProgram,"isPressed",isPressed);
+				glset.uniform1i(programs.renderTheTextureProgram,"isHover",isHover);
 				glset.uniform1i(programs.renderTheTextureProgram,"renderMaterials",1);
 				//glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
 				glset.drawArrays(buttonCoorSq,false);
