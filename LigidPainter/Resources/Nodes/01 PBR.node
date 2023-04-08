@@ -79,15 +79,6 @@
 --value : 0;
 
 
-#Alpha
--input_7 : 
---list : none;
---list_index : none;
---type : float;
---title : Alpha;
---element : range;
---value : 255;
-
 -output_0 :
 --list : none;
 --list_index : none;
@@ -268,8 +259,6 @@ vec3 getRealisticResult(){
 void main() {
     vec3 result = getRealisticResult();
 
-    float alpha = texture(input_7,tex_coords).r;
-    
     float emissionStr = texture(input_6,tex_coords).r;
     vec3 emission = texture(input_5,tex_coords).rgb;
 
@@ -277,5 +266,5 @@ void main() {
     emissionStr = emissionStr * max(maxRG,emission.b);
     emissionStr = sqrt(emissionStr);
     
-    output_0 = vec4(mix(result,emission,emissionStr),alpha);
+    output_0 = vec4(mix(result,emission,emissionStr),1);
 }
