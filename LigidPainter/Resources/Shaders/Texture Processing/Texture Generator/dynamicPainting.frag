@@ -52,7 +52,12 @@ void strokeBlendUniColor(vec4 src, float srcA, vec4 dst, out vec4 color)
 void main()
 {   
     //TODO : Update ratio (1.7)
-    const float ratio =1.77777777778;
+    float ratio;
+    
+    if(displayingTheBrush == 1)
+        ratio = 1.;
+    else
+        ratio = 1.77777777778;
  
     vec2 uv = vec2(texCoords.x*ratio,texCoords.y);
     float bg = texture(bgtxtr,vec2(texCoords.x * 1000,1-texCoords.y*1000)).r;
