@@ -1946,13 +1946,18 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 				if(isMouseOnButton(renderData.window,0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX*2.f + 0.17f,0.8f - ((posI) * 0.125f) + materialsPanelSlideValue,mouseXpos,mouseYpos,false)){
 					deleteSubmeshIconHover = true;
 					if(firstClick){
-						//Delete the submesh
-						model.meshes[i].submeshes.erase(model.meshes[i].submeshes.begin()+sI);
-						
-						//Rename submeshes
-						for (size_t ssi = 0; ssi < model.meshes[i].submeshes.size(); ssi++)
-						{
-							model.meshes[i].submeshes[ssi].name = "submesh_" + std::to_string(ssi);
+						if(sI != 0){
+							//Delete the submesh
+							model.meshes[i].submeshes.erase(model.meshes[i].submeshes.begin()+sI);
+
+							//Rename submeshes
+							for (size_t ssi = 0; ssi < model.meshes[i].submeshes.size(); ssi++)
+							{
+								model.meshes[i].submeshes[ssi].name = "submesh_" + std::to_string(ssi);
+							}
+						}
+						else{
+							alert("First submesh can't be deleted",200);
 						}
 					}
 				}
