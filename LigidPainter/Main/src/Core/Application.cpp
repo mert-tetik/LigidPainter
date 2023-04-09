@@ -1503,6 +1503,11 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 			 if(panelData.paintingPanelSlideVal < 0.0f)
 			 	panelData.paintingPanelSlideVal = 0.0f;
 		}
+		else if(callbackData.mainPanelEnter && panelData.settingsPanelActive){
+			 panelData.settingsPanelSlideVal += scrollx/10.0f;
+			 if(panelData.settingsPanelSlideVal < 0.0f)
+			 	panelData.settingsPanelSlideVal = 0.0f;
+		}
 		else if (!paintingMode && !mainPanelHover) {
 			callbackData = callback.scroll_callback(window, scroll, scrollx);
 		}

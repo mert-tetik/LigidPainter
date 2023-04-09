@@ -304,6 +304,7 @@ struct PanelData {
 	
 	bool settingsPanelActive;
 	float settingsPanelMixval = 0.f;
+	float settingsPanelSlideVal = 0.0f;
 	
 	bool generatorPanelActive;
 	float generatorPanelMixval = 0.f;

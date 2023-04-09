@@ -681,6 +681,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			
 			if(panelData.paintingPanelActive && !UIElements[i].focusMode)
 				slideVal = panelData.paintingPanelSlideVal;
+			if(panelData.settingsPanelActive && !UIElements[i].focusMode)
+				slideVal = panelData.settingsPanelSlideVal;
 
 				glUseProgram(programs.uiProgram);
 
@@ -764,9 +766,9 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	bool skyboxlistStateChanged = false;
 	bool resolutionChanged = false;
 	if(panelData.settingsPanelActive){
-		resolutionChanged = ui.listBox(centerCoords - screenGapX,0.8f,0.9f,"Texture Resolution",0.1f,icons,{"256","512","1024","2048","4096"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenTextureResIndex,screenGapX);
-		ui.listBox(centerCoords - screenGapX,0.33f,0.9f,"Node Resolution",0.1f,icons,{"256","512","1024","2048"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenNodeResIndex,screenGapX);
-		skyboxlistStateChanged = ui.listBox(centerCoords - screenGapX,-0.2f,0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture,screenGapX);
+		resolutionChanged = ui.listBox(centerCoords - screenGapX,0.8f+panelData.settingsPanelSlideVal,0.9f,"Texture Resolution",0.1f,icons,{"256","512","1024","2048","4096"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenTextureResIndex,screenGapX);
+		ui.listBox(centerCoords - screenGapX,0.33f+panelData.settingsPanelSlideVal,0.9f,"Node Resolution",0.1f,icons,{"256","512","1024","2048"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenNodeResIndex,screenGapX);
+		skyboxlistStateChanged = ui.listBox(centerCoords - screenGapX,-0.2f+panelData.settingsPanelSlideVal,0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture,screenGapX);
 	}
 	
 	if(resolutionChanged && chosenNodeResIndex != previousTextureResIndex){

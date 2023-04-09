@@ -413,8 +413,6 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     glset.texImage(copyData,txtrRes,txtrRes,GL_RGBA);
                     glset.generateMipmap();
 
-                    std::cout << "txtrres was : " << txtrRes<<'\n'; 
-
                     delete[] copyData;
 
                     glset.bindFramebuffer(0);
