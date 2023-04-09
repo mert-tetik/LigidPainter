@@ -1871,7 +1871,7 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 			iconBox(0.015f,0.027f,renderData.panelLoc - 1.0f - screenGapX + 0.3f ,0.8f - (posI * 0.125f) + materialsPanelSlideValue,0.99f,icons.Plus,iconmixVal,colorData.iconColor,colorData.iconColorHover);
 			glUseProgram(programs.uiProgram); 
 			posI++;
-			for (size_t sI = 0; sI < model.meshes[i].submeshes.size(); sI++)
+			for (int sI = model.meshes[i].submeshes.size()-1; sI >= 0 ; sI--)
 			{
 				GlSet glset;
 				//TODO : Default mask texture for each submesh
