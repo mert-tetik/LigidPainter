@@ -22,7 +22,7 @@
 #include <vector>
 #include <cstdlib>
 
-int rndrC = 0;
+size_t rndrC = 0;
 
 using namespace std;
 
@@ -93,52 +93,20 @@ using namespace std;
                     glUniformMatrix4fv(glGetUniformLocation(materialResultProgram, "projection"), 1,GL_FALSE, glm::value_ptr(projection));
         	        glUniformMatrix4fv(glGetUniformLocation(materialResultProgram, "view"), 1,GL_FALSE, glm::value_ptr(view));
 
-                    vector<GLubyte> materialTextures(1024 * 1024 * 4 * meshes[i].submeshes.size(), 0);
-                    for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++)
+                    for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++)//20 21 22 23 24 25 
                     {
-                        if(materialOutputs[meshes[i].submeshes[sI].materialIndex]){
-                            glActiveTexture(GL_TEXTURE28);
-                            glBindTexture(GL_TEXTURE_2D,materialOutputs[meshes[i].submeshes[sI].materialIndex]); 
-
-                            vector<GLubyte> new_array(1024 * 1024 * 4);
-                            glGetTexImage(GL_TEXTURE_2D,  0, GL_RGBA, GL_UNSIGNED_BYTE,&new_array[0]);
-                            materialTextures.insert( materialTextures.begin()+(1024 * 1024 * 4 * i), new_array.begin(), new_array.end());
-                        }
+                        glActiveTexture(GL_TEXTURE20+sI);
+                        glBindTexture(GL_TEXTURE_2D,materialOutputs[meshes[i].submeshes[0].materialIndex]);
+                        glUniform1i(glGetUniformLocation(materialResultProgram, ("material" + std::to_string(sI)).c_str()), 20+sI);
                     }
-                    if(rndrC % 100 == 0){
-                        glActiveTexture(GL_TEXTURE30);
-                        glTexImage3D(GL_TEXTURE_3D,0,GL_RGBA,1024,1024,meshes[i].submeshes.size(),0,GL_RGBA,GL_UNSIGNED_BYTE,&materialTextures[0]);
-                        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                        glGenerateMipmap(GL_TEXTURE_3D);
-                    }
-                    glUniform1i(glGetUniformLocation(materialResultProgram, "materials"), 30);
 
-
-
-                    vector<GLubyte> maskTextures(1024 * 1024 * 4 * meshes[i].submeshes.size(), 0);
-                    
-                    for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++)
+                    for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++)//26 27 28 29 30 31
                     {
-                        if(meshes[i].submeshes[sI].maskTexture){
-                            glActiveTexture(GL_TEXTURE28);
-                            glBindTexture(GL_TEXTURE_2D,meshes[i].submeshes[sI].maskTexture); 
-
-                            vector<GLubyte> new_array(1024 * 1024 * 4);
-                            glGetTexImage(GL_TEXTURE_2D,  0, GL_RGBA, GL_UNSIGNED_BYTE,&new_array[0]);
-                            maskTextures.insert( maskTextures.begin()+(1024 * 1024 * 4 * i), new_array.begin(), new_array.end());
-                        }
-                    }
-                    if(rndrC % 100 == 0){
-                        glActiveTexture(GL_TEXTURE31);
-                        glTexImage3D(GL_TEXTURE_3D,0,GL_RGBA,1024,1024,meshes[i].submeshes.size(),0,GL_RGBA,GL_UNSIGNED_BYTE,&maskTextures[0]);
-                        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                        glGenerateMipmap(GL_TEXTURE_3D);
+                        glActiveTexture(GL_TEXTURE26+sI);
+                        glBindTexture(GL_TEXTURE_2D,meshes[i].submeshes[sI].maskTexture);
+                        glUniform1i(glGetUniformLocation(materialResultProgram, ("mask" + std::to_string(sI)).c_str()), 26+sI);
                     }
                     
-                    glUniform1i(glGetUniformLocation(materialResultProgram, "maskTextures"), 31);
-
                     glUniform1i(glGetUniformLocation(materialResultProgram, "submeshCount"), meshes[i].submeshes.size());
 
                     meshes[i].Draw();

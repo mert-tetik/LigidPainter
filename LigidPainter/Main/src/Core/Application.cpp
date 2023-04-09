@@ -15,7 +15,7 @@
 //GL_TEXTURE15 = BRDF
 //GL_TEXTURE16 = prefilteredMap
 //GL_TEXTURE17 = subSelectedTexture
-
+   
 //GL_TEXTURE 20 - 27 Is reserved for nodes
 //GL_TEXTURE28 = Empty
 
@@ -46,9 +46,8 @@
 //TODO Move folders into trash folder before deleting forever
 //TODO Material deletion - don't remove the material object from the vector
 
-//TODO Hold a texture inside of the nodescene structure
-//TODO Once a material be rendered the result in 2d will be held in that texture
-//TODO The material of the mesh will be consist of it's submeshes and will be rendered without pbr calculations
+//TODO Render all the nodescenes / Use checkbox 
+//TODO Restrict submesh count 
 
 //TODO Load audios from load.hpp
 
@@ -593,16 +592,6 @@ bool LigidPainter::run()
 	glBindVertexArray(objects.VAO);
 
 	addSphereButton();
-
-	glActiveTexture(GL_TEXTURE30);
-    unsigned int materials;
-    glGenTextures(1,&materials);
-    glBindTexture(GL_TEXTURE_3D,materials);
-    
-    glActiveTexture(GL_TEXTURE31);
-    unsigned int maskTextures;
-    glGenTextures(1,&maskTextures);
-    glBindTexture(GL_TEXTURE_3D,maskTextures);
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
@@ -2271,6 +2260,8 @@ void LigidPainter::sndPanelPlusIcon(){
 			unsigned int renderTexture;
 			glset.genTextures(renderTexture);
 			glset.bindTexture(renderTexture);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glset.texImage(nullptr,100,100,GL_RGBA);
 			glset.generateMipmap();
 
@@ -2280,6 +2271,8 @@ void LigidPainter::sndPanelPlusIcon(){
 			glset.genTextures(outTexture);
 			glset.bindTexture(outTexture);
 			glset.texImage(nullptr,1024,1024,GL_RGBA);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glset.generateMipmap();
 
 			emptyNodeScene.outTexture = outTexture;

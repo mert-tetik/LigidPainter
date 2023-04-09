@@ -230,7 +230,8 @@ vec3 getRealisticResult(){
     }   
     
     // ambient lighting (we now use IBL as the ambient term)
-    vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+    vec3 F = fresnelSchlickRoughness(max(abs(dot(N, V)), 0.0), F0, roughness);
+    //vec3 F = vec3(0.05);
     
     vec3 kS = F;
     vec3 kD = 1.0 - kS;
