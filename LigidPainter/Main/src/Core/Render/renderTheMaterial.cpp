@@ -417,6 +417,8 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
                     glset.bindFramebuffer(0);
                     glset.deleteFramebuffers(copyFBO);
+
+                    std::cout << "pipeline size : " << material.renderingPipeline.size() << '\n';
                 }
                 
                 

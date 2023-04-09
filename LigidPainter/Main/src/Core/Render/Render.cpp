@@ -279,6 +279,9 @@ bool enteredOnce = true;
 
 
 int paintRenderCounter = 0;
+
+size_t renderingCounter = 0;
+
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
 Icons &icons,float &maskPanelSliderValue, bool renderPlane,bool renderSphere,
 PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,
@@ -525,9 +528,11 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		if(model.meshes.size() != 0){
 			//Output the material
 			if(UIElements[UIrealtimeMaterialRenderingCheckBox].checkBox.checked){
-				for (size_t i = 0; i < nodeScenes.size(); i++)
-				{
-					modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[i],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex);
+				if(renderingCounter % 3 == 0){
+					for (size_t i = 0; i < nodeScenes.size(); i++)
+					{
+						modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[i],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex);
+					}
 				}
 			}
 			else{
@@ -705,6 +710,8 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	
 	colorPicker.hexValTextBoxVal = util.rgbToHexGenerator(colorPicker.pickerValue);
 	
+	renderingCounter++;
+
 	return renderOut;
 }
 void Render::sendProgramsToRender(Programs apprenderPrograms){

@@ -1915,9 +1915,14 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 					//currentMaterialIndex = i;
 					//newModelAdded = true; 
 					//model.meshes[i].materialIndex = selectedNodeScene;
-					SubMeshMs submesh;
-					submesh.name = "submesh_" + std::to_string(model.meshes[i].submeshes.size());
-					model.meshes[i].submeshes.push_back(submesh);
+					if(model.meshes[i].submeshes.size() == 6){
+						alert("Submesh count can be maximum 6",200);						
+					}
+					else{
+						SubMeshMs submesh;
+						submesh.name = "submesh_" + std::to_string(model.meshes[i].submeshes.size());
+						model.meshes[i].submeshes.push_back(submesh);
+					}
 				}
 			}
 			//box(0.03f, 0.06f, renderData.panelLoc - screenGapX + 0.3f, 0.8f - (i * 0.125f), "", colorData.buttonColorHover, 0.048f, true, false, 0.6f, 10000, colorData.buttonColorHover, 0); 

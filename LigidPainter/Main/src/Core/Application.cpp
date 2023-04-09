@@ -46,10 +46,11 @@
 //TODO Move folders into trash folder before deleting forever
 //TODO Material deletion - don't remove the material object from the vector
 
-//TODO Render all the nodescenes / Use checkbox 
 //TODO Restrict submesh count 
 
 //TODO Load audios from load.hpp
+
+//TODO Realtime material rendering performance
 
 //TODO SFX
 //Once a texture is generated or nodes are baked

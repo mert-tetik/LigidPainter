@@ -89,26 +89,26 @@ using namespace std;
                 else{
                     rndrC++;
                     glUseProgram(materialResultProgram);
+                    if(rndrC % 1 == 0){
+                        glUniformMatrix4fv(glGetUniformLocation(materialResultProgram, "projection"), 1,GL_FALSE, glm::value_ptr(projection));
+        	            glUniformMatrix4fv(glGetUniformLocation(materialResultProgram, "view"), 1,GL_FALSE, glm::value_ptr(view));
 
-                    glUniformMatrix4fv(glGetUniformLocation(materialResultProgram, "projection"), 1,GL_FALSE, glm::value_ptr(projection));
-        	        glUniformMatrix4fv(glGetUniformLocation(materialResultProgram, "view"), 1,GL_FALSE, glm::value_ptr(view));
+                        for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++)//20 21 22 23 24 25 
+                        {
+                            glActiveTexture(GL_TEXTURE20+sI);
+                            glBindTexture(GL_TEXTURE_2D,materialOutputs[meshes[i].submeshes[sI].materialIndex]);
+                            glUniform1i(glGetUniformLocation(materialResultProgram, ("material" + std::to_string(sI)).c_str()), 20+sI);
+                        }
 
-                    for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++)//20 21 22 23 24 25 
-                    {
-                        glActiveTexture(GL_TEXTURE20+sI);
-                        glBindTexture(GL_TEXTURE_2D,materialOutputs[meshes[i].submeshes[sI].materialIndex]);
-                        glUniform1i(glGetUniformLocation(materialResultProgram, ("material" + std::to_string(sI)).c_str()), 20+sI);
+                        for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++)//26 27 28 29 30 31
+                        {
+                            glActiveTexture(GL_TEXTURE26+sI);
+                            glBindTexture(GL_TEXTURE_2D,meshes[i].submeshes[sI].maskTexture);
+                            glUniform1i(glGetUniformLocation(materialResultProgram, ("mask" + std::to_string(sI)).c_str()), 26+sI);
+                        }
+
+                        glUniform1i(glGetUniformLocation(materialResultProgram, "submeshCount"), meshes[i].submeshes.size());
                     }
-
-                    for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++)//26 27 28 29 30 31
-                    {
-                        glActiveTexture(GL_TEXTURE26+sI);
-                        glBindTexture(GL_TEXTURE_2D,meshes[i].submeshes[sI].maskTexture);
-                        glUniform1i(glGetUniformLocation(materialResultProgram, ("mask" + std::to_string(sI)).c_str()), 26+sI);
-                    }
-                    
-                    glUniform1i(glGetUniformLocation(materialResultProgram, "submeshCount"), meshes[i].submeshes.size());
-
                     meshes[i].Draw();
                 }
             }
