@@ -422,6 +422,17 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	skyBoxRotationRangeBarElement.type = "rangeBar";
     UIElements.push_back(skyBoxRotationRangeBarElement);//32
     
+    UIElement realtimeMaterialRenderingCheckBoxElement;
+    realtimeMaterialRenderingCheckBoxElement.checkBox.positionX = -0.1f;
+    realtimeMaterialRenderingCheckBoxElement.checkBox.positionY = -0.95f;
+    realtimeMaterialRenderingCheckBoxElement.checkBox.text = "Realtime material rendering";
+    realtimeMaterialRenderingCheckBoxElement.checkBox.checked = false;
+    realtimeMaterialRenderingCheckBoxElement.checkBox.mouseHover = false;
+    realtimeMaterialRenderingCheckBoxElement.panel = 5;
+    realtimeMaterialRenderingCheckBoxElement.attachedToMainPanel = true;
+    realtimeMaterialRenderingCheckBoxElement.type = "checkBox";
+    UIElements.push_back(realtimeMaterialRenderingCheckBoxElement);//33
+    
     UIElement stabilizeFpsCheckBoxElement;
     stabilizeFpsCheckBoxElement.checkBox.positionX = -0.03f;
     stabilizeFpsCheckBoxElement.checkBox.positionY = 0.98f-pressYSettingsPanel;

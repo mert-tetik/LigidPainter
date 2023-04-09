@@ -172,6 +172,9 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 
 		}
 		
+		if(UIElements[UIrealtimeMaterialRenderingCheckBox].checkBox.mouseHover)
+			UIElements[UIrealtimeMaterialRenderingCheckBox].checkBox.checked = !UIElements[UIrealtimeMaterialRenderingCheckBox].checkBox.checked;
+			
 		if(UIElements[UIstabilizeFpsCheckBox].checkBox.mouseHover)
 			UIElements[UIstabilizeFpsCheckBox].checkBox.checked = !UIElements[UIstabilizeFpsCheckBox].checkBox.checked;
 		if(UIElements[UIimageCheckBoxElement].checkBox.mouseHover)

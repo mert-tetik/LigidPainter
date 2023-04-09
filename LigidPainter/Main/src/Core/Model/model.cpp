@@ -96,7 +96,7 @@ using namespace std;
                     for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++)//20 21 22 23 24 25 
                     {
                         glActiveTexture(GL_TEXTURE20+sI);
-                        glBindTexture(GL_TEXTURE_2D,materialOutputs[meshes[i].submeshes[0].materialIndex]);
+                        glBindTexture(GL_TEXTURE_2D,materialOutputs[meshes[i].submeshes[sI].materialIndex]);
                         glUniform1i(glGetUniformLocation(materialResultProgram, ("material" + std::to_string(sI)).c_str()), 20+sI);
                     }
 
