@@ -30,11 +30,9 @@
 
 #include "LibAL.h"
 
-bool texturePanelButtonHover = false;
 
 float dropperMixVal = 0.0f;
 float hexValTextboxMixVal = 0.0f;
-float texturePanelButtonMixVal = 0.0f;
 
 
 void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &colorPicker,SndPanel &sndpanel) {
@@ -61,7 +59,6 @@ void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &
 
  	dropperMixVal = util.transitionEffect(colorPicker.dropperEnter,dropperMixVal,phaseDifference);
 	hexValTextboxMixVal = util.transitionEffect(colorPicker.hexValTextBoxActive,hexValTextboxMixVal,phaseDifference);
- 	texturePanelButtonMixVal = util.transitionEffect(texturePanelButtonHover,texturePanelButtonMixVal,phaseDifference);
 
 
 	sndpanel.minusSignMixVal = util.transitionEffect(sndpanel.minusSignHover,sndpanel.minusSignMixVal,phaseDifference);
@@ -111,8 +108,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	Texture txtr;
 	uiOut.maskPanelMaskClicked = false;
 	uiOut.maskPanelMaskHover = false;
-	uiOut.texturePanelButtonClicked = false;
-	uiOut.texturePanelButtonHover = false;
 
 	float centerDivider;
 	float centerSum;
@@ -544,7 +539,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 
 	if (panelData.texturePanelActive) {
-		ui.modelMaterialPanel(model,programs,renderData,screenGapX,materialsPanelSlideValue,mouseXpos,mouseYpos,texturePanelButtonHover,uiOut,currentMaterialIndex,firstClick,newModelAdded,texturePanelButtonMixVal,selectedNodeScene,icons,nodeScenes,albedoTextures,textureSelectionPanel);
+		ui.modelMaterialPanel(model,programs,renderData,screenGapX,materialsPanelSlideValue,mouseXpos,mouseYpos,uiOut,currentMaterialIndex,firstClick,newModelAdded,selectedNodeScene,icons,nodeScenes,albedoTextures,textureSelectionPanel);
 	}
 
 

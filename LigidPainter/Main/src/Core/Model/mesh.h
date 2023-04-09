@@ -40,6 +40,7 @@ struct SubMeshMs{
     string name; 
     bool textureSelectionState = false;
     int materialIndex = 0;
+    float modelMaterialButtonMixVal = 0.f;
 };
 
 class Mesh {
@@ -52,6 +53,7 @@ public:
     unsigned int VAO;
     std::string materialName;
     int materialIndex;
+    float modelMaterialButtonMixVal = 0.f;
 
     void sendObjectsToMesh(unsigned int aVBO,unsigned int aVAO){
         oVBO = aVBO;

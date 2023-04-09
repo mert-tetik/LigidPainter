@@ -1776,7 +1776,7 @@ void UserInterface::sendTextBoxActiveCharToUI(int textBoxActiveChar){
 }
 
 void UserInterface::modelMaterialPanel(Model &model,Programs programs,RenderData renderData,float screenGapX,float materialsPanelSlideValue,double mouseXpos,
-double mouseYpos,bool &texturePanelButtonHover,RenderOutData& uiOut,int& currentMaterialIndex,bool &firstClick,bool& newModelAdded, float texturePanelButtonMixVal,
+double mouseYpos,RenderOutData& uiOut,int& currentMaterialIndex,bool &firstClick,bool& newModelAdded,
 int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector<aTexture> &albedoTextures,TextureSelectionPanel &textureSelectionPanel){
 	ColorData colorData;
 
@@ -1794,15 +1794,15 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 			//Check if mouse is entered the related button
 			bool textureButtonEnter = isMouseOnButton(renderData.window, 0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX*2 + 0.205f,0.8f - (posI * 0.125f) + materialsPanelSlideValue, mouseXpos, mouseYpos,false);
 			bool textureAddButtonEnter = isMouseOnButton(renderData.window, 0.02f, 0.03f, renderData.panelLoc - 1.0f - screenGapX*2 + 0.3f,0.8f - (posI * 0.125f) + materialsPanelSlideValue, mouseXpos, mouseYpos,false);
-			
-			if(textureButtonEnter){
+			Utilities util;
+			model.meshes[i].modelMaterialButtonMixVal = util.transitionEffect(textureButtonEnter,model.meshes[i].modelMaterialButtonMixVal,0.1f);
 				//Hover
 				if(!textureAddButtonEnter){
 					mouseEnteredOnce = true;
-					texturePanelButtonHover = true;
 				}
-				uiOut.texturePanelButtonHover = true;
-				if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS){
+				if(textureButtonEnter)
+					uiOut.texturePanelButtonHover = true;
+				if(glfwGetMouseButton(renderData.window, 0) == GLFW_PRESS && textureButtonEnter){
 					//Pressed
 					currentMaterialIndex = i;
 					uiOut.texturePanelButtonClicked = true;
@@ -1818,25 +1818,9 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 					currentColor = colorData.materialButtonColor;
 					currentColorHover = colorData.materialButtonColorHover;
 				}
-				//Button (Hover)
-				box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (posI * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, currentColor, 0.2f, false, false, 0.9f, 10000, currentColorHover, texturePanelButtonMixVal);
-			}
-			else{
-				glm::vec4 currentColor;
-				glm::vec4 currentColorHover;
-				if(i == currentMaterialIndex){
-					currentColor = colorData.materialButtonColorActive;
-					currentColorHover = colorData.materialButtonColorActiveHover;
-				}
-				else{
-					currentColor = colorData.materialButtonColor;
-					currentColorHover = colorData.materialButtonColorHover;
-				}
-
 				//Button 
-				box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (posI * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, currentColor, 0.2f, false, false, 0.9f, 10000, currentColorHover, 0);
-				
-			}
+				box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - (posI * 0.125f) + materialsPanelSlideValue, model.meshes[i].materialName, currentColor, 0.2f, false, false, 0.9f, 10000, currentColorHover, model.meshes[i].modelMaterialButtonMixVal);
+
 						if(textureAddButtonEnter){
 				//Hover
 				//uiOut.texturePanelButtonHover = true;
@@ -1879,10 +1863,14 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 				if(isMouseOnButton(renderData.window,0.2f,0.06f,renderData.panelLoc - 1.0f - screenGapX*2.f + 0.205f,0.8f - ((posI) * 0.125f) + materialsPanelSlideValue,mouseXpos,mouseYpos,false)){
 					submeshButtonHover = true;
 				}
-				box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - ((posI) * 0.125f) + materialsPanelSlideValue, model.meshes[i].submeshes[sI].name, colorData.buttonColor, 0.2f, false, false, 0.9f, 10000,  colorData.buttonColorHover, submeshButtonHover);
+
+				model.meshes[i].submeshes[sI].modelMaterialButtonMixVal = util.transitionEffect(submeshButtonHover,model.meshes[i].submeshes[sI].modelMaterialButtonMixVal,0.1f);
+
+
+				box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - ((posI) * 0.125f) + materialsPanelSlideValue, model.meshes[i].submeshes[sI].name, colorData.buttonColor, 0.2f, false, false, 0.9f, 10000,  colorData.buttonColorHover, model.meshes[i].submeshes[sI].modelMaterialButtonMixVal);
 				
-				box(0.001f, 0.04f, renderData.panelLoc - 1.0f - screenGapX + 0.275f, 0.8f - ((posI) * 0.125f) + materialsPanelSlideValue, "", glm::vec4(colorData.iconColor.r,colorData.iconColor.g,colorData.iconColor.b,0.7), 0.2f, false, false, 0.91f, 10000,  colorData.buttonColorHover, submeshButtonHover);
-				box(0.001f, 0.04f, renderData.panelLoc - 1.0f - screenGapX + 0.195f, 0.8f - ((posI) * 0.125f) + materialsPanelSlideValue, "", glm::vec4(colorData.iconColor.r,colorData.iconColor.g,colorData.iconColor.b,0.7), 0.2f, false, false, 0.91f, 10000,  colorData.buttonColorHover, submeshButtonHover);
+				box(0.001f, 0.04f, renderData.panelLoc - 1.0f - screenGapX + 0.275f, 0.8f - ((posI) * 0.125f) + materialsPanelSlideValue, "", glm::vec4(colorData.iconColor.r,colorData.iconColor.g,colorData.iconColor.b,0.7), 0.2f, false, false, 0.91f, 10000,  colorData.buttonColorHover, model.meshes[i].submeshes[sI].modelMaterialButtonMixVal);
+				box(0.001f, 0.04f, renderData.panelLoc - 1.0f - screenGapX + 0.195f, 0.8f - ((posI) * 0.125f) + materialsPanelSlideValue, "", glm::vec4(colorData.iconColor.r,colorData.iconColor.g,colorData.iconColor.b,0.7), 0.2f, false, false, 0.91f, 10000,  colorData.buttonColorHover, model.meshes[i].submeshes[sI].modelMaterialButtonMixVal);
 				
 				renderText(programs.uiProgram,std::to_string(model.meshes[i].submeshes[sI].materialIndex),renderData.panelLoc - 1.0f - screenGapX + 0.22f,0.77f - ((posI) * 0.125f) + materialsPanelSlideValue,0.00022f,colorData.textColor,0.92f,false);
 
@@ -1967,9 +1955,6 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 				glUseProgram(programs.uiProgram);
 				posI++;
 			}
-		}
-		if(!mouseEnteredOnce){
-			texturePanelButtonHover = false;
 		}
 }
 

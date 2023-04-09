@@ -45,20 +45,11 @@
 //TODO Light source rotation from 3D Model displayer
 //TODO Move folders into trash folder before deleting forever
 //TODO Material deletion - don't remove the material object from the vector
-
 //TODO Material deletion - ask before
-
 //TODO Load audios from load.hpp
-
 //TODO Fix material scroll
-
 //TODO Realtime material rendering performance
-
-//TODO SFX
-//Once a texture is generated or nodes are baked
-//Once an alert is displayed
-//Start screen buttons
-
+//TODO Update project file
 //TODO 2D Painting
 // - Lasso Tool 
 // - Quick Selection
