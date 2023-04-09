@@ -46,8 +46,6 @@
 //TODO Move folders into trash folder before deleting forever
 //TODO Material deletion - don't remove the material object from the vector
 
-//TODO Restrict submesh count 
-
 //TODO Load audios from load.hpp
 
 //TODO Realtime material rendering performance

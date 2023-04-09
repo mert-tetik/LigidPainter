@@ -1846,7 +1846,11 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 					submeshButtonHover = true;
 				}
 				box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue, model.meshes[i].submeshes[sI].name, colorData.buttonColor, 0.2f, false, false, 0.9f, 10000,  colorData.buttonColorHover, submeshButtonHover);
-				renderText(programs.uiProgram,std::to_string(model.meshes[i].submeshes[sI].materialIndex),renderData.panelLoc - 1.0f - screenGapX + 0.155f,0.78f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.00022f,colorData.textColor,0.92f,false);
+				
+				box(0.001f, 0.04f, renderData.panelLoc - 1.0f - screenGapX + 0.275f, 0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue, "", glm::vec4(colorData.iconColor.r,colorData.iconColor.g,colorData.iconColor.b,0.7), 0.2f, false, false, 0.91f, 10000,  colorData.buttonColorHover, submeshButtonHover);
+				box(0.001f, 0.04f, renderData.panelLoc - 1.0f - screenGapX + 0.195f, 0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue, "", glm::vec4(colorData.iconColor.r,colorData.iconColor.g,colorData.iconColor.b,0.7), 0.2f, false, false, 0.91f, 10000,  colorData.buttonColorHover, submeshButtonHover);
+				
+				renderText(programs.uiProgram,std::to_string(model.meshes[i].submeshes[sI].materialIndex),renderData.panelLoc - 1.0f - screenGapX + 0.22f,0.77f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.00022f,colorData.textColor,0.92f,false);
 
 				glUseProgram(programs.renderTheTextureProgram);
 				glset.uniform1i(programs.renderTheTextureProgram,"isPressed",1);
@@ -1856,7 +1860,7 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 				glset.bindTexture(model.meshes[i].submeshes[sI].maskTexture);
 
 				float maskW = 0.02f;
-				glm::vec2 maskPos = glm::vec2(renderData.panelLoc - 1.0f - screenGapX + 0.255f ,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue);
+				glm::vec2 maskPos = glm::vec2(renderData.panelLoc - 1.0f - screenGapX + 0.35f ,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue);
 				std::vector<float> maskVertices = { 
 					// first triangle
 		 			maskW+maskPos.x,  maskW*2.f+maskPos.y, 0.91f,1,1,0,0,0,  // top right
@@ -1881,7 +1885,7 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 
 				glUseProgram(programs.iconsProgram);
 				bool addMaskTxtrIconHover = false;
-				if(isMouseOnButton(renderData.window,0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX*2.f + 0.3f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,mouseXpos,mouseYpos,false)){
+				if(isMouseOnButton(renderData.window,0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX*2.f + 0.305f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,mouseXpos,mouseYpos,false)){
 					addMaskTxtrIconHover = true;
 					if(firstClick){
 						model.meshes[i].submeshes[sI].textureSelectionState = true;
@@ -1890,18 +1894,36 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 						textureSelectionPanel.posY = 0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue;
 					}
 				}
-				iconBox(0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX + 0.3f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.91f,icons.AddTexture,addMaskTxtrIconHover,colorData.iconColor,colorData.iconColorHover);
+				iconBox(0.01f,0.02f,renderData.panelLoc - 1.0f - screenGapX + 0.305f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.91f,icons.AddTexture,addMaskTxtrIconHover,colorData.iconColor,colorData.iconColorHover);
 				
 				
 				bool addMaterialIconHover = false;
-				if(isMouseOnButton(renderData.window,0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX*2.f + 0.21f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,mouseXpos,mouseYpos,false)){
+				if(isMouseOnButton(renderData.window,0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX*2.f + 0.25f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,mouseXpos,mouseYpos,false)){
 					addMaterialIconHover = true;
 					if(firstClick){
 						model.meshes[i].submeshes[sI].materialIndex = selectedNodeScene;
 					}
 				}
-				iconBox(0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX + 0.165f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.91f,icons.Material,0,colorData.iconColor,colorData.iconColorHover);
-				iconBox(0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX + 0.21f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.91f,icons.ArrowDown,addMaterialIconHover,colorData.iconColor,colorData.iconColorHover);
+				iconBox(0.012f,0.024f,renderData.panelLoc - 1.0f - screenGapX + 0.215f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.91f,icons.Material,0,colorData.iconColor,colorData.iconColorHover);
+				iconBox(0.01f,0.02f,renderData.panelLoc - 1.0f - screenGapX + 0.25f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.91f,icons.ArrowDown,addMaterialIconHover,colorData.iconColor,colorData.iconColorHover);
+				
+				
+				bool deleteSubmeshIconHover = false;
+				if(isMouseOnButton(renderData.window,0.015f,0.03f,renderData.panelLoc - 1.0f - screenGapX*2.f + 0.17f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,mouseXpos,mouseYpos,false)){
+					deleteSubmeshIconHover = true;
+					if(firstClick){
+						//Delete the submesh
+						model.meshes[i].submeshes.erase(model.meshes[i].submeshes.begin()+sI);
+						
+						//Rename submeshes
+						for (size_t ssi = 0; ssi < model.meshes[i].submeshes.size(); ssi++)
+						{
+							model.meshes[i].submeshes[ssi].name = "submesh_" + std::to_string(ssi);
+						}
+					}
+				}
+				iconBox(0.01f,0.02f,renderData.panelLoc - 1.0f - screenGapX + 0.17f,0.8f - ((i+sI+1) * 0.125f) + materialsPanelSlideValue,0.91f,icons.Minus,deleteSubmeshIconHover,colorData.iconColor,colorData.iconColorHover);
+				
 				
 				glUseProgram(programs.uiProgram);
 			}
