@@ -2129,8 +2129,8 @@ void LigidPainter::sndPanelMinusIcon(){
 	UserInterface ui;
 
 	if(!txtrCreatingPanel.active){
-		if(!albedoTextures[selectedAlbedoTextureIndex].isTrashFolder){
-			if(sndPanel.state == 0){
+		if(sndPanel.state == 0){
+			if(!albedoTextures[selectedAlbedoTextureIndex].isTrashFolder){
 				//Textures
 				if(albedoTextures.size()){
 
@@ -2177,41 +2177,44 @@ void LigidPainter::sndPanelMinusIcon(){
 			//Materials
 			bool deletable = true;
 			if(nodeScenes.size() != 1){
-				
-				for (size_t i = 0; i < model.meshes.size(); i++)
+				if(ligidMessageBox("Selected material will be deleted. Do you want to proceed?",-0.2375f,"",0))
 				{
-					if(model.meshes[i].materialIndex == selectedNodeScene){
-						ui.alert("Warning! Deleting request is ignored. This material is already in use.",200);
-						deletable = false;
-						break;
-					}
-				}
-				if(deletable){
-					//TODO : Update history array indexes
-					for (size_t i = 0; i < nodeScenesHistory.size(); i++)
-					{	
-						if(nodeScenesHistory[i].arrayIndex == selectedNodeScene)
-							nodeScenesHistory.erase(nodeScenesHistory.begin()+i);
-					}
-					for (size_t i = 0; i < nodeScenesHistory.size(); i++)
-					{
-						if(selectedNodeScene < nodeScenesHistory[i].arrayIndex){
-							nodeScenesHistory[i].arrayIndex--;
-						}
-					}
-					
-					nodeScenes.erase(nodeScenes.begin() + selectedNodeScene);
-					modelMaterials.erase(modelMaterials.begin() + selectedNodeScene);
-					if(selectedNodeScene)
-						selectedNodeScene--;
 					for (size_t i = 0; i < model.meshes.size(); i++)
 					{
-						if(selectedNodeScene < model.meshes[i].materialIndex){
-							model.meshes[i].materialIndex--;
+						if(model.meshes[i].materialIndex == selectedNodeScene){
+							ui.alert("Warning! Deleting request is ignored. This material is already in use.",200);
+							deletable = false;
+							break;
 						}
 					}
-					
+					if(deletable){
+						//TODO : Update history array indexes
+						for (size_t i = 0; i < nodeScenesHistory.size(); i++)
+						{	
+							if(nodeScenesHistory[i].arrayIndex == selectedNodeScene)
+								nodeScenesHistory.erase(nodeScenesHistory.begin()+i);
+						}
+						for (size_t i = 0; i < nodeScenesHistory.size(); i++)
+						{
+							if(selectedNodeScene < nodeScenesHistory[i].arrayIndex){
+								nodeScenesHistory[i].arrayIndex--;
+							}
+						}
+
+						nodeScenes.erase(nodeScenes.begin() + selectedNodeScene);
+						modelMaterials.erase(modelMaterials.begin() + selectedNodeScene);
+						if(selectedNodeScene)
+							selectedNodeScene--;
+						for (size_t i = 0; i < model.meshes.size(); i++)
+						{
+							if(selectedNodeScene < model.meshes[i].materialIndex){
+								model.meshes[i].materialIndex--;
+							}
+						}
+
+					}
 				}
+				
 			}
 			else{
 				ui.alert("Warning! Deleting request is ignored. Last material can't be deleted.",200);
