@@ -1838,7 +1838,6 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 					}
 					else{
 						SubMeshMs submesh;
-						submesh.name = "submesh_" + std::to_string(model.meshes[i].submeshes.size());
 						model.meshes[i].submeshes.push_back(submesh);
 					}
 				}
@@ -1865,7 +1864,7 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 				model.meshes[i].submeshes[sI].modelMaterialButtonMixVal = util.transitionEffect(submeshButtonHover,model.meshes[i].submeshes[sI].modelMaterialButtonMixVal,0.1f);
 
 
-				box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - ((posI) * 0.125f) + materialsPanelSlideValue, model.meshes[i].submeshes[sI].name, colorData.buttonColor, 0.2f, false, false, 0.9f, 10000,  colorData.buttonColorHover, model.meshes[i].submeshes[sI].modelMaterialButtonMixVal);
+				box(0.2f, 0.06f, renderData.panelLoc - 1.0f - screenGapX + 0.205f, 0.8f - ((posI) * 0.125f) + materialsPanelSlideValue, "submesh_" + std::to_string(sI), colorData.buttonColor, 0.2f, false, false, 0.9f, 10000,  colorData.buttonColorHover, model.meshes[i].submeshes[sI].modelMaterialButtonMixVal);
 				
 				box(0.001f, 0.04f, renderData.panelLoc - 1.0f - screenGapX + 0.275f, 0.8f - ((posI) * 0.125f) + materialsPanelSlideValue, "", glm::vec4(colorData.iconColor.r,colorData.iconColor.g,colorData.iconColor.b,0.7), 0.2f, false, false, 0.91f, 10000,  colorData.buttonColorHover, model.meshes[i].submeshes[sI].modelMaterialButtonMixVal);
 				box(0.001f, 0.04f, renderData.panelLoc - 1.0f - screenGapX + 0.195f, 0.8f - ((posI) * 0.125f) + materialsPanelSlideValue, "", glm::vec4(colorData.iconColor.r,colorData.iconColor.g,colorData.iconColor.b,0.7), 0.2f, false, false, 0.91f, 10000,  colorData.buttonColorHover, model.meshes[i].submeshes[sI].modelMaterialButtonMixVal);
@@ -1935,12 +1934,6 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 						if(sI != 0){
 							//Delete the submesh
 							model.meshes[i].submeshes.erase(model.meshes[i].submeshes.begin()+sI);
-
-							//Rename submeshes
-							for (size_t ssi = 0; ssi < model.meshes[i].submeshes.size(); ssi++)
-							{
-								model.meshes[i].submeshes[ssi].name = "submesh_" + std::to_string(ssi);
-							}
 						}
 						else{
 							alert("First submesh can't be deleted",200);

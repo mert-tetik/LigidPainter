@@ -41,8 +41,6 @@
 //TODO Fix mirror origin pos
 //TODO Fix mirror paint over
 //TODO Change texture extension
-//TODO Move folders into trash folder before deleting forever
-//TODO Load audios from load.hpp
 //TODO Bake submeshes
 
 //TODO Light source rotation from 3D Model displayer

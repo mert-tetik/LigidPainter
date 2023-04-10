@@ -220,9 +220,21 @@ private:
             std::string materialName;
             std::vector<Vertex> vertices;
             std::vector<unsigned int> indices;
+            std::vector<SubMeshMs> submeshes;
 
             uint64_t materialIndex;
             rf.read(reinterpret_cast<char*>(&materialIndex),sizeof(uint64_t));
+
+            uint64_t submeshSize;
+            rf.read(reinterpret_cast<char*>(&submeshSize),sizeof(uint64_t));
+
+            for (size_t sMi = 0; sMi < submeshSize; sMi++)
+            {
+                SubMeshMs submesh;
+                rf.read(reinterpret_cast<char*>(&submesh),sizeof(SubMeshMs));
+                submeshes.push_back(submesh);
+            }
+            
 
             uint64_t meshNameSize;
             rf.read(reinterpret_cast<char*>(&meshNameSize),sizeof(uint64_t));
@@ -258,6 +270,7 @@ private:
                 indices.push_back(index);
             }
             model.meshes.push_back(Mesh(vertices, indices, {},materialName,materialIndex));
+            model.meshes[meshI].submeshes = submeshes;
         }
         
     }
@@ -737,6 +750,16 @@ private:
         for (size_t meshI = 0; meshI < model.meshes.size(); meshI++)
         {
             wf.write(reinterpret_cast<char*>(&model.meshes[meshI].materialIndex),sizeof(uint64_t));
+
+            uint64_t submeshSize = model.meshes[meshI].submeshes.size();
+            wf.write(reinterpret_cast<char*>(&submeshSize),sizeof(uint64_t));
+
+            for (size_t sMi = 0; sMi < submeshSize; sMi++)
+            {
+                wf.write(reinterpret_cast<char*>(&model.meshes[meshI].submeshes[sMi]),sizeof(SubMeshMs));
+            }
+            
+
             
             uint64_t meshNameSize = model.meshes[meshI].materialName.size();
             wf.write(reinterpret_cast<char*>(&meshNameSize),sizeof(uint64_t));

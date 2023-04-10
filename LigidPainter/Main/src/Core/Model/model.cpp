@@ -173,7 +173,6 @@ using namespace std;
         
             meshes.push_back(processMesh(mesh, scene));
             SubMeshMs submesh;
-            submesh.name = "submesh_0";
             meshes[i].submeshes.push_back(submesh);
         }
         // after we've processed all of the meshes (if any) we then recursively process each of the children nodes

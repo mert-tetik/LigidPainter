@@ -37,7 +37,6 @@ struct TextureMs {
 };
 struct SubMeshMs{
     unsigned int maskTexture = 0;
-    string name; 
     bool textureSelectionState = false;
     int materialIndex = 0;
     float modelMaterialButtonMixVal = 0.f;
