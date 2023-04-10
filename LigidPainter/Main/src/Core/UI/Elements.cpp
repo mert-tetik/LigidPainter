@@ -391,7 +391,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     //---------------------------SETTINGS PANEL---------------------------
 
-    const float pressYSettingsPanel = 0.1f;
+    const float pressYSettingsPanel = 0.4f;
 
     UIElement skyboxCheckBoxElement;
     skyboxCheckBoxElement.checkBox.positionX = 0.03f;
@@ -424,7 +424,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement realtimeMaterialRenderingCheckBoxElement;
     realtimeMaterialRenderingCheckBoxElement.checkBox.positionX = -0.1f;
-    realtimeMaterialRenderingCheckBoxElement.checkBox.positionY = -0.95f;
+    realtimeMaterialRenderingCheckBoxElement.checkBox.positionY = 1.15f-pressYSettingsPanel;
     realtimeMaterialRenderingCheckBoxElement.checkBox.text = "Realtime material rendering";
     realtimeMaterialRenderingCheckBoxElement.checkBox.checked = false;
     realtimeMaterialRenderingCheckBoxElement.checkBox.mouseHover = false;
@@ -434,8 +434,8 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(realtimeMaterialRenderingCheckBoxElement);//33
     
     UIElement stabilizeFpsCheckBoxElement;
-    stabilizeFpsCheckBoxElement.checkBox.positionX = -0.03f;
-    stabilizeFpsCheckBoxElement.checkBox.positionY = 0.98f-pressYSettingsPanel;
+    stabilizeFpsCheckBoxElement.checkBox.positionX = -0.1f;
+    stabilizeFpsCheckBoxElement.checkBox.positionY = 1.2f-pressYSettingsPanel;
     stabilizeFpsCheckBoxElement.checkBox.text = "sync";
     stabilizeFpsCheckBoxElement.checkBox.checked = false;
     stabilizeFpsCheckBoxElement.checkBox.mouseHover = false;
