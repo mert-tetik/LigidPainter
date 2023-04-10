@@ -130,6 +130,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
 	float centerCoords = (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
 
+
+
 	//Texture demonstrator transition animation
 	if(textureDisplayer.buttonClicked){
 		if(textureDisplayer.changeState){
@@ -647,6 +649,16 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	bool usingUiProgram = false;
 	bool usingIconProgram = false;
 	
+	glUseProgram(programs.uiProgram);
+	if(panelData.paintingPanelActive){
+
+		ui.box(0.005f, 0.65f, centerCoords - screenGapX - 0.16f, 0.25f - panelData.paintingPanelSlideVal, "",colorData.buttonColor, 0., false, false, 0.91f, 1000, colorData.buttonColorHover, 0.f); //Add mask texture button
+	}
+	if(panelData.settingsPanelActive){
+
+		ui.box(0.005f, 0.75f, centerCoords - screenGapX - 0.16f, 0.15f - panelData.settingsPanelSlideVal, "",colorData.buttonColor, 0., false, false, 0.91f, 1000, colorData.buttonColorHover, 0.f); //Add mask texture button
+	}
+
 	for (size_t i = 0; i < UIElements.size(); i++)
 	{
 		std::string currentType = UIElements[i].type;

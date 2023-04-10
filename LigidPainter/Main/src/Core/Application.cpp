@@ -47,7 +47,7 @@
 //TODO Fix material scroll
 //TODO Realtime material rendering performance
 //TODO Panel scroll bars
-//TODO Arrange settings panel
+//TODO Disable fill between if spacing
 
 //TODO Light source rotation from 3D Model displayer
 //TODO RTX Support
@@ -588,6 +588,11 @@ bool LigidPainter::run()
 	glBindVertexArray(objects.VAO);
 
 	addSphereButton();
+
+	glHint(GL_LINE_SMOOTH_HINT,GL_FASTEST);
+	glHint(GL_POLYGON_SMOOTH_HINT,GL_FASTEST);
+	glHint(GL_TEXTURE_COMPRESSION_HINT,GL_FASTEST);
+	glHint(GL_FRAGMENT_SHADER_DERIVATIVE_HINT,GL_FASTEST);
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{

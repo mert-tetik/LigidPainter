@@ -424,7 +424,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement realtimeMaterialRenderingCheckBoxElement;
     realtimeMaterialRenderingCheckBoxElement.checkBox.positionX = -0.1f;
-    realtimeMaterialRenderingCheckBoxElement.checkBox.positionY = 1.15f-pressYSettingsPanel;
+    realtimeMaterialRenderingCheckBoxElement.checkBox.positionY = 1.125f-pressYSettingsPanel;
     realtimeMaterialRenderingCheckBoxElement.checkBox.text = "Realtime material rendering";
     realtimeMaterialRenderingCheckBoxElement.checkBox.checked = false;
     realtimeMaterialRenderingCheckBoxElement.checkBox.mouseHover = false;

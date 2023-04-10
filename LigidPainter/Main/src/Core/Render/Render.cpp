@@ -319,8 +319,11 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 	//Panel scroll restrictions
 	if(UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked)
 		panelData.paintingPanelSlideVal = 0.18;
-	else if(panelData.paintingPanelSlideVal > 0.18){
-		//panelData.paintingPanelSlideVal = 0.18;
+	else if(panelData.paintingPanelSlideVal > 0.5){
+		panelData.paintingPanelSlideVal = 0.5;
+	}
+	if(panelData.settingsPanelSlideVal > 0.3){
+		panelData.settingsPanelSlideVal = 0.3;
 	}
 
 	if(!startScreen){
