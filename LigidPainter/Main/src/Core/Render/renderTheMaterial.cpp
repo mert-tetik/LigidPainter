@@ -29,7 +29,7 @@ std::vector<float> renderVertices = {
 
 unsigned int lastProgram = 0;
 
-MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY,std::vector<Node>appNodes,int chosenTextureResIndex,bool& bakeTheMaterial,std::vector<aTexture> &albedoTextures,int currentMaterialIndex,std::vector<NodeScene> &nodeScenesHistory,int chosenNodeResIndex){
+MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY,std::vector<Node>appNodes,int chosenTextureResIndex,bool& bakeTheMaterial,std::vector<aTexture> &albedoTextures,int currentMaterialIndex,std::vector<NodeScene> &nodeScenesHistory,int chosenNodeResIndex,unsigned int materialFBO){
     glClearColor(0,0,0,1);
     int txtrRes = 256;
 
@@ -388,9 +388,8 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     
                     glActiveTexture(GL_TEXTURE28);
                 
-                    unsigned int copyFBO; 
-                    glset.genFramebuffers(copyFBO);
-                    glset.bindFramebuffer(copyFBO);
+                                        glset.bindFramebuffer(materialFBO);
+                    glClear(GL_COLOR_BUFFER_BIT);
 
     	            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + outI, GL_TEXTURE_2D, material.outTexture, 0);
 
@@ -416,9 +415,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     delete[] copyData;
 
                     glset.bindFramebuffer(0);
-                    glset.deleteFramebuffers(copyFBO);
 
-                    std::cout << "pipeline size : " << material.renderingPipeline.size() << '\n';
                 }
                 
                 

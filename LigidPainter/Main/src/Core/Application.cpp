@@ -592,6 +592,9 @@ bool LigidPainter::run()
 	glHint(GL_TEXTURE_COMPRESSION_HINT,GL_FASTEST);
 	glHint(GL_FRAGMENT_SHADER_DERIVATIVE_HINT,GL_FASTEST);
 
+	unsigned int materialFBO;
+	glset.genFramebuffers(materialFBO);
+
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		if(!startScreen && !didDefaultNodesMakeToTheCenter)
@@ -901,7 +904,7 @@ bool LigidPainter::run()
 										,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,
 										txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
-										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios);
+										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO);
 		}
 		duplicateNodeCall = false;
 		

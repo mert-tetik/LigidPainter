@@ -292,7 +292,7 @@ std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::v
 glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
 ,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
 ,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
-,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios) {
+,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,unsigned int materialFBO) {
 	
 
 	
@@ -534,13 +534,13 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 				if(renderingCounter % 3 == 0){
 					for (size_t i = 0; i < nodeScenes.size(); i++)
 					{
-						modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[i],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex);
+						modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[i],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex,materialFBO);
 					}
 				}
 			}
 			else{
 				if(nodeScenes[selectedNodeScene].stateChanged || newModelAdded){
-					modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex);
+					modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex,materialFBO);
 					newModelAdded = false;
 				}
 			}
