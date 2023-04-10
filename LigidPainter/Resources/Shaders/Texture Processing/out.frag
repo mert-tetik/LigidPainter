@@ -185,7 +185,7 @@ void main() {
             float uvx = TexCoords.x;
             float uvy = TexCoords.y;
             
-            if(mirroredScreenMaskCamPos.x > mirroredScreenMaskCamPos.z){
+            if(abs(mirroredScreenMaskCamPos.x) < abs(mirroredScreenMaskCamPos.z)){
                if(mirrormaskrenderingX == 1)
                   uvx = 1.-uvx;
                if(mirrormaskrenderingY == 1)
@@ -206,7 +206,6 @@ void main() {
 
             float intensity = 0.0;
             
-
             if(isPainted(screenPos,false)){
                if(maskMode == 1)
                   intensity = texture(screenMaskTexture, screenPos.xy).r;

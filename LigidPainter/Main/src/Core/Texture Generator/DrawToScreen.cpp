@@ -273,8 +273,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				}
 
 				glm::mat4 mirroredView;
-				mirroredView = glm::lookAt((cameraPos-glm::vec3(xMirrorPos*(mirrorParams[i].pos.x == -1),yMirrorPos*(mirrorParams[i].pos.y == -1),zMirrorPos*(mirrorParams[i].pos.z == -1))) * mirrorParams[i].pos, (originPos-glm::vec3(xMirrorPos*(mirrorParams[i].pos.x == -1),yMirrorPos*(mirrorParams[i].pos.y == -1),zMirrorPos*(mirrorParams[i].pos.z == -1))) * mirrorParams[i].pos, glm::vec3(0.0, 1.0, 0.0));
-		
+				mirroredView = glm::lookAt((cameraPos) * mirrorParams[i].pos, (originPos) * mirrorParams[i].pos, glm::vec3(0.0, 1.0, 0.0));
 				glset.uniformMatrix4fv(programs.outProgram,"view",mirroredView);
 
 				std::vector<MaterialOut> emptyMaterials = {};
@@ -287,6 +286,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				glDeleteFramebuffers(1,&FBOMr2);
 			 	glDeleteTextures(1,&textureColorbuffer);
 			}
+				std::cout << '\n';
 
 
 			for (size_t i = 0; i < mirrorParams.size(); i++)

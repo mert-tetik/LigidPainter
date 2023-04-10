@@ -50,7 +50,7 @@ void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int scre
 		mirroredView = glm::lookAt((cameraPos - glm::vec3(xMirrorPos*(mirrorParams[i].pos.x == -1),yMirrorPos*(mirrorParams[i].pos.y == -1),zMirrorPos *(mirrorParams[i].pos.z == -1))) * mirrorParams[i].pos, (originPos-glm::vec3(xMirrorPos*(mirrorParams[i].pos.x == -1),yMirrorPos*(mirrorParams[i].pos.y == -1),zMirrorPos*(mirrorParams[i].pos.z == -1))) * mirrorParams[i].pos, glm::vec3(0.0, 1.0, 0.0));
 		
 		gl.uniformMatrix4fv(programs.screenDepthProgram,"view",mirroredView);
-	
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		model.Draw(currentMaterialIndex,programs.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0,true,{},0);
 		//TODO : Use framebuffers
 		GLubyte* screenMirrored = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
