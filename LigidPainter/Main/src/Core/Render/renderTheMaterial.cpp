@@ -387,35 +387,21 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     glset.viewport(txtrRes,txtrRes);
                     
                     glActiveTexture(GL_TEXTURE28);
-                
-                                        glset.bindFramebuffer(materialFBO);
+
+                    unsigned int AFBO;
+                    glset.genFramebuffers(AFBO);
+                    glset.bindFramebuffer(AFBO);
                     glClear(GL_COLOR_BUFFER_BIT);
 
-    	            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + outI, GL_TEXTURE_2D, material.outTexture, 0);
-
-                    GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5,GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7 };
-                    glDrawBuffers(8, drawBuffers);
-
-                    glReadBuffer(GL_COLOR_ATTACHMENT0 + outI);
+    	            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, material.outTexture, 0);
 
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
                     model.meshes[currentMaterialIndex].Draw(); 
 
-
                     glset.generateMipmap();
-
-                    GLubyte* copyData = new GLubyte[txtrRes*txtrRes*4];
-                    glReadPixels(0,0,txtrRes,txtrRes,GL_RGBA,GL_UNSIGNED_BYTE,copyData);
-
-                    glset.texImage(copyData,txtrRes,txtrRes,GL_RGBA);
-                    glset.generateMipmap();
-
-                    delete[] copyData;
 
                     glset.bindFramebuffer(0);
-
                 }
                 
                 

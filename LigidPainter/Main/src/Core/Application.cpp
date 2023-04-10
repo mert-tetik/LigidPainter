@@ -43,7 +43,6 @@
 //TODO Change texture extension
 //TODO Move folders into trash folder before deleting forever
 //TODO Load audios from load.hpp
-//TODO Realtime material rendering performance
 //TODO Bake submeshes
 //TODO Fix image background
 
