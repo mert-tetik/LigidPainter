@@ -355,14 +355,6 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
                     glset.generateMipmap();
 
-                    GLubyte* copyData = new GLubyte[txtrRes*txtrRes*4];
-                    glReadPixels(0,0,txtrRes,txtrRes,GL_RGBA,GL_UNSIGNED_BYTE,copyData);
-
-                    glset.texImage(copyData,txtrRes,txtrRes,GL_RGBA);
-                    glset.generateMipmap();
-
-                    delete[] copyData;
-
                     glset.bindFramebuffer(0);
                     glset.deleteFramebuffers(copyFBO);
                     
@@ -446,14 +438,6 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
                 glset.generateMipmap();
 
-                GLubyte* data = new GLubyte[nodeRes*nodeRes*4];
-                glReadPixels(0,0,nodeRes,nodeRes,GL_RGBA,GL_UNSIGNED_BYTE,data);
-
-                glset.texImage(data,nodeRes,nodeRes,GL_RGBA);
-                glset.generateMipmap();
-
-                delete[] data;
-                
                 glset.bindFramebuffer(0);
                 glset.deleteFramebuffers(FBO);
 
@@ -493,14 +477,6 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
 
                     glset.generateMipmap();
-
-                    GLubyte* copyData = new GLubyte[txtrRes*txtrRes*4];
-                    glReadPixels(0,0,txtrRes,txtrRes,GL_RGBA,GL_UNSIGNED_BYTE,copyData);
-
-                    glset.texImage(copyData,txtrRes,txtrRes,GL_RGBA);
-                    glset.generateMipmap();
-
-                    delete[] copyData;
 
                     glset.bindFramebuffer(0);
                     glset.deleteFramebuffers(copyFBO);

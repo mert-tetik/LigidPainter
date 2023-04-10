@@ -36,7 +36,6 @@
 //Left CTRL + TAB + T = Switch to painting panel
 //Left CTRL + TAB + R = Switch to export panel
 
-//TODO Update project file
 //TODO Fix node lagging
 //TODO Fix mirror origin pos
 //TODO Fix mirror paint over
