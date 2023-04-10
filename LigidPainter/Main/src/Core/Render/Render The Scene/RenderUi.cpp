@@ -654,11 +654,11 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	glUseProgram(programs.uiProgram);
 	if(panelData.paintingPanelActive){
 
-		ui.box(0.005f, 0.65f, centerCoords - screenGapX - 0.185f, 0.25f - panelData.paintingPanelSlideVal, "",colorData.mainPanelSliderColor, 0., false, false, 0.91f, 1000, colorData.mainPanelSliderColor, 0.f); //Add mask texture button
+		ui.box(0.0025f, 0.61f, centerCoords - screenGapX - 0.196f, 0.25f - panelData.paintingPanelSlideVal, "",colorData.mainPanelSliderColor, 0., false, false, 0.91f, 1000, colorData.mainPanelSliderColor, 0.f); //Add mask texture button
 	}
 	if(panelData.settingsPanelActive){
 
-		ui.box(0.005f, 0.75f, centerCoords - screenGapX - 0.185f, 0.15f - panelData.settingsPanelSlideVal, "",colorData.mainPanelSliderColor, 0., false, false, 0.91f, 1000, colorData.mainPanelSliderColor, 0.f); //Add mask texture button
+		ui.box(0.0025f, 0.71f, centerCoords - screenGapX - 0.196f, 0.15f - panelData.settingsPanelSlideVal, "",colorData.mainPanelSliderColor, 0., false, false, 0.91f, 1000, colorData.mainPanelSliderColor, 0.f); //Add mask texture button
 	}
 
 	for (size_t i = 0; i < UIElements.size(); i++)
