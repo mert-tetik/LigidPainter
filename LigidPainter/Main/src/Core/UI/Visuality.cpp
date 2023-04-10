@@ -281,41 +281,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 		const float screenGapXSc = glfwGetVideoMode(glfwGetPrimaryMonitor())->width-screenWidth;
 
-		if(sndpanelMoveTexture){
-			float posx = ((mouseXpos + screenGapXSc/2.f)/(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2))-1.f;
-			float posy = (2.f - (mouseYpos/(glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2.f)))-1.f;
-			std::vector<float> renderVertices = { 
-				// first triangle
-				 0.05f + posx,  0.1f+ posy, 1.0f,1,1,0,0,0,  // top right
-				 0.05f+ posx,  -0.1f+ posy, 1.0f,1,0,0,0,0,  // bottom right
-				 -0.05f+ posx,  0.1f+ posy, 1.0f,0,1,0,0,0,  // top left 
-				// second tria0gle	  ,0,0,0,
-				 0.05f+ posx,  -0.1f+ posy, 1.0f,1,0,0,0,0,  // bottom right
-				 -0.05f+ posx,  -0.1f+ posy, 1.0f,0,0,0,0,0,  // bottom left
-				 -0.05f+ posx,  0.1f+ posy, 1.0f,0,1,0,0,0   // top left
-			};
-			if(albedoTextures[selectedAlbedoTextureIndex].isTexture){
-				glUseProgram(programs.renderTheTextureProgram);
-				glActiveTexture(GL_TEXTURE14);
-				glBindTexture(GL_TEXTURE_2D,albedoTextures[selectedAlbedoTextureIndex].id);
-				glset.uniform1i(programs.renderTheTextureProgram, "isPressed" ,0);
-				glset.uniform1i(programs.renderTheTextureProgram, "isHover" ,0);
-				glset.drawArrays(renderVertices,false);
-			}
-			else{
-				glUseProgram(programs.iconsProgram);
-				
-				glActiveTexture(GL_TEXTURE6);
-				if(albedoTextures[selectedAlbedoTextureIndex].isTrashFolder)
-					glBindTexture(GL_TEXTURE_2D,icons.Trash);
-				else
-					glBindTexture(GL_TEXTURE_2D,icons.Folder);
-				
-				glset.uniform4fv(programs.iconsProgram,"iconColor",colorData.iconColor);
-				glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
-				glset.drawArrays(renderVertices,false);
-			}
-		}
+
 		if(albedoTextures.size()){
 			if(albedoTextures[selectedAlbedoTextureIndex].isTexture && sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE && maskPanelEnter){
 				
@@ -753,6 +719,42 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			sndpanelFolderCounter++;
 		}
 		glUseProgram(programs.uiProgram);
+	
+		if(sndpanelMoveTexture){
+			float posx = ((mouseXpos + screenGapXSc/2.f)/(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2))-1.f;
+			float posy = (2.f - (mouseYpos/(glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2.f)))-1.f;
+			std::vector<float> renderVertices = { 
+				// first triangle
+				 0.05f + posx,  0.1f+ posy, 1.0f,1,1,0,0,0,  // top right
+				 0.05f+ posx,  -0.1f+ posy, 1.0f,1,0,0,0,0,  // bottom right
+				 -0.05f+ posx,  0.1f+ posy, 1.0f,0,1,0,0,0,  // top left 
+				// second tria0gle	  ,0,0,0,
+				 0.05f+ posx,  -0.1f+ posy, 1.0f,1,0,0,0,0,  // bottom right
+				 -0.05f+ posx,  -0.1f+ posy, 1.0f,0,0,0,0,0,  // bottom left
+				 -0.05f+ posx,  0.1f+ posy, 1.0f,0,1,0,0,0   // top left
+			};
+			if(albedoTextures[selectedAlbedoTextureIndex].isTexture){
+				glUseProgram(programs.renderTheTextureProgram);
+				glActiveTexture(GL_TEXTURE14);
+				glBindTexture(GL_TEXTURE_2D,albedoTextures[selectedAlbedoTextureIndex].id);
+				glset.uniform1i(programs.renderTheTextureProgram, "isPressed" ,0);
+				glset.uniform1i(programs.renderTheTextureProgram, "isHover" ,0);
+				glset.drawArrays(renderVertices,false);
+			}
+			else{
+				glUseProgram(programs.iconsProgram);
+				
+				glActiveTexture(GL_TEXTURE6);
+				if(albedoTextures[selectedAlbedoTextureIndex].isTrashFolder)
+					glBindTexture(GL_TEXTURE_2D,icons.Trash);
+				else
+					glBindTexture(GL_TEXTURE_2D,icons.Folder);
+				
+				glset.uniform4fv(programs.iconsProgram,"iconColor",colorData.iconColor);
+				glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
+				glset.drawArrays(renderVertices,false);
+			}
+		}
 	}
 
 }
