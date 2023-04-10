@@ -756,6 +756,8 @@ public:
 
 		resultNode.program = program;
 
+		resultNode.fragSource = shaderSource;
+
 		return resultNode;
 	}
 

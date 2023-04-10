@@ -439,6 +439,8 @@ struct ListBox{
 };
 
 struct Node{
+	std::string fragSource;
+
 	std::string title;
 
 	glm::vec4 upBarColor;

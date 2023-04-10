@@ -360,24 +360,6 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		//---------------------------------	
 
 
-		if(model.meshes.size() != 0){
-			//Output the material
-			if(UIElements[UIrealtimeMaterialRenderingCheckBox].checkBox.checked){
-				if(renderingCounter % nodeScenes.size()/2 == 0){
-					for (size_t i = 0; i < nodeScenes.size(); i++)
-					{
-						modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[i],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex,materialFBO);
-					}
-				}
-			}
-			else{
-				if(nodeScenes[selectedNodeScene].stateChanged || newModelAdded){
-					modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex,materialFBO);
-					newModelAdded = false;
-				}
-			}
-		}
-
 		//3D-------------------------
 		glActiveTexture(GL_TEXTURE18);
 		gls.bindTexture(paintOverTexture.id);
@@ -543,7 +525,23 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		lastNodeScene = nodeScenes[selectedNodeScene];
 		//----------------------
 
-
+				if(model.meshes.size() != 0){
+			//Output the material
+			if(UIElements[UIrealtimeMaterialRenderingCheckBox].checkBox.checked){
+				if(renderingCounter % nodeScenes.size()/2 == 0){
+					for (size_t i = 0; i < nodeScenes.size(); i++)
+					{
+						modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[i],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex,materialFBO);
+					}
+				}
+			}
+			else{
+				if(nodeScenes[selectedNodeScene].stateChanged || newModelAdded){
+					modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex,materialFBO);
+					newModelAdded = false;
+				}
+			}
+		}
 		nodeScenes[selectedNodeScene].stateChanged = false;
 
 
