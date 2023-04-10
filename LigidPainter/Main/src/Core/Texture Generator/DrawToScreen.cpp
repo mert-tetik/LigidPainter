@@ -227,6 +227,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				outShaderData.renderTextureProjection = projection;
 				glset.useOutShader(programs.outProgram,outShaderData);
 
+				glm::vec3 mirroredScreenMaskCamPos = cameraPos - originPos;
 				glset.uniform3fv(programs.outProgram, "mirroredScreenMaskCamPos", cameraPos);
 				glset.uniform1i(programs.outProgram, "isTwoDimensional", 0);
 				glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 1);

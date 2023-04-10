@@ -44,7 +44,6 @@
 //TODO Move folders into trash folder before deleting forever
 //TODO Load audios from load.hpp
 //TODO Bake submeshes
-//TODO Fix image background
 
 //TODO Light source rotation from 3D Model displayer
 //TODO RTX Support

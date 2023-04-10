@@ -569,7 +569,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 		//Color Picker
 		if(colorPicker.updateHueVal)
-			colorPicker.hueColorValue = ui.hueBar(centerCoords - screenGapX + 0.1f, -0.55f, colorPicker.hueValue, FBOScreen, renderData.window,projection,colorPicker.updateHueVal); 
+			colorPicker.hueColorValue = ui.hueBar(centerCoords - screenGapX + 0.1f, -0.55f+panelData.paintingPanelSlideVal, colorPicker.hueValue, FBOScreen, renderData.window,projection,colorPicker.updateHueVal); 
 		else
 			ui.hueBar(centerCoords - screenGapX + 0.1f, -0.55f+panelData.paintingPanelSlideVal, colorPicker.hueValue, FBOScreen, renderData.window,projection,colorPicker.updateHueVal); 
 

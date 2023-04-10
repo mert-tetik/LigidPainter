@@ -761,7 +761,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElement subSelectedImagePowerRangeBarElement;
 	subSelectedImagePowerRangeBarElement.rangeBar.positionX = 0.0f;
 	subSelectedImagePowerRangeBarElement.rangeBar.positionY = -0.95f;
-	subSelectedImagePowerRangeBarElement.rangeBar.value = 0.0f;
+	subSelectedImagePowerRangeBarElement.rangeBar.value = -0.11f;
 	subSelectedImagePowerRangeBarElement.panel = 3;
 	subSelectedImagePowerRangeBarElement.attachedToMainPanel = true;
 	subSelectedImagePowerRangeBarElement.type = "rangeBar";

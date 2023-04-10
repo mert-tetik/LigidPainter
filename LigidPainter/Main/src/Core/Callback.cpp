@@ -199,7 +199,6 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		nodePanel.panelPositionX += xoffset/200.f;
 		nodePanel.panelPositionY += yoffset/200.f;
 	}
-	std::cout << "yaw : " << yaw << " campos : "<< cameraPos.x << " , " << cameraPos.z << '\n';
 	callbk = preapareCallbackData();
 	return callbk;
 }
