@@ -7,7 +7,13 @@
 -color : hex30c959; #rgb122,124,66  #hsv86,45,23
 -opacity : 60;
 
-
+-list_0 :
+--title_0 : Result;
+--title_1 : Specular;
+--title_2 : Skybox;
+--title_3 : A Fresnel;
+--title_4 : DotNV;
+--title_5 : Reflectance;
 
 #Albedo
 -input_0 : 
@@ -254,7 +260,14 @@ vec3 getRealisticResult(){
 
    result = pow(result,vec3(1.0/2.2));
 
-   return result;
+    if(list_0 == 0) return result;    
+    if(list_0 == 1) return specular;
+    if(list_0 == 2) return prefilteredColor;
+    if(list_0 == 3) return kD;
+    if(list_0 == 4) return vec3(abs(dot(N,V)));
+    if(list_0 == 5) return R;
+
+   return R;
 }
 
 void main() {
