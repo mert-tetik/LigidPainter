@@ -46,7 +46,6 @@
 //TODO Load audios from load.hpp
 //TODO Fix material scroll
 //TODO Realtime material rendering performance
-//TODO Disable fill between if spacing
 //TODO Bake submeshes
 
 //TODO Light source rotation from 3D Model displayer
@@ -934,7 +933,7 @@ bool LigidPainter::run()
 			mouseDrawingPosY = mouseYpos;
 
 			//Paint
-			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view,mirrorParams,callbackData.cameraPos, callbackData.originPos,UIElements[UImirrorXRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorYRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorZRangeBarElement].rangeBar.value*40.f,UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked,firstStroke);
+			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view,mirrorParams,callbackData.cameraPos, callbackData.originPos,UIElements[UImirrorXRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorYRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorZRangeBarElement].rangeBar.value*40.f,UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked,firstStroke,UIElements[UIbrushSpacingRangeBar].rangeBar.value);
 			paintRenderCounter++;
 			if(paintRenderCounter == 50000){
 				paintRender = true;
