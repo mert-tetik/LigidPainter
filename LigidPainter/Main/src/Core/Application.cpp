@@ -38,14 +38,14 @@
 
 //TODO Update project file
 //TODO Fix node lagging
+//TODO Fix mirror origin pos
 //TODO Fix mirror paint over
-//TODO Fix mirror backside painting
 //TODO Change texture extension
 //TODO Move folders into trash folder before deleting forever
-//TODO Material deletion - don't remove the material object from the vector
 //TODO Load audios from load.hpp
 //TODO Realtime material rendering performance
 //TODO Bake submeshes
+//TODO Fix image background
 
 //TODO Light source rotation from 3D Model displayer
 //TODO RTX Support
@@ -850,7 +850,7 @@ bool LigidPainter::run()
 		exportData.exportImage = exportImage;
 		exportData.path = exportPath.c_str();
 		exportData.fileName = exportFileName.c_str();
-		if (cameraPosChanging || mirrorClick){
+		if (cameraPosChanging || mirrorClick || glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS){
 			viewUpdateData = render.updateViewMatrix(callbackData.cameraPos, callbackData.originPos,UIElements[UImirrorXCheckBox].checkBox.checked ,UIElements[UImirrorYCheckBox].checkBox.checked ,UIElements[UImirrorZCheckBox].checkBox.checked ); 
 		}
 

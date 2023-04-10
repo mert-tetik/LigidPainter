@@ -75,25 +75,47 @@ CallbckData preapareCallbackData() {
 void Callback::key_callback(int key, int action,GLFWwindow* window){
 	Utilities util;
 	float originCameraDistance = glm::distance(originPos,cameraPos);
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_1,0,0) && action == 1){
-		cameraPos.x = originCameraDistance;
-		cameraPos.y = 0;
-		cameraPos.z = 0;
-	}
+
 	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_3,0,0) && action == 1){
+		// radius
 		cameraPos.x = -originCameraDistance;
 		cameraPos.y = 0;
 		cameraPos.z = 0;
-	}
-	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_2,0,0) && action == 1){
-		cameraPos.z = originCameraDistance;
-		cameraPos.y = 0;
-		cameraPos.x = 0;
+		
+		radius = originCameraDistance;
+
+		yaw = 180.f;
+		pitch = 0.f;
 	}
 	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_4,0,0) && action == 1){
-		cameraPos.z = -originCameraDistance;
+		cameraPos.x = originCameraDistance;
 		cameraPos.y = 0;
+		cameraPos.z = 0;
+
+		radius = originCameraDistance;
+		
+		yaw = 0.f;
+		pitch = 0.f;
+	}
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_1,0,0) && action == 1){
 		cameraPos.x = 0;
+		cameraPos.y = 0;
+		cameraPos.z = -originCameraDistance;
+
+		radius = originCameraDistance;
+
+		yaw = -90.f;
+		pitch = 0.f;
+	}
+	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_2,0,0) && action == 1){
+		cameraPos.x = 0;
+		cameraPos.y = 0;
+		cameraPos.z = originCameraDistance;
+
+		radius = originCameraDistance;
+
+		yaw = 90.f;
+		pitch = 0.f;
 	}
 }
 CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double scrollx) {
@@ -113,6 +135,11 @@ CallbckData Callback::scroll_callback(GLFWwindow* window, double scroll, double 
 	callbk = preapareCallbackData();
 	return callbk;
 }
+//+X yaw 0
+//-X yaw 180
+
+//-Z yaw -90
+//+Z yaw 90
 
 
 CallbckData Callback::mouse_callback(GLFWwindow* window, double xpos, double ypos, PanelData &panelData, float maskPanelSliderValue,bool brushMaskPanelMaskHover,
@@ -161,6 +188,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		if (pitch < -89.0f)
 			pitch = -89.0f;
 
+		
 		//Helical Movement
 		cameraPos.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.x;
 		cameraPos.y = sin(glm::radians(pitch)) * -radius + originPos.y;
@@ -171,7 +199,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		nodePanel.panelPositionX += xoffset/200.f;
 		nodePanel.panelPositionY += yoffset/200.f;
 	}
-
+	std::cout << "yaw : " << yaw << " campos : "<< cameraPos.x << " , " << cameraPos.z << '\n';
 	callbk = preapareCallbackData();
 	return callbk;
 }

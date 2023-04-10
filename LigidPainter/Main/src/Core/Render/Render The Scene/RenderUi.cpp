@@ -836,7 +836,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		unsigned int prefilteredMap = load.createPrefilterMap(programs,cubemaps,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 		cubemaps.prefiltered = prefilteredMap;
 	}
-
+	glUseProgram(programs.uiProgram);
+	ui.textureDisplayer(textureDisplayer.ndWidth,textureDisplayer.ndHeight,textureDisplayer.buttonPosX - 1.0f +screenGapX,textureDisplayer.buttonPosY,0.999999f); 
 
 
 	alertState = 0;
