@@ -36,20 +36,22 @@
 //Left CTRL + TAB + T = Switch to painting panel
 //Left CTRL + TAB + R = Switch to export panel
 
+//TODO Update project file
 //TODO Fix node lagging
 //TODO Fix mirror paint over
 //TODO Fix mirror backside painting
-//TODO Material masking
 //TODO Change texture extension
-//TODO RTX Support
-//TODO Light source rotation from 3D Model displayer
 //TODO Move folders into trash folder before deleting forever
 //TODO Material deletion - don't remove the material object from the vector
-//TODO Material deletion - ask before
 //TODO Load audios from load.hpp
 //TODO Fix material scroll
 //TODO Realtime material rendering performance
-//TODO Update project file
+//TODO Panel scroll bars
+//TODO Arrange settings panel
+
+//TODO Light source rotation from 3D Model displayer
+//TODO RTX Support
+
 //TODO 2D Painting
 // - Lasso Tool 
 // - Quick Selection

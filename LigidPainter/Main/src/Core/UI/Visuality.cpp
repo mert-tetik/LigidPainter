@@ -1842,12 +1842,8 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 				}
 			}
 			//box(0.03f, 0.06f, renderData.panelLoc - screenGapX + 0.3f, 0.8f - (posI * 0.125f), "", colorData.buttonColorHover, 0.048f, true, false, 0.6f, 10000, colorData.buttonColorHover, 0); 
-			if(model.meshes[i].materialIndex != 10000)
-				renderText(programs.uiProgram, std::to_string(nodeScenes[model.meshes[i].materialIndex].index),renderData.panelLoc - 1.0f - screenGapX + 0.235f,0.8f - (posI * 0.125f) + materialsPanelSlideValue - 0.02,0.00022,colorData.materialIconIndexTextColor,0.99999f,false);
 			
 			glUseProgram(programs.iconsProgram);
-			if(model.meshes[i].materialIndex != 10000)
-				iconBox(0.02f,0.04f,renderData.panelLoc - 1.0f - screenGapX + 0.255f ,0.8f - (posI * 0.125f) + materialsPanelSlideValue,0.99f,icons.Material,0,colorData.iconColor,colorData.iconColor);
 			float iconmixVal = 0.0f;
 			if(textureAddButtonEnter)
 				iconmixVal = 0.5f;
