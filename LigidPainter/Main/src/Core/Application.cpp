@@ -342,18 +342,27 @@ bool LigidPainter::run()
 	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/MessageBox.wav","wav",audios.MessageBox)){
 		std::cout << "ERROR : Modifying audio object MessageBox.wav  " << LibALerrorMsg << '\n';
 	}
+	else{
+		std::cout << "Loaded MessageBox.wav  " << LibALerrorMsg << '\n';
+	}
 	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/Login.wav","wav",audios.Login)){
 		std::cout << "ERROR : Modifying audio object Login.wav  " << LibALerrorMsg << '\n';
+	}
+	else{
+		std::cout << "Loaded Login.wav  " << LibALerrorMsg << '\n';
 	}
 	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/ButtonEnter.wav","wav",audios.ButtonEnter)){
 		std::cout << "ERROR : Modifying audio object ButtonEnter.wav  " << LibALerrorMsg << '\n';
 	}
+	else{
+		std::cout << "Loaded ButtonEnter.wav  " << LibALerrorMsg << '\n';
+	}
 	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/Alert.wav","wav",audios.Alert)){
 		std::cout << "ERROR : Modifying audio object Alert.wav  " << LibALerrorMsg << '\n';
 	}
-
-
-
+	else{
+		std::cout << "Loaded Alert.wav  " << LibALerrorMsg << '\n';
+	}
 
 	Load load;
 	programs = load.getProgram();

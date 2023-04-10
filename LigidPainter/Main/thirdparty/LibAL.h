@@ -1842,7 +1842,6 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
         bufferData = new char[size];
         in.read(bufferData, size);
 
-        std::cout << "Size is :" << size << '\n'; 
         //-------------------
 
         return 1;

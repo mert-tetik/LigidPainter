@@ -29,7 +29,6 @@ glm::vec3 Render::getColorPickerValue(unsigned int FBOScreen, ColorPicker &color
 	glm::mat4 projection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);
 	saturationValShaderData.renderTextureProjection = projection;
 	saturationValShaderData.boxColor = colorPicker.hueColorValue / 255.0f;
-	std::cout << "ASFD : " << glm::to_string(colorPicker.hueColorValue / 255.0f) << '\n';
     gl.useSaturationValBoxShader(programs.saturationValBoxProgram,saturationValShaderData);
 
 	//Setup
