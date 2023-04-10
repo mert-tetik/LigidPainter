@@ -11,6 +11,8 @@ uniform int subSelected;
 
 uniform int isMask;
 uniform int maskUseColor;
+uniform int roundCorners;
+
 
 uniform sampler2D txtr;
 
@@ -158,7 +160,7 @@ void main(){
     if(getCircle() < 0.05 && renderMaterials == 1)
         color = vec4(0);
 
-    if(roundUp(TexCoords) < 0.05){
+    if(roundUp(TexCoords) < 0.05 && roundCorners == 1){
         color.a = 0.;
     }
 }   

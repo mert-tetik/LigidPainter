@@ -429,7 +429,13 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		else 
 			brushMaskTexturesState = 0;
 		
+		glUseProgram(programs.renderTheTextureProgram);
+		GlSet gls;
+		gls.uniform1i(programs.renderTheTextureProgram,"roundCorners",1);
+		glUseProgram(programs.uiProgram);
 		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal,firstClick,coloringPanel,txtrCreatingPanel,anyTextureNameActive,textureText,sndPanel.activeFolderIndex,nodePanel,appNodes,sndPanel,brushMaskTextures,maskPanelEnter,yOffset,nodeScenesHistory,brushMaskTexturesState,chosenTextureResIndex);
+		glUseProgram(programs.renderTheTextureProgram);
+		gls.uniform1i(programs.renderTheTextureProgram,"roundCorners",0);
 
 
 		ui.renderAlert(alertMessage,alertDuration,programs.uiProgram,alertState);		
