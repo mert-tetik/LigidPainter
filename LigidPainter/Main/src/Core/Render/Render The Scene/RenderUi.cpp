@@ -538,7 +538,14 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			addNodeContextMenu.searchTextboxActive = false;
 		}
 	}
-
+	
+	//! Main panel barriers
+	float barrierW = 0.18f;
+	if(panelData.texturePanelActive)
+		barrierW = 0.22f;
+	
+	ui.box(barrierW, 0.07f, renderData.panelLoc - screenGapX - 1.0f + barrierW, 0.97, "", glm::vec4(0), 0.075f, false, false, 0.9999f, 10000, glm::vec4(0), 0);
+	ui.box(barrierW, 0.07f, renderData.panelLoc - screenGapX - 1.0f + barrierW, -0.97, "", glm::vec4(0), 0.075f, false, false, 0.9999, 10000, glm::vec4(0), 0);
 
 	if (panelData.texturePanelActive) {
 		ui.modelMaterialPanel(model,programs,renderData,screenGapX,materialsPanelSlideValue,mouseXpos,mouseYpos,uiOut,currentMaterialIndex,firstClick,newModelAdded,selectedNodeScene,icons,nodeScenes,albedoTextures,textureSelectionPanel);
@@ -549,10 +556,6 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		addNodeContextMenu.positionX = mouseXpos/(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2.f) - 1.0f + screenGapX ;
 		addNodeContextMenu.positionY = -mouseYpos/glfwGetVideoMode(glfwGetPrimaryMonitor())->height*2.f + 1.0f;
 	}
-
-	//! Main panel barriers
-	ui.box(0.18f, 0.07f, (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum, 0.97, "", glm::vec4(0), 0.075f, false, false, 0.9999f, 10000, glm::vec4(0), 0);
-	ui.box(0.18f, 0.07f, (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum, -0.97, "", glm::vec4(0), 0.075f, false, false, 0.9999, 10000, glm::vec4(0), 0);
 
 
 	if (panelData.paintingPanelActive && renderData.panelLoc < 1.98f) {
@@ -604,11 +607,10 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		glUseProgram(programs.uiProgram);
 
 		const float maskPanelRange = ceil((int)brushMaskTextures.maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
-		ui.verticalRangeBar((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,maskPanelSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.maskTextures.size(),screenGapX);
+		ui.verticalRangeBar((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,maskPanelSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.maskTextures.size(),screenGapX);
 
 		//Display brush texture
 		ui.box(0.035f, 0.07f, centerCoords - screenGapX - 0.1f, 0.42f+panelData.paintingPanelSlideVal, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0);
-		
 	}
 	if(panelData.paintingPanelActive && renderData.panelLoc < 1.98f && UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked){
 		glUseProgram(programs.dynamicPaintingProgram);
@@ -652,11 +654,11 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	glUseProgram(programs.uiProgram);
 	if(panelData.paintingPanelActive){
 
-		ui.box(0.005f, 0.65f, centerCoords - screenGapX - 0.16f, 0.25f - panelData.paintingPanelSlideVal, "",colorData.buttonColor, 0., false, false, 0.91f, 1000, colorData.buttonColorHover, 0.f); //Add mask texture button
+		ui.box(0.005f, 0.65f, centerCoords - screenGapX - 0.185f, 0.25f - panelData.paintingPanelSlideVal, "",colorData.mainPanelSliderColor, 0., false, false, 0.91f, 1000, colorData.mainPanelSliderColor, 0.f); //Add mask texture button
 	}
 	if(panelData.settingsPanelActive){
 
-		ui.box(0.005f, 0.75f, centerCoords - screenGapX - 0.16f, 0.15f - panelData.settingsPanelSlideVal, "",colorData.buttonColor, 0., false, false, 0.91f, 1000, colorData.buttonColorHover, 0.f); //Add mask texture button
+		ui.box(0.005f, 0.75f, centerCoords - screenGapX - 0.185f, 0.15f - panelData.settingsPanelSlideVal, "",colorData.mainPanelSliderColor, 0., false, false, 0.91f, 1000, colorData.mainPanelSliderColor, 0.f); //Add mask texture button
 	}
 
 	for (size_t i = 0; i < UIElements.size(); i++)

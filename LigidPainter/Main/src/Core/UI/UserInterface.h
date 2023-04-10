@@ -161,6 +161,7 @@ struct ColorData //LigidPainter color palette
 
 	glm::vec4 rangeBarTextColor = glm::vec4(0.02f,0.02f,0.02f,0.8f);
 	
+	glm::vec4 mainPanelSliderColor = glm::vec4(0.13f, 0.13f, 0.13f,0.2f);
 };
 
 struct ColorData2{

@@ -44,7 +44,6 @@
 //TODO Move folders into trash folder before deleting forever
 //TODO Material deletion - don't remove the material object from the vector
 //TODO Load audios from load.hpp
-//TODO Fix material scroll
 //TODO Realtime material rendering performance
 //TODO Bake submeshes
 
@@ -1492,7 +1491,13 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 		}
 		else if(callbackData.mainPanelEnter && panelData.texturePanelActive){
 			//Materials
-			if(model.meshes.size() >= 4){
+			int matsize = model.meshes.size();
+			for (size_t i = 0; i < model.meshes.size(); i++)
+			{
+				matsize += model.meshes[i].submeshes.size();
+			}
+			
+			if(matsize >= 10){
 				materialsPanelSlideValue += scrollx/10.0f;
 				if(materialsPanelSlideValue < 0.0f)
 					materialsPanelSlideValue = 0.0f;
