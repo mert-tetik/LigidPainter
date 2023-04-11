@@ -38,7 +38,6 @@
 
 //TODO Fix mirror origin pos
 //TODO Fix mirror paint over
-//TODO Prevent removing pbr node
 
 //TODO Light source rotation from 3D Model displayer
 //TODO RTX Support
@@ -604,8 +603,9 @@ bool LigidPainter::run()
 		if(!startScreen && !didDefaultNodesMakeToTheCenter)
 			defaultNodePosCorrectorCounter++;
 
-		if(defaultNodePosCorrectorCounter < 200){
+		if(defaultNodePosCorrectorCounter > 10){
 			didDefaultNodesMakeToTheCenter = true;
+			defaultNodePosCorrectorCounter = 0;
 			nodeScenes[0].nodes[1].positionX = -0.5f;
 			nodeScenes[0].nodes[1].positionY = -2.1f;
 			
