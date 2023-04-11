@@ -24,7 +24,6 @@
 --element : color;
 --value : 0,0,0;
 
-
 #Roughness
 -input_1 : 
 --list : none;

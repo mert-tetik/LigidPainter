@@ -331,8 +331,6 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     unsigned int copyTxtr;
                     glset.genTextures(copyTxtr);
                     glset.bindTexture(copyTxtr);
-
-
                     glset.texImage(nullptr,txtrRes,txtrRes,GL_RGBA);
                     glset.generateMipmap();
 

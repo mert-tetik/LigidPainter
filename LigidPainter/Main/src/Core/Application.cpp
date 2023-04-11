@@ -40,6 +40,7 @@
 //TODO Fix mirror paint over
 //TODO Change texture extension
 //TODO Bake submeshes
+//TODO Fix normal mapping
 
 //TODO Light source rotation from 3D Model displayer
 //TODO RTX Support

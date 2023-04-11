@@ -61,6 +61,13 @@ public:
     	        snode.doInvert = material.nodes[nodeI].doInvert;
                 wf.write(reinterpret_cast<char*>(&snode),sizeof(sNode));
 
+                uint64_t nodeFragSourceSize = material.nodes[nodeI].fragSource.size();
+                wf.write(reinterpret_cast<char*>(&nodeFragSourceSize),sizeof(uint64_t));
+                for (size_t frI = 0; frI < nodeFragSourceSize; frI++)
+                {
+                    wf.write(reinterpret_cast<char*>(&material.nodes[nodeI].fragSource[frI]),sizeof(char));
+                }
+
                 //Inputs
                 uint64_t nodeInputSize = material.nodes[nodeI].inputs.size();
                 wf.write(reinterpret_cast<char*>(&nodeInputSize),sizeof(uint64_t));
@@ -334,6 +341,79 @@ public:
     	        material.nodes[nodeI].dupI = snode.dupI;
     	        material.nodes[nodeI].doInvert = snode.doInvert;
                 
+                uint64_t nodeFragSourceSize;
+                rf.read(reinterpret_cast<char*>(&nodeFragSourceSize),sizeof(uint64_t));
+                for (size_t frI = 0; frI < nodeFragSourceSize; frI++)
+                {
+                    char c;
+                    rf.read(reinterpret_cast<char*>(&c),sizeof(char));
+                    material.nodes[nodeI].fragSource.push_back(c);
+                }
+                    const char* defaultVertexShader = 
+			            "#version 330 core\n"
+			            "layout(location = 0) in vec3 aPos;\n"
+			            "layout(location = 1) in vec3 aNormal;\n"
+			            "layout(location = 2) in vec2 aTexCoords;\n"
+			            "layout(location = 3) in vec3 aTangent;\n"
+			            "layout(location = 4) in vec3 aBitangent;\n"
+
+			            "uniform mat4 view;\n"
+			            "uniform mat4 projection;\n"
+			            "uniform int is3D;\n"
+
+			            "out vec2 tex_coords;\n"
+			            "out vec3 normal;\n"
+			            "out vec3 posModel;\n"
+			            "out vec4 posScene;\n"
+			            "out vec3 tangent;\n"
+			            "out vec3 bitangent;\n"
+
+			            "void main() {\n"
+			            	"tangent = aTangent;\n"
+			            	"bitangent = aBitangent;\n"
+			                "posModel = aPos;\n"
+			                "tex_coords = aTexCoords;\n"
+			                "normal = aNormal;\n"
+			            	"vec4 res;\n"
+			            	"if(is3D == 1){\n"
+			                	"res = projection * view * vec4(aPos, 0.5);\n" 
+			            	"}\n"
+			            	"else{\n"
+			                	"res = projection * vec4(tex_coords,0, 1);\n" 
+			            	"}\n"
+			            	"posScene = projection * view * vec4(aPos, 0.5);\n"
+			                "gl_Position = res;\n"
+			            "}\0";
+
+		            //Compile the fragment shader
+		            const char* shaderSource = material.nodes[nodeI].fragSource.c_str();
+		            unsigned int fragShader = glCreateShader(GL_FRAGMENT_SHADER);
+		            glShaderSource(fragShader, 1, &shaderSource, NULL);
+		            glCompileShader(fragShader);
+		            //Test the shader
+		            int success;
+		            char infoLog[512];
+		            glGetShaderiv(fragShader, GL_COMPILE_STATUS, &success);
+		            //Print the error if any occurs
+		            if (!success){glGetShaderInfoLog(fragShader, 512, NULL, infoLog);std::cout << "ERROR::SHADER::COMPILATION_FAILED " << infoLog << std::endl;};
+
+		            //Compile the vertex shader
+		            unsigned int vertShader = glCreateShader(GL_VERTEX_SHADER);
+		            glShaderSource(vertShader, 1, &defaultVertexShader, NULL);
+		            glCompileShader(vertShader);
+
+		            //Test the shader
+		            glGetShaderiv(vertShader, GL_COMPILE_STATUS, &success);
+		            //Print the error if any occurs
+		            if (!success){glGetShaderInfoLog(vertShader, 512, NULL, infoLog);std::cout << "ERROR::SHADER::COMPILATION_FAILED " << infoLog << std::endl;};
+
+		            material.nodes[nodeI].program = glCreateProgram();
+		            glAttachShader(material.nodes[nodeI].program, vertShader);
+		            glAttachShader(material.nodes[nodeI].program, fragShader);
+		            glLinkProgram(material.nodes[nodeI].program);
+
+		            glDeleteShader(vertShader);
+		            glDeleteShader(fragShader);
 
                 //Inputs
                 uint64_t nodeInputSize;
