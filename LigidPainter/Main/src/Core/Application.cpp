@@ -39,7 +39,6 @@
 //TODO Fix mirror origin pos
 //TODO Fix mirror paint over
 //TODO Prevent removing pbr node
-//TODO Alert if selected mesh has no multiple submeshes
 
 //TODO Light source rotation from 3D Model displayer
 //TODO RTX Support
@@ -2129,8 +2128,16 @@ void LigidPainter::outSubmeshesButton(){
 				if(nodeScenes[model.meshes[currentMaterialIndex].submeshes[smi].materialIndex].nodes[nodi].outputs.size()){
 					if(nodeScenes[model.meshes[currentMaterialIndex].submeshes[smi].materialIndex].nodes[nodi].outputs[0].isConnectedToShaderInput){
 						outnode = nodeScenes[model.meshes[currentMaterialIndex].submeshes[smi].materialIndex].nodes[nodi];
+						if(outnode.title != "01 PBR"){
+							UserInterface ui;
+							ui.alert("WARNING! A node that is other than pbr node is connected to the shader out at the material " + nodeScenes[model.meshes[currentMaterialIndex].submeshes[smi].materialIndex].sceneName,200);
+						}
 					}
 				}
+			}
+			if(!outnode.outputs.size()){
+				UserInterface ui;
+				ui.alert("WARNING! There are no node connected to the shader output at the material " + nodeScenes[model.meshes[currentMaterialIndex].submeshes[smi].materialIndex].sceneName,200);
 			}
 
 			std::vector<unsigned int> part;
