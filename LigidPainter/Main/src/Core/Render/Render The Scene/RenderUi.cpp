@@ -438,6 +438,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		gls.uniform1i(programs.renderTheTextureProgram,"roundCorners",0);
 
 
+		glUseProgram(programs.uiProgram);
 		ui.renderAlert(alertMessage,alertDuration,programs.uiProgram,alertState);		
 		
 		

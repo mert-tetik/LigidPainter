@@ -40,7 +40,7 @@ void UserInterface::renderAlert(std::string message,int duration,unsigned int ui
 
     opacity = util.transitionEffect(start,opacity,phaseDifference);
 
-    float posX = -((float)(message.size())+0.0001f)/200.f;
+    float posX = -((float)(message.size())+0.0001f)/250.f;
     if(opacity > 0.02f)
         renderText(uiProgram,message,posX,0.8f,0.00022f,glm::vec4(colorData.alertColor,opacity),1.f,false);
 

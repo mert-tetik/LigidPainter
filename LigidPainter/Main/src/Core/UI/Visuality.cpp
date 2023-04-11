@@ -605,7 +605,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 									}
 								}
 								else if(albedoTextures[i].isTrashFolder){
-									alert("Warning! This is THE TRASH folder.",200);
+									alert("Warning! This is THE TRASH folder lol",200);
 									folderIndex = 10000;
 									sndpanelFolderPressed = false;
 									sndpanelMoveTexture = false;
