@@ -363,8 +363,6 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		//3D-------------------------
 		glActiveTexture(GL_TEXTURE18);
 		gls.bindTexture(paintOverTexture.id);
-		glActiveTexture(GL_TEXTURE13);
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.blurycubemap);
 		glUseProgram(renderPrograms.PBRProgram);
 		int channelState = 0;
 		if(UIElements[UIroughnessChannelCheckBoxElement].checkBox.checked)
@@ -430,7 +428,8 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 		gls.uniform1f(renderPrograms.outProgram,"paintingOpacity",(UIElements[UIbrushOpacityRangeBar].rangeBar.value+0.11f)*4.545454545f);
 		gls.uniform1i(renderPrograms.outProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
 		gls.uniform1i(renderPrograms.outProgram,"doPaintOver",(int)UIElements[UIpaintOverCheckBoxElement].checkBox.checked);
-	
+		glActiveTexture(GL_TEXTURE13);
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
 		renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects,nodeScenes);
 
 		renderAxisPointer(axisPointerShaderData,renderPrograms);

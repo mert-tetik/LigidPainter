@@ -14,6 +14,9 @@
 --title_3 : A Fresnel;
 --title_4 : DotNV;
 --title_5 : Reflectance;
+--title_6 : Normal;
+--title_7 : Lo;
+--title_8 : Lo;
 
 #Albedo
 -input_0 : 
@@ -233,7 +236,6 @@ vec3 getRealisticResult(){
         // add to outgoing radiance Lo
         Lo += (kD * albedo / PI + specular) * radiance * NdotL; // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
     }   
-    
     // ambient lighting (we now use IBL as the ambient term)
     vec3 F = fresnelSchlickRoughness(max(abs(dot(N, V)), 0.0), F0, roughness);
     //vec3 F = vec3(0.05);
@@ -265,6 +267,9 @@ vec3 getRealisticResult(){
     if(list_0 == 3) return kD;
     if(list_0 == 4) return vec3(abs(dot(N,V)));
     if(list_0 == 5) return R;
+    if(list_0 == 6) return N;
+    if(list_0 == 7) return Lo;
+    if(list_0 == 7) return F;
 
    return R;
 }
