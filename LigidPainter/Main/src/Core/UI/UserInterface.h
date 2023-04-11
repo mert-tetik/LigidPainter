@@ -54,38 +54,39 @@
 #define UInoiseStrengthRangeBarElement 44
 #define UIgenerateTextureButtonElement 45
 #define UIbakeButtonElement 46
-#define UIpaintThroughCheckBoxElement 47
-#define UIpaintOverCheckBoxElement 48
-#define UIdisplayPaintOverTextureCheckBoxElement 49
-#define UIselectPaintOverTextureIconElement 50
-#define UIselectPaintOverTextureNameTextElement 51
-#define UIdynamicPaintingCheckBoxElement 52
-#define UIdynamicPaintingIconElement 53
-#define UImaskPaintingCheckBoxElement 54
-#define UImaskPaintingIconElement 55
-#define UIcolorPaintingCheckBoxElement 56
-#define UIcolorPaintingIconElement 57
-#define UInormalmapPaintingCheckBoxElement 58
-#define UInormalPaintingIconElement 59
-#define UIsubSelectedImagePowerRangeBarElement 60
-#define UIsubSelectedImagePowerRangeBarTextElement 61
-#define UIfocusModeCheckBox 62
-#define UImirrorXRangeBarElement 63
-#define UImirrorYRangeBarElement 64
-#define UImirrorZRangeBarElement 65
-#define UIalbedoChannelCheckBoxElement 66
-#define UIroughnessChannelCheckBoxElement 67
-#define UImetallicChannelCheckBoxElement 68
-#define UInormalChannelCheckBoxElement 69
-#define UIjpgIcon 70
-#define UIpngIcon 71
-#define UIfolderIcon 72
-#define UIloadPlaneModelButton 73
-#define UIloadSphereModelButton 74
-#define UIplaneIcon 75
-#define UIsphereIcon 76
-#define UIaddBrushMaskTextureIcon 77
-#define UIselectBrushMaskTextureIcon 78
+#define UIoutSubmeshesButtonElement 47
+#define UIpaintThroughCheckBoxElement 48
+#define UIpaintOverCheckBoxElement 49
+#define UIdisplayPaintOverTextureCheckBoxElement 50
+#define UIselectPaintOverTextureIconElement 51
+#define UIselectPaintOverTextureNameTextElement 52
+#define UIdynamicPaintingCheckBoxElement 53
+#define UIdynamicPaintingIconElement 54
+#define UImaskPaintingCheckBoxElement 55
+#define UImaskPaintingIconElement 56
+#define UIcolorPaintingCheckBoxElement 57
+#define UIcolorPaintingIconElement 58
+#define UInormalmapPaintingCheckBoxElement 59
+#define UInormalPaintingIconElement 60
+#define UIsubSelectedImagePowerRangeBarElement 61
+#define UIsubSelectedImagePowerRangeBarTextElement 62
+#define UIfocusModeCheckBox 63
+#define UImirrorXRangeBarElement 64
+#define UImirrorYRangeBarElement 65
+#define UImirrorZRangeBarElement 66
+#define UIalbedoChannelCheckBoxElement 67
+#define UIroughnessChannelCheckBoxElement 68
+#define UImetallicChannelCheckBoxElement 69
+#define UInormalChannelCheckBoxElement 70
+#define UIjpgIcon 71
+#define UIpngIcon 72
+#define UIfolderIcon 73
+#define UIloadPlaneModelButton 74
+#define UIloadSphereModelButton 75
+#define UIplaneIcon 76
+#define UIsphereIcon 77
+#define UIaddBrushMaskTextureIcon 78
+#define UIselectBrushMaskTextureIcon 79
 
 struct ColorData //LigidPainter color palette
 {
@@ -430,6 +431,7 @@ struct NodeInput{
 
 	int selectedRampIndex = 0;
 
+	unsigned int generatedTexture;
 };
 
 struct ListBox{
@@ -485,6 +487,8 @@ struct Node{
 
 	bool hide = false;
 	bool hideDone = false;
+
+	int nodeScenesIndex = 0;
 };
 
 struct ContextMenu {

@@ -38,8 +38,8 @@
 
 //TODO Fix mirror origin pos
 //TODO Fix mirror paint over
-//TODO Change texture extension
-//TODO Bake submeshes
+//TODO Prevent removing pbr node
+//TODO Alert if selected mesh has no multiple submeshes
 
 //TODO Light source rotation from 3D Model displayer
 //TODO RTX Support
@@ -225,6 +225,8 @@ LigidCursors cursors;
 Icons icons;
 Audios audios;
 Model sphereModel;
+int currentMaterialIndex = 0;
+
 
 
 ExportData exportData;
@@ -907,7 +909,7 @@ bool LigidPainter::run()
 										,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,
 										txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
-										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO);
+										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex);
 		}
 		duplicateNodeCall = false;
 		
@@ -2107,6 +2109,104 @@ void LigidPainter::sndPanelBoundaries(float xOffset,int screenSizeX){
 		sndPanel.position -= xOffset / (screenSizeX / 2);
 		sndPanel.position = util.restrictBetween(sndPanel.position, -0.6f, -0.99f);//Keep in boundaries
     }
+}
+void LigidPainter::outSubmeshesButton(){
+	
+	int txtrRes = 256;
+	for (size_t i = 0; i < chosenTextureResIndex; i++)
+	{
+		txtrRes*=2;
+	}
+
+	std::vector<std::vector<unsigned int>> pipeline;
+
+	for (size_t smi = 0; smi < model.meshes[currentMaterialIndex].submeshes.size(); smi++)
+	{
+		Node outnode;
+		//Determine the node that is connected to the shader out node
+		for (size_t nodi = 0; nodi < nodeScenes[model.meshes[currentMaterialIndex].submeshes[smi].materialIndex].nodes.size(); nodi++)
+		{
+			if(nodeScenes[model.meshes[currentMaterialIndex].submeshes[smi].materialIndex].nodes[nodi].outputs.size()){
+				if(nodeScenes[model.meshes[currentMaterialIndex].submeshes[smi].materialIndex].nodes[nodi].outputs[0].isConnectedToShaderInput){
+					outnode = nodeScenes[model.meshes[currentMaterialIndex].submeshes[smi].materialIndex].nodes[nodi];
+				}
+			}
+		}
+
+		std::vector<unsigned int> part;
+		for (size_t oniI = 0; oniI < outnode.inputs.size(); oniI++)
+		{
+			unsigned int texture;
+			texture = outnode.inputs[oniI].generatedTexture;
+			part.push_back(texture);
+		}
+		pipeline.push_back(part);
+	}
+
+	for (size_t pipI = 0; pipI < pipeline[0].size(); pipI++)
+	{
+		glUseProgram(programs.materialResult);
+        
+        for (size_t sI = 0; sI < pipeline.size(); sI++)//20 21 22 23 24 25 
+        {
+            glActiveTexture(GL_TEXTURE20+sI);
+            glBindTexture(GL_TEXTURE_2D,pipeline[sI][pipI]);
+            glUniform1i(glGetUniformLocation(programs.materialResult, ("material" + std::to_string(sI)).c_str()), 20+sI);
+        }
+        for (size_t sI = 0; sI < pipeline.size(); sI++)//26 27 28 29 30 31
+        {
+            glActiveTexture(GL_TEXTURE26+sI);
+            glBindTexture(GL_TEXTURE_2D,model.meshes[currentMaterialIndex].submeshes[sI].maskTexture);
+            glUniform1i(glGetUniformLocation(programs.materialResult, ("mask" + std::to_string(sI)).c_str()), 26+sI);
+        }
+        glUniform1i(glGetUniformLocation(programs.materialResult, "submeshCount"), pipeline.size());
+
+		glActiveTexture(GL_TEXTURE28);
+		
+		unsigned int FBO;
+		glset.genFramebuffers(FBO);
+		glset.bindFramebuffer(FBO);
+		
+		unsigned int textureColorbuffer;
+		glset.genTextures(textureColorbuffer);
+		glset.bindTexture(textureColorbuffer);
+		glset.texImage(NULL, txtrRes,txtrRes,GL_RGB); //TODO : Use texture quality variable
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glset.generateMipmap();
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+		
+		glm::mat4 textProjection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
+		glset.uniform1i(programs.materialResult,"render2D",1);
+		glset.uniformMatrix4fv(programs.materialResult,"ortprojection",textProjection);
+		
+	//Viewport
+
+		std::vector<float> renderVertices = { 
+			// first triangle
+			 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+			 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+			 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+			// second triangle	  ,0,0,0,
+			 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+			 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+			 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+		};
+
+		glset.drawArrays(renderVertices,0);
+		
+		aTexture txtr;
+		txtr.id = textureColorbuffer;
+		txtr.name = "aaaaa";
+		albedoTextures.push_back(txtr);
+        
+		glset.bindFramebuffer(0);
+		glset.deleteFramebuffers(FBO);
+		glset.uniform1i(programs.materialResult,"render2D",0);
+	}
+	
 }
 void LigidPainter::mirrorRangeBars(double xOffset, int width, int height,bool x,bool y,bool z){
 	if (x) {

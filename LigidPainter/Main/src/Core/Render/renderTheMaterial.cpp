@@ -75,6 +75,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
     {
         //Default indexes
         material.nodes[i].renderingIndex = 10000;        
+        material.nodes[i].nodeScenesIndex = i;        
     }
     
     //Process indexes independant nodes
@@ -151,7 +152,6 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
             //------CREATE THE TEXTURE------
 
             unsigned int texture;
-
             if(material.renderingPipeline[nodeI].inputs[inputI].element == "ramp"){
                 if(material.renderingPipeline[nodeI].inputs[inputI].nodeConnectionIndex == 10000){
                     glActiveTexture(GL_TEXTURE28);
@@ -300,6 +300,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 			    }
             }
 
+            material.nodes[material.renderingPipeline[nodeI].nodeScenesIndex].inputs[inputI].generatedTexture = texture;
             glset.uniform1i(nodeProgram,("input_" + std::to_string(inputI)).c_str(),20+inputI);
             resultOut.textures.push_back(texture);
         }

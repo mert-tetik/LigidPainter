@@ -106,6 +106,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			ligid.selectBrushMaskTexture();
 		if (UIElements[UIbakeButtonElement].button.hover)
 			ligid.bakeButton();
+		if (UIElements[UIoutSubmeshesButtonElement].button.hover)
+			ligid.outSubmeshesButton();
 		if (UIElements[UIUploadingModelPathTextBox].textBox.hover)
 			ligid.modelFilePathTextBox(); 
 		if (UIElements[UIgenerateTextureButtonElement].button.hover)

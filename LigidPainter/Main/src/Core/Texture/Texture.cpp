@@ -54,7 +54,28 @@ unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, un
 		int width, height, nrChannels;
 
 		stbi_set_flip_vertically_on_load(true);
-		unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
+		
+		char* filedata;
+		uint64_t len;
+		
+		unsigned char* data;
+
+		int liRes = 0;
+		filedata = util.processLiFile(path.c_str(),len,liRes);
+
+		std::cout << "liRes : " << liRes << std::endl;
+		
+
+		if(liRes){
+			data = stbi_load_from_memory((stbi_uc*)filedata,len,&width,&height,&nrChannels,4);
+		}
+		else{
+			data = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
+		}
+
+
+		
+		//stbi_load_from_memory(filedata,0,);
 		GLubyte* resizedPixelsX = NULL;
 		if (applyResize) {
 			resizedPixelsX = new GLubyte[desiredWidth * desiredHeight * 4];

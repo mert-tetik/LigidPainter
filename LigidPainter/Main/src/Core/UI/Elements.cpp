@@ -588,6 +588,23 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     bakeButtonElement.type = "button";
     UIElements.push_back(bakeButtonElement);//41
 
+    UIElement outSubmeshesButtonElement;
+    outSubmeshesButtonElement.button.positionX = 0.0f;
+    outSubmeshesButtonElement.button.positionY = -0.56f;
+    outSubmeshesButtonElement.button.positionZ = 0.9f;
+    outSubmeshesButtonElement.button.width = 0.08f;
+    outSubmeshesButtonElement.button.height = 0.04f;
+    outSubmeshesButtonElement.button.color = colorData.buttonColor;
+    outSubmeshesButtonElement.button.colorHover = colorData.buttonColorHover;
+    outSubmeshesButtonElement.button.transitionMixVal = 0.0f;
+    outSubmeshesButtonElement.button.buttonCurveReduce = 10.0f;
+    outSubmeshesButtonElement.button.text = "Out the submeshes";
+    outSubmeshesButtonElement.button.textRatio = 0.08f;
+    outSubmeshesButtonElement.panel = 6;
+    outSubmeshesButtonElement.attachedToMainPanel = true;
+    outSubmeshesButtonElement.type = "button";
+    UIElements.push_back(outSubmeshesButtonElement);//41
+
 
 
     //---------PAINTING PANEL----------

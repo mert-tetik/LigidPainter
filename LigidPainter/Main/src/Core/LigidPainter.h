@@ -281,6 +281,7 @@ public:
 	void updateColorPicker(glm::vec3 RGBval,bool changeHue,bool changeSatV,float &hueValue,float &saturationValuePosX, float &saturationValuePosY,bool isMainColorPicker);
 	void setViewportToDefault();
 	void selectBrushMaskTexture();
+	void outSubmeshesButton(); 
 	void selectingPaintOverTextureIcon(); 
 	int ligidMessageBox(std::string message,float messagePosX,std::string bMessage,float bMessagePosX);
 

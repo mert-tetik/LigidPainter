@@ -486,3 +486,34 @@ std::vector<glm::vec3> Utilities::getMirrorVectors(bool x,bool y,bool z){
 
 	return vectors;
 }
+
+char* Utilities::processLiFile(const char * path,uint64_t& len,int &res){
+	
+	std::ifstream rf(path, std::ios::binary);
+
+	if(!rf){
+		std::cout << "CANT OPEN THE FILE : " << path << std::endl;
+		res = 0;
+		rf.close();
+		return {};
+	}
+
+	uint64_t h1 = 0xAFCF438ABFFCFF7E;
+	uint64_t hr;
+	
+	rf.read(reinterpret_cast<char*>(&hr), sizeof(uint64_t));
+
+	if(h1 != hr){
+		res = 0;
+		rf.close();
+		return {};
+	}
+	else{
+		rf.read(reinterpret_cast<char*>(&len), sizeof(uint64_t));
+        char* data = new char[len];
+        rf.read(data, len);
+		res = 1;
+		rf.close();
+		return data;
+	}
+}
