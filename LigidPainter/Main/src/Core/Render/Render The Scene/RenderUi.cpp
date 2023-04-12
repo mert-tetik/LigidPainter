@@ -96,7 +96,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool &firstClick
 ,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive
 ,std::string &textureText,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps
-,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios) {
+,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios,bool &textureDraggingState) {
 	uiAudios = audios;
 
 	ColorData colorData;
@@ -454,7 +454,10 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		GlSet gls;
 		gls.uniform1i(programs.renderTheTextureProgram,"roundCorners",1);
 		glUseProgram(programs.uiProgram);
-		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,sndPanel.materialPanelSlideVal,firstClick,coloringPanel,txtrCreatingPanel,anyTextureNameActive,textureText,sndPanel.activeFolderIndex,nodePanel,appNodes,sndPanel,brushMaskTextures,maskPanelEnter,yOffset,nodeScenesHistory,brushMaskTexturesState,chosenTextureResIndex);
+		ui.sndPanel(sndPanel.state,sndPanel.position + screenGapX,programs,icons,albedoTextures,renderData.window,mouseXpos,mouseYpos,screenGapX,
+					glfwGetVideoMode(glfwGetPrimaryMonitor())->width,selectedAlbedoTextureIndex,nodeScenes,selectedNodeScene,newModelAdded,sndPanel.texturePanelSlideVal,
+					sndPanel.materialPanelSlideVal,firstClick,coloringPanel,txtrCreatingPanel,anyTextureNameActive,textureText,sndPanel.activeFolderIndex,nodePanel,
+					appNodes,sndPanel,brushMaskTextures,maskPanelEnter,yOffset,nodeScenesHistory,brushMaskTexturesState,chosenTextureResIndex,textureDraggingState);
 		glUseProgram(programs.renderTheTextureProgram);
 		gls.uniform1i(programs.renderTheTextureProgram,"roundCorners",0);
 

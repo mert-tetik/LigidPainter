@@ -144,7 +144,11 @@ int sndpanelFolderCounter = 0;
 
 bool sndpanelSliderPressed = false;
 int subselectedIndex = 2;
-void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,float removeThisParam, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool &firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushTexture &brushMaskTextures,bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory,int brushMaskTexturesState,int chosenTextureResIndex) {
+void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,
+double mouseYpos,float screenGapX,float removeThisParam, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
+bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool &firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,
+bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushTexture &brushMaskTextures,
+bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory,int brushMaskTexturesState,int chosenTextureResIndex,bool &textureDraggingState) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -756,6 +760,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 			}
 		}
 	}
+	textureDraggingState = sndpanelMoveTexture;
 
 }
 

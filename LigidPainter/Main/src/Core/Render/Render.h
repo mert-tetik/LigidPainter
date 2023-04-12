@@ -45,7 +45,7 @@ public:
 	,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
 	,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
 	,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen,std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
-	unsigned int materialFBO,int &currentMaterialIndex);
+	unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState);
 
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void sendProgramsToRender(Programs appPrograms);
@@ -76,7 +76,7 @@ private:
 	int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool &firstClick,ColoringPanel& coloringPanel,
 	TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive,std::string &textureText
 	,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps,Objects &objects
-	,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios);
+	,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios,bool &textureDraggingState);
 	
 	
 	void renderAxisPointer(AxisPointerShaderData axisPointerShaderData,Programs programs);

@@ -42,7 +42,6 @@
 //- Range bar + paint
 //- Drag textures + paint  
 //- Texture selection panel + mask brush textures
-//- Double click
 
 //TODO Light source rotation from 3D Model displayer
 //TODO RTX Support
@@ -229,6 +228,7 @@ Icons icons;
 Audios audios;
 Model sphereModel;
 int currentMaterialIndex = 0;
+bool textureDraggingState = false;
 
 
 
@@ -915,7 +915,7 @@ bool LigidPainter::run()
 										,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,
 										txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
-										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex);
+										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState);
 		}
 		duplicateNodeCall = false;
 		
@@ -1401,7 +1401,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 
 
-	if(colorPicker.dropperActive){
+	if(colorPicker.dropperActive || textureDraggingState){
 		doPainting = false;
 	}
 	else if(textureDisplayer.buttonHover || callbackData.paintingPanelButtonEnter || callbackData.modelPanelButtonEnter || callbackData.exportPanelButtonEnter || callbackData.texturePanelButtonEnter || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover){

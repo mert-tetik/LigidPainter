@@ -290,7 +290,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 ,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
 ,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
 ,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
-unsigned int materialFBO,int &currentMaterialIndex) {
+unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState) {
 	
 	renderCurrentMaterialIndex = currentMaterialIndex;
 	
@@ -508,7 +508,7 @@ unsigned int materialFBO,int &currentMaterialIndex) {
 				colorPicker,textureDisplayer,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,
 				nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
 				chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
-				,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex,audios);
+				,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex,audios,textureDraggingState);
 		} 
 		else{
 			renderFocusModeUI(renderPrograms,renderData,UIElements,icons,coloringPanel,saturationValShaderData,mouseXpos,mouseYpos,firstClick,FBOScreen,colorPicker,
