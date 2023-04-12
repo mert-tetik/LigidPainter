@@ -340,20 +340,22 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			
 		}
 
-		float dotrad = 3.f;
-		float dotdepth = 0.1f;
-		std::vector<float> dotVertices = { 
-		 	dotrad,  dotrad, dotdepth,1,1,0,0,0,  // top right
-		 	dotrad,  0.0f, dotdepth,1,0,0,0,0,  // bottom right
-		 	0.0f,  dotrad, dotdepth,0,1,0,0,0,  // top left 
-			dotrad,  0.0f, dotdepth,1,0,0,0,0,  // bottom right
-		 	0.0f,  0.0f, dotdepth,0,0,0,0,0,  // bottom left
-		 	0.0f,  dotrad, dotdepth,0,1,0,0,0   // top left
-		};
-		glUseProgram(programs.dotsProgram);
-		glUniform2f(glGetUniformLocation(programs.dotsProgram , "transform"), nodePanel.panelPositionX* nodePanel.zoomVal *((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2), nodePanel.panelPositionY * nodePanel.zoomVal*((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2));
-		glBufferSubData(GL_ARRAY_BUFFER , 0 , dotVertices.size() * sizeof(float) , &dotVertices[0]);
-		glDrawArraysInstanced(GL_TRIANGLES , 0 , 6 , 200);
+		if(!panelData.paintingPanelActive){
+			float dotrad = 3.f;
+			float dotdepth = 0.1f;
+			std::vector<float> dotVertices = { 
+			 	dotrad,  dotrad, dotdepth,1,1,0,0,0,  // top right
+			 	dotrad,  0.0f, dotdepth,1,0,0,0,0,  // bottom right
+			 	0.0f,  dotrad, dotdepth,0,1,0,0,0,  // top left 
+				dotrad,  0.0f, dotdepth,1,0,0,0,0,  // bottom right
+			 	0.0f,  0.0f, dotdepth,0,0,0,0,0,  // bottom left
+			 	0.0f,  dotrad, dotdepth,0,1,0,0,0   // top left
+			};
+			glUseProgram(programs.dotsProgram);
+			glUniform2f(glGetUniformLocation(programs.dotsProgram , "transform"), nodePanel.panelPositionX* nodePanel.zoomVal *((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2), nodePanel.panelPositionY * nodePanel.zoomVal*((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2));
+			glBufferSubData(GL_ARRAY_BUFFER , 0 , dotVertices.size() * sizeof(float) , &dotVertices[0]);
+			glDrawArraysInstanced(GL_TRIANGLES , 0 , 6 , 200);
+		}
 
 		if(!panelData.paintingPanelActive){
 			if(firstClick && anyNodeHover){

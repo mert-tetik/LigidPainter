@@ -43,7 +43,6 @@
 //- Drag textures + paint  
 //- Texture selection panel + mask brush textures
 //- Double click
-//TODO Node panel dots
 
 //TODO Light source rotation from 3D Model displayer
 //TODO RTX Support
@@ -651,7 +650,8 @@ bool LigidPainter::run()
 			clickCounter = 0;
 			if(countTheClicks && glm::distance(glm::vec2(mouseClickPosx,mouseClickPosy),glm::vec2(mouseXpos,mouseYpos)) < 30){
 				countTheClicks = false;
-				doubleClick = true;
+				if(!mainPanelHover && !nodePanel.panelHover && !sndPanel.panelHover && !coloringPanel.active && !textureSelectionPanel.active && !txtrCreatingPanel.active)
+					doubleClick = true;
 			}
 			else{
 				mouseClickPosx = mouseXpos;
@@ -724,7 +724,8 @@ bool LigidPainter::run()
 			clickCounter = 0;
 			if(countTheClicks && glm::distance(glm::vec2(mouseClickPosx,mouseClickPosy),glm::vec2(mouseXpos,mouseYpos)) < 30){
 				countTheClicks = false;
-				doubleClickR = true;
+				if(!mainPanelHover && !nodePanel.panelHover && !sndPanel.panelHover && !coloringPanel.active && !textureSelectionPanel.active && !txtrCreatingPanel.active)
+					doubleClickR = true;
 			}
 			else{
 				mouseClickPosx = mouseXpos;
@@ -2269,7 +2270,7 @@ void LigidPainter::nodePanelBoundaries(float yOffset,float screenHeight){
 	if (enablePanelMovement) {
 		Utilities util;
 		nodePanel.heigth += yOffset / (screenHeight / 2);
-		nodePanel.heigth = util.restrictBetween(nodePanel.heigth, 1.92f, 0.01);//Keep in boundaries
+		nodePanel.heigth = util.restrictBetween(nodePanel.heigth, 1.85f, 0.01);//Keep in boundaries
     }
 }
 
