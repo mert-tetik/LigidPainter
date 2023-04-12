@@ -633,7 +633,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement displayPaintOverTextureCheckBoxElement;
     displayPaintOverTextureCheckBoxElement.checkBox.positionX = -0.09f;
-    displayPaintOverTextureCheckBoxElement.checkBox.positionY = -0.15f;
+    displayPaintOverTextureCheckBoxElement.checkBox.positionY = -0.105f;
     displayPaintOverTextureCheckBoxElement.checkBox.text = "Display the texture";
     displayPaintOverTextureCheckBoxElement.checkBox.checked = false;
     displayPaintOverTextureCheckBoxElement.checkBox.mouseHover = false;
@@ -644,7 +644,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement selectPaintOverTextureIconElement;
     selectPaintOverTextureIconElement.icon.positionX = -0.08f;
-    selectPaintOverTextureIconElement.icon.positionY = -0.25f;
+    selectPaintOverTextureIconElement.icon.positionY = -0.17f;
     selectPaintOverTextureIconElement.icon.positionZ = 0.9f;
     selectPaintOverTextureIconElement.icon.width = 0.015f;
     selectPaintOverTextureIconElement.icon.height = 0.03f;
@@ -660,7 +660,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement selectPaintOverTextureNameTextElement;
 	selectPaintOverTextureNameTextElement.text.positionX = -0.06f;
-	selectPaintOverTextureNameTextElement.text.positionY = -0.25f;
+	selectPaintOverTextureNameTextElement.text.positionY = -0.17f;
 	selectPaintOverTextureNameTextElement.text.text = "";
     selectPaintOverTextureNameTextElement.text.scale = 0.00022f;
     selectPaintOverTextureNameTextElement.text.color = colorData.textColor;
@@ -668,6 +668,92 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	selectPaintOverTextureNameTextElement.attachedToMainPanel = true;
 	selectPaintOverTextureNameTextElement.type = "text";
     UIElements.push_back(selectPaintOverTextureNameTextElement);//12
+
+    float paintOverSetPos = 0.02f;
+
+    UIElement paintOverPosXRangeBarElement;
+	paintOverPosXRangeBarElement.rangeBar.positionX = -0.03f;
+	paintOverPosXRangeBarElement.rangeBar.positionY = -0.23f-paintOverSetPos;
+	paintOverPosXRangeBarElement.rangeBar.isConstant = true;
+	paintOverPosXRangeBarElement.rangeBar.value = 0.f;
+	paintOverPosXRangeBarElement.panel = 3;
+	paintOverPosXRangeBarElement.attachedToMainPanel = true;
+	paintOverPosXRangeBarElement.type = "rangeBar";
+    UIElements.push_back(paintOverPosXRangeBarElement);
+    
+    UIElement paintOverPosYRangeBarElement;
+	paintOverPosYRangeBarElement.rangeBar.positionX = +0.03f;
+	paintOverPosYRangeBarElement.rangeBar.positionY = -0.23f-paintOverSetPos;
+	paintOverPosYRangeBarElement.rangeBar.isConstant = true;
+	paintOverPosYRangeBarElement.rangeBar.value = 0.f;
+	paintOverPosYRangeBarElement.panel = 3;
+	paintOverPosYRangeBarElement.attachedToMainPanel = true;
+	paintOverPosYRangeBarElement.type = "rangeBar";
+    UIElements.push_back(paintOverPosYRangeBarElement);
+    
+    UIElement paintOverScaleXRangeBarElement;
+	paintOverScaleXRangeBarElement.rangeBar.positionX = -0.03f;
+	paintOverScaleXRangeBarElement.rangeBar.positionY = -0.28f-paintOverSetPos;
+	paintOverScaleXRangeBarElement.rangeBar.isConstant = true;
+	paintOverScaleXRangeBarElement.rangeBar.value = 1.f;
+	paintOverScaleXRangeBarElement.panel = 3;
+	paintOverScaleXRangeBarElement.attachedToMainPanel = true;
+	paintOverScaleXRangeBarElement.type = "rangeBar";
+    UIElements.push_back(paintOverScaleXRangeBarElement);
+    
+    UIElement paintOverScaleYRangeBarElement;
+	paintOverScaleYRangeBarElement.rangeBar.positionX = +0.03f;
+	paintOverScaleYRangeBarElement.rangeBar.positionY = -0.28f-paintOverSetPos;
+	paintOverScaleYRangeBarElement.rangeBar.isConstant = true;
+	paintOverScaleYRangeBarElement.rangeBar.value = 1.f;
+	paintOverScaleYRangeBarElement.panel = 3;
+	paintOverScaleYRangeBarElement.attachedToMainPanel = true;
+	paintOverScaleYRangeBarElement.type = "rangeBar";
+    UIElements.push_back(paintOverScaleYRangeBarElement);
+    
+    UIElement paintOverScaleTextElement;
+	paintOverScaleTextElement.text.positionX = -0.11f;
+	paintOverScaleTextElement.text.positionY = -0.29f-paintOverSetPos;
+	paintOverScaleTextElement.text.text = "Scale";
+    paintOverScaleTextElement.text.scale = 0.0002f;
+    paintOverScaleTextElement.text.color = colorData.textColor;
+	paintOverScaleTextElement.panel = 3;
+	paintOverScaleTextElement.attachedToMainPanel = true;
+	paintOverScaleTextElement.type = "text";
+    UIElements.push_back(paintOverScaleTextElement);//12
+    
+    UIElement paintOverPosTextElement;
+	paintOverPosTextElement.text.positionX = -0.1f;
+	paintOverPosTextElement.text.positionY = -0.24f-paintOverSetPos;
+	paintOverPosTextElement.text.text = "Pos";
+    paintOverPosTextElement.text.scale = 0.0002f;
+    paintOverPosTextElement.text.color = colorData.textColor;
+	paintOverPosTextElement.panel = 3;
+	paintOverPosTextElement.attachedToMainPanel = true;
+	paintOverPosTextElement.type = "text";
+    UIElements.push_back(paintOverPosTextElement);//12
+
+    UIElement paintOverXTextElement;
+	paintOverXTextElement.text.positionX = -0.038f;
+	paintOverXTextElement.text.positionY = -0.21f-paintOverSetPos;
+	paintOverXTextElement.text.text = "X";
+    paintOverXTextElement.text.scale = 0.00015f;
+    paintOverXTextElement.text.color = colorData.textColor;
+	paintOverXTextElement.panel = 3;
+	paintOverXTextElement.attachedToMainPanel = true;
+	paintOverXTextElement.type = "text";
+    UIElements.push_back(paintOverXTextElement);//12
+    
+    UIElement paintOverYTextElement;
+	paintOverYTextElement.text.positionX = +0.022f;
+	paintOverYTextElement.text.positionY = -0.21f-paintOverSetPos;
+	paintOverYTextElement.text.text = "Y";
+    paintOverYTextElement.text.scale = 0.00015f;
+    paintOverYTextElement.text.color = colorData.textColor;
+	paintOverYTextElement.panel = 3;
+	paintOverYTextElement.attachedToMainPanel = true;
+	paintOverYTextElement.type = "text";
+    UIElements.push_back(paintOverYTextElement);//12
 
     UIElement dynamicPaintingCheckBoxElement;
     dynamicPaintingCheckBoxElement.checkBox.positionX = -0.44f;

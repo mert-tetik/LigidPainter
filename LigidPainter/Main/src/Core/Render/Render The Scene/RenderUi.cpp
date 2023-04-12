@@ -652,7 +652,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 		//Paint over texture name
 		glUseProgram(programs.uiProgram);
-		ui.box(0.09f,0.03,((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum) - 0.0f - screenGapX,-0.25f + panelData.paintingPanelSlideVal,"", colorData.buttonColor,0.f,0,0,0.8f,0.8f,colorData.buttonColor,0.f);
+		ui.box(0.09f,0.03,((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum) - 0.0f - screenGapX,-0.17f + panelData.paintingPanelSlideVal,"", colorData.buttonColor,0.f,0,0,0.8f,0.8f,colorData.buttonColor,0.f);
 	}
 
 	bool usingUiProgram = false;
@@ -689,7 +689,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		}
 		if(renderData.panelLoc > 1.98f && !UIElements[i].focusMode)
 			panelCompatibility = false;
-		if(!UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked && (i == UIpaintOverCheckBoxElement || (i == UIdisplayPaintOverTextureCheckBoxElement) || (i == UIselectPaintOverTextureNameTextElement) || (i == UIselectPaintOverTextureIconElement)))
+		if(!UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked && (i == UIpaintOverCheckBoxElement || (i == UIdisplayPaintOverTextureCheckBoxElement) || (i == UIselectPaintOverTextureNameTextElement) || (i == UIpaintOverPosXRangeBarElement) || (i == UIpaintOverPosYRangeBarElement) || (i == UIpaintOverScaleXRangeBarElement) || (i == UIpaintOverScaleYRangeBarElement) || (i == UIpaintOverPosTextElement) || (i == UIpaintOverScaleTextElement) || (i == UIpaintOverXTextElement) || (i == UIpaintOverYTextElement) || (i == UIselectPaintOverTextureIconElement)))
 			panelCompatibility = false;
 
 		if(panelCompatibility && !(UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked && (i == UIbrushBordersRangeBar|| i == UIbrushBordersText || i == UIbrushRotationRangeBar|| i == UIbrushRotationText || i == UIbrushSpacingRangeBar || i == UIbrushSpacingText || i == UIuseNegativeCheckBox || i == UIaddBrushMaskTextureIcon ||  i == UIselectBrushMaskTextureIcon || i == UImaskTextureFileNameText))){

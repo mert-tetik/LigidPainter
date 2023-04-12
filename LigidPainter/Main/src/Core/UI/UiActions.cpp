@@ -26,6 +26,10 @@ bool subSelectedImagePowerRangeBarPressed;
 bool mirrorXRangeBarPressed;
 bool mirrorYRangeBarPressed;
 bool mirrorZRangeBarPressed;
+bool paintOverPosXRangeBarPressed;
+bool paintOverPosYRangeBarPressed;
+bool paintOverScaleXRangeBarPressed;
+bool paintOverScaleYRangeBarPressed;
 //
 
 void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vector<UIElement> &UIElements, ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,NodePanel &nodePanel,SndPanel &sndPanel,bool &firstClick) {
@@ -73,6 +77,18 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		}
 		else if (UIElements[UImirrorZRangeBarElement].rangeBar.hover) {
 			mirrorZRangeBarPressed = true;
+		}
+		else if (UIElements[UIpaintOverPosXRangeBarElement].rangeBar.hover) {
+			paintOverPosXRangeBarPressed = true;
+		}
+		else if (UIElements[UIpaintOverPosYRangeBarElement].rangeBar.hover) {
+			paintOverPosYRangeBarPressed = true;
+		}
+		else if (UIElements[UIpaintOverScaleXRangeBarElement].rangeBar.hover) {
+			paintOverScaleXRangeBarPressed = true;
+		}
+		else if (UIElements[UIpaintOverScaleYRangeBarElement].rangeBar.hover) {
+			paintOverScaleYRangeBarPressed = true;
 		}
 		else if (colorPicker.saturationValuePointerHover) {
 			colorBoxPickerPressed = true;
@@ -306,6 +322,10 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		mirrorXRangeBarPressed = false;
 		mirrorYRangeBarPressed = false;
 		mirrorZRangeBarPressed = false;
+		paintOverPosXRangeBarPressed = false;
+		paintOverPosYRangeBarPressed = false;
+		paintOverScaleXRangeBarPressed = false;
+		paintOverScaleYRangeBarPressed = false;
 	}
 }
 bool UiActions::updateRangeValues(GLFWwindow* window, double xOffset,double yOffset, int screenWidth, int screenHeight,TextureDisplayer &textureDisplayer,
@@ -333,6 +353,9 @@ SndPanel &sndPanel){
 	}
 	if(mirrorXRangeBarPressed || mirrorYRangeBarPressed || mirrorZRangeBarPressed){
 		ligid.mirrorRangeBars(xOffset, screenWidth,screenHeight,mirrorXRangeBarPressed, mirrorYRangeBarPressed, mirrorZRangeBarPressed);
+	}
+	if(paintOverPosXRangeBarPressed || paintOverPosYRangeBarPressed || paintOverScaleXRangeBarPressed || paintOverScaleYRangeBarPressed){
+		ligid.paintoverTransformRanegBars(xOffset, screenWidth,screenHeight,paintOverPosXRangeBarPressed , paintOverPosYRangeBarPressed , paintOverScaleXRangeBarPressed , paintOverScaleYRangeBarPressed);
 	}
 	if (subSelectedImagePowerRangeBarPressed) {
 		ligid.subSelectedImagePowerRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable

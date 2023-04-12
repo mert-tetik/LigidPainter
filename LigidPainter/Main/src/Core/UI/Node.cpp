@@ -684,7 +684,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 			box(0,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+0.02,8 / (node.width*6),node.backColor,0);
 			
 			
-			renderText(programs.uiProgram,node.inputs[i].selectedTextureName,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.5f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10 - node.width/10,node.width/400.f,colorData.textColor,depth+0.02,false);
+			renderText(programs.uiProgram,util.cropString(node.inputs[i].selectedTextureName,10),(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.5f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10 - node.width/10,node.width/400.f,colorData.textColor,depth+0.02,false);
 			
 			glUseProgram(programs.iconsProgram);
 			iconBox(iconWidth/2,iconWidth,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+0.03,icons.X,0,colorData.iconColor,glm::vec4(0));

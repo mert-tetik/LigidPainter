@@ -283,9 +283,8 @@ public:
 	void selectBrushMaskTexture();
 	void outSubmeshesButton(); 
 	void selectingPaintOverTextureIcon(); 
+	void paintoverTransformRanegBars(float xOffset, int screenWidth,int screenHeight,bool pX,bool pY,bool sX, bool sY);
 	int ligidMessageBox(std::string message,float messagePosX,std::string bMessage,float bMessagePosX);
-
-
 };
 struct PanelData {
 	bool movePanel;

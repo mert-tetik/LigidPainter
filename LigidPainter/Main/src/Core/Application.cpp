@@ -38,6 +38,13 @@
 
 //TODO Fix mirror origin pos
 //TODO Fix mirror paint over
+//TODO Fix interactions
+//- Range bar + paint
+//- Drag textures + paint  
+//- Texture selection panel + mask brush textures
+//- Double click
+//TODO Paint over displayer rangebars
+//TODO Node panel dots
 
 //TODO Light source rotation from 3D Model displayer
 //TODO RTX Support
@@ -1820,7 +1827,7 @@ void LigidPainter::colorBoxPickerButton(double xOffset, double yOffset, int widt
 void LigidPainter::selectingPaintOverTextureIcon(){
 	selectingPaintOverTexture = true;
 	textureSelectionPanel.posX = 0.65f;
-	textureSelectionPanel.posY = -0.3f;
+	textureSelectionPanel.posY = -0.2f;
 	textureSelectionPanel.active = true;
 }
 void LigidPainter::modelFilePathTextBox() {
@@ -2083,6 +2090,28 @@ void LigidPainter::loadModelButton() {
 			loadModelButton();
 		}
 	}
+}
+void LigidPainter::paintoverTransformRanegBars(float xOffset, int screenWidth,int screenHeight,bool pX,bool pY,bool sX, bool sY){
+	if (pX) {
+		Utilities util;
+		UIElements[UIpaintOverPosXRangeBarElement].rangeBar.value -= xOffset / (screenWidth / 2) *1.7;
+		//UIElements[UImirrorXRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UImirrorXRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+    }
+	if (pY) {
+		Utilities util;
+		UIElements[UIpaintOverPosYRangeBarElement].rangeBar.value -= xOffset / (screenWidth / 2) *1.7;
+		//UIElements[UImirrorXRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UImirrorXRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+    }
+	if (sX) {
+		Utilities util;
+		UIElements[UIpaintOverScaleXRangeBarElement].rangeBar.value -= xOffset / (screenWidth / 2) *1.7;
+		//UIElements[UImirrorXRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UImirrorXRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+    }
+	if (sY) {
+		Utilities util;
+		UIElements[UIpaintOverScaleYRangeBarElement].rangeBar.value -= xOffset / (screenWidth / 2) *1.7;
+		//UIElements[UImirrorXRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UImirrorXRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+    }
 }
 void LigidPainter::paintingDropper(){
 	colorPicker.dropperActive = true;

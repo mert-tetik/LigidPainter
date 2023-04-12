@@ -267,9 +267,6 @@ NodeScene lastNodeScene;
 double renderlastMouseXpos;
 double renderlastMouseYpos;
 
-glm::vec2 paintOverLayerPos = glm::vec2(0.f);
-glm::vec2 paintOverLayerScale = glm::vec2(1.f);
-
 float startMenuNew3DProjectMixVal = 0.f;
 float startMenuImportProjectMixVal = 0.f;
 
@@ -444,11 +441,11 @@ unsigned int materialFBO,int &currentMaterialIndex) {
 			projection = glm::ortho(0,1,0,1);
 			
 			glUseProgram(renderPrograms.outProgram);
-			glUniform2f(glGetUniformLocation(renderPrograms.outProgram , "paintOverPos"),paintOverLayerPos.x, paintOverLayerPos.y);
-			glUniform2f(glGetUniformLocation(renderPrograms.outProgram , "paintOverScale"),paintOverLayerScale.x, paintOverLayerScale.y);
+			glUniform2f(glGetUniformLocation(renderPrograms.outProgram , "paintOverPos"),UIElements[UIpaintOverPosXRangeBarElement].rangeBar.value, UIElements[UIpaintOverPosYRangeBarElement].rangeBar.value);
+			glUniform2f(glGetUniformLocation(renderPrograms.outProgram , "paintOverScale"),UIElements[UIpaintOverScaleXRangeBarElement].rangeBar.value, UIElements[UIpaintOverScaleYRangeBarElement].rangeBar.value);
 			glUseProgram(renderPrograms.PBRProgram);
-			glUniform2f(glGetUniformLocation(renderPrograms.PBRProgram , "paintOverPos"),paintOverLayerPos.x, paintOverLayerPos.y);
-			glUniform2f(glGetUniformLocation(renderPrograms.PBRProgram , "paintOverScale"),paintOverLayerScale.x, paintOverLayerScale.y);
+			glUniform2f(glGetUniformLocation(renderPrograms.PBRProgram , "paintOverPos"),UIElements[UIpaintOverPosXRangeBarElement].rangeBar.value, UIElements[UIpaintOverPosYRangeBarElement].rangeBar.value);
+			glUniform2f(glGetUniformLocation(renderPrograms.PBRProgram , "paintOverScale"),UIElements[UIpaintOverScaleXRangeBarElement].rangeBar.value, UIElements[UIpaintOverScaleYRangeBarElement].rangeBar.value);
 			
 			glUseProgram(renderPrograms.paintOverProgram);
 			gls.uniformMatrix4fv(renderPrograms.paintOverProgram,"TextProjection",projection);
@@ -456,8 +453,8 @@ unsigned int materialFBO,int &currentMaterialIndex) {
 			gls.uniform1f(renderPrograms.paintOverProgram,"opacity",0.3f);
 			glActiveTexture(GL_TEXTURE0);
 			gls.bindTexture(paintOverTexture.id);
-			glUniform2f(glGetUniformLocation(renderPrograms.paintOverProgram , "pos"),paintOverLayerPos.x, paintOverLayerPos.y);
-			glUniform2f(glGetUniformLocation(renderPrograms.paintOverProgram , "scale"),paintOverLayerScale.x, paintOverLayerScale.y);
+			glUniform2f(glGetUniformLocation(renderPrograms.paintOverProgram , "pos"),UIElements[UIpaintOverPosXRangeBarElement].rangeBar.value, UIElements[UIpaintOverPosYRangeBarElement].rangeBar.value);
+			glUniform2f(glGetUniformLocation(renderPrograms.paintOverProgram , "scale"),UIElements[UIpaintOverScaleXRangeBarElement].rangeBar.value, UIElements[UIpaintOverScaleYRangeBarElement].rangeBar.value);
 			std::vector<float> renderVertices = { 
 				// first triangle
 				 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
@@ -473,19 +470,21 @@ unsigned int materialFBO,int &currentMaterialIndex) {
 			double yOffset = mouseYpos - renderlastMouseYpos;
 			if(glfwGetMouseButton(renderData.window,0) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_F3) == GLFW_PRESS){
 				if(!glfwGetKey(renderData.window,GLFW_KEY_Y) == GLFW_PRESS)
-					paintOverLayerPos.x -= xOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->width;
+					UIElements[UIpaintOverPosXRangeBarElement].rangeBar.value -= xOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->width;
 				if(!glfwGetKey(renderData.window,GLFW_KEY_X) == GLFW_PRESS)
-					paintOverLayerPos.y += yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
+					UIElements[UIpaintOverPosYRangeBarElement].rangeBar.value += yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
 			}
 			if(glfwGetMouseButton(renderData.window,1) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_F3) == GLFW_PRESS){
 				if(!glfwGetKey(renderData.window,GLFW_KEY_Y) == GLFW_PRESS)
-				paintOverLayerScale.x += yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
+				UIElements[UIpaintOverScaleXRangeBarElement].rangeBar.value += yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
 				if(!glfwGetKey(renderData.window,GLFW_KEY_X) == GLFW_PRESS)
-				paintOverLayerScale.y += yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
+				UIElements[UIpaintOverScaleYRangeBarElement].rangeBar.value += yOffset/glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
 			}
 			if(glfwGetKey(renderData.window,GLFW_KEY_R) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_F3) == GLFW_PRESS){
-				paintOverLayerScale = glm::vec2(1);
-				paintOverLayerPos = glm::vec2(0);
+				UIElements[UIpaintOverPosXRangeBarElement].rangeBar.value = 0;
+				UIElements[UIpaintOverPosYRangeBarElement].rangeBar.value = 0;
+				UIElements[UIpaintOverScaleXRangeBarElement].rangeBar.value = 1;
+				UIElements[UIpaintOverScaleYRangeBarElement].rangeBar.value = 1;
 			}
 		}
 
