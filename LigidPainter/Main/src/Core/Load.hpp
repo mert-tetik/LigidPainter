@@ -530,6 +530,12 @@ public:
 		unsigned int materialResult = gl.createProgram("./LigidPainter/Resources/Shaders/3D/materialResult");
 		
 		
+		
+		
+		//materialResult program
+		unsigned int dotsProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/dots");
+		
+		
 
 		
 		Programs glPrograms;
@@ -559,6 +565,7 @@ public:
 		glPrograms.textureDisplayer = textureDisplayer;
 		glPrograms.brushCursor = brushCursor;
 		glPrograms.materialResult = materialResult;
+		glPrograms.dotsProgram = dotsProgram;
 
 
 		return glPrograms;

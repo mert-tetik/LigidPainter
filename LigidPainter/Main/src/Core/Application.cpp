@@ -43,7 +43,6 @@
 //- Drag textures + paint  
 //- Texture selection panel + mask brush textures
 //- Double click
-//TODO Paint over displayer rangebars
 //TODO Node panel dots
 
 //TODO Light source rotation from 3D Model displayer

@@ -113,6 +113,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	float centerSum;
 	centerDivider = 2.0f;
 	centerSum = 0;
+	glm::mat4 scprojection = glm::ortho(0.f, (float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width, 0.f, (float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 	projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 	glUseProgram(programs.rampProgram);
 	gl.uniformMatrix4fv(programs.rampProgram, "TextProjection", projection);
@@ -126,6 +127,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	gl.uniformMatrix4fv(programs.textureDisplayer, "TextProjection", projection);
 	glUseProgram(programs.brushCursor);
 	gl.uniformMatrix4fv(programs.brushCursor, "TextProjection", projection);
+	glUseProgram(programs.dotsProgram);
+	gl.uniformMatrix4fv(programs.dotsProgram, "TextProjection", scprojection);
 	glUseProgram(programs.uiProgram);
 	gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
 	float centerCoords = (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
@@ -336,6 +339,22 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			}
 			
 		}
+
+		float dotrad = 3.f;
+		float dotdepth = 0.1f;
+		std::vector<float> dotVertices = { 
+		 	dotrad,  dotrad, dotdepth,1,1,0,0,0,  // top right
+		 	dotrad,  0.0f, dotdepth,1,0,0,0,0,  // bottom right
+		 	0.0f,  dotrad, dotdepth,0,1,0,0,0,  // top left 
+			dotrad,  0.0f, dotdepth,1,0,0,0,0,  // bottom right
+		 	0.0f,  0.0f, dotdepth,0,0,0,0,0,  // bottom left
+		 	0.0f,  dotrad, dotdepth,0,1,0,0,0   // top left
+		};
+		glUseProgram(programs.dotsProgram);
+		glUniform2f(glGetUniformLocation(programs.dotsProgram , "transform"), nodePanel.panelPositionX* nodePanel.zoomVal *((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2), nodePanel.panelPositionY * nodePanel.zoomVal*((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2));
+		glBufferSubData(GL_ARRAY_BUFFER , 0 , dotVertices.size() * sizeof(float) , &dotVertices[0]);
+		glDrawArraysInstanced(GL_TRIANGLES , 0 , 6 , 200);
+
 		if(!panelData.paintingPanelActive){
 			if(firstClick && anyNodeHover){
 				showTheSelectionBox = false;

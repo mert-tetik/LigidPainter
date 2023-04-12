@@ -63,9 +63,6 @@ unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, un
 		int liRes = 0;
 		filedata = util.processLiFile(path.c_str(),len,liRes);
 
-		std::cout << "liRes : " << liRes << std::endl;
-		
-
 		if(liRes){
 			data = stbi_load_from_memory((stbi_uc*)filedata,len,&width,&height,&nrChannels,4);
 		}

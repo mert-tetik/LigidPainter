@@ -40,6 +40,7 @@ struct Programs
 	unsigned int textureDisplayer;
 	unsigned int brushCursor;
 	unsigned int materialResult;
+	unsigned int dotsProgram;
 };
 struct Cubemaps{
 	unsigned int cubemap;
