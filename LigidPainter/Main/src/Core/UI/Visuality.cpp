@@ -1169,7 +1169,7 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 	iconBox(0.015,0.0273f,position_x, position_y,0.9f,circleTxtr,0,color,color);
 	
 	glUseProgram(uiPrograms.uiProgram);
-	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f,colorData.textColor,0.99999f,false);
+	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f,colorData.textColor,0.9f,false);
 }
 
 
@@ -1958,7 +1958,7 @@ int lastBrushMaskTexturePanelState = 0;
 int state1Index = 0;
 int state2Index = 0;
 int state3Index = 0;
-void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool &firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData &panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData,float posY,int state){
+void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool &firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData &panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData,float posY,int state,TextureSelectionPanel txtrSelectionPanel){
 	ColorData colorData;
 	GlSet gl;
 	Texture txtr;
@@ -2027,13 +2027,13 @@ void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTe
 			float upBotDifMax = std::max(0.05f + position_y,posY-panelRange) - std::max(-0.05f + position_y,posY-panelRange);
 			std::vector<float> buttonCoorSq{
 				// first trianglev 
-				 0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 0.999f,1,upBotDifMin*10,0,0,0,  // top right
-				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 0.999f,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
-				-0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 0.999f,0,upBotDifMin*10,0,0,0,  // top left 
+				 0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 0.9f,1,upBotDifMin*10,0,0,0,  // top right
+				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 0.9f,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
+				-0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 0.9f,0,upBotDifMin*10,0,0,0,  // top left 
 				// second triangle						   
-				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 0.999f,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
-				-0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 0.999f,0,1.0f-upBotDifMax*10,0,0,0,  // bottom left
-				-0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 0.999f,0,upBotDifMin*10,0,0,0  // top left
+				 0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 0.9f,1,1.0f-upBotDifMax*10,0,0,0,  // bottom right
+				-0.03f + position_x,  std::min(std::max(-0.06f + position_y,posY-panelRange),posY), 0.9f,0,1.0f-upBotDifMax*10,0,0,0,  // bottom left
+				-0.03f + position_x,  std::min(std::max(0.06f + position_y,posY-panelRange),posY), 0.9f,0,upBotDifMin*10,0,0,0  // top left
 			};
 
 			if(std::min(std::max(0.06f + position_y,posY-panelRange),posY) != std::min(std::max(-0.06f + position_y,posY-panelRange),posY)){//Prevent rendering all the textures
@@ -2061,7 +2061,7 @@ void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTe
 			}
 
 			
-			if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2),mouseYpos,buttonCoorSq,panelData.movePanel)){
+			if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2),mouseYpos,buttonCoorSq,panelData.movePanel) && !txtrSelectionPanel.active){
 				if(firstClick){
 					Utilities util;
 					UIElements[UImaskTextureFileNameText].text.text = util.cropString(brushmasktextures[i].name,20);

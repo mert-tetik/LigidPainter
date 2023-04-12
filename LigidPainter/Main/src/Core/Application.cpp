@@ -40,7 +40,6 @@
 //TODO Fix mirror paint over
 //TODO Fix interactions
 //- Range bar + paint
-//- Drag textures + paint  
 //- Texture selection panel + mask brush textures
 
 //TODO Light source rotation from 3D Model displayer
