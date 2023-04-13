@@ -1,20 +1,20 @@
-//GL_TEXTURE0 = Albedo texture
-//GL_TEXTURE1 = Mask texture
-//GL_TEXTURE2 = Chars
-//GL_TEXTURE3 = Mirrored Screen Mask Painting Texture
-//GL_TEXTURE4 = Screen Mask Painting Texture
-//GL_TEXTURE5 = 1920x1080 Screen Texture
-//GL_TEXTURE6 = Icons
-//GL_TEXTURE7 = UV mask texture (used for painting over boundaries)
-//GL_TEXTURE8 = 3D Rendered mask texture
-//GL_TEXTURE9 = Depth texture
-//GL_TEXTURE10 = 1080x1080 Screen Texture
-//GL_TEXTURE12 = Modified mask texture
-//GL_TEXTURE13 = skybox
-//GL_TEXTURE14 = texture rendering for the ui
-//GL_TEXTURE15 = BRDF
-//GL_TEXTURE16 = prefilteredMap
-//GL_TEXTURE17 = subSelectedTexture
+//? GL_TEXTURE0 = Albedo texture
+//? GL_TEXTURE1 = Mask texture
+//? GL_TEXTURE2 = Chars
+//? GL_TEXTURE3 = Mirrored Screen Mask Painting Texture
+//? GL_TEXTURE4 = Screen Mask Painting Texture
+//? GL_TEXTURE5 = 1920x1080 Screen Texture
+//? GL_TEXTURE6 = Icons
+//? GL_TEXTURE7 = UV mask texture (used for painting over boundaries)
+//? GL_TEXTURE8 = 3D Rendered mask texture
+//? GL_TEXTURE9 = Depth texture
+//? GL_TEXTURE10 = 1080x1080 Screen Texture
+//? GL_TEXTURE12 = Modified mask texture
+//? GL_TEXTURE13 = skybox
+//? GL_TEXTURE14 = texture rendering for the ui
+//? GL_TEXTURE15 = BRDF
+//? GL_TEXTURE16 = prefilteredMap
+//? GL_TEXTURE17 = subSelectedTexture
    
 //GL_TEXTURE 20 - 27 Is reserved for nodes
 //GL_TEXTURE28 = Empty
@@ -39,7 +39,11 @@
 //TODO Fix mirror origin pos
 //TODO Fix mirror paint over
 //TODO Flip
+//TODO Fix color painting
+//- updatemasktexture will use framebuffers & use alpha channels
+//-2Dpainting glsl 
 
+//TODO Search for brush textures
 //TODO Color id
 //TODO Color pallette
 //TODO Light source rotation from 3D Model displayer
@@ -902,9 +906,6 @@ bool LigidPainter::run()
 		outShaderData.view = viewUpdateData.view;
 		outShaderData.viewPos = viewUpdateData.cameraPos;
 
-		
-
-
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
@@ -1758,7 +1759,7 @@ void LigidPainter::generateTextureButton(){
 		unsigned int textureColorbuffer;
 		glset.genTextures(textureColorbuffer);
 		glset.bindTexture(textureColorbuffer);
-		glset.texImage(NULL, txtrRes,txtrRes,GL_RGB); //TODO : Use texture quality variable
+		glset.texImage(NULL, txtrRes,txtrRes,GL_RGBA); //TODO : Use texture quality variable
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

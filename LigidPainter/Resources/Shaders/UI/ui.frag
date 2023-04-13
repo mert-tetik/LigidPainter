@@ -50,7 +50,7 @@ void main() {
             {
                //Mask texture box here
                //TODO Seperate
-               color = texture(modifiedMaskTexture, TexCoords);
+               color = vec4(vec3(texture(modifiedMaskTexture, TexCoords).rgb),1);
                if(roundUp(TexCoords) < 0.05)
                   color.a = 0.;
             }

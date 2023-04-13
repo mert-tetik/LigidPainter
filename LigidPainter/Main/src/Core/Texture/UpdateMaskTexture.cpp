@@ -16,12 +16,11 @@
 
 using namespace std;
 
-std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData, Programs programs, int removeThisParam, int removeThisParam2) { //rotationValue = rotationBarValue
+void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData, Programs programs, int removeThisParam, int removeThisParam2) { //rotationValue = rotationBarValue
 	GlSet glset;
 	UserInterface ui;
 	TextureGenerator txtrGen;
 
-	glset.viewport(1080, 1080);
 
 	float rotation = ((brushRotationRangeBarValue +0.11f) * 4.54545454545f) * 460.0f; // -0.11 - 0.11 --> 0 - 360
 
@@ -33,15 +32,15 @@ std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int scr
 	//Rotate and scale
 	glm::mat4 trans = glm::mat4(1.0f);
 	if(!renderTiny){
-		trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
+		//trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
 		trans = glm::rotate(trans, glm::radians(rotation), glm::vec3(0.0, 0.0, 1.0));
-		trans = glm::scale(trans, glm::vec3(scaleVal, scaleVal, scaleVal));
+		//trans = glm::scale(trans, glm::vec3(scaleVal, scaleVal, scaleVal));
 		glset.uniformMatrix4fv(programs.outProgram, "renderTrans", trans);
 	}
 	else{
-		trans = glm::translate(trans, glm::vec3(-0.875f, -0.875f, 0.0f));
+		//trans = glm::translate(trans, glm::vec3(-0.875f, -0.875f, 0.0f));
 		trans = glm::rotate(trans, glm::radians(rotation), glm::vec3(0.0, 0.0, 1.0));
-		trans = glm::scale(trans, glm::vec3(scaleValTiny, scaleValTiny, scaleValTiny));
+		//trans = glm::scale(trans, glm::vec3(scaleValTiny, scaleValTiny, scaleValTiny));
 		glset.uniformMatrix4fv(programs.outProgram, "renderTrans", trans);
 	}
 	//Rotate and scale
@@ -52,7 +51,7 @@ std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int scr
 	else
 		size = 540;
 	
-	//16:9 ---> 1:1 (makes easier to get vertices into the middle)
+	//16:9 ---> 1:1 
 	glUseProgram(programs.outProgram);
 	glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
 	glset.uniformMatrix4fv(programs.outProgram, "renderTextureProjection", renderTextureProjection);
@@ -62,13 +61,13 @@ std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int scr
 
 	std::vector<float> centerVertices = { 
 	// first triangle
-	 0.75f,  0.75f, 0.0f,1,1,0,0,0,  // top right
-	 0.75f,  0.25f, 0.0f,1,0,0,0,0,  // bottom right
-	 0.25f,  0.75f, 0.0f,0,1,0,0,0,  // top left 
+	 1.f,  1.f, 0.0f,1,1,0,0,0,  // top right
+	 1.f,  0.f, 0.0f,1,0,0,0,0,  // bottom right
+	 0.f,  1.f, 0.0f,0,1,0,0,0,  // top left 
 	// second triangle	  ,0,0,0,
-	 0.75f,  0.25f, 0.0f,1,0,0,0,0,  // bottom right
-	 0.25f,  0.25f, 0.0f,0,0,0,0,0,  // bottom left
-	 0.25f,  0.75f, 0.0f,0,1,0,0,0   // top left
+	 1.f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+	 0.f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+	 0.f,  1.0f, 0.0f,0,1,0,0,0   // top left
 	};
 
 	std::vector<float> cornerVertices = { 
@@ -104,23 +103,33 @@ std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int scr
 	glPixelStorei(GL_PACK_ALIGNMENT,1);
 
 	//Rotation
-	glset.drawArrays(centerVertices, false);
-	std::vector<GLubyte> rotatedMaskTxtr(size * size * 4);
-	glReadPixels(0, 0, size, size, GL_RGBA, GL_UNSIGNED_BYTE, &rotatedMaskTxtr[0]);
-
+	unsigned int rotationFBO;
+	glset.genFramebuffers(rotationFBO);
+	glset.bindFramebuffer(rotationFBO);
+	
 	glset.activeTexture(GL_TEXTURE12);
-	glset.texImage(&rotatedMaskTxtr[0], size, size, GL_RGBA);
+	unsigned int rotationColorBuffer;
+	glset.genTextures(rotationColorBuffer);
+	glset.bindTexture(rotationColorBuffer);
+	glset.texImage(nullptr,size,size,GL_RGBA);
 	glset.generateMipmap();
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, rotationColorBuffer, 0);
+	glset.viewport(size,size);
+	glset.drawArrays(centerVertices, false);
+
+//	glReadPixels(0, 0, size, size, GL_RGBA, GL_UNSIGNED_BYTE, &rotatedMaskTxtr[0]);
+
+
+
 	//Rotation
 
 	//Get back to previous projection after rendering rotated & scaled mask texture
 	glset.uniform1i(programs.outProgram, "modifiedMaskTexture", 12);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glset.viewport(1920, 1080);
 	trans = glm::mat4(1.0f);
 
 	glset.uniformMatrix4fv(programs.outProgram, "renderTrans", trans);
-	renderTextureProjection = glm::ortho(0.0f, 1.77777777778f, 0.0f, 1.0f);//1920 - 1080 -> 1.77777777778 - 1
+	renderTextureProjection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
 	glset.uniformMatrix4fv(programs.outProgram, "renderTextureProjection", renderTextureProjection);
 	//Get back to previous projection after rendering rotated & scaled mask texture
 
@@ -161,37 +170,56 @@ std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int scr
 	glset.uniform1i(programs.blurProgram, "isRenderVerticalBlur", 0); 
 	glset.uniform1i(programs.blurProgram, "inputTexture", 12); 
 
-	if(renderTiny)
-		glset.drawArrays(cornerVerticesQrtr, false);
-	else
-		glset.drawArrays(cornerVertices, false);
+	unsigned int hBlurFBO;
+	glset.genFramebuffers(hBlurFBO);
+	glset.bindFramebuffer(hBlurFBO);
+	
+	glset.activeTexture(GL_TEXTURE28);
+	unsigned int hBlurColorBuffer;
+	glset.genTextures(hBlurColorBuffer);
+	glset.bindTexture(hBlurColorBuffer);
+	glset.texImage(nullptr,size,size,GL_RGBA);
+	glset.generateMipmap();
 
-	std::vector<GLubyte> horizontalBlurMaskTxtr(size * size * 4);
-	glReadPixels(0, 0, size, size, GL_RGBA, GL_UNSIGNED_BYTE, &horizontalBlurMaskTxtr[0]);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, hBlurColorBuffer, 0);
+
+	glset.drawArrays(centerVertices, false);
 
 	glset.activeTexture(GL_TEXTURE12);
-	glset.texImage(&horizontalBlurMaskTxtr[0], size, size, GL_RGBA);
-	glset.generateMipmap();
-	//Horizontal Blur
+	glset.bindTexture(hBlurColorBuffer);
+
+
+
+	glset.bindFramebuffer(FBOScreen);
+
+
 
 	//Vertical Blur setup
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	blurShaderData.isRenderVerticalBlur = 1;
 	glset.useBlurShader(programs.blurProgram,blurShaderData);
 	//Vertical Blur setup
 
 	//Vertical blur
-		if(renderTiny)
-			glset.drawArrays(cornerVerticesQrtr, false);
-		else
-			glset.drawArrays(cornerVertices, false);
+		unsigned int vBlurFBO;
+	glset.genFramebuffers(vBlurFBO);
+	glset.bindFramebuffer(vBlurFBO);
+	
+	glset.activeTexture(GL_TEXTURE28);
+	unsigned int vBlurColorBuffer;
+	glset.genTextures(vBlurColorBuffer);
+	glset.bindTexture(vBlurColorBuffer);
+	glset.texImage(nullptr,size,size,GL_RGBA);
+	glset.generateMipmap();
 
-	std::vector<GLubyte> verticalBlurMaskTxtr(size * size * 4);
-	glReadPixels(0, 0, size, size, GL_RGBA, GL_UNSIGNED_BYTE, &verticalBlurMaskTxtr[0]);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, vBlurColorBuffer, 0);
+
+	glset.drawArrays(centerVertices, false);
 
 	glset.activeTexture(GL_TEXTURE12);
-	glset.texImage(&verticalBlurMaskTxtr[0], size, size, GL_RGBA);
+	glset.bindTexture(vBlurColorBuffer);
+
+
 	glset.generateMipmap();
 
 	//Verical blur
@@ -206,5 +234,5 @@ std::vector<GLubyte> Texture::updateMaskTexture(unsigned int FBOScreen,  int scr
 	LigidPainter lp;
 	lp.setViewportToDefault();
 
-	return verticalBlurMaskTxtr;
+	// return verticalBlurMaskTxtr;
 }
