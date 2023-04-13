@@ -352,6 +352,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			 	0.0f,  dotrad, dotdepth,0,1,0,0,0   // top left
 			};
 			glUseProgram(programs.dotsProgram);
+			gl.uniform1f(programs.dotsProgram,"zoom",nodePanel.zoomVal);
 			glUniform2f(glGetUniformLocation(programs.dotsProgram , "transform"), nodePanel.panelPositionX* nodePanel.zoomVal *((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2), nodePanel.panelPositionY * nodePanel.zoomVal*((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2));
 			glBufferSubData(GL_ARRAY_BUFFER , 0 , dotVertices.size() * sizeof(float) , &dotVertices[0]);
 			glDrawArraysInstanced(GL_TRIANGLES , 0 , 6 , 200);

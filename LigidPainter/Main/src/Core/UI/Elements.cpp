@@ -825,7 +825,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     colorPaintingIconElement.icon.positionZ = 0.95f;
     colorPaintingIconElement.icon.width = 0.015f;
     colorPaintingIconElement.icon.height = 0.03f;
-    colorPaintingIconElement.icon.color = glm::vec4(0.1f,0.9f,0.0f,1.f);
+    colorPaintingIconElement.icon.color = glm::vec4(149.f/255.f, 207.f/255.f, 138.f/255.f,1.f);
     colorPaintingIconElement.icon.colorHover = colorData.buttonColorHover;
     colorPaintingIconElement.icon.mixVal = 0.0f;
     colorPaintingIconElement.icon.icon = icons.ColorPicker;

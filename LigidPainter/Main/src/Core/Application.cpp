@@ -38,10 +38,10 @@
 
 //TODO Fix mirror origin pos
 //TODO Fix mirror paint over
-//TODO Fix interactions
-//- Range bar + paint
-//- Texture selection panel + mask brush textures
+//TODO Flip
 
+//TODO Color id
+//TODO Color pallette
 //TODO Light source rotation from 3D Model displayer
 //TODO RTX Support
 
@@ -228,7 +228,7 @@ Audios audios;
 Model sphereModel;
 int currentMaterialIndex = 0;
 bool textureDraggingState = false;
-
+bool mirrorRangeBarsPressed = false;
 
 
 ExportData exportData;
@@ -973,6 +973,9 @@ bool LigidPainter::run()
 		lastMouseYpos = mouseYpos;
 
 
+		mirrorRangeBarsPressed = false;
+
+
 		if(renderOut.maskPanelMaskClicked){
 			//If a new mask texture is selected from mask texture panel set brushValChanged to true to update brush mask texture 
 			brushValChanged = true;
@@ -1400,7 +1403,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 
 
-	if(colorPicker.dropperActive || textureDraggingState){
+	if(colorPicker.dropperActive || textureDraggingState || mirrorRangeBarsPressed){
 		doPainting = false;
 	}
 	else if(textureDisplayer.buttonHover || callbackData.paintingPanelButtonEnter || callbackData.modelPanelButtonEnter || callbackData.exportPanelButtonEnter || callbackData.texturePanelButtonEnter || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover){
@@ -2249,6 +2252,7 @@ void LigidPainter::outSubmeshesButton(){
 	}
 }
 void LigidPainter::mirrorRangeBars(double xOffset, int width, int height,bool x,bool y,bool z){
+	mirrorRangeBarsPressed = true;
 	if (x) {
 		Utilities util;
 		UIElements[UImirrorXRangeBarElement].rangeBar.value -= xOffset / (width / 2) *1.7;
