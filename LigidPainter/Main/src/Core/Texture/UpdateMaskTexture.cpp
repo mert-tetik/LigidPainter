@@ -21,7 +21,6 @@ void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int s
 	UserInterface ui;
 	TextureGenerator txtrGen;
 
-
 	float rotation = ((brushRotationRangeBarValue +0.11f) * 4.54545454545f) * 460.0f; // -0.11 - 0.11 --> 0 - 360
 
 	float scaleVal = ((brushBorderRangeBarValue+0.11f)/2.0f * 8.18181818182f) + 0.3f;
@@ -228,6 +227,13 @@ void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int s
 
 	
 	glUseProgram(programs.uiProgram);
+
+	glset.deleteFramebuffers(rotationFBO);
+	//glDeleteTextures(1,&rotationColorBuffer);
+	glset.deleteFramebuffers(hBlurFBO);
+	//glDeleteTextures(1,&hBlurColorBuffer);
+	glset.deleteFramebuffers(vBlurFBO);
+	//TODO Delete vblurcolorbuffer
 
 
 	glset.bindFramebuffer(0);

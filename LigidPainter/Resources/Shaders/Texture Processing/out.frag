@@ -117,8 +117,10 @@ vec3 getPaintedDiffuse(){
    else
       diffuseDrawMix = mix(diffuseClr, texture((screenMaskTexture), screenPos.xy).rgb, intensity);
 
-   return mix(diffuseDrawMix, paintingColor, texture(tdRenderedMaskTexture,TexCoords).a);
-
+   if(maskMode == 1)
+      return mix(diffuseDrawMix, paintingColor, texture(tdRenderedMaskTexture,TexCoords).a);
+   else
+      return mix(diffuseDrawMix, texture(tdRenderedMaskTexture,TexCoords).rgb, texture(tdRenderedMaskTexture,TexCoords).a);
 
    
    return diffuseDrawMix;
@@ -193,7 +195,6 @@ void main() {
 
 
             color = vec4(texture(screenMaskTexture, vec2(uvx , uvy)).rgba);
-            color.a = color.r;
       }
       else{
             vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
@@ -201,17 +202,12 @@ void main() {
             float intensity = 0.0;
             
             if(isPainted(screenPos,false)){
-               if(maskMode == 1)
-                  intensity = texture(screenMaskTexture, screenPos.xy).r;
-               else{
-                  if(texture(screenMaskTexture, screenPos.xy).r > 0.02 || texture(screenMaskTexture, screenPos.xy).g > 0.02 || texture(screenMaskTexture, screenPos.xy).b > 0.02)
-                     intensity = 1;
-               }
+                  intensity = texture(screenMaskTexture, screenPos.xy).a;
             }
             if(usePrevious3DMaskTxtrs == 1)
                color = vec4(mix(texture(previous3DMaskTxtrs,TexCoords),texture(screenMaskTexture, screenPos.xy),intensity));
             else
-               color = texture(screenMaskTexture, screenPos.xy);
+               color = vec4(mix(vec4(0),texture(screenMaskTexture, screenPos.xy),intensity));
       }
    }
 }

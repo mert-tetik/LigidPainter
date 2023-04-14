@@ -290,15 +290,19 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				glset.uniform1i(programs.outProgram, "screenMaskTexture", 4);
 
 				glDeleteFramebuffers(1,&FBOMr2);
-			 	glDeleteTextures(1,&textureColorbuffer);
+			 	//glDeleteTextures(1,&textureColorbuffer);
 			}
+			//TODO Delete these textures
 
-
-			for (size_t i = 0; i < mirrorParams.size(); i++)
-			{	
-				if(i != mirrorParams.size()-1)
-					glDeleteTextures(1,&mirrorParams[i].renderID);
-			}
+			//for (size_t i = 0; i < mirrorParams.size(); i++)
+			//{	
+			//		glDeleteTextures(1,&mirrorParams[i].renderID1);
+			//}
+			//for (size_t i = 0; i < mirrorParams.size(); i++)
+			//{	
+			//	if(i != mirrorParams.size()-1)
+			//		glDeleteTextures(1,&mirrorParams[i].renderID);
+			//}
 
 
 			glset.uniform1i(programs.outProgram, "isRenderScreenMaskMode", 0);
