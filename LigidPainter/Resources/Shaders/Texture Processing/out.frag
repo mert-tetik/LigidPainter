@@ -36,6 +36,7 @@ in vec4 projectedPos;
 
 out vec4 color;
 
+uniform int usePrevious3DMaskTxtrs;
 uniform sampler2D previous3DMaskTxtrs;
 uniform sampler2D tdRenderedMaskTexture;
 uniform sampler2D paintOverTxtr;
@@ -191,7 +192,8 @@ void main() {
             }
 
 
-            color = vec4(texture(screenMaskTexture, vec2(uvx , uvy)).rgb,1);
+            color = vec4(texture(screenMaskTexture, vec2(uvx , uvy)).rgba);
+            color.a = color.r;
       }
       else{
             vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
@@ -206,8 +208,10 @@ void main() {
                      intensity = 1;
                }
             }
-
-            color = vec4(mix(texture(previous3DMaskTxtrs,TexCoords).rgb,texture(screenMaskTexture, screenPos.xy).rgb,intensity),1);
+            if(usePrevious3DMaskTxtrs == 1)
+               color = vec4(mix(texture(previous3DMaskTxtrs,TexCoords),texture(screenMaskTexture, screenPos.xy),intensity));
+            else
+               color = texture(screenMaskTexture, screenPos.xy);
       }
    }
 }

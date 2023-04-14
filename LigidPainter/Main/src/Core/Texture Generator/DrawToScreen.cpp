@@ -200,7 +200,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 			glDeleteTextures(1,&mirrorParams[mirrorParams.size()-1].renderID);
 			for (size_t i = 0; i < mirrorParams.size(); i++)
 			{
-				glClearColor(0,0,0,1);
+				glClearColor(0,0,0,0);
 				//std::cout << "i : "<< i << '\n';
 				//if(lastTxtr)
 				//glDeleteTextures(1,&lastTxtr);
@@ -268,9 +268,13 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				
 				glActiveTexture(GL_TEXTURE29);
-				glset.bindTexture(0);
+				
 				if(i != 0){
 					glset.bindTexture(mirrorParams[i-1].renderID);
+					glset.uniform1i(programs.outProgram, "usePrevious3DMaskTxtrs", 1);
+				}
+				else{
+					glset.uniform1i(programs.outProgram, "usePrevious3DMaskTxtrs", 0);
 				}
 
 				glm::mat4 mirroredView;
