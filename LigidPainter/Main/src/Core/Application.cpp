@@ -430,6 +430,9 @@ bool LigidPainter::run()
 	//Get BRDF Look Up Texture
 	unsigned int BRDFLUTxtr = load.getBrdflutTexture();
 	//Create the default node scene(material)
+
+	txtr.initUpdateMaskTxtr();
+
 	////load.getDefaultNodeScene(nodeScenes,appNodes,"material_0");
 	sndPanel.state = 1;
 	sndPanelPlusIcon();

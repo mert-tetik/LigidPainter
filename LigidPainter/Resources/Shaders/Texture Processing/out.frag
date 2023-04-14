@@ -115,12 +115,12 @@ vec3 getPaintedDiffuse(){
       diffuseDrawMix = mix(diffuseClr, paintingColor, intensity);//TODO : Change
 
    else
-      diffuseDrawMix = mix(diffuseClr, texture((screenMaskTexture), screenPos.xy).rgb, intensity);
+      diffuseDrawMix = mix(diffuseClr, texture((screenMaskTexture), screenPos.xy).rgb*drawColor, intensity);
 
    if(maskMode == 1)
       return mix(diffuseDrawMix, paintingColor, texture(tdRenderedMaskTexture,TexCoords).a);
    else
-      return mix(diffuseDrawMix, texture(tdRenderedMaskTexture,TexCoords).rgb, texture(tdRenderedMaskTexture,TexCoords).a);
+      return mix(diffuseDrawMix, texture(tdRenderedMaskTexture,TexCoords).rgb*drawColor, texture(tdRenderedMaskTexture,TexCoords).a);
 
    
    return diffuseDrawMix;

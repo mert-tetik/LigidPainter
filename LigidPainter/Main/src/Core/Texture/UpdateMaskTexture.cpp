@@ -16,10 +16,18 @@
 
 using namespace std;
 
+
+unsigned int rotationColorBuffer;
+unsigned int hBlurColorBuffer;
+unsigned int vBlurColorBuffer;
+
+
 void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData, Programs programs, int removeThisParam, int removeThisParam2) { //rotationValue = rotationBarValue
 	GlSet glset;
 	UserInterface ui;
 	TextureGenerator txtrGen;
+
+	glset.bindFramebuffer(FBOScreen);
 
 	float rotation = ((brushRotationRangeBarValue +0.11f) * 4.54545454545f) * 460.0f; // -0.11 - 0.11 --> 0 - 360
 
@@ -93,7 +101,6 @@ void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int s
 	//Setup
 	glset.uniform1i(programs.outProgram, "isTwoDimensional", 1);
 	glset.uniform1i(programs.outProgram, "renderMaskBrush", 1);
-	glset.bindFramebuffer(FBOScreen);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glset.uniform1i(programs.outProgram, "modifiedMaskTexture", 1);
 	//Setup
@@ -107,8 +114,6 @@ void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int s
 	glset.bindFramebuffer(rotationFBO);
 	
 	glset.activeTexture(GL_TEXTURE12);
-	unsigned int rotationColorBuffer;
-	glset.genTextures(rotationColorBuffer);
 	glset.bindTexture(rotationColorBuffer);
 	glset.texImage(nullptr,size,size,GL_RGBA);
 	glset.generateMipmap();
@@ -174,8 +179,6 @@ void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int s
 	glset.bindFramebuffer(hBlurFBO);
 	
 	glset.activeTexture(GL_TEXTURE28);
-	unsigned int hBlurColorBuffer;
-	glset.genTextures(hBlurColorBuffer);
 	glset.bindTexture(hBlurColorBuffer);
 	glset.texImage(nullptr,size,size,GL_RGBA);
 	glset.generateMipmap();
@@ -187,9 +190,6 @@ void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int s
 	glset.activeTexture(GL_TEXTURE12);
 	glset.bindTexture(hBlurColorBuffer);
 
-
-
-	glset.bindFramebuffer(FBOScreen);
 
 
 
@@ -205,8 +205,6 @@ void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int s
 	glset.bindFramebuffer(vBlurFBO);
 	
 	glset.activeTexture(GL_TEXTURE28);
-	unsigned int vBlurColorBuffer;
-	glset.genTextures(vBlurColorBuffer);
 	glset.bindTexture(vBlurColorBuffer);
 	glset.texImage(nullptr,size,size,GL_RGBA);
 	glset.generateMipmap();
@@ -228,12 +226,17 @@ void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int s
 	
 	glUseProgram(programs.uiProgram);
 
+	glset.bindFramebuffer(rotationFBO);
+	glClear(GL_COLOR_BUFFER_BIT);
 	glset.deleteFramebuffers(rotationFBO);
-	//glDeleteTextures(1,&rotationColorBuffer);
+
+	glset.bindFramebuffer(hBlurFBO);
+	glClear(GL_COLOR_BUFFER_BIT);
 	glset.deleteFramebuffers(hBlurFBO);
-	//glDeleteTextures(1,&hBlurColorBuffer);
+	
+	glset.bindFramebuffer(vBlurFBO);
+	glClear(GL_COLOR_BUFFER_BIT);
 	glset.deleteFramebuffers(vBlurFBO);
-	//TODO Delete vblurcolorbuffer
 
 
 	glset.bindFramebuffer(0);
@@ -241,4 +244,12 @@ void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int s
 	lp.setViewportToDefault();
 
 	// return verticalBlurMaskTxtr;
+}
+
+void Texture::initUpdateMaskTxtr(){
+	GlSet glset;
+
+	glset.genTextures(rotationColorBuffer);
+	glset.genTextures(vBlurColorBuffer);
+	glset.genTextures(hBlurColorBuffer);
 }
