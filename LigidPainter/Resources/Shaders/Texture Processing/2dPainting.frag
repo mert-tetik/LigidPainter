@@ -17,6 +17,6 @@ void main(){
     if(invert == 0)
         fragColor = vec4(vec3(texture(modifiedMaskTexture,texCoords).rgb),texture(modifiedMaskTexture,texCoords).a);
     else
-        fragColor = vec4(vec3(1.0 - texture(modifiedMaskTexture,texCoords).r),1);
+        fragColor = vec4((1.0 - texture(modifiedMaskTexture,texCoords).rgba));
 
 }

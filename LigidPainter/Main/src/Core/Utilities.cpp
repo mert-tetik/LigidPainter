@@ -440,7 +440,7 @@ unsigned int Utilities::createQRCode(const char* path,glm::vec3 color){
 	Texture txtr;
 	GLubyte* resizedQr = txtr.resizeTexture(qrd,qr.size(),qr.size(),1024,1024); 
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, resizedQr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 1024, 1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, resizedQr);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE28);
 

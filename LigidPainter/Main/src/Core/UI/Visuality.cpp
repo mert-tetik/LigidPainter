@@ -862,7 +862,7 @@ void UserInterface::textureDisplayer(float width,float height, float position_x,
 	};
 
 	glUseProgram(uiPrograms.textureDisplayer);
-	glset.uniform1i(uiPrograms.textureDisplayer, "currentTexture", 0);
+	glset.uniform1i(uiPrograms.textureDisplayer, "currentTexture", 4);
 	glset.drawArrays(buttonCoorSq,false);
 	glUseProgram(uiPrograms.uiProgram);
 	box(0.0f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDisplayerButtonColor,0,0,0,1,10,glm::vec4(0,0,0,1),0);
@@ -1071,7 +1071,7 @@ glm::vec3 UserInterface::hueBar(float position_x, float position_y,float value,u
 	//Finish
 	glset.drawArrays(boxCoor, false); //Render color rectangle displayer
 	glUseProgram(uiPrograms.uiProgram);
-	box(0.01f, 0.005f, position_x, position_y + value, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 0.999f, 10000, glm::vec4(0), 0); //Value indicator
+	box(0.01f, 0.005f, position_x, position_y + value, "", colorData.colorBoxIndicatorColor, 0.045f, false, false, 0.91f, 10000, glm::vec4(0), 0); //Value indicator
 
 
 	return hueValue;
@@ -1996,7 +1996,7 @@ void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTe
 				selectedMaskIndex = state3Index;
 			
 			Utilities util;
-			UIElements[UImaskTextureFileNameText].text.text = util.cropString(brushmasktextures[selectedMaskIndex].name,20);
+			UIElements[UImaskTextureFileNameText].text.text = util.cropString(util.getLastWordBySeparatingWithChar(brushmasktextures[selectedMaskIndex].name,'/'),20);
 			
 			gl.activeTexture(GL_TEXTURE1);
 			gl.bindTexture(brushmasktextures[selectedMaskIndex].id);
@@ -2064,7 +2064,7 @@ void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTe
 			if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2),mouseYpos,buttonCoorSq,panelData.movePanel) && !txtrSelectionPanel.active){
 				if(firstClick){
 					Utilities util;
-					UIElements[UImaskTextureFileNameText].text.text = util.cropString(brushmasktextures[i].name,20);
+					UIElements[UImaskTextureFileNameText].text.text = util.cropString(util.getLastWordBySeparatingWithChar(brushmasktextures[i].name,'/'),20);
 					
 					gl.activeTexture(GL_TEXTURE1);
 					gl.bindTexture(brushmasktextures[i].id);

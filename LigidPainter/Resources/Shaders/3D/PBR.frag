@@ -79,11 +79,11 @@ bool isPainted(vec3 uv, bool isMirrored) { //Use mirrored depth texture if isMir
 
 
 vec3 getPaintedDiffuse(){
-   vec3 diffuseClr = vec3(texture(material.diffuse, TexCoords));
-      
       //Painting
+   vec3 diffuseClr = vec3(texture(material.diffuse, TexCoords));
+
    vec3 screenPos = projectedPos.xyz / projectedPos.w / vec3(2.0, 2.0, 2.0) + 0.5 / vec3(1.0, 1.0, 1.0);
-   
+
    vec3 paintingColor;
    if(doPaintOver == 0)
       paintingColor = drawColor;
@@ -93,36 +93,29 @@ vec3 getPaintedDiffuse(){
       if(src.a < 0.05)
          return diffuseClr;
    }
-      
 
    float intensity = 0.0;
 
    if(isPainted(screenPos,false)) {
-      if(maskMode == 1)
-         intensity = texture(screenMaskTexture, screenPos.xy).r;
-      else{
-         if(texture(screenMaskTexture, screenPos.xy).r > 0.02f || texture(screenMaskTexture, screenPos.xy).g > 0.02f || texture(screenMaskTexture, screenPos.xy).b > 0.02f)
-            intensity = 1.0;
-      }
+         intensity = texture(screenMaskTexture, screenPos.xy).a;
    }
 
    intensity*=paintingOpacity;
-
 
     // ambient
    vec3 diffuseDrawMix;
    
    if(maskMode == 1)
-      diffuseDrawMix = mix(diffuseClr,paintingColor, intensity);//TODO : Change
+      diffuseDrawMix = mix(diffuseClr, paintingColor, intensity);//TODO : Change
+
    else
       diffuseDrawMix = mix(diffuseClr, texture((screenMaskTexture), screenPos.xy).rgb, intensity);
 
-   if(maskMode != 1){
-      if(texture(tdRenderedMaskTexture,TexCoords).r > 0.02 || texture(tdRenderedMaskTexture,TexCoords).g > 0.02 || texture(tdRenderedMaskTexture,TexCoords).b > 0.02)
-         return (texture(tdRenderedMaskTexture,TexCoords).rgb);
-   } 
+   if(maskMode == 1)
+      return mix(diffuseDrawMix, paintingColor, texture(tdRenderedMaskTexture,TexCoords).a);
    else
-      return mix(diffuseDrawMix, paintingColor, texture(tdRenderedMaskTexture,TexCoords).r);
+      return mix(diffuseDrawMix, texture(tdRenderedMaskTexture,TexCoords).rgb, texture(tdRenderedMaskTexture,TexCoords).a);
+
    
    return diffuseDrawMix;
 }

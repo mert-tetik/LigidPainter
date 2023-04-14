@@ -40,6 +40,7 @@
 //TODO Fix mirror paint over
 //TODO Flip
 //TODO Horizontal drag ico
+//TODO Update ui
 
 //TODO Search for brush textures
 //TODO Color id
@@ -330,6 +331,14 @@ bool LigidPainter::run()
 	glEnable(GL_MULTISAMPLE);
 
 
+	glActiveTexture(GL_TEXTURE8);
+	unsigned int blankTxtr;
+	glset.genTextures(blankTxtr);
+	glset.bindTexture(blankTxtr);
+	glset.texImage(nullptr,10,10,GL_RGBA);
+	glset.generateMipmap();
+	glActiveTexture(GL_TEXTURE28);
+
 
 	//LIBAL
 	if(!LibAL_start())
@@ -603,6 +612,13 @@ bool LigidPainter::run()
 	unsigned int materialFBO;
 	glset.genFramebuffers(materialFBO);
 
+	txtr.refreshScreenDrawingTexture();
+	LigidPainter lp;
+
+	glUseProgram(programs.outProgram);
+	glset.uniform1i(programs.outProgram,"maskMode",1);
+	txtr.updateMaskTexture(FBOScreen,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		if(!startScreen && !didDefaultNodesMakeToTheCenter)
@@ -621,7 +637,7 @@ bool LigidPainter::run()
 		
 
 		whileCounter++;
-		if(whileCounter > 1000)
+		if(whileCounter > 10000)
 			whileCounter = 0;
 
 		glfwPollEvents();
@@ -803,7 +819,6 @@ bool LigidPainter::run()
 
 		mainLoop.releaseTextBoxes(window,UIElements,exportFileName,textBoxActiveChar,coloringPanel,txtrCreatingPanel,colorPicker);
 		mainLoop.changeTextureDisplayersState(window,textureDisplayer);
-
 		if( (firstClick || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) && anyTextureNameActive){
 			anyTextureNameActive = false;
 			for (size_t i = 0; i < albedoTextures.size(); i++)
@@ -1609,7 +1624,8 @@ void LigidPainter:: addMaskTextureButton() {
 
 	if (maskTexturePathCheck) { 
 		maskTexturePath = maskTexturePathCheck;
-		UIElements[UImaskTextureFileNameText].text.text = util.getLastWordBySeparatingWithChar(maskTexturePath,folderDistinguisher); 
+		UIElements[UImaskTextureFileNameText].text.text = util.getLastWordBySeparatingWithChar(maskTexturePath,'/'); 
+		std::cout << maskTexturePath << '\n';
 		brushValChanged = true;
 		glset.activeTexture(GL_TEXTURE1);
 
@@ -1649,6 +1665,7 @@ void LigidPainter::hueBar(){
 	colorPicker.hueBarClicked = true;
 }
 void LigidPainter::brushBlurRangeBar(double xOffset,int width,int height,bool renderTiny) {
+	
 	Utilities util;
 	Texture txtr;
 	brushValChanged = true;
