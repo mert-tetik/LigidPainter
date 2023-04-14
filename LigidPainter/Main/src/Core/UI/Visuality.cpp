@@ -862,7 +862,7 @@ void UserInterface::textureDisplayer(float width,float height, float position_x,
 	};
 
 	glUseProgram(uiPrograms.textureDisplayer);
-	glset.uniform1i(uiPrograms.textureDisplayer, "currentTexture", 0);
+	glset.uniform1i(uiPrograms.textureDisplayer, "currentTexture", 4);
 	glset.drawArrays(buttonCoorSq,false);
 	glUseProgram(uiPrograms.uiProgram);
 	box(0.0f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDisplayerButtonColor,0,0,0,1,10,glm::vec4(0,0,0,1),0);

@@ -57,7 +57,7 @@ void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int s
 	glset.uniformMatrix4fv(programs.outProgram, "renderTextureProjection", renderTextureProjection);
 	//16:9 ---> 1:1
 
-	glClearColor(0, 0, 0, 1.0f); //Back color while rendering mask texture
+	glClearColor(0, 0, 0, 0); //Back color while rendering mask texture
 
 	std::vector<float> centerVertices = { 
 	// first triangle
