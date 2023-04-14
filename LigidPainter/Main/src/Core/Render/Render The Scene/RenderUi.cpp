@@ -88,7 +88,7 @@ int previousTextureResIndex;
 Audios uiAudios;
 
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
-const char* exportFileName,float &maskPanelSliderValue,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
+const char* exportFileName,double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,
 float brushBlurVal,OutShaderData &outShaderData, Model &model,std::vector<aTexture> &albedoTextures,Programs programs
 ,int &currentMaterialIndex,int removeThisParam,int removeThisParam2, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,
 float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu
@@ -619,7 +619,22 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		glUseProgram(programs.outProgram);
 		gl.uniform1i(programs.outProgram,"maskMode",UIElements[UImaskPaintingCheckBoxElement].checkBox.checked || UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked);
 		gl.uniform1i(programs.outProgram,"normalPainting",UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked);
-	
+
+	float maskPanelSliderValue = 0.f;
+	int maskPanelElementSize = 0;
+	if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked){
+		maskPanelSliderValue = brushMaskTextures.maskTexturesSliderValue;
+		maskPanelElementSize = brushMaskTextures.maskTextures.size();
+	}
+	if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked){
+		maskPanelSliderValue = brushMaskTextures.colorTexturesSliderValue;
+		maskPanelElementSize = brushMaskTextures.colorTextures.size();
+	}
+	if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked){
+		maskPanelSliderValue = brushMaskTextures.normalTexturesSliderValue;
+		maskPanelElementSize = brushMaskTextures.normalTextures.size();
+	}
+
 	if (panelData.paintingPanelActive && !UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked) { //Icons
 		int state = 0;
 		
@@ -638,8 +653,14 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	if(panelData.paintingPanelActive && renderData.panelLoc < 1.98f && !UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked){
 		glUseProgram(programs.uiProgram);
 
-		const float maskPanelRange = ceil((int)brushMaskTextures.maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
-		ui.verticalRangeBar((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,maskPanelSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.maskTextures.size(),screenGapX);
+		const float maskPanelRange = ceil((int)maskPanelElementSize/3.f) / 8.33333333333 - (0.8f - 0.55f); 
+
+		if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked)
+			ui.verticalRangeBar((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,brushMaskTextures.maskTexturesSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.maskTextures.size(),screenGapX);
+		if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked)
+			ui.verticalRangeBar((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,brushMaskTextures.colorTexturesSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.maskTextures.size(),screenGapX);
+		if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked)	
+			ui.verticalRangeBar((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,brushMaskTextures.normalTexturesSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.maskTextures.size(),screenGapX);
 
 		//Display brush texture
 		ui.box(0.035f, 0.07f, centerCoords - screenGapX - 0.1f, 0.42f+panelData.paintingPanelSlideVal, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 1000, glm::vec4(0), 0);

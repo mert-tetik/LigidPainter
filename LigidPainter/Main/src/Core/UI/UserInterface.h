@@ -658,8 +658,13 @@ struct RenderOutData{
 
 struct BrushTexture{
 	std::vector<aTexture> maskTextures;
+	float maskTexturesSliderValue = 0.0f;
+
 	std::vector<aTexture> colorTextures;
+	float colorTexturesSliderValue = 0.0f;
+	
 	std::vector<aTexture> normalTextures;
+	float normalTexturesSliderValue = 0.0f;
 };
 
 class UserInterface {

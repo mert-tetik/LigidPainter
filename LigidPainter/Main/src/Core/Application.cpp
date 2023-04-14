@@ -39,9 +39,7 @@
 //TODO Fix mirror origin pos
 //TODO Fix mirror paint over
 //TODO Flip
-//TODO Fix color painting
-//- updatemasktexture will use framebuffers & use alpha channels
-//-2Dpainting glsl 
+//TODO Horizontal drag ico
 
 //TODO Search for brush textures
 //TODO Color id
@@ -187,7 +185,6 @@ RenderData updateRenderData(RenderData renderData, unsigned int depthTexture, in
 CallbckData callbackData;
 PanelData panelData;
 
-float maskPanelSliderValue = 0.0f;
 float materialsPanelSlideValue = 0.0f;
 float mainPanelLoc = 1.6f;
 float brushBlurVal = 1;
@@ -909,7 +906,7 @@ bool LigidPainter::run()
 		//Render
 		//double firstTime = glfwGetTime();
 		if(renderTheScene){
-			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,maskPanelSliderValue,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData
+			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData
 										,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker
 										,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene
 										,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,
@@ -987,6 +984,14 @@ bool LigidPainter::run()
 		exportImage = false;
 		textureDisplayer.buttonClicked = false;
 
+		float maskPanelSliderValue = brushMaskTextures.maskTexturesSliderValue;
+
+		if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked){
+			maskPanelSliderValue = brushMaskTextures.colorTexturesSliderValue;
+		}
+		if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked){
+			maskPanelSliderValue = brushMaskTextures.normalTexturesSliderValue;
+		}
 
 		if(!startScreen)
 			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel,coloringPanel,moveCamera,zoomInOutCamera);
@@ -1477,9 +1482,21 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 	else{
 		if(callbackData.maskPanelEnter){
 			//Brush mask panel scroll
-			maskPanelSliderValue += (float)(scrollx / 40.0);
-			const float maskPanelRange = ceil((int)brushMaskTextures.maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
-			maskPanelSliderValue = util.restrictBetween(maskPanelSliderValue, 0.0f, -maskPanelRange/4.f);//Keep in boundaries
+			if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked){
+				brushMaskTextures.maskTexturesSliderValue += (float)(scrollx / 40.0);
+				const float maskPanelRange = ceil((int)brushMaskTextures.maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
+				brushMaskTextures.maskTexturesSliderValue = util.restrictBetween(brushMaskTextures.maskTexturesSliderValue, 0.0f, -maskPanelRange/4.f);//Keep in boundaries
+			}
+			if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked){
+				brushMaskTextures.colorTexturesSliderValue += (float)(scrollx / 40.0);
+				const float maskPanelRange = ceil((int)brushMaskTextures.colorTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
+				brushMaskTextures.colorTexturesSliderValue = util.restrictBetween(brushMaskTextures.colorTexturesSliderValue, 0.0f, -maskPanelRange/4.f);//Keep in boundaries
+			}
+			if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked){
+				brushMaskTextures.normalTexturesSliderValue += (float)(scrollx / 40.0);
+				const float maskPanelRange = ceil((int)brushMaskTextures.normalTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
+				brushMaskTextures.normalTexturesSliderValue = util.restrictBetween(brushMaskTextures.normalTexturesSliderValue, 0.0f, -maskPanelRange/4.f);//Keep in boundaries
+			}
 		}
 		else if(addNodeContextMenu.active){
 			if(scrollx > 0)
@@ -2121,8 +2138,19 @@ void LigidPainter::paintingDropper(){
 }
 void LigidPainter::maskPanelSlider(double yOffset,int screenSizeY){
 	Utilities util;
-	maskPanelSliderValue += yOffset / (screenSizeY / 2);
-	maskPanelSliderValue = util.restrictBetween(maskPanelSliderValue, 0.0f, -0.25f);//Keep in boundaries
+
+	if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked){
+		brushMaskTextures.maskTexturesSliderValue += yOffset / (screenSizeY / 2);
+		brushMaskTextures.maskTexturesSliderValue = util.restrictBetween(brushMaskTextures.maskTexturesSliderValue, 0.0f, -0.25f);//Keep in boundaries
+	}
+	if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked){
+		brushMaskTextures.colorTexturesSliderValue += yOffset / (screenSizeY / 2);
+		brushMaskTextures.colorTexturesSliderValue = util.restrictBetween(brushMaskTextures.colorTexturesSliderValue, 0.0f, -0.25f);//Keep in boundaries
+	}
+	if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked){
+		brushMaskTextures.normalTexturesSliderValue += yOffset / (screenSizeY / 2);
+		brushMaskTextures.normalTexturesSliderValue = util.restrictBetween(brushMaskTextures.normalTexturesSliderValue, 0.0f, -0.25f);//Keep in boundaries
+	}
 }
 void LigidPainter::hexValTextbox(){
 	colorPicker.hexValTextBoxActive = true;

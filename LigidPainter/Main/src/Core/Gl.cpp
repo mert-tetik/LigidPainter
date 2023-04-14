@@ -177,7 +177,7 @@ WindowData GlSet::getWindow() {
 	int windowMaxHeight = glfwGetVideoMode(monitor)->height;
 
 	GLFWimage images[1];
-	images[0].pixels = stbi_load("LigidPainter/Resources/Icons/logo-1080x.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+	images[0].pixels = stbi_load("LigidPainter/Resources/Ico/logo-1080x.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
 	glfwSetWindowIcon(window, 1, images);
 	stbi_image_free(images[0].pixels);
 

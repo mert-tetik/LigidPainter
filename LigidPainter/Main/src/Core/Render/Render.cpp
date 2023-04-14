@@ -280,7 +280,7 @@ int paintRenderCounter = 0;
 size_t renderingCounter = 0;
 
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
-Icons &icons,float &maskPanelSliderValue, bool renderPlane,bool renderSphere,
+Icons &icons, bool renderPlane,bool renderSphere,
 PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,
 OutShaderData &outShaderData,Model &model,vector<aTexture> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
 ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps& cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel
@@ -502,7 +502,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState) {
 		}
 		if(!UIElements[UIfocusModeCheckBox].checkBox.checked){
 			uiOut = renderUi(panelData, renderData, FBOScreen,icons
-				,exportData.fileName, maskPanelSliderValue,mouseXpos,mouseYpos,screenSizeX,screenSizeY,
+				,exportData.fileName,mouseXpos,mouseYpos,screenSizeX,screenSizeY,
 				brushBlurVal,outShaderData,model,albedoTextures,renderPrograms,currentMaterialIndex,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,
 				glfwGetVideoMode(glfwGetPrimaryMonitor())->height, saturationValShaderData,currentBrushMaskTexture,materialsPanelSlideValue,UIElements,
 				colorPicker,textureDisplayer,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,

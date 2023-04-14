@@ -140,15 +140,15 @@ public:
 	
 		GLFWimage images[1];
 		stbi_set_flip_vertically_on_load(false);
-		images[0].pixels = stbi_load("LigidPainter/Resources/Icons/PointerIcon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+		images[0].pixels = stbi_load("LigidPainter/Resources/Ico/PointerIcon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
 		GLFWcursor* pointerCursor = glfwCreateCursor(images,15,0);
 		stbi_image_free(images[0].pixels);
 	
-		images[0].pixels = stbi_load("LigidPainter/Resources/Icons/DefaultIcon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+		images[0].pixels = stbi_load("LigidPainter/Resources/Ico/DefaultIcon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
 		GLFWcursor* defaultCursor = glfwCreateCursor(images,7,0);
 		stbi_image_free(images[0].pixels);
 	
-		images[0].pixels = stbi_load("LigidPainter/Resources/Icons/DropperCursor.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+		images[0].pixels = stbi_load("LigidPainter/Resources/Ico/DropperCursor.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
 		GLFWcursor* dropperCursor = glfwCreateCursor(images,0,30);
 		stbi_image_free(images[0].pixels);
 	
