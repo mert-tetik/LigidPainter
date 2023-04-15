@@ -197,7 +197,28 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 		int loopSize = 0;
 
 		if(mirrorParams.size()){
-			glDeleteTextures(1,&mirrorParams[mirrorParams.size()-1].renderID);
+			//glDeleteTextures(1,&mirrorParams[mirrorParams.size()-1].renderID);
+			for (size_t i = 0; i < mirrorParams.size(); i++)
+			{
+				unsigned int FBOMr;
+				glset.genFramebuffers(FBOMr);
+				glset.bindFramebuffer(FBOMr);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirrorParams[i].renderID1, 0);
+				glClearColor(0,0,0,0);
+				glClear(GL_COLOR_BUFFER_BIT);
+				glset.deleteFramebuffers(FBOMr);
+			}
+			for (size_t i = 0; i < mirrorParams.size(); i++)
+			{
+				unsigned int FBOMr;
+				glset.genFramebuffers(FBOMr);
+				glset.bindFramebuffer(FBOMr);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirrorParams[i].renderID, 0);
+				glClearColor(0,0,0,0);
+				glClear(GL_COLOR_BUFFER_BIT);
+				glset.deleteFramebuffers(FBOMr);
+			}
+			
 			for (size_t i = 0; i < mirrorParams.size(); i++)
 			{
 				glClearColor(0,0,0,0);
@@ -211,14 +232,11 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				unsigned int FBOMr;
 				glset.genFramebuffers(FBOMr);
 				glset.bindFramebuffer(FBOMr);
-				unsigned int textureColorbuffer;
-				glset.genTextures(textureColorbuffer);
-				glset.bindTexture(textureColorbuffer);
-				mirrorParams[i].renderID1 = textureColorbuffer;
+				glset.bindTexture(mirrorParams[i].renderID1);
 				glset.texImage(NULL, 1080,1080,GL_RGBA);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirrorParams[i].renderID1, 0);
 				glset.generateMipmap();
 
 				glset.viewport(1080, 1080);
@@ -256,14 +274,11 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				unsigned int FBOMr2;
 				glset.genFramebuffers(FBOMr2);
 				glset.bindFramebuffer(FBOMr2);
-				unsigned int textureColorbuffer2;
-				glset.genTextures(textureColorbuffer2);
-				glset.bindTexture(textureColorbuffer2);
-				mirrorParams[i].renderID = textureColorbuffer2;
+				glset.bindTexture(mirrorParams[i].renderID);
 				glset.texImage(NULL, 1080,1080,GL_RGBA);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer2, 0);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirrorParams[i].renderID, 0);
 				
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				

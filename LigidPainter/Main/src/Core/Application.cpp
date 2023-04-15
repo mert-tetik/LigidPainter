@@ -1927,6 +1927,8 @@ void LigidPainter::mirrorXCheckBox() {
 	{
 		MirrorParam mirror;
 		glGenTextures(1,&mirror.depthTexture);
+		glGenTextures(1,&mirror.renderID1);
+		glGenTextures(1,&mirror.renderID);
 		mirror.pos = positions[i];
 		mirrorParams.push_back(mirror);
 	}
@@ -1948,6 +1950,8 @@ void LigidPainter::mirrorYCheckBox() {
 	{
 		MirrorParam mirror;
 		glGenTextures(1,&mirror.depthTexture);
+		glGenTextures(1,&mirror.renderID1);
+		glGenTextures(1,&mirror.renderID);
 		mirror.pos = positions[i];
 		mirrorParams.push_back(mirror);
 	}
@@ -1969,6 +1973,8 @@ void LigidPainter::mirrorZCheckBox() {
 	{
 		MirrorParam mirror;
 		glGenTextures(1,&mirror.depthTexture);
+		glGenTextures(1,&mirror.renderID1);
+		glGenTextures(1,&mirror.renderID);
 		mirror.pos = positions[i];
 		mirrorParams.push_back(mirror);
 	}
