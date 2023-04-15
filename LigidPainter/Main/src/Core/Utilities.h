@@ -9,7 +9,7 @@ public:
 	std::string rgbToHexGenerator(glm::vec3 rgbData);
 	glm::vec3 RGBToHSVGenerator(glm::vec3 rgbData);
 	float restrictBetween(float value, float maxVal, float minVal);
-	void printRenderingSpeed();
+	void printRenderingSpeed(bool debugMode,GLFWwindow* window);
 	
 	glm::vec3 hexToRGBConverter(std::string hex);
 	std::string cropString(std::string text,int maxSize);

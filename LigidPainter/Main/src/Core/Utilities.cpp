@@ -130,11 +130,28 @@ float Utilities::restrictBetween(float value, float maxVal, float minVal) {
 
 double lastTime = glfwGetTime();
 int nbFrames = 0;
-void Utilities::printRenderingSpeed() {
+void Utilities::printRenderingSpeed(bool debugMode,GLFWwindow* window) {
 	double currentTime = glfwGetTime();
 	nbFrames++;
 	if (currentTime - lastTime >= 1.0) {
-		printf("%f ms/frame\n", 1000.0 / double(nbFrames));
+		if(debugMode){
+				std::cout << 1000.0 / double(nbFrames) << " ms/frame    ";
+				int width;
+				int height;
+				glfwGetFramebufferSize(window,&width,&height);
+				
+				int wwidth;
+				int wheight;
+				glfwGetWindowSize(window,&wwidth,&wheight);
+
+			std::cout << 
+			"Primary Monitor Size : " << glfwGetVideoMode(glfwGetPrimaryMonitor())->width << " , " <<glfwGetVideoMode(glfwGetPrimaryMonitor())->height
+			<< "    Framebuffer Size : " << width << " , " << height
+			<< "    Window Size : " << wwidth << " , " << wheight << std::endl;
+		}
+		else{
+			std::cout << 1000.0 / double(nbFrames) << " ms/frame\n";
+		}
 		nbFrames = 0;
 		lastTime += 1.0;
 	}

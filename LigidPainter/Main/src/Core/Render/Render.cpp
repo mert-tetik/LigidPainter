@@ -290,7 +290,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 ,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
 ,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
 ,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
-unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState) {
+unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode) {
 	
 	renderCurrentMaterialIndex = currentMaterialIndex;
 	
@@ -657,6 +657,8 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState) {
 			if(firstClick){
 				LibAL_playAudioObject(audios.Login);
 				startScreen = false;
+				if(glfwGetKey(renderData.window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_K) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_PRESS)
+					debugMode = true;
 			}
 		}
 		else if(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.4f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){

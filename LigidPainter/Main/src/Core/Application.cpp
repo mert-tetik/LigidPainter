@@ -165,6 +165,7 @@ Objects objects;
 std::vector<MirrorParam> mirrorParams;
 unsigned int depthTextureID;
 bool startScreen = true;
+bool debugMode = false;
 std::string projectFilePath;
 
 string modelName;
@@ -649,7 +650,7 @@ bool LigidPainter::run()
 		else
 			glfwSwapInterval(0);
 		
-		util.printRenderingSpeed();
+		util.printRenderingSpeed(debugMode,window);
 		
 		// util.printError();
 		if(selectingPaintOverTexture && !textureSelectionPanel.active)
@@ -930,7 +931,8 @@ bool LigidPainter::run()
 										,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,
 										txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
-										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState);
+										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState
+										 ,debugMode);
 		}
 		duplicateNodeCall = false;
 		
