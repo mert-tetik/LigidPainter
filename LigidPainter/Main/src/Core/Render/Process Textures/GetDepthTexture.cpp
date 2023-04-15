@@ -41,8 +41,6 @@ void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int scre
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	std::cout << "GetDepthTxtr : "<< xMirrorPos << '\n';
-
 
 	//Mirrored
 	for (size_t i = 0; i < mirrorParams.size(); i++)
