@@ -1628,7 +1628,6 @@ void LigidPainter:: addMaskTextureButton() {
 	if (maskTexturePathCheck) { 
 		maskTexturePath = maskTexturePathCheck;
 		UIElements[UImaskTextureFileNameText].text.text = util.getLastWordBySeparatingWithChar(maskTexturePath,'/'); 
-		std::cout << maskTexturePath << '\n';
 		brushValChanged = true;
 		glset.activeTexture(GL_TEXTURE1);
 
