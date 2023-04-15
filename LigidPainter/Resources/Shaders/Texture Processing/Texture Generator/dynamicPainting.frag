@@ -92,8 +92,9 @@ void main()
             outClr.a = 0.;
         }
     }
-     else
+     else{
         outClr = fRes*opacity;
+     }
 }
 
 

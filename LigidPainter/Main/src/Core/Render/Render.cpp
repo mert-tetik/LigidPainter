@@ -369,6 +369,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 			channelState = 2;
 		if(UIElements[UInormalChannelCheckBoxElement].checkBox.checked)
 			channelState = 3;
+		gls.uniform1i(renderPrograms.PBRProgram,"dynamicPainting",UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked);
 		gls.uniform1i(renderPrograms.PBRProgram,"useMirror",UIElements[UImirrorXCheckBox].checkBox.checked || UIElements[UImirrorYCheckBox].checkBox.checked || UIElements[UImirrorZCheckBox].checkBox.checked);
 		gls.uniform1i(renderPrograms.PBRProgram,"channelState",channelState);
 		gls.uniform1f(renderPrograms.PBRProgram,"paintingOpacity",(UIElements[UIbrushOpacityRangeBar].rangeBar.value+0.11f)*4.545454545f);
@@ -424,6 +425,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		materialDisplayUpdaterCounter++;
 
 		glUseProgram(renderPrograms.outProgram);
+		gls.uniform1i(renderPrograms.outProgram,"dynamicPainting",UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked);
 		gls.uniform1i(renderPrograms.outProgram,"useMirror",UIElements[UImirrorXCheckBox].checkBox.checked || UIElements[UImirrorYCheckBox].checkBox.checked || UIElements[UImirrorZCheckBox].checkBox.checked);
 		gls.uniform1f(renderPrograms.outProgram,"paintingOpacity",(UIElements[UIbrushOpacityRangeBar].rangeBar.value+0.11f)*4.545454545f);
 		gls.uniform1i(renderPrograms.outProgram,"paintThrough",(int)UIElements[UIpaintThroughCheckBoxElement].checkBox.checked);
