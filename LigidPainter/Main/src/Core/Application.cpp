@@ -1427,7 +1427,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 
 
-	if(colorPicker.dropperActive || textureDraggingState || mirrorRangeBarsPressed){
+	if(colorPicker.dropperActive || textureDraggingState || mirrorRangeBarsPressed || UIElements[UImirrorXCheckBox].checkBox.mouseHover || UIElements[UImirrorYCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover){
 		doPainting = false;
 	}
 	else if(textureDisplayer.buttonHover || callbackData.paintingPanelButtonEnter || callbackData.modelPanelButtonEnter || callbackData.exportPanelButtonEnter || callbackData.texturePanelButtonEnter || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover){
@@ -2650,24 +2650,24 @@ void LigidPainter::sndPanelFolderIcon(){
 				}
 			}
 			material.sceneName = "material_" + std::to_string(material.index); 
-			
+
 			glActiveTexture(GL_TEXTURE28);
 			unsigned int renderTexture;
 			glset.genTextures(renderTexture);
 			glset.bindTexture(renderTexture);
 			glset.texImage(nullptr,100,100,GL_RGBA);
 			glset.generateMipmap();
-	
+
 			material.renderedTexture = renderTexture;
-	
+
 			unsigned int outTexture;
 			glset.genTextures(outTexture);
 			glset.bindTexture(outTexture);
 			glset.texImage(nullptr,1024,1024,GL_RGBA);
 			glset.generateMipmap();
-	
+
 			material.outTexture = outTexture;
-	
+
 			nodeScenes.push_back(material);
 			MaterialOut mOut;
 			mOut.program = 0;

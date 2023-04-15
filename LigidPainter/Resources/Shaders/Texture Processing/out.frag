@@ -44,6 +44,8 @@ uniform int doPaintOver;
 uniform vec2 paintOverScale;
 uniform vec2 paintOverPos;
 
+uniform int useMirror;
+
 uniform float paintingOpacity;
 
 uniform vec3 mirroredScreenMaskCamPos;
@@ -117,10 +119,13 @@ vec3 getPaintedDiffuse(){
    else
       diffuseDrawMix = mix(diffuseClr, texture((screenMaskTexture), screenPos.xy).rgb*drawColor, intensity);
 
-   if(maskMode == 1)
-      return mix(diffuseDrawMix, paintingColor, texture(tdRenderedMaskTexture,TexCoords).a);
-   else
-      return mix(diffuseDrawMix, texture(tdRenderedMaskTexture,TexCoords).rgb*drawColor, texture(tdRenderedMaskTexture,TexCoords).a);
+   if(useMirror == 1){
+      if(maskMode == 1)
+         return mix(diffuseDrawMix, paintingColor, texture(tdRenderedMaskTexture,TexCoords).a);
+      else
+         return mix(diffuseDrawMix, texture(tdRenderedMaskTexture,TexCoords).rgb, texture(tdRenderedMaskTexture,TexCoords).a);
+   }
+
 
    
    return diffuseDrawMix;
