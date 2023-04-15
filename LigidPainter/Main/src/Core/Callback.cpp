@@ -403,9 +403,6 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 	if(colorPicker.dropperActive){
 		glfwSetCursor(window, cursors.dropperCursor);
 	}
-	else if(mainPanelBoundariesEnter){
-		glfwSetCursor(window, cursors.pointerCursor);
-	}
 	else if(uiElementEnter){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
@@ -430,6 +427,10 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 	else if(nodePanel.pointerCursor){
 		glfwSetCursor(window, cursors.pointerCursor);
 	}
+	else if(mainPanelBoundariesEnter || sndPanel.boundariesHover)
+		glfwSetCursor(window, cursors.hSlideCursor);
+	else if(nodePanel.boundariesHover)
+		glfwSetCursor(window, cursors.vSlideCursor);
 	else if (!panelChangeHover){
 		glfwSetCursor(window, cursors.defaultCursor);
 	}

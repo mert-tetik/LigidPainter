@@ -151,6 +151,14 @@ public:
 		images[0].pixels = stbi_load("LigidPainter/Resources/Ico/DropperCursor.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
 		GLFWcursor* dropperCursor = glfwCreateCursor(images,0,30);
 		stbi_image_free(images[0].pixels);
+		
+		images[0].pixels = stbi_load("LigidPainter/Resources/Ico/hSlideCursor.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+		GLFWcursor* hSlideCursor = glfwCreateCursor(images,15,0);
+		stbi_image_free(images[0].pixels);
+		
+		images[0].pixels = stbi_load("LigidPainter/Resources/Ico/vSlideCursor.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+		GLFWcursor* vSlideCursor = glfwCreateCursor(images,15,0);
+		stbi_image_free(images[0].pixels);
 	
 		std::cout << "Loaded Cursors" << std::endl; 
 
@@ -159,6 +167,8 @@ public:
 		cursors.pointerCursor = pointerCursor;
 		cursors.defaultCursor = defaultCursor;
 		cursors.dropperCursor = dropperCursor;
+		cursors.hSlideCursor = hSlideCursor;
+		cursors.vSlideCursor = vSlideCursor;
 	
 		return cursors;
 	}

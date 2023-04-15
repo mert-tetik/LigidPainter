@@ -59,6 +59,8 @@ struct Cubemaps{
 	unsigned int blurycubemap;
 };
 struct LigidCursors{
+	GLFWcursor* vSlideCursor;
+	GLFWcursor* hSlideCursor;
 	GLFWcursor* pointerCursor;
 	GLFWcursor* defaultCursor;
 	GLFWcursor* dropperCursor;
