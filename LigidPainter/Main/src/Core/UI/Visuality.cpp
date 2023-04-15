@@ -145,10 +145,10 @@ int sndpanelFolderCounter = 0;
 bool sndpanelSliderPressed = false;
 int subselectedIndex = 2;
 void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons icons,std::vector<aTexture> &albedoTextures, GLFWwindow* window,double mouseXpos,
-double mouseYpos,float screenGapX,float removeThisParam, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
-bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool &firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,
-bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushTexture &brushMaskTextures,
-bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory,int brushMaskTexturesState,int chosenTextureResIndex,bool &textureDraggingState) {
+							double mouseYpos,float screenGapX,float removeThisParam, int& selectedAlbedoTextureIndex,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
+							bool& newModelAdded,float &txtrSlideVal,float &materialSlideVal,bool &firstClick,ColoringPanel &clringPanel,TextureCreatingPanel &txtrCreatingPanel,
+							bool& anyTextureNameActive,std::string &textureText,int& folderIndex,NodePanel &nodePanel,std::vector<Node> appNodes,SndPanel &sndpnl,BrushTexture &brushMaskTextures,
+							bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory,int brushMaskTexturesState,int chosenTextureResIndex,bool &textureDraggingState) {
 	GlSet glset;
 	ColorData colorData;
 	
@@ -267,8 +267,8 @@ bool maskPanelEnter,float yOffset,std::vector<NodeScene> &nodeScenesHistory,int 
 			iconBox(0.01f,0.02f,panelLoc - 0.17f,0.85f,panelZ+0.01f,icons.LoadFolder,sndpnl.folderSignMixVal,colorD.iconColor,colorD.iconColorHover);
 		}
 		else{
-			iconBox(0.01f,0.02f,panelLoc - 0.17f,0.85f,panelZ+0.01f,icons.Material,sndpnl.folderSignMixVal,colorD.iconColor,colorD.iconColorHover);
-			iconBox(0.01f,0.02f,panelLoc - 0.05f,0.85f,panelZ+0.01f,icons.Material,sndpnl.downSignMixVal,colorD.iconColor,colorD.iconColorHover);
+			iconBox(0.01f,0.02f,panelLoc - 0.17f,0.85f,panelZ+0.01f,icons.MaterialImport,sndpnl.folderSignMixVal,colorD.iconColor,colorD.iconColorHover);
+			iconBox(0.01f,0.02f,panelLoc - 0.05f,0.85f,panelZ+0.01f,icons.MaterialExport,sndpnl.downSignMixVal,colorD.iconColor,colorD.iconColorHover);
 		}
 
 		iconBox(0.01f,0.02f,panelLoc - 0.08f,0.85f,panelZ+0.01f,icons.Plus,sndpnl.plusSignMixVal,colorD.iconColor,colorD.iconColorHover);

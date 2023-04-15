@@ -194,6 +194,8 @@ struct Icons{
 	unsigned int ThreeDProject;
 	unsigned int TwoDProject;
 	unsigned int ImportProject;
+	unsigned int MaterialImport;
+	unsigned int MaterialExport;
 };
 
 struct RenderData { //GlSet::render

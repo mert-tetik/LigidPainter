@@ -2626,54 +2626,56 @@ void LigidPainter::sndPanelFolderIcon(){
 	else{
 		MaterialFile materialFile;
 		char const* lFilterPatterns[1] = { "*.material" };
-		char* materialFilePath = tinyfd_openFileDialog("Save The Material","", 1, lFilterPatterns, "",0);
+		char* materialFilePath = tinyfd_openFileDialog("Import a Material","", 1, lFilterPatterns, "",0);
 		NodeScene material;
 		
-		if(materialFilePath)
+		if(materialFilePath){
 			material = materialFile.readTheFile(materialFilePath);
+
+			material.index = 0;
+			material.arrayIndex = nodeScenes.size();
+			const int maxMaterialSize = 100;
+			for (int i = 0; i < maxMaterialSize; i++)
+			{
+				bool numberAvailable = false;
+				for (int nodeSceneIndex = 0; nodeSceneIndex < nodeScenes.size(); nodeSceneIndex++)
+				{
+					if(nodeScenes[nodeSceneIndex].index == i){
+						numberAvailable = true;
+					}
+				}
+				if(!numberAvailable){
+					material.index = i;
+					break;
+				}
+			}
+			material.sceneName = "material_" + std::to_string(material.index); 
+			
+			glActiveTexture(GL_TEXTURE28);
+			unsigned int renderTexture;
+			glset.genTextures(renderTexture);
+			glset.bindTexture(renderTexture);
+			glset.texImage(nullptr,100,100,GL_RGBA);
+			glset.generateMipmap();
+	
+			material.renderedTexture = renderTexture;
+	
+			unsigned int outTexture;
+			glset.genTextures(outTexture);
+			glset.bindTexture(outTexture);
+			glset.texImage(nullptr,1024,1024,GL_RGBA);
+			glset.generateMipmap();
+	
+			material.outTexture = outTexture;
+	
+			nodeScenes.push_back(material);
+			MaterialOut mOut;
+			mOut.program = 0;
+			modelMaterials.push_back(mOut);
+		}
 
 		nodeScenesHistory.clear();
 
-		material.index = 0;
-		material.arrayIndex = nodeScenes.size();
-		const int maxMaterialSize = 100;
-		for (int i = 0; i < maxMaterialSize; i++)
-		{
-			bool numberAvailable = false;
-			for (int nodeSceneIndex = 0; nodeSceneIndex < nodeScenes.size(); nodeSceneIndex++)
-			{
-				if(nodeScenes[nodeSceneIndex].index == i){
-					numberAvailable = true;
-				}
-			}
-			if(!numberAvailable){
-				material.index = i;
-				break;
-			}
-		}
-		material.sceneName = "material_" + std::to_string(material.index); 
-		
-		glActiveTexture(GL_TEXTURE28);
-		unsigned int renderTexture;
-		glset.genTextures(renderTexture);
-		glset.bindTexture(renderTexture);
-		glset.texImage(nullptr,100,100,GL_RGBA);
-		glset.generateMipmap();
-
-		material.renderedTexture = renderTexture;
-
-		unsigned int outTexture;
-		glset.genTextures(outTexture);
-		glset.bindTexture(outTexture);
-		glset.texImage(nullptr,1024,1024,GL_RGBA);
-		glset.generateMipmap();
-
-		material.outTexture = outTexture;
-
-		nodeScenes.push_back(material);
-		MaterialOut mOut;
-		mOut.program = 0;
-		modelMaterials.push_back(mOut);
 	}
 }
 void LigidPainter::sndPanelBackIcon(){

@@ -231,6 +231,8 @@ public:
 		icons.ThreeDProject = txtr.getTexture("LigidPainter/Resources/Icons/3DProject.jpg",0,0,false);
 		icons.TwoDProject = txtr.getTexture("LigidPainter/Resources/Icons/2DProject.jpg",0,0,false);
 		icons.ImportProject = txtr.getTexture("LigidPainter/Resources/Icons/ImportProject.jpg",0,0,false);
+		icons.MaterialImport = txtr.getTexture("LigidPainter/Resources/Icons/MaterialImport.jpg",0,0,false);
+		icons.MaterialExport = txtr.getTexture("LigidPainter/Resources/Icons/MaterialExport.jpg",0,0,false);
 	
 		return icons;
 	}

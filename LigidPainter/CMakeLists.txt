@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.8)
-project(LigidPainter VERSION 1.2)
+project(LigidPainter VERSION 1.3)
 
 file(GLOB_RECURSE LIGID_SOURCES
    ${PROJECT_SOURCE_DIR}/*.cpp
@@ -67,7 +67,6 @@ set(CPACK_PACKAGE_ICON,${PROJECT_SOURCE_DIR}/Resources/Icons/logo-1080x.ico)
 set(CPACK_WIX_PRODUCT_ICON,${PROJECT_SOURCE_DIR}/Resources/Icons/logo-1080x.ico)
 set(CPACK_WIX_UI_BANNER  ${CMAKE_SOURCE_DIR}/Installer/Banner.jpg)#On top of the screen
 set(CPACK_WIX_UI_DIALOG  ${CMAKE_SOURCE_DIR}/Installer/Dialog.jpg)#Background image
-
 
 #set(CPACK_DEBIAN_PACKAGE_MAINTAINER "LigidTools <${CPACK_PACKAGE_CONTACT}>")
 
