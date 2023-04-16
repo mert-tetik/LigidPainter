@@ -41,6 +41,7 @@
 //TODO Flip
 //TODO Horizontal drag ico
 //TODO Update ui
+//TODO New project panel
 
 //TODO Search for brush textures
 //TODO Color id
@@ -433,6 +434,7 @@ bool LigidPainter::run()
 	//Create the default node scene(material)
 
 	txtr.initUpdateMaskTxtr();
+	textureGen.initDrawToScreen();
 
 	////load.getDefaultNodeScene(nodeScenes,appNodes,"material_0");
 	sndPanel.state = 1;
@@ -1915,12 +1917,6 @@ void LigidPainter::mirrorXCheckBox() {
 	UIElements[UImirrorXCheckBox].checkBox.checked = !UIElements[UImirrorXCheckBox].checkBox.checked;
 
 	Utilities util;
-	for (size_t i = 0; i < mirrorParams.size(); i++)
-	{
-		glDeleteTextures(1,&mirrorParams[i].renderID1);
-		glDeleteTextures(1,&mirrorParams[i].renderID);
-		glDeleteTextures(1,&mirrorParams[i].depthTexture);
-	}
 	
 	mirrorParams.clear();
 	std::vector<glm::vec3> positions = util.getMirrorVectors(UIElements[UImirrorXCheckBox].checkBox.checked,UIElements[UImirrorYCheckBox].checkBox.checked,UIElements[UImirrorZCheckBox].checkBox.checked);
@@ -1928,8 +1924,6 @@ void LigidPainter::mirrorXCheckBox() {
 	{
 		MirrorParam mirror;
 		glGenTextures(1,&mirror.depthTexture);
-		glGenTextures(1,&mirror.renderID1);
-		glGenTextures(1,&mirror.renderID);
 		mirror.pos = positions[i];
 		mirrorParams.push_back(mirror);
 	}
@@ -1939,20 +1933,12 @@ void LigidPainter::mirrorYCheckBox() {
 	UIElements[UImirrorYCheckBox].checkBox.checked = !UIElements[UImirrorYCheckBox].checkBox.checked;
 
 	Utilities util;
-	for (size_t i = 0; i < mirrorParams.size(); i++)
-	{
-		glDeleteTextures(1,&mirrorParams[i].renderID1);
-		glDeleteTextures(1,&mirrorParams[i].renderID);
-		glDeleteTextures(1,&mirrorParams[i].depthTexture);
-	}
 	mirrorParams.clear();
 	std::vector<glm::vec3> positions = util.getMirrorVectors(UIElements[UImirrorXCheckBox].checkBox.checked,UIElements[UImirrorYCheckBox].checkBox.checked,UIElements[UImirrorZCheckBox].checkBox.checked);
 	for (size_t i = 0; i < positions.size(); i++)
 	{
 		MirrorParam mirror;
 		glGenTextures(1,&mirror.depthTexture);
-		glGenTextures(1,&mirror.renderID1);
-		glGenTextures(1,&mirror.renderID);
 		mirror.pos = positions[i];
 		mirrorParams.push_back(mirror);
 	}
@@ -1962,20 +1948,12 @@ void LigidPainter::mirrorZCheckBox() {
 	UIElements[UImirrorZCheckBox].checkBox.checked = !UIElements[UImirrorZCheckBox].checkBox.checked;
 
 	Utilities util;
-	for (size_t i = 0; i < mirrorParams.size(); i++)
-	{
-		glDeleteTextures(1,&mirrorParams[i].renderID1);
-		glDeleteTextures(1,&mirrorParams[i].renderID);
-		glDeleteTextures(1,&mirrorParams[i].depthTexture);
-	}
 	mirrorParams.clear();
 	std::vector<glm::vec3> positions = util.getMirrorVectors(UIElements[UImirrorXCheckBox].checkBox.checked,UIElements[UImirrorYCheckBox].checkBox.checked,UIElements[UImirrorZCheckBox].checkBox.checked);
 	for (size_t i = 0; i < positions.size(); i++)
 	{
 		MirrorParam mirror;
 		glGenTextures(1,&mirror.depthTexture);
-		glGenTextures(1,&mirror.renderID1);
-		glGenTextures(1,&mirror.renderID);
 		mirror.pos = positions[i];
 		mirrorParams.push_back(mirror);
 	}

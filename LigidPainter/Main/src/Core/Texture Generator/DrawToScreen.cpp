@@ -43,6 +43,9 @@ bool refreshTheScreenMask = false;
 
 unsigned int lastTxtr = 0;
 
+std::vector<unsigned int> mirTxtr1;
+std::vector<unsigned int> mirTxtr;
+
 
 void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int removeThisParam2,int removeThisParam,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view,std::vector<MirrorParam> &mirrorParams,glm::vec3 cameraPos,glm::vec3 originPos,float xMirrorPos,float yMirrorPos,float zMirrorPos,bool dynamicPainting,bool firstClick,float spacingRangeBarVal) {
 
@@ -197,13 +200,12 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 		int loopSize = 0;
 
 		if(mirrorParams.size()){
-			//glDeleteTextures(1,&mirrorParams[mirrorParams.size()-1].renderID);
 			for (size_t i = 0; i < mirrorParams.size(); i++)
 			{
 				unsigned int FBOMr;
 				glset.genFramebuffers(FBOMr);
 				glset.bindFramebuffer(FBOMr);
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirrorParams[i].renderID1, 0);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirTxtr1[i], 0);
 				glClearColor(0,0,0,0);
 				glClear(GL_COLOR_BUFFER_BIT);
 				glset.deleteFramebuffers(FBOMr);
@@ -213,7 +215,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				unsigned int FBOMr;
 				glset.genFramebuffers(FBOMr);
 				glset.bindFramebuffer(FBOMr);
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirrorParams[i].renderID, 0);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirTxtr[i], 0);
 				glClearColor(0,0,0,0);
 				glClear(GL_COLOR_BUFFER_BIT);
 				glset.deleteFramebuffers(FBOMr);
@@ -232,11 +234,11 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				unsigned int FBOMr;
 				glset.genFramebuffers(FBOMr);
 				glset.bindFramebuffer(FBOMr);
-				glset.bindTexture(mirrorParams[i].renderID1);
+				glset.bindTexture(mirTxtr1[i]);
 				glset.texImage(NULL, 1080,1080,GL_RGBA);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirrorParams[i].renderID1, 0);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirTxtr1[i], 0);
 				glset.generateMipmap();
 
 				glset.viewport(1080, 1080);
@@ -274,18 +276,18 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				unsigned int FBOMr2;
 				glset.genFramebuffers(FBOMr2);
 				glset.bindFramebuffer(FBOMr2);
-				glset.bindTexture(mirrorParams[i].renderID);
+				glset.bindTexture(mirTxtr[i]);
 				glset.texImage(NULL, 1080,1080,GL_RGBA);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirrorParams[i].renderID, 0);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirTxtr[i], 0);
 				
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				
 				glActiveTexture(GL_TEXTURE29);
 				
 				if(i != 0){
-					glset.bindTexture(mirrorParams[i-1].renderID);
+					glset.bindTexture(mirTxtr[i-1]);
 					glset.uniform1i(programs.outProgram, "usePrevious3DMaskTxtrs", 1);
 				}
 				else{
@@ -325,4 +327,21 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 
 void Texture::refreshScreenTxtr(){
 	refreshTheScreenMask = true;
+}
+
+void TextureGenerator::initDrawToScreen(){
+	for (size_t i = 0; i < 7; i++)
+	{
+		unsigned int txtr;
+		GlSet gl;
+		gl.genTextures(txtr);
+		mirTxtr.push_back(txtr);
+	}
+	for (size_t i = 0; i < 7; i++)
+	{
+		unsigned int txtr;
+		GlSet gl;
+		gl.genTextures(txtr);
+		mirTxtr1.push_back(txtr);
+	}
 }
