@@ -2037,7 +2037,7 @@ void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTe
 			};
 
 			if(std::min(std::max(0.06f + position_y,posY-panelRange),posY) != std::min(std::max(-0.06f + position_y,posY-panelRange),posY)){//Prevent rendering all the textures
-				gl.uniform1i(programs.iconsProgram,"isMaskIcon",1);
+				//gl.uniform1i(programs.iconsProgram,"isMaskIcon",1);
 				if(brushmasktextures[i].id == currentBrushMaskTexture){
 					glm::vec4 chosenBrushMaskTextureColor = glm::vec4(colorData.chosenBrushMaskTextureColor,1.0f);
 					gl.uniform1i(masktxtrprogram,"isPressed",1);
