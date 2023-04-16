@@ -32,7 +32,7 @@ void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int s
 	float rotation = ((brushRotationRangeBarValue +0.11f) * 4.54545454545f) * 460.0f; // -0.11 - 0.11 --> 0 - 360
 
 	float scaleVal = ((brushBorderRangeBarValue+0.11f)/2.0f * 8.18181818182f) + 0.3f;
-	float scaleValTiny = scaleVal/4.0f;
+	float scaleValTiny = scaleVal;
 
 	glset.useOutShader(programs.outProgram,outShaderData);
 
@@ -41,13 +41,13 @@ void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int s
 	if(!renderTiny){
 		//trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0.0f));
 		trans = glm::rotate(trans, glm::radians(rotation), glm::vec3(0.0, 0.0, 1.0));
-		//trans = glm::scale(trans, glm::vec3(scaleVal, scaleVal, scaleVal));
+		trans = glm::scale(trans, glm::vec3(scaleVal, scaleVal, scaleVal));
 		glset.uniformMatrix4fv(programs.outProgram, "renderTrans", trans);
 	}
 	else{
 		//trans = glm::translate(trans, glm::vec3(-0.875f, -0.875f, 0.0f));
 		trans = glm::rotate(trans, glm::radians(rotation), glm::vec3(0.0, 0.0, 1.0));
-		//trans = glm::scale(trans, glm::vec3(scaleValTiny, scaleValTiny, scaleValTiny));
+		trans = glm::scale(trans, glm::vec3(scaleValTiny, scaleValTiny, scaleValTiny));
 		glset.uniformMatrix4fv(programs.outProgram, "renderTrans", trans);
 	}
 	//Rotate and scale
