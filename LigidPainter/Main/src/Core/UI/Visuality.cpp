@@ -764,14 +764,15 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 }
 
-void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<aTexture> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int removeThisParam,unsigned int circleTexture){
+void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<aTexture> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,
+										  double mouseYpos,float screenGapX,int removeThisParam,unsigned int circleTexture, bool firstClick){
 	ColorData clrData;
 	GlSet glset;
 
 	const float boxWidth = 0.25f;
 
 
-	textureSelectionPanel.panelHover = isMouseOnButton(window,boxWidth,boxWidth,textureSelectionPanel.posX - screenGapX,textureSelectionPanel.posY,mouseXpos,mouseYpos,false);
+	textureSelectionPanel.panelHover = isMouseOnButton(window,boxWidth+0.03,boxWidth+0.06,textureSelectionPanel.posX - screenGapX,textureSelectionPanel.posY,mouseXpos,mouseYpos,false);
 	if(!textureSelectionPanel.panelHover){
 		textureSelectionPanel.active = false;
 	}
@@ -831,7 +832,7 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 				glUseProgram(programs.renderTheTextureProgram);
 
 				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
-				if(glfwGetMouseButton(window,0) == GLFW_PRESS){
+				if(firstClick && !textureSelectionPanel.firstCycle){
 					textureSelectionPanel.selectedIndex = i;
 					textureSelectionPanel.selectedTextureName = albedoTextures[i].name;
 					textureSelectionPanel.textureClicked = true;
@@ -1854,7 +1855,7 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 			if(textureAddButtonEnter)
 				iconmixVal = 0.5f;
 				
-			iconBox(0.015f,0.027f,renderData.panelLoc - 1.0f - screenGapX + 0.3f ,0.8f - (posI * 0.125f) + materialsPanelSlideValue,0.99f,icons.Plus,iconmixVal,colorData.iconColor,colorData.iconColorHover);
+			iconBox(0.015f,0.027f,renderData.panelLoc - 1.0f - screenGapX + 0.3f ,0.8f - (posI * 0.125f) + materialsPanelSlideValue,0.9f,icons.Plus,iconmixVal,colorData.iconColor,colorData.iconColorHover);
 			glUseProgram(programs.uiProgram); 
 			posI++;
 			for (int sI = model.meshes[i].submeshes.size()-1; sI >= 0 ; sI--)

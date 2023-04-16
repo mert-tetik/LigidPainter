@@ -36,6 +36,11 @@
 //Left CTRL + TAB + T = Switch to painting panel
 //Left CTRL + TAB + R = Switch to export panel
 
+//! Material masking
+//! Material submesh export
+//! Brush border is not effected
+//! Do painting
+
 //TODO Fix mirror origin pos
 //TODO Fix mirror paint over
 //TODO Flip
@@ -1431,7 +1436,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 
 
-	if(colorPicker.dropperActive || textureDraggingState || mirrorRangeBarsPressed || UIElements[UImirrorXCheckBox].checkBox.mouseHover || UIElements[UImirrorYCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover){
+	if(colorPicker.dropperActive || textureDraggingState || mirrorRangeBarsPressed || textureSelectionPanel.active || UIElements[UImirrorXCheckBox].checkBox.mouseHover || UIElements[UImirrorYCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover){
 		doPainting = false;
 	}
 	else if(textureDisplayer.buttonHover || callbackData.paintingPanelButtonEnter || callbackData.modelPanelButtonEnter || callbackData.exportPanelButtonEnter || callbackData.texturePanelButtonEnter || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover || UIElements[UImirrorZCheckBox].checkBox.mouseHover){
@@ -1776,7 +1781,7 @@ void LigidPainter::subSelectedImagePowerRangeBar(double xOffset, int width, int 
 void LigidPainter::selectBrushMaskTexture(){
 	textureSelectionPanel.active = true;
 	textureSelectionPanel.posX = 0.65f;
-	textureSelectionPanel.posY = 0.65f;
+	textureSelectionPanel.posY = 0.6f;
 	brushMaskTextureSelectionPanelActive = true;
 }
 void LigidPainter::generateTextureButton(){

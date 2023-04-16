@@ -249,6 +249,8 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 					if(!uiElements[i].attachedToMainPanel || uiElements[i].focusMode){
 						centerCoords =  mainPanelLoc - 1.0f;
 					}
+					if(!uiElements[UIdynamicPaintingCheckBoxElement].checkBox.checked && (i == UIpaintOverCheckBoxElement || (i == UIdisplayPaintOverTextureCheckBoxElement) || (i == UIselectPaintOverTextureNameTextElement) || (i == UIpaintOverPosXRangeBarElement) || (i == UIpaintOverPosYRangeBarElement) || (i == UIpaintOverScaleXRangeBarElement) || (i == UIpaintOverScaleYRangeBarElement) || (i == UIpaintOverPosTextElement) || (i == UIpaintOverScaleTextElement) || (i == UIpaintOverXTextElement) || (i == UIpaintOverYTextElement) || (i == UIselectPaintOverTextureIconElement)))
+						panelCompatibility = false;
 
 					if(panelCompatibility){
 

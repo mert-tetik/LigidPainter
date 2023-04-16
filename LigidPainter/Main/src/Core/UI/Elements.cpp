@@ -1083,7 +1083,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElement addBrushMaskTextureIconElement;
     addBrushMaskTextureIconElement.icon.positionX = 0.1f;
     addBrushMaskTextureIconElement.icon.positionY = 0.85f;
-    addBrushMaskTextureIconElement.icon.positionZ = 0.99f;
+    addBrushMaskTextureIconElement.icon.positionZ = 0.9f;
     addBrushMaskTextureIconElement.icon.width = 0.015;
     addBrushMaskTextureIconElement.icon.height = 0.03f;
     addBrushMaskTextureIconElement.icon.color = colorData.iconColor;
@@ -1099,7 +1099,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElement selectBrushMaskTextureIconElement;
     selectBrushMaskTextureIconElement.icon.positionX = 0.05f;
     selectBrushMaskTextureIconElement.icon.positionY = 0.85f;
-    selectBrushMaskTextureIconElement.icon.positionZ = 0.99f;
+    selectBrushMaskTextureIconElement.icon.positionZ = 0.9f;
     selectBrushMaskTextureIconElement.icon.width = 0.015f;
     selectBrushMaskTextureIconElement.icon.height = 0.03;
     selectBrushMaskTextureIconElement.icon.color = colorData.iconColor;
