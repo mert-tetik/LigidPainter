@@ -23,6 +23,8 @@ unsigned int vBlurColorBuffer;
 
 
 void Texture::updateMaskTexture(unsigned int FBOScreen,  int screenSize_x, int screenSize_y, float brushRotationRangeBarValue,bool renderTiny,float brushBorderRangeBarValue,float brushBlurVal,OutShaderData outShaderData, Programs programs, int removeThisParam, int removeThisParam2) { //rotationValue = rotationBarValue
+	renderTiny = false;
+	
 	GlSet glset;
 	UserInterface ui;
 	TextureGenerator txtrGen;

@@ -528,13 +528,13 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		lastNodeScene = nodeScenes[selectedNodeScene];
 		//----------------------
 
-				if(model.meshes.size() != 0){
+		if(model.meshes.size() != 0){
 			//Output the material
 			if(UIElements[UIrealtimeMaterialRenderingCheckBox].checkBox.checked){
 				if(renderingCounter % nodeScenes.size()/2 == 0){
 					for (size_t i = 0; i < nodeScenes.size(); i++)
 					{
-						modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[i],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex,materialFBO);
+						modelMaterials[i] = renderTheNodes(nodeScenes[i],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex,materialFBO);
 					}
 				}
 			}

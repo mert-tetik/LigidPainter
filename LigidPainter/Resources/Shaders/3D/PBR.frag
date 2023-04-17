@@ -121,12 +121,12 @@ vec3 getPaintedDiffuse(){
    if(useMirror == 1){
       if(maskMode == 1){
          if(dynamicPainting == 0)
-            return mix(diffuseDrawMix, paintingColor, texture(tdRenderedMaskTexture,TexCoords).a);
+            return mix(diffuseDrawMix, paintingColor, texture(tdRenderedMaskTexture,TexCoords).a*paintingOpacity);
          if(dynamicPainting == 1)
-            return mix(diffuseDrawMix, paintingColor, texture(tdRenderedMaskTexture,TexCoords).r);
+            return mix(diffuseDrawMix, paintingColor, texture(tdRenderedMaskTexture,TexCoords).r*paintingOpacity);
       }
       else
-         return mix(diffuseDrawMix, texture(tdRenderedMaskTexture,TexCoords).rgb*drawColor, texture(tdRenderedMaskTexture,TexCoords).a);
+         return mix(diffuseDrawMix, texture(tdRenderedMaskTexture,TexCoords).rgb*drawColor, texture(tdRenderedMaskTexture,TexCoords).a*paintingOpacity);
    }
 
    

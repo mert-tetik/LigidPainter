@@ -1601,6 +1601,7 @@ bool UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 	iconBox(0.023f,0.0325f,coloringPanel.panelPosX + 0.18f, coloringPanel.panelPosY-0.18,0.9f,icons.dropperIcon,0,colorData.iconColor,colorData.iconColorHover);
 	coloringPanel.dropperHover = isMouseOnButton(window,0.02f,0.04f,coloringPanel.panelPosX + 0.18f - screenGapX,coloringPanel.panelPosY-0.18,mouseXpos,mouseYpos,false);
 	
+	glUseProgram(programs.uiProgram);
 	//BRUSH
 	if(modifyBrush){
 		rangeBar(coloringPanel.panelPosX + 0.125f, coloringPanel.panelPosY, UIElements[UIbrushSizeRangeBar].rangeBar.value,2.f);
@@ -1855,7 +1856,7 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 			if(textureAddButtonEnter)
 				iconmixVal = 0.5f;
 				
-			iconBox(0.015f,0.027f,renderData.panelLoc - 1.0f - screenGapX + 0.3f ,0.8f - (posI * 0.125f) + materialsPanelSlideValue,0.9f,icons.Plus,iconmixVal,colorData.iconColor,colorData.iconColorHover);
+			iconBox(0.015f,0.027f,renderData.panelLoc - 1.0f - screenGapX + 0.3f ,0.8f - (posI * 0.125f) + materialsPanelSlideValue,0.92f,icons.Plus,iconmixVal,colorData.iconColor,colorData.iconColorHover);
 			glUseProgram(programs.uiProgram); 
 			posI++;
 			for (int sI = model.meshes[i].submeshes.size()-1; sI >= 0 ; sI--)
@@ -1916,7 +1917,7 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 						model.meshes[i].submeshes[sI].textureSelectionState = true;
 						textureSelectionPanel.active = true;
 						textureSelectionPanel.posX = renderData.panelLoc - 1.0f - screenGapX + 0.07f;
-						textureSelectionPanel.posY = 0.8f - ((posI) * 0.125f) + materialsPanelSlideValue;
+						textureSelectionPanel.posY = 0.7f - ((posI) * 0.125f) + materialsPanelSlideValue;
 					}
 				}
 				iconBox(0.01f,0.02f,renderData.panelLoc - 1.0f - screenGapX + 0.305f,0.8f - ((posI) * 0.125f) + materialsPanelSlideValue,0.91f,icons.AddTexture,addMaskTxtrIconHover,colorData.iconColor,colorData.iconColorHover);
@@ -2107,7 +2108,7 @@ bool UserInterface::listBox(float posX,float posY,float posZ,const char* title,f
 				pressed = true;
 			}
 
-			if(hover && firstClick){
+			if(hover && firstClick && chosenIndex != i-1){
 				chosenIndex = i-1;
 				stateChanged = true;
 			}

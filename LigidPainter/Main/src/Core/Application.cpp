@@ -36,17 +36,14 @@
 //Left CTRL + TAB + T = Switch to painting panel
 //Left CTRL + TAB + R = Switch to export panel
 
-//! Material masking
-//! Material submesh export
-//! Brush border is not effected
-//! Do painting
-
 //TODO Fix mirror origin pos
 //TODO Fix mirror paint over
 //TODO Flip
 //TODO Horizontal drag ico
 //TODO Update ui
 //TODO New project panel
+//TODO Circular range bar for rotation smt
+//TODO Alert success & warning
 
 //TODO Search for brush textures
 //TODO Color id
@@ -1780,7 +1777,7 @@ void LigidPainter::subSelectedImagePowerRangeBar(double xOffset, int width, int 
 }
 void LigidPainter::selectBrushMaskTexture(){
 	textureSelectionPanel.active = true;
-	textureSelectionPanel.posX = 0.65f;
+	textureSelectionPanel.posX = 0.72f;
 	textureSelectionPanel.posY = 0.6f;
 	brushMaskTextureSelectionPanelActive = true;
 }
@@ -2276,7 +2273,16 @@ void LigidPainter::outSubmeshesButton(){
 
 			aTexture txtr;
 			txtr.id = textureColorbuffer;
-			txtr.name = "aaaaa";
+			if(pipI == 0)txtr.name = "albedo";if(pipI == 1)txtr.name = "roughness";if(pipI == 2)txtr.name = "metallic";if(pipI == 3)txtr.name = "normal_map";if(pipI == 4)txtr.name = "ambient_occlusion";if(pipI == 5)txtr.name = "emission";if(pipI == 6)txtr.name = "emission_strength";
+
+			std::vector<std::string> albedoTxtrStr;
+			for (size_t i = 0; i < albedoTextures.size(); i++)
+			{
+				albedoTxtrStr.push_back(albedoTextures[i].name);
+			}
+			Utilities util;
+			txtr.name = util.uniqueName(txtr.name,albedoTxtrStr);
+
 			albedoTextures.push_back(txtr);
 	
 			glset.bindFramebuffer(0);
@@ -2649,9 +2655,19 @@ void LigidPainter::sndPanelFolderIcon(){
 			glset.genTextures(outTexture);
 			glset.bindTexture(outTexture);
 			glset.texImage(nullptr,1024,1024,GL_RGBA);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glset.generateMipmap();
 
 			material.outTexture = outTexture;
+
+			material.stateChanged = true;
+			for (size_t mi = 0; mi < material.nodes.size(); mi++)
+			{
+				material.nodes[mi].stateChanged = true;
+			}
+			
+			selectedNodeScene = nodeScenes.size();
 
 			nodeScenes.push_back(material);
 			MaterialOut mOut;

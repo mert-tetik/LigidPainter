@@ -131,6 +131,7 @@ void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vec
 	lastMouseYFocused = mouseYpos;
 
 	if(coloringPanel.active){
+		glUseProgram(programs.uiProgram);
 		bool brushChanged = ui.coloringPanel(coloringPanel,programs,icons,renderData.window,saturationValShaderData,projection,mouseXpos,mouseYpos,firstClick,xOffset,yOffset,FBOScreen,colorPicker,screenGapX,screenHoverPixel,UIElements,true);
 		drawColor = coloringPanel.result/glm::vec3(255.f); 
 		colorPicker.pickerValue = coloringPanel.result;

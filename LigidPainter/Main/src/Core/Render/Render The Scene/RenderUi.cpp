@@ -757,11 +757,18 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 				ui.box(UIElements[i].textBox.width, UIElements[i].textBox.height,centerCoords - screenGapX + UIElements[i].textBox.position_x, UIElements[i].textBox.position_y+slideVal,UIElements[i].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements[i].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements[i].textBox.transitionMixVal); //Add mask texture button
 			}
 			if(currentType == "checkBox"){
-				ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY+slideVal, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,icons.Circle); //jpg checkbox
+				if(!(UIElements[i].checkBox.text == "Focus Mode" && centerCoords - screenGapX + UIElements[i].checkBox.positionX < -0.25f)){
+					if(!(i == UIdynamicPaintingCheckBoxElement && centerCoords - screenGapX + UIElements[i].checkBox.positionX < -0.23f)){
+							ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY+slideVal, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,icons.Circle); //jpg checkbox
+						
+					}
+				}
 			}
 			if(currentType == "icon"){
-				glUseProgram(programs.iconsProgram);
-				ui.iconBox(UIElements[i].icon.width,UIElements[i].icon.height,centerCoords - screenGapX + UIElements[i].icon.positionX ,UIElements[i].icon.positionY+slideVal,UIElements[i].icon.positionZ,UIElements[i].icon.icon, UIElements[i].icon.mixVal , UIElements[i].icon.color , UIElements[i].icon.colorHover);
+				if(!(i == UIdynamicPaintingIconElement && centerCoords - screenGapX + UIElements[i].icon.positionX < -0.21f)){
+					glUseProgram(programs.iconsProgram);
+					ui.iconBox(UIElements[i].icon.width,UIElements[i].icon.height,centerCoords - screenGapX + UIElements[i].icon.positionX ,UIElements[i].icon.positionY+slideVal,UIElements[i].icon.positionZ,UIElements[i].icon.icon, UIElements[i].icon.mixVal , UIElements[i].icon.color , UIElements[i].icon.colorHover);
+				}
 			}
 		}
 	}	
@@ -826,7 +833,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		skyboxlistStateChanged = ui.listBox(centerCoords - screenGapX,-0.5f+panelData.settingsPanelSlideVal,0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture,screenGapX);
 	}
 	
-	if(resolutionChanged && chosenNodeResIndex != previousTextureResIndex){
+	if(resolutionChanged){
 		LigidPainter lp;
 		if(lp.ligidMessageBox("Textures will be compressed into the chosen resolution.",-0.224f,"Do you want to proceed?",-0.1f)){
 			for (size_t i = 0; i < albedoTextures.size(); i++)

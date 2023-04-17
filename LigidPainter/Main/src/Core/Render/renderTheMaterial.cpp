@@ -172,28 +172,35 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     unsigned int channels;
                     int channelSize;
 
+                    GLubyte* data = new GLubyte[3];
+
                     if(material.renderingPipeline[nodeI].inputs[inputI].type == "float"){
-                        channels = GL_RED;
-                        channelSize = 1;
+                        channels = GL_RGB;
+                        channelSize = 3;
+                        data[0] = material.renderingPipeline[nodeI].inputs[inputI].value[0]*255;
+                        data[1] = material.renderingPipeline[nodeI].inputs[inputI].value[0]*255;
+                        data[2] = material.renderingPipeline[nodeI].inputs[inputI].value[0]*255;
                     }
 
                     if(material.renderingPipeline[nodeI].inputs[inputI].type == "vec2"){
-                        channels = GL_RG;
-                        channelSize = 2;
+                        channels = GL_RGB;
+                        channelSize = 3;
+                        data[0] = material.renderingPipeline[nodeI].inputs[inputI].value[0]*255;
+                        data[1] = material.renderingPipeline[nodeI].inputs[inputI].value[1]*255;
+                        data[2] = material.renderingPipeline[nodeI].inputs[inputI].value[1]*255;
                     }
 
                     if(material.renderingPipeline[nodeI].inputs[inputI].type == "vec3"){
                         channels = GL_RGB;
                         channelSize = 3;
+                        data[0] = material.renderingPipeline[nodeI].inputs[inputI].value[0]*255;
+                        data[1] = material.renderingPipeline[nodeI].inputs[inputI].value[1]*255;
+                        data[2] = material.renderingPipeline[nodeI].inputs[inputI].value[2]*255;
                     }
 
-                    GLubyte* data = new GLubyte[channelSize];
 
-                    for (size_t i = 0; i < channelSize; i++)
-                    {
-                        data[i] = material.renderingPipeline[nodeI].inputs[inputI].value[i]*255;
-                    }
 
+                    
                     glset.texImage(data,1,1,channels);
                     delete[] data;
                 }
@@ -375,7 +382,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     
                     //Output the material
 
-                    glset.viewport(txtrRes,txtrRes);
+                    glset.viewport(1024,1024);
                     
                     glActiveTexture(GL_TEXTURE28);
 

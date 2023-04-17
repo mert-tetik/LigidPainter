@@ -53,34 +53,38 @@ using namespace std;
         }
 
         for(unsigned int i = 0; i < meshes.size(); i++){
-            if(!paintingMode && modelMaterials[meshes[i].submeshes[0].materialIndex].program != 0){
-	            glUseProgram(modelMaterials[meshes[i].submeshes[0].materialIndex].program);
-
+            if(!paintingMode){
                 glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
 
+                for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++){
+                    if(modelMaterials[meshes[i].submeshes[sI].materialIndex].program != 0){
+	                    glUseProgram(modelMaterials[meshes[i].submeshes[sI].materialIndex].program);
 
-        	    glUniformMatrix4fv(glGetUniformLocation(modelMaterials[meshes[i].submeshes[0].materialIndex].program, "projection"), 1,GL_FALSE, glm::value_ptr(projection));
-        	    glUniformMatrix4fv(glGetUniformLocation(modelMaterials[meshes[i].submeshes[0].materialIndex].program, "view"), 1,GL_FALSE, glm::value_ptr(view));
-                
-                const float uniRot = (skyboxRotationVal + 0.11f) * 1636.36363636;
-	            glm::mat4 rotation = glm::mat4(1);
-	            rotation = glm::rotate(rotation, glm::radians(uniRot), glm::vec3(0.0, 1.0, 0.0));
-	            glUniformMatrix4fv(glGetUniformLocation(modelMaterials[meshes[i].submeshes[0].materialIndex].program, "skyboxRotation"), 1,GL_FALSE, glm::value_ptr(rotation));
+        	            glUniformMatrix4fv(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "projection"), 1,GL_FALSE, glm::value_ptr(projection));
+        	            glUniformMatrix4fv(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "view"), 1,GL_FALSE, glm::value_ptr(view));
 
-                for (size_t txtI = 0; txtI < modelMaterials[meshes[i].submeshes[0].materialIndex].textures.size(); txtI++)
-                {
-                    glActiveTexture(GL_TEXTURE20 + txtI);
-                    glBindTexture(GL_TEXTURE_2D,modelMaterials[meshes[i].submeshes[0].materialIndex].textures[txtI]);
-    
-            	    glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[0].materialIndex].program, ("input_" + std::to_string(txtI)).c_str()), 20+txtI);
+                        const float uniRot = (skyboxRotationVal + 0.11f) * 1636.36363636;
+	                    glm::mat4 rotation = glm::mat4(1);
+	                    rotation = glm::rotate(rotation, glm::radians(uniRot), glm::vec3(0.0, 1.0, 0.0));
+	                    glUniformMatrix4fv(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "skyboxRotation"), 1,GL_FALSE, glm::value_ptr(rotation));
+
+                        for (size_t txtI = 0; txtI < modelMaterials[meshes[i].submeshes[sI].materialIndex].textures.size(); txtI++)
+                        {
+                            glActiveTexture(GL_TEXTURE20 + txtI);
+                            glBindTexture(GL_TEXTURE_2D,modelMaterials[meshes[i].submeshes[sI].materialIndex].textures[txtI]);
+
+            	            glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, ("input_" + std::to_string(txtI)).c_str()), 20+txtI);
+                        }
+                        glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "is3D"), 1);
+                        glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "prefilterMap"), 16);
+                        glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "brdfLUT"), 15);
+                        glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "blurySkybox"), 13);
+            	        const float uniExpo = (skyboxExposureVal + 0.11f) * 4.54545454545 *2 ;
+                        glUniform1f(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "skyboxExposure"), uniExpo);
+                        glUniform3fv(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "viewPos"),1,&viewPos[0]);
+
+                    }
                 }
-                glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[0].materialIndex].program, "is3D"), 1);
-                glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[0].materialIndex].program, "prefilterMap"), 16);
-                glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[0].materialIndex].program, "brdfLUT"), 15);
-                glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[0].materialIndex].program, "blurySkybox"), 13);
-            	const float uniExpo = (skyboxExposureVal + 0.11f) * 4.54545454545 *2 ;
-                glUniform1f(glGetUniformLocation(modelMaterials[meshes[i].submeshes[0].materialIndex].program, "skyboxExposure"), uniExpo);
-                glUniform3fv(glGetUniformLocation(modelMaterials[meshes[i].submeshes[0].materialIndex].program, "viewPos"),1,&viewPos[0]);
 
         
                 if(meshes[i].submeshes.size() <= 1){

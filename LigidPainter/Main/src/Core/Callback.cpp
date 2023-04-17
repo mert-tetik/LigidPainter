@@ -280,13 +280,20 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 					}
 
 					if(currentType == "checkBox"){
-						uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].checkBox.positionX, uiElements[i].checkBox.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
-						uiElements[i].checkBox.mouseHover = uiElementEnter;
+						if(!(uiElements[i].checkBox.text == "Focus Mode" && centerCoords - screenGapX + uiElements[i].checkBox.positionX < -0.25f)){
+							if(!(i == UIdynamicPaintingCheckBoxElement && centerCoords - screenGapX + uiElements[i].checkBox.positionX < -0.23f)){
+								uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].checkBox.positionX, uiElements[i].checkBox.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
+								uiElements[i].checkBox.mouseHover = uiElementEnter;
+							}
+						}
 					}
 						if(currentType == "icon"){
 							if(uiElements[i].icon.clickable){
-								uiElementEnter = ui.isMouseOnButton(window, uiElements[i].icon.width/1.5, uiElements[i].icon.height/1.5, centerCoords - screenGapX + uiElements[i].icon.positionX, uiElements[i].icon.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
-								uiElements[i].icon.hover = uiElementEnter;
+								if(!(i == UIdynamicPaintingIconElement && centerCoords - screenGapX + uiElements[i].icon.positionX < -0.21f)){
+									uiElementEnter = ui.isMouseOnButton(window, uiElements[i].icon.width/1.5, uiElements[i].icon.height/1.5, centerCoords - screenGapX + uiElements[i].icon.positionX, uiElements[i].icon.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
+									uiElements[i].icon.hover = uiElementEnter;
+								}
+
 							}
 						}
 
