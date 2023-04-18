@@ -16,8 +16,8 @@
 //? GL_TEXTURE16 = prefilteredMap
 //? GL_TEXTURE17 = subSelectedTexture
    
-//GL_TEXTURE 20 - 27 Is reserved for nodes
-//GL_TEXTURE28 = Empty
+//? GL_TEXTURE 20 - 27 Is reserved for nodes
+//? GL_TEXTURE28 = Empty
 
 //Shortcuts
 
@@ -44,6 +44,10 @@
 //TODO New project panel
 //TODO Circular range bar for rotation smt
 //TODO Alert success & warning
+//TODO Color displayer for the dropper
+//TODO Take mask brushes for the project file
+//TODO Mask textures folder & export folder
+//TODO Preview for skybox listbox
 
 //TODO Search for brush textures
 //TODO Color id
