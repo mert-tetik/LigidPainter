@@ -19,23 +19,6 @@
 //? GL_TEXTURE 20 - 27 Is reserved for nodes
 //? GL_TEXTURE28 = Empty
 
-//Shortcuts
-
-//Left CTRL + Z : Undo painting
-//Left CTRL + X : change use negative checkbox's state
-//Left CTRL + H : hide or show the texture demonstrator
-//Left CTRL + Q + scroll = change brush size range bar value
-//Left CTRL + W + scroll = change brush blur range bar value
-//Left CTRL + E + scroll = change brush rotation range bar value
-//Left CTRL + R + scroll = change brush opacity range bar value
-//Left CTRL + T + scroll = change brush spacing range bar value
-//Left CTRL + Y + scroll = change brush borders range bar value
-//Left CTRL + B = set painting fill between quality to 1 or 10
-//Left CTRL + TAB + Q = Switch to model panel
-//Left CTRL + TAB + W = Switch to texture panel
-//Left CTRL + TAB + T = Switch to painting panel
-//Left CTRL + TAB + R = Switch to export panel
-
 //TODO Fix mirror origin pos
 //TODO Fix mirror paint over
 //TODO Flip
@@ -674,11 +657,12 @@ bool LigidPainter::run()
 
 		mainLoop.updateCameraPosChanging(callbackData.cameraPos,cameraPosChanging);
 		//mainLoop.detectClick(window,mousePress,firstClick);
+		
 		if(firstClick){
 			clickCounter = 0;
 			if(countTheClicks && glm::distance(glm::vec2(mouseClickPosx,mouseClickPosy),glm::vec2(mouseXpos,mouseYpos)) < 30){
 				countTheClicks = false;
-				if(!mainPanelHover && !nodePanel.panelHover && !sndPanel.panelHover && !coloringPanel.active && !textureSelectionPanel.active && !txtrCreatingPanel.active)
+				if(!callbackData.mainPanelEnter && !nodePanel.panelHover && !nodePanel.boundariesHover && !nodePanel.boundariesPressed && !sndPanel.panelHover && !coloringPanel.active && !textureSelectionPanel.active && !txtrCreatingPanel.active)
 					doubleClick = true;
 			}
 			else{
@@ -1061,16 +1045,11 @@ bool LigidPainter::run()
 	return true;
 }
 
-
 int LigidPainter::ligidMessageBox(std::string message,float messagePosX,std::string bMessage,float bMessagePosX){
+	
 	bool noButtonClick = true;
 	bool clickTaken = false;
-	panelData.exportPanelActive = false;
-	panelData.paintingPanelActive = false;
-	panelData.texturePanelActive = false;
-	panelData.modelPanelActive = false;
-	panelData.settingsPanelActive = false;
-	panelData.generatorPanelActive = false;
+
 	
 	using namespace std::chrono_literals;
 
@@ -1106,11 +1085,9 @@ int LigidPainter::ligidMessageBox(std::string message,float messagePosX,std::str
 		int result = lgdMessageBox(window,mouseXpos,mouseYpos,cursors.defaultCursor,cursors.pointerCursor,icons.Logo,programs.uiProgram,message.c_str(),messagePosX,0.0f,messageBoxBackColor,messageBoxButtonColor,(float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width, (float)screenWidth,programs.iconsProgram,icons,programs,bMessage,bMessagePosX); //0 = Yes //1 = No //2 = None
 		//Process the message box input
 		if(result == 0 || glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
-			panelData.modelPanelActive = true;
 			return 1;
 		}
 		else if(result == 1 || glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
-			panelData.modelPanelActive = true;
 			return 0;
 		}
 		

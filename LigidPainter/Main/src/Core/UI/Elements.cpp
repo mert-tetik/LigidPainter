@@ -111,10 +111,10 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	modelPanel3DModelsTextElement.type = "text";
     UIElements.push_back(modelPanel3DModelsTextElement);//6
 
-
+    //Removed
 	UIElement loadCustomModelButtonElement;
     loadCustomModelButtonElement.button.positionX = 0.0f;
-    loadCustomModelButtonElement.button.positionY = -0.3f;
+    loadCustomModelButtonElement.button.positionY = -10000.3f;
     loadCustomModelButtonElement.button.positionZ = 0.9f;
     loadCustomModelButtonElement.button.width = 0.06f;
     loadCustomModelButtonElement.button.height = 0.04f;
