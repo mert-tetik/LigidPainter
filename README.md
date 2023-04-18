@@ -10,7 +10,7 @@
 Official website : https://www.ligidtools.com/ligidpainter
 
 ## Building
-https://www.ligidtools.com/  -ligid-painter
+https://www.ligidtools.com/ligidpainter
 
 ## Shortcuts
     Left CTRL + Z = Undo painting
