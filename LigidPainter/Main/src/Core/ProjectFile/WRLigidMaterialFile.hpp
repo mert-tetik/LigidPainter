@@ -13,10 +13,15 @@
 #include "Core/Texture/Texture.h"
 #include "Core/gl.h"
 
+//* V1.3 : 0x94BA0BBA; 
+
 class MaterialFile{
 public:
     void writeTheFile(const char* path,NodeScene material){
         std::ofstream wf = std::ofstream(path, std::ios::out | std::ios::binary);
+
+            uint64_t h1 = 0x94BA0BBA; 
+            wf.write(reinterpret_cast<char*>(&h1),sizeof(uint64_t));
 
             uint64_t nodeScI = material.index;
             uint64_t nodeScAI = material.arrayIndex;
@@ -290,6 +295,16 @@ public:
         startReadingTheProjectFile(path,rf);
 
         NodeScene material;
+
+            uint64_t h1 = 0x94BA0BBA; 
+            uint64_t ch1; 
+            
+            rf.read(reinterpret_cast<char*>(&ch1),sizeof(uint64_t));
+            if(h1 != ch1){
+                UserInterface ui;
+                ui.alert("This is not a material file. File description header is 0x94BA0BBA",200);
+                return material;
+            }
             
             rf.read(reinterpret_cast<char*>(&material.index),sizeof(uint64_t));
             rf.read(reinterpret_cast<char*>(&material.arrayIndex),sizeof(uint64_t));
