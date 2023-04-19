@@ -578,7 +578,7 @@ std::vector<aTexture> albedoTextures,float screenGapX,bool &firstClick,ColoringP
 				}
 			}
 			
-			iconBox(iconWidth,iconWidth*20.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+0.01,0,0,glm::vec4(0),glm::vec4(0));
+			rampBox(iconWidth,iconWidth*20.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height/4) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+0.01);
 
 			glUseProgram(programs.iconsProgram);
 

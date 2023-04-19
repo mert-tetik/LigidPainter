@@ -691,6 +691,8 @@ public:
 	void textureDisplayer(float width,float height, float position_x,float position_y,float z);
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec4 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec4 colorTransitionColor , float mixVal);
 	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover);
+	void rampBox(float width, float height, float position_x, float position_y, float z);
+	
 	void renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active);
 	void renderMenubar(GLFWwindow* window);
 	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked,unsigned int circleTxtr);

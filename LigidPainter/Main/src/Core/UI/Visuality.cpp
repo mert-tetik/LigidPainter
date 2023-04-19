@@ -943,6 +943,30 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 	glBindVertexArray(uiObjects.VAO);
 }
 
+void UserInterface::rampBox(float width, float height, float position_x, float position_y, float z){
+	GlSet glset;
+	glm::mat4 scale = glm::mat4(1);
+	scale = glm::scale(scale,glm::vec3(width,height,1));
+	glset.uniformMatrix4fv(uiPrograms.rampProgram,"scale",scale);
+	
+	glm::vec3 pos = glm::vec3(position_x,position_y,z);
+	glset.uniform3fv(uiPrograms.rampProgram,"pos",pos);
+
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.sqrVBO);
+	glBindVertexArray(uiObjects.sqrVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	ColorData colorData;
+
+	scale = glm::mat4(1);
+	pos = glm::vec3(0);
+	glset.uniformMatrix4fv(uiPrograms.rampProgram,"scale",scale);
+	glset.uniform3fv(uiPrograms.rampProgram,"pos",pos);
+	
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
+	glBindVertexArray(uiObjects.VAO);
+}
+
 void UserInterface::circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture, glm::vec4 color,glm::vec4 transitionColor, float mixVal){
 	iconBox(width,height,positionX,positionY,positionZ,circleIcon,mixVal,color,transitionColor);
 }
