@@ -14,7 +14,7 @@
 --type : vec3;
 --title : Color1;
 --element : color;
---value : 100,100,100;
+--value : 0,0,0;
 
 -input_1 : 
 --list : none;
@@ -22,7 +22,7 @@
 --type : vec3;
 --title : Color2;
 --element : color;
---value : 100,100,100;
+--value : 255,255,255;
 
 -input_2 : 
 --list : none;

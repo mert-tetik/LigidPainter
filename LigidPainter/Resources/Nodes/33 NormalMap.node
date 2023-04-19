@@ -1,12 +1,39 @@
-#version 330 core
+# For ligidtools.com
+# Node extension v1.0
 
-uniform sampler2D inputTexture;
+%attributes;
 
-in vec2 texCoords;
+-title : BlackAndWhite;
+-color : hexb74efc; #rgb122,124,66  #hsv86,45,23
+-opacity : 60;
 
-out vec4 color;
+-input_0 : 
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Source;
+--element : color;
+--value : 128,127,255;
 
-uniform float normalStrength;
+-input_1 : 
+--list : none;
+--list_index : none;
+--type : float;
+--title : Strength;
+--element : range;
+--value : 100;
+
+-output_0 :
+--list : none;
+--list_index : none;
+--type : vec3;
+--title : Texture;
+
+
+-uniforms : tex_coords|normal|posScene|posModel;
+
+%code;
+
 #define textureOffset 1.0
 
 const float PI = 3.14159265;
@@ -38,20 +65,16 @@ float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
 
 vec2 stdNormalMap(in vec2 uv) 
 {
-    float height = max(max(texture(inputTexture, uv).r,texture(inputTexture, uv).g),texture(inputTexture, uv).b);
+    float height = max(max(texture(input_0, uv).r,texture(input_0, uv).g),texture(input_0, uv).b);
     return -vec2(dFdx(height), dFdy(height));
 }
 void main()
 {
-    vec2 normal = stdNormalMap(texCoords);
+    vec2 normal = stdNormalMap(tex_coords);
+    float normalStrength = texture(input_1, tex_coords).r;
     
     normal *= normalStrength;
     normal += 0.5;
     
-    color = vec4(normal, 1., 1.);  
-
-    if(displayingMode == 1){
-        if(roundUp(texCoords) < 0.05)
-            color.a = 0.;
-    } 
+    output_0 = vec4(normal, 1., 1.);  
 }
