@@ -1150,19 +1150,6 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     generateTextCheckBoxElement.type = "checkBox";
     UIElements.push_back(generateTextCheckBoxElement);//38
 
-    UIElement generateTextTextureTextTextBoxElement;
-    generateTextTextureTextTextBoxElement.textBox.position_x = 0.0f;
-    generateTextTextureTextTextBoxElement.textBox.position_y = -0.46f;
-    generateTextTextureTextTextBoxElement.textBox.position_z = 0.9f;
-    generateTextTextureTextTextBoxElement.textBox.width = 0.12;
-    generateTextTextureTextTextBoxElement.textBox.height = 0.03;
-    generateTextTextureTextTextBoxElement.textBox.text = "Choose Destination Path";
-    generateTextTextureTextTextBoxElement.textBox.rich = true;
-    generateTextTextureTextTextBoxElement.panel = 6;
-    generateTextTextureTextTextBoxElement.attachedToMainPanel = true;
-	generateTextTextureTextTextBoxElement.type = "textBox";
-    UIElements.push_back(generateTextTextureTextTextBoxElement);//26
-
 	UIElement generateTextSizeRangeBarElement;
 	generateTextSizeRangeBarElement.rangeBar.positionX = 0.0f;
 	generateTextSizeRangeBarElement.rangeBar.positionY = -0.3;
@@ -1208,8 +1195,18 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     generateTextRightAlignCheckBoxElement.type = "checkBox";
     UIElements.push_back(generateTextRightAlignCheckBoxElement);//38
     
-
-
+    UIElement generateTextTextureTextTextBoxElement;
+    generateTextTextureTextTextBoxElement.textBox.position_x = 0.0f;
+    generateTextTextureTextTextBoxElement.textBox.position_y = -0.46f;
+    generateTextTextureTextTextBoxElement.textBox.position_z = 0.9f;
+    generateTextTextureTextTextBoxElement.textBox.width = 0.12;
+    generateTextTextureTextTextBoxElement.textBox.height = 0.03;
+    generateTextTextureTextTextBoxElement.textBox.text = "Choose Destination Path";
+    generateTextTextureTextTextBoxElement.textBox.rich = true;
+    generateTextTextureTextTextBoxElement.panel = 6;
+    generateTextTextureTextTextBoxElement.attachedToMainPanel = true;
+	generateTextTextureTextTextBoxElement.type = "textBox";
+    UIElements.push_back(generateTextTextureTextTextBoxElement);//26
     
     
     return UIElements;

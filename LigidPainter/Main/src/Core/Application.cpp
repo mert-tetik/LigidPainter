@@ -36,6 +36,8 @@
 //TODO Texture history HDD
 //TODO Fix node colide
 //TODO Node context menu
+//TODO Utilities::transitionEffect glfwtime
+//TODO Dynamic textbox 
 
 //TODO Search for brush textures
 //TODO Color id

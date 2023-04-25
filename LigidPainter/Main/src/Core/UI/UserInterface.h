@@ -96,11 +96,11 @@
 #define UIaddBrushMaskTextureIcon 86
 #define UIselectBrushMaskTextureIcon 87
 #define UIgenerateTextCheckBoxElement 88
-#define UIgenerateTextTextureTextTextBoxElement 89
-#define UIgenerateTextSizeRangeBarElement 90
-#define UIgenerateTextLeftAlignCheckBoxElement 91
-#define UIgenerateTextMidAlignCheckBoxElement 92
-#define UIgenerateTextRightAlignCheckBoxElement 93
+#define UIgenerateTextSizeRangeBarElement 89
+#define UIgenerateTextLeftAlignCheckBoxElement 90
+#define UIgenerateTextMidAlignCheckBoxElement 91
+#define UIgenerateTextRightAlignCheckBoxElement 92
+#define UIgenerateTextTextureTextTextBoxElement 93
 
 struct ColorData //LigidPainter color palette
 {

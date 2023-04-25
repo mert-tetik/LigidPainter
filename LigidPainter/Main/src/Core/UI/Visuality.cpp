@@ -61,7 +61,9 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	}
 	else if(text != ""){
 		if(mixVal > 0.f){
-			container(position_x,position_y,0.95,width,height*4,color,uiPrograms,circleIcon,colorTransitionColor,mixVal);
+			color = glm::vec4(0);
+
+			container(position_x,position_y-height*4,0.95,width,height*4,color,uiPrograms,circleIcon,colorTransitionColor,mixVal);
 			glUseProgram(uiPrograms.uiProgram);
 			float aposX = position_y;
 			float aposY = position_x;
@@ -82,12 +84,13 @@ void UserInterface::box(float width, float height, float position_x, float posit
 						cCnt++;
 					}
 				}
-				
 				renderText(uiPrograms.uiProgram, dTxt, -width + position_x, position_y - 0.01f - (0.05*i), 0.00022f,colorData.textColor,0.96f,mixVal > 0.f && i == (text.size() / charC));
 			}
 		}
-		else
-		renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,mixVal > 0.f);
+		else{
+			Utilities util;
+			renderText(uiPrograms.uiProgram, util.cropString(text,20), -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,mixVal > 0.f);
+		}
 	}
 
 	scale = glm::mat4(1);
