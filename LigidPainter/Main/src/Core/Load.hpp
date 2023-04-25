@@ -233,6 +233,9 @@ public:
 		icons.ImportProject = txtr.getTexture("LigidPainter/Resources/Icons/ImportProject.jpg",0,0,false);
 		icons.MaterialImport = txtr.getTexture("LigidPainter/Resources/Icons/MaterialImport.jpg",0,0,false);
 		icons.MaterialExport = txtr.getTexture("LigidPainter/Resources/Icons/MaterialExport.jpg",0,0,false);
+		icons.AlignLeft = txtr.getTexture("LigidPainter/Resources/Icons/AlignLeft.jpg",0,0,false);
+		icons.AlignMid = txtr.getTexture("LigidPainter/Resources/Icons/AlignMid.jpg",0,0,false);
+		icons.AlignRight = txtr.getTexture("LigidPainter/Resources/Icons/AlignRight.jpg",0,0,false);
 	
 		return icons;
 	}

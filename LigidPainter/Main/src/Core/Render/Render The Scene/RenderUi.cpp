@@ -760,7 +760,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			if(currentType == "checkBox"){
 				if(!(UIElements[i].checkBox.text == "Focus Mode" && centerCoords - screenGapX + UIElements[i].checkBox.positionX < -0.25f)){
 					if(!(i == UIdynamicPaintingCheckBoxElement && centerCoords - screenGapX + UIElements[i].checkBox.positionX < -0.23f)){
-							ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY+slideVal, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,icons.Circle); //jpg checkbox
+							ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY+slideVal, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,UIElements[i].checkBox.texture); //jpg checkbox
 						
 					}
 				}

@@ -273,6 +273,7 @@ struct CheckBox{
 	std::string text;
 	bool mouseHover = false;
 	bool checked = false;
+	unsigned int texture = 0;
 };
 struct TextBox{
 	float width;
