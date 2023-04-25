@@ -4,7 +4,7 @@
 %attributes;
 
 -title : Invert;
--color : hex4287f5; #rgb122,124,66  #hsv86,45,23
+-color : hex4287f5; #rgb122,124,66  hsv86,45,23
 -opacity : 60;
 
 -input_0 : 
@@ -20,7 +20,6 @@
 --list_index : none;
 --type : vec3;
 --title : Texture;
-
 
 -uniforms : tex_coords|normal|posScene|posModel;
 

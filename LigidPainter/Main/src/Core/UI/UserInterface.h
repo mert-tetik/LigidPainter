@@ -95,6 +95,9 @@
 #define UIsphereIcon 85
 #define UIaddBrushMaskTextureIcon 86
 #define UIselectBrushMaskTextureIcon 87
+#define UIgenerateTextCheckBoxElement 88
+#define UIgenerateTextTextureTextTextBoxElement 89
+#define UIgenerateTextSizeRangeBarElement 90
 
 struct ColorData //LigidPainter color palette
 {
@@ -278,6 +281,8 @@ struct TextBox{
 	float transitionMixVal = 0.0f;
 	bool clicked = false;
 	std::string text;
+
+	bool rich = false;
 };
 
 struct Box{
@@ -694,6 +699,8 @@ public:
 	void rampBox(float width, float height, float position_x, float position_y, float z);
 	
 	void renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active);
+	void renderTextR(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active);
+	void renderTextM(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active);
 	void renderMenubar(GLFWwindow* window);
 	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked,unsigned int circleTxtr);
 	void panelChangeButton(float position_x, float position_y);

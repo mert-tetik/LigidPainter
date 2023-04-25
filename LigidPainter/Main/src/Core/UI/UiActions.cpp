@@ -30,6 +30,7 @@ bool paintOverPosXRangeBarPressed;
 bool paintOverPosYRangeBarPressed;
 bool paintOverScaleXRangeBarPressed;
 bool paintOverScaleYRangeBarPressed;
+bool generateTextSizeRangeBarPressed;
 //
 
 void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vector<UIElement> &UIElements, ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,NodePanel &nodePanel,SndPanel &sndPanel,bool &firstClick) {
@@ -89,6 +90,9 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		}
 		else if (UIElements[UIpaintOverScaleYRangeBarElement].rangeBar.hover) {
 			paintOverScaleYRangeBarPressed = true;
+		}
+		else if (UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.hover) {
+			generateTextSizeRangeBarPressed = true;
 		}
 		else if (colorPicker.saturationValuePointerHover) {
 			colorBoxPickerPressed = true;
@@ -182,11 +186,18 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		if(UIElements[UInormalmapCheckBoxElement].checkBox.mouseHover && !UIElements[UInormalmapCheckBoxElement].checkBox.checked){
 			UIElements[UInormalmapCheckBoxElement].checkBox.checked = !UIElements[UInormalmapCheckBoxElement].checkBox.checked;
 			UIElements[UInoiseCheckBoxElement].checkBox.checked = !UIElements[UInormalmapCheckBoxElement].checkBox.checked;
-
+			UIElements[UIgenerateTextCheckBoxElement].checkBox.checked = !UIElements[UInormalmapCheckBoxElement].checkBox.checked;
 		}
 		if(UIElements[UInoiseCheckBoxElement].checkBox.mouseHover && !UIElements[UInoiseCheckBoxElement].checkBox.checked){
 			UIElements[UInoiseCheckBoxElement].checkBox.checked = !UIElements[UInoiseCheckBoxElement].checkBox.checked;
 			UIElements[UInormalmapCheckBoxElement].checkBox.checked = !UIElements[UInoiseCheckBoxElement].checkBox.checked;
+			UIElements[UIgenerateTextCheckBoxElement].checkBox.checked = !UIElements[UInoiseCheckBoxElement].checkBox.checked;
+
+		}
+		if(UIElements[UIgenerateTextCheckBoxElement].checkBox.mouseHover && !UIElements[UIgenerateTextCheckBoxElement].checkBox.checked){
+			UIElements[UIgenerateTextCheckBoxElement].checkBox.checked = !UIElements[UIgenerateTextCheckBoxElement].checkBox.checked;
+			UIElements[UInormalmapCheckBoxElement].checkBox.checked = !UIElements[UIgenerateTextCheckBoxElement].checkBox.checked;
+			UIElements[UInoiseCheckBoxElement].checkBox.checked = !UIElements[UIgenerateTextCheckBoxElement].checkBox.checked;
 
 		}
 		
@@ -210,6 +221,9 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		if (UIElements[UIexportingFolderNameTextBox].textBox.hover){
 			UIElements[UIexportingFolderNameTextBox].textBox.clicked = !UIElements[UIexportingFolderNameTextBox].textBox.clicked; 
 			ligid.exportFileNameTextBox();
+		}
+		if (UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.hover){
+			UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.clicked = !UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.clicked; 
 		}
 		if (UIElements[UIpaintThroughCheckBoxElement].checkBox.mouseHover)
 			UIElements[UIpaintThroughCheckBoxElement].checkBox.checked = !UIElements[UIpaintThroughCheckBoxElement].checkBox.checked; 
@@ -326,6 +340,7 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		paintOverPosYRangeBarPressed = false;
 		paintOverScaleXRangeBarPressed = false;
 		paintOverScaleYRangeBarPressed = false;
+		generateTextSizeRangeBarPressed = false;
 	}
 }
 bool UiActions::updateRangeValues(GLFWwindow* window, double xOffset,double yOffset, int screenWidth, int screenHeight,TextureDisplayer &textureDisplayer,
@@ -356,6 +371,9 @@ SndPanel &sndPanel){
 	}
 	if(paintOverPosXRangeBarPressed || paintOverPosYRangeBarPressed || paintOverScaleXRangeBarPressed || paintOverScaleYRangeBarPressed){
 		ligid.paintoverTransformRanegBars(xOffset, screenWidth,screenHeight,paintOverPosXRangeBarPressed , paintOverPosYRangeBarPressed , paintOverScaleXRangeBarPressed , paintOverScaleYRangeBarPressed);
+	}
+	if(generateTextSizeRangeBarPressed){
+		ligid.generateTextSizeRangeBar(xOffset,screenWidth);
 	}
 	if (subSelectedImagePowerRangeBarPressed) {
 		ligid.subSelectedImagePowerRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable

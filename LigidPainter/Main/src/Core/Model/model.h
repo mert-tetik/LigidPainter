@@ -30,7 +30,7 @@ public:
     unsigned int selectedTexture,glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal,bool renderOnlyTheChosenMesh,std::vector<unsigned int> materialOutputs
     ,unsigned int materialResultProgram);
     
-    void Model::uploadModel(Model uploadedModel);
+    void uploadModel(Model uploadedModel);
 
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void loadModel(std::string const &path,bool triangulate);

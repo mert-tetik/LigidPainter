@@ -34,6 +34,7 @@
 float dropperMixVal = 0.0f;
 float hexValTextboxMixVal = 0.0f;
 
+unsigned int generatedTextTxtr = 0;
 
 void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &colorPicker,SndPanel &sndpanel) {
 	Utilities util;
@@ -820,8 +821,141 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			gl.uniform1f(programs.noisyTextureProgram,"value",rangeBarVal);
 			glActiveTexture(GL_TEXTURE28);
 		}
+		else{
+		//*Generate the text texture
+			int txtrRes = 256;
+			for (size_t i = 0; i < chosenTextureResIndex; i++)
+			{
+				txtrRes*=2;
+			}
+		
+			glActiveTexture(GL_TEXTURE28);
+				
+				//FBO
+				GlSet glset;
 
+				unsigned int FBO;
+				glset.genFramebuffers(FBO);
+				glset.bindFramebuffer(FBO);
+		
+				//Texture
+				if(!generatedTextTxtr)
+					glset.genTextures(generatedTextTxtr);
+				glset.bindTexture(generatedTextTxtr);
+				glset.texImage(NULL, txtrRes,txtrRes,GL_RGBA); //TODO : Use texture quality variable
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		
+				glset.generateMipmap();
+		
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, generatedTextTxtr, 0);
+		
+				glViewport(0,0,txtrRes,txtrRes);
+		
+				std::vector<float> renderVertices = { 
+					// first triangle
+					 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+					 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+					 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+					// second triangle	  ,0,0,0,
+					 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+					 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+					 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+				};
+				if(UIElements[UInoiseCheckBoxElement].checkBox.checked)
+					glUseProgram(programs.noisyTextureProgram);
+				else if(UIElements[UInormalmapCheckBoxElement].checkBox.checked)
+					glUseProgram(programs.normalGenProgram);
+				else{
+					UserInterface ui;
+					glm::mat4 projection = glm::ortho(-1.0f, 0.5f, -1.f, 1.f);
+					glUseProgram(programs.uiProgram);
+					glset.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
+					
+					glUseProgram(programs.uiProgram);
+					float thic = (UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f)/100.f;
+
+					int s = ((UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()/(((0.23f-(UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f))*100)*2.f))+1);
+					int lineCounter = 0;
+					int cCntL = 0;
+					for (size_t i = 0; i < s; i++)
+					{
+						bool added = false;
+						for (size_t si = 0; si < ((0.23f-(UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f))*100)*3.f; si++)
+						{
+							if(cCntL <  UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()){
+								cCntL++;
+								added = true;
+							}
+						}
+						if(added)
+							lineCounter++;
+					}
+					
+					int cCnt = 0;
+					for (size_t i = 0; i < s; i++)
+					{
+						std::string dTxt;
+						for (size_t si = 0; si < ((0.23f-(UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f))*100)*3.f; si++)
+						{
+							if(cCnt <  UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()){
+								dTxt.push_back(UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text[cCnt]);
+								cCnt++;
+							}
+						}
+						
+						float aposY = lineCounter/10.f;
+						float aposX = -.5f;
+
+						
+						//ui.renderText(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false);
+						if(dTxt.size())
+						ui.renderTextM(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false);
+					}
+					
+					projection = glm::ortho(-1.0f, 1.f, -1.f, 1.f);
+					glUseProgram(programs.uiProgram);
+					glset.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
+				}
+
+			glUseProgram(programs.noisyTextureProgram);
+
+			glm::mat4 renderTextureProjection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+		
+			glActiveTexture(GL_TEXTURE28);
+			glset.bindTexture(generatedTextTxtr);
+
+			gl.uniformMatrix4fv(programs.noisyTextureProgram,"renderTextureProjection",renderTextureProjection);
+			gl.uniform1i(programs.noisyTextureProgram,"inputTexture",28);
+			gl.uniform1i(programs.noisyTextureProgram,"displayingMode",1);
+			float rangeBarVal = ((0.22f-(UIElements[UInoiseStrengthRangeBarElement].rangeBar.value + 0.11f))+0.05f)  * 50.f;
+			gl.uniform1f(programs.noisyTextureProgram,"value",rangeBarVal);
+			glActiveTexture(GL_TEXTURE28);
+
+			LigidPainter lp;
+			lp.setViewportToDefault();
+			
+			glset.bindFramebuffer(0);
+			glset.deleteFramebuffers(FBO);
+		///////////////////////
+			
+		}
 		gl.drawArrays(renderVertices,0);
+		if(UIElements[UIgenerateTextCheckBoxElement].checkBox.checked){
+			GlSet glset;
+			
+			unsigned int FBO;
+			glset.genFramebuffers(FBO);
+			glset.bindFramebuffer(FBO);
+	
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, generatedTextTxtr, 0);
+		
+			glClearColor(0,0,0,0);
+			glClear(GL_COLOR_BUFFER_BIT);
+		
+			glset.bindFramebuffer(0);
+			glset.deleteFramebuffers(FBO);
+		}
 		gl.uniform1i(programs.noisyTextureProgram,"displayingMode",0);
 		gl.uniform1i(programs.normalGenProgram,"displayingMode",0);
 	}

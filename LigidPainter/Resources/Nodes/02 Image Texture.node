@@ -4,8 +4,8 @@
 %attributes;
 
 -title : Image Texture;
--color : hexf72d4b; #rgb122,124,66  #hsv86,45,23
--opacity : 60;
+-color : hexf72d4b; #rgb122,124,66  hsv86,45,23
+-opacity : 60; 
 
 -input_0 : 
 --list : none;

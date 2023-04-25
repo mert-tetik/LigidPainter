@@ -556,7 +556,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement generateTextureButtonElement;
     generateTextureButtonElement.button.positionX = 0.0f;
-    generateTextureButtonElement.button.positionY = -0.26f;
+    generateTextureButtonElement.button.positionY = -0.46f;
     generateTextureButtonElement.button.positionZ = 0.9f;
     generateTextureButtonElement.button.width = 0.05f;
     generateTextureButtonElement.button.height = 0.04f;
@@ -573,7 +573,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement bakeButtonElement;
     bakeButtonElement.button.positionX = 0.0f;
-    bakeButtonElement.button.positionY = -0.46f;
+    bakeButtonElement.button.positionY = -0.66f;
     bakeButtonElement.button.positionZ = 0.9f;
     bakeButtonElement.button.width = 0.08f;
     bakeButtonElement.button.height = 0.04f;
@@ -590,7 +590,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement outSubmeshesButtonElement;
     outSubmeshesButtonElement.button.positionX = 0.0f;
-    outSubmeshesButtonElement.button.positionY = -0.56f;
+    outSubmeshesButtonElement.button.positionY = -0.76f;
     outSubmeshesButtonElement.button.positionZ = 0.9f;
     outSubmeshesButtonElement.button.width = 0.08f;
     outSubmeshesButtonElement.button.height = 0.04f;
@@ -604,7 +604,6 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     outSubmeshesButtonElement.attachedToMainPanel = true;
     outSubmeshesButtonElement.type = "button";
     UIElements.push_back(outSubmeshesButtonElement);//41
-
 
 
     //---------PAINTING PANEL----------
@@ -1111,5 +1110,41 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     selectBrushMaskTextureIconElement.attachedToMainPanel = true;
 	selectBrushMaskTextureIconElement.type = "icon";
     UIElements.push_back(selectBrushMaskTextureIconElement);//38
-	return UIElements;
+
+
+    UIElement generateTextCheckBoxElement;
+    generateTextCheckBoxElement.checkBox.positionX = -0.03f;
+    generateTextCheckBoxElement.checkBox.positionY = -0.26f;
+    generateTextCheckBoxElement.checkBox.text = "Text";
+    generateTextCheckBoxElement.checkBox.checked = false;
+    generateTextCheckBoxElement.checkBox.mouseHover = false;
+    generateTextCheckBoxElement.panel = 6;
+    generateTextCheckBoxElement.attachedToMainPanel = true;
+    generateTextCheckBoxElement.type = "checkBox";
+    UIElements.push_back(generateTextCheckBoxElement);//38
+
+    UIElement generateTextTextureTextTextBoxElement;
+    generateTextTextureTextTextBoxElement.textBox.position_x = 0.0f;
+    generateTextTextureTextTextBoxElement.textBox.position_y = -0.36f;
+    generateTextTextureTextTextBoxElement.textBox.position_z = 0.9f;
+    generateTextTextureTextTextBoxElement.textBox.width = 0.12;
+    generateTextTextureTextTextBoxElement.textBox.height = 0.03;
+    generateTextTextureTextTextBoxElement.textBox.text = "Choose Destination Path";
+    generateTextTextureTextTextBoxElement.textBox.rich = true;
+    generateTextTextureTextTextBoxElement.panel = 6;
+    generateTextTextureTextTextBoxElement.attachedToMainPanel = true;
+	generateTextTextureTextTextBoxElement.type = "textBox";
+    UIElements.push_back(generateTextTextureTextTextBoxElement);//26
+
+	UIElement generateTextSizeRangeBarElement;
+	generateTextSizeRangeBarElement.rangeBar.positionX = 0.0f;
+	generateTextSizeRangeBarElement.rangeBar.positionY = -0.3;
+	generateTextSizeRangeBarElement.rangeBar.value = 0.0f;
+	generateTextSizeRangeBarElement.panel = 6;
+	generateTextSizeRangeBarElement.attachedToMainPanel = true;
+	generateTextSizeRangeBarElement.type = "rangeBar";
+    UIElements.push_back(generateTextSizeRangeBarElement);//12
+	
+    
+    return UIElements;
 }

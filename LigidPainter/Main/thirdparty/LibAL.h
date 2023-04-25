@@ -1472,7 +1472,7 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
     		return -1;
     	}
     }
-    static struct LibALAudio
+    struct LibALAudio
     {
         std::uint8_t channels = 0;
         std::uint8_t bitsPerSample = 0; 

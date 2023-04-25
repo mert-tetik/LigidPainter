@@ -31,6 +31,11 @@
 //TODO Take mask brushes for the project file
 //TODO Mask textures folder & export folder
 //TODO Preview for skybox listbox
+//TODO Create mask texture via text
+//TODO Remove seams button
+//TODO Texture history HDD
+//TODO Fix node colide
+//TODO Node context menu
 
 //TODO Search for brush textures
 //TODO Color id
@@ -1187,6 +1192,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			}
 		}
 	}
+
+	if(UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.clicked){
+		if(ui.textInput(key,action,caps,UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text,200,window,textBoxActiveChar)){
+		}
+		if(action == 1 || action == 2){
+			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()+textBoxActiveChar){
+				textBoxActiveChar--;
+			}
+			if(glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_PRESS && textBoxActiveChar != 0){
+				textBoxActiveChar++;
+			}
+		}
+	}
 	
 	if(colorPicker.hexValTextBoxActive){
 		if(ui.textInputHex(key,action,colorPicker.hexValTextBoxVal,textBoxActiveChar)){
@@ -1804,15 +1822,44 @@ void LigidPainter::generateTextureButton(){
 		};
 		if(UIElements[UInoiseCheckBoxElement].checkBox.checked)
 			glUseProgram(programs.noisyTextureProgram);
-		if(UIElements[UInormalmapCheckBoxElement].checkBox.checked)
+		else if(UIElements[UInormalmapCheckBoxElement].checkBox.checked)
 			glUseProgram(programs.normalGenProgram);
+		else{
+			UserInterface ui;
+			glm::mat4 projection = glm::ortho(-1.0f, 0.5f, 0.f, 1.f);
+			glUseProgram(programs.uiProgram);
+			glset.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
+			
+			glUseProgram(programs.uiProgram);
+			float aposX = -1.f;
+			float aposY = ((int)(std::ceil(UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()/(((0.22f-(UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f))*100)*2.f))+1))/5.f;
+			float thic = (UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f)/100.f;
+
+			int cCnt = 0;
+			for (size_t i = 0; i < (std::ceil(UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()/(((0.22f-(UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f))*100)*2.f))+1); i++)
+			{
+				std::string dTxt;
+				for (size_t si = 0; si < ((0.22f-(UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f))*100)*2.f; si++)
+				{
+					if(cCnt <  UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()){
+						dTxt.push_back(UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text[cCnt]);
+						cCnt++;
+					}
+				}
+				
+				ui.renderText(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false);
+			}
+		}
+			
+
 		
 		glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
 		
-		glset.uniformMatrix4fv(programs.noisyTextureProgram,"renderTextureProjection",renderTextureProjection);
-		glset.uniformMatrix4fv(programs.normalGenProgram,"renderTextureProjection",renderTextureProjection);
-
-		glset.drawArrays(renderVertices,0);
+		if(!UIElements[UIgenerateTextCheckBoxElement].checkBox.checked){
+			glset.uniformMatrix4fv(programs.noisyTextureProgram,"renderTextureProjection",renderTextureProjection);
+			glset.uniformMatrix4fv(programs.normalGenProgram,"renderTextureProjection",renderTextureProjection);
+			glset.drawArrays(renderVertices,0);
+		}
 		glUseProgram(programs.uiProgram);
 
 		glDeleteFramebuffers(1,&FBO);	
@@ -1840,6 +1887,12 @@ void LigidPainter::colorBoxColorRangeBar(double yOffset,int height){
 	colorPicker.hueValue += yOffset / (height / 2.0f);
 	colorPicker.hueValue = util.restrictBetween(colorPicker.hueValue, 0.180f, -0.180f);//Keep in boundaries
 	colorPicker.saturationValueValChanged = true;
+}
+void LigidPainter::generateTextSizeRangeBar(float xOffset,int width){
+	Utilities util;
+	UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value -= xOffset / (width / 2.0f);
+	UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
+	
 }
 void LigidPainter::colorBoxPickerButton(double xOffset, double yOffset, int width, int height) {
 	colorPicker.saturationValuePointerChanging = true;
