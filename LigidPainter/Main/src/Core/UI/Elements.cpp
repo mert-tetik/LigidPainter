@@ -556,7 +556,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement generateTextureButtonElement;
     generateTextureButtonElement.button.positionX = 0.0f;
-    generateTextureButtonElement.button.positionY = -0.46f;
+    generateTextureButtonElement.button.positionY = -0.56f;
     generateTextureButtonElement.button.positionZ = 0.9f;
     generateTextureButtonElement.button.width = 0.05f;
     generateTextureButtonElement.button.height = 0.04f;
@@ -1125,7 +1125,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement generateTextTextureTextTextBoxElement;
     generateTextTextureTextTextBoxElement.textBox.position_x = 0.0f;
-    generateTextTextureTextTextBoxElement.textBox.position_y = -0.36f;
+    generateTextTextureTextTextBoxElement.textBox.position_y = -0.46f;
     generateTextTextureTextTextBoxElement.textBox.position_z = 0.9f;
     generateTextTextureTextTextBoxElement.textBox.width = 0.12;
     generateTextTextureTextTextBoxElement.textBox.height = 0.03;
@@ -1145,6 +1145,42 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	generateTextSizeRangeBarElement.type = "rangeBar";
     UIElements.push_back(generateTextSizeRangeBarElement);//12
 	
+    UIElement generateTextLeftAlignCheckBoxElement;
+    generateTextLeftAlignCheckBoxElement.checkBox.positionX = -0.03f;
+    generateTextLeftAlignCheckBoxElement.checkBox.positionY = -0.36f;
+    generateTextLeftAlignCheckBoxElement.checkBox.text = "";
+    generateTextLeftAlignCheckBoxElement.checkBox.checked = true;
+    generateTextLeftAlignCheckBoxElement.checkBox.mouseHover = false;
+    generateTextLeftAlignCheckBoxElement.panel = 6;
+    generateTextLeftAlignCheckBoxElement.attachedToMainPanel = true;
+    generateTextLeftAlignCheckBoxElement.type = "checkBox";
+    UIElements.push_back(generateTextLeftAlignCheckBoxElement);//38
+    
+    UIElement generateTextMidAlignCheckBoxElement;
+    generateTextMidAlignCheckBoxElement.checkBox.positionX = 0.0f;
+    generateTextMidAlignCheckBoxElement.checkBox.positionY = -0.36f;
+    generateTextMidAlignCheckBoxElement.checkBox.text = "";
+    generateTextMidAlignCheckBoxElement.checkBox.checked = false;
+    generateTextMidAlignCheckBoxElement.checkBox.mouseHover = false;
+    generateTextMidAlignCheckBoxElement.panel = 6;
+    generateTextMidAlignCheckBoxElement.attachedToMainPanel = true;
+    generateTextMidAlignCheckBoxElement.type = "checkBox";
+    UIElements.push_back(generateTextMidAlignCheckBoxElement);//38
+
+    UIElement generateTextRightAlignCheckBoxElement;
+    generateTextRightAlignCheckBoxElement.checkBox.positionX = 0.03f;
+    generateTextRightAlignCheckBoxElement.checkBox.positionY = -0.36f;
+    generateTextRightAlignCheckBoxElement.checkBox.text = "";
+    generateTextRightAlignCheckBoxElement.checkBox.checked = false;
+    generateTextRightAlignCheckBoxElement.checkBox.mouseHover = false;
+    generateTextRightAlignCheckBoxElement.panel = 6;
+    generateTextRightAlignCheckBoxElement.attachedToMainPanel = true;
+    generateTextRightAlignCheckBoxElement.type = "checkBox";
+    UIElements.push_back(generateTextRightAlignCheckBoxElement);//38
+    
+
+
+    
     
     return UIElements;
 }

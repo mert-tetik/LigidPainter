@@ -1414,11 +1414,12 @@ void UserInterface::renderTextR(unsigned int program, std::string text, float x,
 	glset.uniform1i(program, "isTextF", 1);
 	glset.uniform4fv(program, "uiColor", color);
 	
-	std::string::const_iterator c;
+	int c;
 	int counter = 0;
-	for (c = text.end()-1; c != text.begin(); c--)
+	for (c = text.size()-1; c != -1; c--)
 	{
-		character ch = characters[*c];
+		
+		character ch = characters[text[c]];
 
 		float xpos = x - ch.Bearing.x * scale;
 		float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;

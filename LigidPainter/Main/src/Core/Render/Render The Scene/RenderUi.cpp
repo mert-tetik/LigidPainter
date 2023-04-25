@@ -904,13 +904,25 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 							}
 						}
 						
-						float aposY = lineCounter/10.f;
-						float aposX = -.5f;
+						float aposY = lineCounter/10.f - 0.1f;
+
+						if(UIElements[UIgenerateTextLeftAlignCheckBoxElement].checkBox.checked){
+							float aposX = -1.f;
+							if(dTxt.size())
+								ui.renderText(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false);
+						}
+						if(UIElements[UIgenerateTextMidAlignCheckBoxElement].checkBox.checked){
+							float aposX = -.5f;
+							if(dTxt.size())
+								ui.renderTextM(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false);
+						}
+						if(UIElements[UIgenerateTextRightAlignCheckBoxElement].checkBox.checked){
+							float aposX = .5f;
+							if(dTxt.size())
+								ui.renderTextR(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false);
+						}
 
 						
-						//ui.renderText(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false);
-						if(dTxt.size())
-						ui.renderTextM(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false);
 					}
 					
 					projection = glm::ortho(-1.0f, 1.f, -1.f, 1.f);

@@ -267,6 +267,22 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			UIElements[UIbrushBlurText].text.text = "Blur";
 			UIElements[UIbrushSizeText].text.text = "Size";
 		}
+
+		if (UIElements[UIgenerateTextLeftAlignCheckBoxElement].checkBox.mouseHover){
+			UIElements[UIgenerateTextLeftAlignCheckBoxElement].checkBox.checked = true; 
+			UIElements[UIgenerateTextMidAlignCheckBoxElement].checkBox.checked = false; 
+			UIElements[UIgenerateTextRightAlignCheckBoxElement].checkBox.checked = false; 
+		}
+		if (UIElements[UIgenerateTextMidAlignCheckBoxElement].checkBox.mouseHover){
+			UIElements[UIgenerateTextMidAlignCheckBoxElement].checkBox.checked = true; 
+			UIElements[UIgenerateTextLeftAlignCheckBoxElement].checkBox.checked = false; 
+			UIElements[UIgenerateTextRightAlignCheckBoxElement].checkBox.checked = false; 
+		}
+		if (UIElements[UIgenerateTextRightAlignCheckBoxElement].checkBox.mouseHover){
+			UIElements[UIgenerateTextRightAlignCheckBoxElement].checkBox.checked = true; 
+			UIElements[UIgenerateTextMidAlignCheckBoxElement].checkBox.checked = false; 
+			UIElements[UIgenerateTextLeftAlignCheckBoxElement].checkBox.checked = false; 
+		}
 		
 		if (UIElements[UIdownloadButton].button.hover)
 			ligid.exportDownloadButtonEnter();
