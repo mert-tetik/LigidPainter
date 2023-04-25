@@ -22,10 +22,9 @@
 //TODO Fix mirror origin pos
 //TODO Fix mirror paint over
 //TODO Flip
-//TODO Horizontal drag ico
 //TODO Update ui
 //TODO New project panel
-//TODO Circular range bar for rotation smt
+//TODO Circular range bar for rotation 
 //TODO Alert success & warning
 //TODO Color displayer for the dropper
 //TODO Take mask brushes for the project file
@@ -527,6 +526,16 @@ bool LigidPainter::run()
 	trashFolder.isTexture = false;
 	trashFolder.isTrashFolder = true;
 	albedoTextures.push_back(trashFolder);
+
+	aTexture exportFolder;
+	exportFolder.isTexture = false;
+	exportFolder.name = "Export";
+	aTexture brushFolder;
+	brushFolder.isTexture = false;
+	brushFolder.name = "Export";
+	
+	albedoTextures.push_back(exportFolder);	
+	albedoTextures.push_back(brushFolder);
 	
 	//aTexture aqrTxtr;
 	//aqrTxtr.id = qrTxtr;
@@ -619,7 +628,7 @@ bool LigidPainter::run()
 
 	glUseProgram(programs.outProgram);
 	glset.uniform1i(programs.outProgram,"maskMode",1);
-	txtr.updateMaskTexture(FBOScreen,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+	txtr.updateMaskTexture(FBOScreen,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);	
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
