@@ -25,6 +25,7 @@
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"
 #include "Core/ProjectFile/WRLigidFile.hpp"
+#include "Core/ProjectFile/WRLigidMaterialFile.hpp"
 
 
 #include "stb_image.h"
@@ -768,29 +769,56 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		ui.box(0.06f,0.04f,0.f,-0.65f,"Create",colorData.buttonColor,0.03f,false,false,0.91f,10,colorData.buttonColorHover,createButtonHover);
 		if(createButtonHover && firstClick){
 			if(projectPath){
+
+				#if defined(_WIN32) || defined(_WIN64)
+				    char folderDistinguisher = '\\';
+				#else
+					char folderDistinguisher = '/'; 
+				#endif
+
 				//Main folder
 				std::string path = projectPath;
-				path += "/LigidProject";
+				path += folderDistinguisher;
+				path += "LigidProject";
 				std::filesystem::create_directories(path);
 				
 				//Materials
 				std::string materialpath = path;
-				materialpath += "/Materials";
+				materialpath += folderDistinguisher;
+				materialpath += "Materials";
 				std::filesystem::create_directories(materialpath);
-				
+				materialpath += folderDistinguisher;
+				materialpath += nodeScenes[0].sceneName;
+				MaterialFile materialFile;
+				materialFile.writeTheFile(materialpath.c_str(),nodeScenes[0]);
+
 				//Shaders
 				std::string shaderpath = path;
-				shaderpath += "/Shaders";
+				shaderpath += folderDistinguisher;
+				shaderpath += "Shaders";
 				std::filesystem::create_directories(shaderpath);
 				
 				//Textures
 				std::string texturespath = path;
-				texturespath += "/Textures";
+				texturespath += folderDistinguisher;
+				texturespath += "Textures";
 				std::filesystem::create_directories(texturespath);
+				
+				std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures");
+				
+				std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Mask");
+				std::filesystem::copy("./LigidPainter/Resources/Textures/Mask", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Mask");
+
+				std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "RGB");
+				std::filesystem::copy("./LigidPainter/Resources/Textures/Sticker", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "RGB");
+				
+				std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Normal Map");
+				std::filesystem::copy("./LigidPainter/Resources/Textures/NormalMap", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Normal Map");
 			
 				//App Nodes
 				std::string nodespath = path;
-				nodespath += "/Nodes";
+				nodespath += folderDistinguisher;
+				nodespath += "Nodes";
 				std::filesystem::create_directories(nodespath);
 
 				std::filesystem::copy("./LigidPainter/Resources/Nodes", nodespath);

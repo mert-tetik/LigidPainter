@@ -19,6 +19,9 @@ class MaterialFile{
 public:
     void writeTheFile(const char* path,NodeScene material){
         std::ofstream wf = std::ofstream(path, std::ios::out | std::ios::binary);
+        if(wf.fail())
+            std::cout << "Error : Writing the material file : Can't create the file : " << path << std::endl;
+
 
             uint64_t h1 = 0x94BA0BBA; 
             wf.write(reinterpret_cast<char*>(&h1),sizeof(uint64_t));
