@@ -199,6 +199,8 @@ struct Icons{
 	unsigned int AlignLeft;
 	unsigned int AlignRight;
 	unsigned int AlignMid;
+	unsigned int ExportFolder;
+	unsigned int BrushFolder;
 };
 
 struct RenderData { //GlSet::render

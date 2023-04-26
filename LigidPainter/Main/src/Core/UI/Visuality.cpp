@@ -343,6 +343,8 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				atxtr.name = atxtr.name;
 				atxtr.id = texture;
 
+
+				//TODO Update that
 				if(brushMaskTexturesState == 0)
 					brushMaskTextures.maskTextures.push_back(atxtr);
 				if(brushMaskTexturesState == 1)
@@ -450,7 +452,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 						if(glfwGetMouseButton(window,1) == GLFW_PRESS)
 							albedoTextures[i].rightClicked = true;
 						if(!albedoTextures[i].isTexture && sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE){
-							if(selectedAlbedoTextureIndex != i && !albedoTextures[selectedAlbedoTextureIndex].isTrashFolder)
+							if(selectedAlbedoTextureIndex != i && !albedoTextures[selectedAlbedoTextureIndex].isTrashFolder && selectedAlbedoTextureIndex != 1 && selectedAlbedoTextureIndex != 2)
 								albedoTextures[selectedAlbedoTextureIndex].folderIndex = i;
 						}
 						if(firstClick && !albedoTextures[i].rightClicked && glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE){
@@ -510,6 +512,10 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 						glActiveTexture(GL_TEXTURE6);
 						if(albedoTextures[i].isTrashFolder)
 							glBindTexture(GL_TEXTURE_2D,icons.Trash);
+						else if(i == 1)
+							glBindTexture(GL_TEXTURE_2D,icons.ExportFolder);
+						else if(i == 2)
+							glBindTexture(GL_TEXTURE_2D,icons.BrushFolder);
 						else
 							glBindTexture(GL_TEXTURE_2D,icons.Folder);
 						glset.uniform4fv(programs.iconsProgram,"iconColor",iconColor);
@@ -603,43 +609,48 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 									}
 								}
 								else if(!albedoTextures[i].isTrashFolder){
-									if(albedoTextures[i].folderIndex == 0){
-										//Delete the folder
-										for (size_t delI = 0; delI < albedoTextures.size(); delI++)
-										{
-											//Delete the elements of the folder
-											if(albedoTextures[delI].folderIndex == i){
-												if(albedoTextures[delI].isTexture){
-													Texture txtr;
-													txtr.deleteOpenglTexture(albedoTextures[delI]);
-												}
-												else{
-													//TODO : Delete that folder's elements
-												}
-												albedoTextures.erase(albedoTextures.begin() + delI);
-												delI--;
-												i--;
-												lC--;
-											}
-										}
-										albedoTextures.erase(albedoTextures.begin() + i);
-										selectedAlbedoTextureIndex = 0;
-										folderIndex = 10000;
-										sndpanelFolderPressed = false;
-										sndpanelMoveTexture = false;
-										i--;
-										lC--;
+									if(i == 1 || i == 2){
+										alert("This folder can't be deleted",200,false);
 									}
 									else{
-										//Move folder into trash
-										albedoTextures[i].folderIndex = 0;
-										selectedAlbedoTextureIndex = 0;
-										sndpanelFolderPressed = false;
-										sndpanelMoveTexture = false;
+										if(albedoTextures[i].folderIndex == 0){
+											//Delete the folder
+											for (size_t delI = 0; delI < albedoTextures.size(); delI++)
+											{
+												//Delete the elements of the folder
+												if(albedoTextures[delI].folderIndex == i){
+													if(albedoTextures[delI].isTexture){
+														Texture txtr;
+														txtr.deleteOpenglTexture(albedoTextures[delI]);
+													}
+													else{
+														//TODO : Delete that folder's elements
+													}
+													albedoTextures.erase(albedoTextures.begin() + delI);
+													delI--;
+													i--;
+													lC--;
+												}
+											}
+											albedoTextures.erase(albedoTextures.begin() + i);
+											selectedAlbedoTextureIndex = 0;
+											folderIndex = 10000;
+											sndpanelFolderPressed = false;
+											sndpanelMoveTexture = false;
+											i--;
+											lC--;
+										}
+										else{
+											//Move folder into trash
+											albedoTextures[i].folderIndex = 0;
+											selectedAlbedoTextureIndex = 0;
+											sndpanelFolderPressed = false;
+											sndpanelMoveTexture = false;
+										}
 									}
 								}
 								else if(albedoTextures[i].isTrashFolder){
-									alert("Warning! This is THE TRASH folder lol",200);
+									alert("Warning! This is THE TRASH folder lol",200,false);
 									folderIndex = 10000;
 									sndpanelFolderPressed = false;
 									sndpanelMoveTexture = false;
@@ -781,6 +792,10 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				glActiveTexture(GL_TEXTURE6);
 				if(albedoTextures[selectedAlbedoTextureIndex].isTrashFolder)
 					glBindTexture(GL_TEXTURE_2D,icons.Trash);
+				else if(selectedAlbedoTextureIndex == 1)
+					glBindTexture(GL_TEXTURE_2D,icons.ExportFolder);
+				else if(selectedAlbedoTextureIndex == 2)
+					glBindTexture(GL_TEXTURE_2D,icons.BrushFolder);
 				else
 					glBindTexture(GL_TEXTURE_2D,icons.Folder);
 				
@@ -1992,7 +2007,7 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 			txtrCreatingPanel.active = false;
 		}
 		else{
-			alert("Warning! Title can not be empty.",200);
+			alert("Warning! Title can not be empty.",200,false);
 		}
 	}
 }
@@ -2062,7 +2077,7 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 					//newModelAdded = true; 
 					//model.meshes[i].materialIndex = selectedNodeScene;
 					if(model.meshes[i].submeshes.size() == 6){
-						alert("Submesh count can be maximum 6",200);						
+						alert("Submesh count can be maximum 6",200,false);						
 					}
 					else{
 						SubMeshMs submesh;
@@ -2164,7 +2179,7 @@ int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector
 							model.meshes[i].submeshes.erase(model.meshes[i].submeshes.begin()+sI);
 						}
 						else{
-							alert("First submesh can't be deleted",200);
+							alert("First submesh can't be deleted",200,false);
 						}
 					}
 				}
@@ -2181,7 +2196,7 @@ int lastBrushMaskTexturePanelState = 0;
 int state1Index = 0;
 int state2Index = 0;
 int state3Index = 0;
-void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool &firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData &panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData,float posY,int state,TextureSelectionPanel txtrSelectionPanel){
+void UserInterface::brushMaskTexturePanel(Programs programs,std::vector<aTexture> &brushmasktextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,unsigned int &currentBrushMaskTexture,bool &firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData &panelData,int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData,float posY,int state,TextureSelectionPanel txtrSelectionPanel){
 	ColorData colorData;
 	GlSet gl;
 	Texture txtr;
@@ -2194,13 +2209,6 @@ void UserInterface::brushMaskTexturePanel(Programs programs,BrushTexture &maskTe
 
 
 		
-		std::vector<aTexture> brushmasktextures;
-		if(state == 0)
-			brushmasktextures = maskTextures.maskTextures;
-		if(state == 1)
-			brushmasktextures = maskTextures.colorTextures;
-		if(state == 2)
-			brushmasktextures = maskTextures.normalTextures;
 
 		unsigned int masktxtrprogram;
 			masktxtrprogram = programs.renderTheTextureProgram;

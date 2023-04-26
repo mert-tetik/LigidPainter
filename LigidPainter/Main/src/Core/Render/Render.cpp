@@ -40,6 +40,7 @@ Programs renderPrograms;
 
 //--------------------RENDER UI --------------------\\
 
+char* projectPath;
 
 unsigned int currentBrushMaskTexture;
 
@@ -180,7 +181,7 @@ void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* 
 
 	for (size_t i = 0; i < albedoTextures.size(); i++) //Export all the albedo textures
 	{
-		if(albedoTextures[i].isTexture){
+		if(albedoTextures[i].isTexture && albedoTextures[i].folderIndex == 1){
 			//Give a number to the texture name
 			std::string exportFileNameStr = "";
 			exportFileNameStr.append(albedoTextures[i].name);
@@ -290,7 +291,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 ,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
 ,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
 ,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
-unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode) {
+unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject) {
 	
 	renderCurrentMaterialIndex = currentMaterialIndex;
 	
@@ -324,7 +325,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		panelData.settingsPanelSlideVal = 0.3;
 	}
 
-	if(!startScreen){
+	if(!startScreen && !createProject){
 		glActiveTexture(GL_TEXTURE9);
 		glBindTexture(GL_TEXTURE_2D,depthTextureID);
 		glActiveTexture(GL_TEXTURE28);
@@ -612,7 +613,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		}
 		ui.renderText(renderPrograms.uiProgram,"Load",0.05f,0.95f,0.00022f,loadButtonColor,0.9f,false);
 	}
-	else{
+	else if(!createProject){
 		
 		gls.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -659,6 +660,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 			if(firstClick){
 				LibAL_playAudioObject(audios.Login);
 				startScreen = false;
+				createProject = true;
 				if(glfwGetKey(renderData.window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_K) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_PRESS)
 					debugMode = true;
 			}
@@ -702,6 +704,77 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		ui.iconBox(0.07,0.14f,0.4f,0.1f,1.f,icons.ImportProject,0.f,colorData.iconColor,colorData.iconColor);
 		glUseProgram(renderPrograms.uiProgram);
 		ui.renderText(renderPrograms.uiProgram,"Import Project",0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
+	}
+	else{
+		gls.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		glActiveTexture(GL_TEXTURE13);
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
+		glActiveTexture(GL_TEXTURE16);
+		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered);
+		renderSkyBox(skyBoxShaderData,renderPrograms,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
+
+		UserInterface ui;
+		glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+		glUseProgram(renderPrograms.iconsProgram);
+		gls.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
+		glUseProgram(renderPrograms.uiProgram);
+		gls.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
+
+		for (size_t i = 0; i < UIElements.size(); i++)
+		{
+			std::string currentType = UIElements[i].type;
+					
+			if(UIElements[i].createProject == true){
+				glUseProgram(renderPrograms.uiProgram);
+	
+				if(currentType == "button"){
+					ui.box(UIElements[i].button.width, UIElements[i].button.height, UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].button.text, UIElements[i].button.color, UIElements[i].button.textRatio, false, false, UIElements[i].button.positionZ, UIElements[i].button.buttonCurveReduce, UIElements[i].button.colorHover, UIElements[i].button.transitionMixVal); //Add mask texture button
+				}
+				if(currentType == "text"){	
+					ui.renderText(renderPrograms.uiProgram,UIElements[i].text.text, UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].text.scale,colorData.textColor,0.9f,false);
+				}
+				if(currentType == "rangeBar"){
+					if(!UIElements[i].rangeBar.isConstant)
+						ui.rangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,UIElements[i].rangeBar.widthDivider);
+					else
+						ui.constRangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,icons);
+				}
+				if(currentType == "textBox"){
+					ui.box(UIElements[i].textBox.width, UIElements[i].textBox.height,UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y,UIElements[i].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements[i].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements[i].textBox.transitionMixVal); //Add mask texture button
+				}
+				if(currentType == "checkBox"){
+					ui.checkBox(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,UIElements[i].checkBox.texture); //jpg checkbox
+				}
+				if(currentType == "icon"){
+					glUseProgram(renderPrograms.iconsProgram);
+					ui.iconBox(UIElements[i].icon.width,UIElements[i].icon.height,UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y,UIElements[i].icon.positionZ,UIElements[i].icon.icon, UIElements[i].icon.mixVal , UIElements[i].icon.color , UIElements[i].icon.colorHover);
+				}
+			}
+		}	
+
+		ui.listBox(-0.15f , -0.1f , 0.9f,"Texture Resolution",0.1f,icons,{"256","512","1024","2048","4096"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenTextureResIndex,screenGapX);
+		ui.listBox(0.15f , -0.1f , 0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture,screenGapX);
+
+		glUseProgram(renderPrograms.uiProgram);
+		
+		bool projectPathTextboxHover = ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,0.25f,mouseXpos,mouseYpos,false);
+		ui.box(0.12f,0.03f,0.f,0.25f, projectPath ? util.cropString(projectPath,22) : "Project Path Here" ,colorData.textBoxColor,0.11f,false,false,0.91f,10,colorData.buttonColorHover,projectPathTextboxHover);
+		if(projectPathTextboxHover && firstClick){
+			projectPath = tinyfd_selectFolderDialog("Choose a path","");
+		}
+		
+		bool createButtonHover = ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,-0.65f,mouseXpos,mouseYpos,false);
+		ui.box(0.06f,0.04f,0.f,-0.65f,"Create",colorData.buttonColor,0.03f,false,false,0.91f,10,colorData.buttonColorHover,createButtonHover);
+		if(createButtonHover && firstClick){
+			if(projectPath){
+
+			}
+			LigidPainter lp;
+			lp.loadModelButton();
+		 	createProject = false;
+		} 
+
 	}
  	renderlastMouseXpos = mouseXpos;
 	renderlastMouseYpos = mouseYpos;

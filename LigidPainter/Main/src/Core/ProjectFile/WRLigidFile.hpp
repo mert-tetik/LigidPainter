@@ -47,7 +47,7 @@ public:
         wf.close();
 
         UserInterface ui;
-        ui.alert("Ligid project file is saved successfully",300);
+        ui.alert("Ligid project file is saved successfully",300,true);
         return model;
     }
     void readTheFile(const char* path,Model &model,std::vector<aTexture> &textures, std::vector<NodeScene> &nodeScenes){
@@ -101,7 +101,7 @@ public:
             finishTheModel(model);
         }
         UserInterface ui;
-        ui.alert("Ligid project file is loaded successfully",300);
+        ui.alert("Ligid project file is loaded successfully",300,true);
         rf.close();
     }
 private:

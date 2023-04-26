@@ -49,6 +49,8 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     uploadingModelPathTextBoxElement.panel = 1;
     uploadingModelPathTextBoxElement.attachedToMainPanel = true;
 	uploadingModelPathTextBoxElement.type = "textBox";
+    uploadingModelPathTextBoxElement.createProject = true;
+    uploadingModelPathTextBoxElement.createProjectPos = glm::vec2(-0.0f,0.1f);
     UIElements.push_back(uploadingModelPathTextBoxElement);//1
 
 	UIElement uploadingModelPathTextElement;
@@ -60,6 +62,8 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     uploadingModelPathTextElement.panel = 1;
     uploadingModelPathTextElement.attachedToMainPanel = true;
     uploadingModelPathTextElement.type = "text";
+    uploadingModelPathTextElement.createProject = true;
+    uploadingModelPathTextElement.createProjectPos = glm::vec2(-0.05f,0.15f);
 	UIElements.push_back(uploadingModelPathTextElement);//2
 
 	UIElement loadModelButtonElement;

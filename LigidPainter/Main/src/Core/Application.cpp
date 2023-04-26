@@ -25,18 +25,20 @@
 //TODO Update ui
 //TODO New project panel
 //TODO Circular range bar for rotation 
-//TODO Alert success & warning
 //TODO Color displayer for the dropper
 //TODO Take mask brushes for the project file
 //TODO Mask textures folder & export folder
 //TODO Preview for skybox listbox
-//TODO Create mask texture via text
 //TODO Remove seams button
 //TODO Texture history HDD
-//TODO Fix node colide
 //TODO Node context menu
 //TODO Utilities::transitionEffect glfwtime
 //TODO Dynamic textbox 
+//TODO History settings
+//TODO Fix sndpanel texture folder slide bar bla bla
+//TODO Project folder
+//TODO Sound for success alert
+
 
 //TODO Search for brush textures
 //TODO Color id
@@ -161,6 +163,7 @@ Objects objects;
 std::vector<MirrorParam> mirrorParams;
 unsigned int depthTextureID;
 bool startScreen = true;
+bool createProject = false;
 bool debugMode = false;
 std::string projectFilePath;
 
@@ -407,7 +410,6 @@ bool LigidPainter::run()
 	//Load chars
 	load.uploadChars();
 	//Load brush mask textures
-	brushMaskTextures = load.loadBrushMaskTextures();
 	//Load cubemaps both blury and not blury
 	cubemaps = load.loadCubemaps();
 	//Load icons
@@ -532,10 +534,31 @@ bool LigidPainter::run()
 	exportFolder.name = "Export";
 	aTexture brushFolder;
 	brushFolder.isTexture = false;
-	brushFolder.name = "Export";
+	brushFolder.name = "Brush Textures";
+	
+	aTexture maskFolder;
+	maskFolder.folderIndex = 2;
+	maskFolder.isTexture = false;
+	maskFolder.name = "Mask";
+	aTexture rgbFolder;
+	rgbFolder.folderIndex = 2;
+	rgbFolder.isTexture = false;
+	rgbFolder.name = "RGB";
+	aTexture normalMapFolder;
+	normalMapFolder.folderIndex = 2;
+	normalMapFolder.isTexture = false;
+	normalMapFolder.name = "Normal Map";
+	
 	
 	albedoTextures.push_back(exportFolder);	
 	albedoTextures.push_back(brushFolder);
+	
+	albedoTextures.push_back(maskFolder);
+	albedoTextures.push_back(rgbFolder);
+	albedoTextures.push_back(normalMapFolder);
+
+	load.loadBrushMaskTextures(albedoTextures);
+
 	
 	//aTexture aqrTxtr;
 	//aqrTxtr.id = qrTxtr;
@@ -720,11 +743,13 @@ bool LigidPainter::run()
 				atxtr.id = texture;
 
 				if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked)
-					brushMaskTextures.maskTextures.push_back(atxtr);
+					atxtr.folderIndex = 3;
 				else if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked)
-					brushMaskTextures.colorTextures.push_back(atxtr);
+					atxtr.folderIndex = 4;
 				else if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked)
-					brushMaskTextures.normalTextures.push_back(atxtr);
+					atxtr.folderIndex = 5;
+
+				albedoTextures.push_back(atxtr);
 				
 				textureSelectionPanel.textureClicked = false;
 			}
@@ -940,7 +965,7 @@ bool LigidPainter::run()
 										txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
 										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState
-										 ,debugMode);
+										 ,debugMode,createProject);
 		}
 		duplicateNodeCall = false;
 		
@@ -1517,18 +1542,36 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 		if(callbackData.maskPanelEnter){
 			//Brush mask panel scroll
 			if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked){
+				int txtrSize = 0;
+				for (size_t i = 0; i < albedoTextures.size(); i++)
+				{
+					if(albedoTextures[i].folderIndex == 3)
+						txtrSize++;
+				}
 				brushMaskTextures.maskTexturesSliderValue += (float)(scrollx / 40.0);
-				const float maskPanelRange = ceil((int)brushMaskTextures.maskTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
+				const float maskPanelRange = ceil((float)txtrSize/3.f) / 8.33333333333 - (0.8f - 0.55f); 
 				brushMaskTextures.maskTexturesSliderValue = util.restrictBetween(brushMaskTextures.maskTexturesSliderValue, 0.0f, -maskPanelRange/4.f);//Keep in boundaries
 			}
 			if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked){
+				int txtrSize = 0;
+				for (size_t i = 0; i < albedoTextures.size(); i++)
+				{
+					if(albedoTextures[i].folderIndex == 4)
+						txtrSize++;
+				}
 				brushMaskTextures.colorTexturesSliderValue += (float)(scrollx / 40.0);
-				const float maskPanelRange = ceil((int)brushMaskTextures.colorTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
+				const float maskPanelRange = ceil((float)txtrSize/3.f) / 8.33333333333 - (0.8f - 0.55f); 
 				brushMaskTextures.colorTexturesSliderValue = util.restrictBetween(brushMaskTextures.colorTexturesSliderValue, 0.0f, -maskPanelRange/4.f);//Keep in boundaries
 			}
 			if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked){
+				int txtrSize = 0;
+				for (size_t i = 0; i < albedoTextures.size(); i++)
+				{
+					if(albedoTextures[i].folderIndex == 5)
+						txtrSize++;
+				}
 				brushMaskTextures.normalTexturesSliderValue += (float)(scrollx / 40.0);
-				const float maskPanelRange = ceil((int)brushMaskTextures.normalTextures.size()/3.f) / 8.33333333333 - (0.8f - 0.55f); 
+				const float maskPanelRange = ceil((float)txtrSize/3.f) / 8.33333333333 - (0.8f - 0.55f); 
 				brushMaskTextures.normalTexturesSliderValue = util.restrictBetween(brushMaskTextures.normalTexturesSliderValue, 0.0f, -maskPanelRange/4.f);//Keep in boundaries
 			}
 		}
@@ -1651,15 +1694,14 @@ void LigidPainter:: addMaskTextureButton() {
 		brushTxtr.id = txtr.getTexture(maskTexturePath,0,0,false);
 		brushTxtr.name = maskTexturePath;
 
-		if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked){
-			brushMaskTextures.maskTextures.push_back(brushTxtr);
-		}
-		if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked){
-			brushMaskTextures.colorTextures.push_back(brushTxtr);
-		}
-		if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked){
-			brushMaskTextures.normalTextures.push_back(brushTxtr);
-		}
+		if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked)
+			brushTxtr.folderIndex = 3;
+		else if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked)
+			brushTxtr.folderIndex = 4;
+		else if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked)
+			brushTxtr.folderIndex = 5;
+
+		albedoTextures.push_back(brushTxtr);
 
 		txtr.updateMaskTexture(FBOScreen,width,height,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 	}
@@ -2043,7 +2085,7 @@ void LigidPainter::paintingPanelButton() {
 	doPainting = true;
 	
 	if(!albedoTextures.size())
-		ui.alert("Warning! There Are No Textures Selected.",100);
+		ui.alert("Warning! There Are No Textures Selected.",100,false);
 }
 void LigidPainter::exportPanelButton() {
 	nodeScenes[selectedNodeScene].stateChanged = true;
@@ -2242,14 +2284,14 @@ void LigidPainter::outSubmeshesButton(){
 						outnode = nodeScenes[model.meshes[currentMaterialIndex].submeshes[smi].materialIndex].nodes[nodi];
 						if(outnode.title != "01 PBR"){
 							UserInterface ui;
-							ui.alert("WARNING! A node that is other than pbr node is connected to the shader out at the material " + nodeScenes[model.meshes[currentMaterialIndex].submeshes[smi].materialIndex].sceneName,200);
+							ui.alert("WARNING! A node that is other than pbr node is connected to the shader out at the material " + nodeScenes[model.meshes[currentMaterialIndex].submeshes[smi].materialIndex].sceneName,200,false);
 						}
 					}
 				}
 			}
 			if(!outnode.outputs.size()){
 				UserInterface ui;
-				ui.alert("WARNING! There are no node connected to the shader output at the material " + nodeScenes[model.meshes[currentMaterialIndex].submeshes[smi].materialIndex].sceneName,200);
+				ui.alert("WARNING! There are no node connected to the shader output at the material " + nodeScenes[model.meshes[currentMaterialIndex].submeshes[smi].materialIndex].sceneName,200,false);
 			}
 
 			std::vector<unsigned int> part;
@@ -2338,7 +2380,7 @@ void LigidPainter::outSubmeshesButton(){
 	}
 	else{
 		UserInterface ui;
-		ui.alert("You have to have at least 2 submeshes for the selected 3D model's material",200);
+		ui.alert("You have to have at least 2 submeshes for the selected 3D model's material",200,false);
 	}
 }
 void LigidPainter::mirrorRangeBars(double xOffset, int width, int height,bool x,bool y,bool z){
@@ -2373,6 +2415,10 @@ void LigidPainter::sndPanelMinusIcon(){
 	if(!txtrCreatingPanel.active){
 		if(sndPanel.state == 0){
 			if(!albedoTextures[selectedAlbedoTextureIndex].isTrashFolder){
+				if(selectedAlbedoTextureIndex == 1 || selectedAlbedoTextureIndex == 2){
+					ui.alert("This folder can't be deleted",200,false);
+					return;
+				}
 				//Textures
 				if(albedoTextures.size()){
 
@@ -2406,11 +2452,11 @@ void LigidPainter::sndPanelMinusIcon(){
 						selectedAlbedoTextureIndex--;
 				}
 				else{
-					ui.alert("Warning! Deleting request is ignored. There are no textures to delete.",200);
+					ui.alert("Warning! Deleting request is ignored. There are no textures to delete.",200,false);
 				}
 			}
 			else{
-				ui.alert("Warning! Trash folder can't be deleted.",200);
+				ui.alert("Warning! Trash folder can't be deleted.",200,false);
 			}
 		}
 		else if(sndPanel.state == 1){
@@ -2424,7 +2470,7 @@ void LigidPainter::sndPanelMinusIcon(){
 					for (size_t i = 0; i < model.meshes.size(); i++)
 					{
 						if(model.meshes[i].materialIndex == selectedNodeScene){
-							ui.alert("Warning! Deleting request is ignored. This material is already in use.",200);
+							ui.alert("Warning! Deleting request is ignored. This material is already in use.",200,false);
 							deletable = false;
 							break;
 						}
@@ -2459,7 +2505,7 @@ void LigidPainter::sndPanelMinusIcon(){
 				
 			}
 			else{
-				ui.alert("Warning! Deleting request is ignored. Last material can't be deleted.",200);
+				ui.alert("Warning! Deleting request is ignored. Last material can't be deleted.",200,false);
 			}
 		}
 	}
@@ -2580,7 +2626,7 @@ void LigidPainter::sndPanelDuplicateIcon(){
 			}
 			else{
 				UserInterface ui;
-				ui.alert("Warning! Duplication request is ignored. There are no texture to duplicate.",200);
+				ui.alert("Warning! Duplication request is ignored. There are no texture to duplicate.",200,false);
 			}
 		}
 		else if(sndPanel.state == 1){

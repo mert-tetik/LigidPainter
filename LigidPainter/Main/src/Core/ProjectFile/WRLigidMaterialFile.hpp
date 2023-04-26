@@ -302,7 +302,7 @@ public:
             rf.read(reinterpret_cast<char*>(&ch1),sizeof(uint64_t));
             if(h1 != ch1){
                 UserInterface ui;
-                ui.alert("This is not a material file. File description header is 0x94BA0BBA",200);
+                ui.alert("This is not a material file. File description header is 0x94BA0BBA",200,false);
                 return material;
             }
             

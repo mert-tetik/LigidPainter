@@ -73,6 +73,7 @@ void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &
 double lastMouseX = 0;
 double lastMouseY = 0;
 
+bool alertIsSuccess = false;
 int alertState = 0;
 std::string alertMessage = "";
 int alertDuration = 1;
@@ -465,7 +466,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 
 		glUseProgram(programs.uiProgram);
-		ui.renderAlert(alertMessage,alertDuration,programs.uiProgram,alertState);		
+		ui.renderAlert(alertMessage,alertDuration,programs.uiProgram,alertState,alertIsSuccess);		
 		
 		
 		txtrCreatingPanel.panelPosX = sndPanel.position + screenGapX; 
@@ -618,29 +619,52 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	int maskPanelElementSize = 0;
 	if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked){
 		maskPanelSliderValue = brushMaskTextures.maskTexturesSliderValue;
-		maskPanelElementSize = brushMaskTextures.maskTextures.size();
 	}
 	if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked){
 		maskPanelSliderValue = brushMaskTextures.colorTexturesSliderValue;
-		maskPanelElementSize = brushMaskTextures.colorTextures.size();
 	}
 	if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked){
 		maskPanelSliderValue = brushMaskTextures.normalTexturesSliderValue;
-		maskPanelElementSize = brushMaskTextures.normalTextures.size();
 	}
 
+	std::vector<aTexture> brushTextures;
+	
 	if (panelData.paintingPanelActive && !UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked) { //Icons
 		int state = 0;
 		
-		if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked)
-			state = 0;
-		if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked)
-			state = 1;
-		if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked)	
-			state = 2;
 
-		ui.brushMaskTexturePanel(programs,brushMaskTextures,centerCoords,screenGapX,maskPanelSliderValue,currentBrushMaskTexture,firstClick,renderData.window,mouseXpos,mouseYpos,FBOScreen,panelData,screenSizeX,screenSizeY,uiOut,UIElements,brushBlurVal,outShaderData,0.8f + panelData.paintingPanelSlideVal,state,textureSelectionPanel);
+		if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked){
+
+			state = 0;
+			for (size_t i = 0; i < albedoTextures.size(); i++)
+			{
+				if(albedoTextures[i].folderIndex == 3)
+					brushTextures.push_back(albedoTextures[i]);
+			}
+			
+		}
+		if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked){
+			for (size_t i = 0; i < albedoTextures.size(); i++)
+			{
+				if(albedoTextures[i].folderIndex == 4)
+					brushTextures.push_back(albedoTextures[i]);
+			}	
+			state = 1;
+		}
+		if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked){
+			
+			for (size_t i = 0; i < albedoTextures.size(); i++)
+			{
+				if(albedoTextures[i].folderIndex == 5)
+					brushTextures.push_back(albedoTextures[i]);
+			}	
+			state = 2;
+		}	
+
+		ui.brushMaskTexturePanel(programs,brushTextures,centerCoords,screenGapX,maskPanelSliderValue,currentBrushMaskTexture,firstClick,renderData.window,mouseXpos,mouseYpos,FBOScreen,panelData,screenSizeX,screenSizeY,uiOut,UIElements,brushBlurVal,outShaderData,0.8f + panelData.paintingPanelSlideVal,state,textureSelectionPanel);
 	}
+
+	maskPanelElementSize = brushTextures.size();
 
 
 	//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -1057,10 +1081,11 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 }
 //--------------------RENDER UI --------------------\\
 
-void UserInterface::alert(std::string message,int duration){
+void UserInterface::alert(std::string message,int duration,bool success){
 	LibAL_stopPlaying(uiAudios.Alert);
 	LibAL_playAudioObject(uiAudios.Alert);
 	
+	alertIsSuccess = success;
 	alertState = 1;
 	alertMessage = message;
 	alertDuration = duration;

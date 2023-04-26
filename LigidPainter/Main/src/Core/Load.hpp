@@ -236,11 +236,13 @@ public:
 		icons.AlignLeft = txtr.getTexture("LigidPainter/Resources/Icons/AlignLeft.jpg",0,0,false);
 		icons.AlignMid = txtr.getTexture("LigidPainter/Resources/Icons/AlignMid.jpg",0,0,false);
 		icons.AlignRight = txtr.getTexture("LigidPainter/Resources/Icons/AlignRight.jpg",0,0,false);
+		icons.ExportFolder = txtr.getTexture("LigidPainter/Resources/Icons/ExportFolder.jpg",0,0,false);
+		icons.BrushFolder = txtr.getTexture("LigidPainter/Resources/Icons/BrushFolder.png",0,0,false);
 	
 		return icons;
 	}
 	
-	BrushTexture loadBrushMaskTextures(){
+	BrushTexture loadBrushMaskTextures(std::vector<aTexture> &albedoTextures){
 		GlSet glset;
 		Texture txtr;
 	
@@ -258,7 +260,8 @@ public:
 		 			aTexture brushTxtr;
 					brushTxtr.id = txtr.getTexture(fileName,0,0,false);
 					brushTxtr.name = fileName;
-					maskTextures.push_back(brushTxtr);
+					brushTxtr.folderIndex = 3;
+					albedoTextures.push_back(brushTxtr);
 		 		}
 		 	}
 		}
@@ -272,7 +275,8 @@ public:
 		 			aTexture brushTxtr;
 					brushTxtr.id = txtr.getTexture(fileName,0,0,false);
 					brushTxtr.name = fileName;
-					clrTextures.push_back(brushTxtr);
+					brushTxtr.folderIndex = 4;
+					albedoTextures.push_back(brushTxtr);
 		 		}
 		 	}
 		}
@@ -287,7 +291,8 @@ public:
 		 			aTexture brushTxtr;
 					brushTxtr.id = txtr.getTexture(fileName,0,0,false);
 					brushTxtr.name = fileName;
-					normalTextures.push_back(brushTxtr);
+					brushTxtr.folderIndex = 5;
+					albedoTextures.push_back(brushTxtr);
 		 		}
 		 	}
 		}

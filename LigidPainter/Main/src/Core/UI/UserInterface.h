@@ -314,6 +314,9 @@ struct UIElement{
 	bool attachedToMainPanel;
 	int panel; //0 = Independent from panels , 1 = 3D model panel , 2 = Materials panel , 3 = Painting Panel , 4 = Export Panel
 	bool focusMode = false;
+
+	bool createProject = false;
+	glm::vec2 createProjectPos;
 };
 
 
@@ -719,13 +722,13 @@ public:
 	void circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture,glm::vec4 color,glm::vec4 transitionColor, float mixVal);
 	void drawLine(float posX,float posY,float posZ,float toPosX,float toPosY,float width,glm::vec4 color,bool isLine);
 	void textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<aTexture> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth,unsigned int circleTexture,bool firstClick);
-	void renderAlert(std::string message,int duration,unsigned int uiProgram,int state);
-	void alert(std::string message,int duration);
+	void renderAlert(std::string message,int duration,unsigned int uiProgram,int state,bool success);
+	void alert(std::string message,int duration,bool success);
 	bool coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool &firstClick,float xOffset,float yOffset,
 	unsigned int FBOscreen,ColorPicker &colorPicker,float screenGapX,glm::vec3 screenHoverPixel,std::vector<UIElement>&UIElements,bool modifyBrush);
 	void textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool &firstClick,ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures,int& activeFolderIndex);
 	void modelMaterialPanel(Model &model,Programs programs,RenderData renderData,float screenGapX,float materialsPanelSlideValue,double mouseXpos,double mouseYpos,RenderOutData& uiOut,int& currentMaterialIndex,bool &firstClick,bool& newModelAdded, int &selectedNodeScene,Icons icons,std::vector<NodeScene> nodeScenes,std::vector<aTexture> &albedoTextures,TextureSelectionPanel &textureSelectionPanel);
-	void brushMaskTexturePanel(Programs programs,BrushTexture &maskTextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,
+	void brushMaskTexturePanel(Programs programs,std::vector<aTexture> &brushmasktextures,float centerCoords, float screenGapX,float &maskPanelSliderValue,
 							   unsigned int &currentBrushMaskTexture,bool &firstClick,GLFWwindow* window,double mouseXpos,double mouseYpos,unsigned int FBOScreen,PanelData &panelData,
 							   int screenSizeX,int screenSizeY,RenderOutData& uiOut,std::vector<UIElement> &UIElements,float brushBlurVal, OutShaderData outShaderData, float posY,int state,TextureSelectionPanel txtrSelectionPanel);
 	bool listBox(float posX,float posY,float posZ,const char* title,float width, Icons icons,std::vector<const char*> list,bool active,GLFWwindow* window, float mouseXpos,float mouseYpos,bool &firstClick,int &chosenIndex,float screenGapX);
