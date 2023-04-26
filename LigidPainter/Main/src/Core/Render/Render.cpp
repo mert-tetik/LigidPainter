@@ -768,7 +768,32 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		ui.box(0.06f,0.04f,0.f,-0.65f,"Create",colorData.buttonColor,0.03f,false,false,0.91f,10,colorData.buttonColorHover,createButtonHover);
 		if(createButtonHover && firstClick){
 			if(projectPath){
+				//Main folder
+				std::string path = projectPath;
+				path += "/LigidProject";
+				std::filesystem::create_directories(path);
+				
+				//Materials
+				std::string materialpath = path;
+				materialpath += "/Materials";
+				std::filesystem::create_directories(materialpath);
+				
+				//Shaders
+				std::string shaderpath = path;
+				shaderpath += "/Shaders";
+				std::filesystem::create_directories(shaderpath);
+				
+				//Textures
+				std::string texturespath = path;
+				texturespath += "/Textures";
+				std::filesystem::create_directories(texturespath);
+			
+				//App Nodes
+				std::string nodespath = path;
+				nodespath += "/Nodes";
+				std::filesystem::create_directories(nodespath);
 
+				std::filesystem::copy("./LigidPainter/Resources/Nodes", nodespath);
 			}
 			LigidPainter lp;
 			lp.loadModelButton();
