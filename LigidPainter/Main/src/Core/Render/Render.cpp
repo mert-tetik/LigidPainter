@@ -522,8 +522,13 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 				
 				UserInterface ui;
 				if(colorPicker.dropperActive || coloringPanel.dropperActive){
+					//TODO : Use with colorpicker
 					glUseProgram(renderPrograms.iconsProgram);
-					ui.iconBox(0.015f,0.03f,mouseXpos/(screenSizeX/2)-1.f,-mouseYpos/(screenSizeY/2.f),0.999f,icons.Circle,0.f,glm::vec4(screenHoverPixel.r/255.f,screenHoverPixel.g/255.f,screenHoverPixel.b/255.f,1),glm::vec4(screenHoverPixel,1));
+					//ui.iconBox(0.0275f*2.f,0.055f*2.f,(mouseXpos/(screenSizeX/2)-1.f),-mouseYpos/(screenSizeY/2.f) + 1.f,0.999f,icons.O,0.f,colorData.panelColor,glm::vec4(screenHoverPixel,1));
+					//ui.iconBox(0.0225f*2.f,0.045f*2.f,(mouseXpos/(screenSizeX/2)-1.f),-mouseYpos/(screenSizeY/2.f) + 1.f,0.9991f,icons.O,0.f,colorData.panelColor,glm::vec4(screenHoverPixel,1));
+					glDisable(GL_DEPTH_TEST);
+					ui.iconBox(0.025f*4.f,0.05f*4.f,(mouseXpos/(screenSizeX/2)-1.f),-mouseYpos/(screenSizeY/2.f) + 1.f,0.9999f,icons.O,0.f,glm::vec4(screenHoverPixel.r/255.f,screenHoverPixel.g/255.f,screenHoverPixel.b/255.f,1),glm::vec4(screenHoverPixel,1));
+					glEnable(GL_DEPTH_TEST);
 					glUseProgram(renderPrograms.uiProgram);
 				}
 		} 
