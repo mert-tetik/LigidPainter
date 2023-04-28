@@ -23,15 +23,9 @@ bool maskPanelSliderPressed;
 bool mainPanelBoundariesPressed;
 bool nodePanelBoundariesPressed;
 bool subSelectedImagePowerRangeBarPressed;
-bool mirrorXRangeBarPressed;
-bool mirrorYRangeBarPressed;
-bool mirrorZRangeBarPressed;
-bool paintOverPosXRangeBarPressed;
-bool paintOverPosYRangeBarPressed;
 bool paintOverScaleXRangeBarPressed;
 bool paintOverScaleYRangeBarPressed;
 bool generateTextSizeRangeBarPressed;
-bool TDModelSizeRangeBarPressed;
 //
 
 void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vector<UIElement> &UIElements, ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,NodePanel &nodePanel,SndPanel &sndPanel,bool &firstClick) {
@@ -72,19 +66,19 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			subSelectedImagePowerRangeBarPressed = true;
 		}
 		else if (UIElements[UImirrorXRangeBarElement].rangeBar.hover) {
-			mirrorXRangeBarPressed = true;
+			UIElements[UImirrorXRangeBarElement].rangeBar.pressed = true;
 		}
 		else if (UIElements[UImirrorYRangeBarElement].rangeBar.hover) {
-			mirrorYRangeBarPressed = true;
+			UIElements[UImirrorYRangeBarElement].rangeBar.pressed = true;
 		}
 		else if (UIElements[UImirrorZRangeBarElement].rangeBar.hover) {
-			mirrorZRangeBarPressed = true;
+			UIElements[UImirrorZRangeBarElement].rangeBar.pressed = true;
 		}
 		else if (UIElements[UIpaintOverPosXRangeBarElement].rangeBar.hover) {
-			paintOverPosXRangeBarPressed = true;
+			UIElements[UIpaintOverPosXRangeBarElement].rangeBar.pressed = true;
 		}
 		else if (UIElements[UIpaintOverPosYRangeBarElement].rangeBar.hover) {
-			paintOverPosYRangeBarPressed = true;
+			UIElements[UIpaintOverPosYRangeBarElement].rangeBar.pressed = true;
 		}
 		else if (UIElements[UIpaintOverScaleXRangeBarElement].rangeBar.hover) {
 			paintOverScaleXRangeBarPressed = true;
@@ -96,7 +90,7 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			generateTextSizeRangeBarPressed = true;
 		}
 		else if (UIElements[UITDModelSizeRangeBarElement].rangeBar.hover) {
-			TDModelSizeRangeBarPressed = true;
+			UIElements[UITDModelSizeRangeBarElement].rangeBar.pressed = true;
 		}
 		else if (colorPicker.saturationValuePointerHover) {
 			colorBoxPickerPressed = true;
@@ -353,19 +347,19 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		nodePanelBoundariesPressed = false;
 		nodePanel.boundariesPressed = false;
 		sndPanel.boundariesPressed = false;
-		mirrorXRangeBarPressed = false;
-		mirrorYRangeBarPressed = false;
-		mirrorZRangeBarPressed = false;
-		paintOverPosXRangeBarPressed = false;
-		paintOverPosYRangeBarPressed = false;
+		UIElements[UImirrorXRangeBarElement].rangeBar.pressed = false;
+		UIElements[UImirrorYRangeBarElement].rangeBar.pressed = false;
+		UIElements[UImirrorZRangeBarElement].rangeBar.pressed = false;
+		UIElements[UIpaintOverPosXRangeBarElement].rangeBar.pressed = false;
+		UIElements[UIpaintOverPosYRangeBarElement].rangeBar.pressed = false;
 		paintOverScaleXRangeBarPressed = false;
 		paintOverScaleYRangeBarPressed = false;
 		generateTextSizeRangeBarPressed = false;
-		TDModelSizeRangeBarPressed = false;
+		UIElements[UITDModelSizeRangeBarElement].rangeBar.pressed = false;
 	}
 }
 bool UiActions::updateRangeValues(GLFWwindow* window, double xOffset,double yOffset, int screenWidth, int screenHeight,TextureDisplayer &textureDisplayer,
-SndPanel &sndPanel){
+SndPanel &sndPanel,std::vector<UIElement> &UIElements){
     bool hideCursor;
     LigidPainter ligid;
     
@@ -387,16 +381,16 @@ SndPanel &sndPanel){
 	if (brushBordersRangeBarPressed) {
 		ligid.brushBordersRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
 	}
-	if(mirrorXRangeBarPressed || mirrorYRangeBarPressed || mirrorZRangeBarPressed){
-		ligid.mirrorRangeBars(xOffset, screenWidth,screenHeight,mirrorXRangeBarPressed, mirrorYRangeBarPressed, mirrorZRangeBarPressed);
+	if(UIElements[UImirrorXRangeBarElement].rangeBar.pressed || UIElements[UImirrorYRangeBarElement].rangeBar.pressed || UIElements[UImirrorZRangeBarElement].rangeBar.pressed){
+		ligid.mirrorRangeBars(xOffset, screenWidth,screenHeight,UIElements[UImirrorXRangeBarElement].rangeBar.pressed, UIElements[UImirrorYRangeBarElement].rangeBar.pressed, UIElements[UImirrorZRangeBarElement].rangeBar.pressed);
 	}
-	if(paintOverPosXRangeBarPressed || paintOverPosYRangeBarPressed || paintOverScaleXRangeBarPressed || paintOverScaleYRangeBarPressed){
-		ligid.paintoverTransformRanegBars(xOffset, screenWidth,screenHeight,paintOverPosXRangeBarPressed , paintOverPosYRangeBarPressed , paintOverScaleXRangeBarPressed , paintOverScaleYRangeBarPressed);
+	if(UIElements[UIpaintOverPosXRangeBarElement].rangeBar.pressed || UIElements[UIpaintOverPosYRangeBarElement].rangeBar.pressed || paintOverScaleXRangeBarPressed || paintOverScaleYRangeBarPressed){
+		ligid.paintoverTransformRanegBars(xOffset, screenWidth,screenHeight,UIElements[UIpaintOverPosXRangeBarElement].rangeBar.pressed , UIElements[UIpaintOverPosYRangeBarElement].rangeBar.pressed , paintOverScaleXRangeBarPressed , paintOverScaleYRangeBarPressed);
 	}
 	if(generateTextSizeRangeBarPressed){
 		ligid.generateTextSizeRangeBar(xOffset,screenWidth);
 	}
-	if(TDModelSizeRangeBarPressed){
+	if(UIElements[UITDModelSizeRangeBarElement].rangeBar.pressed){
 		ligid.TDModelSizeRangeBar(xOffset,screenWidth);
 	}
 	if (subSelectedImagePowerRangeBarPressed) {

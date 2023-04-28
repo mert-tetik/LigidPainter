@@ -49,6 +49,7 @@ char* projectPath;
 
 unsigned int currentBrushMaskTexture;
 
+float createProjectPanelBlurVal = 0.f;
 
 SaturationValShaderData saturationValShaderData;
 
@@ -532,7 +533,8 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 					//ui.iconBox(0.0275f*2.f,0.055f*2.f,(mouseXpos/(screenSizeX/2)-1.f),-mouseYpos/(screenSizeY/2.f) + 1.f,0.999f,icons.O,0.f,colorData.panelColor,glm::vec4(screenHoverPixel,1));
 					//ui.iconBox(0.0225f*2.f,0.045f*2.f,(mouseXpos/(screenSizeX/2)-1.f),-mouseYpos/(screenSizeY/2.f) + 1.f,0.9991f,icons.O,0.f,colorData.panelColor,glm::vec4(screenHoverPixel,1));
 					glDisable(GL_DEPTH_TEST);
-					ui.iconBox(0.025f*4.f,0.05f*4.f,(mouseXpos/(screenSizeX/2)-1.f),-mouseYpos/(screenSizeY/2.f) + 1.f,0.9999f,icons.O,0.f,glm::vec4(screenHoverPixel.r/255.f,screenHoverPixel.g/255.f,screenHoverPixel.b/255.f,1),glm::vec4(screenHoverPixel,1));
+					//TODO : Fix window ratio problem
+					ui.iconBox(0.025f*4.f,0.05f*4.f,(mouseXpos/(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2)-1.f),-mouseYpos/(glfwGetVideoMode(glfwGetPrimaryMonitor())->height/2.f) + 1.f,0.9999f,icons.O,0.f,glm::vec4(screenHoverPixel.r/255.f,screenHoverPixel.g/255.f,screenHoverPixel.b/255.f,1),glm::vec4(screenHoverPixel,1));
 					glEnable(GL_DEPTH_TEST);
 					glUseProgram(renderPrograms.uiProgram);
 				}
@@ -728,6 +730,14 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		ui.renderText(renderPrograms.uiProgram,"Import Project",0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
 	}
 	else{
+		UserInterface ui;
+		glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+		glUseProgram(renderPrograms.iconsProgram);
+		gls.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
+		glUseProgram(renderPrograms.uiProgram);
+		gls.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
+		glUseProgram(renderPrograms.renderTheTextureBlur);
+		gls.uniformMatrix4fv(renderPrograms.renderTheTextureBlur, "TextProjection", projection);
 
 		UIElements[UIbackfaceCullingCheckBox].checkBox.text = "Import Textures";
 		UIElements[UIautoTriangulateCheckBox].checkBox.text = "Import Nodes";
@@ -744,12 +754,57 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered);
 		renderSkyBox(skyBoxShaderData,renderPrograms,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
 
-		UserInterface ui;
-		glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
-		glUseProgram(renderPrograms.iconsProgram);
-		gls.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
-		glUseProgram(renderPrograms.uiProgram);
-		gls.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
+		//TODO Delete that framebuffer
+		unsigned int SBFBO;
+		gls.genFramebuffers(SBFBO);
+		gls.bindFramebuffer(SBFBO);
+
+		//Texture
+		//TODO Delete that texture
+		unsigned int textureColorbuffer;
+		gls.genTextures(textureColorbuffer);
+		gls.bindTexture(textureColorbuffer);
+		glViewport(0,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+		gls.texImage(NULL, glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,GL_RGBA); //TODO : Use texture quality variable
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		gls.generateMipmap();
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+		
+		renderSkyBox(skyBoxShaderData,renderPrograms,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
+
+		glUseProgram(renderPrograms.renderTheTextureBlur);
+		gls.uniform1i(renderPrograms.renderTheTextureBlur, "blurVal" ,createProjectPanelBlurVal*100.f+5);
+		gls.uniform1i(renderPrograms.renderTheTextureBlur, "txtr" ,14);
+
+		glActiveTexture(GL_TEXTURE14);
+		gls.bindTexture(textureColorbuffer);
+
+		float textureWidth = 0.35f;
+		float textureHeight = 0.7f;
+		float position_x = 0.f;
+		float position_y = 0.f;
+		float panelZ = 0.5f;
+
+		std::vector<float> buttonCoorSq{
+			// first triangle
+			 textureWidth + position_x,  textureHeight + position_y, 	panelZ+0.02f,	1,		1		,0,0,0,  // top right
+			 textureWidth + position_x,  -textureHeight + position_y, 	panelZ+0.02f,	1,		0		,0,0,0,  // bottom right
+			-textureWidth + position_x,  textureHeight + position_y, 	panelZ+0.02f,	0,		1		,0,0,0,  // top left 
+			// second triangle						   	
+			 textureWidth + position_x,  -textureHeight + position_y, 	panelZ+0.02f,	1,		0		,0,0,0,  // bottom right
+			-textureWidth + position_x,  -textureHeight + position_y, 	panelZ+0.02f,	0,		0		,0,0,0,  // bottom left
+			-textureWidth + position_x,  textureHeight + position_y, 	panelZ+0.02f,	0,		1		,0,0,0  // top left
+		};
+		
+		gls.bindFramebuffer(0);
+		LigidPainter lp;
+		lp.setViewportToDefault();
+
+		gls.drawArrays(buttonCoorSq,false);
+
 
 		for (size_t i = 0; i < UIElements.size(); i++)
 		{
@@ -768,7 +823,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 					if(!UIElements[i].rangeBar.isConstant)
 						ui.rangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,UIElements[i].rangeBar.widthDivider);
 					else
-						ui.constRangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,icons);
+						ui.constRangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,icons,UIElements[i].rangeBar.mixVal);
 				}
 				if(currentType == "textBox"){
 					ui.box(UIElements[i].textBox.width, UIElements[i].textBox.height,UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y,UIElements[i].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements[i].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements[i].textBox.transitionMixVal); //Add mask texture button
@@ -900,6 +955,9 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		} 
 
 	}
+
+	createProjectPanelBlurVal = util.transitionEffect(createProject,createProjectPanelBlurVal,0.1f);
+	
 	skipProjectFolder:
  	renderlastMouseXpos = mouseXpos;
 	renderlastMouseYpos = mouseYpos;

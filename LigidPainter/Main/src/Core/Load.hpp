@@ -230,6 +230,8 @@ public:
 		icons.AlignRight = txtr.getTexture("LigidPainter/Resources/Icons/AlignRight.jpg",0,0,false);
 		icons.ExportFolder = txtr.getTexture("LigidPainter/Resources/Icons/ExportFolder.jpg",0,0,false);
 		icons.BrushFolder = txtr.getTexture("LigidPainter/Resources/Icons/BrushFolder.png",0,0,false);
+		icons.LCircle = txtr.getTexture("LigidPainter/Resources/Icons/LCircle.jpg",0,0,false);
+		icons.RCircle = txtr.getTexture("LigidPainter/Resources/Icons/RCircle.jpg",0,0,false);
 	
 		return icons;
 	}
@@ -548,6 +550,11 @@ public:
 		unsigned int dotsProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/dots");
 		
 		
+		
+		//Render textures blury
+		unsigned int renderTheTextureBlur = gl.createProgram("./LigidPainter/Resources/Shaders/UI/renderTheTextureBlur");
+		
+		
 
 		
 		Programs glPrograms;
@@ -578,6 +585,7 @@ public:
 		glPrograms.brushCursor = brushCursor;
 		glPrograms.materialResult = materialResult;
 		glPrograms.dotsProgram = dotsProgram;
+		glPrograms.renderTheTextureBlur = renderTheTextureBlur;
 
 
 		return glPrograms;

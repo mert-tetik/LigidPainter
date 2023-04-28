@@ -41,6 +41,7 @@ struct Programs
 	unsigned int brushCursor;
 	unsigned int materialResult;
 	unsigned int dotsProgram;
+	unsigned int renderTheTextureBlur;
 };
 struct Cubemaps{
 	unsigned int cubemap;
@@ -201,6 +202,8 @@ struct Icons{
 	unsigned int AlignMid;
 	unsigned int ExportFolder;
 	unsigned int BrushFolder;
+	unsigned int LCircle;
+	unsigned int RCircle;
 };
 
 struct RenderData { //GlSet::render

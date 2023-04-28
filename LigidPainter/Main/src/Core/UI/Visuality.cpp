@@ -1155,12 +1155,12 @@ void UserInterface::rangeBar(float position_x, float position_y,float value,floa
 	box(0.11f/divideWidth, 0.0075f, position_x, position_y, "", colorData.rangeBarBack, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Range Rectangle
 
 }
-void UserInterface::constRangeBar(float position_x, float position_y,float value,Icons icons) {
+void UserInterface::constRangeBar(float position_x, float position_y,float value,Icons icons,float mixVal) {
 	ColorData colorData;
 	GlSet gl;
 
 
-	box(0.02f, 0.015f, position_x, position_y, "", colorData.buttonColor, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Range Rectangle
+	box(0.02f, 0.015f, position_x, position_y, "", colorData.buttonColor, 0.035f, false, false, 0.9f, 15, glm::vec4(colorData.LigidPainterThemeColor,0.8f), mixVal);//Range Rectangle
 
 	int charSize = std::to_string((int)(value*20)).size();
 	float charRat = 1.6;
@@ -1180,8 +1180,8 @@ void UserInterface::constRangeBar(float position_x, float position_y,float value
 	
 
 	glUseProgram(uiPrograms.iconsProgram);
-	iconBox(0.015f/2.f,0.015f,position_x-0.017f, position_y,0.92f,icons.ArrowLeft,0.f,colorData.iconColor,colorData.buttonColor);
-	iconBox(0.015f/2.f,0.015f,position_x+0.017f, position_y,0.92f,icons.ArrowRight,0.f,colorData.iconColor,colorData.buttonColor);
+	iconBox(0.013f/2.f,0.013f,position_x-0.017f, position_y,0.92f,icons.LCircle,0.f,colorData.iconColor,colorData.buttonColor);
+	iconBox(0.013f/2.f,0.013f,position_x+0.017f, position_y,0.92f,icons.RCircle,0.f,colorData.iconColor,colorData.buttonColor);
 	glUseProgram(uiPrograms.uiProgram);
 }
 void UserInterface::panelChangeButton(float position_x, float position_y) {

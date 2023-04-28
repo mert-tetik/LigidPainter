@@ -23,9 +23,6 @@
 //TODO Fix mirror paint over
 //TODO Flip
 //TODO Update ui
-//TODO New project panel
-//TODO Circular range bar for rotation 
-//TODO Color displayer for the dropper
 //TODO Take mask brushes for the project file
 //TODO Mask textures folder & export folder
 //TODO Preview for skybox listbox
@@ -39,7 +36,13 @@
 //TODO Project folder
 //TODO Sound for success alert
 //TODO Remove 3D Model loading
-
+//TODO Circular range bar for light pos
+//TODO 3D Model position
+//TODO Perspective options (maybe)
+//TODO projectsettings - 3D Model options 
+//TODO Black to alpa zero - texture generator
+//TODO Multiple texture selection
+//TODO Brush textures interactions 
 
 
 //TODO Search for brush textures
@@ -1470,7 +1473,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 
 	
-	bool hideCursor = uiAct.updateRangeValues(window,xOffset,yOffset,width,height,textureDisplayer,sndPanel); 
+	bool hideCursor = uiAct.updateRangeValues(window,xOffset,yOffset,width,height,textureDisplayer,sndPanel,UIElements); 
 
 
 

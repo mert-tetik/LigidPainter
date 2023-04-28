@@ -244,6 +244,8 @@ struct RangeBar{
 	bool hover = false;
 	float widthDivider = 1;
 	bool isConstant = false;
+	float mixVal = 0.f;
+	bool pressed = false;
 };
 
 struct Icon{
@@ -713,7 +715,7 @@ public:
 	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked,unsigned int circleTxtr);
 	void panelChangeButton(float position_x, float position_y);
 	void rangeBar(float position_x, float position_y, float value,float divideWidth);
-	void constRangeBar(float position_x, float position_y,float value,Icons icons);
+	void constRangeBar(float position_x, float position_y,float value,Icons icons,float mixVal);
 	void colorBox(float position_x, float position_y, float valueX, float valueY,Icons icons);
 	glm::vec3 hueBar(float position_x, float position_y,float value, unsigned int FBO,GLFWwindow* window,glm::mat4 projection,bool updateHueVal);
 	void decorationSquare(float position_x, float position_y);
