@@ -1205,13 +1205,14 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     generateTextTextureTextTextBoxElement.textBox.position_z = 0.9f;
     generateTextTextureTextTextBoxElement.textBox.width = 0.12;
     generateTextTextureTextTextBoxElement.textBox.height = 0.03;
-    generateTextTextureTextTextBoxElement.textBox.text = "Choose Destination Path";
+    generateTextTextureTextTextBoxElement.textBox.text = "MyProject";
     generateTextTextureTextTextBoxElement.textBox.rich = true;
     generateTextTextureTextTextBoxElement.panel = 6;
     generateTextTextureTextTextBoxElement.attachedToMainPanel = true;
 	generateTextTextureTextTextBoxElement.type = "textBox";
+	generateTextTextureTextTextBoxElement.createProject = true;
+	generateTextTextureTextTextBoxElement.createProjectPos = glm::vec2(0.f,0.35);
     UIElements.push_back(generateTextTextureTextTextBoxElement);//26
-    
     
     return UIElements;
 }

@@ -38,11 +38,12 @@
 //TODO Fix sndpanel texture folder slide bar bla bla
 //TODO Project folder
 //TODO Sound for success alert
+//TODO Remove 3D Model loading
 
 
 //TODO Search for brush textures
 //TODO Color id
-//TODO Color pallette
+//TODO Color pallette"-
 //TODO Light source rotation from 3D Model displayer
 //TODO RTX Support
 
@@ -126,8 +127,8 @@ bool cameraPosChanging = true;
 bool paintingMode = false; //True if painting started, False if camera position changed after painting
 
 //Paths
-const char* modelFilePath;
-const char* customModelFilePath;
+char* modelFilePath;
+char* customModelFilePath;
 string albedoTexturePath = "albedoImage.png";
 string maskTexturePath = "./LigidPainter/Resources/Textures/Mask/mask16.jpg";
 string exportPath = "";
@@ -965,7 +966,7 @@ bool LigidPainter::run()
 										txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
 										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState
-										 ,debugMode,createProject);
+										 ,debugMode,createProject,modelFilePath,modelName,customModelName);
 		}
 		duplicateNodeCall = false;
 		
@@ -1046,7 +1047,7 @@ bool LigidPainter::run()
 			maskPanelSliderValue = brushMaskTextures.normalTexturesSliderValue;
 		}
 
-		if(!startScreen)
+		if(!startScreen && !createProject)
 			callbackData = callback.mouse_callback(window, mouseXpos, mouseYpos, panelData,maskPanelSliderValue,renderOut.maskPanelMaskHover,cursors,renderOut.texturePanelButtonHover,UIElements,mainPanelLoc,colorPicker,textureDisplayer,nodePanel,addNodeContextMenu,sndPanel,coloringPanel,moveCamera,zoomInOutCamera);
 
 

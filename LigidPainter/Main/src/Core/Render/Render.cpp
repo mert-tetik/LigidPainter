@@ -26,6 +26,7 @@
 #include "Core/Texture/Texture.h"
 #include "Core/ProjectFile/WRLigidFile.hpp"
 #include "Core/ProjectFile/WRLigidMaterialFile.hpp"
+#include "Core/ProjectFile/WRLigidFolder.hpp"
 
 
 #include "stb_image.h"
@@ -34,6 +35,9 @@
 #include "LibAL.h"
 
 #include "tinyfiledialogs.h"
+
+using namespace std;
+
 
 int renderCurrentMaterialIndex = 0;
 
@@ -155,7 +159,7 @@ void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int sel
 
 
 
-void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName,vector<aTexture> &albedoTextures,int chosenTextureResIndex){
+void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName,std::vector<aTexture> &albedoTextures,int chosenTextureResIndex){
 
 	//Create the export folder
 	std::string exportPathStr = exportPath;
@@ -209,7 +213,7 @@ void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* 
 	}
 }
 
-void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels,Model &model,bool useModel,vector<MaterialOut> &modelMaterials,glm::mat4 view,
+void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels,Model &model,bool useModel,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,
 std::vector<aTexture> albedoTextures,int chosenTextureIndex){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -284,15 +288,15 @@ size_t renderingCounter = 0;
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
 Icons &icons, bool renderPlane,bool renderSphere,
 PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,
-OutShaderData &outShaderData,Model &model,vector<aTexture> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
+OutShaderData &outShaderData,Model &model,std::vector<aTexture> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
 ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps& cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel
 ,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
-std::vector<Node> appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool &firstClick,
+std::vector<Node> &appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool &firstClick,
 glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
 ,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
 ,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
 ,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
-unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject) {
+unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,std::string &customModelName) {
 	
 	renderCurrentMaterialIndex = currentMaterialIndex;
 	
@@ -604,8 +608,8 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 					auto path = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
 
 					if(path){
-						LigidFile ligidFile;
-						ligidFile.readTheFile(path,model,albedoTextures,nodeScenes);
+						ProjectFolder projectFolder;
+						projectFolder.readFolder(path,nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures);
 						projectFilePath = path;
 						startScreen = false;
 					}
@@ -681,8 +685,8 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 				auto path = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
 				
 				if(path){
-					LigidFile ligidFile;
-					ligidFile.readTheFile(path,model,albedoTextures,nodeScenes);
+					ProjectFolder projectFolder;
+					projectFolder.readFolder(path,nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures);
 					projectFilePath = path;
 					LibAL_playAudioObject(audios.Login);
 					startScreen = false;
@@ -707,6 +711,11 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		ui.renderText(renderPrograms.uiProgram,"Import Project",0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
 	}
 	else{
+		#if defined(_WIN32) || defined(_WIN64)
+		    char folderDistinguisher = '\\';
+		#else
+			char folderDistinguisher = '/'; 
+		#endif
 		gls.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glActiveTexture(GL_TEXTURE13);
@@ -754,6 +763,28 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 			}
 		}	
 
+		UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.transitionMixVal = util.transitionEffect(UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.clicked,UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.transitionMixVal,0.1f);
+		if(ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,0.35f,mouseXpos,mouseYpos,false)){
+			if(firstClick)
+				UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.clicked = !UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.clicked;
+		}
+		
+		if(ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,0.1f,mouseXpos,mouseYpos,false)){
+			if(firstClick){
+				char const* lFilterPatterns[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
+	
+				auto modelFilePathCheck = tinyfd_openFileDialog("Select 3D Model","",11, lFilterPatterns,"",false);
+
+				if (modelFilePathCheck) {
+					Utilities util;
+					modelFilePath = modelFilePathCheck;
+					modelName = util.getLastWordBySeparatingWithChar(modelFilePath,folderDistinguisher);
+					UIElements[UIUploadingModelPathTextBox].textBox.text = modelName; 
+					customModelName = modelName;
+				}
+			}
+		}
+
 		ui.listBox(-0.15f , -0.1f , 0.9f,"Texture Resolution",0.1f,icons,{"256","512","1024","2048","4096"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenTextureResIndex,screenGapX);
 		ui.listBox(0.15f , -0.1f , 0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture,screenGapX);
 
@@ -769,59 +800,22 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		ui.box(0.06f,0.04f,0.f,-0.65f,"Create",colorData.buttonColor,0.03f,false,false,0.91f,10,colorData.buttonColorHover,createButtonHover);
 		if(createButtonHover && firstClick){
 			if(projectPath){
-
-				#if defined(_WIN32) || defined(_WIN64)
-				    char folderDistinguisher = '\\';
-				#else
-					char folderDistinguisher = '/'; 
-				#endif
-
 				//Main folder
 				std::string path = projectPath;
 				path += folderDistinguisher;
-				path += "LigidProject";
-				std::filesystem::create_directories(path);
+				path += UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text;
+				if(std::filesystem::is_directory(path)){
+					LigidPainter lp;
+					if(lp.ligidMessageBox("There is already a folder with the same name",-0.19f,"Do you want to proceed?",-0.1f)){
+						std::filesystem::remove_all(path);
+					}
+					else{
+						goto skipProjectFolder;
+					}
+				}
+				ProjectFolder project;
+				project.initFolder(path,nodeScenes[0],modelFilePath,UIElements);
 				
-				//Materials
-				std::string materialpath = path;
-				materialpath += folderDistinguisher;
-				materialpath += "Materials";
-				std::filesystem::create_directories(materialpath);
-				materialpath += folderDistinguisher;
-				materialpath += nodeScenes[0].sceneName;
-				MaterialFile materialFile;
-				materialFile.writeTheFile(materialpath.c_str(),nodeScenes[0]);
-
-				//Shaders
-				std::string shaderpath = path;
-				shaderpath += folderDistinguisher;
-				shaderpath += "Shaders";
-				std::filesystem::create_directories(shaderpath);
-				
-				//Textures
-				std::string texturespath = path;
-				texturespath += folderDistinguisher;
-				texturespath += "Textures";
-				std::filesystem::create_directories(texturespath);
-				
-				std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures");
-				
-				std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Mask");
-				std::filesystem::copy("./LigidPainter/Resources/Textures/Mask", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Mask");
-
-				std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "RGB");
-				std::filesystem::copy("./LigidPainter/Resources/Textures/Sticker", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "RGB");
-				
-				std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Normal Map");
-				std::filesystem::copy("./LigidPainter/Resources/Textures/NormalMap", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Normal Map");
-			
-				//App Nodes
-				std::string nodespath = path;
-				nodespath += folderDistinguisher;
-				nodespath += "Nodes";
-				std::filesystem::create_directories(nodespath);
-
-				std::filesystem::copy("./LigidPainter/Resources/Nodes", nodespath);
 			}
 			LigidPainter lp;
 			lp.loadModelButton();
@@ -829,6 +823,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		} 
 
 	}
+	skipProjectFolder:
  	renderlastMouseXpos = mouseXpos;
 	renderlastMouseYpos = mouseYpos;
 	RenderOutData renderOut;
