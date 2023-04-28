@@ -31,6 +31,7 @@ bool paintOverPosYRangeBarPressed;
 bool paintOverScaleXRangeBarPressed;
 bool paintOverScaleYRangeBarPressed;
 bool generateTextSizeRangeBarPressed;
+bool TDModelSizeRangeBarPressed;
 //
 
 void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vector<UIElement> &UIElements, ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,NodePanel &nodePanel,SndPanel &sndPanel,bool &firstClick) {
@@ -93,6 +94,9 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		}
 		else if (UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.hover) {
 			generateTextSizeRangeBarPressed = true;
+		}
+		else if (UIElements[UITDModelSizeRangeBarElement].rangeBar.hover) {
+			TDModelSizeRangeBarPressed = true;
 		}
 		else if (colorPicker.saturationValuePointerHover) {
 			colorBoxPickerPressed = true;
@@ -357,6 +361,7 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		paintOverScaleXRangeBarPressed = false;
 		paintOverScaleYRangeBarPressed = false;
 		generateTextSizeRangeBarPressed = false;
+		TDModelSizeRangeBarPressed = false;
 	}
 }
 bool UiActions::updateRangeValues(GLFWwindow* window, double xOffset,double yOffset, int screenWidth, int screenHeight,TextureDisplayer &textureDisplayer,
@@ -390,6 +395,9 @@ SndPanel &sndPanel){
 	}
 	if(generateTextSizeRangeBarPressed){
 		ligid.generateTextSizeRangeBar(xOffset,screenWidth);
+	}
+	if(TDModelSizeRangeBarPressed){
+		ligid.TDModelSizeRangeBar(xOffset,screenWidth);
 	}
 	if (subSelectedImagePowerRangeBarPressed) {
 		ligid.subSelectedImagePowerRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable

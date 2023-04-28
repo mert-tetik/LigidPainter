@@ -1218,6 +1218,16 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	generateTextTextureTextTextBoxElement.createProject = true;
 	generateTextTextureTextTextBoxElement.createProjectPos = glm::vec2(0.f,0.55);
     UIElements.push_back(generateTextTextureTextTextBoxElement);//26
+
+    UIElement TDModelSizeRangeBarElement;
+	TDModelSizeRangeBarElement.rangeBar.positionX = 0.0f;
+	TDModelSizeRangeBarElement.rangeBar.positionY = 0.f;
+	TDModelSizeRangeBarElement.rangeBar.value = 1.0f;
+	TDModelSizeRangeBarElement.rangeBar.isConstant = true;
+	TDModelSizeRangeBarElement.panel = 1;
+	TDModelSizeRangeBarElement.attachedToMainPanel = true;
+	TDModelSizeRangeBarElement.type = "rangeBar";
+    UIElements.push_back(TDModelSizeRangeBarElement);//12
     
     return UIElements;
 }

@@ -4,15 +4,13 @@ layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
 
 uniform mat4 view;
+uniform mat4 modelMatrix;
 
 uniform mat4 projection;
 uniform int isTwoDimensional;
 
 uniform mat4 renderTextureProjection;
 uniform mat4 renderTrans;
-
-uniform int use3d;
-
 
 out vec2 TexCoords;
 out vec3 Normal;
@@ -26,7 +24,9 @@ void main() {
    Pos = aPos;
    TexCoords = aTexCoords;
    Normal = aNormal;
-   projectedPos = projection * view * vec4(aPos, 0.5); 
+   
+   vec4 tPos = modelMatrix * vec4(aPos,1.),
+   projectedPos = projection * view * vec4(tPos.xyz, 1.0); 
 
       if(isTwoDimensional == 0){
          gl_Position = renderTextureProjection * vec4(aTexCoords, 0.5, 1);

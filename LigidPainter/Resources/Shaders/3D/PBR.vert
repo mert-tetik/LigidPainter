@@ -7,6 +7,7 @@ layout(location = 4) in vec3 aBitangent;
 
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 modelMatrix;
 
 out vec2 TexCoords;
 out vec3 Normal;
@@ -23,7 +24,7 @@ void main() {
     Pos = aPos;
     TexCoords = aTexCoords;
     Normal = aNormal;
-    projectedPos = projection * view * vec4(aPos, 0.5); 
-
-    gl_Position = projection * view * vec4(aPos, 0.5);
+    projectedPos = projection * view * vec4(aPos, 1.0); 
+    vec4 tPos = modelMatrix * vec4(aPos,1.);
+    gl_Position = modelMatrix * projection * view * vec4(tPos.xyz, 1.0);
 }

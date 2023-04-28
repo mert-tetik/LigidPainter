@@ -367,41 +367,43 @@ public:
                     rf.read(reinterpret_cast<char*>(&c),sizeof(char));
                     material.nodes[nodeI].fragSource.push_back(c);
                 }
-                    const char* defaultVertexShader = 
-			            "#version 330 core\n"
-			            "layout(location = 0) in vec3 aPos;\n"
-			            "layout(location = 1) in vec3 aNormal;\n"
-			            "layout(location = 2) in vec2 aTexCoords;\n"
-			            "layout(location = 3) in vec3 aTangent;\n"
-			            "layout(location = 4) in vec3 aBitangent;\n"
-
-			            "uniform mat4 view;\n"
-			            "uniform mat4 projection;\n"
-			            "uniform int is3D;\n"
-
-			            "out vec2 tex_coords;\n"
-			            "out vec3 normal;\n"
-			            "out vec3 posModel;\n"
-			            "out vec4 posScene;\n"
-			            "out vec3 tangent;\n"
-			            "out vec3 bitangent;\n"
-
-			            "void main() {\n"
-			            	"tangent = aTangent;\n"
-			            	"bitangent = aBitangent;\n"
-			                "posModel = aPos;\n"
-			                "tex_coords = aTexCoords;\n"
-			                "normal = aNormal;\n"
-			            	"vec4 res;\n"
-			            	"if(is3D == 1){\n"
-			                	"res = projection * view * vec4(aPos, 0.5);\n" 
-			            	"}\n"
-			            	"else{\n"
-			                	"res = projection * vec4(tex_coords,0, 1);\n" 
-			            	"}\n"
-			            	"posScene = projection * view * vec4(aPos, 0.5);\n"
-			                "gl_Position = res;\n"
-			            "}\0";
+                const char* defaultVertexShader = 
+			"#version 330 core\n"
+			"layout(location = 0) in vec3 aPos;\n"
+			"layout(location = 1) in vec3 aNormal;\n"
+			"layout(location = 2) in vec2 aTexCoords;\n"
+			"layout(location = 3) in vec3 aTangent;\n"
+			"layout(location = 4) in vec3 aBitangent;\n"
+			
+			"uniform mat4 view;\n"
+			"uniform mat4 projection;\n"
+			"uniform mat4 modelMatrix;\n"
+			"uniform int is3D;\n"
+			
+			"out vec2 tex_coords;\n"
+			"out vec3 normal;\n"
+			"out vec3 posModel;\n"
+			"out vec4 posScene;\n"
+			"out vec3 tangent;\n"
+			"out vec3 bitangent;\n"
+			
+			"void main() {\n"
+				"tangent = aTangent;\n"
+				"bitangent = aBitangent;\n"
+			    "posModel = aPos;\n"
+			    "tex_coords = aTexCoords;\n"
+			    "normal = aNormal;\n"
+				"vec4 res;\n"
+				"if(is3D == 1){\n"
+					"vec4 tPos = modelMatrix * vec4(aPos,1.0);\n"
+			    	"res = projection * view * vec4(tPos.xyz, 1.0);\n"
+				"}\n"
+				"else{\n"
+			    	"res = projection * vec4(tex_coords,0, 1);\n" 
+				"}\n"
+				"posScene = projection * view * vec4(aPos, 0.5);\n"
+			    "gl_Position = res;\n"
+			"}\0";
 
 		            //Compile the fragment shader
 		            const char* shaderSource = material.nodes[nodeI].fragSource.c_str();

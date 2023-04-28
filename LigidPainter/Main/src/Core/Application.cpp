@@ -233,6 +233,7 @@ Model sphereModel;
 int currentMaterialIndex = 0;
 bool textureDraggingState = false;
 bool mirrorRangeBarsPressed = false;
+glm::mat4 modelMatrix;
 
 
 ExportData exportData;
@@ -655,6 +656,11 @@ bool LigidPainter::run()
 	glset.uniform1i(programs.outProgram,"maskMode",1);
 	txtr.updateMaskTexture(FBOScreen,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);	
 
+	modelMatrix = glm::mat4(1);
+	modelMatrix = glm::scale(modelMatrix,glm::vec3((UIElements[UITDModelSizeRangeBarElement].rangeBar.value+0.11f)*4.54545454545));
+	glUseProgram(programs.PBRProgram);
+	glset.uniformMatrix4fv(programs.PBRProgram,"modelMatrix",modelMatrix);
+
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		if(!startScreen && !didDefaultNodesMakeToTheCenter && !createProject)
@@ -965,7 +971,7 @@ bool LigidPainter::run()
 										txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
 										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState
-										 ,debugMode,createProject,modelFilePath,modelName,customModelName);
+										 ,debugMode,createProject,modelFilePath,modelName,customModelName,modelMatrix);
 		}
 		duplicateNodeCall = false;
 		
@@ -1826,6 +1832,16 @@ void LigidPainter::subSelectedImagePowerRangeBar(double xOffset, int width, int 
 	UIElements[UIsubSelectedImagePowerRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UIsubSelectedImagePowerRangeBarElement].rangeBar.value, 0.11f, -0.11f);//Keep in boundaries
 	glUseProgram(programs.PBRProgram);
 	glset.uniform1f(programs.PBRProgram,"subSelectedImagePower",(UIElements[UIsubSelectedImagePowerRangeBarElement].rangeBar.value+0.11f)*4.54545454545);
+}
+void LigidPainter::TDModelSizeRangeBar(float xOffset, int width) {
+	Utilities util;
+	Texture txtr;
+
+	UIElements[UITDModelSizeRangeBarElement].rangeBar.value -= xOffset / (width / 2.0f);
+	UIElements[UITDModelSizeRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UITDModelSizeRangeBarElement].rangeBar.value, 10.f, 0.f);//Keep in boundaries
+	
+	modelMatrix = glm::mat4(1);
+	modelMatrix = glm::scale(modelMatrix,glm::vec3(UIElements[UITDModelSizeRangeBarElement].rangeBar.value * 4.f));
 }
 void LigidPainter::selectBrushMaskTexture(){
 	textureSelectionPanel.active = true;

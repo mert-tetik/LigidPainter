@@ -707,6 +707,7 @@ public:
 		resultNode.title = nodeName;
 		resultNode.width = 0.12f;
 
+		//UPDATE OTHERS
 		const char* defaultVertexShader = 
 			"#version 330 core\n"
 			"layout(location = 0) in vec3 aPos;\n"
@@ -717,6 +718,7 @@ public:
 			
 			"uniform mat4 view;\n"
 			"uniform mat4 projection;\n"
+			"uniform mat4 modelMatrix;\n"
 			"uniform int is3D;\n"
 			
 			"out vec2 tex_coords;\n"
@@ -734,7 +736,8 @@ public:
 			    "normal = aNormal;\n"
 				"vec4 res;\n"
 				"if(is3D == 1){\n"
-			    	"res = projection * view * vec4(aPos, 0.5);\n" 
+					"vec4 tPos = modelMatrix * vec4(aPos,1.0);\n"
+			    	"res = projection * view * vec4(tPos.xyz, 1.0);\n"
 				"}\n"
 				"else{\n"
 			    	"res = projection * vec4(tex_coords,0, 1);\n" 

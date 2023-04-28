@@ -281,6 +281,7 @@ public:
 	void mainPanelBoundaries(float xOffset,int screenSizeX);
 	void nodePanelBoundaries(float yOffset,float screenHeight);
 	void sndPanelBoundaries(float xOffset, int screenSizeX);
+	void TDModelSizeRangeBar(float xOffset, int screenSizeX);
 	void sndPanelPlusIcon();
 	void sndPanelDownIcon();
 	void sndPanelFolderIcon();
