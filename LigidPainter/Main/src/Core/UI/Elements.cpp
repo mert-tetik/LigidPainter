@@ -50,7 +50,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     uploadingModelPathTextBoxElement.attachedToMainPanel = true;
 	uploadingModelPathTextBoxElement.type = "textBox";
     uploadingModelPathTextBoxElement.createProject = true;
-    uploadingModelPathTextBoxElement.createProjectPos = glm::vec2(-0.0f,0.1f);
+    uploadingModelPathTextBoxElement.createProjectPos = glm::vec2(-0.0f,0.3f);
     UIElements.push_back(uploadingModelPathTextBoxElement);//1
 
 	UIElement uploadingModelPathTextElement;
@@ -63,7 +63,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     uploadingModelPathTextElement.attachedToMainPanel = true;
     uploadingModelPathTextElement.type = "text";
     uploadingModelPathTextElement.createProject = true;
-    uploadingModelPathTextElement.createProjectPos = glm::vec2(-0.05f,0.15f);
+    uploadingModelPathTextElement.createProjectPos = glm::vec2(-0.05f,0.35f);
 	UIElements.push_back(uploadingModelPathTextElement);//2
 
 	UIElement loadModelButtonElement;
@@ -92,6 +92,8 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     autoTriangulateCheckBoxElement.panel = 1;
     autoTriangulateCheckBoxElement.attachedToMainPanel = true;
 	autoTriangulateCheckBoxElement.type = "checkBox";
+	autoTriangulateCheckBoxElement.createProject = true;
+	autoTriangulateCheckBoxElement.createProjectPos = glm::vec2(+0.2,-0.43f);
     UIElements.push_back(autoTriangulateCheckBoxElement);//4
 	
 
@@ -99,10 +101,13 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     backfaceCullingCheckBoxElement.checkBox.positionX = -0.08f;
     backfaceCullingCheckBoxElement.checkBox.positionY = 0.2f;
     backfaceCullingCheckBoxElement.checkBox.text = "Backface Culling";
+    backfaceCullingCheckBoxElement.checkBox.checked = true;
     backfaceCullingCheckBoxElement.checkBox.texture = icons.Circle;
     backfaceCullingCheckBoxElement.panel = 1;
     backfaceCullingCheckBoxElement.attachedToMainPanel = true;
 	backfaceCullingCheckBoxElement.type = "checkBox";
+	backfaceCullingCheckBoxElement.createProject = true;
+	backfaceCullingCheckBoxElement.createProjectPos = glm::vec2(-0.2,-0.43f);
     UIElements.push_back(backfaceCullingCheckBoxElement);//5
 
 
@@ -1211,7 +1216,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     generateTextTextureTextTextBoxElement.attachedToMainPanel = true;
 	generateTextTextureTextTextBoxElement.type = "textBox";
 	generateTextTextureTextTextBoxElement.createProject = true;
-	generateTextTextureTextTextBoxElement.createProjectPos = glm::vec2(0.f,0.35);
+	generateTextTextureTextTextBoxElement.createProjectPos = glm::vec2(0.f,0.55);
     UIElements.push_back(generateTextTextureTextTextBoxElement);//26
     
     return UIElements;

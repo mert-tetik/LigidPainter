@@ -519,6 +519,13 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 				nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
 				chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
 				,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex,audios,textureDraggingState);
+				
+				UserInterface ui;
+				if(colorPicker.dropperActive || coloringPanel.dropperActive){
+					glUseProgram(renderPrograms.iconsProgram);
+					ui.iconBox(0.015f,0.03f,mouseXpos/(screenSizeX/2)-1.f,-mouseYpos/(screenSizeY/2.f),0.999f,icons.Circle,0.f,glm::vec4(screenHoverPixel.r/255.f,screenHoverPixel.g/255.f,screenHoverPixel.b/255.f,1),glm::vec4(screenHoverPixel,1));
+					glUseProgram(renderPrograms.uiProgram);
+				}
 		} 
 		else{
 			renderFocusModeUI(renderPrograms,renderData,UIElements,icons,coloringPanel,saturationValShaderData,mouseXpos,mouseYpos,firstClick,FBOScreen,colorPicker,
@@ -711,6 +718,9 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		ui.renderText(renderPrograms.uiProgram,"Import Project",0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
 	}
 	else{
+
+		UIElements[UIbackfaceCullingCheckBox].checkBox.text = "Import Textures";
+		UIElements[UIautoTriangulateCheckBox].checkBox.text = "Import Nodes";
 		#if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -764,12 +774,12 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		}	
 
 		UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.transitionMixVal = util.transitionEffect(UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.clicked,UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.transitionMixVal,0.1f);
-		if(ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,0.35f,mouseXpos,mouseYpos,false)){
+		if(ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,0.55f,mouseXpos,mouseYpos,false)){
 			if(firstClick)
 				UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.clicked = !UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.clicked;
 		}
 		
-		if(ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,0.1f,mouseXpos,mouseYpos,false)){
+		if(ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,0.3f,mouseXpos,mouseYpos,false)){
 			if(firstClick){
 				char const* lFilterPatterns[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
 	
@@ -785,19 +795,63 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 			}
 		}
 
-		ui.listBox(-0.15f , -0.1f , 0.9f,"Texture Resolution",0.1f,icons,{"256","512","1024","2048","4096"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenTextureResIndex,screenGapX);
-		ui.listBox(0.15f , -0.1f , 0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture,screenGapX);
+		ui.listBox(-0.15f , 0.1f , 0.9f,"Texture Resolution",0.1f,icons,{"256","512","1024","2048","4096"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenTextureResIndex,screenGapX);
+		bool skyboxlistStateChanged = ui.listBox(0.15f , 0.1f , 0.9f,"Skybox",0.1f,icons,{"1","2","3","4","5","6"},true,renderData.window,mouseXpos,mouseYpos,firstClick,chosenSkyboxTexture,screenGapX);
+
+		if(skyboxlistStateChanged){
+			Load load;
+			glDeleteTextures(1,&cubemaps.cubemap);
+			glDeleteTextures(1,&cubemaps.prefiltered);
+
+			std::vector<std::string> faces
+			{
+			    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/px.png",
+			    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/nx.png",
+			    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/ny.png",
+			    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/py.png",
+			    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/pz.png",
+			    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/nz.png"
+			};
+			unsigned int cubemapTexture = load.loadCubemap(faces,GL_TEXTURE13);  
+			cubemaps.cubemap = cubemapTexture;
+			unsigned int prefilteredMap = load.createPrefilterMap(renderPrograms,cubemaps,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+			cubemaps.prefiltered = prefilteredMap;
+		}
+
+
+		if(ui.isMouseOnButton(renderData.window,0.015f,0.03f,UIElements[UIbackfaceCullingCheckBox].createProjectPos.x-screenGapX,UIElements[UIbackfaceCullingCheckBox].createProjectPos.y,mouseXpos,mouseYpos,false)){
+			UIElements[UIbackfaceCullingCheckBox].checkBox.mouseHover = true;
+		}
+		else
+			UIElements[UIbackfaceCullingCheckBox].checkBox.mouseHover = false;
+		
+		if(ui.isMouseOnButton(renderData.window,0.015f,0.03f,UIElements[UIautoTriangulateCheckBox].createProjectPos.x-screenGapX,UIElements[UIautoTriangulateCheckBox].createProjectPos.y,mouseXpos,mouseYpos,false)){
+			UIElements[UIautoTriangulateCheckBox].checkBox.mouseHover = true;
+		}
+		else
+			UIElements[UIautoTriangulateCheckBox].checkBox.mouseHover = false;
 
 		glUseProgram(renderPrograms.uiProgram);
 		
-		bool projectPathTextboxHover = ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,0.25f,mouseXpos,mouseYpos,false);
-		ui.box(0.12f,0.03f,0.f,0.25f, projectPath ? util.cropString(projectPath,22) : "Project Path Here" ,colorData.textBoxColor,0.11f,false,false,0.91f,10,colorData.buttonColorHover,projectPathTextboxHover);
+		bool projectPathTextboxHover = ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,0.45f,mouseXpos,mouseYpos,false);
+		ui.box(0.12f,0.03f,0.f,0.45f, projectPath ? util.cropString(projectPath,22) : "Project Path Here" ,colorData.textBoxColor,0.11f,false,false,0.91f,10,colorData.buttonColorHover,projectPathTextboxHover);
 		if(projectPathTextboxHover && firstClick){
 			projectPath = tinyfd_selectFolderDialog("Choose a path","");
 		}
 		
-		bool createButtonHover = ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,-0.65f,mouseXpos,mouseYpos,false);
-		ui.box(0.06f,0.04f,0.f,-0.65f,"Create",colorData.buttonColor,0.03f,false,false,0.91f,10,colorData.buttonColorHover,createButtonHover);
+		bool createButtonHover = ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,-0.55f,mouseXpos,mouseYpos,false);
+		ui.box(0.06f,0.04f,0.f,-0.55f,"Create",colorData.buttonColor,0.03f,false,false,0.91f,10,colorData.buttonColorHover,createButtonHover);
+
+
+		glUseProgram(renderPrograms.iconsProgram);
+		bool undoButtonHover = ui.isMouseOnButton(renderData.window,0.02,0.04,-0.3f-screenGapX,0.6,mouseXpos,mouseYpos,false);
+		ui.iconBox(0.02,0.04,-0.3f,0.6,0.9f,icons.Undo,undoButtonHover,colorData.iconColor,colorData.iconColorHover);
+		if((undoButtonHover && firstClick) || glfwGetKey(renderData.window,GLFW_KEY_ESCAPE) == GLFW_PRESS){
+			startScreen = true;
+			createProject = false;
+		}
+		glUseProgram(renderPrograms.uiProgram);
+
 		if(createButtonHover && firstClick){
 			if(projectPath){
 				//Main folder
@@ -814,12 +868,25 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 					}
 				}
 				ProjectFolder project;
-				project.initFolder(path,nodeScenes[0],modelFilePath,UIElements);
+				project.initFolder(path,modelFilePath,UIElements,UIElements[UIbackfaceCullingCheckBox].checkBox.checked,UIElements[UIautoTriangulateCheckBox].checkBox.checked);
+
+				project.readFolder(path + folderDistinguisher + UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures);
+
+
 				
+				LigidPainter lp;
+				lp.loadModelButton();
+		 		createProject = false;
+
+				UIElements[UIbackfaceCullingCheckBox].checkBox.text = "Backface Culling";
+				UIElements[UIautoTriangulateCheckBox].checkBox.text = "Auto triangulate";
+				UIElements[UIbackfaceCullingCheckBox].checkBox.checked = false;
+				UIElements[UIautoTriangulateCheckBox].checkBox.checked = true;
 			}
-			LigidPainter lp;
-			lp.loadModelButton();
-		 	createProject = false;
+			else{
+				LigidPainter lp;
+				lp.ligidMessageBox("Project path is not selected",-0.1f,"",0.f);
+			}
 		} 
 
 	}

@@ -19,7 +19,7 @@
 
 class ProjectFolder{
 public:
-    void initFolder(std::string &path,NodeScene defaultMaterial,char* &modelFilePath,std::vector<UIElement> &UIElements){
+    void initFolder(std::string &path,char* &modelFilePath,std::vector<UIElement> &UIElements,bool transTextures,bool transNodes){
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -33,11 +33,9 @@ public:
 		materialpath += folderDistinguisher;
 		materialpath += "Materials";
 		std::filesystem::create_directories(materialpath);
-		materialpath += folderDistinguisher;
-		materialpath += defaultMaterial.sceneName;
-				
-        MaterialFile materialFile;
-		materialFile.writeTheFile(materialpath.c_str(),defaultMaterial);
+		std::filesystem::copy("./LigidPainter/Resources/Materials/material_0", materialpath);
+
+
 
 		//Shaders
 		std::string shaderpath = path;
@@ -56,15 +54,27 @@ public:
 		std::filesystem::create_directories(texturespath + folderDistinguisher + "Export");
 			
         std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures");
-				
-		std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Mask");
-		std::filesystem::copy("./LigidPainter/Resources/Textures/Mask", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Mask");
+		
+        if(transTextures){
+		    std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Mask");
+		    std::filesystem::copy("./LigidPainter/Resources/Textures/Mask", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Mask");
 
-		std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "RGB");
-		std::filesystem::copy("./LigidPainter/Resources/Textures/Sticker", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "RGB");
-				
-		std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Normal Map");
-		std::filesystem::copy("./LigidPainter/Resources/Textures/NormalMap", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Normal Map");
+		    std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "RGB");
+		    std::filesystem::copy("./LigidPainter/Resources/Textures/Sticker", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "RGB");
+    
+		    std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Normal Map");
+		    std::filesystem::copy("./LigidPainter/Resources/Textures/NormalMap", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Normal Map");
+        }
+        else{
+		    std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Mask");
+		    std::filesystem::copy("./LigidPainter/Resources/Simplified/SimpleBrushTextures/SimpleMask", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Mask");
+
+		    std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "RGB");
+		    std::filesystem::copy("./LigidPainter/Resources/Simplified/SimpleBrushTextures/SimpleRGB", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "RGB");
+    
+		    std::filesystem::create_directories(texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Normal Map");
+		    std::filesystem::copy("./LigidPainter/Resources/Simplified/SimpleBrushTextures/SimpleNormal Map", texturespath + folderDistinguisher + "Brush Textures" + folderDistinguisher + "Normal Map");
+        }
 			
 		//App Nodes
 		std::string nodespath = path;
@@ -80,8 +90,11 @@ public:
 
 		std::filesystem::copy("./LigidPainter/Resources/Text", path);
 
-		std::filesystem::copy("./LigidPainter/Resources/Nodes", nodespath);
-				
+        if(transNodes)
+		    std::filesystem::copy("./LigidPainter/Resources/Nodes", nodespath);
+        else
+		    std::filesystem::copy("./LigidPainter/Resources/Simplified/SimpleNodes", nodespath);
+        	
 		//Version 1.4
 		uint64_t h1 = 0xAB428C9F; 
         uint64_t h2 = 0xFF8A1C1C; 

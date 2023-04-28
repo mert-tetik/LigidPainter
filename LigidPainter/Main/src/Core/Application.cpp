@@ -41,6 +41,7 @@
 //TODO Remove 3D Model loading
 
 
+
 //TODO Search for brush textures
 //TODO Color id
 //TODO Color pallette"-
@@ -407,7 +408,7 @@ bool LigidPainter::run()
 	glEnable(GL_DEPTH_TEST);
 
 	//Load nodes
-	appNodes = load.loadNodes(folderDistinguisher);
+	//appNodes = load.loadNodes(folderDistinguisher);
 	//Load chars
 	load.uploadChars();
 	//Load brush mask textures
@@ -422,7 +423,7 @@ bool LigidPainter::run()
 	//Load UI
 	UIElements = ui.getUiElements(icons);
 	//Load context menus
-	addNodeContextMenu = ui.createContextMenus(appNodes);
+	//addNodeContextMenu = ui.createContextMenus(appNodes);
 	//Load the prefilter map
 	cubemaps.prefiltered = load.createPrefilterMap(programs,cubemaps,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 	//Load general rendering FBO
@@ -435,9 +436,10 @@ bool LigidPainter::run()
 	textureGen.initDrawToScreen();
 
 	////load.getDefaultNodeScene(nodeScenes,appNodes,"material_0");
-	sndPanel.state = 1;
-	sndPanelPlusIcon();
-	sndPanel.state = 0;
+	//sndPanel.state = 1;
+	//sndPanelPlusIcon();
+	//sndPanel.state = 0;
+	
 	//Create the default material out (for model)
 	MaterialOut mOut;
 	mOut.program = 0;
@@ -472,7 +474,6 @@ bool LigidPainter::run()
 	sphereModel.sendObjectsToModel(objects.VAO,objects.VBO);
 
 	glfwSetWindowSizeLimits(window,glfwGetVideoMode(glfwGetPrimaryMonitor())->width/1.7,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
-
 
 
 	glUseProgram(programs.brushCursor);
@@ -558,7 +559,7 @@ bool LigidPainter::run()
 	albedoTextures.push_back(rgbFolder);
 	albedoTextures.push_back(normalMapFolder);
 
-	load.loadBrushMaskTextures(albedoTextures);
+	//load.loadBrushMaskTextures(albedoTextures);
 
 	
 	//aTexture aqrTxtr;
@@ -656,7 +657,7 @@ bool LigidPainter::run()
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
-		if(!startScreen && !didDefaultNodesMakeToTheCenter)
+		if(!startScreen && !didDefaultNodesMakeToTheCenter && !createProject)
 			defaultNodePosCorrectorCounter++;
 
 		if(defaultNodePosCorrectorCounter > 10){
@@ -668,8 +669,6 @@ bool LigidPainter::run()
 			nodeScenes[0].nodes[0].positionX = 0.f;
 			nodeScenes[0].nodes[0].positionY = -1.6f;
 		}
-
-		
 
 		whileCounter++;
 		if(whileCounter > 10000)
@@ -1015,7 +1014,7 @@ bool LigidPainter::run()
 				scrollVal = holdScrollVal;
 			if(zoomInOutCamera || (glfwGetKey(window,GLFW_KEY_Z) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE))
 				scrollVal = mouseYpos - lastMouseYpos;
-			if(!startScreen)
+			if(!startScreen && !createProject)
 				callbackData = callback.scroll_callback(window, 0, scrollVal);
 			doScrollAfterCallInPaintingMode = false;
 		}
@@ -1423,7 +1422,7 @@ double lastXpos;
 double lastYpos;
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	if(startScreen){
+	if(startScreen || createProject){
 		if(nodePanel.pointerCursor)
 			glfwSetCursor(window, cursors.pointerCursor);
 		else
@@ -2183,9 +2182,9 @@ void LigidPainter::loadModelButton() {
 
 		//Load the model
 		if(renderDefaultModel)
-			model.loadModel(modelFilePath,UIElements[UIautoTriangulateCheckBox].checkBox.checked);
+			model.loadModel(modelFilePath,true);
 		else if(customModelFilePath != "")
-			model.loadModel(customModelFilePath,UIElements[UIautoTriangulateCheckBox].checkBox.checked);
+			model.loadModel(customModelFilePath,true);
 
 		newModelAdded = true;
 
