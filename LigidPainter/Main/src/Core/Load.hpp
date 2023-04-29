@@ -556,6 +556,10 @@ public:
 		unsigned int renderTheTextureBlur = gl.createProgram("./LigidPainter/Resources/Shaders/UI/renderTheTextureBlur");
 		
 		
+		
+		unsigned int blackToAlphaProgram = gl.createProgram("./LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/blackToAlpha");
+		
+		
 
 		
 		Programs glPrograms;
@@ -587,6 +591,7 @@ public:
 		glPrograms.materialResult = materialResult;
 		glPrograms.dotsProgram = dotsProgram;
 		glPrograms.renderTheTextureBlur = renderTheTextureBlur;
+		glPrograms.blackToAlphaProgram = blackToAlphaProgram;
 
 
 		return glPrograms;

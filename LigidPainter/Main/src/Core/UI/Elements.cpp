@@ -579,7 +579,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement generateTextureButtonElement;
     generateTextureButtonElement.button.positionX = 0.0f;
-    generateTextureButtonElement.button.positionY = -0.56f;
+    generateTextureButtonElement.button.positionY = -0.86f;
     generateTextureButtonElement.button.positionZ = 0.9f;
     generateTextureButtonElement.button.width = 0.05f;
     generateTextureButtonElement.button.height = 0.04f;
@@ -596,7 +596,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement bakeButtonElement;
     bakeButtonElement.button.positionX = 0.0f;
-    bakeButtonElement.button.positionY = -0.66f;
+    bakeButtonElement.button.positionY = -0.96f;
     bakeButtonElement.button.positionZ = 0.9f;
     bakeButtonElement.button.width = 0.08f;
     bakeButtonElement.button.height = 0.04f;
@@ -613,7 +613,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement outSubmeshesButtonElement;
     outSubmeshesButtonElement.button.positionX = 0.0f;
-    outSubmeshesButtonElement.button.positionY = -0.76f;
+    outSubmeshesButtonElement.button.positionY = -1.06f;
     outSubmeshesButtonElement.button.positionZ = 0.9f;
     outSubmeshesButtonElement.button.width = 0.08f;
     outSubmeshesButtonElement.button.height = 0.04f;
@@ -1228,6 +1228,18 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	TDModelSizeRangeBarElement.attachedToMainPanel = true;
 	TDModelSizeRangeBarElement.type = "rangeBar";
     UIElements.push_back(TDModelSizeRangeBarElement);//12
+
+    UIElement generateBlackToAlphaCheckBoxElement;
+    generateBlackToAlphaCheckBoxElement.checkBox.positionX = -0.03f;
+    generateBlackToAlphaCheckBoxElement.checkBox.positionY = -0.66f;
+    generateBlackToAlphaCheckBoxElement.checkBox.text = "Black To Alpha";
+    generateBlackToAlphaCheckBoxElement.checkBox.checked = false;
+    generateBlackToAlphaCheckBoxElement.checkBox.mouseHover = false;
+    generateBlackToAlphaCheckBoxElement.checkBox.texture = icons.Circle;
+    generateBlackToAlphaCheckBoxElement.panel = 6;
+    generateBlackToAlphaCheckBoxElement.attachedToMainPanel = true;
+    generateBlackToAlphaCheckBoxElement.type = "checkBox";
+    UIElements.push_back(generateBlackToAlphaCheckBoxElement);//38
     
     return UIElements;
 }

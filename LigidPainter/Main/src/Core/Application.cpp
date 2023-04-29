@@ -1627,14 +1627,19 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 			}
 		}
 		else if(callbackData.mainPanelEnter && panelData.paintingPanelActive){
-			 panelData.paintingPanelSlideVal += scrollx/10.0f;
+			 panelData.paintingPanelSlideVal -= scrollx/10.0f;
 			 if(panelData.paintingPanelSlideVal < 0.0f)
 			 	panelData.paintingPanelSlideVal = 0.0f;
 		}
 		else if(callbackData.mainPanelEnter && panelData.settingsPanelActive){
-			 panelData.settingsPanelSlideVal += scrollx/10.0f;
+			 panelData.settingsPanelSlideVal -= scrollx/10.0f;
 			 if(panelData.settingsPanelSlideVal < 0.0f)
 			 	panelData.settingsPanelSlideVal = 0.0f;
+		}
+		else if(callbackData.mainPanelEnter && panelData.generatorPanelActive){
+			 panelData.generatorPanelSlideVal -= scrollx/10.0f;
+			 if(panelData.generatorPanelSlideVal < 0.0f)
+			 	panelData.generatorPanelSlideVal = 0.0f;
 		}
 		else if (!paintingMode && !mainPanelHover) {
 			callbackData = callback.scroll_callback(window, scroll, scrollx);
@@ -1899,6 +1904,8 @@ void LigidPainter::generateTextureButton(){
 			glUseProgram(programs.noisyTextureProgram);
 		else if(UIElements[UInormalmapCheckBoxElement].checkBox.checked)
 			glUseProgram(programs.normalGenProgram);
+		else if(UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked)
+			glUseProgram(programs.blackToAlphaProgram);
 		else{
 			UserInterface ui;
 			glm::mat4 projection = glm::ortho(-1.0f, 0.5f, 0.f, 1.f);
@@ -1929,10 +1936,12 @@ void LigidPainter::generateTextureButton(){
 
 		
 		glm::mat4 renderTextureProjection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
+		//TODO Fix Text generation
 		
 		if(!UIElements[UIgenerateTextCheckBoxElement].checkBox.checked){
 			glset.uniformMatrix4fv(programs.noisyTextureProgram,"renderTextureProjection",renderTextureProjection);
 			glset.uniformMatrix4fv(programs.normalGenProgram,"renderTextureProjection",renderTextureProjection);
+			glset.uniformMatrix4fv(programs.blackToAlphaProgram,"renderTextureProjection",renderTextureProjection);
 			glset.drawArrays(renderVertices,0);
 		}
 		glUseProgram(programs.uiProgram);

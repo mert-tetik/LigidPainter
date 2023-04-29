@@ -102,6 +102,7 @@
 #define UIgenerateTextRightAlignCheckBoxElement 92
 #define UIgenerateTextTextureTextTextBoxElement 93
 #define UITDModelSizeRangeBarElement 94
+#define UIgenerateBlackToAlphaCheckBoxElement 95
 
 struct ColorData //LigidPainter color palette
 {
@@ -117,8 +118,8 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 buttonColorHover = glm::vec4(0.0f, 0.0f, 0.0f,0.7f);
 
 	glm::vec4 menuBarColor = glm::vec4(0.05f, 0.05f, 0.05f,0.5f);
-	glm::vec4 textBoxColor = glm::vec4(0.05f, 0.05f, 0.05f,0.5f);
-	glm::vec4 textBoxColorClicked = glm::vec4(LigidPainterThemeColor,0.5f);
+	glm::vec4 textBoxColor = glm::vec4(0.1f, 0.1f, 0.1f,1.0f);
+	glm::vec4 textBoxColorClicked = glm::vec4(LigidPainterThemeColor,1.0f);
 
 	glm::vec4 checkBoxColor = glm::vec4(0.05f, 0.05f, 0.05f,0.5f);
 	glm::vec4 checkBoxHoverColor = glm::vec4(0.15f, 0.15f, 0.15f,0.5f);
@@ -705,7 +706,7 @@ public:
 	void nodePanel(float mainPanelLoc,float sndPanel, float height,Programs programs,Icons icons,std::vector<NodeScene> nodeScenes,int selectedNodeScene);
 	void nodePanelBarriers(float mainPanelLoc,float sndPanel, float height);
 
-	void textureDisplayer(float width,float height, float position_x,float position_y,float z);
+	void textureDisplayer(float width,float height, float position_x,float position_y,float z,unsigned int icon);
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec4 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec4 colorTransitionColor , float mixVal);
 	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover);
 	void rampBox(float width, float height, float position_x, float position_y, float z);

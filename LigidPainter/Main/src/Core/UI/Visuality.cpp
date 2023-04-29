@@ -900,9 +900,12 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 	glUseProgram(programs.uiProgram);
 }
 
-void UserInterface::textureDisplayer(float width,float height, float position_x,float position_y,float z){ 
+void UserInterface::textureDisplayer(float width,float height, float position_x,float position_y,float z,unsigned int icon){ 
 	GlSet glset;
 	ColorData clrData;
+
+	glUseProgram(uiPrograms.iconsProgram);
+	iconBox(0.02f/2.f,0.02f,position_x+0.005f,position_y-0.01f,z, icon,0.f,glm::vec4(0),glm::vec4(0));
 	std::vector<float> buttonCoorSq{
 		// first triangle
 		 width + position_x,  position_y, z,1,1,0,0,0,  // top right
@@ -917,8 +920,9 @@ void UserInterface::textureDisplayer(float width,float height, float position_x,
 	glUseProgram(uiPrograms.textureDisplayer);
 	glset.uniform1i(uiPrograms.textureDisplayer, "currentTexture", 0);
 	glset.drawArrays(buttonCoorSq,false);
+	glUseProgram(uiPrograms.iconsProgram);
+	iconBox(0.035f/2.f,0.035f,position_x+0.005f,position_y-0.01f,1.f, icon,0.f,clrData.textureDisplayerButtonColor,clrData.textureDisplayerButtonColor);
 	glUseProgram(uiPrograms.uiProgram);
-	box(0.0f,0.035f,position_x+0.005f,position_y-0.01f,"", clrData.textureDisplayerButtonColor,0,0,0,1,10,glm::vec4(0,0,0,1),0);
 }
 
 bool vertRGBarPressed = false;

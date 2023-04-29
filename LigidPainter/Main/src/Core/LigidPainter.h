@@ -42,6 +42,7 @@ struct Programs
 	unsigned int materialResult;
 	unsigned int dotsProgram;
 	unsigned int renderTheTextureBlur;
+	unsigned int blackToAlphaProgram;
 };
 struct Cubemaps{
 	unsigned int cubemap;
@@ -324,5 +325,6 @@ struct PanelData {
 	
 	bool generatorPanelActive;
 	float generatorPanelMixval = 0.f;
+	float generatorPanelSlideVal = 0.0f;
 };
 #endif // !MSHPAPP

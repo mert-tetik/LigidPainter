@@ -331,6 +331,9 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 	if(panelData.settingsPanelSlideVal > 0.3){
 		panelData.settingsPanelSlideVal = 0.3;
 	}
+	if(panelData.generatorPanelSlideVal > 0.3){
+		panelData.generatorPanelSlideVal = 0.3;
+	}
 
 	if(!startScreen && !createProject){
 		glActiveTexture(GL_TEXTURE9);

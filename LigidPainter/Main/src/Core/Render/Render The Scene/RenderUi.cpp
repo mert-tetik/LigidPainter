@@ -766,6 +766,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 				slideVal = panelData.paintingPanelSlideVal;
 			if(panelData.settingsPanelActive && !UIElements[i].focusMode)
 				slideVal = panelData.settingsPanelSlideVal;
+			if(panelData.generatorPanelActive && !UIElements[i].focusMode)
+				slideVal = panelData.generatorPanelSlideVal;
 
 				glUseProgram(programs.uiProgram);
 
@@ -848,6 +850,20 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			gl.uniform1f(programs.noisyTextureProgram,"value",rangeBarVal);
 			glActiveTexture(GL_TEXTURE28);
 		}
+		else if(UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked){
+			glUseProgram(programs.blackToAlphaProgram);
+
+			glm::mat4 renderTextureProjection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+		
+			glActiveTexture(GL_TEXTURE0);
+
+			gl.uniformMatrix4fv(programs.blackToAlphaProgram,"renderTextureProjection",renderTextureProjection);
+			gl.uniform1i(programs.blackToAlphaProgram,"inputTexture",0);
+			gl.uniform1i(programs.blackToAlphaProgram,"displayingMode",1);
+			float rangeBarVal = ((0.22f-(UIElements[UInoiseStrengthRangeBarElement].rangeBar.value + 0.11f))+0.05f)  * 50.f;
+			//gl.uniform1f(programs.blackToAlphaProgram,"value",rangeBarVal);
+			glActiveTexture(GL_TEXTURE28);
+		}
 		else{
 		//*Generate the text texture
 			int txtrRes = 256;
@@ -893,6 +909,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 					glUseProgram(programs.noisyTextureProgram);
 				else if(UIElements[UInormalmapCheckBoxElement].checkBox.checked)
 					glUseProgram(programs.normalGenProgram);
+				else if(UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked)
+					glUseProgram(programs.blackToAlphaProgram);
 				else{
 					UserInterface ui;
 					glm::mat4 projection = glm::ortho(-1.0f, 0.5f, -1.f, 1.f);
@@ -1071,7 +1089,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	else
 		textureSelectionPanel.firstCycle = true;
 
-	ui.textureDisplayer(textureDisplayer.ndWidth,textureDisplayer.ndHeight,textureDisplayer.buttonPosX - 1.0f +screenGapX,textureDisplayer.buttonPosY,0.999999f); 
+	ui.textureDisplayer(textureDisplayer.ndWidth,textureDisplayer.ndHeight,textureDisplayer.buttonPosX - 1.0f +screenGapX,textureDisplayer.buttonPosY,0.999999f,icons.O); 
 
 
 	alertState = 0;

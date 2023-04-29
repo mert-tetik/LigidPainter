@@ -13,7 +13,6 @@ uniform int isMask;
 uniform int maskUseColor;
 uniform int roundCorners;
 
-
 uniform sampler2D txtr;
 
 uniform int renderMaterials;

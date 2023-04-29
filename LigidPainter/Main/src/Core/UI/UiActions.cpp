@@ -185,18 +185,26 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			UIElements[UInormalmapCheckBoxElement].checkBox.checked = !UIElements[UInormalmapCheckBoxElement].checkBox.checked;
 			UIElements[UInoiseCheckBoxElement].checkBox.checked = !UIElements[UInormalmapCheckBoxElement].checkBox.checked;
 			UIElements[UIgenerateTextCheckBoxElement].checkBox.checked = !UIElements[UInormalmapCheckBoxElement].checkBox.checked;
+			UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked = !UIElements[UInormalmapCheckBoxElement].checkBox.checked;
 		}
 		if(UIElements[UInoiseCheckBoxElement].checkBox.mouseHover && !UIElements[UInoiseCheckBoxElement].checkBox.checked){
 			UIElements[UInoiseCheckBoxElement].checkBox.checked = !UIElements[UInoiseCheckBoxElement].checkBox.checked;
 			UIElements[UInormalmapCheckBoxElement].checkBox.checked = !UIElements[UInoiseCheckBoxElement].checkBox.checked;
 			UIElements[UIgenerateTextCheckBoxElement].checkBox.checked = !UIElements[UInoiseCheckBoxElement].checkBox.checked;
+			UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked = !UIElements[UInoiseCheckBoxElement].checkBox.checked;
 
 		}
 		if(UIElements[UIgenerateTextCheckBoxElement].checkBox.mouseHover && !UIElements[UIgenerateTextCheckBoxElement].checkBox.checked){
 			UIElements[UIgenerateTextCheckBoxElement].checkBox.checked = !UIElements[UIgenerateTextCheckBoxElement].checkBox.checked;
 			UIElements[UInormalmapCheckBoxElement].checkBox.checked = !UIElements[UIgenerateTextCheckBoxElement].checkBox.checked;
 			UIElements[UInoiseCheckBoxElement].checkBox.checked = !UIElements[UIgenerateTextCheckBoxElement].checkBox.checked;
-
+			UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked = !UIElements[UIgenerateTextCheckBoxElement].checkBox.checked;
+		}
+		if(UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.mouseHover && !UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked){
+			UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked = !UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked;
+			UIElements[UInormalmapCheckBoxElement].checkBox.checked = !UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked;
+			UIElements[UInoiseCheckBoxElement].checkBox.checked = !UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked;
+			UIElements[UIgenerateTextCheckBoxElement].checkBox.checked = !UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked;
 		}
 		
 		if(UIElements[UIrealtimeMaterialRenderingCheckBox].checkBox.mouseHover)
