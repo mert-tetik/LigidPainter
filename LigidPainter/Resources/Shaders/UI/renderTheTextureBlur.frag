@@ -10,6 +10,8 @@ const float PI = 3.14159265;
 uniform sampler2D txtr;
 
 uniform int blurVal;
+
+uniform int roundCorners;
     
 // from https://iquilezles.org/articles/distfunctions
 float udRoundBox( vec2 p, vec2 b, float r )
@@ -60,7 +62,7 @@ vec4 blur(int range) {
 void main(){
     color = blur(blurVal/2);
 
-    if(roundUp(TexCoords) < 0.05){
+    if(roundUp(TexCoords) < 0.05 && roundCorners == 1){
         color.a = 0.;
     }
 

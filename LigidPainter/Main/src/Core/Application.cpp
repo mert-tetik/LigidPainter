@@ -1110,8 +1110,14 @@ int LigidPainter::ligidMessageBox(std::string message,float messagePosX,std::str
 	
 	std::this_thread::sleep_for(100ms);
 	
+	glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+	glUseProgram(programs.renderTheTextureBlur);
+	glset.uniformMatrix4fv(programs.renderTheTextureBlur, "TextProjection", projection);
+	glset.uniform1i(programs.renderTheTextureBlur, "txtr", 14);
+	
 	while (true)
 	{
+
 		//Disable painting
 		doPainting = false; 
 		//renderData.doPainting = doPainting;
@@ -1120,13 +1126,10 @@ int LigidPainter::ligidMessageBox(std::string message,float messagePosX,std::str
 		glClearColor(colorData.viewportBackColor.r,colorData.viewportBackColor.g,colorData.viewportBackColor.b,1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear before rendering
 
-		glset.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		glActiveTexture(GL_TEXTURE13);
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
-		glActiveTexture(GL_TEXTURE16);
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered);
-		render.renderSkyBox(skyBoxShaderData,programs,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
+		glUseProgram(programs.renderTheTextureBlur);
+		float blurVal = 0.5f;
+		render.renderBlurySkybox(cubemaps,skyBoxShaderData,programs,UIElements,blurVal,1.f,1.f,false);
+		glUseProgram(programs.uiProgram);
 		
 		
 		float messageBoxBackColor[3] = {colorData.messageBoxPanelColor.r,colorData.messageBoxPanelColor.g,colorData.messageBoxPanelColor.r};
