@@ -38,7 +38,6 @@
 
 using namespace std;
 
-
 int renderCurrentMaterialIndex = 0;
 
 Programs renderPrograms;
@@ -719,7 +718,36 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 			enteredOnce = true;
 			nodePanel.pointerCursor = false;
 		}
-	
+
+		#if defined(_WIN32) || defined(_WIN64)
+		    char folderDistinguisher = '\\';
+		#else
+			char folderDistinguisher = '/'; 
+		#endif
+
+		int bI = 0;
+		ui.container(0.f,-0.7f,0.5f,0.4f,0.15f,colorData.panelColor,renderPrograms,icons.Circle,glm::vec4(0),0.f);
+		glUseProgram(renderPrograms.uiProgram);
+
+		ui.renderText(renderPrograms.uiProgram,"From ./Projects",-0.4f,-0.55f,0.00022f,colorData.textColor,0.91f,false);
+		
+		for (const auto & entry : std::filesystem::directory_iterator("./Projects")){
+			std::string fileName = entry.path().string();
+			std::string file = util.getLastWordBySeparatingWithChar(fileName,folderDistinguisher);
+
+			bool buttonHover = ui.isMouseOnButton(renderData.window,0.4f,0.015f,0.f-screenGapX,-0.58f - ((float)bI * 0.03),mouseXpos,mouseYpos,false);
+
+			ui.box(0.4f,0.015f,0.f,-0.58f - ((float)bI * 0.03),file,colorData.buttonColor,+0.39f,false,false,0.91f+(bI/10000.f),10000,colorData.buttonColorHover,buttonHover);
+			bI++;
+			if(firstClick && buttonHover){
+				ProjectFolder projectFolder;
+				projectFolder.readFolder(fileName + folderDistinguisher + file + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures);
+				projectFilePath = fileName;
+				LibAL_playAudioObject(audios.Login);
+				startScreen = false;
+			}
+		}
+
 		ui.container(-0.0f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,startMenuNew3DProjectMixVal);
 		glUseProgram(renderPrograms.iconsProgram);
 		ui.iconBox(0.07,0.14f,0.0f,0.1f,1.f,icons.ThreeDProject,0.f,colorData.iconColor,colorData.iconColor);
@@ -884,8 +912,6 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 
 				project.readFolder(path + folderDistinguisher + UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures);
 
-
-				
 				LigidPainter lp;
 				lp.loadModelButton();
 		 		createProject = false;
