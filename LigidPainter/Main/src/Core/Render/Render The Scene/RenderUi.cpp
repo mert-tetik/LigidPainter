@@ -1098,7 +1098,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	lastMouseY = mouseYpos;
 
 	float generateOptionsYoffset = -0.05f;
-	if(UIElements[UInormalmapCheckBoxElement].checkBox.checked){
+	if(UIElements[UInormalmapCheckBoxElement].checkBox.checked && panelData.generatorPanelActive){
 		UIElements[UInormalmapCheckBoxElement].checkBox.positionY = 0.16f + generateOptionsYoffset; 
 		UIElements[UInormalStrengthTextElement].text.positionY = 0.07f + generateOptionsYoffset; 
 		UIElements[UInormalStrengthRangeBarElement].rangeBar.positionY = 0.1f + generateOptionsYoffset;
@@ -1122,7 +1122,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		
 		UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.positionY = -0.23f + generateOptionsYoffset;
 	}
-	if(UIElements[UInoiseCheckBoxElement].checkBox.checked){
+	if(UIElements[UInoiseCheckBoxElement].checkBox.checked && panelData.generatorPanelActive){
 		UIElements[UInormalmapCheckBoxElement].checkBox.positionY = 0.16f + generateOptionsYoffset; 
 		UIElements[UInormalStrengthTextElement].text.positionY = 1000.1f; 
 		UIElements[UInormalStrengthRangeBarElement].rangeBar.positionY = 1000.07f;
@@ -1146,7 +1146,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		
 		UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.positionY = -0.22f + generateOptionsYoffset;
 	}
-	if(UIElements[UIgenerateTextCheckBoxElement].checkBox.checked){
+	if(UIElements[UIgenerateTextCheckBoxElement].checkBox.checked && panelData.generatorPanelActive){
 		UIElements[UInormalmapCheckBoxElement].checkBox.positionY = 0.16f + generateOptionsYoffset; 
 		UIElements[UInormalStrengthTextElement].text.positionY = 1000.1f; 
 		UIElements[UInormalStrengthRangeBarElement].rangeBar.positionY = 1000.07f;
@@ -1170,7 +1170,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		
 		UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.positionY = -0.35f + generateOptionsYoffset;
 	}
-	if(UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked){
+	if(UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked && panelData.generatorPanelActive){
 		UIElements[UInormalmapCheckBoxElement].checkBox.positionY = 0.16f + generateOptionsYoffset; 
 		UIElements[UInormalStrengthTextElement].text.positionY = 1000.1f; 
 		UIElements[UInormalStrengthRangeBarElement].rangeBar.positionY = 1000.07f;
