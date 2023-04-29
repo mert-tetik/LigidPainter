@@ -45,7 +45,7 @@ Programs renderPrograms;
 
 //--------------------RENDER UI --------------------\\
 
-char* projectPath;
+char* projectPath = "./Projects";
 
 unsigned int currentBrushMaskTexture;
 
@@ -848,7 +848,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		bool projectPathTextboxHover = ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,0.45f,mouseXpos,mouseYpos,false);
 		ui.box(0.12f,0.03f,0.f,0.45f, projectPath ? util.cropString(projectPath,22) : "Project Path Here" ,colorData.textBoxColor,0.11f,false,false,0.91f,10,colorData.buttonColorHover,projectPathTextboxHover);
 		if(projectPathTextboxHover && firstClick){
-			projectPath = tinyfd_selectFolderDialog("Choose a path","");
+			projectPath = tinyfd_selectFolderDialog("Choose a path","./Projects");
 		}
 		
 		bool createButtonHover = ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,-0.55f,mouseXpos,mouseYpos,false);

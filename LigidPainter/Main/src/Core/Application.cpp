@@ -36,14 +36,17 @@
 //TODO Project folder
 //TODO Sound for success alert
 //TODO Remove 3D Model loading
-//TODO Circular range bar for light pos
-//TODO 3D Model position
-//TODO Perspective options (maybe)
+//TODO Default project path
+//TODO Display project from the start 
 //TODO projectsettings - 3D Model options 
-//TODO Black to alpa zero - texture generator
 //TODO Multiple texture selection
 //TODO Brush textures interactions 
+//TODO Fix project folder save options
 
+//TODO Circular range bar for light pos
+//TODO 3D Model position
+//TODO 3D Model Fov
+//TODO 3D Models 
 
 //TODO Search for brush textures
 //TODO Color id
@@ -663,6 +666,9 @@ bool LigidPainter::run()
 	modelMatrix = glm::scale(modelMatrix,glm::vec3((UIElements[UITDModelSizeRangeBarElement].rangeBar.value+0.11f)*4.54545454545));
 	glUseProgram(programs.PBRProgram);
 	glset.uniformMatrix4fv(programs.PBRProgram,"modelMatrix",modelMatrix);
+
+	if(!std::filesystem::is_directory("./Projects"))
+		std::filesystem::create_directories("./Projects");
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{

@@ -1050,10 +1050,10 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     folderIconElement.type = "icon";
     UIElements.push_back(folderIconElement);//34
 
-    //Load plane button
+    //Load plane button (deleted)
 	UIElement loadPlaneModelButtonElement;
     loadPlaneModelButtonElement.icon.positionX = 0.0f;
-    loadPlaneModelButtonElement.icon.positionY = -0.1f;
+    loadPlaneModelButtonElement.icon.positionY = -1000.1f;
     loadPlaneModelButtonElement.icon.positionZ = 0.9f;
     loadPlaneModelButtonElement.icon.width = 0.03f;
     loadPlaneModelButtonElement.icon.height = 0.055f;
@@ -1067,10 +1067,10 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	loadPlaneModelButtonElement.type = "icon";
     UIElements.push_back(loadPlaneModelButtonElement);//35
 
-	//Load sphere button 
+	//Load sphere button (deleted)
 	UIElement loadSphereModelButtonElement;
     loadSphereModelButtonElement.icon.positionX = 0.0f;
-    loadSphereModelButtonElement.icon.positionY = -0.2f;
+    loadSphereModelButtonElement.icon.positionY = -1000.2f;
     loadSphereModelButtonElement.icon.positionZ = 0.91f;
     loadSphereModelButtonElement.icon.width = 0.03f;
     loadSphereModelButtonElement.icon.height = 0.055f;
@@ -1084,9 +1084,9 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	loadSphereModelButtonElement.type = "icon";
     UIElements.push_back(loadSphereModelButtonElement);//36
 
-	UIElement planeIconElement;
+	UIElement planeIconElement;//(deleted)
     planeIconElement.icon.positionX = 0.0f;
-    planeIconElement.icon.positionY = -0.1f;
+    planeIconElement.icon.positionY = -1000.1f;
     planeIconElement.icon.positionZ = 0.99f;
     planeIconElement.icon.width = 0.0175f;
     planeIconElement.icon.height = 0.035f;
@@ -1099,9 +1099,9 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	planeIconElement.type = "icon";
     UIElements.push_back(planeIconElement);//37
 
-    UIElement sphereIconElement;
+    UIElement sphereIconElement;//(deleted)
     sphereIconElement.icon.positionX = 0.0f;
-    sphereIconElement.icon.positionY = -0.2f;
+    sphereIconElement.icon.positionY = -1000.2f;
     sphereIconElement.icon.positionZ = 0.99f;
     sphereIconElement.icon.width = 0.03f/1.6f;
     sphereIconElement.icon.height = 0.055f/1.6f;
