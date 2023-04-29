@@ -1102,10 +1102,14 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		UIElements[UInormalmapCheckBoxElement].checkBox.positionY = 0.16f + generateOptionsYoffset; 
 		UIElements[UInormalStrengthTextElement].text.positionY = 0.07f + generateOptionsYoffset; 
 		UIElements[UInormalStrengthRangeBarElement].rangeBar.positionY = 0.1f + generateOptionsYoffset;
+
+		ui.box(0.13f,0.0005f,centerCoords - screenGapX, 0.02f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
 		
 		UIElements[UInoiseCheckBoxElement].checkBox.positionY = -0.03f + generateOptionsYoffset;
 		UIElements[UInoiseStrengthRangeBarElement].rangeBar.positionY = -1000.06f;
 		UIElements[UInoiseStrengthTextElement].text.positionY = -1000.06f;
+		
+		ui.box(0.13f,0.0005f,centerCoords - screenGapX, -0.08f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
 		
 		UIElements[UIgenerateTextCheckBoxElement].checkBox.positionY = -0.13f + generateOptionsYoffset;
 		UIElements[UIgenerateTextLeftAlignCheckBoxElement].checkBox.positionY = -1000.06f;
@@ -1114,16 +1118,22 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.positionY = -1000.06f;
 		UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.position_y = -1000.06f;
 		
+		ui.box(0.13f,0.0005f,centerCoords - screenGapX, -0.18f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
+		
 		UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.positionY = -0.23f + generateOptionsYoffset;
 	}
 	if(UIElements[UInoiseCheckBoxElement].checkBox.checked){
 		UIElements[UInormalmapCheckBoxElement].checkBox.positionY = 0.16f + generateOptionsYoffset; 
 		UIElements[UInormalStrengthTextElement].text.positionY = 1000.1f; 
 		UIElements[UInormalStrengthRangeBarElement].rangeBar.positionY = 1000.07f;
+
+		ui.box(0.13f,0.0005f,centerCoords - screenGapX, 0.11f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
 		
 		UIElements[UInoiseCheckBoxElement].checkBox.positionY = 0.06f + generateOptionsYoffset;
 		UIElements[UInoiseStrengthRangeBarElement].rangeBar.positionY = 0.01f + generateOptionsYoffset;
 		UIElements[UInoiseStrengthTextElement].text.positionY = -0.02f + generateOptionsYoffset;
+		
+		ui.box(0.13f,0.0005f,centerCoords - screenGapX, -0.07f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
 		
 		UIElements[UIgenerateTextCheckBoxElement].checkBox.positionY = -0.12f + generateOptionsYoffset;
 		UIElements[UIgenerateTextLeftAlignCheckBoxElement].checkBox.positionY = -1000.06f;
@@ -1132,6 +1142,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.positionY = -1000.06f;
 		UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.position_y = -1000.06f;
 		
+		ui.box(0.13f,0.0005f,centerCoords - screenGapX, -0.17f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
+		
 		UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.positionY = -0.22f + generateOptionsYoffset;
 	}
 	if(UIElements[UIgenerateTextCheckBoxElement].checkBox.checked){
@@ -1139,9 +1151,13 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		UIElements[UInormalStrengthTextElement].text.positionY = 1000.1f; 
 		UIElements[UInormalStrengthRangeBarElement].rangeBar.positionY = 1000.07f;
 		
+		ui.box(0.13f,0.0005f,centerCoords - screenGapX, 0.11f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
+		
 		UIElements[UInoiseCheckBoxElement].checkBox.positionY = 0.06f + generateOptionsYoffset;
 		UIElements[UInoiseStrengthRangeBarElement].rangeBar.positionY = 1000.02f;
 		UIElements[UInoiseStrengthTextElement].text.positionY = -10000.01f;
+		
+		ui.box(0.13f,0.0005f,centerCoords - screenGapX, 0.01f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
 		
 		UIElements[UIgenerateTextCheckBoxElement].checkBox.positionY = -0.04f + generateOptionsYoffset;
 		UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.position_y = -0.11f + generateOptionsYoffset;
@@ -1150,6 +1166,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		UIElements[UIgenerateTextMidAlignCheckBoxElement].checkBox.positionY = -0.25f + generateOptionsYoffset;
 		UIElements[UIgenerateTextRightAlignCheckBoxElement].checkBox.positionY = -0.25f + generateOptionsYoffset;
 		
+		ui.box(0.13f,0.0005f,centerCoords - screenGapX, -0.3f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
+		
 		UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.positionY = -0.35f + generateOptionsYoffset;
 	}
 	if(UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked){
@@ -1157,9 +1175,13 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		UIElements[UInormalStrengthTextElement].text.positionY = 1000.1f; 
 		UIElements[UInormalStrengthRangeBarElement].rangeBar.positionY = 1000.07f;
 		
+		ui.box(0.13f,0.0005f,centerCoords - screenGapX, 0.11f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
+		
 		UIElements[UInoiseCheckBoxElement].checkBox.positionY = 0.06f + generateOptionsYoffset;
 		UIElements[UInoiseStrengthRangeBarElement].rangeBar.positionY = 1000.02f;
 		UIElements[UInoiseStrengthTextElement].text.positionY = -10000.01f;
+		
+		ui.box(0.13f,0.0005f,centerCoords - screenGapX, 0.01f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
 		
 		UIElements[UIgenerateTextCheckBoxElement].checkBox.positionY = -0.04f + generateOptionsYoffset;
 		UIElements[UIgenerateTextLeftAlignCheckBoxElement].checkBox.positionY = -1000.06f;
@@ -1167,6 +1189,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		UIElements[UIgenerateTextRightAlignCheckBoxElement].checkBox.positionY = -1000.06f;
 		UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.positionY = -1000.06f;
 		UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.position_y = -1000.06f;
+		
+		ui.box(0.13f,0.0005f,centerCoords - screenGapX, -0.09f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
 		
 		UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.positionY = -0.14f + generateOptionsYoffset;
 	}

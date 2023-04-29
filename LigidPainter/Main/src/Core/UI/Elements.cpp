@@ -579,7 +579,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement generateTextureButtonElement;
     generateTextureButtonElement.button.positionX = 0.0f;
-    generateTextureButtonElement.button.positionY = -0.86f;
+    generateTextureButtonElement.button.positionY = -0.56f;
     generateTextureButtonElement.button.positionZ = 0.9f;
     generateTextureButtonElement.button.width = 0.05f;
     generateTextureButtonElement.button.height = 0.04f;
@@ -596,7 +596,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement bakeButtonElement;
     bakeButtonElement.button.positionX = 0.0f;
-    bakeButtonElement.button.positionY = -0.96f;
+    bakeButtonElement.button.positionY = -0.66f;
     bakeButtonElement.button.positionZ = 0.9f;
     bakeButtonElement.button.width = 0.08f;
     bakeButtonElement.button.height = 0.04f;
@@ -613,7 +613,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement outSubmeshesButtonElement;
     outSubmeshesButtonElement.button.positionX = 0.0f;
-    outSubmeshesButtonElement.button.positionY = -1.06f;
+    outSubmeshesButtonElement.button.positionY = -0.76f;
     outSubmeshesButtonElement.button.positionZ = 0.9f;
     outSubmeshesButtonElement.button.width = 0.08f;
     outSubmeshesButtonElement.button.height = 0.04f;
