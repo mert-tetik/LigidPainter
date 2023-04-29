@@ -1,5 +1,7 @@
 LigidPainter Project Folder
 
+LigidPainter version 1.4
+
 Using the folder :
     - Importing into LigidPainter :
         - Import the *.ligid file using LigidPainter
