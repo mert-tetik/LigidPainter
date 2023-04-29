@@ -514,7 +514,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
 
     UIElement normalmapCheckBoxElement;
-    normalmapCheckBoxElement.checkBox.positionX = -0.03f;
+    normalmapCheckBoxElement.checkBox.positionX = -0.1f;
     normalmapCheckBoxElement.checkBox.positionY = 0.16f;
     normalmapCheckBoxElement.checkBox.text = "Normal map";
     normalmapCheckBoxElement.checkBox.checked = true;
@@ -546,7 +546,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(normalStrengthRangeBarElement);//40
 
     UIElement noiseCheckBoxElement;
-    noiseCheckBoxElement.checkBox.positionX = -0.03f;
+    noiseCheckBoxElement.checkBox.positionX = -0.1f;
     noiseCheckBoxElement.checkBox.positionY = -0.06f;
     noiseCheckBoxElement.checkBox.text = "Noise";
     noiseCheckBoxElement.checkBox.checked = false;
@@ -1148,7 +1148,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
 
     UIElement generateTextCheckBoxElement;
-    generateTextCheckBoxElement.checkBox.positionX = -0.03f;
+    generateTextCheckBoxElement.checkBox.positionX = -0.1f;
     generateTextCheckBoxElement.checkBox.positionY = -0.26f;
     generateTextCheckBoxElement.checkBox.text = "Text";
     generateTextCheckBoxElement.checkBox.checked = false;
@@ -1230,7 +1230,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(TDModelSizeRangeBarElement);//12
 
     UIElement generateBlackToAlphaCheckBoxElement;
-    generateBlackToAlphaCheckBoxElement.checkBox.positionX = -0.03f;
+    generateBlackToAlphaCheckBoxElement.checkBox.positionX = -0.1f;
     generateBlackToAlphaCheckBoxElement.checkBox.positionY = -0.66f;
     generateBlackToAlphaCheckBoxElement.checkBox.text = "Black To Alpha";
     generateBlackToAlphaCheckBoxElement.checkBox.checked = false;
