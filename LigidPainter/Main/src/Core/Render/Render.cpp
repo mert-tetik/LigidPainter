@@ -823,7 +823,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 					if(!UIElements[i].rangeBar.isConstant)
 						ui.rangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,UIElements[i].rangeBar.widthDivider);
 					else
-						ui.constRangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,icons,UIElements[i].rangeBar.mixVal);
+						ui.constRangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,icons,UIElements[i].rangeBar.mixVal,UIElements[i].rangeBar.lastVal,UIElements[i].rangeBar.increase);
 				}
 				if(currentType == "textBox"){
 					ui.box(UIElements[i].textBox.width, UIElements[i].textBox.height,UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y,UIElements[i].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements[i].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements[i].textBox.transitionMixVal); //Add mask texture button

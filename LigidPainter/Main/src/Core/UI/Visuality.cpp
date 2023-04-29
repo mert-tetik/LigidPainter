@@ -1155,10 +1155,33 @@ void UserInterface::rangeBar(float position_x, float position_y,float value,floa
 	box(0.11f/divideWidth, 0.0075f, position_x, position_y, "", colorData.rangeBarBack, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Range Rectangle
 
 }
-void UserInterface::constRangeBar(float position_x, float position_y,float value,Icons icons,float mixVal) {
+void UserInterface::constRangeBar(float position_x, float position_y,float value,Icons icons,float mixVal,float &lastVal,bool &increase) {
 	ColorData colorData;
 	GlSet gl;
+	glm::vec4 leftColor;
+	glm::vec4 rightColor;
 
+	if(value < lastVal)
+		increase = false;
+	else if (value > lastVal)
+		increase = true;
+
+	if(!increase){
+		leftColor = colorData.iconColor;
+		rightColor = colorData.iconColorHover;
+	}
+	else{
+		rightColor = colorData.iconColor;
+		leftColor = colorData.iconColorHover;
+	}
+
+
+	if(mixVal <= 0.f){
+		rightColor = colorData.iconColor;
+		leftColor = colorData.iconColor;
+	}
+
+	lastVal = value;
 
 	box(0.02f, 0.015f, position_x, position_y, "", colorData.buttonColor, 0.035f, false, false, 0.9f, 15, glm::vec4(colorData.LigidPainterThemeColor,0.8f), mixVal);//Range Rectangle
 
@@ -1180,8 +1203,8 @@ void UserInterface::constRangeBar(float position_x, float position_y,float value
 	
 
 	glUseProgram(uiPrograms.iconsProgram);
-	iconBox(0.013f/2.f,0.013f,position_x-0.017f, position_y,0.92f,icons.LCircle,0.f,colorData.iconColor,colorData.buttonColor);
-	iconBox(0.013f/2.f,0.013f,position_x+0.017f, position_y,0.92f,icons.RCircle,0.f,colorData.iconColor,colorData.buttonColor);
+	iconBox(0.013f/2.f,0.013f,position_x-0.017f, position_y,0.92f,icons.LCircle,0.f,leftColor,colorData.buttonColor);
+	iconBox(0.013f/2.f,0.013f,position_x+0.017f, position_y,0.92f,icons.RCircle,0.f,rightColor,colorData.buttonColor);
 	glUseProgram(uiPrograms.uiProgram);
 }
 void UserInterface::panelChangeButton(float position_x, float position_y) {
