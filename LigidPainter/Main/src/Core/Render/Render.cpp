@@ -764,8 +764,8 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		unsigned int textureColorbuffer;
 		gls.genTextures(textureColorbuffer);
 		gls.bindTexture(textureColorbuffer);
-		glViewport(0,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
-		gls.texImage(NULL, glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,GL_RGBA); //TODO : Use texture quality variable
+		glViewport(0,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width/20,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/20);
+		gls.texImage(NULL, glfwGetVideoMode(glfwGetPrimaryMonitor())->width/20,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/20,GL_RGBA); //TODO : Use texture quality variable
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

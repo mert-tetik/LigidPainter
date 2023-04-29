@@ -472,7 +472,7 @@ bool LigidPainter::run()
 	render.sendProgramsToRender(programs);
 	txtr.sendProgramsToTextures(programs);
 	//--Send max window size
-	ui.sendObjectsToUI(objects,icons.Circle);
+	ui.sendObjectsToUI(objects,icons.Circle,icons.SmoothSquare);
 
 	model.sendObjectsToModel(objects.VAO,objects.VBO);
 	sphereModel.sendObjectsToModel(objects.VAO,objects.VBO);

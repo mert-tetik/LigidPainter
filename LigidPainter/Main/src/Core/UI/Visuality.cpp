@@ -26,6 +26,7 @@ Objects uiObjects;
 int uiTextBoxActiveChar;
 
 unsigned int circleIcon;
+unsigned int smoothSquareIcon;
 
 void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec4 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec4 colorTransitionColor, float mixVal) {
 	
@@ -102,9 +103,15 @@ void UserInterface::box(float width, float height, float position_x, float posit
 
 	if(buttonCurveReduce <= 200){
 		glUseProgram(uiPrograms.iconsProgram);
+		unsigned int icon;
+		if(isTextBox)
+			icon = smoothSquareIcon;
+		else
+			icon = circleIcon;
+
 		if(width != 0.)
-			iconBox((height/2.)*1.3,height*1.3,position_x-width,position_y,z,circleIcon,mixVal,color,colorTransitionColor);
-		iconBox((height/2.)*1.3,height*1.3,position_x+width,position_y,z,circleIcon,mixVal,color,colorTransitionColor);
+			iconBox((height/2.)*1.3,height*1.3,position_x-width,position_y,z,icon,mixVal,color,colorTransitionColor);
+		iconBox((height/2.)*1.3,height*1.3,position_x+width,position_y,z,icon,mixVal,color,colorTransitionColor);
 		glUseProgram(uiPrograms.uiProgram);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
@@ -2422,7 +2429,8 @@ std::vector<float> UserInterface::selectionBox(bool active,float sPX,float sPY,f
 	return box;
 }
 
-void UserInterface::sendObjectsToUI(Objects aobjects,unsigned int acircleIcon){
+void UserInterface::sendObjectsToUI(Objects aobjects,unsigned int acircleIcon,unsigned int asmoothSquareIcon){
 	uiObjects = aobjects;
 	circleIcon = acircleIcon;
+	smoothSquareIcon = asmoothSquareIcon;
 }

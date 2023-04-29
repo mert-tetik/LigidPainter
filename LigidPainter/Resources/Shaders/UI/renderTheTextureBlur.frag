@@ -36,18 +36,29 @@ float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
 
 const float width = 1024;
 
-vec4 boxBlur(int range){
-    vec3 res = vec3(0);
-    for(int x = 0; x < range/10; x++){
-        for(int y = 0; y < range/10; y++){
-            res += texture(txtr,vec2(Pos.x+((x*range/10-range)/width),Pos.y+((y*range/10-range)/width))).rgb / pow(range/10,2);
-        }
+const int LOD = 1,         // gaussian done on MIPmap at scale LOD
+          sLOD = 1 << LOD; // tile size = 2^LOD
+
+
+float gaussian(vec2 i,int range) {
+    float sigma = float(range) * .25;
+    return exp( -.5* dot(i/=sigma,i) ) / ( 6.28 * sigma*sigma );
+}
+
+vec4 blur(int range) {
+    vec4 O = vec4(0); 
+    int s = range/sLOD;
+    
+    for ( int i = 0; i < s*s; i++ ) {
+        vec2 d = vec2(i%s, i/s)*float(sLOD) - float(range)/2.;
+        O += gaussian(d,range) * textureLod( txtr, Pos + vec2(1./width) * d , float(LOD) );
     }
-    return vec4(res,1);
+    
+    return O / O.a;
 }
 
 void main(){
-    color = boxBlur(blurVal);
+    color = blur(blurVal/2);
 
     if(roundUp(TexCoords) < 0.05){
         color.a = 0.;

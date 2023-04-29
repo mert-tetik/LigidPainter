@@ -232,6 +232,7 @@ public:
 		icons.BrushFolder = txtr.getTexture("LigidPainter/Resources/Icons/BrushFolder.png",0,0,false);
 		icons.LCircle = txtr.getTexture("LigidPainter/Resources/Icons/LCircle.jpg",0,0,false);
 		icons.RCircle = txtr.getTexture("LigidPainter/Resources/Icons/RCircle.jpg",0,0,false);
+		icons.SmoothSquare = txtr.getTexture("LigidPainter/Resources/Icons/SmoothSquare.jpg",0,0,false);
 	
 		return icons;
 	}

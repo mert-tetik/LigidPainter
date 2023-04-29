@@ -759,7 +759,7 @@ public:
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void sendMaxWindowSizeToCalculationsAndMore(int maxScreenWidth,int maxScreenHeight);
 	void sendTextBoxActiveCharToUI(int textBoxActiveChar);
-	void sendObjectsToUI(Objects aobjects,unsigned int acircleIcon);
+	void sendObjectsToUI(Objects aobjects,unsigned int acircleIcon,unsigned int smoothSquareIcon);
 };
 class MainLoop{
 public:
