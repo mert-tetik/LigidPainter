@@ -1848,14 +1848,28 @@ void LigidPainter::subSelectedImagePowerRangeBar(double xOffset, int width, int 
 	glUseProgram(programs.PBRProgram);
 	glset.uniform1f(programs.PBRProgram,"subSelectedImagePower",(UIElements[UIsubSelectedImagePowerRangeBarElement].rangeBar.value+0.11f)*4.54545454545);
 }
-void LigidPainter::TDModelSizeRangeBar(float xOffset, int width) {
+void LigidPainter::TDModelSizeRangeBar(float xOffset, int width,bool size,bool posx,bool posy,bool posz) {
 	Utilities util;
 	Texture txtr;
-
-	UIElements[UITDModelSizeRangeBarElement].rangeBar.value -= xOffset / (width / 2.0f);
-	UIElements[UITDModelSizeRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UITDModelSizeRangeBarElement].rangeBar.value, 10.f, 0.f);//Keep in boundaries
+	if(size){
+		UIElements[UITDModelSizeRangeBarElement].rangeBar.value -= xOffset / (width / 2.0f) * 10.f;
+		UIElements[UITDModelSizeRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UITDModelSizeRangeBarElement].rangeBar.value, 10.f, 0.f);//Keep in boundaries
+	}
+	if(posx){
+		UIElements[UITDModelPosXRangeBarElement].rangeBar.value -= xOffset / (width / 2.0f) * 10.f;
+		UIElements[UITDModelPosXRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UITDModelPosXRangeBarElement].rangeBar.value, 10.f, -10.f);//Keep in boundaries
+	}
+	if(posy){
+		UIElements[UITDModelPosYRangeBarElement].rangeBar.value -= xOffset / (width / 2.0f) * 10.f;
+		UIElements[UITDModelPosYRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UITDModelPosYRangeBarElement].rangeBar.value, 10.f, -10.f);//Keep in boundaries
+	}
+	if(posz){
+		UIElements[UITDModelPosZRangeBarElement].rangeBar.value -= xOffset / (width / 2.0f) * 10.f;
+		UIElements[UITDModelPosZRangeBarElement].rangeBar.value = util.restrictBetween(UIElements[UITDModelPosZRangeBarElement].rangeBar.value, 10.f, -10.f);//Keep in boundaries
+	}
 	
 	modelMatrix = glm::mat4(1);
+	modelMatrix = glm::translate(modelMatrix,glm::vec3(UIElements[UITDModelPosXRangeBarElement].rangeBar.value ,UIElements[UITDModelPosYRangeBarElement].rangeBar.value ,UIElements[UITDModelPosZRangeBarElement].rangeBar.value ));
 	modelMatrix = glm::scale(modelMatrix,glm::vec3(UIElements[UITDModelSizeRangeBarElement].rangeBar.value * 4.f));
 }
 void LigidPainter::selectBrushMaskTexture(){

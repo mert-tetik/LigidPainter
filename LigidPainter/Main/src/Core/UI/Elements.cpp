@@ -1219,16 +1219,6 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	generateTextTextureTextTextBoxElement.createProjectPos = glm::vec2(0.f,0.55);
     UIElements.push_back(generateTextTextureTextTextBoxElement);//26
 
-    UIElement TDModelSizeRangeBarElement;
-	TDModelSizeRangeBarElement.rangeBar.positionX = 0.0f;
-	TDModelSizeRangeBarElement.rangeBar.positionY = 0.f;
-	TDModelSizeRangeBarElement.rangeBar.value = 1.0f;
-	TDModelSizeRangeBarElement.rangeBar.isConstant = true;
-	TDModelSizeRangeBarElement.rangeBar.isRich = true;
-	TDModelSizeRangeBarElement.panel = 1;
-	TDModelSizeRangeBarElement.attachedToMainPanel = true;
-	TDModelSizeRangeBarElement.type = "rangeBar";
-    UIElements.push_back(TDModelSizeRangeBarElement);//12
 
     UIElement generateBlackToAlphaCheckBoxElement;
     generateBlackToAlphaCheckBoxElement.checkBox.positionX = -0.1f;
@@ -1241,6 +1231,51 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     generateBlackToAlphaCheckBoxElement.attachedToMainPanel = true;
     generateBlackToAlphaCheckBoxElement.type = "checkBox";
     UIElements.push_back(generateBlackToAlphaCheckBoxElement);//38
+
+    UIElement TDModelSizeRangeBarElement;
+	TDModelSizeRangeBarElement.rangeBar.positionX = 0.0f;
+	TDModelSizeRangeBarElement.rangeBar.positionY = 0.f;
+	TDModelSizeRangeBarElement.rangeBar.value = 1.0f;
+	TDModelSizeRangeBarElement.rangeBar.isConstant = true;
+	TDModelSizeRangeBarElement.rangeBar.isRich = true;
+	TDModelSizeRangeBarElement.panel = 1;
+	TDModelSizeRangeBarElement.attachedToMainPanel = true;
+	TDModelSizeRangeBarElement.type = "rangeBar";
+    UIElements.push_back(TDModelSizeRangeBarElement);//12
+    
+    
+    UIElement TDModelPosXRangeBarElement;
+	TDModelPosXRangeBarElement.rangeBar.positionX = 0.0f;
+	TDModelPosXRangeBarElement.rangeBar.positionY = -0.1f;
+	TDModelPosXRangeBarElement.rangeBar.value = 0.0f;
+	TDModelPosXRangeBarElement.rangeBar.isConstant = true;
+	TDModelPosXRangeBarElement.rangeBar.isRich = true;
+	TDModelPosXRangeBarElement.panel = 1;
+	TDModelPosXRangeBarElement.attachedToMainPanel = true;
+	TDModelPosXRangeBarElement.type = "rangeBar";
+    UIElements.push_back(TDModelPosXRangeBarElement);//12
+    
+    UIElement TDModelPosYRangeBarElement;
+	TDModelPosYRangeBarElement.rangeBar.positionX = 0.0f;
+	TDModelPosYRangeBarElement.rangeBar.positionY = -0.15f;
+	TDModelPosYRangeBarElement.rangeBar.value = 0.0f;
+	TDModelPosYRangeBarElement.rangeBar.isConstant = true;
+	TDModelPosYRangeBarElement.rangeBar.isRich = true;
+	TDModelPosYRangeBarElement.panel = 1;
+	TDModelPosYRangeBarElement.attachedToMainPanel = true;
+	TDModelPosYRangeBarElement.type = "rangeBar";
+    UIElements.push_back(TDModelPosYRangeBarElement);//12
+    
+    UIElement TDModelPosZRangeBarElement;
+	TDModelPosZRangeBarElement.rangeBar.positionX = 0.0f;
+	TDModelPosZRangeBarElement.rangeBar.positionY = -0.2f;
+	TDModelPosZRangeBarElement.rangeBar.value = 0.0f;
+	TDModelPosZRangeBarElement.rangeBar.isConstant = true;
+	TDModelPosZRangeBarElement.rangeBar.isRich = true;
+	TDModelPosZRangeBarElement.panel = 1;
+	TDModelPosZRangeBarElement.attachedToMainPanel = true;
+	TDModelPosZRangeBarElement.type = "rangeBar";
+    UIElements.push_back(TDModelPosZRangeBarElement);//12
     
     return UIElements;
 }

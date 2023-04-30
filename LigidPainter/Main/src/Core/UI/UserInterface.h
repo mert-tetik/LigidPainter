@@ -101,8 +101,11 @@
 #define UIgenerateTextMidAlignCheckBoxElement 91
 #define UIgenerateTextRightAlignCheckBoxElement 92
 #define UIgenerateTextTextureTextTextBoxElement 93
-#define UITDModelSizeRangeBarElement 94
-#define UIgenerateBlackToAlphaCheckBoxElement 95
+#define UIgenerateBlackToAlphaCheckBoxElement 94
+#define UITDModelSizeRangeBarElement 95
+#define UITDModelPosXRangeBarElement 96
+#define UITDModelPosYRangeBarElement 97
+#define UITDModelPosZRangeBarElement 98
 
 struct ColorData //LigidPainter color palette
 {

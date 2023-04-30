@@ -92,6 +92,15 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		else if (UIElements[UITDModelSizeRangeBarElement].rangeBar.hover) {
 			UIElements[UITDModelSizeRangeBarElement].rangeBar.pressed = true;
 		}
+		else if (UIElements[UITDModelPosXRangeBarElement].rangeBar.hover) {
+			UIElements[UITDModelPosXRangeBarElement].rangeBar.pressed = true;
+		}
+		else if (UIElements[UITDModelPosYRangeBarElement].rangeBar.hover) {
+			UIElements[UITDModelPosYRangeBarElement].rangeBar.pressed = true;
+		}
+		else if (UIElements[UITDModelPosZRangeBarElement].rangeBar.hover) {
+			UIElements[UITDModelPosZRangeBarElement].rangeBar.pressed = true;
+		}
 		else if (colorPicker.saturationValuePointerHover) {
 			colorBoxPickerPressed = true;
 		}
@@ -364,6 +373,9 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 		paintOverScaleYRangeBarPressed = false;
 		generateTextSizeRangeBarPressed = false;
 		UIElements[UITDModelSizeRangeBarElement].rangeBar.pressed = false;
+		UIElements[UITDModelPosXRangeBarElement].rangeBar.pressed = false;
+		UIElements[UITDModelPosYRangeBarElement].rangeBar.pressed = false;
+		UIElements[UITDModelPosZRangeBarElement].rangeBar.pressed = false;
 	}
 }
 bool UiActions::updateRangeValues(GLFWwindow* window, double xOffset,double yOffset, int screenWidth, int screenHeight,TextureDisplayer &textureDisplayer,
@@ -399,7 +411,16 @@ SndPanel &sndPanel,std::vector<UIElement> &UIElements){
 		ligid.generateTextSizeRangeBar(xOffset,screenWidth);
 	}
 	if(UIElements[UITDModelSizeRangeBarElement].rangeBar.pressed){
-		ligid.TDModelSizeRangeBar(xOffset,screenWidth);
+		ligid.TDModelSizeRangeBar(xOffset,screenWidth,1,0,0,0);
+	}
+	if(UIElements[UITDModelPosXRangeBarElement].rangeBar.pressed){
+		ligid.TDModelSizeRangeBar(xOffset,screenWidth,0,1,0,0);
+	}
+	if(UIElements[UITDModelPosYRangeBarElement].rangeBar.pressed){
+		ligid.TDModelSizeRangeBar(xOffset,screenWidth,0,0,1,0);
+	}
+	if(UIElements[UITDModelPosZRangeBarElement].rangeBar.pressed){
+		ligid.TDModelSizeRangeBar(xOffset,screenWidth,0,0,0,1);
 	}
 	if (subSelectedImagePowerRangeBarPressed) {
 		ligid.subSelectedImagePowerRangeBar(xOffset, screenWidth, screenHeight);//Changes the global variable
