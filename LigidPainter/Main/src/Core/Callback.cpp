@@ -47,6 +47,7 @@ bool maskPanelEnter;
 bool mainPanelBoundariesEnter;
 bool mainPanelEnter;
 bool uiElementEnter;
+bool rangeElementEnter;
 //Ui enter
 
 int screenX;
@@ -234,6 +235,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 				for (size_t i = 0; i < uiElements.size(); i++)
 				{
 					uiElementEnter = false;
+					rangeElementEnter = false;
 
 					std::string currentType = uiElements[i].type; 
 
@@ -272,8 +274,20 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 					}
 
 					if(currentType == "rangeBar"){
-						uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].rangeBar.positionX + (uiElements[i].rangeBar.value/uiElements[i].rangeBar.widthDivider)*(1.f - (float)uiElements[i].rangeBar.isConstant), uiElements[i].rangeBar.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
-						uiElements[i].rangeBar.hover = uiElementEnter;
+						if(!uiElements[i].rangeBar.isRich){
+							uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].rangeBar.positionX + (uiElements[i].rangeBar.value/uiElements[i].rangeBar.widthDivider)*(1.f - (float)uiElements[i].rangeBar.isConstant), uiElements[i].rangeBar.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
+							uiElements[i].rangeBar.hover = uiElementEnter;
+							if(uiElements[i].rangeBar.pressed)
+								uiElementEnter = true;
+							rangeElementEnter = uiElementEnter;
+						}
+						else{
+							uiElementEnter = ui.isMouseOnButton(window, 0.06f, 0.02f, centerCoords - screenGapX + uiElements[i].rangeBar.positionX + (uiElements[i].rangeBar.value/uiElements[i].rangeBar.widthDivider)*(1.f - (float)uiElements[i].rangeBar.isConstant), uiElements[i].rangeBar.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
+							uiElements[i].rangeBar.hover = uiElementEnter;
+							if(uiElements[i].rangeBar.pressed)
+								uiElementEnter = true;
+							rangeElementEnter = uiElementEnter;
+						}
 					}
 
 					if(currentType == "textBox"){
@@ -370,6 +384,7 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		for (size_t i = 0; i < uiElements.size(); i++)
 		{
 			uiElementEnter = false;
+			rangeElementEnter = false;
 			std::string currentType = uiElements[i].type; 
 
 			float centerCoords = (mainPanelLoc + std::max(mainPanelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
@@ -389,6 +404,10 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 			if(currentType == "rangeBar"){
 				uiElementEnter = ui.isMouseOnButton(window, 0.02f, 0.02f, centerCoords - screenGapX + uiElements[i].rangeBar.positionX + uiElements[i].rangeBar.value/uiElements[i].rangeBar.widthDivider, uiElements[i].rangeBar.positionY + slideVal, mouseXPos, mouseYPos, movePanel);
 				uiElements[i].rangeBar.hover = uiElementEnter;
+				
+				if(uiElements[i].rangeBar.pressed)
+					uiElementEnter = true;
+				rangeElementEnter = uiElementEnter;
 			}
 			if(currentType == "textBox"){
 				uiElementEnter = ui.isMouseOnButton(window, uiElements[i].textBox.width, uiElements[i].textBox.height, centerCoords - screenGapX + uiElements[i].textBox.position_x, uiElements[i].textBox.position_y + slideVal, mouseXPos, mouseYPos, movePanel);
@@ -414,8 +433,11 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 	if(colorPicker.dropperActive){
 		glfwSetCursor(window, cursors.dropperCursor);
 	}
-	else if(uiElementEnter){
+	else if(uiElementEnter && !rangeElementEnter){
 		glfwSetCursor(window, cursors.pointerCursor);
+	}
+	else if(uiElementEnter && rangeElementEnter){
+		glfwSetCursor(window, cursors.hSlideCursor);
 	}
 	else if(colorPicker.dropperEnter){
 		glfwSetCursor(window, cursors.pointerCursor);

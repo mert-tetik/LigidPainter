@@ -1218,6 +1218,68 @@ void UserInterface::constRangeBar(float position_x, float position_y,float value
 	iconBox(0.013f/2.f,0.013f,position_x+0.017f, position_y,0.92f,icons.RCircle,0.f,rightColor,colorData.buttonColor);
 	glUseProgram(uiPrograms.uiProgram);
 }
+void UserInterface::richConstRangeBar(float position_x, float position_y,float value,Icons icons,float mixVal,float &lastVal,bool &increase,bool hover) {
+	ColorData colorData;
+	GlSet gl;
+	glm::vec4 leftColor;
+	glm::vec4 rightColor;
+
+	if(value < lastVal)
+		increase = false;
+	else if (value > lastVal)
+		increase = true;
+
+	if(!increase){
+		leftColor = colorData.iconColor;
+		rightColor = colorData.iconColorHover;
+	}
+	else{
+		rightColor = colorData.iconColor;
+		leftColor = colorData.iconColorHover;
+	}
+
+
+	if(mixVal <= 0.f){
+		rightColor = colorData.iconColor;
+		leftColor = colorData.iconColor;
+	}
+
+	if(!hover && mixVal <= 0.f){
+		rightColor = glm::vec4(0);
+		leftColor = glm::vec4(0);
+	}
+	if(hover)
+		colorData.buttonColor = colorData.buttonColorHover;
+
+	lastVal = value;
+
+	float w = 2.5f;
+	
+	box(0.02f*w, 0.0175f, position_x, position_y, "", colorData.buttonColor, 0.035f, true, false, 0.9f, 15, glm::vec4(colorData.LigidPainterThemeColor,0.8f), mixVal);//Range Rectangle
+
+	int charSize = std::to_string((int)(value*20)).size();
+	float charRat = 1.6;
+	float txtRat = 0.01f;
+	if(charSize == 1){
+		txtRat = 0.01f;
+		charRat = 1;
+	}
+	else if(charSize == 2){
+		charRat = 1.2;
+	}
+	else if(charSize == 3){
+		charRat = 1.4;
+	}	
+
+	renderText(uiPrograms.uiProgram,std::to_string((int)(value*20)),position_x-txtRat,position_y-0.006f,0.00022f/charRat,colorData.iconColor,0.91f,false);
+
+	glUseProgram(uiPrograms.iconsProgram);
+	iconBox(0.010f/2.f,0.010f,position_x-0.017f*w, position_y,0.92f,icons.ArrowLeft,0.f,leftColor,colorData.buttonColor);
+	iconBox(0.010f/2.f,0.010f,position_x+0.017f*w, position_y,0.92f,icons.ArrowRight,0.f,rightColor,colorData.buttonColor);
+	glUseProgram(uiPrograms.uiProgram);
+}
+
+
 void UserInterface::panelChangeButton(float position_x, float position_y) {
 	std::vector<float> buttonCoor{
 		// first triangle

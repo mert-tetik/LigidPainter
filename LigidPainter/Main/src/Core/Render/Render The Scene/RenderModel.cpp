@@ -11,7 +11,7 @@
 
 void Render::renderModel(bool backfaceCulling,PBRShaderData &data,Model &model,bool renderDefault, vector<MaterialOut> &modelMaterials,Programs programs,
 int currentMaterialIndex,glm::mat4 view,bool paintingMode,std::vector<aTexture> albedoTextures,int chosenTextureIndex,glm::vec3 viewPos,float skyboxExposureVal,
-float skyboxRotationVal,Objects &objects,std::vector<NodeScene> nodeScenes,glm::mat4 &modelMatrix) {
+float skyboxRotationVal,Objects &objects,std::vector<NodeScene> nodeScenes,glm::mat4 &modelMatrix,bool useUV) {
 	glDepthFunc(GL_LESS); 
 
     GlSet gl;
@@ -35,7 +35,7 @@ float skyboxRotationVal,Objects &objects,std::vector<NodeScene> nodeScenes,glm::
 		materialOutputs.push_back(nodeScenes[i].outTexture);
 	}
 	
-	model.Draw(currentMaterialIndex,programs.PBRProgram,true,modelMaterials,view,paintingMode,chosenTxtr,viewPos,skyboxExposureVal,skyboxRotationVal,false,materialOutputs,programs.materialResult,modelMatrix);
+	model.Draw(currentMaterialIndex,programs.PBRProgram,true,modelMaterials,view,paintingMode,chosenTxtr,viewPos,skyboxExposureVal,skyboxRotationVal,false,materialOutputs,programs.materialResult,modelMatrix,useUV);
 
 	gl.disable(GL_CULL_FACE); //Disable backface culling if enabled
 

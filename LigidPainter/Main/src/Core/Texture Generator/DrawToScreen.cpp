@@ -47,7 +47,10 @@ std::vector<unsigned int> mirTxtr1;
 std::vector<unsigned int> mirTxtr;
 
 
-void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos, bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int removeThisParam2,int removeThisParam,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view,std::vector<MirrorParam> &mirrorParams,glm::vec3 cameraPos,glm::vec3 originPos,float xMirrorPos,float yMirrorPos,float zMirrorPos,bool dynamicPainting,bool firstClick,float spacingRangeBarVal) {
+void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPaintingTxtrId, float brushSize,unsigned int FBOScreen,float rotationValue, float opacityRangeBarValue, double lastMouseXPos, double lastMouseYPos, double mouseXpos, double mouseYpos,
+ 									bool useNegativeForDrawing,bool brushValChanged,Programs& programs,int removeThisParam2,int removeThisParam,float brushBorderRangeBarValue,float brushBlurVal,unsigned int FBO,OutShaderData &outShaderData,Model &model,
+									std::vector<MaterialOut> &modelMaterials,bool fillBetween,glm::mat4 view,std::vector<MirrorParam> &mirrorParams,glm::vec3 cameraPos,glm::vec3 originPos,float xMirrorPos,float yMirrorPos,float zMirrorPos,bool dynamicPainting,
+									bool firstClick,float spacingRangeBarVal,bool useUV) {
 
 	if(true){
 		holdLocations.clear();
@@ -300,7 +303,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 				glset.uniformMatrix4fv(programs.outProgram,"view",mirroredView);
 
 				std::vector<MaterialOut> emptyMaterials = {};
-				model.Draw(0,programs.PBRProgram,false,modelMaterials,view,true,0,glm::vec3(0),0,0,true,{},0,glm::mat4(0));
+				model.Draw(0,programs.PBRProgram,false,modelMaterials,view,true,0,glm::vec3(0),0,0,true,{},0,glm::mat4(0),useUV);
 
 				glset.uniform1i(programs.outProgram, "tdMaskRendering", 0);
 				

@@ -237,7 +237,7 @@ public:
 
 	void loadModelButton();
 	void modelFilePathTextBox();
-	void autoTriangulateCheckBox();
+	void useUVCheckBox();
 	void backfaceCullingCheckBox();
 	void useNegativeForDrawingCheckbox();
 	void addPlaneButton();

@@ -367,7 +367,7 @@ public:
                     rf.read(reinterpret_cast<char*>(&c),sizeof(char));
                     material.nodes[nodeI].fragSource.push_back(c);
                 }
-                const char* defaultVertexShader = 
+		const char* defaultVertexShader = 
 			"#version 330 core\n"
 			"layout(location = 0) in vec3 aPos;\n"
 			"layout(location = 1) in vec3 aNormal;\n"
@@ -379,6 +379,7 @@ public:
 			"uniform mat4 projection;\n"
 			"uniform mat4 modelMatrix;\n"
 			"uniform int is3D;\n"
+			"uniform int useUV;\n"
 			
 			"out vec2 tex_coords;\n"
 			"out vec3 normal;\n"
@@ -395,8 +396,14 @@ public:
 			    "normal = aNormal;\n"
 				"vec4 res;\n"
 				"if(is3D == 1){\n"
-					"vec4 tPos = modelMatrix * vec4(aPos,1.0);\n"
-			    	"res = projection * view * vec4(tPos.xyz, 1.0);\n"
+					"if(useUV == 1){\n"
+						"vec4 tPos = modelMatrix * vec4(aTexCoords,0.0,1.0);\n"
+			    		"res = projection * view * vec4(tPos.xyz, 1.0);\n"
+					"}\n"
+					"else{\n"
+						"vec4 tPos = modelMatrix * vec4(aPos,1.0);\n"
+			    		"res = projection * view * vec4(tPos.xyz, 1.0);\n"
+					"}\n"
 				"}\n"
 				"else{\n"
 			    	"res = projection * vec4(tex_coords,0, 1);\n" 

@@ -42,7 +42,7 @@ using namespace std;
 
     // draws the model, and thus all its meshes
     void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,unsigned int selectedTexture,
-    glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal,bool renderOnlyTheChosenMesh, std::vector<unsigned int> materialOutputs,unsigned int materialResultProgram,glm::mat4& modelMatrix)
+    glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal,bool renderOnlyTheChosenMesh, std::vector<unsigned int> materialOutputs,unsigned int materialResultProgram,glm::mat4& modelMatrix,bool useUV)
     {
         if(meshes.size() > 0 && paintingMode){
             glActiveTexture(GL_TEXTURE0);
@@ -76,6 +76,7 @@ using namespace std;
 
             	            glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, ("input_" + std::to_string(txtI)).c_str()), 20+txtI);
                         }
+                        glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "useUV"), useUV);
                         glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "is3D"), 1);
                         glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "prefilterMap"), 16);
                         glUniform1i(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "brdfLUT"), 15);

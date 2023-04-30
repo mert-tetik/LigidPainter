@@ -214,7 +214,7 @@ void Render::exportTexture(bool JPG,bool PNG,const char* exportPath,const char* 
 }
 
 void Render::renderTexture(std::vector<float>& vertices,unsigned int width, unsigned int height,unsigned int texture,unsigned int channels,Model &model,bool useModel,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,
-std::vector<aTexture> albedoTextures,int chosenTextureIndex){
+std::vector<aTexture> albedoTextures,int chosenTextureIndex,bool useUV){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     GlSet gl;
@@ -224,7 +224,7 @@ std::vector<aTexture> albedoTextures,int chosenTextureIndex){
 		chosenTxtr = albedoTextures[chosenTextureIndex].id;
 
 	if(useModel)
-		model.Draw(renderCurrentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0,true,{},0,glm::mat4(0));
+		model.Draw(renderCurrentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0,true,{},0,glm::mat4(0),useUV);
 	else
 		gl.drawArrays(vertices, false); //Render Model
 
@@ -344,11 +344,11 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		if (renderData.paintingMode) renderDepthCounter++;
 		else renderDepthCounter = 0;
 		if (renderDepthCounter == 1) {//Get depth texture
-			getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex, glfwGetVideoMode(glfwGetPrimaryMonitor())->width , glfwGetVideoMode(glfwGetPrimaryMonitor())->height,view,albedoTextures,selectedAlbedoTextureIndex,mirrorParams,depthTextureID,cameraPos, originPos,UIElements[UImirrorXRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorYRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorZRangeBarElement].rangeBar.value*40.f);
+			getDepthTexture(FBOScreen,screenSizeX,screenSizeY,screenDepthShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex, glfwGetVideoMode(glfwGetPrimaryMonitor())->width , glfwGetVideoMode(glfwGetPrimaryMonitor())->height,view,albedoTextures,selectedAlbedoTextureIndex,mirrorParams,depthTextureID,cameraPos, originPos,UIElements[UImirrorXRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorYRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorZRangeBarElement].rangeBar.value*40.f,UIElements[UIuseUVCheckBox].checkBox.checked);
 		}
 		bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || (glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
 		if (isRenderTexture || paintRender) {
-			renderTextures(FBOScreen,screenSizeX, screenSizeY,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,currentMaterialIndex,renderPrograms,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,modelMaterials,view,selectedAlbedoTextureIndex,chosenTextureResIndex);
+			renderTextures(FBOScreen,screenSizeX, screenSizeY,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,currentMaterialIndex,renderPrograms,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,modelMaterials,view,selectedAlbedoTextureIndex,chosenTextureResIndex,UIElements[UIuseUVCheckBox].checkBox.checked);
 		}
 		if(exportData.exportImage){
     		exportTexture(UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,exportData.fileName,albedoTextures,chosenTextureResIndex);
@@ -420,7 +420,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 				std::vector<MaterialOut> matDisplays;
 				matDisplays.push_back(modelMaterials[i]);
 
-				spherModel.Draw(0,renderPrograms.PBRProgram,false,matDisplays,displayMatrix,false,0,glm::vec3(6.f,0.f,0.f),0,0,false,{},0,glm::mat4(0));
+				spherModel.Draw(0,renderPrograms.PBRProgram,false,matDisplays,displayMatrix,false,0,glm::vec3(6.f,0.f,0.f),0,0,false,{},0,glm::mat4(0),UIElements[UIuseUVCheckBox].checkBox.checked);
 				
 				gls.bindFramebuffer(0);
 				gls.deleteFramebuffers(dFBO);
@@ -446,7 +446,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		glActiveTexture(GL_TEXTURE13);
 		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
 		renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,
-					viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects,nodeScenes,modelMatrix);
+					viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects,nodeScenes,modelMatrix,UIElements[UIuseUVCheckBox].checkBox.checked);
 
 		renderAxisPointer(axisPointerShaderData,renderPrograms);
 		//-------------------------
@@ -771,7 +771,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		gls.uniformMatrix4fv(renderPrograms.renderTheTextureBlur, "TextProjection", projection);
 
 		UIElements[UIbackfaceCullingCheckBox].checkBox.text = "Import Textures";
-		UIElements[UIautoTriangulateCheckBox].checkBox.text = "Import Nodes";
+		UIElements[UIuseUVCheckBox].checkBox.text = "Import Nodes";
 		#if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -797,8 +797,12 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 				if(currentType == "rangeBar"){
 					if(!UIElements[i].rangeBar.isConstant)
 						ui.rangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,UIElements[i].rangeBar.widthDivider);
-					else
-						ui.constRangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,icons,UIElements[i].rangeBar.mixVal,UIElements[i].rangeBar.lastVal,UIElements[i].rangeBar.increase);
+					else{
+						if(!UIElements[i].rangeBar.isRich)
+							ui.constRangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,icons,UIElements[i].rangeBar.mixVal,UIElements[i].rangeBar.lastVal,UIElements[i].rangeBar.increase);
+						else
+							ui.richConstRangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,icons,UIElements[i].rangeBar.mixVal,UIElements[i].rangeBar.lastVal,UIElements[i].rangeBar.increase,UIElements[i].rangeBar.hover);
+					}
 				}
 				if(currentType == "textBox"){
 					ui.box(UIElements[i].textBox.width, UIElements[i].textBox.height,UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y,UIElements[i].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements[i].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements[i].textBox.transitionMixVal); //Add mask texture button
@@ -865,11 +869,11 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		else
 			UIElements[UIbackfaceCullingCheckBox].checkBox.mouseHover = false;
 		
-		if(ui.isMouseOnButton(renderData.window,0.015f,0.03f,UIElements[UIautoTriangulateCheckBox].createProjectPos.x-screenGapX,UIElements[UIautoTriangulateCheckBox].createProjectPos.y,mouseXpos,mouseYpos,false)){
-			UIElements[UIautoTriangulateCheckBox].checkBox.mouseHover = true;
+		if(ui.isMouseOnButton(renderData.window,0.015f,0.03f,UIElements[UIuseUVCheckBox].createProjectPos.x-screenGapX,UIElements[UIuseUVCheckBox].createProjectPos.y,mouseXpos,mouseYpos,false)){
+			UIElements[UIuseUVCheckBox].checkBox.mouseHover = true;
 		}
 		else
-			UIElements[UIautoTriangulateCheckBox].checkBox.mouseHover = false;
+			UIElements[UIuseUVCheckBox].checkBox.mouseHover = false;
 
 		glUseProgram(renderPrograms.uiProgram);
 		
@@ -908,7 +912,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 					}
 				}
 				ProjectFolder project;
-				project.initFolder(path,modelFilePath,UIElements,UIElements[UIbackfaceCullingCheckBox].checkBox.checked,UIElements[UIautoTriangulateCheckBox].checkBox.checked);
+				project.initFolder(path,modelFilePath,UIElements,UIElements[UIbackfaceCullingCheckBox].checkBox.checked,UIElements[UIuseUVCheckBox].checkBox.checked);
 
 				project.readFolder(path + folderDistinguisher + UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures);
 
@@ -917,9 +921,9 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		 		createProject = false;
 
 				UIElements[UIbackfaceCullingCheckBox].checkBox.text = "Backface Culling";
-				UIElements[UIautoTriangulateCheckBox].checkBox.text = "Auto triangulate";
+				UIElements[UIuseUVCheckBox].checkBox.text = "Auto triangulate";
 				UIElements[UIbackfaceCullingCheckBox].checkBox.checked = false;
-				UIElements[UIautoTriangulateCheckBox].checkBox.checked = true;
+				UIElements[UIuseUVCheckBox].checkBox.checked = true;
 			}
 			else{
 				LigidPainter lp;

@@ -23,8 +23,6 @@
 //TODO Fix mirror paint over
 //TODO Flip
 //TODO Update ui
-//TODO Take mask brushes for the project file
-//TODO Mask textures folder & export folder
 //TODO Preview for skybox listbox
 //TODO Remove seams button
 //TODO Texture history HDD
@@ -33,20 +31,20 @@
 //TODO Dynamic textbox 
 //TODO History settings
 //TODO Fix sndpanel texture folder slide bar bla bla
-//TODO Project folder
 //TODO Sound for success alert
 //TODO Remove 3D Model loading
-//TODO Default project path
-//TODO Display project from the start 
 //TODO projectsettings - 3D Model options 
 //TODO Multiple texture selection
 //TODO Brush textures interactions 
 //TODO Fix project folder save options
+//TODO Slider for start screen project displayer
 
 //TODO Circular range bar for light pos
 //TODO 3D Model position
 //TODO 3D Model Fov
-//TODO 3D Models 
+//TODO 3D Models
+//TODO Use texcoords for rendering checkbox
+//TODO Perspective or orthographic 
 
 //TODO Search for brush textures
 //TODO Color id
@@ -239,7 +237,7 @@ Model sphereModel;
 int currentMaterialIndex = 0;
 bool textureDraggingState = false;
 bool mirrorRangeBarsPressed = false;
-glm::mat4 modelMatrix;
+glm::mat4 modelMatrix = glm::mat4(1);
 
 
 ExportData exportData;
@@ -1011,7 +1009,7 @@ bool LigidPainter::run()
 			mouseDrawingPosY = mouseYpos;
 
 			//Paint
-			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view,mirrorParams,callbackData.cameraPos, callbackData.originPos,UIElements[UImirrorXRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorYRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorZRangeBarElement].rangeBar.value*40.f,UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked,firstStroke,UIElements[UIbrushSpacingRangeBar].rangeBar.value);
+			textureGen.drawToScreen(window, screenPaintingReturnData.normalId, brushSize, FBOScreen,UIElements[UIbrushRotationRangeBar].rangeBar.value,UIElements[UIbrushOpacityRangeBar].rangeBar.value,lastMouseXpos, lastMouseYpos,mouseXpos,mouseYpos,UIElements[UIuseNegativeCheckBox].checkBox.checked,brushValChanged,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,paintingFBO,outShaderData,model,modelMaterials, paintingSpacing < 10,viewUpdateData.view,mirrorParams,callbackData.cameraPos, callbackData.originPos,UIElements[UImirrorXRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorYRangeBarElement].rangeBar.value*40.f,UIElements[UImirrorZRangeBarElement].rangeBar.value*40.f,UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked,firstStroke,UIElements[UIbrushSpacingRangeBar].rangeBar.value,UIElements[UIuseUVCheckBox].checkBox.checked);
 			paintRenderCounter++;
 			if(paintRenderCounter == 50000){
 				paintRender = true;
@@ -2187,8 +2185,8 @@ void LigidPainter::loadCustomModel(){
 	renderDefaultModel = false;
 	loadModelButton();
 }
-void LigidPainter::autoTriangulateCheckBox(){
-	UIElements[UIautoTriangulateCheckBox].checkBox.checked = !UIElements[UIautoTriangulateCheckBox].checkBox.checked;
+void LigidPainter::useUVCheckBox(){
+	UIElements[UIuseUVCheckBox].checkBox.checked = !UIElements[UIuseUVCheckBox].checkBox.checked;
 }
 void LigidPainter::backfaceCullingCheckBox() {
 	if (backfaceCullingChecked == false) {

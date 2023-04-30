@@ -28,7 +28,7 @@ public:
     // draws the model, and thus all its meshes
     void Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,
     unsigned int selectedTexture,glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal,bool renderOnlyTheChosenMesh,std::vector<unsigned int> materialOutputs
-    ,unsigned int materialResultProgram,glm::mat4& modelMatrix);
+    ,unsigned int materialResultProgram,glm::mat4& modelMatrix,bool useUV);
     
     void uploadModel(Model uploadedModel);
 

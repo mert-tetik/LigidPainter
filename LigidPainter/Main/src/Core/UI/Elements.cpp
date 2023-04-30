@@ -39,9 +39,9 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
 	//---------------------------MODEL PANEL---------------------------
 
-	UIElement uploadingModelPathTextBoxElement;
+	UIElement uploadingModelPathTextBoxElement; //DELETED
     uploadingModelPathTextBoxElement.textBox.position_x = 0.0f;
-    uploadingModelPathTextBoxElement.textBox.position_y = 0.6f;
+    uploadingModelPathTextBoxElement.textBox.position_y = 1000.6f;
     uploadingModelPathTextBoxElement.textBox.position_z = 0.9f;
     uploadingModelPathTextBoxElement.textBox.width = 0.12;
     uploadingModelPathTextBoxElement.textBox.height = 0.03;
@@ -53,10 +53,10 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     uploadingModelPathTextBoxElement.createProjectPos = glm::vec2(-0.0f,0.3f);
     UIElements.push_back(uploadingModelPathTextBoxElement);//1
 
-	UIElement uploadingModelPathTextElement;
+	UIElement uploadingModelPathTextElement; //DELETED
     uploadingModelPathTextElement.text.positionX = -0.05f;
-    uploadingModelPathTextElement.text.positionY = 0.64f;
-    uploadingModelPathTextElement.text.text = "File Path";
+    uploadingModelPathTextElement.text.positionY = 1000.64f;
+    uploadingModelPathTextElement.text.text = "3D Model path";
     uploadingModelPathTextElement.text.scale = 0.00022f;
     uploadingModelPathTextElement.text.color = colorData.textBoxColor;
     uploadingModelPathTextElement.panel = 1;
@@ -66,9 +66,9 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     uploadingModelPathTextElement.createProjectPos = glm::vec2(-0.05f,0.35f);
 	UIElements.push_back(uploadingModelPathTextElement);//2
 
-	UIElement loadModelButtonElement;
+	UIElement loadModelButtonElement; //DELETED
     loadModelButtonElement.button.positionX = 0.0f;
-    loadModelButtonElement.button.positionY = 0.45f;
+    loadModelButtonElement.button.positionY = 1000.45f;
     loadModelButtonElement.button.positionZ = 0.9f;
     loadModelButtonElement.button.width = 0.08f;
     loadModelButtonElement.button.height = 0.04f;
@@ -83,18 +83,18 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	loadModelButtonElement.type = "button";
     UIElements.push_back(loadModelButtonElement);//3
 
-	UIElement autoTriangulateCheckBoxElement;
-    autoTriangulateCheckBoxElement.checkBox.positionX = -0.08f;
-    autoTriangulateCheckBoxElement.checkBox.positionY = 0.3f;
-    autoTriangulateCheckBoxElement.checkBox.text = "Auto triangulate";
-    autoTriangulateCheckBoxElement.checkBox.checked = true;
-    autoTriangulateCheckBoxElement.checkBox.texture = icons.Circle;
-    autoTriangulateCheckBoxElement.panel = 1;
-    autoTriangulateCheckBoxElement.attachedToMainPanel = true;
-	autoTriangulateCheckBoxElement.type = "checkBox";
-	autoTriangulateCheckBoxElement.createProject = true;
-	autoTriangulateCheckBoxElement.createProjectPos = glm::vec2(+0.2,-0.43f);
-    UIElements.push_back(autoTriangulateCheckBoxElement);//4
+	UIElement useUVCheckBoxElement;
+    useUVCheckBoxElement.checkBox.positionX = -0.08f;
+    useUVCheckBoxElement.checkBox.positionY = 0.3f;
+    useUVCheckBoxElement.checkBox.text = "Render the UV";
+    useUVCheckBoxElement.checkBox.checked = false;
+    useUVCheckBoxElement.checkBox.texture = icons.Circle;
+    useUVCheckBoxElement.panel = 1;
+    useUVCheckBoxElement.attachedToMainPanel = true;
+	useUVCheckBoxElement.type = "checkBox";
+	useUVCheckBoxElement.createProject = true;
+	useUVCheckBoxElement.createProjectPos = glm::vec2(+0.2,-0.43f);
+    UIElements.push_back(useUVCheckBoxElement);//4
 	
 
 	UIElement backfaceCullingCheckBoxElement;
@@ -111,9 +111,9 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(backfaceCullingCheckBoxElement);//5
 
 
-	UIElement modelPanel3DModelsTextElement;
+	UIElement modelPanel3DModelsTextElement; //DELETED
     modelPanel3DModelsTextElement.text.positionX = -0.05f;
-    modelPanel3DModelsTextElement.text.positionY = 0.08f-0.1f;
+    modelPanel3DModelsTextElement.text.positionY = 1000.08f-0.1f;
     modelPanel3DModelsTextElement.text.text = "3D Models";
     modelPanel3DModelsTextElement.text.scale = 0.00022f;
     modelPanel3DModelsTextElement.text.color = colorData.textBoxColor;
@@ -1035,9 +1035,9 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     pngIconElement.type = "icon";
     UIElements.push_back(pngIconElement);//33
 
-	UIElement folderIconElement;
+	UIElement folderIconElement; //Deleted
     folderIconElement.icon.positionX = 0.1f;
-    folderIconElement.icon.positionY = 0.6f;
+    folderIconElement.icon.positionY = 1000.6f;
     folderIconElement.icon.positionZ = 0.99f;
     folderIconElement.icon.width = 0.02f;
     folderIconElement.icon.height = 0.04f;
@@ -1224,6 +1224,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	TDModelSizeRangeBarElement.rangeBar.positionY = 0.f;
 	TDModelSizeRangeBarElement.rangeBar.value = 1.0f;
 	TDModelSizeRangeBarElement.rangeBar.isConstant = true;
+	TDModelSizeRangeBarElement.rangeBar.isRich = true;
 	TDModelSizeRangeBarElement.panel = 1;
 	TDModelSizeRangeBarElement.attachedToMainPanel = true;
 	TDModelSizeRangeBarElement.type = "rangeBar";

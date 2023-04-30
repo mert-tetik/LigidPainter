@@ -172,8 +172,8 @@ void UiActions::uiActions(GLFWwindow* window ,CallbckData callbackData,std::vect
 			UIElements[UIalbedoChannelCheckBoxElement].checkBox.checked = false; 
 		}
 
-		if (UIElements[UIautoTriangulateCheckBox].checkBox.mouseHover)
-			ligid.autoTriangulateCheckBox();
+		if (UIElements[UIuseUVCheckBox].checkBox.mouseHover)
+			ligid.useUVCheckBox();
 		if (UIElements[UIbackfaceCullingCheckBox].checkBox.mouseHover)
 			ligid.backfaceCullingCheckBox();
 		if(UIElements[UIskyboxCheckBox].checkBox.mouseHover)
