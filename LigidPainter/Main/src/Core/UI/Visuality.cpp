@@ -999,7 +999,8 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 	glBindVertexArray(uiObjects.VAO);
 }
 
-void UserInterface::spinnerBox(float width, float height, float position_x, float position_y, float z,float &value,float xOffset,float yOffset,double mouseXpos,double mouseYpos, GLFWwindow* window){
+bool spinnerBoxPressed = false;
+void UserInterface::spinnerBox(float width, float height, float position_x, float position_y, float z,float &value,float xOffset,float yOffset,double mouseXpos,double mouseYpos,bool firstClick, GLFWwindow* window){
 	GlSet glset;
 	ColorData clrData;
 
@@ -1007,8 +1008,13 @@ void UserInterface::spinnerBox(float width, float height, float position_x, floa
 	yOffset /= -200;
 
 	bool buttonHover = isMouseOnButton(window,width,height,position_x,position_y,mouseXpos,mouseYpos,false);
+	
+	if(buttonHover && firstClick)
+		spinnerBoxPressed = true;
+	if(glfwGetMouseButton(window,0) == GLFW_RELEASE)
+		spinnerBoxPressed = false;
 
-	if(buttonHover && glfwGetMouseButton(window,0) == GLFW_PRESS){
+	if(spinnerBoxPressed){
 		if(value >= 0.25 && value < 0.5){
 			value += (xOffset-yOffset)/2.f;
 		}
@@ -1034,7 +1040,6 @@ void UserInterface::spinnerBox(float width, float height, float position_x, floa
 			value += xOffset;
 		}
 	}
-	std::cout << value << ' ';
 	Utilities util;
 	value = util.restrictBetween(value,2.f,0.f);
 

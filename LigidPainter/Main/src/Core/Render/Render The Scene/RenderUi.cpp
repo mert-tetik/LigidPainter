@@ -88,8 +88,6 @@ bool showTheSelectionBox = true;
 std::vector<float> selectionBoxCoords = {};
 bool selectionActive = false;
 
-float lightRotVal;
-
 int previousTextureResIndex;
 
 Audios uiAudios;
@@ -103,7 +101,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool &firstClick
 ,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive
 ,std::string &textureText,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps
-,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios,bool &textureDraggingState) {
+,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios,bool &textureDraggingState,float &lightRotVal) {
 	uiAudios = audios;
 
 	ColorData colorData;
@@ -1202,8 +1200,13 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		
 		UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.positionY = -0.14f + generateOptionsYoffset;
 	}
-	glUseProgram(programs.spinnerProgram);
-	ui.spinnerBox(0.1f,0.2f,centerCoords - screenGapX, -0.5f,0.9f,lightRotVal,xOffset,yOffset,mouseXpos,mouseYpos,renderData.window);
+	if(panelData.modelPanelActive){
+		glUseProgram(programs.spinnerProgram);
+		ui.spinnerBox(0.1f,0.2f,centerCoords - screenGapX, -0.5f,0.9f,lightRotVal,xOffset,yOffset,mouseXpos,mouseYpos,firstClick,renderData.window);
+		glUseProgram(programs.iconsProgram);
+		ui.iconBox(0.06,0.12,centerCoords - screenGapX,-0.49f,0.91f,icons.Light,0.f,colorData.iconColor,colorData.iconColorHover);
+
+	}
 
 	lastMouseX = mouseXpos;
 	lastMouseY = mouseYpos;

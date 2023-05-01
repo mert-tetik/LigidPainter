@@ -224,7 +224,7 @@ std::vector<aTexture> albedoTextures,int chosenTextureIndex,bool useUV){
 		chosenTxtr = albedoTextures[chosenTextureIndex].id;
 
 	if(useModel)
-		model.Draw(renderCurrentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0,true,{},0,glm::mat4(0),useUV);
+		model.Draw(renderCurrentMaterialIndex,renderPrograms.PBRProgram,false,modelMaterials,view,true,chosenTxtr,glm::vec3(0),0,0,true,{},0,glm::mat4(0),useUV,0);
 	else
 		gl.drawArrays(vertices, false); //Render Model
 
@@ -284,6 +284,7 @@ bool enteredOnce = true;
 int paintRenderCounter = 0;
 
 size_t renderingCounter = 0;
+float lightRotVal = 0.f;
 
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
 Icons &icons, bool renderPlane,bool renderSphere,
@@ -420,7 +421,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 				std::vector<MaterialOut> matDisplays;
 				matDisplays.push_back(modelMaterials[i]);
 
-				spherModel.Draw(0,renderPrograms.PBRProgram,false,matDisplays,displayMatrix,false,0,glm::vec3(6.f,0.f,0.f),0,0,false,{},0,glm::mat4(0),UIElements[UIuseUVCheckBox].checkBox.checked);
+				spherModel.Draw(0,renderPrograms.PBRProgram,false,matDisplays,displayMatrix,false,0,glm::vec3(6.f,0.f,0.f),0,0,false,{},0,glm::mat4(1),UIElements[UIuseUVCheckBox].checkBox.checked,.0);
 				
 				gls.bindFramebuffer(0);
 				gls.deleteFramebuffers(dFBO);
@@ -446,7 +447,8 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		glActiveTexture(GL_TEXTURE13);
 		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
 		renderModel(renderData.backfaceCulling,pbrShaderData,model,renderDefault,modelMaterials,renderPrograms,currentMaterialIndex,view,panelData.paintingPanelActive,albedoTextures,selectedAlbedoTextureIndex,
-					viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects,nodeScenes,modelMatrix,UIElements[UIuseUVCheckBox].checkBox.checked);
+					viewPos,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value,objects,nodeScenes,modelMatrix,UIElements[UIuseUVCheckBox].checkBox.checked,
+					lightRotVal);
 
 		renderAxisPointer(axisPointerShaderData,renderPrograms);
 		//-------------------------
@@ -526,7 +528,8 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 				colorPicker,textureDisplayer,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,
 				nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
 				chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
-				,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex,audios,textureDraggingState);
+				,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex,audios,textureDraggingState
+				,lightRotVal);
 				
 				UserInterface ui;
 				if(colorPicker.dropperActive || coloringPanel.dropperActive){

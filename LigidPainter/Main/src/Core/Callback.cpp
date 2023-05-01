@@ -184,16 +184,17 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		pitch += yoffset;
 
 		//Disable 90+ degrees rotations in y axis
-		if (pitch > 89.0f)
-			pitch = 89.0f;
-		if (pitch < -89.0f)
-			pitch = -89.0f;
+		// if (pitch > 89.0f)
+		// 	pitch = 89.0f;
+		// if (pitch < -89.0f)
+		// 	pitch = -89.0f;
 
 		
 		//Helical Movement
-		cameraPos.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.x;
 		cameraPos.y = sin(glm::radians(pitch)) * -radius + originPos.y;
+		cameraPos.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.x;
 		cameraPos.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.z;
+		std::cout << "yaw : " << glm::radians(yaw) << " pitch : " << glm::radians(pitch) << std::endl;
 	}
 	
 	if (glfwGetMouseButton(window, 2) == GLFW_PRESS && nodePanel.panelHover){

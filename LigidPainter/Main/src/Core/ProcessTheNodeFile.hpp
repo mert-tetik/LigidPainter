@@ -151,7 +151,8 @@ private:
     };
 
     std::map<std::string,std::string> uniformData{
-        {"tex_coords","vec2"}, {"normal","vec3"}, {"posScene","vec4"} , {"posModel","vec3"} , {"viewPos","vec3"} , {"skyboxExposure","float"},{"blurySkybox","samplerCube"} , {"prefilterMap","samplerCube"}, {"tangent", "vec3"},{"skyboxRotation", "mat4"} , {"bitangent", "vec3"},{"brdfLUT","sampler2D"}
+        {"tex_coords","vec2"}, {"normal","vec3"}, {"posScene","vec4"} , {"posModel","vec3"} , {"viewPos","vec3"} , {"skyboxExposure","float"},{"blurySkybox","samplerCube"} , {"prefilterMap","samplerCube"}, {"tangent", "vec3"},{"skyboxRotation", "mat4"} , 
+        {"bitangent", "vec3"},{"brdfLUT","sampler2D"},{"lightRotation", "float"}
     };
 
     std::vector<std::string> uniforms;
@@ -699,7 +700,7 @@ private:
             std::string type;
             std::string in;
             
-            if(uniforms[i] == "viewPos" || uniforms[i] == "blurySkybox" || uniforms[i] == "prefilterMap" || uniforms[i] == "brdfLUT" || uniforms[i] == "skyboxExposure" || uniforms[i] == "skyboxRotation"){
+            if(uniforms[i] == "viewPos" || uniforms[i] == "blurySkybox" || uniforms[i] == "prefilterMap" || uniforms[i] == "brdfLUT" || uniforms[i] == "skyboxExposure" || uniforms[i] == "skyboxRotation" || uniforms[i] == "lightRotation"){
                 in = "uniform " + uniformData[uniforms[i]] + ' ' + uniforms[i] + ';' + '\n';
             }
             else{

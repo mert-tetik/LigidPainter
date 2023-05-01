@@ -94,7 +94,7 @@
 --title : Texture;
 
 
--uniforms : tex_coords|normal|posScene|posModel|viewPos|blurySkybox|prefilterMap|tangent|bitangent|brdfLUT|skyboxExposure|skyboxRotation;
+-uniforms : tex_coords|normal|posScene|posModel|viewPos|blurySkybox|prefilterMap|tangent|bitangent|brdfLUT|skyboxExposure|skyboxRotation|lightRotation;
 
 %code;
 
@@ -157,6 +157,16 @@ vec3 getRealisticResult(){
    vec3 lightPos3 = vec3(-10.0, -10.0, 10.0);
    vec3 lightPos4 = vec3( 10.0, -10.0, 10.0);
 
+    const float lightRadius = 10.;
+
+    //LightRotation : 0-2
+    float lightRot = lightRotation;
+    lightRot*=3;
+    lightPos1.x = cos((lightRot)) * 1 * lightRadius;
+    lightPos1.z = sin((lightRot)) * 1 * lightRadius;
+    lightPos2.x = cos((lightRot + 1.f)) * 1 * lightRadius;
+    lightPos2.z = sin((lightRot + 1.f)) * 1 * lightRadius;
+
    vec3 lightColorX = vec3(300.0f, 300.0f, 300.0f);
 
 
@@ -187,6 +197,7 @@ vec3 getRealisticResult(){
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
+    
     for(int i = 0; i < 2; ++i) 
     {
       vec3 lightPosX;

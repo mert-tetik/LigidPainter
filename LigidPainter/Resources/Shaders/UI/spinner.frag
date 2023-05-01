@@ -43,14 +43,14 @@ void main( )
             color.z -= 1.0;
             color.z = 1.0 - color.z;
             
-            outColor.rgb = p.y < 0. && color.z > angle - epsilon && color.z < angle + epsilon 
-                ? markerColor
-                : vec3(0.5);
+            outColor.rgba = p.y < 0. && color.z > angle - epsilon && color.z < angle + epsilon 
+                ? vec4(markerColor,1)
+                : vec4(vec3(0.05),0.5);
         }
         else{
-            outColor.rgb = p.y > 0. && color.z > angle - epsilon && color.z < angle + epsilon 
-                ? markerColor
-                : vec3(0.5);
+            outColor.rgba = p.y > 0. && color.z > angle - epsilon && color.z < angle + epsilon 
+                ? vec4(markerColor,1)
+                : vec4(vec3(0.05),0.5);
         }    
     } 
     else {

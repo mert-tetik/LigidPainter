@@ -43,7 +43,7 @@ using namespace std;
     // draws the model, and thus all its meshes
     void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,unsigned int selectedTexture,
                     glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal,bool renderOnlyTheChosenMesh, std::vector<unsigned int> materialOutputs,unsigned int materialResultProgram,glm::mat4& modelMatrix,
-                    bool useUV)
+                    bool useUV,float lightRotation)
     {
         if(meshes.size() > 0 && paintingMode){
             glActiveTexture(GL_TEXTURE0);
@@ -69,6 +69,7 @@ using namespace std;
                         const float uniRot = (skyboxRotationVal + 0.11f) * 1636.36363636;
 	                    glm::mat4 rotation = glm::mat4(1);
 	                    rotation = glm::rotate(rotation, glm::radians(uniRot), glm::vec3(0.0, 1.0, 0.0));
+	                    glUniform1f(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "lightRotation"), (lightRotation));
 	                    glUniformMatrix4fv(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "skyboxRotation"), 1,GL_FALSE, glm::value_ptr(rotation));
 	                    glUniformMatrix4fv(glGetUniformLocation(modelMaterials[meshes[i].submeshes[sI].materialIndex].program, "modelMatrix"), 1,GL_FALSE, glm::value_ptr(modelMatrix));
 

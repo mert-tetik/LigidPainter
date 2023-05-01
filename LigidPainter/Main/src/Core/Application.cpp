@@ -38,6 +38,9 @@
 //TODO Brush textures interactions 
 //TODO Fix project folder save options
 //TODO Slider for start screen project displayer
+//TODO Default pbr light rot
+//TODO Add node context menu few elements
+//TODO Spinner screengap
 
 //TODO Circular range bar for light pos
 //TODO 3D Model Fov

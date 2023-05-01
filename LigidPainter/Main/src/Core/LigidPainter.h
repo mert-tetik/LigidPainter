@@ -207,6 +207,7 @@ struct Icons{
 	unsigned int LCircle;
 	unsigned int RCircle;
 	unsigned int SmoothSquare;
+	unsigned int Light;
 };
 
 struct RenderData { //GlSet::render
