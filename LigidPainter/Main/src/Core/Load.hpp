@@ -560,6 +560,10 @@ public:
 		unsigned int blackToAlphaProgram = gl.createProgram("./LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/blackToAlpha");
 		
 		
+		
+		unsigned int spinnerProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/spinner");
+		
+		
 
 		
 		Programs glPrograms;
@@ -592,6 +596,7 @@ public:
 		glPrograms.dotsProgram = dotsProgram;
 		glPrograms.renderTheTextureBlur = renderTheTextureBlur;
 		glPrograms.blackToAlphaProgram = blackToAlphaProgram;
+		glPrograms.spinnerProgram = spinnerProgram;
 
 
 		return glPrograms;

@@ -391,7 +391,7 @@ public:
 			"void main() {\n"
 				"tangent = aTangent;\n"
 				"bitangent = aBitangent;\n"
-			    "posModel = aPos;\n"
+			    "posModel = (modelMatrix * vec4(aPos,1)).xyz;\n"
 			    "tex_coords = aTexCoords;\n"
 			    "normal = aNormal;\n"
 				"vec4 res;\n"

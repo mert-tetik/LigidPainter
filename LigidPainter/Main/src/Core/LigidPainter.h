@@ -43,6 +43,7 @@ struct Programs
 	unsigned int dotsProgram;
 	unsigned int renderTheTextureBlur;
 	unsigned int blackToAlphaProgram;
+	unsigned int spinnerProgram;
 };
 struct Cubemaps{
 	unsigned int cubemap;

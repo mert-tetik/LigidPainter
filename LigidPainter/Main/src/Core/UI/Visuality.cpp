@@ -992,8 +992,72 @@ void UserInterface::iconBox(float width, float height, float position_x, float p
 
 	scale = glm::mat4(1);
 	pos = glm::vec3(0);
-	glset.uniformMatrix4fv(uiPrograms.iconsProgram,"scale",scale);
+	glset.uniformMatrix4fv(uiPrograms.iconsProgram,"scale",-scale);
 	glset.uniform3fv(uiPrograms.iconsProgram,"pos",pos);
+	
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
+	glBindVertexArray(uiObjects.VAO);
+}
+
+void UserInterface::spinnerBox(float width, float height, float position_x, float position_y, float z,float &value,float xOffset,float yOffset,double mouseXpos,double mouseYpos, GLFWwindow* window){
+	GlSet glset;
+	ColorData clrData;
+
+	xOffset /= 200;
+	yOffset /= -200;
+
+	bool buttonHover = isMouseOnButton(window,width,height,position_x,position_y,mouseXpos,mouseYpos,false);
+
+	if(buttonHover && glfwGetMouseButton(window,0) == GLFW_PRESS){
+		if(value >= 0.25 && value < 0.5){
+			value += (xOffset-yOffset)/2.f;
+		}
+		if(value >= 0.5 && value < 0.75){
+			value += -yOffset;
+		}
+		if(value >= 0.75 && value < 1.0){
+			value += (-xOffset-yOffset)/2.f;
+		}
+		if(value >= 1.0 && value < 1.25){
+			value += -xOffset;
+		}
+		if(value >= 1.25 && value < 1.5){
+			value += (-xOffset+yOffset)/2.f;
+		}
+		if(value >= 1.5 && value < 1.75){
+			value += yOffset;
+		}
+		if(value >= 1.75 && value <= 2.0){
+			value += (xOffset+yOffset)/2.f;
+		}
+		if(value <= 0.25){
+			value += xOffset;
+		}
+	}
+	std::cout << value << ' ';
+	Utilities util;
+	value = util.restrictBetween(value,2.f,0.f);
+
+
+	glm::mat4 scale = glm::mat4(1);
+	scale = glm::scale(scale,glm::vec3(width,-height,1));
+	glset.uniformMatrix4fv(uiPrograms.spinnerProgram,"scale",scale);
+	
+	glm::vec3 pos = glm::vec3(position_x,position_y,z);
+	glset.uniform3fv(uiPrograms.spinnerProgram,"pos",pos);
+	
+	glset.uniform1f(uiPrograms.spinnerProgram,"val",value);
+
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.sqrVBO);
+	glBindVertexArray(uiObjects.sqrVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	ColorData colorData;
+
+	scale = glm::mat4(1);
+	pos = glm::vec3(0);
+	glset.uniformMatrix4fv(uiPrograms.spinnerProgram,"scale",scale);
+	glset.uniform3fv(uiPrograms.spinnerProgram,"pos",pos);
 	
 	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
 	glBindVertexArray(uiObjects.VAO);

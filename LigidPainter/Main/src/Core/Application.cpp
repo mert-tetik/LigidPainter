@@ -40,11 +40,12 @@
 //TODO Slider for start screen project displayer
 
 //TODO Circular range bar for light pos
-//TODO 3D Model position
 //TODO 3D Model Fov
 //TODO 3D Models
-//TODO Use texcoords for rendering checkbox
-//TODO Perspective or orthographic 
+
+//TODO Load 3D Models from Models folder
+//TODO Add 3D Models before the project
+//TODO Project folder manager
 
 //TODO Search for brush textures
 //TODO Color id

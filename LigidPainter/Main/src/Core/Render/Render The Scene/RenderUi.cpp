@@ -88,6 +88,8 @@ bool showTheSelectionBox = true;
 std::vector<float> selectionBoxCoords = {};
 bool selectionActive = false;
 
+float lightRotVal;
+
 int previousTextureResIndex;
 
 Audios uiAudios;
@@ -134,6 +136,8 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	gl.uniformMatrix4fv(programs.brushCursor, "TextProjection", projection);
 	glUseProgram(programs.dotsProgram);
 	gl.uniformMatrix4fv(programs.dotsProgram, "TextProjection", scprojection);
+	glUseProgram(programs.spinnerProgram);
+	gl.uniformMatrix4fv(programs.spinnerProgram, "TextProjection", projection);
 	glUseProgram(programs.uiProgram);
 	gl.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
 	float centerCoords = (renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum;
@@ -1099,8 +1103,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 	alertState = 0;
 	
-	lastMouseX = mouseXpos;
-	lastMouseY = mouseYpos;
+
 
 	float generateOptionsYoffset = -0.05f;
 	if(UIElements[UInormalmapCheckBoxElement].checkBox.checked && panelData.generatorPanelActive){
@@ -1199,7 +1202,11 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		
 		UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.positionY = -0.14f + generateOptionsYoffset;
 	}
+	glUseProgram(programs.spinnerProgram);
+	ui.spinnerBox(0.1f,0.2f,centerCoords - screenGapX, -0.5f,0.9f,lightRotVal,xOffset,yOffset,mouseXpos,mouseYpos,renderData.window);
 
+	lastMouseX = mouseXpos;
+	lastMouseY = mouseYpos;
 
 	uiOut.currentBrushMaskTxtr = currentBrushMaskTexture;
 	return uiOut;

@@ -42,7 +42,8 @@ using namespace std;
 
     // draws the model, and thus all its meshes
     void Model::Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,unsigned int selectedTexture,
-    glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal,bool renderOnlyTheChosenMesh, std::vector<unsigned int> materialOutputs,unsigned int materialResultProgram,glm::mat4& modelMatrix,bool useUV)
+                    glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal,bool renderOnlyTheChosenMesh, std::vector<unsigned int> materialOutputs,unsigned int materialResultProgram,glm::mat4& modelMatrix,
+                    bool useUV)
     {
         if(meshes.size() > 0 && paintingMode){
             glActiveTexture(GL_TEXTURE0);
@@ -55,7 +56,9 @@ using namespace std;
         for(unsigned int i = 0; i < meshes.size(); i++){
             if(!paintingMode){
                 glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
-
+                //glm::mat4 projection = glm::ortho(-(1920.0f / 50.0f), 1920.0f / 50.0f, 
+                                                    //1080.0f / 50.0f, -(1080.0f / 50.0f), 
+                                                    //-1000.0f, 1000.0f);
                 for (size_t sI = 0; sI < meshes[i].submeshes.size(); sI++){
                     if(modelMaterials[meshes[i].submeshes[sI].materialIndex].program != 0){
 	                    glUseProgram(modelMaterials[meshes[i].submeshes[sI].materialIndex].program);
