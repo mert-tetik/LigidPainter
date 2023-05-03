@@ -35,18 +35,18 @@ class Render {
 public:
 
 	RenderOutData render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,Icons &icons,
-	bool renderPlane,bool renderSphere,PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,
-	float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,OutShaderData &outShaderData,Model &model,
-	std::vector<aTexture> &albedoTextures,bool paintRender,float materialsPanelSlideValue,std::vector<UIElement> &UIElements, ColorPicker &colorPicker,
-	TextureDisplayer &textureDisplayer,Cubemaps &cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel,
-	int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene
-	,std::vector<Node> &appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool& newModelAdded,bool &firstClick,
-	glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
-	,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
-	,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
-	,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen,std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
-	unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,
-	std::string &customModelName,glm::mat4 &modelMatrix);
+						bool renderPlane,bool renderSphere,PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,
+						float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,OutShaderData &outShaderData,Model &model,
+						std::vector<aTexture> &albedoTextures,bool paintRender,float materialsPanelSlideValue,std::vector<UIElement> &UIElements, ColorPicker &colorPicker,
+						TextureDisplayer &textureDisplayer,Cubemaps &cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel,
+						int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene
+						,std::vector<Node> &appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool& newModelAdded,bool &firstClick,
+						glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
+						,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
+						,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
+						,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen,std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
+						unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,
+						std::string &customModelName,glm::mat4 &modelMatrix,bool &displayProjectFolderManager);
 
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void sendProgramsToRender(Programs appPrograms);
@@ -73,15 +73,15 @@ private:
 	glm::vec3 screenHoverPixel,glm::vec3 &drawColor,OutShaderData &outShaderData);
 
 	RenderOutData renderUi(PanelData& panelData, RenderData &renderData, unsigned int FBOScreen, Icons &icons,const char* exportFileName,
-	double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,float brushBlurVal,
-	OutShaderData &outShaderData,Model &model,std::vector<aTexture> &albedoTextures,Programs programs,int &currentMaterialIndex,int maxScreenWidth,
-	int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,float materialsPanelSlideValue,
-	std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,
-	SndPanel &sndPanel,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,
-	int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool &firstClick,ColoringPanel& coloringPanel,
-	TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive,std::string &textureText
-	,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps,Objects &objects
-	,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios,bool &textureDraggingState,float &lightRotVal);
+							double mouseXpos,double mouseYpos,int screenSizeX,int screenSizeY,float brushBlurVal,
+							OutShaderData &outShaderData,Model &model,std::vector<aTexture> &albedoTextures,Programs programs,int &currentMaterialIndex,int maxScreenWidth,
+							int maxScreenHeight, SaturationValShaderData &saturationValShaderData,unsigned int &currentBrushMaskTexture,float materialsPanelSlideValue,
+							std::vector<UIElement> &UIElements,ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,
+							SndPanel &sndPanel,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,
+							int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool &firstClick,ColoringPanel& coloringPanel,
+							TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive,std::string &textureText
+							,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps,Objects &objects
+							,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios,bool &textureDraggingState,float &lightRotVal,std::string projectPath);
 	
 	
 	void renderAxisPointer(AxisPointerShaderData axisPointerShaderData,Programs programs);
@@ -97,5 +97,8 @@ private:
 							float yMirrorPos,float zMirrorPos,bool useUV);
     void exportTexture(bool JPG,bool PNG,const char* exportPath,const char* exportFileName,std::vector<aTexture> &albedoTextures,int chosenTextureResIndex);
 
+	void projectFolderManagerPanel(std::vector<UIElement> &UIElements,Programs renderPrograms,Cubemaps cubemaps,SkyBoxShaderData skyBoxShaderData,
+                                        float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos
+										,bool firstClick,bool &displayProjectFolderManager);
 };
 #endif // !RGDRENDER_H

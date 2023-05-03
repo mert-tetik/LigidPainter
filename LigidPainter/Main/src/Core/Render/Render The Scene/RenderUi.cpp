@@ -101,7 +101,7 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool &firstClick
 ,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive
 ,std::string &textureText,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps
-,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios,bool &textureDraggingState,float &lightRotVal) {
+,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios,bool &textureDraggingState,float &lightRotVal,std::string projectPath) {
 	uiAudios = audios;
 
 	ColorData colorData;
@@ -1205,7 +1205,26 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		ui.spinnerBox(0.1f,0.2f,centerCoords - screenGapX, -0.5f,0.9f,lightRotVal,xOffset,yOffset,mouseXpos,mouseYpos,firstClick,renderData.window);
 		glUseProgram(programs.iconsProgram);
 		ui.iconBox(0.06,0.12,centerCoords - screenGapX,-0.49f,0.91f,icons.Light,0.f,colorData.iconColor,colorData.iconColorHover);
+		glUseProgram(programs.uiProgram);
 
+		#if defined(_WIN32) || defined(_WIN64)
+		    char folderDistinguisher = '\\';
+		#else
+			char folderDistinguisher = '/'; 
+		#endif
+		int bI = 0;
+		for (const auto & entry : std::filesystem::directory_iterator((std::string)(projectPath) + "\\3DModels\\")){
+			std::string fileName = entry.path().string();
+			std::string file = util.getLastWordBySeparatingWithChar(fileName,folderDistinguisher);
+
+			bool buttonHover = ui.isMouseOnButton(renderData.window,0.2f,0.02f,centerCoords - screenGapX*2,0.8f - ((float)bI * 0.04),mouseXpos,mouseYpos,false);
+
+			ui.box(0.2f,0.02f,centerCoords - screenGapX,0.8f - ((float)bI * 0.04),file,colorData.buttonColor,+0.19f,false,false,0.91f+(bI/10000.f),10000,colorData.buttonColorHover,buttonHover);
+			bI++;
+			if(firstClick && buttonHover){
+				model.loadModel(fileName,true);
+			}
+		}
 	}
 
 	lastMouseX = mouseXpos;

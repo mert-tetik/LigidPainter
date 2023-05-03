@@ -34,7 +34,13 @@ public:
 		materialpath += "Materials";
 		std::filesystem::create_directories(materialpath);
 		std::filesystem::copy("./LigidPainter/Resources/Materials/material_0", materialpath);
-
+		
+        //Models
+		std::string modelpath = path;
+		modelpath += folderDistinguisher;
+		modelpath += "3DModels";
+		std::filesystem::create_directories(modelpath);
+		std::filesystem::copy(".\\LigidPainter\\Resources\\3D Models\\", modelpath);
 
 
 		//Shaders
@@ -86,8 +92,6 @@ public:
 
 		std::string extension = "";
 				
-		std::filesystem::copy(modelFilePath, path + folderDistinguisher + "3DModel." + extension);
-
 		std::filesystem::copy("./LigidPainter/Resources/Text", path);
 
         if(transNodes)
@@ -188,21 +192,19 @@ public:
         UserInterface ui;
         addNodeContexMenu = ui.createContextMenus(appNodes);
 
-        model.loadModel(path + folderDistinguisher + "3DModel",true);
-
-
         //Settings
         std::vector<std::string> elements{
-            "Skybox", //0
-            "Texture_Resolution", //1
-            "Backface_Culling", //2
-            "Node_Resolution", //3
-            "Image_Background", //4
-            "Skybox_Background", //5
-            "Realtime_Material_Rendering", //6
-            "Sync", //7
-            "JPG", //8
-            "Selected_Material" //9 
+            "Model", //0
+            "Skybox", //1
+            "Texture_Resolution", //2
+            "Backface_Culling", //3
+            "Node_Resolution", //4
+            "Image_Background", //5
+            "Skybox_Background", //6
+            "Realtime_Material_Rendering", //7
+            "Sync", //8
+            "JPG", //9
+            "Selected_Material" //10 
         };
 
         std::string setting;
@@ -229,27 +231,30 @@ public:
                 stI++;
             }
             
-            int stVal = std::stoi(stValue); 
+            int stVal;
+            if(stName != elements[0])
+                stVal = std::stoi(stValue); 
+            if(stName == elements[0])
+                model.loadModel(path + "3DModels" + folderDistinguisher + stValue,true);
 
-            //if(stName == elements[0])
-            //if(stName == elements[1])
-            if(stName == elements[2])
+            //if(stName == elements[2])
+            if(stName == elements[3])
                 UIElements[UIbackfaceCullingCheckBox].checkBox.checked = stVal;
-            //if(stName == elements[3])
+            //if(stName == elements[4])
             
-            if(stName == elements[4])
-                UIElements[UIimageCheckBoxElement].checkBox.checked = stVal;
             if(stName == elements[5])
-                UIElements[UIskyboxCheckBox].checkBox.checked = stVal;
+                UIElements[UIimageCheckBoxElement].checkBox.checked = stVal;
             if(stName == elements[6])
-                UIElements[UIrealtimeMaterialRenderingCheckBox].checkBox.checked = stVal;
+                UIElements[UIskyboxCheckBox].checkBox.checked = stVal;
             if(stName == elements[7])
+                UIElements[UIrealtimeMaterialRenderingCheckBox].checkBox.checked = stVal;
+            if(stName == elements[8])
                 UIElements[UIstabilizeFpsCheckBox].checkBox.checked = stVal;
-            if(stName == elements[8]){
+            if(stName == elements[9]){
                 UIElements[UIjpgCheckBox].checkBox.checked = stVal;
                 UIElements[UIpngCheckBox].checkBox.checked = !UIElements[UIjpgCheckBox].checkBox.checked;
             }
-            //if(stName == elements[9])
+            //if(stName == elements[10])
                 //UIElements[UIjpgCheckBox].checkBox.checked;
 
         }

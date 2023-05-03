@@ -134,6 +134,16 @@ using namespace std;
 	    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	    glBindVertexArray(mVAO);
     }
+    void Model::Draw()
+    {
+        for(unsigned int i = 0; i < meshes.size(); i++){
+            if(meshes[i].submeshes.size() <= 1){
+                meshes[i].Draw();
+            }
+        }
+	    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+	    glBindVertexArray(mVAO);
+    }
     
     void Model::uploadModel(Model uploadedModel){
         meshes.clear();
@@ -145,6 +155,49 @@ using namespace std;
         
     }
     
+    glm::vec3 Model::getMostFarVertex(){
+        glm::vec3 mostFarPos = glm::vec3(0);
+        for(unsigned int i = 0; i < meshes.size(); i++){
+            for (size_t v = 0; v < meshes[i].vertices.size(); v++)
+            {
+                if(glm::length(meshes[i].vertices[v].Position) > glm::length(mostFarPos)){
+                    mostFarPos = meshes[i].vertices[v].Position;
+                }
+            }
+        }
+        return mostFarPos;
+    }
+    
+    glm::vec3 Model::getMostFarVector(){
+        glm::vec3 mostFarPos = glm::vec3(0);
+
+        for(unsigned int i = 0; i < meshes.size(); i++){
+            for (size_t v = 0; v < meshes[i].vertices.size(); v++)
+            {
+                if(abs(meshes[i].vertices[v].Position.x) > mostFarPos.x){
+                    mostFarPos.x = abs(meshes[i].vertices[v].Position.x);
+                }
+                if(abs(meshes[i].vertices[v].Position.y) > mostFarPos.y){
+                    mostFarPos.y = abs(meshes[i].vertices[v].Position.y);
+                }
+                if(abs(meshes[i].vertices[v].Position.z) > mostFarPos.z){
+                    mostFarPos.z = abs(meshes[i].vertices[v].Position.z);
+                }
+            }
+        }
+        return glm::vec3(max(max(mostFarPos.x,mostFarPos.y),mostFarPos.z));
+    }
+    
+    void Model::normalizeVertices(){
+        for(unsigned int i = 0; i < meshes.size(); i++){
+            for (size_t v = 0; v < meshes[i].vertices.size(); v++)
+            {
+                meshes[i].vertices[v].Position = glm::normalize(meshes[i].vertices[v].Position); 
+            }
+        }
+        return;
+    }
+
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void Model::loadModel(string const &path,bool triangulate)
     {

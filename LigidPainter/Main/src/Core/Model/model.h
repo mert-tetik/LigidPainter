@@ -29,7 +29,12 @@ public:
     void Draw(unsigned int chosenMaterialIndex,unsigned int PBRProgram,bool useOpacity,std::vector<MaterialOut> &modelMaterials,glm::mat4 view,bool paintingMode,
     unsigned int selectedTexture,glm::vec3 viewPos,float skyboxExposureVal,float skyboxRotationVal,bool renderOnlyTheChosenMesh,std::vector<unsigned int> materialOutputs
     ,unsigned int materialResultProgram,glm::mat4& modelMatrix,bool useUV,float lightRotation);
-    
+    void Draw();
+
+    glm::vec3 getMostFarVertex();
+    glm::vec3 getMostFarVector();
+    void normalizeVertices();
+
     void uploadModel(Model uploadedModel);
 
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.

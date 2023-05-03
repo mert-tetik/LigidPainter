@@ -44,6 +44,7 @@ struct Programs
 	unsigned int renderTheTextureBlur;
 	unsigned int blackToAlphaProgram;
 	unsigned int spinnerProgram;
+	unsigned int solidRenderer;
 };
 struct Cubemaps{
 	unsigned int cubemap;
@@ -208,6 +209,8 @@ struct Icons{
 	unsigned int RCircle;
 	unsigned int SmoothSquare;
 	unsigned int Light;
+	unsigned int L;
+	unsigned int I;
 };
 
 struct RenderData { //GlSet::render

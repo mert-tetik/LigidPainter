@@ -234,6 +234,8 @@ public:
 		icons.RCircle = txtr.getTexture("LigidPainter/Resources/Icons/RCircle.jpg",0,0,false);
 		icons.SmoothSquare = txtr.getTexture("LigidPainter/Resources/Icons/SmoothSquare.jpg",0,0,false);
 		icons.Light = txtr.getTexture("LigidPainter/Resources/Icons/Light.jpg",0,0,false);
+		icons.L = txtr.getTexture("LigidPainter/Resources/Icons/L.jpg",0,0,false);
+		icons.I = txtr.getTexture("LigidPainter/Resources/Icons/I.jpg",0,0,false);
 	
 		return icons;
 	}
@@ -416,152 +418,35 @@ public:
 	Programs getProgram() {//Prepare shader program | Usen once
 
 		GlSet gl;
-		//Ui program
 		unsigned int uiProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/ui");
-
-
-		//Skybox program
 		unsigned int skyboxProgram = gl.createProgram("./LigidPainter/Resources/Shaders/3D/skybox");
-
-
-
-		//Blur program
 		unsigned int blurProgram = gl.createProgram("./LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/blur");
-
-
-
-		//Icons program
 		unsigned int iconsProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/icons");
-
-
-		//Skybox Blur program
 		unsigned int skyboxblurProgram = gl.createProgram("./LigidPainter/Resources/Shaders/skyboxblur");
-
-
-
-		//PBR program
 		unsigned int PBRProgram = gl.createProgram("./LigidPainter/Resources/Shaders/3D/PBR");
-
-
-
-		//Saturation Value program
 		unsigned int saturationValBoxProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/saturationValBox");
-
-
-
-		//Saturation Value program
 		unsigned int screenDepthProgram = gl.createProgram("./LigidPainter/Resources/Shaders/Texture Processing/screenDepth");
-
-
-
-		//Hue program
 		unsigned int hueProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/hue");
-
-
-
-		//Axis pointer program
 		unsigned int axisPointerProgram = gl.createProgram("./LigidPainter/Resources/Shaders/3D/axisPointer");
-
-
-
-		//Out program
 		unsigned int outProgram = gl.createProgram("./LigidPainter/Resources/Shaders/Texture Processing/out");
-
-
-
-		//Out program
 		unsigned int twoDPaintingProgram = gl.createProgram("./LigidPainter/Resources/Shaders/Texture Processing/2dPainting");
-
-
-
-		//renderTheTexture Program
 		unsigned int renderTheTextureProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/renderTheTexture");
-
-
-
-		//Prefiltered map
 		unsigned int prefilterMapProgram = gl.createProgram("./LigidPainter/Resources/Shaders/3D/prefilterMap");
-		
-		
-		
-		//BRDF
 		unsigned int brdfProgram = gl.createProgram("./LigidPainter/Resources/Shaders/3D/BRDF");
-		
-		
-		
-		//Blury skybox
 		unsigned int blurySkyboxProgram = gl.createProgram("./LigidPainter/Resources/Shaders/skyboxblur");
-
-
-
-		//Normal map generator
 		unsigned int normalGenProgram = gl.createProgram("./LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/normalGen");
-
-
-
-
-		//Normal map generator
 		unsigned int noisyTextureProgram = gl.createProgram("./LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/noisyTexture");
-		
-		
-		
-		
-		//Curve 
 		unsigned int curveProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/curve");
-		
-		
-		
-		
-		//Ramp 
 		unsigned int rampProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/ramp");
-
-
-
-
-		//Dynamic painting program
 		unsigned int dynamicPaintingProgram = gl.createProgram("./LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/dynamicPainting");
-		
-		
-		
-		
-		//Dynamic painting program
 		unsigned int paintOverProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/paintover");
-
-
-
-
-		//Texture Displayer program
 		unsigned int textureDisplayer = gl.createProgram("./LigidPainter/Resources/Shaders/UI/textureDisplayer");
-		
-		
-		
-		
-		//brushCursor program
 		unsigned int brushCursor = gl.createProgram("./LigidPainter/Resources/Shaders/UI/brushCursor");
-		
-		
-		
-		
-		//materialResult program
 		unsigned int materialResult = gl.createProgram("./LigidPainter/Resources/Shaders/3D/materialResult");
-		
-		
-		
-		
-		//materialResult program
+		unsigned int solidRenderer = gl.createProgram("./LigidPainter/Resources/Shaders/3D/solidRenderer");
 		unsigned int dotsProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/dots");
-		
-		
-		
-		//Render textures blury
 		unsigned int renderTheTextureBlur = gl.createProgram("./LigidPainter/Resources/Shaders/UI/renderTheTextureBlur");
-		
-		
-		
 		unsigned int blackToAlphaProgram = gl.createProgram("./LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/blackToAlpha");
-		
-		
-		
 		unsigned int spinnerProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/spinner");
 		
 		
@@ -598,6 +483,7 @@ public:
 		glPrograms.renderTheTextureBlur = renderTheTextureBlur;
 		glPrograms.blackToAlphaProgram = blackToAlphaProgram;
 		glPrograms.spinnerProgram = spinnerProgram;
+		glPrograms.solidRenderer = solidRenderer;
 
 
 		return glPrograms;

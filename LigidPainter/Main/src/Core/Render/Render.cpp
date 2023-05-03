@@ -44,7 +44,8 @@ Programs renderPrograms;
 
 //--------------------RENDER UI --------------------\\
 
-char* projectPath = "./Projects";
+char* projectPathC = "./Projects";
+std::string projectPath = "";
 
 unsigned int currentBrushMaskTexture;
 
@@ -298,7 +299,7 @@ glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatin
 ,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
 ,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
 unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,std::string &customModelName
-,glm::mat4 &modelMatrix) {
+,glm::mat4 &modelMatrix,bool &displayProjectFolderManager) {
 	
 	renderCurrentMaterialIndex = currentMaterialIndex;
 	
@@ -335,7 +336,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		panelData.generatorPanelSlideVal = 0.3;
 	}
 
-	if(!startScreen && !createProject){
+	if(!startScreen && !createProject && !displayProjectFolderManager){
 		glActiveTexture(GL_TEXTURE9);
 		glBindTexture(GL_TEXTURE_2D,depthTextureID);
 		glActiveTexture(GL_TEXTURE28);
@@ -436,6 +437,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		}
 		materialDisplayUpdaterCounter++;
 
+
 		glUseProgram(renderPrograms.outProgram);
 		gls.uniform1i(renderPrograms.outProgram,"dynamicPainting",UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked);
 		gls.uniform1i(renderPrograms.outProgram,"useMirror",UIElements[UImirrorXCheckBox].checkBox.checked || UIElements[UImirrorYCheckBox].checkBox.checked || UIElements[UImirrorZCheckBox].checkBox.checked);
@@ -529,7 +531,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 				nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
 				chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
 				,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex,audios,textureDraggingState
-				,lightRotVal);
+				,lightRotVal,projectPath);
 				
 				UserInterface ui;
 				if(colorPicker.dropperActive || coloringPanel.dropperActive){
@@ -591,58 +593,9 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 			screenHoverPixel = getScreenHoverPixel(mouseXpos,mouseYpos,screenSizeY);
 		}
 
-		UserInterface ui;
-		glUseProgram(renderPrograms.uiProgram);
-		glm::vec4 saveButtonColor = colorData.textColor;
-		if(ui.isMouseOnButton(renderData.window,0.025f,0.02f,-0.03f-screenGapX,0.95f,mouseXpos,mouseYpos,false)){
-			saveButtonColor = glm::vec4(colorData.LigidPainterThemeColor,1);
-
-			nodePanel.pointerCursor = true;
-			if(firstClick){
-				char* projectFilePathCheck;
-				if(projectFilePath == ""){
-					//File dialog
-					char const* lFilterPatterns[1] = { "*.ligid" };
-					projectFilePathCheck = tinyfd_saveFileDialog("Save The Project","", 1, lFilterPatterns, "");
-				}
-
-				if(projectFilePath != ""){
-					LigidFile ligidFile;
-					ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes,chosenTextureResIndex);
-				}
-				else if(projectFilePathCheck){
-					LigidFile ligidFile;
-					projectFilePath = projectFilePathCheck;
-					ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes,chosenTextureResIndex);
-				}
-			}
-		}
-		ui.renderText(renderPrograms.uiProgram,"Save",-0.05f,0.95f,0.00022f,saveButtonColor,0.9f,false);
 		
-		glm::vec4 loadButtonColor = colorData.textColor;
-		if(ui.isMouseOnButton(renderData.window,0.025f,0.02f,0.07f-screenGapX,0.95f,mouseXpos,mouseYpos,false)){
-			loadButtonColor = glm::vec4(colorData.LigidPainterThemeColor,1);
-			nodePanel.pointerCursor = true;
-			if(firstClick){
-				LigidPainter lp;
-				if(lp.ligidMessageBox("Another project will be loaded. Unsaved data will be lost.",-0.23f,"Do you want to proceed?",-0.1f)){
-					glUseProgram(renderPrograms.uiProgram);
-					char const* lFilterPatterns[1] = { "*.ligid" };
-					//File dialog
-					auto path = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
-
-					if(path){
-						ProjectFolder projectFolder;
-						projectFolder.readFolder(path,nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures);
-						projectFilePath = path;
-						startScreen = false;
-					}
-				}
-			}
-		}
-		ui.renderText(renderPrograms.uiProgram,"Load",0.05f,0.95f,0.00022f,loadButtonColor,0.9f,false);
 	}
-	else if(!createProject){
+	else if(startScreen){
 		
 		gls.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -709,6 +662,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 				auto path = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
 				
 				if(path){
+					projectPath = path;
 					ProjectFolder projectFolder;
 					projectFolder.readFolder(path,nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures);
 					projectFilePath = path;
@@ -743,6 +697,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 			ui.box(0.4f,0.015f,0.f,-0.58f - ((float)bI * 0.03),file,colorData.buttonColor,+0.39f,false,false,0.91f+(bI/10000.f),10000,colorData.buttonColorHover,buttonHover);
 			bI++;
 			if(firstClick && buttonHover){
+				projectPath = fileName;
 				ProjectFolder projectFolder;
 				projectFolder.readFolder(fileName + folderDistinguisher + file + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures);
 				projectFilePath = fileName;
@@ -763,7 +718,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		glUseProgram(renderPrograms.uiProgram);
 		ui.renderText(renderPrograms.uiProgram,"Import Project",0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
 	}
-	else{
+	else if(createProject){
 		UserInterface ui;
 		glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 		glUseProgram(renderPrograms.iconsProgram);
@@ -881,9 +836,11 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		glUseProgram(renderPrograms.uiProgram);
 		
 		bool projectPathTextboxHover = ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,0.45f,mouseXpos,mouseYpos,false);
-		ui.box(0.12f,0.03f,0.f,0.45f, projectPath ? util.cropString(projectPath,22) : "Project Path Here" ,colorData.textBoxColor,0.11f,false,false,0.91f,10,colorData.buttonColorHover,projectPathTextboxHover);
+		ui.box(0.12f,0.03f,0.f,0.45f, projectPathC ? util.cropString(projectPathC,22) : "Project Path Here" ,colorData.textBoxColor,0.11f,false,false,0.91f,10,colorData.buttonColorHover,projectPathTextboxHover);
 		if(projectPathTextboxHover && firstClick){
-			projectPath = tinyfd_selectFolderDialog("Choose a path","./Projects");
+			projectPathC = tinyfd_selectFolderDialog("Choose a path","./Projects");
+			if(!projectPathC)
+				projectPathC = "./Projects";
 		}
 		
 		bool createButtonHover = ui.isMouseOnButton(renderData.window,0.06f,0.04f,0.f-screenGapX,-0.55f,mouseXpos,mouseYpos,false);
@@ -900,11 +857,12 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		glUseProgram(renderPrograms.uiProgram);
 
 		if(createButtonHover && firstClick){
-			if(projectPath){
+			if(projectPathC){
 				//Main folder
-				std::string path = projectPath;
+				std::string path = projectPathC;
 				path += folderDistinguisher;
 				path += UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text;
+				projectPath = path;
 				if(std::filesystem::is_directory(path)){
 					LigidPainter lp;
 					if(lp.ligidMessageBox("There is already a folder with the same name",-0.19f,"Do you want to proceed?",-0.1f)){
@@ -935,6 +893,12 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 		} 
 
 	}
+	else if(displayProjectFolderManager){		
+		projectFolderManagerPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,displayProjectFolderManager);
+	}
+
+	glUseProgram(renderPrograms.solidRenderer);
+	gls.uniformMatrix4fv(renderPrograms.solidRenderer,"projection",perspectiveProjection);
 
 	createProjectPanelBlurVal = util.transitionEffect(createProject,createProjectPanelBlurVal,0.1f);
 	

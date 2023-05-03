@@ -194,7 +194,6 @@ LigidCursors cursors,bool texturePanelButtonHover,std::vector<UIElement> &uiElem
 		cameraPos.y = sin(glm::radians(pitch)) * -radius + originPos.y;
 		cameraPos.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.x;
 		cameraPos.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius + originPos.z;
-		std::cout << "yaw : " << glm::radians(yaw) << " pitch : " << glm::radians(pitch) << std::endl;
 	}
 	
 	if (glfwGetMouseButton(window, 2) == GLFW_PRESS && nodePanel.panelHover){

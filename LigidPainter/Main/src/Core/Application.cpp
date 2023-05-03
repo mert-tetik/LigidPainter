@@ -41,6 +41,8 @@
 //TODO Default pbr light rot
 //TODO Add node context menu few elements
 //TODO Spinner screengap
+//TODO Remove 3DModel folder
+//TODO Import 3d models
 
 //TODO Circular range bar for light pos
 //TODO 3D Model Fov
@@ -241,6 +243,7 @@ Model sphereModel;
 int currentMaterialIndex = 0;
 bool textureDraggingState = false;
 bool mirrorRangeBarsPressed = false;
+bool displayProjectFolderManager = true;
 glm::mat4 modelMatrix = glm::mat4(1);
 
 
@@ -982,7 +985,7 @@ bool LigidPainter::run()
 										txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
 										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState
-										 ,debugMode,createProject,modelFilePath,modelName,customModelName,modelMatrix);
+										 ,debugMode,createProject,modelFilePath,modelName,customModelName,modelMatrix,displayProjectFolderManager);
 		}
 		duplicateNodeCall = false;
 		
