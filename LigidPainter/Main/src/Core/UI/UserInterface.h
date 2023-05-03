@@ -729,8 +729,9 @@ public:
 	
 	void renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active);
 	void renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,Font font);
-	void renderTextR(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active);
-	void renderTextM(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active);
+	void renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,Font font,float maxX);
+	void renderTextR(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,Font font);
+	void renderTextM(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,Font font);
 	void renderMenubar(GLFWwindow* window);
 	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked,unsigned int circleTxtr);
 	void panelChangeButton(float position_x, float position_y);

@@ -287,6 +287,8 @@ int paintRenderCounter = 0;
 size_t renderingCounter = 0;
 float lightRotVal = 0.f;
 
+Font txtrGenSelectedFont;
+
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
 							Icons &icons, bool renderPlane,bool renderSphere,
 							PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,
@@ -531,7 +533,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 				nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
 				chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
 				,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex,audios,textureDraggingState
-				,lightRotVal,projectPath,fonts);
+				,lightRotVal,projectPath,fonts,txtrGenSelectedFont);
 				
 				UserInterface ui;
 				if(colorPicker.dropperActive || coloringPanel.dropperActive){

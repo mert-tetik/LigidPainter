@@ -90,6 +90,8 @@ bool selectionActive = false;
 
 int previousTextureResIndex;
 
+bool txtrGenSelectFonts = false;
+
 Audios uiAudios;
 
 RenderOutData Render::renderUi(PanelData &panelData,RenderData& renderData,unsigned int FBOScreen,Icons &icons,
@@ -101,7 +103,8 @@ float materialsPanelSlideValue,std::vector<UIElement> &UIElements,ColorPicker &c
 std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appNodes,bool &newModelAdded,std::vector<MaterialOut> &modelMaterials,bool &firstClick
 ,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive
 ,std::string &textureText,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps
-,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios,bool &textureDraggingState,float &lightRotVal,std::string projectPath,std::vector<Font> &fonts) {
+,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios,bool &textureDraggingState,float &lightRotVal,std::string projectPath,std::vector<Font> &fonts
+,Font &txtrGenSelectedFont) {
 	uiAudios = audios;
 
 	ColorData colorData;
@@ -961,17 +964,17 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 						if(UIElements[UIgenerateTextLeftAlignCheckBoxElement].checkBox.checked){
 							float aposX = -1.f;
 							if(dTxt.size())
-								ui.renderText(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false);
+								ui.renderText(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false,txtrGenSelectedFont);
 						}
 						if(UIElements[UIgenerateTextMidAlignCheckBoxElement].checkBox.checked){
 							float aposX = -.5f;
 							if(dTxt.size())
-								ui.renderTextM(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false);
+								ui.renderTextM(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false,txtrGenSelectedFont);
 						}
 						if(UIElements[UIgenerateTextRightAlignCheckBoxElement].checkBox.checked){
 							float aposX = .5f;
 							if(dTxt.size())
-								ui.renderTextR(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false);
+								ui.renderTextR(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false,txtrGenSelectedFont);
 						}
 
 						
@@ -1171,10 +1174,39 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		UIElements[UIgenerateTextLeftAlignCheckBoxElement].checkBox.positionY = -0.25f + generateOptionsYoffset;
 		UIElements[UIgenerateTextMidAlignCheckBoxElement].checkBox.positionY = -0.25f + generateOptionsYoffset;
 		UIElements[UIgenerateTextRightAlignCheckBoxElement].checkBox.positionY = -0.25f + generateOptionsYoffset;
+
+		if(txtrGenSelectFonts){
+			for (size_t i = 0; i < fonts.size(); i++)
+			{
+				bool fontElementEnter = false;
+				fontElementEnter = ui.isMouseOnButton(renderData.window,0.1f,0.025f,centerCoords - screenGapX*2.f, -0.33f + generateOptionsYoffset - ((i+1)/20.f),mouseXpos,mouseYpos,0);
+
+				ui.box(0.1f,0.025f,centerCoords - screenGapX, -0.33f + generateOptionsYoffset - ((i+1)/20.f),"" , colorData.buttonColor, 0 , false, false, 0.95f, 10000 , colorData.buttonColorHover, fontElementEnter);
+				ui.renderText(programs.uiProgram,fonts[i].name,centerCoords - screenGapX - 0.1,-0.33f + generateOptionsYoffset - ((i+1)/20.f),0.00022f,colorData.textColor,0.96f,0,fonts[i]);
+			
+				if(fontElementEnter && firstClick)
+					txtrGenSelectedFont = fonts[i];
+			}
+		}
+	
+		bool fontButtonEnter = false;
+		if(ui.isMouseOnButton(renderData.window,0.1f,0.025f,centerCoords - screenGapX*2.f, -0.33f + generateOptionsYoffset,mouseXpos,mouseYpos,0)){
+			fontButtonEnter = true;
+			if(firstClick)
+				txtrGenSelectFonts = !txtrGenSelectFonts;
+		}
+		else{
+			if(firstClick)
+				txtrGenSelectFonts = false;
+		}
+
+			
+		ui.box(0.1f,0.025f,centerCoords - screenGapX, -0.33f + generateOptionsYoffset,"" , colorData.buttonColor, 0 , false, false, 0.9f, 10 , colorData.buttonColorHover, fontButtonEnter);
+		ui.renderText(programs.uiProgram,txtrGenSelectedFont.name,centerCoords - screenGapX - 0.1,-0.33f + generateOptionsYoffset,0.00022f,colorData.textColor,0.91f,0,txtrGenSelectedFont);
 		
-		ui.box(0.13f,0.0005f,centerCoords - screenGapX, -0.3f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
+		ui.box(0.13f,0.0005f,centerCoords - screenGapX, -0.37f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
 		
-		UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.positionY = -0.35f + generateOptionsYoffset;
+		UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.positionY = -0.4f + generateOptionsYoffset;
 	}
 	if(UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked && panelData.generatorPanelActive){
 		UIElements[UInormalmapCheckBoxElement].checkBox.positionY = 0.16f + generateOptionsYoffset; 

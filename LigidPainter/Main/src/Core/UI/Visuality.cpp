@@ -1583,8 +1583,98 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
 	glBindVertexArray(uiObjects.VAO);
 }
+void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,Font font,float maxX) {
+	lastXText = x;
+	GlSet glset;
+	ColorData2 colorData2;
+	
+	const int maxCharCountSize = 100;
+	if(active){
+		textCursorPhaseCounter++;
+		if(textCursorPhaseCounter == maxCharCountSize)
+			textCursorPhaseCounter = 0;
+	}
 
-void UserInterface::renderTextM(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active) {
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.sqrVBO);
+	glBindVertexArray(uiObjects.sqrVAO);
+
+	glset.activeTexture(GL_TEXTURE2);
+
+	glset.uniform1i(program,"isText", 1);
+	glset.uniform1i(program, "isTextF", 1);
+	glset.uniform4fv(program, "uiColor", color);
+	
+	std::string::const_iterator c;
+	int counter = 0;
+	for (c = text.begin(); c != text.end(); c++)
+	{
+		character ch = font.characters[*c];
+		if(*c == '\n'){
+			x=lastXText;
+			y-=(ch.Size.y) * scale;
+		}
+		else{
+			if(maxX < x){
+				x=lastXText;
+				y-=(ch.Size.y) * scale;
+			}
+			
+			float xpos = x + ch.Bearing.x * scale;
+			float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+
+			float w = ch.Size.x * scale * 0.8f;
+			float h = ch.Size.y * scale;
+
+			glm::mat4 scalemat = glm::mat4(1);
+			scalemat = glm::scale(scalemat,glm::vec3(w/1.7,h/1.7,1));
+			glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
+
+			glm::vec3 pos = glm::vec3(xpos + w/1.7,ypos + h/1.7,z);
+			glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+
+			glset.bindTexture(ch.TextureID);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
+			if(active){
+				if(counter == text.size()+uiTextBoxActiveChar-1 && textCursorPhaseCounter < maxCharCountSize/2){
+					glset.uniform1i(program,"isText", 0);
+					glset.uniform1i(program, "isTextF", 0);
+					glset.uniform4fv(program, "uiColor", colorData2.textboxCursorColor);
+					glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0);
+
+					scalemat = glm::mat4(1);
+					scalemat = glm::scale(scalemat,glm::vec3(0.001f,0.02,1));
+					glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
+					pos = glm::vec3(xpos + w/1.7*2.,y+0.01,z);
+					glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+					glDrawArrays(GL_TRIANGLES, 0, 6);
+
+					glset.uniform1i(program, "isTextF", 1);
+					glset.uniform1i(program,"isText", 1);
+					glset.uniform4fv(program, "uiColor", color);
+				}
+			}
+
+			x += (ch.Advance >> 6) * scale / 1.2f; 
+			counter++;
+
+		}
+
+	}
+	glset.uniform1i(program, "isTextF", 0);
+	glset.uniform1i(program, "isText", 0);
+
+	glm::mat4 scalemat = glm::mat4(1);
+	glm::vec3 pos = glm::vec3(0);
+	glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
+	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
+	glBindVertexArray(uiObjects.VAO);
+}
+
+void UserInterface::renderTextM(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,Font font) {
 	GlSet glset;
 	ColorData2 colorData2;
 	
@@ -1618,7 +1708,7 @@ void UserInterface::renderTextM(unsigned int program, std::string text, float x,
 	
 	for (c = text.begin(); c != text.end(); c++)
 	{
-		character ch = characters[*c];
+		character ch = font.characters[*c];
 
 		float xpos = x + ch.Bearing.x * scale;
 		float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
@@ -1672,7 +1762,7 @@ void UserInterface::renderTextM(unsigned int program, std::string text, float x,
 	glBindVertexArray(uiObjects.VAO);
 }
 
-void UserInterface::renderTextR(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active) {
+void UserInterface::renderTextR(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,Font font) {
 	GlSet glset;
 	ColorData2 colorData2;
 	
@@ -1697,7 +1787,7 @@ void UserInterface::renderTextR(unsigned int program, std::string text, float x,
 	for (c = text.size()-1; c != -1; c--)
 	{
 		
-		character ch = characters[text[c]];
+		character ch = font.characters[text[c]];
 
 		float xpos = x - ch.Bearing.x * scale;
 		float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;

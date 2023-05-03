@@ -345,7 +345,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
             }
             glUseProgram(renderPrograms.uiProgram);
             glDisable(GL_DEPTH_TEST);
-            ui.renderText(renderPrograms.uiProgram,"Carpe Diem",-0.35f,0.f,0.0022f,colorData.panelColor,0.91f,false,fileFont);
+            ui.renderText(renderPrograms.uiProgram,"Carpe Diem",-0.35f,0.f,0.0022f,colorData.panelColor,0.91f,false,fileFont,0.5f);
             glEnable(GL_DEPTH_TEST);
         }
 }
