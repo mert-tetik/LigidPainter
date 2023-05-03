@@ -266,6 +266,10 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
         glEnable(GL_DEPTH_TEST);
 
         if(projectFolderState == 0){
+
+            glUseProgram(renderPrograms.iconsProgram);
+            ui.iconBox(0.05f,0.1f,0.7f,0.7f,0.9f,icons.Texture,0,colorData.textColor,colorData.textColor);
+
             Texture texture;
             if(firstClick){
                 glDeleteTextures(1,&fileTxtr);
