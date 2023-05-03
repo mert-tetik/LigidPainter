@@ -45,7 +45,7 @@ ProcessHppNode processNodeFile(std::string filePath){
     std::fstream filein(filePath, std::ios::in);
 
     if(!filein.is_open()){
-        std::cout << "Unable to open the file\n";
+        std::cout << "Unable to open the file :" << filePath << "\n";
         std::cerr << "Error: " << strerror(errno) << std::endl;
     } else {
         std::cout << "Loaded " << filePath << std::endl;

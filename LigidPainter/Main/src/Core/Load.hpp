@@ -488,10 +488,10 @@ public:
 
 		return glPrograms;
 	}
-	Node createNode(std::string nodeName){
+	Node createNode(std::string path,std::string nodeName){
 		processNode process;
 		ProcessHppNode node;
-		node = process.processNodeFile("./LigidPainter/Resources/Nodes/" + nodeName + ".node");
+		node = process.processNodeFile(path);
 
 		Node resultNode;
 		resultNode.title = node.title;
@@ -715,7 +715,7 @@ public:
 				raw.pop_back();
 			}
 			
-			appNodes.push_back(createNode(raw));				
+			appNodes.push_back(createNode(fileName,raw));				
 		}
 		return appNodes;
 	}

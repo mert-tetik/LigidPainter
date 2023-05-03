@@ -6,13 +6,11 @@ in vec3 Pos;
 in vec3 Normal;
 
 void main(){
-
-
     vec3 objectColor = vec3(0.5,0.5,0.5);
     vec3 lightColor = vec3(1);
     vec3 lightPos = vec3(2);
 
-    float ambientStrength = 0.1;
+    float ambientStrength = 0.2;
     vec3 ambient = ambientStrength * lightColor;
 
     vec3 norm = normalize(Normal);

@@ -40,6 +40,7 @@ int selectedFileIndex = 0;
 std::string selectedFile = "";
 unsigned int fileTxtr = 0;
 Model fileModel;
+Node fileNode;
 
 void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mouseYpos,GLFWwindow* window,float midPanelW,Icons icons,Programs programs,bool firstClick){
     Utilities util;
@@ -148,15 +149,20 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
         ColorData colorData;
         ColorData2 colorData2;
         GlSet gls;
+
+	    glm::mat4 view = glm::lookAt(glm::vec3(-5,0,0), glm::vec3(0), glm::vec3(0.0, 1.0, 0.0)); 
+        skyBoxShaderData.view = view;
+
 		
         glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
 		glUseProgram(renderPrograms.iconsProgram);
 		gls.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
 		glUseProgram(renderPrograms.uiProgram);
 		gls.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
-		glUseProgram(renderPrograms.renderTheTextureProgram);
-		gls.uniform1i(renderPrograms.renderTheTextureProgram, "txtr", 14);
-		gls.uniformMatrix4fv(renderPrograms.renderTheTextureProgram, "TextProjection", projection);
+		glUseProgram(renderPrograms.textureDisplayer);
+		gls.uniform1i(renderPrograms.textureDisplayer, "currentTexture", 14);
+		gls.uniform1i(renderPrograms.textureDisplayer, "roundCor",1);
+		gls.uniformMatrix4fv(renderPrograms.textureDisplayer, "TextProjection", projection);
 		glUseProgram(renderPrograms.renderTheTextureBlur);
 		gls.uniformMatrix4fv(renderPrograms.renderTheTextureBlur, "TextProjection", projection);
 
@@ -266,9 +272,9 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
                 fileTxtr = texture.getTexture(selectedFile,0,0,0);
             }
 
-            glUseProgram(renderPrograms.renderTheTextureProgram);
+            glUseProgram(renderPrograms.textureDisplayer);
 
-            float rad = 0.4f;
+            float rad = 0.3f;
             std::vector<float> renderVertices = { 
 		        rad,  rad*2, 0.0f,1,1,0,0,0,  // top right
 		        rad,  -rad*2, 0.0f,1,0,0,0,0,  // bottom right
@@ -281,15 +287,13 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
             glActiveTexture(GL_TEXTURE14);
             glBindTexture(GL_TEXTURE_2D,fileTxtr);
             gls.drawArrays(renderVertices,0);
+    		gls.uniform1i(renderPrograms.textureDisplayer, "roundCor",0);
+
         }        
         if(projectFolderState == 1){
             glUseProgram(renderPrograms.solidRenderer);
             glm::vec3 mostFar = fileModel.getMostFarVector();
-            gls.uniform3fv(renderPrograms.solidRenderer,"mostFar",mostFar);
-
-
-	        glm::mat4 view = glm::lookAt(glm::vec3(5,0,0), glm::vec3(0), glm::vec3(0.0, 1.0, 0.0)); 
-            
+            gls.uniform3fv(renderPrograms.solidRenderer,"mostFar",mostFar);            
 	        gls.uniformMatrix4fv(renderPrograms.solidRenderer,"view",view);
 
 
@@ -298,5 +302,23 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
             }
 
             fileModel.Draw();
+        }
+        
+        if(projectFolderState == 2){
+
+        }
+        if(projectFolderState == 3){
+
+            if(firstClick){
+                Load load;
+                fileNode = load.createNode(selectedFile,"Node"); 
+            }
+            fileNode.height = ((fileNode.inputs.size() + fileNode.rangeBarCount + fileNode.outputs.size())/25.f + 0.07 * !fileNode.isMainOut) * 0.5f;
+			fileNode.width = 0.12f * 0.5f;
+			fileNode.positionX = 0.7f;
+
+            ui.node(fileNode,renderPrograms,icons);
+            glUseProgram(renderPrograms.uiProgram);
+            ui.renderText(renderPrograms.uiProgram,fileNode.fragSource,-0.5f,+0.9f,0.00022f,colorData.panelColor,0.91f,false);
         }
 }

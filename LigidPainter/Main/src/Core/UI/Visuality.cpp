@@ -1411,7 +1411,10 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 std::map<char, character> characters;
 int textCursorPhaseCounter = 0;
 
+float lastXText = 0;
+
 void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active) {
+	lastXText = x;
 	GlSet glset;
 	ColorData2 colorData2;
 	
@@ -1436,46 +1439,53 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 	for (c = text.begin(); c != text.end(); c++)
 	{
 		character ch = characters[*c];
+		if(*c == '\n'){
+			x=lastXText;
+			y-=0.03f;
+		}
+		else{
+			float xpos = x + ch.Bearing.x * scale;
+			float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
 
-		float xpos = x + ch.Bearing.x * scale;
-		float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+			float w = ch.Size.x * scale * 0.8f;
+			float h = ch.Size.y * scale;
 
-		float w = ch.Size.x * scale * 0.8f;
-		float h = ch.Size.y * scale;
+			glm::mat4 scalemat = glm::mat4(1);
+			scalemat = glm::scale(scalemat,glm::vec3(w/1.7,h/1.7,1));
+			glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
 
-		glm::mat4 scalemat = glm::mat4(1);
-		scalemat = glm::scale(scalemat,glm::vec3(w/1.7,h/1.7,1));
-		glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
-		
-		glm::vec3 pos = glm::vec3(xpos + w/1.7,ypos + h/1.7,z);
-		glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+			glm::vec3 pos = glm::vec3(xpos + w/1.7,ypos + h/1.7,z);
+			glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
 
-		glset.bindTexture(ch.TextureID);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		
+			glset.bindTexture(ch.TextureID);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		if(active){
-			if(counter == text.size()+uiTextBoxActiveChar-1 && textCursorPhaseCounter < maxCharCountSize/2){
-				glset.uniform1i(program,"isText", 0);
-				glset.uniform1i(program, "isTextF", 0);
-				glset.uniform4fv(program, "uiColor", colorData2.textboxCursorColor);
-				glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0);
-				
-				scalemat = glm::mat4(1);
-				scalemat = glm::scale(scalemat,glm::vec3(0.001f,0.02,1));
-				glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
-				pos = glm::vec3(xpos + w/1.7*2.,y+0.01,z);
-				glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
-				glDrawArrays(GL_TRIANGLES, 0, 6);
-				
-				glset.uniform1i(program, "isTextF", 1);
-				glset.uniform1i(program,"isText", 1);
-				glset.uniform4fv(program, "uiColor", color);
+
+			if(active){
+				if(counter == text.size()+uiTextBoxActiveChar-1 && textCursorPhaseCounter < maxCharCountSize/2){
+					glset.uniform1i(program,"isText", 0);
+					glset.uniform1i(program, "isTextF", 0);
+					glset.uniform4fv(program, "uiColor", colorData2.textboxCursorColor);
+					glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0);
+
+					scalemat = glm::mat4(1);
+					scalemat = glm::scale(scalemat,glm::vec3(0.001f,0.02,1));
+					glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
+					pos = glm::vec3(xpos + w/1.7*2.,y+0.01,z);
+					glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+					glDrawArrays(GL_TRIANGLES, 0, 6);
+
+					glset.uniform1i(program, "isTextF", 1);
+					glset.uniform1i(program,"isText", 1);
+					glset.uniform4fv(program, "uiColor", color);
+				}
 			}
+
+			x += (ch.Advance >> 6) * scale / 1.2f; 
+			counter++;
+
 		}
 
-		x += (ch.Advance >> 6) * scale / 1.2f; 
-		counter++;
 	}
 	glset.uniform1i(program, "isTextF", 0);
 	glset.uniform1i(program, "isText", 0);

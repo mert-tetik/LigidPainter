@@ -747,9 +747,11 @@ public:
 	std::vector<float> selectionBox(bool active,float sPX,float sPY,float dPX,float dPY,float depth);
 	void showMessageBox(std::string message);
 	
+	
+	void node(Node node,Programs progams,Icons icons);
 	bool node(Node &node,Programs programs,Icons icons,GLFWwindow* window,double mouseX,double mouseY,double xOffset,double yOffset,float maxScreenWidth,
-	float maxScreenHeight,NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,std::vector<aTexture> albedoTextures,
-	float screenGapX,bool &firstClick,ColoringPanel &coloringPanel,bool &duplicateNodeCall,std::vector<Node> &duplicatedNodes);
+				float maxScreenHeight,NodeScene &material,NodePanel &nodePanel,TextureSelectionPanel &textureSelectionPanel,int currentNodeIndex,std::vector<aTexture> albedoTextures,
+				float screenGapX,bool &firstClick,ColoringPanel &coloringPanel,bool &duplicateNodeCall,std::vector<Node> &duplicatedNodes);
 
 
 	

@@ -187,7 +187,7 @@ public:
 				raw.pop_back();
 			}
 			Load load;
-			appNodes.push_back(load.createNode(raw));				
+			appNodes.push_back(load.createNode(fileName,raw));				
 		}
         UserInterface ui;
         addNodeContexMenu = ui.createContextMenus(appNodes);
