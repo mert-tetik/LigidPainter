@@ -33,7 +33,7 @@ public:
 		materialpath += folderDistinguisher;
 		materialpath += "Materials";
 		std::filesystem::create_directories(materialpath);
-		std::filesystem::copy("./LigidPainter/Resources/Materials/material_0", materialpath);
+		std::filesystem::copy("./LigidPainter/Resources/Materials/material_0.material", materialpath);
 		
         //Models
 		std::string modelpath = path;
@@ -41,6 +41,13 @@ public:
 		modelpath += "3DModels";
 		std::filesystem::create_directories(modelpath);
 		std::filesystem::copy(".\\LigidPainter\\Resources\\3D Models\\", modelpath);
+      
+        //Fonts
+		std::string fontspath = path;
+		fontspath += folderDistinguisher;
+		fontspath += "Fonts";
+		std::filesystem::create_directories(fontspath);
+		std::filesystem::copy(".\\LigidPainter\\Resources\\fonts\\", fontspath);
 
 
 		//Shaders
@@ -114,7 +121,7 @@ public:
         wf.write(reinterpret_cast<char*>(&h2),sizeof(uint64_t));
         wf.write(reinterpret_cast<char*>(&h3),sizeof(uint64_t));
     }
-    void readFolder(std::string path,std::vector<NodeScene> &materials, std::vector<Node> &appNodes,ContextMenu &addNodeContexMenu,Model &model,std::vector<UIElement> &UIElements,std::vector<aTexture> &albedoTextures){
+    void readFolder(std::string path,std::vector<NodeScene> &materials, std::vector<Node> &appNodes,ContextMenu &addNodeContexMenu,Model &model,std::vector<UIElement> &UIElements,std::vector<aTexture> &albedoTextures,std::vector<Font> &fonts){
 
         //Version 1.4
 		uint64_t h1 = 0xAB428C9F; 
@@ -258,6 +265,19 @@ public:
                 //UIElements[UIjpgCheckBox].checkBox.checked;
 
         }
+
+        //FONTS
+        fonts.clear();
+        std::string fontsPath = path + "Fonts";
+        for (const auto & entry : std::filesystem::directory_iterator(fontsPath)){
+            std::string fileName = entry.path().string();
+		    std::string file = util.getLastWordBySeparatingWithChar(fileName,folderDistinguisher);
+            
+            Load load;
+            fonts.push_back(load.createFont(fileName));
+        }
+        
+        
 
         //TEXTURES
         albedoTextures.clear();

@@ -288,18 +288,18 @@ size_t renderingCounter = 0;
 float lightRotVal = 0.f;
 
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
-Icons &icons, bool renderPlane,bool renderSphere,
-PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,
-OutShaderData &outShaderData,Model &model,std::vector<aTexture> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
-ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps& cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel
-,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
-std::vector<Node> &appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool &firstClick,
-glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
-,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
-,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
-,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
-unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,std::string &customModelName
-,glm::mat4 &modelMatrix,bool &displayProjectFolderManager) {
+							Icons &icons, bool renderPlane,bool renderSphere,
+							PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,
+							OutShaderData &outShaderData,Model &model,std::vector<aTexture> &albedoTextures,bool paintRender,float materialsPanelSlideValue, std::vector<UIElement> &UIElements, 
+							ColorPicker &colorPicker,TextureDisplayer &textureDisplayer,Cubemaps& cubemaps,ContextMenu &addNodeContextMenu,NodePanel &nodePanel,SndPanel &sndPanel
+							,int& selectedAlbedoTextureIndex,TextureSelectionPanel &textureSelectionPanel,std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,
+							std::vector<Node> &appNodes,glm::mat4 perspectiveProjection,glm::mat4 view,std::vector<MaterialOut> &modelMaterials,bool &newModelAdded,bool &firstClick,
+							glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
+							,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
+							,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
+							,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
+							unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,std::string &customModelName
+							,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts) {
 	
 	renderCurrentMaterialIndex = currentMaterialIndex;
 	
@@ -531,7 +531,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 				nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
 				chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
 				,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex,audios,textureDraggingState
-				,lightRotVal,projectPath);
+				,lightRotVal,projectPath,fonts);
 				
 				UserInterface ui;
 				if(colorPicker.dropperActive || coloringPanel.dropperActive){
@@ -664,7 +664,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 				if(path){
 					projectPath = path;
 					ProjectFolder projectFolder;
-					projectFolder.readFolder(path,nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures);
+					projectFolder.readFolder(path,nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures,fonts);
 					projectFilePath = path;
 					LibAL_playAudioObject(audios.Login);
 					startScreen = false;
@@ -699,7 +699,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 			if(firstClick && buttonHover){
 				projectPath = fileName;
 				ProjectFolder projectFolder;
-				projectFolder.readFolder(fileName + folderDistinguisher + file + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures);
+				projectFolder.readFolder(fileName + folderDistinguisher + file + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures,fonts);
 				projectFilePath = fileName;
 				LibAL_playAudioObject(audios.Login);
 				startScreen = false;
@@ -875,7 +875,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 				ProjectFolder project;
 				project.initFolder(path,modelFilePath,UIElements,UIElements[UIbackfaceCullingCheckBox].checkBox.checked,UIElements[UIuseUVCheckBox].checkBox.checked);
 
-				project.readFolder(path + folderDistinguisher + UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures);
+				project.readFolder(path + folderDistinguisher + UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures,fonts);
 
 				LigidPainter lp;
 				lp.loadModelButton();
@@ -894,7 +894,7 @@ unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bo
 
 	}
 	else if(displayProjectFolderManager){		
-		projectFolderManagerPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,displayProjectFolderManager);
+		projectFolderManagerPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,displayProjectFolderManager,fonts);
 	}
 
 	glUseProgram(renderPrograms.solidRenderer);

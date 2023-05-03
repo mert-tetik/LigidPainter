@@ -691,6 +691,17 @@ struct BrushTexture{
 	float normalTexturesSliderValue = 0.0f;
 };
 
+struct character {
+	unsigned int TextureID;
+	glm::ivec2   Size;
+	glm::ivec2   Bearing;
+	unsigned int Advance;
+};
+struct Font{
+	std::string name;
+	std::map<char, character> characters;
+};
+
 class UserInterface {
 public:
 	//Load
@@ -717,6 +728,7 @@ public:
 	void rampBox(float width, float height, float position_x, float position_y, float z);
 	
 	void renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active);
+	void renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,Font font);
 	void renderTextR(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active);
 	void renderTextM(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active);
 	void renderMenubar(GLFWwindow* window);

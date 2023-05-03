@@ -41,6 +41,7 @@ std::string selectedFile = "";
 unsigned int fileTxtr = 0;
 Model fileModel;
 Node fileNode;
+Font fileFont;
 
 void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mouseYpos,GLFWwindow* window,float midPanelW,Icons icons,Programs programs,bool firstClick){
     Utilities util;
@@ -142,7 +143,7 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
 int projectFolderState = 0;
 void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Programs renderPrograms,Cubemaps cubemaps,SkyBoxShaderData skyBoxShaderData,
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
-                                        bool firstClick,bool &displayProjectFolderManager){
+                                        bool firstClick,bool &displayProjectFolderManager,std::vector<Font> fonts){
         glDisable(GL_DEPTH_TEST);
         Utilities util;
         UserInterface ui;
@@ -246,6 +247,13 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
 		ui.iconBox(0.01f,0.02f,(-1.f+0.025f),0.50f,0.92f,icons.BrushFolder,shadersIconHover,colorData.iconColor,colorData.iconColorHover);//Shaders
         if(shadersIconHover && firstClick)
             projectFolderState = 4;
+        
+        bool fontsIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f)-screenGapX,0.42f,mouseXpos,mouseYpos,false);
+		ui.iconBox(0.01f,0.02f,(-1.f+0.025f),0.42f,0.92f,icons.JpgFile,fontsIconHover,colorData.iconColor,colorData.iconColorHover);//Shaders
+        if(fontsIconHover && firstClick){
+            projectFolderState = 5;
+
+        }
 
 		glUseProgram(renderPrograms.uiProgram);
 
@@ -260,6 +268,8 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
             currentFolder = "Nodes";
         if(projectFolderState == 4)
             currentFolder = "Shaders";
+        if(projectFolderState == 5)
+            currentFolder = "Fonts";
         
 
         drawTheFolder(projectPath + folderDistinguisher + currentFolder,screenGapX,mouseXpos,mouseYpos,window,midPanelW,icons,renderPrograms,firstClick);
@@ -324,5 +334,18 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
             ui.node(fileNode,renderPrograms,icons);
             glUseProgram(renderPrograms.uiProgram);
             ui.renderText(renderPrograms.uiProgram,fileNode.fragSource,-0.5f,+0.9f,0.00022f,colorData.panelColor,0.91f,false);
+        }
+        if(projectFolderState == 5){
+            if(firstClick && selectedFile.size() > 3)
+            {
+                if((selectedFile[selectedFile.size()-1] == 'f' || selectedFile[selectedFile.size()-1] == 'F') && (selectedFile[selectedFile.size()-2] == 't' || selectedFile[selectedFile.size()-2] == 'T') && (selectedFile[selectedFile.size()-3] == 't' || selectedFile[selectedFile.size()-3] == 'T')){
+                    Load load;
+                    fileFont = load.createFont(selectedFile);
+                }
+            }
+            glUseProgram(renderPrograms.uiProgram);
+            glDisable(GL_DEPTH_TEST);
+            ui.renderText(renderPrograms.uiProgram,"Carpe Diem",-0.35f,0.f,0.0022f,colorData.panelColor,0.91f,false,fileFont);
+            glEnable(GL_DEPTH_TEST);
         }
 }
