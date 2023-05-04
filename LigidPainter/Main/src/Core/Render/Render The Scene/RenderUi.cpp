@@ -931,55 +931,23 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 					float thic = (UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f)/100.f;
 
 					int s = ((UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()/(((0.23f-(UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f))*100)*2.f))+1);
-					int lineCounter = 0;
-					int cCntL = 0;
-					for (size_t i = 0; i < s; i++)
-					{
-						bool added = false;
-						for (size_t si = 0; si < ((0.23f-(UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f))*100)*3.f; si++)
-						{
-							if(cCntL <  UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()){
-								cCntL++;
-								added = true;
-							}
-						}
-						if(added)
-							lineCounter++;
-					}
 					
-					int cCnt = 0;
-					for (size_t i = 0; i < s; i++)
-					{
-						std::string dTxt;
-						for (size_t si = 0; si < ((0.23f-(UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f))*100)*3.f; si++)
-						{
-							if(cCnt <  UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()){
-								dTxt.push_back(UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text[cCnt]);
-								cCnt++;
-							}
-						}
-						
-						float aposY = lineCounter/10.f - 0.1f;
+					float aposY = 0.f;
 
-						if(UIElements[UIgenerateTextLeftAlignCheckBoxElement].checkBox.checked){
-							float aposX = -1.f;
-							if(dTxt.size())
-								ui.renderText(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false,txtrGenSelectedFont);
-						}
-						if(UIElements[UIgenerateTextMidAlignCheckBoxElement].checkBox.checked){
-							float aposX = -.5f;
-							if(dTxt.size())
-								ui.renderTextM(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false,txtrGenSelectedFont);
-						}
-						if(UIElements[UIgenerateTextRightAlignCheckBoxElement].checkBox.checked){
-							float aposX = .5f;
-							if(dTxt.size())
-								ui.renderTextR(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false,txtrGenSelectedFont);
-						}
+					if(UIElements[UIgenerateTextLeftAlignCheckBoxElement].checkBox.checked){
+						float aposX = -1.f;
+						ui.renderText(programs.uiProgram,UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text,aposX,aposY,thic,glm::vec4(1),0.9f,false,txtrGenSelectedFont,0.45f);
+					}
+					if(UIElements[UIgenerateTextMidAlignCheckBoxElement].checkBox.checked){
+						float aposX = -.5f;
+						ui.renderTextM(programs.uiProgram,UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text,aposX,aposY,thic,glm::vec4(1),0.9f,false,txtrGenSelectedFont);
+					}
+					if(UIElements[UIgenerateTextRightAlignCheckBoxElement].checkBox.checked){
+						float aposX = .5f;
+						ui.renderTextR(programs.uiProgram,UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text,aposX,aposY,thic,glm::vec4(1),0.9f,false,txtrGenSelectedFont);
+					}
 
 						
-					}
-					
 					projection = glm::ortho(-1.0f, 1.f, -1.f, 1.f);
 					glUseProgram(programs.uiProgram);
 					glset.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);

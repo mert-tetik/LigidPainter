@@ -1616,7 +1616,7 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 		else{
 			if(maxX < x){
 				x=lastXText;
-				y-=(ch.Size.y) * scale;
+				y-=(ch.Size.y) * scale * 1.2f;
 			}
 			
 			float xpos = x + ch.Bearing.x * scale;

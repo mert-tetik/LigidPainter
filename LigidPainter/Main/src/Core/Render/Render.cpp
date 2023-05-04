@@ -690,6 +690,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 
 		ui.renderText(renderPrograms.uiProgram,"From ./Projects",-0.4f,-0.55f,0.00022f,colorData.textColor,0.91f,false);
 		
+		
 		for (const auto & entry : std::filesystem::directory_iterator("./Projects")){
 			std::string fileName = entry.path().string();
 			std::string file = util.getLastWordBySeparatingWithChar(fileName,folderDistinguisher);
@@ -697,6 +698,57 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 			bool buttonHover = ui.isMouseOnButton(renderData.window,0.4f,0.015f,0.f-screenGapX,-0.58f - ((float)bI * 0.03),mouseXpos,mouseYpos,false);
 
 			ui.box(0.4f,0.015f,0.f,-0.58f - ((float)bI * 0.03),file,colorData.buttonColor,+0.39f,false,false,0.91f+(bI/10000.f),10000,colorData.buttonColorHover,buttonHover);
+			
+			std::string path = fileName + folderDistinguisher + file + ".ligid";
+
+			//Version 1.4
+			uint64_t h1 = 0xAB428C9F; 
+        	uint64_t h2 = 0xFF8A1C1C; 
+        	uint64_t h3 = 0x4B4B9AAA; 
+        	std::ifstream rf(path, std::ios::out | std::ios::binary);
+			
+			if(!rf) {
+				//Skip
+        	}
+	    	std::string Cdt; //Creation date
+	    	std::string Ldt; //Last opening date
+	
+			uint64_t c1; 
+        	uint64_t c2; 
+        	uint64_t c3; 
+        	rf.read(reinterpret_cast<char*>(&c1),sizeof(uint64_t));
+        	rf.read(reinterpret_cast<char*>(&c2),sizeof(uint64_t));
+        	rf.read(reinterpret_cast<char*>(&c3),sizeof(uint64_t));
+	
+        	if(c1 == h1 && c2 == h2 && c3 == h3){
+				
+				uint64_t timestrsize;
+            	rf.read(reinterpret_cast<char*>(&timestrsize),sizeof(uint64_t));
+            	for (size_t i = 0; i < timestrsize; i++)
+            	{
+					char c;
+            	    rf.read(reinterpret_cast<char*>(&c),sizeof(char));
+					Cdt.push_back(c);
+            	}
+				
+				uint64_t timestrsize2;
+            	rf.read(reinterpret_cast<char*>(&timestrsize2),sizeof(uint64_t));
+            	for (size_t i = 0; i < timestrsize2; i++)
+            	{
+					char c;
+            	    rf.read(reinterpret_cast<char*>(&c),sizeof(char));
+					Ldt.push_back(c);
+            	}
+        	}
+        	else{
+				//Skip
+        	}
+			
+			
+			ui.renderText(renderPrograms.uiProgram, (std::string)Cdt ,-0.15f,-0.58f - ((float)bI * 0.03),0.00022f,colorData.textColor,0.93f,false);
+			
+			ui.renderText(renderPrograms.uiProgram, (std::string)Ldt ,0.15f,-0.58f - ((float)bI * 0.03),0.00022f,colorData.textColor,0.93f,false);
+
 			bI++;
 			if(firstClick && buttonHover){
 				projectPath = fileName;
@@ -707,6 +759,8 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 				startScreen = false;
 			}
 		}
+
+
 
 		ui.container(-0.0f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,startMenuNew3DProjectMixVal);
 		glUseProgram(renderPrograms.iconsProgram);

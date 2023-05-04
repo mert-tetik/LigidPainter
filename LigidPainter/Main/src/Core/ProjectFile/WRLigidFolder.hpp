@@ -120,6 +120,24 @@ public:
         wf.write(reinterpret_cast<char*>(&h1),sizeof(uint64_t));
         wf.write(reinterpret_cast<char*>(&h2),sizeof(uint64_t));
         wf.write(reinterpret_cast<char*>(&h3),sizeof(uint64_t));
+
+        time_t ttime2 = time(0);
+	    std::string timestr = ctime(&ttime2);
+        
+        uint64_t timestrsize = timestr.size(); 
+        
+        wf.write(reinterpret_cast<char*>(&timestrsize),sizeof(uint64_t));
+        for (size_t i = 0; i < timestrsize; i++)
+        {
+            wf.write(reinterpret_cast<char*>(&timestr[i]),sizeof(char));
+        }
+        
+        wf.write(reinterpret_cast<char*>(&timestrsize),sizeof(uint64_t));
+        for (size_t i = 0; i < timestrsize; i++)
+        {
+            wf.write(reinterpret_cast<char*>(&timestr[i]),sizeof(char));
+        }
+        
     }
     void readFolder(std::string path,std::vector<NodeScene> &materials, std::vector<Node> &appNodes,ContextMenu &addNodeContexMenu,Model &model,std::vector<UIElement> &UIElements,std::vector<aTexture> &albedoTextures,std::vector<Font> &fonts){
 
@@ -140,7 +158,59 @@ public:
         rf.read(reinterpret_cast<char*>(&c3),sizeof(uint64_t));
 
         if(c1 == h1 && c2 == h2 && c3 == h3){
-            //Passed
+            //Update ligid file
+
+
+            std::string timestr;
+            uint64_t timestrsize; 
+            rf.read(reinterpret_cast<char*>(&timestrsize),sizeof(uint64_t));
+            for (size_t i = 0; i < timestrsize; i++)
+            {
+                char c;
+                rf.read(reinterpret_cast<char*>(&c),sizeof(char));
+                timestr.push_back(c);
+            }
+            
+            
+            rf.close();
+
+
+            std::ofstream ofs;
+            ofs.open(path, std::ofstream::out | std::ofstream::trunc);
+            ofs.close();
+
+            std::ofstream wf(path, std::ios::out | std::ios::binary);
+
+            wf.write(reinterpret_cast<char*>(&c1),sizeof(uint64_t));
+            wf.write(reinterpret_cast<char*>(&c2),sizeof(uint64_t));
+            wf.write(reinterpret_cast<char*>(&c3),sizeof(uint64_t));
+            
+            
+            wf.write(reinterpret_cast<char*>(&timestrsize),sizeof(uint64_t));
+            for (size_t i = 0; i < timestrsize; i++)
+            {
+                wf.write(reinterpret_cast<char*>(&timestr[i]),sizeof(char));
+            }
+            
+            
+            time_t ttime2 = time(0);
+	        std::string timestr2 = ctime(&ttime2);
+        
+            uint64_t timestrsize2 = timestr.size(); 
+
+            wf.write(reinterpret_cast<char*>(&timestrsize2),sizeof(uint64_t));
+            for (size_t i = 0; i < timestrsize2; i++)
+            {
+                wf.write(reinterpret_cast<char*>(&timestr2[i]),sizeof(char));
+            }
+            
+
+            time_t crtime = time(0);
+	        ctime(&crtime);
+
+            wf.write(reinterpret_cast<char*>(&crtime),sizeof(time_t));
+
+            wf.close();
         }
         else{
             UserInterface ui;

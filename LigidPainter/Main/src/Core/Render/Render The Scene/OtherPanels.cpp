@@ -63,7 +63,7 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
     glEnable(GL_DEPTH_TEST);
     //Slider
     float sliderWidth = 1.f / (std::max(lastBI / 46.f,1.f));
-    ui.box(0.005f,sliderWidth,(-1.f+0.15f+0.05f) + midPanelW - 0.005f,((1.f - (0.025f*2.f)) - sliderWidth) + (projectManager.projectManagerScrollVal * 0.04f / std::max(lastBI / 46.f,1.f)),"",colorData2.sliderColor,0,false,false,0.99f,10000,colorData.iconColor,0);
+    ui.box(0.005f,sliderWidth,(-1.f+0.15f+0.05f) + midPanelW - 0.005f,((1.f - (0.025f*2.f)) - sliderWidth) + (projectManager.projectManagerScrollVal * 0.04f / std::max(lastBI / 46.f,1.f)),"",glm::vec4(0.7f,0.7f,0.7f,0.7f),0,false,false,0.99f,10000,colorData.iconColor,0);
     glDisable(GL_DEPTH_TEST);
 
     lastBI = 0;
@@ -105,7 +105,7 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
                 glDisable(GL_DEPTH_TEST);
 		        glUseProgram(programs.iconsProgram);
 		        if(bI >= 0)
-                    ui.iconBox(0.01f,0.02f,((-1.f+midPanelW)+0.05f)-(midPanelW-0.01f - (cI/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.L,0.f,colorData2.sliderColor,colorData.iconColorHover);
+                    ui.iconBox(0.01f,0.02f,((-1.f+midPanelW)+0.05f)-(midPanelW-0.01f - (cI/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.L,0.f,glm::vec4(0.7f,0.7f,0.7f,0.7f),colorData.iconColorHover);
 		        bI++;
 		        lastBI++;
                 
@@ -128,9 +128,9 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
                         glDisable(GL_DEPTH_TEST);
 		                glUseProgram(programs.iconsProgram);
 		                if(bI >= 0)
-                            ui.iconBox(0.01f,0.022f,((-1.f+midPanelW)+0.05f)- (midPanelW-0.01f - ((cI-1)/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.I,0.f,colorData2.sliderColor,colorData.iconColorHover);
+                            ui.iconBox(0.01f,0.022f,((-1.f+midPanelW)+0.05f)- (midPanelW-0.01f - ((cI-1)/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.I,0.f,glm::vec4(0.7f,0.7f,0.7f,0.7f),colorData.iconColorHover);
 		                if(bI >= 0)
-                            ui.iconBox(0.01f,0.02f,((-1.f+midPanelW)+0.05f)- (midPanelW-0.01f - ((cI)/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.L,0.f,colorData2.sliderColor,colorData.iconColorHover);
+                            ui.iconBox(0.01f,0.02f,((-1.f+midPanelW)+0.05f)- (midPanelW-0.01f - ((cI)/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.L,0.f,glm::vec4(0.7f,0.7f,0.7f,0.7f),colorData.iconColorHover);
 		                bI++;
 		                lastBI++;
                         if(std::filesystem::is_directory(fileName3)){

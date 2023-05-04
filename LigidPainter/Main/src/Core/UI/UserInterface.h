@@ -189,7 +189,6 @@ struct ColorData2{
 	glm::vec4 textboxCursorColor = glm::vec4(1.f);
 	glm::vec4 nodeOutlineColor = glm::vec4(LigidPainterThemeColor,1.f);
 	glm::vec4 selectionBoxColor = glm::vec4(LigidPainterThemeColor,0.2f);
-	glm::vec4 sliderColor = glm::vec4(glm::vec3(0.7f),0.7f);
 };
 
 struct Audios{
