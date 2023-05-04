@@ -179,6 +179,7 @@ bool createProject = false;
 bool debugMode = false;
 std::string projectFilePath;
 std::vector<Font> fonts;
+ProjectManager projectManager;
 
 string modelName;
 string customModelName; 
@@ -986,7 +987,7 @@ bool LigidPainter::run()
 										txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
 										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState
-										 ,debugMode,createProject,modelFilePath,modelName,customModelName,modelMatrix,displayProjectFolderManager,fonts);
+										 ,debugMode,createProject,modelFilePath,modelName,customModelName,modelMatrix,displayProjectFolderManager,fonts,projectManager);
 		}
 		duplicateNodeCall = false;
 		
@@ -1537,6 +1538,13 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 	int screenSizeX;
 	int screenSizeY;
 	glfwGetFramebufferSize(window,&screenSizeX,&screenSizeY);
+
+	if(projectManager.elementPanelHover && displayProjectFolderManager){
+		if(scrollx > 0 && projectManager.projectManagerScrollVal != 0)
+			projectManager.projectManagerScrollVal++;
+		if(scrollx < 0)
+			projectManager.projectManagerScrollVal--;
+	}
 
 	//Ctrl + q = change brush size range bar value
 	if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS && panelData.paintingPanelActive){

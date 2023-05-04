@@ -43,7 +43,9 @@ Model fileModel;
 Node fileNode;
 Font fileFont;
 
-void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mouseYpos,GLFWwindow* window,float midPanelW,Icons icons,Programs programs,bool firstClick){
+int lastBI = 0;
+
+void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mouseYpos,GLFWwindow* window,float midPanelW,Icons icons,Programs programs,bool firstClick,ProjectManager &projectManager){
     Utilities util;
     UserInterface ui;
     ColorData colorData;
@@ -55,7 +57,17 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
 			char folderDistinguisher = '/'; 
 		#endif
 
-    int bI = 0;
+    projectManager.projectManagerScrollVal = util.restrictBetween(projectManager.projectManagerScrollVal,0,min(-lastBI + 46,0));
+    int bI = projectManager.projectManagerScrollVal;
+    
+    glEnable(GL_DEPTH_TEST);
+    //Slider
+    float sliderWidth = 1.f / (std::max(lastBI / 46.f,1.f));
+    ui.box(0.005f,sliderWidth,(-1.f+0.15f+0.05f) + midPanelW - 0.005f,((1.f - (0.025f*2.f)) - sliderWidth) + (projectManager.projectManagerScrollVal * 0.04f / std::max(lastBI / 46.f,1.f)),"",colorData2.sliderColor,0,false,false,0.99f,10000,colorData.iconColor,0);
+    glDisable(GL_DEPTH_TEST);
+
+    lastBI = 0;
+    
     for (const auto & entry : std::filesystem::directory_iterator(path)){
         int cI = 0;
 		std::string fileName = entry.path().string();
@@ -68,11 +80,11 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
         }
         glEnable(GL_DEPTH_TEST);
         glUseProgram(programs.uiProgram);
-        ui.box(midPanelW,0.02f,(-1.f+midPanelW)+0.05f,(0.9f-0.02f) - ((float)bI * 0.04),file,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,midPanelW-0.01f - (cI/30.f),false,false,0.91f+((buttonHover||selectedFileIndex == bI)/10000.f),10000,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,buttonHover);
+        if(bI >= 0)
+            ui.box(midPanelW,0.02f,(-1.f+midPanelW)+0.05f,(0.9f-0.02f) - ((float)bI * 0.04),file,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,midPanelW-0.01f - (cI/30.f),false,false,0.91f+((buttonHover||selectedFileIndex == bI)/10000.f),10000,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,buttonHover);
         glDisable(GL_DEPTH_TEST);
-		glUseProgram(programs.iconsProgram);
-        ui.iconBox(0.01f,0.02f,((-1.f+midPanelW)+0.05f)-(midPanelW-0.01f - (cI/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.L,0.f,colorData.iconColor,colorData.iconColorHover);
 		bI++;
+		lastBI++;
 
         if(std::filesystem::is_directory(fileName)){
             cI++;  
@@ -88,11 +100,14 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
                 }
 		        glUseProgram(programs.uiProgram);
 		        glEnable(GL_DEPTH_TEST);
-                ui.box(midPanelW,0.02f,(-1.f+midPanelW)+0.05f,(0.9f-0.02f) - ((float)bI * 0.04),file2,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,midPanelW-0.01f - (cI/30.f),false,false,0.91f+((buttonHover2||selectedFileIndex == bI)/10000.f),10000,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,buttonHover2);
+                if(bI >= 0)
+                    ui.box(midPanelW,0.02f,(-1.f+midPanelW)+0.05f,(0.9f-0.02f) - ((float)bI * 0.04),file2,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,midPanelW-0.01f - (cI/30.f),false,false,0.91f+((buttonHover2||selectedFileIndex == bI)/10000.f),10000,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,buttonHover2);
                 glDisable(GL_DEPTH_TEST);
 		        glUseProgram(programs.iconsProgram);
-		        ui.iconBox(0.01f,0.02f,((-1.f+midPanelW)+0.05f)-(midPanelW-0.01f - (cI/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.L,0.f,colorData.iconColor,colorData.iconColorHover);
+		        if(bI >= 0)
+                    ui.iconBox(0.01f,0.02f,((-1.f+midPanelW)+0.05f)-(midPanelW-0.01f - (cI/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.L,0.f,colorData2.sliderColor,colorData.iconColorHover);
 		        bI++;
+		        lastBI++;
                 
                 if(std::filesystem::is_directory(fileName2)){
                     cI++;   
@@ -108,12 +123,16 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
                         }
 		                glUseProgram(programs.uiProgram);
 		                glEnable(GL_DEPTH_TEST);
-                        ui.box(midPanelW,0.02f,(-1.f+midPanelW)+0.05f,(0.9f-0.02f) - ((float)bI * 0.04),file3,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,midPanelW-0.01f - (cI/30.f),false,false,0.91f+((buttonHover3||selectedFileIndex == bI)/10000.f),10000,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,buttonHover3);
+                        if(bI >= 0)
+                            ui.box(midPanelW,0.02f,(-1.f+midPanelW)+0.05f,(0.9f-0.02f) - ((float)bI * 0.04),file3,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,midPanelW-0.01f - (cI/30.f),false,false,0.91f+((buttonHover3||selectedFileIndex == bI)/10000.f),10000,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,buttonHover3);
                         glDisable(GL_DEPTH_TEST);
 		                glUseProgram(programs.iconsProgram);
-		                ui.iconBox(0.01f,0.022f,((-1.f+midPanelW)+0.05f)- (midPanelW-0.01f - ((cI-1)/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.I,0.f,colorData.iconColor,colorData.iconColorHover);
-		                ui.iconBox(0.01f,0.02f,((-1.f+midPanelW)+0.05f)- (midPanelW-0.01f - ((cI)/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.L,0.f,colorData.iconColor,colorData.iconColorHover);
+		                if(bI >= 0)
+                            ui.iconBox(0.01f,0.022f,((-1.f+midPanelW)+0.05f)- (midPanelW-0.01f - ((cI-1)/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.I,0.f,colorData2.sliderColor,colorData.iconColorHover);
+		                if(bI >= 0)
+                            ui.iconBox(0.01f,0.02f,((-1.f+midPanelW)+0.05f)- (midPanelW-0.01f - ((cI)/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.L,0.f,colorData2.sliderColor,colorData.iconColorHover);
 		                bI++;
+		                lastBI++;
                         if(std::filesystem::is_directory(fileName3)){
 
                             //--------------------------------------------------------------------------------------
@@ -143,7 +162,7 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
 int projectFolderState = 0;
 void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Programs renderPrograms,Cubemaps cubemaps,SkyBoxShaderData skyBoxShaderData,
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
-                                        bool firstClick,bool &displayProjectFolderManager,std::vector<Font> fonts){
+                                        bool firstClick,bool &displayProjectFolderManager,std::vector<Font> fonts,ProjectManager &projectManager){
         glDisable(GL_DEPTH_TEST);
         Utilities util;
         UserInterface ui;
@@ -213,6 +232,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
         float midPanelW = 0.15f;
 		glEnable(GL_DEPTH_TEST);
         ui.box(midPanelW,1.0f,(-1.f+0.15f+0.05f),0.f,"",colorData.panelColorSnd,+0.19f,false,false,0.91f,10000,colorData.panelColorSnd,0);
+        projectManager.elementPanelHover = ui.isMouseOnButton(window,midPanelW,1.0f,(-1.f+0.15f+0.05f),0.f,mouseXpos,mouseYpos,0);
 		glDisable(GL_DEPTH_TEST);
 		
 		glUseProgram(renderPrograms.iconsProgram);
@@ -272,7 +292,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
             currentFolder = "Fonts";
         
 
-        drawTheFolder(projectPath + folderDistinguisher + currentFolder,screenGapX,mouseXpos,mouseYpos,window,midPanelW,icons,renderPrograms,firstClick);
+        drawTheFolder(projectPath + folderDistinguisher + currentFolder,screenGapX,mouseXpos,mouseYpos,window,midPanelW,icons,renderPrograms,firstClick,projectManager);
         glEnable(GL_DEPTH_TEST);
 
         if(projectFolderState == 0){

@@ -1635,7 +1635,6 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 			glset.bindTexture(ch.TextureID);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 
-
 			if(active){
 				if(counter == text.size()+uiTextBoxActiveChar-1 && textCursorPhaseCounter < maxCharCountSize/2){
 					glset.uniform1i(program,"isText", 0);
