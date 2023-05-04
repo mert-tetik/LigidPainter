@@ -45,6 +45,8 @@ Font fileFont;
 
 int lastBI = 0;
 
+
+
 void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mouseYpos,GLFWwindow* window,float midPanelW,Icons icons,Programs programs,bool firstClick,ProjectManager &projectManager){
     Utilities util;
     UserInterface ui;
@@ -83,7 +85,8 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
         if(bI >= 0)
             ui.box(midPanelW,0.02f,(-1.f+midPanelW)+0.05f,(0.9f-0.02f) - ((float)bI * 0.04),file,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,midPanelW-0.01f - (cI/30.f),false,false,0.91f+((buttonHover||selectedFileIndex == bI)/10000.f),10000,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,buttonHover);
         glDisable(GL_DEPTH_TEST);
-		bI++;
+		
+        bI++;
 		lastBI++;
 
         if(std::filesystem::is_directory(fileName)){
@@ -160,6 +163,7 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
 }
 
 int projectFolderState = 0;
+bool showInfo = false;
 void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Programs renderPrograms,Cubemaps cubemaps,SkyBoxShaderData skyBoxShaderData,
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
                                         bool firstClick,bool &displayProjectFolderManager,std::vector<Font> fonts,ProjectManager &projectManager){
@@ -198,34 +202,46 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
 		
 		glUseProgram(renderPrograms.uiProgram);
 		
-		//Left column
-		ui.box(0.025f,1.0f,(-1.f+0.025f),0.f,"",glm::vec4(colorData.panelColorSnd.r,colorData.panelColorSnd.g,colorData.panelColorSnd.b,1),+0.19f,false,false,0.91f,10000,colorData.panelColorSnd,0);
+		glEnable(GL_DEPTH_TEST);
+        ui.box(1.0f,0.025f,0.f,(1.f-0.025f),"",glm::vec4(colorData.panelColor.r,colorData.panelColor.g,colorData.panelColor.b,1),+0.19f,false,false,0.91f,10000,colorData.panelColorSnd,0); //Upbar
 		
-        ui.box(1.0f,0.025f,0.f,(1.f-0.025f),"",glm::vec4(colorData.panelColorSnd.r,colorData.panelColorSnd.g,colorData.panelColorSnd.b,1),+0.19f,false,false,0.91f,10000,colorData.panelColorSnd,0); //Upbar
+        //Left column
+		ui.box(0.025f,1.0f,(-1.f+0.025f),0.f,"",glm::vec4(colorData.panelColorSnd.r,colorData.panelColorSnd.g,colorData.panelColorSnd.b,1),+0.19f,false,false,0.92f,10000,colorData.panelColorSnd,0);
 
 
 
 		glUseProgram(renderPrograms.uiProgram);
-		glm::vec4 saveButtonColor = colorData.textColor;
-		if(ui.isMouseOnButton(window,0.025f,0.02f,-0.03f-screenGapX,0.95f,mouseXpos,mouseYpos,false)){
-			saveButtonColor = glm::vec4(colorData.LigidPainterThemeColor,1);
 
-			//nodePanel.pointerCursor = true;
-			if(firstClick){
-				//Save project folder
-			}
-		}
-		ui.renderText(renderPrograms.uiProgram,"Save",-0.05f,0.95f,0.00022f,saveButtonColor,0.9f,false);
+
+        bool saveButtonHover = false;
+        if(ui.isMouseOnButton(window,0.025f,0.025f,-1.0f+0.08f,(1.f-0.025f),mouseXpos,mouseYpos,0))
+            saveButtonHover = true;
+        ui.box(0.03f,0.025f,-1.0f+0.05f+0.03f,(1.f-0.025f),"Save",glm::vec4(0.7f),0.02f,false,false,0.91f + saveButtonHover/1000.f,1000.f,colorData.buttonColor,0.f);
 		
-		glm::vec4 loadButtonColor = colorData.textColor;
-		if(ui.isMouseOnButton(window,0.025f,0.02f,0.07f-screenGapX,0.95f,mouseXpos,mouseYpos,false)){
-			loadButtonColor = glm::vec4(colorData.LigidPainterThemeColor,1);
-			//nodePanel.pointerCursor = true;
-			if(firstClick){
-				//Load project folder
-			}
-		}
-		ui.renderText(renderPrograms.uiProgram,"Load",0.05f,0.95f,0.00022f,loadButtonColor,0.9f,false);
+        ui.box(0.0005f,0.025f,(-1.0f+0.05f+0.03f)+0.03f,(1.f-0.025f),"",glm::vec4(0.7f),0.f,false,false,0.93f,1000.f,colorData.iconColor,0.f);
+		
+        bool saveAsButtonHover = false;
+        if(ui.isMouseOnButton(window,0.04f,0.025f,(-1.0f+0.05f+0.03f)+0.03f + 0.04f,(1.f-0.025f),mouseXpos,mouseYpos,0))
+            saveAsButtonHover = true;
+        ui.box(0.04f,0.025f,(-1.0f+0.05f+0.03f)+0.03f + 0.04f,(1.f-0.025f),"Save As",glm::vec4(0.7f),0.035f,false,false,0.91f + saveAsButtonHover/1000.f,1000.f,colorData.buttonColor,0.f);
+        
+        ui.box(0.0005f,0.025f,((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f,(1.f-0.025f),"",glm::vec4(0.7f),0.f,false,false,0.93f,1000.f,colorData.iconColor,0.f);
+
+        bool loadButtonHover = false;
+        if(ui.isMouseOnButton(window,0.03f,0.025f,((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f,(1.f-0.025f),mouseXpos,mouseYpos,0))
+            loadButtonHover = true;
+        ui.box(0.03f,0.025f,((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f,(1.f-0.025f),"Load",glm::vec4(0.7f),0.02f,false,false,0.91f + loadButtonHover/1000.f,1000.f,colorData.buttonColor,0.f);
+        
+        ui.box(0.0005f,0.025f,(((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f) + 0.03f,(1.f-0.025f),"",glm::vec4(0.7f),0.f,false,false,0.93f,1000.f,colorData.iconColor,0.f);
+        
+        bool infoButtonHover = false;
+        if(ui.isMouseOnButton(window,0.03f,0.025f,(((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f) + 0.03f + 0.03f,(1.f-0.025f),mouseXpos,mouseYpos,0))
+            infoButtonHover = true;
+        if(infoButtonHover && firstClick)
+            showInfo = !showInfo;
+        ui.box(0.03f,0.025f,(((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f) + 0.03f + 0.03f,(1.f-0.025f),"Info",glm::vec4(0.7f),0.018f,false,false,0.91f + infoButtonHover/1000.f,1000.f,colorData.buttonColor,0.f);
+
+        ui.box(0.0005f,0.025f,(((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f) + 0.03f*3,(1.f-0.025f),"",glm::vec4(0.7f),0.f,false,false,0.93f,1000.f,colorData.iconColor,0.f);
 
 
 		
@@ -368,4 +384,56 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
             ui.renderText(renderPrograms.uiProgram,"Carpe Diem",-0.35f,0.f,0.0022f,colorData.panelColor,0.91f,false,fileFont,0.5f);
             glEnable(GL_DEPTH_TEST);
         }
+
+    if(showInfo){
+        ui.container(0.f,0.f,0.95f,0.2f,0.2f,colorData.panelColor,renderPrograms,icons.Circle,colorData.panelColor,0.f);
+        glUseProgram(renderPrograms.uiProgram);
+        ui.renderText(renderPrograms.uiProgram,std::filesystem::current_path().string() + projectPath,-0.2f,0.f,0.00022f,colorData.textColor,0.96f,0);
+        ui.renderText(renderPrograms.uiProgram,std::to_string(util.getFolderSizeInBytes(projectPath)),-0.2f,-0.1f,0.00022f,colorData.textColor,0.96f,0);
+
+        //Version 1.4
+		uint64_t h1 = 0xAB428C9F; 
+        uint64_t h2 = 0xFF8A1C1C; 
+        uint64_t h3 = 0x4B4B9AAA; 
+        std::ifstream rf(projectPath + folderDistinguisher + util.getLastWordBySeparatingWithChar(projectPath,folderDistinguisher) + ".ligid", std::ios::out | std::ios::binary);
+		
+        std::string Cdt = ""; //Creation date
+	    std::string Ldt = ""; //Last opening date
+		
+		if(rf) {
+	
+			uint64_t c1; 
+        	uint64_t c2; 
+        	uint64_t c3; 
+        	rf.read(reinterpret_cast<char*>(&c1),sizeof(uint64_t));
+        	rf.read(reinterpret_cast<char*>(&c2),sizeof(uint64_t));
+        	rf.read(reinterpret_cast<char*>(&c3),sizeof(uint64_t));
+	
+        	if(c1 == h1 && c2 == h2 && c3 == h3){
+				
+				uint64_t timestrsize;
+        		rf.read(reinterpret_cast<char*>(&timestrsize),sizeof(uint64_t));
+        		for (size_t i = 0; i < timestrsize; i++)
+        		{
+					char c;
+        		    rf.read(reinterpret_cast<char*>(&c),sizeof(char));
+					Cdt.push_back(c);
+        		}
+				
+				uint64_t timestrsize2;
+        		rf.read(reinterpret_cast<char*>(&timestrsize2),sizeof(uint64_t));
+        		for (size_t i = 0; i < timestrsize2; i++)
+        		{
+					char c;
+        		    rf.read(reinterpret_cast<char*>(&c),sizeof(char));
+					Ldt.push_back(c);
+        		}
+        	}
+        }
+        else{
+            Cdt = "Can't locate the ligid file";
+        }
+        ui.renderText(renderPrograms.uiProgram, Cdt,-0.2f,-0.2f,0.00022f,colorData.textColor,0.96f,0);
+        ui.renderText(renderPrograms.uiProgram, Ldt,-0.2f,-0.3f,0.00022f,colorData.textColor,0.96f,0);
+    }
 }

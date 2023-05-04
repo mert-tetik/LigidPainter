@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -533,4 +534,23 @@ char* Utilities::processLiFile(const char * path,uint64_t& len,int &res){
 		rf.close();
 		return data;
 	}
+}
+
+long long Utilities::getFolderSizeInBytes(std::string path){
+	long long folderSize = 0;
+
+	std::vector<std::string> folders;
+	folders.push_back(path);
+    for (size_t i = 0; i < folders.size(); i++)
+	{
+		for (const auto & entry : std::filesystem::directory_iterator(folders[i])){
+			std::string filePath = entry.path().string();
+
+			if(std::filesystem::is_directory(filePath))
+				folders.push_back(filePath);
+			else
+				folderSize += std::filesystem::file_size(filePath);
+		}
+	}
+	return folderSize;
 }
