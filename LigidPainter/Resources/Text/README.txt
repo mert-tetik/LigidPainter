@@ -2,6 +2,12 @@ LigidPainter Project Folder
 
 LigidPainter version 1.4
 
+
+*.ligid file's name and the folder's name must be the same
+Example : ./MyProject/MyProject.ligid
+Otherwise your project folder might be ignored by the LigidPainter
+
+
 Using the folder :
     - Importing into LigidPainter :
         - Import the *.ligid file using LigidPainter

@@ -229,6 +229,7 @@ public:
 		icons.Light = txtr.getTexture("LigidPainter/Resources/Icons/Light.jpg",0,0,false);
 		icons.L = txtr.getTexture("LigidPainter/Resources/Icons/L.jpg",0,0,false);
 		icons.I = txtr.getTexture("LigidPainter/Resources/Icons/I.jpg",0,0,false);
+		icons.OSq = txtr.getTexture("LigidPainter/Resources/Icons/OSq.jpg",0,0,false);
 	
 		return icons;
 	}

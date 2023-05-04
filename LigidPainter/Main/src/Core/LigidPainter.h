@@ -211,6 +211,7 @@ struct Icons{
 	unsigned int Light;
 	unsigned int L;
 	unsigned int I;
+	unsigned int OSq;
 };
 
 struct RenderData { //GlSet::render

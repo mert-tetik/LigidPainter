@@ -690,6 +690,9 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 
 		ui.renderText(renderPrograms.uiProgram,"From ./Projects",-0.4f,-0.55f,0.00022f,colorData.textColor,0.91f,false);
 		
+		ui.renderText(renderPrograms.uiProgram, "Project name" ,-0.4f,-0.59f,0.00022f,colorData.textColor,0.93f,false);
+		ui.renderText(renderPrograms.uiProgram, "Creation Date" ,-0.15f,-0.59f,0.00022f,colorData.textColor,0.93f,false);
+		ui.renderText(renderPrograms.uiProgram, "Last Opening Date" ,0.15f,-0.59f,0.00022f,colorData.textColor,0.93f,false);
 		
 		for (const auto & entry : std::filesystem::directory_iterator("./Projects")){
 			std::string fileName = entry.path().string();
@@ -733,12 +736,12 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
             		    rf.read(reinterpret_cast<char*>(&c),sizeof(char));
 						Ldt.push_back(c);
             		}
-					bool buttonHover = ui.isMouseOnButton(renderData.window,0.4f,0.015f,0.f-screenGapX,-0.58f - ((float)bI * 0.03),mouseXpos,mouseYpos,false);
-					ui.box(0.4f,0.015f,0.f,-0.58f - ((float)bI * 0.03),file,colorData.buttonColor,+0.39f,false,false,0.91f+(bI/10000.f),10000,colorData.buttonColorHover,buttonHover);
+					bool buttonHover = ui.isMouseOnButton(renderData.window,0.4f,0.015f,0.f-screenGapX,-0.62f - ((float)bI * 0.03),mouseXpos,mouseYpos,false);
+					ui.box(0.4f,0.015f,0.f,-0.62f - ((float)bI * 0.03),file,colorData.buttonColor,+0.39f,false,false,0.5f+(buttonHover/10000.f),10,colorData.buttonColorHover,buttonHover);
 
-					ui.renderText(renderPrograms.uiProgram, (std::string)Cdt ,-0.15f,-0.58f - ((float)bI * 0.03),0.00022f,colorData.textColor,0.93f,false);
+					ui.renderText(renderPrograms.uiProgram, (std::string)Cdt ,-0.15f,-0.63f - ((float)bI * 0.03),0.00022f,colorData.textColor,0.93f,false);
 
-					ui.renderText(renderPrograms.uiProgram, (std::string)Ldt ,0.15f,-0.58f - ((float)bI * 0.03),0.00022f,colorData.textColor,0.93f,false);
+					ui.renderText(renderPrograms.uiProgram, (std::string)Ldt ,0.15f,-0.63f - ((float)bI * 0.03),0.00022f,colorData.textColor,0.93f,false);
 
 					bI++;
 					if(firstClick && buttonHover){
