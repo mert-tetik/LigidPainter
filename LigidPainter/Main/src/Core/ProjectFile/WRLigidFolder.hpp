@@ -512,7 +512,7 @@ public:
         }
         return path;
     }
-    void duplicateFolder(std::string srcPath){
+    std::string duplicateFolder(std::string srcPath){
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -534,11 +534,11 @@ public:
                     std::filesystem::create_directories(destinationPath + folderDistinguisher + rmvPath(srcPath,filePath));
                 }
                 else{
-                    std::cout << srcPath + filePath << " to " << removeLastPath(destinationPath + folderDistinguisher + rmvPath(srcPath,filePath)) << std::endl;
                     std::filesystem::copy(srcPath + filePath,removeLastPath(destinationPath + folderDistinguisher + rmvPath(srcPath,filePath)));
                 }
             }
         }
+        return destinationPath;
     }
 private:
 };
