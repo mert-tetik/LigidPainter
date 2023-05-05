@@ -22,35 +22,37 @@
 //TODO Fix mirror origin pos
 //TODO Fix mirror paint over
 //TODO Flip
-//TODO Update ui
 //TODO Preview for skybox listbox
-//TODO Remove seams button
+//TODO Remove seams
 //TODO Texture history HDD
 //TODO Node context menu
+//TODO Project manager context menu
+//TODO Project manager drag & drop
 //TODO Utilities::transitionEffect glfwtime
-//TODO Dynamic textbox 
+//TODO Text new line 
 //TODO History settings
 //TODO Fix sndpanel texture folder slide bar bla bla
 //TODO Sound for success alert
-//TODO Remove 3D Model loading
-//TODO projectsettings - 3D Model options 
+//TODO Update projectsettings 
 //TODO Multiple texture selection
 //TODO Brush textures interactions 
 //TODO Fix project folder save options
-//TODO Slider for start screen project displayer
-//TODO Default pbr light rot
-//TODO Add node context menu few elements
+//TODO start screen project displayer - restrict size
+//TODO Default pbr node light rot
+//TODO Fix add node context menu few elements
 //TODO Spinner screengap
-//TODO Remove 3DModel folder
-//TODO Import 3d models
+//TODO Fix UI Shaders
+//TODO Fix folder icons
+//TODO Drag to coloring panel color picker
 
-//TODO Circular range bar for light pos
-//TODO 3D Model Fov
-//TODO 3D Models
+//TODO For tomorrow
+//Fix the painting
+//Apply 3D model settings to the painting
+//Make the project manager functional
+//Fix textboxes
+//Fix the design of the new project panel
 
-//TODO Load 3D Models from Models folder
-//TODO Add 3D Models before the project
-//TODO Project folder manager
+//TODO FixCircular range bar for light pos
 
 //TODO Search for brush textures
 //TODO Color id
