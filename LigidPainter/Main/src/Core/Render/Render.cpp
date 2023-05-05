@@ -951,7 +951,8 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 		{
 			txtrRes*=2;
 		}
-		projectFolderManagerPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,displayProjectFolderManager,fonts,projectManager,albedoTextures,txtrRes);
+		projectFolderManagerPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,
+								  displayProjectFolderManager,fonts,projectManager,albedoTextures,txtrRes,nodeScenes,appNodes,addNodeContextMenu,model);
 	}
 
 	glUseProgram(renderPrograms.solidRenderer);

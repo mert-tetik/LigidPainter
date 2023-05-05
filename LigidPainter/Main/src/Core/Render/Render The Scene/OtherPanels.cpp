@@ -108,8 +108,8 @@ int projectFolderState = 0;
 bool showInfo = false;
 void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Programs renderPrograms,Cubemaps cubemaps,SkyBoxShaderData skyBoxShaderData,
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
-                                        bool firstClick,bool &displayProjectFolderManager,std::vector<Font> fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
-                                        ,int txtrRes){
+                                        bool firstClick,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
+                                        ,int txtrRes,std::vector<NodeScene> &materials, std::vector<Node> &appNodes, ContextMenu &addNodeContexMenu, Model &model){
         glDisable(GL_DEPTH_TEST);
         Utilities util;
         UserInterface ui;
@@ -398,6 +398,20 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
     bool loadButtonHover = false;
     if(ui.isMouseOnButton(window,0.03f,0.025f,((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f,(1.f-0.025f),mouseXpos,mouseYpos,0))
         loadButtonHover = true;
+    if(loadButtonHover && firstClick){
+        ProjectFolder project;
+        LigidPainter lp;
+        if(lp.ligidMessageBox("Another project will be loaded!",-0.12f,"Unsaved data will be lost. Do you want to proceed?",-0.22f)){
+            char const* lFilterPatterns[1] = { "*.ligid" };
+			auto projectPathCheck = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
+            
+            if(projectPathCheck){
+                project.readFolder(projectPathCheck,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
+                projectPath = projectPathCheck;
+            }
+            
+        }
+    }
     ui.box(0.03f,0.025f,((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f,(1.f-0.025f),"Load",glm::vec4(0.7f),0.02f,false,false,0.91f + loadButtonHover/1000.f,1000.f,colorData.buttonColor,0.f);
         
     ui.box(0.0005f,0.025f,(((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f) + 0.03f,(1.f-0.025f),"",glm::vec4(0.7f),0.f,false,false,0.93f,1000.f,colorData.iconColor,0.f);
