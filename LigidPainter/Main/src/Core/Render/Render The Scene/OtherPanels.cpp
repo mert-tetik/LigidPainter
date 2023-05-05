@@ -45,7 +45,20 @@ Font fileFont;
 
 int lastBI = 0;
 
-
+int countSlashes(std::string s){
+    int counter = 0;
+    #if defined(_WIN32) || defined(_WIN64)
+	    char folderDistinguisher = '\\';
+	#else
+		char folderDistinguisher = '/'; 
+	#endif
+    for (size_t i = 0; i < s.size(); i++)
+    {
+        if(s[i] == folderDistinguisher)
+            counter++;
+    }
+    return counter;
+}
 
 void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mouseYpos,GLFWwindow* window,float midPanelW,Icons icons,Programs programs,bool firstClick,ProjectManager &projectManager){
     Utilities util;
@@ -70,7 +83,7 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
 
     lastBI = 0;
     
-    for (const auto & entry : std::filesystem::directory_iterator(path)){
+    for (const auto & entry : std::filesystem::recursive_directory_iterator(path)){
         int cI = 0;
 		std::string fileName = entry.path().string();
 		std::string file = util.getLastWordBySeparatingWithChar(fileName,folderDistinguisher);
@@ -83,82 +96,11 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
         glEnable(GL_DEPTH_TEST);
         glUseProgram(programs.uiProgram);
         if(bI >= 0)
-            ui.box(midPanelW,0.02f,(-1.f+midPanelW)+0.05f,(0.9f-0.02f) - ((float)bI * 0.04),file,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,midPanelW-0.01f - (cI/30.f),false,false,0.91f+((buttonHover||selectedFileIndex == bI)/10000.f),10000,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,buttonHover);
+            ui.box(midPanelW,0.02f,(-1.f+midPanelW)+0.05f,(0.9f-0.02f) - ((float)bI * 0.04),file,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,midPanelW-0.01f - (cI/30.f) + ((countSlashes(path) - countSlashes(fileName)) / 50.f) ,false,false,0.91f+((buttonHover||selectedFileIndex == bI)/10000.f),10000,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,buttonHover);
         glDisable(GL_DEPTH_TEST);
 		
         bI++;
 		lastBI++;
-
-        if(std::filesystem::is_directory(fileName)){
-            cI++;  
-            //--------------------------------------------------------------------------------------
-            for (const auto & entry2 : std::filesystem::directory_iterator(fileName)){
-		        std::string fileName2 = entry2.path().string();
-		        std::string file2 = util.getLastWordBySeparatingWithChar(fileName2,folderDistinguisher);
-
-    	        bool buttonHover2 = ui.isMouseOnButton(window,midPanelW,0.02f,(-1.f+midPanelW)+0.05f - screenGapX,(0.9f-0.02f) - ((float)bI * 0.04),mouseXpos,mouseYpos,false);
-                if(buttonHover2 && firstClick){
-                    selectedFileIndex = bI;
-                    selectedFile = fileName2;
-                }
-		        glUseProgram(programs.uiProgram);
-		        glEnable(GL_DEPTH_TEST);
-                if(bI >= 0)
-                    ui.box(midPanelW,0.02f,(-1.f+midPanelW)+0.05f,(0.9f-0.02f) - ((float)bI * 0.04),file2,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,midPanelW-0.01f - (cI/30.f),false,false,0.91f+((buttonHover2||selectedFileIndex == bI)/10000.f),10000,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,buttonHover2);
-                glDisable(GL_DEPTH_TEST);
-		        glUseProgram(programs.iconsProgram);
-		        if(bI >= 0)
-                    ui.iconBox(0.01f,0.02f,((-1.f+midPanelW)+0.05f)-(midPanelW-0.01f - (cI/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.L,0.f,glm::vec4(0.7f,0.7f,0.7f,0.7f),colorData.iconColorHover);
-		        bI++;
-		        lastBI++;
-                
-                if(std::filesystem::is_directory(fileName2)){
-                    cI++;   
-                    //--------------------------------------------------------------------------------------
-                    for (const auto & entry3 : std::filesystem::directory_iterator(fileName2)){
-		                std::string fileName3 = entry3.path().string();
-		                std::string file3 = util.getLastWordBySeparatingWithChar(fileName3,folderDistinguisher);
-
-    	                bool buttonHover3 = ui.isMouseOnButton(window,midPanelW,0.02f,(-1.f+midPanelW)+0.05f - screenGapX,(0.9f-0.02f) - ((float)bI * 0.04),mouseXpos,mouseYpos,false);
-                        if(buttonHover3 && firstClick){
-                            selectedFileIndex = bI;
-                            selectedFile = fileName3;
-                        }
-		                glUseProgram(programs.uiProgram);
-		                glEnable(GL_DEPTH_TEST);
-                        if(bI >= 0)
-                            ui.box(midPanelW,0.02f,(-1.f+midPanelW)+0.05f,(0.9f-0.02f) - ((float)bI * 0.04),file3,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,midPanelW-0.01f - (cI/30.f),false,false,0.91f+((buttonHover3||selectedFileIndex == bI)/10000.f),10000,selectedFileIndex == bI ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,buttonHover3);
-                        glDisable(GL_DEPTH_TEST);
-		                glUseProgram(programs.iconsProgram);
-		                if(bI >= 0)
-                            ui.iconBox(0.01f,0.022f,((-1.f+midPanelW)+0.05f)- (midPanelW-0.01f - ((cI-1)/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.I,0.f,glm::vec4(0.7f,0.7f,0.7f,0.7f),colorData.iconColorHover);
-		                if(bI >= 0)
-                            ui.iconBox(0.01f,0.02f,((-1.f+midPanelW)+0.05f)- (midPanelW-0.01f - ((cI)/30.f))-0.02f,(0.9f-0.02f) - ((float)bI * 0.04),0.92f,icons.L,0.f,glm::vec4(0.7f,0.7f,0.7f,0.7f),colorData.iconColorHover);
-		                bI++;
-		                lastBI++;
-                        if(std::filesystem::is_directory(fileName3)){
-
-                            //--------------------------------------------------------------------------------------
-                            
-                        
-                            //--------------------------------------------------------------------------------------
-
-                        }
-
-	                }   
-                    //--------------------------------------------------------------------------------------
-                    cI--;  
-
-                    
-                }
-
-	        }   
-            //--------------------------------------------------------------------------------------
-            cI--;  
-
-
-        }
-
 	}
 }
 
