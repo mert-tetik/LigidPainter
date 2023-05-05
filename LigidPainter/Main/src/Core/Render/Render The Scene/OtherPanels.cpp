@@ -444,7 +444,8 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
     if(ui.isMouseOnButton(window,0.04f,0.025f,(-1.0f+0.05f+0.03f)+0.03f + 0.04f,(1.f-0.025f),mouseXpos,mouseYpos,0))
         saveAsButtonHover = true;
     if(saveAsButtonHover && firstClick){
-        //Save as
+        ProjectFolder project;
+        project.duplicateFolder(projectPath);
     }
     ui.box(0.04f,0.025f,(-1.0f+0.05f+0.03f)+0.03f + 0.04f,(1.f-0.025f),"Save As",glm::vec4(0.7f),0.035f,false,false,0.91f + saveAsButtonHover/1000.f,1000.f,colorData.buttonColor,0.f);
         

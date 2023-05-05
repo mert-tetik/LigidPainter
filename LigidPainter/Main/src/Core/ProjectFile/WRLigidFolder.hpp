@@ -16,6 +16,9 @@
 #include "Core/Load.hpp"
 #include "Core/ProjectFile/WRLigidMaterialFile.hpp"
 
+#include "tinyfiledialogs.h"
+
+
 
 class ProjectFolder{
 public:
@@ -485,10 +488,57 @@ public:
             stbi_write_png(path.c_str(), txtrRes, txtrRes, 4, pixelData, txtrRes * 4);
         }
     }
+    string rmvPath(string &startingPath, string &fullPath) 
+    {
+        // look for starting path in the fullpath
+        int index = fullPath.find(startingPath);
+
+        if (index != string::npos)
+        {
+            fullPath = fullPath.erase(0, startingPath.length());
+        }
+        return fullPath;
+    }
+    string removeLastPath(std::string path){
+        #if defined(_WIN32) || defined(_WIN64)
+		    char folderDistinguisher = '\\';
+		#else
+			char folderDistinguisher = '/'; 
+		#endif
+        int c = path.size()-1;
+        while(path[c] != folderDistinguisher){
+            path.erase(path.begin()+c);
+            c--;
+        }
+        return path;
+    }
     void duplicateFolder(std::string srcPath){
-        char* destinationPath = tinyfd_selectFolderDialog("Select the destination folder","");
-        if(destinationPath)
-            std::filesystem::copy(srcPath,destinationPath);
+        #if defined(_WIN32) || defined(_WIN64)
+		    char folderDistinguisher = '\\';
+		#else
+			char folderDistinguisher = '/'; 
+		#endif
+        
+        char* dest = tinyfd_selectFolderDialog("Select the destination folder","");
+        Utilities util;
+        std::string destinationPath = (std::string)(dest) + folderDistinguisher +  util.getLastWordBySeparatingWithChar(srcPath,folderDistinguisher);
+        if(destinationPath.size()){
+            if(std::filesystem::is_directory(destinationPath))
+                std::filesystem::remove_all(destinationPath);
+
+            std::filesystem::create_directories(destinationPath);
+            for (auto& p : std::filesystem::recursive_directory_iterator(srcPath)){
+                std::string filePath = p.path().string();
+
+                if(std::filesystem::is_directory(filePath)){
+                    std::filesystem::create_directories(destinationPath + folderDistinguisher + rmvPath(srcPath,filePath));
+                }
+                else{
+                    std::cout << srcPath + filePath << " to " << removeLastPath(destinationPath + folderDistinguisher + rmvPath(srcPath,filePath)) << std::endl;
+                    std::filesystem::copy(srcPath + filePath,removeLastPath(destinationPath + folderDistinguisher + rmvPath(srcPath,filePath)));
+                }
+            }
+        }
     }
 private:
 };
