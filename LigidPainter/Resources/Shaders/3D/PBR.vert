@@ -26,5 +26,5 @@ void main() {
     Normal = aNormal;
     projectedPos = projection * view * vec4(aPos, 1.0); 
     vec4 tPos = modelMatrix * vec4(aPos,1.);
-    gl_Position = modelMatrix * projection * view * vec4(tPos.xyz, 1.0);
+    gl_Position =  projection * view * vec4(tPos.xyz, 1.0);
 }

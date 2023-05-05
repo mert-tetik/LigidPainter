@@ -946,7 +946,12 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 
 	}
 	else if(displayProjectFolderManager){		
-		projectFolderManagerPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,displayProjectFolderManager,fonts,projectManager);
+		int txtrRes = 256;
+		for (size_t i = 0; i < chosenTextureResIndex; i++)
+		{
+			txtrRes*=2;
+		}
+		projectFolderManagerPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,displayProjectFolderManager,fonts,projectManager,albedoTextures,txtrRes);
 	}
 
 	glUseProgram(renderPrograms.solidRenderer);

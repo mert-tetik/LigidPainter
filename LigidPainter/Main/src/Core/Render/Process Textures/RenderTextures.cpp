@@ -29,6 +29,8 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 	if(txtrRes != lastTxtrRes)
 		txtrResChanged = true;
 
+	albedoTextures[chosenTextureIndex].changed = true;
+
 	if(isRenderTexture){
 		glEnable(GL_DEPTH_TEST); 
 		glDepthFunc(GL_LESS);

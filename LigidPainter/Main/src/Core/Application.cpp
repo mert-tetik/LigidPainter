@@ -904,21 +904,7 @@ bool LigidPainter::run()
 
 
 		if(glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS){
-			char* projectFilePathCheck;
-			if(projectFilePath == "" || glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
-				//File dialog
-				char const* lFilterPatterns[1] = { "*.ligid" };
-				projectFilePathCheck = tinyfd_saveFileDialog("Save The Project","", 1, lFilterPatterns, "");
-			}
-			if(projectFilePath != "" && glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE){
-				LigidFile ligidFile;
-				ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes,chosenTextureResIndex);
-			}
-			else if(projectFilePathCheck){
-				LigidFile ligidFile;
-				projectFilePath = projectFilePathCheck;
-				ligidFile.writeTheFile(projectFilePath.c_str(),model,albedoTextures,nodeScenes,chosenTextureResIndex);
-			}
+			displayProjectFolderManager = true;
 		}
 
 
