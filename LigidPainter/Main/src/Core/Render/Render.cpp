@@ -385,6 +385,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 			channelState = 2;
 		if(UIElements[UInormalChannelCheckBoxElement].checkBox.checked)
 			channelState = 3;
+		gls.uniform1i(renderPrograms.PBRProgram,"useUV",UIElements[UIuseUVCheckBox].checkBox.checked);
 		gls.uniform1i(renderPrograms.PBRProgram,"dynamicPainting",UIElements[UIdynamicPaintingCheckBoxElement].checkBox.checked);
 		gls.uniform1i(renderPrograms.PBRProgram,"useMirror",UIElements[UImirrorXCheckBox].checkBox.checked || UIElements[UImirrorYCheckBox].checkBox.checked || UIElements[UImirrorZCheckBox].checkBox.checked);
 		gls.uniform1i(renderPrograms.PBRProgram,"channelState",channelState);
@@ -396,6 +397,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 		gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosZ",UIElements[UImirrorZRangeBarElement].rangeBar.value * 10.f + ((float)! UIElements[UImirrorZCheckBox].checkBox.checked*100000.f));
 		gls.uniformMatrix4fv(renderPrograms.PBRProgram,"modelMatrix",modelMatrix);
 		glUseProgram(renderPrograms.screenDepthProgram);
+		gls.uniform1i(renderPrograms.screenDepthProgram,"useUV",UIElements[UIuseUVCheckBox].checkBox.checked);
 		gls.uniformMatrix4fv(renderPrograms.screenDepthProgram,"modelMatrix",modelMatrix);
 
 		if(materialDisplayUpdaterCounter > 200){

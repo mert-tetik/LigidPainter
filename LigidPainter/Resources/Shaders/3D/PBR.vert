@@ -20,16 +20,20 @@ out vec4 projectedPos;
 
 uniform int getTheResultV;
 uniform mat4 orthoProjection;
+uniform int useUV;
 
 void main() {
    
     Tangent = aTangent;
     Bitangent = aBitangent;
-    Pos = aPos;
     TexCoords = aTexCoords;
     Normal = aNormal;
-  
-    vec4 tPos = modelMatrix * vec4(aPos,1.);
+    if(useUV == 1)
+        Pos = vec3(aTexCoords,0);
+    else
+        Pos = aPos;
+
+    vec4 tPos = modelMatrix * vec4(Pos,1.);
     projectedPos = projection * view * vec4(tPos.xyz, 0.5); 
     if(getTheResultV == 0)
         gl_Position = projectedPos;
