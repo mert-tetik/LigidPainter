@@ -203,7 +203,6 @@ void GlSet::usePBRShader(unsigned int program,PBRShaderData data){
 
 	//Frag
 	uniform1i(program,"screenMaskTexture",data.screenMaskTexture);
-	uniform1i(program,"brdfLUT",15);
 	uniform1i(program,"paintOverTxtr",18);
 	uniform1i(program,"tdRenderedMaskTexture",8);
 	uniform1i(program,"prefilterMap",16);
@@ -212,7 +211,7 @@ void GlSet::usePBRShader(unsigned int program,PBRShaderData data){
 	uniform1i(program,"mirroredDepthTexture",data.mirroredDepthTexture);
 	uniform3fv(program,"viewPos",data.viewPos);
 	uniform1i(program,"bluryskybox",data.bluryskybox);
-	uniform1i(program,"material.diffuse",data.materialDiffuse);
+	uniform1i(program,"Material.diffuse",0);
 	uniform1i(program,"subSelectedTexture",17);
 }
 

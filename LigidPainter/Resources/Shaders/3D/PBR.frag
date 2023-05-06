@@ -30,7 +30,6 @@ out vec4 color;
 
 uniform samplerCube bluryskybox;
 uniform samplerCube prefilterMap;
-uniform sampler2D brdfLUT;
 
 uniform int paintThrough; 
 
@@ -57,6 +56,8 @@ uniform float paintingOpacity;
 uniform int channelState;
 
 uniform int dynamicPainting;
+
+uniform int getTheResultF;
 
 float far = 10.0f;
 float near = 0.1f;
@@ -108,6 +109,7 @@ vec3 getPaintedDiffuse(){
    }
 
    intensity*=paintingOpacity;
+
 
     // ambient
    vec3 diffuseDrawMix;
@@ -304,7 +306,7 @@ vec3 getRealisticResult(vec3 paintedDiffuse){
     // sample both the pre-filter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part.
     const float MAX_REFLECTION_LOD = 4.0;
     vec3 prefilteredColor = textureLod(prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb * skyboxExposure;    
-    vec2 brdf  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
+    //vec2 brdf  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
     vec3 specular = prefilteredColor * (F);
 
     vec3 ambient = (kD * diffuse + specular) * ao;
@@ -327,8 +329,11 @@ vec3 getRealisticResult(vec3 paintedDiffuse){
 }
 
 void main() {
-    vec3 paintedDiffuse = getPaintedDiffuse();
-    vec3 result = getRealisticResult(paintedDiffuse);
-
-    color = vec4(result,opacity);
+   vec3 paintedDiffuse = getPaintedDiffuse();
+   vec3 result;
+   if(getTheResultF == 0)
+      result = getRealisticResult(paintedDiffuse);
+   else
+      result = paintedDiffuse;
+   color = vec4(result,opacity);
 }

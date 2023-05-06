@@ -176,8 +176,10 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 
 		if(!dynamicPainting){
 			glUseProgram(programs.twoDPaintingProgram);
-			glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);		
-			glset.blendFunc( GL_SRC_ALPHA, GL_ONE);
+			
+			glset.blendFunc(GL_ONE, GL_ONE);
+			glBlendEquationSeparate(GL_MAX,GL_MAX);	
+			
 			if(refreshTheScreenMask){
 				glClear(GL_DEPTH_BUFFER_BIT);
 				refreshTheScreenMask = true;
@@ -189,9 +191,11 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 			glDrawArraysInstanced(GL_TRIANGLES , 0 , 6 , holdLocations.size());
 			glset.activeTexture(GL_TEXTURE4);
 			glset.generateMipmap();
+			
 			glset.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glDepthFunc(GL_LESS);
 			glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
+			
+			glDepthFunc(GL_LESS);
 		}
 		else{
 			glDepthFunc(GL_ALWAYS);

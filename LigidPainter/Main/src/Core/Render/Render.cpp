@@ -352,7 +352,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 		}
 		bool isRenderTexture = (renderData.cameraPosChanged && renderData.paintingMode) || exportData.exportImage || (glfwGetMouseButton(renderData.window, 0) == GLFW_RELEASE && renderData.paintingMode); //addImageButtonPressed = albedo texture changed
 		if (isRenderTexture || paintRender) {
-			renderTextures(FBOScreen,screenSizeX, screenSizeY,outShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,currentMaterialIndex,renderPrograms,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,modelMaterials,view,selectedAlbedoTextureIndex,chosenTextureResIndex,UIElements[UIuseUVCheckBox].checkBox.checked);
+			renderTextures(FBOScreen,screenSizeX, screenSizeY,pbrShaderData,model,renderDefault,albedoTextures,false,isRenderTexture,paintRender,currentMaterialIndex,renderPrograms,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,modelMaterials,view,selectedAlbedoTextureIndex,chosenTextureResIndex,UIElements[UIuseUVCheckBox].checkBox.checked);
 		}
 		if(exportData.exportImage){
     		exportTexture(UIElements[UIjpgCheckBox].checkBox.checked, UIElements[UIpngCheckBox].checkBox.checked,exportData.path,exportData.fileName,albedoTextures,chosenTextureResIndex);
@@ -393,6 +393,8 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 		gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosY",UIElements[UImirrorYRangeBarElement].rangeBar.value * 10.f + ((float)!UIElements[UImirrorYCheckBox].checkBox.checked*100000.f));
 		gls.uniform1f(renderPrograms.PBRProgram,"mirrorOriginPosZ",UIElements[UImirrorZRangeBarElement].rangeBar.value * 10.f + ((float)! UIElements[UImirrorZCheckBox].checkBox.checked*100000.f));
 		gls.uniformMatrix4fv(renderPrograms.PBRProgram,"modelMatrix",modelMatrix);
+		glUseProgram(renderPrograms.screenDepthProgram);
+		gls.uniformMatrix4fv(renderPrograms.screenDepthProgram,"modelMatrix",modelMatrix);
 
 		if(materialDisplayUpdaterCounter > 200){
 			//TODO : Update only selected one

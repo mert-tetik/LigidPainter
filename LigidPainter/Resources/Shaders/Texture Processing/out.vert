@@ -5,8 +5,8 @@ layout(location = 2) in vec2 aTexCoords;
 
 uniform mat4 view;
 uniform mat4 modelMatrix;
-
 uniform mat4 projection;
+
 uniform int isTwoDimensional;
 
 uniform mat4 renderTextureProjection;
@@ -26,7 +26,7 @@ void main() {
    Normal = aNormal;
    
    vec4 tPos = modelMatrix * vec4(aPos,1.),
-   projectedPos = projection * view * vec4(tPos.xyz, 1.0); 
+   projectedPos = projection * view * vec4(tPos.xyz, 0.5); 
 
       if(isTwoDimensional == 0){
          gl_Position = renderTextureProjection * vec4(aTexCoords, 0.5, 1);

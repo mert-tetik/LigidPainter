@@ -9,6 +9,7 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 modelMatrix;
 
+
 out vec2 TexCoords;
 out vec3 Normal;
 out vec3 Pos;
@@ -17,6 +18,9 @@ out vec3 Bitangent;
 
 out vec4 projectedPos;
 
+uniform int getTheResultV;
+uniform mat4 orthoProjection;
+
 void main() {
    
     Tangent = aTangent;
@@ -24,7 +28,11 @@ void main() {
     Pos = aPos;
     TexCoords = aTexCoords;
     Normal = aNormal;
-    projectedPos = projection * view * vec4(aPos, 1.0); 
+  
     vec4 tPos = modelMatrix * vec4(aPos,1.);
-    gl_Position =  projection * view * vec4(tPos.xyz, 1.0);
+    projectedPos = projection * view * vec4(tPos.xyz, 0.5); 
+    if(getTheResultV == 0)
+        gl_Position = projectedPos;
+    else
+        gl_Position = orthoProjection * vec4(TexCoords,0.5,1);
 }

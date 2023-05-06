@@ -674,6 +674,10 @@ bool LigidPainter::run()
 
 	modelMatrix = glm::mat4(1);
 	modelMatrix = glm::scale(modelMatrix,glm::vec3((UIElements[UITDModelSizeRangeBarElement].rangeBar.value+0.11f)*4.54545454545));
+	glUseProgram(programs.screenDepthProgram);
+	glset.uniformMatrix4fv(programs.screenDepthProgram,"modelMatrix",modelMatrix);
+	glUseProgram(programs.outProgram);
+	glset.uniformMatrix4fv(programs.outProgram,"modelMatrix",modelMatrix);
 	glUseProgram(programs.PBRProgram);
 	glset.uniformMatrix4fv(programs.PBRProgram,"modelMatrix",modelMatrix);
 

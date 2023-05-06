@@ -137,7 +137,7 @@ vec3 getPaintedDiffuse(){
 
 
    
-   return diffuseDrawMix;
+   return vec3(intensity);
 }
 
 
