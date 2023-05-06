@@ -178,6 +178,24 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
 		gls.uniform1i(renderPrograms.textureDisplayer, "currentTexture", 14);
 		gls.uniform1i(renderPrograms.textureDisplayer, "roundCor",1);
 		gls.uniformMatrix4fv(renderPrograms.textureDisplayer, "TextProjection", projection);
+		glUseProgram(renderPrograms.renderTheTextureProgram);
+		gls.uniformMatrix4fv(renderPrograms.renderTheTextureProgram, "TextProjection", projection);
+		gls.uniform1i(renderPrograms.renderTheTextureProgram, "txtr", 14);
+		gls.uniform1i(renderPrograms.renderTheTextureProgram, "isHover", 0);
+		gls.uniform1i(renderPrograms.renderTheTextureProgram, "isPressed", 0);
+		gls.uniform1i(renderPrograms.renderTheTextureProgram, "subSelected", 0);
+		gls.uniform1i(renderPrograms.renderTheTextureProgram, "isMask", 0);
+		gls.uniform1i(renderPrograms.renderTheTextureProgram, "maskUseColor", 0);
+		gls.uniform1i(renderPrograms.renderTheTextureProgram, "roundCorners", 0);
+		gls.uniform1i(renderPrograms.renderTheTextureProgram, "renderMaterials", 0);
+        
+        
+        
+        
+        
+        
+        
+        
 		glUseProgram(renderPrograms.renderTheTextureBlur);
 		gls.uniformMatrix4fv(renderPrograms.renderTheTextureBlur, "TextProjection", projection);
 
@@ -266,6 +284,18 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
             currentFolder = "Shaders";
         if(projectFolderState == 5)
             currentFolder = "Fonts";
+
+        float rad = 0.07f;
+        glm::vec2 pos = glm::vec2(-0.585f,0.85f);
+        std::vector<float> folderVertices = { 
+	        rad + pos.x,  rad*2 + pos.y, 0.0f,1,1,0,0,0,  // top right
+	        rad + pos.x,  -rad*2 + pos.y, 0.0f,1,0,0,0,0,  // bottom right
+	        -rad + pos.x,  rad*2 + pos.y, 0.0f,0,1,0,0,0,  // top left 
+    
+            rad + pos.x,  -rad*2 + pos.y, 0.0f,1,0,0,0,0,  // bottom right
+	        -rad + pos.x,  -rad*2 + pos.y, 0.0f,0,0,0,0,0,  // bottom left
+	        -rad + pos.x,  rad*2 + pos.y, 0.0f,0,1,0,0,0   // top left
+	    };
         
 		ui.box(midPanelW,0.025f, (-1.f+0.15f+0.05f) + screenGapX,0.925f,currentFolder,glm::vec4(colorData.panelColorSnd.r,colorData.panelColorSnd.g,colorData.panelColorSnd.b,0.5),+0.14f,false,false,0.92f,10000,colorData.panelColorSnd,0);
         
@@ -276,7 +306,6 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
         if(projectFolderState == 0){
 
             glUseProgram(renderPrograms.iconsProgram);
-            ui.iconBox(0.05f,0.1f,0.7f,0.7f,0.9f,icons.Texture,0,colorData.textColor,colorData.textColor);
 
             Texture texture;
             if(firstClick){
@@ -301,6 +330,9 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
             gls.drawArrays(renderVertices,0);
     		gls.uniform1i(renderPrograms.textureDisplayer, "roundCor",0);
 
+            glActiveTexture(GL_TEXTURE14);
+            glBindTexture(GL_TEXTURE_2D,icons.TextureFolder);
+
         }        
         if(projectFolderState == 1){
             glUseProgram(renderPrograms.solidRenderer);
@@ -314,10 +346,17 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
             }
 
             fileModel.Draw();
+
+            
+
+            glActiveTexture(GL_TEXTURE14);
+            glBindTexture(GL_TEXTURE_2D,icons.TDModelFolder);
+
         }
         
         if(projectFolderState == 2){
-
+            glActiveTexture(GL_TEXTURE14);
+            glBindTexture(GL_TEXTURE_2D,icons.MaterialFolder);
         }
         if(projectFolderState == 3){
 
@@ -332,6 +371,12 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
             ui.node(fileNode,renderPrograms,icons);
             glUseProgram(renderPrograms.uiProgram);
             ui.renderText(renderPrograms.uiProgram,fileNode.fragSource,-0.5f,+0.9f,0.00022f,colorData.panelColor,0.91f,false);
+            glActiveTexture(GL_TEXTURE14);
+            glBindTexture(GL_TEXTURE_2D,icons.NodeFolder);
+        }
+        if(projectFolderState == 4){
+            glActiveTexture(GL_TEXTURE14);
+            glBindTexture(GL_TEXTURE_2D,icons.ShaderFolder);
         }
         if(projectFolderState == 5){
             if(firstClick && selectedFile.size() > 3)
@@ -345,7 +390,13 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
             glDisable(GL_DEPTH_TEST);
             ui.renderText(renderPrograms.uiProgram,"Carpe Diem",-0.35f,0.f,0.0022f,colorData.panelColor,0.91f,false,fileFont,0.5f);
             glEnable(GL_DEPTH_TEST);
+            glActiveTexture(GL_TEXTURE14);
+            glBindTexture(GL_TEXTURE_2D,icons.FontFolder);
         }
+
+        glUseProgram(renderPrograms.renderTheTextureProgram);
+        
+        gls.drawArrays(folderVertices,0);
 
     if(showInfo){
         if(ui.isMouseOnButton(window,0.f,0.f,0.95f-screenGapX,0.3f,mouseXpos,mouseYpos,0)){

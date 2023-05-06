@@ -6,16 +6,14 @@ in vec2 TexCoords;
 
 uniform int isHover;
 uniform int isPressed;
-
 uniform int subSelected;
-
 uniform int isMask;
 uniform int maskUseColor;
 uniform int roundCorners;
+uniform int renderMaterials;
 
 uniform sampler2D txtr;
 
-uniform int renderMaterials;
 
 const float PI = 3.14159265;
     

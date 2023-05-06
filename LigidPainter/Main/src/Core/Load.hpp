@@ -230,6 +230,12 @@ public:
 		icons.L = txtr.getTexture("LigidPainter/Resources/Icons/L.jpg",0,0,false);
 		icons.I = txtr.getTexture("LigidPainter/Resources/Icons/I.jpg",0,0,false);
 		icons.OSq = txtr.getTexture("LigidPainter/Resources/Icons/OSq.jpg",0,0,false);
+		icons.TDModelFolder = txtr.getTexture("LigidPainter/Resources/Icons/3DModelFolder.png",0,0,false);
+		icons.MaterialFolder = txtr.getTexture("LigidPainter/Resources/Icons/MaterialFolder.png",0,0,false);
+		icons.NodeFolder = txtr.getTexture("LigidPainter/Resources/Icons/NodeFolder.png",0,0,false);
+		icons.FontFolder = txtr.getTexture("LigidPainter/Resources/Icons/FontFolder.png",0,0,false);
+		icons.ShaderFolder = txtr.getTexture("LigidPainter/Resources/Icons/ShaderFolder.png",0,0,false);
+		icons.TextureFolder = txtr.getTexture("LigidPainter/Resources/Icons/TextureFolder.png",0,0,false);
 	
 		return icons;
 	}

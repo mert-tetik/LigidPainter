@@ -212,6 +212,12 @@ struct Icons{
 	unsigned int L;
 	unsigned int I;
 	unsigned int OSq;
+	unsigned int TDModelFolder;
+	unsigned int MaterialFolder;
+	unsigned int FontFolder;
+	unsigned int ShaderFolder;
+	unsigned int NodeFolder;
+	unsigned int TextureFolder;
 };
 
 struct RenderData { //GlSet::render
