@@ -289,6 +289,8 @@ float lightRotVal = 0.f;
 
 Font txtrGenSelectedFont;
 
+std::vector<std::string> createProject3DModelPaths;
+
 RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, PanelData &panelData, ExportData &exportData,
 							Icons &icons, bool renderPlane,bool renderSphere,
 							PBRShaderData &pbrShaderData,SkyBoxShaderData &skyBoxShaderData,float brushBlurVal,ScreenDepthShaderData &screenDepthShaderData,AxisPointerShaderData &axisPointerShaderData,
@@ -790,7 +792,43 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 			char folderDistinguisher = '/'; 
 		#endif
 		
-		renderBlurySkybox(cubemaps,skyBoxShaderData,renderPrograms,UIElements,createProjectPanelBlurVal,0.35f,0.7f,true);
+
+
+		//Left panel
+		renderBlurySkybox(cubemaps,skyBoxShaderData,renderPrograms,UIElements,createProjectPanelBlurVal,0.2f,1.f,-0.8+screenGapX,0.f,true);
+		
+		glUseProgram(renderPrograms.iconsProgram);
+		bool add3DModelIconHover = false;
+		if(ui.isMouseOnButton(renderData.window,0.015f,0.03f,-0.65,0.95f,mouseXpos,mouseYpos,0)){
+			add3DModelIconHover = true;
+		}
+		ui.iconBox(0.015f,0.03f,-0.65 + screenGapX,0.95f,0.95f,icons.Plus,add3DModelIconHover,colorData.iconColor,colorData.iconColorHover);
+
+		if(add3DModelIconHover && firstClick){
+			char const* lFilterPatterns[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
+			auto modelFilePathCheck = tinyfd_openFileDialog("Select 3D Model","",11, lFilterPatterns,"",false);
+			if(modelFilePathCheck){
+				createProject3DModelPaths.push_back(modelFilePathCheck);
+			}
+		}
+
+		glUseProgram(renderPrograms.uiProgram);
+		ui.renderText(renderPrograms.uiProgram,"Add 3D models to your project",-0.98f,0.95f,0.00022f,colorData.buttonColor,0.95f,0);
+
+		for (size_t i = 0; i < createProject3DModelPaths.size(); i++)
+		{
+			bool tdModelListButtonHover = ui.isMouseOnButton(renderData.window,0.2f,0.04f,-0.8,0.95f - (i+1)*0.08f,mouseXpos,mouseYpos,false);
+			ui.box(0.2f,0.04f,-0.8+screenGapX,0.95f - (i+1)*0.08f,createProject3DModelPaths[i],colorData.buttonColor,0.2f,0,0,0.93f,1000,colorData.buttonColorHover,tdModelListButtonHover);
+			if(tdModelListButtonHover && firstClick){
+				createProject3DModelPaths.erase(createProject3DModelPaths.begin()+i);
+				break;
+			}
+		}
+		
+
+
+
+
 
 
 		for (size_t i = 0; i < UIElements.size(); i++)
@@ -927,7 +965,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 					}
 				}
 				ProjectFolder project;
-				project.initFolder(path,modelFilePath,UIElements,UIElements[UIbackfaceCullingCheckBox].checkBox.checked,UIElements[UIuseUVCheckBox].checkBox.checked);
+				project.initFolder(path,modelFilePath,UIElements,UIElements[UIbackfaceCullingCheckBox].checkBox.checked,UIElements[UIuseUVCheckBox].checkBox.checked,createProject3DModelPaths);
 
 				project.readFolder(path + folderDistinguisher + UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures,fonts);
 

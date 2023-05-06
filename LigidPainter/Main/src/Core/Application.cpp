@@ -1136,7 +1136,7 @@ int LigidPainter::ligidMessageBox(std::string message,float messagePosX,std::str
 
 		glUseProgram(programs.renderTheTextureBlur);
 		float blurVal = 0.5f;
-		render.renderBlurySkybox(cubemaps,skyBoxShaderData,programs,UIElements,blurVal,1.f,1.f,false);
+		render.renderBlurySkybox(cubemaps,skyBoxShaderData,programs,UIElements,blurVal,1.f,1.f,0,0,false);
 		glUseProgram(programs.uiProgram);
 		
 		

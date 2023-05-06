@@ -6,7 +6,7 @@
 #include "Core/LigidPainter.h"
 #include "Core/gl.h"
 
-void Render::renderBlurySkybox(Cubemaps &cubemaps,SkyBoxShaderData &skyBoxShaderData,Programs & renderPrograms,std::vector<UIElement> UIElements, float &createProjectPanelBlurVal,float w,float h,bool roundCorners){
+void Render::renderBlurySkybox(Cubemaps &cubemaps,SkyBoxShaderData &skyBoxShaderData,Programs & renderPrograms,std::vector<UIElement> UIElements, float &createProjectPanelBlurVal,float w,float h,float posX,float posY,bool roundCorners){
         GlSet gls;
         gls.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -47,8 +47,8 @@ void Render::renderBlurySkybox(Cubemaps &cubemaps,SkyBoxShaderData &skyBoxShader
 
 		float textureWidth = w;
 		float textureHeight = h;
-		float position_x = 0.f;
-		float position_y = 0.f;
+		float position_x = posX;
+		float position_y = posY;
 		float panelZ = 0.5f;
 
 		std::vector<float> buttonCoorSq{

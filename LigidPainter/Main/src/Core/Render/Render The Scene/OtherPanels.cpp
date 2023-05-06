@@ -329,7 +329,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
 			char folderDistinguisher = '/'; 
 		#endif
 		
-		renderBlurySkybox(cubemaps,skyBoxShaderData,renderPrograms,UIElements,createProjectPanelBlurVal,1.0f,1.0f,false);
+		renderBlurySkybox(cubemaps,skyBoxShaderData,renderPrograms,UIElements,createProjectPanelBlurVal,1.0f,1.0f,0.,0.,false);
 		
 		glUseProgram(renderPrograms.uiProgram);
 		

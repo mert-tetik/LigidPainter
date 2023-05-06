@@ -57,7 +57,7 @@ public:
 		bool useModel,std::vector<MaterialOut> &modelMaterialProgram,glm::mat4 view,std::vector<aTexture> albedoTextures,int chosenTextureIndex,bool useUV);
 	glm::vec3 getColorPickerValue(unsigned int FBOScreen,ColorPicker &colorPicker,  int screenSizeX,  int screenSizeY, Programs programs, int maxScreenWidth,int maxScreenHeight,SaturationValShaderData &saturationValShaderData);
 	void renderSkyBox(SkyBoxShaderData data,Programs programs,float exposureVal,float skyboxRotationVal);
-	void renderBlurySkybox(Cubemaps &cubemaps,SkyBoxShaderData &skyBoxShaderData,Programs & renderPrograms,std::vector<UIElement> UIElements, float &createProjectPanelBlurVal,float w, float h,bool roundCorners);
+	void renderBlurySkybox(Cubemaps &cubemaps,SkyBoxShaderData &skyBoxShaderData,Programs & renderPrograms,std::vector<UIElement> UIElements, float &createProjectPanelBlurVal,float w, float h,float posX,float posY,bool roundCorners);
 
 
 private:

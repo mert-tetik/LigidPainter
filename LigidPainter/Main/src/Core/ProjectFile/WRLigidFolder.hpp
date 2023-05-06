@@ -22,7 +22,7 @@
 
 class ProjectFolder{
 public:
-    void initFolder(std::string &path,char* &modelFilePath,std::vector<UIElement> &UIElements,bool transTextures,bool transNodes){
+    void initFolder(std::string &path,char* &modelFilePath,std::vector<UIElement> &UIElements,bool transTextures,bool transNodes,std::vector<std::string> tdModelPaths){
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -44,6 +44,21 @@ public:
 		modelpath += "3DModels";
 		std::filesystem::create_directories(modelpath);
 		std::filesystem::copy(".\\LigidPainter\\Resources\\3D Models\\", modelpath);
+
+        for (size_t i = 0; i < tdModelPaths.size(); i++)
+        {
+            if(std::filesystem::exists(tdModelPaths[i])){
+                if(!std::filesystem::is_directory(tdModelPaths[i])){
+		            std::filesystem::copy(tdModelPaths[i], modelpath);
+                } //Is a file?
+                else{
+                    std::cout << tdModelPaths[i] << " is a folder and NOT a 3d model file" << std::endl; 
+                }
+            } //Does exists?
+            else{
+                std::cout << tdModelPaths[i] << " doesn't exists (File path probably has illegal characters. Renaming them will solve the problem. Afterwards you can include the file from project manager or recreate the project)" << std::endl; 
+            }
+        }
       
         //Fonts
 		std::string fontspath = path;
