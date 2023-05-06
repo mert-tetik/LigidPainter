@@ -128,7 +128,7 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
         }
         
         if(!isHidden){
-            bool buttonHover = ui.isMouseOnButton(window,midPanelW,0.02f,(-1.f+midPanelW)+0.05f - screenGapX,(0.9f-0.02f) - ((float)bI * 0.04),mouseXpos,mouseYpos,false);
+            bool buttonHover = ui.isMouseOnButton(window,midPanelW,0.02f,(-1.f+midPanelW)+0.05f,(0.9f-0.02f) - ((float)bI * 0.04),mouseXpos,mouseYpos,false);
             if(buttonHover && firstClick){
                 selectedFileIndex = bI;
                 selectedFile = fileName;
@@ -231,38 +231,38 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
 		
 		glUseProgram(renderPrograms.iconsProgram);
 		//Close
-        bool closeIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f)-screenGapX,0.92f,mouseXpos,mouseYpos,false);
+        bool closeIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.92f,mouseXpos,mouseYpos,false);
 		ui.iconBox(0.01f,0.02f,(-1.f+0.025f)+ screenGapX,0.94f,0.92f,icons.Undo,closeIconHover,colorData.iconColor,colorData.iconColorHover);
         if(closeIconHover && firstClick)
             displayProjectFolderManager = false;
 		
 		
-        bool texturesIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f)-screenGapX,0.82f,mouseXpos,mouseYpos,false);
+        bool texturesIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.82f,mouseXpos,mouseYpos,false);
 		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.82f,0.92f,icons.Texture,texturesIconHover,colorData.iconColor,colorData.iconColorHover);//Textures
         if(texturesIconHover && firstClick)
             projectFolderState = 0;
 
-        bool tdmodelsIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f)-screenGapX,0.74f,mouseXpos,mouseYpos,false);
+        bool tdmodelsIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.74f,mouseXpos,mouseYpos,false);
 		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.74f,0.92f,icons.TDModel,tdmodelsIconHover,colorData.iconColor,colorData.iconColorHover);//3DModels
         if(tdmodelsIconHover && firstClick)
             projectFolderState = 1;
 		
-        bool materialsIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f)-screenGapX,0.66f,mouseXpos,mouseYpos,false);
+        bool materialsIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.66f,mouseXpos,mouseYpos,false);
 		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.66f,0.92f,icons.Material,materialsIconHover,colorData.iconColor,colorData.iconColorHover);//Materials
         if(materialsIconHover && firstClick)
             projectFolderState = 2;
 		
-        bool nodesIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f)-screenGapX,0.58f,mouseXpos,mouseYpos,false);
+        bool nodesIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.58f,mouseXpos,mouseYpos,false);
 		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.58f,0.92f,icons.Mark,nodesIconHover,colorData.iconColor,colorData.iconColorHover);//Nodes
         if(nodesIconHover && firstClick)
             projectFolderState = 3;
 		
-        bool shadersIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f)-screenGapX,0.50f,mouseXpos,mouseYpos,false);
+        bool shadersIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.50f,mouseXpos,mouseYpos,false);
 		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.50f,0.92f,icons.BrushFolder,shadersIconHover,colorData.iconColor,colorData.iconColorHover);//Shaders
         if(shadersIconHover && firstClick)
             projectFolderState = 4;
         
-        bool fontsIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f)-screenGapX,0.42f,mouseXpos,mouseYpos,false);
+        bool fontsIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.42f,mouseXpos,mouseYpos,false);
 		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.42f,0.92f,icons.JpgFile,fontsIconHover,colorData.iconColor,colorData.iconColorHover);//Shaders
         if(fontsIconHover && firstClick){
             projectFolderState = 5;
