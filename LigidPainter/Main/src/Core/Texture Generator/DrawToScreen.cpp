@@ -200,6 +200,7 @@ void TextureGenerator::drawToScreen(GLFWwindow*& window, unsigned int  screenPai
 		else{
 			glDepthFunc(GL_ALWAYS);
 			glset.drawArrays(screenVertices,false);
+			glset.activeTexture(GL_TEXTURE4);
 			glset.generateMipmap();
 			glDepthFunc(GL_LESS);
 		}

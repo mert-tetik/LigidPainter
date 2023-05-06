@@ -130,7 +130,6 @@ vec3 getPaintedDiffuse(){
       else
          return mix(diffuseDrawMix, texture(tdRenderedMaskTexture,TexCoords).rgb*drawColor, texture(tdRenderedMaskTexture,TexCoords).a*paintingOpacity);
    }
-
    
    return diffuseDrawMix;
 }
