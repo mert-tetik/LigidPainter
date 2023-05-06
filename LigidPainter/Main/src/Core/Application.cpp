@@ -45,6 +45,7 @@
 //TODO Fix folder icons
 //TODO Drag to coloring panel color picker
 //TODO Node & textbox copy paste
+//TODO Resize certain textures
 
 //TODO For tomorrow
 //Fix the painting
@@ -183,6 +184,7 @@ bool debugMode = false;
 std::string projectFilePath;
 std::vector<Font> fonts;
 ProjectManager projectManager;
+unsigned int generatedTextTxtr = 0;
 
 string modelName;
 string customModelName; 
@@ -980,7 +982,7 @@ bool LigidPainter::run()
 										txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
 										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState
-										 ,debugMode,createProject,modelFilePath,modelName,customModelName,modelMatrix,displayProjectFolderManager,fonts,projectManager,firstClickR);
+										 ,debugMode,createProject,modelFilePath,modelName,customModelName,modelMatrix,displayProjectFolderManager,fonts,projectManager,firstClickR,generatedTextTxtr);
 		}
 		duplicateNodeCall = false;
 		
@@ -1934,30 +1936,18 @@ void LigidPainter::generateTextureButton(){
 		else if(UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked)
 			glUseProgram(programs.blackToAlphaProgram);
 		else{
-			UserInterface ui;
-			glm::mat4 projection = glm::ortho(-1.0f, 0.5f, 0.f, 1.f);
-			glUseProgram(programs.uiProgram);
-			glset.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
-			
-			glUseProgram(programs.uiProgram);
-			float aposX = -1.f;
-			float aposY = ((int)(std::ceil(UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()/(((0.22f-(UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f))*100)*2.f))+1))/5.f;
-			float thic = (UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f)/100.f;
+			glDeleteTextures(1,&textureColorbuffer);
 
-			int cCnt = 0;
-			for (size_t i = 0; i < (std::ceil(UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()/(((0.22f-(UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f))*100)*2.f))+1); i++)
-			{
-				std::string dTxt;
-				for (size_t si = 0; si < ((0.22f-(UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f))*100)*2.f; si++)
-				{
-					if(cCnt <  UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()){
-						dTxt.push_back(UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text[cCnt]);
-						cCnt++;
-					}
-				}
-				
-				ui.renderText(programs.uiProgram,dTxt,aposX,aposY - ((UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f) * i),thic,glm::vec4(1),0.9f,false);
-			}
+			Texture txtr;
+
+			glActiveTexture(GL_TEXTURE28);
+			glset.bindTexture(generatedTextTxtr);
+
+			GLubyte* txtrData = txtr.getTextureFromProgram(GL_TEXTURE28,txtrRes,txtrRes,4);
+			glset.genTextures(textureColorbuffer);
+			glset.bindTexture(textureColorbuffer);
+			glset.texImage(txtrData,txtrRes,txtrRes,GL_RGBA);
+			glset.generateMipmap();
 		}
 			
 

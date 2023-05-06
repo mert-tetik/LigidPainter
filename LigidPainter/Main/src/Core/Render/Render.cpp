@@ -301,7 +301,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 							,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
 							,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
 							unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,std::string &customModelName
-							,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,bool firstClickR) {
+							,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,bool firstClickR,unsigned int &generatedTextTxtr) {
 	
 	renderCurrentMaterialIndex = currentMaterialIndex;
 	
@@ -535,7 +535,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 				nodeScenes,selectedNodeScene,appNodes,newModelAdded,modelMaterials,firstClick,coloringPanel,txtrCreatingPanel,
 				chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,nodeScenesHistory
 				,brushMaskTextures,maskPanelEnter,duplicateNodeCall,cubemaps,objects,screenHoverPixel,chosenNodeResIndex,audios,textureDraggingState
-				,lightRotVal,projectPath,fonts,txtrGenSelectedFont);
+				,lightRotVal,projectPath,fonts,txtrGenSelectedFont,generatedTextTxtr);
 				
 				UserInterface ui;
 				if(colorPicker.dropperActive || coloringPanel.dropperActive){

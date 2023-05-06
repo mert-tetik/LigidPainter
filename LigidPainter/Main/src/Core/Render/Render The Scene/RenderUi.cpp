@@ -34,7 +34,6 @@
 float dropperMixVal = 0.0f;
 float hexValTextboxMixVal = 0.0f;
 
-unsigned int generatedTextTxtr = 0;
 
 void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &colorPicker,SndPanel &sndpanel) {
 	Utilities util;
@@ -104,7 +103,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 ,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive
 ,std::string &textureText,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps
 ,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios,bool &textureDraggingState,float &lightRotVal,std::string projectPath,std::vector<Font> &fonts
-,Font &txtrGenSelectedFont) {
+,Font &txtrGenSelectedFont,unsigned int &generatedTextTxtr) {
 	uiAudios = audios;
 
 	ColorData colorData;
@@ -892,8 +891,10 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 				glset.bindFramebuffer(FBO);
 		
 				//Texture
-				if(!generatedTextTxtr)
+				if(!generatedTextTxtr){
+
 					glset.genTextures(generatedTextTxtr);
+				}
 				glset.bindTexture(generatedTextTxtr);
 				glset.texImage(NULL, txtrRes,txtrRes,GL_RGBA); //TODO : Use texture quality variable
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

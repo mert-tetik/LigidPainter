@@ -46,7 +46,8 @@ public:
 						,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
 						,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen,std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
 						unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,
-						std::string &customModelName,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,bool firstClickR);
+						std::string &customModelName,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,bool firstClickR
+						,unsigned int &generatedTextTxtr);
 
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void sendProgramsToRender(Programs appPrograms);
@@ -82,7 +83,7 @@ private:
 							TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive,std::string &textureText
 							,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps,Objects &objects
 							,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios,bool &textureDraggingState,float &lightRotVal,std::string projectPath,std::vector<Font> &fonts
-							,Font &txtrGenSelectedFont);
+							,Font &txtrGenSelectedFont,unsigned int &generatedTextTxtr);
 	
 	
 	void renderAxisPointer(AxisPointerShaderData axisPointerShaderData,Programs programs);
