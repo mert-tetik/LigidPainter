@@ -301,7 +301,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 							,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
 							,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
 							unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,std::string &customModelName
-							,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager) {
+							,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,bool firstClickR) {
 	
 	renderCurrentMaterialIndex = currentMaterialIndex;
 	
@@ -952,7 +952,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 			txtrRes*=2;
 		}
 		projectFolderManagerPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,
-								  displayProjectFolderManager,fonts,projectManager,albedoTextures,txtrRes,nodeScenes,appNodes,addNodeContextMenu,model);
+								  displayProjectFolderManager,fonts,projectManager,albedoTextures,txtrRes,nodeScenes,appNodes,addNodeContextMenu,model,firstClickR);
 	}
 
 	glUseProgram(renderPrograms.solidRenderer);
