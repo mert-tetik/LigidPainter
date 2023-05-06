@@ -417,6 +417,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 				glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, 100, 100);
 				glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
 
+
 				glClearColor(0.043f,0.635f,0.823f,1);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				glViewport(0,0,100,100);
@@ -699,8 +700,11 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 		ui.renderText(renderPrograms.uiProgram, "Project name" ,-0.4f,-0.59f,0.00022f,colorData.textColor,0.93f,false);
 		ui.renderText(renderPrograms.uiProgram, "Creation Date" ,-0.15f,-0.59f,0.00022f,colorData.textColor,0.93f,false);
 		ui.renderText(renderPrograms.uiProgram, "Last Opening Date" ,0.15f,-0.59f,0.00022f,colorData.textColor,0.93f,false);
-		
+		int projectFileCounter = 0;
 		for (const auto & entry : std::filesystem::directory_iterator("./Projects")){
+			if(projectFileCounter == 9) //7
+				break;
+
 			std::string fileName = entry.path().string();
 			std::string file = util.getLastWordBySeparatingWithChar(fileName,folderDistinguisher);
 			
@@ -760,6 +764,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 					}
         		}
         	}
+			projectFileCounter++;
 		}
 
 
