@@ -26,7 +26,9 @@ bool UserInterface::textInput(int key, int action,bool caps,std::string &text,in
                 valueChanged = true;
 			}
 			else if(glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS  || glfwGetKey(window,GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS){
-
+				if(key == 'v' || key == 'V'){
+					text += glfwGetClipboardString(window);
+				}
 			}
 			else if(glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS  || glfwGetKey(window,GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS){
 				if(key == 61){
