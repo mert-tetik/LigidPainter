@@ -395,7 +395,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-                    model.meshes[currentMaterialIndex].Draw(); 
+                    model.Draw(currentMaterialIndex);
 
                     glset.generateMipmap();
 

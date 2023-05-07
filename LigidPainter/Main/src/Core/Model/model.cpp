@@ -144,6 +144,13 @@ using namespace std;
 	    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	    glBindVertexArray(mVAO);
     }
+    void Model::Draw(int i)
+    {
+        meshes[i].Draw();
+	    
+        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+	    glBindVertexArray(mVAO);
+    }
     
     void Model::uploadModel(Model uploadedModel){
         meshes.clear();
