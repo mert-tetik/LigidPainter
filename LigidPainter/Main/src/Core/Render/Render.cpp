@@ -747,7 +747,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 						Ldt.push_back(c);
             		}
 					bool buttonHover = ui.isMouseOnButton(renderData.window,0.4f,0.015f,0.f-screenGapX,-0.62f - ((float)bI * 0.03),mouseXpos,mouseYpos,false);
-					ui.box(0.4f,0.015f,0.f,-0.62f - ((float)bI * 0.03),file,colorData.buttonColor,+0.39f,false,false,0.5f+(buttonHover/10000.f),10,colorData.buttonColorHover,buttonHover);
+					ui.box(0.4f,0.015f,0.f,-0.62f - ((float)bI * 0.03),util.cropString(file,18),colorData.buttonColor,+0.39f,false,false,0.5f+(buttonHover/10000.f),10,colorData.buttonColorHover,buttonHover);
 
 					ui.renderText(renderPrograms.uiProgram, (std::string)Cdt ,-0.15f,-0.63f - ((float)bI * 0.03),0.00022f,colorData.textColor,0.93f,false);
 

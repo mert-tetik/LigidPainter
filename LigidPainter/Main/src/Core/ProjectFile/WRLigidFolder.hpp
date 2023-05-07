@@ -535,25 +535,28 @@ public:
 		#endif
         
         char* dest = tinyfd_selectFolderDialog("Select the destination folder","");
-        Utilities util;
-        std::string destinationPath = (std::string)(dest) + folderDistinguisher +  util.getLastWordBySeparatingWithChar(srcPath,folderDistinguisher);
-        if(destinationPath.size()){
-            if(std::filesystem::is_directory(destinationPath))
-                std::filesystem::remove_all(destinationPath);
+        if(dest){
+            Utilities util;
+            std::string destinationPath = (std::string)(dest) + folderDistinguisher +  util.getLastWordBySeparatingWithChar(srcPath,folderDistinguisher);
+            if(destinationPath.size()){
+                if(std::filesystem::is_directory(destinationPath))
+                    std::filesystem::remove_all(destinationPath);
 
-            std::filesystem::create_directories(destinationPath);
-            for (auto& p : std::filesystem::recursive_directory_iterator(srcPath)){
-                std::string filePath = p.path().string();
+                std::filesystem::create_directories(destinationPath);
+                for (auto& p : std::filesystem::recursive_directory_iterator(srcPath)){
+                    std::string filePath = p.path().string();
 
-                if(std::filesystem::is_directory(filePath)){
-                    std::filesystem::create_directories(destinationPath + folderDistinguisher + rmvPath(srcPath,filePath));
-                }
-                else{
-                    std::filesystem::copy(srcPath + filePath,removeLastPath(destinationPath + folderDistinguisher + rmvPath(srcPath,filePath)));
+                    if(std::filesystem::is_directory(filePath)){
+                        std::filesystem::create_directories(destinationPath + folderDistinguisher + rmvPath(srcPath,filePath));
+                    }
+                    else{
+                        std::filesystem::copy(srcPath + filePath,removeLastPath(destinationPath + folderDistinguisher + rmvPath(srcPath,filePath)));
+                    }
                 }
             }
+
         }
-        return destinationPath;
+        return "";
     }
 private:
 };
