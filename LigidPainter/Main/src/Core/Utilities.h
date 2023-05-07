@@ -27,6 +27,7 @@ public:
 	std::vector<glm::vec3> getMirrorVectors(bool x,bool y,bool z);
 	char* processLiFile(const char * path,uint64_t& len,int &res);
 	long long getFolderSizeInBytes(std::string path);
+	int getElementSizeOfTheFolder(std::vector<int> albedoTextures,int folderIndex);
 
 };
 #endif

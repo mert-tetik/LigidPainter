@@ -192,26 +192,34 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	
 	glUseProgram(programs.uiProgram);
 	
-	
+	Utilities util;
 
 	//Slider
+
+	std::vector<int> folderIndices;
+	for (size_t i = 0; i < albedoTextures.size(); i++)
+	{
+		folderIndices.push_back(albedoTextures[i].folderIndex);
+	}
+	
+
 	box(0.007f, panelHeigth - cornerWidth, panelLoc - panelWidth*2 + cornerWidth/2.5f , +0.014f, "", colorD.panelColorSnd, 0.022f, false, false, panelZ+0.01, 10000, colorD.panelColor, 0);
 	int elementSize = 0;
 	float slideVal = 0;
 	if(sndpnl.state == 0){
 		slideVal = sndpnl.texturePanelSlideVal;
-		elementSize = albedoTextures.size();
+		elementSize = util.getElementSizeOfTheFolder(folderIndices,folderIndex);
 	}
 	if(sndpnl.state == 1){
 		slideVal = sndpnl.materialPanelSlideVal;
 		elementSize = nodeScenes.size();
 	}
 		
-	float slidePHeight = (panelHeigth - cornerWidth) * (7.f/(max((float)albedoTextures.size()/3.f,7.f))); 
+	float slidePHeight = (panelHeigth - cornerWidth) * (7.f/(max((float) util.getElementSizeOfTheFolder(folderIndices,folderIndex)/3.f,7.f))); 
 	slideVal *= slidePHeight;
 	
 	if(sndpnl.state == 0){
-		if(albedoTextures.size() > 21 && albedoTextures.size() <= 27){
+		if(util.getElementSizeOfTheFolder(folderIndices,folderIndex) > 21 && util.getElementSizeOfTheFolder(folderIndices,folderIndex) <= 27){
 			slidePHeight -= 0.1f;
 		}
 	}
@@ -255,6 +263,9 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 
 	box(0.007f, slidePHeight, panelLoc - panelWidth*2 + cornerWidth/2.5f , max(-slideVal + (panelHeigth - cornerWidth), -(panelHeigth - cornerWidth-0.014f)) - slidePHeight, "", colorD.panelHoldColor, 0.022f, false, false, panelZ+0.02, 10000, colorD.panelColor, 0);
 	
+
+
+	
 	box(panelWidth, panelHeigth - cornerWidth, panelLoc - panelWidth - cornerWidth, 0.0f, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
 	
 	box(panelWidth, cornerWidth, panelLoc - panelWidth - cornerWidth, panelHeigth, "", colorD.panelColor, 0.022f, false, false, panelZ, 10000, colorD.panelColor, 0);
@@ -266,7 +277,6 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 	circle(panelLoc - cornerWidth + 0.002f,panelHeigth - cornerWidth + 0.002f,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor,glm::vec4(0),0);
 	circle(panelLoc - cornerWidth,-panelHeigth + cornerWidth,panelZ,cornerWidth+0.01f,(cornerWidth+0.01f)*2,icons.Circle,colorD.panelColor,glm::vec4(0),0);
 	
-	Utilities util;
 	sndpnl.texturePanelButtonMixval = util.transitionEffect(1-sndpnl.state,sndpnl.texturePanelButtonMixval,0.1f);
 	sndpnl.materialPanelButtonMixval = util.transitionEffect(sndpnl.state,sndpnl.materialPanelButtonMixval,0.1f);
 
@@ -508,6 +518,10 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 							glBindTexture(GL_TEXTURE_2D,icons.BrushFolder);
 						else
 							glBindTexture(GL_TEXTURE_2D,icons.Folder);
+						glm::mat4 scaleMat = glm::mat4(1);
+						glm::vec3 posVec = glm::vec3(0);
+						glset.uniformMatrix4fv(programs.iconsProgram,"scale",scaleMat);
+						glset.uniform3fv(programs.iconsProgram,"pos",posVec);
 						glset.uniform4fv(programs.iconsProgram,"iconColor",iconColor);
 						glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
 					}
@@ -789,9 +803,15 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 				else
 					glBindTexture(GL_TEXTURE_2D,icons.Folder);
 				
+				glm::mat4 scaleMat = glm::mat4(1);
+				glm::vec3 posVec = glm::vec3(0);
+				glset.uniformMatrix4fv(programs.iconsProgram,"scale",scaleMat);
+				glset.uniform3fv(programs.iconsProgram,"pos",posVec);
+
 				glset.uniform4fv(programs.iconsProgram,"iconColor",colorData.iconColor);
 				glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
 				glset.drawArrays(renderVertices,false);
+				glUseProgram(0);
 			}
 		}
 	}

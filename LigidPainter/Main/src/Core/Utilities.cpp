@@ -554,3 +554,13 @@ long long Utilities::getFolderSizeInBytes(std::string path){
 	}
 	return folderSize;
 }
+
+int Utilities::getElementSizeOfTheFolder(std::vector<int> albedoTextures,int folderIndex){
+	int counter = 0;
+	for (size_t i = 0; i < albedoTextures.size(); i++)
+	{
+		if(albedoTextures[i] == folderIndex)
+			counter++;
+	}
+	return counter;
+}
