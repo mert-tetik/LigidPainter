@@ -240,74 +240,14 @@ public:
 		return icons;
 	}
 	
-	BrushTexture loadBrushMaskTextures(std::vector<aTexture> &albedoTextures){
-		GlSet glset;
-		Texture txtr;
-	
-		std::vector<aTexture> maskTextures;
-		std::vector<aTexture> clrTextures;
-		std::vector<aTexture> normalTextures;
-	
-		const char* maskpath = "./LigidPainter/Resources/Textures/Mask";
-
-		for (const auto & entry : std::filesystem::directory_iterator(maskpath)){
-			glset.activeTexture(GL_TEXTURE1);//Raw mask
-			std::string fileName = entry.path().string();
-			if(fileName.size() > 3){
-		 		if(fileName[fileName.size()-1] != 't' && fileName[fileName.size()-2] != 'x' && fileName[fileName.size()-3] != 't'){
-		 			aTexture brushTxtr;
-					brushTxtr.id = txtr.getTexture(fileName,0,0,false);
-					brushTxtr.name = fileName;
-					brushTxtr.folderIndex = 3;
-					albedoTextures.push_back(brushTxtr);
-		 		}
-		 	}
-		}
-		const char* colorpath = "./LigidPainter/Resources/Textures/Sticker";
-
-		for (const auto & entry : std::filesystem::directory_iterator(colorpath)){
-			glset.activeTexture(GL_TEXTURE1);//Raw mask
-			std::string fileName = entry.path().string();
-			if(fileName.size() > 3){
-		 		if(fileName[fileName.size()-1] != 't' && fileName[fileName.size()-2] != 'x' && fileName[fileName.size()-3] != 't'){
-		 			aTexture brushTxtr;
-					brushTxtr.id = txtr.getTexture(fileName,0,0,false);
-					brushTxtr.name = fileName;
-					brushTxtr.folderIndex = 4;
-					albedoTextures.push_back(brushTxtr);
-		 		}
-		 	}
-		}
-
-		const char* normalpath = "./LigidPainter/Resources/Textures/NormalMap";
-
-		for (const auto & entry : std::filesystem::directory_iterator(normalpath)){
-			glset.activeTexture(GL_TEXTURE1);//Raw mask
-			std::string fileName = entry.path().string();
-			if(fileName.size() > 3){
-		 		if(fileName[fileName.size()-1] != 't' && fileName[fileName.size()-2] != 'x' && fileName[fileName.size()-3] != 't'){
-		 			aTexture brushTxtr;
-					brushTxtr.id = txtr.getTexture(fileName,0,0,false);
-					brushTxtr.name = fileName;
-					brushTxtr.folderIndex = 5;
-					albedoTextures.push_back(brushTxtr);
-		 		}
-		 	}
-		}
-	
-		BrushTexture brushTextures;
-		brushTextures.maskTextures = maskTextures;
-		brushTextures.colorTextures = clrTextures;
-		brushTextures.normalTextures = normalTextures;
-		return brushTextures;
-	}
-	
-	
-	
 	
 	std::map<char, character> chars;
 	
 	void uploadChars() {
+		//Does the same with createfont but doesn't return any font structure
+		//Instead sends the characters to the visuality.cpp
+		//Those chars is used for rendering texts
+
 		GlSet glset;
 		FT_Library ft;
 		FT_Init_FreeType(&ft);
@@ -375,6 +315,10 @@ public:
 	}
 	
 	Font createFont(std::string path){
+		//Create a node structure with the given path
+		//Font structure contains the characters and the font file's name
+		//Use the font with the rendertext
+
 		std::map<char, character> charsIn;
 
 		// path = "./Projects/FontProject/Fonts/BrunoAceSC-Regular.ttf";
@@ -500,7 +444,8 @@ public:
 		return textures;
 	}
 
-	Programs getProgram() {//Prepare shader program | Usen once
+	Programs getProgram() {
+		//Returns the shader programs
 
 		GlSet gl;
 		unsigned int uiProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/ui");
@@ -534,9 +479,7 @@ public:
 		unsigned int blackToAlphaProgram = gl.createProgram("./LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/blackToAlpha");
 		unsigned int spinnerProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/spinner");
 		
-		
 
-		
 		Programs glPrograms;
 
 		glPrograms.blurProgram = blurProgram;
@@ -781,30 +724,9 @@ public:
 		return resultNode;
 	}
 
-	std::vector<Node> loadNodes(char folderDistinguisher){
-		GlSet glset;
-		Texture txtr;
-		Utilities util;
-		std::vector<Node> appNodes;
-
-		const char* path = "./LigidPainter/Resources/Nodes";
-	
-	
-		for (const auto & entry : std::filesystem::directory_iterator(path)){
-			std::string fileName = entry.path().string();
-			std::string file = util.getLastWordBySeparatingWithChar(fileName,folderDistinguisher);
-			std::string raw = file;
-
-			for (size_t i = 0; i < 5; i++)
-			{
-				raw.pop_back();
-			}
-			
-			appNodes.push_back(createNode(fileName,raw));				
-		}
-		return appNodes;
-	}
 	std::vector<Node> createOutputNode(std::vector<Node> appNodes){	
+		//Creates nodes with an output which will be used for default material
+
 		ColorData colorData;
 
 		std::vector<Node> result;
@@ -871,6 +793,9 @@ public:
 	}
 
 	unsigned int createPrefilterMap(Programs programs,Cubemaps &cubemaps,int windowMaxWidth, int windowMaxHeight){
+		//Creates the prefildered cubemap for the skybox
+		//Which is used for PBR
+
 		GlSet glset;
 		
 		//Is required for rendering the skybox
@@ -1030,6 +955,7 @@ public:
 	// }
 
 	void getDefaultNodeScene(std::vector<NodeScene> &nodeScenes,std::vector<Node> appNodes,const char* name){
+		//Returns a default material 
 		std::vector<Node> mainOutNodes;
 		mainOutNodes = createOutputNode(appNodes);		
 
@@ -1062,6 +988,7 @@ public:
 		nodeScenes.push_back(emptyNodeScene);
 	}
 	unsigned int getPaintingFBO(WindowData windowData,unsigned int screenPaintingTexture){
+		//Returns the framebuffer object used for painting
 		GlSet glset;
 
 		//Framebuffer used in drawToScreen.cpp
@@ -1103,16 +1030,6 @@ public:
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		return FBO;
-	}
-	unsigned int getBrdflutTexture(){
-		Texture txtr;
-		GlSet glset;
-
-		glActiveTexture(GL_TEXTURE15);
-		unsigned int BRDFTexture = txtr.getTexture("LigidPainter/Resources/Source/ibl_brdf_lut.png",540,540,false);
-		glset.bindTexture(BRDFTexture);
-
-		return BRDFTexture;
 	}
 };
 

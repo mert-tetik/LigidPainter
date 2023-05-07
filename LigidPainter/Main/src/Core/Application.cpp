@@ -47,6 +47,8 @@
 //TODO Node & textbox copy paste
 //TODO Resize certain textures
 
+//TODO Borders
+
 //TODO For tomorrow
 //Fix the painting
 //Apply 3D model settings to the painting
@@ -449,7 +451,7 @@ bool LigidPainter::run()
 	//Load general rendering FBO
 	FBOScreen = load.createScreenFrameBufferObject(glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 	//Get BRDF Look Up Texture
-	unsigned int BRDFLUTxtr = load.getBrdflutTexture();
+	//unsigned int BRDFLUTxtr = load.getBrdflutTexture();
 	//Create the default node scene(material)
 
 	txtr.initUpdateMaskTxtr();

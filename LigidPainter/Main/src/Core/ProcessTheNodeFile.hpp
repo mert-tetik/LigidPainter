@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <string>
 
+//TODO Better write that from scratch
+
 struct ProcessHppNodeInput{
     std::string title; //"Color"
     std::string element;//"Color picker or range slide bar"
