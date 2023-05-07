@@ -57,25 +57,6 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	ColorData colorData;
 
 
-	if (!isTextBox && text != "") {
-		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,false,position_x+width,false);
-	}
-	else if(text != ""){
-		if(mixVal > 0.f){
-			color = glm::vec4(0);
-
-			container(position_x,position_y-height*4,0.95,width,height*4,color,uiPrograms,circleIcon,colorTransitionColor,mixVal);
-			glUseProgram(uiPrograms.uiProgram);
-
-
-			renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,0.96f,mixVal > 0.f,position_x+width,true);
-			
-		}
-		else{
-			Utilities util;
-			renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,mixVal > 0.f,position_x+width,false);
-		}
-	}
 
 	scale = glm::mat4(1);
 	pos = glm::vec3(0);
@@ -97,6 +78,27 @@ void UserInterface::box(float width, float height, float position_x, float posit
 		iconBox((height/2.)*1.3,height*1.3,position_x+width,position_y,z,icon,mixVal,color,colorTransitionColor);
 		glUseProgram(uiPrograms.uiProgram);
 	}
+
+	if (!isTextBox && text != "") {
+		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,false,position_x+width,false);
+	}
+	else if(text != ""){
+		if(mixVal > 0.f){
+			color = glm::vec4(0);
+
+			container(position_x,position_y-height*4,0.95,width,height*4,color,uiPrograms,circleIcon,colorTransitionColor,mixVal);
+			glUseProgram(uiPrograms.uiProgram);
+
+
+			renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,0.96f,mixVal > 0.f,position_x+width,true);
+			
+		}
+		else{
+			Utilities util;
+			renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,mixVal > 0.f,position_x+width,false);
+		}
+	}
+
 	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
 	glBindVertexArray(uiObjects.VAO);
 }
