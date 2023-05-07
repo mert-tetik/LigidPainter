@@ -1236,9 +1236,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 
 	UserInterface ui;
-	const int exportFileNameThreshold = 20;
 	if(UIElements[UIexportingFolderNameTextBox].textBox.clicked){
-		if(ui.textInput(key,action,caps,exportFileName,exportFileNameThreshold,window,textBoxActiveChar)){
+		if(ui.textInput(key,action,caps,exportFileName,100,window,textBoxActiveChar)){
 			UIElements[UIexportingFolderNameTextBox].textBox.text = exportFileName;
 		}
 		if(action == 1 || action == 2){
@@ -1295,7 +1294,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	const int maxTextureCharCount = 22;
 	if(txtrCreatingPanel.textBoxActive){
-		if(ui.textInput(key,action,caps,txtrCreatingPanel.textBoxVal,maxTextureCharCount,window,textBoxActiveChar)){
+		if(ui.textInput(key,action,caps,txtrCreatingPanel.textBoxVal,200,window,textBoxActiveChar)){
 			txtrCreatingPanel.newTextboxEntry = true;
 		}	
 		if(action == 1 || action == 2){
@@ -1309,7 +1308,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 
 	if(anyTextureNameActive){
-		ui.textInput(key,action,caps,textureText,exportFileNameThreshold,window,textBoxActiveChar);
+		ui.textInput(key,action,caps,textureText,200,window,textBoxActiveChar);
 		
 		if(action == 1 || action == 2){
 			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && textureText.size()+textBoxActiveChar){
