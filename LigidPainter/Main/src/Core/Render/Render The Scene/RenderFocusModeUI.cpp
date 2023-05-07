@@ -107,7 +107,7 @@ void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vec
 					if(!UIElements[i].rangeBar.isRich)
 						ui.constRangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY+slideVal, UIElements[i].rangeBar.value,icons,UIElements[i].rangeBar.mixVal,UIElements[i].rangeBar.lastVal,UIElements[i].rangeBar.increase);
 					else
-						ui.richConstRangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY+slideVal, UIElements[i].rangeBar.value,icons,UIElements[i].rangeBar.mixVal,UIElements[i].rangeBar.lastVal,UIElements[i].rangeBar.increase,UIElements[i].rangeBar.hover);
+						ui.richConstRangeBar(centerCoords - screenGapX + UIElements[i].rangeBar.positionX, UIElements[i].rangeBar.positionY+slideVal, UIElements[i].rangeBar.value,icons,UIElements[i].rangeBar.mixVal,UIElements[i].rangeBar.lastVal,UIElements[i].rangeBar.increase,UIElements[i].rangeBar.hover,UIElements[i].rangeBar.name);
 				}
 			}
 			if(currentType == "textBox"){

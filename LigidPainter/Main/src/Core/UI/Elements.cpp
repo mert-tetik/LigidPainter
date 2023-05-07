@@ -1238,6 +1238,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	TDModelSizeRangeBarElement.rangeBar.value = 1.0f;
 	TDModelSizeRangeBarElement.rangeBar.isConstant = true;
 	TDModelSizeRangeBarElement.rangeBar.isRich = true;
+	TDModelSizeRangeBarElement.rangeBar.name = "Size : ";
 	TDModelSizeRangeBarElement.panel = 1;
 	TDModelSizeRangeBarElement.attachedToMainPanel = true;
 	TDModelSizeRangeBarElement.type = "rangeBar";
@@ -1250,6 +1251,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	TDModelPosXRangeBarElement.rangeBar.value = 0.0f;
 	TDModelPosXRangeBarElement.rangeBar.isConstant = true;
 	TDModelPosXRangeBarElement.rangeBar.isRich = true;
+	TDModelPosXRangeBarElement.rangeBar.name = "Position : X";
 	TDModelPosXRangeBarElement.panel = 1;
 	TDModelPosXRangeBarElement.attachedToMainPanel = true;
 	TDModelPosXRangeBarElement.type = "rangeBar";
@@ -1261,6 +1263,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	TDModelPosYRangeBarElement.rangeBar.value = 0.0f;
 	TDModelPosYRangeBarElement.rangeBar.isConstant = true;
 	TDModelPosYRangeBarElement.rangeBar.isRich = true;
+	TDModelPosYRangeBarElement.rangeBar.name = "Y";
 	TDModelPosYRangeBarElement.panel = 1;
 	TDModelPosYRangeBarElement.attachedToMainPanel = true;
 	TDModelPosYRangeBarElement.type = "rangeBar";
@@ -1272,6 +1275,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	TDModelPosZRangeBarElement.rangeBar.value = 0.0f;
 	TDModelPosZRangeBarElement.rangeBar.isConstant = true;
 	TDModelPosZRangeBarElement.rangeBar.isRich = true;
+	TDModelPosZRangeBarElement.rangeBar.name = "Z";
 	TDModelPosZRangeBarElement.panel = 1;
 	TDModelPosZRangeBarElement.attachedToMainPanel = true;
 	TDModelPosZRangeBarElement.type = "rangeBar";

@@ -858,7 +858,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 						if(!UIElements[i].rangeBar.isRich)
 							ui.constRangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,icons,UIElements[i].rangeBar.mixVal,UIElements[i].rangeBar.lastVal,UIElements[i].rangeBar.increase);
 						else
-							ui.richConstRangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,icons,UIElements[i].rangeBar.mixVal,UIElements[i].rangeBar.lastVal,UIElements[i].rangeBar.increase,UIElements[i].rangeBar.hover);
+							ui.richConstRangeBar(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].rangeBar.value,icons,UIElements[i].rangeBar.mixVal,UIElements[i].rangeBar.lastVal,UIElements[i].rangeBar.increase,UIElements[i].rangeBar.hover,UIElements[i].rangeBar.name);
 					}
 				}
 				if(currentType == "textBox"){

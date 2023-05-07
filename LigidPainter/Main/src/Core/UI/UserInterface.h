@@ -255,6 +255,7 @@ struct RangeBar{
 	bool pressed = false;
 	float lastVal = 0.f;
 	bool increase = false;
+	std::string name = "";
 };
 
 struct Icon{
@@ -738,6 +739,7 @@ public:
 	void renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,float maxX,bool multipleLines);
 	void renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,Font font);
 	void renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,Font font,float maxX);
+	void renderTextR(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active);
 	void renderTextR(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,Font font);
 	void renderTextM(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,Font font);
 	void renderMenubar(GLFWwindow* window);
@@ -745,7 +747,7 @@ public:
 	void panelChangeButton(float position_x, float position_y);
 	void rangeBar(float position_x, float position_y, float value,float divideWidth);
 	void constRangeBar(float position_x, float position_y,float value,Icons icons,float mixVal,float &lastVal,bool &increase);
-	void richConstRangeBar(float position_x, float position_y,float value,Icons icons,float mixVal,float &lastVal,bool &increase,bool hover);
+	void richConstRangeBar(float position_x, float position_y,float value,Icons icons,float mixVal,float &lastVal,bool &increase,bool hover,std::string name);
 	void colorBox(float position_x, float position_y, float valueX, float valueY,Icons icons);
 	glm::vec3 hueBar(float position_x, float position_y,float value, unsigned int FBO,GLFWwindow* window,glm::mat4 projection,bool updateHueVal);
 	void decorationSquare(float position_x, float position_y);
