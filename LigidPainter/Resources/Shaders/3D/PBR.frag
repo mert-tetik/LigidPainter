@@ -102,10 +102,7 @@ vec3 getPaintedDiffuse(){
    float intensity = 0.0;
 
    if(isPainted(screenPos,false)) {
-      if(dynamicPainting == 0)
-         intensity = texture(screenMaskTexture, screenPos.xy).a;
-      if(dynamicPainting == 1)
-         intensity = texture(screenMaskTexture, screenPos.xy).r;
+      intensity = texture(screenMaskTexture, screenPos.xy).r;
    }
 
    intensity*=paintingOpacity;
@@ -116,20 +113,16 @@ vec3 getPaintedDiffuse(){
    
    if(maskMode == 1)
       diffuseDrawMix = mix(diffuseClr, paintingColor, intensity);//TODO : Change
-
    else
       diffuseDrawMix = mix(diffuseClr, texture((screenMaskTexture), screenPos.xy).rgb*drawColor, intensity);
 
-   if(useMirror == 1){
-      if(maskMode == 1){
-         if(dynamicPainting == 0)
-            return mix(diffuseDrawMix, paintingColor, texture(tdRenderedMaskTexture,TexCoords).a*paintingOpacity);
-         if(dynamicPainting == 1)
-            return mix(diffuseDrawMix, paintingColor, texture(tdRenderedMaskTexture,TexCoords).r*paintingOpacity);
-      }
-      else
-         return mix(diffuseDrawMix, texture(tdRenderedMaskTexture,TexCoords).rgb*drawColor, texture(tdRenderedMaskTexture,TexCoords).a*paintingOpacity);
-   }
+    if(useMirror == 1){
+       if(maskMode == 1){
+             return mix(diffuseDrawMix, paintingColor, texture(tdRenderedMaskTexture,TexCoords).a*paintingOpacity);
+       }
+       else
+          return mix(diffuseDrawMix, texture(tdRenderedMaskTexture,TexCoords).rgb*drawColor, texture(tdRenderedMaskTexture,TexCoords).a*paintingOpacity);
+    }
    
    return diffuseDrawMix;
 }

@@ -99,7 +99,7 @@ void GlSet::blendFunc(unsigned int sfactor, unsigned int dfactor) {
 	glBlendFunc(sfactor, dfactor);
 }
 void GlSet::texImage(GLubyte* data,int width,int height,unsigned int channels) {
-	glTexImage2D(GL_TEXTURE_2D, 0, channels == GL_RGBA ? GL_RGBA16F : channels, width, height, 0, channels, GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, channels == GL_RGBA ? GL_RGBA8 : channels, width, height, 0, channels, GL_UNSIGNED_BYTE, data);
 }
 void GlSet::generateMipmap() {
 	glGenerateMipmap(GL_TEXTURE_2D);

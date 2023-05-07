@@ -72,7 +72,7 @@ void main()
         lastPoint.x *= ratio;
         vec2 currentPoint = positions[i]*1000;
         currentPoint.x *= ratio;
-        vec4 fragColor = vec4(0); 
+        vec4 fragColor = vec4(fRes); 
 
         float d = length(uv*1000 - currentPoint) / radius;
         if (d < 1.0) {
@@ -82,8 +82,17 @@ void main()
             strokeBlendUniColor(src, 1., dst, fragColor);
         }
 
-        fRes += fragColor;
+        fRes = fragColor ;
     }
+        if(displayingTheBrush == 1){
+        outClr = vec4(vec3((fRes.a)*100),1.);
+        if(roundUp(texCoords) < 0.05){
+            outClr.a = 0.;
+        }
+    }
+     else{
+        outClr = fRes*opacity;
+     }
 }
 
 
