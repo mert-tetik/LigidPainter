@@ -2090,6 +2090,7 @@ void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Pr
 
 
 	glUseProgram(programs.uiProgram);
+	gl.uniform1f(uiPrograms.uiProgram,"uiTransitionMixVal",0.f);
 	gl.uniform4fv(uiPrograms.uiProgram,"uiColor",colorData.nodePanelColor);
 	gl.drawArrays(boxCoor,false);
 	gl.drawArrays(leftCoor,false);
@@ -2162,6 +2163,7 @@ void UserInterface::nodePanelBarriers(float mainPanelLoc,float sndPanel, float h
 	glUseProgram(uiPrograms.uiProgram);
 	glm::vec4 none =  glm::vec4(0);
 	gl.uniform4fv(uiPrograms.uiProgram,"uiColor",none);
+	gl.uniform1f(uiPrograms.uiProgram,"uiTransitionMixVal",0.f);
 	gl.drawArrays(topCoor,false);
 	gl.drawArrays(leftCoor,false);
 	gl.drawArrays(rightCoor,false);
