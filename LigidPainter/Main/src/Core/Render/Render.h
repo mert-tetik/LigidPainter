@@ -47,7 +47,7 @@ public:
 						,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen,std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
 						unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,
 						std::string &customModelName,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,bool firstClickR
-						,unsigned int &generatedTextTxtr);
+						,unsigned int &generatedTextTxtr,Font &txtrGenSelectedFont);
 
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void sendProgramsToRender(Programs appPrograms);

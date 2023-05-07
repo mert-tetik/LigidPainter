@@ -185,6 +185,7 @@ std::string projectFilePath;
 std::vector<Font> fonts;
 ProjectManager projectManager;
 unsigned int generatedTextTxtr = 0;
+Font txtrGenSelectedFont;
 
 string modelName;
 string customModelName; 
@@ -982,7 +983,8 @@ bool LigidPainter::run()
 										txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
 										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState
-										 ,debugMode,createProject,modelFilePath,modelName,customModelName,modelMatrix,displayProjectFolderManager,fonts,projectManager,firstClickR,generatedTextTxtr);
+										 ,debugMode,createProject,modelFilePath,modelName,customModelName,modelMatrix,displayProjectFolderManager,fonts,projectManager,firstClickR,generatedTextTxtr
+										 ,txtrGenSelectedFont);
 		}
 		duplicateNodeCall = false;
 		
@@ -1936,18 +1938,64 @@ void LigidPainter::generateTextureButton(){
 		else if(UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked)
 			glUseProgram(programs.blackToAlphaProgram);
 		else{
-			glDeleteTextures(1,&textureColorbuffer);
-
-			Texture txtr;
-
+//*Generate the text texture
+			int txtrRes = 256;
+			for (size_t i = 0; i < chosenTextureResIndex; i++)
+			{
+				txtrRes*=2;
+			}
+		
 			glActiveTexture(GL_TEXTURE28);
-			glset.bindTexture(generatedTextTxtr);
+				
+				glViewport(0,0,txtrRes,txtrRes);
+		
+				std::vector<float> renderVertices = { 
+					// first triangle
+					 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+					 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+					 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+					// second triangle	  ,0,0,0,
+					 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+					 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+					 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+				};
+				if(UIElements[UInoiseCheckBoxElement].checkBox.checked)
+					glUseProgram(programs.noisyTextureProgram);
+				else if(UIElements[UInormalmapCheckBoxElement].checkBox.checked)
+					glUseProgram(programs.normalGenProgram);
+				else if(UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked)
+					glUseProgram(programs.blackToAlphaProgram);
+				else{
+					UserInterface ui;
+					glm::mat4 projection = glm::ortho(-1.0f, 0.5f, -1.f, 1.f);
+					glUseProgram(programs.uiProgram);
+					glset.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
+					
+					glUseProgram(programs.uiProgram);
+					float thic = (UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f)/100.f;
 
-			GLubyte* txtrData = txtr.getTextureFromProgram(GL_TEXTURE28,txtrRes,txtrRes,4);
-			glset.genTextures(textureColorbuffer);
-			glset.bindTexture(textureColorbuffer);
-			glset.texImage(txtrData,txtrRes,txtrRes,GL_RGBA);
-			glset.generateMipmap();
+					int s = ((UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()/(((0.23f-(UIElements[UIgenerateTextSizeRangeBarElement].rangeBar.value+0.11f))*100)*2.f))+1);
+					
+					float aposY = 0.f;
+
+					if(UIElements[UIgenerateTextLeftAlignCheckBoxElement].checkBox.checked){
+						float aposX = -1.f;
+						ui.renderText(programs.uiProgram,UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text,aposX,aposY,thic,glm::vec4(1),0.9f,false,txtrGenSelectedFont,0.45f);
+					}
+					if(UIElements[UIgenerateTextMidAlignCheckBoxElement].checkBox.checked){
+						float aposX = -.5f;
+						ui.renderTextM(programs.uiProgram,UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text,aposX,aposY,thic,glm::vec4(1),0.9f,false,txtrGenSelectedFont);
+					}
+					if(UIElements[UIgenerateTextRightAlignCheckBoxElement].checkBox.checked){
+						float aposX = .5f;
+						ui.renderTextR(programs.uiProgram,UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text,aposX,aposY,thic,glm::vec4(1),0.9f,false,txtrGenSelectedFont);
+					}
+
+						
+					projection = glm::ortho(-1.0f, 1.f, -1.f, 1.f);
+					glUseProgram(programs.uiProgram);
+					glset.uniformMatrix4fv(programs.uiProgram, "TextProjection", projection);
+				}
 		}
 			
 

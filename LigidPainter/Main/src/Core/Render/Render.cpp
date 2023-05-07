@@ -287,7 +287,7 @@ int paintRenderCounter = 0;
 size_t renderingCounter = 0;
 float lightRotVal = 0.f;
 
-Font txtrGenSelectedFont;
+
 
 std::vector<std::string> createProject3DModelPaths;
 
@@ -303,7 +303,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 							,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
 							,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
 							unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,std::string &customModelName
-							,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,bool firstClickR,unsigned int &generatedTextTxtr) {
+							,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,bool firstClickR,unsigned int &generatedTextTxtr,Font &txtrGenSelectedFont) {
 	
 	renderCurrentMaterialIndex = currentMaterialIndex;
 	

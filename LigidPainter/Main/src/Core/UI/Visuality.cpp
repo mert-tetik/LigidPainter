@@ -921,7 +921,7 @@ void UserInterface::textureDisplayer(float width,float height, float position_x,
 	};
 
 	glUseProgram(uiPrograms.textureDisplayer);
-	glset.uniform1i(uiPrograms.textureDisplayer, "currentTexture", 4);
+	glset.uniform1i(uiPrograms.textureDisplayer, "currentTexture", 0);
 	glset.drawArrays(buttonCoorSq,false);
 	glUseProgram(uiPrograms.iconsProgram);
 	iconBox(0.035f/2.f,0.035f,position_x+0.005f,position_y-0.01f,1.f, icon,0.f,clrData.textureDisplayerButtonColor,clrData.textureDisplayerButtonColor);

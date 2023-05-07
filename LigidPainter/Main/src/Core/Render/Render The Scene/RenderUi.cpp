@@ -477,7 +477,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		
 		
 		txtrCreatingPanel.panelPosX = sndPanel.position + screenGapX; 
-		txtrCreatingPanel.panelPosY = 0.73f;
+		txtrCreatingPanel.panelPosY = 0.7f;
 
 		if(txtrCreatingPanel.active)
 			ui.textureCreatingPanel(txtrCreatingPanel,icons,programs,renderData.window,mouseXpos,mouseYpos, firstClick,coloringPanel,screenGapX,albedoTextures,sndPanel.activeFolderIndex);
