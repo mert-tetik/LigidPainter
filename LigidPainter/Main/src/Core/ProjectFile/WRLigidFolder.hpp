@@ -423,7 +423,7 @@ public:
                     unsigned int txtrID;
                     GlSet glset;
                     glset.genTextures(txtrID);
-                    txtrID = texture.getTexture(fileName,0,0,false);
+                    txtrID = texture.getTexture(fileName,false,txtr.width,txtr.height);
                     txtr.id = txtrID;
                     txtr.name = file;
                     if(i != 0){

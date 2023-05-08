@@ -14,7 +14,6 @@ public:
 	void bindFramebuffer(unsigned int FBO);
 	void genFramebuffers(unsigned int& FBO);
 	void deleteFramebuffers(unsigned int& FBO);
-	void setVertexAtribPointer();
 	void bufferData(std::vector<float>& vertices);
 	void activeTexture(unsigned int texture);
 	void bindTexture(unsigned int texture);

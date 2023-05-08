@@ -113,8 +113,8 @@ struct ColorData //LigidPainter color palette
 
 	glm::vec4 viewportBackColor = glm::vec4(0.23f, 0.23f, 0.23f,1.0f);
 
-	glm::vec4 panelColor = glm::vec4(0.15f, 0.15f, 0.15f,0.5f);
-	glm::vec4 panelColorSnd = glm::vec4(0.05f, 0.05f, 0.05f,0.5f);
+	glm::vec4 panelColor = glm::vec4(0.15f, 0.15f, 0.15f,0.7f);
+	glm::vec4 panelColorSnd = glm::vec4(0.05f, 0.05f, 0.05f,0.7f);
 	glm::vec4 panelHoldColor = glm::vec4(0.05f, 0.05f, 0.05f,0.5f);
 
 	glm::vec4 buttonColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
@@ -153,7 +153,7 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 messageBoxPanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 	glm::vec4 messageBoxButtonColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
 
-	glm::vec4 nodePanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
+	glm::vec4 nodePanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.7f);
 	glm::vec4 nodePanelColorSnd = glm::vec4(0.0f, 0.0f, 0.0f,0.7f);
 
 	glm::vec4 nodePanelContextMenuPanelColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
@@ -223,6 +223,9 @@ struct aTexture{
 	bool isTrashFolder = false;
 	bool rightClicked = false;
 	int folderIndex = 10000;
+
+	int width = 0;
+	int height = 0;
 	
 	bool changed = false;
 };

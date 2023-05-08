@@ -23,6 +23,7 @@ struct InitializedTextures{
 class Texture {
 public:
 	unsigned int getTexture(std::string path, unsigned int desiredWidth, unsigned int desiredHeight,bool update);
+	unsigned int getTexture(std::string path,bool update,int &width,int &height);
 	void downloadTexture(const char* path, const char* name, int format, int width, int height, GLubyte* pixels, int channels);
 	GLubyte* getTextureFromProgram(unsigned int texture, int width, int height, int channels);
 	TextureData getTextureData(const char* path);

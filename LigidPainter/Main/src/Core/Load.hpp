@@ -114,7 +114,7 @@ public:
 		    "LigidPainter/Resources/Cubemap/Skybox/ambient/pzb.png",
 		    "LigidPainter/Resources/Cubemap/Skybox/ambient/nzb.png"
 		};
-		unsigned int cubemapTextureblur = loadCubemap(facesblur,GL_TEXTURE13);  
+		unsigned int cubemapTextureblur = 0;  
 
 	
 		Cubemaps cubemaps;

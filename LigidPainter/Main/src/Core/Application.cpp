@@ -106,6 +106,7 @@
 #include "messageBox.h"
 #include "ProjectFile/WRLigidFile.hpp"
 #include "ProjectFile/WRLigidMaterialFile.hpp"
+#include "Prep.hpp"
 
 #define LIBAL_OPENAL_IMPLEMENTATION
 #include "LibAL.h"
@@ -289,7 +290,6 @@ bool LigidPainter::run()
 	Utilities util;
 
 
-
 	windowData = glset.getWindow();
 	window = windowData.window;
 
@@ -299,169 +299,39 @@ bool LigidPainter::run()
 	
 	glViewport(0,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width/3.5,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/3.5);
 
-	//Set Callbacks
-	glfwSetMonitorCallback(monitor_callback); 
-	glfwSetWindowSizeCallback(window, framebuffer_size_callback); 
-	glfwSetKeyCallback(window, key_callback);
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
-	glfwSetJoystickCallback(joystick_callback);
-	glfwSetMouseButtonCallback(window, mouse_button_callback);
-	glfwSetDropCallback(window,drop_callback);
 
-
-
-
-
-	glGenBuffers(1, &objects.sqrVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, objects.sqrVBO);
-	glGenVertexArrays(1,&objects.sqrVAO);
-	glBindVertexArray(objects.sqrVAO);
+	//
+	prepGLFW(window,monitor_callback,framebuffer_size_callback,key_callback,mouse_callback,scroll_callback,joystick_callback,mouse_button_callback,drop_callback);
 	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	//Create square vbo and custom vbo
+	//Square vao has the coordinates of a square
+	//Custom buffer is used for nonsquare or unstable coordinates
+	prepVertexBuffers(objects.sqrVBO,objects.sqrVAO,objects.VBO,objects.VAO);
+
+	prepStartLoadingScreen(window,programs.renderTheTextureProgram,viewportBGImage);
 	
-	std::vector<float> sqrCoor{
-		// first triangle
-		 1,  1., 0,	1,1,	0,0,0,  // top right
-		 1, -1., 0,	1,0,	0,0,0,  // bottom right
-		-1,  1., 0,	0,1,	0,0,0,  // top left 
-		 		
-		 1, -1., 0,	1,0,	0,0,0,  // bottom right
-		-1, -1., 0,	0,0,	0,0,0,  // bottom left
-		-1,  1., 0,	0,1,	0,0,0  // top left
-	};
-
-	glBufferData(GL_ARRAY_BUFFER,sqrCoor.size() * sizeof(float), &sqrCoor[0],GL_DYNAMIC_DRAW);
-
-
-	glGenBuffers(1, &objects.VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, objects.VBO);
-	glGenVertexArrays(1,&objects.VAO);
-	glBindVertexArray(objects.VAO);
-	glUseProgram(programs.uiProgram);
-	glset.setVertexAtribPointer();
-	glBufferData(GL_ARRAY_BUFFER, 10000, NULL, GL_DYNAMIC_DRAW); 
-
-	
-
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //Wireframe
 	glEnable(GL_BLEND);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_MULTISAMPLE);
-
-
-	glActiveTexture(GL_TEXTURE8);
-	unsigned int blankTxtr;
-	glset.genTextures(blankTxtr);
-	glset.bindTexture(blankTxtr);
-	glset.texImage(nullptr,10,10,GL_RGBA);
-	glset.generateMipmap();
-	glActiveTexture(GL_TEXTURE28);
-
-
-	//LIBAL
-	if(!LibAL_start())
-		std::cout << "ERROR : Initializing libal\n";
+	glEnable(GL_DEPTH_TEST);
 	
-	LibAL_genAudio(audios.MessageBox);
-	LibAL_genAudio(audios.Login);
-	LibAL_genAudio(audios.ButtonEnter);
-	LibAL_genAudio(audios.Alert);
+	//Generate audio objects via libal
+	prepLibAL(audios.MessageBox,audios.Login,audios.ButtonEnter,audios.Alert);
 
-	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/MessageBox.wav","wav",audios.MessageBox)){
-		std::cout << "ERROR : Modifying audio object MessageBox.wav  " << LibALerrorMsg << '\n';
-	}
-	else{
-		std::cout << "Loaded MessageBox.wav  " << LibALerrorMsg << '\n';
-	}
-	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/Login.wav","wav",audios.Login)){
-		std::cout << "ERROR : Modifying audio object Login.wav  " << LibALerrorMsg << '\n';
-	}
-	else{
-		std::cout << "Loaded Login.wav  " << LibALerrorMsg << '\n';
-	}
-	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/ButtonEnter.wav","wav",audios.ButtonEnter)){
-		std::cout << "ERROR : Modifying audio object ButtonEnter.wav  " << LibALerrorMsg << '\n';
-	}
-	else{
-		std::cout << "Loaded ButtonEnter.wav  " << LibALerrorMsg << '\n';
-	}
-	if(!LibAL_modifyAudioViaPath("LigidPainter/Resources/Sounds/Alert.wav","wav",audios.Alert)){
-		std::cout << "ERROR : Modifying audio object Alert.wav  " << LibALerrorMsg << '\n';
-	}
-	else{
-		std::cout << "Loaded Alert.wav  " << LibALerrorMsg << '\n';
-	}
+	prepLoadStuff(cubemaps,icons,cursors,textures,UIElements,FBOScreen,programs,maskTexturePath);
+
+
+
+
+
 
 	Load load;
-	programs = load.getProgram();
-
-	glActiveTexture(GL_TEXTURE0);
-	glset.genTextures(viewportBGImage);
-	glset.bindTexture(viewportBGImage);
-	txtr.getTexture("LigidPainter/Resources/Images/BGImage.jpg",1920,1080,true);
-	glActiveTexture(GL_TEXTURE28);
 
 
-
-	//Loading screen
-	std::vector<float> renderVertices = { 
-		// first triangle
-		 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
-		 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
-		 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
-		// second triangle	  ,0,0,0,
-		 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
-		 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
-		 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
-	};
-	glUseProgram(programs.renderTheTextureProgram);
-	glm::mat4 txtprojection = glm::ortho(0,1,0,1);
-	glset.uniformMatrix4fv(programs.renderTheTextureProgram,"TextProjection",txtprojection);
-	glset.uniform1i(programs.renderTheTextureProgram,"txtr",0);
-	glset.drawArrays(renderVertices,0);
-	glfwSwapBuffers(window);
-
-	glEnable(GL_DEPTH_TEST);
-
-	//Load nodes
-	//appNodes = load.loadNodes(folderDistinguisher);
-	//Load chars
-	load.uploadChars();
-	//Load brush mask textures
-	//Load cubemaps both blury and not blury
-	cubemaps = load.loadCubemaps();
-	//Load icons
-	icons = load.loadIcons();
-	//Load cursors
-	cursors = load.loadCursors();
-	//Create textures
-	textures = load.initTextures(maskTexturePath.c_str());
-	//Load UI
-	UIElements = ui.getUiElements(icons);
-	//Load context menus
-	//addNodeContextMenu = ui.createContextMenus(appNodes);
-	//Load the prefilter map
-	cubemaps.prefiltered = load.createPrefilterMap(programs,cubemaps,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
-	//Load general rendering FBO
-	FBOScreen = load.createScreenFrameBufferObject(glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
-	//Get BRDF Look Up Texture
-	//unsigned int BRDFLUTxtr = load.getBrdflutTexture();
-	//Create the default node scene(material)
 
 	txtr.initUpdateMaskTxtr();
 	textureGen.initDrawToScreen();
 
-	////load.getDefaultNodeScene(nodeScenes,appNodes,"material_0");
-	//sndPanel.state = 1;
-	//sndPanelPlusIcon();
-	//sndPanel.state = 0;
-	
 	//Create the default material out (for model)
 	MaterialOut mOut;
 	mOut.program = 0;
@@ -476,7 +346,8 @@ bool LigidPainter::run()
 	delete[] screenTexture;
 	//Load screen painting FBO
 	unsigned int paintingFBO = load.getPaintingFBO(windowData,screenPaintingReturnData.normalId);
-	//
+
+	//TODO : Rewrite
 	glm::mat4 perspectiveProjection = render.setMatrices();
 
 
@@ -498,15 +369,7 @@ bool LigidPainter::run()
 	glfwSetWindowSizeLimits(window,glfwGetVideoMode(glfwGetPrimaryMonitor())->width/1.7,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 
 
-	glUseProgram(programs.brushCursor);
-	glset.uniform1i(programs.brushCursor, "modifiedMaskTexture", 12);
-	glUseProgram(programs.iconsProgram);
-	glset.uniform1i(programs.iconsProgram, "icon", 6);
-	glUseProgram(programs.uiProgram);
-	glm::vec3 textClr = glm::vec3(colorData.textColor);
-	glset.uniform3fv(programs.uiProgram,"textColor",textClr);
-	glset.uniform1i(programs.uiProgram, "text", 2);
-	glset.uniform1i(programs.uiProgram, "modifiedMaskTexture", 12);
+	
 
 
 	//
@@ -618,12 +481,10 @@ bool LigidPainter::run()
 
 	subSelectedImagePowerRangeBar(0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 
-	glUseProgram(programs.dynamicPaintingProgram);
-	glset.uniform1f(programs.dynamicPaintingProgram,"radius",(UIElements[UIbrushSizeRangeBar].rangeBar.value+0.11f)*300);
-	glset.uniform1f(programs.dynamicPaintingProgram,"hardness",(UIElements[UIbrushBlurRangeBar].rangeBar.value-0.09f)*4.5454545*50);
-	glset.uniform1f(programs.dynamicPaintingProgram,"opacity",(UIElements[UIbrushOpacityRangeBar].rangeBar.value + 0.11)*4.5454545);
-
 	bool firstStroke = false;
+
+	
+
 
 	aTexture defAlbTxtr1,defAlbTxtr2;
 	defAlbTxtr1.name = "defaultSelectedTexture";
@@ -673,18 +534,9 @@ bool LigidPainter::run()
 	txtr.refreshScreenDrawingTexture();
 	LigidPainter lp;
 
-	glUseProgram(programs.outProgram);
-	glset.uniform1i(programs.outProgram,"maskMode",1);
 	txtr.updateMaskTexture(FBOScreen,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,UIElements[UIbrushRotationRangeBar].rangeBar.value,false,UIElements[UIbrushBordersRangeBar].rangeBar.value,brushBlurVal,outShaderData,programs,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);	
 
-	modelMatrix = glm::mat4(1);
-	modelMatrix = glm::scale(modelMatrix,glm::vec3((UIElements[UITDModelSizeRangeBarElement].rangeBar.value+0.11f)*4.54545454545));
-	glUseProgram(programs.screenDepthProgram);
-	glset.uniformMatrix4fv(programs.screenDepthProgram,"modelMatrix",modelMatrix);
-	glUseProgram(programs.outProgram);
-	glset.uniformMatrix4fv(programs.outProgram,"modelMatrix",modelMatrix);
-	glUseProgram(programs.PBRProgram);
-	glset.uniformMatrix4fv(programs.PBRProgram,"modelMatrix",modelMatrix);
+	prepPrograms(programs,UIElements,modelMatrix);
 
 	if(!std::filesystem::is_directory("./Projects"))
 		std::filesystem::create_directories("./Projects");
@@ -753,28 +605,23 @@ bool LigidPainter::run()
 				brushMaskTextureSelectionPanelActive = false;
 				textureSelectionPanel.active = false;
 				
-				int txtrRes = 256;
-				for (size_t i = 0; i < chosenTextureResIndex; i++)
-				{
-					txtrRes*=2;
-				}
-				glActiveTexture(GL_TEXTURE0);
+				glActiveTexture(GL_TEXTURE28);
 				glBindTexture(GL_TEXTURE_2D,albedoTextures[textureSelectionPanel.selectedIndex].id);
 
-				GLubyte* txtrData = txtr.getTextureFromProgram(GL_TEXTURE0,txtrRes,txtrRes,4);
+				aTexture atxtr = albedoTextures[textureSelectionPanel.selectedIndex];
+				GLubyte* txtrData = txtr.getTextureFromProgram(GL_TEXTURE28,atxtr.width,atxtr.height,4);
 
 				glActiveTexture(GL_TEXTURE0);
 				unsigned int texture;
 				glGenTextures(1,&texture);
 				glBindTexture(GL_TEXTURE_2D,texture);
-				glset.texImage(txtrData,txtrRes,txtrRes,GL_RGBA);
+				glset.texImage(txtrData,atxtr.width,atxtr.height,GL_RGBA);
 				glset.generateMipmap();
 
-				aTexture atxtr = albedoTextures[selectedAlbedoTextureIndex];
 				Utilities util;
 
-				atxtr.name = atxtr.name;
-				atxtr.id = texture;
+				atxtr.id = texture;	
+				atxtr.changed = true;
 
 				if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked)
 					atxtr.folderIndex = 3;

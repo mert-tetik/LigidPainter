@@ -113,6 +113,77 @@ unsigned int Texture::getTexture(std::string path, unsigned int desiredWidth, un
 
 	
 }
+unsigned int Texture::getTexture(std::string path,bool update,int &width,int &height) {
+
+	unsigned int textureID;
+
+	GlSet glset;
+	
+	Utilities util;
+	if(!util.illegalCharCheck(path)){
+		if(!update){
+			glset.genTextures(textureID);
+			glset.bindTexture(textureID);
+		}
+		else{
+			textureID = 0;
+		}
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		int nrChannels;
+
+		stbi_set_flip_vertically_on_load(true);
+		
+		char* filedata;
+		uint64_t len;
+		
+		unsigned char* data;
+
+		int liRes = 0;
+		filedata = util.processLiFile(path.c_str(),len,liRes);
+
+		if(liRes){
+			data = stbi_load_from_memory((stbi_uc*)filedata,len,&width,&height,&nrChannels,4);
+		}
+		else{
+			data = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
+		}
+
+		
+		//stbi_load_from_memory(filedata,0,);
+
+		if (data != NULL)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glset.generateMipmap();
+
+			std::cout << "Loaded " << path << std::endl;
+		}
+		else
+		{
+			const char* reason = "[unknown reason]";
+			if (stbi_failure_reason())
+			{
+				reason = stbi_failure_reason();
+			}
+			std::cout << "Failed to load texture! " << path << " Reason : " << reason<< std::endl;
+		}
+		
+		stbi_image_free(data);
+		return textureID;
+	}
+	else{
+		UserInterface ui;
+		ui.alert("ERROR : Texture can't be imported. There are illegal characters in the path.",400,false);
+		return 0;
+	}
+
+	
+}
 
 void Texture::downloadTexture(const char* path, const char* name, int format, int width, int height, GLubyte* pixels, int channels) {
 
@@ -239,50 +310,4 @@ void Texture::sendProgramsToTextures(Programs apptxtrPrograms){
 	txtrPrograms = apptxtrPrograms;
 }
 void Texture::sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight){
-}
-
-GLubyte* Texture::resizeTexture(GLubyte* data,int w,int h,int ow,int oh){
-	
-	// glViewport(0,0,ow,oh);
-
-	// glActiveTexture(GL_TEXTURE28);
-	// unsigned int bufferTxtr;
-	// glGenTextures(1,&bufferTxtr);
-
-	// unsigned int FBO;
-	// glGenFramebuffers(1,&FBO);
-	// glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-	// glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferTxtr, 0);
-
-	
-	// std::vector<float> renderVertices = { 
-	// 	// first triangle
-	// 	 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
-	// 	 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
-	// 	 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
-	// 	// second triangle	  ,0,0,0,
-	// 	 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
-	// 	 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
-	// 	 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
-	// };
-
-	// GlSet gl;
-
-	// glActiveTexture(GL_TEXTURE13);
-	
-	// gl.drawArrays(renderVertices,false);
-
-	// glReadPixels(0,0,);
-
-
-	// glUseProgram(txtrPrograms.renderTheTextureProgram);
-
-
-
-	// LigidPainter lp;
-	// lp.setViewportToDefault();
-	
-	// glBindFramebuffer(GL_FRAMEBUFFER,0);
-	// glDeleteFramebuffers(1,&FBO);
-	return {};
 }
