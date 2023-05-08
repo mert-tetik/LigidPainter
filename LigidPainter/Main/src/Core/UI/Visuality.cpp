@@ -454,8 +454,10 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 						if(glfwGetMouseButton(window,1) == GLFW_PRESS)
 							albedoTextures[i].rightClicked = true;
 						if(!albedoTextures[i].isTexture && sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE){
-							if(selectedAlbedoTextureIndex != i && !albedoTextures[selectedAlbedoTextureIndex].isTrashFolder && selectedAlbedoTextureIndex != 1 && selectedAlbedoTextureIndex != 2)
+							if(selectedAlbedoTextureIndex != i && !albedoTextures[selectedAlbedoTextureIndex].isTrashFolder && selectedAlbedoTextureIndex != 1 && selectedAlbedoTextureIndex != 2){
 								albedoTextures[selectedAlbedoTextureIndex].folderIndex = i;
+								albedoTextures[selectedAlbedoTextureIndex].changed = true;
+							}
 						}
 						if(firstClick && !albedoTextures[i].rightClicked && glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE){
 							if(albedoTextures[i].isTexture){
@@ -612,6 +614,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 									}
 									else{
 										albedoTextures[i].folderIndex = 0;
+										albedoTextures[i].changed = true;
 									}
 								}
 								else if(!albedoTextures[i].isTrashFolder){
@@ -649,6 +652,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 										else{
 											//Move folder into trash
 											albedoTextures[i].folderIndex = 0;
+											albedoTextures[i].changed = true;
 											selectedAlbedoTextureIndex = 0;
 											sndpanelFolderPressed = false;
 											sndpanelMoveTexture = false;
@@ -756,6 +760,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 		}
 		if(sndpanelMoveTexture && glfwGetMouseButton(window,0) == GLFW_RELEASE && sndpnl.backSignHover){
 			albedoTextures[selectedAlbedoTextureIndex].folderIndex = 10000;
+			albedoTextures[selectedAlbedoTextureIndex].changed = true;
 		}
 		if(glfwGetMouseButton(window,0) == GLFW_RELEASE){
 

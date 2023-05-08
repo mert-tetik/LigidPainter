@@ -45,7 +45,6 @@ Programs renderPrograms;
 //--------------------RENDER UI --------------------\\
 
 char* projectPathC = "./Projects";
-std::string projectPath = "";
 
 unsigned int currentBrushMaskTexture;
 
@@ -301,7 +300,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 							glm::vec3 viewPos,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial
 							,bool& anyTextureNameActive,std::string &textureText,int viewportBGImage,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter
 							,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
-							,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
+							,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectPath,aTexture paintOverTexture,Model &spherModel,Audios audios,
 							unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,std::string &customModelName
 							,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,bool firstClickR,unsigned int &generatedTextTxtr,Font &txtrGenSelectedFont) {
 	
@@ -674,7 +673,6 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 					projectPath = path;
 					ProjectFolder projectFolder;
 					projectFolder.readFolder(path,nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures,fonts);
-					projectFilePath = path;
 					LibAL_playAudioObject(audios.Login);
 					startScreen = false;
 				}
@@ -758,7 +756,6 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 						projectPath = fileName;
 						ProjectFolder projectFolder;
 						projectFolder.readFolder(fileName + folderDistinguisher + file + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures,fonts);
-						projectFilePath = fileName;
 						LibAL_playAudioObject(audios.Login);
 						startScreen = false;
 					}

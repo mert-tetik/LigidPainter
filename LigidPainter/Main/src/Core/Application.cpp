@@ -107,6 +107,7 @@
 #include "ProjectFile/WRLigidFile.hpp"
 #include "ProjectFile/WRLigidMaterialFile.hpp"
 #include "Prep.hpp"
+#include "ProjectFile/WRLigidFolder.hpp"
 
 #define LIBAL_OPENAL_IMPLEMENTATION
 #include "LibAL.h"
@@ -184,7 +185,7 @@ unsigned int depthTextureID;
 bool startScreen = true;
 bool createProject = false;
 bool debugMode = false;
-std::string projectFilePath;
+std::string projectPath;
 std::vector<Font> fonts;
 ProjectManager projectManager;
 unsigned int generatedTextTxtr = 0;
@@ -723,13 +724,27 @@ bool LigidPainter::run()
 			for (size_t i = 0; i < albedoTextures.size(); i++)
 			{
 				if(albedoTextures[i].nameTextActive && textureText != "" && textureText != albedoTextures[i].name){
-					std::vector<std::string> textureNames;
-			        for (size_t nameI = 0; nameI < albedoTextures.size(); nameI++)
-			        {
-				        textureNames.push_back(albedoTextures[nameI].name);
-			        }
-                    textureText = util.uniqueName(textureText,textureNames);
-					albedoTextures[i].name = textureText;
+					if(i == 0 || i == 1 || i == 2 || i == 3 || i == 4 || i == 5){
+						ui.alert("Error! This folder's name can't be changed!",200,false);
+					}
+					else{
+						std::vector<std::string> textureNames;
+			        	for (size_t nameI = 0; nameI < albedoTextures.size(); nameI++)
+			        	{
+				    	    textureNames.push_back(albedoTextures[nameI].name);
+			        	}
+                    	textureText = util.uniqueName(textureText,textureNames);
+						util.extensionCheckForTexture(textureText);
+						//TODO Don't let to rename const folders
+						ProjectFolder project;
+						std::string destPath = project.getTheProjectPathOfTheTexture(albedoTextures,albedoTextures[i],projectPath);
+						std::string destfilename = util.getLastWordBySeparatingWithChar(project.getTheProjectPathOfTheTexture(albedoTextures,albedoTextures[i],projectPath),folderDistinguisher);
+						destPath.erase(destPath.begin() + (destPath.size() - destfilename.size()), destPath.end());
+
+						std::filesystem::rename(project.getTheProjectPathOfTheTexture(albedoTextures,albedoTextures[i],projectPath), destPath + folderDistinguisher + textureText);					
+						albedoTextures[i].name = textureText;
+					}
+
 				}
 			}
 		}
@@ -812,7 +827,7 @@ bool LigidPainter::run()
 										,appNodes,perspectiveProjection,viewUpdateData.view, modelMaterials,newModelAdded,firstClick,viewUpdateData.cameraPos,coloringPanel,
 										txtrCreatingPanel,chosenTextureResIndex,chosenSkyboxTexture,bakeTheMaterial,anyTextureNameActive,textureText,viewportBGImage,nodeScenesHistory
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
-										 callbackData.originPos,startScreen,projectFilePath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState
+										 callbackData.originPos,startScreen,projectPath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState
 										 ,debugMode,createProject,modelFilePath,modelName,customModelName,modelMatrix,displayProjectFolderManager,fonts,projectManager,firstClickR,generatedTextTxtr
 										 ,txtrGenSelectedFont);
 		}
@@ -2353,8 +2368,10 @@ void LigidPainter::sndPanelMinusIcon(){
 							albedoTextures.erase(albedoTextures.begin() + selectedAlbedoTextureIndex);
 
 						}
-						else
+						else{
 							albedoTextures[selectedAlbedoTextureIndex].folderIndex = 0;
+							albedoTextures[selectedAlbedoTextureIndex].changed = true;
+						}
 					}
 					else{
 						for (size_t i = 0; i < albedoTextures.size(); i++)
