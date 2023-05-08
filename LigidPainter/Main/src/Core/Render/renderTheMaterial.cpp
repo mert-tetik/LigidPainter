@@ -365,6 +365,8 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     glset.deleteFramebuffers(copyFBO);
                     
                     aTexture txtr;
+                    txtr.width = txtrRes;
+                    txtr.height = txtrRes;
                     txtr.id = copyTxtr;
                     txtr.name = material.renderingPipeline[nodeI].outputs[outI].text;;
                     Utilities util;
@@ -488,6 +490,8 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                     glset.deleteFramebuffers(copyFBO);
                     
                     aTexture txtr;
+                    txtr.width = txtrRes;
+                    txtr.height = txtrRes;
                     txtr.id = copyTxtr;
                     txtr.name = material.renderingPipeline[nodeI].outputs[outI].text;;
 

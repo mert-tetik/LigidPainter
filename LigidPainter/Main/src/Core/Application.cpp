@@ -486,31 +486,6 @@ bool LigidPainter::run()
 	
 
 
-	aTexture defAlbTxtr1,defAlbTxtr2;
-	defAlbTxtr1.name = "defaultSelectedTexture";
-	defAlbTxtr2.name = "defaultSubselectedTexture";
-	glGenTextures(1,&defAlbTxtr1.id);
-	glGenTextures(1,&defAlbTxtr2.id);
-	
-	GLubyte* defAlbTxtrData = new GLubyte[1024 * 1024 * 4];
-	std::fill_n(defAlbTxtrData, 1024 * 1024 * 4, 255);
-	
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,defAlbTxtr1.id);
-	glset.texImage(defAlbTxtrData,1024,1024,GL_RGBA);
-	glset.generateMipmap();
-	albedoTextures.push_back(defAlbTxtr1);
-
-	glActiveTexture(GL_TEXTURE17);
-	glBindTexture(GL_TEXTURE_2D,defAlbTxtr2.id);
-	
-	
-	glset.texImage(defAlbTxtrData,1024,1024,GL_RGBA);
-	glset.generateMipmap();
-	albedoTextures.push_back(defAlbTxtr2);
-
-	delete[] defAlbTxtrData;
-
 	glActiveTexture(GL_TEXTURE28);
 	int defaultNodePosCorrectorCounter = 0;
 	bool didDefaultNodesMakeToTheCenter = false;
@@ -1231,18 +1206,13 @@ void drop_callback(GLFWwindow* window, int count, const char** paths){
 		}
 		
 		
-		int txtrRes = 256;
-		for (size_t i = 0; i < chosenTextureResIndex; i++)
-		{
-			txtrRes*=2;
-		}
 		for (size_t i = 0; i < albedoTexturePaths.size(); i++)
 		{
 			aTexture result;
 			
 			glActiveTexture(GL_TEXTURE0);
 			
-			result.id = txtr.getTexture(albedoTexturePaths[i],txtrRes,txtrRes,false); //Force albedo's ratio to be 1:1
+			result.id = txtr.getTexture(albedoTexturePaths[i],false,result.width,result.height); //Force albedo's ratio to be 1:1
 			
 			Utilities util;
 			 
@@ -1573,7 +1543,7 @@ void LigidPainter:: addMaskTextureButton() {
 		glset.activeTexture(GL_TEXTURE1);
 
 		aTexture brushTxtr;
-		brushTxtr.id = txtr.getTexture(maskTexturePath,0,0,false);
+		brushTxtr.id = txtr.getTexture(maskTexturePath,false,brushTxtr.width,brushTxtr.height);
 		brushTxtr.name = maskTexturePath;
 
 		if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked)
@@ -1786,7 +1756,7 @@ void LigidPainter::generateTextureButton(){
 		else if(UIElements[UIgenerateBlackToAlphaCheckBoxElement].checkBox.checked)
 			glUseProgram(programs.blackToAlphaProgram);
 		else{
-//*Generate the text texture
+			//*Generate the text texture
 			int txtrRes = 256;
 			for (size_t i = 0; i < chosenTextureResIndex; i++)
 			{
@@ -1863,6 +1833,8 @@ void LigidPainter::generateTextureButton(){
 		glset.bindFramebuffer(0);
 
 		aTexture txtr;
+		txtr.width = txtrRes;
+		txtr.height = txtrRes;
 		txtr.id = textureColorbuffer;
 		txtr.name = "generatedTexture"; 
 		std::vector<std::string> textureNames;
@@ -2303,6 +2275,8 @@ void LigidPainter::outSubmeshesButton(){
 			glset.drawArrays(renderVertices,0);
 
 			aTexture txtr;
+			txtr.width = txtrRes;
+			txtr.height = txtrRes;
 			txtr.id = textureColorbuffer;
 			if(pipI == 0)txtr.name = "albedo";if(pipI == 1)txtr.name = "roughness";if(pipI == 2)txtr.name = "metallic";if(pipI == 3)txtr.name = "normal_map";if(pipI == 4)txtr.name = "ambient_occlusion";if(pipI == 5)txtr.name = "emission";if(pipI == 6)txtr.name = "emission_strength";
 
@@ -2541,17 +2515,17 @@ void LigidPainter::sndPanelDuplicateIcon(){
 				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D,albedoTextures[selectedAlbedoTextureIndex].id);
 
-				GLubyte* txtrData = txtr.getTextureFromProgram(GL_TEXTURE0,txtrRes,txtrRes,4);
+				aTexture atxtr = albedoTextures[selectedAlbedoTextureIndex];
+				GLubyte* txtrData = txtr.getTextureFromProgram(GL_TEXTURE0,atxtr.width,atxtr.height,4);
 
 				glActiveTexture(GL_TEXTURE0);
 				unsigned int texture;
 				glGenTextures(1,&texture);
 				glBindTexture(GL_TEXTURE_2D,texture);
-				glset.texImage(txtrData,txtrRes,txtrRes,GL_RGBA);
+				glset.texImage(txtrData,atxtr.width,atxtr.height,GL_RGBA);
 				glset.generateMipmap();
 
 
-				aTexture atxtr = albedoTextures[selectedAlbedoTextureIndex];
 				Utilities util;
 
 				std::vector<std::string> albedoTxtrStr;
@@ -2774,7 +2748,7 @@ void LigidPainter::sndPanelDownIcon(){
 				glActiveTexture(GL_TEXTURE0);
 
 				
-				result.id = txtr.getTexture(albedoTexturePaths[i],txtrRes,txtrRes,false); //Force albedo's ratio to be 1:1
+				result.id = txtr.getTexture(albedoTexturePaths[i],false,result.width,result.height); //Force albedo's ratio to be 1:1
 				
 				Utilities util;
 				 
@@ -2791,7 +2765,6 @@ void LigidPainter::sndPanelDownIcon(){
 				albedoTextures.push_back(result);
 				glActiveTexture(GL_TEXTURE28);
 			}
-			
 		}
 	}
 	else if(sndPanel.state == 1){

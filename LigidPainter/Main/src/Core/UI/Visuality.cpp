@@ -2435,7 +2435,8 @@ bool UserInterface::coloringPanel(ColoringPanel &coloringPanel,Programs programs
 
 	return brushChanged;
 }
-void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool &firstClick,ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures,int& activeFolderIndex){
+void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel,Icons icons,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,bool &firstClick,
+										ColoringPanel &coloringPanel,float screenGapX,std::vector<aTexture> &albedoTextures,int& activeFolderIndex,int chosenTextureResIndex){
 	ColorData colorData;
 	Utilities util;
 	GlSet glset;
@@ -2491,6 +2492,13 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 
 	if(txtrCreatingPanel.createButtonHover && firstClick){
 		if(txtrCreatingPanel.textBoxVal != ""){
+			
+			int txtrRes = 256;
+			for (size_t i = 0; i < chosenTextureResIndex; i++)
+			{
+				txtrRes*=2;
+			}
+			
 			aTexture txtr;
 			txtr.folderIndex = activeFolderIndex;
 			glActiveTexture(GL_TEXTURE28);
@@ -2498,7 +2506,7 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 			unsigned int texture;
 			glset.genTextures(texture);
 			glset.bindTexture(texture);
-			glset.texImage(nullptr,1080,1080,GL_RGBA);
+			glset.texImage(nullptr,txtrRes,txtrRes,GL_RGBA);
 			glset.generateMipmap();
 
 			unsigned int FBO;
@@ -2525,6 +2533,8 @@ void UserInterface::textureCreatingPanel(TextureCreatingPanel &txtrCreatingPanel
 			txtrCreatingPanel.textBoxVal = util.uniqueName(txtrCreatingPanel.textBoxVal,textureNames);
 
 			txtr.id = texture;
+			txtr.width = txtrRes;
+			txtr.height = txtrRes;
 			txtr.name = txtrCreatingPanel.textBoxVal;
 
 			albedoTextures.push_back(txtr);
