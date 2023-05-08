@@ -503,5 +503,44 @@ int getElementSizeOfTheFolder(std::vector<int> albedoTextures,int folderIndex){
 	return counter;
 }
 
+bool extensionCheckForTexture(std::string &name){
+	
+	//JPG || PNG
+	bool isPNG = false;
+	
+	if(name[name.size()-1] == 'g' || name[name.size()-1] == 'G')
+		if(name[name.size()-2] == 'n' || name[name.size()-2] == 'N')		
+			if(name[name.size()-3] == 'p' || name[name.size()-3] == 'P')		
+				if(name[name.size()-4] == '.')		
+					isPNG = true;
+	
+	if(!isPNG){
+		int i;
+		
+		for (i = 0; i < name.size(); i++)
+		{
+			if(name[i] == '.')
+				break;
+		}
+		
+		if(i != name.size()-1)
+			name.erase(name.begin()+i,name.end());
+		
+		name += ".png"; 
+	}
+	return true;
+}
+bool checkIfPNG(std::string name){
+	
+	//JPG || PNG
+	bool isPNG = false;
+	
+	if(name[name.size()-1] == 'g' || name[name.size()-1] == 'G')
+		if(name[name.size()-2] == 'n' || name[name.size()-2] == 'N')		
+			if(name[name.size()-3] == 'p' || name[name.size()-3] == 'P')		
+				if(name[name.size()-4] == '.')		
+					isPNG = true;
+	return isPNG;
+}
 };
 #endif

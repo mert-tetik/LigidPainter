@@ -184,6 +184,88 @@ unsigned int Texture::getTexture(std::string path,bool update,int &width,int &he
 
 	
 }
+unsigned int Texture::getTextureForcePNG(std::string path,std::string fileName,bool update,int &width,int &height) {
+
+	unsigned int textureID;
+
+	GlSet glset;
+	
+	Utilities util;
+	if(!util.illegalCharCheck(path)){
+		if(!update){
+			glset.genTextures(textureID);
+			glset.bindTexture(textureID);
+		}
+		else{
+			textureID = 0;
+		}
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		int nrChannels;
+
+		stbi_set_flip_vertically_on_load(true);
+		
+		char* filedata;
+		uint64_t len;
+		
+		unsigned char* data;
+
+		int liRes = 0;
+		filedata = util.processLiFile(path.c_str(),len,liRes);
+
+		if(liRes){
+			data = stbi_load_from_memory((stbi_uc*)filedata,len,&width,&height,&nrChannels,4);
+		}
+		else{
+			data = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
+		}
+
+		
+		//stbi_load_from_memory(filedata,0,);
+
+		if (data != NULL)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glset.generateMipmap();
+			if(!util.checkIfPNG(fileName)){
+				std::filesystem::remove(path);
+				
+				util.extensionCheckForTexture(fileName);
+				for (size_t i = 0; i < fileName.size(); i++)
+				{
+					path[path.size()-1-i] = fileName[fileName.size()-1-i];
+				}
+				
+            	stbi_write_png(path.c_str(), width, height, 4, data, width * 4);
+				std::cout << "Converted " << path << std::endl;
+			}
+			std::cout << "Loaded " << path << std::endl;
+		}
+		else
+		{
+			const char* reason = "[unknown reason]";
+			if (stbi_failure_reason())
+			{
+				reason = stbi_failure_reason();
+			}
+			std::cout << "Failed to load texture! " << path << " Reason : " << reason<< std::endl;
+		}
+		
+		stbi_image_free(data);
+		return textureID;
+	}
+	else{
+		UserInterface ui;
+		ui.alert("ERROR : Texture can't be imported. There are illegal characters in the path.",400,false);
+		return 0;
+	}
+
+	
+}
 
 void Texture::downloadTexture(const char* path, const char* name, int format, int width, int height, GLubyte* pixels, int channels) {
 

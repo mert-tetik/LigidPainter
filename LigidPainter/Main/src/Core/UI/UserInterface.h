@@ -227,7 +227,7 @@ struct aTexture{
 	int width = 0;
 	int height = 0;
 	
-	bool changed = false;
+	bool changed = true;
 };
 
 struct Button{

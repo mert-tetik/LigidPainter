@@ -518,6 +518,12 @@ bool LigidPainter::run()
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
+		for (size_t i = 0; i < albedoTextures.size(); i++)
+		{
+			if(albedoTextures[i].isTexture)
+				util.extensionCheckForTexture(albedoTextures[i].name);
+		}
+		
 		if(!startScreen && !didDefaultNodesMakeToTheCenter && !createProject)
 			defaultNodePosCorrectorCounter++;
 

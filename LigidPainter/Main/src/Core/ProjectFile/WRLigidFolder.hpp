@@ -249,8 +249,6 @@ public:
             path.pop_back();
         }
         
-        std::cout << "path is : " << path << std::endl;
-
 
         //MATERIALS 
         Utilities util;
@@ -423,9 +421,14 @@ public:
                     unsigned int txtrID;
                     GlSet glset;
                     glset.genTextures(txtrID);
-                    txtrID = texture.getTexture(fileName,false,txtr.width,txtr.height);
+                    txtrID = texture.getTextureForcePNG(fileName,file,false,txtr.width,txtr.height);
+
+                    
+
                     txtr.id = txtrID;
                     txtr.name = file;
+                    util.extensionCheckForTexture(txtr.name);
+                    txtr.changed = false;
                     if(i != 0){
                         if(folders[i] == "Trash")
                             txtr.folderIndex = 0;
@@ -500,7 +503,47 @@ public:
             glActiveTexture(GL_TEXTURE28);
             glBindTexture(GL_TEXTURE_2D,changedTextures[i].id);
             GLubyte* pixelData = txtr.getTextureFromProgram(GL_TEXTURE28,1024,1024,4);
-            stbi_write_png(path.c_str(), txtrRes, txtrRes, 4, pixelData, txtrRes * 4);
+            stbi_write_png(path.c_str(), changedTextures[i].width, changedTextures[i].height, 4, pixelData, changedTextures[i].width * 4);
+        }
+        std::string path;
+        path = projectPath + folderDistinguisher + "Textures";
+        
+        for (const auto & entry : std::filesystem::recursive_directory_iterator(path)){
+            std::string filePath = entry.path().string();
+            for (size_t i = 0; i < albedoTextures.size(); i++)
+            {
+                std::string txtrpath;
+                txtrpath = projectPath + folderDistinguisher + "Textures";
+
+                //Get the path
+                if(albedoTextures[i].folderIndex == 10000)
+                    txtrpath += folderDistinguisher + albedoTextures[i].name + ".png"; //0 Folder 
+                else{
+                    if(albedoTextures[albedoTextures[i].folderIndex].folderIndex == 10000)
+                        txtrpath += folderDistinguisher + albedoTextures[albedoTextures[i].folderIndex].name + folderDistinguisher + albedoTextures[i].name + ".png"; //1 Folder
+                    else{
+                        if(albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex == 10000)
+                            txtrpath += folderDistinguisher + albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].name + albedoTextures[albedoTextures[i].folderIndex].name + folderDistinguisher + albedoTextures[i].name + ".png"; //2 Folder
+                        else{
+                            if(albedoTextures[albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex].folderIndex == 10000)
+                                txtrpath += folderDistinguisher + albedoTextures[albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex].name + folderDistinguisher + albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].name + albedoTextures[albedoTextures[i].folderIndex].name + folderDistinguisher + albedoTextures[i].name + ".png"; //3 Folder
+                            else{
+                                if(albedoTextures[albedoTextures[albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex].folderIndex].folderIndex == 10000)
+                                    txtrpath += folderDistinguisher + albedoTextures[albedoTextures[albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex].folderIndex].name + folderDistinguisher + albedoTextures[albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex].name + folderDistinguisher + albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].name + albedoTextures[albedoTextures[i].folderIndex].name + folderDistinguisher + albedoTextures[i].name + ".png"; //4 Folder
+                                else{
+                                    if(albedoTextures[ albedoTextures[albedoTextures[albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex].folderIndex].folderIndex].folderIndex == 10000)
+                                        txtrpath += folderDistinguisher + albedoTextures[ albedoTextures[albedoTextures[albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex].folderIndex].folderIndex].name + folderDistinguisher + albedoTextures[albedoTextures[albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex].folderIndex].name + folderDistinguisher + albedoTextures[albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex].name + folderDistinguisher + albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].name + albedoTextures[albedoTextures[i].folderIndex].name + folderDistinguisher + albedoTextures[i].name + ".png"; //5 Folder
+                                    else{
+                                        if(albedoTextures[albedoTextures[ albedoTextures[albedoTextures[albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex].folderIndex].folderIndex].folderIndex].folderIndex == 10000)
+                                            txtrpath += folderDistinguisher + albedoTextures[albedoTextures[ albedoTextures[albedoTextures[albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex].folderIndex].folderIndex].folderIndex].name + folderDistinguisher + albedoTextures[ albedoTextures[albedoTextures[albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex].folderIndex].folderIndex].name + folderDistinguisher + albedoTextures[albedoTextures[albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex].folderIndex].name + folderDistinguisher + albedoTextures[albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].folderIndex].name + folderDistinguisher + albedoTextures[albedoTextures[albedoTextures[i].folderIndex].folderIndex].name + albedoTextures[albedoTextures[i].folderIndex].name + folderDistinguisher + albedoTextures[i].name + ".png"; //6 Folder
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            std::cout << filePath << '\n';
         }
     }
     string rmvPath(string &startingPath, string &fullPath) 
