@@ -787,6 +787,8 @@ public:
 	//Calculations and More
 	bool isMouseOnPanelChangeButton(GLFWwindow* window, float position_x, float position_y, double mouseXpos, double mouseYpos);
 	bool isMouseOnButton(GLFWwindow* window, float width, float height, float position_x, float position_y, double mouseXpos, double mouseYpos, bool isPanelMoving);
+	bool isMouseOnButton(GLFWwindow* window, float width, float height, float position_x, float position_y,double mouseXpos, double mouseYpos,bool isPanelMoving,int screenW,int screenH);
+	
 	bool isMouseOnCoords(GLFWwindow*window,double mouseXpos, double mouseYpos,std::vector<float> buttonCoor,bool isPanelMoving);
 	bool textInput(int key, int action,bool caps,std::string &text,int threshold,GLFWwindow* window,int activeChar);
 	bool textInputHex(int key, int action, std::string &text, int &activeChar);

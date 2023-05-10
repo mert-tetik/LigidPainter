@@ -97,6 +97,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 
 		glUseProgram(renderPrograms.directionalShadow);
 		ui.renderTheProgram(-1.0 + 0.4f + 0.9f,0.0f,0.9f,1.f);
+        
+		//glEnable(GL_DEPTH_TEST);
 		
 		
 		glUseProgram(renderPrograms.uiProgram);
@@ -108,14 +110,63 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 		if(createProjectMode){
 			ui.renderText(renderPrograms.uiProgram,"Create new 3D project",-0.55f,0.8f,0.0006f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 			
+			//1 Project Title
 			glUseProgram(renderPrograms.iconsProgram);
 			ui.iconBox(0.05f/1.5f,0.05f,-0.54f,0.715f,0.9f,icons.Circle,0.f,glm::vec4(0.8,0.8,0.8,1.0),glm::vec4(0.06,0.12,0.15,1.0));
 			glUseProgram(renderPrograms.uiProgram);
 			
 			ui.renderText(renderPrograms.uiProgram,"1",-0.55f,0.7f,0.0004f,glm::vec4(0.95,0.95,0.95,1.0),0.91f,false);
 			ui.renderText(renderPrograms.uiProgram,"Project Title",-0.47f,0.7f,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
+			
+			renderer.startScreenProjectTitleTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.615f,0.9f),glm::vec2(mouseXpos,mouseYpos),firstClick);
+			
+			
+			//2 Project Path
+			glUseProgram(renderPrograms.iconsProgram);
+			ui.iconBox(0.05f/1.5f,0.05f,-0.54f,0.415f,0.9f,icons.Circle,0.f,glm::vec4(0.8,0.8,0.8,1.0),glm::vec4(0.06,0.12,0.15,1.0));
+			glUseProgram(renderPrograms.uiProgram);
+			
+			ui.renderText(renderPrograms.uiProgram,"2",-0.55f,0.4f,0.0004f,glm::vec4(0.95,0.95,0.95,1.0),0.91f,false);
+			ui.renderText(renderPrograms.uiProgram,"Project Path",-0.47f,0.4f,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 
-			renderer.startScreenProjectTitleTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.615f,0.9f),glm::vec2(mouseXpos,mouseYpos));
+			renderer.startScreenProjectPathTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.315f,0.9f),glm::vec2(mouseXpos,mouseYpos),firstClick);
+			
+			
+			//3 Texture Resolution
+			glUseProgram(renderPrograms.iconsProgram);
+			ui.iconBox(0.05f/1.5f,0.05f,-0.54f,0.115f,0.9f,icons.Circle,0.f,glm::vec4(0.8,0.8,0.8,1.0),glm::vec4(0.06,0.12,0.15,1.0));
+			glUseProgram(renderPrograms.uiProgram);
+			
+			ui.renderText(renderPrograms.uiProgram,"3",-0.55f,0.1f,0.0004f,glm::vec4(0.95,0.95,0.95,1.0),0.91f,false);
+			ui.renderText(renderPrograms.uiProgram,"Texture Resolution",-0.47f,0.1f,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 
+			renderer.startScreenProjectResolutionTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.015f,0.9f),glm::vec2(mouseXpos,mouseYpos),firstClick);
+			
+			
+			//4 Select a skybox
+			glUseProgram(renderPrograms.iconsProgram);
+			ui.iconBox(0.05f/1.5f,0.05f,-0.54f,-0.185f,0.9f,icons.Circle,0.f,glm::vec4(0.8,0.8,0.8,1.0),glm::vec4(0.06,0.12,0.15,1.0));
+			glUseProgram(renderPrograms.uiProgram);
+			
+			ui.renderText(renderPrograms.uiProgram,"4",-0.55f,-0.2f,0.0004f,glm::vec4(0.95,0.95,0.95,1.0),0.91f,false);
+			ui.renderText(renderPrograms.uiProgram,"Select a skybox",-0.47f,-0.2f,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
+
+			glUseProgram(renderPrograms.renderTheTextureProgram);
+			glActiveTexture(GL_TEXTURE14);
+			gls.bindTexture(icons.sky1);
+			ui.renderTheProgram(-0.35f,-0.4f,0.2f*1.4705/1.5,0.2f);
+			
+			gls.bindTexture(icons.sky2);
+			ui.renderTheProgram(0.15f,-0.4f,0.2f*1.4705/1.5,0.2f);
+			
+			gls.bindTexture(icons.sky3);
+			ui.renderTheProgram(-0.35f,-0.7f,0.2f*1.4705/1.5,0.2f);
+			
+			gls.bindTexture(icons.sky4);
+			ui.renderTheProgram(0.15f,-0.7f,0.2f*1.4705/1.5,0.2f);
+			
+			
+			gls.bindTexture(icons.rendered1);
+			ui.renderTheProgram(0.8f,-0.2f,0.8f / 1.428 /1.5,0.8f);
 		}
 }

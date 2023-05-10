@@ -108,6 +108,56 @@ bool UserInterface::isMouseOnButton(GLFWwindow* window, float width, float heigh
 	}
 	//Barycentric calculations
 }
+bool UserInterface::isMouseOnButton(GLFWwindow* window, float width, float height, float position_x, float position_y,double mouseXpos, double mouseYpos,bool isPanelMoving,int screenW,int screenH){ //Return true if mouse hover on the given coordinates
+	
+	std::vector<float> buttonCoor{
+		// first triangle
+		 width + position_x,  height + position_y, 1,1,0,0,0,0,  // top right
+		 width + position_x, -height + position_y, 1,0,0,0,0,0,  // bottom right
+		-width + position_x,  height + position_y, 0,1,0,0,0,0,  // top left 
+		// second triangle
+		 width + position_x, -height + position_y, 1,0,0,0,0,0,  // bottom right
+		-width + position_x, -height + position_y, 0,0,0,0,0,0,  // bottom left
+		-width + position_x,  height + position_y, 0,1,0,0,0,0  // top left
+	};
+	int screenSizeX;
+	int screenSizeY;
+	glfwGetFramebufferSize(window,&screenSizeX,&screenSizeY);
+	float mouseFX;
+	if (!isPanelMoving) {
+		mouseFX = ((float)mouseXpos / (screenW / 2)) - 1.0f;//Screen Coord
+	}
+	else {
+		mouseFX = ((float)mouseXpos / (screenW / 2));//Screen Coord
+
+	}
+	float mouseFY = (((float)mouseYpos / (screenH / 2))-1.0f)*-1.0f;//Screen Coord
+
+	//Barycentric calculations
+	for (size_t i = 0; i < 2; i++)
+	{
+		float ax = buttonCoor[0 + (24*i)];
+		float ay = buttonCoor[1 + (24 * i)];
+		float bx = buttonCoor[8 + (24 * i)];
+		float by = buttonCoor[9 + (24 * i)];
+		float cx = buttonCoor[16 + (24 * i)];
+		float cy = buttonCoor[17 + (24 * i)];
+
+		if (cy - ay == 0) {
+			cy += 0.0001f;
+		}
+
+		float w1 = (ax * (cy - ay) + (mouseFY - ay) * (cx - ax) - mouseFX * (cy - ay)) / ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay));
+		float w2 = (mouseFY - ay - w1 * (by - ay)) / (cy - ay);
+		if (w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1) {
+			return true;
+		}
+		else if (i == 1) {
+			return false;
+		}
+	}
+	//Barycentric calculations
+}
 
 bool UserInterface::isMouseOnCoords(GLFWwindow*window,double mouseXpos, double mouseYpos,std::vector<float> buttonCoor,bool isPanelMoving){ //Return true if mouse hover on the given coordinates
 	int screenSizeX;

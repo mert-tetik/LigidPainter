@@ -260,6 +260,8 @@ bool mirrorRangeBarsPressed = false;
 bool displayProjectFolderManager = true;
 glm::mat4 modelMatrix = glm::mat4(1);
 
+Renderer renderer(1);
+
 
 
 ExportData exportData;
@@ -520,10 +522,11 @@ bool LigidPainter::run()
 
 
 
-	Renderer renderer(1);
-	renderer.startScreenNewProjectButton = RendererButton(0.2f,0.06f,1000,0,"New 3D Project",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(1),0,window);
-	renderer.startScreenLoadProjectButton = RendererButton(0.2f,0.06f,1000,0,"Load Project",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(1),0,window);
-	renderer.startScreenProjectTitleTextBox = RendererTextBox(0.4f,0.06f,0,"Title Here",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(1),0,window);
+	renderer.startScreenNewProjectButton = RendererButton(0.2f,0.06f,1000,0,"New 3D Project",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,window);
+	renderer.startScreenLoadProjectButton = RendererButton(0.2f,0.06f,1000,0,"Load Project",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,window);
+	renderer.startScreenProjectTitleTextBox = RendererTextBox(0.4f,0.06f,0,"Title Here",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,window);
+	renderer.startScreenProjectPathTextBox = RendererTextBox(0.4f,0.06f,0,"Path Here",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,window);
+	renderer.startScreenProjectResolutionTextBox = RendererListBox(0.4f,0.06f,0,{"256","512","1024","2048","4096"},0,glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,window);
 
 
 
@@ -1097,6 +1100,31 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		}
 		if(action == 1 || action == 2){
 			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && UIElements[UIexportingFolderNameTextBox].textBox.text.size()+textBoxActiveChar){
+				textBoxActiveChar--;
+			}
+			if(glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_PRESS && textBoxActiveChar != 0){
+				textBoxActiveChar++;
+			}
+		}
+	}
+
+	if(renderer.startScreenProjectTitleTextBox.active){
+		if(ui.textInput(key,action,caps,renderer.startScreenProjectTitleTextBox.text,200,window,textBoxActiveChar)){
+		}
+		if(action == 1 || action == 2){
+			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()+textBoxActiveChar){
+				textBoxActiveChar--;
+			}
+			if(glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_PRESS && textBoxActiveChar != 0){
+				textBoxActiveChar++;
+			}
+		}
+	}
+	if(renderer.startScreenProjectPathTextBox.active){
+		if(ui.textInput(key,action,caps,renderer.startScreenProjectPathTextBox.text,200,window,textBoxActiveChar)){
+		}
+		if(action == 1 || action == 2){
+			if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS && UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text.size()+textBoxActiveChar){
 				textBoxActiveChar--;
 			}
 			if(glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_PRESS && textBoxActiveChar != 0){

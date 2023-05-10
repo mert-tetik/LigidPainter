@@ -42,6 +42,10 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	scale = glm::scale(scale,glm::vec3(width,height,1));
 	glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scale);
 	
+	glset.uniform1f(uiPrograms.uiProgram,"width",width);
+	glset.uniform1f(uiPrograms.uiProgram,"height",height);
+	glset.uniform1f(uiPrograms.uiProgram,"radius",buttonCurveReduce);
+	
 	glm::vec3 pos = glm::vec3(position_x,position_y,z);
 	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
 
@@ -66,17 +70,17 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	glset.uniform1i(uiPrograms.uiProgram, "isUiTextureUsed", 0);
 
 	if(buttonCurveReduce <= 200){
-		glUseProgram(uiPrograms.iconsProgram);
-		unsigned int icon;
-		if(isTextBox)
-			icon = smoothSquareIcon;
-		else
-			icon = circleIcon;
+		// glUseProgram(uiPrograms.iconsProgram);
+		// unsigned int icon;
+		// if(isTextBox)
+		// 	icon = smoothSquareIcon;
+		// else
+		// 	icon = circleIcon;
 
-		if(width != 0.)
-			iconBox((height/2.)*1.3,height*1.3,position_x-width,position_y,z,icon,mixVal,color,colorTransitionColor);
-		iconBox((height/2.)*1.3,height*1.3,position_x+width,position_y,z,icon,mixVal,color,colorTransitionColor);
-		glUseProgram(uiPrograms.uiProgram);
+		// if(width != 0.)
+		// 	iconBox((height/2.)*1.3,height*1.3,position_x-width,position_y,z,icon,mixVal,color,colorTransitionColor);
+		// iconBox((height/2.)*1.3,height*1.3,position_x+width,position_y,z,icon,mixVal,color,colorTransitionColor);
+		// glUseProgram(uiPrograms.uiProgram);
 	}
 
 	if (!isTextBox && text != "") {

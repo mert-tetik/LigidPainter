@@ -236,6 +236,15 @@ public:
 		icons.FontFolder = txtr.getTexture("LigidPainter/Resources/Icons/FontFolder.png",0,0,false);
 		icons.ShaderFolder = txtr.getTexture("LigidPainter/Resources/Icons/ShaderFolder.png",0,0,false);
 		icons.TextureFolder = txtr.getTexture("LigidPainter/Resources/Icons/TextureFolder.png",0,0,false);
+		
+		icons.sky1 = txtr.getTexture(".\\LigidPainter\\Resources\\Images\\sky\\sky1.png",0,0,false);
+		icons.sky2 = txtr.getTexture(".\\LigidPainter\\Resources\\Images\\sky\\sky2.png",0,0,false);
+		icons.sky3 = txtr.getTexture(".\\LigidPainter\\Resources\\Images\\sky\\sky3.png",0,0,false);
+		icons.sky4 = txtr.getTexture(".\\LigidPainter\\Resources\\Images\\sky\\sky4.png",0,0,false);
+		icons.sky5 = txtr.getTexture(".\\LigidPainter\\Resources\\Images\\sky\\sky5.png",0,0,false);
+		icons.sky6 = txtr.getTexture(".\\LigidPainter\\Resources\\Images\\sky\\sky6.png",0,0,false);
+		
+		icons.rendered1 = txtr.getTexture(".\\LigidPainter\\Resources\\Images\\rendered1.png",0,0,false);
 	
 		return icons;
 	}

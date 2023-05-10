@@ -219,6 +219,15 @@ struct Icons{
 	unsigned int ShaderFolder;
 	unsigned int NodeFolder;
 	unsigned int TextureFolder;
+	
+	unsigned int sky1;
+	unsigned int sky2;
+	unsigned int sky3;
+	unsigned int sky4;
+	unsigned int sky5;
+	unsigned int sky6;
+	
+	unsigned int rendered1;
 };
 
 struct RenderData { //GlSet::render
