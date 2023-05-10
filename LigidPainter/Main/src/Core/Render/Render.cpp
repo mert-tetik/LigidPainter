@@ -22,6 +22,7 @@
 #include "Core/Render/Render.h"
 #include "Core/UI/UserInterface.h"
 #include "Core/Utilities.h"
+#include "Core/Renderer.hpp"
 #include "Core/gl.h"
 #include "Core/Texture/Texture.h"
 #include "Core/ProjectFile/WRLigidFile.hpp"
@@ -302,7 +303,8 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 							,bool &duplicateNodeCall,Objects &objects,int &chosenNodeResIndex,glm::vec3 &drawColor,std::vector<MirrorParam>&mirrorParams,unsigned int &depthTextureID
 							,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectPath,aTexture paintOverTexture,Model &spherModel,Audios audios,
 							unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,std::string &customModelName
-							,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,bool firstClickR,unsigned int &generatedTextTxtr,Font &txtrGenSelectedFont) {
+							,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,bool firstClickR,unsigned int &generatedTextTxtr,
+							Font &txtrGenSelectedFont,Renderer &renderer) {
 	
 	renderCurrentMaterialIndex = currentMaterialIndex;
 	
@@ -604,179 +606,180 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 		
 	}
 	else if(startScreen){
-		
-		gls.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		startScreenPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,
+						  displayProjectFolderManager,fonts,projectManager,albedoTextures,1024,nodeScenes,appNodes,addNodeContextMenu,model,firstClickR,renderer);
+		// gls.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		glActiveTexture(GL_TEXTURE13);
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
-		glActiveTexture(GL_TEXTURE16);
-		glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered);
-		renderSkyBox(skyBoxShaderData,renderPrograms,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
+		// glActiveTexture(GL_TEXTURE13);
+		// glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.cubemap);
+		// glActiveTexture(GL_TEXTURE16);
+		// glBindTexture(GL_TEXTURE_CUBE_MAP,cubemaps.prefiltered);
+		// renderSkyBox(skyBoxShaderData,renderPrograms,UIElements[UIskyBoxExposureRangeBar].rangeBar.value,UIElements[UIskyBoxRotationRangeBar].rangeBar.value);
 
-		UserInterface ui;
-		glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
-		glUseProgram(renderPrograms.uiProgram);
-		gls.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
-		glUseProgram(renderPrograms.iconsProgram);
-		gls.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
+		// UserInterface ui;
+		// glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+		// glUseProgram(renderPrograms.uiProgram);
+		// gls.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
+		// glUseProgram(renderPrograms.iconsProgram);
+		// gls.uniformMatrix4fv(renderPrograms.iconsProgram, "Projection", projection);
 	
-		// float new2DProjectMixVal = 0.f;
-		// if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,-0.4f,0.0f,mouseXpos,mouseYpos,false)){
-		// 	new2DProjectMixVal = 1.f;
+		// // float new2DProjectMixVal = 0.f;
+		// // if(ui.isMouseOnButton(renderData.window,0.1f,0.3f,-0.4f,0.0f,mouseXpos,mouseYpos,false)){
+		// // 	new2DProjectMixVal = 1.f;
+		// // }
+		// ui.container(-0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColorHover,renderPrograms,icons.Circle,colorData.buttonColorHover,0);
+		// glUseProgram(renderPrograms.iconsProgram);
+		// ui.iconBox(0.07,0.14f,-0.4f,0.1f,1.f,icons.TwoDProject,0.f,colorData.iconColor,colorData.iconColor);
+		// glUseProgram(renderPrograms.uiProgram);
+		// ui.renderText(renderPrograms.uiProgram,"New 2D Project",-0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
+		// ui.renderText(renderPrograms.uiProgram,"Will be available",-0.4f-0.07f,-0.3f,0.00022f,glm::vec4(colorData.LigidPainterThemeColor,1),1.f,false);
+		// ui.renderText(renderPrograms.uiProgram,"on the next release",-0.42f-0.06f,-0.32f,0.00022f,glm::vec4(colorData.LigidPainterThemeColor,1),1.f,false);
+
+		// float new3DProjectMixVal = 0.f;
+		// float importProjectMixVal = 0.f;
+		
+		// startMenuNew3DProjectMixVal = util.transitionEffect(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.f-screenGapX,0.0f,mouseXpos,mouseYpos,false),startMenuNew3DProjectMixVal,0.05f);
+		// startMenuImportProjectMixVal = util.transitionEffect(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.4f-screenGapX,0.0f,mouseXpos,mouseYpos,false),startMenuImportProjectMixVal,0.05f);
+		
+		// if(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
+		// 	if(enteredOnce){
+		// 		LibAL_stopPlaying(audios.ButtonEnter);
+		// 		LibAL_playAudioObject(audios.ButtonEnter);
+		// 		enteredOnce = false;
+		// 	}
+			
+		// 	nodePanel.pointerCursor = true;
+		// 	new3DProjectMixVal = 1.f;
+		// 	if(firstClick){
+		// 		LibAL_playAudioObject(audios.Login);
+		// 		startScreen = false;
+		// 		createProject = true;
+		// 		if(glfwGetKey(renderData.window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_K) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_PRESS)
+		// 			debugMode = true;
+		// 	}
 		// }
-		ui.container(-0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColorHover,renderPrograms,icons.Circle,colorData.buttonColorHover,0);
-		glUseProgram(renderPrograms.iconsProgram);
-		ui.iconBox(0.07,0.14f,-0.4f,0.1f,1.f,icons.TwoDProject,0.f,colorData.iconColor,colorData.iconColor);
-		glUseProgram(renderPrograms.uiProgram);
-		ui.renderText(renderPrograms.uiProgram,"New 2D Project",-0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
-		ui.renderText(renderPrograms.uiProgram,"Will be available",-0.4f-0.07f,-0.3f,0.00022f,glm::vec4(colorData.LigidPainterThemeColor,1),1.f,false);
-		ui.renderText(renderPrograms.uiProgram,"on the next release",-0.42f-0.06f,-0.32f,0.00022f,glm::vec4(colorData.LigidPainterThemeColor,1),1.f,false);
-
-		float new3DProjectMixVal = 0.f;
-		float importProjectMixVal = 0.f;
-		
-		startMenuNew3DProjectMixVal = util.transitionEffect(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.f-screenGapX,0.0f,mouseXpos,mouseYpos,false),startMenuNew3DProjectMixVal,0.05f);
-		startMenuImportProjectMixVal = util.transitionEffect(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.4f-screenGapX,0.0f,mouseXpos,mouseYpos,false),startMenuImportProjectMixVal,0.05f);
-		
-		if(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
-			if(enteredOnce){
-				LibAL_stopPlaying(audios.ButtonEnter);
-				LibAL_playAudioObject(audios.ButtonEnter);
-				enteredOnce = false;
-			}
+		// else if(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.4f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
+		// 	if(enteredOnce){
+		// 		LibAL_stopPlaying(audios.ButtonEnter);
+		// 		LibAL_playAudioObject(audios.ButtonEnter);
+		// 		enteredOnce = false;
+		// 	}
 			
-			nodePanel.pointerCursor = true;
-			new3DProjectMixVal = 1.f;
-			if(firstClick){
-				LibAL_playAudioObject(audios.Login);
-				startScreen = false;
-				createProject = true;
-				if(glfwGetKey(renderData.window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_K) == GLFW_PRESS && glfwGetKey(renderData.window,GLFW_KEY_J) == GLFW_PRESS)
-					debugMode = true;
-			}
-		}
-		else if(ui.isMouseOnButton(renderData.window,0.12f,0.3f,0.4f-screenGapX,0.0f,mouseXpos,mouseYpos,false)){
-			if(enteredOnce){
-				LibAL_stopPlaying(audios.ButtonEnter);
-				LibAL_playAudioObject(audios.ButtonEnter);
-				enteredOnce = false;
-			}
-			
-			nodePanel.pointerCursor = true;
-			importProjectMixVal = 1.f;
-			if(firstClick){
-				char const* lFilterPatterns[1] = { "*.ligid" };
-				//File dialog
-				auto path = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
+		// 	nodePanel.pointerCursor = true;
+		// 	importProjectMixVal = 1.f;
+		// 	if(firstClick){
+		// 		char const* lFilterPatterns[1] = { "*.ligid" };
+		// 		//File dialog
+		// 		auto path = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
 				
-				if(path){
-					projectPath = path;
-					ProjectFolder projectFolder;
-					projectFolder.readFolder(path,nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures,fonts);
-					LibAL_playAudioObject(audios.Login);
-					startScreen = false;
-				}
-			}
-		}
-		else{
-			enteredOnce = true;
-			nodePanel.pointerCursor = false;
-		}
+		// 		if(path){
+		// 			projectPath = path;
+		// 			ProjectFolder projectFolder;
+		// 			projectFolder.readFolder(path,nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures,fonts);
+		// 			LibAL_playAudioObject(audios.Login);
+		// 			startScreen = false;
+		// 		}
+		// 	}
+		// }
+		// else{
+		// 	enteredOnce = true;
+		// 	nodePanel.pointerCursor = false;
+		// }
 
-		#if defined(_WIN32) || defined(_WIN64)
-		    char folderDistinguisher = '\\';
-		#else
-			char folderDistinguisher = '/'; 
-		#endif
+		// #if defined(_WIN32) || defined(_WIN64)
+		//     char folderDistinguisher = '\\';
+		// #else
+		// 	char folderDistinguisher = '/'; 
+		// #endif
 
-		int bI = 0;
-		ui.container(0.f,-0.7f,0.5f,0.4f,0.15f,colorData.panelColor,renderPrograms,icons.Circle,glm::vec4(0),0.f);
-		glUseProgram(renderPrograms.uiProgram);
+		// int bI = 0;
+		// ui.container(0.f,-0.7f,0.5f,0.4f,0.15f,colorData.panelColor,renderPrograms,icons.Circle,glm::vec4(0),0.f);
+		// glUseProgram(renderPrograms.uiProgram);
 
-		ui.renderText(renderPrograms.uiProgram,"From ./Projects",-0.4f,-0.55f,0.00022f,colorData.textColor,0.91f,false);
+		// ui.renderText(renderPrograms.uiProgram,"From ./Projects",-0.4f,-0.55f,0.00022f,colorData.textColor,0.91f,false);
 		
-		ui.renderText(renderPrograms.uiProgram, "Project name" ,-0.4f,-0.59f,0.00022f,colorData.textColor,0.93f,false);
-		ui.renderText(renderPrograms.uiProgram, "Creation Date" ,-0.15f,-0.59f,0.00022f,colorData.textColor,0.93f,false);
-		ui.renderText(renderPrograms.uiProgram, "Last Opening Date" ,0.15f,-0.59f,0.00022f,colorData.textColor,0.93f,false);
-		int projectFileCounter = 0;
-		for (const auto & entry : std::filesystem::directory_iterator("./Projects")){
-			if(projectFileCounter == 9) //7
-				break;
+		// ui.renderText(renderPrograms.uiProgram, "Project name" ,-0.4f,-0.59f,0.00022f,colorData.textColor,0.93f,false);
+		// ui.renderText(renderPrograms.uiProgram, "Creation Date" ,-0.15f,-0.59f,0.00022f,colorData.textColor,0.93f,false);
+		// ui.renderText(renderPrograms.uiProgram, "Last Opening Date" ,0.15f,-0.59f,0.00022f,colorData.textColor,0.93f,false);
+		// int projectFileCounter = 0;
+		// for (const auto & entry : std::filesystem::directory_iterator("./Projects")){
+		// 	if(projectFileCounter == 9) //7
+		// 		break;
 
-			std::string fileName = entry.path().string();
-			std::string file = util.getLastWordBySeparatingWithChar(fileName,folderDistinguisher);
+		// 	std::string fileName = entry.path().string();
+		// 	std::string file = util.getLastWordBySeparatingWithChar(fileName,folderDistinguisher);
 			
-			std::string path = fileName + folderDistinguisher + file + ".ligid";
+		// 	std::string path = fileName + folderDistinguisher + file + ".ligid";
 
-			//Version 1.4
-			uint64_t h1 = 0xAB428C9F; 
-        	uint64_t h2 = 0xFF8A1C1C; 
-        	uint64_t h3 = 0x4B4B9AAA; 
-        	std::ifstream rf(path, std::ios::out | std::ios::binary);
+		// 	//Version 1.4
+		// 	uint64_t h1 = 0xAB428C9F; 
+        // 	uint64_t h2 = 0xFF8A1C1C; 
+        // 	uint64_t h3 = 0x4B4B9AAA; 
+        // 	std::ifstream rf(path, std::ios::out | std::ios::binary);
 			
-			if(rf) {
-				std::string Cdt; //Creation date
-	    		std::string Ldt; //Last opening date
+		// 	if(rf) {
+		// 		std::string Cdt; //Creation date
+	    // 		std::string Ldt; //Last opening date
 		
-				uint64_t c1; 
-        		uint64_t c2; 
-        		uint64_t c3; 
-        		rf.read(reinterpret_cast<char*>(&c1),sizeof(uint64_t));
-        		rf.read(reinterpret_cast<char*>(&c2),sizeof(uint64_t));
-        		rf.read(reinterpret_cast<char*>(&c3),sizeof(uint64_t));
+		// 		uint64_t c1; 
+        // 		uint64_t c2; 
+        // 		uint64_t c3; 
+        // 		rf.read(reinterpret_cast<char*>(&c1),sizeof(uint64_t));
+        // 		rf.read(reinterpret_cast<char*>(&c2),sizeof(uint64_t));
+        // 		rf.read(reinterpret_cast<char*>(&c3),sizeof(uint64_t));
 		
-        		if(c1 == h1 && c2 == h2 && c3 == h3){
+        // 		if(c1 == h1 && c2 == h2 && c3 == h3){
 					
-					uint64_t timestrsize;
-            		rf.read(reinterpret_cast<char*>(&timestrsize),sizeof(uint64_t));
-            		for (size_t i = 0; i < timestrsize; i++)
-            		{
-						char c;
-            		    rf.read(reinterpret_cast<char*>(&c),sizeof(char));
-						Cdt.push_back(c);
-            		}
+		// 			uint64_t timestrsize;
+        //     		rf.read(reinterpret_cast<char*>(&timestrsize),sizeof(uint64_t));
+        //     		for (size_t i = 0; i < timestrsize; i++)
+        //     		{
+		// 				char c;
+        //     		    rf.read(reinterpret_cast<char*>(&c),sizeof(char));
+		// 				Cdt.push_back(c);
+        //     		}
 					
-					uint64_t timestrsize2;
-            		rf.read(reinterpret_cast<char*>(&timestrsize2),sizeof(uint64_t));
-            		for (size_t i = 0; i < timestrsize2; i++)
-            		{
-						char c;
-            		    rf.read(reinterpret_cast<char*>(&c),sizeof(char));
-						Ldt.push_back(c);
-            		}
-					bool buttonHover = ui.isMouseOnButton(renderData.window,0.4f,0.015f,0.f-screenGapX,-0.62f - ((float)bI * 0.03),mouseXpos,mouseYpos,false);
-					ui.box(0.4f,0.015f,0.f,-0.62f - ((float)bI * 0.03),util.cropString(file,18),colorData.buttonColor,+0.39f,false,false,0.5f+(buttonHover/10000.f),10,colorData.buttonColorHover,buttonHover);
+		// 			uint64_t timestrsize2;
+        //     		rf.read(reinterpret_cast<char*>(&timestrsize2),sizeof(uint64_t));
+        //     		for (size_t i = 0; i < timestrsize2; i++)
+        //     		{
+		// 				char c;
+        //     		    rf.read(reinterpret_cast<char*>(&c),sizeof(char));
+		// 				Ldt.push_back(c);
+        //     		}
+		// 			bool buttonHover = ui.isMouseOnButton(renderData.window,0.4f,0.015f,0.f-screenGapX,-0.62f - ((float)bI * 0.03),mouseXpos,mouseYpos,false);
+		// 			ui.box(0.4f,0.015f,0.f,-0.62f - ((float)bI * 0.03),util.cropString(file,18),colorData.buttonColor,+0.39f,false,false,0.5f+(buttonHover/10000.f),10,colorData.buttonColorHover,buttonHover);
 
-					ui.renderText(renderPrograms.uiProgram, (std::string)Cdt ,-0.15f,-0.63f - ((float)bI * 0.03),0.00022f,colorData.textColor,0.93f,false);
+		// 			ui.renderText(renderPrograms.uiProgram, (std::string)Cdt ,-0.15f,-0.63f - ((float)bI * 0.03),0.00022f,colorData.textColor,0.93f,false);
 
-					ui.renderText(renderPrograms.uiProgram, (std::string)Ldt ,0.15f,-0.63f - ((float)bI * 0.03),0.00022f,colorData.textColor,0.93f,false);
+		// 			ui.renderText(renderPrograms.uiProgram, (std::string)Ldt ,0.15f,-0.63f - ((float)bI * 0.03),0.00022f,colorData.textColor,0.93f,false);
 
-					bI++;
-					if(firstClick && buttonHover){
-						projectPath = fileName;
-						ProjectFolder projectFolder;
-						projectFolder.readFolder(fileName + folderDistinguisher + file + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures,fonts);
-						LibAL_playAudioObject(audios.Login);
-						startScreen = false;
-					}
-        		}
-        	}
-			projectFileCounter++;
-		}
+		// 			bI++;
+		// 			if(firstClick && buttonHover){
+		// 				projectPath = fileName;
+		// 				ProjectFolder projectFolder;
+		// 				projectFolder.readFolder(fileName + folderDistinguisher + file + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures,fonts);
+		// 				LibAL_playAudioObject(audios.Login);
+		// 				startScreen = false;
+		// 			}
+        // 		}
+        // 	}
+		// 	projectFileCounter++;
+		// }
 
 
 
-		ui.container(-0.0f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,startMenuNew3DProjectMixVal);
-		glUseProgram(renderPrograms.iconsProgram);
-		ui.iconBox(0.07,0.14f,0.0f,0.1f,1.f,icons.ThreeDProject,0.f,colorData.iconColor,colorData.iconColor);
-		glUseProgram(renderPrograms.uiProgram);
-		ui.renderText(renderPrograms.uiProgram,"New 3D Project",0.0f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
+		// ui.container(-0.0f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,startMenuNew3DProjectMixVal);
+		// glUseProgram(renderPrograms.iconsProgram);
+		// ui.iconBox(0.07,0.14f,0.0f,0.1f,1.f,icons.ThreeDProject,0.f,colorData.iconColor,colorData.iconColor);
+		// glUseProgram(renderPrograms.uiProgram);
+		// ui.renderText(renderPrograms.uiProgram,"New 3D Project",0.0f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
 		
-		ui.container(0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,startMenuImportProjectMixVal);
-		glUseProgram(renderPrograms.iconsProgram);
-		ui.iconBox(0.07,0.14f,0.4f,0.1f,1.f,icons.ImportProject,0.f,colorData.iconColor,colorData.iconColor);
-		glUseProgram(renderPrograms.uiProgram);
-		ui.renderText(renderPrograms.uiProgram,"Import Project",0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
+		// ui.container(0.4f,0.0f,0.8f,0.1f,0.3f,colorData.buttonColor,renderPrograms,icons.Circle,colorData.buttonColorHover,startMenuImportProjectMixVal);
+		// glUseProgram(renderPrograms.iconsProgram);
+		// ui.iconBox(0.07,0.14f,0.4f,0.1f,1.f,icons.ImportProject,0.f,colorData.iconColor,colorData.iconColor);
+		// glUseProgram(renderPrograms.uiProgram);
+		// ui.renderText(renderPrograms.uiProgram,"Import Project",0.4f-0.06f,-0.2f,0.00022f,colorData.textColor,1.f,false);
 	}
 	else if(createProject){
 		UserInterface ui;

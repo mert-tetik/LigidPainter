@@ -71,6 +71,8 @@
 // - Eraser
 // - Text tool
 
+
+
 #include<iostream>
 
 #include "../../thirdparty/include/glad/glad.h"
@@ -89,7 +91,7 @@
 #include "../../thirdparty/include/glm/gtc/type_ptr.hpp"
 #include "../../thirdparty/include/glm/gtx/string_cast.hpp"
 
-
+#include "Renderer.hpp"
 
 #include "LigidPainter.h"
 #include "UI/UserInterface.h"
@@ -259,6 +261,7 @@ bool displayProjectFolderManager = true;
 glm::mat4 modelMatrix = glm::mat4(1);
 
 
+
 ExportData exportData;
 PBRShaderData pbrShaderData;
 SkyBoxShaderData skyBoxShaderData;
@@ -367,7 +370,8 @@ bool LigidPainter::run()
 	model.sendObjectsToModel(objects.VAO,objects.VBO);
 	sphereModel.sendObjectsToModel(objects.VAO,objects.VBO);
 
-	glfwSetWindowSizeLimits(window,glfwGetVideoMode(glfwGetPrimaryMonitor())->width/1.7,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+	//TODO Get back
+	//glfwSetWindowSizeLimits(window,glfwGetVideoMode(glfwGetPrimaryMonitor())->width/1.7,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
 
 
 	
@@ -403,9 +407,6 @@ bool LigidPainter::run()
 
 	MainLoop mainLoop;
 	
-	glfwSetWindowAttrib(window,GLFW_DECORATED,GLFW_TRUE);
-	glfwSetWindowSize(window,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
-	glfwSetWindowPos(window,0,20);
 	
 	glfwPollEvents();
 
@@ -516,6 +517,15 @@ bool LigidPainter::run()
 
 	if(!std::filesystem::is_directory("./Projects"))
 		std::filesystem::create_directories("./Projects");
+
+
+
+	Renderer renderer(1);
+	renderer.startScreenNewProjectButton = RendererButton(0.2f,0.06f,1000,0,"New 3D Project",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(1),0,window);
+	renderer.startScreenLoadProjectButton = RendererButton(0.2f,0.06f,1000,0,"Load Project",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(1),0,window);
+	renderer.startScreenProjectTitleTextBox = RendererTextBox(0.4f,0.06f,0,"Title Here",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(1),0,window);
+
+
 
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
@@ -829,7 +839,7 @@ bool LigidPainter::run()
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
 										 callbackData.originPos,startScreen,projectPath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState
 										 ,debugMode,createProject,modelFilePath,modelName,customModelName,modelMatrix,displayProjectFolderManager,fonts,projectManager,firstClickR,generatedTextTxtr
-										 ,txtrGenSelectedFont);
+										 ,txtrGenSelectedFont,renderer);
 		}
 		duplicateNodeCall = false;
 		

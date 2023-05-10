@@ -27,6 +27,7 @@
 
 using namespace std;
 
+
 class Utilities {
 public:
 
@@ -134,6 +135,14 @@ float restrictBetween(float value, float maxVal, float minVal) {
 	}
 	return value;
 }
+double renderingSpeed = 1;
+
+
+float transitionEffect(bool buttonEnter,float mixVal,float phaseDifference){
+	if (buttonEnter && mixVal <= 1.0f) {mixVal += 1./(double)(renderingSpeed);}
+	else if (!buttonEnter && mixVal >= 0.0f) {mixVal -= 1./(double)(renderingSpeed);}
+	return mixVal;
+} 
 
 double lastTime = glfwGetTime();
 int nbFrames = 0;
@@ -157,7 +166,8 @@ void printRenderingSpeed(bool debugMode,GLFWwindow* window) {
 			<< "    Window Size : " << wwidth << " , " << wheight << std::endl;
 		}
 		else{
-			std::cout << 1000.0 / double(nbFrames) << " ms/frame\n";
+			renderingSpeed = (double)nbFrames;
+			std::cout << renderingSpeed << " ms/frame\n";
 		}
 		nbFrames = 0;
 		lastTime += 1.0;
@@ -267,12 +277,6 @@ bool shortCut(GLFWwindow* window,unsigned int input1,unsigned int input2,unsigne
 	return result;
 }
 
-float transitionEffect(bool buttonEnter,float mixVal,float phaseDifference){
-
-	if (buttonEnter && mixVal <= 1.0f) {mixVal += phaseDifference;}
-	else if (!buttonEnter && mixVal >= 0.0f) {mixVal -= phaseDifference;}
-	return mixVal;
-} 
 
 float keepTheRatio(double value1,double value2, double desiredRatio){
 	double maxV = max(value1,value2);
