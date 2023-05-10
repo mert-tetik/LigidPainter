@@ -94,12 +94,90 @@ void UserInterface::box(float width, float height, float position_x, float posit
 			glUseProgram(uiPrograms.uiProgram);
 
 
-			renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,0.96f,mixVal > 0.f,position_x+width,true);
+			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,0.96f,mixVal > 0.f,position_x+width,true);
 			
 		}
 		else{
 			Utilities util;
-			renderText(uiPrograms.uiProgram, text, -width + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,mixVal > 0.f,position_x+width,false);
+			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,mixVal > 0.f,position_x+width,false);
+		}
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
+	glBindVertexArray(uiObjects.VAO);
+}
+void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec4 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec4 colorTransitionColor, float mixVal,glm::vec4 textColor,float textSize) {
+	
+	//buttonCurveReduce = 10 | normal  
+	//buttonCurveReduce = >10 | smaller
+	//buttonCurveReduce = <10 | bigger
+	//buttonCurveReduce = 10000 to get a square
+
+	//parameter z = position_z
+	GlSet glset;
+
+	glm::mat4 scale = glm::mat4(1);
+	scale = glm::scale(scale,glm::vec3(width,height,1));
+	glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scale);
+	
+	glset.uniform1f(uiPrograms.uiProgram,"width",width);
+	glset.uniform1f(uiPrograms.uiProgram,"height",height);
+	glset.uniform1f(uiPrograms.uiProgram,"radius",buttonCurveReduce);
+	
+	glm::vec3 pos = glm::vec3(position_x,position_y,z);
+	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+
+	glset.uniform1i(uiPrograms.uiProgram,"isUiTextureUsed",isMaskImageBox);
+	glset.uniform4fv(uiPrograms.uiProgram,"uiColor",color);
+	glset.uniform4fv(uiPrograms.uiProgram, "uiTransitionColor", colorTransitionColor);
+	glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", mixVal);
+
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.sqrVBO);
+	glBindVertexArray(uiObjects.sqrVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	ColorData colorData;
+
+
+
+	scale = glm::mat4(1);
+	pos = glm::vec3(0);
+	glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scale);
+	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+
+	glset.uniform1i(uiPrograms.uiProgram, "isUiTextureUsed", 0);
+
+	if(buttonCurveReduce <= 200){
+		// glUseProgram(uiPrograms.iconsProgram);
+		// unsigned int icon;
+		// if(isTextBox)
+		// 	icon = smoothSquareIcon;
+		// else
+		// 	icon = circleIcon;
+
+		// if(width != 0.)
+		// 	iconBox((height/2.)*1.3,height*1.3,position_x-width,position_y,z,icon,mixVal,color,colorTransitionColor);
+		// iconBox((height/2.)*1.3,height*1.3,position_x+width,position_y,z,icon,mixVal,color,colorTransitionColor);
+		// glUseProgram(uiPrograms.uiProgram);
+	}
+
+	if (!isTextBox && text != "") {
+		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, textSize,textColor,z+0.001f,false,position_x+width,false);
+	}
+	else if(text != ""){
+		if(mixVal > 0.f){
+			color = glm::vec4(0);
+
+			container(position_x,position_y-height*4,0.95,width,height*4,color,uiPrograms,circleIcon,colorTransitionColor,mixVal);
+			glUseProgram(uiPrograms.uiProgram);
+
+
+			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, textSize,textColor,0.96f,mixVal > 0.f,position_x+width,true);
+			
+		}
+		else{
+			Utilities util;
+			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, textSize,textColor,z+0.001f,mixVal > 0.f,position_x+width,false);
 		}
 	}
 

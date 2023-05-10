@@ -106,7 +106,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 
 					glUseProgram(renderPrograms.renderTheTextureProgram);
 			glActiveTexture(GL_TEXTURE14);
-			gls.uniform1f(renderPrograms.renderTheTextureProgram,"opacity",0.2f);
+			gls.uniform1f(renderPrograms.renderTheTextureProgram,"opacity",0.1f);
 			
 			gls.bindTexture(icons.rendered1);
 			ui.renderTheProgram(0.2f,-0.2f,0.8f / 1.428 /1.5,0.8f);

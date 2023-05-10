@@ -11,6 +11,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+#include "../../thirdparty/tinyfiledialogs.h"
 
 
 class RendererButton
@@ -73,8 +74,12 @@ public :
     std::string text;
     glm::vec4 color1;
     glm::vec4 color2;
+    glm::vec4 textColor;
+    float textSize;
     bool clickable;
     GLFWwindow* window;
+
+    bool folderDialog;
 
     bool buttonEnter;
     bool active = false;
@@ -91,31 +96,38 @@ public :
         //clickable = false;
         //window = windowD
     }//
-    RendererTextBox(float widthD,float heightD,bool outlineD,std::string textD, glm::vec4 color1D ,glm::vec4 color2D,bool clickableD,GLFWwindow* windowD){
+    RendererTextBox(float widthD,float heightD,bool outlineD,std::string textD, glm::vec4 color1D ,glm::vec4 color2D,bool clickableD,glm::vec4 textColorD,float textSizeD,bool folderDialogD,GLFWwindow* windowD){
         width = widthD;
         height = heightD;
         outline = outlineD;
         text = textD;
         color1 = color1D;
         color2 = color2D;
+        textColor = textColorD;
+        textSize = textSizeD;
         clickable = clickableD;
+        folderDialog = folderDialogD;
         window = windowD;
     }
     void draw(glm::vec3 pos,glm::vec2 cursorPos,bool firstClick){
         UserInterface ui;
         buttonEnter = ui.isMouseOnButton(window,width,height,pos.x,pos.y,cursorPos.x,cursorPos.y,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
         
-        if(buttonEnter && firstClick)
+        if(buttonEnter && firstClick && !folderDialog)
             active = true;
         if((!buttonEnter && firstClick) || glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_ENTER) == GLFW_PRESS)
             active = false;
+
+        if(folderDialog && firstClick && buttonEnter){
+            char* check = tinyfd_selectFolderDialog("Select a folder", text.c_str());
+            if(check)
+                text = check;
+        }
         
         Utilities util;
         mixVal = util.transitionEffect(active,mixVal,0.1f);
 
-        
-        
-        ui.box(width,height,pos.x,pos.y,text,color1,0,true,false,pos.z,10,color2,mixVal);
+        ui.box(width,height,pos.x,pos.y,text,buttonEnter == true ? color1/glm::vec4(2.) : color1 ,0,true,false,pos.z,10,color2,mixVal,textColor,textSize);
     }
 };
 
