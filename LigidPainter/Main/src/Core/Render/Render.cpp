@@ -304,7 +304,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 							,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen, std::string &projectPath,aTexture paintOverTexture,Model &spherModel,Audios audios,
 							unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,std::string &customModelName
 							,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,bool firstClickR,unsigned int &generatedTextTxtr,
-							Font &txtrGenSelectedFont,Renderer &renderer) {
+							Font &txtrGenSelectedFont,Renderer &renderer,float &startScreenScrollVal) {
 	
 	renderCurrentMaterialIndex = currentMaterialIndex;
 	
@@ -607,7 +607,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 	}
 	else if(startScreen){
 		startScreenPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,
-						  displayProjectFolderManager,fonts,projectManager,albedoTextures,1024,nodeScenes,appNodes,addNodeContextMenu,model,firstClickR,renderer);
+						  displayProjectFolderManager,fonts,projectManager,albedoTextures,1024,nodeScenes,appNodes,addNodeContextMenu,model,firstClickR,renderer,startScreenScrollVal);
 		// gls.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		// glActiveTexture(GL_TEXTURE13);

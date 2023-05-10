@@ -11,6 +11,7 @@ uniform int isMask;
 uniform int maskUseColor;
 uniform int roundCorners;
 uniform int renderMaterials;
+uniform float opacity;
 
 uniform sampler2D txtr;
 
@@ -73,6 +74,7 @@ void main(){
             if(isPressed == 0){
                 //Default
                 color = texture(txtr,TexCoords);
+                color.a *= opacity;
             }
             else{ 
                 const float cornerThickness = 0.02; 

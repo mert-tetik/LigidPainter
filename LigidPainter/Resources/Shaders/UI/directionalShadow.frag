@@ -11,7 +11,12 @@ void main( )
     vec2 uv = TexCoords;
     float r = smoothstep(0.,1.,uv.x*5.+0.7);
 
+    float a;
+    if(r < 1)//
+        a = 1.-r;
+    else
+        a = 0.;
 
     // Output to screen
-    fragColor = vec4(vec3(r),1.0);
+    fragColor = vec4(vec3(r),a);
 }

@@ -259,6 +259,7 @@ bool textureDraggingState = false;
 bool mirrorRangeBarsPressed = false;
 bool displayProjectFolderManager = true;
 glm::mat4 modelMatrix = glm::mat4(1);
+float startScreenScrollVal = 0.f;
 
 Renderer renderer(1);
 
@@ -842,7 +843,7 @@ bool LigidPainter::run()
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
 										 callbackData.originPos,startScreen,projectPath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState
 										 ,debugMode,createProject,modelFilePath,modelName,customModelName,modelMatrix,displayProjectFolderManager,fonts,projectManager,firstClickR,generatedTextTxtr
-										 ,txtrGenSelectedFont,renderer);
+										 ,txtrGenSelectedFont,renderer,startScreenScrollVal);
 		}
 		duplicateNodeCall = false;
 		
@@ -1445,7 +1446,12 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 		ligid.brushBordersRangeBar((float)scrollx*10.0f,screenSizeX,screenSizeY);
 	}
 	else{
-		if(callbackData.maskPanelEnter){
+		if(startScreen){
+			startScreenScrollVal += (float)(scrollx / 25.0);
+			if(startScreenScrollVal > 0.)
+				startScreenScrollVal = 0.;
+		}
+		else if(callbackData.maskPanelEnter){
 			//Brush mask panel scroll
 			if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked){
 				int txtrSize = 0;

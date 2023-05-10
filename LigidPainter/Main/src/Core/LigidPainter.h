@@ -46,6 +46,7 @@ struct Programs
 	unsigned int spinnerProgram;
 	unsigned int solidRenderer;
 	unsigned int directionalShadow;
+	unsigned int gradient;
 };
 struct Cubemaps{
 	unsigned int cubemap;
