@@ -478,6 +478,7 @@ public:
 		unsigned int renderTheTextureBlur = gl.createProgram("./LigidPainter/Resources/Shaders/UI/renderTheTextureBlur");
 		unsigned int blackToAlphaProgram = gl.createProgram("./LigidPainter/Resources/Shaders/Texture Processing/Texture Generator/blackToAlpha");
 		unsigned int spinnerProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/spinner");
+		unsigned int directionalShadow = gl.createProgram("./LigidPainter/Resources/Shaders/UI/directionalShadow");
 		
 
 		Programs glPrograms;
@@ -512,6 +513,7 @@ public:
 		glPrograms.blackToAlphaProgram = blackToAlphaProgram;
 		glPrograms.spinnerProgram = spinnerProgram;
 		glPrograms.solidRenderer = solidRenderer;
+		glPrograms.directionalShadow = directionalShadow;
 
 
 		return glPrograms;

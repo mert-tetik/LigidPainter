@@ -45,6 +45,7 @@ struct Programs
 	unsigned int blackToAlphaProgram;
 	unsigned int spinnerProgram;
 	unsigned int solidRenderer;
+	unsigned int directionalShadow;
 };
 struct Cubemaps{
 	unsigned int cubemap;

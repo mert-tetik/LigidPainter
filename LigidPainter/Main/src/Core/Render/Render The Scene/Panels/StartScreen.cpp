@@ -61,6 +61,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 		gls.uniform1i(renderPrograms.iconsProgram, "icon", 6);
 		glUseProgram(renderPrograms.uiProgram);
 		gls.uniformMatrix4fv(renderPrograms.uiProgram, "TextProjection", projection);
+		glUseProgram(renderPrograms.directionalShadow);
+		gls.uniformMatrix4fv(renderPrograms.directionalShadow, "TextProjection", projection);
 		glUseProgram(renderPrograms.textureDisplayer);
 		gls.uniform1i(renderPrograms.textureDisplayer, "currentTexture", 14);
 		gls.uniform1i(renderPrograms.textureDisplayer, "roundCor",1);
@@ -93,9 +95,15 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
         //Left panel
         ui.box(0.2f,1.f,-1.f + 0.2f ,0,"",glm::vec4(1),0,0,0,0.9f,10000,glm::vec4(1),0.f);
 
+		glUseProgram(renderPrograms.directionalShadow);
+		ui.renderTheProgram(-1.0 + 0.4f + 0.9f,0.0f,0.9f,1.f);
 		
+		
+		glUseProgram(renderPrograms.uiProgram);
         renderer.startScreenNewProjectButton.draw(glm::vec3(-1.f + 0.2f,0.7f,0.92f),glm::vec2(mouseXpos,mouseYpos));
         renderer.startScreenLoadProjectButton.draw(glm::vec3(-1.f + 0.2f,0.58f,0.92f),glm::vec2(mouseXpos,mouseYpos));
+			
+
 
 		if(createProjectMode){
 			ui.renderText(renderPrograms.uiProgram,"Create new 3D project",-0.55f,0.8f,0.0006f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
@@ -108,5 +116,6 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.renderText(renderPrograms.uiProgram,"Project Title",-0.47f,0.7f,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 
 			renderer.startScreenProjectTitleTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.615f,0.9f),glm::vec2(mouseXpos,mouseYpos));
+
 		}
 }

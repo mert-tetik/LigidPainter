@@ -2941,6 +2941,23 @@ std::vector<float> UserInterface::selectionBox(bool active,float sPX,float sPY,f
 	return box;
 }
 
+void UserInterface::renderTheProgram(float posx,float posy,float width,float height){
+	
+	std::vector<float> renderVertices = { 
+		// first triangle
+		 width + posx,  height+ posy, 1.0f,1,1,0,0,0,  // top right
+		 width+ posx,  -height+ posy, 1.0f,1,0,0,0,0,  // bottom right
+		 -width+ posx,  height+ posy, 1.0f,0,1,0,0,0,  // top left 
+		// second tria0gle	  ,0,0,0,
+		 width+ posx,  -height+ posy, 1.0f,1,0,0,0,0,  // bottom right
+		 -width+ posx,  -height+ posy, 1.0f,0,0,0,0,0,  // bottom left
+		 -width+ posx,  height+ posy, 1.0f,0,1,0,0,0   // top left
+	};
+
+	GlSet glset;
+	glset.drawArrays(renderVertices,false);
+}
+
 void UserInterface::sendObjectsToUI(Objects aobjects,unsigned int acircleIcon,unsigned int asmoothSquareIcon){
 	uiObjects = aobjects;
 	circleIcon = acircleIcon;

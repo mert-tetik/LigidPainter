@@ -793,6 +793,8 @@ public:
 	bool isMouseOnNodePanel(GLFWwindow* window,float mainPanelLoc,float height,double mouseXpos,double mouseYpos,bool calculateBoundaries,float sndPanel);
 
 
+	void renderTheProgram(float posx,float posy,float width,float height);
+
 	void sendProgramsToUserInterface(Programs appPrograms);
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void sendMaxWindowSizeToCalculationsAndMore(int maxScreenWidth,int maxScreenHeight);
