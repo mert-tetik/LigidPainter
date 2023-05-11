@@ -1494,10 +1494,31 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 		color = colorData.checkBoxCheckedColor;
 	}
 	glUseProgram(uiPrograms.iconsProgram);
-	iconBox(0.015,0.0273f,position_x, position_y,0.9f,circleTxtr,0,color,color);
+	iconBox(0.015,0.0273f,position_x, position_y,0.9f,circleTxtr == 0 ? circleIcon : circleTxtr,0,color,color);
 	
 	glUseProgram(uiPrograms.uiProgram);
 	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f,colorData.textColor,0.9f,false);
+}
+
+void UserInterface::checkBoxW(float position_x, float position_y, std::string text, bool mouseHover,bool checked,unsigned int circleTxtr) {
+	ColorData colorData;
+
+	glm::vec4 color;
+
+	if (!checked) {
+		if (!mouseHover)
+			color = colorData.checkBoxColor;
+		else
+			color =  colorData.checkBoxHoverColor;
+	}
+	else {
+		color = colorData.checkBoxCheckedColor;
+	}
+	glUseProgram(uiPrograms.iconsProgram);
+	iconBox(0.05f/1.5,0.05f,position_x, position_y,0.9f,circleTxtr == 0 ? circleIcon : circleTxtr,0,color,color);
+	
+	glUseProgram(uiPrograms.uiProgram);
+	renderText(uiPrograms.uiProgram, text, position_x+0.03f, position_y - 0.01f, 0.00032f,glm::vec4(0,0,0,1),0.9f,false);
 }
 
 
@@ -1893,6 +1914,101 @@ void UserInterface::renderTextM(unsigned int program, std::string text, float x,
 	for (c = text.begin(); c != text.end(); c++)
 	{
 		character ch = font.characters[*c];
+
+		float xpos = x + ch.Bearing.x * scale;
+		float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+
+		float w = ch.Size.x * scale * 0.8f;
+		float h = ch.Size.y * scale;
+
+		glm::mat4 scalemat = glm::mat4(1);
+		scalemat = glm::scale(scalemat,glm::vec3(w/1.7,h/1.7,1));
+		glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
+		
+		glm::vec3 pos = glm::vec3(xpos + w/1.7,ypos + h/1.7,z);
+		glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+
+		glset.bindTexture(ch.TextureID);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		
+
+		if(active){
+			if(counter == text.size()+uiTextBoxActiveChar-1 && textCursorPhaseCounter < maxCharCountSize/2){
+				glset.uniform1i(program,"isText", 0);
+				glset.uniform1i(program, "isTextF", 0);
+				glset.uniform4fv(program, "uiColor", colorData2.textboxCursorColor);
+				glset.uniform1f(uiPrograms.uiProgram, "uiTransitionMixVal", 0);
+				
+				scalemat = glm::mat4(1);
+				scalemat = glm::scale(scalemat,glm::vec3(0.001f,0.02,1));
+				glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
+				pos = glm::vec3(xpos + w/1.7*2.,y+0.01,z);
+				glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+				glDrawArrays(GL_TRIANGLES, 0, 6);
+				
+				glset.uniform1i(program, "isTextF", 1);
+				glset.uniform1i(program,"isText", 1);
+				glset.uniform4fv(program, "uiColor", color);
+			}
+		}
+
+		x += (ch.Advance >> 6) * scale / 1.2f; 
+		counter++;
+	}
+	glset.uniform1i(program, "isTextF", 0);
+	glset.uniform1i(program, "isText", 0);
+
+	glm::mat4 scalemat = glm::mat4(1);
+	glm::vec3 pos = glm::vec3(0);
+	glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scalemat);
+	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
+	glBindVertexArray(uiObjects.VAO);
+}
+void UserInterface::renderTextM(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,float maxX,bool multipleLines) {
+	GlSet glset;
+	ColorData2 colorData2;
+	
+	const int maxCharCountSize = 100;
+	if(active){
+		textCursorPhaseCounter++;
+		if(textCursorPhaseCounter == maxCharCountSize)
+			textCursorPhaseCounter = 0;
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.sqrVBO);
+	glBindVertexArray(uiObjects.sqrVAO);
+
+	glset.activeTexture(GL_TEXTURE2);
+
+	glset.uniform1i(program,"isText", 1);
+	glset.uniform1i(program, "isTextF", 1);
+	glset.uniform4fv(program, "uiColor", color);
+	
+	std::string::const_iterator c;
+	int counter = 0;
+
+	float totalX = x;
+
+	for (c = text.begin(); c != text.end(); c++){
+		character ch = characters[*c];
+		totalX += (ch.Advance >> 6) * scale / 1.2f;
+		if(maxX < totalX)
+			break;
+	}
+
+	x -= totalX/2.f;
+	
+	for (c = text.begin(); c != text.end(); c++)
+	{
+		character ch = characters[*c];
+		if(maxX < x){
+			x=lastXText;
+			y-=(ch.Size.y) * scale * 1.3f;
+			if(!multipleLines)
+				break;
+		}
 
 		float xpos = x + ch.Bearing.x * scale;
 		float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;

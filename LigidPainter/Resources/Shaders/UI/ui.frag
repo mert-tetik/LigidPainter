@@ -42,7 +42,7 @@ float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
 	vec3 c = mix( vec3(1.0,0.0,0.0), vec3(0.0,0.0,0.0), smoothstep(0.0,1.0,b) );
    
    vec3 circleColor = vec3(1.0, 1.0, 1.0);
-   float thickness = 10.5;
+   float thickness = 2.5;
    float fade = 0.005;
    
    vec3 color = vec3(smoothstep(0.0, fade, b));

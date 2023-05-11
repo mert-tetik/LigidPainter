@@ -39,11 +39,21 @@
 
 bool createProjectMode = true;
 
+std::vector<std::string> tdModelPaths;
+unsigned int selectedSkyBox = 0;
+
 void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs renderPrograms,Cubemaps cubemaps,SkyBoxShaderData skyBoxShaderData,
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
                                         bool firstClick,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
                                         ,int txtrRes,std::vector<NodeScene> &materials, std::vector<Node> &appNodes, ContextMenu &addNodeContexMenu, Model &model,bool firstClickR,Renderer &renderer
 										,float &scrVal){
+		#if defined(_WIN32) || defined(_WIN64)
+		    char folderDistinguisher = '\\';
+		#else
+			char folderDistinguisher = '/'; 
+		#endif
+
+
         glDisable(GL_DEPTH_TEST);
         Utilities util;
         UserInterface ui;
@@ -185,8 +195,29 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			
 			gls.bindTexture(icons.sky6);
 			ui.renderTheProgram(-0.1f,-0.6f-scrVal,0.1f*1.4705/1.5,0.1f);
+
+			glUseProgram(renderPrograms.uiProgram);
+        	ui.box(0.11f*1.4705/1.5,0.08f,-0.35f,-0.4f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,40,glm::vec4(colorData.LigidPainterThemeColor,1.0),selectedSkyBox == 0);
+			if(ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.35f,-0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5) && firstClick)
+				selectedSkyBox = 0;
+        	ui.box(0.11f*1.4705/1.5,0.08f,-0.1f, -0.4f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,40,glm::vec4(colorData.LigidPainterThemeColor,1.0),selectedSkyBox == 1);
+			if(ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.1f, -0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5) && firstClick)
+				selectedSkyBox = 1;
+        	ui.box(0.11f*1.4705/1.5,0.08f, 0.15f,-0.4f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,40,glm::vec4(colorData.LigidPainterThemeColor,1.0),selectedSkyBox == 2);
+			if(ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f, 0.15f,-0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5) && firstClick)
+				selectedSkyBox = 2;
+        	ui.box(0.11f*1.4705/1.5,0.08f, 0.4f, -0.4f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,40,glm::vec4(colorData.LigidPainterThemeColor,1.0),selectedSkyBox == 3);
+			if(ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f, 0.4f, -0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5) && firstClick)
+				selectedSkyBox = 3;
+        	ui.box(0.11f*1.4705/1.5,0.08f,-0.35f,-0.6f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,40,glm::vec4(colorData.LigidPainterThemeColor,1.0),selectedSkyBox == 4);
+			if(ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.35f,-0.6f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5) && firstClick)
+				selectedSkyBox = 4;
+        	ui.box(0.11f*1.4705/1.5,0.08f,-0.1f, -0.6f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,40,glm::vec4(colorData.LigidPainterThemeColor,1.0),selectedSkyBox == 5);
+			if(ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.1f, -0.6f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5) && firstClick)
+				selectedSkyBox = 5;
+
 			
-			
+			//5 Project Settings			
 			glUseProgram(renderPrograms.iconsProgram);
 			ui.iconBox(0.05f/1.5f,0.05f,-0.54f,-0.885f-scrVal,0.9f,icons.Circle,0.f,glm::vec4(0.8,0.8,0.8,1.0),glm::vec4(0.06,0.12,0.15,1.0));
 			glUseProgram(renderPrograms.uiProgram);
@@ -194,7 +225,59 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.renderText(renderPrograms.uiProgram,"5",-0.55f,-0.9f-scrVal,0.0004f,glm::vec4(0.95,0.95,0.95,1.0),0.91f,false);
 			ui.renderText(renderPrograms.uiProgram,"Project settings",-0.47f,-0.9f-scrVal,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 			
-			
+			renderer.startScreenIncludeTexturesCheckBox.draw(glm::vec3(-0.45,-1.0f-scrVal,0.95f),glm::vec2(mouseXpos,mouseYpos),firstClick);
+			renderer.startScreenIncludeNodesCheckBox.draw(glm::vec3(-0.15,-1.0f-scrVal,0.95f),glm::vec2(mouseXpos,mouseYpos),firstClick);
+			renderer.startScreenIncludeFontsCheckBox.draw(glm::vec3(0.15,-1.0f-scrVal,0.95f),glm::vec2(mouseXpos,mouseYpos),firstClick);
 
+			//6 Upload 3D Models
+			glUseProgram(renderPrograms.iconsProgram);
+			ui.iconBox(0.05f/1.5f,0.05f,-0.54f,-1.285f-scrVal,0.9f,icons.Circle,0.f,glm::vec4(0.8,0.8,0.8,1.0),glm::vec4(0.06,0.12,0.15,1.0));
+			glUseProgram(renderPrograms.uiProgram);
+
+			ui.renderText(renderPrograms.uiProgram,"6",-0.55f,-1.3f-scrVal,0.0004f,glm::vec4(0.95,0.95,0.95,1.0),0.91f,false);
+			ui.renderText(renderPrograms.uiProgram,"Upload 3D Models",-0.47f,-1.3f-scrVal,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
+
+			float posX = 0;
+			float posY = -0.31f;
+			for (size_t i = 0; i < tdModelPaths.size()+1; i++)
+			{
+				posX += (0.15*2);
+				if(i%4 == 0){
+					posX = 0.f;
+					posY += 0.31f;
+				}				
+				bool buttonEnter = ui.isMouseOnButton(window,0.15f,0.15f,-0.37f + posX,-1.5f-scrVal - posY,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+        		ui.box(0.15f,0.15f,-0.37f + posX,-1.5f-scrVal - posY,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,10,glm::vec4(colorData.LigidPainterThemeColor,1.0),buttonEnter);
+				
+				if(i == 0){
+					if(buttonEnter && firstClick){
+						char const* lFilterPatterns[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };	
+						char * modelFilePathCheck = tinyfd_openFileDialog("Select 3D Model","",11, lFilterPatterns,"",false);
+						if(modelFilePathCheck)
+							tdModelPaths.push_back(modelFilePathCheck);
+					}
+					
+					glUseProgram(renderPrograms.iconsProgram);
+					ui.iconBox(0.05f/1.5f,0.05f,-0.37f + posX,-1.45f-scrVal - posY,0.95f,icons.Plus,buttonEnter,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(colorData.LigidPainterThemeColor,1.0));
+					
+					glUseProgram(renderPrograms.uiProgram);
+					ui.renderText(renderPrograms.uiProgram,"Add Model", -0.3f + posX - 0.15f,-1.56f-scrVal - posY,0.00032f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false);
+				}
+				else{
+					ui.renderText(renderPrograms.uiProgram,util.getLastWordBySeparatingWithChar(tdModelPaths[i-1],folderDistinguisher), -0.37f + posX,-1.5f-scrVal - posY,0.00032f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false,-0.37f + posX + 0.14f, false);
+					
+					//Delete Button
+					bool delButtonEnter = ui.isMouseOnButton(window,0.03f/1.5f,0.03f,-0.26f + posX,-1.605f-scrVal - posY,mouseXpos,mouseYpos,false,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+					ui.box(0.03f/1.5f,0.03f,-0.26f + posX,-1.605f-scrVal - posY,"",glm::vec4(0.86,0.12,0.15,1.0),0,false,false,0.92f,10000,glm::vec4(colorData.LigidPainterThemeColor,1.0),delButtonEnter);
+					glUseProgram(renderPrograms.iconsProgram);
+					ui.iconBox(0.03f/1.5f,0.03f,-0.26f + posX,-1.605f-scrVal - posY,0.95f,icons.Trash,delButtonEnter,glm::vec4(1.0,1.0,1.0,1.0),glm::vec4(colorData.LigidPainterThemeColor,1.0));
+				
+					if(delButtonEnter && firstClick){
+						tdModelPaths.erase(tdModelPaths.begin()+i-1);
+						break;
+					}
+					glUseProgram(renderPrograms.uiProgram);
+				}
+			}
 		}
 }

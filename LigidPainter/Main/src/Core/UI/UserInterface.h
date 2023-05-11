@@ -747,8 +747,12 @@ public:
 	void renderTextR(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active);
 	void renderTextR(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,Font font);
 	void renderTextM(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,Font font);
+	void renderTextM(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,float maxX,bool multipleLines);
+
 	void renderMenubar(GLFWwindow* window);
 	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked,unsigned int circleTxtr);
+	void checkBoxW(float position_x, float position_y, std::string text, bool mouseHover,bool checked,unsigned int circleTxtr);
+
 	void panelChangeButton(float position_x, float position_y);
 	void rangeBar(float position_x, float position_y, float value,float divideWidth);
 	void constRangeBar(float position_x, float position_y,float value,Icons icons,float mixVal,float &lastVal,bool &increase);

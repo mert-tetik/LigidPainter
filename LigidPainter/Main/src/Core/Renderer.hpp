@@ -192,7 +192,44 @@ public :
         }
     }
 };
+class RendererCheckBox
+{
+private:
+    /* data */
+public:
+    std::string text;
+    bool clickable;
+    GLFWwindow* window;
+    bool checked;
 
+    bool buttonEnter;
+
+    RendererCheckBox(){
+        //width = widthD
+        //height = heightD
+        //curveValue = curveValueD
+        //outline = outlineD
+        //text = textD;
+        //color1 = color1D;
+        //color2 = color2D;
+        //clickable = false;
+        //window = windowD
+    }//
+    RendererCheckBox(std::string textD ,bool checkedD,GLFWwindow* windowD){
+        text = textD;
+        checked = checkedD;
+        window = windowD;
+    }
+    void draw(glm::vec3 pos,glm::vec2 cursorPos,bool firstClick){
+        UserInterface ui;
+        buttonEnter = ui.isMouseOnButton(window,0.05,0.05,pos.x,pos.y,cursorPos.x,cursorPos.y,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+
+        if(buttonEnter && firstClick)        
+            checked = !checked;
+            
+        ui.checkBoxW(pos.x,pos.y,text,buttonEnter,checked,0);
+    }
+};
 
 class Renderer
 {
@@ -207,6 +244,10 @@ public:
     RendererTextBox startScreenProjectTitleTextBox;
     RendererTextBox startScreenProjectPathTextBox;
     RendererListBox startScreenProjectResolutionTextBox;
+    
+    RendererCheckBox startScreenIncludeTexturesCheckBox;
+    RendererCheckBox startScreenIncludeNodesCheckBox;
+    RendererCheckBox startScreenIncludeFontsCheckBox;
 };
 
 #endif

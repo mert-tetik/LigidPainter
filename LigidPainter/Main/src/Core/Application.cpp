@@ -528,6 +528,9 @@ bool LigidPainter::run()
 	renderer.startScreenProjectTitleTextBox = RendererTextBox(0.4f,0.06f,0,"Title Here",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,glm::vec4(0,0,0,1),0.00035f,false,window);
 	renderer.startScreenProjectPathTextBox = RendererTextBox(0.4f,0.06f,0,"./Projects",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,glm::vec4(0,0,0,1),0.00035f,true,window);
 	renderer.startScreenProjectResolutionTextBox = RendererListBox(0.4f,0.06f,0,{"256","512","1024","2048","4096"},0,glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,window);
+	renderer.startScreenIncludeTexturesCheckBox = RendererCheckBox("Include Textures",true,window);
+	renderer.startScreenIncludeNodesCheckBox = RendererCheckBox("Include Node",true,window);
+	renderer.startScreenIncludeFontsCheckBox = RendererCheckBox("Include Fonts",true,window);
 
 
 
