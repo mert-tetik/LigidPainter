@@ -84,7 +84,7 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	}
 
 	if (!isTextBox && text != "") {
-		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,false,position_x+width,false);
+		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,false,position_x+width,false,mixVal);
 	}
 	else if(text != ""){
 		if(mixVal > 0.f){
@@ -94,12 +94,12 @@ void UserInterface::box(float width, float height, float position_x, float posit
 			glUseProgram(uiPrograms.uiProgram);
 
 
-			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,0.96f,mixVal > 0.f,position_x+width,true);
+			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,0.96f,mixVal > 0.f,position_x+width,true,0);
 			
 		}
 		else{
 			Utilities util;
-			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,mixVal > 0.f,position_x+width,false);
+			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,mixVal > 0.f,position_x+width,false,0);
 		}
 	}
 
@@ -162,7 +162,7 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	}
 
 	if (!isTextBox && text != "") {
-		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, textSize,textColor,z+0.001f,false,position_x+width,false);
+		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, textSize,textColor,z+0.001f,false,position_x+width,false,mixVal);
 	}
 	else if(text != ""){
 		if(mixVal > 0.f){
@@ -172,12 +172,12 @@ void UserInterface::box(float width, float height, float position_x, float posit
 			glUseProgram(uiPrograms.uiProgram);
 
 
-			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, textSize,textColor,0.96f,mixVal > 0.f,position_x+width,true);
+			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, textSize,textColor,0.96f,mixVal > 0.f,position_x+width,true,0);
 			
 		}
 		else{
 			Utilities util;
-			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, textSize,textColor,z+0.001f,mixVal > 0.f,position_x+width,false);
+			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, textSize,textColor,z+0.001f,mixVal > 0.f,position_x+width,false,0);
 		}
 	}
 
@@ -1547,6 +1547,7 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 	glset.uniform1i(program,"isText", 1);
 	glset.uniform1i(program, "isTextF", 1);
 	glset.uniform4fv(program, "uiColor", color);
+	glset.uniform1f(program, "uiTransitionMixVal", 0.f);
 	
 	std::string::const_iterator c;
 	int counter = 0;
@@ -1612,7 +1613,7 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
 	glBindVertexArray(uiObjects.VAO);
 }
-void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,float maxX,bool multipleLines) {
+void UserInterface::renderText(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,float maxX,bool multipleLines,float mixVal) {
 	lastXText = x;
 	GlSet glset;
 	ColorData2 colorData2;
@@ -1632,6 +1633,7 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 	glset.uniform1i(program,"isText", 1);
 	glset.uniform1i(program, "isTextF", 1);
 	glset.uniform4fv(program, "uiColor", color);
+	glset.uniform1f(program, "uiTransitionMixVal", mixVal);
 	
 	std::string::const_iterator c;
 	int counter = 0;
@@ -1724,7 +1726,9 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 	glset.uniform1i(program,"isText", 1);
 	glset.uniform1i(program, "isTextF", 1);
 	glset.uniform4fv(program, "uiColor", color);
+	glset.uniform1f(program, "uiTransitionMixVal", 0.f);
 	
+
 	std::string::const_iterator c;
 	int counter = 0;
 	for (c = text.begin(); c != text.end(); c++)
@@ -1809,6 +1813,7 @@ void UserInterface::renderText(unsigned int program, std::string text, float x, 
 	glset.uniform1i(program,"isText", 1);
 	glset.uniform1i(program, "isTextF", 1);
 	glset.uniform4fv(program, "uiColor", color);
+	glset.uniform1f(program, "uiTransitionMixVal", 0.f);
 	
 	std::string::const_iterator c;
 	int counter = 0;
@@ -1898,6 +1903,7 @@ void UserInterface::renderTextM(unsigned int program, std::string text, float x,
 	glset.uniform1i(program,"isText", 1);
 	glset.uniform1i(program, "isTextF", 1);
 	glset.uniform4fv(program, "uiColor", color);
+	glset.uniform1f(program, "uiTransitionMixVal", 0.f);
 	
 	std::string::const_iterator c;
 	int counter = 0;
@@ -1985,7 +1991,9 @@ void UserInterface::renderTextM(unsigned int program, std::string text, float x,
 	glset.uniform1i(program,"isText", 1);
 	glset.uniform1i(program, "isTextF", 1);
 	glset.uniform4fv(program, "uiColor", color);
+	glset.uniform1f(program, "uiTransitionMixVal", 0.f);
 	
+
 	std::string::const_iterator c;
 	int counter = 0;
 
@@ -2081,6 +2089,8 @@ void UserInterface::renderTextR(unsigned int program, std::string text, float x,
 	glset.uniform1i(program,"isText", 1);
 	glset.uniform1i(program, "isTextF", 1);
 	glset.uniform4fv(program, "uiColor", color);
+	glset.uniform1f(program, "uiTransitionMixVal", 0.f);
+
 	
 	int c;
 	int counter = 0;
@@ -2159,6 +2169,8 @@ void UserInterface::renderTextR(unsigned int program, std::string text, float x,
 	glset.uniform1i(program,"isText", 1);
 	glset.uniform1i(program, "isTextF", 1);
 	glset.uniform4fv(program, "uiColor", color);
+	glset.uniform1f(program, "uiTransitionMixVal", 0.f);
+
 	
 	int c;
 	int counter = 0;

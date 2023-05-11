@@ -74,7 +74,8 @@ void main() {
          //Text here
          vec2 uv = TexCoords;
          uv.y = 1. - uv.y;
-         vec4 sampled = vec4(uiColor.rgb, texture(text, uv).r);
+         vec4 cColor = mix(uiColor,uiTransitionColor,uiTransitionMixVal); 
+         vec4 sampled = vec4(cColor.rgb, texture(text, uv).r);
          color = vec4(textColor,1) * sampled * uiColor.a;
       }
 }
