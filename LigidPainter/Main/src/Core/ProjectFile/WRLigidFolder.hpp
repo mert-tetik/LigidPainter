@@ -22,7 +22,8 @@
 
 class ProjectFolder{
 public:
-    void initFolder(std::string &path,char* &modelFilePath,std::vector<UIElement> &UIElements,bool transTextures,bool transNodes,std::vector<std::string> tdModelPaths){
+    void initFolder(std::string &path,std::string projectTitle,bool transTextures,bool transNodes,std::vector<std::string> tdModelPaths){
+        //TODO Process font importing
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -113,8 +114,6 @@ public:
 		nodespath += "Nodes";
 		std::filesystem::create_directories(nodespath);
 
-		std::string modelPath = modelFilePath;
-
 		std::string extension = "";
 				
 		std::filesystem::copy("./LigidPainter/Resources/Text", path);
@@ -129,7 +128,7 @@ public:
         uint64_t h2 = 0xFF8A1C1C; 
         uint64_t h3 = 0x4B4B9AAA; 
 
-        std::ofstream wf(path + folderDistinguisher + UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text + ".ligid", std::ios::out | std::ios::binary);
+        std::ofstream wf(path + folderDistinguisher + projectTitle + ".ligid", std::ios::out | std::ios::binary);
         		
 		if(!wf) {
             std::cout << "ERROR WHILE CREATING LIGID PROJECT FILE! Cannot open file : " << path << std::endl;

@@ -607,7 +607,8 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 	}
 	else if(startScreen){
 		startScreenPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,
-						  displayProjectFolderManager,fonts,projectManager,albedoTextures,1024,nodeScenes,appNodes,addNodeContextMenu,model,firstClickR,renderer,startScreenScrollVal);
+						  displayProjectFolderManager,fonts,projectManager,albedoTextures,1024,nodeScenes,appNodes,addNodeContextMenu,model,firstClickR,renderer,startScreenScrollVal
+						  ,startScreen);
 		// gls.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		// glActiveTexture(GL_TEXTURE13);
@@ -972,7 +973,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 					}
 				}
 				ProjectFolder project;
-				project.initFolder(path,modelFilePath,UIElements,UIElements[UIbackfaceCullingCheckBox].checkBox.checked,UIElements[UIuseUVCheckBox].checkBox.checked,createProject3DModelPaths);
+				//project.initFolder(path,modelFilePath,UIElements,UIElements[UIbackfaceCullingCheckBox].checkBox.checked,UIElements[UIuseUVCheckBox].checkBox.checked,createProject3DModelPaths);
 
 				project.readFolder(path + folderDistinguisher + UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures,fonts);
 

@@ -46,7 +46,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
                                         bool firstClick,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
                                         ,int txtrRes,std::vector<NodeScene> &materials, std::vector<Node> &appNodes, ContextMenu &addNodeContexMenu, Model &model,bool firstClickR,Renderer &renderer
-										,float &scrVal){
+										,float &scrVal,bool &startScreen){
 		#if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -155,7 +155,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.renderText(renderPrograms.uiProgram,"Project Path",-0.47f,0.4f-scrVal,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 
 			renderer.startScreenProjectPathTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.315f-scrVal,0.9f),glm::vec2(mouseXpos,mouseYpos),firstClick);
-			
+			projectPath = renderer.startScreenProjectPathTextBox.text;
 			
 			//3 Texture Resolution
 			glUseProgram(renderPrograms.iconsProgram);
@@ -332,5 +332,17 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.box(0.9f,0.08f,-1.0 + 0.4f + 0.9f,-1.0f+0.08,"",glm::vec4(0.86,0.86,0.86,1.0),0,false,false,0.92f,10000,glm::vec4(colorData.LigidPainterThemeColor,1.0),0);
 
 			renderer.startScreenCreateTheProjectButton.draw(glm::vec3(-1.0 + 0.4f + 0.9f,-1.0f+0.08,0.95f),glm::vec2(mouseXpos,mouseYpos));
+			if(renderer.startScreenCreateTheProjectButton.buttonEnter && firstClick){
+				//if(!std::filesystem::exists(projectPath))
+					//Project path doesn't exist
+				//if(renderer.startScreenProjectTitleTextBox.text == "")
+					//Project title is empty
+				//if(tdModelPaths.size() == 0)
+					//There are no 3D Models selected
+
+				ProjectFolder project;
+				project.initFolder(projectPath,renderer.startScreenProjectTitleTextBox.text,renderer.startScreenIncludeTexturesCheckBox.checked,renderer.startScreenIncludeNodesCheckBox.checked,tdModelPaths);
+				startScreen = false;
+			}
 		}
 }
