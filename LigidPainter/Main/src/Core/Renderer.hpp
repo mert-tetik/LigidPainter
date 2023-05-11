@@ -56,13 +56,14 @@ public:
         window = windowD;
     }
     void draw(glm::vec3 pos,glm::vec2 cursorPos){
+        ColorData colorData;
         UserInterface ui;
         buttonEnter = ui.isMouseOnButton(window,width,height,pos.x,pos.y,cursorPos.x,cursorPos.y,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
         
         Utilities util;
         mixVal = util.transitionEffect(buttonEnter,mixVal,0.1f);
         
-        ui.box(width,height,pos.x,pos.y,text,color1,0,false,false,pos.z,curveValue,color2,mixVal);
+        ui.box(width,height,pos.x,pos.y,text,color1,0,false,false,pos.z,curveValue,color2,mixVal,curveValue >= 100 ? colorData.textColor : color1,0.0003f);
     }
 };
 
