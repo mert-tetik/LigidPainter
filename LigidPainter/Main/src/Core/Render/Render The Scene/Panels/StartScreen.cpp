@@ -197,24 +197,72 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.renderTheProgram(-0.1f,-0.6f-scrVal,0.1f*1.4705/1.5,0.1f);
 
 			glUseProgram(renderPrograms.uiProgram);
-        	ui.box(0.11f*1.4705/1.5,0.08f,-0.35f,-0.4f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,40,glm::vec4(colorData.LigidPainterThemeColor,1.0),selectedSkyBox == 0);
-			if(ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.35f,-0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5) && firstClick)
+        	
+			bool sky0Enter = ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.35f,-0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+			if(sky0Enter && firstClick)
 				selectedSkyBox = 0;
-        	ui.box(0.11f*1.4705/1.5,0.08f,-0.1f, -0.4f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,40,glm::vec4(colorData.LigidPainterThemeColor,1.0),selectedSkyBox == 1);
-			if(ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.1f, -0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5) && firstClick)
+			glm::vec4 sky0BtnColor = glm::vec4(0.06,0.12,0.15,1.0);
+			glm::vec4 sky0BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,1.0);
+			if(sky0Enter){
+				sky0BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
+				sky0BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
+			}
+			ui.box(0.11f*1.4705/1.5,0.08f,-0.35f,-0.4f-scrVal,"",sky0BtnColor,0,false,false,0.92f,40,sky0BtnColorActive,selectedSkyBox == 0);
+        	
+			bool sky1Enter = ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.1f, -0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+			if(sky1Enter && firstClick)
 				selectedSkyBox = 1;
-        	ui.box(0.11f*1.4705/1.5,0.08f, 0.15f,-0.4f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,40,glm::vec4(colorData.LigidPainterThemeColor,1.0),selectedSkyBox == 2);
-			if(ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f, 0.15f,-0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5) && firstClick)
+			glm::vec4 sky1BtnColor = glm::vec4(0.06,0.12,0.15,1.0);
+			glm::vec4 sky1BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,1.0);
+			if(sky1Enter){
+				sky1BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
+				sky1BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
+			}
+			ui.box(0.11f*1.4705/1.5,0.08f,-0.1f, -0.4f-scrVal,"",sky1BtnColor,0,false,false,0.92f,40,sky1BtnColorActive,selectedSkyBox == 1);
+        	
+			bool sky2Enter = ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f, 0.15f,-0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+			if(sky2Enter && firstClick)
 				selectedSkyBox = 2;
-        	ui.box(0.11f*1.4705/1.5,0.08f, 0.4f, -0.4f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,40,glm::vec4(colorData.LigidPainterThemeColor,1.0),selectedSkyBox == 3);
-			if(ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f, 0.4f, -0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5) && firstClick)
+			glm::vec4 sky2BtnColor = glm::vec4(0.06,0.12,0.15,1.0);
+			glm::vec4 sky2BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,1.0);
+			if(sky2Enter){
+				sky2BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
+				sky2BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
+			}
+			ui.box(0.11f*1.4705/1.5,0.08f, 0.15f,-0.4f-scrVal,"",sky2BtnColor,0,false,false,0.92f,40,sky2BtnColorActive,selectedSkyBox == 2);
+        	
+			bool sky3Enter = ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f, 0.4f, -0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+			if(sky3Enter && firstClick)
 				selectedSkyBox = 3;
-        	ui.box(0.11f*1.4705/1.5,0.08f,-0.35f,-0.6f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,40,glm::vec4(colorData.LigidPainterThemeColor,1.0),selectedSkyBox == 4);
-			if(ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.35f,-0.6f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5) && firstClick)
+			glm::vec4 sky3BtnColor = glm::vec4(0.06,0.12,0.15,1.0);
+			glm::vec4 sky3BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,1.0);
+			if(sky3Enter){
+				sky3BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
+				sky3BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
+			}
+			ui.box(0.11f*1.4705/1.5,0.08f, 0.4f, -0.4f-scrVal,"",sky3BtnColor,0,false,false,0.92f,40,sky3BtnColorActive,selectedSkyBox == 3);
+        	
+			bool sky4Enter = ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.35f,-0.6f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+			if(sky4Enter && firstClick)
 				selectedSkyBox = 4;
-        	ui.box(0.11f*1.4705/1.5,0.08f,-0.1f, -0.6f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,40,glm::vec4(colorData.LigidPainterThemeColor,1.0),selectedSkyBox == 5);
-			if(ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.1f, -0.6f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5) && firstClick)
+			glm::vec4 sky4BtnColor = glm::vec4(0.06,0.12,0.15,1.0);
+			glm::vec4 sky4BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,1.0);
+			if(sky4Enter){
+				sky4BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
+				sky4BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
+			}
+			ui.box(0.11f*1.4705/1.5,0.08f,-0.35f,-0.6f-scrVal,"",sky4BtnColor,0,false,false,0.92f,40,sky4BtnColorActive,selectedSkyBox == 4);
+        	
+			bool sky5Enter = ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.1f, -0.6f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+			if(sky5Enter && firstClick)
 				selectedSkyBox = 5;
+			glm::vec4 sky5BtnColor = glm::vec4(0.06,0.12,0.15,1.0);
+			glm::vec4 sky5BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,1.0);
+			if(sky5Enter){
+				sky5BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
+				sky5BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
+			}
+			ui.box(0.11f*1.4705/1.5,0.08f,-0.1f, -0.6f-scrVal,"",sky5BtnColor,0,false,false,0.92f,40,sky5BtnColorActive,selectedSkyBox == 5);
 
 			
 			//5 Project Settings			
@@ -279,5 +327,10 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 					glUseProgram(renderPrograms.uiProgram);
 				}
 			}
+
+			glUseProgram(renderPrograms.uiProgram);
+			ui.box(0.9f,0.08f,-1.0 + 0.4f + 0.9f,-1.0f+0.08,"",glm::vec4(0.86,0.86,0.86,1.0),0,false,false,0.92f,10000,glm::vec4(colorData.LigidPainterThemeColor,1.0),0);
+
+			renderer.startScreenCreateTheProjectButton.draw(glm::vec3(-1.0 + 0.4f + 0.9f,-1.0f+0.08,0.95f),glm::vec2(mouseXpos,mouseYpos));
 		}
 }

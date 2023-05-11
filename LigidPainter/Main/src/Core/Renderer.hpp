@@ -142,6 +142,7 @@ public :
     glm::vec4 color2;
     bool clickable;
     GLFWwindow* window;
+    float textSize = 0.00022f;
 
     bool buttonEnter;
     bool active = false;
@@ -158,7 +159,7 @@ public :
         //clickable = false;
         //window = windowD
     }//
-    RendererListBox(float widthD,float heightD,bool outlineD,std::vector<std::string> elementsD,int selectedIndexD, glm::vec4 color1D ,glm::vec4 color2D,bool clickableD,GLFWwindow* windowD){
+    RendererListBox(float widthD,float heightD,bool outlineD,std::vector<std::string> elementsD,int selectedIndexD, glm::vec4 color1D ,glm::vec4 color2D,bool clickableD,float textSizeD,GLFWwindow* windowD){
         width = widthD;
         height = heightD;
         outline = outlineD;
@@ -167,6 +168,7 @@ public :
         color2 = color2D;
         clickable = clickableD;
         window = windowD;
+        textSize = textSizeD;
         selectedIndex = selectedIndexD;
     }
     void draw(glm::vec3 pos,glm::vec2 cursorPos,bool firstClick){
@@ -182,7 +184,8 @@ public :
         mixVal = util.transitionEffect(active,mixVal,0.1f);
 
         
-        ui.box(width,height,pos.x,pos.y,elements[selectedIndex],color1,0,false,false,pos.z,10,color2,mixVal);
+        ui.box(width,height,pos.x,pos.y,elements[selectedIndex],buttonEnter == true ? color1/glm::vec4(2.) : color1 ,0,false,false,pos.z,10,color2,mixVal,color1,textSize);
+
         if(active){
             for (size_t i = 0; i < elements.size(); i++)
             {
@@ -240,6 +243,8 @@ public:
     }
     RendererButton startScreenNewProjectButton;
     RendererButton startScreenLoadProjectButton;
+    
+    RendererButton startScreenCreateTheProjectButton;
 
     RendererTextBox startScreenProjectTitleTextBox;
     RendererTextBox startScreenProjectPathTextBox;
