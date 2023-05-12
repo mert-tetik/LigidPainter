@@ -4,6 +4,7 @@
 out vec4 fragColor;
 in vec2 TexCoords;
 
+uniform float gradPosX;
 
 #define SRGB_TO_LINEAR(c) pow((c), vec3(2.2))
 #define LINEAR_TO_SRGB(c) pow((c), vec3(1.0 / 2.2))
@@ -25,7 +26,7 @@ void main()
     vec2 a; // First gradient point.
     vec2 b; // Second gradient point.
     a = abs(vec2(0));
-    b = vec2(3);
+    b = vec2(gradPosX,3);
 
     // Calculate interpolation factor with vector projection.
     vec2 ba = b - a;

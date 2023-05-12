@@ -139,8 +139,8 @@ double renderingSpeed = 1;
 
 
 float transitionEffect(bool buttonEnter,float mixVal,float phaseDifference){
-	if (buttonEnter && mixVal <= 1.0f) {mixVal += 1./(double)(400.);}
-	else if (!buttonEnter && mixVal >= 0.0f) {mixVal -= 1./(double)(400.);}
+	if (buttonEnter && mixVal <= 1.0f) {mixVal += 1./(double)(200.);}
+	else if (!buttonEnter && mixVal >= 0.0f) {mixVal -= 1./(double)(200.);}
 	return mixVal;
 } 
 

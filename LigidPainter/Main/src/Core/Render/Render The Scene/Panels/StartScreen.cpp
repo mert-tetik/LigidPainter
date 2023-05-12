@@ -43,6 +43,8 @@ bool loadProjectMode = false;
 std::vector<std::string> tdModelPaths;
 unsigned int selectedSkyBox = 0;
 
+float gradPosMixVal = 0.f;
+
 void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs renderPrograms,Cubemaps cubemaps,SkyBoxShaderData skyBoxShaderData,
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
                                         bool firstClick,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
@@ -110,6 +112,9 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
         ui.box(0.2f,1.f,-1.f + 0.2f ,0,"",glm::vec4(1),0,0,0,0.9f,10000,glm::vec4(1),0.f);
 
 		glUseProgram(renderPrograms.gradient);
+		gradPosMixVal = util.transitionEffect(createProjectMode,gradPosMixVal,0.1f);
+
+		gls.uniform1f(renderPrograms.gradient, "gradPosX", 3.f-gradPosMixVal*3.f);
 		ui.renderTheProgram(-1.0 + 0.4f + 0.9f,0.0f,0.9f,1.f);
 		
 		glUseProgram(renderPrograms.directionalShadow);
