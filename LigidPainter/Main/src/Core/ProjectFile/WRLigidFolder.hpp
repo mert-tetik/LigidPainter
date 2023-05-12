@@ -29,6 +29,9 @@ public:
 		#else
 			char folderDistinguisher = '/'; 
 		#endif
+
+        path+=folderDistinguisher;
+        path+=projectTitle;
         
         std::filesystem::create_directories(path);
 				

@@ -335,6 +335,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			if(renderer.startScreenCreateTheProjectButton.buttonEnter && firstClick){
 				//if(!std::filesystem::exists(projectPath))
 					//Project path doesn't exist
+				//if(!std::filesystem::exists(projectPath+))
+					//Project path doesn't exist
 				//if(renderer.startScreenProjectTitleTextBox.text == "")
 					//Project title is empty
 				//if(tdModelPaths.size() == 0)
@@ -342,6 +344,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 
 				ProjectFolder project;
 				project.initFolder(projectPath,renderer.startScreenProjectTitleTextBox.text,renderer.startScreenIncludeTexturesCheckBox.checked,renderer.startScreenIncludeNodesCheckBox.checked,tdModelPaths);
+				project.readFolder(projectPath + folderDistinguisher + renderer.startScreenProjectTitleTextBox.text + ".ligid" ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
 				startScreen = false;
 			}
 		}
