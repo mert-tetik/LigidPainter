@@ -365,12 +365,77 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				char const* lFilterPatterns[11] = { "*.ligid" };	
 				char * projectFilePathCheck = tinyfd_openFileDialog("Select 3D Model","", 1, lFilterPatterns,"",false);
 				ProjectFolder project;
-				//project.readFolder(projectFilePathCheck ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
+				project.readFolder(projectFilePathCheck ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
 				projectPath = projectFilePathCheck;
 				std::string projectPathName = util.getLastWordBySeparatingWithChar(projectPath,folderDistinguisher);
 				projectPath.erase(projectPath.end()-projectPathName.size(),projectPath.end());
 				startScreen = false;
 			}
-        	ui.box(0.5f,0.2f, 0.4f,0.5f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,10,glm::vec4(colorData.LigidPainterThemeColor,1.0),0.f);			
+        	ui.box(0.5f,0.2f, 0.4f,0.5f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,10,glm::vec4(colorData.LigidPainterThemeColor,1.0),0.f);
+
+			float posY = 0;
+			for (const auto & entry : std::filesystem::directory_iterator("./Projects")){
+				std::string filePath = entry.path().string();
+				std::string fileName = util.getLastWordBySeparatingWithChar(filePath,folderDistinguisher);
+				std::string path = filePath + folderDistinguisher + fileName + ".ligid";
+
+				uint64_t h1 = 0xAB428C9F; 
+         		uint64_t h2 = 0xFF8A1C1C; 
+         		uint64_t h3 = 0x4B4B9AAA; 
+         		std::ifstream rf(path, std::ios::out | std::ios::binary);
+
+		 		if(rf) {
+		 			std::string Cdt; //Creation date
+	     			std::string Ldt; //Last opening date
+
+		 			uint64_t c1; 
+         			uint64_t c2; 
+         			uint64_t c3; 
+         			rf.read(reinterpret_cast<char*>(&c1),sizeof(uint64_t));
+         			rf.read(reinterpret_cast<char*>(&c2),sizeof(uint64_t));
+         			rf.read(reinterpret_cast<char*>(&c3),sizeof(uint64_t));
+
+         			if(c1 == h1 && c2 == h2 && c3 == h3){
+					
+		 				uint64_t timestrsize;
+            	 		rf.read(reinterpret_cast<char*>(&timestrsize),sizeof(uint64_t));
+            	 		for (size_t i = 0; i < timestrsize; i++)
+            	 		{
+		 					char c;
+            	 		    rf.read(reinterpret_cast<char*>(&c),sizeof(char));
+		 					Cdt.push_back(c);
+            	 		}
+
+		 				uint64_t timestrsize2;
+            	 		rf.read(reinterpret_cast<char*>(&timestrsize2),sizeof(uint64_t));
+            	 		for (size_t i = 0; i < timestrsize2; i++)
+            	 		{
+		 					char c;
+            	 		    rf.read(reinterpret_cast<char*>(&c),sizeof(char));
+		 					Ldt.push_back(c);
+            	 		}
+						bool buttonEnter = ui.isMouseOnButton(window,0.7f,0.06f,0.15f,-0.025f-posY,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+						if(buttonEnter && firstClick){
+							ProjectFolder project;
+							project.readFolder(path ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
+							projectPath = path;
+							std::string projectPathName = util.getLastWordBySeparatingWithChar(projectPath,folderDistinguisher);
+							projectPath.erase(projectPath.end()-projectPathName.size(),projectPath.end());
+							startScreen = false;
+						}
+						ui.box(0.7f,0.06f,0.15f,-0.025f-posY,"",glm::vec4(0),0,false,false,0.9f,1000,glm::vec4(0.66,0.72,0.75,1.0),buttonEnter);
+
+		 				ui.renderText(renderPrograms.uiProgram, (std::string)Cdt ,0.05f,-0.025f-posY,0.0003f,glm::vec4(0.06,0.12,0.15,1.0),0.93f,false);
+		 				ui.renderText(renderPrograms.uiProgram, (std::string)Ldt ,0.45f,-0.025f-posY,0.0003f,glm::vec4(0.06,0.12,0.15,1.0),0.93f,false);
+						
+						ui.renderText(renderPrograms.uiProgram,fileName,-0.4f,0.0f-posY,0.00035f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false,0.04,false,0.f);
+						ui.renderText(renderPrograms.uiProgram,std::filesystem::absolute(filePath).string(),-0.4f,-0.05f-posY,0.00025f,glm::vec4(0.06,0.12,0.15,0.5),0.95f,false,0.04,false,0.f);
+
+						ui.renderText(renderPrograms.uiProgram,std::to_string((int)(posY*6.66666666667)+1),-0.5f,-0.05f-posY,0.0005f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false);
+
+						posY += 0.15f;
+         			}
+         		}
+			}
 		}
 }
