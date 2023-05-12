@@ -38,6 +38,7 @@
 #include "tinyfiledialogs.h"
 
 bool createProjectMode = true;
+bool loadProjectMode = false;
 
 std::vector<std::string> tdModelPaths;
 unsigned int selectedSkyBox = 0;
@@ -114,13 +115,13 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 		glUseProgram(renderPrograms.directionalShadow);
 		ui.renderTheProgram(-1.0 + 0.4f + 0.9f,0.0f,0.9f,1.f);
 
-					glUseProgram(renderPrograms.renderTheTextureProgram);
-			glActiveTexture(GL_TEXTURE14);
-			gls.uniform1f(renderPrograms.renderTheTextureProgram,"opacity",0.1f);
-			
-			gls.bindTexture(icons.rendered1);
-			ui.renderTheProgram(0.2f,-0.2f,0.8f / 1.428 /1.5,0.8f);
-			gls.uniform1f(renderPrograms.renderTheTextureProgram,"opacity",1.f);
+		glUseProgram(renderPrograms.renderTheTextureProgram);
+		glActiveTexture(GL_TEXTURE14);
+		gls.uniform1f(renderPrograms.renderTheTextureProgram,"opacity",0.1f);
+		
+		gls.bindTexture(icons.rendered1);
+		ui.renderTheProgram(0.2f,-0.2f,0.8f / 1.428 /1.5,0.8f);
+		gls.uniform1f(renderPrograms.renderTheTextureProgram,"opacity",1.f);
 		
         
 		//glEnable(GL_DEPTH_TEST);
@@ -128,7 +129,15 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 		
 		glUseProgram(renderPrograms.uiProgram);
         renderer.startScreenNewProjectButton.draw(glm::vec3(-1.f + 0.2f,0.7f,0.92f),glm::vec2(mouseXpos,mouseYpos));
+		if(renderer.startScreenNewProjectButton.buttonEnter && firstClick){
+			createProjectMode = true;
+			loadProjectMode = false;
+		}
         renderer.startScreenLoadProjectButton.draw(glm::vec3(-1.f + 0.2f,0.58f,0.92f),glm::vec2(mouseXpos,mouseYpos));
+		if(renderer.startScreenLoadProjectButton.buttonEnter && firstClick){
+			loadProjectMode = true;
+			createProjectMode = false;
+		}
 			
 
 
@@ -347,5 +356,9 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				project.readFolder(projectPath + folderDistinguisher + renderer.startScreenProjectTitleTextBox.text + ".ligid" ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
 				startScreen = false;
 			}
+		}
+		else if(loadProjectMode){
+			ui.renderText(renderPrograms.uiProgram,"Load a project",-0.55f,0.8f-scrVal,0.0006f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
+			
 		}
 }
