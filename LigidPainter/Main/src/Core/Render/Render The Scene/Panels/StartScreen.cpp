@@ -360,5 +360,17 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 		else if(loadProjectMode){
 			ui.renderText(renderPrograms.uiProgram,"Load a project",-0.55f,0.8f-scrVal,0.0006f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 			
+			renderer.startScreenLoadAProjectButton.draw(glm::vec3(-0.35f,0.5f-scrVal,0.95f),glm::vec2(mouseXpos,mouseYpos));
+			if(renderer.startScreenLoadAProjectButton.buttonEnter && firstClick){
+				char const* lFilterPatterns[11] = { "*.ligid" };	
+				char * projectFilePathCheck = tinyfd_openFileDialog("Select 3D Model","", 1, lFilterPatterns,"",false);
+				ProjectFolder project;
+				//project.readFolder(projectFilePathCheck ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
+				projectPath = projectFilePathCheck;
+				std::string projectPathName = util.getLastWordBySeparatingWithChar(projectPath,folderDistinguisher);
+				projectPath.erase(projectPath.end()-projectPathName.size(),projectPath.end());
+				startScreen = false;
+			}
+        	ui.box(0.5f,0.2f, 0.4f,0.5f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,10,glm::vec4(colorData.LigidPainterThemeColor,1.0),0.f);			
 		}
 }

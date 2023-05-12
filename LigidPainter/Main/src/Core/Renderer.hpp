@@ -246,7 +246,7 @@ public:
     RendererButton startScreenLoadProjectButton;
     
     RendererButton startScreenCreateTheProjectButton;
-
+    
     RendererTextBox startScreenProjectTitleTextBox;
     RendererTextBox startScreenProjectPathTextBox;
     RendererListBox startScreenProjectResolutionTextBox;
@@ -254,6 +254,9 @@ public:
     RendererCheckBox startScreenIncludeTexturesCheckBox;
     RendererCheckBox startScreenIncludeNodesCheckBox;
     RendererCheckBox startScreenIncludeFontsCheckBox;
+    
+    
+    RendererButton startScreenLoadAProjectButton;
 };
 
 #endif
