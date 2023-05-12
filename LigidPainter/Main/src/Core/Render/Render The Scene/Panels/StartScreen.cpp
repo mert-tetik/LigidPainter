@@ -119,7 +119,10 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 		glActiveTexture(GL_TEXTURE14);
 		gls.uniform1f(renderPrograms.renderTheTextureProgram,"opacity",0.1f);
 		
-		gls.bindTexture(icons.rendered1);
+		if(createProjectMode)
+			gls.bindTexture(icons.rendered1);
+		if(loadProjectMode)
+			gls.bindTexture(icons.rendered2);
 		ui.renderTheProgram(0.2f,-0.2f,0.8f / 1.428 /1.5,0.8f);
 		gls.uniform1f(renderPrograms.renderTheTextureProgram,"opacity",1.f);
 		
@@ -358,9 +361,9 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			}
 		}
 		else if(loadProjectMode){
-			ui.renderText(renderPrograms.uiProgram,"Load a project",-0.55f,0.8f-scrVal,0.0006f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
+			ui.renderText(renderPrograms.uiProgram,"Load a project",-0.55f,0.8f,0.0006f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 			
-			renderer.startScreenLoadAProjectButton.draw(glm::vec3(-0.35f,0.5f-scrVal,0.95f),glm::vec2(mouseXpos,mouseYpos));
+			renderer.startScreenLoadAProjectButton.draw(glm::vec3(-0.35f,0.5f,0.95f),glm::vec2(mouseXpos,mouseYpos));
 			if(renderer.startScreenLoadAProjectButton.buttonEnter && firstClick){
 				char const* lFilterPatterns[11] = { "*.ligid" };	
 				char * projectFilePathCheck = tinyfd_openFileDialog("Select 3D Model","", 1, lFilterPatterns,"",false);
@@ -371,7 +374,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				projectPath.erase(projectPath.end()-projectPathName.size(),projectPath.end());
 				startScreen = false;
 			}
-        	ui.box(0.5f,0.2f, 0.4f,0.5f-scrVal,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,10,glm::vec4(colorData.LigidPainterThemeColor,1.0),0.f);
+        	ui.box(0.5f,0.2f, 0.4f,0.5f,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,10,glm::vec4(colorData.LigidPainterThemeColor,1.0),0.f);
+			ui.renderText(renderPrograms.uiProgram,"Drag & Drop *.ligid files here",0.2f,0.4f,0.0005f,glm::vec4(0.06,0.12,0.15,1.0),0.93f,false);
 
 			float posY = 0;
 			for (const auto & entry : std::filesystem::directory_iterator("./Projects")){

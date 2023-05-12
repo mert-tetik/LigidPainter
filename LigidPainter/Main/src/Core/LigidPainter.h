@@ -229,6 +229,7 @@ struct Icons{
 	unsigned int sky6;
 	
 	unsigned int rendered1;
+	unsigned int rendered2;
 };
 
 struct RenderData { //GlSet::render

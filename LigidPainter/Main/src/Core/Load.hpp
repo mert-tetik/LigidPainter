@@ -245,6 +245,7 @@ public:
 		icons.sky6 = txtr.getTexture(".\\LigidPainter\\Resources\\Images\\sky\\sky6.png",0,0,false);
 		
 		icons.rendered1 = txtr.getTexture(".\\LigidPainter\\Resources\\Images\\rendered1.png",0,0,false);
+		icons.rendered2 = txtr.getTexture(".\\LigidPainter\\Resources\\Images\\rendered2.png",0,0,false);
 	
 		return icons;
 	}
