@@ -184,12 +184,12 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
                     copyPathHover = true;
                 if(copyPathHover && firstClick)
                     glfwSetClipboardString(window,std::filesystem::absolute(fileName.c_str()).string().c_str());
-                ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y,"Copy Path",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,0.06f,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,copyPathHover);
+                ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y,"Copy Path",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1),0.06f,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,copyPathHover);
 
                 bool renameHover = false;
                 if(ui.isMouseOnButton(window,0.06f,0.02f,contextMenuPos.x,contextMenuPos.y - 0.04f,mouseXpos,mouseYpos,0))
                     renameHover = true;
-                ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.04,"Rename",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,0.06f ,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,renameHover);
+                ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.04,"Rename",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1),0.06f ,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,renameHover);
 
                 
                 if(std::filesystem::is_directory(fileName)){
@@ -201,7 +201,7 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
                             if(!std::filesystem::is_directory(glfwGetClipboardString(window)))//Is a file?
                                 std::filesystem::copy(glfwGetClipboardString(window),fileName);
                     }
-                    ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.08f,"Paste The Path",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor, 0.06f,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,pasteHover);
+                    ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.08f,"Paste The Path",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1), 0.06f,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,pasteHover);
                     
                     bool addFileHover = false;
                     if(ui.isMouseOnButton(window,0.06f,0.02f,contextMenuPos.x ,contextMenuPos.y - 0.12f,mouseXpos,mouseYpos,0))
@@ -214,7 +214,7 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
                                     std::filesystem::copy(addFilePath,fileName);
 
                     }
-                    ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.12f,"Add File",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor, 0.06f,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,addFileHover);
+                    ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.12f,"Add File",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1), 0.06f,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,addFileHover);
                 }
                 else{
                     bool deleteHover = false;
@@ -227,12 +227,12 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
                         }
                         
                     }
-                    ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.08,"Delete",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,0.06f ,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,deleteHover);
+                    ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.08,"Delete",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1),0.06f ,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,deleteHover);
                 }
                 
             }
             if(bI >= 0)
-                ui.box(midPanelW,0.02f,(-1.f+midPanelW)+0.05f+screenGapX,(0.9f-0.02f) - ((float)bI * 0.04),file,(isSelected(fileName)) || (fileName == contextMenuFile) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor,midPanelW-0.01f - (cI/30.f) + ((countSlashes(path) - countSlashes(fileName)) / 50.f) ,false,false,0.91f+((buttonHover||isSelected(fileName))/10000.f),10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,buttonHover);
+                ui.box(midPanelW,0.02f,(-1.f+midPanelW)+0.05f+screenGapX,(0.9f-0.02f) - ((float)bI * 0.04),file,(isSelected(fileName)) || (fileName == contextMenuFile) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1),midPanelW-0.01f - (cI/30.f) + ((countSlashes(path) - countSlashes(fileName)) / 50.f) ,false,false,0.91f+((buttonHover||isSelected(fileName))/10000.f),10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : glm::vec4(0.9f,0.9f,0.9f,1),buttonHover,glm::vec4(0.06,0.12,0.15,1.0),0.00022f);
 
             if(std::filesystem::is_directory(fileName) && bI >= 0){
                 bool hideButtonHover = buttonHover;
@@ -255,7 +255,7 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
                 if(!std::filesystem::is_directory(glfwGetClipboardString(window)))//Is a file?
                     std::filesystem::copy(glfwGetClipboardString(window),path);
         }
-        ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.08f,"Paste The Path",isSelected(path) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor, 0.06f,false,false,0.93f,10000,isSelected(path) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,pasteHover);
+        ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.08f,"Paste The Path",isSelected(path) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1), 0.06f,false,false,0.93f,10000,isSelected(path) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,pasteHover);
         
         bool addFileHover = false;
         if(ui.isMouseOnButton(window,0.06f,0.02f,contextMenuPos.x,contextMenuPos.y - 0.12f,mouseXpos,mouseYpos,0))
@@ -267,7 +267,7 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
                     if(!std::filesystem::is_directory(addFilePath))//Is a file?
                         std::filesystem::copy(addFilePath,path);
         }
-        ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.12f,"Add File",isSelected(path) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : colorData.buttonColor, 0.06f,false,false,0.93f,10000,isSelected(path) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,addFileHover);
+        ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.12f,"Add File",isSelected(path) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1), 0.06f,false,false,0.93f,10000,isSelected(path) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,addFileHover);
 
     }
     if(firstClick)
@@ -334,10 +334,10 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
 		glUseProgram(renderPrograms.uiProgram);
 		
 		glEnable(GL_DEPTH_TEST);
-        ui.box(1.0f,0.025f,0.f + screenGapX,(1.f-0.025f),"",glm::vec4(colorData.panelColor.r,colorData.panelColor.g,colorData.panelColor.b,1),+0.19f,false,false,0.91f,10000,colorData.panelColorSnd,0); //Upbar
+        ui.box(1.0f,0.025f,0.f + screenGapX,(1.f-0.025f),"",glm::vec4(1,1,1,1),+0.19f,false,false,0.91f,10000,colorData.panelColorSnd,0); //Upbar
 		
         //Left column
-		ui.box(0.025f,1.0f,(-1.f+0.025f) + screenGapX,0.f,"",glm::vec4(colorData.panelColorSnd.r,colorData.panelColorSnd.g,colorData.panelColorSnd.b,1),+0.19f,false,false,0.92f,10000,colorData.panelColorSnd,0);
+		ui.box(0.025f,1.0f,(-1.f+0.025f) + screenGapX,0.f,"",glm::vec4(0.95f,0.95f,0.95f,1),+0.19f,false,false,0.92f,10000,colorData.panelColorSnd,0);
 
 
 
@@ -347,45 +347,45 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
 		
         float midPanelW = 0.15f;
 		glEnable(GL_DEPTH_TEST);
-        ui.box(midPanelW,1.0f,(-1.f+0.15f+0.05f) + screenGapX,0.f,"",colorData.panelColorSnd,+0.19f,false,false,0.91f,10000,colorData.panelColorSnd,0);
+        ui.box(midPanelW,1.0f,(-1.f+0.15f+0.05f) + screenGapX,0.f,"",glm::vec4(1,1,1,1.f),+0.19f,false,false,0.91f,10000,colorData.panelColorSnd,0);
         projectManager.elementPanelHover = ui.isMouseOnButton(window,midPanelW,1.0f,(-1.f+0.15f+0.05f),0.f,mouseXpos,mouseYpos,0);
 		glDisable(GL_DEPTH_TEST);
 		
 		glUseProgram(renderPrograms.iconsProgram);
 		//Close
         bool closeIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.92f,mouseXpos,mouseYpos,false);
-		ui.iconBox(0.01f,0.02f,(-1.f+0.025f)+ screenGapX,0.94f,0.92f,icons.Undo,closeIconHover,colorData.iconColor,colorData.iconColorHover);
+		ui.iconBox(0.01f,0.02f,(-1.f+0.025f)+ screenGapX,0.94f,0.92f,icons.Undo,closeIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));
         if(closeIconHover && firstClick)
             displayProjectFolderManager = false;
 		
 		
         bool texturesIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.82f,mouseXpos,mouseYpos,false);
-		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.82f,0.92f,icons.Texture,texturesIconHover,colorData.iconColor,colorData.iconColorHover);//Textures
+		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.82f,0.92f,icons.Texture,texturesIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Textures
         if(texturesIconHover && firstClick)
             projectFolderState = 0;
 
         bool tdmodelsIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.74f,mouseXpos,mouseYpos,false);
-		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.74f,0.92f,icons.TDModel,tdmodelsIconHover,colorData.iconColor,colorData.iconColorHover);//3DModels
+		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.74f,0.92f,icons.TDModel,tdmodelsIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//3DModels
         if(tdmodelsIconHover && firstClick)
             projectFolderState = 1;
 		
         bool materialsIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.66f,mouseXpos,mouseYpos,false);
-		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.66f,0.92f,icons.Material,materialsIconHover,colorData.iconColor,colorData.iconColorHover);//Materials
+		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.66f,0.92f,icons.Material,materialsIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Materials
         if(materialsIconHover && firstClick)
             projectFolderState = 2;
 		
         bool nodesIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.58f,mouseXpos,mouseYpos,false);
-		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.58f,0.92f,icons.Mark,nodesIconHover,colorData.iconColor,colorData.iconColorHover);//Nodes
+		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.58f,0.92f,icons.Mark,nodesIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Nodes
         if(nodesIconHover && firstClick)
             projectFolderState = 3;
 		
         bool shadersIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.50f,mouseXpos,mouseYpos,false);
-		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.50f,0.92f,icons.BrushFolder,shadersIconHover,colorData.iconColor,colorData.iconColorHover);//Shaders
+		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.50f,0.92f,icons.BrushFolder,shadersIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Shaders
         if(shadersIconHover && firstClick)
             projectFolderState = 4;
         
         bool fontsIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.42f,mouseXpos,mouseYpos,false);
-		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.42f,0.92f,icons.JpgFile,fontsIconHover,colorData.iconColor,colorData.iconColorHover);//Shaders
+		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.42f,0.92f,icons.JpgFile,fontsIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Shaders
         if(fontsIconHover && firstClick){
             projectFolderState = 5;
 
@@ -419,7 +419,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
 	        -rad + pos.x,  rad*2 + pos.y, 0.0f,0,1,0,0,0   // top left
 	    };
         
-		ui.box(midPanelW,0.025f, (-1.f+0.15f+0.05f) + screenGapX,0.925f,currentFolder,glm::vec4(colorData.panelColorSnd.r,colorData.panelColorSnd.g,colorData.panelColorSnd.b,0.5),+0.14f,false,false,0.92f,10000,colorData.panelColorSnd,0);
+		ui.box(midPanelW,0.025f, (-1.f+0.15f+0.05f) + screenGapX,0.925f,currentFolder,glm::vec4(0.92,0.92,0.92,1.0),+0.14f,false,false,0.92f,10000,colorData.panelColorSnd,0,glm::vec4(0.26,0.32,0.35,1.0),0.00022f);
         
 
         drawTheFolder(projectPath + folderDistinguisher + currentFolder,screenGapX,mouseXpos,mouseYpos,window,midPanelW,icons,renderPrograms,firstClick,projectManager,firstClickR);
@@ -602,7 +602,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
         ProjectFolder project;
         project.saveFolder(projectPath,albedoTextures,txtrRes);
     }
-    ui.box(0.03f,0.025f,-1.0f+0.05f+0.03f + screenGapX,(1.f-0.025f),"Save",glm::vec4(0.7f),0.02f,false,false,0.91f + saveButtonHover/1000.f,1000.f,colorData.buttonColor,0.f);
+    ui.box(0.03f,0.025f,-1.0f+0.05f+0.03f + screenGapX,(1.f-0.025f),"Save",glm::vec4(0.7f),0.02f,false,false,0.91f + saveButtonHover/1000.f,1000.f,colorData.buttonColor,0.f,glm::vec4(0.06,0.12,0.15,1.0),0.00022f);
 		
     ui.box(0.0005f,0.025f,(-1.0f+0.05f+0.03f)+0.03f + screenGapX,(1.f-0.025f),"",glm::vec4(0.7f),0.f,false,false,0.93f,1000.f,colorData.iconColor,0.f);
 		
@@ -616,7 +616,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
         if(pathCheck.size())
             projectPath = pathCheck;        
     }
-    ui.box(0.04f,0.025f,(-1.0f+0.05f+0.03f)+0.03f + 0.04f + screenGapX,(1.f-0.025f),"Save As",glm::vec4(0.7f),0.035f,false,false,0.91f + saveAsButtonHover/1000.f,1000.f,colorData.buttonColor,0.f);
+    ui.box(0.04f,0.025f,(-1.0f+0.05f+0.03f)+0.03f + 0.04f + screenGapX,(1.f-0.025f),"Save As",glm::vec4(0.7f),0.035f,false,false,0.91f + saveAsButtonHover/1000.f,1000.f,colorData.buttonColor,0.f,glm::vec4(0.06,0.12,0.15,1.0),0.00022f);
         
     ui.box(0.0005f,0.025f,((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + screenGapX,(1.f-0.025f),"",glm::vec4(0.7f),0.f,false,false,0.93f,1000.f,colorData.iconColor,0.f);
 
@@ -636,7 +636,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
             }
         }
     }
-    ui.box(0.03f,0.025f,((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f + screenGapX,(1.f-0.025f),"Load",glm::vec4(0.7f),0.02f,false,false,0.91f + loadButtonHover/1000.f,1000.f,colorData.buttonColor,0.f);
+    ui.box(0.03f,0.025f,((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f + screenGapX,(1.f-0.025f),"Load",glm::vec4(0.7f),0.02f,false,false,0.91f + loadButtonHover/1000.f,1000.f,colorData.buttonColor,0.f,glm::vec4(0.06,0.12,0.15,1.0),0.00022f);
         
     ui.box(0.0005f,0.025f,(((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f) + 0.03f + screenGapX,(1.f-0.025f),"",glm::vec4(0.7f),0.f,false,false,0.93f,1000.f,colorData.iconColor,0.f);
         
@@ -645,7 +645,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
             infoButtonHover = true;
     if(infoButtonHover && firstClick)
             showInfo = !showInfo;
-    ui.box(0.03f,0.025f,(((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f) + 0.03f + 0.03f + screenGapX,(1.f-0.025f),"Info",glm::vec4(0.7f),0.018f,false,false,0.91f + infoButtonHover/1000.f,1000.f,colorData.buttonColor,0.f);
+    ui.box(0.03f,0.025f,(((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f) + 0.03f + 0.03f + screenGapX,(1.f-0.025f),"Info",glm::vec4(0.7f),0.018f,false,false,0.91f + infoButtonHover/1000.f,1000.f,colorData.buttonColor,0.f,glm::vec4(0.06,0.12,0.15,1.0),0.00022f);
 
     ui.box(0.0005f,0.025f,(((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f) + 0.03f*3 + screenGapX,(1.f-0.025f),"",glm::vec4(0.7f),0.f,false,false,0.93f,1000.f,colorData.iconColor,0.f);
 }
