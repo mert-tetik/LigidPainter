@@ -118,16 +118,6 @@ $
     c -= rot(b, 24); \
   }
 
-uint hash_uint(uint kx)
-{
-  uint a, b, c;
-  a = b = c = 0xdeadbeefu + (1u << 2u) + 13u;
-
-  a += kx;
-  final(a, b, c);
-
-  return c;
-}
 
 uint hash_uint2(uint kx, uint ky)
 {
@@ -154,30 +144,10 @@ uint hash_uint3(uint kx, uint ky, uint kz)
   return c;
 }
 
-uint hash_uint4(uint kx, uint ky, uint kz, uint kw)
-{
-  uint a, b, c;
-  a = b = c = 0xdeadbeefu + (4u << 2u) + 13u;
-
-  a += kx;
-  b += ky;
-  c += kz;
-  mix(a, b, c);
-
-  a += kw;
-  final(a, b, c);
-
-  return c;
-}
 
 #undef rot
 #undef final
 #undef mix
-
-uint hash_int(int kx)
-{
-  return hash_uint(uint(kx));
-}
 
 uint hash_int2(int kx, int ky)
 {
@@ -189,17 +159,8 @@ uint hash_int3(int kx, int ky, int kz)
   return hash_uint3(uint(kx), uint(ky), uint(kz));
 }
 
-uint hash_int4(int kx, int ky, int kz, int kw)
-{
-  return hash_uint4(uint(kx), uint(ky), uint(kz), uint(kw));
-}
 
 /* Hashing uint or uint[234] into a float in the range [0, 1]. */
-
-float hash_uint_to_float(uint kx)
-{
-  return float(hash_uint(kx)) / float(0xFFFFFFFFu);
-}
 
 float hash_uint2_to_float(uint kx, uint ky)
 {
@@ -208,10 +169,6 @@ float hash_uint2_to_float(uint kx, uint ky)
 
 /* Hashing float or vec[234] into a float in the range [0, 1]. */
 
-float hash_float_to_float(float k)
-{
-  return hash_uint_to_float(floatBitsToUint(k));
-}
 
 float hash_vec2_to_float(vec2 k)
 {
@@ -275,31 +232,6 @@ float tri_mix(float v0,
          z * (y1 * (v4 * x1 + v5 * x) + y * (v6 * x1 + v7 * x));
 }
 
-float quad_mix(float v0,
-               float v1,
-               float v2,
-               float v3,
-               float v4,
-               float v5,
-               float v6,
-               float v7,
-               float v8,
-               float v9,
-               float v10,
-               float v11,
-               float v12,
-               float v13,
-               float v14,
-               float v15,
-               float x,
-               float y,
-               float z,
-               float w)
-{
-  return mix(tri_mix(v0, v1, v2, v3, v4, v5, v6, v7, x, y, z),
-             tri_mix(v8, v9, v10, v11, v12, v13, v14, v15, x, y, z),
-             w);
-}
 
 float fade(float t)
 {
@@ -311,12 +243,6 @@ float negate_if(float value, uint condition)
   return (condition != 0u) ? -value : value;
 }
 
-float noise_grad(uint hash, float x)
-{
-  uint h = hash & 15u;
-  float g = 1u + (h & 7u);
-  return negate_if(g, h & 8u) * x;
-}
 
 float noise_grad(uint hash, float x, float y)
 {
@@ -335,28 +261,6 @@ float noise_grad(uint hash, float x, float y, float z)
   return negate_if(u, h & 1u) + negate_if(v, h & 2u);
 }
 
-float noise_grad(uint hash, float x, float y, float z, float w)
-{
-  uint h = hash & 31u;
-  float u = h < 24u ? x : y;
-  float v = h < 16u ? y : z;
-  float s = h < 8u ? z : w;
-  return negate_if(u, h & 1u) + negate_if(v, h & 2u) + negate_if(s, h & 4u);
-}
-
-float noise_perlin(float x)
-{
-  int X;
-  float fx;
-
-  FLOORFRAC(x, X, fx);
-
-  float u = fade(fx);
-
-  float r = mix(noise_grad(hash_int(X), fx), noise_grad(hash_int(X + 1), fx - 1.0), u);
-
-  return r;
-}
 
 float noise_perlin(vec2 vec)
 {
@@ -407,53 +311,10 @@ float noise_perlin(vec3 vec)
   return r;
 }
 
-float noise_perlin(vec4 vec)
-{
-  int X, Y, Z, W;
-  float fx, fy, fz, fw;
-
-  FLOORFRAC(vec.x, X, fx);
-  FLOORFRAC(vec.y, Y, fy);
-  FLOORFRAC(vec.z, Z, fz);
-  FLOORFRAC(vec.w, W, fw);
-
-  float u = fade(fx);
-  float v = fade(fy);
-  float t = fade(fz);
-  float s = fade(fw);
-
-  float r = quad_mix(
-      noise_grad(hash_int4(X, Y, Z, W), fx, fy, fz, fw),
-      noise_grad(hash_int4(X + 1, Y, Z, W), fx - 1.0, fy, fz, fw),
-      noise_grad(hash_int4(X, Y + 1, Z, W), fx, fy - 1.0, fz, fw),
-      noise_grad(hash_int4(X + 1, Y + 1, Z, W), fx - 1.0, fy - 1.0, fz, fw),
-      noise_grad(hash_int4(X, Y, Z + 1, W), fx, fy, fz - 1.0, fw),
-      noise_grad(hash_int4(X + 1, Y, Z + 1, W), fx - 1.0, fy, fz - 1.0, fw),
-      noise_grad(hash_int4(X, Y + 1, Z + 1, W), fx, fy - 1.0, fz - 1.0, fw),
-      noise_grad(hash_int4(X + 1, Y + 1, Z + 1, W), fx - 1.0, fy - 1.0, fz - 1.0, fw),
-      noise_grad(hash_int4(X, Y, Z, W + 1), fx, fy, fz, fw - 1.0),
-      noise_grad(hash_int4(X + 1, Y, Z, W + 1), fx - 1.0, fy, fz, fw - 1.0),
-      noise_grad(hash_int4(X, Y + 1, Z, W + 1), fx, fy - 1.0, fz, fw - 1.0),
-      noise_grad(hash_int4(X + 1, Y + 1, Z, W + 1), fx - 1.0, fy - 1.0, fz, fw - 1.0),
-      noise_grad(hash_int4(X, Y, Z + 1, W + 1), fx, fy, fz - 1.0, fw - 1.0),
-      noise_grad(hash_int4(X + 1, Y, Z + 1, W + 1), fx - 1.0, fy, fz - 1.0, fw - 1.0),
-      noise_grad(hash_int4(X, Y + 1, Z + 1, W + 1), fx, fy - 1.0, fz - 1.0, fw - 1.0),
-      noise_grad(hash_int4(X + 1, Y + 1, Z + 1, W + 1), fx - 1.0, fy - 1.0, fz - 1.0, fw - 1.0),
-      u,
-      v,
-      t,
-      s);
-
-  return r;
-}
 
 /* Remap the output of noise to a predictable range [-1, 1].
  * The scale values were computed experimentally by the OSL developers.
  */
-float noise_scale1(float result)
-{
-  return 0.2500 * result;
-}
 
 float noise_scale2(float result)
 {
@@ -465,23 +326,7 @@ float noise_scale3(float result)
   return 0.9820 * result;
 }
 
-float noise_scale4(float result)
-{
-  return 0.8344 * result;
-}
-
 /* Safe Signed And Unsigned Noise */
-
-float snoise(float p)
-{
-  float r = noise_perlin(p);
-  return (isinf(r)) ? 0.0 : noise_scale1(r);
-}
-
-float noise(float p)
-{
-  return 0.5 * snoise(p) + 0.5;
-}
 
 float snoise(vec2 p)
 {
@@ -505,46 +350,9 @@ float noise(vec3 p)
   return 0.5 * snoise(p) + 0.5;
 }
 
-float snoise(vec4 p)
-{
-  float r = noise_perlin(p);
-  return (isinf(r)) ? 0.0 : noise_scale4(r);
-}
 
-float noise(vec4 p)
-{
-  return 0.5 * snoise(p) + 0.5;
-}
 
 /* Other Hash Functions */
-
-float fractal_noise(float p, float octaves, float roughness)
-{
-  float fscale = 1.0;
-  float amp = 1.0;
-  float maxamp = 0.0;
-  float sum = 0.0;
-  octaves = clamp(octaves, 0.0, 15.0);
-  int n = int(octaves);
-  for (int i = 0; i <= n; i++) {
-    float t = noise(fscale * p);
-    sum += t * amp;
-    maxamp += amp;
-    amp *= clamp(roughness, 0.0, 1.0);
-    fscale *= 2.0;
-  }
-  float rmd = octaves - floor(octaves);
-  if (rmd != 0.0) {
-    float t = noise(fscale * p);
-    float sum2 = sum + t * amp;
-    sum /= maxamp;
-    sum2 /= maxamp + amp;
-    return (1.0 - rmd) * sum + rmd * sum2;
-  }
-  else {
-    return sum / maxamp;
-  }
-}
 
 /* The fractal_noise functions are all exactly the same except for the input type. */
 float fractal_noise(vec2 p, float octaves, float roughness)
@@ -604,34 +412,7 @@ float fractal_noise(vec3 p, float octaves, float roughness)
   }
 }
 
-/* The fractal_noise functions are all exactly the same except for the input type. */
-float fractal_noise(vec4 p, float octaves, float roughness)
-{
-  float fscale = 1.0;
-  float amp = 1.0;
-  float maxamp = 0.0;
-  float sum = 0.0;
-  octaves = clamp(octaves, 0.0, 15.0);
-  int n = int(octaves);
-  for (int i = 0; i <= n; i++) {
-    float t = noise(fscale * p);
-    sum += t * amp;
-    maxamp += amp;
-    amp *= clamp(roughness, 0.0, 1.0);
-    fscale *= 2.0;
-  }
-  float rmd = octaves - floor(octaves);
-  if (rmd != 0.0) {
-    float t = noise(fscale * p);
-    float sum2 = sum + t * amp;
-    sum /= maxamp;
-    sum2 /= maxamp + amp;
-    return (1.0 - rmd) * sum + rmd * sum2;
-  }
-  else {
-    return sum / maxamp;
-  }
-}
+
 
 vec2 random_vec2_offset(float seed)
 {
