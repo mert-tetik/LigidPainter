@@ -411,7 +411,6 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
          			rf.read(reinterpret_cast<char*>(&c3),sizeof(uint64_t));
 
          			if(c1 == h1 && c2 == h2 && c3 == h3){
-					
 		 				uint64_t timestrsize;
             	 		rf.read(reinterpret_cast<char*>(&timestrsize),sizeof(uint64_t));
             	 		for (size_t i = 0; i < timestrsize; i++)
@@ -429,7 +428,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
             	 		    rf.read(reinterpret_cast<char*>(&c),sizeof(char));
 		 					Ldt.push_back(c);
             	 		}
-						bool buttonEnter = ui.isMouseOnButton(window,0.7f,0.06f,0.15f,-0.025f-posY,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+						bool buttonEnter = ui.isMouseOnButton(window,0.7f,0.06f,0.15f,-0.016f-posY,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
 						if(buttonEnter && firstClick){
 							ProjectFolder project;
 							project.readFolder(path ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
@@ -438,15 +437,22 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 							projectPath.erase(projectPath.end()-projectPathName.size(),projectPath.end());
 							startScreen = false;
 						}
-						ui.box(0.7f,0.06f,0.15f,-0.025f-posY,"",glm::vec4(0),0,false,false,0.9f,1000,glm::vec4(0.66,0.72,0.75,1.0),buttonEnter);
+						//Hover button
+						ui.box(0.7f,0.06f,0.15f,-0.016f-posY,"",glm::vec4(0),0,false,false,0.9f,20,glm::vec4(0.76,0.76,0.76,1.0),buttonEnter,{},{},0,false);
+						
+						//Seperator line
+						ui.box(0.7f,0.06f,0.15f,-0.016f-posY,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.9f,20,glm::vec4(0.66,0.72,0.75,1.0),0.f,{},{},0,true);
 
+						//Dates
 		 				ui.renderText(renderPrograms.uiProgram, (std::string)Cdt ,0.05f,-0.025f-posY,0.0003f,glm::vec4(0.06,0.12,0.15,1.0),0.93f,false);
 		 				ui.renderText(renderPrograms.uiProgram, (std::string)Ldt ,0.45f,-0.025f-posY,0.0003f,glm::vec4(0.06,0.12,0.15,1.0),0.93f,false);
 						
+						//File name
 						ui.renderText(renderPrograms.uiProgram,fileName,-0.4f,0.0f-posY,0.00035f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false,0.04,false,0.f);
 						ui.renderText(renderPrograms.uiProgram,std::filesystem::absolute(filePath).string(),-0.4f,-0.05f-posY,0.00025f,glm::vec4(0.06,0.12,0.15,0.5),0.95f,false,0.04,false,0.f);
 
-						ui.renderText(renderPrograms.uiProgram,std::to_string((int)(posY*6.66666666667)+1),-0.5f,-0.05f-posY,0.0005f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false);
+						//Index
+						ui.renderText(renderPrograms.uiProgram,std::to_string((int)(posY*6.66666666667)+1),-0.5f,-0.04f-posY,0.0005f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false);
 
 						posY += 0.15f;
          			}
