@@ -29,6 +29,8 @@ public:
     bool clickable;
     GLFWwindow* window;
     float textRatio;
+    glm::vec4 textcolor;
+    glm::vec4 textcolor2;
 
 
     bool buttonEnter;
@@ -45,7 +47,7 @@ public:
         //clickable = false;
         //window = windowD
     }//
-    RendererButton(float widthD,float heightD,float curveValueD,bool outlineD,std::string textD, glm::vec4 color1D ,glm::vec4 color2D,bool clickableD,float textRatioD,GLFWwindow* windowD){
+    RendererButton(float widthD,float heightD,float curveValueD,bool outlineD,std::string textD, glm::vec4 color1D ,glm::vec4 color2D,bool clickableD,float textRatioD,glm::vec4 textcolorD,glm::vec4 textcolor2D,GLFWwindow* windowD){
         width = widthD;
         height = heightD;
         curveValue = curveValueD;
@@ -56,6 +58,8 @@ public:
         clickable = clickableD;
         window = windowD;
         textRatio = textRatioD;
+        textcolor = textcolorD;
+        textcolor2 = textcolor2D;
     }
     void draw(glm::vec3 pos,glm::vec2 cursorPos){
         ColorData colorData;
@@ -65,7 +69,7 @@ public:
         Utilities util;
         mixVal = util.transitionEffect(buttonEnter,mixVal,0.1f);
         
-        ui.box(width,height,pos.x,pos.y,text,color1,textRatio,false,false,pos.z,curveValue,color2,mixVal,curveValue >= 100 ? colorData.textColor : color1,curveValue >= 100 ? colorData.textColor : color2,0.0003f,outline);
+        ui.box(width,height,pos.x,pos.y,text,color1,textRatio,false,false,pos.z,curveValue,color2,mixVal,curveValue >= 100 ? textcolor : color1,outline == false ? textcolor2 : color2,0.0003f,outline);
     }
 };
 

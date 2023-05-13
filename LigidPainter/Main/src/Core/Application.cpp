@@ -524,10 +524,10 @@ bool LigidPainter::run()
 
 
 
-	renderer.startScreenNewProjectButton = RendererButton(0.2f,0.06f,1000,0,"New 3D Project",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,0.1f,window);
-	renderer.startScreenLoadProjectButton = RendererButton(0.2f,0.06f,1000,0,"Load Project",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,0.1f,window);
-	renderer.startScreenCreateTheProjectButton = RendererButton(0.15f,0.06f,40,true,"Create",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,0.03f,window);
-	renderer.startScreenLoadAProjectButton = RendererButton(0.15f,0.06f,40,true,"Load",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,0.07f,window);
+	renderer.startScreenNewProjectButton = RendererButton(0.2f,0.06f,1000,0,"New 3D Project",glm::vec4(0.f,0.f,0.f,0.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,0.1f,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(1.0),window);
+	renderer.startScreenLoadProjectButton = RendererButton(0.2f,0.06f,1000,0,"Load Project",glm::vec4(0.f,0.f,0.f,0.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,0.1f,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(1.0),window);
+	renderer.startScreenCreateTheProjectButton = RendererButton(0.15f,0.06f,40,true,"Create",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,0.03f,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(1.0),window);
+	renderer.startScreenLoadAProjectButton = RendererButton(0.15f,0.06f,40,true,"Load",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,0.07f,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(1.0),window);
 	renderer.startScreenProjectTitleTextBox = RendererTextBox(0.4f,0.06f,0,"Title Here",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,glm::vec4(0,0,0,1),0.00035f,false,window);
 	renderer.startScreenProjectPathTextBox = RendererTextBox(0.4f,0.06f,0,"./Projects",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,glm::vec4(0,0,0,1),0.00035f,true,window);
 	renderer.startScreenProjectResolutionTextBox = RendererListBox(0.4f,0.06f,0,{"256","512","1024","2048","4096"},0,glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,0.00032f,window);
