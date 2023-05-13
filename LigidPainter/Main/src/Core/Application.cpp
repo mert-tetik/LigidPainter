@@ -96,6 +96,7 @@
 #include "LigidPainter.h"
 #include "UI/UserInterface.h"
 #include "Utilities.h"
+#include "UtilTimer.hpp"
 #include "Callback.h"
 #include "gl.h"
 #include "Load.hpp"
@@ -568,7 +569,8 @@ bool LigidPainter::run()
 			glfwSwapInterval(0);
 		
 		util.printRenderingSpeed(debugMode,window);
-		
+		calculateTheSpeed(0,window);
+
 		// util.printError();
 		if(selectingPaintOverTexture && !textureSelectionPanel.active)
 			selectingPaintOverTexture = false;
@@ -839,7 +841,7 @@ bool LigidPainter::run()
 
 		//Render
 		//double firstTime = glfwGetTime();
-		if(renderTheScene){
+		if(true){//renderTheScene
 			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData
 										,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker
 										,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene
@@ -942,7 +944,7 @@ bool LigidPainter::run()
 		if (glfwGetMouseButton(window, 1) == GLFW_RELEASE) { //Camera position changed
 			cameraPosChanging = false;
 		}
-		if(renderTheScene)
+		if(true)//renderTheScene
 			glfwSwapBuffers(window);
 
 		const int renderingThreshold = 120;
@@ -968,7 +970,9 @@ bool LigidPainter::run()
 	glfwTerminate();
 	return true;
 }
-
+double LigidPainter::getRenderingSpeedInFPS(){
+	return programFPS;
+}
 int LigidPainter::ligidMessageBox(std::string message,float messagePosX,std::string bMessage,float bMessagePosX){
 	
 	bool noButtonClick = true;

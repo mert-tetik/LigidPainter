@@ -28,8 +28,10 @@
 using namespace std;
 
 
+
 class Utilities {
 public:
+double renderingSpeed = 1;
 
 std::string readFile(const char* path) {
 	string fullText;
@@ -135,12 +137,19 @@ float restrictBetween(float value, float maxVal, float minVal) {
 	}
 	return value;
 }
-double renderingSpeed = 1;
 
 
 float transitionEffect(bool buttonEnter,float mixVal,float phaseDifference){
-	if (buttonEnter && mixVal <= 1.0f) {mixVal += 1./(double)(200.);}
-	else if (!buttonEnter && mixVal >= 0.0f) {mixVal -= 1./(double)(200.);}
+	LigidPainter lp;
+	float time = lp.getRenderingSpeedInFPS()/2.f;
+	if (buttonEnter && mixVal <= 1.0f) {mixVal += 1./(double)(time);}
+	else if (!buttonEnter && mixVal >= 0.0f) {mixVal -= 1./(double)(time);}
+
+	if(mixVal < 0.f)
+		mixVal = 0.f;
+	if(mixVal > 1.f)
+		mixVal = 1.f;
+		
 	return mixVal;
 } 
 

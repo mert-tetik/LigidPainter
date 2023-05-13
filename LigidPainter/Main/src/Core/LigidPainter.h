@@ -12,7 +12,6 @@
 #include "GLFW/glfw3.h"
 
 
-
 struct Programs
 {
 	unsigned int uiProgram;
@@ -326,6 +325,8 @@ public:
 	void paintoverTransformRanegBars(float xOffset, int screenWidth,int screenHeight,bool pX,bool pY,bool sX, bool sY);
 	void generateTextSizeRangeBar(float xOffset,int screenWidth);
 	int ligidMessageBox(std::string message,float messagePosX,std::string bMessage,float bMessagePosX);
+
+	double getRenderingSpeedInFPS();
 };
 struct PanelData {
 	bool movePanel;

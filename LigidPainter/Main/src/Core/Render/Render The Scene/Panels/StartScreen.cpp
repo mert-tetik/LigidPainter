@@ -380,14 +380,20 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			if(renderer.startScreenLoadAProjectButton.buttonEnter && firstClick){
 				char const* lFilterPatterns[11] = { "*.ligid" };	
 				char * projectFilePathCheck = tinyfd_openFileDialog("Select 3D Model","", 1, lFilterPatterns,"",false);
-				ProjectFolder project;
-				project.readFolder(projectFilePathCheck ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
-				projectPath = projectFilePathCheck;
-				std::string projectPathName = util.getLastWordBySeparatingWithChar(projectPath,folderDistinguisher);
-				projectPath.erase(projectPath.end()-projectPathName.size(),projectPath.end());
-				startScreen = false;
+				if(projectFilePathCheck){
+					ProjectFolder project;
+					project.readFolder(projectFilePathCheck ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
+					projectPath = projectFilePathCheck;
+					std::string projectPathName = util.getLastWordBySeparatingWithChar(projectPath,folderDistinguisher);
+					projectPath.erase(projectPath.end()-projectPathName.size(),projectPath.end());
+					startScreen = false;
+				}
 			}
 
+			ui.renderText(renderPrograms.uiProgram, "Name" ,-0.4f,0.3f,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.93f,false);
+			ui.renderText(renderPrograms.uiProgram, "Last Opened" , 0.45f,0.3f,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.93f,false);
+			ui.renderText(renderPrograms.uiProgram, "Creation Date" , 0.05f,0.3f,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.93f,false);
+			
 			float posY = -0.2f;
 			for (const auto & entry : std::filesystem::directory_iterator("./Projects")){
 				std::string filePath = entry.path().string();
@@ -438,7 +444,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 							startScreen = false;
 						}
 						//Hover button
-						ui.box(0.7f,0.06f,0.15f,-0.016f-posY,"",glm::vec4(0),0,false,false,0.9f,20,glm::vec4(0.76,0.76,0.76,1.0),buttonEnter,{},{},0,false);
+						ui.box(0.7f,0.06f,0.15f,-0.016f-posY,"",glm::vec4(0),0,false,false,0.9f,20,glm::vec4(0.96,0.96,1.96,0.6),buttonEnter,{},{},0,false);
 						
 						//Seperator line
 						ui.box(0.7f,0.06f,0.15f,-0.016f-posY,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.9f,20,glm::vec4(0.66,0.72,0.75,1.0),0.f,{},{},0,true);
