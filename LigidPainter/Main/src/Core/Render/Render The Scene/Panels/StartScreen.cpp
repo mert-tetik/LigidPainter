@@ -395,6 +395,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.renderText(renderPrograms.uiProgram, "Creation Date" , 0.05f,0.3f,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.93f,false);
 
 			//Barrier
+			bool barrierEnter = ui.isMouseOnButton(window,1.0f,0.45f,0.15f,0.7,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
 			ui.box(1.0f,0.45f,0.15f,0.7,"",glm::vec4(0),0,false,false,0.99f,11100,glm::vec4(0),false,{},{},0,false);
 
 			int fileCounter = 0;
@@ -439,6 +440,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 		 					Ldt.push_back(c);
             	 		}
 						bool buttonEnter = ui.isMouseOnButton(window,0.7f,0.06f,0.15f,-0.016f-posY,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+						if(barrierEnter)
+							buttonEnter = false;
 						if(buttonEnter && firstClick){
 							ProjectFolder project;
 							project.readFolder(path ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
@@ -448,7 +451,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 							startScreen = false;
 						}
 						//Hover button
-						ui.box(0.7f,0.06f,0.15f,-0.016f-posY,"",glm::vec4(0),0,false,false,0.9f,20,glm::vec4(colorData.LigidPainterThemeColor,0.6),buttonEnter,{},{},0,false);
+						ui.box(0.7f,0.06f,0.15f,-0.016f-posY,"",glm::vec4(0),0,false,false,0.9f,20,glm::vec4(colorData.LigidPainterThemeColor,0.3),buttonEnter,{},{},0,false);
 						
 						//Seperator line
 						ui.box(0.7f,0.06f,0.15f,-0.016f-posY,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.9f,20,glm::vec4(0.66,0.72,0.75,1.0),0.f,{},{},0,true);
@@ -465,8 +468,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 						ui.renderText(renderPrograms.uiProgram,std::to_string(fileCounter),-0.5f,-0.04f-posY,0.0005f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false);
 
 						posY += 0.15f;
+						fileCounter++;
          			}
-				fileCounter++;
 			}
 		}
 	}
