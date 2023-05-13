@@ -172,15 +172,23 @@ public :
         textSize = textSizeD;
         selectedIndex = selectedIndexD;
     }
-    void draw(glm::vec3 pos,glm::vec2 cursorPos,bool firstClick){
+    void draw(glm::vec3 pos,glm::vec2 cursorPos,bool firstClick,Programs programs,Icons icons){
         UserInterface ui;
         buttonEnter = ui.isMouseOnButton(window,width,height,pos.x,pos.y,cursorPos.x,cursorPos.y,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
         
         Utilities util;
         mixVal = util.transitionEffect(active,mixVal,0.1f);
 
-        
+        //Main
         ui.box(width,height,pos.x,pos.y,elements[selectedIndex],buttonEnter == true ? color1/glm::vec4(2.) : color1 ,0,false,false,pos.z,10,color2,mixVal,color1,textSize);
+        
+        //Button
+        float btnWidth = width/6.f; 
+        ui.box(btnWidth,height,pos.x + width - btnWidth - 0.01f,pos.y,"",buttonEnter == true ? color1/glm::vec4(2.) : color1/glm::vec4(1.5) ,0,false,false,pos.z,1000,color2,mixVal,color1,textSize);
+
+        glUseProgram(programs.iconsProgram);
+        ui.iconBox(height/1.5f/1.5f,height/1.5f,pos.x + width - btnWidth - 0.02f,pos.y,pos.z + 0.001f,icons.ArrowDown,0.f,glm::vec4(1),glm::vec4(1));
+        glUseProgram(programs.uiProgram);
 
         if(active){
             for (size_t i = 0; i < elements.size(); i++)
@@ -208,6 +216,9 @@ public:
     bool clickable;
     GLFWwindow* window;
     bool checked;
+    Icons icons;
+    glm::vec4 color1;
+    glm::vec4 color2;
 
     bool buttonEnter;
 
@@ -222,10 +233,13 @@ public:
         //clickable = false;
         //window = windowD
     }//
-    RendererCheckBox(std::string textD ,bool checkedD,GLFWwindow* windowD){
+    RendererCheckBox(std::string textD ,bool checkedD,Icons iconsD,glm::vec4 color1D,glm::vec4 color2D,GLFWwindow* windowD){
         text = textD;
         checked = checkedD;
         window = windowD;
+        icons = iconsD;
+        color1 = color1D;
+        color2 = color2D;
     }
     void draw(glm::vec3 pos,glm::vec2 cursorPos,bool firstClick){
         UserInterface ui;
@@ -234,7 +248,7 @@ public:
         if(buttonEnter && firstClick)        
             checked = !checked;
             
-        ui.checkBoxW(pos.x,pos.y,text,buttonEnter,checked,0);
+        ui.checkBox(pos.x,pos.y,text,buttonEnter,checked,icons,color1,color2);
     }
 };
 

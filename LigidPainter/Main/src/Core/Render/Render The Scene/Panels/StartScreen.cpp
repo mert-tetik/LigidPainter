@@ -178,6 +178,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			
 			ui.renderText(renderPrograms.uiProgram,"1",-0.55f,0.7f-scrVal,0.0004f,glm::vec4(0.95,0.95,0.95,1.0),0.91f,false);
 			ui.renderText(renderPrograms.uiProgram,"Project Title",-0.47f,0.7f-scrVal,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
+		glEnable(GL_DEPTH_TEST);
 			
 			renderer.startScreenProjectTitleTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.615f-scrVal,0.91f),glm::vec2(mouseXpos,mouseYpos),firstClick);
             
@@ -189,7 +190,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.renderText(renderPrograms.uiProgram,"3",-0.55f,0.1f-scrVal,0.0004f,glm::vec4(0.95,0.95,0.95,1.0),0.91f,false);
 			ui.renderText(renderPrograms.uiProgram,"Texture Resolution",-0.47f,0.1f-scrVal,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 
-			renderer.startScreenProjectResolutionTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.015f-scrVal,0.96f),glm::vec2(mouseXpos,mouseYpos),firstClick);
+			renderer.startScreenProjectResolutionTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.015f-scrVal,0.96f),glm::vec2(mouseXpos,mouseYpos),firstClick,renderPrograms,icons);
 			
 			
 			//4 Select a skybox
