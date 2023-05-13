@@ -176,11 +176,6 @@ public :
         UserInterface ui;
         buttonEnter = ui.isMouseOnButton(window,width,height,pos.x,pos.y,cursorPos.x,cursorPos.y,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
         
-        if(buttonEnter && firstClick)
-            active = true;
-        if((!buttonEnter && firstClick) || glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_ENTER) == GLFW_PRESS)
-            active = false;
-        
         Utilities util;
         mixVal = util.transitionEffect(active,mixVal,0.1f);
 
@@ -190,10 +185,18 @@ public :
         if(active){
             for (size_t i = 0; i < elements.size(); i++)
             {
-                ui.box(width,height,pos.x,pos.y - (height*2*(i+1)),elements[i],glm::vec4(color1.x,color1.y,color1.z,mixVal),0,false,false,pos.z,1000,color2,0);
+                bool elementEnter = ui.isMouseOnButton(window,width,height,pos.x,pos.y - (height*2*(i+1)),cursorPos.x,cursorPos.y,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+                if(elementEnter && firstClick)
+                    selectedIndex = i;
+                ui.box(width,height,pos.x,pos.y - (height*2*(i+1)),elements[i],glm::vec4(color1.x/1.5f,color1.y/1.5f,color1.z/1.5f,mixVal),0,false,false,pos.z,1000,color2,elementEnter);
             }
             
         }
+        
+        if(buttonEnter && firstClick)
+            active = true;
+        if((!buttonEnter && firstClick) || glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_ENTER) == GLFW_PRESS)
+            active = false;
     }
 };
 class RendererCheckBox
