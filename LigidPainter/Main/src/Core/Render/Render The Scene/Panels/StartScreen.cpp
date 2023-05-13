@@ -49,7 +49,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
                                         bool firstClick,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
                                         ,int txtrRes,std::vector<NodeScene> &materials, std::vector<Node> &appNodes, ContextMenu &addNodeContexMenu, Model &model,bool firstClickR,Renderer &renderer
-										,float &scrVal,bool &startScreen){
+										,float &scrVal,bool &startScreen, float &startScreenLoadPanelScrollVal){
 		#if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -393,8 +393,12 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.renderText(renderPrograms.uiProgram, "Name" ,-0.4f,0.3f,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.93f,false);
 			ui.renderText(renderPrograms.uiProgram, "Last Opened" , 0.45f,0.3f,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.93f,false);
 			ui.renderText(renderPrograms.uiProgram, "Creation Date" , 0.05f,0.3f,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.93f,false);
-			
-			float posY = -0.2f;
+
+			//Barrier
+			ui.box(1.0f,0.45f,0.15f,0.7,"",glm::vec4(0),0,false,false,0.99f,11100,glm::vec4(0),false,{},{},0,false);
+
+			int fileCounter = 0;
+			float posY = -0.2 + startScreenLoadPanelScrollVal;
 			for (const auto & entry : std::filesystem::directory_iterator("./Projects")){
 				std::string filePath = entry.path().string();
 				std::string fileName = util.getLastWordBySeparatingWithChar(filePath,folderDistinguisher);
@@ -458,11 +462,12 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 						ui.renderText(renderPrograms.uiProgram,std::filesystem::absolute(filePath).string(),-0.4f,-0.05f-posY,0.00025f,glm::vec4(0.06,0.12,0.15,0.5),0.95f,false,0.04,false,0.f);
 
 						//Index
-						ui.renderText(renderPrograms.uiProgram,std::to_string((int)(posY*6.66666666667)+1),-0.5f,-0.04f-posY,0.0005f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false);
+						ui.renderText(renderPrograms.uiProgram,std::to_string(fileCounter),-0.5f,-0.04f-posY,0.0005f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false);
 
 						posY += 0.15f;
          			}
-         		}
+				fileCounter++;
 			}
 		}
+	}
 }

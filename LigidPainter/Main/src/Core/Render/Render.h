@@ -49,7 +49,7 @@ public:
 						,glm::vec3 cameraPos, glm::vec3 originPos,bool &startScreen,std::string &projectFilePath,aTexture paintOverTexture,Model &spherModel,Audios audios,
 						unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,
 						std::string &customModelName,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,bool firstClickR
-						,unsigned int &generatedTextTxtr,Font &txtrGenSelectedFont,Renderer &renderer, float &startScreenScrollVal);
+						,unsigned int &generatedTextTxtr,Font &txtrGenSelectedFont,Renderer &renderer, float &startScreenScrollVal,float &startScreenLoadPanelScrollVal);
 
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void sendProgramsToRender(Programs appPrograms);
@@ -109,6 +109,6 @@ private:
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
                                         bool firstClick,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
                                         ,int txtrRes,std::vector<NodeScene> &materials, std::vector<Node> &appNodes, ContextMenu &addNodeContexMenu, Model &model,bool firstClickR,
-										Renderer &renderer,float &scrVal,bool &startScreen);
+										Renderer &renderer,float &scrVal,bool &startScreen,float &startScreenLoadPanelScrollVal);
 };
 #endif // !RGDRENDER_H
