@@ -48,7 +48,10 @@ float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
    vec3 color = vec3(smoothstep(0.0, fade, b));
    color *= vec3(smoothstep(thickness + fade, thickness, b)) * circleColor;
    
-    return color.r;
+   if(outline == 1)
+      return color.r;
+   else
+      return c.r;
 }
 
 void main() {

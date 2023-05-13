@@ -232,7 +232,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				sky0BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
 				sky0BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
 			}
-			ui.box(0.11f*1.4705/1.5,0.08f,-0.35f,-0.4f-scrVal,"",sky0BtnColor,0,false,false,0.92f,40,sky0BtnColorActive,selectedSkyBox == 0);
+			ui.box(0.11f*1.4705/1.5,0.08f,-0.35f,-0.4f-scrVal,"",sky0BtnColor,0,false,false,0.92f,40,sky0BtnColorActive,selectedSkyBox == 0,{},{},0,true);
         	
 			bool sky1Enter = ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.1f, -0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
 			if(sky1Enter && firstClick)
@@ -243,7 +243,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				sky1BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
 				sky1BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
 			}
-			ui.box(0.11f*1.4705/1.5,0.08f,-0.1f, -0.4f-scrVal,"",sky1BtnColor,0,false,false,0.92f,40,sky1BtnColorActive,selectedSkyBox == 1);
+			ui.box(0.11f*1.4705/1.5,0.08f,-0.1f, -0.4f-scrVal,"",sky1BtnColor,0,false,false,0.92f,40,sky1BtnColorActive,selectedSkyBox == 1,{},{},0,true);
         	
 			bool sky2Enter = ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f, 0.15f,-0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
 			if(sky2Enter && firstClick)
@@ -254,7 +254,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				sky2BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
 				sky2BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
 			}
-			ui.box(0.11f*1.4705/1.5,0.08f, 0.15f,-0.4f-scrVal,"",sky2BtnColor,0,false,false,0.92f,40,sky2BtnColorActive,selectedSkyBox == 2);
+			ui.box(0.11f*1.4705/1.5,0.08f, 0.15f,-0.4f-scrVal,"",sky2BtnColor,0,false,false,0.92f,40,sky2BtnColorActive,selectedSkyBox == 2,{},{},0,true);
         	
 			bool sky3Enter = ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f, 0.4f, -0.4f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
 			if(sky3Enter && firstClick)
@@ -265,7 +265,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				sky3BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
 				sky3BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
 			}
-			ui.box(0.11f*1.4705/1.5,0.08f, 0.4f, -0.4f-scrVal,"",sky3BtnColor,0,false,false,0.92f,40,sky3BtnColorActive,selectedSkyBox == 3);
+			ui.box(0.11f*1.4705/1.5,0.08f, 0.4f, -0.4f-scrVal,"",sky3BtnColor,0,false,false,0.92f,40,sky3BtnColorActive,selectedSkyBox == 3,{},{},0,true);
         	
 			bool sky4Enter = ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.35f,-0.6f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
 			if(sky4Enter && firstClick)
@@ -276,7 +276,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				sky4BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
 				sky4BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
 			}
-			ui.box(0.11f*1.4705/1.5,0.08f,-0.35f,-0.6f-scrVal,"",sky4BtnColor,0,false,false,0.92f,40,sky4BtnColorActive,selectedSkyBox == 4);
+			ui.box(0.11f*1.4705/1.5,0.08f,-0.35f,-0.6f-scrVal,"",sky4BtnColor,0,false,false,0.92f,40,sky4BtnColorActive,selectedSkyBox == 4,{},{},0,true);
         	
 			bool sky5Enter = ui.isMouseOnButton(window,0.11f*1.4705/1.5,0.08f,-0.1f, -0.6f-scrVal,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
 			if(sky5Enter && firstClick)
@@ -287,7 +287,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				sky5BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
 				sky5BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
 			}
-			ui.box(0.11f*1.4705/1.5,0.08f,-0.1f, -0.6f-scrVal,"",sky5BtnColor,0,false,false,0.92f,40,sky5BtnColorActive,selectedSkyBox == 5);
+			ui.box(0.11f*1.4705/1.5,0.08f,-0.1f, -0.6f-scrVal,"",sky5BtnColor,0,false,false,0.92f,40,sky5BtnColorActive,selectedSkyBox == 5,{},{},0,true);
 
 			
 			//5 Project Settings			
@@ -320,7 +320,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 					posY += 0.31f;
 				}				
 				bool buttonEnter = ui.isMouseOnButton(window,0.15f,0.15f,-0.37f + posX,-1.5f-scrVal - posY,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
-        		ui.box(0.15f,0.15f,-0.37f + posX,-1.5f-scrVal - posY,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,10,glm::vec4(colorData.LigidPainterThemeColor,1.0),buttonEnter);
+        		ui.box(0.15f,0.15f,-0.37f + posX,-1.5f-scrVal - posY,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,10,glm::vec4(colorData.LigidPainterThemeColor,1.0),buttonEnter,{},{},0,true);
 				
 				if(i == 0){
 					if(buttonEnter && firstClick){
@@ -354,9 +354,9 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			}
 
 			glUseProgram(renderPrograms.uiProgram);
-			ui.box(0.9f,0.08f,-1.0 + 0.4f + 0.9f,-1.0f+0.08,"",glm::vec4(0.86,0.86,0.86,1.0),0,false,false,0.92f,10000,glm::vec4(colorData.LigidPainterThemeColor,1.0),0);
+			ui.box(0.9f,0.08f,-1.0 + 0.4f + 0.9f,-1.0f+0.08,"",glm::vec4(1.0,1.0,1.0,0.8),0,false,false,0.98f,10000,glm::vec4(colorData.LigidPainterThemeColor,1.0),0);
 
-			renderer.startScreenCreateTheProjectButton.draw(glm::vec3(-1.0 + 0.4f + 0.9f,-1.0f+0.08,0.95f),glm::vec2(mouseXpos,mouseYpos));
+			renderer.startScreenCreateTheProjectButton.draw(glm::vec3(-1.0 + 0.4f + 1.f,-1.0f+0.08,0.99f),glm::vec2(mouseXpos,mouseYpos));
 			if(renderer.startScreenCreateTheProjectButton.buttonEnter && firstClick){
 				//if(!std::filesystem::exists(projectPath))
 					//Project path doesn't exist

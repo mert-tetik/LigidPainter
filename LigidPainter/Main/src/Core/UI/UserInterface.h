@@ -734,7 +734,7 @@ public:
 
 	void textureDisplayer(float width,float height, float position_x,float position_y,float z,unsigned int icon);
 	void box(float width, float height, float position_x, float position_y, std::string text, glm::vec4 color, float textRatio, bool isTextBox, bool isMaskImageBox, float buttonCurveReduce,float z,glm::vec4 colorTransitionColor , float mixVal);
-	void box(float width, float height, float position_x, float position_y,std::string text,glm::vec4 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec4 colorTransitionColor, float mixVal,glm::vec4 textColor,float textSize);
+	void box(float width, float height, float position_x, float position_y,std::string text,glm::vec4 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec4 colorTransitionColor, float mixVal,glm::vec4 textColor,glm::vec4 textColor2,float textSize,bool outline);
 	
 	void iconBox(float width, float height, float position_x, float position_y,float z, unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover);
 	void spinnerBox(float width, float height, float position_x, float position_y,float z, float &value,float xOffset,float yOffset, double mouseXpos,double mouseYpos ,bool firstClick,GLFWwindow* window);

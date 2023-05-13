@@ -49,6 +49,7 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	glm::vec3 pos = glm::vec3(position_x,position_y,z);
 	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
 
+	glset.uniform1i(uiPrograms.uiProgram,"outline",0);
 	glset.uniform1i(uiPrograms.uiProgram,"isUiTextureUsed",isMaskImageBox);
 	glset.uniform4fv(uiPrograms.uiProgram,"uiColor",color);
 	glset.uniform4fv(uiPrograms.uiProgram, "uiTransitionColor", colorTransitionColor);
@@ -84,7 +85,7 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	}
 
 	if (!isTextBox && text != "") {
-		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,false,position_x+width,false,mixVal);
+		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,false,position_x+width,false,0);
 	}
 	else if(text != ""){
 		if(mixVal > 0.f){
@@ -106,7 +107,7 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
 	glBindVertexArray(uiObjects.VAO);
 }
-void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec4 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec4 colorTransitionColor, float mixVal,glm::vec4 textColor,float textSize) {
+void UserInterface::box(float width, float height, float position_x, float position_y,std::string text,glm::vec4 color, float textRatio,bool isTextBox,bool isMaskImageBox,float z,float buttonCurveReduce, glm::vec4 colorTransitionColor, float mixVal,glm::vec4 textColor,glm::vec4 textColor2,float textSize,bool outline) {
 	
 	//buttonCurveReduce = 10 | normal  
 	//buttonCurveReduce = >10 | smaller
@@ -126,6 +127,8 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	
 	glm::vec3 pos = glm::vec3(position_x,position_y,z);
 	glset.uniform3fv(uiPrograms.uiProgram,"pos",pos);
+
+	glset.uniform1i(uiPrograms.uiProgram,"outline",outline);
 
 	glset.uniform1i(uiPrograms.uiProgram,"isUiTextureUsed",isMaskImageBox);
 	glset.uniform4fv(uiPrograms.uiProgram,"uiColor",color);
@@ -162,6 +165,7 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	}
 
 	if (!isTextBox && text != "") {
+		glset.uniform4fv(uiPrograms.uiProgram, "uiTransitionColor", textColor2);
 		renderText(uiPrograms.uiProgram, text, position_x -textRatio, position_y - 0.01f, textSize,textColor,z+0.001f,false,position_x+width,false,mixVal);
 	}
 	else if(text != ""){

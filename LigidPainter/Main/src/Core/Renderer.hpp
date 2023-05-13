@@ -28,6 +28,7 @@ public:
     glm::vec4 color2;
     bool clickable;
     GLFWwindow* window;
+    float textRatio;
 
 
     bool buttonEnter;
@@ -44,7 +45,7 @@ public:
         //clickable = false;
         //window = windowD
     }//
-    RendererButton(float widthD,float heightD,float curveValueD,bool outlineD,std::string textD, glm::vec4 color1D ,glm::vec4 color2D,bool clickableD,GLFWwindow* windowD){
+    RendererButton(float widthD,float heightD,float curveValueD,bool outlineD,std::string textD, glm::vec4 color1D ,glm::vec4 color2D,bool clickableD,float textRatioD,GLFWwindow* windowD){
         width = widthD;
         height = heightD;
         curveValue = curveValueD;
@@ -54,6 +55,7 @@ public:
         color2 = color2D;
         clickable = clickableD;
         window = windowD;
+        textRatio = textRatioD;
     }
     void draw(glm::vec3 pos,glm::vec2 cursorPos){
         ColorData colorData;
@@ -63,7 +65,7 @@ public:
         Utilities util;
         mixVal = util.transitionEffect(buttonEnter,mixVal,0.1f);
         
-        ui.box(width,height,pos.x,pos.y,text,color1,0,false,false,pos.z,curveValue,color2,mixVal,curveValue >= 100 ? colorData.textColor : color1,0.0003f);
+        ui.box(width,height,pos.x,pos.y,text,color1,textRatio,false,false,pos.z,curveValue,color2,mixVal,curveValue >= 100 ? colorData.textColor : color1,curveValue >= 100 ? colorData.textColor : color2,0.0003f,outline);
     }
 };
 
@@ -128,7 +130,7 @@ public :
         Utilities util;
         mixVal = util.transitionEffect(active,mixVal,0.1f);
 
-        ui.box(width,height,pos.x,pos.y,text,buttonEnter == true ? color1/glm::vec4(2.) : color1 ,0,true,false,pos.z,10,color2,mixVal,textColor,textSize);
+        ui.box(width,height,pos.x,pos.y,text,buttonEnter == true ? color1/glm::vec4(2.) : color1 ,0,true,false,pos.z,10,color2,mixVal,textColor,textColor,textSize,true);
     }
 };
 
@@ -180,14 +182,14 @@ public :
         mixVal = util.transitionEffect(active,mixVal,0.1f);
 
         //Main
-        ui.box(width,height,pos.x,pos.y,elements[selectedIndex],buttonEnter == true ? color1/glm::vec4(2.) : color1 ,0,false,false,pos.z,10,color2,mixVal,color1,textSize);
+        ui.box(width,height,pos.x,pos.y,elements[selectedIndex],buttonEnter == true ? color1/glm::vec4(2.) : color1 ,0,false,false,pos.z,10,color2,mixVal,color1,color1,textSize,true);
         
         //Button
         float btnWidth = width/6.f; 
-        ui.box(btnWidth,height,pos.x + width - btnWidth - 0.01f,pos.y,"",buttonEnter == true ? color1/glm::vec4(2.) : color1/glm::vec4(1.5) ,0,false,false,pos.z,1000,color2,mixVal,color1,textSize);
+        ui.box(btnWidth,height,pos.x + width - btnWidth - width/25.f,pos.y,"",buttonEnter == true ? color1/glm::vec4(2.) : color1/glm::vec4(1.5) ,10,false,false,pos.z,10,color2,mixVal,color1,color1,textSize,false);
 
         glUseProgram(programs.iconsProgram);
-        ui.iconBox(height/1.5f/1.5f,height/1.5f,pos.x + width - btnWidth - 0.02f,pos.y,pos.z + 0.001f,icons.ArrowDown,0.f,glm::vec4(1),glm::vec4(1));
+        ui.iconBox(height/1.5f/1.5f,height/1.5f,pos.x + width - btnWidth - width/25.f,pos.y,pos.z + 0.001f,icons.ArrowDown,0.f,glm::vec4(1),glm::vec4(1));
         glUseProgram(programs.uiProgram);
 
         if(active){
