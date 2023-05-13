@@ -221,7 +221,8 @@ public:
     Icons icons;
     glm::vec4 color1;
     glm::vec4 color2;
-
+    
+    float mixVal = 0.f;
     bool buttonEnter;
 
     RendererCheckBox(){
@@ -249,8 +250,11 @@ public:
 
         if(buttonEnter && firstClick)        
             checked = !checked;
-            
-        ui.checkBox(pos.x,pos.y,text,buttonEnter,checked,icons,color1,color2);
+        
+        Utilities util;
+        mixVal = util.transitionEffect(checked,mixVal,0.1f); 
+
+        ui.checkBox(pos.x,pos.y,text,buttonEnter,checked,icons,color1,color2,mixVal);
     }
 };
 

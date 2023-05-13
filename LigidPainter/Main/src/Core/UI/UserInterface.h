@@ -751,7 +751,7 @@ public:
 
 	void renderMenubar(GLFWwindow* window);
 	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked,unsigned int circleTxtr);
-	void checkBox(float position_x, float position_y, std::string text, bool mouseHover,bool checked,Icons icons,glm::vec4 color1,glm::vec4 color2);
+	void checkBox(float position_x, float position_y, std::string text, bool mouseHover,bool checked,Icons icons,glm::vec4 color1,glm::vec4 color2, float mixVal);
 
 	void panelChangeButton(float position_x, float position_y);
 	void rangeBar(float position_x, float position_y, float value,float divideWidth);
