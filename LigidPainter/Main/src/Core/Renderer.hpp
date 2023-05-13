@@ -185,11 +185,11 @@ public :
         Utilities util;
         mixVal = util.transitionEffect(active,mixVal,0.1f);
 
-        //Main
-        ui.box(width,height,pos.x,pos.y,elements[selectedIndex],buttonEnter == true ? color1/glm::vec4(2.) : color1 ,0,false,false,pos.z,10,color2,mixVal,color1,color1,textSize,true);
         
-        //Button
         float btnWidth = width/6.f; 
+        //Main
+        ui.box(width,height,pos.x,pos.y,elements[selectedIndex],buttonEnter == true ? color1/glm::vec4(2.) : color1 ,btnWidth,false,false,pos.z,10,color2,mixVal,color1,color1,textSize,true);
+        //Button
         ui.box(btnWidth,height,pos.x + width - btnWidth - width/25.f,pos.y,"",buttonEnter == true ? color1/glm::vec4(2.) : color1/glm::vec4(1.5) ,10,false,false,pos.z,10,color2,mixVal,color1,color1,textSize,false);
 
         glUseProgram(programs.iconsProgram);
@@ -202,7 +202,7 @@ public :
                 bool elementEnter = ui.isMouseOnButton(window,width,height,pos.x,pos.y - (height*2*(i+1)),cursorPos.x,cursorPos.y,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
                 if(elementEnter && firstClick)
                     selectedIndex = i;
-                ui.box(width,height,pos.x,pos.y - (height*2*(i+1)),elements[i],glm::vec4(color1.x/1.5f,color1.y/1.5f,color1.z/1.5f,mixVal),0,false,false,pos.z,1000,color2,elementEnter);
+                ui.box(width - 0.02f,height,pos.x,pos.y - (height*2*(i+1)),elements[i],glm::vec4(color1.x/1.5f,color1.y/1.5f,color1.z/1.5f,mixVal),0,false,false,pos.z,1000,color2,elementEnter);
             }
             
         }
