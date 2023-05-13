@@ -379,10 +379,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				projectPath.erase(projectPath.end()-projectPathName.size(),projectPath.end());
 				startScreen = false;
 			}
-        	ui.box(0.5f,0.2f, 0.4f,0.5f,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,10,glm::vec4(colorData.LigidPainterThemeColor,1.0),0.f);
-			ui.renderText(renderPrograms.uiProgram,"Drag & Drop *.ligid files here",0.2f,0.4f,0.0005f,glm::vec4(0.06,0.12,0.15,1.0),0.93f,false);
 
-			float posY = 0;
+			float posY = -0.2f;
 			for (const auto & entry : std::filesystem::directory_iterator("./Projects")){
 				std::string filePath = entry.path().string();
 				std::string fileName = util.getLastWordBySeparatingWithChar(filePath,folderDistinguisher);
