@@ -103,6 +103,11 @@ void UserInterface::box(float width, float height, float position_x, float posit
 			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, 0.00022f,colorData.textColor,z+0.001f,mixVal > 0.f,position_x+width,false,0);
 		}
 	}
+	if(width == 0){
+		glUseProgram(uiPrograms.iconsProgram);
+		iconBox(height/2.f,height,position_x,position_y,z,circleIcon,mixVal,color,colorTransitionColor);
+		glUseProgram(uiPrograms.uiProgram);
+	}
 
 	glBindBuffer(GL_ARRAY_BUFFER,uiObjects.VBO);
 	glBindVertexArray(uiObjects.VAO);
@@ -1326,9 +1331,9 @@ void UserInterface::rangeBar(float position_x, float position_y,float value,floa
 	ColorData colorData;
 	GlSet gl;
 
-	box(0, 0.015f, position_x+value/divideWidth, position_y, "", colorData.rangeBarFront, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Value Square
-	box(((value+0.11f)/divideWidth) / 2, 0.0075f, position_x+((value+0.11f)/divideWidth) / 2 - 0.11f/divideWidth, position_y, "", colorData.rangeBarSlide, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Range Rectangle
-	box(0.11f/divideWidth, 0.0075f, position_x, position_y, "", colorData.rangeBarBack, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Range Rectangle
+	box(0, 0.02f, position_x+value/divideWidth, position_y, "", colorData.rangeBarFront, 0.035f, false, false, 0.9f, 15, glm::vec4(0), 0);//Value Square
+	box(((value+0.11f)/divideWidth) / 2, 0.0075f, position_x+((value+0.11f)/divideWidth) / 2 - 0.11f/divideWidth, position_y, "", colorData.rangeBarSlide, 0.035f, false, false, 0.9f, 5, glm::vec4(0), 0);//Range Rectangle
+	box(0.11f/divideWidth, 0.0075f, position_x, position_y, "", colorData.rangeBarBack, 0.035f, false, false, 0.9f, 5, glm::vec4(0), 0);//Range Rectangle
 
 }
 void UserInterface::constRangeBar(float position_x, float position_y,float value,Icons icons,float mixVal,float &lastVal,bool &increase) {
@@ -1359,7 +1364,7 @@ void UserInterface::constRangeBar(float position_x, float position_y,float value
 
 	lastVal = value;
 
-	box(0.02f, 0.015f, position_x, position_y, "", colorData.buttonColor, 0.035f, false, false, 0.9f, 15, glm::vec4(colorData.LigidPainterThemeColor,0.8f), mixVal);//Range Rectangle
+	box(0.026f, 0.015f, position_x, position_y, "", colorData.buttonColor, 0.035f, false, false, 0.9f, 5, glm::vec4(colorData.LigidPainterThemeColor,0.8f), mixVal);//Range Rectangle
 
 	int charSize = std::to_string((int)(value*20)).size();
 	float charRat = 1.6;
@@ -1420,7 +1425,7 @@ void UserInterface::richConstRangeBar(float position_x, float position_y,float v
 
 	float w = 2.5f;
 	
-	box(0.02f*w, 0.0175f, position_x, position_y, "", colorData.buttonColor, 0.035f, true, false, 0.9f, 15, glm::vec4(colorData.LigidPainterThemeColor,0.8f), mixVal);//Range Rectangle
+	box(0.02f*w, 0.0175f, position_x, position_y, "", colorData.buttonColor, 0.035f, true, false, 0.9f, 10, glm::vec4(colorData.LigidPainterThemeColor,0.8f), mixVal);//Range Rectangle
 	renderTextR(uiPrograms.uiProgram,name,position_x-0.025f*w,position_y-0.006f,0.00022f,colorData.textColor,0.91f,false);
 
 	int charSize = std::to_string((int)(value*20)).size();
@@ -1483,25 +1488,26 @@ void UserInterface::decorationSquare(float position_x, float position_y) {
 	glset.drawArrays(buttonCoor, false);
 }
 
-void UserInterface::checkBox(float position_x, float position_y, std::string text, bool mouseHover,bool checked,unsigned int circleTxtr) {
+void UserInterface::checkBox(float position_x, float position_y, std::string text, bool mouseHover,bool checked,unsigned int circleTxtr,Icons icons) {
 	ColorData colorData;
+	glm::vec4 color1 = colorData.checkBoxColor;
+	glm::vec4 color2 = colorData.checkBoxCheckedColor;
 
-	glm::vec4 color;
+	float mixVal = 0.f;
+	mixVal = checked;
 
-	if (!checked) {
-		if (!mouseHover)
-			color = colorData.checkBoxColor;
-		else
-			color =  colorData.checkBoxHoverColor;
+	if (mouseHover){
+		color1 = color1/glm::vec4(1.5f);
+		color2 =  color2*glm::vec4(2.f);
 	}
-	else {
-		color = colorData.checkBoxCheckedColor;
-	}
+	
 	glUseProgram(uiPrograms.iconsProgram);
-	iconBox(0.015,0.0273f,position_x, position_y,0.9f,circleTxtr == 0 ? circleIcon : circleTxtr,0,color,color);
+	iconBox(0.05f/3.f,0.05f*2/3.f,position_x, position_y,0.9f,icons.O,0,color1,color1); //Outline
+	
+	iconBox(0.025f/3.f,0.025f*2/3.f,position_x, position_y,0.91f,icons.Circle,0,glm::vec4(color2.r,color2.g,color2.b,mixVal),color2); //Circle
 	
 	glUseProgram(uiPrograms.uiProgram);
-	renderText(uiPrograms.uiProgram, text, position_x+0.02f, position_y - 0.01f, 0.00022f,colorData.textColor,0.9f,false);
+	renderText(uiPrograms.uiProgram, text, position_x+0.03f, position_y - 0.01f, 0.00022f,glm::vec4(0,0,0,1),0.9f,false);
 }
 
 void UserInterface::checkBox(float position_x, float position_y, std::string text, bool mouseHover,bool checked,Icons icons,glm::vec4 color1,glm::vec4 color2,float mixVal) {
@@ -2289,7 +2295,7 @@ void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Pr
 		 nodePanelLeft					,  nodePanelTop		, nodePanelZ,1.0f,0.0f	,0,0,0,  // bottom right
 		 nodePanelLeft - 0.038f			,  nodePanelTop		, nodePanelZ,0.0f,0.0f	,0,0,0,  // bottom left
 		 nodePanelLeft - 0.038f			,  -1.00f 			, nodePanelZ,0.0f,1.0f	,0,0,0 // top left
-	};
+	}; 
 
 	std::vector<float> rightCoor{
 		//first triangle								   
@@ -2307,6 +2313,8 @@ void UserInterface::nodePanel(float mainPanelLoc,float sndPanel, float height,Pr
 
 
 	glUseProgram(programs.uiProgram);
+	gl.uniform1i(uiPrograms.uiProgram,"outline",0);
+	gl.uniform1f(uiPrograms.uiProgram,"radius",1000.f);
 	gl.uniform1f(uiPrograms.uiProgram,"uiTransitionMixVal",0.f);
 	gl.uniform4fv(uiPrograms.uiProgram,"uiColor",colorData.nodePanelColor);
 	gl.drawArrays(boxCoor,false);

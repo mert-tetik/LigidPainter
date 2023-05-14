@@ -118,7 +118,7 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 panelHoldColor = glm::vec4(0.05f, 0.05f, 0.05f,0.5f);
 
 	glm::vec4 buttonColor = glm::vec4(0.13f, 0.13f, 0.13f,0.5f);
-	glm::vec4 buttonColorHover = glm::vec4(0.0f, 0.0f, 0.0f,0.7f);
+	glm::vec4 buttonColorHover = glm::vec4(LigidPainterThemeColor,0.7f);
 
 	glm::vec4 menuBarColor = glm::vec4(0.05f, 0.05f, 0.05f,0.5f);
 	glm::vec4 textBoxColor = glm::vec4(0.1f, 0.1f, 0.1f,1.0f);
@@ -750,7 +750,7 @@ public:
 	void renderTextM(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,float maxX,bool multipleLines);
 
 	void renderMenubar(GLFWwindow* window);
-	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked,unsigned int circleTxtr);
+	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked,unsigned int circleTxtr,Icons icons);
 	void checkBox(float position_x, float position_y, std::string text, bool mouseHover,bool checked,Icons icons,glm::vec4 color1,glm::vec4 color2, float mixVal);
 
 	void panelChangeButton(float position_x, float position_y);

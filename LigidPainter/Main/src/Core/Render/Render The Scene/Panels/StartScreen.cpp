@@ -451,7 +451,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 							startScreen = false;
 						}
 						//Hover button
-						ui.box(0.7f,0.06f,0.15f,-0.016f-posY,"",glm::vec4(0),0,false,false,0.9f,20,glm::vec4(colorData.LigidPainterThemeColor,0.3),buttonEnter,{},{},0,false);
+						ui.box(0.7f,0.06f,0.15f,-0.016f-posY,"",glm::vec4(0),0,false,false,0.9f,20,glm::vec4(glm::vec3(0.1),0.1),buttonEnter,{},{},0,false);
 						
 						//Seperator line
 						ui.box(0.7f,0.06f,0.15f,-0.016f-posY,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.9f,20,glm::vec4(0.66,0.72,0.75,1.0),0.f,{},{},0,true);

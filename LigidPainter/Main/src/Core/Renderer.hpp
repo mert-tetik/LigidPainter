@@ -69,7 +69,7 @@ public:
         Utilities util;
         mixVal = util.transitionEffect(buttonEnter,mixVal,0.1f);
         
-        ui.box(width,height,pos.x,pos.y,text,color1,textRatio,false,false,pos.z,curveValue,color2,mixVal,curveValue >= 100 ? textcolor : color1,outline == false ? textcolor2 : color2,0.0003f,outline);
+        ui.box(width,height,pos.x,pos.y,text,color1,textRatio,false,false,pos.z,curveValue,color2,mixVal,outline == false ? textcolor : color1,outline == false ? textcolor2 : color2,0.0003f,outline);
     }
 };
 

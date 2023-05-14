@@ -581,7 +581,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     generateTextureButtonElement.button.positionX = 0.0f;
     generateTextureButtonElement.button.positionY = -0.56f;
     generateTextureButtonElement.button.positionZ = 0.9f;
-    generateTextureButtonElement.button.width = 0.05f;
+    generateTextureButtonElement.button.width = 0.07f;
     generateTextureButtonElement.button.height = 0.04f;
     generateTextureButtonElement.button.color = colorData.buttonColor;
     generateTextureButtonElement.button.colorHover = colorData.buttonColorHover;
@@ -598,7 +598,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     bakeButtonElement.button.positionX = 0.0f;
     bakeButtonElement.button.positionY = -0.66f;
     bakeButtonElement.button.positionZ = 0.9f;
-    bakeButtonElement.button.width = 0.08f;
+    bakeButtonElement.button.width = 0.1f;
     bakeButtonElement.button.height = 0.04f;
     bakeButtonElement.button.color = colorData.buttonColor;
     bakeButtonElement.button.colorHover = colorData.buttonColorHover;
@@ -615,7 +615,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     outSubmeshesButtonElement.button.positionX = 0.0f;
     outSubmeshesButtonElement.button.positionY = -0.76f;
     outSubmeshesButtonElement.button.positionZ = 0.9f;
-    outSubmeshesButtonElement.button.width = 0.08f;
+    outSubmeshesButtonElement.button.width = 0.1f;
     outSubmeshesButtonElement.button.height = 0.04f;
     outSubmeshesButtonElement.button.color = colorData.buttonColor;
     outSubmeshesButtonElement.button.colorHover = colorData.buttonColorHover;

@@ -217,7 +217,7 @@ bool UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 			}
 		}
 
-		box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10,"",colorData.buttonColor,0,0,0,depth+currentNodeIndex/1000+0.00003f,8 / (node.width*6),node.backColor,0);///Bottom
+		box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10,"",colorData.buttonColor,0,0,0,depth+currentNodeIndex/1000+0.00003f,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
 		renderText(programs.uiProgram,node.listBoxes[i].elements[node.listBoxes[i].chosenIndex],(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.4f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+currentNodeIndex/1000+0.00004f,false);
 		glUseProgram(programs.iconsProgram);
 		if(node.listBoxes[i].elements[node.listBoxes[i].chosenIndex] == " Red")circle((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width/1.2f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10,depth+currentNodeIndex/1000+0.00004f,iconWidth/1.3 , iconWidth*1.7,0,glm::vec4(1,0,0,1),glm::vec4(0),0);
@@ -482,7 +482,7 @@ bool UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 	for (size_t i = 0; i < node.inputs.size()*!node.hide; i++)
 	{	
 		if(node.inputs[i].element == "ramp"){
-			box(iconWidth*3,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX-node.width/4.f) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height/4.) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].rampClr[node.inputs[i].selectedRampIndex]/255.f,1),0,0,0,depth+currentNodeIndex/1000+0.00001,8 / (node.width*6),node.backColor,0);///Bottom
+			box(iconWidth*3,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX-node.width/4.f) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height/4.) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].rampClr[node.inputs[i].selectedRampIndex]/255.f,1),0,0,0,depth+currentNodeIndex/1000+0.00001,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
 			bool clrHover = false;
 			bool plusHover = false;
 			bool minusHover = false;
@@ -588,7 +588,7 @@ bool UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 		
 		if(node.inputs[i].element == "color" && node.inputs[i].nodeConnectionIndex == 10000){
 			inputElementIndex++;
-			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].color/255.f,1),0,0,0,depth+currentNodeIndex/1000+0.00001,8 / (node.width*6),node.backColor,0);///Bottom
+			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].color/255.f,1),0,0,0,depth+currentNodeIndex/1000+0.00001,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
 			bool colorInputHover = false; 
 			if(nodePanel.panelHover && !coloringPanel.active){
 				colorInputHover = isMouseOnButton(window,iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - screenGap, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
@@ -672,16 +672,16 @@ bool UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 				textureSelectionPanel.textureClicked = false;
 			}
 
-			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.buttonColor,0,0,0,depth+currentNodeIndex/1000+0.00001,8 / (node.width*6),node.backColor,0);///Bottom
+			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.buttonColor,0,0,0,depth+currentNodeIndex/1000+0.00001,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
 			//Select a texture
-			box(0,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,depth+currentNodeIndex/1000+0.00001,8 / (node.width*6),node.backColor,0);
+			box(0,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,depth+currentNodeIndex/1000+0.00001,(iconWidth*6.f) * 100.f,node.backColor,0);
 			glUseProgram(programs.iconsProgram);
 			iconBox(iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+currentNodeIndex/1000+0.00003,icons.AddTexture,0,colorData.iconColor,glm::vec4(0));
 			
 			//Remove texture
 			
 			glUseProgram(programs.uiProgram);
-			box(0,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+currentNodeIndex/1000+0.00002,8 / (node.width*6),node.backColor,0);
+			box(0,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+currentNodeIndex/1000+0.00002,(iconWidth*6.f) * 100.f,node.backColor,0);
 			
 			
 			renderText(programs.uiProgram,util.cropString(node.inputs[i].selectedTextureName,10),(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.5f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10 - node.width/10,node.width/400.f,colorData.textColor,depth+currentNodeIndex/1000+0.00002,false);
@@ -745,7 +745,7 @@ bool UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 				float pointPosVal = val / (1.f/(node.width*2.f)) - node.width;
 				
 				//Range bar
-				box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+currentNodeIndex/1000+0.00001f,8 / (node.width*6),node.backColor,0);///Bottom
+				box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+currentNodeIndex/1000+0.00001f,(iconWidth*6.f) * 200.f,node.backColor,0);///Bottom
 				//Display the value
 				renderText(programs.uiProgram,std::to_string(val),(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10 - node.width/10.f,node.width/300.f,colorData.textColor,depth+currentNodeIndex/1000+0.000015f,false);
 				//Pointer
@@ -936,7 +936,7 @@ void UserInterface::node(Node node,Programs programs,Icons icons){
 			box(node.width*1.12,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10 - iconWidth*2,"",colorData.buttonColor,0,0,0,depth+currentNodeIndex/1000+0.00003f,10000,node.backColor,0);///Bottom
 		}
 
-		box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10,"",colorData.buttonColor,0,0,0,depth+currentNodeIndex/1000+0.00003f,8 / (node.width*6),node.backColor,0);///Bottom
+		box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10,"",colorData.buttonColor,0,0,0,depth+currentNodeIndex/1000+0.00003f,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
 		renderText(programs.uiProgram,node.listBoxes[i].elements[node.listBoxes[i].chosenIndex],(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.4f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10,node.width/300.f,colorData.textColor,depth+currentNodeIndex/1000+0.00004f,false);
 		glUseProgram(programs.iconsProgram);
 		if(node.listBoxes[i].elements[node.listBoxes[i].chosenIndex] == " Red")circle((node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width/1.2f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex)/(20.f/(node.width*8)) - 0.05f * node.width*10,depth+currentNodeIndex/1000+0.00004f,iconWidth/1.3 , iconWidth*1.7,0,glm::vec4(1,0,0,1),glm::vec4(0),0);
@@ -1064,7 +1064,7 @@ void UserInterface::node(Node node,Programs programs,Icons icons){
 	for (size_t i = 0; i < node.inputs.size()*!node.hide; i++)
 	{	
 		if(node.inputs[i].element == "ramp"){
-			box(iconWidth*3,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX-node.width/4.f) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height/4.) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].rampClr[node.inputs[i].selectedRampIndex]/255.f,1),0,0,0,depth+currentNodeIndex/1000+0.00001,8 / (node.width*6),node.backColor,0);///Bottom
+			box(iconWidth*3,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX-node.width/4.f) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal - node.height/4.) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].rampClr[node.inputs[i].selectedRampIndex]/255.f,1),0,0,0,depth+currentNodeIndex/1000+0.00001,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
 			bool clrHover = false;
 			bool plusHover = false;
 			bool minusHover = false;
@@ -1108,22 +1108,22 @@ void UserInterface::node(Node node,Programs programs,Icons icons){
 		
 		if(node.inputs[i].element == "color" && node.inputs[i].nodeConnectionIndex == 10000){
 			inputElementIndex++;
-			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].color/255.f,1),0,0,0,depth+currentNodeIndex/1000+0.00001,8 / (node.width*6),node.backColor,0);///Bottom
+			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].color/255.f,1),0,0,0,depth+currentNodeIndex/1000+0.00001,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
 		}
 
 		if(node.inputs[i].element == "image" && node.inputs[i].nodeConnectionIndex == 10000){
 			inputElementIndex++;
 			
-			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.buttonColor,0,0,0,depth+currentNodeIndex/1000+0.00001,8 / (node.width*6),node.backColor,0);///Bottom
+			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.buttonColor,0,0,0,depth+currentNodeIndex/1000+0.00001,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
 			//Select a texture
-			box(0,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,depth+currentNodeIndex/1000+0.00001,8 / (node.width*6),node.backColor,0);
+			box(0,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarFront,0,0,0,depth+currentNodeIndex/1000+0.00001,(iconWidth*6.f) * 100.f,node.backColor,0);
 			glUseProgram(programs.iconsProgram);
 			iconBox(iconWidth,iconWidth*2,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,depth+currentNodeIndex/1000+0.00003,icons.AddTexture,0,colorData.iconColor,glm::vec4(0));
 			
 			//Remove texture
 			
 			glUseProgram(programs.uiProgram);
-			box(0,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+currentNodeIndex/1000+0.00002,8 / (node.width*6),node.backColor,0);
+			box(0,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal + node.width, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+currentNodeIndex/1000+0.00002,(iconWidth*6.f) * 100.f,node.backColor,0);
 			
 			
 			renderText(programs.uiProgram,util.cropString(node.inputs[i].selectedTextureName,10),(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width/1.5f,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10 - node.width/10,node.width/400.f,colorData.textColor,depth+currentNodeIndex/1000+0.00002,false);
@@ -1187,7 +1187,7 @@ void UserInterface::node(Node node,Programs programs,Icons icons){
 				float pointPosVal = val / (1.f/(node.width*2.f)) - node.width;
 				
 				//Range bar
-				box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+currentNodeIndex/1000+0.00001f,8 / (node.width*6),node.backColor,0);///Bottom
+				box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+currentNodeIndex/1000+0.00001f,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
 				//Display the value
 				renderText(programs.uiProgram,std::to_string(val),(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10 - node.width/10.f,node.width/300.f,colorData.textColor,depth+currentNodeIndex/1000+0.000015f,false);
 				//Pointer
