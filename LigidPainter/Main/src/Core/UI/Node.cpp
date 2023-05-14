@@ -588,7 +588,7 @@ bool UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 		
 		if(node.inputs[i].element == "color" && node.inputs[i].nodeConnectionIndex == 10000){
 			inputElementIndex++;
-			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].color/255.f,1),0,0,0,depth+currentNodeIndex/1000+0.00001,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
+			box(iconWidth*7.f,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].color/255.f,1),0,0,0,depth+currentNodeIndex/1000+0.00001,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
 			bool colorInputHover = false; 
 			if(nodePanel.panelHover && !coloringPanel.active){
 				colorInputHover = isMouseOnButton(window,iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - screenGap, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,mouseX,mouseY,false);
@@ -745,7 +745,7 @@ bool UserInterface::node(Node &node,Programs programs,Icons icons,GLFWwindow* wi
 				float pointPosVal = val / (1.f/(node.width*2.f)) - node.width;
 				
 				//Range bar
-				box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+currentNodeIndex/1000+0.00001f,(iconWidth*6.f) * 200.f,node.backColor,0);///Bottom
+				box(node.width * 1.25f,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+currentNodeIndex/1000+0.00001f,(iconWidth*6.f) * 200.f,node.backColor,0);///Bottom
 				//Display the value
 				renderText(programs.uiProgram,std::to_string(val),(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10 - node.width/10.f,node.width/300.f,colorData.textColor,depth+currentNodeIndex/1000+0.000015f,false);
 				//Pointer
@@ -1108,7 +1108,7 @@ void UserInterface::node(Node node,Programs programs,Icons icons){
 		
 		if(node.inputs[i].element == "color" && node.inputs[i].nodeConnectionIndex == 10000){
 			inputElementIndex++;
-			box(iconWidth*6,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].color/255.f,1),0,0,0,depth+currentNodeIndex/1000+0.00001,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
+			box(iconWidth*7.f,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal, ((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",glm::vec4(node.inputs[i].color/255.f,1),0,0,0,depth+currentNodeIndex/1000+0.00001,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
 		}
 
 		if(node.inputs[i].element == "image" && node.inputs[i].nodeConnectionIndex == 10000){
@@ -1187,7 +1187,7 @@ void UserInterface::node(Node node,Programs programs,Icons icons){
 				float pointPosVal = val / (1.f/(node.width*2.f)) - node.width;
 				
 				//Range bar
-				box(node.width,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+currentNodeIndex/1000+0.00001f,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
+				box(node.width * 1.25f ,iconWidth*2.f,(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10,"",colorData.rangeBarBack,0,0,0,depth+currentNodeIndex/1000+0.00001f,(iconWidth*6.f) * 100.f,node.backColor,0);///Bottom
 				//Display the value
 				renderText(programs.uiProgram,std::to_string(val),(node.positionX + nodePanel.panelPositionX) * nodePanel.zoomVal - node.width,((node.positionY + nodePanel.panelPositionY) * nodePanel.zoomVal + node.height) - (i+ioIndex+inputElementIndex)/(20.f/(node.width*16)) - 0.05f * node.width*10 - node.width/10.f,node.width/300.f,colorData.textColor,depth+currentNodeIndex/1000+0.000015f,false);
 				//Pointer
