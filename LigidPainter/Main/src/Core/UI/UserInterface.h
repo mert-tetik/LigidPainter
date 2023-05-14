@@ -126,7 +126,7 @@ struct ColorData //LigidPainter color palette
 
 	glm::vec4 checkBoxColor = glm::vec4(0.05f, 0.05f, 0.05f,0.5f);
 	glm::vec4 checkBoxHoverColor = glm::vec4(0.15f, 0.15f, 0.15f,0.5f);
-	glm::vec4 checkBoxCheckedColor = glm::vec4(1.0f, 1.0f, 1.0f,0.5f);
+	glm::vec4 checkBoxCheckedColor = glm::vec4(LigidPainterThemeColor,0.5f);
 
 	glm::vec4 rangeBarBack = glm::vec4(0.65f, 0.65f, 0.65f,0.5f);
 	glm::vec4 rangeBarFront = glm::vec4(0.95f, 0.95f, 0.95f,0.5f);
@@ -290,6 +290,7 @@ struct CheckBox{
 	bool mouseHover = false;
 	bool checked = false;
 	unsigned int texture = 0;
+	float mixVal = 0.f;
 };
 struct TextBox{
 	float width;
@@ -750,7 +751,7 @@ public:
 	void renderTextM(unsigned int program, std::string text, float x, float y, float scale,glm::vec4 color,float z,bool active,float maxX,bool multipleLines);
 
 	void renderMenubar(GLFWwindow* window);
-	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked,unsigned int circleTxtr,Icons icons);
+	void checkBox(float position_x, float position_y, std::string text, bool mouseHover, bool checked,unsigned int circleTxtr,Icons icons,float mixVal);
 	void checkBox(float position_x, float position_y, std::string text, bool mouseHover,bool checked,Icons icons,glm::vec4 color1,glm::vec4 color2, float mixVal);
 
 	void panelChangeButton(float position_x, float position_y);

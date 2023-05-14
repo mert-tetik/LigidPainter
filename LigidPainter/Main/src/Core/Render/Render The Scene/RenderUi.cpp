@@ -55,6 +55,9 @@ void updateButtonColorMixValues(std::vector<UIElement> &UIElements,ColorPicker &
 		else if(currentType == "textBox"){
 			UIElements[i].textBox.transitionMixVal = util.transitionEffect(UIElements[i].textBox.clicked,UIElements[i].textBox.transitionMixVal,phaseDifference);
 		}
+		else if(currentType == "checkBox"){
+			UIElements[i].checkBox.mixVal = util.transitionEffect(UIElements[i].checkBox.checked,UIElements[i].checkBox.mixVal,phaseDifference);
+		}
 		else if(currentType == "rangeBar"){
 			UIElements[i].rangeBar.mixVal = util.transitionEffect(UIElements[i].rangeBar.pressed,UIElements[i].rangeBar.mixVal,phaseDifference);
 		}
@@ -798,7 +801,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			if(currentType == "checkBox"){
 				if(!(UIElements[i].checkBox.text == "Focus Mode" && centerCoords - screenGapX + UIElements[i].checkBox.positionX < -0.25f)){
 					if(!(i == UIdynamicPaintingCheckBoxElement && centerCoords - screenGapX + UIElements[i].checkBox.positionX < -0.23f)){
-						ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY+slideVal, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,UIElements[i].checkBox.texture,icons); //jpg checkbox
+						ui.checkBox(centerCoords - screenGapX + UIElements[i].checkBox.positionX, UIElements[i].checkBox.positionY+slideVal, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,UIElements[i].checkBox.texture,icons,UIElements[i].checkBox.mixVal); //jpg checkbox
 					}
 				}
 			}

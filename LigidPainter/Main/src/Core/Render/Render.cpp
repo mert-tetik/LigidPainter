@@ -866,7 +866,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 					ui.box(UIElements[i].textBox.width, UIElements[i].textBox.height,UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y,UIElements[i].textBox.text , colorData.textBoxColor, 0 , true, false, UIElements[i].textBox.position_z, 10 , colorData.textBoxColorClicked, UIElements[i].textBox.transitionMixVal); //Add mask texture button
 				}
 				if(currentType == "checkBox"){
-					ui.checkBox(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,UIElements[i].checkBox.texture,icons); //jpg checkbox
+					ui.checkBox(UIElements[i].createProjectPos.x, UIElements[i].createProjectPos.y, UIElements[i].checkBox.text,  UIElements[i].checkBox.mouseHover,  UIElements[i].checkBox.checked,UIElements[i].checkBox.texture,icons,UIElements[i].checkBox.mixVal); //jpg checkbox
 				}
 				if(currentType == "icon"){
 					glUseProgram(renderPrograms.iconsProgram);
