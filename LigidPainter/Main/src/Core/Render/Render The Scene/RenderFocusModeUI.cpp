@@ -28,6 +28,35 @@
 
 #include "tinyfiledialogs.h"
 
+void updateButtonColorMixValuesFocused(std::vector<UIElement> &UIElements) {
+	Utilities util;
+
+	const float phaseDifference = 0.1f;
+
+	for (size_t i = 0; i < UIElements.size(); i++)
+	{
+		std::string currentType = UIElements[i].type;
+		
+		if(currentType == "button"){
+			UIElements[i].button.transitionMixVal = util.transitionEffect(UIElements[i].button.hover,UIElements[i].button.transitionMixVal,phaseDifference);
+		}
+		else if(currentType == "icon"){
+			if(UIElements[i].icon.clickable){
+				UIElements[i].icon.mixVal = util.transitionEffect(UIElements[i].icon.hover,UIElements[i].icon.mixVal,phaseDifference);
+			}
+		}
+		else if(currentType == "textBox"){
+			UIElements[i].textBox.transitionMixVal = util.transitionEffect(UIElements[i].textBox.clicked,UIElements[i].textBox.transitionMixVal,phaseDifference);
+		}
+		else if(currentType == "checkBox"){
+			UIElements[i].checkBox.mixVal = util.transitionEffect(UIElements[i].checkBox.checked,UIElements[i].checkBox.mixVal,phaseDifference);
+		}
+		else if(currentType == "rangeBar"){
+			UIElements[i].rangeBar.mixVal = util.transitionEffect(UIElements[i].rangeBar.pressed,UIElements[i].rangeBar.mixVal,phaseDifference);
+		}
+	}
+}
+
 double lastMouseXFocused = 0;
 double lastMouseYFocused = 0;
 void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vector<UIElement> &UIElements,Icons icons,ColoringPanel &coloringPanel,SaturationValShaderData saturationValShaderData,double mouseXpos,double mouseYpos,bool firstClick,unsigned int FBOScreen,ColorPicker &colorPicker,glm::vec3 screenHoverPixel,glm::vec3 &drawColor,OutShaderData &outShaderData) {
@@ -64,6 +93,8 @@ void Render::renderFocusModeUI(Programs programs,RenderData &renderData,std::vec
 	int screenSizeX;
 	int screenSizeY;
 	glfwGetFramebufferSize(renderData.window,&screenSizeX,&screenSizeY);
+
+	updateButtonColorMixValuesFocused(UIElements);
 
 	float screenGapX = ((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width - screenSizeX)/(((float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width)/2.0f)/2.0f; 
 
