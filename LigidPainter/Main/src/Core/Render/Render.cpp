@@ -608,7 +608,26 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 	else if(startScreen){
 		startScreenPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,
 						  displayProjectFolderManager,fonts,projectManager,albedoTextures,1024,nodeScenes,appNodes,addNodeContextMenu,model,firstClickR,renderer,startScreenScrollVal
-						  ,startScreen,startScreenLoadPanelScrollVal);
+						  ,startScreen,startScreenLoadPanelScrollVal,chosenSkyboxTexture);
+		if(!startScreen){
+			//Refresh the skybox texture after quiting from the start panel
+			Load load;
+
+			std::vector<std::string> faces
+			{
+			    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/px.png",
+			    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/nx.png",
+			    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/ny.png",
+			    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/py.png",
+			    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/pz.png",
+			    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/nz.png"
+			};
+			unsigned int cubemapTexture = load.loadCubemap(faces,GL_TEXTURE13);  
+			cubemaps.cubemap = cubemapTexture;
+			//TODO Fix loading prefiltered map
+			unsigned int prefilteredMap = load.createPrefilterMap(renderPrograms,cubemaps,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+			cubemaps.prefiltered = prefilteredMap;
+		}
 		// gls.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		// glActiveTexture(GL_TEXTURE13);
@@ -792,8 +811,6 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 		glUseProgram(renderPrograms.renderTheTextureBlur);
 		gls.uniformMatrix4fv(renderPrograms.renderTheTextureBlur, "TextProjection", projection);
 
-		UIElements[UIbackfaceCullingCheckBox].checkBox.text = "Import Textures";
-		UIElements[UIuseUVCheckBox].checkBox.text = "Import Nodes";
 		#if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else

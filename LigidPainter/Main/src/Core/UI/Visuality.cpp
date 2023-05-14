@@ -1495,8 +1495,8 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 
 
 	if (mouseHover){
-		color1 = color1/glm::vec4(1.5f);
-		color2 =  color2*glm::vec4(2.f);
+		color1 = color1/glm::vec4(1.25f);
+		color2 =  color2*glm::vec4(1.25f);
 	}
 	
 	glUseProgram(uiPrograms.iconsProgram);
@@ -1505,7 +1505,7 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 	iconBox(0.022f/3.f,0.022f*2/3.f,position_x, position_y,0.91f,icons.Circle,0,glm::vec4(color2.r,color2.g,color2.b,mixVal),color2); //Circle
 	
 	glUseProgram(uiPrograms.uiProgram);
-	renderText(uiPrograms.uiProgram, text, position_x+0.03f, position_y - 0.01f, 0.00022f,glm::vec4(0,0,0,1),0.9f,false);
+	renderText(uiPrograms.uiProgram, text, position_x+0.03f, position_y - 0.01f, 0.00022f,color1,0.9f,false);
 }
 
 void UserInterface::checkBox(float position_x, float position_y, std::string text, bool mouseHover,bool checked,Icons icons,glm::vec4 color1,glm::vec4 color2,float mixVal) {

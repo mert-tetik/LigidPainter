@@ -41,15 +41,22 @@ bool createProjectMode = true;
 bool loadProjectMode = false;
 
 std::vector<std::string> tdModelPaths;
-unsigned int selectedSkyBox = 0;
 
 float gradPosMixVal = 0.f;
+
+//TODO update settings file
+//TODO use import font conditioning
+//TODO seperate create project + load project scroll values
+//TODO Project title textbox depth testing 
+//TODO Set glfw 
+//TODO Project creation conditions & alert
+//TODO Add default 3D Models and do not copy a folder
 
 void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs renderPrograms,Cubemaps cubemaps,SkyBoxShaderData skyBoxShaderData,
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
                                         bool firstClick,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
                                         ,int txtrRes,std::vector<NodeScene> &materials, std::vector<Node> &appNodes, ContextMenu &addNodeContexMenu, Model &model,bool firstClickR,Renderer &renderer
-										,float &scrVal,bool &startScreen, float &startScreenLoadPanelScrollVal){
+										,float &scrVal,bool &startScreen, float &startScreenLoadPanelScrollVal,int &selectedSkyBox){
 		#if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else

@@ -321,8 +321,6 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
 		glUseProgram(renderPrograms.renderTheTextureBlur);
 		gls.uniformMatrix4fv(renderPrograms.renderTheTextureBlur, "TextProjection", projection);
 
-		UIElements[UIbackfaceCullingCheckBox].checkBox.text = "Import Textures";
-		UIElements[UIuseUVCheckBox].checkBox.text = "Import Nodes";
 		#if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else

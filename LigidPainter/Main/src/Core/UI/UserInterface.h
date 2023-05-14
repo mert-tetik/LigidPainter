@@ -124,7 +124,7 @@ struct ColorData //LigidPainter color palette
 	glm::vec4 textBoxColor = glm::vec4(0.1f, 0.1f, 0.1f,1.0f);
 	glm::vec4 textBoxColorClicked = glm::vec4(LigidPainterThemeColor,1.0f);
 
-	glm::vec4 checkBoxColor = glm::vec4(0.05f, 0.05f, 0.05f,0.5f);
+	glm::vec4 checkBoxColor = glm::vec4(0.95f, 0.95f, 0.95f,0.9f);
 	glm::vec4 checkBoxHoverColor = glm::vec4(0.15f, 0.15f, 0.15f,0.5f);
 	glm::vec4 checkBoxCheckedColor = glm::vec4(LigidPainterThemeColor,0.5f);
 
