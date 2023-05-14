@@ -244,6 +244,7 @@ struct Button{
 	float transitionMixVal;
 	bool hover = false;
 	bool hoverAnimationActive; 
+
 };
 
 struct RangeBar{
