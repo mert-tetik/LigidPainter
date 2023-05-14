@@ -22,7 +22,7 @@
 
 class ProjectFolder{
 public:
-    void initFolder(std::string &path,std::string projectTitle,bool transTextures,bool transNodes,std::vector<std::string> tdModelPaths){
+    void initFolder(std::string &path,std::string projectTitle,bool transTextures,bool transNodes,bool transFonts,std::vector<std::string> tdModelPaths){
         //TODO Process font importing
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
@@ -69,7 +69,9 @@ public:
 		fontspath += folderDistinguisher;
 		fontspath += "Fonts";
 		std::filesystem::create_directories(fontspath);
-		std::filesystem::copy(".\\LigidPainter\\Resources\\fonts\\", fontspath);
+        if(transFonts){
+		    std::filesystem::copy(".\\LigidPainter\\Resources\\fonts\\", fontspath);
+        }
 
 
 		//Shaders

@@ -375,7 +375,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 					//There are no 3D Models selected
 
 				ProjectFolder project;
-				project.initFolder(projectPath,renderer.startScreenProjectTitleTextBox.text,renderer.startScreenIncludeTexturesCheckBox.checked,renderer.startScreenIncludeNodesCheckBox.checked,tdModelPaths);
+				project.initFolder(projectPath,renderer.startScreenProjectTitleTextBox.text,renderer.startScreenIncludeTexturesCheckBox.checked,renderer.startScreenIncludeNodesCheckBox.checked,renderer.startScreenIncludeFontsCheckBox.checked,tdModelPaths);
 				project.readFolder(projectPath + folderDistinguisher + renderer.startScreenProjectTitleTextBox.text + ".ligid" ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
 				startScreen = false;
 			}
