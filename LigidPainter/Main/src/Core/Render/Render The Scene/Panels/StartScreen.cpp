@@ -423,7 +423,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				if(success){
 					ProjectFolder project;
 					project.initFolder(projectPath,renderer.startScreenProjectTitleTextBox.text,renderer.startScreenIncludeTexturesCheckBox.checked,renderer.startScreenIncludeNodesCheckBox.checked,
-									   renderer.startScreenIncludeFontsCheckBox.checked,tdModelPaths,selectedSkyBox);
+									   renderer.startScreenIncludeFontsCheckBox.checked,tdModelPaths,selectedSkyBox,UIElements);
 
 					project.readFolder(projectPath + folderDistinguisher + renderer.startScreenProjectTitleTextBox.text + ".ligid" ,materials,appNodes,addNodeContexMenu,model,UIElements,
 									   albedoTextures,fonts);

@@ -37,6 +37,7 @@ private:
 		
         if(!wf) {
             std::cout << "ERROR while creating the project settings file! : " << path << std::endl;
+            return;
         }
 
         uint64_t h1 = 0x0000AA; //Version 1.4 
@@ -50,15 +51,17 @@ private:
         wf.write(reinterpret_cast<char*>(&UIElements[UITDModelPosXRangeBarElement].rangeBar.value),sizeof(float));// 3D Model position X rangebar
         wf.write(reinterpret_cast<char*>(&UIElements[UITDModelPosYRangeBarElement].rangeBar.value),sizeof(float));// 3D Model position Y rangebar
         wf.write(reinterpret_cast<char*>(&UIElements[UITDModelPosZRangeBarElement].rangeBar.value),sizeof(float));// 3D Model position Z rangebar
+        wf.write(reinterpret_cast<char*>(&chosenSkyboxIndex),sizeof(int));// Selected skybox index
 
         std::string model = util.getLastWordBySeparatingWithChar(tdModelPaths[0],folderDistinguisher); //TODO Give index
         for (size_t i = 0; i < model.size(); i++) 
         {
             wf.write(reinterpret_cast<char*>(&model[i]),sizeof(char));// 3D Model
         }
+
         //TODO Export path
     }
-    void readSettingsFile(std::string path,std::vector<std::string> tdModelPaths,int chosenSkyboxIndex,ifstream &stRf,std::string &setting,std::vector<UIElement> &UIElements,Model &model){
+    void readSettingsFile(std::string path,std::vector<std::string> tdModelPaths,int &chosenSkyboxIndex,ifstream &stRf,std::string &setting,std::vector<UIElement> &UIElements,Model &model){
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -66,10 +69,47 @@ private:
 		#endif
 
         Utilities util;
+        
+        std::string fileName = "ProjectSettings.settings";
+        std::ifstream rf(path + folderDistinguisher + fileName, std::ios::in | std::ios::binary);
 
+        if(!rf){
+            std::cout << "ERROR Can't open file " << path + folderDistinguisher + fileName << std::endl;
+            return;
+        }
+
+        uint64_t h1 = 0x0000AA; //Version 1.4 
+        uint64_t r1;
+        rf.read(reinterpret_cast<char*>(&r1),sizeof(uint64_t));
+        if(r1 == h1){
+            rf.read(reinterpret_cast<char*>(&UIElements[UIuseUVCheckBox].checkBox.checked),sizeof(bool));// Use uv checkbox
+            rf.read(reinterpret_cast<char*>(&UIElements[UIbackfaceCullingCheckBox].checkBox.checked),sizeof(bool));// Backface culling checkbox
+            rf.read(reinterpret_cast<char*>(&UIElements[UIstabilizeFpsCheckBox].checkBox.checked),sizeof(bool));// Sync checkbox
+            rf.read(reinterpret_cast<char*>(&UIElements[UIrealtimeMaterialRenderingCheckBox].checkBox.checked),sizeof(bool));// Sync checkbox
+            rf.read(reinterpret_cast<char*>(&UIElements[UITDModelSizeRangeBarElement].rangeBar.value),sizeof(float));// 3D Model scale rangebar
+            rf.read(reinterpret_cast<char*>(&UIElements[UITDModelPosXRangeBarElement].rangeBar.value),sizeof(float));// 3D Model position X rangebar
+            rf.read(reinterpret_cast<char*>(&UIElements[UITDModelPosYRangeBarElement].rangeBar.value),sizeof(float));// 3D Model position Y rangebar
+            rf.read(reinterpret_cast<char*>(&UIElements[UITDModelPosZRangeBarElement].rangeBar.value),sizeof(float));// 3D Model position Z rangebar
+            rf.read(reinterpret_cast<char*>(&chosenSkyboxIndex),sizeof(int));// Selected skybox index
+
+
+            std::string modelStr;
+
+            for (size_t i = 0; i < modelStr.size(); i++) 
+            {
+                char c;
+                rf.read(reinterpret_cast<char*>(&c),sizeof(char));// 3D Model
+                modelStr.push_back(c);
+            }
+
+            model.loadModel(path + "3DModels" + folderDistinguisher + modelStr,true);
+        }
+        else{
+            std::cout << path + folderDistinguisher + fileName << " is not a project settings file!" << std::endl;
+        }
     }
 public:
-    void initFolder(std::string &path,std::string projectTitle,bool transTextures,bool transNodes,bool transFonts,std::vector<std::string> tdModelPaths,int &chosenSkyboxIndex){
+    void initFolder(std::string &path,std::string projectTitle,bool transTextures,bool transNodes,bool transFonts,std::vector<std::string> tdModelPaths,int &chosenSkyboxIndex,std::vector<UIElement> &UIElements){
         //TODO Process font importing
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
@@ -81,7 +121,9 @@ public:
         path+=projectTitle;
         
         std::filesystem::create_directories(path);
-				
+			
+        writeSettingsFile(path,tdModelPaths,chosenSkyboxIndex,UIElements);
+
 		//Materials
 		std::string materialpath = path;
 		materialpath += folderDistinguisher;
