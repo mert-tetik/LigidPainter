@@ -353,7 +353,9 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 					posY += 0.31f;
 				}				
 				bool buttonEnter = ui.isMouseOnButton(window,0.15f,0.15f,-0.37f + posX,-1.5f-scrVal - posY,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
-        		ui.box(0.15f,0.15f,-0.37f + posX,-1.5f-scrVal - posY,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,10,glm::vec4(colorData.LigidPainterThemeColor,1.0),buttonEnter,{},{},0,true);
+        		if(buttonEnter)
+					nodePanel.pointerCursor = true;
+				ui.box(0.15f,0.15f,-0.37f + posX,-1.5f-scrVal - posY,"",glm::vec4(0.06,0.12,0.15,1.0),0,false,false,0.92f,10,glm::vec4(colorData.LigidPainterThemeColor,1.0),buttonEnter,{},{},0,true);
 				
 				if(i == 0){
 					if(buttonEnter && firstClick){
