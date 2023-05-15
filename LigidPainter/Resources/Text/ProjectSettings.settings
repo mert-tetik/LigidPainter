@@ -1,4 +1,9 @@
 Model sphere.fbx
+Model_Scale 0
+Model_Pos_X 0
+Model_Pos_Y 0
+Model_Pos_Z 0
+Render_UV 0
 Skybox 1
 Texture_Resolution 2
 Auto_Triangulate 1
