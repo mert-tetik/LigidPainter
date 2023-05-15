@@ -21,8 +21,55 @@
 
 
 class ProjectFolder{
+private:
+    void writeSettingsFile(std::string path,std::vector<std::string> tdModelPaths,int chosenSkyboxIndex,std::vector<UIElement> &UIElements){
+        #if defined(_WIN32) || defined(_WIN64)
+		    char folderDistinguisher = '\\';
+		#else
+			char folderDistinguisher = '/'; 
+		#endif
+
+        Utilities util;
+
+        std::string fileName = "ProjectSettings.settings";
+        std::ofstream wf(path + folderDistinguisher + fileName, std::ios::out | std::ios::binary);
+
+		
+        if(!wf) {
+            std::cout << "ERROR while creating the project settings file! : " << path << std::endl;
+        }
+
+        uint64_t h1 = 0x0000AA; //Version 1.4 
+        wf.write(reinterpret_cast<char*>(&h1),sizeof(uint64_t));
+    
+        wf.write(reinterpret_cast<char*>(&UIElements[UIuseUVCheckBox].checkBox.checked),sizeof(bool));// Use uv checkbox
+        wf.write(reinterpret_cast<char*>(&UIElements[UIbackfaceCullingCheckBox].checkBox.checked),sizeof(bool));// Backface culling checkbox
+        wf.write(reinterpret_cast<char*>(&UIElements[UIstabilizeFpsCheckBox].checkBox.checked),sizeof(bool));// Sync checkbox
+        wf.write(reinterpret_cast<char*>(&UIElements[UIrealtimeMaterialRenderingCheckBox].checkBox.checked),sizeof(bool));// Sync checkbox
+        wf.write(reinterpret_cast<char*>(&UIElements[UITDModelSizeRangeBarElement].rangeBar.value),sizeof(float));// 3D Model scale rangebar
+        wf.write(reinterpret_cast<char*>(&UIElements[UITDModelPosXRangeBarElement].rangeBar.value),sizeof(float));// 3D Model position X rangebar
+        wf.write(reinterpret_cast<char*>(&UIElements[UITDModelPosYRangeBarElement].rangeBar.value),sizeof(float));// 3D Model position Y rangebar
+        wf.write(reinterpret_cast<char*>(&UIElements[UITDModelPosZRangeBarElement].rangeBar.value),sizeof(float));// 3D Model position Z rangebar
+
+        std::string model = util.getLastWordBySeparatingWithChar(tdModelPaths[0],folderDistinguisher); //TODO Give index
+        for (size_t i = 0; i < model.size(); i++) 
+        {
+            wf.write(reinterpret_cast<char*>(&model[i]),sizeof(char));// 3D Model
+        }
+        //TODO Export path
+    }
+    void readSettingsFile(std::string path,std::vector<std::string> tdModelPaths,int chosenSkyboxIndex,ifstream &stRf,std::string &setting,std::vector<UIElement> &UIElements,Model &model){
+        #if defined(_WIN32) || defined(_WIN64)
+		    char folderDistinguisher = '\\';
+		#else
+			char folderDistinguisher = '/'; 
+		#endif
+
+        Utilities util;
+
+    }
 public:
-    void initFolder(std::string &path,std::string projectTitle,bool transTextures,bool transNodes,bool transFonts,std::vector<std::string> tdModelPaths){
+    void initFolder(std::string &path,std::string projectTitle,bool transTextures,bool transNodes,bool transFonts,std::vector<std::string> tdModelPaths,int &chosenSkyboxIndex){
         //TODO Process font importing
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
@@ -290,19 +337,6 @@ public:
         addNodeContexMenu = ui.createContextMenus(appNodes);
 
         //Settings
-        std::vector<std::string> elements{
-            "Model", //0
-            "Skybox", //1
-            "Texture_Resolution", //2
-            "Backface_Culling", //3
-            "Node_Resolution", //4
-            "Image_Background", //5
-            "Skybox_Background", //6
-            "Realtime_Material_Rendering", //7
-            "Sync", //8
-            "JPG", //9
-            "Selected_Material" //10 
-        };
 
         std::string setting;
         ifstream stRf(path + folderDistinguisher + "ProjectSettings.settings");
@@ -310,51 +344,11 @@ public:
         if(stRf.fail()){
             std::cout << "WARNING! ProjectSettings.settings file can't be detected at : " << path << std::endl;
         }
-
-        while (getline(stRf, setting)) {
-            std::string stName;
-            std::string stValue;
-            int stI = 0;
-            while (setting[stI] != ' ')
-            {
-                stName+=setting[stI];
-                stI++;
-            }
-            stI++;
-            
-            while (stI != setting.size())
-            {
-                stValue+=setting[stI];
-                stI++;
-            }
-            
-            int stVal;
-            if(stName != elements[0])
-                stVal = std::stoi(stValue); 
-            if(stName == elements[0])
-                model.loadModel(path + "3DModels" + folderDistinguisher + stValue,true);
-
-            //if(stName == elements[2])
-            if(stName == elements[3])
-                UIElements[UIbackfaceCullingCheckBox].checkBox.checked = stVal;
-            //if(stName == elements[4])
-            
-            if(stName == elements[5])
-                UIElements[UIimageCheckBoxElement].checkBox.checked = stVal;
-            if(stName == elements[6])
-                UIElements[UIskyboxCheckBox].checkBox.checked = stVal;
-            if(stName == elements[7])
-                UIElements[UIrealtimeMaterialRenderingCheckBox].checkBox.checked = stVal;
-            if(stName == elements[8])
-                UIElements[UIstabilizeFpsCheckBox].checkBox.checked = stVal;
-            if(stName == elements[9]){
-                UIElements[UIjpgCheckBox].checkBox.checked = stVal;
-                UIElements[UIpngCheckBox].checkBox.checked = !UIElements[UIjpgCheckBox].checkBox.checked;
-            }
-            //if(stName == elements[10])
-                //UIElements[UIjpgCheckBox].checkBox.checked;
-
+        else{
+            //READ HERE
         }
+
+       
 
         //FONTS
         fonts.clear();

@@ -43,9 +43,9 @@ std::vector<std::string> tdModelPaths;
 float gradPosMixVal = 0.f;
 
 //TODO update settings file
-//TODO seperate create project + load project scroll values
 //TODO Add default 3D Models and do not copy a folder
 //TODO Error : This 3d model is already imported
+//TODO Sliders
 
 std::string createProjectErrorMsg = "";
 int createProjectErrorMsgCounter = 0;
@@ -422,8 +422,11 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				}
 				if(success){
 					ProjectFolder project;
-					project.initFolder(projectPath,renderer.startScreenProjectTitleTextBox.text,renderer.startScreenIncludeTexturesCheckBox.checked,renderer.startScreenIncludeNodesCheckBox.checked,renderer.startScreenIncludeFontsCheckBox.checked,tdModelPaths);
-					project.readFolder(projectPath + folderDistinguisher + renderer.startScreenProjectTitleTextBox.text + ".ligid" ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
+					project.initFolder(projectPath,renderer.startScreenProjectTitleTextBox.text,renderer.startScreenIncludeTexturesCheckBox.checked,renderer.startScreenIncludeNodesCheckBox.checked,
+									   renderer.startScreenIncludeFontsCheckBox.checked,tdModelPaths,selectedSkyBox);
+
+					project.readFolder(projectPath + folderDistinguisher + renderer.startScreenProjectTitleTextBox.text + ".ligid" ,materials,appNodes,addNodeContexMenu,model,UIElements,
+									   albedoTextures,fonts);
 					startScreen = false;
 				}
 			}
