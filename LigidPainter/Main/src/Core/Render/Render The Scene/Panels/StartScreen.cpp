@@ -46,16 +46,15 @@ float gradPosMixVal = 0.f;
 
 //TODO update settings file
 //TODO seperate create project + load project scroll values
-//TODO Project title textbox depth testing 
-//TODO Set glfw 
 //TODO Project creation conditions & alert
 //TODO Add default 3D Models and do not copy a folder
+//TODO Pointer cursor
 
 void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs renderPrograms,Cubemaps cubemaps,SkyBoxShaderData skyBoxShaderData,
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
                                         bool firstClick,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
                                         ,int txtrRes,std::vector<NodeScene> &materials, std::vector<Node> &appNodes, ContextMenu &addNodeContexMenu, Model &model,bool firstClickR,Renderer &renderer
-										,float &scrVal,bool &startScreen, float &startScreenLoadPanelScrollVal,int &selectedSkyBox){
+										,float &scrVal,bool &startScreen, float &startScreenLoadPanelScrollVal,int &selectedSkyBox,NodePanel &nodePanel){
 		#if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -153,11 +152,15 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 		
 		glUseProgram(renderPrograms.uiProgram);
         renderer.startScreenNewProjectButton.draw(glm::vec3(-1.f + 0.2f,0.7f,0.92f),glm::vec2(mouseXpos,mouseYpos));
+		if(renderer.startScreenNewProjectButton.buttonEnter)
+				nodePanel.pointerCursor = true;
 		if(renderer.startScreenNewProjectButton.buttonEnter && firstClick){
 			createProjectMode = true;
 			loadProjectMode = false;
 		}
         renderer.startScreenLoadProjectButton.draw(glm::vec3(-1.f + 0.2f,0.58f,0.92f),glm::vec2(mouseXpos,mouseYpos));
+		if(renderer.startScreenLoadProjectButton.buttonEnter)
+				nodePanel.pointerCursor = true;
 		if(renderer.startScreenLoadProjectButton.buttonEnter && firstClick){
 			loadProjectMode = true;
 			createProjectMode = false;
@@ -179,6 +182,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.renderText(renderPrograms.uiProgram,"Project Path",-0.47f,0.4f-scrVal,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 
 			renderer.startScreenProjectPathTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.315f-scrVal,0.9f),glm::vec2(mouseXpos,mouseYpos),firstClick);
+			if(renderer.startScreenProjectPathTextBox.buttonEnter)
+				nodePanel.pointerCursor = true;
 			projectPath = renderer.startScreenProjectPathTextBox.text;
 			
 			//3 Texture Resolution
@@ -190,6 +195,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.renderText(renderPrograms.uiProgram,"Texture Resolution",-0.47f,0.1f-scrVal,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 
 			renderer.startScreenProjectResolutionTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.015f-scrVal,0.96f),glm::vec2(mouseXpos,mouseYpos),firstClick,renderPrograms,icons);
+			if(renderer.startScreenProjectResolutionTextBox.buttonEnter)
+				nodePanel.pointerCursor = true;
 			
 			//1 Project Title
 			glUseProgram(renderPrograms.iconsProgram);
@@ -201,6 +208,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			
 			glDepthFunc(GL_LESS);
 			renderer.startScreenProjectTitleTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.615f-scrVal,0.91f),glm::vec2(mouseXpos,mouseYpos),firstClick);
+			if(renderer.startScreenProjectTitleTextBox.buttonEnter)
+				nodePanel.pointerCursor = true;
 			glDepthFunc(GL_LEQUAL);
             
 			
@@ -243,6 +252,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			if(sky0Enter){
 				sky0BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
 				sky0BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
+				nodePanel.pointerCursor = true;
 			}
 			ui.box(0.11f*1.4705/1.5,0.08f,-0.35f,-0.4f-scrVal,"",sky0BtnColor,0,false,false,0.92f,40,sky0BtnColorActive,selectedSkyBox == 0,{},{},0,true);
         	
@@ -254,6 +264,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			if(sky1Enter){
 				sky1BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
 				sky1BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
+				nodePanel.pointerCursor = true;
 			}
 			ui.box(0.11f*1.4705/1.5,0.08f,-0.1f, -0.4f-scrVal,"",sky1BtnColor,0,false,false,0.92f,40,sky1BtnColorActive,selectedSkyBox == 1,{},{},0,true);
         	
@@ -265,6 +276,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			if(sky2Enter){
 				sky2BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
 				sky2BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
+				nodePanel.pointerCursor = true;
 			}
 			ui.box(0.11f*1.4705/1.5,0.08f, 0.15f,-0.4f-scrVal,"",sky2BtnColor,0,false,false,0.92f,40,sky2BtnColorActive,selectedSkyBox == 2,{},{},0,true);
         	
@@ -276,6 +288,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			if(sky3Enter){
 				sky3BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
 				sky3BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
+				nodePanel.pointerCursor = true;
 			}
 			ui.box(0.11f*1.4705/1.5,0.08f, 0.4f, -0.4f-scrVal,"",sky3BtnColor,0,false,false,0.92f,40,sky3BtnColorActive,selectedSkyBox == 3,{},{},0,true);
         	
@@ -287,6 +300,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			if(sky4Enter){
 				sky4BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
 				sky4BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
+				nodePanel.pointerCursor = true;
 			}
 			ui.box(0.11f*1.4705/1.5,0.08f,-0.35f,-0.6f-scrVal,"",sky4BtnColor,0,false,false,0.92f,40,sky4BtnColorActive,selectedSkyBox == 4,{},{},0,true);
         	
@@ -298,6 +312,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			if(sky5Enter){
 				sky5BtnColor = glm::vec4(0.06,0.12,0.15,0.5);
 				sky5BtnColorActive = glm::vec4(colorData.LigidPainterThemeColor,0.5);
+				nodePanel.pointerCursor = true;
 			}
 			ui.box(0.11f*1.4705/1.5,0.08f,-0.1f, -0.6f-scrVal,"",sky5BtnColor,0,false,false,0.92f,40,sky5BtnColorActive,selectedSkyBox == 5,{},{},0,true);
 
@@ -311,8 +326,14 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.renderText(renderPrograms.uiProgram,"Project settings",-0.47f,-0.9f-scrVal,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 			
 			renderer.startScreenIncludeTexturesCheckBox.draw(glm::vec3(-0.45,-1.0f-scrVal,0.95f),glm::vec2(mouseXpos,mouseYpos),firstClick);
+			if(renderer.startScreenIncludeTexturesCheckBox.buttonEnter)
+				nodePanel.pointerCursor = true;
 			renderer.startScreenIncludeNodesCheckBox.draw(glm::vec3(-0.15,-1.0f-scrVal,0.95f),glm::vec2(mouseXpos,mouseYpos),firstClick);
+			if(renderer.startScreenIncludeNodesCheckBox.buttonEnter)
+				nodePanel.pointerCursor = true;
 			renderer.startScreenIncludeFontsCheckBox.draw(glm::vec3(0.15,-1.0f-scrVal,0.95f),glm::vec2(mouseXpos,mouseYpos),firstClick);
+			if(renderer.startScreenIncludeFontsCheckBox.buttonEnter)
+				nodePanel.pointerCursor = true;
 
 			//6 Upload 3D Models
 			glUseProgram(renderPrograms.iconsProgram);
@@ -369,6 +390,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.box(0.9f,0.08f,-1.0 + 0.4f + 0.9f,-1.0f+0.08,"",glm::vec4(1.0,1.0,1.0,0.8),0,false,false,0.98f,10000,glm::vec4(colorData.LigidPainterThemeColor,1.0),0);
 
 			renderer.startScreenCreateTheProjectButton.draw(glm::vec3(-1.0 + 0.4f + 1.f,-1.0f+0.08,0.99f),glm::vec2(mouseXpos,mouseYpos));
+			if(renderer.startScreenCreateTheProjectButton.buttonEnter)
+				nodePanel.pointerCursor = true;
 			if(renderer.startScreenCreateTheProjectButton.buttonEnter && firstClick){
 				//if(!std::filesystem::exists(projectPath))
 					//Project path doesn't exist
@@ -389,6 +412,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.renderText(renderPrograms.uiProgram,"Load a project",-0.55f,0.8f,0.0006f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 			
 			renderer.startScreenLoadAProjectButton.draw(glm::vec3(-0.35f,0.5f,0.95f),glm::vec2(mouseXpos,mouseYpos));
+			if(renderer.startScreenLoadAProjectButton.buttonEnter)
+				nodePanel.pointerCursor = true;
 			if(renderer.startScreenLoadAProjectButton.buttonEnter && firstClick){
 				char const* lFilterPatterns[11] = { "*.ligid" };	
 				char * projectFilePathCheck = tinyfd_openFileDialog("Select 3D Model","", 1, lFilterPatterns,"",false);
@@ -454,6 +479,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 						bool buttonEnter = ui.isMouseOnButton(window,0.7f,0.06f,0.15f,-0.016f-posY,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
 						if(barrierEnter)
 							buttonEnter = false;
+						if(buttonEnter)
+							nodePanel.pointerCursor = true;
 						if(buttonEnter && firstClick){
 							ProjectFolder project;
 							project.readFolder(path ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);

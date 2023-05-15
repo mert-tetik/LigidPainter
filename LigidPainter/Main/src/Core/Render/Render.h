@@ -109,6 +109,6 @@ private:
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
                                         bool firstClick,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
                                         ,int txtrRes,std::vector<NodeScene> &materials, std::vector<Node> &appNodes, ContextMenu &addNodeContexMenu, Model &model,bool firstClickR,
-										Renderer &renderer,float &scrVal,bool &startScreen,float &startScreenLoadPanelScrollVal,int &selectedSkyBox);
+										Renderer &renderer,float &scrVal,bool &startScreen,float &startScreenLoadPanelScrollVal,int &selectedSkyBox,NodePanel &nodePanel);
 };
 #endif // !RGDRENDER_H

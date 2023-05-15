@@ -1337,6 +1337,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 			glfwSetCursor(window, cursors.pointerCursor);
 		else
 			glfwSetCursor(window, cursors.defaultCursor);
+		
+		nodePanel.pointerCursor = false;
 	}
 
 	renderTheScene = true;
