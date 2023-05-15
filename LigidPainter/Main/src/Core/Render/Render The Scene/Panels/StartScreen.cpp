@@ -45,7 +45,6 @@ std::vector<std::string> tdModelPaths;
 float gradPosMixVal = 0.f;
 
 //TODO update settings file
-//TODO use import font conditioning
 //TODO seperate create project + load project scroll values
 //TODO Project title textbox depth testing 
 //TODO Set glfw 
@@ -107,6 +106,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 
         glfwSetWindowAttrib(window,GLFW_DECORATED,GLFW_TRUE);
 	    glfwSetWindowSize(window,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+		glfwSetWindowSizeLimits(window,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+
         glViewport(0,
                    0,
                     glfwGetVideoMode(glfwGetPrimaryMonitor())->height,

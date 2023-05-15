@@ -610,6 +610,12 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 						  displayProjectFolderManager,fonts,projectManager,albedoTextures,1024,nodeScenes,appNodes,addNodeContextMenu,model,firstClickR,renderer,startScreenScrollVal
 						  ,startScreen,startScreenLoadPanelScrollVal,chosenSkyboxTexture);
 		if(!startScreen){
+			//Update window
+			//glfwSetWindowAspectRatio(renderData.window,1,1);
+			glfwSetWindowSizeLimits(renderData.window,glfwGetVideoMode(glfwGetPrimaryMonitor())->width/1.7f,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/4.f,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+			glfwSetWindowPos(renderData.window,0,20);
+			glfwSetWindowSize(renderData.window,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height);
+
 			//Refresh the skybox texture after quiting from the start panel
 			Load load;
 
@@ -622,6 +628,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 			    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/pz.png",
 			    "LigidPainter/Resources/Cubemap/Skybox/sky"+std::to_string(chosenSkyboxTexture+1)+"/nz.png"
 			};
+			
 			unsigned int cubemapTexture = load.loadCubemap(faces,GL_TEXTURE13);  
 			cubemaps.cubemap = cubemapTexture;
 			//TODO Fix loading prefiltered map
