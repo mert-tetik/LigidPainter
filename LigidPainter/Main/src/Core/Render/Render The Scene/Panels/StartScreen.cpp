@@ -428,7 +428,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 									   renderer.startScreenIncludeFontsCheckBox.checked,tdModelPaths,selectedSkyBox,UIElements);
 
 					project.readFolder(projectPath + folderDistinguisher + renderer.startScreenProjectTitleTextBox.text + ".ligid" ,materials,appNodes,addNodeContexMenu,model,UIElements,
-									   albedoTextures,fonts);
+									   albedoTextures,fonts,selectedSkyBox);
 					startScreen = false;
 				}
 			}
@@ -444,7 +444,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				char * projectFilePathCheck = tinyfd_openFileDialog("Select 3D Model","", 1, lFilterPatterns,"",false);
 				if(projectFilePathCheck){
 					ProjectFolder project;
-					project.readFolder(projectFilePathCheck ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
+					project.readFolder(projectFilePathCheck ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts,selectedSkyBox);
 					projectPath = projectFilePathCheck;
 					std::string projectPathName = util.getLastWordBySeparatingWithChar(projectPath,folderDistinguisher);
 					projectPath.erase(projectPath.end()-projectPathName.size(),projectPath.end());
@@ -508,7 +508,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 							nodePanel.pointerCursor = true;
 						if(buttonEnter && firstClick){
 							ProjectFolder project;
-							project.readFolder(path ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
+							project.readFolder(path ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts,selectedSkyBox);
 							projectPath = path;
 							std::string projectPathName = util.getLastWordBySeparatingWithChar(projectPath,folderDistinguisher);
 							projectPath.erase(projectPath.end()-projectPathName.size(),projectPath.end());

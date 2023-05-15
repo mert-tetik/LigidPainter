@@ -999,7 +999,8 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 				ProjectFolder project;
 				//project.initFolder(path,modelFilePath,UIElements,UIElements[UIbackfaceCullingCheckBox].checkBox.checked,UIElements[UIuseUVCheckBox].checkBox.checked,createProject3DModelPaths);
 
-				project.readFolder(path + folderDistinguisher + UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures,fonts);
+				project.readFolder(path + folderDistinguisher + UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,
+									albedoTextures,fonts,chosenSkyboxTexture);
 
 				LigidPainter lp;
 				lp.loadModelButton();
@@ -1024,7 +1025,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 			txtrRes*=2;
 		}
 		projectFolderManagerPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,
-								  displayProjectFolderManager,fonts,projectManager,albedoTextures,txtrRes,nodeScenes,appNodes,addNodeContextMenu,model,firstClickR);
+								  displayProjectFolderManager,fonts,projectManager,albedoTextures,txtrRes,nodeScenes,appNodes,addNodeContextMenu,model,firstClickR,chosenSkyboxTexture);
 	}
 
 	glUseProgram(renderPrograms.solidRenderer);

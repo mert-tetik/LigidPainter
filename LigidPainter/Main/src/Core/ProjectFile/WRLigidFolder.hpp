@@ -22,7 +22,7 @@
 
 class ProjectFolder{
 private:
-    void writeSettingsFile(std::string path,std::vector<std::string> tdModelPaths,int chosenSkyboxIndex,std::vector<UIElement> &UIElements){
+    void writeSettingsFile(std::string path,std::string tdModelName,int chosenSkyboxIndex,std::vector<UIElement> &UIElements){
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -53,7 +53,7 @@ private:
         wf.write(reinterpret_cast<char*>(&UIElements[UITDModelPosZRangeBarElement].rangeBar.value),sizeof(float));// 3D Model position Z rangebar
         wf.write(reinterpret_cast<char*>(&chosenSkyboxIndex),sizeof(int));// Selected skybox index
 
-        std::string model = util.getLastWordBySeparatingWithChar(tdModelPaths[0],folderDistinguisher); //TODO Give index
+        std::string model = util.getLastWordBySeparatingWithChar(tdModelName,folderDistinguisher);
         for (size_t i = 0; i < model.size(); i++) 
         {
             wf.write(reinterpret_cast<char*>(&model[i]),sizeof(char));// 3D Model
@@ -61,7 +61,7 @@ private:
 
         //TODO Export path
     }
-    void readSettingsFile(std::string path,std::vector<std::string> tdModelPaths,int &chosenSkyboxIndex,ifstream &stRf,std::string &setting,std::vector<UIElement> &UIElements,Model &model){
+    void readSettingsFile(std::string path,int &chosenSkyboxIndex,ifstream &stRf,std::string &setting,std::vector<UIElement> &UIElements,Model &model){
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -101,8 +101,10 @@ private:
                 rf.read(reinterpret_cast<char*>(&c),sizeof(char));// 3D Model
                 modelStr.push_back(c);
             }
-
-            model.loadModel(path + "3DModels" + folderDistinguisher + modelStr,true);
+            if(std::filesystem::exists(path + "3DModels" + folderDistinguisher + modelStr))
+                model.loadModel(path + "3DModels" + folderDistinguisher + modelStr,true);
+            else
+                std::cout << "Can't find the 3D Model file at the : " << path + "3DModels" + folderDistinguisher + modelStr << std::endl;
         }
         else{
             std::cout << path + folderDistinguisher + fileName << " is not a project settings file!" << std::endl;
@@ -122,7 +124,7 @@ public:
         
         std::filesystem::create_directories(path);
 			
-        writeSettingsFile(path,tdModelPaths,chosenSkyboxIndex,UIElements);
+        writeSettingsFile(path,tdModelPaths[0],chosenSkyboxIndex,UIElements); //TODO Give index
 
 		//Materials
 		std::string materialpath = path;
@@ -250,7 +252,8 @@ public:
         }
         
     }
-    void readFolder(std::string path,std::vector<NodeScene> &materials, std::vector<Node> &appNodes,ContextMenu &addNodeContexMenu,Model &model,std::vector<UIElement> &UIElements,std::vector<aTexture> &albedoTextures,std::vector<Font> &fonts){
+    void readFolder(std::string path,std::vector<NodeScene> &materials, std::vector<Node> &appNodes,ContextMenu &addNodeContexMenu,Model &model,std::vector<UIElement> &UIElements,
+                    std::vector<aTexture> &albedoTextures,std::vector<Font> &fonts,int& chosenSkyboxIndex){
 
         //Version 1.4
 		uint64_t h1 = 0xAB428C9F; 
@@ -260,6 +263,7 @@ public:
 		if(!rf) {
             std::cout << "ERROR WHILE READING LIGID PROJECT FILE! Cannot open file : " << path << std::endl;
         }
+
 
 		uint64_t c1; 
         uint64_t c2; 
@@ -387,7 +391,7 @@ public:
             std::cout << "WARNING! ProjectSettings.settings file can't be detected at : " << path << std::endl;
         }
         else{
-            //READ HERE
+            readSettingsFile(path,chosenSkyboxIndex,stRf,setting,UIElements,model);
         }
 
        
@@ -525,13 +529,15 @@ public:
         }
         return path;
     }
-    void saveFolder(std::string projectPath,std::vector<aTexture> &albedoTextures,int txtrRes){
+    void saveFolder(std::string projectPath,std::vector<aTexture> &albedoTextures,int txtrRes,int& chosenSkyboxIndex,std::vector<UIElement> &UIElements){
 
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
 			char folderDistinguisher = '/'; 
 		#endif
+
+        writeSettingsFile(projectPath,"sphere.fbx",chosenSkyboxIndex,UIElements); //TODO Give the current td model name
 
         std::vector<aTexture> changedTextures;
         for (size_t i = 0; i < albedoTextures.size(); i++)
