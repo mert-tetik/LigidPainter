@@ -122,6 +122,9 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	//parameter z = position_z
 	GlSet glset;
 
+	//if(outline)
+		//width*=1.15;
+
 	glm::mat4 scale = glm::mat4(1);
 	scale = glm::scale(scale,glm::vec3(width,height,1));
 	glset.uniformMatrix4fv(uiPrograms.uiProgram,"scale",scale);

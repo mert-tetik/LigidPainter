@@ -29,21 +29,21 @@ float udRoundBox( vec2 p, vec2 b, float r )
 
 float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
 {
-   float divider = 1.05;
+   float divider = 1.15;
     //TODO : Check if round corners effect texture rendering+
     // setup
     float iRadius = radius;
     vec2 halfRes = vec2(0.5*vec2(1920*width,1080*height));
 
     // compute box
-    float b = udRoundBox( uv.xy*vec2(1920*width,1080*height)*divider - halfRes*divider, halfRes, iRadius );
+    float b = udRoundBox( uv.xy*vec2(1920*width,1080*height) * vec2(1.05,divider) - halfRes * vec2(1.05,divider), halfRes, iRadius );
     
     // colorize (red / black )
 	vec3 c = mix( vec3(1.0,0.0,0.0), vec3(0.0,0.0,0.0), smoothstep(0.0,1.0,b) );
    
    vec3 circleColor = vec3(1.0, 1.0, 1.0);
    float thickness = 2.5;
-   float fade = 0.005;
+   float fade = 3.115;
    
    vec3 color = vec3(smoothstep(0.0, fade, b));
    color *= vec3(smoothstep(thickness + fade, thickness, b)) * circleColor;
