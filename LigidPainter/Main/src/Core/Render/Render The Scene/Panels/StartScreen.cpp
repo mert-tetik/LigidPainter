@@ -48,7 +48,10 @@ float gradPosMixVal = 0.f;
 //TODO seperate create project + load project scroll values
 //TODO Project creation conditions & alert
 //TODO Add default 3D Models and do not copy a folder
-//TODO Pointer cursor
+//TODO Error : This 3d model is already imported
+
+std::string createProjectErrorMsg = "";
+int createProjectErrorMsgCounter = 0;
 
 void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs renderPrograms,Cubemaps cubemaps,SkyBoxShaderData skyBoxShaderData,
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
@@ -385,27 +388,47 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 					glUseProgram(renderPrograms.uiProgram);
 				}
 			}
-
+			if(createProjectErrorMsg != "")
+				createProjectErrorMsgCounter++;
+			if(createProjectErrorMsgCounter == 500){
+				createProjectErrorMsgCounter = 0;
+				createProjectErrorMsg = "";
+			}
 			glUseProgram(renderPrograms.uiProgram);
 			ui.box(0.9f,0.08f,-1.0 + 0.4f + 0.9f,-1.0f+0.08,"",glm::vec4(1.0,1.0,1.0,0.8),0,false,false,0.98f,10000,glm::vec4(colorData.LigidPainterThemeColor,1.0),0);
 
-			renderer.startScreenCreateTheProjectButton.draw(glm::vec3(-1.0 + 0.4f + 1.f,-1.0f+0.08,0.99f),glm::vec2(mouseXpos,mouseYpos));
+			renderer.startScreenCreateTheProjectButton.draw(glm::vec3(-1.0 + 0.6f + 1.f,-1.0f+0.08,0.99f),glm::vec2(mouseXpos,mouseYpos));
+
+			ui.renderText(renderPrograms.uiProgram,createProjectErrorMsg, -0.1f,-1.0f+0.06,0.0004f,glm::vec4(colorData.LigidPainterThemeColor,1.f),0.99f,false);
+
 			if(renderer.startScreenCreateTheProjectButton.buttonEnter)
 				nodePanel.pointerCursor = true;
 			if(renderer.startScreenCreateTheProjectButton.buttonEnter && firstClick){
-				//if(!std::filesystem::exists(projectPath))
-					//Project path doesn't exist
-				//if(!std::filesystem::exists(projectPath+))
-					//Project path doesn't exist
-				//if(renderer.startScreenProjectTitleTextBox.text == "")
-					//Project title is empty
-				//if(tdModelPaths.size() == 0)
-					//There are no 3D Models selected
+				
+				bool success = true;
 
-				ProjectFolder project;
-				project.initFolder(projectPath,renderer.startScreenProjectTitleTextBox.text,renderer.startScreenIncludeTexturesCheckBox.checked,renderer.startScreenIncludeNodesCheckBox.checked,renderer.startScreenIncludeFontsCheckBox.checked,tdModelPaths);
-				project.readFolder(projectPath + folderDistinguisher + renderer.startScreenProjectTitleTextBox.text + ".ligid" ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
-				startScreen = false;
+				if(!std::filesystem::exists(projectPath)){
+					createProjectErrorMsg = "Project path doesn't exists"; 
+					success = false;
+				}
+				if(std::filesystem::exists(projectPath + folderDistinguisher + renderer.startScreenProjectTitleTextBox.text)){
+					createProjectErrorMsg = "Project path already exists"; 
+					success = false;
+				}
+				if(renderer.startScreenProjectTitleTextBox.text == ""){
+					createProjectErrorMsg = "Project title is empty"; 
+					success = false;
+				}
+				if(tdModelPaths.size() == 0){
+					createProjectErrorMsg = "There are no 3D Models selected"; 
+					success = false;
+				}
+				if(success){
+					ProjectFolder project;
+					project.initFolder(projectPath,renderer.startScreenProjectTitleTextBox.text,renderer.startScreenIncludeTexturesCheckBox.checked,renderer.startScreenIncludeNodesCheckBox.checked,renderer.startScreenIncludeFontsCheckBox.checked,tdModelPaths);
+					project.readFolder(projectPath + folderDistinguisher + renderer.startScreenProjectTitleTextBox.text + ".ligid" ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts);
+					startScreen = false;
+				}
 			}
 		}
 		else if(loadProjectMode){
