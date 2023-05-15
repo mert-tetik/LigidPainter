@@ -193,6 +193,8 @@ std::vector<Font> fonts;
 ProjectManager projectManager;
 unsigned int generatedTextTxtr = 0;
 Font txtrGenSelectedFont;
+bool starctScCreateProjectMode = true;
+bool starctScLoadProjectMode = false;
 
 string modelName;
 string customModelName; 
@@ -851,7 +853,7 @@ bool LigidPainter::run()
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
 										 callbackData.originPos,startScreen,projectPath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState
 										 ,debugMode,createProject,modelFilePath,modelName,customModelName,modelMatrix,displayProjectFolderManager,fonts,projectManager,firstClickR,generatedTextTxtr
-										 ,txtrGenSelectedFont,renderer,startScreenScrollVal,startScreenLoadPanelScrollVal);
+										 ,txtrGenSelectedFont,renderer,startScreenScrollVal,startScreenLoadPanelScrollVal,starctScCreateProjectMode,starctScLoadProjectMode);
 		}
 		duplicateNodeCall = false;
 		
@@ -1459,14 +1461,16 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 	}
 	else{
 		if(startScreen){
-			startScreenScrollVal += (float)(scrollx / 25.0);
-			if(startScreenScrollVal > 0.)
-				startScreenScrollVal = 0.;
-
-			
-			startScreenLoadPanelScrollVal += (float)(scrollx / 25.0);
-			if(startScreenLoadPanelScrollVal > 0.)
-				startScreenLoadPanelScrollVal = 0.;
+			if(starctScCreateProjectMode){
+				startScreenScrollVal += (float)(scrollx / 25.0);
+				if(startScreenScrollVal > 0.)
+					startScreenScrollVal = 0.;
+			}
+			if(starctScLoadProjectMode){
+				startScreenLoadPanelScrollVal += (float)(scrollx / 25.0);
+				if(startScreenLoadPanelScrollVal > 0.)
+					startScreenLoadPanelScrollVal = 0.;
+			}
 		}
 		else if(callbackData.maskPanelEnter){
 			//Brush mask panel scroll

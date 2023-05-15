@@ -37,8 +37,6 @@
 
 #include "tinyfiledialogs.h"
 
-bool createProjectMode = true;
-bool loadProjectMode = false;
 
 std::vector<std::string> tdModelPaths;
 
@@ -46,7 +44,6 @@ float gradPosMixVal = 0.f;
 
 //TODO update settings file
 //TODO seperate create project + load project scroll values
-//TODO Project creation conditions & alert
 //TODO Add default 3D Models and do not copy a folder
 //TODO Error : This 3d model is already imported
 
@@ -57,7 +54,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
                                         bool firstClick,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
                                         ,int txtrRes,std::vector<NodeScene> &materials, std::vector<Node> &appNodes, ContextMenu &addNodeContexMenu, Model &model,bool firstClickR,Renderer &renderer
-										,float &scrVal,bool &startScreen, float &startScreenLoadPanelScrollVal,int &selectedSkyBox,NodePanel &nodePanel){
+										,float &scrVal,bool &startScreen, float &startScreenLoadPanelScrollVal,int &selectedSkyBox,NodePanel &nodePanel,bool &starctScCreateProjectMode,bool &starctScLoadProjectMode){
 		#if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -128,7 +125,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
         glDisable(GL_DEPTH_TEST);
 
 		glUseProgram(renderPrograms.gradient);
-		gradPosMixVal = util.transitionEffect(createProjectMode,gradPosMixVal,0.1f);
+		gradPosMixVal = util.transitionEffect(starctScCreateProjectMode,gradPosMixVal,0.1f);
 
 		gls.uniform1f(renderPrograms.gradient, "gradPosX", 3.f-gradPosMixVal*3.f);
 		ui.renderTheProgram(-1.0 + 0.4f + 0.9f,0.0f,0.9f,1.f);
@@ -140,9 +137,9 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 		glActiveTexture(GL_TEXTURE14);
 		gls.uniform1f(renderPrograms.renderTheTextureProgram,"opacity",0.1f);
 		
-		if(createProjectMode)
+		if(starctScCreateProjectMode)
 			gls.bindTexture(icons.rendered1);
-		if(loadProjectMode)
+		if(starctScLoadProjectMode)
 			gls.bindTexture(icons.rendered2);
 		ui.renderTheProgram(0.2f,-0.2f,0.8f / 1.428 /1.5,0.8f);
 		gls.uniform1f(renderPrograms.renderTheTextureProgram,"opacity",1.f);
@@ -158,20 +155,20 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 		if(renderer.startScreenNewProjectButton.buttonEnter)
 				nodePanel.pointerCursor = true;
 		if(renderer.startScreenNewProjectButton.buttonEnter && firstClick){
-			createProjectMode = true;
-			loadProjectMode = false;
+			starctScCreateProjectMode = true;
+			starctScLoadProjectMode = false;
 		}
         renderer.startScreenLoadProjectButton.draw(glm::vec3(-1.f + 0.2f,0.58f,0.92f),glm::vec2(mouseXpos,mouseYpos));
 		if(renderer.startScreenLoadProjectButton.buttonEnter)
 				nodePanel.pointerCursor = true;
 		if(renderer.startScreenLoadProjectButton.buttonEnter && firstClick){
-			loadProjectMode = true;
-			createProjectMode = false;
+			starctScLoadProjectMode = true;
+			starctScCreateProjectMode = false;
 		}
 			
 
 
-		if(createProjectMode){
+		if(starctScCreateProjectMode){
 			ui.renderText(renderPrograms.uiProgram,"Create new 3D project",-0.55f,0.8f-scrVal,0.0006f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 			
 			
@@ -431,7 +428,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				}
 			}
 		}
-		else if(loadProjectMode){
+		else if(starctScLoadProjectMode){
 			ui.renderText(renderPrograms.uiProgram,"Load a project",-0.55f,0.8f,0.0006f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 			
 			renderer.startScreenLoadAProjectButton.draw(glm::vec3(-0.35f,0.5f,0.95f),glm::vec2(mouseXpos,mouseYpos));
