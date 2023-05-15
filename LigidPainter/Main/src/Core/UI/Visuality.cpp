@@ -525,6 +525,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 					bool isPressed = false;
 
 					if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2),mouseYpos,buttonCoorSq,false) && !clringPanel.active && !txtrCreatingPanel.active){
+						
 						if(firstClick && glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
 							if(selectedAlbedoTextureIndex != i){
 								glActiveTexture(GL_TEXTURE17);
@@ -620,8 +621,16 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 						glset.uniform4fv(programs.iconsProgram,"iconColor",iconColor);
 						glset.uniform1f(programs.iconsProgram,"iconMixVal",0);
 					}
+
 					glset.drawArrays(buttonCoorSq,false);
 
+					if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2),mouseYpos,buttonCoorSq,false) && !clringPanel.active && !txtrCreatingPanel.active){
+						if(albedoTextures[i].isTexture && !albedoTextures[i].rightClicked){
+							glUseProgram(uiPrograms.uiProgram);
+							renderText(uiPrograms.uiProgram,"W : " + std::to_string(albedoTextures[i].width),position_x- 0.04f  ,position_y + 0.025f  ,0.00022f,colorData.textColor,panelZ+0.021f,false);
+							renderText(uiPrograms.uiProgram,"H : " + std::to_string(albedoTextures[i].height),position_x- 0.04f ,position_y - 0.025f ,0.00022f,colorData.textColor,panelZ+0.021f,false);
+						}
+					}
 
 					glUseProgram(programs.uiProgram);
 
