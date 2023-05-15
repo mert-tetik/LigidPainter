@@ -134,7 +134,7 @@ public :
         Utilities util;
         mixVal = util.transitionEffect(active,mixVal,0.1f);
 
-        ui.box(width,height,pos.x,pos.y,text,buttonEnter == true ? color1/glm::vec4(2.) : color1 ,0,true,false,pos.z,10,color2,mixVal,textColor,textColor,textSize,true);
+        ui.box(width,height,pos.x,pos.y,text,buttonEnter == true ? color1/glm::vec4(2.) : color1 ,0,true,false,pos.z,10,color2,mixVal,textColor,glm::vec4(1),textSize,true);
     }
 };
 

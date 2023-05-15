@@ -113,15 +113,17 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
                     glfwGetVideoMode(glfwGetPrimaryMonitor())->height,
                     glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
         
-        glDisable(GL_DEPTH_TEST);
-		glDepthMask(GL_FALSE);
+        glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_TRUE);
 
 		
         
         //Back color
         ui.box(10,10,0,0,"",glm::vec4(0.98f,0.98f,0.98f,1),0,0,0,0.9f,10000,glm::vec4(1),0.f);
         //Left panel
-        ui.box(0.2f,1.f,-1.f + 0.2f ,0,"",glm::vec4(1),0,0,0,0.9f,10000,glm::vec4(1),0.f);
+        ui.box(0.2f,1.f,-1.f + 0.2f ,0,"",glm::vec4(1),0,0,0,0.91f,10000,glm::vec4(1),0.f);
+
+        glDisable(GL_DEPTH_TEST);
 
 		glUseProgram(renderPrograms.gradient);
 		gradPosMixVal = util.transitionEffect(createProjectMode,gradPosMixVal,0.1f);
@@ -179,17 +181,6 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			renderer.startScreenProjectPathTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.315f-scrVal,0.9f),glm::vec2(mouseXpos,mouseYpos),firstClick);
 			projectPath = renderer.startScreenProjectPathTextBox.text;
 			
-			//1 Project Title
-			glUseProgram(renderPrograms.iconsProgram);
-			ui.iconBox(0.05f/1.5f,0.05f,-0.54f,0.715f-scrVal,0.9f,icons.Circle,0.f,glm::vec4(0.8,0.8,0.8,1.0),glm::vec4(0.06,0.12,0.15,1.0));
-			glUseProgram(renderPrograms.uiProgram);
-			
-			ui.renderText(renderPrograms.uiProgram,"1",-0.55f,0.7f-scrVal,0.0004f,glm::vec4(0.95,0.95,0.95,1.0),0.91f,false);
-			ui.renderText(renderPrograms.uiProgram,"Project Title",-0.47f,0.7f-scrVal,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
-		glEnable(GL_DEPTH_TEST);
-			
-			renderer.startScreenProjectTitleTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.615f-scrVal,0.91f),glm::vec2(mouseXpos,mouseYpos),firstClick);
-            
 			//3 Texture Resolution
 			glUseProgram(renderPrograms.iconsProgram);
 			ui.iconBox(0.05f/1.5f,0.05f,-0.54f,0.115f-scrVal,0.9f,icons.Circle,0.f,glm::vec4(0.8,0.8,0.8,1.0),glm::vec4(0.06,0.12,0.15,1.0));
@@ -199,6 +190,19 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.renderText(renderPrograms.uiProgram,"Texture Resolution",-0.47f,0.1f-scrVal,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 
 			renderer.startScreenProjectResolutionTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.015f-scrVal,0.96f),glm::vec2(mouseXpos,mouseYpos),firstClick,renderPrograms,icons);
+			
+			//1 Project Title
+			glUseProgram(renderPrograms.iconsProgram);
+			ui.iconBox(0.05f/1.5f,0.05f,-0.54f,0.715f-scrVal,0.9f,icons.Circle,0.f,glm::vec4(0.8,0.8,0.8,1.0),glm::vec4(0.06,0.12,0.15,1.0));
+			glUseProgram(renderPrograms.uiProgram);
+			
+			ui.renderText(renderPrograms.uiProgram,"1",-0.55f,0.7f-scrVal,0.0004f,glm::vec4(0.95,0.95,0.95,1.0),0.91f,false);
+			ui.renderText(renderPrograms.uiProgram,"Project Title",-0.47f,0.7f-scrVal,0.0004f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
+			
+			glDepthFunc(GL_LESS);
+			renderer.startScreenProjectTitleTextBox.draw(glm::vec3(-0.47f + renderer.startScreenProjectTitleTextBox.width,0.615f-scrVal,0.91f),glm::vec2(mouseXpos,mouseYpos),firstClick);
+			glDepthFunc(GL_LEQUAL);
+            
 			
 			
 			//4 Select a skybox

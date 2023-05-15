@@ -180,13 +180,14 @@ void UserInterface::box(float width, float height, float position_x, float posit
 			container(position_x,position_y-height*4,0.95,width,height*4,color,uiPrograms,circleIcon,colorTransitionColor,mixVal);
 			glUseProgram(uiPrograms.uiProgram);
 
-
-			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, textSize,textColor,0.96f,mixVal > 0.f,position_x+width,true,0);
+			glset.uniform4fv(uiPrograms.uiProgram, "uiTransitionColor", textColor2);
+			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, textSize,textColor,0.96f,mixVal > 0.f,position_x+width,true,mixVal);
 			
 		}
 		else{
 			Utilities util;
-			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, textSize,textColor,z+0.001f,mixVal > 0.f,position_x+width,false,0);
+			glset.uniform4fv(uiPrograms.uiProgram, "uiTransitionColor", textColor2);
+			renderText(uiPrograms.uiProgram, text, -width/1.2 + position_x, position_y - 0.01f, textSize,textColor,z+0.001f,mixVal > 0.f,position_x+width,false,mixVal);
 		}
 	}
 
@@ -2250,6 +2251,7 @@ void UserInterface::renderTextR(unsigned int program, std::string text, float x,
 
 
 void UserInterface::container(float positionX,float positionY,float positionZ,float width, float height,glm::vec4 color,Programs &programs,unsigned int circleTexture,glm::vec4 transitionColor,float mixVal){
+	
 	glUseProgram(programs.uiProgram);
 	box(width,height,positionX,positionY,"", color,0,0,0,positionZ,10000,transitionColor,mixVal);
 	
