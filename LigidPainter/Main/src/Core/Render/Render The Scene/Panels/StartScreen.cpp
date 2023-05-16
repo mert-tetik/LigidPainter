@@ -397,7 +397,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 					ui.iconBox(0.05f/1.5f,0.05f,-0.37f + posX,-1.45f-scrVal - posY,0.95f,icons.Plus,buttonEnter,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(colorData.LigidPainterThemeColor,1.0));
 					
 					glUseProgram(renderPrograms.uiProgram);
-					ui.renderText(renderPrograms.uiProgram,"Add Model", -0.3f + posX - 0.15f,-1.56f-scrVal - posY,0.00032f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false,10,0,buttonEnter);
+					ui.renderText(renderPrograms.uiProgram,"Add Model", -0.3f + posX - 0.14f,-1.56f-scrVal - posY,0.00032f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false,10,0,buttonEnter);
 				}
 				else{
 					ui.renderText(renderPrograms.uiProgram,util.getLastWordBySeparatingWithChar(tdModelPaths[i-1],folderDistinguisher), -0.47f + posX,-1.5f-scrVal - posY,0.00032f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false,-0.37f + posX + 0.14f, false,buttonEnter);
@@ -493,6 +493,46 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			bool barrierEnter = ui.isMouseOnButton(window,1.0f,0.45f,0.15f,0.7,mouseXpos,mouseYpos,0,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
 			ui.box(1.0f,0.45f,0.15f,0.7,"",glm::vec4(0),0,false,false,0.99f,11100,glm::vec4(0),false,{},{},0,false);
 
+
+			float posYA = -0.2 + startScreenLoadPanelScrollVal;
+			float pPosYA = 0.f;
+			for (const auto & entry : std::filesystem::directory_iterator("./Projects")){
+				std::string filePath = entry.path().string();
+				std::string fileName = util.getLastWordBySeparatingWithChar(filePath,folderDistinguisher);
+				std::string path = filePath + folderDistinguisher + fileName + ".ligid";
+
+				uint64_t h1 = 0xAB428C9F; 
+         		uint64_t h2 = 0xFF8A1C1C; 
+         		uint64_t h3 = 0x4B4B9AAA; 
+         		std::ifstream rf(path, std::ios::out | std::ios::binary);
+
+		 		if(rf) {
+		 			std::string Cdt; //Creation date
+	     			std::string Ldt; //Last opening date
+
+		 			uint64_t c1; 
+         			uint64_t c2; 
+         			uint64_t c3; 
+         			rf.read(reinterpret_cast<char*>(&c1),sizeof(uint64_t));
+         			rf.read(reinterpret_cast<char*>(&c2),sizeof(uint64_t));
+         			rf.read(reinterpret_cast<char*>(&c3),sizeof(uint64_t));
+
+         			if(c1 == h1 && c2 == h2 && c3 == h3)
+						posYA += 0.15f;
+						pPosYA += 0.15f;
+				}
+			}
+			if(pPosYA/0.15f > 9){
+				if(posYA < 1.1f){
+					posYA = 1.1f;
+					startScreenLoadPanelScrollVal = -pPosYA+1.3f;
+				}
+			}
+			else{
+				startScreenLoadPanelScrollVal = 0.f;
+			}
+			
+			
 			int fileCounter = 0;
 			float posY = -0.2 + startScreenLoadPanelScrollVal;
 			for (const auto & entry : std::filesystem::directory_iterator("./Projects")){
@@ -569,10 +609,6 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
          			}
 			}
 		}
-		if(posY < 1.f){
-			startScreenLoadPanelScrollVal = +0.2 - posY;
-		}
-
 	}
 	startScreenLastMousePosY = mouseYpos;
 }
