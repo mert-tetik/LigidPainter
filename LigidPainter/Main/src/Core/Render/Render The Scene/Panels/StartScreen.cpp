@@ -174,6 +174,29 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 
 
 		if(starctScCreateProjectMode){
+
+			//Slider
+			float sliderHeight = 2.f / (3.5f + std::ceil(tdModelPaths.size()/4.f)*0.31f * 10.f);
+			float sliderPos = 1.f-sliderHeight + scrVal;
+			if(startScreenSliderPressed)
+				scrVal -= yOffset/205.f;
+			if(scrVal > 0.f)
+				scrVal = 0.f;
+			
+			bool sliderHover = ui.isMouseOnButton(window,0.01f,sliderHeight, 0.98,sliderPos+0.16f,mouseXpos,mouseYpos,false,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+			if(sliderPos - sliderHeight < -1.f){
+				sliderPos = -1.f + sliderHeight;
+				scrVal = +sliderPos - 1.f + sliderHeight;
+			}
+			
+			if(sliderHover && firstClick)
+				startScreenSliderPressed = true;
+			if(glfwGetMouseButton(window,0) == GLFW_RELEASE)
+				startScreenSliderPressed = false;
+			
+
+			ui.box(0.01f,sliderHeight, 0.98,sliderPos+0.16f,"",glm::vec4(colorData.LigidPainterThemeColor,0.5),0,false,false,0.98f,10000,glm::vec4(colorData.LigidPainterThemeColor,1.0),sliderHover);
+
 			ui.renderText(renderPrograms.uiProgram,"Create new 3D project",-0.55f,0.8f-scrVal,0.0006f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 			
 			
@@ -395,27 +418,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 
 			glUseProgram(renderPrograms.uiProgram);
 			
-			//Slider
-			float sliderHeight = 2.f / (3.5f + posY * 10.f);
-			float sliderPos = 1.f-sliderHeight + scrVal;
-			if(startScreenSliderPressed)
-				scrVal -= yOffset/205.f;
-			if(scrVal > 0.f)
-				scrVal = 0.f;
 			
-			bool sliderHover = ui.isMouseOnButton(window,0.01f,sliderHeight, 0.98,sliderPos+0.16f,mouseXpos,mouseYpos,false,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
-			if(sliderPos - sliderHeight < -1.f){
-				sliderPos = -1.f + sliderHeight;
-				scrVal = +sliderPos - 1.f + sliderHeight;
-			}
-			
-			if(sliderHover && firstClick)
-				startScreenSliderPressed = true;
-			if(glfwGetMouseButton(window,0) == GLFW_RELEASE)
-				startScreenSliderPressed = false;
-			
-
-			ui.box(0.01f,sliderHeight, 0.98,sliderPos+0.16f,"",glm::vec4(colorData.LigidPainterThemeColor,0.5),0,false,false,0.98f,10000,glm::vec4(colorData.LigidPainterThemeColor,1.0),sliderHover);
 
 
 			if(createProjectErrorMsg != "")
