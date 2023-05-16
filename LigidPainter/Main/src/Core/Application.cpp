@@ -49,8 +49,6 @@
 //TODO Project manager icon
 //TODO Project settings 3d model
 //TODO Fix brush displayer
-//TODO Create texture textbox style
-//TODO Complete text generator style
 
 
 
