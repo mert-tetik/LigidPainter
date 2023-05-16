@@ -377,13 +377,13 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 					ui.renderText(renderPrograms.uiProgram,"Add Model", -0.3f + posX - 0.15f,-1.56f-scrVal - posY,0.00032f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false,10,0,buttonEnter);
 				}
 				else{
-					ui.renderText(renderPrograms.uiProgram,util.getLastWordBySeparatingWithChar(tdModelPaths[i-1],folderDistinguisher), -0.37f + posX,-1.5f-scrVal - posY,0.00032f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false,-0.37f + posX + 0.14f, false,buttonEnter);
+					ui.renderText(renderPrograms.uiProgram,util.getLastWordBySeparatingWithChar(tdModelPaths[i-1],folderDistinguisher), -0.47f + posX,-1.5f-scrVal - posY,0.00032f,glm::vec4(0.06,0.12,0.15,1.0),0.95f,false,-0.37f + posX + 0.14f, false,buttonEnter);
 					
 					//Delete Button
-					bool delButtonEnter = ui.isMouseOnButton(window,0.03f/1.5f,0.03f,-0.26f + posX,-1.605f-scrVal - posY,mouseXpos,mouseYpos,false,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
-					ui.box(0.03f/1.5f,0.03f,-0.26f + posX,-1.605f-scrVal - posY,"",glm::vec4(0.86,0.12,0.15,1.0),0,false,false,0.92f,10000,glm::vec4(colorData.LigidPainterThemeColor,1.0),delButtonEnter);
+					bool delButtonEnter = ui.isMouseOnButton(window,0.03f/1.5f,0.03f,-0.477f + posX,-1.585f-scrVal - posY,mouseXpos,mouseYpos,false,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+					ui.box(0.03f/1.5f,0.03f,-0.477f + posX,-1.585f-scrVal - posY,"",glm::vec4(0.86,0.12,0.15,1.0),0,false,false,0.92f,6,glm::vec4(colorData.LigidPainterThemeColor,1.0),delButtonEnter,{},{},0,false);
 					glUseProgram(renderPrograms.iconsProgram);
-					ui.iconBox(0.03f/1.5f,0.03f,-0.26f + posX,-1.605f-scrVal - posY,0.95f,icons.Trash,delButtonEnter,glm::vec4(1.0,1.0,1.0,1.0),glm::vec4(colorData.LigidPainterThemeColor,1.0));
+					ui.iconBox(0.03f/1.5f,0.03f,-0.477f + posX,-1.585f-scrVal - posY,0.95f,icons.Trash,0,glm::vec4(1.0,1.0,1.0,1.0),glm::vec4(0.8,0.8,0.8,1.0));
 				
 					if(delButtonEnter && firstClick){
 						tdModelPaths.erase(tdModelPaths.begin()+i-1);
