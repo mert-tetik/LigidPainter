@@ -72,7 +72,7 @@ glm::mat4 Render::setMatrices() {
 	glm::mat4 model = glm::mat4(1.0f);
 	gl.uniformMatrix4fv(renderPrograms.uiProgram, "model", model);
 
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width / (float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height, 0.1f, 1000.0f);
 	glUseProgram(renderPrograms.uiProgram);
 	gl.uniformMatrix4fv(renderPrograms.uiProgram, "projection",projection);
 

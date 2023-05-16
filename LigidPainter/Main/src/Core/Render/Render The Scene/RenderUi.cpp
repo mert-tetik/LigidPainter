@@ -1115,6 +1115,10 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		UIElements[UIgenerateTextMidAlignCheckBoxElement].checkBox.positionY = -0.25f + generateOptionsYoffset;
 		UIElements[UIgenerateTextRightAlignCheckBoxElement].checkBox.positionY = -0.25f + generateOptionsYoffset;
 
+		if(txtrGenSelectedFont.name == "")
+			if(fonts.size())
+				txtrGenSelectedFont = fonts[0];
+
 		if(txtrGenSelectFonts){
 			for (size_t i = 0; i < fonts.size(); i++)
 			{

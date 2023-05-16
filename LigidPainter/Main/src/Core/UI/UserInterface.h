@@ -706,7 +706,7 @@ struct character {
 	unsigned int Advance;
 };
 struct Font{
-	std::string name;
+	std::string name = "";
 	std::map<char, character> characters;
 };
 

@@ -35,6 +35,11 @@ void UserInterface::box(float width, float height, float position_x, float posit
 	//buttonCurveReduce = <10 | bigger
 	//buttonCurveReduce = 10000 to get a square
 
+	if(width == height*2){
+		float ratio = glfwGetVideoMode(glfwGetPrimaryMonitor())->width / glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
+		height = width*ratio;
+	}
+
 	//parameter z = position_z
 	GlSet glset;
 
@@ -1081,6 +1086,11 @@ void UserInterface::numericModifier(float position_x,float position_y,unsigned i
 }
 
 void UserInterface::iconBox(float width, float height, float position_x, float position_y, float z,	unsigned int icon,float mixVal,glm::vec4 color,glm::vec4 colorHover){
+	if(width == height*2){
+		float ratio = glfwGetVideoMode(glfwGetPrimaryMonitor())->width / glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
+		height = width*ratio;
+	}
+
 	GlSet glset;
 	ColorData clrData;
 

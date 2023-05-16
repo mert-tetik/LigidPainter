@@ -45,15 +45,14 @@
 //TODO Node & textbox copy paste
 //TODO Resize certain textures
 
-//TODO Borders
 //TODO Remove seams
+//TODO Project manager icon
+//TODO Project settings 3d model
+//TODO Fix brush displayer
+//TODO Create texture textbox style
+//TODO Complete text generator style
 
-//TODO For tomorrow
-//Fix the painting
-//Apply 3D model settings to the painting
-//Make the project manager functional
-//Fix textboxes
-//Fix the design of the new project panel
+
 
 //TODO FixCircular range bar for light pos
 

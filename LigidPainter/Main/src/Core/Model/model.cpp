@@ -1,5 +1,6 @@
 
-#include <glad/glad.h> 
+#include<glad/glad.h>
+#include<GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -55,7 +56,7 @@ using namespace std;
 
         for(unsigned int i = 0; i < meshes.size(); i++){
             if(!paintingMode){
-                glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
+                glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)glfwGetVideoMode(glfwGetPrimaryMonitor())->width / (float)glfwGetVideoMode(glfwGetPrimaryMonitor())->height, 0.1f, 1000.0f);
                 //glm::mat4 projection = glm::ortho(-(1920.0f / 50.0f), 1920.0f / 50.0f, 
                                                     //1080.0f / 50.0f, -(1080.0f / 50.0f), 
                                                     //-1000.0f, 1000.0f);
