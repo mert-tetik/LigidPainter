@@ -1462,12 +1462,12 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 	else{
 		if(startScreen){
 			if(starctScCreateProjectMode){
-				startScreenScrollVal += (float)(scrollx / 25.0);
+				startScreenScrollVal += (float)(scrollx / 15.0);
 				if(startScreenScrollVal > 0.)
 					startScreenScrollVal = 0.;
 			}
 			if(starctScLoadProjectMode){
-				startScreenLoadPanelScrollVal += (float)(scrollx / 25.0);
+				startScreenLoadPanelScrollVal += (float)(scrollx / 15.0);
 				if(startScreenLoadPanelScrollVal > 0.)
 					startScreenLoadPanelScrollVal = 0.;
 			}

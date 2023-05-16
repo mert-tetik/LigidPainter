@@ -42,13 +42,16 @@ std::vector<std::string> tdModelPaths;
 
 float gradPosMixVal = 0.f;
 
-//TODO update settings file
+//TODO settings file - 3D Model
 //TODO Add default 3D Models and do not copy a folder
 //TODO Error : This 3d model is already imported
-//TODO Sliders
 
 std::string createProjectErrorMsg = "";
 int createProjectErrorMsgCounter = 0;
+
+float startScreenLastMousePosY = 0;
+
+bool startScreenSliderPressed = false;
 
 void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs renderPrograms,Cubemaps cubemaps,SkyBoxShaderData skyBoxShaderData,
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
@@ -61,6 +64,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			char folderDistinguisher = '/'; 
 		#endif
 
+		float yOffset = 0.f;
+		yOffset = mouseYpos - startScreenLastMousePosY;
 
         glDisable(GL_DEPTH_TEST);
 
@@ -387,13 +392,38 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 					glUseProgram(renderPrograms.uiProgram);
 				}
 			}
+
+			glUseProgram(renderPrograms.uiProgram);
+			
+			//Slider
+			float sliderHeight = 2.f / (3.5f + posY * 10.f);
+			float sliderPos = 1.f-sliderHeight + scrVal;
+			if(startScreenSliderPressed)
+				scrVal -= yOffset/205.f;
+			if(scrVal > 0.f)
+				scrVal = 0.f;
+			
+			bool sliderHover = ui.isMouseOnButton(window,0.01f,sliderHeight, 0.98,sliderPos+0.16f,mouseXpos,mouseYpos,false,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,glfwGetVideoMode(glfwGetPrimaryMonitor())->height/1.5);
+			if(sliderPos - sliderHeight < -1.f){
+				sliderPos = -1.f + sliderHeight;
+				scrVal = +sliderPos - 1.f + sliderHeight;
+			}
+			
+			if(sliderHover && firstClick)
+				startScreenSliderPressed = true;
+			if(glfwGetMouseButton(window,0) == GLFW_RELEASE)
+				startScreenSliderPressed = false;
+			
+
+			ui.box(0.01f,sliderHeight, 0.98,sliderPos+0.16f,"",glm::vec4(colorData.LigidPainterThemeColor,0.5),0,false,false,0.98f,10000,glm::vec4(colorData.LigidPainterThemeColor,1.0),sliderHover);
+
+
 			if(createProjectErrorMsg != "")
 				createProjectErrorMsgCounter++;
 			if(createProjectErrorMsgCounter == 500){
 				createProjectErrorMsgCounter = 0;
 				createProjectErrorMsg = "";
 			}
-			glUseProgram(renderPrograms.uiProgram);
 			ui.box(0.9f,0.08f,-1.0 + 0.4f + 0.9f,-1.0f+0.08,"",glm::vec4(1.0,1.0,1.0,0.8),0,false,false,0.98f,10000,glm::vec4(colorData.LigidPainterThemeColor,1.0),0);
 
 			renderer.startScreenCreateTheProjectButton.draw(glm::vec3(-1.0 + 0.6f + 1.f,-1.0f+0.08,0.99f),glm::vec2(mouseXpos,mouseYpos));
@@ -536,5 +566,10 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
          			}
 			}
 		}
+		if(posY < 1.f){
+			startScreenLoadPanelScrollVal = +0.2 - posY;
+		}
+
 	}
+	startScreenLastMousePosY = mouseYpos;
 }
