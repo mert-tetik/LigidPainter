@@ -1006,38 +1006,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	}
 	
 	if(resolutionChanged){
-		LigidPainter lp;
-		if(lp.ligidMessageBox("Textures will be compressed into the chosen resolution.",-0.224f,"Do you want to proceed?",-0.1f)){
-			for (size_t i = 0; i < albedoTextures.size(); i++)
-			{
-				if(albedoTextures[i].isTexture){
-					int txtrRes = 256;
-					for (size_t i = 0; i < previousTextureResIndex; i++)
-					{
-						txtrRes*=2;
-					}
-
-					glActiveTexture(GL_TEXTURE28);
-					glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
-					Texture texture;
-					GLubyte* data = texture.getTextureFromProgram(GL_TEXTURE28,txtrRes,txtrRes,4);
-					int desiredRes = 256;
-					for (size_t i = 0; i < chosenTextureResIndex; i++)
-					{
-						desiredRes*=2;
-					}
-					
-					GLubyte* resizedData = new GLubyte[desiredRes*desiredRes*4];
-					stbir_resize_uint8(data, txtrRes, txtrRes, 0,resizedData,desiredRes, desiredRes, 0, 4);
-					gl.texImage(resizedData,desiredRes,desiredRes,GL_RGBA);
-					gl.generateMipmap();
-					delete[] resizedData;
-				}
-			}
-		}
-		else{
-			chosenTextureResIndex = previousTextureResIndex;
-		}
+		//Removed
 	}
 	previousTextureResIndex = chosenTextureResIndex;
 	

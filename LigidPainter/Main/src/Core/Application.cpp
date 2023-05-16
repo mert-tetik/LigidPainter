@@ -28,8 +28,6 @@
 //TODO Node context menu
 //TODO Project manager context menu
 //TODO Project manager drag & drop
-//TODO Utilities::transitionEffect glfwtime
-//TODO Text new line 
 //TODO History settings
 //TODO Fix sndpanel texture folder slide bar bla bla
 //TODO Sound for success alert
@@ -48,6 +46,7 @@
 //TODO Resize certain textures
 
 //TODO Borders
+//TODO Remove seams
 
 //TODO For tomorrow
 //Fix the painting
@@ -58,6 +57,7 @@
 
 //TODO FixCircular range bar for light pos
 
+//TODO Special panel for the texture generator
 //TODO Search for brush textures
 //TODO Color id
 //TODO Color pallette"-

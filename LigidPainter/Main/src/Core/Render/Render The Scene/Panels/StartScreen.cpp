@@ -470,6 +470,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 			ui.renderText(renderPrograms.uiProgram,"Load a project",-0.55f,0.8f,0.0006f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
 			
 			renderer.startScreenLoadAProjectButton.draw(glm::vec3(-0.35f,0.5f,0.95f),glm::vec2(mouseXpos,mouseYpos));
+			ui.renderText(renderPrograms.uiProgram,"Load the *.ligid file inside of your project folder",-0.55f,0.75f,0.0003f,glm::vec4(colorData.LigidPainterThemeColor,1.0),0.91f,false);
+			
 			if(renderer.startScreenLoadAProjectButton.buttonEnter)
 				nodePanel.pointerCursor = true;
 			if(renderer.startScreenLoadAProjectButton.buttonEnter && firstClick){
