@@ -575,13 +575,13 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 				if(renderingCounter % nodeScenes.size()/2 == 0){
 					for (size_t i = 0; i < nodeScenes.size(); i++)
 					{
-						modelMaterials[i] = renderTheNodes(nodeScenes[i],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex,materialFBO);
+						modelMaterials[i] = renderTheNodes(nodeScenes[i],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex,materialFBO,renderPrograms);
 					}
 				}
 			}
 			else{
 				if(nodeScenes[selectedNodeScene].stateChanged || newModelAdded){
-					modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex,materialFBO);
+					modelMaterials[selectedNodeScene] = renderTheNodes(nodeScenes[selectedNodeScene],model,perspectiveProjection,view,glfwGetVideoMode(glfwGetPrimaryMonitor())->width,screenSizeX,glfwGetVideoMode(glfwGetPrimaryMonitor())->height,screenSizeY,appNodes,chosenTextureResIndex,bakeTheMaterial,albedoTextures,currentMaterialIndex,nodeScenesHistory,chosenNodeResIndex,materialFBO,renderPrograms);
 					newModelAdded = false;
 				}
 			}

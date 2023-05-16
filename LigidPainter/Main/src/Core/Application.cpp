@@ -50,6 +50,7 @@
 //TODO Project settings 3d model
 //TODO Fix brush displayer
 //TODO Change default material
+//TODO Project settings - txtr res is not affected
 
 
 

@@ -140,6 +140,10 @@ void Render::expandTheTexture(aTexture txtr, Model usedModel,int meshIndex,Progr
 	unsigned int whiteUvTxtr;
 	glset.genTextures(whiteUvTxtr);
 	glset.bindTexture(whiteUvTxtr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glset.texImage(nullptr,txtr.width,txtr.height,GL_RGBA);
 	glset.generateMipmap();
 

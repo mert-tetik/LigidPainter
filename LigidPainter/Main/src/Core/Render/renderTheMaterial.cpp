@@ -29,7 +29,9 @@ std::vector<float> renderVertices = {
 
 unsigned int lastProgram = 0;
 
-MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,int screenSizeY,std::vector<Node>appNodes,int chosenTextureResIndex,bool& bakeTheMaterial,std::vector<aTexture> &albedoTextures,int currentMaterialIndex,std::vector<NodeScene> &nodeScenesHistory,int chosenNodeResIndex,unsigned int materialFBO){
+MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 perspectiveProjection,glm::mat4 view,int maxScreenWidth,int screenSizeX,int maxScreenHeight,
+                                   int screenSizeY,std::vector<Node>appNodes,int chosenTextureResIndex,bool& bakeTheMaterial,std::vector<aTexture> &albedoTextures,
+                                   int currentMaterialIndex,std::vector<NodeScene> &nodeScenesHistory,int chosenNodeResIndex,unsigned int materialFBO,Programs programs){
     glClearColor(0,0,0,1);
     int txtrRes = 256;
 
@@ -141,7 +143,6 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
     }
 
     
-
 
     for (size_t nodeI = 0; nodeI < material.renderingPipeline.size(); nodeI++)
     {
@@ -307,6 +308,11 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 			    }
             }
 
+
+            glUseProgram(nodeProgram);
+
+
+
             material.nodes[material.renderingPipeline[nodeI].nodeScenesIndex].inputs[inputI].generatedTexture = texture;
             glset.uniform1i(nodeProgram,("input_" + std::to_string(inputI)).c_str(),20+inputI);
             resultOut.textures.push_back(texture);
@@ -378,6 +384,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 			
                     txtr.name = util.uniqueName(txtr.name,textureNames);
 
+                    expandTheTexture(txtr,model,currentMaterialIndex,programs);
                     albedoTextures.push_back(txtr);
                 }
                 if(true){
@@ -450,7 +457,7 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
                 glset.deleteFramebuffers(FBO);
 
                 material.renderingPipeline[nodeI].outputs[outI].result = resultTexture;
-                
+
                 
                 if(bakeTheMaterial && material.renderingPipeline[nodeI].marked){
                     glset.viewport(txtrRes,txtrRes);
@@ -504,13 +511,16 @@ MaterialOut Render::renderTheNodes(NodeScene &material,Model &model,glm::mat4 pe
 			
                     txtr.name = util.uniqueName(txtr.name,textureNames);
 
+                    expandTheTexture(txtr,model,currentMaterialIndex,programs);
+
                     albedoTextures.push_back(txtr);
                 }
                 resultOut.textures.clear();
             }
         }
     }
-    
+
+
     
     end:
     glset.bindFramebuffer(0);
