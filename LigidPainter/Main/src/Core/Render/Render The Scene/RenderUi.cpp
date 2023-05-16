@@ -1146,7 +1146,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 
 			
 		ui.box(0.1f,0.025f,centerCoords - screenGapX, -0.33f + generateOptionsYoffset,"" , colorData.buttonColor, 0 , false, false, 0.9f, 10 , colorData.buttonColorHover, fontButtonEnter);
-		ui.renderText(programs.uiProgram,txtrGenSelectedFont.name,centerCoords - screenGapX - 0.1,-0.33f + generateOptionsYoffset,0.00022f,colorData.textColor,0.91f,0,txtrGenSelectedFont);
+		ui.renderText(programs.uiProgram,txtrGenSelectedFont.name,centerCoords - screenGapX - 0.08,-0.33f + generateOptionsYoffset,0.00022f,colorData.textColor,0.91f,0,txtrGenSelectedFont);
 		
 		ui.box(0.13f,0.0005f,centerCoords - screenGapX, -0.37f + generateOptionsYoffset,"" , colorData.iconColor, 0 , false, false, 0.9f, 10 , colorData.textBoxColorClicked, 0.f);
 		

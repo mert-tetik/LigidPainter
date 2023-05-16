@@ -63,6 +63,7 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		model.Draw();
 
 
+
 		//Finish
 		gl.uniform1i(programs.PBRProgram,"getTheResultF",0);
 		gl.uniform1i(programs.PBRProgram,"getTheResultV",0);
@@ -76,10 +77,15 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 
 		glDeleteTextures(1,&albedoTextures[chosenTextureIndex].id);
 		albedoTextures[chosenTextureIndex].id = textureColorbuffer;
+		albedoTextures[chosenTextureIndex].width = txtrRes;
+		albedoTextures[chosenTextureIndex].height = txtrRes;
 		glActiveTexture(GL_TEXTURE0);
 		gl.bindTexture(albedoTextures[chosenTextureIndex].id);
 
+		
+		expandTheTexture(albedoTextures[chosenTextureIndex],model,currentMaterialIndex,programs);
 
+		
 		glDeleteFramebuffers(1,&FBO);
 
 		glActiveTexture(GL_TEXTURE28);
@@ -123,4 +129,74 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		LigidPainter lp;
 		lp.setViewportToDefault();
 	}
+}
+
+
+void Render::expandTheTexture(aTexture txtr, Model usedModel,int meshIndex,Programs programs){
+	GlSet glset;
+
+	glActiveTexture(GL_TEXTURE7);
+	
+	unsigned int whiteUvTxtr;
+	glset.genTextures(whiteUvTxtr);
+	glset.bindTexture(whiteUvTxtr);
+	glset.texImage(nullptr,txtr.width,txtr.height,GL_RGBA);
+	glset.generateMipmap();
+
+	unsigned int whiteUVFBO;
+	glset.genFramebuffers(whiteUVFBO);
+	glset.bindFramebuffer(whiteUVFBO);
+	
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, whiteUvTxtr, 0);
+
+	glClearColor(0,0,0,1);
+	glClear(GL_COLOR_BUFFER_BIT);	
+
+	glViewport(0,0,txtr.width,txtr.height);
+
+	glUseProgram(programs.expandTexture);
+	
+	//Necessary uniforms for the white uv texture
+	glm::mat4 projection = glm::ortho(0.0f, 1.0f, 0.0f, 1.0f);
+	glset.uniformMatrix4fv(programs.expandTexture,"projection",projection);
+	glset.uniform1i(programs.expandTexture,"renderingState",0);
+	glset.uniform1i(programs.expandTexture,"whiteUVTexture",7);
+	glset.uniform1i(programs.expandTexture,"originalTexture",28);
+
+
+	usedModel.Draw(meshIndex);
+
+	unsigned int resultUVFBO;
+	glset.genFramebuffers(resultUVFBO);
+	glset.bindFramebuffer(resultUVFBO);
+	
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr.id, 0);
+	
+	//Necessary uniforms for the result texture
+	glActiveTexture(GL_TEXTURE28);
+	glset.bindTexture(txtr.id);
+
+	glset.uniform1i(programs.expandTexture,"renderingState",1);
+
+	std::vector<float> renderVertices = { 
+		// first triangle
+		1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
+		1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+		0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+		// second triangle	  ,0,0,0,
+		1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
+		0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
+		0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+	};
+
+	glset.drawArrays(renderVertices,false);
+
+	//Finish
+	glDeleteFramebuffers(1,&whiteUVFBO);
+	glDeleteFramebuffers(1,&resultUVFBO);
+	glDeleteTextures(1,&whiteUvTxtr);
+	glset.bindFramebuffer(0);
+
+	LigidPainter lp;
+	lp.setViewportToDefault();
 }

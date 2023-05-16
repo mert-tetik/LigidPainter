@@ -1169,7 +1169,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(generateTextSizeRangeBarElement);//12
 	
     UIElement generateTextLeftAlignCheckBoxElement;
-    generateTextLeftAlignCheckBoxElement.checkBox.positionX = -0.04f;
+    generateTextLeftAlignCheckBoxElement.checkBox.positionX = -0.06f;
     generateTextLeftAlignCheckBoxElement.checkBox.positionY = -0.36f;
     generateTextLeftAlignCheckBoxElement.checkBox.text = "";
     generateTextLeftAlignCheckBoxElement.checkBox.checked = true;
@@ -1193,7 +1193,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     UIElements.push_back(generateTextMidAlignCheckBoxElement);//38
 
     UIElement generateTextRightAlignCheckBoxElement;
-    generateTextRightAlignCheckBoxElement.checkBox.positionX = 0.04f;
+    generateTextRightAlignCheckBoxElement.checkBox.positionX = 0.06f;
     generateTextRightAlignCheckBoxElement.checkBox.positionY = -0.36f;
     generateTextRightAlignCheckBoxElement.checkBox.text = "";
     generateTextRightAlignCheckBoxElement.checkBox.checked = false;

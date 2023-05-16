@@ -490,6 +490,7 @@ public:
 		unsigned int spinnerProgram = gl.createProgram("./LigidPainter/Resources/Shaders/UI/spinner");
 		unsigned int directionalShadow = gl.createProgram("./LigidPainter/Resources/Shaders/UI/directionalShadow");
 		unsigned int gradient = gl.createProgram("./LigidPainter/Resources/Shaders/UI/gradient");
+		unsigned int expandTexture = gl.createProgram("./LigidPainter/Resources/Shaders/Texture Processing/expandTexture");
 		
 
 		Programs glPrograms;
@@ -526,6 +527,7 @@ public:
 		glPrograms.solidRenderer = solidRenderer;
 		glPrograms.directionalShadow = directionalShadow;
 		glPrograms.gradient = gradient;
+		glPrograms.expandTexture = expandTexture;
 
 
 		return glPrograms;

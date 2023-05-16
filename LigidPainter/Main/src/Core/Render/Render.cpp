@@ -400,7 +400,6 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 		glUseProgram(renderPrograms.screenDepthProgram);
 		gls.uniform1i(renderPrograms.screenDepthProgram,"useUV",UIElements[UIuseUVCheckBox].checkBox.checked);
 		gls.uniformMatrix4fv(renderPrograms.screenDepthProgram,"modelMatrix",modelMatrix);
-
 		if(materialDisplayUpdaterCounter > 200){
 			//TODO : Update only selected one
 			for (size_t i = 0; i < nodeScenes.size(); i++)
@@ -432,7 +431,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 				std::vector<MaterialOut> matDisplays;
 				matDisplays.push_back(modelMaterials[i]);
 
-				spherModel.Draw(0,renderPrograms.PBRProgram,false,matDisplays,displayMatrix,false,0,glm::vec3(6.f,0.f,0.f),0,0,false,{},0,glm::mat4(1),UIElements[UIuseUVCheckBox].checkBox.checked,.0);
+				spherModel.Draw(0,renderPrograms.PBRProgram,false,matDisplays,displayMatrix,false,0,glm::vec3(6.f,0.f,0.f),0,0,false,{},0,glm::mat4(2),0,.0);
 				
 				gls.bindFramebuffer(0);
 				gls.deleteFramebuffers(dFBO);

@@ -361,8 +361,33 @@ public:
             MaterialFile materialFile;
             material = materialFile.readTheFile(fileName.c_str());
 
+            GlSet gls;
+            gls.genTextures(material.renderedTexture);
+            glActiveTexture(GL_TEXTURE28);
+            gls.bindTexture(material.renderedTexture);
+            gls.texImage(nullptr,100,100,GL_RGBA);
+			gls.generateMipmap();
             materials.push_back(material);
 		}
+        if(!materials.size()){
+            for (const auto & entry : std::filesystem::directory_iterator("\\LigidPainter\\Resources\\Materials")){
+		        std::string fileName = entry.path().string();
+		        std::string file = util.getLastWordBySeparatingWithChar(fileName,folderDistinguisher);
+		        std::string raw = file;
+                NodeScene material;
+
+                MaterialFile materialFile;
+                material = materialFile.readTheFile(fileName.c_str());
+
+                GlSet gls;
+                gls.genTextures(material.renderedTexture);
+                glActiveTexture(GL_TEXTURE28);
+                gls.bindTexture(material.renderedTexture);
+                gls.texImage(nullptr,100,100,GL_RGBA);
+			    gls.generateMipmap();
+                materials.push_back(material);
+		    }
+        }
 
         //NODES
         appNodes.clear();

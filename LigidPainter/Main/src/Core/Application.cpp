@@ -49,6 +49,8 @@
 //TODO Project manager icon
 //TODO Project settings 3d model
 //TODO Fix brush displayer
+//TODO Change default material
+
 
 
 
@@ -2473,7 +2475,7 @@ void LigidPainter::sndPanelMinusIcon(){
 					for (size_t i = 0; i < model.meshes.size(); i++)
 					{
 						if(model.meshes[i].materialIndex == selectedNodeScene){
-							ui.alert("Warning! Deleting request is ignored. This material is already in use.",200,false);
+							ui.alert("Warning! Deleting request is ignored. This material is in use & can't be deleted.",200,false);
 							deletable = false;
 							break;
 						}
