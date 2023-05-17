@@ -599,7 +599,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
         saveButtonHover = true;
     if(saveButtonHover && firstClick){
         ProjectFolder project;
-        project.saveFolder(projectPath,albedoTextures,txtrRes,chosenSkyboxIndex,UIElements);
+        project.saveFolder(projectPath,albedoTextures,txtrRes,chosenSkyboxIndex,UIElements,model);
     }
     ui.box(0.03f,0.025f,-1.0f+0.05f+0.03f + screenGapX,(1.f-0.025f),"Save",glm::vec4(0.7f),0.02f,false,false,0.91f + saveButtonHover/1000.f,1000.f,colorData.buttonColor,0.f,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,1.0),0.00022f,true);
 		
@@ -610,7 +610,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
         saveAsButtonHover = true;
     if(saveAsButtonHover && firstClick){
         ProjectFolder project;
-        project.saveFolder(projectPath,albedoTextures,txtrRes,chosenSkyboxIndex,UIElements);
+        project.saveFolder(projectPath,albedoTextures,txtrRes,chosenSkyboxIndex,UIElements,model);
         std::string pathCheck = project.duplicateFolder(projectPath);
         if(pathCheck.size())
             projectPath = pathCheck;        

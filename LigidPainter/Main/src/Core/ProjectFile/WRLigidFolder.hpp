@@ -111,7 +111,7 @@ private:
         }
     }
 public:
-    void initFolder(std::string &path,std::string projectTitle,bool transTextures,bool transNodes,bool transFonts,std::vector<std::string> tdModelPaths,int &chosenSkyboxIndex,std::vector<UIElement> &UIElements){
+    void initFolder(std::string &path,std::string projectTitle,bool transTextures,bool transNodes,bool transFonts,std::vector<std::string> tdModelPaths,int modelIndex,int &chosenSkyboxIndex,std::vector<UIElement> &UIElements){
         //TODO Process font importing
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
@@ -124,7 +124,7 @@ public:
         
         std::filesystem::create_directories(path);
 			
-        writeSettingsFile(path,tdModelPaths[0],chosenSkyboxIndex,UIElements); //TODO Give index
+        writeSettingsFile(path,tdModelPaths[modelIndex],chosenSkyboxIndex,UIElements); //TODO Give index
 
 		//Materials
 		std::string materialpath = path;
@@ -554,15 +554,15 @@ public:
         }
         return path;
     }
-    void saveFolder(std::string projectPath,std::vector<aTexture> &albedoTextures,int txtrRes,int& chosenSkyboxIndex,std::vector<UIElement> &UIElements){
+    void saveFolder(std::string projectPath,std::vector<aTexture> &albedoTextures,int txtrRes,int& chosenSkyboxIndex,std::vector<UIElement> &UIElements,Model &model){
 
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
 			char folderDistinguisher = '/'; 
 		#endif
-
-        writeSettingsFile(projectPath,"sphere.fbx",chosenSkyboxIndex,UIElements); //TODO Give the current td model name
+        Utilities util;
+        writeSettingsFile(projectPath,util.getLastWordBySeparatingWithChar(model.filePath,folderDistinguisher),chosenSkyboxIndex,UIElements); //TODO Give the current td model name
 
         std::vector<aTexture> changedTextures;
         for (size_t i = 0; i < albedoTextures.size(); i++)

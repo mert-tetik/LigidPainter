@@ -45,7 +45,6 @@
 //TODO Node & textbox copy paste
 //TODO Resize certain textures
 
-//TODO Project manager icon
 //TODO Project settings 3d model
 //TODO Fix brush displayer
 //TODO Project settings - txtr res is not affected
@@ -548,7 +547,7 @@ bool LigidPainter::run()
 			if(albedoTextures[i].isTexture)
 				util.extensionCheckForTexture(albedoTextures[i].name);
 		}
-		
+
 		if(!startScreen && !didDefaultNodesMakeToTheCenter && !createProject)
 			defaultNodePosCorrectorCounter++;
 

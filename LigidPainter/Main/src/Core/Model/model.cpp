@@ -32,6 +32,7 @@ using namespace std;
     vector<TextureMs> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
     vector<Mesh>    meshes;
     string directory;
+    string filePath;
 
     unsigned int mVAO;
     unsigned int mVBO;
@@ -209,6 +210,8 @@ using namespace std;
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void Model::loadModel(string const &path,bool triangulate)
     {
+        filePath = path;
+        
         meshes.clear();
         // read file via ASSIMP
         Assimp::Importer importer;
