@@ -48,7 +48,7 @@
 //TODO Project settings 3d model first load
 //TODO Fix brush displayer
 //TODO Saving shortcuts
-//TODO Fix texture selection panel & add node contextmenu
+//TODO Fix texture selection panel
 //TODO Fix project manager save as blabla
 //TODO Numpad textbox error
 //TODO Stop updating after 10 seconds
