@@ -51,9 +51,9 @@
 //TODO Fix texture selection panel
 //TODO Fix project manager save as blabla
 //TODO Numpad textbox error
-//TODO Stop updating after 10 seconds
+//TODO Stop rendering after 10 seconds
 //TODO Tmp files
-
+//TODO Fix arraydown wrong folder index
 
 
 //TODO FixCircular range bar for light pos
@@ -2850,7 +2850,7 @@ void LigidPainter::sndPanelDownIcon(){
 				//Rename if necessary
 				result.name = util.removeExtension(util.getLastWordBySeparatingWithChar(albedoTexturePaths[i],folderDistinguisher)); 
 				result.name = util.uniqueName(result.name,textureNames);
-
+				result.folderIndex = sndPanel.activeFolderIndex;
 				albedoTextures.push_back(result);
 				glActiveTexture(GL_TEXTURE28);
 			}
