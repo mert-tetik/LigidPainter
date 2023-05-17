@@ -50,6 +50,7 @@
 //TODO Test saving
 //TODO Numpad textbox error
 //TODO Tmp files
+//TODO Brush texture folder importing alignment & (check default folders compatibility with other folders)
 
 
 //TODO FixCircular range bar for light pos

@@ -686,11 +686,11 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		const float maskPanelRange = ceil((int)maskPanelElementSize/3.f) / 8.33333333333 - (0.8f - 0.55f); 
 
 		if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked)
-			ui.verticalRangeBar((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,brushMaskTextures.maskTexturesSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.maskTextures.size(),screenGapX);
+			ui.verticalRangeBar((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,brushMaskTextures.maskTexturesSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)maskPanelElementSize,screenGapX);
 		if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked)
-			ui.verticalRangeBar((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,brushMaskTextures.colorTexturesSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.maskTextures.size(),screenGapX);
+			ui.verticalRangeBar((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,brushMaskTextures.colorTexturesSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)maskPanelElementSize,screenGapX);
 		if(UIElements[UInormalmapPaintingCheckBoxElement].checkBox.checked)	
-			ui.verticalRangeBar((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,brushMaskTextures.normalTexturesSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)brushMaskTextures.maskTextures.size(),screenGapX);
+			ui.verticalRangeBar((renderData.panelLoc + max(renderData.panelLoc - 1.7f,0.0f)) / centerDivider + centerSum - screenGapX + 0.13f,0.8f+panelData.paintingPanelSlideVal,0.125,brushMaskTextures.normalTexturesSliderValue,(0.25f / (maskPanelRange/4.f+0.001f)) * (maskPanelSliderValue*-1.f),renderData.window,mouseXpos,mouseYpos,yOffset,firstClick,(int)maskPanelElementSize,screenGapX);
 
 		//Display brush texture
 		ui.box(0.035f, 0.07f, centerCoords - screenGapX - 0.1f, 0.42f+panelData.paintingPanelSlideVal, "", colorData.buttonColor, 0.075f, false, true, 0.9f, 10, glm::vec4(0), 0);
