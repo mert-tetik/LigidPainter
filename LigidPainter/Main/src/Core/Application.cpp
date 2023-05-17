@@ -45,10 +45,9 @@
 //TODO Node & textbox copy paste
 //TODO Resize certain textures
 
-//TODO Project settings 3d model first load
+//TODO Default models
 //TODO Fix brush displayer
 //TODO Test saving
-//TODO Fix project manager save as blabla
 //TODO Numpad textbox error
 //TODO Tmp files
 
