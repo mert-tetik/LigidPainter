@@ -1569,9 +1569,9 @@ void UserInterface::checkBox(float position_x, float position_y, std::string tex
 	}
 	
 	glUseProgram(uiPrograms.iconsProgram);
-	iconBox(0.05f/3.f,0.05f*2/3.f,position_x, position_y,0.9f,icons.O,0,color1,color1); //Outline
+	iconBox(0.05f/4.f,0.05f*2/4.f,position_x, position_y,0.9f,icons.O,0,color1,color1); //Outline
 	
-	iconBox(0.022f/3.f,0.022f*2/3.f,position_x, position_y,0.91f,icons.Circle,0,glm::vec4(color2.r,color2.g,color2.b,mixVal),color2); //Circle
+	iconBox(0.022f/4.f,0.022f*2/4.f,position_x, position_y,0.91f,icons.Circle,0,glm::vec4(color2.r,color2.g,color2.b,mixVal),color2); //Circle
 	
 	glUseProgram(uiPrograms.uiProgram);
 	renderText(uiPrograms.uiProgram, text, position_x+0.03f, position_y - 0.01f, 0.00022f,color1,0.9f,false);
