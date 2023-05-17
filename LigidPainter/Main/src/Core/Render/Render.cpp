@@ -607,7 +607,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 	else if(startScreen){
 		startScreenPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,
 						  displayProjectFolderManager,fonts,projectManager,albedoTextures,1024,nodeScenes,appNodes,addNodeContextMenu,model,firstClickR,renderer,startScreenScrollVal
-						  ,startScreen,startScreenLoadPanelScrollVal,chosenSkyboxTexture,nodePanel,starctScCreateProjectMode,starctScLoadProjectMode);
+						  ,startScreen,startScreenLoadPanelScrollVal,chosenSkyboxTexture,nodePanel,starctScCreateProjectMode,starctScLoadProjectMode,chosenTextureResIndex);
 		if(!startScreen){
 			//Update window
 			//glfwSetWindowAspectRatio(renderData.window,1,1);
@@ -999,7 +999,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 				//project.initFolder(path,modelFilePath,UIElements,UIElements[UIbackfaceCullingCheckBox].checkBox.checked,UIElements[UIuseUVCheckBox].checkBox.checked,createProject3DModelPaths);
 
 				project.readFolder(path + folderDistinguisher + UIElements[UIgenerateTextTextureTextTextBoxElement].textBox.text + ".ligid",nodeScenes,appNodes,addNodeContextMenu,model,UIElements,
-									albedoTextures,fonts,chosenSkyboxTexture);
+									albedoTextures,fonts,chosenSkyboxTexture,chosenTextureResIndex);
 
 				LigidPainter lp;
 				lp.loadModelButton();
@@ -1024,7 +1024,7 @@ RenderOutData Render::render(RenderData &renderData, unsigned int FBOScreen, Pan
 			txtrRes*=2;
 		}
 		projectFolderManagerPanel(UIElements,renderPrograms,cubemaps,skyBoxShaderData,createProjectPanelBlurVal,projectPath,screenGapX,renderData.window,icons,mouseXpos,mouseYpos,firstClick,
-								  displayProjectFolderManager,fonts,projectManager,albedoTextures,txtrRes,nodeScenes,appNodes,addNodeContextMenu,model,firstClickR,chosenSkyboxTexture);
+								  displayProjectFolderManager,fonts,projectManager,albedoTextures,txtrRes,nodeScenes,appNodes,addNodeContextMenu,model,firstClickR,chosenSkyboxTexture,chosenTextureResIndex);
 	}
 
 	glUseProgram(renderPrograms.solidRenderer);

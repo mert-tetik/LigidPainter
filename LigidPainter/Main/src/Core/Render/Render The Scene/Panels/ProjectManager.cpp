@@ -286,7 +286,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
                                         bool firstClick,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
                                         ,int txtrRes,std::vector<NodeScene> &materials, std::vector<Node> &appNodes, ContextMenu &addNodeContexMenu, Model &model,bool firstClickR
-                                        ,int & chosenSkyboxIndex){
+                                        ,int & chosenSkyboxIndex,int& chosenTextureResIndex){
         glDisable(GL_DEPTH_TEST);
         Utilities util;
         UserInterface ui;
@@ -599,7 +599,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
         saveButtonHover = true;
     if(saveButtonHover && firstClick){
         ProjectFolder project;
-        project.saveFolder(projectPath,albedoTextures,txtrRes,chosenSkyboxIndex,UIElements,model);
+        project.saveFolder(projectPath,albedoTextures,txtrRes,chosenSkyboxIndex,chosenTextureResIndex,UIElements,model);
     }
     ui.box(0.03f,0.025f,-1.0f+0.05f+0.03f + screenGapX,(1.f-0.025f),"Save",glm::vec4(0.7f),0.02f,false,false,0.91f + saveButtonHover/1000.f,1000.f,colorData.buttonColor,0.f,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,1.0),0.00022f,true);
 		
@@ -610,7 +610,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
         saveAsButtonHover = true;
     if(saveAsButtonHover && firstClick){
         ProjectFolder project;
-        project.saveFolder(projectPath,albedoTextures,txtrRes,chosenSkyboxIndex,UIElements,model);
+        project.saveFolder(projectPath,albedoTextures,txtrRes,chosenSkyboxIndex,chosenTextureResIndex,UIElements,model);
         std::string pathCheck = project.duplicateFolder(projectPath);
         if(pathCheck.size())
             projectPath = pathCheck;        
@@ -630,7 +630,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
 			auto projectPathCheck = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
             
             if(projectPathCheck){
-                project.readFolder(projectPathCheck,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts,chosenSkyboxIndex);
+                project.readFolder(projectPathCheck,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts,chosenSkyboxIndex,chosenTextureResIndex);
                 projectPath = projectPathCheck;
             }
         }

@@ -45,13 +45,14 @@
 //TODO Node & textbox copy paste
 //TODO Resize certain textures
 
-//TODO Project settings 3d model
+//TODO Project settings 3d model first load
 //TODO Fix brush displayer
-//TODO Project settings - txtr res is not affected
 //TODO Saving shortcuts
 //TODO Fix texture selection panel & add node contextmenu
 //TODO Fix project manager save as blabla
-
+//TODO Numpad textbox error
+//TODO Stop updating after 10 seconds
+//TODO Tmp files
 
 
 
@@ -533,7 +534,7 @@ bool LigidPainter::run()
 	renderer.startScreenLoadAProjectButton = RendererButton(0.15f,0.06f,20,false,"Load",glm::vec4(colorData.LigidPainterThemeColor,1),glm::vec4(1),0,0.03f,glm::vec4(1.0),glm::vec4(colorData.LigidPainterThemeColor,1.0),window);
 	renderer.startScreenProjectTitleTextBox = RendererTextBox(0.4f,0.06f,0,"Title Here",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,glm::vec4(0,0,0,1),0.00035f,false,window);
 	renderer.startScreenProjectPathTextBox = RendererTextBox(0.4f,0.06f,0,"./Projects",glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,glm::vec4(0,0,0,1),0.00035f,true,window);
-	renderer.startScreenProjectResolutionTextBox = RendererListBox(0.4f,0.06f,0,{"256","512","1024","2048","4096"},0,glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,0.00032f,window);
+	renderer.startScreenProjectResolutionTextBox = RendererListBox(0.4f,0.06f,0,{"256","512","1024","2048","4096"},2,glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(colorData.LigidPainterThemeColor,1),0,0.00032f,window);
 	renderer.startScreenIncludeTexturesCheckBox = RendererCheckBox("Include Textures",true,icons,glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(0.2f,0.2f,0.2f,1.f),window);
 	renderer.startScreenIncludeNodesCheckBox = RendererCheckBox("Include Node",true,icons,glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(0.2f,0.2f,0.2f,1.f),window);
 	renderer.startScreenIncludeFontsCheckBox = RendererCheckBox("Include Fonts",true,icons,glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(0.2f,0.2f,0.2f,1.f),window);

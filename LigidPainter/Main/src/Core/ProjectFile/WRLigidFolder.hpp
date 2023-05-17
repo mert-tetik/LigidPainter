@@ -22,7 +22,7 @@
 
 class ProjectFolder{
 private:
-    void writeSettingsFile(std::string path,std::string tdModelName,int chosenSkyboxIndex,std::vector<UIElement> &UIElements){
+    void writeSettingsFile(std::string path,std::string tdModelName,int chosenSkyboxIndex,int chosenTxtResIndex,std::vector<UIElement> &UIElements){
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -52,16 +52,21 @@ private:
         wf.write(reinterpret_cast<char*>(&UIElements[UITDModelPosYRangeBarElement].rangeBar.value),sizeof(float));// 3D Model position Y rangebar
         wf.write(reinterpret_cast<char*>(&UIElements[UITDModelPosZRangeBarElement].rangeBar.value),sizeof(float));// 3D Model position Z rangebar
         wf.write(reinterpret_cast<char*>(&chosenSkyboxIndex),sizeof(int));// Selected skybox index
+        wf.write(reinterpret_cast<char*>(&chosenTxtResIndex),sizeof(int));// Selected txtrres index
 
         std::string model = util.getLastWordBySeparatingWithChar(tdModelName,folderDistinguisher);
-        for (size_t i = 0; i < model.size(); i++) 
+
+        uint64_t modelSize = model.size(); 
+        wf.write(reinterpret_cast<char*>(&modelSize),sizeof(uint64_t));
+
+        for (size_t i = 0; i < modelSize; i++) 
         {
             wf.write(reinterpret_cast<char*>(&model[i]),sizeof(char));// 3D Model
         }
 
         //TODO Export path
     }
-    void readSettingsFile(std::string path,int &chosenSkyboxIndex,ifstream &stRf,std::string &setting,std::vector<UIElement> &UIElements,Model &model){
+    void readSettingsFile(std::string path,int &chosenSkyboxIndex,int& chosenTxtResIndex,ifstream &stRf,std::string &setting,std::vector<UIElement> &UIElements,Model &model){
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -91,11 +96,15 @@ private:
             rf.read(reinterpret_cast<char*>(&UIElements[UITDModelPosYRangeBarElement].rangeBar.value),sizeof(float));// 3D Model position Y rangebar
             rf.read(reinterpret_cast<char*>(&UIElements[UITDModelPosZRangeBarElement].rangeBar.value),sizeof(float));// 3D Model position Z rangebar
             rf.read(reinterpret_cast<char*>(&chosenSkyboxIndex),sizeof(int));// Selected skybox index
+            rf.read(reinterpret_cast<char*>(&chosenTxtResIndex),sizeof(int));// Selected txtrres index
 
 
             std::string modelStr;
 
-            for (size_t i = 0; i < modelStr.size(); i++) 
+            uint64_t modelSize; 
+            rf.read(reinterpret_cast<char*>(&modelSize),sizeof(uint64_t));
+
+            for (size_t i = 0; i < modelSize; i++) 
             {
                 char c;
                 rf.read(reinterpret_cast<char*>(&c),sizeof(char));// 3D Model
@@ -111,7 +120,7 @@ private:
         }
     }
 public:
-    void initFolder(std::string &path,std::string projectTitle,bool transTextures,bool transNodes,bool transFonts,std::vector<std::string> tdModelPaths,int modelIndex,int &chosenSkyboxIndex,std::vector<UIElement> &UIElements){
+    void initFolder(std::string &path,std::string projectTitle,bool transTextures,bool transNodes,bool transFonts,std::vector<std::string> tdModelPaths,int modelIndex,int &chosenSkyboxIndex,int chosenTxtResIndex,std::vector<UIElement> &UIElements){
         //TODO Process font importing
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
@@ -124,7 +133,7 @@ public:
         
         std::filesystem::create_directories(path);
 			
-        writeSettingsFile(path,tdModelPaths[modelIndex],chosenSkyboxIndex,UIElements); //TODO Give index
+        writeSettingsFile(path,tdModelPaths[modelIndex],chosenSkyboxIndex,chosenTxtResIndex,UIElements); //TODO Give index
 
 		//Materials
 		std::string materialpath = path;
@@ -253,7 +262,7 @@ public:
         
     }
     void readFolder(std::string path,std::vector<NodeScene> &materials, std::vector<Node> &appNodes,ContextMenu &addNodeContexMenu,Model &model,std::vector<UIElement> &UIElements,
-                    std::vector<aTexture> &albedoTextures,std::vector<Font> &fonts,int& chosenSkyboxIndex){
+                    std::vector<aTexture> &albedoTextures,std::vector<Font> &fonts,int& chosenSkyboxIndex,int& chosenTxtResIndex){
 
         //Version 1.4
 		uint64_t h1 = 0xAB428C9F; 
@@ -416,7 +425,7 @@ public:
             std::cout << "WARNING! ProjectSettings.settings file can't be detected at : " << path << std::endl;
         }
         else{
-            readSettingsFile(path,chosenSkyboxIndex,stRf,setting,UIElements,model);
+            readSettingsFile(path,chosenSkyboxIndex,chosenTxtResIndex,stRf,setting,UIElements,model);
         }
 
        
@@ -554,7 +563,7 @@ public:
         }
         return path;
     }
-    void saveFolder(std::string projectPath,std::vector<aTexture> &albedoTextures,int txtrRes,int& chosenSkyboxIndex,std::vector<UIElement> &UIElements,Model &model){
+    void saveFolder(std::string projectPath,std::vector<aTexture> &albedoTextures,int txtrRes,int& chosenSkyboxIndex,int& chosenTxtResIndex,std::vector<UIElement> &UIElements,Model &model){
 
         #if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
@@ -562,7 +571,7 @@ public:
 			char folderDistinguisher = '/'; 
 		#endif
         Utilities util;
-        writeSettingsFile(projectPath,util.getLastWordBySeparatingWithChar(model.filePath,folderDistinguisher),chosenSkyboxIndex,UIElements); //TODO Give the current td model name
+        writeSettingsFile(projectPath,util.getLastWordBySeparatingWithChar(model.filePath,folderDistinguisher),chosenSkyboxIndex,chosenTxtResIndex,UIElements); //TODO Give the current td model name
 
         std::vector<aTexture> changedTextures;
         for (size_t i = 0; i < albedoTextures.size(); i++)

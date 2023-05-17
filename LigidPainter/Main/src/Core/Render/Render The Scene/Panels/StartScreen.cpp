@@ -59,7 +59,8 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
                                         bool firstClick,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
                                         ,int txtrRes,std::vector<NodeScene> &materials, std::vector<Node> &appNodes, ContextMenu &addNodeContexMenu, Model &model,bool firstClickR,Renderer &renderer
-										,float &scrVal,bool &startScreen, float &startScreenLoadPanelScrollVal,int &selectedSkyBox,NodePanel &nodePanel,bool &starctScCreateProjectMode,bool &starctScLoadProjectMode){
+										,float &scrVal,bool &startScreen, float &startScreenLoadPanelScrollVal,int &selectedSkyBox,NodePanel &nodePanel,bool &starctScCreateProjectMode,bool &starctScLoadProjectMode,
+										int&chosenTextureResIndex){
 		#if defined(_WIN32) || defined(_WIN64)
 		    char folderDistinguisher = '\\';
 		#else
@@ -402,8 +403,21 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 					if(buttonEnter && firstClick){
 						char const* lFilterPatterns[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };	
 						char * modelFilePathCheck = tinyfd_openFileDialog("Select 3D Model","",11, lFilterPatterns,"",false);
-						if(modelFilePathCheck)
-							tdModelPaths.push_back(modelFilePathCheck);
+						if(modelFilePathCheck){
+							bool contains = false;
+							for (size_t mi = 0; mi < tdModelPaths.size(); mi++)
+							{
+								if(modelFilePathCheck == tdModelPaths[mi]){
+									contains = true;
+									break;
+								}
+							}
+							if(!contains)
+								tdModelPaths.push_back(modelFilePathCheck);
+							else
+								createProjectErrorMsg = "3D Model is already included!"; 
+
+						}
 					}
 					
 					glUseProgram(renderPrograms.iconsProgram);
@@ -471,16 +485,17 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				if(success){
 					ProjectFolder project;
 					project.initFolder(projectPath,renderer.startScreenProjectTitleTextBox.text,renderer.startScreenIncludeTexturesCheckBox.checked,renderer.startScreenIncludeNodesCheckBox.checked,
-									   renderer.startScreenIncludeFontsCheckBox.checked,tdModelPaths,selectedModelIndex,selectedSkyBox,UIElements);
+									   renderer.startScreenIncludeFontsCheckBox.checked,tdModelPaths,selectedModelIndex,selectedSkyBox,renderer.startScreenProjectResolutionTextBox.selectedIndex,UIElements);
 
 					project.readFolder(projectPath + folderDistinguisher + renderer.startScreenProjectTitleTextBox.text + ".ligid" ,materials,appNodes,addNodeContexMenu,model,UIElements,
-									   albedoTextures,fonts,selectedSkyBox);
+									   albedoTextures,fonts,selectedSkyBox,chosenTextureResIndex);
 					startScreen = false;
 				}
 			}
 		}
 		else if(starctScLoadProjectMode){
 			ui.renderText(renderPrograms.uiProgram,"Load a project",-0.55f,0.8f,0.0006f,glm::vec4(0.06,0.12,0.15,1.0),0.91f,false);
+			
 			
 			renderer.startScreenLoadAProjectButton.draw(glm::vec3(-0.35f,0.5f,0.95f),glm::vec2(mouseXpos,mouseYpos));
 			ui.renderText(renderPrograms.uiProgram,"Load the *.ligid file inside of your project folder",-0.55f,0.75f,0.0003f,glm::vec4(colorData.LigidPainterThemeColor,1.0),0.91f,false);
@@ -492,7 +507,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 				char * projectFilePathCheck = tinyfd_openFileDialog("Select 3D Model","", 1, lFilterPatterns,"",false);
 				if(projectFilePathCheck){
 					ProjectFolder project;
-					project.readFolder(projectFilePathCheck ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts,selectedSkyBox);
+					project.readFolder(projectFilePathCheck ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts,selectedSkyBox,chosenTextureResIndex);
 					projectPath = projectFilePathCheck;
 					std::string projectPathName = util.getLastWordBySeparatingWithChar(projectPath,folderDistinguisher);
 					projectPath.erase(projectPath.end()-projectPathName.size(),projectPath.end());
@@ -596,7 +611,7 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 							nodePanel.pointerCursor = true;
 						if(buttonEnter && firstClick){
 							ProjectFolder project;
-							project.readFolder(path ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts,selectedSkyBox);
+							project.readFolder(path ,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts,selectedSkyBox,chosenTextureResIndex);
 							projectPath = path;
 							std::string projectPathName = util.getLastWordBySeparatingWithChar(projectPath,folderDistinguisher);
 							projectPath.erase(projectPath.end()-projectPathName.size(),projectPath.end());
@@ -623,6 +638,10 @@ void Render::startScreenPanel(std::vector<UIElement> &UIElements,Programs render
 						fileCounter++;
          			}
 			}
+		}
+		if(fileCounter == 0){
+			glUseProgram(renderPrograms.uiProgram);
+			ui.renderText(renderPrograms.uiProgram,"There is no project to display",-0.2f,0.0f,0.0006f,glm::vec4(colorData.LigidPainterThemeColor,1.0),0.91f,false);
 		}
 	}
 	startScreenLastMousePosY = mouseYpos;

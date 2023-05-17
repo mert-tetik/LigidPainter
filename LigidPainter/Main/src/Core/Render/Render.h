@@ -112,12 +112,12 @@ private:
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
                                         bool firstClick,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
                                         ,int txtrRes,std::vector<NodeScene> &materials, std::vector<Node> &appNodes, ContextMenu &addNodeContexMenu, Model &model,bool firstClickR,
-										int & chosenSkyboxIndex);
+										int & chosenSkyboxIndex,int& chosenTextureResIndex);
 	void startScreenPanel(std::vector<UIElement> &UIElements,Programs renderPrograms,Cubemaps cubemaps,SkyBoxShaderData skyBoxShaderData,
                                         float &createProjectPanelBlurVal,std::string &projectPath,double screenGapX,GLFWwindow* window,Icons icons,double mouseXpos,double mouseYpos,
                                         bool firstClick,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,std::vector<aTexture> &albedoTextures
                                         ,int txtrRes,std::vector<NodeScene> &materials, std::vector<Node> &appNodes, ContextMenu &addNodeContexMenu, Model &model,bool firstClickR,
 										Renderer &renderer,float &scrVal,bool &startScreen,float &startScreenLoadPanelScrollVal,int &selectedSkyBox,NodePanel &nodePanel,bool &starctScCreateProjectMode,
-										bool &starctScLoadProjectMode);
+										bool &starctScLoadProjectMode,int&chosenTextureResIndex);
 };
 #endif // !RGDRENDER_H
