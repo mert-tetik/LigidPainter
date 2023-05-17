@@ -112,18 +112,27 @@ void prepStartLoadingScreen(GLFWwindow* window,unsigned int renderTheTextureProg
 	//Loading screen
 	std::vector<float> renderVertices = { 
 		// first triangle
-		 1.0f,  1.0f, 0.0f,1,1,0,0,0,  // top right
-		 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
-		 0.0f,  1.0f, 0.0f,0,1,0,0,0,  // top left 
+		 1.0f,  1.0f, 1.0f,1,1,0,0,0,  // top right
+		 1.0f,  0.0f, 1.0f,1,0,0,0,0,  // bottom right
+		 0.0f,  1.0f, 1.0f,0,1,0,0,0,  // top left 
 		// second triangle	  ,0,0,0,
-		 1.0f,  0.0f, 0.0f,1,0,0,0,0,  // bottom right
-		 0.0f,  0.0f, 0.0f,0,0,0,0,0,  // bottom left
-		 0.0f,  1.0f, 0.0f,0,1,0,0,0   // top left
+		 1.0f,  0.0f, 1.0f,1,0,0,0,0,  // bottom right
+		 0.0f,  0.0f, 1.0f,0,0,0,0,0,  // bottom left
+		 0.0f,  1.0f, 1.0f,0,1,0,0,0   // top left
 	};
 	glUseProgram(renderTheTextureProgram);
 	glm::mat4 txtprojection = glm::ortho(0,1,0,1);
 	glset.uniformMatrix4fv(renderTheTextureProgram,"TextProjection",txtprojection);
-	glset.uniform1i(renderTheTextureProgram,"txtr",0);
+	glset.uniform1i(renderTheTextureProgram,"isHover",0);
+	glset.uniform1i(renderTheTextureProgram,"isPressed",0);
+	glset.uniform1i(renderTheTextureProgram,"subSelected",0);
+	glset.uniform1i(renderTheTextureProgram,"isMask",0);
+	glset.uniform1i(renderTheTextureProgram,"maskUseColor",0);
+	glset.uniform1i(renderTheTextureProgram,"roundCorners",0);
+	glset.uniform1f(renderTheTextureProgram,"renderMaterials",0);
+	glset.uniform1f(renderTheTextureProgram,"opacity",1);
+	
+	
 	glset.drawArrays(renderVertices,0);
 	glfwSwapBuffers(window);
 }
@@ -131,7 +140,6 @@ void prepLoadStuff(Cubemaps &cubemaps,Icons &icons,LigidCursors &cursors,Initial
     Load load;
     UserInterface ui;
 
-	programs = load.getProgram();
 	//Load chars
 	load.uploadChars();
 	//Load brush mask textures

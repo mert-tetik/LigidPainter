@@ -45,10 +45,9 @@
 //TODO Node & textbox copy paste
 //TODO Resize certain textures
 
-//TODO Default models
-//TODO Fix brush displayer
-//TODO Test saving
+//TODO Fix loading screen
 //TODO Numpad textbox error
+//TODO Test saving
 //TODO Tmp files
 //TODO Brush texture folder importing alignment & (check default folders compatibility with other folders)
 
@@ -316,16 +315,22 @@ bool LigidPainter::run()
 	//Square vao has the coordinates of a square
 	//Custom buffer is used for nonsquare or unstable coordinates
 	prepVertexBuffers(objects.sqrVBO,objects.sqrVAO,objects.VBO,objects.VAO);
-
+	
+	glDisable(GL_DEPTH_TEST);
+	Load load;
+	programs = load.getProgram();
 	prepStartLoadingScreen(window,programs.renderTheTextureProgram,viewportBGImage);
+
 	
 	glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_MULTISAMPLE);
-	glEnable(GL_DEPTH_TEST);
 	
 	//Generate audio objects via libal
 	prepLibAL(audios.MessageBox,audios.Login,audios.ButtonEnter,audios.Alert);
+
+
 
 	prepLoadStuff(cubemaps,icons,cursors,textures,UIElements,FBOScreen,programs,maskTexturePath);
 
@@ -334,7 +339,7 @@ bool LigidPainter::run()
 
 
 
-	Load load;
+
 
 
 

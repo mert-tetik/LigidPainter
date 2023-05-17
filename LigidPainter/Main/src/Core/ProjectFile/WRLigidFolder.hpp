@@ -147,7 +147,6 @@ public:
 		modelpath += folderDistinguisher;
 		modelpath += "3DModels";
 		std::filesystem::create_directories(modelpath);
-		std::filesystem::copy(".\\LigidPainter\\Resources\\3D Models\\", modelpath);
 
         for (size_t i = 0; i < tdModelPaths.size(); i++)
         {

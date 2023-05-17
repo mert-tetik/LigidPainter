@@ -38,7 +38,7 @@
 #include "tinyfiledialogs.h"
 
 
-std::vector<std::string> tdModelPaths;
+std::vector<std::string> tdModelPaths = {".\\LigidPainter\\Resources\\3D Models\\sphere.fbx",".\\LigidPainter\\Resources\\3D Models\\plane.fbx"};
 
 float gradPosMixVal = 0.f;
 
