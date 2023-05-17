@@ -617,6 +617,8 @@ struct TextureSelectionPanel{
 	bool textureClicked = false;
 
 	bool firstCycle = true;
+
+	int scroll = 0;
 };
 
 struct ColoringPanel{
@@ -676,6 +678,7 @@ struct TextureCreatingPanel{
 	bool createButtonHover = false;
 
 	glm::vec3 color = glm::vec3(0);
+
 };
 struct RenderOutData{
 	glm::vec3 mouseHoverPixel;
@@ -767,7 +770,7 @@ public:
 	void container(float positionX,float positionY,float positionZ,float width, float height,glm::vec4 color, Programs &programs,unsigned int circleTexture,glm::vec4 transitionColor, float mixVal);
 	void circle(float positionX,float positionY,float positionZ,float width, float height, unsigned int circleTexture,glm::vec4 color,glm::vec4 transitionColor, float mixVal);
 	void drawLine(float posX,float posY,float posZ,float toPosX,float toPosY,float width,glm::vec4 color,bool isLine);
-	void textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<aTexture> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth,unsigned int circleTexture,bool firstClick);
+	void textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<aTexture> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,double mouseYpos,float screenGapX,int maxScreenWidth,unsigned int circleTexture,bool firstClick,Icons icons);
 	void renderAlert(std::string message,int duration,unsigned int uiProgram,int state,bool success);
 	void alert(std::string message,int duration,bool success);
 	bool coloringPanel(ColoringPanel &coloringPanel,Programs programs,Icons icons,GLFWwindow* window,SaturationValShaderData saturationValShaderData,glm::mat4 orthoProjection,double mouseXpos,double mouseYpos,bool &firstClick,float xOffset,float yOffset,

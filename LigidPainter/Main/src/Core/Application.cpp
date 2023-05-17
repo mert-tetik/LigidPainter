@@ -48,7 +48,6 @@
 //TODO Project settings 3d model first load
 //TODO Fix brush displayer
 //TODO Saving shortcuts
-//TODO Fix texture selection panel
 //TODO Fix project manager save as blabla
 //TODO Numpad textbox error
 //TODO Tmp files
@@ -259,7 +258,7 @@ Model sphereModel;
 int currentMaterialIndex = 0;
 bool textureDraggingState = false;
 bool mirrorRangeBarsPressed = false;
-bool displayProjectFolderManager = true;
+bool displayProjectFolderManager = false;
 glm::mat4 modelMatrix = glm::mat4(1);
 float startScreenScrollVal = 0.f;
 float startScreenLoadPanelScrollVal = 0.f;
@@ -782,8 +781,9 @@ bool LigidPainter::run()
 
 
 		if(glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS){
-			displayProjectFolderManager = true;
+
 		}
+
 
 
 		mainLoop.changeColorPickersValue(window,colorPicker,coloringPanel,renderOut.mouseHoverPixel,firstClick);
@@ -1471,6 +1471,14 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 					startScreenLoadPanelScrollVal = 0.;
 			}
 		}
+		else if(textureSelectionPanel.active){
+			if(scrollx > 0)
+				textureSelectionPanel.scroll--;
+			if(scrollx < 0)
+				textureSelectionPanel.scroll++;
+			if(textureSelectionPanel.scroll < 0)
+				textureSelectionPanel.scroll = 0;
+		}
 		else if(callbackData.maskPanelEnter){
 			//Brush mask panel scroll
 			if(UIElements[UImaskPaintingCheckBoxElement].checkBox.checked){
@@ -1509,9 +1517,9 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 		}
 		else if(addNodeContextMenu.active){
 			if(scrollx > 0)
-				addNodeContextMenu.scroll --;
+				addNodeContextMenu.scroll--;
 			if(scrollx < 0)
-				addNodeContextMenu.scroll ++;
+				addNodeContextMenu.scroll++;
 			addNodeContextMenu.scroll = util.restrictBetween(addNodeContextMenu.scroll, addNodeContextMenu.buttons.size()-10, 0);//Keep in boundaries
 		}
 		else if(sndPanel.panelHover){

@@ -1035,7 +1035,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	glUseProgram(programs.uiProgram);
 	
 	if(textureSelectionPanel.active){
-		ui.textureSelectionPanel(textureSelectionPanel,albedoTextures,programs,renderData.window,mouseXpos,mouseYpos,screenGapX, glfwGetVideoMode(glfwGetPrimaryMonitor())->width,icons.Circle,firstClick);
+		ui.textureSelectionPanel(textureSelectionPanel,albedoTextures,programs,renderData.window,mouseXpos,mouseYpos,screenGapX, glfwGetVideoMode(glfwGetPrimaryMonitor())->width,icons.Circle,firstClick,icons);
 		textureSelectionPanel.firstCycle = false;
 	}
 	else

@@ -936,7 +936,7 @@ void UserInterface::sndPanel(int state,float panelLoc,Programs programs,Icons ic
 }
 
 void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectionPanel,std::vector<aTexture> &albedoTextures,Programs programs,GLFWwindow* window,double mouseXpos,
-										  double mouseYpos,float screenGapX,int removeThisParam,unsigned int circleTexture, bool firstClick){
+										  double mouseYpos,float screenGapX,int removeThisParam,unsigned int circleTexture, bool firstClick,Icons icons){
 	ColorData clrData;
 	GlSet glset;
 
@@ -959,10 +959,43 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 	float maskXpos = 0.0f;
 	float maskYpos = 0.0f;
 
+	std::vector<aTexture> onlyTextures;
+
 	for (size_t i = 0; i < albedoTextures.size(); i++)
 	{
-		if(albedoTextures[i].isTexture){
-			if(i % 10 == 0 && i != 0){
+		if(albedoTextures[i].isTexture)
+			onlyTextures.push_back(albedoTextures[i]);
+	}
+	bool leftAHover = false;
+	if(isMouseOnButton(window,0.01f, 0.02f, textureSelectionPanel.posX+0.08f,textureSelectionPanel.posY+0.28f,mouseXpos,mouseYpos,false)){
+		leftAHover = true;
+		if(glfwGetMouseButton(window,0) == GLFW_PRESS){
+			textureSelectionPanel.scroll--;
+			if(textureSelectionPanel.scroll < 0)
+				textureSelectionPanel.scroll = 0;
+		}
+	}
+	if(glfwGetKey(window,GLFW_KEY_LEFT) == GLFW_PRESS){
+			textureSelectionPanel.scroll--;
+			if(textureSelectionPanel.scroll < 0)
+				textureSelectionPanel.scroll = 0;
+	}
+	if(glfwGetKey(window,GLFW_KEY_RIGHT) == GLFW_PRESS){
+			textureSelectionPanel.scroll++;
+	}
+	bool rightAHover = false;
+	if(isMouseOnButton(window,0.01f, 0.02f, textureSelectionPanel.posX+0.22f,textureSelectionPanel.posY+0.28f,mouseXpos,mouseYpos,false)){
+		rightAHover = true;
+		if(glfwGetMouseButton(window,0) == GLFW_PRESS)
+			textureSelectionPanel.scroll++;
+	}
+
+	if(textureSelectionPanel.scroll > std::max((int)onlyTextures.size()-50,0))
+		textureSelectionPanel.scroll = onlyTextures.size()-50;
+	int counter = 0;
+	for (size_t i = textureSelectionPanel.scroll; i < std::min(std::min((int)onlyTextures.size()+textureSelectionPanel.scroll,50+textureSelectionPanel.scroll),(int)onlyTextures.size()); i++)
+	{
+			if(counter % 10 == 0 && counter != 0){
 				maskYpos-=0.1f;
 				maskXpos=0.0f;
 			}
@@ -984,7 +1017,7 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 			float upBotDifMax = std::max(0.05f + position_y,minBot) - std::max(-0.05f + position_y,minBot);
 			
 			glActiveTexture(GL_TEXTURE14);
-			glBindTexture(GL_TEXTURE_2D,albedoTextures[i].id);
+			glBindTexture(GL_TEXTURE_2D,onlyTextures[i].id);
 
 			std::vector<float> buttonCoorSq{
 				// first triangle
@@ -999,13 +1032,13 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 			glset.uniform1i(uiPrograms.renderTheTextureProgram, "isPressed" ,0);
 			if(isMouseOnCoords(window,mouseXpos+screenGapX*(glfwGetVideoMode(glfwGetPrimaryMonitor())->width/2) - screenGapX,mouseYpos,buttonCoorSq,false)){
 				glUseProgram(programs.uiProgram);
-				box(0.1f,0.02f,textureSelectionPanel.posX-boxWidth+0.1f,textureSelectionPanel.posY+boxWidth*1.1f,albedoTextures[i].name, glm::vec4(0),0,true,0,0.96,10,clrData.textureSelectionPanelColor,0);
+				box(0.1f,0.02f,textureSelectionPanel.posX-boxWidth+0.1f,textureSelectionPanel.posY+boxWidth*1.1f,onlyTextures[i].name, glm::vec4(0),0,true,0,0.96,10,clrData.textureSelectionPanelColor,0);
 				glUseProgram(programs.renderTheTextureProgram);
 
 				glset.uniform1i(uiPrograms.renderTheTextureProgram, "isHover" ,1);
 				if(firstClick && !textureSelectionPanel.firstCycle){
 					textureSelectionPanel.selectedIndex = i;
-					textureSelectionPanel.selectedTextureName = albedoTextures[i].name;
+					textureSelectionPanel.selectedTextureName = onlyTextures[i].name;
 					textureSelectionPanel.textureClicked = true;
 				}
 			}
@@ -1014,9 +1047,22 @@ void UserInterface::textureSelectionPanel(TextureSelectionPanel &textureSelectio
 			}
 
 			glset.drawArrays(buttonCoorSq,false);
-		}
+
+			counter++;
 	}
+
+
+	glDisable(GL_DEPTH_TEST);
+	glUseProgram(programs.iconsProgram);
+
+	iconBox(0.01f, 0.02f, textureSelectionPanel.posX+0.08f,textureSelectionPanel.posY+0.28f,1,icons.ArrowLeft,leftAHover,clrData.iconColor,clrData.iconColorHover);
+	iconBox(0.01f, 0.02f, textureSelectionPanel.posX+0.22f,textureSelectionPanel.posY+0.28f,1,icons.ArrowRight,rightAHover,clrData.iconColor,clrData.iconColorHover);
+
+	
+	
 	glUseProgram(programs.uiProgram);
+	renderText(programs.uiProgram, std::to_string(textureSelectionPanel.scroll) + " , "+ std::to_string(std::min(std::min((int)onlyTextures.size()+textureSelectionPanel.scroll,50+textureSelectionPanel.scroll),(int)onlyTextures.size())) + " / " + std::to_string(onlyTextures.size()),textureSelectionPanel.posX+0.1f,textureSelectionPanel.posY+0.27f,0.00022f,clrData.textColor,1.f,false);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void UserInterface::textureDisplayer(float width,float height, float position_x,float position_y,float z,unsigned int icon){ 
