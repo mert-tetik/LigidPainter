@@ -32,8 +32,10 @@ https://www.ligidtools.com/ligidpainter
     Left CTRL + 3 = Stabilize camera on -x axis
     Left CTRL + 4 = Stabilize camera on -z axis
     Z + Vertical mouse move = Zoom in & out
-    Left CTRL + S = Save the project file
+    Left CTRL + S = Save the project folder
     Left CTRL + Left SHIFT + S = Save as
+    Left CTRL + Left SHIFT + N = Load new project
+    Left CTRL + M = Open the project manager
 
     Over Painting Texture
     F3 - Show and Modify the texture

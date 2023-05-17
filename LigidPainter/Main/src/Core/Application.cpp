@@ -47,7 +47,7 @@
 
 //TODO Project settings 3d model first load
 //TODO Fix brush displayer
-//TODO Saving shortcuts
+//TODO Test saving
 //TODO Fix project manager save as blabla
 //TODO Numpad textbox error
 //TODO Tmp files
@@ -780,12 +780,6 @@ bool LigidPainter::run()
 		}
 
 
-		if(glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS){
-
-		}
-
-
-
 		mainLoop.changeColorPickersValue(window,colorPicker,coloringPanel,renderOut.mouseHoverPixel,firstClick);
 
 		//Ui actions
@@ -975,6 +969,45 @@ bool LigidPainter::run()
 double LigidPainter::getRenderingSpeedInFPS(){
 	return programFPS;
 }
+
+void LigidPainter::saveProjectFolder(){
+	ProjectFolder project;
+	int txtrRes = 256;
+	for (size_t i = 0; i < chosenTextureResIndex; i++)
+	{
+		txtrRes*=2;
+	}
+    project.saveFolder(projectPath,albedoTextures,txtrRes,chosenSkyboxTexture,chosenTextureResIndex,UIElements,model);
+}
+void LigidPainter::saveAsProjectFolder(){
+	int txtrRes = 256;
+	for (size_t i = 0; i < chosenTextureResIndex; i++)
+	{
+		txtrRes*=2;
+	}
+
+	ProjectFolder project;
+    project.saveFolder(projectPath,albedoTextures,txtrRes,chosenSkyboxTexture,chosenTextureResIndex,UIElements,model);
+    
+	std::string pathCheck = project.duplicateFolder(projectPath);
+    
+	if(pathCheck.size())
+        projectPath = pathCheck;
+}
+void LigidPainter::loadProjectFolder(){
+	ProjectFolder project;
+    LigidPainter lp;
+    if(lp.ligidMessageBox("Another project will be loaded!",-0.12f,"Unsaved data will be lost. Do you want to proceed?",-0.22f)){
+        char const* lFilterPatterns[1] = { "*.ligid" };
+		auto projectPathCheck = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
+        
+        if(projectPathCheck){
+            project.readFolder(projectPathCheck,nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures,fonts,chosenSkyboxTexture,chosenTextureResIndex);
+            projectPath = projectPathCheck;
+        }
+    }
+}
+
 int LigidPainter::ligidMessageBox(std::string message,float messagePosX,std::string bMessage,float bMessagePosX){
 	
 	bool noButtonClick = true;
@@ -1262,6 +1295,21 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	//Ctrl + Tab + r switch to model panel
 	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_R,0) && action == 1){
 		lp.exportPanelButton();
+	}
+	if(glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS && action == 1){
+		LigidPainter lp;
+		lp.saveProjectFolder();
+	}
+	if(glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS && action == 1){
+		LigidPainter lp;
+		lp.saveAsProjectFolder();
+	}
+	if(glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_N) == GLFW_PRESS && action == 1){
+		LigidPainter lp;
+		lp.loadProjectFolder();
+	}
+	if(glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_M) == GLFW_PRESS && action == 1){
+		displayProjectFolderManager = true;
 	}
 	Callback cb;
 	cb.key_callback(key,action,window);

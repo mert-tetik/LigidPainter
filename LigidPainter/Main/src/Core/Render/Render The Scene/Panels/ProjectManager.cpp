@@ -598,8 +598,8 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
     if(ui.isMouseOnButton(window,0.025f,0.025f,-1.0f+0.08f,(1.f-0.025f),mouseXpos,mouseYpos,0))
         saveButtonHover = true;
     if(saveButtonHover && firstClick){
-        ProjectFolder project;
-        project.saveFolder(projectPath,albedoTextures,txtrRes,chosenSkyboxIndex,chosenTextureResIndex,UIElements,model);
+        LigidPainter lp;
+        lp.saveProjectFolder();
     }
     ui.box(0.03f,0.025f,-1.0f+0.05f+0.03f + screenGapX,(1.f-0.025f),"Save",glm::vec4(0.7f),0.02f,false,false,0.91f + saveButtonHover/1000.f,1000.f,colorData.buttonColor,0.f,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,1.0),0.00022f,true);
 		
@@ -609,11 +609,8 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
     if(ui.isMouseOnButton(window,0.04f,0.025f,(-1.0f+0.05f+0.03f)+0.03f + 0.04f,(1.f-0.025f),mouseXpos,mouseYpos,0))
         saveAsButtonHover = true;
     if(saveAsButtonHover && firstClick){
-        ProjectFolder project;
-        project.saveFolder(projectPath,albedoTextures,txtrRes,chosenSkyboxIndex,chosenTextureResIndex,UIElements,model);
-        std::string pathCheck = project.duplicateFolder(projectPath);
-        if(pathCheck.size())
-            projectPath = pathCheck;        
+        LigidPainter lp;
+        lp.saveAsProjectFolder();  
     }
     ui.box(0.04f,0.025f,(-1.0f+0.05f+0.03f)+0.03f + 0.04f + screenGapX,(1.f-0.025f),"Save As",glm::vec4(0.7f),0.035f,false,false,0.91f + saveAsButtonHover/1000.f,1000.f,colorData.buttonColor,0.f,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,1.0),0.00022f,true);
         
@@ -623,17 +620,8 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
     if(ui.isMouseOnButton(window,0.03f,0.025f,((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f,(1.f-0.025f),mouseXpos,mouseYpos,0))
         loadButtonHover = true;
     if(loadButtonHover && firstClick){
-        ProjectFolder project;
         LigidPainter lp;
-        if(lp.ligidMessageBox("Another project will be loaded!",-0.12f,"Unsaved data will be lost. Do you want to proceed?",-0.22f)){
-            char const* lFilterPatterns[1] = { "*.ligid" };
-			auto projectPathCheck = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
-            
-            if(projectPathCheck){
-                project.readFolder(projectPathCheck,materials,appNodes,addNodeContexMenu,model,UIElements,albedoTextures,fonts,chosenSkyboxIndex,chosenTextureResIndex);
-                projectPath = projectPathCheck;
-            }
-        }
+        lp.loadProjectFolder();
     }
     ui.box(0.03f,0.025f,((-1.0f+0.05f+0.03f)+0.03f + 0.04f) + 0.04f + 0.03f + screenGapX,(1.f-0.025f),"Load",glm::vec4(0.7f),0.02f,false,false,0.91f + loadButtonHover/1000.f,1000.f,colorData.buttonColor,0.f,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,1.0),0.00022f,true);
         

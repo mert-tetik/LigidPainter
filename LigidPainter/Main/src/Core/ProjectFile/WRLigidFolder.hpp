@@ -596,7 +596,12 @@ public:
             stbi_write_png(path.c_str(), changedTextures[i].width, changedTextures[i].height, 4, pixelData, changedTextures[i].width * 4);
         }
         std::string path;
-        path = projectPath + folderDistinguisher + "Textures";
+        if(projectPath[projectPath.size()-1] == '/' || projectPath[projectPath.size()-1] == '\\')
+            path = projectPath + "Textures" + folderDistinguisher;
+        else
+            path = projectPath + folderDistinguisher + "Textures" + folderDistinguisher;
+        
+        //std::cout <<  "PATH WAS : " << path << std::endl;
         
         for (const auto & entry : std::filesystem::recursive_directory_iterator(path)){
             std::string filePath = entry.path().string();
@@ -604,15 +609,18 @@ public:
             for (size_t i = 0; i < albedoTextures.size(); i++)
             {
                 std::string txtrpath;
-                path = getTheProjectPathOfTheTexture(albedoTextures,albedoTextures[i],projectPath);
+                txtrpath = getTheProjectPathOfTheTexture(albedoTextures,albedoTextures[i],projectPath);
 
 
                 if(txtrpath == filePath)
                     matched = true;
-                // std::cout << filePath <<' ' << txtrpath << std::endl;
+                std::cout << filePath <<' ' << txtrpath << std::endl;
             }
             if(!matched){
-                std::filesystem::remove(filePath);
+                if(std::filesystem::is_directory(filePath))
+                    std::filesystem::remove_all(filePath);
+                else
+                    std::filesystem::remove(filePath);
             }
         }
     }
@@ -669,7 +677,7 @@ public:
             }
 
         }
-        return "";
+        return dest;
     }
 private:
 };

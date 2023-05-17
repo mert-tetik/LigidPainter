@@ -333,6 +333,10 @@ public:
 	void generateTextSizeRangeBar(float xOffset,int screenWidth);
 	int ligidMessageBox(std::string message,float messagePosX,std::string bMessage,float bMessagePosX);
 
+	void saveProjectFolder();
+	void saveAsProjectFolder();
+	void loadProjectFolder();
+
 	double getRenderingSpeedInFPS();
 };
 struct PanelData {
