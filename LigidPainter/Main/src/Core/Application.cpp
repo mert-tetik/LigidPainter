@@ -45,12 +45,13 @@
 //TODO Node & textbox copy paste
 //TODO Resize certain textures
 
-//TODO Remove seams
 //TODO Project manager icon
 //TODO Project settings 3d model
 //TODO Fix brush displayer
-//TODO Change default material
 //TODO Project settings - txtr res is not affected
+//TODO Saving shortcuts
+//TODO Fix texture selection panel & add node contextmenu
+//TODO Fix project manager save as blabla
 
 
 

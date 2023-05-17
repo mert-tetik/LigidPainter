@@ -220,6 +220,12 @@ struct Icons{
 	unsigned int ShaderFolder;
 	unsigned int NodeFolder;
 	unsigned int TextureFolder;
+	unsigned int TDModelBold;
+	unsigned int Font;
+	unsigned int MaterialBold;
+	unsigned int Node;
+	unsigned int Shader;
+	unsigned int TextureBold;
 	
 	unsigned int sky1;
 	unsigned int sky2;

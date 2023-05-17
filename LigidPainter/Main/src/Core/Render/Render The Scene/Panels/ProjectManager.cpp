@@ -352,39 +352,39 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
 		
 		glUseProgram(renderPrograms.iconsProgram);
 		//Close
-        bool closeIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.92f,mouseXpos,mouseYpos,false);
+        bool closeIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.94f,mouseXpos,mouseYpos,false);
 		ui.iconBox(0.01f,0.02f,(-1.f+0.025f)+ screenGapX,0.94f,0.92f,icons.Undo,closeIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));
         if(closeIconHover && firstClick)
             displayProjectFolderManager = false;
 		
 		
         bool texturesIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.82f,mouseXpos,mouseYpos,false);
-		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.82f,0.92f,icons.Texture,texturesIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Textures
+		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.82f,0.92f,icons.TextureBold,texturesIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Textures
         if(texturesIconHover && firstClick)
             projectFolderState = 0;
 
         bool tdmodelsIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.74f,mouseXpos,mouseYpos,false);
-		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.74f,0.92f,icons.TDModel,tdmodelsIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//3DModels
+		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.74f,0.92f,icons.TDModelBold,tdmodelsIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//3DModels
         if(tdmodelsIconHover && firstClick)
             projectFolderState = 1;
 		
         bool materialsIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.66f,mouseXpos,mouseYpos,false);
-		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.66f,0.92f,icons.Material,materialsIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Materials
+		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.66f,0.92f,icons.MaterialBold,materialsIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Materials
         if(materialsIconHover && firstClick)
             projectFolderState = 2;
 		
         bool nodesIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.58f,mouseXpos,mouseYpos,false);
-		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.58f,0.92f,icons.Mark,nodesIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Nodes
+		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.58f,0.92f,icons.Node,nodesIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Nodes
         if(nodesIconHover && firstClick)
             projectFolderState = 3;
 		
         bool shadersIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.50f,mouseXpos,mouseYpos,false);
-		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.50f,0.92f,icons.BrushFolder,shadersIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Shaders
+		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.50f,0.92f,icons.Shader,shadersIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Shaders
         if(shadersIconHover && firstClick)
             projectFolderState = 4;
         
         bool fontsIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.42f,mouseXpos,mouseYpos,false);
-		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.42f,0.92f,icons.JpgFile,fontsIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Shaders
+		ui.iconBox(0.01f,0.02f,(-1.f+0.025f) + screenGapX,0.42f,0.92f,icons.Font,fontsIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));//Shaders
         if(fontsIconHover && firstClick){
             projectFolderState = 5;
 

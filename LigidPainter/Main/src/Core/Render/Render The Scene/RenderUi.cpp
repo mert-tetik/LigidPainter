@@ -534,7 +534,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 					indepI++;
 				}
 			}
-			const bool searchButtonEnter = ui.isMouseOnButton(renderData.window,addNodeContextMenu.buttons[1].width, addNodeContextMenu.buttons[1].height, addNodeContextMenu.positionX-screenGapX, addNodeContextMenu.positionY - 0.265f*2.05f,mouseXpos,mouseYpos,false); 
+			const bool searchButtonEnter = ui.isMouseOnButton(renderData.window,addNodeContextMenu.buttons[1].width, addNodeContextMenu.buttons[1].height, addNodeContextMenu.positionX-screenGapX, addNodeContextMenu.positionY - 0.265f-addNodeContextMenu.buttons[addNodeContextMenu.buttons.size()-1].positionY,mouseXpos,mouseYpos,false); 
 			glm::vec4 selectedTextboxColor;
 			
 			if(searchButtonEnter && firstClick){
@@ -555,13 +555,13 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 					selectedTextboxColor = glm::vec4(colorData.LigidPainterThemeColor,1);
 			}
 				 
-			ui.box(addNodeContextMenu.buttons[1].width, addNodeContextMenu.buttons[1].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY - 0.265f*2.1, addNodeContextMenu.searchText, selectedTextboxColor, 0.05f, addNodeContextMenu.searchTextboxActive, false, 0.99f, addNodeContextMenu.buttons[1].buttonCurveReduce, selectedTextboxColor, addNodeContextMenu.searchTextboxActive); //Add mask texture button	
+			ui.box(addNodeContextMenu.buttons[1].width, addNodeContextMenu.buttons[1].height, addNodeContextMenu.positionX, addNodeContextMenu.positionY - addNodeContextMenu.buttons[1].height + addNodeContextMenu.buttons[std::min((int)addNodeContextMenu.buttons.size()-1,10)].positionY, addNodeContextMenu.searchText, selectedTextboxColor, 0.05f,false, false, 0.99f, addNodeContextMenu.buttons[1].buttonCurveReduce, selectedTextboxColor, addNodeContextMenu.searchTextboxActive); //Add mask texture button	
 			glUseProgram(programs.iconsProgram);
 			if(!addNodeContextMenu.searchTextboxActive)
-				ui.iconBox(0.007f,0.014f,addNodeContextMenu.positionX-addNodeContextMenu.buttons[1].width*0.7, addNodeContextMenu.positionY - 0.265f*2.1, 0.9999,icons.ArrowDown,0,colorData.iconColor,colorData.iconColor);
+				ui.iconBox(0.007f,0.014f,addNodeContextMenu.positionX-addNodeContextMenu.buttons[1].width*0.7, addNodeContextMenu.positionY - 0.265f-addNodeContextMenu.buttons[std::min((int)addNodeContextMenu.buttons.size()-1,10)].positionY, 0.9999,icons.ArrowDown,0,colorData.iconColor,colorData.iconColor);
 
-			if(addNodeContextMenu.scroll != addNodeContextMenu.buttons.size()-10){	
-				ui.iconBox(0.01f,0.02f,addNodeContextMenu.positionX, addNodeContextMenu.positionY - 0.265f*1.87f, 0.9999,icons.ArrowDown,0,colorData.iconColor,colorData.iconColor);
+			if(addNodeContextMenu.scroll != addNodeContextMenu.buttons.size()-10 && addNodeContextMenu.buttons.size() > 9){	
+				ui.iconBox(0.01f,0.02f,addNodeContextMenu.positionX, addNodeContextMenu.positionY - addNodeContextMenu.buttons[std::min((int)addNodeContextMenu.buttons.size()-1,10)].positionY, 0.9999,icons.ArrowDown,0,colorData.iconColor,colorData.iconColor);
 			}
 		}
 		else{
