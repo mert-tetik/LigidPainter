@@ -32,7 +32,6 @@ void MainLoop::updateCameraPosChanging(glm::vec3 cameraPos,bool &cameraPosChangi
 
 void MainLoop::updateRenderTheScene(GLFWwindow* window,int &renderTheSceneCounter,bool &renderTheScene){
 	const bool mouseInputTaken = glfwGetMouseButton(window, 0) == GLFW_PRESS || glfwGetMouseButton(window, 1) == GLFW_PRESS || glfwGetMouseButton(window, 2) == GLFW_PRESS;   
-	renderTheSceneCounter++;
 	if(mouseInputTaken){
 		renderTheScene = true;
 		renderTheSceneCounter = 0;

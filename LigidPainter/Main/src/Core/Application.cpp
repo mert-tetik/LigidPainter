@@ -51,9 +51,7 @@
 //TODO Fix texture selection panel
 //TODO Fix project manager save as blabla
 //TODO Numpad textbox error
-//TODO Stop rendering after 10 seconds
 //TODO Tmp files
-//TODO Fix arraydown wrong folder index
 
 
 //TODO FixCircular range bar for light pos
@@ -539,8 +537,6 @@ bool LigidPainter::run()
 	renderer.startScreenIncludeNodesCheckBox = RendererCheckBox("Include Node",true,icons,glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(0.2f,0.2f,0.2f,1.f),window);
 	renderer.startScreenIncludeFontsCheckBox = RendererCheckBox("Include Fonts",true,icons,glm::vec4(0.f,0.f,0.f,1.f),glm::vec4(0.2f,0.2f,0.2f,1.f),window);
 
-
-
 	while (!glfwWindowShouldClose(window))//Main loop
 	{
 		for (size_t i = 0; i < albedoTextures.size(); i++)
@@ -573,7 +569,9 @@ bool LigidPainter::run()
 			glfwSwapInterval(0);
 		
 		util.printRenderingSpeed(debugMode,window);
-		calculateTheSpeed(0,window);
+		if(calculateTheSpeed(0,window)){
+			renderTheSceneCounter++;
+		}
 
 		// util.printError();
 		if(selectingPaintOverTexture && !textureSelectionPanel.active)
@@ -845,7 +843,7 @@ bool LigidPainter::run()
 
 		//Render
 		//double firstTime = glfwGetTime();
-		if(true){//renderTheScene
+		if(renderTheScene){//renderTheScene
 			renderOut = render.render(renderData, FBOScreen, panelData,exportData,icons,renderPlane,renderSphere,pbrShaderData,skyBoxShaderData
 										,brushBlurVal,screenDepthShaderData,axisPointerShaderData,outShaderData,model,albedoTextures,paintRender,materialsPanelSlideValue,UIElements,colorPicker
 										,textureDisplayer,cubemaps,addNodeContextMenu,nodePanel,sndPanel,selectedAlbedoTextureIndex,textureSelectionPanel,nodeScenes,selectedNodeScene
@@ -948,10 +946,10 @@ bool LigidPainter::run()
 		if (glfwGetMouseButton(window, 1) == GLFW_RELEASE) { //Camera position changed
 			cameraPosChanging = false;
 		}
-		if(true)//renderTheScene
+		if(renderTheScene)//renderTheScene
 			glfwSwapBuffers(window);
 
-		const int renderingThreshold = 120;
+		const int renderingThreshold = 10;
 		if(renderTheSceneCounter == renderingThreshold)
 			renderTheScene = false;
 

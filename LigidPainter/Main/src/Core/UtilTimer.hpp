@@ -5,7 +5,7 @@ double programFPS = 1;
 
 double lastTimeT = glfwGetTime();
 int nbFramesT = 0;
-void calculateTheSpeed(bool debugMode,GLFWwindow* window) {
+bool calculateTheSpeed(bool debugMode,GLFWwindow* window) {
 	double currentTime = glfwGetTime();
 	nbFramesT++;
 	if (currentTime - lastTimeT >= 1.0) {
@@ -14,5 +14,7 @@ void calculateTheSpeed(bool debugMode,GLFWwindow* window) {
 		
         nbFramesT = 0;
 		lastTimeT += 1.0;
+		return true;
 	}
+	return false;
 }
