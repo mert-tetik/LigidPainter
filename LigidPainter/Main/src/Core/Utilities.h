@@ -573,40 +573,54 @@ bool checkIfTextureIsInsideOfAFolderUsingFolderName(aTexture &texture,std::vecto
 	return (textures[texture.folderIndex].name == folderName);
 }
 
-bool writeTMPFile(aTexture texture,int txtrIndex,std::vector<aTexture> albedoTextures){
+std::string getTMPFilePath(aTexture texture,int txtrIndex,std::vector<aTexture> albedoTextures){
 	std::string filePath = "./tmp/";
-	
 	if(texture.folderIndex != 10000){
 		if(albedoTextures[texture.folderIndex].folderIndex != 10000){
 			if(albedoTextures[albedoTextures[texture.folderIndex].folderIndex].folderIndex != 10000){
 				if(albedoTextures[albedoTextures[albedoTextures[texture.folderIndex].folderIndex].folderIndex].folderIndex != 10000){
+					if(albedoTextures[albedoTextures[albedoTextures[albedoTextures[texture.folderIndex].folderIndex].folderIndex].folderIndex].folderIndex != 10000){
+						if(albedoTextures[albedoTextures[albedoTextures[albedoTextures[albedoTextures[texture.folderIndex].folderIndex].folderIndex].folderIndex].folderIndex].folderIndex != 10000){
+							//6 Folder
+							filePath += (std::to_string(albedoTextures[albedoTextures[albedoTextures[albedoTextures[albedoTextures[albedoTextures[texture.folderIndex].folderIndex].folderIndex].folderIndex].folderIndex].folderIndex].folderIndex));
+							filePath += '_';
+						}
+						//5 Folder
+						filePath+=(std::to_string(albedoTextures[albedoTextures[albedoTextures[albedoTextures[albedoTextures[texture.folderIndex].folderIndex].folderIndex].folderIndex].folderIndex].folderIndex));
+						filePath += '_';
+					}
+					//4 Folder
 					filePath+=(std::to_string(albedoTextures[albedoTextures[albedoTextures[albedoTextures[texture.folderIndex].folderIndex].folderIndex].folderIndex].folderIndex));
 					filePath += '_';
 				}
+				//3 Folder
 				filePath+=(std::to_string(albedoTextures[albedoTextures[albedoTextures[texture.folderIndex].folderIndex].folderIndex].folderIndex));
 				filePath += '_';
 			}
+			//2 Folder
 			filePath+=(std::to_string(albedoTextures[albedoTextures[texture.folderIndex].folderIndex].folderIndex));
 			filePath += '_';
 		}
+		//1 Folder
 		filePath+=(std::to_string(albedoTextures[texture.folderIndex].folderIndex));
 		filePath += '_';
 	}
-	
+	//0 Folder
 	filePath+=(std::to_string(texture.folderIndex));
-
 	filePath += '_';
-	
 	filePath+=std::to_string(txtrIndex);
-	
-	int historyI = 0;
-	
+}
+bool writeTMPFile(aTexture texture,int txtrIndex,std::vector<aTexture> albedoTextures){
+	std::string filePath = getTMPFilePath(texture,txtrIndex,albedoTextures);
+
+
 	#if defined(_WIN32) || defined(_WIN64)
     	char folderDistinguisher = '\\';
 	#else
 		char folderDistinguisher = '/'; 
 	#endif
 
+	int historyI = 0;
 	for (const auto & entry : std::filesystem::directory_iterator("./tmp")){
 		std::string tmpFilePath = entry.path().string();
 		std::string orgFile = filePath;		
@@ -640,8 +654,14 @@ bool writeTMPFile(aTexture texture,int txtrIndex,std::vector<aTexture> albedoTex
 	char* pixels = new char[texture.width*texture.height*4];
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels); 
 	
-	wf.write(reinterpret_cast<char*>(&texture.width),sizeof(int));
-    wf.write(reinterpret_cast<char*>(&texture.height),sizeof(int));
+    if(!wf.write(reinterpret_cast<char*>(&texture.width),sizeof(int))){
+		std::cout << "ERROR While writing the tmp texture file's width data" << std::endl;
+		return false;
+	}
+    if(!wf.write(reinterpret_cast<char*>(&texture.height),sizeof(int))){
+		std::cout << "ERROR While writing the tmp texture file's height data" << std::endl;
+		return false;
+	}
 
 	if(!wf.write(pixels , texture.width*texture.height*4)){
 		std::cout << "ERROR While writing the tmp file (can't write the texture data)" << std::endl;
@@ -652,42 +672,15 @@ bool writeTMPFile(aTexture texture,int txtrIndex,std::vector<aTexture> albedoTex
 	return true;
 }
 bool readTMPFile(aTexture texture,int txtrIndex,std::vector<aTexture> albedoTextures){
-	std::string filePath = "./tmp/";
-	
-	if(texture.folderIndex != 10000){
-		if(albedoTextures[texture.folderIndex].folderIndex != 10000){
-			if(albedoTextures[albedoTextures[texture.folderIndex].folderIndex].folderIndex != 10000){
-				if(albedoTextures[albedoTextures[albedoTextures[texture.folderIndex].folderIndex].folderIndex].folderIndex != 10000){
-					//4 folder
-					filePath+=(std::to_string(albedoTextures[albedoTextures[albedoTextures[albedoTextures[texture.folderIndex].folderIndex].folderIndex].folderIndex].folderIndex));
-					filePath += '_';
-				}
-				//3 folder
-				filePath+=(std::to_string(albedoTextures[albedoTextures[albedoTextures[texture.folderIndex].folderIndex].folderIndex].folderIndex));
-				filePath += '_';
-			}
-			//2 folder
-			filePath+=(std::to_string(albedoTextures[albedoTextures[texture.folderIndex].folderIndex].folderIndex));
-			filePath += '_';
-		}
-		//1 folder
-		filePath+=(std::to_string(albedoTextures[texture.folderIndex].folderIndex));
-		filePath += '_';
-	}
-	//0 folder
-	filePath+=(std::to_string(texture.folderIndex));
-	filePath += '_';
-	
-	filePath+=std::to_string(txtrIndex);
+	std::string filePath = getTMPFilePath(texture,txtrIndex,albedoTextures);
 
-	
-	
 	#if defined(_WIN32) || defined(_WIN64)
     	char folderDistinguisher = '\\';
 	#else
 		char folderDistinguisher = '/'; 
 	#endif
 
+	
 	int historyI = 0;
 	for (const auto & entry : std::filesystem::directory_iterator("./tmp")){
 		std::string tmpFilePath = entry.path().string();
@@ -710,17 +703,24 @@ bool readTMPFile(aTexture texture,int txtrIndex,std::vector<aTexture> albedoText
 	std::ifstream rf = std::ifstream(filePath, std::ios::binary);
 
 	if(!rf){
-		std::cout << "ERROR While opening the tmp file" << std::endl;
+		std::cout << "ERROR While opening the tmp file : " << filePath << std::endl;
 		return false;
 	}
 	
 	int width;
 	int height;
-    rf.read(reinterpret_cast<char*>(&width),sizeof(int));
-    rf.read(reinterpret_cast<char*>(&height),sizeof(int));
+    if(!rf.read(reinterpret_cast<char*>(&width),sizeof(int))){
+		std::cout << "ERROR While reading the tmp texture file's width data" << std::endl;
+		return false;
+	}
+    if(!rf.read(reinterpret_cast<char*>(&height),sizeof(int))){
+		std::cout << "ERROR While reading the tmp texture file's height data" << std::endl;
+		return false;
+	}
 	
 	char* pixels = new char[width * height * 4];
-	if(!rf.read(pixels , width*height*4)){
+	
+	if(!rf.read(pixels , width * height * 4)){
 		std::cout << "ERROR While reading the tmp file (can't write the texture data)" << std::endl;
 		return false;
 	}	
@@ -736,6 +736,5 @@ bool readTMPFile(aTexture texture,int txtrIndex,std::vector<aTexture> albedoText
 	delete[] pixels;
 	return true;
 }
-
 };
 #endif
