@@ -521,7 +521,6 @@ public:
 
 		    }
         }
-
     }
     std::string getTheProjectPathOfTheTexture(std::vector<aTexture> albedoTextures,aTexture txtr,std::string projectPath){
         #if defined(_WIN32) || defined(_WIN64)
@@ -657,6 +656,9 @@ public:
         char* dest = tinyfd_selectFolderDialog("Select the destination folder","");
         if(dest){
             Utilities util;
+            if(srcPath[srcPath.size()-1] == '/' || srcPath[srcPath.size()-1] == '\\')
+               srcPath.pop_back();
+
             std::string destinationPath = (std::string)(dest) + folderDistinguisher +  util.getLastWordBySeparatingWithChar(srcPath,folderDistinguisher);
             if(destinationPath.size()){
                 if(std::filesystem::is_directory(destinationPath))
@@ -674,9 +676,11 @@ public:
                     }
                 }
             }
-
+            return destinationPath;
         }
-        return dest;
+        else{
+            return "";
+        }
     }
 private:
 };

@@ -46,7 +46,7 @@
 //TODO Resize certain textures
 
 //TODO Test saving
-//TODO Painting transparent bg
+//TODO Complete 3D Model section
 
 //TODO FixCircular range bar for light pos
 
@@ -997,6 +997,7 @@ void LigidPainter::saveAsProjectFolder(){
 		txtrRes*=2;
 	}
 
+	std::cout << "Basladi" << std::endl;
 	ProjectFolder project;
     project.saveFolder(projectPath,albedoTextures,txtrRes,chosenSkyboxTexture,chosenTextureResIndex,UIElements,model);
     
@@ -1004,17 +1005,20 @@ void LigidPainter::saveAsProjectFolder(){
     
 	if(pathCheck.size())
         projectPath = pathCheck;
+	
+	std::cout << "Project path is : " << projectPath << std::endl;
 }
 void LigidPainter::loadProjectFolder(){
 	ProjectFolder project;
     LigidPainter lp;
     if(lp.ligidMessageBox("Another project will be loaded!",-0.12f,"Unsaved data will be lost. Do you want to proceed?",-0.22f)){
         char const* lFilterPatterns[1] = { "*.ligid" };
-		auto projectPathCheck = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
+		char* projectPathCheck = tinyfd_openFileDialog("Select LigidPainter Project File", "", 1, lFilterPatterns, "", false);
         
         if(projectPathCheck){
             project.readFolder(projectPathCheck,nodeScenes,appNodes,addNodeContextMenu,model,UIElements,albedoTextures,fonts,chosenSkyboxTexture,chosenTextureResIndex);
-            projectPath = projectPathCheck;
+            Utilities util;
+			projectPath = util.removeLastWordBySeparatingWithChar(projectPathCheck, folderDistinguisher);
         }
     }
 }
@@ -1307,7 +1311,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if(util.shortCut(window,GLFW_KEY_LEFT_CONTROL,GLFW_KEY_TAB,GLFW_KEY_R,0) && action == 1){
 		lp.exportPanelButton();
 	}
-	if(glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS && action == 1){
+	if(glfwGetKey(window,GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE &&  glfwGetKey(window,GLFW_KEY_S) == GLFW_PRESS && action == 1){
 		LigidPainter lp;
 		lp.saveProjectFolder();
 	}

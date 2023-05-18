@@ -77,10 +77,11 @@ string getLastWordBySeparatingWithChar(string s, char del)
 }
 string removeLastWordBySeparatingWithChar(string s, char del)
 {
-	for (size_t i = 0; i < s.size(); i++)
+	for (int i = s.size()-1; i >= 0; i--)
 	{
 		if(s[i] == del){
 			s.erase(s.begin()+i,s.end());
+			break;
 		}
 	}
 	return s;
