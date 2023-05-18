@@ -122,33 +122,11 @@ void ctrlZCheck(GLFWwindow* window,std::vector<aTexture> &albedoTextures,int sel
 		}
 		
 		if(albedoTextures.size() && paintingPanelActive){
-			if(albedoTextures[selectedAlbedoTextureIndex].undoList.size()){
-				//Refresh the screen mask texture (Prevent bugs where might be accur trying undo while in the middle of painting)
-				txtr.refreshScreenDrawingTexture();
+			//Refresh the screen mask texture (Prevent bugs where might be accur trying undo while in the middle of painting)
+			txtr.refreshScreenDrawingTexture();
 
-				//Bind the related texture
-				//glset.activeTexture(GL_TEXTURE0);
-				unsigned int currentTexture = albedoTextures[selectedAlbedoTextureIndex].id;
-				for (size_t sceneI = 0; sceneI < nodeScenes.size(); sceneI++)
-				{
-					for (size_t nodeI = 0; nodeI < nodeScenes[sceneI].nodes.size(); nodeI++)
-					{
-						for (size_t inI = 0; inI < nodeScenes[sceneI].nodes[nodeI].inputs.size(); inI++)
-						{
-							if(nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTexture == currentTexture){
-								nodeScenes[sceneI].nodes[nodeI].inputs[inI].selectedTexture = albedoTextures[selectedAlbedoTextureIndex].undoList[albedoTextures[selectedAlbedoTextureIndex].undoList.size()-1];
-							}
-						}
-					}
-				}
-
-				glDeleteTextures(1,&currentTexture);
-
-				albedoTextures[selectedAlbedoTextureIndex].id = albedoTextures[selectedAlbedoTextureIndex].undoList[albedoTextures[selectedAlbedoTextureIndex].undoList.size()-1];
-
-				//Remove the last element
-				albedoTextures[selectedAlbedoTextureIndex].undoList.pop_back();
-			}
+			Utilities util;
+			util.readTMPFile(albedoTextures[selectedAlbedoTextureIndex],selectedAlbedoTextureIndex,albedoTextures);
 		}
 		doCtrlZ = false;
 	}

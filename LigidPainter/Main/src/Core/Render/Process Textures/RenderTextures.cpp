@@ -85,6 +85,9 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		
 		expandTheTexture(albedoTextures[chosenTextureIndex],model,currentMaterialIndex,programs);
 
+		Utilities util;
+		util.writeTMPFile(albedoTextures[chosenTextureIndex],chosenTextureIndex,albedoTextures);
+
 		
 		glDeleteFramebuffers(1,&FBO);
 

@@ -47,6 +47,7 @@
 
 //TODO Test saving
 //TODO Tmp files
+//TODO Painting transparent bg
 
 //TODO FixCircular range bar for light pos
 
@@ -521,8 +522,14 @@ bool LigidPainter::run()
 
 	prepPrograms(programs,UIElements,modelMatrix);
 
+	//Create program folders
 	if(!std::filesystem::is_directory("./Projects"))
 		std::filesystem::create_directories("./Projects");
+	
+	if(std::filesystem::is_directory("./tmp"))
+		std::filesystem::remove_all("./tmp");
+	
+	std::filesystem::create_directories("./tmp");
 
 
 
@@ -963,6 +970,10 @@ bool LigidPainter::run()
 	}
 
 	//Close the program
+
+	if(std::filesystem::is_directory("./tmp"))
+		std::filesystem::remove_all("./tmp");
+
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	return true;
