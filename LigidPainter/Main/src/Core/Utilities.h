@@ -609,6 +609,8 @@ std::string getTMPFilePath(aTexture texture,int txtrIndex,std::vector<aTexture> 
 	filePath+=(std::to_string(texture.folderIndex));
 	filePath += '_';
 	filePath+=std::to_string(txtrIndex);
+
+	return filePath;
 }
 bool writeTMPFile(aTexture texture,int txtrIndex,std::vector<aTexture> albedoTextures){
 	std::string filePath = getTMPFilePath(texture,txtrIndex,albedoTextures);

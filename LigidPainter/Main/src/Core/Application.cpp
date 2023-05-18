@@ -46,7 +46,6 @@
 //TODO Resize certain textures
 
 //TODO Test saving
-//TODO Tmp files
 //TODO Painting transparent bg
 
 //TODO FixCircular range bar for light pos

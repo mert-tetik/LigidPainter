@@ -32,6 +32,9 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 	albedoTextures[chosenTextureIndex].changed = true;
 
 	if(isRenderTexture){
+		Utilities util;
+		util.writeTMPFile(albedoTextures[chosenTextureIndex],chosenTextureIndex,albedoTextures);
+
 		glEnable(GL_DEPTH_TEST); 
 		glDepthFunc(GL_LESS);
     	GlSet gl;
@@ -51,6 +54,9 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
 
+		glClearColor(0,0,0,0);
+		glClear(GL_COLOR_BUFFER_BIT);	
+
 		glViewport(0,0,txtrRes,txtrRes);
 
 
@@ -61,7 +67,6 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 		gl.uniformMatrix4fv(programs.PBRProgram,"orthoProjection",projection);
 
 		model.Draw();
-
 
 
 		//Finish
@@ -84,10 +89,6 @@ void Render::renderTextures(unsigned int FBOScreen, int screenSizeX,  int screen
 
 		
 		expandTheTexture(albedoTextures[chosenTextureIndex],model,currentMaterialIndex,programs);
-
-		Utilities util;
-		util.writeTMPFile(albedoTextures[chosenTextureIndex],chosenTextureIndex,albedoTextures);
-
 		
 		glDeleteFramebuffers(1,&FBO);
 
@@ -156,7 +157,7 @@ void Render::expandTheTexture(aTexture txtr, Model usedModel,int meshIndex,Progr
 	
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, whiteUvTxtr, 0);
 
-	glClearColor(0,0,0,1);
+	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT);	
 
 	glViewport(0,0,txtr.width,txtr.height);
