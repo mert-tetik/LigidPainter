@@ -185,26 +185,20 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
                 if(copyPathHover && firstClick)
                     glfwSetClipboardString(window,std::filesystem::absolute(fileName.c_str()).string().c_str());
                 ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y,"Copy Path",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1),0.06f,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,copyPathHover);
-
-                bool renameHover = false;
-                if(ui.isMouseOnButton(window,0.06f,0.02f,contextMenuPos.x,contextMenuPos.y - 0.04f,mouseXpos,mouseYpos,0))
-                    renameHover = true;
-                ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.04,"Rename",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1),0.06f ,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,renameHover);
-
                 
                 if(std::filesystem::is_directory(fileName)){
                     bool pasteHover = false;
-                    if(ui.isMouseOnButton(window,0.06f,0.02f,contextMenuPos.x,contextMenuPos.y - 0.08f,mouseXpos,mouseYpos,0))
+                    if(ui.isMouseOnButton(window,0.06f,0.02f,contextMenuPos.x,contextMenuPos.y - 0.04f,mouseXpos,mouseYpos,0))
                         pasteHover = true;
                     if(pasteHover && firstClick){
                         if(std::filesystem::exists(glfwGetClipboardString(window)))//Does exists?
                             if(!std::filesystem::is_directory(glfwGetClipboardString(window)))//Is a file?
                                 std::filesystem::copy(glfwGetClipboardString(window),fileName);
                     }
-                    ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.08f,"Paste The Path",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1), 0.06f,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,pasteHover);
+                    ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.04f,"Paste The Path",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1), 0.06f,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,pasteHover);
                     
                     bool addFileHover = false;
-                    if(ui.isMouseOnButton(window,0.06f,0.02f,contextMenuPos.x ,contextMenuPos.y - 0.12f,mouseXpos,mouseYpos,0))
+                    if(ui.isMouseOnButton(window,0.06f,0.02f,contextMenuPos.x ,contextMenuPos.y - 0.08f,mouseXpos,mouseYpos,0))
                         addFileHover = true;
                     if(addFileHover && firstClick){
                         char* addFilePath = tinyfd_openFileDialog("Select the file","",0,{},{},0);
@@ -214,11 +208,11 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
                                     std::filesystem::copy(addFilePath,fileName);
 
                     }
-                    ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.12f,"Add File",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1), 0.06f,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,addFileHover);
+                    ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.08f,"Add File",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1), 0.06f,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,addFileHover);
                 }
                 else{
                     bool deleteHover = false;
-                    if(ui.isMouseOnButton(window,0.06f,0.02f,contextMenuPos.x,contextMenuPos.y - 0.08f,mouseXpos,mouseYpos,0))
+                    if(ui.isMouseOnButton(window,0.06f,0.02f,contextMenuPos.x,contextMenuPos.y - 0.04f,mouseXpos,mouseYpos,0))
                         deleteHover = true;
                     if(deleteHover && firstClick){
                         for (size_t i = 0; i < selectedFiles.size(); i++)
@@ -227,7 +221,7 @@ void drawTheFolder(std::string path,float screenGapX,double mouseXpos,double mou
                         }
                         
                     }
-                    ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.08,"Delete",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1),0.06f ,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,deleteHover);
+                    ui.box(0.07f,0.02f,contextMenuPos.x + screenGapX,contextMenuPos.y - 0.04,"Delete",isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,0.7) : glm::vec4(0.98f,0.98f,0.98f,1),0.06f ,false,false,0.93f,10000,isSelected(fileName) ? glm::vec4(colorData.LigidPainterThemeColor,1) : colorData.buttonColorHover,deleteHover);
                 }
                 
             }

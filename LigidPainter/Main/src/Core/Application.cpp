@@ -46,7 +46,6 @@
 //TODO Resize certain textures
 
 //TODO Fix saving
-//TODO Go to project manager button
 //TODO Fix painting 
 //TODO Project manager remove rename
 
