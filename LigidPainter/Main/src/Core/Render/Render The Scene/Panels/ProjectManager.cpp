@@ -354,7 +354,7 @@ void Render::projectFolderManagerPanel(std::vector<UIElement> &UIElements,Progra
 		//Close
         bool closeIconHover = ui.isMouseOnButton(window,0.01f,0.02f,(-1.f+0.025f),0.94f,mouseXpos,mouseYpos,false);
 		ui.iconBox(0.01f,0.02f,(-1.f+0.025f)+ screenGapX,0.94f,0.92f,icons.Undo,closeIconHover,glm::vec4(0.06,0.12,0.15,1.0),glm::vec4(0.06,0.12,0.15,0.5));
-        if(closeIconHover && firstClick)
+        if((closeIconHover && firstClick) || glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
             displayProjectFolderManager = false;
 		
 		
