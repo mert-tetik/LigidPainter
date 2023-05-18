@@ -106,6 +106,7 @@
 #define UITDModelPosXRangeBarElement 96
 #define UITDModelPosYRangeBarElement 97
 #define UITDModelPosZRangeBarElement 98
+#define UIopenProjectManagerButtonElement 99
 
 struct ColorData //LigidPainter color palette
 {

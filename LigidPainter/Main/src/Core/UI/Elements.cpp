@@ -442,7 +442,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement realtimeMaterialRenderingCheckBoxElement;
     realtimeMaterialRenderingCheckBoxElement.checkBox.positionX = -0.1f;
-    realtimeMaterialRenderingCheckBoxElement.checkBox.positionY = 1.125f-pressYSettingsPanel;
+    realtimeMaterialRenderingCheckBoxElement.checkBox.positionY = 1.025f-pressYSettingsPanel;
     realtimeMaterialRenderingCheckBoxElement.checkBox.text = "Realtime material rendering";
     realtimeMaterialRenderingCheckBoxElement.checkBox.checked = false;
     realtimeMaterialRenderingCheckBoxElement.checkBox.mouseHover = false;
@@ -454,7 +454,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement stabilizeFpsCheckBoxElement;
     stabilizeFpsCheckBoxElement.checkBox.positionX = -0.1f;
-    stabilizeFpsCheckBoxElement.checkBox.positionY = 1.2f-pressYSettingsPanel;
+    stabilizeFpsCheckBoxElement.checkBox.positionY = 1.1f-pressYSettingsPanel;
     stabilizeFpsCheckBoxElement.checkBox.text = "sync";
     stabilizeFpsCheckBoxElement.checkBox.checked = false;
     stabilizeFpsCheckBoxElement.checkBox.mouseHover = false;
@@ -1280,6 +1280,23 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 	TDModelPosZRangeBarElement.attachedToMainPanel = true;
 	TDModelPosZRangeBarElement.type = "rangeBar";
     UIElements.push_back(TDModelPosZRangeBarElement);//12
+
+    UIElement openProjectManagerButtonElement;
+    openProjectManagerButtonElement.button.positionX = 0.0f;
+    openProjectManagerButtonElement.button.positionY = 0.8f;
+    openProjectManagerButtonElement.button.positionZ = 0.9f;
+    openProjectManagerButtonElement.button.width = 0.08f;
+    openProjectManagerButtonElement.button.height = 0.04f;
+    openProjectManagerButtonElement.button.color = colorData.buttonColor;
+    openProjectManagerButtonElement.button.colorHover = colorData.buttonColorHover;
+    openProjectManagerButtonElement.button.transitionMixVal = 0.0f;
+    openProjectManagerButtonElement.button.buttonCurveReduce = 10.0f;
+    openProjectManagerButtonElement.button.text = "Project Manager";
+    openProjectManagerButtonElement.button.textRatio = 0.068f;
+    openProjectManagerButtonElement.panel = 5;
+    openProjectManagerButtonElement.attachedToMainPanel = true;
+    openProjectManagerButtonElement.type = "button";
+    UIElements.push_back(openProjectManagerButtonElement);//41
     
     return UIElements;
 }

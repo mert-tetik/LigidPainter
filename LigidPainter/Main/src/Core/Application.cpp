@@ -45,9 +45,10 @@
 //TODO Node & textbox copy paste
 //TODO Resize certain textures
 
-//TODO Test saving
+//TODO Fix saving
 //TODO Go to project manager button
 //TODO Fix painting 
+//TODO Project manager remove rename
 
 
 //TODO Special panel for the texture generator
@@ -778,7 +779,10 @@ bool LigidPainter::run()
 				}
 			}
 		}
-
+		
+		if(UIElements[UIopenProjectManagerButtonElement].button.hover && firstClick)
+			displayProjectFolderManager = true;
+			
 
 		if(!coloringPanel.active){
 			coloringPanel.panelHover = false;
