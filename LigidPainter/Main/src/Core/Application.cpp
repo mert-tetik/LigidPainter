@@ -45,12 +45,8 @@
 //TODO Node & textbox copy paste
 //TODO Resize certain textures
 
-//TODO Fix loading screen
-//TODO Numpad textbox error
 //TODO Test saving
 //TODO Tmp files
-//TODO Brush texture folder importing alignment & (check default folders compatibility with other folders)
-
 
 //TODO FixCircular range bar for light pos
 
@@ -1538,7 +1534,7 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 				int txtrSize = 0;
 				for (size_t i = 0; i < albedoTextures.size(); i++)
 				{
-					if(albedoTextures[i].folderIndex == 3)
+					if(util.checkIfTextureIsInsideOfAFolderUsingFolderName(albedoTextures[i],albedoTextures,"Mask"))
 						txtrSize++;
 				}
 				brushMaskTextures.maskTexturesSliderValue += (float)(scrollx / 40.0);
@@ -1549,7 +1545,7 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 				int txtrSize = 0;
 				for (size_t i = 0; i < albedoTextures.size(); i++)
 				{
-					if(albedoTextures[i].folderIndex == 4)
+					if(util.checkIfTextureIsInsideOfAFolderUsingFolderName(albedoTextures[i],albedoTextures,"RGB"))
 						txtrSize++;
 				}
 				brushMaskTextures.colorTexturesSliderValue += (float)(scrollx / 40.0);
@@ -1560,7 +1556,7 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 				int txtrSize = 0;
 				for (size_t i = 0; i < albedoTextures.size(); i++)
 				{
-					if(albedoTextures[i].folderIndex == 5)
+					if(util.checkIfTextureIsInsideOfAFolderUsingFolderName(albedoTextures[i],albedoTextures,"Normal Map"))
 						txtrSize++;
 				}
 				brushMaskTextures.normalTexturesSliderValue += (float)(scrollx / 40.0);

@@ -555,5 +555,12 @@ bool checkIfPNG(std::string name){
 					isPNG = true;
 	return isPNG;
 }
+
+bool checkIfTextureIsInsideOfAFolderUsingFolderName(aTexture &texture,std::vector<aTexture> textures,std::string folderName){
+	if(texture.folderIndex == 10000)
+		return false;
+	return (textures[texture.folderIndex].name == folderName);
+}
+
 };
 #endif

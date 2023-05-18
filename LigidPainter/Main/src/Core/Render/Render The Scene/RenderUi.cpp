@@ -650,7 +650,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			state = 0;
 			for (size_t i = 0; i < albedoTextures.size(); i++)
 			{
-				if(albedoTextures[i].folderIndex == 3)
+				if(util.checkIfTextureIsInsideOfAFolderUsingFolderName(albedoTextures[i],albedoTextures,"Mask"))
 					brushTextures.push_back(albedoTextures[i]);
 			}
 			
@@ -658,7 +658,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 		if(UIElements[UIcolorPaintingCheckBoxElement].checkBox.checked){
 			for (size_t i = 0; i < albedoTextures.size(); i++)
 			{
-				if(albedoTextures[i].folderIndex == 4)
+				if(util.checkIfTextureIsInsideOfAFolderUsingFolderName(albedoTextures[i],albedoTextures,"RGB"))
 					brushTextures.push_back(albedoTextures[i]);
 			}	
 			state = 1;
@@ -667,7 +667,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			
 			for (size_t i = 0; i < albedoTextures.size(); i++)
 			{
-				if(albedoTextures[i].folderIndex == 5)
+				if(util.checkIfTextureIsInsideOfAFolderUsingFolderName(albedoTextures[i],albedoTextures,"Normal Map"))
 					brushTextures.push_back(albedoTextures[i]);
 			}	
 			state = 2;
