@@ -50,7 +50,7 @@ public:
 						unsigned int materialFBO,int &currentMaterialIndex,bool &textureDraggingState,bool &debugMode,bool &createProject,char* &modelFilePath,std::string &modelName,
 						std::string &customModelName,glm::mat4 &modelMatrix,bool &displayProjectFolderManager,std::vector<Font> &fonts,ProjectManager &projectManager,bool firstClickR
 						,unsigned int &generatedTextTxtr,Font &txtrGenSelectedFont,Renderer &renderer, float &startScreenScrollVal,float &startScreenLoadPanelScrollVal,bool &starctScCreateProjectMode,
-						bool &starctScLoadProjectMode);
+						bool &starctScLoadProjectMode,int &TDModelsPanelScrollVal);
 
     void sendMaxWindowSize(int maxScreenWidth,int maxScreenHeight);
 	void sendProgramsToRender(Programs appPrograms);
@@ -88,7 +88,7 @@ private:
 							TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive,std::string &textureText
 							,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps,Objects &objects
 							,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios,bool &textureDraggingState,float &lightRotVal,std::string projectPath,std::vector<Font> &fonts
-							,Font &txtrGenSelectedFont,unsigned int &generatedTextTxtr);
+							,Font &txtrGenSelectedFont,unsigned int &generatedTextTxtr,int &TDModelsPanelScrollVal);
 	
 	
 	void renderAxisPointer(AxisPointerShaderData axisPointerShaderData,Programs programs);

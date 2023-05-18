@@ -47,8 +47,10 @@
 
 //TODO Test saving
 //TODO Complete 3D Model section
+//TODO Go to project manager button
+//TODO Fix painting 
+//TODO Remove unnecessary terminal outputs
 
-//TODO FixCircular range bar for light pos
 
 //TODO Special panel for the texture generator
 //TODO Search for brush textures
@@ -257,6 +259,7 @@ bool displayProjectFolderManager = false;
 glm::mat4 modelMatrix = glm::mat4(1);
 float startScreenScrollVal = 0.f;
 float startScreenLoadPanelScrollVal = 0.f;
+int TDModelsPanelScrollVal = 0;
 
 Renderer renderer(1);
 
@@ -853,7 +856,7 @@ bool LigidPainter::run()
 										,brushMaskTextures,callbackData.maskPanelEnter,duplicateNodeCall,objects,chosenNodeResIndex,drawColor,mirrorParams,depthTextureID,callbackData.cameraPos,
 										 callbackData.originPos,startScreen,projectPath,paintOverTexture,sphereModel,audios,materialFBO,currentMaterialIndex,textureDraggingState
 										 ,debugMode,createProject,modelFilePath,modelName,customModelName,modelMatrix,displayProjectFolderManager,fonts,projectManager,firstClickR,generatedTextTxtr
-										 ,txtrGenSelectedFont,renderer,startScreenScrollVal,startScreenLoadPanelScrollVal,starctScCreateProjectMode,starctScLoadProjectMode);
+										 ,txtrGenSelectedFont,renderer,startScreenScrollVal,startScreenLoadPanelScrollVal,starctScCreateProjectMode,starctScLoadProjectMode,TDModelsPanelScrollVal);
 		}
 		duplicateNodeCall = false;
 		
@@ -997,7 +1000,6 @@ void LigidPainter::saveAsProjectFolder(){
 		txtrRes*=2;
 	}
 
-	std::cout << "Basladi" << std::endl;
 	ProjectFolder project;
     project.saveFolder(projectPath,albedoTextures,txtrRes,chosenSkyboxTexture,chosenTextureResIndex,UIElements,model);
     
@@ -1006,7 +1008,6 @@ void LigidPainter::saveAsProjectFolder(){
 	if(pathCheck.size())
         projectPath = pathCheck;
 	
-	std::cout << "Project path is : " << projectPath << std::endl;
 }
 void LigidPainter::loadProjectFolder(){
 	ProjectFolder project;
@@ -1621,6 +1622,14 @@ void scroll_callback(GLFWwindow* window, double scroll, double scrollx)
 			 panelData.paintingPanelSlideVal -= scrollx/10.0f;
 			 if(panelData.paintingPanelSlideVal < 0.0f)
 			 	panelData.paintingPanelSlideVal = 0.0f;
+		}
+		else if(callbackData.mainPanelEnter && panelData.modelPanelActive){
+			if(scrollx > 0)
+				TDModelsPanelScrollVal--;
+			if(scrollx < 0)
+				TDModelsPanelScrollVal++;
+			if(TDModelsPanelScrollVal < 0)
+				TDModelsPanelScrollVal = 0;
 		}
 		else if(callbackData.mainPanelEnter && panelData.settingsPanelActive){
 			 panelData.settingsPanelSlideVal -= scrollx/10.0f;

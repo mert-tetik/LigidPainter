@@ -1234,7 +1234,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
 
     UIElement TDModelSizeRangeBarElement;
 	TDModelSizeRangeBarElement.rangeBar.positionX = 0.0f;
-	TDModelSizeRangeBarElement.rangeBar.positionY = 0.f;
+	TDModelSizeRangeBarElement.rangeBar.positionY = 0.1f;
 	TDModelSizeRangeBarElement.rangeBar.value = 1.0f;
 	TDModelSizeRangeBarElement.rangeBar.isConstant = true;
 	TDModelSizeRangeBarElement.rangeBar.isRich = true;
@@ -1247,7 +1247,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement TDModelPosXRangeBarElement;
 	TDModelPosXRangeBarElement.rangeBar.positionX = 0.0f;
-	TDModelPosXRangeBarElement.rangeBar.positionY = -0.1f;
+	TDModelPosXRangeBarElement.rangeBar.positionY = -0.0f;
 	TDModelPosXRangeBarElement.rangeBar.value = 0.0f;
 	TDModelPosXRangeBarElement.rangeBar.isConstant = true;
 	TDModelPosXRangeBarElement.rangeBar.isRich = true;
@@ -1259,7 +1259,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement TDModelPosYRangeBarElement;
 	TDModelPosYRangeBarElement.rangeBar.positionX = 0.0f;
-	TDModelPosYRangeBarElement.rangeBar.positionY = -0.15f;
+	TDModelPosYRangeBarElement.rangeBar.positionY = -0.05f;
 	TDModelPosYRangeBarElement.rangeBar.value = 0.0f;
 	TDModelPosYRangeBarElement.rangeBar.isConstant = true;
 	TDModelPosYRangeBarElement.rangeBar.isRich = true;
@@ -1271,7 +1271,7 @@ std::vector<UIElement> UserInterface::getUiElements(Icons icons) {
     
     UIElement TDModelPosZRangeBarElement;
 	TDModelPosZRangeBarElement.rangeBar.positionX = 0.0f;
-	TDModelPosZRangeBarElement.rangeBar.positionY = -0.2f;
+	TDModelPosZRangeBarElement.rangeBar.positionY = -0.1f;
 	TDModelPosZRangeBarElement.rangeBar.value = 0.0f;
 	TDModelPosZRangeBarElement.rangeBar.isConstant = true;
 	TDModelPosZRangeBarElement.rangeBar.isRich = true;

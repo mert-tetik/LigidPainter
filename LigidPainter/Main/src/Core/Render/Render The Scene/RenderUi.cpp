@@ -106,7 +106,7 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 ,ColoringPanel &coloringPanel,TextureCreatingPanel &txtrCreatingPanel,int& chosenTextureResIndex,int &chosenSkyboxTexture,bool& bakeTheMaterial,bool& anyTextureNameActive
 ,std::string &textureText,std::vector<NodeScene> &nodeScenesHistory,BrushTexture &brushMaskTextures,bool maskPanelEnter,bool &duplicateNodeCall,Cubemaps &cubemaps
 ,Objects &objects,glm::vec3 screenHoverPixel,int &chosenNodeResIndex,Audios audios,bool &textureDraggingState,float &lightRotVal,std::string projectPath,std::vector<Font> &fonts
-,Font &txtrGenSelectedFont,unsigned int &generatedTextTxtr) {
+,Font &txtrGenSelectedFont,unsigned int &generatedTextTxtr,int &TDModelsPanelScrollVal) {
 	uiAudios = audios;
 
 	ColorData colorData;
@@ -1191,18 +1191,30 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 			char folderDistinguisher = '/'; 
 		#endif
 		int bI = 0;
+		int cI = 0;
+		ui.container(centerCoords - screenGapX,0.6f,0.9f,0.16f,0.2f,colorData.panelColorSnd,programs,icons.Circle,{},0);
+		glUseProgram(programs.uiProgram);
+		ui.renderText(programs.uiProgram,"3D Models", centerCoords - screenGapX-0.16f,0.8f - ((float)bI * 0.04),0.00024f,colorData.textColor,0.91f,false);
 		for (const auto & entry : std::filesystem::directory_iterator((std::string)(projectPath) + "\\3DModels\\")){
-			std::string fileName = entry.path().string();
-			std::string file = util.getLastWordBySeparatingWithChar(fileName,folderDistinguisher);
+			if(cI >= TDModelsPanelScrollVal){
+				std::string fileName = entry.path().string();
+				std::string file = util.getLastWordBySeparatingWithChar(fileName,folderDistinguisher);
 
-			bool buttonHover = ui.isMouseOnButton(renderData.window,0.2f,0.02f,centerCoords - screenGapX*2,0.8f - ((float)bI * 0.04),mouseXpos,mouseYpos,false);
+				bool buttonHover = ui.isMouseOnButton(renderData.window,0.18f,0.02f,centerCoords - screenGapX,0.76f - ((float)bI * 0.04),mouseXpos,mouseYpos,false);
 
-			ui.box(0.2f,0.02f,centerCoords - screenGapX,0.8f - ((float)bI * 0.04),file,colorData.buttonColor,+0.19f,false,false,0.91f+(bI/10000.f),10000,colorData.buttonColorHover,buttonHover);
-			bI++;
-			if(firstClick && buttonHover){
-				model.loadModel(fileName,true);
+				ui.box(0.18f,0.02f,centerCoords - screenGapX,0.76f - ((float)bI * 0.04),file,buttonHover == true ? colorData.buttonColor : colorData.buttonColor / glm::vec4(2.f),+0.17f,false,false,0.91f+(bI/10000.f),7,colorData.buttonColorHover,util.getLastWordBySeparatingWithChar(model.filePath,folderDistinguisher) == util.getLastWordBySeparatingWithChar(fileName,folderDistinguisher));
+				bI++;
+
+				if(bI > 9)
+					break;
+				if(firstClick && buttonHover){
+					model.loadModel(fileName,true);
+				}
 			}
+			cI++;
 		}
+		if(bI <= 9)
+			TDModelsPanelScrollVal--;
 	}
 
 	lastMouseX = mouseXpos;
