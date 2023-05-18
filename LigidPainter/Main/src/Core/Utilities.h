@@ -731,7 +731,7 @@ bool readTMPFile(aTexture texture,int txtrIndex,std::vector<aTexture> albedoText
 	glActiveTexture(GL_TEXTURE28);
 	GlSet glset;
 	glset.bindTexture(texture.id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_BYTE, pixels);
 
 	delete[] pixels;
 	return true;
