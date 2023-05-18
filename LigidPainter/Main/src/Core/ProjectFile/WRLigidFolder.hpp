@@ -116,7 +116,7 @@ private:
                 std::cout << "Can't find the 3D Model file at the : " << path + "3DModels" + folderDistinguisher + modelStr << std::endl;
         }
         else{
-            std::cout << path + folderDistinguisher + fileName << " is not a project settings file!" << std::endl;
+            std::cout <<" ERROR " << path + folderDistinguisher + fileName << " is not a project settings file!" << std::endl;
         }
     }
 public:
@@ -612,7 +612,6 @@ public:
 
                 if(txtrpath == filePath)
                     matched = true;
-                std::cout << filePath <<' ' << txtrpath << std::endl;
             }
             if(!matched){
                 if(std::filesystem::is_directory(filePath))

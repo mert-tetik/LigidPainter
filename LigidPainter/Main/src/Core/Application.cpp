@@ -46,10 +46,8 @@
 //TODO Resize certain textures
 
 //TODO Test saving
-//TODO Complete 3D Model section
 //TODO Go to project manager button
 //TODO Fix painting 
-//TODO Remove unnecessary terminal outputs
 
 
 //TODO Special panel for the texture generator

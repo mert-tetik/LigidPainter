@@ -188,7 +188,7 @@ void printRenderingSpeed(bool debugMode,GLFWwindow* window) {
 		}
 		else{
 			renderingSpeed = (double)nbFrames;
-			std::cout << renderingSpeed << " ms/frame\n";
+			std::cout << renderingSpeed << " fps\n";
 		}
 		nbFrames = 0;
 		lastTime += 1.0;
