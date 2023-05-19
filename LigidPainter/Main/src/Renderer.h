@@ -8,12 +8,15 @@
 #include "../../thirdparty/include/glm/gtc/type_ptr.hpp"
 #include "../../thirdparty/include/glm/gtx/string_cast.hpp"
 
+#include "Model.hpp"
+
 class Renderer
 {
 private:
     /* data */
 public:
     GLFWwindow* window;
+    Model model;
 
     Renderer(glm::vec2 videoScale){
         glfwInit();
@@ -42,7 +45,10 @@ public:
     }
 
     void render(){
-        glfwSwapBuffers(window);
         glfwPollEvents();    
+
+        model.Draw();
+
+        glfwSwapBuffers(window);
     }
 };
