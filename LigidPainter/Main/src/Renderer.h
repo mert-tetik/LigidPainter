@@ -9,6 +9,7 @@
 #include "../../thirdparty/include/glm/gtx/string_cast.hpp"
 
 #include "Model.hpp"
+#include "Shader.hpp"
 
 class Renderer
 {
@@ -17,6 +18,8 @@ private:
 public:
     GLFWwindow* window;
     Model model;
+
+    Shader tdModelShader;
 
     Renderer(glm::vec2 videoScale){
         glfwInit();
@@ -42,11 +45,18 @@ public:
         }    
 
         glViewport(0, 0, videoScale.x, videoScale.y);
+
+        tdModelShader = Shader("LigidPainter/Resources/Shaders/3DModel.vert","LigidPainter/Resources/Shaders/3DModel.frag",nullptr);
     }
 
     void render(){
         glfwPollEvents();    
-
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        uniform mat4 view;
+        uniform mat4 projection;
+        uniform mat4 modelMatrix;
+        tdModelShader.setMat4("");
+        tdModelShader.use();
         model.Draw();
 
         glfwSwapBuffers(window);
