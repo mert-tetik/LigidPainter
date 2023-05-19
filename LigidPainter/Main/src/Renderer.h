@@ -56,6 +56,7 @@ public:
 
     Shader tdModelShader;
     Shader skyboxShader;
+    Shader buttonShader;
 
     Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
 
@@ -112,6 +113,7 @@ public:
         //TODO : Remove that (maybe)
         tdModelShader = Shader("LigidPainter/Resources/Shaders/3DModel.vert","LigidPainter/Resources/Shaders/3DModel.frag",nullptr);
         skyboxShader = Shader("LigidPainter/Resources/Shaders/Skybox.vert","LigidPainter/Resources/Shaders/Skybox.frag",nullptr);
+        buttonShader = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/Button.frag",nullptr);
 
         //Update necessary data before callbacks
         updateViewport();
