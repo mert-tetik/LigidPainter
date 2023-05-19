@@ -14,6 +14,7 @@ class LigidPainter{
 public:
     int run(){
         Renderer renderer(glm::vec2(1920,1080));
+        
         while(!glfwWindowShouldClose(renderer.context.window))
         {   
             renderer.render();

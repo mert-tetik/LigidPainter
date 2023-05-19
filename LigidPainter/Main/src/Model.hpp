@@ -38,6 +38,8 @@ public:
 
     void Draw()
     {
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
         for(unsigned int i = 0; i < meshes.size(); i++){
             if(meshes[i].submeshes.size() <= 1){
                 meshes[i].Draw();
