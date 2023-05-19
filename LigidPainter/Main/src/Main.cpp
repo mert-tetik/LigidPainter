@@ -1,7 +1,6 @@
 #include<iostream>
 
-
-#include "Core/LigidPainter.h"
+#include "LigidPainter.h"
 
 int main() 
 {
