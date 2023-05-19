@@ -29,6 +29,8 @@ struct Scene{
     glm::vec2 videoScale;
 
     Camera camera;
+
+    unsigned int skybox;
 };
 struct Context{
     GLFWwindow* window;
@@ -51,6 +53,9 @@ public:
     Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
         //Hold the videoscale value inside of the scene structure
         scene.videoScale = videoScale;
+        
+        //Since the window size is determined by the videoscale value there is no harm to do that
+        context.windowScale = scene.videoScale;  
 
         //Init GLFW
         glfwInit();
@@ -65,15 +70,25 @@ public:
         {
             std::cout << "Failed to create GLFW window" << std::endl;
         }
-        //Pointing a function that is a class member
         glfwMakeContextCurrent(context.window);
-        //Cursor position callback function casting
+        
+        //Pointing a function that is a class member
         glfwSetWindowUserPointer(context.window, this);
+        
+        //Cursor position callback function casting
         auto cursorPosFunc = [](GLFWwindow* w, double x, double y)
         {
-            static_cast<Renderer*>(glfwGetWindowUserPointer(w))->cursor_position_callback(w,x,y);
+            static_cast<Renderer*>(glfwGetWindowUserPointer(w))->cursorPositionCallback(w,x,y);
         };
         glfwSetCursorPosCallback(context.window, cursorPosFunc);
+        
+        //Framebuffer size callback function casting
+        auto framebufferSizeFunc = [](GLFWwindow* w, int x, int y)
+        {
+            static_cast<Renderer*>(glfwGetWindowUserPointer(w))->framebufferSizeCallback(w,x,y);
+        };
+        glfwSetFramebufferSizeCallback(context.window, framebufferSizeFunc);
+
 
 
 
@@ -111,6 +126,8 @@ public:
         glfwSwapBuffers(context.window);
     }
 
+
+
 private:
     void updateViewMatrix(){
         scene.viewMatrix = glm::lookAt(scene.camera.cameraPos, 
@@ -119,63 +136,72 @@ private:
     }
     void updateProjectionMatrix(){
         scene.projectionMatrix = glm::perspective(glm::radians(scene.fov), 
-                                         scene.videoScale.x / scene.videoScale.y, 
+                                         context.windowScale.x / context.windowScale.y, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
                                          scene.near, 
                                          scene.far);
     }
     void updateViewport(){
         glViewport(0, 
                    0, 
-                   scene.videoScale.x, 
-                   scene.videoScale.y);
+                   context.windowScale.x, 
+                   context.windowScale.y);
     }
-    glm::vec2 lastMousePos;
-    void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
+
+
+    void framebufferSizeCallback(GLFWwindow* window, int width, int height){
+        //Goes the global variable
+        context.windowScale.x = width;
+        context.windowScale.y = height;
+        updateProjectionMatrix(); //Since the 3D Model is effected by window resizing we update the projection matrix 
+        updateViewport(); //And ofc the OpenGL viewport
+    }
+
+    glm::vec2 lastMousePos;//This will be used as "last frame's cursor pos" for the cursor offset
+    void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
     {
+        //Take the cursor position data to a global variable
         context.mousePos.x = xpos;
         context.mousePos.y = ypos;
         
+        //Get the mouse offset by subtracting current cursor position from last frame's cursor pos
         context.mouseOffset.x = context.mousePos.x - lastMousePos.x;
     	context.mouseOffset.y = context.mousePos.y - lastMousePos.y;
 
-        const float sensitivity = 0.2f;
+        const float sensitivity = 0.2f; //Mouse sensivity (Increase the value to go brrrrrbrbrbrb)
 
-    	if ((glfwGetMouseButton(context.window, 1) == GLFW_PRESS) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-    		context.mouseOffset.x *= sensitivity;
-    		context.mouseOffset.y *= sensitivity;
-
+    	if ((glfwGetMouseButton(context.window, 1) == GLFW_PRESS) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { //L Control + L Click
     		//Straight Movement
-    		scene.camera.cameraPos.x -= sin(glm::radians(scene.camera.yaw)) * context.mouseOffset.x * (sensitivity / 2) + cos(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * context.mouseOffset.y) / 4;
-    		scene.camera.originPos.x -= sin(glm::radians(scene.camera.yaw)) * context.mouseOffset.x * (sensitivity / 2) + cos(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * context.mouseOffset.y) / 4;
+            //Rotates the Camera in 3 axis using mouse offset & intepreting yaw, pitch & radius values
+            scene.camera.cameraPos.x -= sin(glm::radians(scene.camera.yaw)) * context.mouseOffset.x * sensitivity * (sensitivity / 2) + cos(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * context.mouseOffset.y) / 4;
+    		scene.camera.originPos.x -= sin(glm::radians(scene.camera.yaw)) * context.mouseOffset.x * sensitivity * (sensitivity / 2) + cos(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * context.mouseOffset.y) / 4;
 
-    		scene.camera.cameraPos.z += cos(glm::radians(scene.camera.yaw)) * context.mouseOffset.x * (sensitivity / 2) - sin(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * context.mouseOffset.y) / 4;
-    		scene.camera.originPos.z += cos(glm::radians(scene.camera.yaw)) * context.mouseOffset.x * (sensitivity / 2) - sin(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * context.mouseOffset.y) / 4;
+    		scene.camera.cameraPos.z += cos(glm::radians(scene.camera.yaw)) * context.mouseOffset.x * sensitivity * (sensitivity / 2) - sin(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * context.mouseOffset.y) / 4;
+    		scene.camera.originPos.z += cos(glm::radians(scene.camera.yaw)) * context.mouseOffset.x * sensitivity * (sensitivity / 2) - sin(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * context.mouseOffset.y) / 4;
 
-    		scene.camera.cameraPos.y -= cos(glm::radians(scene.camera.pitch)) * context.mouseOffset.y * (sensitivity / 2);
-    		scene.camera.originPos.y -= cos(glm::radians(scene.camera.pitch)) * context.mouseOffset.y * (sensitivity / 2);
+    		scene.camera.cameraPos.y -= cos(glm::radians(scene.camera.pitch)) * context.mouseOffset.y * sensitivity * (sensitivity / 2);
+    		scene.camera.originPos.y -= cos(glm::radians(scene.camera.pitch)) * context.mouseOffset.y * sensitivity * (sensitivity / 2);
     	}
-    	else if ((glfwGetMouseButton(context.window, 1) == GLFW_PRESS)) {
-
-    		context.mouseOffset.x *= sensitivity;
-    		context.mouseOffset.y *= sensitivity;
-
-    	    scene.camera.yaw += context.mouseOffset.x;
-    		scene.camera.pitch += context.mouseOffset.y;
+    	else if ((glfwGetMouseButton(context.window, 1) == GLFW_PRESS)) { //L Click
+    	    scene.camera.yaw += context.mouseOffset.x * sensitivity;
+    		scene.camera.pitch += context.mouseOffset.y * sensitivity;
 
     		//Disable 90+ degrees rotations in y axis
-    		// if (pitch > 89.0f)
-    		// 	pitch = 89.0f;
-    		// if (pitch < -89.0f)
-    		// 	pitch = -89.0f;
+    		if (scene.camera.pitch > 89.0f)
+    			scene.camera.pitch = 89.0f;
+    		if (scene.camera.pitch < -89.0f)
+    			scene.camera.pitch = -89.0f;
 
     
     		//Helical Movement
+            //Rotates the Camera in 3 axis using yaw, pitch & radius values
     		scene.camera.cameraPos.y = sin(glm::radians(scene.camera.pitch)) * - scene.camera.radius + scene.camera.originPos.y;
     		scene.camera.cameraPos.x = cos(glm::radians(scene.camera.yaw)) * cos(glm::radians(scene.camera.pitch)) * scene.camera.radius + scene.camera.originPos.x;
     		scene.camera.cameraPos.z = sin(glm::radians(scene.camera.yaw)) * cos(glm::radians(scene.camera.pitch)) * scene.camera.radius + scene.camera.originPos.z;
     	}
+        //Update the view matrix so we can see the changes
         updateViewMatrix();
         
+        //This will be used as "last frame's cursor pos" for the cursor offset
         lastMousePos.x = context.mousePos.x;
         lastMousePos.y = context.mousePos.y;
     }
