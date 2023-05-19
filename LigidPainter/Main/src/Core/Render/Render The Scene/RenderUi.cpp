@@ -736,11 +736,37 @@ std::vector<NodeScene>& nodeScenes,int &selectedNodeScene,std::vector<Node> appN
 	
 	glUseProgram(programs.uiProgram);
 	if(panelData.paintingPanelActive){
-
+		//Shadows
+		glUseProgram(programs.renderTheTextureProgram);
+		glActiveTexture(GL_TEXTURE14);
+		GlSet glset;
+		glset.uniform1f(programs.renderTheTextureProgram, "opacity" , 0.8f);
+		glset.bindTexture(icons.shadowTile);
+		
+		glDepthFunc(GL_LEQUAL);
+		ui.renderTheProgram(renderData.panelLoc - 1.0f - screenGapX - 0.55f,0.9f,0.1f,0.05f);
+		ui.renderTheProgram(renderData.panelLoc - 1.0f - screenGapX - 0.63f,0.9f,0.025f,0.05f);
+		ui.renderTheProgram(renderData.panelLoc - 1.0f - screenGapX - 0.44f,0.9f,0.025f,0.05f);
+		ui.renderTheProgram(renderData.panelLoc - 1.0f - screenGapX - 0.38f,0.9f,0.025f,0.05f);
+		ui.renderTheProgram(renderData.panelLoc - 1.0f - screenGapX - 0.32f,0.9f,0.025f,0.05f);
+		ui.renderTheProgram(renderData.panelLoc - 1.0f - screenGapX - 0.26f,0.9f,0.025f,0.05f);
+		
+		ui.renderTheProgram(renderData.panelLoc - 1.0f - screenGapX - 0.16f,0.9f,0.025,0.05f);
+		ui.renderTheProgram(renderData.panelLoc - 1.0f - screenGapX - 0.10f,0.9f,0.025,0.05f);
+		ui.renderTheProgram(renderData.panelLoc - 1.0f - screenGapX - 0.04f,0.9f,0.025,0.05f);
+		
+		ui.renderTheProgram(renderData.panelLoc - 1.0f - screenGapX - 0.16f,0.85f,0.05f,0.05f);
+		ui.renderTheProgram(renderData.panelLoc - 1.0f - screenGapX - 0.10f,0.85f,0.05f,0.05f);
+		ui.renderTheProgram(renderData.panelLoc - 1.0f - screenGapX - 0.04f,0.85f,0.05f,0.05f);
+		glset.uniform1f(programs.renderTheTextureProgram, "opacity" , 1.0f);
+		glDepthFunc(GL_LESS);
+		
+		glUseProgram(programs.uiProgram);
+		//Slider
 		ui.box(0.0025f, 0.6f, renderData.panelLoc - 1.0f - screenGapX + 0.0025f, 0.25f - panelData.paintingPanelSlideVal, "",colorData.mainPanelSliderColor, 0., false, false, 0.91f, 1000, colorData.mainPanelSliderColor, 0.f); //Add mask texture button
 	}
 	if(panelData.settingsPanelActive){
-
+		//Slider
 		ui.box(0.0025f, 0.7f, renderData.panelLoc - 1.0f - screenGapX + 0.0025f, 0.15f - panelData.settingsPanelSlideVal, "",colorData.mainPanelSliderColor, 0., false, false, 0.91f, 1000, colorData.mainPanelSliderColor, 0.f); //Add mask texture button
 	}
 

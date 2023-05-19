@@ -59,7 +59,7 @@ uniform int dynamicPainting;
 
 uniform int getTheResultF;
 
-float far = 10.0f;
+float far = 100.0f;
 float near = 0.1f;
 float linearizeDepth(float depth){
    return (2.0 * near * far) / (far + near -(depth * 2.0 - 1.0) *(far-near));

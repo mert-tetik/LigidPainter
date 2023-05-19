@@ -52,7 +52,7 @@ uniform vec3 mirroredScreenMaskCamPos;
 
 uniform int dynamicPainting;
 
-float far = 10.0;
+float far = 100.0;
 float near = 0.1;
 float linearizeDepth(float depth){
    return (2.0 * near * far) / (far + near -(depth * 2.0 - 1.0) *(far-near));

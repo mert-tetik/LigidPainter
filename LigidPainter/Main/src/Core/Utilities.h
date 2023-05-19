@@ -614,6 +614,9 @@ std::string getTMPFilePath(aTexture texture,int txtrIndex,std::vector<aTexture> 
 	return filePath;
 }
 bool writeTMPFile(aTexture texture,int txtrIndex,std::vector<aTexture> albedoTextures){
+	if(!texture.isTexture)
+		return false;
+
 	std::string filePath = getTMPFilePath(texture,txtrIndex,albedoTextures);
 
 
@@ -675,6 +678,9 @@ bool writeTMPFile(aTexture texture,int txtrIndex,std::vector<aTexture> albedoTex
 	return true;
 }
 bool readTMPFile(aTexture texture,int txtrIndex,std::vector<aTexture> albedoTextures){
+	if(!texture.isTexture)
+		return false;
+		
 	std::string filePath = getTMPFilePath(texture,txtrIndex,albedoTextures);
 
 	#if defined(_WIN32) || defined(_WIN64)

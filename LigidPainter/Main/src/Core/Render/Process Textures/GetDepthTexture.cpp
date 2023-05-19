@@ -37,7 +37,7 @@ void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int scre
 
 	GLubyte* screen = txtr.getTextureFromProgram(GL_TEXTURE5, 1920, 1080, 3);
 	gl.activeTexture(GL_TEXTURE9);
-	gl.texImage(screen, 1920, 1080, GL_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16, 1920, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, screen);
 	gl.generateMipmap();
 	delete[]screen;
 
@@ -58,7 +58,8 @@ void Render::getDepthTexture(unsigned int FBOScreen,  int screenSizeX,  int scre
 		gl.activeTexture(GL_TEXTURE28);
 
 		gl.bindTexture(mirrorParams[i].depthTexture);
-		gl.texImage(screenMirrored, 1920, 1080, GL_RGB);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16, 1920, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, screenMirrored);
+
 		gl.generateMipmap();
 		delete[] screenMirrored;
 	}

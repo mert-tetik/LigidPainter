@@ -47,8 +47,6 @@
 
 //TODO Fix saving
 //TODO Fix painting 
-//TODO Project manager remove rename
-
 
 //TODO Special panel for the texture generator
 //TODO Search for brush textures

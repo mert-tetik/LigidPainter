@@ -3233,13 +3233,13 @@ void UserInterface::renderTheProgram(float posx,float posy,float width,float hei
 	
 	std::vector<float> renderVertices = { 
 		// first triangle
-		 width + posx,  height+ posy, 0.9f,1,1,0,0,0,  // top right
-		 width+ posx,  -height+ posy, 0.9f,1,0,0,0,0,  // bottom right
-		 -width+ posx,  height+ posy, 0.9f,0,1,0,0,0,  // top left 
+		 width + posx,  height+ posy, 0.8f,1,1,0,0,0,  // top right
+		 width+ posx,  -height+ posy, 0.8f,1,0,0,0,0,  // bottom right
+		 -width+ posx,  height+ posy, 0.8f,0,1,0,0,0,  // top left 
 		// second tria0gle	  ,0,0,0,
-		 width+ posx,  -height+ posy, 0.9f,1,0,0,0,0,  // bottom right
-		 -width+ posx,  -height+ posy, 0.9f,0,0,0,0,0,  // bottom left
-		 -width+ posx,  height+ posy, 0.9f,0,1,0,0,0   // top left
+		 width+ posx,  -height+ posy, 0.8f,1,0,0,0,0,  // bottom right
+		 -width+ posx,  -height+ posy, 0.8f,0,0,0,0,0,  // bottom left
+		 -width+ posx,  height+ posy, 0.8f,0,1,0,0,0   // top left
 	};
 
 	GlSet glset;
