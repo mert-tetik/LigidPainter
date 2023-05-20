@@ -30,15 +30,6 @@ And helps you manage the time
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
-#include "Shader.hpp"
-#include "Box.hpp"
-#include "Renderer.h"
-#include "Util.hpp"
-
-#include "GUI/Panel.hpp"
-#include "GUI/Button.hpp"
-#include "Mouse.hpp"
-
 #include <glm/gtc/type_ptr.hpp>
 
 #include <string>
@@ -77,6 +68,20 @@ public:
         	return true;
         }
         return false;
+    }
+
+    void transition(bool state ,float &value,float timeInSeconds){
+        //If state is true move value to the 1 gradually
+        //timeInSeconds determines how many time will pass since the value hits 1 or reduces back to 0
+        //If timeInSeconds == 1.f value 0 will hit the value 1 in one second
+
+	    if (state && value <= 1.0f) {value += 1./(FPS) / timeInSeconds;}
+	    else if (!state && value >= 0.0f) {value -= 1./(FPS) / timeInSeconds;}
+
+	    if(value < 0.f)
+	    	value = 0.f;
+	    if(value > 1.f)
+	    	value = 1.f;
     }
 };
 

@@ -30,6 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Box.hpp"
 #include "Renderer.h"
 #include "Util.hpp"
+#include "Timer.hpp"
 
 #include "GUI/Panel.hpp"
 #include "GUI/Button.hpp"
@@ -57,6 +58,10 @@ public:
     //---Button properties
     std::string text;
     glm::vec4 color;
+    glm::vec4 color2; 
+    bool outline; 
+    float radius; 
+    int animationStyle;
     
     //Those values are adepting to the panel if button is attached to one
     //Values are percentage of the monitor size
@@ -65,13 +70,26 @@ public:
     
     bool hover = false;
 
+    float hoverMixVal = 0.f;
+    float clickedMixVal = 0.f;
+
     Button(){}
-    Button(Shader shader,glm::vec4 color){
+    Button(Shader shader, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle){
+        //animationStyle determines what type of mouse hover or click animation will be used
+        
+        //0 = Change thickness for mousehover
+        //1 = Change color for mousehover
+
         this->shader = shader;
         this->color = color;
+        this->color2 = color2;
+        this->scale = scale;
+        this->outline = outline;
+        this->radius = radius;
+        this->animationStyle = animationStyle;
     }
 
-    void render(glm::vec2 videoScale,Mouse& mouse){
+    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer){
         Util util;
 
         // pos value % of the video scale
@@ -84,21 +102,28 @@ public:
 
         //Check if mouse on top of the button
         hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
+
+        if(hover && mouse.LClick){
+            clickedMixVal = 1.f;
+        }
+
+        timer.transition(hover,hoverMixVal,0.2f); 
+        timer.transition(false,clickedMixVal,0.5f); 
         
+
         shader.setVec3("pos"    ,     resultPos );
         shader.setVec2("scale"  ,     resultScale);
         shader.setVec4("color"  ,     color     );
+        shader.setVec4("color2"  ,     color2     );
+        shader.setFloat("colorMixVal"  ,     clickedMixVal     );
 
         shader.setFloat("width" ,     scale.x   );
         shader.setFloat("height",     scale.y   );
 
-        shader.setFloat("radius",     1000.f    );
-        shader.setInt("outline" ,     true      );
+        shader.setFloat("radius",     radius    );
+        shader.setInt("outline" ,     outline      );
         
-        if(!hover)
-            shader.setFloat("thickness" ,    100.f  );
-        else
-            shader.setFloat("thickness" ,    200.f  );
+        shader.setFloat("thickness" ,    100.f + hoverMixVal*100.f );
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }

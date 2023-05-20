@@ -34,6 +34,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Panel.hpp"
 #include "GUI/Button.hpp"
 #include "Mouse.hpp"
+#include "Timer.hpp"
+
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -107,13 +109,15 @@ private:
             scale.x = 1;
     }
 
-    void drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm::vec2 resultScale){
+    void drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm::vec2 resultScale,Timer &timer){
         //Draw the panel and it's elements
 
         //Draw panel
         shader.setVec3("pos",       resultPos);
         shader.setVec2("scale",     resultScale);
         shader.setVec4("color",     color   );
+        shader.setVec4("color2"  ,     color     );
+        shader.setFloat("colorMixVal"  ,   0.f );
         
         shader.setFloat("width",     scale.x   );
         shader.setFloat("height",     scale.y   );
@@ -128,10 +132,9 @@ private:
 
         //Render Vertically
         if(vertical == true){
-            for (size_t i = 0; i < buttons.size(); i++)
+            for (int i = 0; i < buttons.size(); i++)
             {
                 buttons[i].scale.x = scale.x;
-                buttons[i].scale.y = 2;
 
                 //Move the button on top of the panel
                 buttons[i].pos = pos;
@@ -139,27 +142,30 @@ private:
                 buttons[i].pos.y += buttons[i].scale.y;
 
                 buttons[i].pos.z += 0.01f;
-                buttons[i].pos.y +=  i * buttons[i].scale.y * 2.f;
+                buttons[i].pos.y +=  i * (buttons[i].scale.y + buttons[max(i-1,0)].scale.y);
 
-                buttons[i].render(videoScale,mouse);
+                buttons[i].render(videoScale,mouse,timer);
             }
         }
         else{
             //Render horizontally
-            for (size_t i = 0; i < buttons.size(); i++)
+            float elementPos = 0.f;
+            for (int i = 0; i < buttons.size(); i++)
             {
-                buttons[i].scale.x = 5;
                 buttons[i].scale.y = scale.y;
 
                 //Move the button on top of the panel
                 buttons[i].pos = pos;
                 buttons[i].pos.x -= scale.x;
-                buttons[i].pos.x += buttons[i].scale.x;
-
+                buttons[i].pos.x += buttons[0].scale.x;
+                    elementPos = buttons[i].pos.x; 
+                
+                elementPos += i * (buttons[i].scale.x + buttons[max(i-1,0)].scale.x);
+                
                 buttons[i].pos.z += 0.01f;
-                buttons[i].pos.x +=  i * buttons[i].scale.x * 2.f;
+                buttons[i].pos.x = elementPos;
 
-                buttons[i].render(videoScale,mouse);
+                buttons[i].render(videoScale,mouse,timer);
             }
         }
     }
@@ -194,7 +200,7 @@ public:
         this->vertical = vertical;
     }
 
-    void render(glm::vec2 videoScale,Mouse& mouse){
+    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer){
         //Panel's itself
         Util util;
 
@@ -211,7 +217,7 @@ public:
 
         resizeThePanel(mouse,videoScale);
     
-        drawPanel(videoScale,mouse,resultPos,resultScale);
+        drawPanel(videoScale,mouse,resultPos,resultScale,timer);
     }
 };
 #endif

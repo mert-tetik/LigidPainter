@@ -185,6 +185,9 @@ public:
     void render(){
         glfwPollEvents();
         
+        //Update timer data
+        timer.runTimer();
+        
         glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
@@ -217,7 +220,7 @@ public:
        
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,context.windowScale.x,context.windowScale.y,0.f);
-        userInterface.render(scene.videoScale,mouse);//Render the UI
+        userInterface.render(scene.videoScale,mouse,timer);//Render the UI
 
         box.unbindBuffers(); //Finish rendering the UI
 

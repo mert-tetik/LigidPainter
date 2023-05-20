@@ -54,6 +54,8 @@ Example :
 #include "Box.hpp"
 #include "Renderer.h"
 #include "Util.hpp"
+#include "Timer.hpp"
+
 
 #include "GUI/Panel.hpp"
 #include "GUI/Button.hpp"
@@ -92,8 +94,10 @@ public:
         paintingPanel = Panel(
                                 shaders.buttonShader,
                                 {
-                                    Button(shaders.buttonShader,glm::vec4(1)), //Buttons of the panel here
-                                    Button(shaders.buttonShader,glm::vec4(1))
+                                    Button(shaders.buttonShader,glm::vec2(5,5),glm::vec4(1),glm::vec4(0.043f,0.635f,0.823f,1.f),true,1000,1),
+                                    Button(shaders.buttonShader,glm::vec2(2,5),glm::vec4(1),glm::vec4(0.043f,0.635f,0.823f,1.f),true,1000,1),
+                                    Button(shaders.buttonShader,glm::vec2(5,5),glm::vec4(1),glm::vec4(0.043f,0.635f,0.823f,1.f),true,1000,1),
+                                    Button(shaders.buttonShader,glm::vec2(2,5),glm::vec4(1),glm::vec4(0.043f,0.635f,0.823f,1.f),true,1000,1) //Buttons of the panel here
                                 },
                                 glm::vec2(25,3), //Initial scale value
                                 glm::vec3(50,50,0.1f),  //Initial position value
@@ -102,7 +106,7 @@ public:
                             );
     }    
 
-    void render(glm::vec2 videoScale, Mouse &mouse){
+    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer){
         glDepthFunc(GL_LEQUAL);
 
         //Use the related shader
@@ -116,7 +120,7 @@ public:
         
         //--Render all the UI elements there
         
-        paintingPanel.render(videoScale,mouse);
+        paintingPanel.render(videoScale,mouse,timer);
     }
 };
 

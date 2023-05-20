@@ -9,6 +9,9 @@ in vec2 texCoords;
 //in vec3 fragPos;
 
 uniform vec4 color;
+uniform vec4 color2;
+uniform float colorMixVal;
+
 uniform int outline;
 uniform float thickness;
 uniform float radius;
@@ -52,7 +55,7 @@ float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
 }
 
 void main(){
-    fragColor = vec4(color);
+    fragColor = mix(color,color2,colorMixVal);
 
     if(radius != 0)
     //Create round corners
