@@ -55,6 +55,7 @@ Example :
 #include "Renderer.h"
 #include "Util.hpp"
 #include "Timer.hpp"
+#include "ColorPalette.hpp"
 
 
 #include "GUI/Panel.hpp"
@@ -84,6 +85,8 @@ public:
     //Has the screen resolution
     //Example : L = 0, R = 1920, B = 1080, T = 0  
     glm::mat4 projection; 
+
+    ColorPalette colorPalette;
     
     UI(){}
 
@@ -93,16 +96,17 @@ public:
         //Init the painting panel
         paintingPanel = Panel(
                                 shaders.buttonShader,
-                                {
-                                    Button(shaders.buttonShader,glm::vec2(5,5),glm::vec4(1),glm::vec4(0.043f,0.635f,0.823f,1.f),false,0,1),
-                                    Button(shaders.buttonShader,glm::vec2(2,5),glm::vec4(1),glm::vec4(0.043f,0.635f,0.823f,1.f),true,1000,0),
-                                    Button(shaders.buttonShader,glm::vec2(5,5),glm::vec4(1),glm::vec4(0.043f,0.635f,0.823f,1.f),true,1000,0),
-                                    Button(shaders.buttonShader,glm::vec2(2,5),glm::vec4(1),glm::vec4(0.043f,0.635f,0.823f,1.f),true,1000,0) //Buttons of the panel here
+                                {   
+                                    //         Shader              Scale                Color                  Second Color        outline    radius    animation style
+                                    Button(shaders.buttonShader,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  false       ,0            ,1    ),
+                                    Button(shaders.buttonShader,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0    ),
+                                    Button(shaders.buttonShader,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0    ),
+                                    Button(shaders.buttonShader,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0    ) //Buttons of the panel here
                                 },
                                 glm::vec2(25,3), //Initial scale value
                                 glm::vec3(50,50,0.1f),  //Initial position value
-                                glm::vec4(0.1f,0.1f,0.1f,1.f) //Color of the panel
-                                ,false
+                                colorPalette.mainColor, //Color of the panel
+                                false
                             );
     }    
 

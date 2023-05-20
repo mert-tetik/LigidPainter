@@ -63,9 +63,9 @@ private:
 
         shader.setFloat("width" ,     scale.x   );
         shader.setFloat("height",     scale.y   );
-
         shader.setFloat("radius",     radius    );
         shader.setInt("outline" ,     outline      );
+
         if(animationStyle == 0)
             shader.setFloat("thickness" ,    100.f + hoverMixVal*100.f );
         else
