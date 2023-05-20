@@ -13,7 +13,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 ---------------------------------------------------------------------------
 
 Box.hpp : Is used to render a single 2D square.
-          Mostly used by GUI elements. (UIElements.hpp)
+          Mostly used by GUI elements. (GUI folder)
 */
 
 #ifndef LGDBOX_HPP

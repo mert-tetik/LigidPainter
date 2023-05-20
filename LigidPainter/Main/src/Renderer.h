@@ -34,6 +34,7 @@ Renderer.h : Renders the whole screen
 #include "Shader.hpp"
 #include "Skybox.hpp"
 #include "Box.hpp"
+#include "GUI/Mouse.hpp"
 
 struct Camera{
     float yaw = -90.f;
@@ -69,7 +70,7 @@ struct Shaders{
     Shader buttonShader;
 };
 
-#include "UIElements.hpp"
+#include "GUI/UI.hpp"
 
 class Renderer
 {
@@ -160,15 +161,20 @@ public:
         //Create 2D square vertex buffers
         box.init();
 
-        //Init the userinterface
-        userInterface.init(shaders);
         
         //Loads the default skybox
         scene.skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky2");
+        
+        //Init the userinterface
+        userInterface.init(shaders,context);
     }
 
     void render(){
         glfwPollEvents();
+        
+        glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
         
         //Refresh the default framebuffer    
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -196,13 +202,12 @@ public:
         //Bind 2D square vertex buffers
         box.bindBuffers();
        
+        userInterface.mouse.cursorPos = context.mousePos;
         //Update the UI projection using window size
-        userInterface.projection = glm::ortho(0.f,context.windowScale.x,0.f,context.windowScale.y);
+        userInterface.projection = glm::ortho(0.f,context.windowScale.x,context.windowScale.y,0.f);
         userInterface.render(scene.videoScale);//Render the UI
 
         box.unbindBuffers(); //Finish rendering the UI
-
-
 
         glfwSwapBuffers(context.window);
     }
