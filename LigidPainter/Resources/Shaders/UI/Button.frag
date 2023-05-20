@@ -16,6 +16,8 @@ uniform float radius;
 uniform float width;
 uniform float height;
 
+uniform vec2 videoScale;
+
 float udRoundBox( vec2 p, vec2 b, float r )
 {
     return length(max(abs(p)-b+r,0.0))-r;
@@ -23,34 +25,37 @@ float udRoundBox( vec2 p, vec2 b, float r )
 
 float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
 {
-   float divider = 1.0;
-    // setup
+    //Divider reduces the radius/size of the button 
+    //So the outline won't be stuck out of the boundaries
+    float divider = 1.0;
     if(outline == 1)
-        divider = 1.15;
+        divider = 1.3;
 
+    //Radius of the corners
     float iRadius = radius;
-    vec2 halfRes = vec2(0.5*vec2(1920*width,1080*height));
+    vec2 halfRes = vec2(0.5*vec2(videoScale.x*width,videoScale.y*height));
 
-    // compute box
-    float b = udRoundBox( uv.xy*vec2(1920*width,1080*height) * vec2(1.05,divider) - halfRes * vec2(1.05,divider), halfRes, iRadius );
-    
-    // colorize (red / black )
-	vec3 c = mix( vec3(1.0,0.0,0.0), vec3(0.0,0.0,0.0), smoothstep(0.0,1.0,b) );
+    //Compute box
+    float b = udRoundBox( uv.xy*vec2(videoScale.x*width,videoScale.y*height) * vec2(1.05,divider) - halfRes * vec2(1.05,divider), halfRes, iRadius );
    
-   vec3 circleColor = vec3(1.0, 1.0, 1.0);
-   float fade = 3.115;
+    //Fade of the outline (greater the value is smoother outline becomes)
+    float fade = 150.115;
+
+    //Outline
+    float outV = (smoothstep(0.0, fade, b));
+    outV *= (smoothstep(thickness + fade, thickness, b));
    
-   vec3 color = vec3(smoothstep(0.0, fade, b));
-   color *= vec3(smoothstep(thickness + fade, thickness, b)) * circleColor;
-   
-   if(outline == 1)
-      return color.r;
-   else
-      return c.r;
+    if(outline == 1)
+        return outV;
+    else
+        return 1. - b;
 }
 
 void main(){
     fragColor = vec4(color);
+
     if(radius != 0)
-        fragColor.a = roundUp(texCoords);
+    //Create round corners
+    //Returns only the outline if outline uniform is set to 1
+        fragColor.a = roundUp(texCoords); 
 }

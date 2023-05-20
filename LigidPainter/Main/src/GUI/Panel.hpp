@@ -54,7 +54,93 @@ struct PanelSide{
 class Panel
 {
 private:
-    /* data */
+    void mouseTracking(Mouse& mouse,glm::vec2 resultScale,glm::vec3 resultPos){
+        //Check if mouse on the panel or any side of the panel 
+
+        const float grabbingRange = 20; 
+
+        //Check if mouse on top of the panel
+        hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
+        //Check if mouse on top of the left side of the panel
+        leftSide.hover = mouse.isMouseHover(glm::vec2(grabbingRange,resultScale.y),glm::vec2(resultPos.x-resultScale.x,resultPos.y));
+        //Check if mouse on top of the right side of the panel
+        rightSide.hover = mouse.isMouseHover(glm::vec2(grabbingRange,resultScale.y),glm::vec2(resultPos.x+resultScale.x,resultPos.y));
+        //Check if mouse on top of the bottom side of the panel
+        bottomSide.hover = mouse.isMouseHover(glm::vec2(resultScale.x,grabbingRange),glm::vec2(resultPos.x,resultPos.y + resultScale.y));
+
+        //Keep the left corner in the pressed state from the left click to left mouse button release
+        if(leftSide.hover && mouse.LClick) //Clicked to the corner
+            leftSide.pressed = true;
+        if(!mouse.LPressed) //Corner released
+            leftSide.pressed = false;
+        
+        //Keep the right corner in the pressed state from the left click to left mouse button release
+        if(rightSide.hover && mouse.LClick) //Clicked to the corner
+            rightSide.pressed = true;
+        if(!mouse.LPressed) //Corner released
+            rightSide.pressed = false;
+        
+        //Keep the bottom corner in the pressed state from the left click to left mouse button release
+        if(bottomSide.hover && mouse.LClick) //Clicked to the corner
+            bottomSide.pressed = true;
+        if(!mouse.LPressed) //Corner released
+            bottomSide.pressed = false;
+    }
+
+    void resizeThePanel(Mouse &mouse, glm::vec2 videoScale){
+        //Resize the panel if necessary
+        if(rightSide.pressed){
+            scale.x += mouse.mouseOffset.x/videoScale.x * 50.f;
+            pos.x += mouse.mouseOffset.x/videoScale.x *50.f;
+        }
+        else if(leftSide.pressed){
+            scale.x -= mouse.mouseOffset.x/videoScale.x * 50.f;
+            pos.x += mouse.mouseOffset.x/videoScale.x *50.f;
+        }
+        else if(bottomSide.pressed){
+            scale.y += mouse.mouseOffset.y/videoScale.y * 50.f;
+            pos.y += mouse.mouseOffset.y/videoScale.y *50.f;
+        }
+
+        //Restrict the size of the panel
+        if(scale.x < 1)
+            scale.x = 1;
+    }
+
+    void drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm::vec2 resultScale){
+        //Draw the panel and it's elements
+
+        //Draw panel
+        shader.setVec3("pos",       resultPos);
+        shader.setVec2("scale",     resultScale);
+        shader.setVec4("color",     color   );
+        
+        shader.setFloat("width",     scale.x   );
+        shader.setFloat("height",     scale.y   );
+        
+        shader.setFloat("radius",     500.f   );
+        shader.setInt("outline",     false   );
+        shader.setFloat("thickness" ,    0.f  );
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        //Panel's buttons
+        for (size_t i = 0; i < buttons.size(); i++)
+        {
+            buttons[i].scale.x = scale.x;
+            buttons[i].scale.y = 2;
+            
+            //Move the button on top of the panel
+            buttons[i].pos = pos;
+            buttons[i].pos.y -= scale.y;
+            buttons[i].pos.y += buttons[i].scale.y;
+            
+            buttons[i].pos.z += 0.01f;
+            buttons[i].pos.y +=  i * buttons[i].scale.y * 2.f;
+            
+            buttons[i].render(videoScale,mouse);
+        }
+    }
 public:
     Shader shader;
 
@@ -96,88 +182,11 @@ public:
         glm::vec2 resultScale = util.getPercent(videoScale,scale);
 
 
+        mouseTracking(mouse,resultScale,resultPos);
 
-
-        const float grabbingRange = 20; 
-
-        //Check if mouse on top of the panel
-        hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
-        //Check if mouse on top of the left side of the panel
-        leftSide.hover = mouse.isMouseHover(glm::vec2(grabbingRange,resultScale.y),glm::vec2(resultPos.x-resultScale.x,resultPos.y));
-        //Check if mouse on top of the right side of the panel
-        rightSide.hover = mouse.isMouseHover(glm::vec2(grabbingRange,resultScale.y),glm::vec2(resultPos.x+resultScale.x,resultPos.y));
-        //Check if mouse on top of the bottom side of the panel
-        bottomSide.hover = mouse.isMouseHover(glm::vec2(resultScale.x,grabbingRange),glm::vec2(resultPos.x,resultPos.y + resultScale.y));
-
-        //Keep the left corner in the pressed state from the left click to left mouse button release
-        if(leftSide.hover && mouse.LClick) //Clicked to the corner
-            leftSide.pressed = true;
-        if(!mouse.LPressed) //Corner released
-            leftSide.pressed = false;
-        
-        //Keep the right corner in the pressed state from the left click to left mouse button release
-        if(rightSide.hover && mouse.LClick) //Clicked to the corner
-            rightSide.pressed = true;
-        if(!mouse.LPressed) //Corner released
-            rightSide.pressed = false;
-        
-        //Keep the bottom corner in the pressed state from the left click to left mouse button release
-        if(bottomSide.hover && mouse.LClick) //Clicked to the corner
-            bottomSide.pressed = true;
-        if(!mouse.LPressed) //Corner released
-            bottomSide.pressed = false;
-
-
-        //Resize the panel if necessary
-        if(rightSide.pressed){
-            scale.x += mouse.mouseOffset.x/videoScale.x * 50.f;
-            pos.x += mouse.mouseOffset.x/videoScale.x *50.f;
-        }
-        else if(leftSide.pressed){
-            scale.x -= mouse.mouseOffset.x/videoScale.x * 50.f;
-            pos.x += mouse.mouseOffset.x/videoScale.x *50.f;
-        }
-        else if(bottomSide.pressed){
-            scale.y += mouse.mouseOffset.y/videoScale.y * 50.f;
-            pos.y += mouse.mouseOffset.y/videoScale.y *50.f;
-        }
-
-        //Restrict the size of the panel
-        if(scale.x < 1)
-            scale.x = 1;
-
-
-        shader.setVec3("pos",       resultPos);
-        shader.setVec2("scale",     resultScale);
-        shader.setVec4("color",     color   );
-        
-        shader.setFloat("width",     scale.x   );
-        shader.setFloat("height",     scale.y   );
-        
-        shader.setFloat("radius",     500.f   );
-        shader.setInt("outline",     false   );
-        shader.setFloat("thickness" ,    0.f  );
-
-
-
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        //Panel's buttons
-        for (size_t i = 0; i < buttons.size(); i++)
-        {
-            buttons[i].scale.x = scale.x;
-            buttons[i].scale.y = 2;
-            
-            //Move the button on top of the panel
-            buttons[i].pos = pos;
-            buttons[i].pos.y -= scale.y;
-            buttons[i].pos.y += buttons[i].scale.y;
-            
-            buttons[i].pos.z += 0.01f;
-            buttons[i].pos.y +=  i * buttons[i].scale.y * 2.f;
-            
-            buttons[i].render(videoScale,mouse);
-        }
+        resizeThePanel(mouse,videoScale);
+    
+        drawPanel(videoScale,mouse,resultPos,resultScale);
     }
 };
 #endif

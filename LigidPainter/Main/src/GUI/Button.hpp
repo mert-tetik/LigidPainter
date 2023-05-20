@@ -70,7 +70,7 @@ public:
         this->shader = shader;
         this->color = color;
     }
-    
+
     void render(glm::vec2 videoScale,Mouse& mouse){
         Util util;
 
@@ -94,12 +94,12 @@ public:
 
         shader.setFloat("radius",     1000.f    );
         shader.setInt("outline" ,     true      );
+        
         if(!hover)
             shader.setFloat("thickness" ,    100.f  );
         else
             shader.setFloat("thickness" ,    200.f  );
 
-        
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 };

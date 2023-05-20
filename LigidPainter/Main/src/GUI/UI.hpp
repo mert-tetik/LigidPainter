@@ -80,7 +80,7 @@ public:
     
     //UI Rendering projection
     //Has the screen resolution
-    //Example : L = 0, R = 1920, B = 0, T = 1080 
+    //Example : L = 0, R = 1920, B = 1080, T = 0  
     glm::mat4 projection; 
     
     UI(){}
@@ -107,6 +107,8 @@ public:
         //Use the related shader
         shaders.buttonShader.use();
         
+        //Send the monitor resolution to the button shader
+        shaders.buttonShader.setVec2("videoScale",videoScale);  
         //Projection is changing in the renderer.render()
         //userInterface.projection = glm::mat4(...)
         shaders.buttonShader.setMat4("projection",projection); 
