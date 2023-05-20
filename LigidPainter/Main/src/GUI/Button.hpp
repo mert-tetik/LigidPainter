@@ -33,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Panel.hpp"
 #include "GUI/Button.hpp"
-#include "GUI/Mouse.hpp"
+#include "Mouse.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -69,9 +69,9 @@ public:
     Button(Shader shader,glm::vec4 color){
         this->shader = shader;
         this->color = color;
-
     }
-    void render(glm::vec2 videoScale,Mouse mouse){
+    
+    void render(glm::vec2 videoScale,Mouse& mouse){
         Util util;
 
         // pos value % of the video scale

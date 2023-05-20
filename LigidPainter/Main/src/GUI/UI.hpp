@@ -57,7 +57,7 @@ Example :
 
 #include "GUI/Panel.hpp"
 #include "GUI/Button.hpp"
-#include "GUI/Mouse.hpp"
+#include "Mouse.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -76,8 +76,7 @@ public:
     //(Mostly panels)
     Panel paintingPanel;  
 
-    Shaders shaders;
-    Mouse mouse; //Used to detect if mouse hover etc.
+    Shaders shaders; 
     
     //UI Rendering projection
     //Has the screen resolution
@@ -88,7 +87,6 @@ public:
 
     void init(Shaders shaders,Context context){
         this->shaders = shaders;
-        mouse = Mouse(context.window);
         
         //Init the painting panel
         paintingPanel = Panel(
@@ -103,7 +101,7 @@ public:
                             );
     }    
 
-    void render(glm::vec2 videoScale){
+    void render(glm::vec2 videoScale, Mouse &mouse){
         glDepthFunc(GL_LEQUAL);
 
         //Use the related shader

@@ -34,7 +34,7 @@ Renderer.h : Renders the whole screen
 #include "Shader.hpp"
 #include "Skybox.hpp"
 #include "Box.hpp"
-#include "GUI/Mouse.hpp"
+#include "Mouse.hpp"
 
 struct Camera{
     float yaw = -90.f;
@@ -59,8 +59,6 @@ struct Scene{
 };
 struct Context{
     GLFWwindow* window;
-    glm::vec2 mousePos;
-    glm::vec2 mouseOffset;
     glm::vec2 windowScale;
 };
 
@@ -85,13 +83,13 @@ public:
     //*Define shaders there then init like that shaders.tdModelShader = Shader("a.vert","a.frag");
     Shaders shaders; 
 
+    Mouse mouse; //Everything related to the mouse is done via that class
 
     Box box; //A class that used render 2D square vertices 
 
     UI userInterface; 
 
     Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
-
         //Hold the videoscale value inside of the scene structure
         scene.videoScale = videoScale;
         
@@ -113,6 +111,9 @@ public:
         }
         glfwMakeContextCurrent(context.window);
         
+
+
+
         //Pointing a function that is a class member
         glfwSetWindowUserPointer(context.window, this);
         
@@ -129,6 +130,16 @@ public:
             static_cast<Renderer*>(glfwGetWindowUserPointer(w))->framebufferSizeCallback(w,x,y);
         };
         glfwSetFramebufferSizeCallback(context.window, framebufferSizeFunc);
+        
+        //Mouse button callback function casting
+        auto mouseButtonFunc = [](GLFWwindow* w, int button, int action, int mods)
+        {
+            static_cast<Renderer*>(glfwGetWindowUserPointer(w))->mouseButtonCallback(w,button,action,mods);
+        };
+
+        glfwSetMouseButtonCallback(context.window, mouseButtonFunc);
+        
+        
 
 
 
@@ -202,12 +213,21 @@ public:
         //Bind 2D square vertex buffers
         box.bindBuffers();
        
-        userInterface.mouse.cursorPos = context.mousePos;
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,context.windowScale.x,context.windowScale.y,0.f);
-        userInterface.render(scene.videoScale);//Render the UI
+        userInterface.render(scene.videoScale,mouse);//Render the UI
 
         box.unbindBuffers(); //Finish rendering the UI
+
+
+
+        //Set mouse states to default
+        mouse.LClick = false;
+        mouse.RClick = false;
+        mouse.MClick = false;
+        mouse.mouseOffset = glm::vec2(0);
+        mouse.mods = 0;
+
 
         glfwSwapBuffers(context.window);
     }
@@ -234,6 +254,35 @@ private:
     }
 
 
+    void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
+        if(button == 0){ //Left
+            if(action == 1)
+                mouse.LClick = true;
+        }  
+        if(button == 1){ //Right
+            if(action == 1)
+                mouse.LClick = true;
+        }  
+        if(button == 2){ //Mid
+            if(action == 1)
+                mouse.LClick = true;
+        }  
+
+        
+        if(button == 0){ //Left
+            mouse.LPressed = action;
+        }  
+        if(button == 1){ //Right
+            mouse.RPressed = action;
+        }  
+        if(button == 2){ //Mid
+            mouse.MPressed = action;
+        }  
+        
+
+        mouse.mods = mods;
+    }
+    
     void framebufferSizeCallback(GLFWwindow* window, int width, int height){
         //Goes the global variable
         context.windowScale.x = width;
@@ -246,30 +295,30 @@ private:
     void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
     {
         //Take the cursor position data to a global variable
-        context.mousePos.x = xpos;
-        context.mousePos.y = ypos;
+        mouse.cursorPos.x = xpos;
+        mouse.cursorPos.y = ypos;
         
         //Get the mouse offset by subtracting current cursor position from last frame's cursor pos
-        context.mouseOffset.x = context.mousePos.x - lastMousePos.x;
-    	context.mouseOffset.y = context.mousePos.y - lastMousePos.y;
+        mouse.mouseOffset.x = mouse.cursorPos.x - lastMousePos.x;
+    	mouse.mouseOffset.y = mouse.cursorPos.y - lastMousePos.y;
 
         const float sensitivity = 0.2f; //Mouse sensivity (Increase the value to go brrrrrbrbrbrb)
 
     	if ((glfwGetMouseButton(context.window, 1) == GLFW_PRESS) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { //L Control + L Click
     		//Straight Movement
             //Rotates the Camera in 3 axis using mouse offset & intepreting yaw, pitch & radius values
-            scene.camera.cameraPos.x -= sin(glm::radians(scene.camera.yaw)) * context.mouseOffset.x * sensitivity * (sensitivity / 2) + cos(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * context.mouseOffset.y) / 4;
-    		scene.camera.originPos.x -= sin(glm::radians(scene.camera.yaw)) * context.mouseOffset.x * sensitivity * (sensitivity / 2) + cos(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * context.mouseOffset.y) / 4;
+            scene.camera.cameraPos.x -= sin(glm::radians(scene.camera.yaw)) * mouse.mouseOffset.x * sensitivity * (sensitivity / 2) + cos(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * mouse.mouseOffset.y) / 4;
+    		scene.camera.originPos.x -= sin(glm::radians(scene.camera.yaw)) * mouse.mouseOffset.x * sensitivity * (sensitivity / 2) + cos(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * mouse.mouseOffset.y) / 4;
 
-    		scene.camera.cameraPos.z += cos(glm::radians(scene.camera.yaw)) * context.mouseOffset.x * sensitivity * (sensitivity / 2) - sin(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * context.mouseOffset.y) / 4;
-    		scene.camera.originPos.z += cos(glm::radians(scene.camera.yaw)) * context.mouseOffset.x * sensitivity * (sensitivity / 2) - sin(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * context.mouseOffset.y) / 4;
+    		scene.camera.cameraPos.z += cos(glm::radians(scene.camera.yaw)) * mouse.mouseOffset.x * sensitivity * (sensitivity / 2) - sin(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * mouse.mouseOffset.y) / 4;
+    		scene.camera.originPos.z += cos(glm::radians(scene.camera.yaw)) * mouse.mouseOffset.x * sensitivity * (sensitivity / 2) - sin(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * mouse.mouseOffset.y) / 4;
 
-    		scene.camera.cameraPos.y -= cos(glm::radians(scene.camera.pitch)) * context.mouseOffset.y * sensitivity * (sensitivity / 2);
-    		scene.camera.originPos.y -= cos(glm::radians(scene.camera.pitch)) * context.mouseOffset.y * sensitivity * (sensitivity / 2);
+    		scene.camera.cameraPos.y -= cos(glm::radians(scene.camera.pitch)) * mouse.mouseOffset.y * sensitivity * (sensitivity / 2);
+    		scene.camera.originPos.y -= cos(glm::radians(scene.camera.pitch)) * mouse.mouseOffset.y * sensitivity * (sensitivity / 2);
     	}
     	else if ((glfwGetMouseButton(context.window, 1) == GLFW_PRESS)) { //L Click
-    	    scene.camera.yaw += context.mouseOffset.x * sensitivity;
-    		scene.camera.pitch += context.mouseOffset.y * sensitivity;
+    	    scene.camera.yaw += mouse.mouseOffset.x * sensitivity;
+    		scene.camera.pitch += mouse.mouseOffset.y * sensitivity;
 
     		//Disable 90+ degrees rotations in y axis
     		if (scene.camera.pitch > 89.0f)
@@ -288,8 +337,8 @@ private:
         updateViewMatrix();
         
         //This will be used as "last frame's cursor pos" for the cursor offset
-        lastMousePos.x = context.mousePos.x;
-        lastMousePos.y = context.mousePos.y;
+        lastMousePos.x = mouse.cursorPos.x;
+        lastMousePos.y = mouse.cursorPos.y;
     }
 
 };

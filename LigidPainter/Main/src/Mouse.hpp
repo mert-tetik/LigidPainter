@@ -47,6 +47,19 @@ private:
     /* data */
 public:
     glm::vec2 cursorPos;
+    glm::vec2 mouseOffset;
+
+	int mods = 0;
+
+	bool LClick = false; //Left click - button 0
+	bool RClick = false; //Right click - button 1
+	bool MClick = false; //Middle click - button 2
+
+	bool LPressed = false;
+	bool RPressed = false;
+	bool MPressed = false;
+
+
     GLFWwindow* window;
 
     Mouse(){}
