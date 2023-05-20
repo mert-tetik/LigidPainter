@@ -1,3 +1,18 @@
+/*
+---------------------------------------------------------------------------
+LigidPainter - 3D Model texturing software / Texture generator   
+---------------------------------------------------------------------------
+
+Copyright (c) 2022-2023, LigidTools 
+
+All rights reserved.
+
+Official GitHub Link : https://github.com/mert-tetik/LigidPainter
+Official Web Page : https://ligidtools.com/ligidpainter
+
+---------------------------------------------------------------------------
+*/
+
 #ifndef LGDSKYBOX_HPP
 #define LGDSKYBOX_HPP
 
@@ -7,7 +22,6 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <stb_image.h>
 
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
@@ -118,9 +132,9 @@ public:
 		    path + "/nz.png"
 		};
 
+	    int width, height, nrChannels;//Of the face of the skybox
 	    for (unsigned int i = 0; i < faces.size(); i++)
 	    {
-	        int width, height, nrChannels;//Of the face of the skybox
 
             //Cube's faces are determined that way cause macOS having trouble indexing cubemap's faces.
             //That doesn't solve the problem tho
@@ -139,7 +153,7 @@ public:
 				cubePos = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z;
 
             Texture txtr;
-            unsigned char *data = txtr.getTextureDataViaPath(faces[i].c_str(),width,height,nrChannels);
+            unsigned char *data = txtr.getTextureDataViaPath(faces[i].c_str(),width,height,nrChannels,3);
 
 	        if (data) //Loaded
 	        {

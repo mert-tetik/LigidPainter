@@ -1,3 +1,20 @@
+/*
+---------------------------------------------------------------------------
+LigidPainter - 3D Model texturing software / Texture generator   
+---------------------------------------------------------------------------
+
+Copyright (c) 2022-2023, LigidTools 
+
+All rights reserved.
+
+Official GitHub Link : https://github.com/mert-tetik/LigidPainter
+Official Web Page : https://ligidtools.com/ligidpainter
+
+---------------------------------------------------------------------------
+
+Renderer.h : Renders the whole screen
+*/
+
 #ifndef LGDRENDERER_HPP
 #define LGDRENDERER_HPP
 
@@ -16,6 +33,7 @@
 #include "Model.hpp"
 #include "Shader.hpp"
 #include "Skybox.hpp"
+#include "Box.hpp"
 
 struct Camera{
     float yaw = -90.f;
@@ -45,6 +63,14 @@ struct Context{
     glm::vec2 windowScale;
 };
 
+struct Shaders{
+    Shader tdModelShader;
+    Shader skyboxShader;
+    Shader buttonShader;
+};
+
+#include "UIElements.hpp"
+
 class Renderer
 {
 private:
@@ -54,9 +80,14 @@ public:
     Scene scene; //3D Scene structure
     Model model; //Loaded 3D Model
 
-    Shader tdModelShader;
-    Shader skyboxShader;
-    Shader buttonShader;
+    //Structure that holds all the shaders
+    //*Define shaders there then init like that shaders.tdModelShader = Shader("a.vert","a.frag");
+    Shaders shaders; 
+
+
+    Box box; //A class that used render 2D square vertices 
+
+    UI userInterface; 
 
     Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
 
@@ -108,12 +139,11 @@ public:
         }    
 
 
-
         //Load the 3D Model shader 
         //TODO : Remove that (maybe)
-        tdModelShader = Shader("LigidPainter/Resources/Shaders/3DModel.vert","LigidPainter/Resources/Shaders/3DModel.frag",nullptr);
-        skyboxShader = Shader("LigidPainter/Resources/Shaders/Skybox.vert","LigidPainter/Resources/Shaders/Skybox.frag",nullptr);
-        buttonShader = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/Button.frag",nullptr);
+        shaders.tdModelShader = Shader("LigidPainter/Resources/Shaders/3DModel.vert","LigidPainter/Resources/Shaders/3DModel.frag",nullptr);
+        shaders.skyboxShader = Shader("LigidPainter/Resources/Shaders/Skybox.vert","LigidPainter/Resources/Shaders/Skybox.frag",nullptr);
+        shaders.buttonShader = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/Button.frag",nullptr);
 
         //Update necessary data before callbacks
         updateViewport();
@@ -126,6 +156,12 @@ public:
         //Couldn't use the constructor since the glad is not initialized before definition
         //There is no need to use that function once again
         scene.skybox.init();
+
+        //Create 2D square vertex buffers
+        box.init();
+
+        //Init the userinterface
+        userInterface.init(shaders);
         
         //Loads the default skybox
         scene.skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky2");
@@ -138,19 +174,35 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         //Render skybox
-        skyboxShader.use();
-        skyboxShader.setMat4("view",scene.viewMatrix);
-        skyboxShader.setMat4("projection",scene.projectionMatrix);
-        skyboxShader.setInt("skybox",0);
+        shaders.skyboxShader.use();
+        shaders.skyboxShader.setMat4("view",scene.viewMatrix);
+        shaders.skyboxShader.setMat4("projection",scene.projectionMatrix);
+        shaders.skyboxShader.setInt("skybox",0);
         scene.skybox.draw();
 
         //Render 3D Model
-        tdModelShader.use();
-        tdModelShader.setMat4("view",scene.viewMatrix);
-        tdModelShader.setMat4("projection",scene.projectionMatrix);
+        shaders.tdModelShader.use();
+        shaders.tdModelShader.setMat4("view",scene.viewMatrix);
+        shaders.tdModelShader.setMat4("projection",scene.projectionMatrix);
         glm::mat4 modelMatrix = glm::mat4(1);
-        tdModelShader.setMat4("modelMatrix",modelMatrix);
+        shaders.tdModelShader.setMat4("modelMatrix",modelMatrix);
         model.Draw();
+
+        //Clear the depth buffer before rendering the UI elements (prevent coliding)
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        //Render UI
+
+        //Bind 2D square vertex buffers
+        box.bindBuffers();
+       
+        //Update the UI projection using window size
+        userInterface.projection = glm::ortho(0.f,context.windowScale.x,0.f,context.windowScale.y);
+        userInterface.render();//Render the UI
+
+        box.unbindBuffers(); //Finish rendering the UI
+
+
 
         glfwSwapBuffers(context.window);
     }

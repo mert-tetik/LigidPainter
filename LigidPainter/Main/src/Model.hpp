@@ -4,7 +4,6 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <stb_image.h>
 
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
@@ -19,6 +18,25 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+/*
+---------------------------------------------------------------------------
+LigidPainter - 3D Model texturing software / Texture generator   
+---------------------------------------------------------------------------
+
+Copyright (c) 2022-2023, LigidTools 
+
+All rights reserved.
+
+Official GitHub Link : https://github.com/mert-tetik/LigidPainter
+Official Web Page : https://ligidtools.com/ligidpainter
+
+---------------------------------------------------------------------------
+
+Model.hpp : Model class stores a 3D Model's data
+
+*/
+
+
 #include <map>
 #include <vector>
 #include <cstdlib>

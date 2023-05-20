@@ -1,3 +1,18 @@
+/*
+---------------------------------------------------------------------------
+LigidPainter - 3D Model texturing software / Texture generator   
+---------------------------------------------------------------------------
+
+Copyright (c) 2022-2023, LigidTools 
+
+All rights reserved.
+
+Official GitHub Link : https://github.com/mert-tetik/LigidPainter
+Official Web Page : https://ligidtools.com/ligidpainter
+
+---------------------------------------------------------------------------
+*/
+
 #ifndef LGDSTEXTURE_HPP
 #define LGDSTEXTURE_HPP
 
@@ -46,7 +61,7 @@ public:
     
     std::string path;
 
-    Texture();
+    Texture(){}
 
     void load(const char* path){
         this->path = path;
@@ -84,9 +99,9 @@ public:
 
     //Returns the texture data from the given path
     //Is not related with the class object
-    unsigned char* getTextureDataViaPath(const char* path,int aWidth,int aHeight,int aChannels){
+    unsigned char* getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels){
         stbi_set_flip_vertically_on_load(true);
-        return stbi_load(path, &aWidth, &aHeight, &aChannels, 4);
+        return stbi_load(aPath, &aWidth, &aHeight, &aChannels, desiredChannels);
     }
 };
 
