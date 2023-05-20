@@ -35,6 +35,7 @@ Renderer.h : Renders the whole screen
 #include "Skybox.hpp"
 #include "Box.hpp"
 #include "Mouse.hpp"
+#include "Timer.hpp"
 
 struct Camera{
     float yaw = -90.f;
@@ -73,29 +74,7 @@ struct Shaders{
 class Renderer
 {
 private:
-    /* data */
-public:
-    Context context; //Holds data related to the window
-    Scene scene; //3D Scene structure
-    Model model; //Loaded 3D Model
-
-    //Structure that holds all the shaders
-    //*Define shaders there then init like that shaders.tdModelShader = Shader("a.vert","a.frag");
-    Shaders shaders; 
-
-    Mouse mouse; //Everything related to the mouse is done via that class
-
-    Box box; //A class that used render 2D square vertices 
-
-    UI userInterface; 
-
-    Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
-        //Hold the videoscale value inside of the scene structure
-        scene.videoScale = videoScale;
-        
-        //Since the window size is determined by the videoscale value there is no harm to do that
-        context.windowScale = scene.videoScale;  
-
+    void initGLFW(glm::vec2 videoScale){
         //Init GLFW
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -111,8 +90,6 @@ public:
         }
         glfwMakeContextCurrent(context.window);
         
-
-
 
         //Pointing a function that is a class member
         glfwSetWindowUserPointer(context.window, this);
@@ -138,21 +115,47 @@ public:
         };
 
         glfwSetMouseButtonCallback(context.window, mouseButtonFunc);
-        
-        
-
-
-
-
+    }
+    void initGlad(){
         //Init GLAD
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
             std::cout << "Failed to initialize GLAD" << std::endl;
         }    
+    }
+public:
+    Context context; //Holds data related to the window
+    Scene scene; //3D Scene structure
+    Model model; //Loaded 3D Model
 
+    //Structure that holds all the shaders
+    //*Define shaders there then init like that shaders.tdModelShader = Shader("a.vert","a.frag");
+    Shaders shaders; 
 
-        //Load the 3D Model shader 
-        //TODO : Remove that (maybe)
+    Mouse mouse; //Everything related to the mouse is done via that class
+
+    Box box; //A class that used render 2D square vertices 
+
+    UI userInterface; 
+
+    //Manage time
+    //Commonly used to support the transition effects (to be make sure the transition is done in certain time & not effect by rendering speed)
+    Timer timer;    
+
+    Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
+        //Hold the videoscale value inside of the scene structure
+        scene.videoScale = videoScale;
+        
+        //Since the window size is determined by the videoscale value there is no harm to do that
+        context.windowScale = scene.videoScale;  
+
+        //Initialize the GLFW, create the main window & set callbacks
+        initGLFW(videoScale);
+
+        initGlad();
+
+        //Init skyboxes
+        //TODO : Remove those (maybe)
         shaders.tdModelShader = Shader("LigidPainter/Resources/Shaders/3DModel.vert","LigidPainter/Resources/Shaders/3DModel.frag",nullptr);
         shaders.skyboxShader = Shader("LigidPainter/Resources/Shaders/Skybox.vert","LigidPainter/Resources/Shaders/Skybox.frag",nullptr);
         shaders.buttonShader = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/Button.frag",nullptr);
@@ -171,7 +174,6 @@ public:
 
         //Create 2D square vertex buffers
         box.init();
-
         
         //Loads the default skybox
         scene.skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky2");

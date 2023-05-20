@@ -95,9 +95,10 @@ public:
                                     Button(shaders.buttonShader,glm::vec4(1)), //Buttons of the panel here
                                     Button(shaders.buttonShader,glm::vec4(1))
                                 },
-                                glm::vec2(3,25), //Initial scale value
-                                glm::vec3(10,50,0.1f),  //Initial position value
+                                glm::vec2(25,3), //Initial scale value
+                                glm::vec3(50,50,0.1f),  //Initial position value
                                 glm::vec4(0.1f,0.1f,0.1f,1.f) //Color of the panel
+                                ,false
                             );
     }    
 

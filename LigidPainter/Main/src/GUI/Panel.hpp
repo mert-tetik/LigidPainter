@@ -125,20 +125,42 @@ private:
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         //Panel's buttons
-        for (size_t i = 0; i < buttons.size(); i++)
-        {
-            buttons[i].scale.x = scale.x;
-            buttons[i].scale.y = 2;
-            
-            //Move the button on top of the panel
-            buttons[i].pos = pos;
-            buttons[i].pos.y -= scale.y;
-            buttons[i].pos.y += buttons[i].scale.y;
-            
-            buttons[i].pos.z += 0.01f;
-            buttons[i].pos.y +=  i * buttons[i].scale.y * 2.f;
-            
-            buttons[i].render(videoScale,mouse);
+
+        //Render Vertically
+        if(vertical == true){
+            for (size_t i = 0; i < buttons.size(); i++)
+            {
+                buttons[i].scale.x = scale.x;
+                buttons[i].scale.y = 2;
+
+                //Move the button on top of the panel
+                buttons[i].pos = pos;
+                buttons[i].pos.y -= scale.y;
+                buttons[i].pos.y += buttons[i].scale.y;
+
+                buttons[i].pos.z += 0.01f;
+                buttons[i].pos.y +=  i * buttons[i].scale.y * 2.f;
+
+                buttons[i].render(videoScale,mouse);
+            }
+        }
+        else{
+            //Render horizontally
+            for (size_t i = 0; i < buttons.size(); i++)
+            {
+                buttons[i].scale.x = 5;
+                buttons[i].scale.y = scale.y;
+
+                //Move the button on top of the panel
+                buttons[i].pos = pos;
+                buttons[i].pos.x -= scale.x;
+                buttons[i].pos.x += buttons[i].scale.x;
+
+                buttons[i].pos.z += 0.01f;
+                buttons[i].pos.x +=  i * buttons[i].scale.x * 2.f;
+
+                buttons[i].render(videoScale,mouse);
+            }
         }
     }
 public:
@@ -155,18 +177,21 @@ public:
 
     bool hover = false; //Panel's itself
     
+    bool vertical = true;
+
     //Sides of the panel
     PanelSide leftSide;
     PanelSide rightSide;
     PanelSide bottomSide;
 
     Panel(){}
-    Panel(Shader shader,std::vector<Button> buttons,glm::vec2 scale,glm::vec3 pos,glm::vec4 color){
+    Panel(Shader shader,std::vector<Button> buttons,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,bool vertical){
         this->color = color;
         this->pos = pos;
         this->scale = scale;
         this->shader = shader;
         this->buttons = buttons;
+        this->vertical = vertical;
     }
 
     void render(glm::vec2 videoScale,Mouse& mouse){

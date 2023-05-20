@@ -27,16 +27,16 @@ float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
 {
     //Divider reduces the radius/size of the button 
     //So the outline won't be stuck out of the boundaries
-    float divider = 1.0;
+    vec2 divider = vec2(1.0,1.0);
     if(outline == 1)
-        divider = 1.3;
+        divider = vec2(1.05,1.3);
 
     //Radius of the corners
     float iRadius = radius;
     vec2 halfRes = vec2(0.5*vec2(videoScale.x*width,videoScale.y*height));
 
     //Compute box
-    float b = udRoundBox( uv.xy*vec2(videoScale.x*width,videoScale.y*height) * vec2(1.05,divider) - halfRes * vec2(1.05,divider), halfRes, iRadius );
+    float b = udRoundBox( uv.xy*vec2(videoScale.x*width,videoScale.y*height) * divider - halfRes * divider, halfRes, iRadius );
    
     //Fade of the outline (greater the value is smoother outline becomes)
     float fade = 150.115;
