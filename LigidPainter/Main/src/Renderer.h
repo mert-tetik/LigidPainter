@@ -198,7 +198,7 @@ public:
        
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,context.windowScale.x,0.f,context.windowScale.y);
-        userInterface.render();//Render the UI
+        userInterface.render(scene.videoScale);//Render the UI
 
         box.unbindBuffers(); //Finish rendering the UI
 

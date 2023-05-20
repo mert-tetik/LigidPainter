@@ -49,6 +49,7 @@ Example :
 #include "Shader.hpp"
 #include "Box.hpp"
 #include "Renderer.h"
+#include "Util.h"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -66,22 +67,28 @@ private:
     /* data */
 public:
     //For now buttons can only be usable with panels
-    
+
     Shader shader;
 
     //---Button properties
     std::string text;
+    glm::vec4 color;
+    
     //Those values are adepting to the panel if button is attached to one
-    glm::vec2 scale = glm::vec2(200,100);  
-    glm::vec3 pos = glm::vec3(100,100,1); 
+    glm::vec2 scale;  
+    glm::vec3 pos; 
+    
 
     Button(){}
-    Button(Shader shader){
+    Button(Shader shader,glm::vec4 color){
         this->shader = shader;
+        this->color = color;
+
     }
-    void render(){
+    void render(glm::vec2 videoScale){
         shader.setVec3("pos",pos);
         shader.setVec2("scale",scale);
+        shader.setVec4("color",color);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
@@ -93,28 +100,41 @@ private:
     /* data */
 public:
     Shader shader;
-    std::string text;
-    glm::vec2 scale = glm::vec2(200,100);
-    glm::vec3 pos = glm::vec3(100,100,1);
+
+    //Attributes
+    glm::vec2 scale;
+    glm::vec3 pos;
+    glm::vec4 color;
+
     std::vector<Button> buttons;
 
     Panel(){}
-    Panel(Shader shader, std::vector<Button> buttons){
+    Panel(Shader shader, std::vector<Button> buttons,glm::vec2 scale,glm::vec3 pos,glm::vec4 color){
+        this->color = color;
+        this->pos = pos;
+        this->scale = scale;
         this->shader = shader;
         this->buttons = buttons;
     }
 
-    void render(){
+    void render(glm::vec2 videoScale){
         //Panel's itself
-        shader.setVec3("pos",pos);
-        shader.setVec2("scale",scale);
+        shader.setVec3("pos",       pos     );
+        shader.setVec2("scale",     scale   );
+        shader.setVec4("color",     color   );
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         //Panel's buttons
         for (size_t i = 0; i < buttons.size(); i++)
         {
-            buttons[i].render();
+            buttons[i].scale.x = scale.x;
+            buttons[i].scale.y = 50;
+            
+            buttons[i].pos = pos;
+            buttons[i].pos.z += 0.01f;
+            buttons[i].pos.y +=  i * buttons[i].scale.y * 4.f;
+            buttons[i].render(videoScale);
         }
     }
 };
@@ -139,13 +159,21 @@ public:
         this->shaders = shaders;
         
         //Init the painting panel
-        paintingPanel = Panel(shaders.buttonShader,{
-            Button(shaders.buttonShader), //Buttons of the panel here
-            Button(shaders.buttonShader)
-        });
+        paintingPanel = Panel(
+                                shaders.buttonShader,
+                                {
+                                    Button(shaders.buttonShader,glm::vec4(1)), //Buttons of the panel here
+                                    Button(shaders.buttonShader,glm::vec4(1))
+                                },
+                                glm::vec2(100,1000), //Initial scale value
+                                glm::vec3(10,100,0.1f),  //Initial position value
+                                glm::vec4(0.1f,0.1f,0.1f,1.f) //Color of the panel
+                            );
     }    
 
-    void render(){
+    void render(glm::vec2 videoScale){
+        glDepthFunc(GL_LEQUAL);
+
         //Use the related shader
         shaders.buttonShader.use();
         
@@ -155,7 +183,7 @@ public:
         
         //--Render all the UI elements there
         
-        paintingPanel.render();
+        paintingPanel.render(videoScale);
     }
 };
 

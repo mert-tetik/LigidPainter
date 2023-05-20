@@ -8,6 +8,8 @@ out vec4 fragColor;
 in vec2 texCoords;
 //in vec3 fragPos;
 
+uniform vec4 color;
+
 void main(){
-    fragColor = vec4(texCoords,1,1);
+    fragColor = vec4(color);
 }
