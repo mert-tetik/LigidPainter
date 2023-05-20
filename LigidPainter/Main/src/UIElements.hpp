@@ -31,6 +31,10 @@ Example :
 
     Define UI Elements inside of the UI class
     Render them inside of the render function of the UI class
+
+    Position of the vertex is determined that way:
+        monitor size / 100 * pos val
+        
 */
 
 #ifndef LGDUIELEMENTS_HPP
@@ -49,7 +53,7 @@ Example :
 #include "Shader.hpp"
 #include "Box.hpp"
 #include "Renderer.h"
-#include "Util.h"
+#include "Util.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -75,8 +79,9 @@ public:
     glm::vec4 color;
     
     //Those values are adepting to the panel if button is attached to one
-    glm::vec2 scale;  
-    glm::vec3 pos; 
+    //Values are percentage of the monitor size
+    glm::vec2 scale;  //Example : w : 20, h : 30 means cover %20 of the window in x axis & cover 30% of the window in y axis
+    glm::vec3 pos; //Same here
     
 
     Button(){}
@@ -86,9 +91,19 @@ public:
 
     }
     void render(glm::vec2 videoScale){
-        shader.setVec3("pos",pos);
-        shader.setVec2("scale",scale);
-        shader.setVec4("color",color);
+        Util util;
+
+        // pos value % of the video scale
+        glm::vec3 resultPos = glm::vec3( 
+                              util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                              ,pos.z); //Use the original depth value
+
+        // scale value % of the video scale
+        glm::vec2 resultScale = util.getPercent(videoScale,scale);
+
+        shader.setVec3("pos",       resultPos);
+        shader.setVec2("scale",     resultScale);
+        shader.setVec4("color",     color   );
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
@@ -102,8 +117,10 @@ public:
     Shader shader;
 
     //Attributes
-    glm::vec2 scale;
-    glm::vec3 pos;
+    //Values are percentage of the monitor size
+    glm::vec2 scale;  //Example : w : 20, h : 30 means cover %20 of the window in x axis & cover 30% of the window in y axis
+    glm::vec3 pos; //Same here
+    
     glm::vec4 color;
 
     std::vector<Button> buttons;
@@ -119,8 +136,18 @@ public:
 
     void render(glm::vec2 videoScale){
         //Panel's itself
-        shader.setVec3("pos",       pos     );
-        shader.setVec2("scale",     scale   );
+        Util util;
+
+        // pos value % of the video scale
+        glm::vec3 resultPos = glm::vec3( 
+                              util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                              ,pos.z); //Use the original depth value
+
+        // scale value % of the video scale
+        glm::vec2 resultScale = util.getPercent(videoScale,scale);
+
+        shader.setVec3("pos",       resultPos);
+        shader.setVec2("scale",     resultScale);
         shader.setVec4("color",     color   );
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -129,11 +156,11 @@ public:
         for (size_t i = 0; i < buttons.size(); i++)
         {
             buttons[i].scale.x = scale.x;
-            buttons[i].scale.y = 50;
+            buttons[i].scale.y = 10;
             
             buttons[i].pos = pos;
             buttons[i].pos.z += 0.01f;
-            buttons[i].pos.y +=  i * buttons[i].scale.y * 4.f;
+            buttons[i].pos.y +=  i * buttons[i].scale.y;
             buttons[i].render(videoScale);
         }
     }
@@ -165,7 +192,7 @@ public:
                                     Button(shaders.buttonShader,glm::vec4(1)), //Buttons of the panel here
                                     Button(shaders.buttonShader,glm::vec4(1))
                                 },
-                                glm::vec2(100,1000), //Initial scale value
+                                glm::vec2(10,100), //Initial scale value
                                 glm::vec3(10,100,0.1f),  //Initial position value
                                 glm::vec4(0.1f,0.1f,0.1f,1.f) //Color of the panel
                             );
