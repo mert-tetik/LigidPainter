@@ -15,15 +15,9 @@
 
 #include "Mesh.hpp"
 #include "Shader.hpp"
+#include "Texture.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "../../thirdparty/stb_image.h"
-
-#define STBI_MSC_SECURE_CRT
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "../../thirdparty/stb_image_write.h"
 
 #include <string>
 #include <fstream>
@@ -144,8 +138,8 @@ public:
 			if(i == 5)
 				cubePos = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z;
 
-
-	        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0); //Load the face
+            Texture txtr;
+            unsigned char *data = txtr.getTextureDataViaPath(faces[i].c_str(),width,height,nrChannels);
 
 	        if (data) //Loaded
 	        {
