@@ -132,17 +132,21 @@ private:
 
         //Render Vertically
         if(vertical == true){
+            float elementPos = 0.f;
             for (int i = 0; i < buttons.size(); i++)
             {
-                buttons[i].scale.x = scale.x;
+                buttons[i].scale.y = scale.y;
 
                 //Move the button on top of the panel
                 buttons[i].pos = pos;
                 buttons[i].pos.y -= scale.y;
-                buttons[i].pos.y += buttons[i].scale.y;
-
+                buttons[i].pos.y += buttons[0].scale.y;
+                    elementPos = buttons[i].pos.y; 
+                
+                elementPos += i * (buttons[i].scale.y + buttons[max(i-1,0)].scale.y);
+                
                 buttons[i].pos.z += 0.01f;
-                buttons[i].pos.y +=  i * (buttons[i].scale.y + buttons[max(i-1,0)].scale.y);
+                buttons[i].pos.y = elementPos;
 
                 buttons[i].render(videoScale,mouse,timer);
             }
@@ -158,7 +162,7 @@ private:
                 buttons[i].pos = pos;
                 buttons[i].pos.x -= scale.x;
                 buttons[i].pos.x += buttons[0].scale.x;
-                    elementPos = buttons[i].pos.x; 
+                elementPos = buttons[i].pos.x; 
                 
                 elementPos += i * (buttons[i].scale.x + buttons[max(i-1,0)].scale.x);
                 

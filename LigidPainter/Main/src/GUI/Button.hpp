@@ -49,20 +49,46 @@ Official Web Page : https://ligidtools.com/ligidpainter
 class Button
 {
 private:
-    /* data */
+    void render(glm::vec3 resultPos,glm::vec2 resultScale){
+
+        shader.setVec3("pos"    ,     resultPos );
+        shader.setVec2("scale"  ,     resultScale);
+        shader.setVec4("color"  ,     color     );
+        shader.setVec4("color2"  ,     color2     );
+        
+        if(animationStyle == 1)
+            shader.setFloat("colorMixVal"  ,     (clickedMixVal + hoverMixVal)/2.f   );
+        else
+            shader.setFloat("colorMixVal"  ,     (clickedMixVal)   );
+
+        shader.setFloat("width" ,     scale.x   );
+        shader.setFloat("height",     scale.y   );
+
+        shader.setFloat("radius",     radius    );
+        shader.setInt("outline" ,     outline      );
+        if(animationStyle == 0)
+            shader.setFloat("thickness" ,    100.f + hoverMixVal*100.f );
+        else
+            shader.setFloat("thickness" ,    100.f);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
 public:
     //For now buttons can only be usable with panels
 
     Shader shader;
 
     //---Button properties
-    std::string text;
-    glm::vec4 color;
-    glm::vec4 color2; 
-    bool outline; 
-    float radius; 
-    int animationStyle;
-    
+    std::string text; //Text of the button
+
+    glm::vec4 color; //Original color
+    glm::vec4 color2; //Hover or clicked transition color
+    bool outline; //Whether will only has outlines or be solid
+    float radius; //Radius of the corners
+    int animationStyle; //determines what type of mouse hover or click animation will be used
+    //0 = Change thickness for mousehover
+    //1 = Change color for mousehover
+
     //Those values are adepting to the panel if button is attached to one
     //Values are percentage of the monitor size
     glm::vec2 scale;  //Example : w : 20, h : 30 means cover %20 of the window in x axis & cover 30% of the window in y axis
@@ -76,7 +102,6 @@ public:
     Button(){}
     Button(Shader shader, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle){
         //animationStyle determines what type of mouse hover or click animation will be used
-        
         //0 = Change thickness for mousehover
         //1 = Change color for mousehover
 
@@ -104,28 +129,14 @@ public:
         hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
 
         if(hover && mouse.LClick){
+            //If clicked to the button
             clickedMixVal = 1.f;
         }
 
         timer.transition(hover,hoverMixVal,0.2f); 
         timer.transition(false,clickedMixVal,0.5f); 
         
-
-        shader.setVec3("pos"    ,     resultPos );
-        shader.setVec2("scale"  ,     resultScale);
-        shader.setVec4("color"  ,     color     );
-        shader.setVec4("color2"  ,     color2     );
-        shader.setFloat("colorMixVal"  ,     clickedMixVal     );
-
-        shader.setFloat("width" ,     scale.x   );
-        shader.setFloat("height",     scale.y   );
-
-        shader.setFloat("radius",     radius    );
-        shader.setInt("outline" ,     outline      );
-        
-        shader.setFloat("thickness" ,    100.f + hoverMixVal*100.f );
-
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        render(resultPos,resultScale);
     }
 };
 #endif
