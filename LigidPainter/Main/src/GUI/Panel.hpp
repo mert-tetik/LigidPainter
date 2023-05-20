@@ -61,6 +61,12 @@ public:
 
     std::vector<Button> buttons;
 
+    bool hover = false; //Panel's itself
+    
+    bool Rhover = false; //Panel's right side
+    bool Lhover = false; //Panel's left side
+    bool Bhover = false; //Panel's bottom side
+
     Panel(){}
     Panel(Shader shader,std::vector<Button> buttons,glm::vec2 scale,glm::vec3 pos,glm::vec4 color){
         this->color = color;
@@ -81,6 +87,21 @@ public:
 
         // scale value % of the video scale
         glm::vec2 resultScale = util.getPercent(videoScale,scale);
+
+
+
+        const float grabbingRange = 20; 
+
+        //Check if mouse on top of the panel
+        hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
+        //Check if mouse on top of the left side of the panel
+        Lhover = mouse.isMouseHover(glm::vec2(grabbingRange,resultScale.y),glm::vec2(resultPos.x-resultScale.x,resultPos.y));
+        //Check if mouse on top of the right side of the panel
+        Rhover = mouse.isMouseHover(glm::vec2(grabbingRange,resultScale.y),glm::vec2(resultPos.x+resultScale.x,resultPos.y));
+        //Check if mouse on top of the bottom side of the panel
+        Bhover = mouse.isMouseHover(glm::vec2(resultScale.x,grabbingRange),glm::vec2(resultPos.x,resultPos.y + resultScale.y));
+
+
 
         shader.setVec3("pos",       resultPos);
         shader.setVec2("scale",     resultScale);
