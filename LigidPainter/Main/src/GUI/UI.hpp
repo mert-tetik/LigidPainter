@@ -78,7 +78,9 @@ class UI{
 public:
     //UI Elements
     //(Mostly panels)
-    Panel navigationPanel;  
+    Panel navigationPanel;
+    Panel windowPanel;
+    Panel paintingPanel; //Main panel (kinda)
 
     Shaders shaders; 
 
@@ -102,7 +104,7 @@ public:
                                 shaders.buttonShader,
                                 {   
                                     //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture    text scale
-                                    Button(shaders.buttonShader,  "File"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0            ,1         ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ),
+                                    Button(shaders.buttonShader,  "File"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ),
                                     Button(shaders.buttonShader,  "Edit"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ),
                                     Button(shaders.buttonShader,  "Panels"      ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ),
                                     Button(shaders.buttonShader,  "Help"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ) //Buttons of the panel here
@@ -111,6 +113,36 @@ public:
                                 glm::vec3(50,1,0.1f),  //Initial position value
                                 colorPalette.mainColor, //Color of the panel
                                 false
+                            );
+
+        windowPanel  = Panel(
+                                shaders.buttonShader,
+                                {   
+                                    //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture                  text scale
+                                    Button(shaders.buttonShader,  "3D Painting"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                    Button(shaders.buttonShader,  "2D Painting"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                    Button(shaders.buttonShader,  "Matarial editor"      ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                    Button(shaders.buttonShader,  "Displayer"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ) //Buttons of the panel here
+                                },
+                                glm::vec2(1,48), //Initial scale value
+                                glm::vec3(99,50,0.1f),  //Initial position value
+                                colorPalette.mainColor, //Color of the panel
+                                true
+                            );
+
+        paintingPanel=Panel(
+                                shaders.buttonShader,
+                                {   
+                                    //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture                  text scale
+                                    Button(shaders.buttonShader,  "3D Painting"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                    Button(shaders.buttonShader,  "2D Painting"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                    Button(shaders.buttonShader,  "Matarial editor"      ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                    Button(shaders.buttonShader,  "Displayer"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ) //Buttons of the panel here
+                                },
+                                glm::vec2(1,48), //Initial scale value
+                                glm::vec3(99,50,0.1f),  //Initial position value
+                                colorPalette.mainColor, //Color of the panel
+                                true
                             );
     }    
 
@@ -129,6 +161,7 @@ public:
         //--Render all the UI elements there
         
         navigationPanel.render(videoScale,mouse,timer,textRenderer);
+        windowPanel.render(videoScale,mouse,timer,textRenderer);
     }
 };
 
