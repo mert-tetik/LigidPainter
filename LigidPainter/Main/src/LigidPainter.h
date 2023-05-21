@@ -28,7 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 class LigidPainter{
 public:
     int run(){
-        Renderer renderer(glm::vec2(1920/2,1080/2));
+        Renderer renderer(glm::vec2(1920,1080));
         
         while(!glfwWindowShouldClose(renderer.context.window))
         {   

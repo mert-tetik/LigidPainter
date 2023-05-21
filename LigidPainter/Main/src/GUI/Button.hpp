@@ -84,7 +84,7 @@ private:
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
-    bool renderTheTexture(glm::vec3 resultPos,glm::vec2 resultScale,float resultScaleText,glm::vec2 videoScale,TextRenderer textRenderer){
+    bool renderTheTexture(glm::vec3 resultPos,glm::vec2 resultScale,float resultScaleText,glm::vec2 videoScale,TextRenderer textRenderer,float &textureRadius){
         //returns the renderthetext
         //If returns yes render the text
         //If not don't render the text
@@ -94,7 +94,7 @@ private:
         shader.setVec4("color"  ,     glm::vec4(0)     );
         shader.setVec4("color2"  ,     glm::vec4(0)     );
         //Update the parameters if original renderer's parameters are changed
-        glm::vec3 textPosData = textRenderer.renderText(shader,text,resultPos.x,resultPos.y,-10000.1,resultPos.x + resultScale.x,false,resultScaleText/videoScale.x,resultPos.x-resultScale.x);
+        glm::vec3 textPosData = textRenderer.renderText(shader,text,resultPos.x,resultPos.y,-10000.1,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x);
         //textPosData.x is where the text is started in x axis
         //textPosData.y is where the text is ended in x axis
         //textPosData.z is boolean value if text is reached to the boundaries
@@ -104,6 +104,7 @@ private:
         if(texture.ID != 0){
             //Scale of the texture
             glm::vec2 resultScaleTexture = glm::vec2(std::min(resultScale.x/1.5f,resultScale.y/1.5f));
+            textureRadius = resultScaleTexture.x;
 
             //Position of the texture
             glm::vec3 resultPosTexture = resultPos;
@@ -216,7 +217,7 @@ public:
         float resultRadius = util.getPercent(videoScale.x,radius);
         
         // Real size of the text
-        float resultScaleText = util.getPercent(videoScale.x,40);
+        float resultScaleText = videoScale.x/1920/2;
 
         //Check if mouse on top of the button
         hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
@@ -241,14 +242,15 @@ public:
         //Render the button
         render(resultPos,resultScale,resultRadius);
 
-        bool renderTheText = renderTheTexture(resultPos,resultScale,resultScaleText,videoScale,textRenderer);
+        float textureRadius = 0.f;
+        bool renderTheText = renderTheTexture(resultPos,resultScale,resultScaleText,videoScale,textRenderer,textureRadius);
 
         //Render the text
         if(renderTheText){
             shader.setVec4("color"  ,     textColor     );
             shader.setVec4("color2"  ,     textColor2     );
             //Update the parameters of the renderText function in the renderTheTexture function if this function's parameters are changed
-            textRenderer.renderText(shader,text,resultPos.x,resultPos.y,1,resultPos.x + resultScale.x,false,resultScaleText/videoScale.x,resultPos.x-resultScale.x);
+            textRenderer.renderText(shader,text,resultPos.x+textureRadius ,resultPos.y,1,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x);
         }
     }
 };
