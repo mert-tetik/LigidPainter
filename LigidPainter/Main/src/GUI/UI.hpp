@@ -58,10 +58,23 @@ Example :
 #include "ColorPalette.hpp"
 #include "TextRendering/TextRenderer.hpp"
 
+#include "GUI/Button.hpp"
+
+struct Section{ //Sections seperates the button elements in the panel
+    
+    Button header;// Header button (After pressing that button you can display other elements in that section)
+    std::vector<Button> buttons; //Button elements of that section
+    
+    Section(Button header,std::vector<Button> buttons){
+        this->header = header;
+        this->buttons = buttons;
+    }
+};
+
 
 #include "GUI/Panel.hpp"
-#include "GUI/Button.hpp"
 #include "Mouse.hpp"
+
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -72,6 +85,7 @@ Example :
 #include <map>
 #include <vector>
 #include <cstdlib>
+
 
 
 class UI{
@@ -102,13 +116,20 @@ public:
         //Init the painting panel
         navigationPanel = Panel(
                                 shaders.buttonShader,
-                                {   
-                                    //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture    text scale
-                                    Button(shaders.buttonShader,  "File"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ),
-                                    Button(shaders.buttonShader,  "Edit"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ),
-                                    Button(shaders.buttonShader,  "Panels"      ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ),
-                                    Button(shaders.buttonShader,  "Help"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ) //Buttons of the panel here
+                                
+                                {
+                                    Section(
+                                        Button(),
+                                        {   
+                                            //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture    text scale
+                                            Button(shaders.buttonShader,  "File"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ),
+                                            Button(shaders.buttonShader,  "Edit"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ),
+                                            Button(shaders.buttonShader,  "Panels"      ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ),
+                                            Button(shaders.buttonShader,  "Help"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ) //Buttons of the panel here
+                                        }
+                                    )
                                 },
+
                                 glm::vec2(50,1), //Initial scale value
                                 glm::vec3(50,1,0.1f),  //Initial position value
                                 colorPalette.mainColor, //Color of the panel
@@ -117,13 +138,20 @@ public:
 
         windowPanel  = Panel(
                                 shaders.buttonShader,
-                                {   
-                                    //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture                  text scale
-                                    Button(shaders.buttonShader,  "3D Painting"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
-                                    Button(shaders.buttonShader,  "2D Painting"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
-                                    Button(shaders.buttonShader,  "Matarial editor"      ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
-                                    Button(shaders.buttonShader,  "Displayer"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ) //Buttons of the panel here
+
+                                {
+                                    Section(
+                                        Button(),
+                                        {   
+                                            //         Shader               Text                   Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture                  text scale
+                                            Button(shaders.buttonShader,  "3D Painting"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                            Button(shaders.buttonShader,  "2D Painting"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                            Button(shaders.buttonShader,  "Matarial editor"    ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                            Button(shaders.buttonShader,  "Displayer"          ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ) //Buttons of the panel here
+                                        }
+                                    )
                                 },
+                                
                                 glm::vec2(1,48), //Initial scale value
                                 glm::vec3(99,50,0.1f),  //Initial position value
                                 colorPalette.mainColor, //Color of the panel
@@ -132,15 +160,32 @@ public:
 
         paintingPanel=Panel(
                                 shaders.buttonShader,
-                                {   
-                                    //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture                  text scale
-                                    Button(shaders.buttonShader,  "3D Painting"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
-                                    Button(shaders.buttonShader,  "2D Painting"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
-                                    Button(shaders.buttonShader,  "Matarial editor"      ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
-                                    Button(shaders.buttonShader,  "Displayer"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ) //Buttons of the panel here
+                                
+                                {
+                                    Section(
+                                        Button(shaders.buttonShader,  "Brush"        ,glm::vec2(2,2), colorPalette.themeColor, colorPalette.secondColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                        {   
+                                            //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture                  text scale
+                                            Button(shaders.buttonShader,  "Radius"      ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                            Button(shaders.buttonShader,  "Strength"    ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                            Button(shaders.buttonShader,  "Mask"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                            Button(shaders.buttonShader,  "Color"       ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ), //Buttons of the panel here
+                                            Button(shaders.buttonShader,  "Softness"    ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ) //Buttons of the panel here
+                                        }
+                                    ),
+                                    Section(
+                                        Button(shaders.buttonShader,  "Blur"        ,glm::vec2(2,2), colorPalette.themeColor, colorPalette.secondColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                        {   
+                                            //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture                  text scale
+                                            Button(shaders.buttonShader,  "Radius"     ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                            Button(shaders.buttonShader,  "Strength"   ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                            Button(shaders.buttonShader,  "Mask"       ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ),
+                                        }
+                                    )
                                 },
-                                glm::vec2(1,48), //Initial scale value
-                                glm::vec3(99,50,0.1f),  //Initial position value
+                                
+                                glm::vec2(5,48), //Initial scale value
+                                glm::vec3(50,50,0.1f),  //Initial position value
                                 colorPalette.mainColor, //Color of the panel
                                 true
                             );
@@ -162,6 +207,7 @@ public:
         
         navigationPanel.render(videoScale,mouse,timer,textRenderer);
         windowPanel.render(videoScale,mouse,timer,textRenderer);
+        paintingPanel.render(videoScale,mouse,timer,textRenderer);
     }
 };
 

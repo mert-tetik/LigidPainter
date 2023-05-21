@@ -31,7 +31,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Renderer.h"
 #include "Util.hpp"
 
-#include "GUI/Panel.hpp"
+#include "GUI/UI.hpp"
 #include "GUI/Button.hpp"
 #include "Mouse.hpp"
 #include "Timer.hpp"
@@ -51,7 +51,6 @@ struct PanelSide{
     bool hover = false;
     bool pressed = false;
 };
-
 
 class Panel
 {
@@ -108,7 +107,40 @@ private:
         if(scale.x < 1)
             scale.x = 1;
     }
+    void prepDrawBtnVertically(Button &button,Button &previousButton,float& elementPos,int btnCounter){
+        button.scale.x = scale.x;
 
+        //Move the button on top of the panel
+        button.pos = pos;
+        button.pos.y -= scale.y;
+        
+        button.pos.y += button.scale.y;
+        //button.pos.y += sections[sI].buttons[0].scale.y;
+        
+        elementPos = button.pos.y; 
+
+        elementPos += btnCounter * (button.scale.y + previousButton.scale.y);
+
+        button.pos.z += 0.01f;
+        button.pos.y = elementPos;
+    }
+    void prepDrawBtnHorizontally(Button &button,Button &previousButton,float& elementPos,int btnCounter){
+        button.scale.y = scale.y;
+
+        //Move the button on top of the panel
+        button.pos = pos;
+        button.pos.x -= scale.x;
+        
+        button.pos.x += button.scale.x;
+        //button.pos.x += sections[sI].buttons[0].scale.x;
+        
+        elementPos = button.pos.x; 
+
+        elementPos += btnCounter * (button.scale.x + previousButton.scale.x);
+
+        button.pos.z += 0.01f;
+        button.pos.x = elementPos;
+    }
     void drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm::vec2 resultScale,Timer &timer,TextRenderer &textRenderer){
         //Draw the panel and it's elements
 
@@ -130,46 +162,37 @@ private:
 
         //Panel's buttons
 
-        //Render Vertically
-        if(vertical == true){
-            float elementPos = 0.f;
-            for (int i = 0; i < buttons.size(); i++)
-            {
-                buttons[i].scale.x = scale.x;
+        float elementPos = 0.f;
+        //Render sections
+        int btnCounter = 0; //Indexing buttons to position them
+        for (int sI = 0; sI < sections.size(); sI++)
+        {
+            if(sections[sI].header.text.size()){ //If there is a header
+                //Section header button
 
-                //Move the button on top of the panel
-                buttons[i].pos = pos;
-                buttons[i].pos.y -= scale.y;
-                buttons[i].pos.y += buttons[0].scale.y;
-                    elementPos = buttons[i].pos.y; 
-                
-                elementPos += i * (buttons[i].scale.y + buttons[max(i-1,0)].scale.y);
-                
-                buttons[i].pos.z += 0.01f;
-                buttons[i].pos.y = elementPos;
-
-                buttons[i].render(videoScale,mouse,timer,textRenderer);
+                //Prepare the transform data of the button    
+                if(vertical)
+                    prepDrawBtnVertically(sections[sI].header,sections[max(sI-1,0)].buttons[sections[max(sI-1,0)].buttons.size()-1],elementPos,btnCounter);
+                else
+                    prepDrawBtnHorizontally(sections[sI].header,sections[max(sI-1,0)].buttons[sections[max(sI-1,0)].buttons.size()-1],elementPos,btnCounter);
+                //Draw the button
+                sections[sI].header.render(videoScale,mouse,timer,textRenderer);
+                btnCounter++; //Indexing buttons to position them
             }
-        }
-        else{
-            //Render horizontally
-            float elementPos = 0.f;
-            for (int i = 0; i < buttons.size(); i++)
+
+            for (int i = 0; i < sections[sI].buttons.size(); i++) //
             {
-                buttons[i].scale.y = scale.y;
+                //Buttons of the current section
 
-                //Move the button on top of the panel
-                buttons[i].pos = pos;
-                buttons[i].pos.x -= scale.x;
-                buttons[i].pos.x += buttons[0].scale.x;
-                elementPos = buttons[i].pos.x; 
-                
-                elementPos += i * (buttons[i].scale.x + buttons[max(i-1,0)].scale.x);
-                
-                buttons[i].pos.z += 0.01f;
-                buttons[i].pos.x = elementPos;
+                //Prepare the transform data of the button    
+                if(vertical)
+                    prepDrawBtnVertically(sections[sI].buttons[i],sections[sI].buttons[max(i-1,0)],elementPos,btnCounter);
+                else
+                    prepDrawBtnHorizontally(sections[sI].buttons[i],sections[sI].buttons[max(i-1,0)],elementPos,btnCounter);
 
-                buttons[i].render(videoScale,mouse,timer,textRenderer);
+                //Draw the button
+                sections[sI].buttons[i].render(videoScale,mouse,timer,textRenderer);
+                btnCounter++; //Indexing buttons to position them
             }
         }
     }
@@ -182,8 +205,8 @@ public:
     glm::vec3 pos; //Same here
     
     glm::vec4 color;
-
-    std::vector<Button> buttons;
+    
+    std::vector<Section> sections;
 
     bool hover = false; //Panel's itself
     
@@ -195,13 +218,13 @@ public:
     PanelSide bottomSide;
 
     Panel(){}
-    Panel(Shader shader,std::vector<Button> buttons,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,bool vertical){
+    Panel(Shader shader,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,bool vertical){
+        this->shader = shader;
+        this->vertical = vertical;
+        this->scale = scale;
         this->color = color;
         this->pos = pos;
-        this->scale = scale;
-        this->shader = shader;
-        this->buttons = buttons;
-        this->vertical = vertical;
+        this->sections = sections;
     }
 
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){

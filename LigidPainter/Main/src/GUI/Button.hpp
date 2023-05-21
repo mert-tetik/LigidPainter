@@ -33,7 +33,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Timer.hpp"
 #include "Texture.hpp"
 
-#include "GUI/Panel.hpp"
 #include "GUI/Button.hpp"
 #include "Mouse.hpp"
 
