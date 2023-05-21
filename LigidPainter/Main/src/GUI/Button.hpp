@@ -141,6 +141,9 @@ public:
 
         // scale value % of the video scale
         glm::vec2 resultScale = util.getPercent(videoScale,scale);
+        
+        // Real size of the text
+        float resultScaleText = util.getPercent(videoScale.x,20);
 
         //Check if mouse on top of the button
         hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
@@ -168,7 +171,7 @@ public:
         //Render the text
         shader.setVec4("color"  ,     textColor     );
         shader.setVec4("color2"  ,     textColor2     );
-        textRenderer.renderText(shader,"ASDFAS ASDFASFASDF ASDF ASDDAF SAFSDAF SDAF",resultPos.x - resultScale.x,resultPos.y,1,resultPos.x + resultScale.x,false,0.5f);
+        textRenderer.renderText(shader,"ASDFAS ASDFASFASDF ASDF ASDDAF SAFSDAF SDAF",resultPos.x - resultScale.x,resultPos.y,1,resultPos.x + resultScale.x,false,resultScaleText/videoScale.x);
     }
 };
 #endif

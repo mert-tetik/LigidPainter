@@ -64,7 +64,7 @@ void main(){
         //Render the text
         vec2 uv = texCoords;
         uv.y = 1. - uv.y;
-        fragColor.a = texture(txtr, uv).r;
+        fragColor.a = texture(txtr, vec2(uv.x,1. - uv.y)).r;
     }
     else if(radius != 0)
     //Create round corners
