@@ -11,6 +11,21 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
+
+⠀⠀⠀⠀⠀⠀⠀⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⠿⠿⠿⠿⠦⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⡿⢿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣿⣿⠟⠁⠀⠘⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠟⠁⠀⠀⠀⠀⠸⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿⠿⠛⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 */
 
 #ifndef LGDMOUSE_HPP
@@ -46,9 +61,12 @@ class Mouse
 private:
     /* data */
 public:
+	//Cursor pos
     glm::vec2 cursorPos;
     glm::vec2 mouseOffset;
 
+	
+	//Cursor actions
 	int mods = 0;
 
 	bool LClick = false; //Left click - button 0
@@ -60,6 +78,15 @@ public:
 	bool MPressed = false;
 
 
+	//Cursors
+	GLFWcursor* defaultCursor;
+	GLFWcursor* pointerCursor;
+	GLFWcursor* hSlideCursor;
+	GLFWcursor* vSlideCursor;
+	
+	GLFWcursor* activeCursor; //updateCursor sets that cursor as the cursor
+	
+
     GLFWwindow* window;
 
     Mouse(){}
@@ -67,6 +94,39 @@ public:
     Mouse(GLFWwindow* window){
         this->window = window;
     }
+
+	void loadCursors(){
+		//Help importing texture
+		Texture texture;
+
+		GLFWimage images[1];
+		int channels = 0;
+		
+		images[0].pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/PointerIcon.png", images[0].width, images[0].height, channels, 4,false); //rgba channels 
+		pointerCursor = glfwCreateCursor(images,15,0);
+		activeCursor = pointerCursor;
+		stbi_image_free(images[0].pixels);
+	
+		images[0].pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/DefaultIcon.png", images[0].width, images[0].height, channels, 4,false);
+		defaultCursor = glfwCreateCursor(images,7,0);
+		stbi_image_free(images[0].pixels);
+	
+		images[0].pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/hSlideCursor.png", images[0].width, images[0].height, channels, 4,false); //rgba channels 
+		hSlideCursor = glfwCreateCursor(images,15,0);
+		stbi_image_free(images[0].pixels);
+		
+		images[0].pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/vSlideCursor.png", images[0].width, images[0].height, channels, 4,false); //rgba channels 
+		vSlideCursor = glfwCreateCursor(images,15,0);
+		stbi_image_free(images[0].pixels);
+	}
+
+	void setCursor(GLFWcursor* cursor){
+		activeCursor = cursor;
+	}
+	void updateCursor(){//Call that every frame after rendering the UI elements
+		glfwSetCursor(window,activeCursor);
+		activeCursor = defaultCursor;
+	}
 
     bool isMouseHover(glm::vec2 scale, glm::vec2 position){ //In screen coordinates
         std::vector<float> buttonCoor{

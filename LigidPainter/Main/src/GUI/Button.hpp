@@ -224,6 +224,10 @@ public:
         //Check if mouse on top of the button
         hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
 
+        if(hover)
+            //Set the cursor as pointer
+            mouse.setCursor(mouse.pointerCursor);// mouse.activeCursor = mouse.pointerCursor
+
         if(hover && mouse.LClick){
             //Mouse left button pressed on top of the button
             //(if release on top of the button, the button will be clicked)

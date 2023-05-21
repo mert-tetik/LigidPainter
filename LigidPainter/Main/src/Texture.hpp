@@ -96,13 +96,36 @@ public:
 			}
 			std::cout << "Failed to load texture! " << path << " Reason : " << reason<< std::endl;
 		}
+
+        stbi_image_free(data);
     }
 
     //Returns the texture data from the given path
     //Is not related with the class object
-    unsigned char* getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels){
-        stbi_set_flip_vertically_on_load(true);
-        return stbi_load(aPath, &aWidth, &aHeight, &aChannels, desiredChannels);
+    unsigned char* getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip){
+        stbi_set_flip_vertically_on_load(flip);
+        unsigned char* data = stbi_load(aPath, &aWidth, &aHeight, &aChannels, desiredChannels);
+
+        if(data != NULL){
+            std::cout << "Loaded " << aPath << std::endl;
+            return data;
+        }
+        else{
+            const char* reason = "[unknown reason]";
+			if (stbi_failure_reason())
+			{
+				reason = stbi_failure_reason();
+			}
+			std::cout << "Failed to load texture! " << aPath << " Reason : " << reason<< std::endl;
+        
+            stbi_image_free(data);
+            
+            //Allocate 4 unsigned char memory blocks
+            unsigned char* aData = (unsigned char*) malloc(4 * sizeof(unsigned char));
+
+            return aData;
+        }
+
     }
 };
 

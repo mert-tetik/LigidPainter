@@ -86,6 +86,12 @@ private:
             bottomSide.pressed = true;
         if(!mouse.LPressed) //Corner released
             bottomSide.pressed = false;
+
+        //Change the cursor
+        if(leftSide.hover || leftSide.pressed || rightSide.hover || rightSide.pressed)
+            mouse.setCursor(mouse.hSlideCursor);
+        if(bottomSide.hover || bottomSide.pressed)
+            mouse.setCursor(mouse.vSlideCursor);
     }
 
     void resizeThePanel(Mouse &mouse, glm::vec2 videoScale){

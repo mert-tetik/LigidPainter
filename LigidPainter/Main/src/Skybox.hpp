@@ -152,7 +152,7 @@ public:
 				cubePos = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z;
 
             Texture txtr;
-            unsigned char *data = txtr.getTextureDataViaPath(faces[i].c_str(),width,height,nrChannels,3);
+            unsigned char *data = txtr.getTextureDataViaPath(faces[i].c_str(),width,height,nrChannels,3,true);
 
 	        if (data) //Loaded
 	        {

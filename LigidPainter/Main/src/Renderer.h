@@ -212,6 +212,11 @@ public:
 
         //Init the userinterface
         userInterface.init(shaders,context,appTextures);
+
+        //Init mouse class
+        mouse = Mouse(context.window);
+        //Load the cursors of the LigidPainter
+        mouse.loadCursors();
     }
 
     void render(){
@@ -264,6 +269,11 @@ public:
         mouse.MClick = false;
         mouse.mouseOffset = glm::vec2(0);
         mouse.mods = 0;
+
+        //Cursor is changing there
+        //Sets the active cursor (mouse.activeCursor) as the cursor
+        //Than changes the active cursor as default cursor
+        mouse.updateCursor();  
 
 
         glfwSwapBuffers(context.window);
