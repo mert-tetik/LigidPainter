@@ -50,7 +50,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 class Button
 {
 private:
-    void render(glm::vec3 resultPos,glm::vec2 resultScale){
+    void render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadius){
         
         //Set the transform data (used by vertex shader)
         shader.setVec3("pos"    ,     resultPos );
@@ -73,7 +73,7 @@ private:
         shader.setFloat("height",     resultScale.y   );
 
         //Properties
-        shader.setFloat("radius",     radius    );
+        shader.setFloat("radius",     resultRadius    );
         shader.setInt("outline" ,     outline      );
 
         if(animationStyle == 0) //Increase the thicness of the button if hover
@@ -113,11 +113,11 @@ private:
                 resultPosTexture.x = textPosData.x; 
             }
             else{
-                //If there is text get the texture left side of the text
+                //If there is text get the texture left side of the button
                 resultPosTexture.x = resultPos.x - resultScale.x + resultScaleTexture.x * 2.f; 
             }
 
-            //If the texture passed the boundaries (left side) get the texture into middle and don't render the text
+            //If the button is small enough get the texture into middle and don't render the text
             if(textPosData.x - resultScaleTexture.x * 4.f < resultPos.x - resultScale.x){
                 resultPosTexture.x = resultPos.x; //Button's position
                 renderTheText = false;
@@ -163,7 +163,7 @@ public:
     glm::vec4 textColor2; //Hover or clicked transition color of the text
 
     bool outline; //Whether will only has outlines or be solid
-    float radius; //Radius of the corners
+    float radius; //% Radius of the corners 
     int animationStyle; //determines what type of mouse hover or click animation will be used
     //0 = Change thickness for mousehover
     //1 = Change color for mousehover
@@ -212,6 +212,9 @@ public:
         // scale value % of the video scale
         glm::vec2 resultScale = util.getPercent(videoScale,scale);
         
+        // scale value % of the video scale
+        float resultRadius = util.getPercent(videoScale.x,radius);
+        
         // Real size of the text
         float resultScaleText = util.getPercent(videoScale.x,40);
 
@@ -236,7 +239,7 @@ public:
         timer.transition(false,clickedMixVal,0.5f); 
         
         //Render the button
-        render(resultPos,resultScale);
+        render(resultPos,resultScale,resultRadius);
 
         bool renderTheText = renderTheTexture(resultPos,resultScale,resultScaleText,videoScale,textRenderer);
 
