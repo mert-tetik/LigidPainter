@@ -50,25 +50,34 @@ class Button
 {
 private:
     void render(glm::vec3 resultPos,glm::vec2 resultScale){
-
+        
+        //Set the transform data (used by vertex shader)
         shader.setVec3("pos"    ,     resultPos );
         shader.setVec2("scale"  ,     resultScale);
-        shader.setVec4("color"  ,     color     );
-        shader.setVec4("color2"  ,     color2     );
         
-        if(animationStyle == 1)
-            shader.setFloat("colorMixVal"  ,     (clickedMixVal + hoverMixVal)/2.f   );
+        if(clickState1)//If button is pressed
+            shader.setVec4("color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
         else
+            shader.setVec4("color"  ,     color     ); //Default button color
+        
+        shader.setVec4("color2"  ,     color2     ); //Second color that is used by hover or click animations
+        
+        if(animationStyle == 1) //If hover or clicked change the color of the button
+            shader.setFloat("colorMixVal"  ,     (clickedMixVal + hoverMixVal)/2.f   );
+        else //If clicked change the color of the button
             shader.setFloat("colorMixVal"  ,     (clickedMixVal)   );
 
+        //Set the resolution of the button (used by fragment shader)
         shader.setFloat("width" ,     scale.x   );
         shader.setFloat("height",     scale.y   );
+
+        //Properties
         shader.setFloat("radius",     radius    );
         shader.setInt("outline" ,     outline      );
 
-        if(animationStyle == 0)
+        if(animationStyle == 0) //Increase the thicness of the button if hover
             shader.setFloat("thickness" ,    100.f + hoverMixVal*100.f );
-        else
+        else  //Set the thickness value of the button
             shader.setFloat("thickness" ,    100.f);
         
         glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -77,6 +86,9 @@ public:
     //For now buttons can only be usable with panels
 
     Shader shader;
+
+    bool clickState1 = false;
+
 
     //---Button properties
     std::string text; //Text of the button
@@ -134,8 +146,17 @@ public:
         hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
 
         if(hover && mouse.LClick){
+            //Mouse left button pressed on top of the button
+            //(if release on top of the button, the button will be clicked)
+            clickState1 = true;
+        }
+        if(!mouse.LPressed){
             //If clicked to the button
-            clickedMixVal = 1.f;
+            if(clickState1 && hover){
+                //Clicked
+                clickedMixVal = 1.f;
+            }
+            clickState1 = false;
         }
 
         timer.transition(hover,hoverMixVal,0.2f); 
