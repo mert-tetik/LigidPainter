@@ -98,16 +98,16 @@ public:
         paintingPanel = Panel(
                                 shaders.buttonShader,
                                 {   
-                                    //         Shader              Scale                Color                  Second Color        outline    radius    animation style
-                                    Button(shaders.buttonShader,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  false       ,0            ,1            ,colorPalette.oppositeColor, colorPalette.mainColor),
-                                    Button(shaders.buttonShader,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor),
-                                    Button(shaders.buttonShader,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor),
-                                    Button(shaders.buttonShader,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor) //Buttons of the panel here
+                                    //         Shader               Text           Scale                Color                  Second Color        outline     radius    animation style             text color              second text color
+                                    Button(shaders.buttonShader,  "File"        ,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  false       ,0            ,1            ,colorPalette.oppositeColor, colorPalette.mainColor),
+                                    Button(shaders.buttonShader,  "Edit "       ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor),
+                                    Button(shaders.buttonShader,  "Panels"      ,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor),
+                                    Button(shaders.buttonShader,  "Help "       ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor) //Buttons of the panel here
                                 },
-                                glm::vec2(25,3), //Initial scale value
+                                glm::vec2(3,25), //Initial scale value
                                 glm::vec3(50,50,0.1f),  //Initial position value
                                 colorPalette.mainColor, //Color of the panel
-                                false
+                                true
                             );
     }    
 

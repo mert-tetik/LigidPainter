@@ -115,12 +115,13 @@ public:
     float clickedMixVal = 0.f;
 
     Button(){}
-    Button(Shader shader, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2){
+    Button(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2){
         //animationStyle determines what type of mouse hover or click animation will be used
         //0 = Change thickness for mousehover
         //1 = Change color for mousehover
 
         this->shader = shader;
+        this->text = text;
         this->color = color;
         this->color2 = color2;
         this->scale = scale;
@@ -143,7 +144,7 @@ public:
         glm::vec2 resultScale = util.getPercent(videoScale,scale);
         
         // Real size of the text
-        float resultScaleText = util.getPercent(videoScale.x,20);
+        float resultScaleText = util.getPercent(videoScale.x,40);
 
         //Check if mouse on top of the button
         hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
@@ -171,7 +172,7 @@ public:
         //Render the text
         shader.setVec4("color"  ,     textColor     );
         shader.setVec4("color2"  ,     textColor2     );
-        textRenderer.renderText(shader,"ASDFAS ASDFASFASDF ASDF ASDDAF SAFSDAF SDAF",resultPos.x - resultScale.x,resultPos.y,1,resultPos.x + resultScale.x,false,resultScaleText/videoScale.x);
+        textRenderer.renderText(shader,text,resultPos.x,resultPos.y,1,resultPos.x + resultScale.x,false,resultScaleText/videoScale.x,resultPos.x-resultScale.x);
     }
 };
 #endif

@@ -135,7 +135,7 @@ private:
             float elementPos = 0.f;
             for (int i = 0; i < buttons.size(); i++)
             {
-                buttons[i].scale.y = scale.y;
+                buttons[i].scale.x = scale.x;
 
                 //Move the button on top of the panel
                 buttons[i].pos = pos;

@@ -37,7 +37,7 @@ public:
         this->font = font;
     }
 
-    void renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale){
+    void renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft){
 	    float lastXText = x;
         
         glActiveTexture(GL_TEXTURE0);
@@ -47,7 +47,34 @@ public:
         shader.setInt("txtr",0);
 	    shader.setInt("renderText",1);
 
-        //Render all the chars in the text parameter
+	    float overallX = 0.f;
+		for (std::string::const_iterator aC = text.begin(); aC != text.end(); aC++){
+	    	character ch = font.characters[*aC];//Get the current char
+            
+			//To the right
+	    	overallX += (ch.Advance >> 6) * scale / 1.2f;
+		}
+		
+		x-=overallX/2.f;
+
+	    float overallX2 = 0.f;
+		bool hitTheBoundaires = false;
+		for (std::string::const_iterator aC = text.begin(); aC != text.end(); aC++){
+	    	character ch = font.characters[*aC];//Get the current char
+            
+			if(maxX < x + overallX2) {
+				hitTheBoundaires = true;
+				break;
+			}
+			
+			//To the right
+	    	overallX2 += (ch.Advance >> 6) * scale / 1.2f;
+		}
+		if(hitTheBoundaires)
+			x = mostLeft;
+
+		
+		//Render all the chars in the text parameter
 	    int counter = 0;
 	    for (c = text.begin(); c != text.end(); c++)
 	    {
@@ -70,7 +97,7 @@ public:
 
                 //Calculate the position of the char
 	    		float xpos = x + ch.Bearing.x * scale;
-	    		float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+	    		float ypos = y - (ch.Bearing.y*2.f + ch.Size.y)/2.f * scale;
 
                 //Calculate the size of the char
 	    		float w = ch.Size.x * scale * 0.8f;
