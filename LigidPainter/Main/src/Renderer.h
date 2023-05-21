@@ -30,12 +30,14 @@ Renderer.h : Renders the whole screen
 #include "../../thirdparty/include/glm/gtc/type_ptr.hpp"
 #include "../../thirdparty/include/glm/gtx/string_cast.hpp"
 
-#include "Model.hpp"
+#include "3D/Model.hpp"
 #include "Shader.hpp"
 #include "Skybox.hpp"
 #include "Box.hpp"
 #include "Mouse.hpp"
 #include "Timer.hpp"
+#include "TextRendering/Font.hpp"
+#include "TextRendering/TextRenderer.hpp"
 
 struct Camera{
     float yaw = -90.f;
@@ -68,6 +70,10 @@ struct Shaders{
     Shader skyboxShader;
     Shader buttonShader;
 };
+
+struct Fonts{ //Fonts those will be used in the app
+    Font Arial;
+}
 
 #include "GUI/UI.hpp"
 
@@ -142,6 +148,15 @@ public:
     //Commonly used to support the transition effects (to be make sure the transition is done in certain time & not effect by rendering speed)
     Timer timer;    
 
+    //Structure that holds the font classes that will be used by the text renderer (TextRenderer.hpp)
+    Fonts fonts;
+
+    //That class is responisble of rendering texts
+    //Constructor takes a font class
+    //You can change the font in the runtime
+    TextRenderer textRenderer; 
+
+
     Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
         //Hold the videoscale value inside of the scene structure
         scene.videoScale = videoScale;
@@ -180,6 +195,12 @@ public:
         
         //Init the userinterface
         userInterface.init(shaders,context);
+
+        //Load the fonts
+        fonts.Arial.loadFont("./LigidPainter/Resources/Fonts/Arial.ttf");
+
+        //Init the text renderer
+        textRenderer = TextRenderer(fonts.Arial);
     }
 
     void render(){
@@ -220,7 +241,7 @@ public:
        
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,context.windowScale.x,context.windowScale.y,0.f);
-        userInterface.render(scene.videoScale,mouse,timer);//Render the UI
+        userInterface.render(scene.videoScale,mouse,timer,textRenderer);//Render the UI
 
         box.unbindBuffers(); //Finish rendering the UI
 

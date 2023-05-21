@@ -27,7 +27,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
-#include "Mesh.hpp"
 #include "Shader.hpp"
 #include "Texture.hpp"
 

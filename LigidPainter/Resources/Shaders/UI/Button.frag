@@ -21,6 +21,9 @@ uniform float height;
 
 uniform vec2 videoScale;
 
+uniform int renderText;
+uniform sampler2D txtr;
+
 float udRoundBox( vec2 p, vec2 b, float r )
 {
     return length(max(abs(p)-b+r,0.0))-r;
@@ -57,7 +60,13 @@ float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
 void main(){
     fragColor = mix(color,color2,colorMixVal);
 
-    if(radius != 0)
+    if(renderText == 1){
+        //Render the text
+        vec2 uv = texCoords;
+        uv.y = 1. - uv.y;
+        fragColor.a = texture(txtr, uv).r;
+    }
+    else if(radius != 0)
     //Create round corners
     //Returns only the outline if outline uniform is set to 1
         fragColor.a = roundUp(texCoords); 

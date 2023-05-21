@@ -21,6 +21,18 @@ public:
     glm::vec3 getPercent(glm::vec3 value, glm::vec3 percent){
         return glm::vec3(value.x / 100.f * percent.x,value.y / 100.f * percent.y,value.z / 100.f * percent.z);
     }
+
+    string getLastWordBySeparatingWithChar(string s, char del)
+    {
+    	std::vector<std::string> words;
+    	stringstream ss(s);
+    	string word;
+    	while (!ss.eof()) {
+    		getline(ss, word, del);
+    		words.push_back(word);
+    	}
+    	return words[words.size() - 1];
+    }
 };
 
 #endif

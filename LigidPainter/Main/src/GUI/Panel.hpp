@@ -109,7 +109,7 @@ private:
             scale.x = 1;
     }
 
-    void drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm::vec2 resultScale,Timer &timer){
+    void drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm::vec2 resultScale,Timer &timer,TextRenderer &textRenderer){
         //Draw the panel and it's elements
 
         //Draw panel
@@ -148,7 +148,7 @@ private:
                 buttons[i].pos.z += 0.01f;
                 buttons[i].pos.y = elementPos;
 
-                buttons[i].render(videoScale,mouse,timer);
+                buttons[i].render(videoScale,mouse,timer,textRenderer);
             }
         }
         else{
@@ -169,7 +169,7 @@ private:
                 buttons[i].pos.z += 0.01f;
                 buttons[i].pos.x = elementPos;
 
-                buttons[i].render(videoScale,mouse,timer);
+                buttons[i].render(videoScale,mouse,timer,textRenderer);
             }
         }
     }
@@ -204,7 +204,7 @@ public:
         this->vertical = vertical;
     }
 
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer){
+    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){
         //Panel's itself
         Util util;
 
@@ -221,7 +221,7 @@ public:
 
         resizeThePanel(mouse,videoScale);
     
-        drawPanel(videoScale,mouse,resultPos,resultScale,timer);
+        drawPanel(videoScale,mouse,resultPos,resultScale,timer,textRenderer);
     }
 };
 #endif

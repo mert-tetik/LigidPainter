@@ -83,6 +83,9 @@ public:
 
     glm::vec4 color; //Original color
     glm::vec4 color2; //Hover or clicked transition color
+    glm::vec4 textColor; //Original color of the text
+    glm::vec4 textColor2; //Hover or clicked transition color of the text
+
     bool outline; //Whether will only has outlines or be solid
     float radius; //Radius of the corners
     int animationStyle; //determines what type of mouse hover or click animation will be used
@@ -100,7 +103,7 @@ public:
     float clickedMixVal = 0.f;
 
     Button(){}
-    Button(Shader shader, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle){
+    Button(Shader shader, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2){
         //animationStyle determines what type of mouse hover or click animation will be used
         //0 = Change thickness for mousehover
         //1 = Change color for mousehover
@@ -112,9 +115,11 @@ public:
         this->outline = outline;
         this->radius = radius;
         this->animationStyle = animationStyle;
+        this->textColor = textColor;
+        this->textColor2 = textColor2;
     }
 
-    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer){
+    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer){
         Util util;
 
         // pos value % of the video scale
@@ -136,7 +141,13 @@ public:
         timer.transition(hover,hoverMixVal,0.2f); 
         timer.transition(false,clickedMixVal,0.5f); 
         
+        //Render the button
         render(resultPos,resultScale);
+
+        //Render the text
+        shader.setVec4("color"  ,     textColor     );
+        shader.setVec4("color2"  ,     textColor2     );
+        textRenderer.renderText(shader,"ASDFAS ASDFASFASDF ASDF ASDDAF SAFSDAF SDAF",resultPos.x - resultScale.x,resultPos.y,1,resultPos.x + resultScale.x,false,0.5f);
     }
 };
 #endif

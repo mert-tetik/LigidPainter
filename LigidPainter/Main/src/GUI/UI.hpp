@@ -56,6 +56,7 @@ Example :
 #include "Util.hpp"
 #include "Timer.hpp"
 #include "ColorPalette.hpp"
+#include "TextRendering/TextRenderer.hpp"
 
 
 #include "GUI/Panel.hpp"
@@ -98,10 +99,10 @@ public:
                                 shaders.buttonShader,
                                 {   
                                     //         Shader              Scale                Color                  Second Color        outline    radius    animation style
-                                    Button(shaders.buttonShader,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  false       ,0            ,1    ),
-                                    Button(shaders.buttonShader,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0    ),
-                                    Button(shaders.buttonShader,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0    ),
-                                    Button(shaders.buttonShader,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0    ) //Buttons of the panel here
+                                    Button(shaders.buttonShader,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  false       ,0            ,1            ,colorPalette.oppositeColor, colorPalette.mainColor),
+                                    Button(shaders.buttonShader,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor),
+                                    Button(shaders.buttonShader,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor),
+                                    Button(shaders.buttonShader,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor) //Buttons of the panel here
                                 },
                                 glm::vec2(25,3), //Initial scale value
                                 glm::vec3(50,50,0.1f),  //Initial position value
@@ -110,7 +111,7 @@ public:
                             );
     }    
 
-    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer){
+    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer){
         glDepthFunc(GL_LEQUAL);
 
         //Use the related shader
@@ -124,7 +125,7 @@ public:
         
         //--Render all the UI elements there
         
-        paintingPanel.render(videoScale,mouse,timer);
+        paintingPanel.render(videoScale,mouse,timer,textRenderer);
     }
 };
 

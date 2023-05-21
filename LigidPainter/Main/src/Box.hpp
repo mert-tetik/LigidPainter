@@ -29,7 +29,6 @@ Box.hpp : Is used to render a single 2D square.
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
-#include "Mesh.hpp"
 #include "Shader.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
