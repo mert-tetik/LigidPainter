@@ -111,7 +111,7 @@ public:
 
                 //Calculate the position of the char
 	    		float xpos = x + ch.Bearing.x * scale;
-	    		float ypos = y - (-ch.Bearing.y + ch.Size.y);
+	    		float ypos = y + (ch.Size.y - ch.Bearing.y ) * scale;
 
                 //Calculate the size of the char
 	    		float w = ch.Size.x * scale * 0.8f;
@@ -119,7 +119,7 @@ public:
 
                 //Set the transform values
 	    		shader.setVec2("scale",glm::vec2(w/1.7,h/1.7));
-	    		shader.setVec3("pos",glm::vec3(xpos + w/1.7,ypos + h/1.7,z));
+	    		shader.setVec3("pos",glm::vec3(xpos + w/1.7,ypos,z));
 
                 //Draw the char
 	    		glBindTexture(GL_TEXTURE_2D,ch.TextureID);

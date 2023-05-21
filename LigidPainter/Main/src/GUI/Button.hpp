@@ -163,6 +163,8 @@ public:
     glm::vec4 textColor; //Original color of the text
     glm::vec4 textColor2; //Hover or clicked transition color of the text
 
+    float textScale;
+
     bool outline; //Whether will only has outlines or be solid
     float radius; //% Radius of the corners 
     int animationStyle; //determines what type of mouse hover or click animation will be used
@@ -184,7 +186,7 @@ public:
     float clickedMixVal = 0.f;
 
     Button(){}
-    Button(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,Texture texture){
+    Button(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,float textScale){
         //animationStyle determines what type of mouse hover or click animation will be used
         //0 = Change thickness for mousehover
         //1 = Change color for mousehover
@@ -200,6 +202,7 @@ public:
         this->textColor = textColor;
         this->textColor2 = textColor2;
         this->texture = texture;
+        this->textScale = textScale;
     }
 
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer){
@@ -216,8 +219,8 @@ public:
         // scale value % of the video scale
         float resultRadius = util.getPercent(videoScale.x,radius);
         
-        // Real size of the text
-        float resultScaleText = videoScale.x/1920/2;
+        // Real scale value of the text
+        float resultScaleText = videoScale.x/1920/2*textScale;
 
         //Check if mouse on top of the button
         hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));

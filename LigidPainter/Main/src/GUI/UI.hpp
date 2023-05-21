@@ -78,7 +78,7 @@ class UI{
 public:
     //UI Elements
     //(Mostly panels)
-    Panel paintingPanel;  
+    Panel navigationPanel;  
 
     Shaders shaders; 
 
@@ -98,17 +98,17 @@ public:
         this->appTextures = appTextures;
         
         //Init the painting panel
-        paintingPanel = Panel(
+        navigationPanel = Panel(
                                 shaders.buttonShader,
                                 {   
-                                    //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color                texture
-                                    Button(shaders.buttonShader,  "File"        ,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  false       ,0           ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture()),
-                                    Button(shaders.buttonShader,  "Edit"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1.f         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture()),
-                                    Button(shaders.buttonShader,  "Panels"      ,glm::vec2(8,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1.f         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon),
-                                    Button(shaders.buttonShader,  "Help"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1.f         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon) //Buttons of the panel here
+                                    //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture    text scale
+                                    Button(shaders.buttonShader,  "File"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0            ,1         ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ),
+                                    Button(shaders.buttonShader,  "Edit"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ),
+                                    Button(shaders.buttonShader,  "Panels"      ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ),
+                                    Button(shaders.buttonShader,  "Help"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f    ) //Buttons of the panel here
                                 },
-                                glm::vec2(25,3), //Initial scale value
-                                glm::vec3(50,50,0.1f),  //Initial position value
+                                glm::vec2(50,1), //Initial scale value
+                                glm::vec3(50,1,0.1f),  //Initial position value
                                 colorPalette.mainColor, //Color of the panel
                                 false
                             );
@@ -128,7 +128,7 @@ public:
         
         //--Render all the UI elements there
         
-        paintingPanel.render(videoScale,mouse,timer,textRenderer);
+        navigationPanel.render(videoScale,mouse,timer,textRenderer);
     }
 };
 

@@ -65,7 +65,7 @@ public:
 		}
 		else {
 			glActiveTexture(GL_TEXTURE0);
-			FT_Set_Pixel_Sizes(face, 0, 60); 
+			FT_Set_Pixel_Sizes(face, 0, 48); 
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	
 			// load first 128 characters of ASCII set
