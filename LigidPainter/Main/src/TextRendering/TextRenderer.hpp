@@ -38,7 +38,15 @@ public:
     }
 
     void renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft){
-	    float lastXText = x;
+		//Text is rendered using button shader
+		//Shader is the shader class of the button shader
+		//X Y Z : Is the location of the text, z = depth value
+		//MaxX is the location value in the x axis where you want text to end or get to new line (buttons right side's x coordinate)
+		//If mutliple line is set to true, multiple lines will be enabled
+		//Scale : scale of the text. 1 is default and pretty big. 
+		//Most left is the location value in the x axis where text can't go further left of that value (buttons left side's x coordinate)
+
+		float lastXText = x;
         
         glActiveTexture(GL_TEXTURE0);
     
@@ -47,6 +55,7 @@ public:
         shader.setInt("txtr",0);
 	    shader.setInt("renderText",1);
 
+		//Get the location of the text's last char
 	    float overallX = 0.f;
 		for (std::string::const_iterator aC = text.begin(); aC != text.end(); aC++){
 	    	character ch = font.characters[*aC];//Get the current char
@@ -55,8 +64,9 @@ public:
 	    	overallX += (ch.Advance >> 6) * scale / 1.2f;
 		}
 		
-		x-=overallX/2.f;
+		x-=overallX/2.f; //Allign the text in the middle
 
+		//Check if the text's left side is out of the boundaries
 	    float overallX2 = 0.f;
 		bool hitTheBoundaires = false;
 		for (std::string::const_iterator aC = text.begin(); aC != text.end(); aC++){
@@ -70,7 +80,8 @@ public:
 			//To the right
 	    	overallX2 += (ch.Advance >> 6) * scale / 1.2f;
 		}
-		if(hitTheBoundaires)
+
+		if(hitTheBoundaires) //If the text's left side is out of the boundaries align the text on the left side of the button
 			x = mostLeft;
 
 		
