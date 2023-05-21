@@ -119,10 +119,10 @@ private:
         shader.setVec4("color2"  ,     color     );
         shader.setFloat("colorMixVal"  ,   0.f );
         
-        shader.setFloat("width",     scale.x   );
-        shader.setFloat("height",     scale.y   );
+        shader.setFloat("width",     resultScale.x  );
+        shader.setFloat("height",     resultScale.y   );
         
-        shader.setFloat("radius",     500.f   );
+        shader.setFloat("radius",     10.f   );
         shader.setInt("outline",     false   );
         shader.setFloat("thickness" ,    0.f  );
 

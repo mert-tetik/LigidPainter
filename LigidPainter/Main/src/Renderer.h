@@ -71,6 +71,11 @@ struct Shaders{
     Shader buttonShader;
 };
 
+struct AppTextures{ //Textures those will be used in UI of the app
+    //--Icons
+    Texture TDModelIcon; //3D Model Icon 
+};
+
 struct Fonts{ //Fonts those will be used in the app
     Font Arial;
 }
@@ -156,6 +161,9 @@ public:
     //You can change the font in the runtime
     TextRenderer textRenderer; 
 
+    //Textures those will be used in UI of the app
+    AppTextures appTextures;
+
 
     Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
         //Hold the videoscale value inside of the scene structure
@@ -193,14 +201,17 @@ public:
         //Loads the default skybox
         scene.skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky2");
         
-        //Init the userinterface
-        userInterface.init(shaders,context);
-
         //Load the fonts
         fonts.Arial.loadFont("./LigidPainter/Resources/Fonts/Arial.ttf");
 
         //Init the text renderer
         textRenderer = TextRenderer(fonts.Arial);
+        
+        //--Load the app textures
+        appTextures.TDModelIcon.load("C:/Users/CASPER/source/repos/LigidPainter/LigidPainter/Resources/Icons/3DModel.jpg");
+
+        //Init the userinterface
+        userInterface.init(shaders,context,appTextures);
     }
 
     void render(){

@@ -81,6 +81,8 @@ public:
     Panel paintingPanel;  
 
     Shaders shaders; 
+
+	AppTextures appTextures;
     
     //UI Rendering projection
     //Has the screen resolution
@@ -91,18 +93,19 @@ public:
     
     UI(){}
 
-    void init(Shaders shaders,Context context){
+    void init(Shaders shaders,Context context,AppTextures appTextures){
         this->shaders = shaders;
+        this->appTextures = appTextures;
         
         //Init the painting panel
         paintingPanel = Panel(
                                 shaders.buttonShader,
                                 {   
-                                    //         Shader               Text           Scale                Color                  Second Color        outline     radius    animation style             text color              second text color
-                                    Button(shaders.buttonShader,  "File"        ,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  false       ,0            ,1            ,colorPalette.oppositeColor, colorPalette.mainColor),
-                                    Button(shaders.buttonShader,  "Edit "       ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor),
-                                    Button(shaders.buttonShader,  "Panels"      ,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor),
-                                    Button(shaders.buttonShader,  "Help "       ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,1000         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor) //Buttons of the panel here
+                                    //         Shader               Text           Scale                Color                  Second Color        outline     radius    animation style             text color              second text color                texture
+                                    Button(shaders.buttonShader,  "File"        ,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  false       ,0            ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture()),
+                                    Button(shaders.buttonShader,  "Edit"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,20         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture()),
+                                    Button(shaders.buttonShader,  "Panels"      ,glm::vec2(5,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,20         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon),
+                                    Button(shaders.buttonShader,  "Help"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  true        ,20         ,0            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon) //Buttons of the panel here
                                 },
                                 glm::vec2(3,25), //Initial scale value
                                 glm::vec3(50,50,0.1f),  //Initial position value

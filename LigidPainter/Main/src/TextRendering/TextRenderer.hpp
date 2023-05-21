@@ -7,10 +7,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
-
 #include "Font.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
@@ -37,7 +33,13 @@ public:
         this->font = font;
     }
 
-    void renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft){
+    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft){
+		glm::vec3 data;
+		//.x = Returns the text's starting position int x axis
+		//.y = Returns the text's ending position int x axis
+		//.z = hitTheBoundaries
+
+
 		//Text is rendered using button shader
 		//Shader is the shader class of the button shader
 		//X Y Z : Is the location of the text, z = depth value
@@ -84,7 +86,8 @@ public:
 		if(hitTheBoundaires) //If the text's left side is out of the boundaries align the text on the left side of the button
 			x = mostLeft;
 
-		
+		data.x = x;
+
 		//Render all the chars in the text parameter
 	    int counter = 0;
 	    for (c = text.begin(); c != text.end(); c++)
@@ -108,7 +111,7 @@ public:
 
                 //Calculate the position of the char
 	    		float xpos = x + ch.Bearing.x * scale;
-	    		float ypos = y - (ch.Bearing.y*2.f + ch.Size.y)/2.f * scale;
+	    		float ypos = y - (-ch.Bearing.y + ch.Size.y);
 
                 //Calculate the size of the char
 	    		float w = ch.Size.x * scale * 0.8f;
@@ -129,7 +132,12 @@ public:
 	    	}
 	    }
 	    shader.setInt("renderText",0);
-    }
+
+		data.y = x;
+		data.z = hitTheBoundaires;
+
+		return data;
+	}
 };
 
 #endif

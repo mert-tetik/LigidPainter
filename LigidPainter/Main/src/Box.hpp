@@ -55,14 +55,14 @@ public:
         std::vector<float> boxVertices = { 
 			// first triangle      
             //Position              //Texture coordinates
-			1.0f,  1.0f, 0.0f       ,      1,1,         // top right
-			1.0f,  -1.0f, 0.0f      ,      1,0,         // bottom right
-			-1.0f,  1.0f, 0.0f      ,      0,1,         // top left 
+			1.0f,  1.0f, 0.0f       ,      1,0,         // top right
+			1.0f,  -1.0f, 0.0f      ,      1,1,         // bottom right
+			-1.0f,  1.0f, 0.0f      ,      0,0,         // top left 
 			
             // second triangle              
-			1.0f,  -1.0f, 0.0f      ,      1,0,         // bottom right
-			-1.0f,  -1.0f, 0.0f     ,      0,0,         // bottom left
-			-1.0f,  1.0f, 0.0f      ,      0,1          // top left
+			1.0f,  -1.0f, 0.0f      ,      1,1,         // bottom right
+			-1.0f,  -1.0f, 0.0f     ,      0,1,         // bottom left
+			-1.0f,  1.0f, 0.0f      ,      0,0          // top left
 		};
 
         //Generate vertex objects

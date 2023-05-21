@@ -22,6 +22,7 @@ uniform float height;
 uniform vec2 videoScale;
 
 uniform int renderText;
+uniform int renderTexture;
 uniform sampler2D txtr;
 
 float udRoundBox( vec2 p, vec2 b, float r )
@@ -34,22 +35,22 @@ float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
     //Divider reduces the radius/size of the button 
     //So the outline won't be stuck out of the boundaries
     vec2 divider = vec2(1.0,1.0);
-    if(outline == 1)
-        divider = vec2(1.05,1.3);
+    //if(outline == 1)
+    //    divider = vec2(1.0,1.3);
 
     //Radius of the corners
     float iRadius = radius;
-    vec2 halfRes = vec2(0.5*vec2(videoScale.x*width,videoScale.y*height));
+    vec2 halfRes = vec2(0.5*vec2(width,height));
 
     //Compute box
-    float b = udRoundBox( uv.xy*vec2(videoScale.x*width,videoScale.y*height) * divider - halfRes * divider, halfRes, iRadius );
+    float b = udRoundBox( uv.xy*vec2(width,height) * divider - halfRes * divider, halfRes, iRadius );
    
     //Fade of the outline (greater the value is smoother outline becomes)
-    float fade = 150.115;
+    float fade = 1.115;
 
     //Outline
-    float outV = (smoothstep(0.0, fade, b));
-    outV *= (smoothstep(thickness + fade, thickness, b));
+    float outV = (smoothstep(0.0, fade, 1. - b));
+    outV *= (smoothstep(thickness + fade, thickness,1. - b));
    
     if(outline == 1)
         return outV;
@@ -59,12 +60,18 @@ float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
 
 void main(){
     fragColor = mix(color,color2,colorMixVal);
-
-    if(renderText == 1){
+    
+    if(renderTexture == 1){
+        //Render the texture
+        vec2 uv = texCoords;
+        fragColor = texture(txtr, uv).rgba;
+        fragColor.a = 0.5; 
+    }
+    else if(renderText == 1){
         //Render the text
         vec2 uv = texCoords;
-        uv.y = 1. - uv.y;
-        fragColor.a = texture(txtr, vec2(uv.x,1. - uv.y)).r;
+        uv.y = 1.0 - uv.y;
+        fragColor.a = texture(txtr, uv).r;
     }
     else if(radius != 0)
     //Create round corners
