@@ -62,7 +62,7 @@ struct Scene{
 };
 struct Context{
     GLFWwindow* window;
-    glm::vec2 windowScale;
+    glm::ivec2 windowScale;
 };
 
 struct Shaders{
@@ -87,7 +87,6 @@ class Renderer
 private:
     void initGLFW(glm::vec2 videoScale){
         //Init GLFW
-        glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -168,12 +167,14 @@ public:
     Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
         //Hold the videoscale value inside of the scene structure
         scene.videoScale = videoScale;
-        
-        //Since the window size is determined by the videoscale value there is no harm to do that
-        context.windowScale = scene.videoScale;  
+          
 
         //Initialize the GLFW, create the main window & set callbacks
         initGLFW(videoScale);
+
+        //Get the window size
+        glfwGetFramebufferSize(context.window,&context.windowScale.x,&context.windowScale.y);
+        
 
         initGlad();
 
@@ -256,7 +257,7 @@ public:
         box.bindBuffers();
        
         //Update the UI projection using window size
-        userInterface.projection = glm::ortho(0.f,context.windowScale.x,context.windowScale.y,0.f);
+        userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
         userInterface.render(scene.videoScale,mouse,timer,textRenderer);//Render the UI
 
         box.unbindBuffers(); //Finish rendering the UI
@@ -289,7 +290,7 @@ private:
     }
     void updateProjectionMatrix(){
         scene.projectionMatrix = glm::perspective(glm::radians(scene.fov), 
-                                         context.windowScale.x / context.windowScale.y, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
+                                         (float)context.windowScale.x / (float)context.windowScale.y, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
                                          scene.near, 
                                          scene.far);
     }
