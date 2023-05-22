@@ -169,9 +169,13 @@ private:
         
         shader.setFloat("radius",     10.f   );
         shader.setInt("outline",     false   );
-        shader.setFloat("thickness" ,    0.f  );
 
-        shader.setInt("outlineExtra" ,    false     ); 
+        shader.setInt("outlineExtra" ,    true     ); 
+        shader.setVec3("outlineColor" ,    color2     ); 
+        shader.setVec3("outlineColor2" ,    color2     ); 
+
+        shader.setFloat("thickness" ,    outlineThickness  );
+
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -239,6 +243,7 @@ public:
     glm::vec3 pos; //Same here
     
     glm::vec4 color;
+    glm::vec4 color2;
     
     std::vector<Section> sections;
 
@@ -246,19 +251,23 @@ public:
     
     bool vertical = true;
 
+    float outlineThickness;
+
     //Sides of the panel
     PanelSide leftSide;
     PanelSide rightSide;
     PanelSide bottomSide;
 
     Panel(){}
-    Panel(Shader shader,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,bool vertical,bool lockL,bool lockR,bool lockB){
+    Panel(Shader shader,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,bool vertical,bool lockL,bool lockR,bool lockB,float outlineThickness){
         this->shader = shader;
         this->vertical = vertical;
         this->scale = scale;
         this->color = color;
+        this->color2 = color2;
         this->pos = pos;
         this->sections = sections;
+        this->outlineThickness = outlineThickness;
         this->leftSide.locked = lockL;
         this->rightSide.locked = lockR;
         this->bottomSide.locked = lockB;

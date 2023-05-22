@@ -189,10 +189,12 @@ public:
                                 glm::vec2(50,1), //Initial scale value
                                 glm::vec3(50,1,0.1f),  //Initial position value
                                 colorPalette.mainColor, //Color of the panel
+                                colorPalette.thirdColor, //Color of the panel
                                 false,
                                 true,
                                 true,
-                                false
+                                false,
+                                1.f
                             );
 
         windowPanel  = Panel(
@@ -213,8 +215,12 @@ public:
                                 glm::vec2(1,48), //Initial scale value
                                 glm::vec3(99,50,0.1f),  //Initial position value
                                 colorPalette.mainColor, //Color of the panel
+                                colorPalette.thirdColor, //Color of the panel
                                 true,
-                                false,true,true
+                                false,
+                                true,
+                                true,
+                                1.f
                             );
 
         paintingPanel=Panel(
@@ -239,8 +245,12 @@ public:
                                 glm::vec2(5,48), //Initial scale value
                                 glm::vec3(50,50,0.1f),  //Initial position value
                                 colorPalette.mainColor, //Color of the panel
+                                colorPalette.thirdColor, //Color of the panel
                                 true,
-                                false,true,true
+                                false,
+                                true,
+                                true,
+                                1.f
                             );
     }    
 
