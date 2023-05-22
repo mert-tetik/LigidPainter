@@ -197,6 +197,13 @@ public:
     float clickedMixVal = 0.f;
 
     Button(){}
+
+
+
+
+    //----Constructors 
+
+    //Manual constructor
     Button(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
            Texture texture,float textScale,float panelOffset,bool outlineExtra,glm::vec3 outlineColor,glm::vec3 outlineColor2,float outlineThickness){
         
@@ -222,6 +229,64 @@ public:
         this->outlineColor2 = outlineColor2;
         this->outlineThickness = outlineThickness;
     }
+
+    //Style constructor
+    Button(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,Texture texture,float panelOffset){
+        //Style 0 = Stylized
+        //style 1 = Solid
+        //style 2 = both
+
+        this->shader = shader;
+        this->text = text;
+        this->scale = scale;
+        this->texture = texture;
+        this->panelOffset = panelOffset;
+        
+        if(style == 0){
+            this->color = colorPalette.secondColor;
+            this->color2 = colorPalette.themeColor;
+            this->outline = true;
+            this->radius = 0.5f;
+            this->animationStyle = 0;
+            this->textColor = colorPalette.oppositeColor;
+            this->textColor2 = colorPalette.thirdColor;
+            this->textScale = 0.5f;
+            this->outlineExtra = false;
+            this->outlineColor = {};
+            this->outlineColor2 = {};
+            this->outlineThickness = 2.f;
+        }
+        if(style == 1){
+            this->color = colorPalette.secondColor;
+            this->color2 = colorPalette.themeColor;
+            this->outline = false;
+            this->radius = 0.1f;
+            this->animationStyle = 1;
+            this->textColor = colorPalette.oppositeColor;
+            this->textColor2 = colorPalette.thirdColor;
+            this->textScale = 0.5f;
+            this->outlineExtra = true;
+            this->outlineColor = colorPalette.oppositeColor;
+            this->outlineColor2 = colorPalette.thirdColor;
+            this->outlineThickness = 1.f;
+        }
+        if(style == 2){
+            this->color = colorPalette.secondColor;
+            this->color2 = colorPalette.themeColor;
+            this->outline = false;
+            this->radius = 0.25f;
+            this->animationStyle = 1;
+            this->textColor = colorPalette.oppositeColor;
+            this->textColor2 = colorPalette.thirdColor;
+            this->textScale = 0.5f;
+            this->outlineExtra = true;
+            this->outlineColor = colorPalette.oppositeColor;
+            this->outlineColor2 = colorPalette.thirdColor;
+            this->outlineThickness = 2.f;
+        }
+    }
+
+
 
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer){
         Util util;

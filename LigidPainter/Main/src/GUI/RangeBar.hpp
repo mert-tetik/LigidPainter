@@ -122,13 +122,17 @@ public:
     float hoverMixVal = 0.f;
     float clickedMixVal = 0.f;
 
-    float minValue = 30.f; 
+    //Keep the value between these variables
+    float minValue = -50.f; 
     float maxValue = 50.f; 
     float value = (maxValue+minValue)/2.f; //Value of the range bar
 
     RangeBar(){}
+
+    //Manual constructor
     RangeBar(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 pointerColor,glm::vec4 pointerColor2,bool outlineExtra,glm::vec3 outlineColor,
-             glm::vec3 outlineColor2, float radius,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,float textScale,float panelOffset,float outlineThickness){
+             glm::vec3 outlineColor2, float radius,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,float textScale,float panelOffset,float outlineThickness,float minValue,float maxValue
+             ,float value){
         //animationStyle determines what type of mouse hover or click animation will be used
         //0 = Change thickness for mousehover
         //1 = Change color for mousehover
@@ -150,6 +154,42 @@ public:
         this->outlineColor = outlineColor;
         this->outlineColor2 = outlineColor2;
         this->outlineThickness = outlineThickness;
+        this->minValue = minValue;
+        this->maxValue = maxValue;
+        this->value = value;
+    }
+
+    //Style constructor
+    RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,Texture texture,float panelOffset,float minValue,float maxValue,float value){
+        //For now there is only 1 style
+        
+        this->shader = shader;
+        this->text = text;
+
+        this->color = colorPalette.secondColor;
+        this->color2 = colorPalette.mainColor;
+        
+        this->pointerColor = colorPalette.thirdColor;
+        this->pointerColor2 = colorPalette.themeColor;
+
+        this->scale = scale;
+        this->radius = 0.2f;
+        this->textColor = colorPalette.oppositeColor;
+        this->textColor2 = colorPalette.mainColor;
+        this->texture = texture;
+        this->textScale = 0.5f;
+
+        this->panelOffset = panelOffset;
+        
+        this->outlineExtra = true;
+        
+        this->outlineColor = colorPalette.thirdColor;
+        this->outlineColor2 = colorPalette.themeColor;
+        this->outlineThickness = 2.f;
+
+        this->minValue = minValue;
+        this->maxValue = maxValue;
+        this->value = value;
     }
 
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer){
@@ -215,7 +255,7 @@ public:
                 resultRadius,
                 pointerColor,
                 pointerColor2,
-                clickedMixVal,
+                (clickedMixVal+hoverMixVal)/2.f,
                 false,
                 resultOutlineThickness); //Pointer
 

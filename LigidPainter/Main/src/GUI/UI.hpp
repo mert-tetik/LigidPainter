@@ -178,11 +178,10 @@ public:
                                     Section(
                                         Element(Button()),
                                         {   
-                                            //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture    text scale    panel offset
-                                            Element(Button(shaders.buttonShader,  "File"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0.05f         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f          , 0.f  ,  true  ,  colorPalette.oppositeColor,colorPalette.thirdColor,0.5f)),
-                                            Element(Button(shaders.buttonShader,  "Edit"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0.05f         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f          , 0.f  ,  true  ,  colorPalette.oppositeColor,colorPalette.thirdColor,0.5f)),
-                                            Element(Button(shaders.buttonShader,  "Panels"      ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0.05f         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f          , 0.f  ,  true  ,  colorPalette.oppositeColor,colorPalette.thirdColor,0.5f)),
-                                            Element(Button(shaders.buttonShader,  "Help"        ,glm::vec2(2,5), colorPalette.secondColor, colorPalette.themeColor,  false        ,0.05f         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   Texture(),    0.5f          , 0.f  ,  true  ,  colorPalette.oppositeColor,colorPalette.thirdColor,0.5f)) //Buttons of the panel here
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"File"    ,Texture(), 0.f)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Edit"    ,Texture(), 0.f)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Panels"  ,Texture(), 0.f)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Help"    ,Texture(), 0.f)),
                                         }
                                     )
                                 },
@@ -200,11 +199,10 @@ public:
                                     Section(
                                         Element(Button()),
                                         {   
-                                            //         Shader               Text                   Scale %               Color                 Second Color        outline     radius %   animation style          text color           second text color                   texture            text scale    panel offset
-                                            Element(Button(shaders.buttonShader,  "3D Painting"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f           ,0.f , false  ,  colorPalette.oppositeColor,colorPalette.thirdColor,0.f)),
-                                            Element(Button(shaders.buttonShader,  "2D Painting"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f           ,0.f , false  ,  colorPalette.oppositeColor,colorPalette.thirdColor,0.f)),
-                                            Element(Button(shaders.buttonShader,  "Matarial editor"    ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f           ,0.f , false  ,  colorPalette.oppositeColor,colorPalette.thirdColor,0.f)),
-                                            Element(Button(shaders.buttonShader,  "Displayer"          ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f           ,0.f , false  ,  colorPalette.oppositeColor,colorPalette.thirdColor,0.f)) //Buttons of the panel here
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"3D Painting"         , appTextures.TDModelIcon, 0.f)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"2D Painting"         , appTextures.TDModelIcon, 0.f)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Matarial editor"     , appTextures.TDModelIcon, 0.f)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Displayer"           , appTextures.TDModelIcon, 0.f)),
                                         }
                                     )
                                 },
@@ -220,23 +218,16 @@ public:
                                 
                                 {
                                     Section(
-                                        Element(Button(shaders.buttonShader,  "Brush"        ,glm::vec2(2,2), colorPalette.themeColor, colorPalette.secondColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    ,1.f, false  ,  colorPalette.oppositeColor,colorPalette.thirdColor,1.f)),
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Brush"  , appTextures.TDModelIcon, 0.f)),
                                         {   
-                                            //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture                  text scale    panel offset
-                                            Element(Button(shaders.buttonShader,  "Radius"      ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f         , 0.f , false  ,  colorPalette.oppositeColor,colorPalette.thirdColor,1.f)),
-                                            Element(Button(shaders.buttonShader,  "Strength"    ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f         , 1.f , false  ,  colorPalette.oppositeColor,colorPalette.thirdColor,1.f)),
-                                            Element(Button(shaders.buttonShader,  "Mask"        ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f         , 0.f , false  ,  colorPalette.oppositeColor,colorPalette.thirdColor,1.f)),
-                                            Element(Button(shaders.buttonShader,  "Color"       ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f         , 0.f , false  ,  colorPalette.oppositeColor,colorPalette.thirdColor,1.f)), //Buttons of the panel here
-                                            Element(Button(shaders.buttonShader,  "Softness"    ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f         , 2.f , false  ,  colorPalette.oppositeColor,colorPalette.thirdColor,1.f)) //Buttons of the panel here
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Stuff"  , appTextures.TDModelIcon, 5.f)),
                                         }
                                     ),
                                     Section(
-                                        Element(Button(shaders.buttonShader,  "Blur"        ,glm::vec2(2,2), colorPalette.themeColor, colorPalette.secondColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f    , 1.f, false  ,  colorPalette.oppositeColor,colorPalette.thirdColor,1.f)),
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Blur"  , appTextures.TDModelIcon, 0.f)),
                                         {   
-                                            //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture                  text scale     panel offset
-                                            Element(Button(shaders.buttonShader,  "Radius"     ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0.5f         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f           , 0.f, false  ,  colorPalette.oppositeColor,colorPalette.thirdColor,2.f)),
-                                            Element(RangeBar(shaders.buttonShader,  "Strength"   ,glm::vec2(2,1), colorPalette.secondColor, colorPalette.mainColor, colorPalette.thirdColor,colorPalette.themeColor,  false, colorPalette.oppositeColor,colorPalette.thirdColor       ,0.2f               ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f           , 0.f,2.f)),
-                                            Element(Button(shaders.buttonShader,  "Mask"       ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0.5f         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f           , 2.f, false  ,  colorPalette.oppositeColor,colorPalette.thirdColor,2.f)),
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Stuff"  , appTextures.TDModelIcon, 5.f)),
+                                            Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Stuff"  , appTextures.TDModelIcon, 5.f,0.f,100.f,50.f)),
                                         }
                                     )
                                 },
