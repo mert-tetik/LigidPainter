@@ -189,6 +189,9 @@ public:
                                 glm::vec2(50,1), //Initial scale value
                                 glm::vec3(50,1,0.1f),  //Initial position value
                                 colorPalette.mainColor, //Color of the panel
+                                false,
+                                true,
+                                true,
                                 false
                             );
 
@@ -210,7 +213,8 @@ public:
                                 glm::vec2(1,48), //Initial scale value
                                 glm::vec3(99,50,0.1f),  //Initial position value
                                 colorPalette.mainColor, //Color of the panel
-                                true
+                                true,
+                                false,true,true
                             );
 
         paintingPanel=Panel(
@@ -235,7 +239,8 @@ public:
                                 glm::vec2(5,48), //Initial scale value
                                 glm::vec3(50,50,0.1f),  //Initial position value
                                 colorPalette.mainColor, //Color of the panel
-                                true
+                                true,
+                                false,true,true
                             );
     }    
 
@@ -256,6 +261,11 @@ public:
         navigationPanel.render(videoScale,mouse,timer,textRenderer);
         windowPanel.render(videoScale,mouse,timer,textRenderer);
         paintingPanel.render(videoScale,mouse,timer,textRenderer);
+        
+        //Positioning the panels
+        paintingPanel.pos.x = windowPanel.pos.x - windowPanel.scale.x - paintingPanel.scale.x;
+        paintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + paintingPanel.scale.y;
+        windowPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y;
     }
 };
 

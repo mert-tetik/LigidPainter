@@ -174,7 +174,6 @@ public:
 
         //Get the window size
         glfwGetFramebufferSize(context.window,&context.windowScale.x,&context.windowScale.y);
-        
 
         initGlad();
 
