@@ -63,11 +63,14 @@ Example :
 #include "TextRendering/TextRenderer.hpp"
 
 #include "GUI/Button.hpp"
+#include "GUI/RangeBar.hpp"
 
 struct Element{
     //The UI Element
 
     Button button;
+    RangeBar rangeBar;
+    
     int state; //Decide which element will be used 0 = button 
     
     //Those variables will be transported to the element
@@ -86,6 +89,14 @@ struct Element{
         panelOffset = button.panelOffset;
         state = 0;
     }
+    Element(RangeBar rangeBar){
+        //Init as range bar
+        this->rangeBar = rangeBar;
+        pos = rangeBar.pos;
+        scale = rangeBar.scale;
+        panelOffset = rangeBar.panelOffset;
+        state = 1;
+    }
 
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer){
         if(state == 0){ //Render the button
@@ -93,6 +104,12 @@ struct Element{
             button.scale = scale;
             button.panelOffset = panelOffset;
             button.render(videoScale,mouse, timer,textRenderer);
+        }
+        if(state == 1){ //Render the button
+            rangeBar.pos = pos;
+            rangeBar.scale = scale;
+            rangeBar.panelOffset = panelOffset;
+            rangeBar.render(videoScale,mouse, timer,textRenderer);
         }
     }
 };
@@ -218,7 +235,7 @@ public:
                                         {   
                                             //         Shader               Text           Scale %               Color                  Second Color        outline     radius %    animation style             text color              second text color      texture                  text scale     panel offset
                                             Element(Button(shaders.buttonShader,  "Radius"     ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f           , 0.f)),
-                                            Element(Button(shaders.buttonShader,  "Strength"   ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f           , 0.f)),
+                                            Element(RangeBar(shaders.buttonShader,  "Strength"   ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f           , 0.f)),
                                             Element(Button(shaders.buttonShader,  "Mask"       ,glm::vec2(2,2), colorPalette.secondColor, colorPalette.themeColor,  false        ,0         ,1            ,colorPalette.oppositeColor, colorPalette.mainColor    ,   appTextures.TDModelIcon,    0.5f           , 2.f)),
                                         }
                                     )
