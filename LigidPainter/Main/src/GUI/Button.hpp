@@ -153,6 +153,7 @@ public:
 
     bool clickState1 = false;
 
+    float panelOffset = 0.f; //While rendering in the panel put that much space in % between the next button element
 
     //---Button properties
     std::string text; //Text of the button
@@ -185,7 +186,7 @@ public:
     float clickedMixVal = 0.f;
 
     Button(){}
-    Button(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,float textScale){
+    Button(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,float textScale,float panelOffset){
         //animationStyle determines what type of mouse hover or click animation will be used
         //0 = Change thickness for mousehover
         //1 = Change color for mousehover
@@ -202,6 +203,7 @@ public:
         this->textColor2 = textColor2;
         this->texture = texture;
         this->textScale = textScale;
+        this->panelOffset = panelOffset;
     }
 
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer){

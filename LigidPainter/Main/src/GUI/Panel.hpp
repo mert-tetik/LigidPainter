@@ -113,36 +113,31 @@ private:
         if(scale.x < 1)
             scale.x = 1;
     }
-    void prepDrawBtnVertically(Button &button,Button &previousButton,float& elementPos,int btnCounter){
+    void prepDrawBtnVertically(Element &button,Element &previousButton,float& elementPos,int btnCounter){
         button.scale.x = scale.x;
 
         //Move the button on top of the panel
         button.pos = pos;
-        button.pos.y -= scale.y;
+        //button.pos.y -= scale.y;
         
         button.pos.y += button.scale.y;
-        //button.pos.y += sections[sI].buttons[0].scale.y;
+        //button.pos.y += sections[sI].elements[0].scale.y;
         
-        elementPos = button.pos.y; 
-
-        elementPos += btnCounter * (button.scale.y + previousButton.scale.y);
+        if(btnCounter)        
+            elementPos += (button.scale.y + previousButton.scale.y) + previousButton.panelOffset;
 
         button.pos.z += 0.01f;
         button.pos.y = elementPos;
     }
-    void prepDrawBtnHorizontally(Button &button,Button &previousButton,float& elementPos,int btnCounter){
+    void prepDrawBtnHorizontally(Element &button,Element &previousButton,float& elementPos,int btnCounter){
         button.scale.y = scale.y;
 
         //Move the button on top of the panel
         button.pos = pos;
-        button.pos.x -= scale.x;
-        
-        button.pos.x += button.scale.x;
-        //button.pos.x += sections[sI].buttons[0].scale.x;
-        
-        elementPos = button.pos.x; 
+        //button.pos.x += sections[sI].elements[0].scale.x;
 
-        elementPos += btnCounter * (button.scale.x + previousButton.scale.x);
+        if(btnCounter)        
+            elementPos += (button.scale.x + previousButton.scale.x) + previousButton.panelOffset;
 
         button.pos.z += 0.01f;
         button.pos.x = elementPos;
@@ -168,36 +163,55 @@ private:
 
         //Panel's buttons
 
-        float elementPos = 0.f;
+        float elementPos = 0.f; //Starting pos
+        
+        //Get the starting position
+        if(vertical){//If the panel is vertical
+            if(sections.size()){//If there are sections
+                if(sections[0].header.button.text.size()) //If there is a header in the section
+                    elementPos = pos.y-scale.y + sections[0].header.scale.y; //Take the starting position by including the height of the section header
+                else if(sections[0].elements.size()) //If there are buttons in the first section
+                    elementPos = pos.y-scale.y + sections[0].elements[0].scale.y; //Take the starting position by including the height of the first button of the section
+            }
+        }
+        else{//If the panel is horizontal
+            if(sections.size()){//If there are sections
+                if(sections[0].header.button.text.size())  //If there is a header in the section
+                    elementPos = pos.x-scale.x + sections[0].header.scale.x; //Take the starting position by including the height of the section header
+                else if(sections[0].elements.size())//If there are buttons in the first section
+                    elementPos = pos.x-scale.x + sections[0].elements[0].scale.x; //Take the starting position by including the width of the first button of the section
+            }
+        }
+        
         //Render sections
         int btnCounter = 0; //Indexing buttons to position them
         for (int sI = 0; sI < sections.size(); sI++)
         {
-            if(sections[sI].header.text.size()){ //If there is a header
+            if(sections[sI].header.button.text.size()){ //If there is a header
                 //Section header button
 
                 //Prepare the transform data of the button    
                 if(vertical)
-                    prepDrawBtnVertically(sections[sI].header,sections[max(sI-1,0)].buttons[sections[max(sI-1,0)].buttons.size()-1],elementPos,btnCounter);
+                    prepDrawBtnVertically(sections[sI].header,sections[max(sI-1,0)].elements[sections[max(sI-1,0)].elements.size()-1],elementPos,btnCounter);
                 else
-                    prepDrawBtnHorizontally(sections[sI].header,sections[max(sI-1,0)].buttons[sections[max(sI-1,0)].buttons.size()-1],elementPos,btnCounter);
+                    prepDrawBtnHorizontally(sections[sI].header,sections[max(sI-1,0)].elements[sections[max(sI-1,0)].elements.size()-1],elementPos,btnCounter);
                 //Draw the button
                 sections[sI].header.render(videoScale,mouse,timer,textRenderer);
                 btnCounter++; //Indexing buttons to position them
             }
 
-            for (int i = 0; i < sections[sI].buttons.size(); i++) //
+            for (int i = 0; i < sections[sI].elements.size(); i++) //
             {
                 //Buttons of the current section
 
                 //Prepare the transform data of the button    
                 if(vertical)
-                    prepDrawBtnVertically(sections[sI].buttons[i],sections[sI].buttons[max(i-1,0)],elementPos,btnCounter);
+                    prepDrawBtnVertically(sections[sI].elements[i],sections[sI].elements[max(i-1,0)],elementPos,btnCounter);
                 else
-                    prepDrawBtnHorizontally(sections[sI].buttons[i],sections[sI].buttons[max(i-1,0)],elementPos,btnCounter);
+                    prepDrawBtnHorizontally(sections[sI].elements[i],sections[sI].elements[max(i-1,0)],elementPos,btnCounter);
 
                 //Draw the button
-                sections[sI].buttons[i].render(videoScale,mouse,timer,textRenderer);
+                sections[sI].elements[i].render(videoScale,mouse,timer,textRenderer);
                 btnCounter++; //Indexing buttons to position them
             }
         }
