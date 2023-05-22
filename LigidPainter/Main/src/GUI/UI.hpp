@@ -152,6 +152,7 @@ public:
     Panel navigationPanel;
     Panel windowPanel;
     Panel paintingPanel; //Main panel (kinda)
+    Panel libraryPanel; 
 
     Shaders shaders; 
 
@@ -252,9 +253,39 @@ public:
                                 true,
                                 1.f
                             );
+        
+        libraryPanel  = Panel(
+                                shaders.buttonShader,
+
+                                {
+                                    Section(
+                                        Element(Button()),
+                                        {   
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Textures"        , Texture(), 0.f)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Materials"       , Texture(), 0.f)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Brushes"         , Texture(), 0.f)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Fonts"           , Texture(), 0.f)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Scripts"         , Texture(), 0.f)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Filters"         , Texture(), 0.f)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Layers"          , Texture(), 0.f)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"3D Models"       , Texture(), 0.f)),
+                                        }
+                                    )
+                                },
+                                
+                                glm::vec2(1,48), //Initial scale value
+                                glm::vec3(1,50,0.1f),  //Initial position value
+                                colorPalette.mainColor, //Color of the panel
+                                colorPalette.thirdColor, //Color of the panel
+                                true,
+                                true,
+                                false,
+                                true,
+                                1.f
+                            );
     }    
 
-    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer){
+    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context){
         glDepthFunc(GL_LEQUAL);
 
         //Use the related shader
@@ -271,11 +302,17 @@ public:
         navigationPanel.render(videoScale,mouse,timer,textRenderer);
         windowPanel.render(videoScale,mouse,timer,textRenderer);
         paintingPanel.render(videoScale,mouse,timer,textRenderer);
+        libraryPanel.render(videoScale,mouse,timer,textRenderer);
         
+        float screenGap = videoScale.x - context.windowScale.x; //Use that value to keep panels on the left side
+        float screenGapPerc = screenGap / videoScale.x * 100.f; 
+
         //Positioning the panels
-        paintingPanel.pos.x = windowPanel.pos.x - windowPanel.scale.x - paintingPanel.scale.x;
-        paintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + paintingPanel.scale.y;
-        windowPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y;
+        paintingPanel.pos.x = windowPanel.pos.x - windowPanel.scale.x - paintingPanel.scale.x; //Keep on the left side of the window panel 
+        paintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + paintingPanel.scale.y; //Keep beneath the navigation bar
+        windowPanel.pos.x = 100.f - windowPanel.scale.x - screenGapPerc; //Keep on the right side
+        windowPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
+        libraryPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
     }
 };
 

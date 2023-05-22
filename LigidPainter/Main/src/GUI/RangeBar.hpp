@@ -175,7 +175,7 @@ public:
         this->scale = scale;
         this->radius = 0.2f;
         this->textColor = colorPalette.oppositeColor;
-        this->textColor2 = colorPalette.mainColor;
+        this->textColor2 = colorPalette.secondColor;
         this->texture = texture;
         this->textScale = 0.5f;
 

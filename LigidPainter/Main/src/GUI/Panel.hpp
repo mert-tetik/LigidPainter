@@ -101,7 +101,7 @@ private:
             scale.x += mouse.mouseOffset.x/videoScale.x * 50.f;
             pos.x += mouse.mouseOffset.x/videoScale.x *50.f;
             //Restrict the size of the panel
-            if(scale.x < 1){
+            if(scale.x < 1 || scale.x > 20){
                 scale.x -= mouse.mouseOffset.x/videoScale.x * 50.f;
                 pos.x -= mouse.mouseOffset.x/videoScale.x *50.f;
             }
@@ -110,7 +110,7 @@ private:
             scale.x -= mouse.mouseOffset.x/videoScale.x * 50.f;
             pos.x += mouse.mouseOffset.x/videoScale.x *50.f;
             //Restrict the size of the panel
-            if(scale.x < 1){
+            if(scale.x < 1 || scale.x > 20){
                 scale.x += mouse.mouseOffset.x/videoScale.x * 50.f;
                 pos.x -= mouse.mouseOffset.x/videoScale.x *50.f;
             }
@@ -118,7 +118,7 @@ private:
         else if(bottomSide.pressed){
             scale.y += mouse.mouseOffset.y/videoScale.y * 50.f;
             pos.y += mouse.mouseOffset.y/videoScale.y *50.f;
-            if(scale.y < 0.5f){
+            if(scale.y < 0.5f || scale.y > 20){
                 scale.y -= mouse.mouseOffset.y/videoScale.y * 50.f;
                 pos.y -= mouse.mouseOffset.y/videoScale.y *50.f;
             }
