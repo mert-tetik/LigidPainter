@@ -159,6 +159,8 @@ private:
         shader.setInt("outline",     false   );
         shader.setFloat("thickness" ,    0.f  );
 
+        shader.setInt("outlineExtra" ,    false     ); 
+
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         //Panel's buttons

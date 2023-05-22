@@ -48,7 +48,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 class RangeBar
 {
 private:
-    void render(glm::vec3 posVal,glm::vec2 scaleVal,float radiusVal,glm::vec4 color1Val, glm::vec4 color2Val,float mixVal){
+    //Unlike the button class this function takes more parameters to draw individual parts of the range bar 
+    void render(glm::vec3 posVal,glm::vec2 scaleVal,float radiusVal,glm::vec4 color1Val, glm::vec4 color2Val,float mixVal,bool outlineExtra,float resultOutlineThickness){
         
         //Set the transform data (used by vertex shader)
         shader.setVec3("pos"    ,     posVal );
@@ -65,12 +66,14 @@ private:
 
         //Properties
         shader.setFloat("radius",     radiusVal    );
-        shader.setInt("outline" ,     outline      );
+        shader.setInt("outline" ,     false      ); //Outline is not used 
+        shader.setInt("outlineExtra" ,     outlineExtra     );  
+        
+        //Outline extra color (affected by the colorMixVal)
+        shader.setVec3("outlineColor" ,     outlineColor     );  
+        shader.setVec3("outlineColor2" ,     outlineColor2     );  
 
-        if(animationStyle == 0) //Increase the thicness of the button if hover
-            shader.setFloat("thickness" ,    2.f + hoverMixVal*2.f );
-        else  //Set the thickness value of the button
-            shader.setFloat("thickness" ,    2.f);
+        shader.setFloat("thickness" ,    resultOutlineThickness);
         
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
@@ -78,23 +81,30 @@ private:
 public:
     Shader shader;
 
-    bool pointerPressed = false;
+    bool pointerPressed = false;//Range bar is pressed and now is changing value via mouse offset
 
     float panelOffset = 0.f; //While rendering in the panel put that much space in % between the next button element
+
 
     //---RangeBar properties
     std::string text; //Text of the button
 
-    glm::vec4 color; //Original color
-    glm::vec4 color2; //Hover or clicked transition color
+    glm::vec4 color; //Original color of the back side
+    glm::vec4 color2; //Hover or clicked transition color of the back side
+    glm::vec4 pointerColor; //Original color of the pointer / front side 
+    glm::vec4 pointerColor2; //Hover or clicked transition color of the pointer / front side
     glm::vec4 textColor; //Original color of the text
     glm::vec4 textColor2; //Hover or clicked transition color of the text
 
-    float textScale;
+    float textScale; //Scale of the text
 
-    bool outline; //Whether will only has outlines or be solid
+    //Outline Extra does the same with outline. But unlike the outline doesn't remove the center
+    bool outlineExtra; 
+    glm::vec3 outlineColor;
+    glm::vec3 outlineColor2;
+    float outlineThickness;
+
     float radius; //% Radius of the corners 
-    int animationStyle; //determines what type of mouse hover or click animation will be used
     //0 = Change thickness for mousehover
     //1 = Change color for mousehover
 
@@ -108,7 +118,6 @@ public:
     glm::vec3 pos; //Same here
     
     bool hover = false; //The slider's itself mouse hover
-    bool pointerHover = false; //Slider's pointer mouse hover
 
     float hoverMixVal = 0.f;
     float clickedMixVal = 0.f;
@@ -118,7 +127,8 @@ public:
     float value = (maxValue+minValue)/2.f; //Value of the range bar
 
     RangeBar(){}
-    RangeBar(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,float textScale,float panelOffset){
+    RangeBar(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 pointerColor,glm::vec4 pointerColor2,bool outlineExtra,glm::vec3 outlineColor,
+             glm::vec3 outlineColor2, float radius,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,float textScale,float panelOffset,float outlineThickness){
         //animationStyle determines what type of mouse hover or click animation will be used
         //0 = Change thickness for mousehover
         //1 = Change color for mousehover
@@ -127,15 +137,19 @@ public:
         this->text = text;
         this->color = color;
         this->color2 = color2;
+        this->pointerColor = pointerColor;
+        this->pointerColor2 = pointerColor2;
         this->scale = scale;
-        this->outline = outline;
         this->radius = radius;
-        this->animationStyle = animationStyle;
         this->textColor = textColor;
         this->textColor2 = textColor2;
         this->texture = texture;
         this->textScale = textScale;
         this->panelOffset = panelOffset;
+        this->outlineExtra = outlineExtra;
+        this->outlineColor = outlineColor;
+        this->outlineColor2 = outlineColor2;
+        this->outlineThickness = outlineThickness;
     }
 
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer){
@@ -152,6 +166,10 @@ public:
         // scale value % of the video scale
         float resultRadius = util.getPercent(videoScale.x,radius);
 
+        // Real value of the thickness
+        float resultOutlineThickness = videoScale.x/1920/2*outlineThickness;
+
+
 
         const float buttonPointerWidthRatio = 30.f;
 
@@ -163,22 +181,16 @@ public:
         //Check if mouse on top of the slider
         hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
         
-        //Check if mouse on top of the slider pointer
-        pointerHover = mouse.isMouseHover(glm::vec2(resultScale.x / buttonPointerWidthRatio ,resultScale.y),glm::vec2(resultPos.x + displayValue*2.f,resultPos.y));
-
         if(hover)
-            //Set the cursor as horizontal slide
-            mouse.setCursor(mouse.pointerCursor);// mouse.activeCursor = mouse.pointerCursor
-        
-        if(pointerHover)
             //Set the cursor as horizontal slide
             mouse.setCursor(mouse.hSlideCursor);// mouse.activeCursor = mouse.pointerCursor
 
-        if(pointerHover && mouse.LClick){
+        if(hover && mouse.LClick){
             //Set pointer as pressed
             pointerPressed = true;
         }
         if(pointerPressed){
+            mouse.setCursor(mouse.hSlideCursor);// mouse.activeCursor = mouse.pointerCursor
             value += mouse.mouseOffset.x;
             if(value < minValue)
                 value = minValue;
@@ -192,26 +204,31 @@ public:
 
 
         timer.transition(hover,hoverMixVal,0.2f); 
-        timer.transition(false,clickedMixVal,0.5f); 
+        timer.transition(pointerPressed,clickedMixVal,0.2f); 
 
         
         //Render the range bar
-        render(resultPos,resultScale,resultRadius,color,color,0.f); //Back side
+        render(resultPos,resultScale,resultRadius,color,color2,hoverMixVal,true,resultOutlineThickness); //Back side
 
         render( glm::vec3(resultPos.x + displayValue - resultScale.x/2.f, resultPos.y,resultPos.z),
                 glm::vec2(resultScale.x/2.f + displayValue ,resultScale.y),
                 resultRadius,
-                color2,
-                color2,
-                0.f); //Pointer
+                pointerColor,
+                pointerColor2,
+                clickedMixVal,
+                false,
+                resultOutlineThickness); //Pointer
 
         ////Render the text
-        //if(renderTheText){
-        //    shader.setVec4("color"  ,     textColor     );
-        //    shader.setVec4("color2"  ,     textColor2     );
-        //    //Update the parameters of the renderText function in the renderTheTexture function if this function's parameters are changed
-        //    textRenderer.renderText(shader,text,resultPos.x+textureRadius ,resultPos.y,1,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x);
-        //}
+        float resultScaleText = videoScale.x/1920/2*textScale;
+
+        shader.setVec4("color"  ,     textColor     );
+        shader.setVec4("color2"  ,     textColor2     );
+        
+        std::string textResult; 
+        textResult = text;
+        textResult += "(" + std::to_string(value) + ")";
+        textRenderer.renderText(shader,textResult,resultPos.x ,resultPos.y,1,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x);
     }
 };
 #endif

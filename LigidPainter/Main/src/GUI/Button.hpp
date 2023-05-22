@@ -49,7 +49,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 class Button
 {
 private:
-    void render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadius){
+    void render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadius,float resultOutlineThickness){
         
         //Set the transform data (used by vertex shader)
         shader.setVec3("pos"    ,     resultPos );
@@ -73,12 +73,18 @@ private:
 
         //Properties
         shader.setFloat("radius",     resultRadius    );
-        shader.setInt("outline" ,     outline      );
+        shader.setInt("outline" ,     outline      ); 
+        shader.setInt("outlineExtra" ,     outlineExtra     ); 
+
+        //Outline extra color (affected by the colorMixVal)
+        shader.setVec3("outlineColor" ,     outlineColor     );  
+        shader.setVec3("outlineColor2" ,     outlineColor2     );   
+
 
         if(animationStyle == 0) //Increase the thicness of the button if hover
-            shader.setFloat("thickness" ,    2.f + hoverMixVal*2.f );
+            shader.setFloat("thickness" ,    resultOutlineThickness + hoverMixVal*2.f ); 
         else  //Set the thickness value of the button
-            shader.setFloat("thickness" ,    2.f);
+            shader.setFloat("thickness" ,    resultOutlineThickness); 
         
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
@@ -166,6 +172,11 @@ public:
     float textScale;
 
     bool outline; //Whether will only has outlines or be solid
+    bool outlineExtra; //Outline Extra does the same with outline. But unlike the outline doesn't remove the center
+    float outlineThickness;
+    glm::vec3 outlineColor;
+    glm::vec3 outlineColor2;
+
     float radius; //% Radius of the corners 
     int animationStyle; //determines what type of mouse hover or click animation will be used
     //0 = Change thickness for mousehover
@@ -186,7 +197,9 @@ public:
     float clickedMixVal = 0.f;
 
     Button(){}
-    Button(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,float textScale,float panelOffset){
+    Button(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
+           Texture texture,float textScale,float panelOffset,bool outlineExtra,glm::vec3 outlineColor,glm::vec3 outlineColor2,float outlineThickness){
+        
         //animationStyle determines what type of mouse hover or click animation will be used
         //0 = Change thickness for mousehover
         //1 = Change color for mousehover
@@ -204,6 +217,10 @@ public:
         this->texture = texture;
         this->textScale = textScale;
         this->panelOffset = panelOffset;
+        this->outlineExtra = outlineExtra;
+        this->outlineColor = outlineColor;
+        this->outlineColor2 = outlineColor2;
+        this->outlineThickness = outlineThickness;
     }
 
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer){
@@ -222,6 +239,9 @@ public:
         
         // Real scale value of the text
         float resultScaleText = videoScale.x/1920/2*textScale;
+        
+        // Real outline value of the text
+        float resultOutlineThickness = videoScale.x/1920/2*outlineThickness;
 
         //Check if mouse on top of the button
         hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
@@ -248,7 +268,7 @@ public:
         timer.transition(false,clickedMixVal,0.5f); 
         
         //Render the button
-        render(resultPos,resultScale,resultRadius);
+        render(resultPos,resultScale,resultRadius,resultOutlineThickness);
 
         float textureRadius = 0.f;
         bool renderTheText = renderTheTexture(resultPos,resultScale,resultScaleText,videoScale,textRenderer,textureRadius);
