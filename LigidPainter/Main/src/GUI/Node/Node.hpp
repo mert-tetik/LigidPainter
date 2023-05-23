@@ -37,7 +37,7 @@ public:
     std::vector<NodeIO> inputs;
     std::vector<NodeIO> outputs;
 
-    node(/* args */){
+    Node(/* args */){
 
     }
 };

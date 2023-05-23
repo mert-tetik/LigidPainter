@@ -293,11 +293,11 @@ private:
             sliderButton.pos.y = (pos.y - scale.y) + sliderButton.scale.y + slideVal;  
             sliderButton.render(videoScale,mouse,timer,textRenderer);
             if(sliderButton.clickState1){ //Pressed
-                slideVal += mouse.mouseOffset.y;
+                slideVal += mouse.mouseOffset.y/videoScale.y*100.f;
                 if(slideVal < 0)
                     slideVal = 0;
                 if(sliderButton.pos.y + sliderButton.scale.y >= pos.y + scale.y && mouse.mouseOffset.y > 0)
-                    slideVal -= mouse.mouseOffset.y;
+                    slideVal -= mouse.mouseOffset.y/videoScale.y*100.f;
             } 
         }
 
@@ -355,7 +355,10 @@ public:
         this->topSide.locked = lockT;
         this->rowCount = rowCount; 
 
-        this->sliderButton = Button(1,glm::vec2(1,20),colorPalette,shader,"",Texture(),0.f,false);
+        this->sliderButton = Button(0,glm::vec2(0.25f,20),colorPalette,shader,"",Texture(),0.f,false);
+        this->sliderButton.color = colorPalette.mainColor;
+        this->sliderButton.color2 = colorPalette.themeColor;
+        this->sliderButton.radius = 0.25f;
     }
 
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){
