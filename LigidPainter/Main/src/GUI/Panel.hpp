@@ -285,7 +285,11 @@ private:
         endRenderingTheButtons:
 
         sliderButton.pos = pos;
-        sliderButton.pos.x = pos.x + sliderButton.scale.x + scale.x;
+        if(leftSide.locked)
+            sliderButton.pos.x = pos.x + sliderButton.scale.x + scale.x;
+        else
+            sliderButton.pos.x = pos.x - sliderButton.scale.x - scale.x;
+
         slideRatio = elementPos / (pos.y + scale.y);
         
         if(slideRatio > 1 && vertical){
