@@ -21,6 +21,7 @@ Renderer.h : Renders the whole screen
 //GL_TEXTURE0 is used for random stuff - bind as default
 
 #include <iostream>
+#include <filesystem>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -59,6 +60,9 @@ struct Scene{
     Camera camera;
 
     Skybox skybox;
+};
+struct Library{
+    std::vector<Texture> textures;
 };
 struct Context{
     GLFWwindow* window;
@@ -168,6 +172,8 @@ public:
     //Textures those will be used in UI of the app
     AppTextures appTextures;
 
+    Library library;
+
 
     Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
         //Hold the videoscale value inside of the scene structure
@@ -223,6 +229,19 @@ public:
         mouse = Mouse(context.window);
         //Load the cursors of the LigidPainter
         mouse.loadCursors();
+
+
+        //Load the textures
+        //*Is a part of the project folder reader
+        for (const auto & entry : std::filesystem::directory_iterator("C:/Users/CASPER/Desktop/textures")){
+            std::string texturePath = entry.path().string();
+
+            Texture texture;
+            texture.load(texturePath.c_str());
+
+            library.textures.push_back(texture);
+        }
+
     }
 
     void render(){
@@ -263,7 +282,7 @@ public:
        
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
-        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box);//Render the UI
+        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library);//Render the UI
 
         box.unbindBuffers(); //Finish rendering the UI
 

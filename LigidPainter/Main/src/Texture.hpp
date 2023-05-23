@@ -60,6 +60,10 @@ public:
     
     std::string path;
 
+    //For program textures
+    std::string tmpPath;
+    bool isTexture = true; //Otherwise is a folder
+
     Texture(){}
 
     void load(const char* path){

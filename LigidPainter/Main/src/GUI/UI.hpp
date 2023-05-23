@@ -122,6 +122,7 @@ struct Section{ //Sections seperates the elements in the panel
 
     std::vector<Element> elements; //Elements of that section
     
+    Section(){}
     Section(Element header,std::vector<Element> elements){
         this->header = header;
         this->elements = elements;
@@ -162,6 +163,8 @@ public:
 
     //Dialogs    
     GreetingDialog greetingDialog;
+
+    int frameCounter = 0; //Reset every 1000 frame
 
     
     //UI Rendering projection
@@ -327,7 +330,7 @@ public:
         greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
     }    
 
-    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box){
+    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library library){
         glDepthFunc(GL_LEQUAL);
 
         //Use the related shader
@@ -339,6 +342,18 @@ public:
         //userInterface.projection = glm::mat4(...)
         shaders.buttonShader.setMat4("projection",projection); 
         
+        //Update the library displayer panel
+        if(frameCounter % 100 == 0){
+            Section libSection;
+            libSection.header = Element(Button()); //Has no section button
+            libraryPanelDisplayer.sections.clear();
+            for (size_t i = 0; i < library.textures.size(); i++)
+            {
+                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , library.textures[i], 0.f))) ;
+            }
+            libraryPanelDisplayer.sections.push_back(Section(Element(Button()),libSection.elements));
+        }
+
         //--Render all the UI elements there
         
         navigationPanel.render(videoScale,mouse,timer,textRenderer);
@@ -359,6 +374,9 @@ public:
         libraryPanelDisplayer.pos.x = libraryPanelLeft.pos.x + libraryPanelLeft.scale.x + libraryPanelDisplayer.scale.x; //Keep on the left side of the window panel 
 
         //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
+
+        if(frameCounter > 1000)
+            frameCounter = 0;
     }
 };
 
