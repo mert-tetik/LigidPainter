@@ -156,6 +156,8 @@ public:
     Panel paintingPanel; //Main panel (kinda)
     Panel libraryPanelLeft; 
     Panel libraryPanelDisplayer; 
+    Panel nodeEditorDisplayer; 
+    Panel selectedTextureDisplayer; 
 
     Shaders shaders; 
 
@@ -188,10 +190,10 @@ public:
                                     Section(
                                         Element(Button()),
                                         {   
-                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"File"    ,Texture(), 0.f)),
-                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Edit"    ,Texture(), 0.f)),
-                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Panels"  ,Texture(), 0.f)),
-                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Help"    ,Texture(), 0.f)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"File"    ,Texture(), 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Edit"    ,Texture(), 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Panels"  ,Texture(), 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Help"    ,Texture(), 0.f,false)),
                                         }
                                     )
                                 },
@@ -204,6 +206,7 @@ public:
                                 true,
                                 true,
                                 false,
+                                true,
                                 1.f,
                                 1
                             );
@@ -216,10 +219,10 @@ public:
                                     Section(
                                         Element(Button()),
                                         {   
-                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"3D Painting"         , appTextures.TDModelIcon, 0.f)),
-                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"2D Painting"         , appTextures.TDModelIcon, 0.f)),
-                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Matarial editor"     , appTextures.TDModelIcon, 0.f)),
-                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Displayer"           , appTextures.TDModelIcon, 0.f)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"3D Painting"         , appTextures.TDModelIcon, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"2D Painting"         , appTextures.TDModelIcon, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Matarial editor"     , appTextures.TDModelIcon, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Displayer"           , appTextures.TDModelIcon, 0.f,false)),
                                         }
                                     )
                                 },
@@ -232,6 +235,7 @@ public:
                                 false,
                                 true,
                                 true,
+                                true,
                                 1.f,
                                 1
                             );
@@ -241,16 +245,56 @@ public:
                                 colorPalette,
                                 {
                                     Section(
-                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Brush"  , appTextures.TDModelIcon, 0.f)),
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Brush"  , appTextures.TDModelIcon, 0.f,true)),
                                         {   
-                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Stuff"  , appTextures.TDModelIcon, 5.f)),
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color"  , appTextures.TDModelIcon, 1.f,false)),
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Radius"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Strength"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Smoothness"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Spacing"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                         }
                                     ),
                                     Section(
-                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Blur"  , appTextures.TDModelIcon, 0.f)),
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Soften"  , appTextures.TDModelIcon, 3.f,true)),
                                         {   
-                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Stuff"  , appTextures.TDModelIcon, 5.f)),
-                                            Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Stuff"  , appTextures.TDModelIcon, 5.f,0.f,100.f,50.f)),
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Radius"  , appTextures.TDModelIcon, 1.f,false)),
+                                            Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Strength"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                        }
+                                    ),
+                                    Section(
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Smear"  , appTextures.TDModelIcon, 3.f,true)),
+                                        {   
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Radius"  , appTextures.TDModelIcon, 1.f,false)),
+                                            Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Strength"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                        }
+                                    ),
+                                    Section(
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Vector"  , appTextures.TDModelIcon, 3.f,true)),
+                                        {   
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Fill"  , appTextures.TDModelIcon, 1.f,false)),
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Stroke"  , appTextures.TDModelIcon, 1.f,false)),
+                                        }
+                                    ),
+                                    Section(
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Area"  , appTextures.TDModelIcon, 3.f,true)),
+                                        {   
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Box"  , appTextures.TDModelIcon, 1.f,false)),
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Gradient"  , appTextures.TDModelIcon, 1.f,true)),
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Depth Test"  , appTextures.TDModelIcon, 1.f,true)),
+                                            Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Lasso"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                            Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Polygonal Lasso"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                            Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Circle"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                        }
+                                    ),
+                                    Section(
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Text"  , appTextures.TDModelIcon, 3.f,true)),
+                                        {   
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Text"  , appTextures.TDModelIcon, 1.f,false)),
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Font"  , appTextures.TDModelIcon, 1.f,false)),
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color"  , appTextures.TDModelIcon, 1.f,false)),
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Alignment"  , appTextures.TDModelIcon, 1.f,false)),
+                                            Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Size"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                            Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Bearing"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                         }
                                     )
                                 },
@@ -261,6 +305,7 @@ public:
                                 colorPalette.thirdColor, //Color of the panel
                                 true,
                                 false,
+                                true,
                                 true,
                                 true,
                                 1.f,
@@ -274,14 +319,14 @@ public:
                                     Section(
                                         Element(Button()),
                                         {   
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Textures"        , Texture(), 0.f)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Materials"       , Texture(), 0.f)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Brushes"         , Texture(), 0.f)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Fonts"           , Texture(), 0.f)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Scripts"         , Texture(), 0.f)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Filters"         , Texture(), 0.f)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Layers"          , Texture(), 0.f)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"3D Models"       , Texture(), 0.f)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Textures"        , Texture(), 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Materials"       , Texture(), 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Brushes"         , Texture(), 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Fonts"           , Texture(), 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Scripts"         , Texture(), 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Filters"         , Texture(), 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Layers"          , Texture(), 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"3D Models"       , Texture(), 0.f,false)),
                                         }
                                     )
                                 },
@@ -293,6 +338,7 @@ public:
                                 true,
                                 true,
                                 false,
+                                true,
                                 true,
                                 1.f,
                                 1
@@ -301,19 +347,7 @@ public:
                                 shaders.buttonShader,
                                 colorPalette,
                                 {
-                                    Section(
-                                        Element(Button()),
-                                        {   
-                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , appTextures.greetingDialogImage, 0.f)),
-                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , appTextures.greetingDialogImage, 0.f)),
-                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_8"       , appTextures.greetingDialogImage, 0.f)),
-                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_7"       , appTextures.greetingDialogImage, 0.f)),
-                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_6"       , appTextures.greetingDialogImage, 0.f)),
-                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_2"       , appTextures.greetingDialogImage, 0.f)),
-                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_1"       , appTextures.greetingDialogImage, 0.f)),
-                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , appTextures.greetingDialogImage, 0.f)),
-                                        }
-                                    )
+                                    {}
                                 },
                                 
                                 glm::vec2(1,48), //Initial scale value
@@ -324,9 +358,54 @@ public:
                                 true,
                                 false,
                                 true,
+                                true,
                                 1.f,
                                 3
                             );
+        nodeEditorDisplayer  = Panel(
+                                shaders.buttonShader,
+                                colorPalette,
+                                {
+                                    {}
+                                },
+                                
+                                glm::vec2(25 ,5), //Initial scale value
+                                glm::vec3(50 ,95 ,0.1f),  //Initial position value
+                                colorPalette.mainColor, //Color of the panel
+                                colorPalette.thirdColor, //Color of the panel
+                                true,
+                                false,
+                                true,
+                                true,
+                                false,
+                                1.f,
+                                1
+                            );
+        selectedTextureDisplayer  = Panel(
+                                shaders.buttonShader,
+                                colorPalette,
+                                {
+                                    Section(
+                                        Element(Button()),
+                                        {   
+                                            Element(Button(1,glm::vec2(2,5.5f),colorPalette,shaders.buttonShader,""        , appTextures.greetingDialogImage, 0.f,false)),
+                                        }
+                                    )
+                                },
+                                
+                                glm::vec2(50 ,5), //Initial scale value
+                                glm::vec3(50 ,95 ,0.1f),  //Initial position value
+                                colorPalette.mainColor, //Color of the panel
+                                colorPalette.thirdColor, //Color of the panel
+                                true,
+                                true,
+                                false,
+                                true,
+                                false,
+                                1.f,
+                                1
+                            );
+        
 
         greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
     }    
@@ -348,12 +427,15 @@ public:
             Section libSection;
             libSection.header = Element(Button()); //Has no section button
             libraryPanelDisplayer.sections.clear();
-            for (size_t i = 0; i < library.textures.size()/1.5f; i++)
+            for (size_t i = 0; i < library.textures.size(); i++)
             {
-                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , library.textures[i], 0.f))) ;
+                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , library.textures[i], 0.f,false))) ;
             }
             libraryPanelDisplayer.sections.push_back(Section(Element(Button()),libSection.elements));
         }
+        
+        float screenGap = videoScale.x - context.windowScale.x; //Use that value to keep panels on the left side
+        float screenGapPerc = screenGap / videoScale.x * 100.f; 
 
         //--Render all the UI elements there
         
@@ -362,17 +444,33 @@ public:
         paintingPanel.render(videoScale,mouse,timer,textRenderer);
         libraryPanelLeft.render(videoScale,mouse,timer,textRenderer);
         libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer);
-        
-        float screenGap = videoScale.x - context.windowScale.x; //Use that value to keep panels on the left side
-        float screenGapPerc = screenGap / videoScale.x * 100.f; 
+        nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer);
+        selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer);
 
         //Positioning the panels
         paintingPanel.pos.x = windowPanel.pos.x - windowPanel.scale.x - paintingPanel.scale.x; //Keep on the left side of the window panel 
-        paintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + paintingPanel.scale.y; //Keep beneath the navigation bar
         windowPanel.pos.x = 100.f - windowPanel.scale.x - screenGapPerc; //Keep on the right side
+        libraryPanelDisplayer.pos.x = libraryPanelLeft.pos.x + libraryPanelLeft.scale.x + libraryPanelDisplayer.scale.x; //Keep on the left side of the window panel 
+        
+        paintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + paintingPanel.scale.y; //Keep beneath the navigation bar
         windowPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
         libraryPanelLeft.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
-        libraryPanelDisplayer.pos.x = libraryPanelLeft.pos.x + libraryPanelLeft.scale.x + libraryPanelDisplayer.scale.x; //Keep on the left side of the window panel 
+
+        libraryPanelDisplayer.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + libraryPanelDisplayer.scale.y; //Keep beneath the navigation bar
+        libraryPanelDisplayer.scale.y = 50 - navigationPanel.scale.y - nodeEditorDisplayer.scale.y;
+        libraryPanelLeft.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + libraryPanelDisplayer.scale.y; //Keep beneath the navigation bar
+        libraryPanelLeft.scale.y = 50 - navigationPanel.scale.y - nodeEditorDisplayer.scale.y;
+
+
+        nodeEditorDisplayer.pos.x = paintingPanel.pos.x - paintingPanel.scale.x - nodeEditorDisplayer.scale.x; //Keep on the left side of the window panel 
+        selectedTextureDisplayer.pos.x = libraryPanelDisplayer.pos.x - libraryPanelLeft.pos.x;
+        selectedTextureDisplayer.pos.y = nodeEditorDisplayer.pos.y;
+        selectedTextureDisplayer.scale.y = nodeEditorDisplayer.scale.y;
+        selectedTextureDisplayer.scale.x = libraryPanelDisplayer.scale.x + libraryPanelLeft.scale.x;
+        
+        nodeEditorDisplayer.scale.x = 50 - selectedTextureDisplayer.scale.x - (paintingPanel.scale.x+windowPanel.scale.x);
+        
+        selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
 
         //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
 

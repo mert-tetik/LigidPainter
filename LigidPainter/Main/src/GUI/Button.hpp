@@ -177,6 +177,8 @@ public:
     glm::vec3 outlineColor;
     glm::vec3 outlineColor2;
 
+    bool keepPressingState;
+
     float radius; //% Radius of the corners 
     int animationStyle; //determines what type of mouse hover or click animation will be used
     //0 = Change thickness for mousehover
@@ -207,7 +209,7 @@ public:
 
     //Manual constructor
     Button(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
-           Texture texture,float textScale,float panelOffset,bool outlineExtra,glm::vec3 outlineColor,glm::vec3 outlineColor2,float outlineThickness){
+           Texture texture,float textScale,float panelOffset,bool outlineExtra,glm::vec3 outlineColor,glm::vec3 outlineColor2,float outlineThickness,bool keepPressingState){
         
         //animationStyle determines what type of mouse hover or click animation will be used
         //0 = Change thickness for mousehover
@@ -230,10 +232,11 @@ public:
         this->outlineColor = outlineColor;
         this->outlineColor2 = outlineColor2;
         this->outlineThickness = outlineThickness;
+        this->keepPressingState = keepPressingState;
     }
 
     //Style constructor
-    Button(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,Texture texture,float panelOffset){
+    Button(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,Texture texture,float panelOffset,bool keepPressingState){
         //Style 0 = Stylized
         //style 1 = Solid
         //style 2 = both
@@ -243,6 +246,7 @@ public:
         this->scale = scale;
         this->texture = texture;
         this->panelOffset = panelOffset;
+        this->keepPressingState = keepPressingState;
         
         if(style == 0){
             this->color = colorPalette.oppositeColor;
@@ -323,9 +327,12 @@ public:
         if(hover && mouse.LClick){
             //Mouse left button pressed on top of the button
             //(if release on top of the button, the button will be clicked)
-            clickState1 = true;
+            if(keepPressingState)
+                clickState1 = !clickState1;
+            else
+                clickState1 = true;
         }
-        if(!mouse.LPressed){
+        if(!mouse.LPressed && !keepPressingState){
             //If clicked to the button
             if(clickState1 && hover){
                 //Clicked
@@ -335,7 +342,10 @@ public:
         }
 
         timer.transition(hover,hoverMixVal,0.2f); 
-        timer.transition(false,clickedMixVal,0.5f); 
+        if(keepPressingState)
+            timer.transition(clickState1,clickedMixVal,0.5f); 
+        else
+            timer.transition(false,clickedMixVal,0.5f); 
         
         //Render the button
         render(resultPos,resultScale,resultRadius,resultOutlineThickness);

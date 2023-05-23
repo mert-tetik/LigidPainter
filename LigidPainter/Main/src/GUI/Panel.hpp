@@ -71,6 +71,8 @@ private:
         rightSide.hover = mouse.isMouseHover(glm::vec2(grabbingRange,resultScale.y),glm::vec2(resultPos.x+resultScale.x,resultPos.y)) && !rightSide.locked;
         //Check if mouse on top of the bottom side of the panel
         bottomSide.hover = mouse.isMouseHover(glm::vec2(resultScale.x,grabbingRange),glm::vec2(resultPos.x,resultPos.y + resultScale.y)) && !bottomSide.locked;
+        //Check if mouse on top of the top side of the panel
+        topSide.hover = mouse.isMouseHover(glm::vec2(resultScale.x,grabbingRange),glm::vec2(resultPos.x,resultPos.y - resultScale.y)) && !topSide.locked;
 
         //Keep the left corner in the pressed state from the left click to left mouse button release
         if(leftSide.hover && mouse.LClick) //Clicked to the corner
@@ -89,11 +91,17 @@ private:
             bottomSide.pressed = true;
         if(!mouse.LPressed) //Corner released
             bottomSide.pressed = false;
+        
+        //Keep the top corner in the pressed state from the left click to left mouse button release
+        if(topSide.hover && mouse.LClick) //Clicked to the corner
+            topSide.pressed = true;
+        if(!mouse.LPressed) //Corner released
+            topSide.pressed = false;
 
         //Change the cursor
         if(leftSide.hover || leftSide.pressed || rightSide.hover || rightSide.pressed)
             mouse.setCursor(mouse.hSlideCursor);
-        if(bottomSide.hover || bottomSide.pressed)
+        if(bottomSide.hover || bottomSide.pressed || topSide.hover || topSide.pressed)
             mouse.setCursor(mouse.vSlideCursor);
     }
 
@@ -125,6 +133,15 @@ private:
                 pos.y -= mouse.mouseOffset.y/videoScale.y *50.f;
             }
         }
+        
+        else if(topSide.pressed){
+            scale.y -= mouse.mouseOffset.y/videoScale.y * 50.f;
+            pos.y += mouse.mouseOffset.y/videoScale.y *50.f;
+            if(scale.y < 0.5f || scale.y > 20){
+                scale.y += mouse.mouseOffset.y/videoScale.y * 50.f;
+                pos.y -= mouse.mouseOffset.y/videoScale.y *50.f;
+            }
+        }
 
     }
     void prepDrawBtnVertically(Element &button,Element &previousButton,float& elementPos,int btnCounter){
@@ -142,7 +159,7 @@ private:
         //button.pos.y += sections[sI].elements[0].scale.y;
         
         if(btnCounter && btnCounter % rowCount == 0)        
-            elementPos += (button.scale.y + previousButton.scale.y) + previousButton.panelOffset;
+            elementPos += (button.scale.y + previousButton.scale.y) + button.panelOffset;
 
         button.pos.z += 0.01f;
         button.pos.y = elementPos - slideVal * slideRatio;
@@ -155,7 +172,7 @@ private:
         //button.pos.x += sections[sI].elements[0].scale.x;
 
         if(btnCounter)        
-            elementPos += (button.scale.x + previousButton.scale.x) + previousButton.panelOffset;
+            elementPos += (button.scale.x + previousButton.scale.x) + button.panelOffset;
 
         button.pos.z += 0.01f;
         button.pos.x = elementPos;
@@ -182,8 +199,29 @@ private:
 
         shader.setFloat("thickness" ,    outlineThickness  );
 
-
         glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
+        //Barriers (In order to prevent the overflow)
+        //Bottom
+        shader.setVec3("pos",       glm::vec3(resultPos.x,resultPos.y + resultScale.y + 5000,1.f)); //To the bottom
+        shader.setVec2("scale",     glm::vec2(5000));
+        
+        shader.setFloat("radius",     0.f   ); 
+        shader.setInt("outlineExtra" ,    false     ); 
+        
+        shader.setVec4("color",     glm::vec4(0)   ); //Invisible
+        shader.setVec3("outlineColor" ,    glm::vec4(0)     ); //Invisible
+        
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        //Top
+        shader.setVec3("pos",       glm::vec3(resultPos.x,resultPos.y - resultScale.y - 5000,1.f)); //To the bottom
+        shader.setVec2("scale",     glm::vec2(5000));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
+
+
 
         //Panel's buttons
 
@@ -223,22 +261,29 @@ private:
                 sections[sI].header.render(videoScale,mouse,timer,textRenderer);
                 btnCounter++; //Indexing buttons to position them
             }
+            if(sections[sI].header.button.clickState1 == true || !sections[sI].header.button.text.size()){
+                for (int i = 0; i < sections[sI].elements.size(); i++) //
+                {
+                    //Buttons of the current section
 
-            for (int i = 0; i < sections[sI].elements.size(); i++) //
-            {
-                //Buttons of the current section
+                    //Prepare the transform data of the button    
+                    if(vertical)
+                        prepDrawBtnVertically(sections[sI].elements[i],sections[sI].elements[max(i-1,0)],elementPos,btnCounter);
+                    else
+                        prepDrawBtnHorizontally(sections[sI].elements[i],sections[sI].elements[max(i-1,0)],elementPos,btnCounter);
 
-                //Prepare the transform data of the button    
-                if(vertical)
-                    prepDrawBtnVertically(sections[sI].elements[i],sections[sI].elements[max(i-1,0)],elementPos,btnCounter);
-                else
-                    prepDrawBtnHorizontally(sections[sI].elements[i],sections[sI].elements[max(i-1,0)],elementPos,btnCounter);
+                    //Draw the button
+                    if(sections[sI].elements[i].pos.y < (pos.y + scale.y) && sections[sI].elements[i].pos.y > (pos.y - scale.y)) //Don't render the unshown textures
+                        sections[sI].elements[i].render(videoScale,mouse,timer,textRenderer);
+                        
+                    btnCounter++; //Indexing buttons to position them
 
-                //Draw the button
-                sections[sI].elements[i].render(videoScale,mouse,timer,textRenderer);
-                btnCounter++; //Indexing buttons to position them
+                }
             }
         }
+
+        endRenderingTheButtons:
+
         sliderButton.pos = pos;
         sliderButton.pos.x = pos.x + sliderButton.scale.x + scale.x;
         slideRatio = elementPos / (pos.y + scale.y);
@@ -256,6 +301,7 @@ private:
             } 
         }
 
+        glClear(GL_DEPTH_BUFFER_BIT);
     }
 
 
@@ -285,13 +331,14 @@ public:
     PanelSide leftSide;
     PanelSide rightSide;
     PanelSide bottomSide;
+    PanelSide topSide;
 
     float slideVal = 0.f;
 
     Button sliderButton;
 
     Panel(){}
-    Panel(Shader shader,ColorPalette colorPalette,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,bool vertical,bool lockL,bool lockR,bool lockB,
+    Panel(Shader shader,ColorPalette colorPalette,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,bool vertical,bool lockL,bool lockR,bool lockB,bool lockT,
           float outlineThickness,int rowCount){
 
         this->shader = shader;
@@ -305,9 +352,10 @@ public:
         this->leftSide.locked = lockL;
         this->rightSide.locked = lockR;
         this->bottomSide.locked = lockB;
+        this->topSide.locked = lockT;
         this->rowCount = rowCount; 
 
-        this->sliderButton = Button(1,glm::vec2(1,20),colorPalette,shader,"",Texture(),0.f);
+        this->sliderButton = Button(1,glm::vec2(1,20),colorPalette,shader,"",Texture(),0.f,false);
     }
 
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){
