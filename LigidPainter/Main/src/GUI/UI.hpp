@@ -183,7 +183,7 @@ public:
         //Init the painting panel
         navigationPanel = Panel(
                                 shaders.buttonShader,
-                                
+                                colorPalette,
                                 {
                                     Section(
                                         Element(Button()),
@@ -210,6 +210,7 @@ public:
 
         windowPanel  = Panel(
                                 shaders.buttonShader,
+                                colorPalette,
 
                                 {
                                     Section(
@@ -237,7 +238,7 @@ public:
 
         paintingPanel=Panel(
                                 shaders.buttonShader,
-                                
+                                colorPalette,
                                 {
                                     Section(
                                         Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Brush"  , appTextures.TDModelIcon, 0.f)),
@@ -268,7 +269,7 @@ public:
         
         libraryPanelLeft  = Panel(
                                 shaders.buttonShader,
-
+                                colorPalette,
                                 {
                                     Section(
                                         Element(Button()),
@@ -298,7 +299,7 @@ public:
                             );
         libraryPanelDisplayer  = Panel(
                                 shaders.buttonShader,
-
+                                colorPalette,
                                 {
                                     Section(
                                         Element(Button()),
@@ -342,12 +343,12 @@ public:
         //userInterface.projection = glm::mat4(...)
         shaders.buttonShader.setMat4("projection",projection); 
         
-        //Update the library displayer panel
+        //Update the library displayer panel every 100 frame
         if(frameCounter % 100 == 0){
             Section libSection;
             libSection.header = Element(Button()); //Has no section button
             libraryPanelDisplayer.sections.clear();
-            for (size_t i = 0; i < library.textures.size(); i++)
+            for (size_t i = 0; i < library.textures.size()/1.5f; i++)
             {
                 libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , library.textures[i], 0.f))) ;
             }

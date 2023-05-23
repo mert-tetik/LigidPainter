@@ -89,7 +89,7 @@ public:
         this->textureDisplayerButton.outlineColor = glm::vec4(0);
         this->textureDisplayerButton.outlineColor2 = glm::vec4(0);
 
-        this->bgPanel = Panel(buttonShader,{},glm::vec2(20),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,false,true,true,true,1.f,1.f);
+        this->bgPanel = Panel(buttonShader,colorPalette,{},glm::vec2(20),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,false,true,true,true,1.f,1.f);
     }
     
     void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer textRenderer,glm::vec2 videoScale){

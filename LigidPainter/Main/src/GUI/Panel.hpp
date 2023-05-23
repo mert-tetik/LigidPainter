@@ -56,6 +56,8 @@ struct PanelSide{
 class Panel
 {
 private:
+    float slideRatio = 1.f;
+
     void mouseTracking(Mouse& mouse,glm::vec2 resultScale,glm::vec3 resultPos){
         //Check if mouse on the panel or any side of the panel 
 
@@ -143,7 +145,7 @@ private:
             elementPos += (button.scale.y + previousButton.scale.y) + previousButton.panelOffset;
 
         button.pos.z += 0.01f;
-        button.pos.y = elementPos;
+        button.pos.y = elementPos - slideVal * slideRatio;
     }
     void prepDrawBtnHorizontally(Element &button,Element &previousButton,float& elementPos,int btnCounter){
         button.scale.y = scale.y;
@@ -237,7 +239,27 @@ private:
                 btnCounter++; //Indexing buttons to position them
             }
         }
+        sliderButton.pos = pos;
+        sliderButton.pos.x = pos.x + sliderButton.scale.x + scale.x;
+        slideRatio = elementPos / (pos.y + scale.y);
+        
+        if(slideRatio > 1 && vertical){
+            sliderButton.scale.y = scale.y / slideRatio;
+            sliderButton.pos.y = (pos.y - scale.y) + sliderButton.scale.y + slideVal;  
+            sliderButton.render(videoScale,mouse,timer,textRenderer);
+            if(sliderButton.clickState1){ //Pressed
+                slideVal += mouse.mouseOffset.y;
+                if(slideVal < 0)
+                    slideVal = 0;
+                if(sliderButton.pos.y + sliderButton.scale.y >= pos.y + scale.y && mouse.mouseOffset.y > 0)
+                    slideVal -= mouse.mouseOffset.y;
+            } 
+        }
+
     }
+
+
+
 public:
     Shader shader;
 
@@ -264,8 +286,14 @@ public:
     PanelSide rightSide;
     PanelSide bottomSide;
 
+    float slideVal = 0.f;
+
+    Button sliderButton;
+
     Panel(){}
-    Panel(Shader shader,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,bool vertical,bool lockL,bool lockR,bool lockB,float outlineThickness,int rowCount){
+    Panel(Shader shader,ColorPalette colorPalette,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,bool vertical,bool lockL,bool lockR,bool lockB,
+          float outlineThickness,int rowCount){
+
         this->shader = shader;
         this->vertical = vertical;
         this->scale = scale;
@@ -278,6 +306,8 @@ public:
         this->rightSide.locked = lockR;
         this->bottomSide.locked = lockB;
         this->rowCount = rowCount; 
+
+        this->sliderButton = Button(1,glm::vec2(1,20),colorPalette,shader,"",Texture(),0.f);
     }
 
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){
