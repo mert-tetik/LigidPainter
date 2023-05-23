@@ -74,6 +74,9 @@ struct Shaders{
 struct AppTextures{ //Textures those will be used in UI of the app
     //--Icons
     Texture TDModelIcon; //3D Model Icon 
+    
+    //--Textures
+    Texture greetingDialogImage;  
 };
 
 struct Fonts{ //Fonts those will be used in the app
@@ -94,10 +97,12 @@ private:
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         #endif
         context.window = glfwCreateWindow(videoScale.x, videoScale.y, "LigidPainter", NULL, NULL);
+        
         if (context.window == NULL)
         {
             std::cout << "Failed to create GLFW window" << std::endl;
         }
+        
         glfwMakeContextCurrent(context.window);
         
 
@@ -177,6 +182,10 @@ public:
 
         initGlad();
 
+        //--Load the app textures
+        appTextures.TDModelIcon.load("./LigidPainter/Resources/Icons/3DModel.jpg");
+        appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
+
         //Init skyboxes
         //TODO : Remove those (maybe)
         shaders.tdModelShader = Shader("LigidPainter/Resources/Shaders/3DModel.vert","LigidPainter/Resources/Shaders/3DModel.frag",nullptr);
@@ -206,12 +215,9 @@ public:
 
         //Init the text renderer
         textRenderer = TextRenderer(fonts.Arial);
-        
-        //--Load the app textures
-        appTextures.TDModelIcon.load("C:/Users/CASPER/source/repos/LigidPainter/LigidPainter/Resources/Icons/3DModel.jpg");
 
         //Init the userinterface
-        userInterface.init(shaders,context,appTextures);
+        userInterface.init(shaders,context,appTextures,videoScale);
 
         //Init mouse class
         mouse = Mouse(context.window);
@@ -220,7 +226,7 @@ public:
     }
 
     void render(){
-        glfwPollEvents();
+       glfwPollEvents();
         
         //Update timer data
         timer.runTimer();
@@ -257,7 +263,7 @@ public:
        
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
-        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context);//Render the UI
+        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box);//Render the UI
 
         box.unbindBuffers(); //Finish rendering the UI
 

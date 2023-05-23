@@ -130,6 +130,7 @@ struct Section{ //Sections seperates the elements in the panel
 
 
 #include "GUI/Panel.hpp"
+#include "GUI/Dialogs/GreetingDialog.hpp"
 #include "Mouse.hpp"
 
 
@@ -152,11 +153,16 @@ public:
     Panel navigationPanel;
     Panel windowPanel;
     Panel paintingPanel; //Main panel (kinda)
-    Panel libraryPanel; 
+    Panel libraryPanelLeft; 
+    Panel libraryPanelDisplayer; 
 
     Shaders shaders; 
 
 	AppTextures appTextures;
+
+    //Dialogs    
+    GreetingDialog greetingDialog;
+
     
     //UI Rendering projection
     //Has the screen resolution
@@ -167,7 +173,7 @@ public:
     
     UI(){}
 
-    void init(Shaders shaders,Context context,AppTextures appTextures){
+    void init(Shaders shaders,Context context,AppTextures appTextures,glm::vec2 videoScale){
         this->shaders = shaders;
         this->appTextures = appTextures;
         
@@ -195,7 +201,8 @@ public:
                                 true,
                                 true,
                                 false,
-                                1.f
+                                1.f,
+                                1
                             );
 
         windowPanel  = Panel(
@@ -221,7 +228,8 @@ public:
                                 false,
                                 true,
                                 true,
-                                1.f
+                                1.f,
+                                1
                             );
 
         paintingPanel=Panel(
@@ -251,10 +259,11 @@ public:
                                 false,
                                 true,
                                 true,
-                                1.f
+                                1.f,
+                                1
                             );
         
-        libraryPanel  = Panel(
+        libraryPanelLeft  = Panel(
                                 shaders.buttonShader,
 
                                 {
@@ -281,11 +290,44 @@ public:
                                 true,
                                 false,
                                 true,
-                                1.f
+                                1.f,
+                                1
                             );
+        libraryPanelDisplayer  = Panel(
+                                shaders.buttonShader,
+
+                                {
+                                    Section(
+                                        Element(Button()),
+                                        {   
+                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , appTextures.greetingDialogImage, 0.f)),
+                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , appTextures.greetingDialogImage, 0.f)),
+                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_8"       , appTextures.greetingDialogImage, 0.f)),
+                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_7"       , appTextures.greetingDialogImage, 0.f)),
+                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_6"       , appTextures.greetingDialogImage, 0.f)),
+                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_2"       , appTextures.greetingDialogImage, 0.f)),
+                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_1"       , appTextures.greetingDialogImage, 0.f)),
+                                            Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , appTextures.greetingDialogImage, 0.f)),
+                                        }
+                                    )
+                                },
+                                
+                                glm::vec2(1,48), //Initial scale value
+                                glm::vec3(1,50,0.1f),  //Initial position value
+                                colorPalette.mainColor, //Color of the panel
+                                colorPalette.thirdColor, //Color of the panel
+                                true,
+                                true,
+                                false,
+                                true,
+                                1.f,
+                                3
+                            );
+
+        greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
     }    
 
-    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context){
+    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box){
         glDepthFunc(GL_LEQUAL);
 
         //Use the related shader
@@ -302,7 +344,8 @@ public:
         navigationPanel.render(videoScale,mouse,timer,textRenderer);
         windowPanel.render(videoScale,mouse,timer,textRenderer);
         paintingPanel.render(videoScale,mouse,timer,textRenderer);
-        libraryPanel.render(videoScale,mouse,timer,textRenderer);
+        libraryPanelLeft.render(videoScale,mouse,timer,textRenderer);
+        libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer);
         
         float screenGap = videoScale.x - context.windowScale.x; //Use that value to keep panels on the left side
         float screenGapPerc = screenGap / videoScale.x * 100.f; 
@@ -312,7 +355,10 @@ public:
         paintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + paintingPanel.scale.y; //Keep beneath the navigation bar
         windowPanel.pos.x = 100.f - windowPanel.scale.x - screenGapPerc; //Keep on the right side
         windowPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
-        libraryPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
+        libraryPanelLeft.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
+        libraryPanelDisplayer.pos.x = libraryPanelLeft.pos.x + libraryPanelLeft.scale.x + libraryPanelDisplayer.scale.x; //Keep on the left side of the window panel 
+
+        //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
     }
 };
 

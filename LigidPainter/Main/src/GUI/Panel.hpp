@@ -126,16 +126,20 @@ private:
 
     }
     void prepDrawBtnVertically(Element &button,Element &previousButton,float& elementPos,int btnCounter){
-        button.scale.x = scale.x;
+        button.scale.x = scale.x/rowCount;
+        
+        
 
         //Move the button on top of the panel
         button.pos = pos;
-        //button.pos.y -= scale.y;
         
+        button.pos.x -= scale.x;
+        button.pos.x += button.scale.x;
+        button.pos.x += button.scale.x*2.f * (btnCounter % rowCount);
         button.pos.y += button.scale.y;
         //button.pos.y += sections[sI].elements[0].scale.y;
         
-        if(btnCounter)        
+        if(btnCounter && btnCounter % rowCount == 0)        
             elementPos += (button.scale.y + previousButton.scale.y) + previousButton.panelOffset;
 
         button.pos.z += 0.01f;
@@ -250,6 +254,8 @@ public:
     bool hover = false; //Panel's itself
     
     bool vertical = true;
+    
+    int rowCount; //How many element will share the same row
 
     float outlineThickness;
 
@@ -259,7 +265,7 @@ public:
     PanelSide bottomSide;
 
     Panel(){}
-    Panel(Shader shader,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,bool vertical,bool lockL,bool lockR,bool lockB,float outlineThickness){
+    Panel(Shader shader,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,bool vertical,bool lockL,bool lockR,bool lockB,float outlineThickness,int rowCount){
         this->shader = shader;
         this->vertical = vertical;
         this->scale = scale;
@@ -271,6 +277,7 @@ public:
         this->leftSide.locked = lockL;
         this->rightSide.locked = lockR;
         this->bottomSide.locked = lockB;
+        this->rowCount = rowCount; 
     }
 
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){

@@ -71,7 +71,6 @@ void main(){
         //Render the texture
         vec2 uv = texCoords;
         fragColor = texture(txtr, uv).rgba;
-        fragColor.a = 0.5; 
     }
     else if(renderText == 1){
         //Render the text
@@ -86,7 +85,9 @@ void main(){
         if(outline == 1)
             doOutline = true;
 
-        fragColor.a = roundUp(texCoords,doOutline); //Give the outline or curves to the corners
+        float roundVal = roundUp(texCoords,doOutline); 
+        if(roundVal < 0.2)
+            fragColor.a = roundVal; //Give the outline or curves to the corners
     }
     
     if(outlineExtra == 1){

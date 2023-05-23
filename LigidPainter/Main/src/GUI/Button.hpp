@@ -108,7 +108,7 @@ private:
         bool renderTheText = true;
         if(texture.ID != 0){
             //Scale of the texture
-            glm::vec2 resultScaleTexture = glm::vec2(std::min(resultScale.x/1.5f,resultScale.y/1.5f));
+            glm::vec2 resultScaleTexture = glm::vec2(std::min(resultScale.x/buttonImageScaleDivider,resultScale.y/buttonImageScaleDivider));
             textureRadius = resultScaleTexture.x;
 
             //Position of the texture
@@ -196,6 +196,8 @@ public:
     float hoverMixVal = 0.f;
     float clickedMixVal = 0.f;
 
+    int buttonImageScaleDivider = 1.5f;
+
     Button(){}
 
 
@@ -243,13 +245,13 @@ public:
         this->panelOffset = panelOffset;
         
         if(style == 0){
-            this->color = colorPalette.secondColor;
+            this->color = colorPalette.oppositeColor;
             this->color2 = colorPalette.themeColor;
             this->outline = true;
             this->radius = 0.5f;
             this->animationStyle = 0;
             this->textColor = colorPalette.oppositeColor;
-            this->textColor2 = colorPalette.thirdColor;
+            this->textColor2 = colorPalette.themeColor;
             this->textScale = 0.5f;
             this->outlineExtra = false;
             this->outlineColor = {};
@@ -269,6 +271,7 @@ public:
             this->outlineColor = colorPalette.oppositeColor;
             this->outlineColor2 = colorPalette.thirdColor;
             this->outlineThickness = 1.f;
+            this->buttonImageScaleDivider = 1.f;
         }
         if(style == 2){
             this->color = colorPalette.secondColor;
@@ -283,6 +286,7 @@ public:
             this->outlineColor = colorPalette.oppositeColor;
             this->outlineColor2 = colorPalette.thirdColor;
             this->outlineThickness = 2.f;
+            this->buttonImageScaleDivider = 2.f;
         }
     }
 
@@ -290,6 +294,7 @@ public:
 
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer){
         Util util;
+
 
         // pos value % of the video scale
         glm::vec3 resultPos = glm::vec3( 
