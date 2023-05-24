@@ -85,10 +85,11 @@ public:
 
     Node(){}
 
-    void loadIO(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs, Shader buttonShader,ColorPalette colorPalette){
+    void loadIO(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs, Shader buttonShader,ColorPalette colorPalette,float heigth){
         this->buttonShader = buttonShader;
         this->inputs = inputs;
         this->outputs = outputs;
+        this->scale.y = heigth;
 
 
         this->nodePanel = Panel(
@@ -164,8 +165,6 @@ public:
                     //Render the line (starting point : IO circle pos , destination point : cursor pos)
                     drawLine(glm::vec2(outputs[i-inputs.size()].IOCircle.pos.x,outputs[i-inputs.size()].IOCircle.pos.y),mouse.cursorPos/videoScale * 100.f,videoScale);
                 }
-                //Make the node's size compatible with elements of the node
-                nodePanel.scale.y = abs((nodePanel.pos.y - nodePanel.scale.y) - (nodePanel.sections[0].elements[i].pos.y + nodePanel.sections[0].elements[i].scale.y))/2.f + 2.f;
             }
         }
 

@@ -512,6 +512,7 @@ public:
 
         //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
         appNodes[0].render(videoScale,mouse,timer,textRenderer);
+        appNodes[1].render(videoScale,mouse,timer,textRenderer);
 
         if(frameCounter > 1000)
             frameCounter = 0;

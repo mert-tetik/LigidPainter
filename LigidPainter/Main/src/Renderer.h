@@ -251,7 +251,6 @@ public:
 
         //Create app nodes
         Node materialNode;
-
         materialNode.loadIO
         (
             {
@@ -261,11 +260,33 @@ public:
                 NodeIO("Input1",Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false),2),colorPalette.mainColor,colorPalette,shaders.buttonShader),
             },
             shaders.buttonShader,
-            colorPalette
+            colorPalette,
+            12.f
         );
+
+        Node meshOutputNode;
+        std::vector <NodeIO> meshOutputNodeInputElements;
+        
+        for (size_t i = 0; i < model.meshes.size(); i++)
+        {
+            meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,model.meshes[i].materialName,Texture(),2.f,false),0),colorPalette.mainColor,colorPalette,shaders.buttonShader));
+        }
+        
+        meshOutputNode.loadIO
+        (
+            meshOutputNodeInputElements,
+            {
+
+            },
+            shaders.buttonShader,
+            colorPalette,
+            25.f
+        );
+        
 
         //materialNode.loadNode();
         appNodes.push_back(materialNode);
+        appNodes.push_back(meshOutputNode);
 
     }
 
