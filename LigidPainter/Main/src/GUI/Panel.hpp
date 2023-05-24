@@ -273,7 +273,7 @@ private:
                         prepDrawBtnHorizontally(sections[sI].elements[i],sections[sI].elements[max(i-1,0)],elementPos,btnCounter);
 
                     //Draw the button
-                    if(sections[sI].elements[i].pos.y < (pos.y + scale.y) && sections[sI].elements[i].pos.y > (pos.y - scale.y)) //Don't render the unshown textures
+                    if(sections[sI].elements[i].pos.y - sections[sI].elements[i].scale.y < (pos.y + scale.y) && sections[sI].elements[i].pos.y + sections[sI].elements[i].scale.y > (pos.y - scale.y)) //Don't render the unshown elements
                         sections[sI].elements[i].render(videoScale,mouse,timer,textRenderer);
                         
                     btnCounter++; //Indexing buttons to position them

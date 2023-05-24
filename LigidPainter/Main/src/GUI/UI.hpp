@@ -64,12 +64,14 @@ Example :
 
 #include "GUI/Button.hpp"
 #include "GUI/RangeBar.hpp"
+#include "GUI/CheckBox.hpp"
 
 struct Element{
     //The UI Element
 
     Button button;
     RangeBar rangeBar;
+    CheckBox checkBox;
     
     int state; //Decide which element will be used 0 = button 
     
@@ -97,6 +99,14 @@ struct Element{
         panelOffset = rangeBar.panelOffset;
         state = 1;
     }
+    Element(CheckBox checkBox){
+        //Init as range bar
+        this->checkBox = checkBox;
+        pos = checkBox.pos;
+        scale = checkBox.scale;
+        panelOffset = checkBox.panelOffset;
+        state = 2;
+    }
 
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer){
         if(state == 0){ //Render the button
@@ -105,11 +115,17 @@ struct Element{
             button.panelOffset = panelOffset;
             button.render(videoScale,mouse, timer,textRenderer);
         }
-        if(state == 1){ //Render the button
+        if(state == 1){ //Render the rangeBar
             rangeBar.pos = pos;
             rangeBar.scale = scale;
             rangeBar.panelOffset = panelOffset;
             rangeBar.render(videoScale,mouse, timer,textRenderer);
+        }
+        if(state == 2){ //Render the checkBox
+            checkBox.pos = pos;
+            checkBox.scale = scale;
+            checkBox.panelOffset = panelOffset;
+            checkBox.render(videoScale,mouse, timer,textRenderer);
         }
     }
 };
@@ -279,8 +295,8 @@ public:
                                         Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Area"  , appTextures.TDModelIcon, 3.f,true)),
                                         {   
                                             Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Box"  , appTextures.TDModelIcon, 1.f,false)),
-                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Gradient"  , appTextures.TDModelIcon, 1.f,true)),
-                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Depth Test"  , appTextures.TDModelIcon, 1.f,true)),
+                                            Element(CheckBox(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Gradient"  , 1.f)),
+                                            Element(CheckBox(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Depth Test"  , 1.f)),
                                             Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Lasso"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                             Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Polygonal Lasso"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                             Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Circle"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
