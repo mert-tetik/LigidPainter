@@ -40,6 +40,7 @@ Renderer.h : Renders the whole screen
 #include "TextRendering/Font.hpp"
 #include "TextRendering/TextRenderer.hpp"
 
+
 struct Camera{
     float yaw = -90.f;
     float pitch = 0.f;
@@ -88,8 +89,10 @@ struct Fonts{ //Fonts those will be used in the app
 }
 
 #include "GUI/UI.hpp"
+#include "GUI/Node/Node.hpp"
+#include "GUI/Node/NodeIO.hpp"
 
-class Renderer
+;class Renderer
 {
 private:
     void initGLFW(glm::vec2 videoScale){
@@ -172,7 +175,11 @@ public:
     //Textures those will be used in UI of the app
     AppTextures appTextures;
 
+    std::vector<Node> appNodes;
+
     Library library;
+
+    ColorPalette colorPalette;
 
 
     Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
@@ -242,6 +249,24 @@ public:
             library.textures.push_back(texture);
         }
 
+        //Create app nodes
+        Node materialNode;
+
+        materialNode.loadIO
+        (
+            {
+                NodeIO("Input1",Element(Button(1,glm::vec2(1,8),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false),1),colorPalette.mainColor,colorPalette,shaders.buttonShader),
+            },
+            {
+                NodeIO("Input1",Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false),2),colorPalette.mainColor,colorPalette,shaders.buttonShader),
+            },
+            shaders.buttonShader,
+            colorPalette
+        );
+
+        //materialNode.loadNode();
+        appNodes.push_back(materialNode);
+
     }
 
     void render(){
@@ -283,7 +308,7 @@ public:
        
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
-        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library);//Render the UI
+        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes);//Render the UI
 
         box.unbindBuffers(); //Finish rendering the UI
 

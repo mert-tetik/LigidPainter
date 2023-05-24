@@ -69,6 +69,8 @@ Example :
 struct Element{
     //The UI Element
 
+    int nodeState; //Used by the elements of nodes (0 : Input , 1 : Input no connection , 2 : Output , 3 : Output no connection)
+
     Button button;
     RangeBar rangeBar;
     CheckBox checkBox;
@@ -98,6 +100,24 @@ struct Element{
         scale = rangeBar.scale;
         panelOffset = rangeBar.panelOffset;
         state = 1;
+    }
+    Element(Button button,int nodeState){
+        //Init as button
+        this->button = button;
+        pos = button.pos;
+        scale = button.scale;
+        panelOffset = button.panelOffset;
+        state = 0;
+        this->nodeState = nodeState;
+    }
+    Element(RangeBar rangeBar,int nodeState){
+        //Init as range bar
+        this->rangeBar = rangeBar;
+        pos = rangeBar.pos;
+        scale = rangeBar.scale;
+        panelOffset = rangeBar.panelOffset;
+        state = 1;
+        this->nodeState = nodeState;
     }
     Element(CheckBox checkBox){
         //Init as range bar
@@ -149,6 +169,8 @@ struct Section{ //Sections seperates the elements in the panel
 #include "GUI/Panel.hpp"
 #include "GUI/Dialogs/GreetingDialog.hpp"
 #include "Mouse.hpp"
+#include "GUI/Node/Node.hpp"
+#include "GUI/Node/NodeIO.hpp"
 
 
 #include <glm/gtc/type_ptr.hpp>
@@ -180,7 +202,7 @@ public:
 	AppTextures appTextures;
 
     //Dialogs    
-    GreetingDialog greetingDialog;
+    //GreetingDialog greetingDialog;
 
     int frameCounter = 0; //Reset every 1000 frame
 
@@ -423,10 +445,10 @@ public:
                             );
         
 
-        greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
+        //greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
     }    
 
-    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library library){
+    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library library,std::vector<Node> &appNodes){
         glDepthFunc(GL_LEQUAL);
 
         //Use the related shader
@@ -489,6 +511,7 @@ public:
         selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
 
         //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
+        appNodes[0].render(videoScale,mouse,timer,textRenderer);
 
         if(frameCounter > 1000)
             frameCounter = 0;

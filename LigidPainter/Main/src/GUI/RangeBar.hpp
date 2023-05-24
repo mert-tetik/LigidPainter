@@ -202,6 +202,7 @@ public:
 
         // scale value % of the video scale
         glm::vec2 resultScale = util.getPercent(videoScale,scale);
+        resultScale.x /= 1.2f;
         
         // scale value % of the video scale
         float resultRadius = util.getPercent(videoScale.x,radius);
