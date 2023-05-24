@@ -76,7 +76,8 @@ public:
 
     int ID; //Unique id for the node
 
-    Panel nodePanel;
+    Panel nodePanel;//Node's itself
+    Button barButton; //That bar on top of the nodes 
 
     glm::vec2 scale = glm::vec2(10,20); //Scale of the node
     glm::vec3 pos = glm::vec3(50,50,0.9f); //Position of the node
@@ -88,6 +89,7 @@ public:
         this->buttonShader = buttonShader;
         this->inputs = inputs;
         this->outputs = outputs;
+
 
         this->nodePanel = Panel(
             buttonShader,
@@ -107,6 +109,7 @@ public:
             0.5f,
             1
         );
+        this->barButton = Button(2,nodePanel.scale,colorPalette,buttonShader,"Node",Texture(),0.f,false);
 
         Section section;
         section.header = Element(Button());
@@ -128,31 +131,58 @@ public:
 
 
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){
+        nodePanel.render(videoScale,mouse,timer,textRenderer);
+        
         for (size_t i = 0; i < nodePanel.sections[0].elements.size(); i++)
         {
             if(nodePanel.sections[0].elements[i].nodeState == 0){//Input
+
+                //Move the IO Circle to the left side of the the input element
                 inputs[i].IOCircle.pos = nodePanel.sections[0].elements[i].pos;
                 inputs[i].IOCircle.pos.x -= nodePanel.sections[0].elements[i].scale.x;
+                inputs[i].IOCircle.pos.z = nodePanel.sections[0].elements[i].pos.z + 0.01f;
 
+                //Render the IO circle
                 inputs[i].IOCircle.render(videoScale,mouse,timer,textRenderer);
             }
             if(nodePanel.sections[0].elements[i].nodeState == 2){//Outputs
+
+                //Move the IO Circle to the right side of the the output element
                 outputs[i-inputs.size()].IOCircle.pos = nodePanel.sections[0].elements[i].pos;
                 outputs[i-inputs.size()].IOCircle.pos.x += nodePanel.sections[0].elements[i].scale.x;
+                outputs[i-inputs.size()].IOCircle.pos.z = nodePanel.sections[0].elements[i].pos.z + 0.01f;
 
                 outputs[i-inputs.size()].IOCircle.render(videoScale,mouse,timer,textRenderer);
+                
                 if(outputs[i-inputs.size()].IOCircle.clickState1){//Pressed to IO circle
                     Util util;
+                    
+                    //Don't scale the panel if IO circle is pressed
                     nodePanel.leftSide.pressed = false;
                     nodePanel.rightSide.pressed = false;
+                    
+                    //Render the line (starting point : IO circle pos , destination point : cursor pos)
                     drawLine(glm::vec2(outputs[i-inputs.size()].IOCircle.pos.x,outputs[i-inputs.size()].IOCircle.pos.y),mouse.cursorPos/videoScale * 100.f,videoScale);
                 }
-            
-                nodePanel.scale.y = abs((nodePanel.pos.y - nodePanel.scale.y) - (nodePanel.sections[0].elements[i].pos.y + nodePanel.sections[0].elements[i].scale.y))/2.f;
+                //Make the node's size compatible with elements of the node
+                nodePanel.scale.y = abs((nodePanel.pos.y - nodePanel.scale.y) - (nodePanel.sections[0].elements[i].pos.y + nodePanel.sections[0].elements[i].scale.y))/2.f + 2.f;
             }
         }
-        nodePanel.render(videoScale,mouse,timer,textRenderer);
-        
+
+        //Position the bar button        
+        barButton.pos = nodePanel.pos;
+        barButton.scale = nodePanel.scale;
+        barButton.scale.y = 1.5f;
+        barButton.pos.y = nodePanel.pos.y - nodePanel.scale.y - barButton.scale.y; 
+
+        //Render the bar button
+        barButton.render(videoScale,mouse,timer,textRenderer);
+
+        //Move the node panel if bar button is pressed
+        if(barButton.clickState1){ //Pressed
+            nodePanel.pos.x += mouse.mouseOffset.x/videoScale.x * 100.f;
+            nodePanel.pos.y += mouse.mouseOffset.y/videoScale.y * 100.f;
+        }
     }
 };
 
