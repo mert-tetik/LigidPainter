@@ -313,6 +313,7 @@ public:
 
         //Render 3D Model
         shaders.tdModelShader.use();
+        shaders.tdModelShader.setVec3("viewPos",scene.camera.cameraPos);
         shaders.tdModelShader.setMat4("view",scene.viewMatrix);
         shaders.tdModelShader.setMat4("projection",scene.projectionMatrix);
         glm::mat4 modelMatrix = glm::mat4(1);
