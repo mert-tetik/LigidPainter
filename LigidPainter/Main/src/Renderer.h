@@ -74,6 +74,7 @@ struct Shaders{
     Shader tdModelShader;
     Shader skyboxShader;
     Shader buttonShader;
+    Shader prefilteringShader;
 };
 
 struct AppTextures{ //Textures those will be used in UI of the app
@@ -203,6 +204,7 @@ public:
         //TODO : Remove those (maybe)
         shaders.tdModelShader = Shader("LigidPainter/Resources/Shaders/3DModel.vert","LigidPainter/Resources/Shaders/3DModel.frag",nullptr);
         shaders.skyboxShader = Shader("LigidPainter/Resources/Shaders/Skybox.vert","LigidPainter/Resources/Shaders/Skybox.frag",nullptr);
+        shaders.prefilteringShader = Shader("LigidPainter/Resources/Shaders/Skybox.vert","LigidPainter/Resources/Shaders/PrefilterSkybox.frag",nullptr);
         shaders.buttonShader = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/Button.frag",nullptr);
 
         //Update necessary data before callbacks
@@ -222,6 +224,7 @@ public:
         
         //Loads the default skybox
         scene.skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky2");
+        scene.skybox.createPrefilterMap(shaders.prefilteringShader,videoScale);
         
         //Load the fonts
         fonts.Arial.loadFont("./LigidPainter/Resources/Fonts/Arial.ttf");
@@ -297,6 +300,8 @@ public:
         if(timer.runTimer())
             std::cout << timer.FPS << std::endl; //Print the fps every second
         
+        updateViewport();
+
         glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
@@ -308,17 +313,25 @@ public:
         shaders.skyboxShader.use();
         shaders.skyboxShader.setMat4("view",scene.viewMatrix);
         shaders.skyboxShader.setMat4("projection",scene.projectionMatrix);
+
         shaders.skyboxShader.setInt("skybox",0);
         scene.skybox.draw();
 
         //Render 3D Model
         shaders.tdModelShader.use();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP,scene.skybox.ID);
+        
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_CUBE_MAP,scene.skybox.IDPrefiltered);
+        shaders.tdModelShader.setInt("skybox",0);
+        shaders.tdModelShader.setInt("prefilterMap",1);
         shaders.tdModelShader.setVec3("viewPos",scene.camera.cameraPos);
         shaders.tdModelShader.setMat4("view",scene.viewMatrix);
         shaders.tdModelShader.setMat4("projection",scene.projectionMatrix);
         glm::mat4 modelMatrix = glm::mat4(1);
         shaders.tdModelShader.setMat4("modelMatrix",modelMatrix);
-        model.Draw();
+        //model.Draw();
 
         //Clear the depth buffer before rendering the UI elements (prevent coliding)
         glClear(GL_DEPTH_BUFFER_BIT);

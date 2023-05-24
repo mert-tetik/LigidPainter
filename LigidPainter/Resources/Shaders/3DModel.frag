@@ -10,7 +10,7 @@ in vec4 projectedPos;
 
 uniform vec3 viewPos;
 
-uniform samplerCube bluryskybox;
+uniform samplerCube skybox;
 uniform samplerCube prefilterMap;
 
 out vec4 fragColor;
@@ -161,7 +161,7 @@ vec3 getPBR(){
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;	  
     
-    vec3 irradiance = texture(bluryskybox, N).rgb ;
+    vec3 irradiance = texture(skybox, N).rgb ;
     vec3 diffuse      = albedo;
     
     // sample both the pre-filter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part.
