@@ -206,6 +206,7 @@ public:
 
     int frameCounter = 0; //Reset every 1000 frame
 
+    int selectedLibraryElementIndex = 0; //0 For the textures , 1 for the materials bla bla
     
     //UI Rendering projection
     //Has the screen resolution
@@ -360,14 +361,14 @@ public:
                                     Section(
                                         Element(Button()),
                                         {   
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Textures"        , Texture(), 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Materials"       , Texture(), 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Brushes"         , Texture(), 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Fonts"           , Texture(), 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Scripts"         , Texture(), 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Filters"         , Texture(), 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Layers"          , Texture(), 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"3D Models"       , Texture(), 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Textures"        , Texture(), 0.f,true)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Materials"       , Texture(), 0.f,true)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Brushes"         , Texture(), 0.f,true)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Fonts"           , Texture(), 0.f,true)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Scripts"         , Texture(), 0.f,true)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Filters"         , Texture(), 0.f,true)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Layers"          , Texture(), 0.f,true)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"3D Models"       , Texture(), 0.f,true)),
                                         }
                                     )
                                 },
@@ -475,9 +476,17 @@ public:
             Section libSection;
             libSection.header = Element(Button()); //Has no section button
             libraryPanelDisplayer.sections.clear();
-            for (size_t i = 0; i < library.textures.size(); i++)
-            {
-                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , library.textures[i], 0.f,false))) ;
+            if(selectedLibraryElementIndex == 0){
+                for (size_t i = 0; i < library.textures.size(); i++)
+                {
+                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , library.textures[i], 0.f,false))) ;
+                }
+            }
+            else if(selectedLibraryElementIndex == 0){
+                for (size_t i = 0; i < library.materials.size(); i++)
+                {
+                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"material_0"       , Texture(), 0.f,false))) ;
+                }
             }
             libraryPanelDisplayer.sections.push_back(Section(Element(Button()),libSection.elements));
         }
@@ -494,6 +503,21 @@ public:
         libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer);
         nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer);
         selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer);
+
+
+
+        //Update the selected library element index
+        for (size_t i = 0; i < libraryPanelLeft.sections[0].elements.size(); i++)
+        {
+            if(libraryPanelLeft.sections[0].elements[i].button.clickState1){ //If a button is clicked (textures or materials for example)
+                if(selectedLibraryElementIndex != i){ //If the clicked button is not selected 
+                    libraryPanelLeft.sections[0].elements[selectedLibraryElementIndex].button.clickState1 = false; //Unselect the selected one
+                    selectedLibraryElementIndex = i; //Select the clicked button
+                    break; 
+                }
+            }
+        }
+        
 
         //Positioning the panels
         paintingPanel.pos.x = windowPanel.pos.x - windowPanel.scale.x - paintingPanel.scale.x; //Keep on the left side of the window panel 

@@ -39,6 +39,7 @@ Renderer.h : Renders the whole screen
 #include "Timer.hpp"
 #include "TextRendering/Font.hpp"
 #include "TextRendering/TextRenderer.hpp"
+#include "3D/Material.hpp"
 
 
 struct Camera{
@@ -64,6 +65,7 @@ struct Scene{
 };
 struct Library{
     std::vector<Texture> textures;
+    std::vector<Material> materials;
 };
 struct Context{
     GLFWwindow* window;
