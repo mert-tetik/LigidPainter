@@ -169,8 +169,10 @@ struct Section{ //Sections seperates the elements in the panel
 #include "GUI/Panel.hpp"
 #include "GUI/Dialogs/GreetingDialog.hpp"
 #include "Mouse.hpp"
+#include "GUI/ContextMenu.hpp"
 #include "GUI/Node/Node.hpp"
 #include "GUI/Node/NodeIO.hpp"
+
 
 
 #include <glm/gtc/type_ptr.hpp>
@@ -186,6 +188,8 @@ struct Section{ //Sections seperates the elements in the panel
 
 
 class UI{
+    Shaders shaders; 
+	AppTextures appTextures;
 public:
     //UI Elements
     //(Mostly panels)
@@ -197,9 +201,7 @@ public:
     Panel nodeEditorDisplayer; 
     Panel selectedTextureDisplayer; 
 
-    Shaders shaders; 
 
-	AppTextures appTextures;
 
     //Dialogs    
     //GreetingDialog greetingDialog;
@@ -459,7 +461,7 @@ public:
         //greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
     }    
 
-    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes){
+    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<ContextMenu> &contextMenus){
         glDepthFunc(GL_LEQUAL);
 
         //Use the related shader
@@ -504,6 +506,31 @@ public:
         nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer);
         selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer);
 
+        for (size_t i = 0; i < contextMenus.size(); i++)//Check contextMenus
+        {
+            if(mouse.LClick||mouse.RClick||mouse.MClick||glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwGetKey(context.window,GLFW_KEY_ENTER) == GLFW_PRESS){
+               contextMenus[i].active = false; 
+            }
+            //Render the context menu if active
+            if(contextMenus[i].active){
+                contextMenus[i].render(videoScale,mouse,timer,textRenderer);
+                if(contextMenus[i].contextPanel.hover == false)
+                    contextMenus[i].active = false; 
+            }
+        }
+        for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++)
+        {
+            if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.RClick){ //Right clicked to a textuer
+                //Show the context menu
+                contextMenus[0].active = true;
+                contextMenus[0].pos.x = libraryPanelDisplayer.sections[0].elements[i].button.pos.x;
+                contextMenus[0].pos.y = libraryPanelDisplayer.sections[0].elements[i].button.pos.y;
+                contextMenus[0].pos.z = 0.95f;
+
+            }
+        }
+        
+        
 
         if(libraryPanelDisplayer.barButtons[0].clickedMixVal == 1.f && selectedLibraryElementIndex == 1){//Add button clicked
             library.materials.push_back(Material());

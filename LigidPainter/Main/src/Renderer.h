@@ -71,14 +71,12 @@ struct Context{
     GLFWwindow* window;
     glm::ivec2 windowScale;
 };
-
 struct Shaders{
     Shader tdModelShader;
     Shader skyboxShader;
     Shader buttonShader;
     Shader prefilteringShader;
 };
-
 struct AppTextures{ //Textures those will be used in UI of the app
     //--Icons
     Texture TDModelIcon; //3D Model Icon 
@@ -86,16 +84,17 @@ struct AppTextures{ //Textures those will be used in UI of the app
     //--Textures
     Texture greetingDialogImage;  
 };
-
 struct Fonts{ //Fonts those will be used in the app
     Font Arial;
-}
+};
 
 #include "GUI/UI.hpp"
+#include "GUI/ContextMenu.hpp"
 #include "GUI/Node/Node.hpp"
 #include "GUI/Node/NodeIO.hpp"
 
-;class Renderer
+
+class Renderer
 {
 private:
     void initGLFW(glm::vec2 videoScale){
@@ -184,6 +183,7 @@ public:
 
     ColorPalette colorPalette;
 
+    std::vector<ContextMenu> contextMenus; //0 for textures , 1 for materials
 
     Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
         //Hold the videoscale value inside of the scene structure
@@ -233,6 +233,10 @@ public:
 
         //Init the text renderer
         textRenderer = TextRenderer(fonts.Arial);
+
+        //Create context menus
+        contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Rename" ,"Favourite", "Duplicate" , "Copy Path", "Delete"})); //Textures 
+        contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Edit" ,"Rename" ,"Favourite", "Duplicate" , "Copy Path", "Delete"})); //Materials
 
         //Init the userinterface
         userInterface.init(shaders,context,appTextures,videoScale);
@@ -293,6 +297,7 @@ public:
         appNodes.push_back(materialNode);
         appNodes.push_back(meshOutputNode);
 
+
     }
 
     void render(){
@@ -345,7 +350,7 @@ public:
        
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
-        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes);//Render the UI
+        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,contextMenus);//Render the UI
 
         box.unbindBuffers(); //Finish rendering the UI
 
@@ -396,11 +401,11 @@ private:
         }  
         if(button == 1){ //Right
             if(action == 1)
-                mouse.LClick = true;
+                mouse.RClick = true;
         }  
         if(button == 2){ //Mid
             if(action == 1)
-                mouse.LClick = true;
+                mouse.MClick = true;
         }  
 
         

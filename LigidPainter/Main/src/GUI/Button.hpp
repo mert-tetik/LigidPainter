@@ -33,7 +33,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Timer.hpp"
 #include "Texture.hpp"
 
-#include "GUI/Button.hpp"
 #include "Mouse.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
@@ -200,10 +199,8 @@ public:
 
     int buttonImageScaleDivider = 1.5f;
 
+    
     Button(){}
-
-
-
 
     //----Constructors 
 
