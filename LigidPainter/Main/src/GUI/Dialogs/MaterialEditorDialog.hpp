@@ -32,6 +32,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Mouse.hpp"
 #include "Timer.hpp"
 
+#include "GUI/Dialogs/MaterialModifier.hpp"
+
 #include <glm/gtc/type_ptr.hpp>
 
 #include <string>
@@ -42,10 +44,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
+struct AppMaterialModifiers{
+    MaterialModifier textureModifier;
+};
+
 class MaterialEditorDialog
 {
 private:
-    /* data */
+    Shader buttonShader;
+    ColorPalette colorPalette;
 public:
     bool active = true; //Render the dialog
     glm::vec3 pos = glm::vec3(50.f,50.f,0.8f); ///Position of the dialog
@@ -63,9 +70,18 @@ public:
     Panel layerPanel; //Modifiers will be displayed in there
     Panel modifiersPanel; //Modifiers will be displayed in there
 
+    AppMaterialModifiers appMaterialModifiers;
+
+    std::vector<MaterialModifier> materialModifiers;
+
+    int selectedMaterialModifierIndex = 0;
+
     MaterialEditorDialog(){}
     
     MaterialEditorDialog(Shader buttonShader,ColorPalette colorPalette,AppTextures appTextures){
+        this->buttonShader = buttonShader; 
+        this->colorPalette = colorPalette; 
+        
         bgPanel = Panel
         (
             buttonShader,
@@ -82,19 +98,36 @@ public:
             },
             scale,pos,colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{});
         
-        layerPanel = Panel(buttonShader,colorPalette,{},scaleLayer,posLayer,colorPalette.mainColor,colorPalette.thirdColor,false,true,false,true,true,1.f,1.f,                                
+        layerPanel = Panel(buttonShader,colorPalette,{},scaleLayer,posLayer,colorPalette.mainColor,colorPalette.thirdColor,true,true,false,true,true,1.f,1.f,                                
                                 {
                                     Button(1,glm::vec2(2,1.5f),colorPalette,buttonShader,"Add"        , Texture(), 0.f,false),
                                     Button(1,glm::vec2(2,1.5f),colorPalette,buttonShader,"Del"        , Texture(), 0.f,false)
                                 }
                           );
-        modifiersPanel = Panel(buttonShader,colorPalette,{},scaleModifier,posModifier,colorPalette.mainColor,colorPalette.thirdColor,false,false,true,true,true,1.f,1.f,                                
+        modifiersPanel = Panel(buttonShader,colorPalette,{},scaleModifier,posModifier,colorPalette.mainColor,colorPalette.thirdColor,true,false,true,true,true,1.f,1.f,                                
                                 {
-                                    Button(1,glm::vec2(2,1.5f),colorPalette,buttonShader,"Add"        , Texture(), 0.f,false),
-                                    Button(1,glm::vec2(2,1.5f),colorPalette,buttonShader,"Del"        , Texture(), 0.f,false)
+                                
                                 }
                           );
         materialDisplayer = Button(1,glm::vec2(45,45),colorPalette,buttonShader,"Material"        , appTextures.greetingDialogImage, 0.f,false);
+
+
+        appMaterialModifiers.textureModifier = MaterialModifier("Texture Modifier",colorPalette,buttonShader,appTextures,
+            {
+                Section(
+                    Element(Button(1,glm::vec2(1,2.f),colorPalette,buttonShader,"Channels",Texture(),0.f,true)),
+                    {
+                        Element(Button(1,glm::vec2(1,1.5f),colorPalette,buttonShader,"Albedo",appTextures.greetingDialogImage,0.f,false)),
+                        Element(Button(1,glm::vec2(1,1.5f),colorPalette,buttonShader,"Roughness",appTextures.greetingDialogImage,0.f,false)),
+                        Element(Button(1,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",appTextures.greetingDialogImage,0.f,false)),
+                        Element(Button(1,glm::vec2(1,1.5f),colorPalette,buttonShader,"Normal map",appTextures.greetingDialogImage,0.f,false)),
+                        Element(Button(1,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height map",appTextures.greetingDialogImage,0.f,false)),
+                        Element(Button(1,glm::vec2(1,1.5f),colorPalette,buttonShader,"Ambient Occlusion",appTextures.greetingDialogImage,0.f,false))
+                    }
+                )
+            }
+        );
+
     }
 
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){
@@ -106,6 +139,42 @@ public:
         materialDisplayer.scale.x = (modifiersPanel.pos.x - modifiersPanel.scale.x) - (layerPanel.pos.x + layerPanel.scale.x); 
         materialDisplayer.scale.x /= 2.f;
         materialDisplayer.pos.x = modifiersPanel.pos.x - modifiersPanel.scale.x - materialDisplayer.scale.x;
+
+
+
+        //Update layer panal elements
+        if(layerPanel.barButtons[0].clickedMixVal == 1.f){
+            materialModifiers.push_back(appMaterialModifiers.textureModifier);
+
+            layerPanel.sections.clear();
+            Section layerPanelSection;
+            layerPanelSection.header = Element(Button());
+            for (size_t i = 0; i < materialModifiers.size(); i++)
+            {
+                layerPanelSection.elements.push_back(
+                    Element(Button(1,glm::vec2(2,1.5f),colorPalette,buttonShader,materialModifiers[i].title , Texture(), 0.f,true))
+                );
+            }
+            layerPanel.sections.push_back(layerPanelSection);
+        }
+
+        //Update the selected material modifier index
+        if(layerPanel.sections.size()){
+            for (size_t i = 0; i < layerPanel.sections[0].elements.size(); i++)
+            {
+                if(layerPanel.sections[0].elements[i].button.clickState1){ //If a modifier button is clicked 
+                    if(selectedMaterialModifierIndex != i){ //If the clicked button is not selected 
+                        layerPanel.sections[0].elements[selectedMaterialModifierIndex].button.clickState1 = false; //Unselect the selected one
+                        selectedMaterialModifierIndex = i; //Select the clicked button
+                        if(materialModifiers.size()){
+                            modifiersPanel.sections = materialModifiers[selectedMaterialModifierIndex].sections;
+                        }
+                        break; 
+                    }
+                }
+            }
+        }
+
 
         materialDisplayer.render(videoScale,mouse,timer,textRenderer);
     }
