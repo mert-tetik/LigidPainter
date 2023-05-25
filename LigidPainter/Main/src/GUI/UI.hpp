@@ -246,7 +246,8 @@ public:
                                 false,
                                 true,
                                 1.f,
-                                1
+                                1,
+                                {}
                             );
 
         windowPanel  = Panel(
@@ -275,7 +276,8 @@ public:
                                 true,
                                 true,
                                 1.f,
-                                1
+                                1,
+                                {}
                             );
 
         paintingPanel=Panel(
@@ -347,7 +349,8 @@ public:
                                 true,
                                 true,
                                 1.f,
-                                1
+                                1,
+                                {}
                             );
         
         libraryPanelLeft  = Panel(
@@ -379,7 +382,8 @@ public:
                                 true,
                                 true,
                                 1.f,
-                                1
+                                1,
+                                {}
                             );
         libraryPanelDisplayer  = Panel(
                                 shaders.buttonShader,
@@ -398,7 +402,11 @@ public:
                                 true,
                                 true,
                                 1.f,
-                                3
+                                3,
+                                {
+                                    Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Add"        , Texture(), 0.f,false),
+                                    Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Del"        , Texture(), 0.f,false)
+                                }
                             );
         nodeEditorDisplayer  = Panel(
                                 shaders.buttonShader,
@@ -417,7 +425,8 @@ public:
                                 true,
                                 false,
                                 1.f,
-                                1
+                                1,
+                                {}
                             );
         selectedTextureDisplayer  = Panel(
                                 shaders.buttonShader,
@@ -441,7 +450,8 @@ public:
                                 true,
                                 false,
                                 1.f,
-                                1
+                                1,
+                                {}
                             );
         
 

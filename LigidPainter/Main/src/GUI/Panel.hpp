@@ -247,6 +247,28 @@ private:
         
         //Render sections
         int btnCounter = 0; //Indexing buttons to position them
+        //Render the bar buttons
+        for (size_t i = 0; i < barButtons.size(); i++) //Bar buttons are used only in the vertical panels
+        {
+            barButtons[i].scale.x = scale.x/barButtons.size();
+        
+            //Move the buttons on top of the panel
+            barButtons[i].pos = pos;
+
+            barButtons[i].pos.x -= scale.x;
+            barButtons[i].pos.x += barButtons[i].scale.x;
+            barButtons[i].pos.x += barButtons[i].scale.x*2.f * (i % barButtons.size());
+            barButtons[i].pos.y -= scale.y - barButtons[i].scale.y;
+            
+            barButtons[i].pos.z += 0.01f;
+
+            barButtons[i].render(videoScale,mouse,timer,textRenderer);
+
+        }
+        if(barButtons.size())
+            elementPos += (barButtons[0].scale.y)*2.f;
+        
+
         for (int sI = 0; sI < sections.size(); sI++)
         {
             if(sections[sI].header.button.text.size()){ //If there is a header
@@ -329,6 +351,8 @@ public:
     
     int rowCount; //How many element will share the same row
 
+    std::vector<Button> barButtons;
+
     float outlineThickness;
 
     //Sides of the panel
@@ -343,7 +367,7 @@ public:
 
     Panel(){}
     Panel(Shader shader,ColorPalette colorPalette,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,bool vertical,bool lockL,bool lockR,bool lockB,bool lockT,
-          float outlineThickness,int rowCount){
+          float outlineThickness,int rowCount,std::vector<Button> barButtons){
 
         this->shader = shader;
         this->vertical = vertical;
@@ -358,6 +382,7 @@ public:
         this->bottomSide.locked = lockB;
         this->topSide.locked = lockT;
         this->rowCount = rowCount; 
+        this->barButtons = barButtons; 
 
         this->sliderButton = Button(0,glm::vec2(0.25f,20),colorPalette,shader,"",Texture(),0.f,false);
         this->sliderButton.color = colorPalette.mainColor;

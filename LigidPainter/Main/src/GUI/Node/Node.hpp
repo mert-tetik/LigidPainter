@@ -108,7 +108,8 @@ public:
             true,
             true,
             0.5f,
-            1
+            1,
+            {}
         );
         this->barButton = Button(2,nodePanel.scale,colorPalette,buttonShader,"Node",Texture(),0.f,false);
 
