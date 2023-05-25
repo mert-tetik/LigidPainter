@@ -459,7 +459,7 @@ public:
         //greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
     }    
 
-    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library library,std::vector<Node> &appNodes){
+    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes){
         glDepthFunc(GL_LEQUAL);
 
         //Use the related shader
@@ -476,16 +476,16 @@ public:
             Section libSection;
             libSection.header = Element(Button()); //Has no section button
             libraryPanelDisplayer.sections.clear();
-            if(selectedLibraryElementIndex == 0){
+            if(selectedLibraryElementIndex == 0){//Update textures
                 for (size_t i = 0; i < library.textures.size(); i++)
                 {
                     libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , library.textures[i], 0.f,false))) ;
                 }
             }
-            else if(selectedLibraryElementIndex == 0){
+            else if(selectedLibraryElementIndex == 1){ //Update materials
                 for (size_t i = 0; i < library.materials.size(); i++)
                 {
-                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"material_0"       , Texture(), 0.f,false))) ;
+                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"material"       , Texture(), 0.f,false))) ;
                 }
             }
             libraryPanelDisplayer.sections.push_back(Section(Element(Button()),libSection.elements));
@@ -505,6 +505,9 @@ public:
         selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer);
 
 
+        if(libraryPanelDisplayer.barButtons[0].clickedMixVal == 1.f && selectedLibraryElementIndex == 1){//Add button clicked
+            library.materials.push_back(Material());
+        } 
 
         //Update the selected library element index
         for (size_t i = 0; i < libraryPanelLeft.sections[0].elements.size(); i++)
@@ -545,8 +548,8 @@ public:
         selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
 
         //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
-        appNodes[0].render(videoScale,mouse,timer,textRenderer);
-        appNodes[1].render(videoScale,mouse,timer,textRenderer);
+        appNodes[0].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer);
+        appNodes[1].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer);
 
         if(frameCounter > 1000)
             frameCounter = 0;

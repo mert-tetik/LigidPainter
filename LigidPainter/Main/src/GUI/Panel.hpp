@@ -58,7 +58,7 @@ class Panel
 private:
     float slideRatio = 1.f;
 
-    void mouseTracking(Mouse& mouse,glm::vec2 resultScale,glm::vec3 resultPos){
+    void mouseTracking(Mouse& mouse){
         //Check if mouse on the panel or any side of the panel 
 
         const float grabbingRange = 20; 
@@ -201,23 +201,24 @@ private:
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
+        if(clearDepthBuffer){
+            //Barriers (In order to prevent the overflow)
+            //Bottom
+            shader.setVec3("pos",       glm::vec3(resultPos.x,resultPos.y + resultScale.y + 5000,1.f)); //To the bottom
+            shader.setVec2("scale",     glm::vec2(5000));
 
-        //Barriers (In order to prevent the overflow)
-        //Bottom
-        shader.setVec3("pos",       glm::vec3(resultPos.x,resultPos.y + resultScale.y + 5000,1.f)); //To the bottom
-        shader.setVec2("scale",     glm::vec2(5000));
-        
-        shader.setFloat("radius",     0.f   ); 
-        shader.setInt("outlineExtra" ,    false     ); 
-        
-        shader.setVec4("color",     glm::vec4(0)   ); //Invisible
-        shader.setVec3("outlineColor" ,    glm::vec4(0)     ); //Invisible
-        
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        //Top
-        shader.setVec3("pos",       glm::vec3(resultPos.x,resultPos.y - resultScale.y - 5000,1.f)); //To the bottom
-        shader.setVec2("scale",     glm::vec2(5000));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+            shader.setFloat("radius",     0.f   ); 
+            shader.setInt("outlineExtra" ,    false     ); 
+
+            shader.setVec4("color",     glm::vec4(0)   ); //Invisible
+            shader.setVec3("outlineColor" ,    glm::vec4(0)     ); //Invisible
+
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+            //Top
+            shader.setVec3("pos",       glm::vec3(resultPos.x,resultPos.y - resultScale.y - 5000,1.f)); //To the bottom
+            shader.setVec2("scale",     glm::vec2(5000));
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
 
 
 
@@ -326,8 +327,8 @@ private:
                     slideVal -= mouse.mouseOffset.y/videoScale.y*100.f;
             } 
         }
-
-        glClear(GL_DEPTH_BUFFER_BIT);
+        if(clearDepthBuffer)
+            glClear(GL_DEPTH_BUFFER_BIT);
     }
 
 
@@ -355,11 +356,16 @@ public:
 
     float outlineThickness;
 
+    bool clearDepthBuffer = true; //Clears the depth buffer after rendering the elements if true
+
     //Sides of the panel
     PanelSide leftSide;
     PanelSide rightSide;
     PanelSide bottomSide;
     PanelSide topSide;
+
+    glm::vec2 resultScale;
+    glm::vec3 resultPos;
 
     float slideVal = 0.f;
 
@@ -395,15 +401,15 @@ public:
         Util util;
 
         // pos value % of the video scale
-        glm::vec3 resultPos = glm::vec3( 
+        resultPos = glm::vec3( 
                               util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
                               ,pos.z); //Use the original depth value
 
         // scale value % of the video scale
-        glm::vec2 resultScale = util.getPercent(videoScale,scale);
+        resultScale = util.getPercent(videoScale,scale);
 
 
-        mouseTracking(mouse,resultScale,resultPos);
+        mouseTracking(mouse);
 
         resizeThePanel(mouse,videoScale);
     

@@ -233,7 +233,7 @@ public:
         shader.setVec4("color"  ,     textColor     );
         shader.setVec4("color2"  ,     textColor2     );
         //Update the parameters of the renderText function in the renderTheTexture function if this function's parameters are changed
-        textRenderer.renderText(shader,text,resultTextPos .x ,resultPos.y,1,orgResultPos.x + orgResultScale.x,false,resultScaleText,resultTextPos.x-resultScale.x);
+        textRenderer.renderText(shader,text,resultTextPos .x ,resultPos.y,resultPos.z+0.02f,orgResultPos.x + orgResultScale.x,false,resultScaleText,resultTextPos.x-resultScale.x);
     }
 };
 #endif

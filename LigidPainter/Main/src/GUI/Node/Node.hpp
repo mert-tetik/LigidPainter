@@ -80,7 +80,7 @@ public:
     Button barButton; //That bar on top of the nodes 
 
     glm::vec2 scale = glm::vec2(10,20); //Scale of the node
-    glm::vec3 pos = glm::vec3(50,50,0.9f); //Position of the node
+    glm::vec3 pos = glm::vec3(50,50,0.8f); //Position of the node
 
 
     Node(){}
@@ -111,6 +111,7 @@ public:
             1,
             {}
         );
+        nodePanel.clearDepthBuffer = false;
         this->barButton = Button(2,nodePanel.scale,colorPalette,buttonShader,"Node",Texture(),0.f,false);
 
         Section section;
@@ -132,7 +133,37 @@ public:
 
 
 
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){
+    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel){
+        //Barriers (In order to prevent the overflow)
+        
+        //Bottom
+        buttonShader.setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y + nodeEditorPanel.resultScale.y + 5000,1.f)); //To the bottom
+        buttonShader.setVec2("scale",     glm::vec2(5000));
+        buttonShader.setFloat("radius",     0.f   ); 
+        buttonShader.setInt("outlineExtra" ,    false     ); 
+        buttonShader.setVec4("color",     glm::vec4(0)   ); //Invisible
+        buttonShader.setVec4("color2",     glm::vec4(0)   ); //Invisible
+        buttonShader.setFloat("colorMixVal"  ,   0.f );
+        buttonShader.setVec3("outlineColor" ,    glm::vec4(0)     ); //Invisible
+        
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
+        //Top
+        buttonShader.setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y - nodeEditorPanel.resultScale.y - 5000,1.f)); //To the Top
+        buttonShader.setVec2("scale",     glm::vec2(5000));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
+        //Left
+        buttonShader.setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x - nodeEditorPanel.resultScale.x - 5000,nodeEditorPanel.resultPos.y,1.f));
+        buttonShader.setVec2("scale",     glm::vec2(5000));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
+        //Right
+        buttonShader.setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x + nodeEditorPanel.resultScale.x + 5000,nodeEditorPanel.resultPos.y,1.f));
+        buttonShader.setVec2("scale",     glm::vec2(5000));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
         nodePanel.render(videoScale,mouse,timer,textRenderer);
         
         for (size_t i = 0; i < nodePanel.sections[0].elements.size(); i++)
@@ -173,6 +204,7 @@ public:
         barButton.pos = nodePanel.pos;
         barButton.scale = nodePanel.scale;
         barButton.scale.y = 1.5f;
+        barButton.pos.z += 0.02f;
         barButton.pos.y = nodePanel.pos.y - nodePanel.scale.y - barButton.scale.y; 
 
         //Render the bar button
@@ -183,6 +215,7 @@ public:
             nodePanel.pos.x += mouse.mouseOffset.x/videoScale.x * 100.f;
             nodePanel.pos.y += mouse.mouseOffset.y/videoScale.y * 100.f;
         }
+        glClear(GL_DEPTH_BUFFER_BIT);
     }
 };
 

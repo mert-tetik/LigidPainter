@@ -332,6 +332,13 @@ public:
             else
                 clickState1 = true;
         }
+
+        timer.transition(hover,hoverMixVal,0.2f); 
+        if(keepPressingState)
+            timer.transition(clickState1,clickedMixVal,0.5f); 
+        else
+            timer.transition(false,clickedMixVal,0.5f); 
+        
         if(!mouse.LPressed && !keepPressingState){
             //If clicked to the button
             if(clickState1 && hover){
@@ -340,12 +347,6 @@ public:
             }
             clickState1 = false;
         }
-
-        timer.transition(hover,hoverMixVal,0.2f); 
-        if(keepPressingState)
-            timer.transition(clickState1,clickedMixVal,0.5f); 
-        else
-            timer.transition(false,clickedMixVal,0.5f); 
         
         //Render the button
         render(resultPos,resultScale,resultRadius,resultOutlineThickness);
@@ -358,7 +359,7 @@ public:
             shader.setVec4("color"  ,     textColor     );
             shader.setVec4("color2"  ,     textColor2     );
             //Update the parameters of the renderText function in the renderTheTexture function if this function's parameters are changed
-            textRenderer.renderText(shader,text,resultPos.x+textureRadius ,resultPos.y,1,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x);
+            textRenderer.renderText(shader,text,resultPos.x+textureRadius ,resultPos.y,resultPos.z+0.002f,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x);
         }
     }
 };
