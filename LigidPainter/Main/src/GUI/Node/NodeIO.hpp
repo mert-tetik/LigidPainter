@@ -58,12 +58,13 @@ public:
     //Will be generated once
     unsigned int result; 
 
-    NodeIO(std::string title ,Element element,glm::vec4 color,ColorPalette colorPalette,Shader buttonShader){
+    NodeIO(std::string title ,Element element,glm::vec4 color,ColorPalette colorPalette,Shader buttonShader,glm::vec2 videoScale){
         this->title = title;
         this->element = element;
         this->color = color;
 
-        IOCircle = Button(0,glm::vec2(1.f,1.f),colorPalette,buttonShader,"",Texture(),0.f,false);
+        IOCircle = Button(0,glm::vec2(videoScale.y,videoScale.x)/glm::vec2(videoScale.y*2.5f),colorPalette,buttonShader,"",Texture(),0.f,false);
+        IOCircle.radius = 0.25f;
     }
 };
 

@@ -269,10 +269,10 @@ public:
         materialNode.loadIO
         (
             {
-                NodeIO("Input1",Element(Button(1,glm::vec2(1,8),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false),1),colorPalette.mainColor,colorPalette,shaders.buttonShader),
+                NodeIO("Input1",Element(Button(1,glm::vec2(1,8),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false),1),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale),
             },
             {
-                NodeIO("Input1",Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false),2),colorPalette.mainColor,colorPalette,shaders.buttonShader),
+                NodeIO("Input1",Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false),2),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale),
             },
             shaders.buttonShader,
             shaders.singleCurve,
@@ -285,7 +285,7 @@ public:
         
         for (size_t i = 0; i < model.meshes.size(); i++)
         {
-            meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,model.meshes[i].materialName,Texture(),2.f,false),0),colorPalette.mainColor,colorPalette,shaders.buttonShader));
+            meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,model.meshes[i].materialName,Texture(),2.f,false),0),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale));
         }
         
         meshOutputNode.loadIO

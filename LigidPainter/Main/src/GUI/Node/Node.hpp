@@ -65,6 +65,16 @@ private:
         glDrawArrays(GL_TRIANGLES, 0, 6);
         buttonShader.use();
     }
+    bool doHaveConnection(int nodeI,int outI){
+        for (size_t outi = 0; outi < outputs.size(); outi++)
+        {
+            for (size_t coni = 0; coni < outputs[outi].connections.size(); coni++)
+            {
+                if(outputs[outi].connections[coni].inputIndex == outI && outputs[outi].connections[coni].nodeIndex == nodeI)
+                    return true;
+            }
+        }
+    }
 public:
     std::vector<NodeIO> inputs;
     std::vector<NodeIO> outputs;
@@ -176,6 +186,12 @@ public:
 
                 //Render the IO circle
                 inputs[i].IOCircle.render(videoScale,mouse,timer,textRenderer);
+
+                if(inputs[i].IOCircle.clickState1){
+                    //Don't scale the panel if IO circle is pressed
+                    nodePanel.leftSide.pressed = false;
+                    nodePanel.rightSide.pressed = false;
+                }
             }
             if(nodePanel.sections[0].elements[i].nodeState == 2){//Outputs
 
@@ -195,20 +211,30 @@ public:
                     //Render the line (starting point : IO circle pos , destination point : cursor pos)
                     drawLine(glm::vec2(outputs[i-inputs.size()].IOCircle.pos.x,outputs[i-inputs.size()].IOCircle.pos.y),mouse.cursorPos/videoScale * 100.f,videoScale,nodeEditorPanel);
                 }
-                if(outputs[i-inputs.size()].IOCircle.clickState1 && !mouse.LPressed){//Released the IO circle
-                    //Check all the nodes if released on top of the IO button
-                    for (size_t nodI = 0; nodI < nodeScene.size(); nodI++)
+                //Check all the nodes if released on top of the IO button
+                for (size_t nodI = 0; nodI < nodeScene.size(); nodI++)
+                {
+                    for (size_t IOi = 0; IOi < nodeScene[nodI].inputs.size(); IOi++)
                     {
-                        for (size_t IOi = 0; IOi < nodeScene[nodI].inputs.size(); IOi++)
-                        {
-                            if(nodeScene[nodI].inputs[IOi].IOCircle.hover)
-                                outputs[i-inputs.size()].connections.push_back(NodeConnection(nodI,IOi));
+                        if(nodeScene[nodI].inputs[IOi].IOCircle.hover){
+                            if(outputs[i-inputs.size()].IOCircle.clickState1 && !mouse.LPressed){//Released the IO circle
+                                outputs[i-inputs.size()].connections.push_back(NodeConnection(nodI,IOi));//Connect to the IO button
+                            }
+                            if(doHaveConnection(nodI,IOi) && mouse.LClick){//If pressed to a IO circle that already is connected
+                                outputs[i-inputs.size()].IOCircle.clickState1 = true;
+                                for (size_t coni = 0; coni < outputs[i-inputs.size()].connections.size(); coni++)//Severe that connection
+                                {
+                                    if(outputs[i-inputs.size()].connections[coni].inputIndex == IOi && outputs[i-inputs.size()].connections[coni].nodeIndex == nodI)
+                                        outputs[i-inputs.size()].connections.erase(outputs[i-inputs.size()].connections.begin() + coni);
+                                }
+                                
+                            }
                         }
-                        
                     }
                     
-                    //Connect to the IO button
-                }   
+                }
+                    
+                
                 for (size_t conI = 0; conI < outputs[i-inputs.size()].connections.size(); conI++)
                 {
                     glm::vec3 destPos = nodeScene[outputs[i-inputs.size()].connections[conI].nodeIndex].inputs[outputs[i-inputs.size()].connections[conI].inputIndex].IOCircle.pos;
