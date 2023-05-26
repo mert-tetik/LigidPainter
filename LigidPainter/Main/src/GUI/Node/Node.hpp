@@ -30,6 +30,8 @@
 #include <vector>
 #include <cstdlib>
 
+//TODO Make the node editor panel movable
+//TODO Prevent connection to connected input
 
 class Node
 {
@@ -118,7 +120,8 @@ public:
             true,
             0.5f,
             1,
-            {}
+            {},
+            20.f
         );
         nodePanel.clearDepthBuffer = false;
         this->barButton = Button(2,nodePanel.scale,colorPalette,buttonShader,"Node",Texture(),0.f,false);

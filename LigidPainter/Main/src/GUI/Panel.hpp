@@ -111,16 +111,16 @@ private:
             scale.x += mouse.mouseOffset.x/videoScale.x * 50.f;
             pos.x += mouse.mouseOffset.x/videoScale.x *50.f;
             //Restrict the size of the panel
-            if(scale.x < 1 || scale.x > 20){
+            if(scale.x < 1 || scale.x > maxScaleVal){
                 scale.x -= mouse.mouseOffset.x/videoScale.x * 50.f;
-                pos.x -= mouse.mouseOffset.x/videoScale.x *50.f;
+                pos.x -= mouse.mouseOffset.x/videoScale.x * 50.f;
             }
         }
         else if(leftSide.pressed){
             scale.x -= mouse.mouseOffset.x/videoScale.x * 50.f;
             pos.x += mouse.mouseOffset.x/videoScale.x *50.f;
             //Restrict the size of the panel
-            if(scale.x < 1 || scale.x > 20){
+            if(scale.x < 1 || scale.x > maxScaleVal){
                 scale.x += mouse.mouseOffset.x/videoScale.x * 50.f;
                 pos.x -= mouse.mouseOffset.x/videoScale.x *50.f;
             }
@@ -128,7 +128,7 @@ private:
         else if(bottomSide.pressed){
             scale.y += mouse.mouseOffset.y/videoScale.y * 50.f;
             pos.y += mouse.mouseOffset.y/videoScale.y *50.f;
-            if(scale.y < 0.5f || scale.y > 20){
+            if(scale.y < 0.5f || scale.y > maxScaleVal){
                 scale.y -= mouse.mouseOffset.y/videoScale.y * 50.f;
                 pos.y -= mouse.mouseOffset.y/videoScale.y *50.f;
             }
@@ -137,7 +137,7 @@ private:
         else if(topSide.pressed){
             scale.y -= mouse.mouseOffset.y/videoScale.y * 50.f;
             pos.y += mouse.mouseOffset.y/videoScale.y *50.f;
-            if(scale.y < 0.5f || scale.y > 100){
+            if(scale.y < 0.5f || scale.y > maxScaleVal){
                 scale.y += mouse.mouseOffset.y/videoScale.y * 50.f;
                 pos.y -= mouse.mouseOffset.y/videoScale.y *50.f;
             }
@@ -369,11 +369,13 @@ public:
 
     float slideVal = 0.f;
 
+    float maxScaleVal;    
+
     Button sliderButton;
 
     Panel(){}
     Panel(Shader shader,ColorPalette colorPalette,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,bool vertical,bool lockL,bool lockR,bool lockB,bool lockT,
-          float outlineThickness,int rowCount,std::vector<Button> barButtons){
+          float outlineThickness,int rowCount,std::vector<Button> barButtons,float maxScaleVal){
 
         this->shader = shader;
         this->vertical = vertical;
@@ -388,6 +390,7 @@ public:
         this->bottomSide.locked = lockB;
         this->topSide.locked = lockT;
         this->rowCount = rowCount; 
+        this->maxScaleVal = maxScaleVal; 
         this->barButtons = barButtons; 
 
         this->sliderButton = Button(0,glm::vec2(0.25f,20),colorPalette,shader,"",Texture(),0.f,false);
