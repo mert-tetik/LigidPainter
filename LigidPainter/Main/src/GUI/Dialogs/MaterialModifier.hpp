@@ -55,15 +55,18 @@ public:
     //5 = ambient Occlusion
     std::vector<Shader> channelShaders;  
 
+    int modifierIndex;//0 for the texture modifier
+
     //Sections of the modifier panel
     std::vector<Section> sections;   
 
     std::string title;
 
     MaterialModifier(){}
-    MaterialModifier(std::string title,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures, std::vector<Section> sections){
+    MaterialModifier(std::string title,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures, std::vector<Section> sections,int modifierIndex){
         this->title = title;    
         this->sections = sections;
+        this->modifierIndex = modifierIndex;
     }
 };
 

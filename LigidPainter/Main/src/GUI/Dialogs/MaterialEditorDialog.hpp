@@ -33,6 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Timer.hpp"
 
 #include "GUI/Dialogs/MaterialModifier.hpp"
+#include "GUI/Dialogs/TextureSelectionDialog.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -69,6 +70,8 @@ public:
     Panel bgPanel; //To cover the bg
     Panel layerPanel; //Modifiers will be displayed in there
     Panel modifiersPanel; //Modifiers will be displayed in there
+
+    int textureModifierTextureSelectingButtonIndex = 1000; //1000 if none of them is selecting
 
     AppMaterialModifiers appMaterialModifiers;
 
@@ -125,12 +128,14 @@ public:
                         Element(Button(1,glm::vec2(1,1.5f),colorPalette,buttonShader,"Ambient Occlusion",appTextures.greetingDialogImage,0.f,false))
                     }
                 )
-            }
+            },
+            0
         );
+        appMaterialModifiers.textureModifier.sections[0].header.button.clickState1 = true;
 
     }
 
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){
+    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library){
         bgPanel.render(videoScale,mouse,timer,textRenderer);
         layerPanel.render(videoScale,mouse,timer,textRenderer);
         modifiersPanel.render(videoScale,mouse,timer,textRenderer);
@@ -172,6 +177,27 @@ public:
                         break; 
                     }
                 }
+            }
+        }
+
+        if(modifiersPanel.sections.size()){
+            if(materialModifiers[selectedMaterialModifierIndex].modifierIndex == 0) {//If is a texture modifier
+                for (size_t i = 0; i < modifiersPanel.sections[0].elements.size(); i++)
+                {
+                    if(modifiersPanel.sections[0].elements[i].button.clickedMixVal){
+                        textureModifierTextureSelectingButtonIndex = i;
+                        textureSelectionDialog.active = true;
+                    }
+                }
+            }
+        }
+        if(textureSelectionDialog.active && textureModifierTextureSelectingButtonIndex != 1000){
+            if(textureSelectionDialog.selectedTextureIndex != 1000){
+                modifiersPanel.sections[0].elements[textureModifierTextureSelectingButtonIndex].button.texture = library.textures[textureSelectionDialog.selectedTextureIndex];
+                materialModifiers[selectedMaterialModifierIndex].sections[0].elements[textureModifierTextureSelectingButtonIndex].button.texture = library.textures[textureSelectionDialog.selectedTextureIndex];
+                textureModifierTextureSelectingButtonIndex = 1000;
+                textureSelectionDialog.selectedTextureIndex = 1000;
+                textureSelectionDialog.active = false;
             }
         }
 

@@ -169,6 +169,7 @@ struct Section{ //Sections seperates the elements in the panel
 #include "GUI/Panel.hpp"
 #include "GUI/Dialogs/GreetingDialog.hpp"
 #include "GUI/Dialogs/MaterialEditorDialog.hpp"
+#include "GUI/Dialogs/TextureSelectionDialog.hpp"
 #include "Mouse.hpp"
 #include "GUI/ContextMenu.hpp"
 #include "GUI/Node/Node.hpp"
@@ -207,6 +208,7 @@ public:
     //Dialogs    
     //GreetingDialog greetingDialog;
     MaterialEditorDialog materialEditorDialog;
+    TextureSelectionDialog textureSelectionDialog;
 
     int frameCounter = 0; //Reset every 1000 frame
 
@@ -462,6 +464,7 @@ public:
 
         //greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
         materialEditorDialog = MaterialEditorDialog(shaders.buttonShader,colorPalette,appTextures);
+        textureSelectionDialog = TextureSelectionDialog(shaders.buttonShader,colorPalette);
     }    
 
     void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<ContextMenu> &contextMenus){
@@ -578,7 +581,11 @@ public:
         selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
 
         //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
-        materialEditorDialog.render(videoScale,mouse,timer,textRenderer);
+        materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library);
+        
+        if(textureSelectionDialog.active)
+            textureSelectionDialog.render(videoScale,mouse,timer,textRenderer,library);
+        
         appNodes[0].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer);
         appNodes[1].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer);
 
