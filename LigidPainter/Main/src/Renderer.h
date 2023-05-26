@@ -177,7 +177,11 @@ public:
     //Textures those will be used in UI of the app
     AppTextures appTextures;
 
+    //0 = materialNode
+    //1 = meshOutputNode
     std::vector<Node> appNodes;
+    
+    std::vector<Node> nodeScene; //Contains app nodes
 
     Library library;
 
@@ -297,7 +301,8 @@ public:
         appNodes.push_back(materialNode);
         appNodes.push_back(meshOutputNode);
 
-
+        nodeScene.push_back(meshOutputNode);
+        nodeScene.push_back(materialNode);
     }
 
     void render(){
@@ -350,7 +355,7 @@ public:
        
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
-        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,contextMenus);//Render the UI
+        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus);//Render the UI
 
         box.unbindBuffers(); //Finish rendering the UI
 

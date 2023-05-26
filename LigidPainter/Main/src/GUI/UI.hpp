@@ -467,7 +467,7 @@ public:
         textureSelectionDialog = TextureSelectionDialog(shaders.buttonShader,colorPalette);
     }    
 
-    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<ContextMenu> &contextMenus){
+    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,std::vector<ContextMenu> &contextMenus){
         glDepthFunc(GL_LEQUAL);
 
         //Use the related shader
@@ -586,8 +586,11 @@ public:
         if(textureSelectionDialog.active)
             textureSelectionDialog.render(videoScale,mouse,timer,textRenderer,library);
         
-        appNodes[0].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer);
-        appNodes[1].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer);
+        //Render the nodes
+        for (size_t i = 0; i < nodeScene.size(); i++)
+        {
+            nodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,nodeScene);
+        }
 
         if(frameCounter > 1000)
             frameCounter = 0;

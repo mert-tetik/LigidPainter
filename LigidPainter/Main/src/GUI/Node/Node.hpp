@@ -133,7 +133,7 @@ public:
 
 
 
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel){
+    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &nodeScene){
         //Barriers (In order to prevent the overflow)
         
         //Bottom
@@ -185,7 +185,6 @@ public:
                 outputs[i-inputs.size()].IOCircle.pos.x += nodePanel.sections[0].elements[i].scale.x;
                 outputs[i-inputs.size()].IOCircle.pos.z = nodePanel.sections[0].elements[i].pos.z + 0.01f;
 
-                outputs[i-inputs.size()].IOCircle.render(videoScale,mouse,timer,textRenderer);
                 
                 if(outputs[i-inputs.size()].IOCircle.clickState1){//Pressed to IO circle
                     Util util;
@@ -197,6 +196,32 @@ public:
                     //Render the line (starting point : IO circle pos , destination point : cursor pos)
                     drawLine(glm::vec2(outputs[i-inputs.size()].IOCircle.pos.x,outputs[i-inputs.size()].IOCircle.pos.y),mouse.cursorPos/videoScale * 100.f,videoScale);
                 }
+                if(outputs[i-inputs.size()].IOCircle.clickState1 && !mouse.LPressed){//Released the IO circle
+                    //Check all the nodes if released on top of the IO button
+                    for (size_t nodI = 0; nodI < nodeScene.size(); nodI++)
+                    {
+                        for (size_t IOi = 0; IOi < nodeScene[nodI].inputs.size(); IOi++)
+                        {
+                            if(nodeScene[nodI].inputs[IOi].IOCircle.hover)
+                                outputs[i-inputs.size()].connections.push_back(NodeConnection(nodI,IOi));
+                        }
+                        
+                    }
+                    
+                    //Connect to the IO button
+                }   
+                for (size_t conI = 0; conI < outputs[i-inputs.size()].connections.size(); conI++)
+                {
+                    glm::vec3 destPos = nodeScene[outputs[i-inputs.size()].connections[conI].nodeIndex].inputs[outputs[i-inputs.size()].connections[conI].inputIndex].IOCircle.pos;
+                    drawLine(
+                                glm::vec2(outputs[i-inputs.size()].IOCircle.pos.x,outputs[i-inputs.size()].IOCircle.pos.y), //Source
+                                glm::vec2(destPos.x,destPos.y), //Destination
+                                videoScale 
+                            );
+                }
+                
+
+                outputs[i-inputs.size()].IOCircle.render(videoScale,mouse,timer,textRenderer);
             }
         }
 

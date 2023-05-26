@@ -32,14 +32,22 @@
 #include <vector>
 #include <cstdlib>
 
-//class NodeConnection;
+struct NodeConnection{
+    int nodeIndex; //Connected to which node
+    int inputIndex; //Connected to which input
+
+    NodeConnection(int nodeIndex,int inputIndex){
+        this->nodeIndex = nodeIndex;
+        this->inputIndex = inputIndex;
+    }
+};
 
 class NodeIO
 {
 private:
     /* data */
 public:
-    //std::vector<NodeConnection> connections; //An input can have only one connection unlike the outputs
+    std::vector<NodeConnection> connections; //An input can have only one connection unlike the outputs
     std::string title; //Title of the connection
     Element element; //Which element will manipulate the value
 
