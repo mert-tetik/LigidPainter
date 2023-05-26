@@ -34,7 +34,7 @@
 class Node
 {
 private:
-    void drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale){
+    void drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nodeEditorPanel){
         glm::vec2 gap = src - dest;
         
         glm::vec2 pos = src - gap/2.f;
@@ -48,31 +48,29 @@ private:
         // scale value % of the video scale
         glm::vec2 resultScale = util.getPercent(videoScale,scale);
 
-        buttonShader.setVec3("pos",       resultPos);
-        buttonShader.setVec2("scale",     resultScale);
-        buttonShader.setVec4("color",     glm::vec4(1)   );
-        buttonShader.setVec4("color2"  ,     glm::vec4(1)     );
-        buttonShader.setFloat("colorMixVal"  ,   0.f );
+        singleCurveShader.use();
+        nodeEditorPanel.resultPos.x = videoScale.x/2.f;
+        nodeEditorPanel.resultPos.y = videoScale.y/2.f;
+        nodeEditorPanel.resultScale.x = videoScale.x/2.f;
+        nodeEditorPanel.resultScale.y = videoScale.y/2.f;
         
-        buttonShader.setFloat("width",     resultScale.x  );
-        buttonShader.setFloat("height",     resultScale.y   );
+        singleCurveShader.setVec3("pos",       nodeEditorPanel.resultPos);
+        singleCurveShader.setVec2("scale",     nodeEditorPanel.resultScale);
         
-        buttonShader.setFloat("radius",     0.f   );
-        buttonShader.setInt("outline",     false   );
-        buttonShader.setInt("outlineExtra" ,    false     ); 
+        singleCurveShader.setVec2("startPos",       src);
+        singleCurveShader.setVec2("destPos",       dest);
 
-        buttonShader.setVec3("outlineColor" ,    glm::vec3(0,0,0)     ); 
-        buttonShader.setVec3("outlineColor2" ,    glm::vec3(0,0,0)     ); 
-
-        buttonShader.setFloat("thickness" ,    1.f  );
+        singleCurveShader.setVec2("percScale",       nodeEditorPanel.scale);
+        
         glDrawArrays(GL_TRIANGLES, 0, 6);
+        buttonShader.use();
     }
 public:
     std::vector<NodeIO> inputs;
     std::vector<NodeIO> outputs;
 
-    Shader shader; //This shader will be used to output 
     Shader buttonShader;  
+    Shader singleCurveShader;  
 
     int ID; //Unique id for the node
 
@@ -85,8 +83,9 @@ public:
 
     Node(){}
 
-    void loadIO(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs, Shader buttonShader,ColorPalette colorPalette,float heigth){
+    void loadIO(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs, Shader buttonShader,Shader singleCurveShader,ColorPalette colorPalette,float heigth){
         this->buttonShader = buttonShader;
+        this->singleCurveShader = singleCurveShader;
         this->inputs = inputs;
         this->outputs = outputs;
         this->scale.y = heigth;
@@ -194,7 +193,7 @@ public:
                     nodePanel.rightSide.pressed = false;
                     
                     //Render the line (starting point : IO circle pos , destination point : cursor pos)
-                    drawLine(glm::vec2(outputs[i-inputs.size()].IOCircle.pos.x,outputs[i-inputs.size()].IOCircle.pos.y),mouse.cursorPos/videoScale * 100.f,videoScale);
+                    drawLine(glm::vec2(outputs[i-inputs.size()].IOCircle.pos.x,outputs[i-inputs.size()].IOCircle.pos.y),mouse.cursorPos/videoScale * 100.f,videoScale,nodeEditorPanel);
                 }
                 if(outputs[i-inputs.size()].IOCircle.clickState1 && !mouse.LPressed){//Released the IO circle
                     //Check all the nodes if released on top of the IO button
@@ -216,7 +215,8 @@ public:
                     drawLine(
                                 glm::vec2(outputs[i-inputs.size()].IOCircle.pos.x,outputs[i-inputs.size()].IOCircle.pos.y), //Source
                                 glm::vec2(destPos.x,destPos.y), //Destination
-                                videoScale 
+                                videoScale,
+                                nodeEditorPanel
                             );
                 }
                 

@@ -137,7 +137,7 @@ private:
         else if(topSide.pressed){
             scale.y -= mouse.mouseOffset.y/videoScale.y * 50.f;
             pos.y += mouse.mouseOffset.y/videoScale.y *50.f;
-            if(scale.y < 0.5f || scale.y > 20){
+            if(scale.y < 0.5f || scale.y > 100){
                 scale.y += mouse.mouseOffset.y/videoScale.y * 50.f;
                 pos.y -= mouse.mouseOffset.y/videoScale.y *50.f;
             }

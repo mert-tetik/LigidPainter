@@ -5,7 +5,7 @@ layout(location = 1) in vec2 aTexCoords;
 
 //All the GUI elements will use that vertex shader 
 
-//out vec3 fragPos;
+out vec3 fragPos;
 out vec2 texCoords;
 
 uniform mat4 projection;

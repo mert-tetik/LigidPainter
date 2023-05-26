@@ -76,6 +76,7 @@ struct Shaders{
     Shader skyboxShader;
     Shader buttonShader;
     Shader prefilteringShader;
+    Shader singleCurve;
 };
 struct AppTextures{ //Textures those will be used in UI of the app
     //--Icons
@@ -212,6 +213,7 @@ public:
         shaders.skyboxShader = Shader("LigidPainter/Resources/Shaders/Skybox.vert","LigidPainter/Resources/Shaders/Skybox.frag",nullptr);
         shaders.prefilteringShader = Shader("LigidPainter/Resources/Shaders/Skybox.vert","LigidPainter/Resources/Shaders/PrefilterSkybox.frag",nullptr);
         shaders.buttonShader = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/Button.frag",nullptr);
+        shaders.singleCurve = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/SingleCurve.frag",nullptr);
 
         //Update necessary data before callbacks
         updateViewport();
@@ -273,6 +275,7 @@ public:
                 NodeIO("Input1",Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false),2),colorPalette.mainColor,colorPalette,shaders.buttonShader),
             },
             shaders.buttonShader,
+            shaders.singleCurve,
             colorPalette,
             12.f
         );
@@ -292,6 +295,7 @@ public:
 
             },
             shaders.buttonShader,
+            shaders.singleCurve,
             colorPalette,
             25.f
         );

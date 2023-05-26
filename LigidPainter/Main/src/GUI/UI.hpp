@@ -469,6 +469,9 @@ public:
 
     void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,std::vector<ContextMenu> &contextMenus){
         glDepthFunc(GL_LEQUAL);
+        
+        shaders.singleCurve.use();
+        shaders.singleCurve.setMat4("projection",projection); 
 
         //Use the related shader
         shaders.buttonShader.use();
@@ -577,11 +580,14 @@ public:
         selectedTextureDisplayer.scale.x = libraryPanelDisplayer.scale.x + libraryPanelLeft.scale.x;
         
         nodeEditorDisplayer.scale.x = 50 - selectedTextureDisplayer.scale.x - (paintingPanel.scale.x+windowPanel.scale.x);
+        Util util;
         
+        std::cout<<50.f/100.f*60.f <<std::endl;
+
         selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
 
         //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
-        materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library);
+        //materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library);
         
         if(textureSelectionDialog.active)
             textureSelectionDialog.render(videoScale,mouse,timer,textRenderer,library);
