@@ -55,7 +55,8 @@ private:
     Shader buttonShader;
     ColorPalette colorPalette;
 public:
-    bool active = true; //Render the dialog
+    bool firstFrameActivated = false; //To detect the first frame activated
+    bool active = false; //Render the dialog
     glm::vec3 pos = glm::vec3(50.f,50.f,0.8f); ///Position of the dialog
     glm::vec2 scale = glm::vec2(40,40); ///Scale of the dialog
     
@@ -74,8 +75,6 @@ public:
     int textureModifierTextureSelectingButtonIndex = 1000; //1000 if none of them is selecting
 
     AppMaterialModifiers appMaterialModifiers;
-
-    std::vector<MaterialModifier> materialModifiers;
 
     int selectedMaterialModifierIndex = 0;
 
@@ -131,13 +130,21 @@ public:
                     }
                 )
             },
-            0
+            0,
+            {
+                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier/AllChannels.frag",
+                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier/AllChannels.frag",
+                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier/AllChannels.frag",
+                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier/AllChannels.frag",
+                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier/AllChannels.frag",
+                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier/AllChannels.frag"
+            }
         );
         appMaterialModifiers.textureModifier.sections[0].header.button.clickState1 = true;
 
     }
 
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library){
+    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library,Material &material){
         bgPanel.render(videoScale,mouse,timer,textRenderer);
         layerPanel.render(videoScale,mouse,timer,textRenderer);
         modifiersPanel.render(videoScale,mouse,timer,textRenderer);
@@ -150,16 +157,17 @@ public:
 
 
         //Update layer panal elements
-        if(layerPanel.barButtons[0].clickedMixVal == 1.f){
-            materialModifiers.push_back(appMaterialModifiers.textureModifier);
+        if(layerPanel.barButtons[0].clickedMixVal == 1.f || firstFrameActivated){
+            if(!firstFrameActivated)
+                material.materialModifiers.push_back(appMaterialModifiers.textureModifier);
 
             layerPanel.sections.clear();
             Section layerPanelSection;
             layerPanelSection.header = Element(Button());
-            for (size_t i = 0; i < materialModifiers.size(); i++)
+            for (size_t i = 0; i < material.materialModifiers.size(); i++)
             {
                 layerPanelSection.elements.push_back(
-                    Element(Button(1,glm::vec2(2,1.5f),colorPalette,buttonShader,materialModifiers[i].title , Texture(), 0.f,true))
+                    Element(Button(1,glm::vec2(2,1.5f),colorPalette,buttonShader,material.materialModifiers[i].title , Texture(), 0.f,true))
                 );
             }
             layerPanel.sections.push_back(layerPanelSection);
@@ -173,8 +181,8 @@ public:
                     if(selectedMaterialModifierIndex != i){ //If the clicked button is not selected 
                         layerPanel.sections[0].elements[selectedMaterialModifierIndex].button.clickState1 = false; //Unselect the selected one
                         selectedMaterialModifierIndex = i; //Select the clicked button
-                        if(materialModifiers.size()){
-                            modifiersPanel.sections = materialModifiers[selectedMaterialModifierIndex].sections;
+                        if(material.materialModifiers.size()){
+                            modifiersPanel.sections = material.materialModifiers[selectedMaterialModifierIndex].sections;
                         }
                         break; 
                     }
@@ -183,7 +191,7 @@ public:
         }
 
         if(modifiersPanel.sections.size()){
-            if(materialModifiers[selectedMaterialModifierIndex].modifierIndex == 0) {//If is a texture modifier
+            if(material.materialModifiers[selectedMaterialModifierIndex].modifierIndex == 0) {//If is a texture modifier
                 for (size_t i = 0; i < modifiersPanel.sections[0].elements.size(); i++)
                 {
                     if(modifiersPanel.sections[0].elements[i].button.clickedMixVal){
@@ -196,7 +204,7 @@ public:
         if(textureSelectionDialog.active && textureModifierTextureSelectingButtonIndex != 1000){
             if(textureSelectionDialog.selectedTextureIndex != 1000){
                 modifiersPanel.sections[0].elements[textureModifierTextureSelectingButtonIndex].button.texture = library.textures[textureSelectionDialog.selectedTextureIndex];
-                materialModifiers[selectedMaterialModifierIndex].sections[0].elements[textureModifierTextureSelectingButtonIndex].button.texture = library.textures[textureSelectionDialog.selectedTextureIndex];
+                material.materialModifiers[selectedMaterialModifierIndex].sections[0].elements[textureModifierTextureSelectingButtonIndex].button.texture = library.textures[textureSelectionDialog.selectedTextureIndex];
                 textureModifierTextureSelectingButtonIndex = 1000;
                 textureSelectionDialog.selectedTextureIndex = 1000;
                 textureSelectionDialog.active = false;
@@ -205,6 +213,14 @@ public:
 
 
         materialDisplayer.render(videoScale,mouse,timer,textRenderer);
+    
+        firstFrameActivated = false;
+    }
+
+    void activate(){
+        selectedMaterialModifierIndex = 0;
+        active = true;
+        firstFrameActivated = true;
     }
 };
 

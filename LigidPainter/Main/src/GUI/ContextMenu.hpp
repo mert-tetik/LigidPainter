@@ -55,6 +55,7 @@ private:
 public:
     Panel contextPanel;
     glm::vec3 pos;
+    int selectedElement = 0;
     bool active = false; 
     ContextMenu(){}
     ContextMenu(Shader buttonShader,ColorPalette colorPalette,std::vector<std::string> elements){

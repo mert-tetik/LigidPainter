@@ -63,7 +63,14 @@ public:
     std::string title;
 
     MaterialModifier(){}
-    MaterialModifier(std::string title,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures, std::vector<Section> sections,int modifierIndex){
+    MaterialModifier(std::string title,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures, std::vector<Section> sections,int modifierIndex,
+                    std::vector<std::string>shaderPaths){
+
+        for (size_t i = 0; i < shaderPaths.size(); i++)
+        {
+            channelShaders.push_back(Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert",shaderPaths[i].c_str()));
+        }
+
         this->title = title;    
         this->sections = sections;
         this->modifierIndex = modifierIndex;

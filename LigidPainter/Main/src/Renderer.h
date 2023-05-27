@@ -190,6 +190,8 @@ public:
 
     std::vector<ContextMenu> contextMenus; //0 for textures , 1 for materials
 
+    int textureRes = 1024; //Textures will be generated with that resolution
+
     Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
         //Hold the videoscale value inside of the scene structure
         scene.videoScale = videoScale;
@@ -359,7 +361,7 @@ public:
        
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
-        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus);//Render the UI
+        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes);//Render the UI
 
         box.unbindBuffers(); //Finish rendering the UI
 

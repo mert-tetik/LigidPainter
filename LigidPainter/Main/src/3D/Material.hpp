@@ -39,12 +39,40 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
+class MaterialModifier;
+
 class Material
 {
 private:
-    /* data */
+    void initTexture(Texture &txtr,int textureRes){
+        glActiveTexture(GL_TEXTURE0);
+        glGenTextures(1,&txtr.ID);
+        glBindTexture(GL_TEXTURE_2D,txtr.ID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+
+        txtr.width = textureRes;
+        txtr.height = textureRes;
+        txtr.channels = 4;
+    }
 public:
-    Material(/* args */){}
+    Texture albedo;
+    Texture roughness;
+    Texture metallic; 
+    Texture normalMap;
+    Texture heightMap;
+    Texture ambientOcclusion;
+
+    std::vector<MaterialModifier> materialModifiers;
+
+    Material(){}
+    Material(int textureRes){
+        initTexture(albedo,textureRes);
+        initTexture(roughness,textureRes);
+        initTexture(metallic,textureRes);
+        initTexture(normalMap,textureRes);
+        initTexture(heightMap,textureRes);
+        initTexture(ambientOcclusion,textureRes);
+    }
 };
 
 #endif

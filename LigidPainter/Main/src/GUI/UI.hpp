@@ -83,6 +83,7 @@ struct Element{
     glm::vec2 scale;
     float panelOffset;
 
+
     Element(){}
 
     Element(Button button){
@@ -204,7 +205,6 @@ public:
     Panel selectedTextureDisplayer; 
 
 
-
     //Dialogs    
     //GreetingDialog greetingDialog;
     MaterialEditorDialog materialEditorDialog;
@@ -213,7 +213,9 @@ public:
     int frameCounter = 0; //Reset every 1000 frame
 
     int selectedLibraryElementIndex = 0; //0 For the textures , 1 for the materials bla bla
+    int selectedMaterialIndex = 0; //In the library (to manipulate with )
     
+
     //UI Rendering projection
     //Has the screen resolution
     //Example : L = 0, R = 1920, B = 1080, T = 0  
@@ -474,7 +476,8 @@ public:
         textureSelectionDialog = TextureSelectionDialog(shaders.buttonShader,colorPalette);
     }    
 
-    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,std::vector<ContextMenu> &contextMenus){
+    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
+                std::vector<ContextMenu> &contextMenus,int &textureRes){
         glDepthFunc(GL_LEQUAL);
         
         shaders.singleCurve.use();
@@ -524,6 +527,12 @@ public:
 
         for (size_t i = 0; i < contextMenus.size(); i++)//Check contextMenus
         {
+            if(i == 1 && selectedLibraryElementIndex == 1){ //Material context menu
+                if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick && contextMenus[i].active){//Clicked to edit button
+                    selectedMaterialIndex = contextMenus[i].selectedElement;
+                    materialEditorDialog.activate();
+                }
+            }
             if(mouse.LClick||mouse.RClick||mouse.MClick||glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwGetKey(context.window,GLFW_KEY_ENTER) == GLFW_PRESS){
                contextMenus[i].active = false; 
             }
@@ -533,15 +542,30 @@ public:
                 if(contextMenus[i].contextPanel.hover == false)
                     contextMenus[i].active = false; 
             }
+            else{
+                contextMenus[i].selectedElement = 0;
+            }
         }
         for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++)
         {
-            if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.RClick){ //Right clicked to a textuer
-                //Show the context menu
-                contextMenus[0].active = true;
-                contextMenus[0].pos.x = libraryPanelDisplayer.sections[0].elements[i].button.pos.x;
-                contextMenus[0].pos.y = libraryPanelDisplayer.sections[0].elements[i].button.pos.y;
-                contextMenus[0].pos.z = 0.95f;
+            if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.RClick){ //Right clicked to an element
+                if(selectedLibraryElementIndex == 0){//To a texture
+                    //Show the context menu
+                    contextMenus[0].active = true;
+                    contextMenus[0].pos.x = libraryPanelDisplayer.sections[0].elements[i].button.pos.x;
+                    contextMenus[0].pos.y = libraryPanelDisplayer.sections[0].elements[i].button.pos.y;
+                    contextMenus[0].pos.z = 0.95f;
+                    contextMenus[0].selectedElement = i;
+                    
+                }
+                if(selectedLibraryElementIndex == 1){//To a material
+                    //Show the context menu
+                    contextMenus[1].active = true;
+                    contextMenus[1].pos.x = libraryPanelDisplayer.sections[0].elements[i].button.pos.x;
+                    contextMenus[1].pos.y = libraryPanelDisplayer.sections[0].elements[i].button.pos.y;
+                    contextMenus[1].pos.z = 0.95f;
+                    contextMenus[1].selectedElement = i;
+                }
 
             }
         }
@@ -549,7 +573,7 @@ public:
         
 
         if(libraryPanelDisplayer.barButtons[0].clickedMixVal == 1.f && selectedLibraryElementIndex == 1){//Add button clicked
-            library.materials.push_back(Material());
+            library.materials.push_back(Material(textureRes));
         } 
 
         //Update the selected library element index
@@ -593,17 +617,22 @@ public:
 
         selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
 
-        //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
-        //materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library);
-        
-        if(textureSelectionDialog.active)
-            textureSelectionDialog.render(videoScale,mouse,timer,textRenderer,library);
         
         //Render the nodes
         for (size_t i = 0; i < nodeScene.size(); i++)
         {
             nodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,nodeScene);
         }
+
+        //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
+        if(materialEditorDialog.active && library.materials.size()){
+            if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
+                materialEditorDialog.active = false;
+            materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex]);
+        }
+        
+        if(textureSelectionDialog.active)
+            textureSelectionDialog.render(videoScale,mouse,timer,textRenderer,library);
 
         if(frameCounter > 1000)
             frameCounter = 0;
