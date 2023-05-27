@@ -193,6 +193,7 @@ struct Section{ //Sections seperates the elements in the panel
 class UI{
     Shaders shaders; 
 	AppTextures appTextures;
+    Model sphereModel;
 public:
     //UI Elements
     //(Mostly panels)
@@ -227,9 +228,10 @@ public:
     
     UI(){}
 
-    void init(Shaders shaders,Context context,AppTextures appTextures,glm::vec2 videoScale){
+    void init(Shaders shaders,Context context,AppTextures appTextures,glm::vec2 videoScale,Model &sphereModel){
         this->shaders = shaders;
         this->appTextures = appTextures;
+        this->sphereModel = sphereModel;
         
         //Init the painting panel
         navigationPanel = Panel(
@@ -474,7 +476,7 @@ public:
         
 
         //greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
-        materialEditorDialog = MaterialEditorDialog(shaders.buttonShader,colorPalette,appTextures);
+        materialEditorDialog = MaterialEditorDialog(shaders.buttonShader,shaders.tdModelShader,colorPalette,appTextures,sphereModel);
         textureSelectionDialog = TextureSelectionDialog(shaders.buttonShader,colorPalette);
     }    
 
@@ -508,7 +510,7 @@ public:
             else if(selectedLibraryElementIndex == 1){ //Update materials
                 for (size_t i = 0; i < library.materials.size(); i++)
                 {
-                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.materials[i].title       , Texture(), 0.f,false))) ;
+                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.materials[i].title       , Texture(library.materials[i].displayingTexture), 0.f,false))) ;
                 }
             }
             libraryPanelDisplayer.sections.push_back(Section(Element(Button()),libSection.elements));
@@ -634,7 +636,7 @@ public:
         if(materialEditorDialog.active && library.materials.size()){
             if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
                 materialEditorDialog.active = false;
-            materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex],textureRes,box);
+            materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex],textureRes,box,context);
         }
         
         if(textureSelectionDialog.active)

@@ -58,13 +58,20 @@ public:
     int height;
     int channels;
     
-    std::string path;
+    std::string path = "";
 
     //For program textures
     std::string tmpPath;
     bool isTexture = true; //Otherwise is a folder
 
     Texture(){}
+    
+    Texture(unsigned int ID){
+        this->ID = ID;
+        width = 2048;
+        height = 2048;
+        channels = 4;
+    }
 
     void load(const char* path){
         this->path = path;

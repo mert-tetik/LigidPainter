@@ -155,6 +155,7 @@ public:
     Context context; //Holds data related to the window
     Scene scene; //3D Scene structure
     Model model; //Loaded 3D Model
+    Model sphereModel; //Sphere 3D Model to display the materials
 
     //Structure that holds all the shaders
     //*Define shaders there then init like that shaders.tdModelShader = Shader("a.vert","a.frag");
@@ -227,7 +228,9 @@ public:
 
         //Loads the default model (will be removed)
         model.loadModel("./LigidPainter/Resources/3D Models/halfCube.fbx",true);
+        sphereModel.loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
         
+
         //Couldn't use the constructor since the glad is not initialized before definition
         //There is no need to use that function once again
         scene.skybox.init();
@@ -250,7 +253,7 @@ public:
         contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Edit" , "Add To Scene", "Rename" ,"Favourite", "Duplicate" , "Copy Path", "Delete"})); //Materials
 
         //Init the userinterface
-        userInterface.init(shaders,context,appTextures,videoScale);
+        userInterface.init(shaders,context,appTextures,videoScale,sphereModel);
 
         //Init mouse class
         mouse = Mouse(context.window);
