@@ -18,8 +18,11 @@ Renderer.h : Renders the whole screen
 #ifndef LGDRENDERER_HPP
 #define LGDRENDERER_HPP
 
-//GL_TEXTURE0 is used for random stuff - bind as default
-
+/*
+    Bugs :
+    ! Multiple material nodes unconnecting bug
+    ! Material editor - modifier panel bug (changing between materials)
+*/
 #include <iostream>
 #include <filesystem>
 
@@ -244,7 +247,7 @@ public:
 
         //Create context menus
         contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Rename" ,"Favourite", "Duplicate" , "Copy Path", "Delete"})); //Textures 
-        contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Edit" ,"Rename" ,"Favourite", "Duplicate" , "Copy Path", "Delete"})); //Materials
+        contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Edit" , "Add To Scene", "Rename" ,"Favourite", "Duplicate" , "Copy Path", "Delete"})); //Materials
 
         //Init the userinterface
         userInterface.init(shaders,context,appTextures,videoScale);

@@ -506,7 +506,7 @@ public:
             else if(selectedLibraryElementIndex == 1){ //Update materials
                 for (size_t i = 0; i < library.materials.size(); i++)
                 {
-                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"material"       , Texture(), 0.f,false))) ;
+                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.materials[i].title       , Texture(), 0.f,false))) ;
                 }
             }
             libraryPanelDisplayer.sections.push_back(Section(Element(Button()),libSection.elements));
@@ -531,6 +531,11 @@ public:
                 if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick && contextMenus[i].active){//Clicked to edit button
                     selectedMaterialIndex = contextMenus[i].selectedElement;
                     materialEditorDialog.activate();
+                }
+                if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick && contextMenus[i].active){//Clicked to add to scene button
+                    Node materialNode = appNodes[0];
+                    materialNode.barButton.text = library.materials[contextMenus[i].selectedElement].title;
+                    nodeScene.push_back(materialNode); //Add material node
                 }
             }
             if(mouse.LClick||mouse.RClick||mouse.MClick||glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwGetKey(context.window,GLFW_KEY_ENTER) == GLFW_PRESS){
@@ -573,7 +578,7 @@ public:
         
 
         if(libraryPanelDisplayer.barButtons[0].clickedMixVal == 1.f && selectedLibraryElementIndex == 1){//Add button clicked
-            library.materials.push_back(Material(textureRes));
+            library.materials.push_back(Material(textureRes,"material_0"));
         } 
 
         //Update the selected library element index

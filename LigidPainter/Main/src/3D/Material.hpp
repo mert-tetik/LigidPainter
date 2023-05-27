@@ -55,6 +55,8 @@ private:
         txtr.channels = 4;
     }
 public:
+    std::string title;
+
     Texture albedo;
     Texture roughness;
     Texture metallic; 
@@ -65,7 +67,8 @@ public:
     std::vector<MaterialModifier> materialModifiers;
 
     Material(){}
-    Material(int textureRes){
+    Material(int textureRes,std::string title){
+        this->title = title;
         initTexture(albedo,textureRes);
         initTexture(roughness,textureRes);
         initTexture(metallic,textureRes);

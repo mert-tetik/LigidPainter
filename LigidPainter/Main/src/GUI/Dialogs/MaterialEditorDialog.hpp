@@ -132,12 +132,12 @@ public:
             },
             0,
             {
-                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier/AllChannels.frag",
-                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier/AllChannels.frag",
-                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier/AllChannels.frag",
-                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier/AllChannels.frag",
-                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier/AllChannels.frag",
-                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier/AllChannels.frag"
+                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",
+                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",
+                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",
+                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",
+                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",
+                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag"
             }
         );
         appMaterialModifiers.textureModifier.sections[0].header.button.clickState1 = true;
@@ -221,6 +221,10 @@ public:
         selectedMaterialModifierIndex = 0;
         active = true;
         firstFrameActivated = true;
+    }
+
+    void updateMaterial(){ //Updates textures of the material using modifier shaders
+
     }
 };
 
