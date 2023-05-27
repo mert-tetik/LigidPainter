@@ -73,11 +73,14 @@ public:
     Texture heightMap;
     Texture ambientOcclusion;
 
+    int ID; //Unique ID
+
     std::vector<MaterialModifier> materialModifiers;
 
     Material(){}
-    Material(int textureRes,std::string title){
+    Material(int textureRes,std::string title,int ID){
         this->title = title;
+        this->ID = ID;
         initTexture(albedo,textureRes);
         initTexture(roughness,textureRes);
         initTexture(metallic,textureRes);

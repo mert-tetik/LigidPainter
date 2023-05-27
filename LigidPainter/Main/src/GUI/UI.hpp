@@ -222,6 +222,8 @@ public:
     glm::mat4 projection; 
 
     ColorPalette colorPalette;
+
+    int materialIDCounter = 0;
     
     UI(){}
 
@@ -535,6 +537,7 @@ public:
                 if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick && contextMenus[i].active){//Clicked to add to scene button
                     Node materialNode = appNodes[0];
                     materialNode.barButton.text = library.materials[contextMenus[i].selectedElement].title;
+                    materialNode.materialID = library.materials[contextMenus[i].selectedElement].ID;
                     nodeScene.push_back(materialNode); //Add material node
                 }
             }
@@ -578,7 +581,8 @@ public:
         
 
         if(libraryPanelDisplayer.barButtons[0].clickedMixVal == 1.f && selectedLibraryElementIndex == 1){//Add button clicked
-            library.materials.push_back(Material(textureRes,"material_0"));
+            library.materials.push_back(Material(textureRes,"material_0",materialIDCounter));
+            materialIDCounter++;
         } 
 
         //Update the selected library element index
@@ -623,7 +627,7 @@ public:
         //Render the nodes
         for (size_t i = 0; i < nodeScene.size(); i++)
         {
-            nodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,nodeScene);
+            nodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,nodeScene,i);
         }
 
         //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);

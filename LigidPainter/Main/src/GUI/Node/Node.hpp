@@ -84,7 +84,8 @@ public:
     Shader buttonShader;  
     Shader singleCurveShader;  
 
-    int ID; //Unique id for the node
+    //int ID; //Unique id for the node (IS NOT USED RN)
+    int materialID;
 
     Panel nodePanel;//Node's itself
     Button barButton; //That bar on top of the nodes 
@@ -95,12 +96,13 @@ public:
 
     Node(){}
 
-    void loadIO(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs, Shader buttonShader,Shader singleCurveShader,ColorPalette colorPalette,float heigth){
+    void loadIO(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs, Shader buttonShader,Shader singleCurveShader,ColorPalette colorPalette,float heigth,int materialID){
         this->buttonShader = buttonShader;
         this->singleCurveShader = singleCurveShader;
         this->inputs = inputs;
         this->outputs = outputs;
         this->scale.y = heigth;
+        this->materialID = materialID;
 
 
         this->nodePanel = Panel(
@@ -145,7 +147,7 @@ public:
 
 
 
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &nodeScene){
+    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &nodeScene,int currentNodeIndex){
         //Barriers (In order to prevent the overflow)
         
         //Bottom
@@ -190,6 +192,23 @@ public:
                 //Render the IO circle
                 inputs[i].IOCircle.render(videoScale,mouse,timer,textRenderer);
 
+                //Check all the nodes if an output is connected to the input
+                for (size_t nodI = 0; nodI < nodeScene.size(); nodI++){
+                    for (size_t IOi = 0; IOi < nodeScene[nodI].outputs.size(); IOi++){
+                        for (size_t conI = 0; conI < nodeScene[nodI].outputs[IOi].connections.size(); conI++)
+                        {
+                            //If an output is connected to the input
+                            if(nodeScene[nodI].outputs[IOi].connections[conI].nodeIndex == currentNodeIndex && nodeScene[nodI].outputs[IOi].connections[conI].inputIndex == i){
+                                if(inputs[i].connections.size())
+                                    inputs[i].connections[0] = NodeConnection(nodI,IOi);
+                                else
+                                    inputs[i].connections.push_back(NodeConnection(nodI,IOi));
+                            }
+                        }
+                    }
+                }
+                
+
                 if(inputs[i].IOCircle.clickState1){
                     //Don't scale the panel if IO circle is pressed
                     nodePanel.leftSide.pressed = false;
@@ -227,8 +246,9 @@ public:
                                 outputs[i-inputs.size()].IOCircle.clickState1 = true;
                                 for (size_t coni = 0; coni < outputs[i-inputs.size()].connections.size(); coni++)//Severe that connection
                                 {
-                                    if(outputs[i-inputs.size()].connections[coni].inputIndex == IOi && outputs[i-inputs.size()].connections[coni].nodeIndex == nodI)
+                                    if(outputs[i-inputs.size()].connections[coni].inputIndex == IOi && outputs[i-inputs.size()].connections[coni].nodeIndex == nodI){
                                         outputs[i-inputs.size()].connections.erase(outputs[i-inputs.size()].connections.begin() + coni);
+                                    }
                                 }
                                 
                             }

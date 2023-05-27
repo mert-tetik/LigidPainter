@@ -226,7 +226,7 @@ public:
         updateProjectionMatrix();
 
         //Loads the default model (will be removed)
-        model.loadModel("./LigidPainter/Resources/3D Models/plane.fbx",true);
+        model.loadModel("./LigidPainter/Resources/3D Models/halfCube.fbx",true);
         
         //Couldn't use the constructor since the glad is not initialized before definition
         //There is no need to use that function once again
@@ -282,7 +282,8 @@ public:
             shaders.buttonShader,
             shaders.singleCurve,
             colorPalette,
-            12.f
+            12.f,
+            0
         );
 
         Node meshOutputNode;
@@ -302,7 +303,8 @@ public:
             shaders.buttonShader,
             shaders.singleCurve,
             colorPalette,
-            25.f
+            25.f,
+            0
         );
         
 
@@ -311,7 +313,6 @@ public:
         appNodes.push_back(meshOutputNode);
 
         nodeScene.push_back(meshOutputNode);
-        nodeScene.push_back(materialNode);
     }
 
     void render(){
@@ -344,20 +345,9 @@ public:
         glBindTexture(GL_TEXTURE_CUBE_MAP,scene.skybox.ID);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_CUBE_MAP,scene.skybox.IDPrefiltered);
-        if(library.materials.size()){
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D,library.materials[0].albedo.ID);
-            glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D,library.materials[0].roughness.ID);
-            glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D,library.materials[0].metallic.ID);
-            glActiveTexture(GL_TEXTURE5);
-            glBindTexture(GL_TEXTURE_2D,library.materials[0].normalMap.ID);
-            glActiveTexture(GL_TEXTURE6);
-            glBindTexture(GL_TEXTURE_2D,library.materials[0].heightMap.ID);
-            glActiveTexture(GL_TEXTURE7);
-            glBindTexture(GL_TEXTURE_2D,library.materials[0].ambientOcclusion.ID);
-        }
+        
+        
+        
         shaders.tdModelShader.setInt("skybox",0);
         shaders.tdModelShader.setInt("prefilterMap",1);
         shaders.tdModelShader.setInt("albedoTxtr",2);
@@ -371,7 +361,31 @@ public:
         shaders.tdModelShader.setMat4("projection",scene.projectionMatrix);
         glm::mat4 modelMatrix = glm::mat4(1);
         shaders.tdModelShader.setMat4("modelMatrix",modelMatrix);
-        model.Draw();
+
+
+        std::vector<Material> nodeMaterials = getTheMaterialsConnectedToTheMeshNode(nodeScene,library);
+
+        for (size_t i = 0; i < model.meshes.size(); i++)
+        {
+            if(library.materials.size()){
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].albedo.ID);
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].roughness.ID);
+                glActiveTexture(GL_TEXTURE4);
+                glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].metallic.ID);
+                glActiveTexture(GL_TEXTURE5);
+                glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].normalMap.ID);
+                glActiveTexture(GL_TEXTURE6);
+                glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].heightMap.ID);
+                glActiveTexture(GL_TEXTURE7);
+                glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].ambientOcclusion.ID);
+            }
+            model.meshes[i].Draw();
+        }
+        
+
+        //model.Draw();
 
         //Clear the depth buffer before rendering the UI elements (prevent coliding)
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -408,6 +422,29 @@ public:
 
 
 private:
+    std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> nodeScene,Library library){
+        std::vector<Material> materials;
+
+        //Check all the inputs of the mesh node
+        for (size_t i = 0; i < nodeScene[0].inputs.size(); i++)
+        {
+            int materialID = 1000;
+            if(nodeScene[0].inputs[i].connections.size())
+                materialID = nodeScene[nodeScene[0].inputs[i].connections[0].nodeIndex].materialID;
+            else
+                materials.push_back(Material());
+
+            if(materialID != 1000){
+                for (size_t matI = 0; matI < library.materials.size(); matI++)
+                {
+                    if(library.materials[matI].ID == materialID)
+                        materials.push_back(library.materials[matI]);
+                }
+            }
+            
+        }
+        return materials;
+    }
     void updateViewMatrix(){
         scene.viewMatrix = glm::lookAt(scene.camera.cameraPos, 
                                        scene.camera.originPos, 

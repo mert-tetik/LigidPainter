@@ -136,6 +136,11 @@ public:
         appMaterialModifiers.textureModifier.sections[0].header.button.clickState1 = true;
 
     }
+    int aa = 0;
+    void check(){
+        std::cout << aa << ' ';
+        aa++;
+    }
 
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library,Material &material, int textureRes,Box box){
         bgPanel.render(videoScale,mouse,timer,textRenderer);
@@ -146,6 +151,10 @@ public:
         materialDisplayer.scale.x = (modifiersPanel.pos.x - modifiersPanel.scale.x) - (layerPanel.pos.x + layerPanel.scale.x); 
         materialDisplayer.scale.x /= 2.f;
         materialDisplayer.pos.x = modifiersPanel.pos.x - modifiersPanel.scale.x - materialDisplayer.scale.x;
+
+        if(firstFrameActivated){
+            modifiersPanel.sections.clear();
+        }
 
         //Update the material if interacted with modifier's panel
         for (size_t secI = 0; secI < modifiersPanel.sections.size(); secI++)
@@ -166,6 +175,7 @@ public:
             }
         }
         
+        check();
 
         //Update layer panal elements
         if(layerPanel.barButtons[0].clickedMixVal == 1.f || firstFrameActivated){
@@ -184,7 +194,7 @@ public:
             updateMaterial(material,(float)textureRes,box);
             layerPanel.sections.push_back(layerPanelSection);
         }
-
+        check();
         //Update the selected material modifier index
         if(layerPanel.sections.size()){
             for (size_t i = 0; i < layerPanel.sections[0].elements.size(); i++)
@@ -201,8 +211,14 @@ public:
                 }
             }
         }
-
-        if(modifiersPanel.sections.size()){
+check();
+        if(selectedMaterialModifierIndex >= material.materialModifiers.size()){
+            selectedMaterialModifierIndex = material.materialModifiers.size()-1;
+            if(selectedMaterialModifierIndex < 0)
+                selectedMaterialModifierIndex = 0;
+        }
+        
+        if(modifiersPanel.sections.size() && material.materialModifiers.size()){
             if(material.materialModifiers[selectedMaterialModifierIndex].modifierIndex == 0) {//If is a texture modifier
                 for (size_t i = 0; i < modifiersPanel.sections[0].elements.size(); i++)
                 {
@@ -213,6 +229,8 @@ public:
                 }
             }
         }
+check();
+
         if(textureSelectionDialog.active && textureModifierTextureSelectingButtonIndex != 1000){
             if(textureSelectionDialog.selectedTextureIndex != 1000){
                 modifiersPanel.sections[0].elements[textureModifierTextureSelectingButtonIndex].button.texture = library.textures[textureSelectionDialog.selectedTextureIndex];
@@ -223,11 +241,13 @@ public:
                 updateMaterial(material,(float)textureRes,box);
             }
         }
-
+check();
 
         materialDisplayer.render(videoScale,mouse,timer,textRenderer);
-    
+    check();
         firstFrameActivated = false;
+
+        aa = 0;
     }
 
     void activate(){
@@ -344,8 +364,9 @@ public:
 
         }
         
-
+        
         //Finish
+        buttonShader.use();
         glBindFramebuffer(GL_FRAMEBUFFER,0);
     }
 };
