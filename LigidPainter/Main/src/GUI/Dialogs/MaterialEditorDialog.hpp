@@ -137,7 +137,7 @@ public:
 
     }
 
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library,Material &material, int textureRes){
+    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library,Material &material, int textureRes,Box box){
         bgPanel.render(videoScale,mouse,timer,textRenderer);
         layerPanel.render(videoScale,mouse,timer,textRenderer);
         modifiersPanel.render(videoScale,mouse,timer,textRenderer);
@@ -163,7 +163,7 @@ public:
                     Element(Button(1,glm::vec2(2,1.5f),colorPalette,buttonShader,material.materialModifiers[i].title , Texture(), 0.f,true))
                 );
             }
-            updateMaterial(material,textureRes);
+            updateMaterial(material,(float)textureRes,box);
             layerPanel.sections.push_back(layerPanelSection);
         }
 
@@ -217,7 +217,7 @@ public:
         firstFrameActivated = true;
     }
 
-    void updateMaterial(Material &material,int textureRes){ //Updates textures of the material using modifier shaders
+    void updateMaterial(Material &material,float textureRes,Box box){ //Updates textures of the material using modifier shaders
         //layout(location=0) out vec4 albedo;
         //layout(location=1) out vec4 roughness;
         //layout(location=2) out vec4 metallic; 
@@ -227,51 +227,82 @@ public:
 
         glViewport(0,0,textureRes,textureRes);
         
-        glm::mat4 projection = glm::ortho(0,textureRes,0,textureRes);
+        glm::mat4 projection = glm::ortho(0.f,(float)textureRes,(float)textureRes,0.f);
         
         //Take the texture in to the middle of the screen and cover it completely
-        glm::vec2 scale = glm::vec2(textureRes/2.f,textureRes/2.f);
-        glm::vec3 position = glm::vec3(textureRes,textureRes,1.f);
+        glm::vec2 fragScale = glm::vec2((float)textureRes/2.f,(float)textureRes/2.f);
+        glm::vec3 fragPos = glm::vec3((float)textureRes/2.f,(float)textureRes/2.f,1.0f);
 
+        std::cout << "MATERIAL UPDATED " << textureRes << std::endl;
         
         for (size_t i = 0; i < material.materialModifiers.size(); i++)
         {
 
-            unsigned int FBO; //That framebuffer will be used to get the results of the shader (modifier)
-            glGenFramebuffers(1,&FBO);
-            glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-
             for (size_t channelI = 0; channelI < 6; channelI++) //For all the material channels
             {
+                glDisable(GL_DEPTH_TEST);
+
+                unsigned int FBO; //That framebuffer will be used to get the results of the shader (modifier)
+                glGenFramebuffers(1,&FBO);
+                glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+            
+                
                 unsigned int textureBuffer;
 
-                if(i == 0)
+                if(channelI == 0){
                     textureBuffer = material.albedo.ID;
-                if(i == 1)
+                    material.albedo.width = textureRes;
+                    material.albedo.height = textureRes;
+                }
+                if(channelI == 1){
                     textureBuffer = material.roughness.ID;
-                if(i == 2)
+                    material.roughness.width = textureRes;
+                    material.roughness.height = textureRes;
+                }
+                if(channelI == 2){
                     textureBuffer = material.metallic.ID;
-                if(i == 3)
+                    material.metallic.width = textureRes;
+                    material.metallic.height = textureRes;
+                }
+                if(channelI == 3){
                     textureBuffer = material.normalMap.ID;
-                if(i == 4)
+                    material.normalMap.width = textureRes;
+                    material.normalMap.height = textureRes;
+                }
+                if(channelI == 4){
                     textureBuffer = material.heightMap.ID;
-                if(i == 5)
+                    material.heightMap.width = textureRes;
+                    material.heightMap.height = textureRes;
+                }
+                if(channelI == 5){
                     textureBuffer = material.ambientOcclusion.ID;
+                    material.ambientOcclusion.width = textureRes;
+                    material.ambientOcclusion.height = textureRes;
+                }
+                
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D,textureBuffer);
+                
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+                
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+                glGenerateMipmap(GL_TEXTURE_2D);
 
                 material.materialModifiers[i].shader.use(); //Use the shader of the modifier
                 material.materialModifiers[i].shader.setMat4("projection",projection); //Set the projection
-                material.materialModifiers[i].shader.setVec2("scale",scale); //Set the scale
-                material.materialModifiers[i].shader.setVec3("pos",pos); //Set the position
+                material.materialModifiers[i].shader.setVec2("scale",fragScale); //Set the scale
+                material.materialModifiers[i].shader.setVec3("pos",fragPos); //Set the position
                 material.materialModifiers[i].shader.setInt("theTexture",0); //Set the texture slot
+                material.materialModifiers[i].shader.setInt("state",channelI); //Set the texture slot
 
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + channelI, GL_TEXTURE_2D, textureBuffer, 0);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
 
-                //Buffers
-                GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4, 
-                                         GL_COLOR_ATTACHMENT5,GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7 };
-
-                glDrawBuffers(8, drawBuffers); //Use these buffers 
-                glReadBuffer(GL_COLOR_ATTACHMENT0 + channelI); //Read the corresponding color attachment
+                glClearColor(1,0,1,1);
+                glClear(GL_COLOR_BUFFER_BIT);
 
                 //Bind the texture (bind the channel textures if rendering a texture modifier & bind the result of the previous modifier)
                 glActiveTexture(GL_TEXTURE0);
@@ -280,12 +311,18 @@ public:
                     glBindTexture(GL_TEXTURE_2D,material.materialModifiers[i].sections[0].elements[channelI].button.texture.ID);
                 //else
                 //  glBindTexture(GL_TEXTURE_2D,previousTexture);
-
+                
+                //box.bindBuffers();
                 glDrawArrays(GL_TRIANGLES, 0, 6); //Draw the square
+
+                glGenerateMipmap(GL_TEXTURE_2D);
+                
+                //Delete the framebuffer after completing the channel
+                glDeleteFramebuffers(1,&FBO);
+
+                glEnable(GL_DEPTH_TEST);
             }
 
-            //Delete the framebuffer after completing the modifier
-            glDeleteFramebuffers(1,&FBO);
         }
         
 

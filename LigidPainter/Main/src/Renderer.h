@@ -226,7 +226,7 @@ public:
         updateProjectionMatrix();
 
         //Loads the default model (will be removed)
-        model.loadModel("./LigidPainter/Resources/3D Models/untitled.fbx",true);
+        model.loadModel("./LigidPainter/Resources/3D Models/plane.fbx",true);
         
         //Couldn't use the constructor since the glad is not initialized before definition
         //There is no need to use that function once again
@@ -342,17 +342,36 @@ public:
         shaders.tdModelShader.use();
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP,scene.skybox.ID);
-        
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_CUBE_MAP,scene.skybox.IDPrefiltered);
+        if(library.materials.size()){
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D,library.materials[0].albedo.ID);
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D,library.materials[0].roughness.ID);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D,library.materials[0].metallic.ID);
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D,library.materials[0].normalMap.ID);
+            glActiveTexture(GL_TEXTURE6);
+            glBindTexture(GL_TEXTURE_2D,library.materials[0].heightMap.ID);
+            glActiveTexture(GL_TEXTURE7);
+            glBindTexture(GL_TEXTURE_2D,library.materials[0].ambientOcclusion.ID);
+        }
         shaders.tdModelShader.setInt("skybox",0);
         shaders.tdModelShader.setInt("prefilterMap",1);
+        shaders.tdModelShader.setInt("albedoTxtr",2);
+        shaders.tdModelShader.setInt("roughnessTxtr",3);
+        shaders.tdModelShader.setInt("metallicTxtr",4);
+        shaders.tdModelShader.setInt("normalMapTxtr",5);
+        shaders.tdModelShader.setInt("heightMapTxtr",6);
+        shaders.tdModelShader.setInt("ambientOcclusionTxtr",7);
         shaders.tdModelShader.setVec3("viewPos",scene.camera.cameraPos);
         shaders.tdModelShader.setMat4("view",scene.viewMatrix);
         shaders.tdModelShader.setMat4("projection",scene.projectionMatrix);
         glm::mat4 modelMatrix = glm::mat4(1);
         shaders.tdModelShader.setMat4("modelMatrix",modelMatrix);
-        //model.Draw();
+        model.Draw();
 
         //Clear the depth buffer before rendering the UI elements (prevent coliding)
         glClear(GL_DEPTH_BUFFER_BIT);

@@ -70,7 +70,7 @@ void main(){
     if(renderTexture == 1){
         //Render the texture
         vec2 uv = texCoords;
-        fragColor = texture(txtr, uv).rgba;
+        fragColor = texture(txtr, uv);
     }
     else if(renderText == 1){
         //Render the text

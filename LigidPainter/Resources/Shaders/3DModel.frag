@@ -13,6 +13,13 @@ uniform vec3 viewPos;
 uniform samplerCube skybox;
 uniform samplerCube prefilterMap;
 
+uniform sampler2D albedoTxtr;
+uniform sampler2D roughnessTxtr;
+uniform sampler2D metallicTxtr;
+uniform sampler2D normalMapTxtr;
+uniform sampler2D heightMapTxtr;
+uniform sampler2D ambientOcclusionTxtr;
+
 out vec4 fragColor;
 
 
@@ -63,11 +70,15 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }   
 
+vec4 getTexture(sampler2D txtr){
+    return texture(txtr,TexCoords);
+}
+
 vec3 getPBR(){
-    vec3 albedo = vec3(0.0);
-    vec3 normal = vec3(128./255.,127./255.,255./255.);
-    float metallic = (0.0);
-    float roughness = (0.3);
+    vec3 albedo = getTexture(albedoTxtr).rgb;
+    vec3 normal = getTexture(normalMapTxtr).rgb;
+    float roughness = getTexture(roughnessTxtr).r;
+    float metallic = getTexture(metallicTxtr).r;
 
 
     vec3 T = normalize(vec3(vec4(Tangent, 0.0)));

@@ -618,10 +618,7 @@ public:
         nodeEditorDisplayer.scale.x = 50 - selectedTextureDisplayer.scale.x - (paintingPanel.scale.x+windowPanel.scale.x);
         Util util;
         
-        std::cout<<50.f/100.f*60.f <<std::endl;
-
         selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
-
         
         //Render the nodes
         for (size_t i = 0; i < nodeScene.size(); i++)
@@ -633,7 +630,7 @@ public:
         if(materialEditorDialog.active && library.materials.size()){
             if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
                 materialEditorDialog.active = false;
-            materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex],textureRes);
+            materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex],textureRes,box);
         }
         
         if(textureSelectionDialog.active)
