@@ -3,12 +3,7 @@
 in vec3 fragPos;
 in vec2 texCoords;
 
-uniform sampler2D albedoTexture;
-uniform sampler2D roughnessTexture;
-uniform sampler2D metallicTexture;
-uniform sampler2D normalMapTexture;
-uniform sampler2D heightMapTexture;
-uniform sampler2D ambientOcclusionTexture;
+uniform sampler2D theTexture;
 
 layout(location=0) out vec4 albedo;
 layout(location=1) out vec4 roughness;
@@ -22,10 +17,10 @@ void getImage(sampler2D txtr,out vec4 result){
 }
 
 void main(){
-    getImage(albedoTexture,albedo);
-    getImage(roughnessTexture,roughness);
-    getImage(metallicTexture,metallic);
-    getImage(normalMapTexture,normalMap);
-    getImage(heightMapTexture,heightMap);
-    getImage(ambientOcclusionTexture,ambientOcclusion);
+    getImage(theTexture,albedo);
+    getImage(theTexture,roughness);
+    getImage(theTexture,metallic);
+    getImage(theTexture,normalMap);
+    getImage(theTexture,heightMap);
+    getImage(theTexture,ambientOcclusion);
 }

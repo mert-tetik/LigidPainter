@@ -131,20 +131,13 @@ public:
                 )
             },
             0,
-            {
-                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",
-                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",
-                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",
-                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",
-                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",
-                "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag"
-            }
+            "LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag"
         );
         appMaterialModifiers.textureModifier.sections[0].header.button.clickState1 = true;
 
     }
 
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library,Material &material){
+    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library,Material &material, int textureRes){
         bgPanel.render(videoScale,mouse,timer,textRenderer);
         layerPanel.render(videoScale,mouse,timer,textRenderer);
         modifiersPanel.render(videoScale,mouse,timer,textRenderer);
@@ -170,6 +163,7 @@ public:
                     Element(Button(1,glm::vec2(2,1.5f),colorPalette,buttonShader,material.materialModifiers[i].title , Texture(), 0.f,true))
                 );
             }
+            updateMaterial(material,textureRes);
             layerPanel.sections.push_back(layerPanelSection);
         }
 
@@ -223,8 +217,80 @@ public:
         firstFrameActivated = true;
     }
 
-    void updateMaterial(){ //Updates textures of the material using modifier shaders
+    void updateMaterial(Material &material,int textureRes){ //Updates textures of the material using modifier shaders
+        //layout(location=0) out vec4 albedo;
+        //layout(location=1) out vec4 roughness;
+        //layout(location=2) out vec4 metallic; 
+        //layout(location=3) out vec4 normalMap;
+        //layout(location=4) out vec4 heightMap;
+        //layout(location=5) out vec4 ambientOcclusion;
 
+        glViewport(0,0,textureRes,textureRes);
+        
+        glm::mat4 projection = glm::ortho(0,textureRes,0,textureRes);
+        
+        //Take the texture in to the middle of the screen and cover it completely
+        glm::vec2 scale = glm::vec2(textureRes/2.f,textureRes/2.f);
+        glm::vec3 position = glm::vec3(textureRes,textureRes,1.f);
+
+        
+        for (size_t i = 0; i < material.materialModifiers.size(); i++)
+        {
+
+            unsigned int FBO; //That framebuffer will be used to get the results of the shader (modifier)
+            glGenFramebuffers(1,&FBO);
+            glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+
+            for (size_t channelI = 0; channelI < 6; channelI++) //For all the material channels
+            {
+                unsigned int textureBuffer;
+
+                if(i == 0)
+                    textureBuffer = material.albedo.ID;
+                if(i == 1)
+                    textureBuffer = material.roughness.ID;
+                if(i == 2)
+                    textureBuffer = material.metallic.ID;
+                if(i == 3)
+                    textureBuffer = material.normalMap.ID;
+                if(i == 4)
+                    textureBuffer = material.heightMap.ID;
+                if(i == 5)
+                    textureBuffer = material.ambientOcclusion.ID;
+
+                material.materialModifiers[i].shader.use(); //Use the shader of the modifier
+                material.materialModifiers[i].shader.setMat4("projection",projection); //Set the projection
+                material.materialModifiers[i].shader.setVec2("scale",scale); //Set the scale
+                material.materialModifiers[i].shader.setVec3("pos",pos); //Set the position
+                material.materialModifiers[i].shader.setInt("theTexture",0); //Set the texture slot
+
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + channelI, GL_TEXTURE_2D, textureBuffer, 0);
+
+                //Buffers
+                GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4, 
+                                         GL_COLOR_ATTACHMENT5,GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7 };
+
+                glDrawBuffers(8, drawBuffers); //Use these buffers 
+                glReadBuffer(GL_COLOR_ATTACHMENT0 + channelI); //Read the corresponding color attachment
+
+                //Bind the texture (bind the channel textures if rendering a texture modifier & bind the result of the previous modifier)
+                glActiveTexture(GL_TEXTURE0);
+
+                if(material.materialModifiers[i].modifierIndex == 0) //Is texture modifier
+                    glBindTexture(GL_TEXTURE_2D,material.materialModifiers[i].sections[0].elements[channelI].button.texture.ID);
+                //else
+                //  glBindTexture(GL_TEXTURE_2D,previousTexture);
+
+                glDrawArrays(GL_TRIANGLES, 0, 6); //Draw the square
+            }
+
+            //Delete the framebuffer after completing the modifier
+            glDeleteFramebuffers(1,&FBO);
+        }
+        
+
+        //Finish
+        glBindFramebuffer(GL_FRAMEBUFFER,0);
     }
 };
 
