@@ -147,7 +147,25 @@ public:
         materialDisplayer.scale.x /= 2.f;
         materialDisplayer.pos.x = modifiersPanel.pos.x - modifiersPanel.scale.x - materialDisplayer.scale.x;
 
+        //Update the material if interacted with modifier's panel
+        for (size_t secI = 0; secI < modifiersPanel.sections.size(); secI++)
+        {
+            for (size_t elementI = 0; elementI < modifiersPanel.sections[secI].elements.size(); elementI++)
+            {
+                if(modifiersPanel.sections[secI].elements[elementI].state == 0)
+                    if(modifiersPanel.sections[secI].elements[elementI].button.clickedMixVal == 1.f)
+                        updateMaterial(material,(float)textureRes,box);
 
+                if(modifiersPanel.sections[secI].elements[elementI].state == 1)
+                    if(modifiersPanel.sections[secI].elements[elementI].rangeBar.pointerPressed == true)
+                        updateMaterial(material,(float)textureRes,box);
+
+                if(modifiersPanel.sections[secI].elements[elementI].state == 2)
+                    if(modifiersPanel.sections[secI].elements[elementI].checkBox.hover && mouse.LClick == true)
+                        updateMaterial(material,(float)textureRes,box);
+            }
+        }
+        
 
         //Update layer panal elements
         if(layerPanel.barButtons[0].clickedMixVal == 1.f || firstFrameActivated){
@@ -202,6 +220,7 @@ public:
                 textureModifierTextureSelectingButtonIndex = 1000;
                 textureSelectionDialog.selectedTextureIndex = 1000;
                 textureSelectionDialog.active = false;
+                updateMaterial(material,(float)textureRes,box);
             }
         }
 
