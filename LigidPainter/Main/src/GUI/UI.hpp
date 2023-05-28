@@ -65,6 +65,7 @@ Example :
 #include "GUI/Button.hpp"
 #include "GUI/RangeBar.hpp"
 #include "GUI/CheckBox.hpp"
+#include "GUI/ComboBox.hpp"
 
 struct Element{
     //The UI Element
@@ -74,6 +75,7 @@ struct Element{
     Button button;
     RangeBar rangeBar;
     CheckBox checkBox;
+    ComboBox comboBox;
     
     int state; //Decide which element will be used 0 = button 
     
@@ -102,6 +104,24 @@ struct Element{
         panelOffset = rangeBar.panelOffset;
         state = 1;
     }
+    Element(CheckBox checkBox){
+        //Init as range bar
+        this->checkBox = checkBox;
+        pos = checkBox.pos;
+        scale = checkBox.scale;
+        panelOffset = checkBox.panelOffset;
+        state = 2;
+    }
+    Element(ComboBox comboBox){
+        //Init as range bar
+        this->comboBox = comboBox;
+        pos = comboBox.pos;
+        scale = comboBox.scale;
+        panelOffset = comboBox.panelOffset;
+        state = 3;
+    }
+
+
     Element(Button button,int nodeState){
         //Init as button
         this->button = button;
@@ -119,14 +139,6 @@ struct Element{
         panelOffset = rangeBar.panelOffset;
         state = 1;
         this->nodeState = nodeState;
-    }
-    Element(CheckBox checkBox){
-        //Init as range bar
-        this->checkBox = checkBox;
-        pos = checkBox.pos;
-        scale = checkBox.scale;
-        panelOffset = checkBox.panelOffset;
-        state = 2;
     }
 
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
@@ -151,6 +163,13 @@ struct Element{
             checkBox.doMouseTracking = doMouseTracking;
             checkBox.render(videoScale,mouse, timer,textRenderer,doMouseTracking);
         }
+        if(state == 3){ //Render the comboxBox
+            comboBox.pos = pos;
+            comboBox.scale = scale;
+            comboBox.panelOffset = panelOffset;
+            comboBox.doMouseTracking = doMouseTracking;
+            comboBox.render(videoScale,mouse, timer,textRenderer,doMouseTracking);
+        }
     }
 };
 
@@ -172,6 +191,7 @@ struct Section{ //Sections seperates the elements in the panel
 
 #include "GUI/Panel.hpp"
 #include "GUI/Dialogs/GreetingDialog.hpp"
+#include "GUI/Dialogs/NewProjectDialog.hpp"
 #include "GUI/Dialogs/MaterialEditorDialog.hpp"
 #include "GUI/Dialogs/TextureSelectionDialog.hpp"
 #include "Mouse.hpp"
@@ -209,7 +229,8 @@ public:
     Panel selectedTextureDisplayer; 
 
     //Dialogs    
-    //GreetingDialog greetingDialog;
+    GreetingDialog greetingDialog;
+    NewProjectDialog newProjectDialog;
     MaterialEditorDialog materialEditorDialog;
     TextureSelectionDialog textureSelectionDialog;
 
@@ -478,7 +499,8 @@ public:
                             );
         
 
-        //greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
+        greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
+        newProjectDialog = NewProjectDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
         materialEditorDialog = MaterialEditorDialog(shaders.buttonShader,shaders.tdModelShader,colorPalette,appTextures,sphereModel);
         textureSelectionDialog = TextureSelectionDialog(shaders.buttonShader,colorPalette);
     }    
@@ -640,6 +662,8 @@ public:
         }
 
         //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
+        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
+        
         if(materialEditorDialog.active && library.materials.size()){
             if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
                 materialEditorDialog.deactivate(textureSelectionDialog);
