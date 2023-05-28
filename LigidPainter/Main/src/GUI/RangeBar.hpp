@@ -127,6 +127,8 @@ public:
     float maxValue = 50.f; 
     float value = (maxValue+minValue)/2.f; //Value of the range bar
 
+    bool doMouseTracking;
+
     RangeBar(){}
 
     //Manual constructor
@@ -192,8 +194,10 @@ public:
         this->value = value;
     }
 
-    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer){
+    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
         Util util;
+
+        this->doMouseTracking = doMouseTracking;
 
         // pos value % of the video scale
         glm::vec3 resultPos = glm::vec3( 
@@ -220,8 +224,11 @@ public:
         float displayValue = util.getPercent(resultScale.x,resultVal);
 
         //Check if mouse on top of the slider
-        hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
-        
+        if(doMouseTracking)
+            hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
+        else 
+            hover = false;
+
         if(hover)
             //Set the cursor as horizontal slide
             mouse.setCursor(mouse.hSlideCursor);// mouse.activeCursor = mouse.pointerCursor

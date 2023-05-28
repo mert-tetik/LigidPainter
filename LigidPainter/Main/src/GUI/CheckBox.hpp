@@ -123,6 +123,8 @@ public:
     glm::vec2 scale;  //Example : w : 20, h : 30 means cover %20 of the window in x axis & cover 30% of the window in y axis
     glm::vec3 pos; //Same here
     
+    bool doMouseTracking;
+
     bool hover = false;
 
     float hoverMixVal = 0.f;
@@ -176,8 +178,10 @@ public:
 
 
 
-    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer){
+    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
         Util util;
+
+        this->doMouseTracking = doMouseTracking;
 
 
         // pos value % of the video scale
@@ -212,7 +216,10 @@ public:
         float resultOutlineThickness = videoScale.x/1920/2 * (2.f);//2.f = outline thickness
 
         //Check if mouse on top of the button
-        hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
+        if(doMouseTracking)
+            hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
+        else 
+            hover = false;
 
         if(hover)
             //Set the cursor as pointer

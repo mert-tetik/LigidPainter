@@ -80,7 +80,7 @@ public:
                         sectionElements
                     )
         );
-        texturePanel.render(videoScale,mouse,timer,textRenderer);
+        texturePanel.render(videoScale,mouse,timer,textRenderer,true);
 
         for (size_t i = 0; i < texturePanel.sections[0].elements.size(); i++)
         {

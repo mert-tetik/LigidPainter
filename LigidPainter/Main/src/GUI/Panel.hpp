@@ -64,15 +64,24 @@ private:
         const float grabbingRange = 20; 
 
         //Check if mouse on top of the panel
-        hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
-        //Check if mouse on top of the left side of the panel
-        leftSide.hover = mouse.isMouseHover(glm::vec2(grabbingRange,resultScale.y),glm::vec2(resultPos.x-resultScale.x,resultPos.y)) && !leftSide.locked;
-        //Check if mouse on top of the right side of the panel
-        rightSide.hover = mouse.isMouseHover(glm::vec2(grabbingRange,resultScale.y),glm::vec2(resultPos.x+resultScale.x,resultPos.y)) && !rightSide.locked;
-        //Check if mouse on top of the bottom side of the panel
-        bottomSide.hover = mouse.isMouseHover(glm::vec2(resultScale.x,grabbingRange),glm::vec2(resultPos.x,resultPos.y + resultScale.y)) && !bottomSide.locked;
-        //Check if mouse on top of the top side of the panel
-        topSide.hover = mouse.isMouseHover(glm::vec2(resultScale.x,grabbingRange),glm::vec2(resultPos.x,resultPos.y - resultScale.y)) && !topSide.locked;
+        if(doMouseTracking){
+            hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
+            //Check if mouse on top of the left side of the panel
+            leftSide.hover = mouse.isMouseHover(glm::vec2(grabbingRange,resultScale.y),glm::vec2(resultPos.x-resultScale.x,resultPos.y)) && !leftSide.locked;
+            //Check if mouse on top of the right side of the panel
+            rightSide.hover = mouse.isMouseHover(glm::vec2(grabbingRange,resultScale.y),glm::vec2(resultPos.x+resultScale.x,resultPos.y)) && !rightSide.locked;
+            //Check if mouse on top of the bottom side of the panel
+            bottomSide.hover = mouse.isMouseHover(glm::vec2(resultScale.x,grabbingRange),glm::vec2(resultPos.x,resultPos.y + resultScale.y)) && !bottomSide.locked;
+            //Check if mouse on top of the top side of the panel
+            topSide.hover = mouse.isMouseHover(glm::vec2(resultScale.x,grabbingRange),glm::vec2(resultPos.x,resultPos.y - resultScale.y)) && !topSide.locked;
+        }
+        else{
+            hover = false;
+            leftSide.hover = false;
+            rightSide.hover = false;
+            bottomSide.hover = false;
+            topSide.hover = false;
+        }
 
         //Keep the left corner in the pressed state from the left click to left mouse button release
         if(leftSide.hover && mouse.LClick) //Clicked to the corner
@@ -263,7 +272,7 @@ private:
             
             barButtons[i].pos.z += 0.01f;
 
-            barButtons[i].render(videoScale,mouse,timer,textRenderer);
+            barButtons[i].render(videoScale,mouse,timer,textRenderer,doMouseTracking);
 
         }
         if(barButtons.size())
@@ -281,7 +290,7 @@ private:
                 else
                     prepDrawBtnHorizontally(sections[sI].header,sections[max(sI-1,0)].elements[sections[max(sI-1,0)].elements.size()-1],elementPos,btnCounter);
                 //Draw the button
-                sections[sI].header.render(videoScale,mouse,timer,textRenderer);
+                sections[sI].header.render(videoScale,mouse,timer,textRenderer,doMouseTracking);
                 btnCounter++; //Indexing buttons to position them
             }
             if(sections[sI].header.button.clickState1 == true || !sections[sI].header.button.text.size()){
@@ -297,7 +306,7 @@ private:
 
                     //Draw the button
                     if(sections[sI].elements[i].pos.y - sections[sI].elements[i].scale.y < (pos.y + scale.y) && sections[sI].elements[i].pos.y + sections[sI].elements[i].scale.y > (pos.y - scale.y)) //Don't render the unshown elements
-                        sections[sI].elements[i].render(videoScale,mouse,timer,textRenderer);
+                        sections[sI].elements[i].render(videoScale,mouse,timer,textRenderer,doMouseTracking);
                         
                     btnCounter++; //Indexing buttons to position them
 
@@ -318,7 +327,7 @@ private:
         if(slideRatio > 1 && vertical){
             sliderButton.scale.y = scale.y / slideRatio;
             sliderButton.pos.y = (pos.y - scale.y) + sliderButton.scale.y + slideVal;  
-            sliderButton.render(videoScale,mouse,timer,textRenderer);
+            sliderButton.render(videoScale,mouse,timer,textRenderer,doMouseTracking);
             if(sliderButton.clickState1){ //Pressed
                 slideVal += mouse.mouseOffset.y/videoScale.y*100.f;
                 if(slideVal < 0)
@@ -371,6 +380,8 @@ public:
 
     float maxScaleVal;    
 
+    bool doMouseTracking;
+
     Button sliderButton;
 
     Panel(){}
@@ -399,7 +410,9 @@ public:
         this->sliderButton.radius = 0.25f;
     }
 
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){
+    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
+        this->doMouseTracking = doMouseTracking;
+        
         //Panel's itself
         Util util;
 

@@ -129,24 +129,27 @@ struct Element{
         state = 2;
     }
 
-    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer){
+    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
         if(state == 0){ //Render the button
             button.pos = pos;
             button.scale = scale;
             button.panelOffset = panelOffset;
-            button.render(videoScale,mouse, timer,textRenderer);
+            button.doMouseTracking = doMouseTracking;
+            button.render(videoScale,mouse, timer,textRenderer,doMouseTracking);
         }
         if(state == 1){ //Render the rangeBar
             rangeBar.pos = pos;
             rangeBar.scale = scale;
             rangeBar.panelOffset = panelOffset;
-            rangeBar.render(videoScale,mouse, timer,textRenderer);
+            rangeBar.doMouseTracking = doMouseTracking;
+            rangeBar.render(videoScale,mouse, timer,textRenderer,doMouseTracking);
         }
         if(state == 2){ //Render the checkBox
             checkBox.pos = pos;
             checkBox.scale = scale;
             checkBox.panelOffset = panelOffset;
-            checkBox.render(videoScale,mouse, timer,textRenderer);
+            checkBox.doMouseTracking = doMouseTracking;
+            checkBox.render(videoScale,mouse, timer,textRenderer,doMouseTracking);
         }
     }
 };
@@ -205,7 +208,6 @@ public:
     Panel nodeEditorDisplayer; 
     Panel selectedTextureDisplayer; 
 
-
     //Dialogs    
     //GreetingDialog greetingDialog;
     MaterialEditorDialog materialEditorDialog;
@@ -216,6 +218,7 @@ public:
     int selectedLibraryElementIndex = 0; //0 For the textures , 1 for the materials bla bla
     int selectedMaterialIndex = 0; //In the library (to manipulate with )
     
+    bool anyContextMenuActive = false;
 
     //UI Rendering projection
     //Has the screen resolution
@@ -521,16 +524,20 @@ public:
 
         //--Render all the UI elements there
         
-        navigationPanel.render(videoScale,mouse,timer,textRenderer);
-        windowPanel.render(videoScale,mouse,timer,textRenderer);
-        paintingPanel.render(videoScale,mouse,timer,textRenderer);
-        libraryPanelLeft.render(videoScale,mouse,timer,textRenderer);
-        libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer);
-        nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer);
-        selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer);
+        navigationPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
+        windowPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
+        paintingPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
+        libraryPanelLeft.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
+        libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
+        nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
+        selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
 
+        anyContextMenuActive = false; 
         for (size_t i = 0; i < contextMenus.size(); i++)//Check contextMenus
         {
+            if(contextMenus[i].active){
+                anyContextMenuActive = true;
+            }
             if(i == 1 && selectedLibraryElementIndex == 1){ //Material context menu
                 if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick && contextMenus[i].active){//Clicked to edit button
                     selectedMaterialIndex = contextMenus[i].selectedElement;

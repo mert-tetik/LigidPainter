@@ -146,9 +146,9 @@ public:
         Material &material, int textureRes,Box box,Context context){
 
         //Render the panels & material displayer button
-        bgPanel.render(videoScale,mouse,timer,textRenderer);
-        layerPanel.render(videoScale,mouse,timer,textRenderer);
-        modifiersPanel.render(videoScale,mouse,timer,textRenderer);
+        bgPanel.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.active);
+        layerPanel.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.active);
+        modifiersPanel.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.active);
         
         //Update material displayer button
         materialDisplayer.texture = Texture(material.displayingTexture);
@@ -223,7 +223,7 @@ public:
             }
         }
 
-        materialDisplayer.render(videoScale,mouse,timer,textRenderer);
+        materialDisplayer.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.active);
         firstFrameActivated = false;
     }
 

@@ -90,7 +90,7 @@ public:
 
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){
         contextPanel.pos = pos;
-        contextPanel.render(videoScale,mouse,timer,textRenderer);
+        contextPanel.render(videoScale,mouse,timer,textRenderer,true);
     }
 };
 

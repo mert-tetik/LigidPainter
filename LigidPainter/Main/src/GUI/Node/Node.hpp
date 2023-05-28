@@ -148,21 +148,11 @@ public:
 
 
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &nodeScene,int currentNodeIndex){
-        GLFWcursor* lastCursor = mouse.activeCursor;
-        
         //Barriers (In order to prevent the overflow)
         bool cursorOnBarriers = renderBarriers(nodeEditorPanel,mouse);
 
         //Render the node panel which contains the input buttons and stuff
-        nodePanel.render(videoScale,mouse,timer,textRenderer);
-        
-        if(cursorOnBarriers){ //Righ after rendering cancel mouse states regarding the panel
-            nodePanel.hover = false;
-            nodePanel.leftSide.hover = false;
-            nodePanel.leftSide.pressed = false;
-            nodePanel.rightSide.hover = false;
-            nodePanel.rightSide.pressed = false;
-        }
+        nodePanel.render(videoScale,mouse,timer,textRenderer,!cursorOnBarriers);
         
         for (size_t i = 0; i < nodePanel.sections[0].elements.size(); i++) //Render IO circles and check them etc.
         {
@@ -175,9 +165,7 @@ public:
                 inputs[i].IOCircle.pos.z = nodePanel.sections[0].elements[i].pos.z + 0.01f;
 
                 //Render the IO circle
-                inputs[i].IOCircle.render(videoScale,mouse,timer,textRenderer);
-                if(cursorOnBarriers)
-                    inputs[i].IOCircle.hover = false;
+                inputs[i].IOCircle.render(videoScale,mouse,timer,textRenderer,!cursorOnBarriers);
 
 
                 //Check all the nodes if an output is connected to the input
@@ -270,10 +258,8 @@ public:
                 }
                 
                 //Render the output circle
-                outputs[i-inputs.size()].IOCircle.render(videoScale,mouse,timer,textRenderer);
+                outputs[i-inputs.size()].IOCircle.render(videoScale,mouse,timer,textRenderer,!cursorOnBarriers);
                 
-                if(cursorOnBarriers)
-                    outputs[i-inputs.size()].IOCircle.hover = false;
             }
         }
 
@@ -285,20 +271,12 @@ public:
         barButton.pos.y = nodePanel.pos.y - nodePanel.scale.y - barButton.scale.y; 
 
         //Render the bar button
-        barButton.render(videoScale,mouse,timer,textRenderer);
-        if(cursorOnBarriers){
-            barButton.clickState1 = false;
-            barButton.hover = false;
-        }
+        barButton.render(videoScale,mouse,timer,textRenderer,!cursorOnBarriers);
 
         //Move the node panel if bar button is pressed
         if(barButton.clickState1){ //Pressed
             nodePanel.pos.x += mouse.mouseOffset.x/videoScale.x * 100.f;
             nodePanel.pos.y += mouse.mouseOffset.y/videoScale.y * 100.f;
-        }
-
-        if(cursorOnBarriers){ //If mouse is on the barriers don't change the cursor 
-            mouse.setCursor(lastCursor);
         }
 
         glClear(GL_DEPTH_BUFFER_BIT);
