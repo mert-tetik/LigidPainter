@@ -635,7 +635,7 @@ public:
         //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
         if(materialEditorDialog.active && library.materials.size()){
             if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
-                materialEditorDialog.active = false;
+                materialEditorDialog.deactivate(textureSelectionDialog);
             materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex],textureRes,box,context);
         }
         

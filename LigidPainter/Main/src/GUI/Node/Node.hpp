@@ -148,8 +148,12 @@ public:
 
 
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &nodeScene,int currentNodeIndex){
+        GLFWcursor* lastCursor = mouse.activeCursor;
+        
         //Barriers (In order to prevent the overflow)
         
+        bool cursorOnBarriers = false;
+
         //Bottom
         buttonShader.setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y + nodeEditorPanel.resultScale.y + 5000,1.f)); //To the bottom
         buttonShader.setVec2("scale",     glm::vec2(5000));
@@ -160,25 +164,45 @@ public:
         buttonShader.setFloat("colorMixVal"  ,   0.f );
         buttonShader.setVec3("outlineColor" ,    glm::vec4(0)     ); //Invisible
         
+        if(mouse.isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y + nodeEditorPanel.resultScale.y + 5000,1.f))){
+            cursorOnBarriers = true;
+        }
+        
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
         //Top
         buttonShader.setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y - nodeEditorPanel.resultScale.y - 5000,1.f)); //To the Top
         buttonShader.setVec2("scale",     glm::vec2(5000));
+        if(mouse.isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y - nodeEditorPanel.resultScale.y - 5000,1.f))){
+            cursorOnBarriers = true;
+        }
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
         //Left
         buttonShader.setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x - nodeEditorPanel.resultScale.x - 5000,nodeEditorPanel.resultPos.y,1.f));
         buttonShader.setVec2("scale",     glm::vec2(5000));
+        if(mouse.isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x - nodeEditorPanel.resultScale.x - 5000,nodeEditorPanel.resultPos.y,1.f))){
+            cursorOnBarriers = true;
+        }
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
         //Right
         buttonShader.setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x + nodeEditorPanel.resultScale.x + 5000,nodeEditorPanel.resultPos.y,1.f));
         buttonShader.setVec2("scale",     glm::vec2(5000));
+        if(mouse.isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x + nodeEditorPanel.resultScale.x + 5000,nodeEditorPanel.resultPos.y,1.f)))
+            cursorOnBarriers = true;
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
 
         nodePanel.render(videoScale,mouse,timer,textRenderer);
+        
+        if(cursorOnBarriers){
+            nodePanel.hover = false;
+            nodePanel.leftSide.hover = false;
+            nodePanel.leftSide.pressed = false;
+            nodePanel.rightSide.hover = false;
+            nodePanel.rightSide.pressed = false;
+        }
         
         for (size_t i = 0; i < nodePanel.sections[0].elements.size(); i++)
         {
@@ -191,6 +215,8 @@ public:
 
                 //Render the IO circle
                 inputs[i].IOCircle.render(videoScale,mouse,timer,textRenderer);
+                if(cursorOnBarriers)
+                    inputs[i].IOCircle.hover = false;
 
                 //Check all the nodes if an output is connected to the input
                 for (size_t nodI = 0; nodI < nodeScene.size(); nodI++){
@@ -271,6 +297,8 @@ public:
                 
 
                 outputs[i-inputs.size()].IOCircle.render(videoScale,mouse,timer,textRenderer);
+                if(cursorOnBarriers)
+                    outputs[i-inputs.size()].IOCircle.hover = false;
             }
         }
 
@@ -283,12 +311,21 @@ public:
 
         //Render the bar button
         barButton.render(videoScale,mouse,timer,textRenderer);
+        if(cursorOnBarriers){
+            barButton.clickState1 = false;
+            barButton.hover = false;
+        }
 
         //Move the node panel if bar button is pressed
         if(barButton.clickState1){ //Pressed
             nodePanel.pos.x += mouse.mouseOffset.x/videoScale.x * 100.f;
             nodePanel.pos.y += mouse.mouseOffset.y/videoScale.y * 100.f;
         }
+
+        if(cursorOnBarriers){ //If mouse is on the barriers don't change the cursor 
+            mouse.setCursor(lastCursor);
+        }
+
         glClear(GL_DEPTH_BUFFER_BIT);
     }
 };
