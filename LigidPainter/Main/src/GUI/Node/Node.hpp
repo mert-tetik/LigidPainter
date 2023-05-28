@@ -151,7 +151,165 @@ public:
         GLFWcursor* lastCursor = mouse.activeCursor;
         
         //Barriers (In order to prevent the overflow)
+        bool cursorOnBarriers = renderBarriers(nodeEditorPanel,mouse);
+
+        //Render the node panel which contains the input buttons and stuff
+        nodePanel.render(videoScale,mouse,timer,textRenderer);
         
+        if(cursorOnBarriers){ //Righ after rendering cancel mouse states regarding the panel
+            nodePanel.hover = false;
+            nodePanel.leftSide.hover = false;
+            nodePanel.leftSide.pressed = false;
+            nodePanel.rightSide.hover = false;
+            nodePanel.rightSide.pressed = false;
+        }
+        
+        for (size_t i = 0; i < nodePanel.sections[0].elements.size(); i++) //Render IO circles and check them etc.
+        {
+            if(nodePanel.sections[0].elements[i].nodeState == 0){
+                //----------Inputs-----------
+
+                //Move the IO Circle to the left side of the the input element
+                inputs[i].IOCircle.pos = nodePanel.sections[0].elements[i].pos;
+                inputs[i].IOCircle.pos.x -= nodePanel.sections[0].elements[i].scale.x;
+                inputs[i].IOCircle.pos.z = nodePanel.sections[0].elements[i].pos.z + 0.01f;
+
+                //Render the IO circle
+                inputs[i].IOCircle.render(videoScale,mouse,timer,textRenderer);
+                if(cursorOnBarriers)
+                    inputs[i].IOCircle.hover = false;
+
+
+                //Check all the nodes if an output is connected to the input
+                for (size_t nodI = 0; nodI < nodeScene.size(); nodI++){
+                    for (size_t IOi = 0; IOi < nodeScene[nodI].outputs.size(); IOi++){
+                        for (size_t conI = 0; conI < nodeScene[nodI].outputs[IOi].connections.size(); conI++)
+                        {
+                            //If an output is connected to the input
+                            if(nodeScene[nodI].outputs[IOi].connections[conI].nodeIndex == currentNodeIndex && nodeScene[nodI].outputs[IOi].connections[conI].inputIndex == i){
+                                //Add the connection
+                                if(inputs[i].connections.size())
+                                    inputs[i].connections[0] = NodeConnection(nodI,IOi);
+                                else
+                                    inputs[i].connections.push_back(NodeConnection(nodI,IOi));
+                            }
+                            else{
+                                //Remove the connection if there are any (if an output is not connected to the input)
+                                inputs[i].connections.clear();
+                            }
+                        }
+                    }
+                }
+                
+                //Don't scale the panel if IO circle is pressed
+                if(inputs[i].IOCircle.clickState1){
+                    nodePanel.leftSide.pressed = false;
+                    nodePanel.rightSide.pressed = false;
+                }
+            }
+            if(nodePanel.sections[0].elements[i].nodeState == 2){
+                //----------Outputs-----------
+
+                //Move the IO Circle to the right side of the the output element
+                outputs[i-inputs.size()].IOCircle.pos = nodePanel.sections[0].elements[i].pos;
+                outputs[i-inputs.size()].IOCircle.pos.x += nodePanel.sections[0].elements[i].scale.x;
+                outputs[i-inputs.size()].IOCircle.pos.z = nodePanel.sections[0].elements[i].pos.z + 0.01f;
+
+                
+                if(outputs[i-inputs.size()].IOCircle.clickState1){//Pressed to IO circle
+                    Util util;
+                    
+                    //Don't scale the panel if IO circle is pressed
+                    nodePanel.leftSide.pressed = false;
+                    nodePanel.rightSide.pressed = false;
+                    
+                    //Render the line (starting point : IO circle pos , destination point : cursor pos)
+                    drawLine(glm::vec2(outputs[i-inputs.size()].IOCircle.pos.x,outputs[i-inputs.size()].IOCircle.pos.y),mouse.cursorPos/videoScale * 100.f,videoScale,nodeEditorPanel);
+                }
+
+                //Check all the nodes if released on top of the IO button
+                for (size_t nodI = 0; nodI < nodeScene.size(); nodI++)
+                {
+                    for (size_t IOi = 0; IOi < nodeScene[nodI].inputs.size(); IOi++)
+                    {
+                        if(nodeScene[nodI].inputs[IOi].IOCircle.hover){
+                            if(outputs[i-inputs.size()].IOCircle.clickState1 && !mouse.LPressed){//Released the IO circle
+                                outputs[i-inputs.size()].connections.push_back(NodeConnection(nodI,IOi));//Connect to the input button
+                            }
+                            if(doHaveConnection(nodI,IOi) && mouse.LClick){//If pressed to a IO circle that already is connected
+                                //Severe the current connection & make the output IO circle pressed (move connection)
+
+                                outputs[i-inputs.size()].IOCircle.clickState1 = true; //Move that connection
+                                
+                                for (size_t coni = 0; coni < outputs[i-inputs.size()].connections.size(); coni++)//Severe that connection
+                                {
+                                    if(outputs[i-inputs.size()].connections[coni].inputIndex == IOi && outputs[i-inputs.size()].connections[coni].nodeIndex == nodI){
+                                        outputs[i-inputs.size()].connections.erase(outputs[i-inputs.size()].connections.begin() + coni);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                    
+                //Render the lines of the connected connections
+                for (size_t conI = 0; conI < outputs[i-inputs.size()].connections.size(); conI++)
+                {
+                    glm::vec3 destPos = nodeScene[
+                                                    outputs[i-inputs.size()].connections[conI].nodeIndex //Which node the output is connected
+                                                 ].inputs
+                                                 [
+                                                    outputs[i-inputs.size()].connections[conI].inputIndex //Which input the output is connected
+                                                 ].IOCircle.pos; //Position of the input button
+                    drawLine(
+                                glm::vec2(outputs[i-inputs.size()].IOCircle.pos.x,outputs[i-inputs.size()].IOCircle.pos.y), //Source (Position of the output)
+                                glm::vec2(destPos.x,destPos.y), //Destination
+                                videoScale,
+                                nodeEditorPanel
+                            );
+                }
+                
+                //Render the output circle
+                outputs[i-inputs.size()].IOCircle.render(videoScale,mouse,timer,textRenderer);
+                
+                if(cursorOnBarriers)
+                    outputs[i-inputs.size()].IOCircle.hover = false;
+            }
+        }
+
+        //Position the bar button        
+        barButton.pos = nodePanel.pos;
+        barButton.scale = nodePanel.scale;
+        barButton.scale.y = 1.5f;
+        barButton.pos.z += 0.02f;
+        barButton.pos.y = nodePanel.pos.y - nodePanel.scale.y - barButton.scale.y; 
+
+        //Render the bar button
+        barButton.render(videoScale,mouse,timer,textRenderer);
+        if(cursorOnBarriers){
+            barButton.clickState1 = false;
+            barButton.hover = false;
+        }
+
+        //Move the node panel if bar button is pressed
+        if(barButton.clickState1){ //Pressed
+            nodePanel.pos.x += mouse.mouseOffset.x/videoScale.x * 100.f;
+            nodePanel.pos.y += mouse.mouseOffset.y/videoScale.y * 100.f;
+        }
+
+        if(cursorOnBarriers){ //If mouse is on the barriers don't change the cursor 
+            mouse.setCursor(lastCursor);
+        }
+
+        glClear(GL_DEPTH_BUFFER_BIT);
+    }
+
+private:
+    bool renderBarriers(Panel &nodeEditorPanel,Mouse &mouse){
+        //Renders the barriers and returns if the cursor is inside of the barriers
+        //Barriers prevents the node rendering outside of the node editor panel
+        //Barriers are covering outside of the node editor panel
+
         bool cursorOnBarriers = false;
 
         //Bottom
@@ -193,140 +351,7 @@ public:
             cursorOnBarriers = true;
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-
-        nodePanel.render(videoScale,mouse,timer,textRenderer);
-        
-        if(cursorOnBarriers){
-            nodePanel.hover = false;
-            nodePanel.leftSide.hover = false;
-            nodePanel.leftSide.pressed = false;
-            nodePanel.rightSide.hover = false;
-            nodePanel.rightSide.pressed = false;
-        }
-        
-        for (size_t i = 0; i < nodePanel.sections[0].elements.size(); i++)
-        {
-            if(nodePanel.sections[0].elements[i].nodeState == 0){//Input
-
-                //Move the IO Circle to the left side of the the input element
-                inputs[i].IOCircle.pos = nodePanel.sections[0].elements[i].pos;
-                inputs[i].IOCircle.pos.x -= nodePanel.sections[0].elements[i].scale.x;
-                inputs[i].IOCircle.pos.z = nodePanel.sections[0].elements[i].pos.z + 0.01f;
-
-                //Render the IO circle
-                inputs[i].IOCircle.render(videoScale,mouse,timer,textRenderer);
-                if(cursorOnBarriers)
-                    inputs[i].IOCircle.hover = false;
-
-                //Check all the nodes if an output is connected to the input
-                for (size_t nodI = 0; nodI < nodeScene.size(); nodI++){
-                    for (size_t IOi = 0; IOi < nodeScene[nodI].outputs.size(); IOi++){
-                        for (size_t conI = 0; conI < nodeScene[nodI].outputs[IOi].connections.size(); conI++)
-                        {
-                            //If an output is connected to the input
-                            if(nodeScene[nodI].outputs[IOi].connections[conI].nodeIndex == currentNodeIndex && nodeScene[nodI].outputs[IOi].connections[conI].inputIndex == i){
-                                if(inputs[i].connections.size())
-                                    inputs[i].connections[0] = NodeConnection(nodI,IOi);
-                                else
-                                    inputs[i].connections.push_back(NodeConnection(nodI,IOi));
-                            }
-                        }
-                    }
-                }
-                
-
-                if(inputs[i].IOCircle.clickState1){
-                    //Don't scale the panel if IO circle is pressed
-                    nodePanel.leftSide.pressed = false;
-                    nodePanel.rightSide.pressed = false;
-                }
-            }
-            if(nodePanel.sections[0].elements[i].nodeState == 2){//Outputs
-
-                //Move the IO Circle to the right side of the the output element
-                outputs[i-inputs.size()].IOCircle.pos = nodePanel.sections[0].elements[i].pos;
-                outputs[i-inputs.size()].IOCircle.pos.x += nodePanel.sections[0].elements[i].scale.x;
-                outputs[i-inputs.size()].IOCircle.pos.z = nodePanel.sections[0].elements[i].pos.z + 0.01f;
-
-                
-                if(outputs[i-inputs.size()].IOCircle.clickState1){//Pressed to IO circle
-                    Util util;
-                    
-                    //Don't scale the panel if IO circle is pressed
-                    nodePanel.leftSide.pressed = false;
-                    nodePanel.rightSide.pressed = false;
-                    
-                    //Render the line (starting point : IO circle pos , destination point : cursor pos)
-                    drawLine(glm::vec2(outputs[i-inputs.size()].IOCircle.pos.x,outputs[i-inputs.size()].IOCircle.pos.y),mouse.cursorPos/videoScale * 100.f,videoScale,nodeEditorPanel);
-                }
-                //Check all the nodes if released on top of the IO button
-                for (size_t nodI = 0; nodI < nodeScene.size(); nodI++)
-                {
-                    for (size_t IOi = 0; IOi < nodeScene[nodI].inputs.size(); IOi++)
-                    {
-                        if(nodeScene[nodI].inputs[IOi].IOCircle.hover){
-                            if(outputs[i-inputs.size()].IOCircle.clickState1 && !mouse.LPressed){//Released the IO circle
-                                outputs[i-inputs.size()].connections.push_back(NodeConnection(nodI,IOi));//Connect to the IO button
-                            }
-                            if(doHaveConnection(nodI,IOi) && mouse.LClick){//If pressed to a IO circle that already is connected
-                                outputs[i-inputs.size()].IOCircle.clickState1 = true;
-                                for (size_t coni = 0; coni < outputs[i-inputs.size()].connections.size(); coni++)//Severe that connection
-                                {
-                                    if(outputs[i-inputs.size()].connections[coni].inputIndex == IOi && outputs[i-inputs.size()].connections[coni].nodeIndex == nodI){
-                                        outputs[i-inputs.size()].connections.erase(outputs[i-inputs.size()].connections.begin() + coni);
-                                    }
-                                }
-                                
-                            }
-                        }
-                    }
-                    
-                }
-                    
-                
-                for (size_t conI = 0; conI < outputs[i-inputs.size()].connections.size(); conI++)
-                {
-                    glm::vec3 destPos = nodeScene[outputs[i-inputs.size()].connections[conI].nodeIndex].inputs[outputs[i-inputs.size()].connections[conI].inputIndex].IOCircle.pos;
-                    drawLine(
-                                glm::vec2(outputs[i-inputs.size()].IOCircle.pos.x,outputs[i-inputs.size()].IOCircle.pos.y), //Source
-                                glm::vec2(destPos.x,destPos.y), //Destination
-                                videoScale,
-                                nodeEditorPanel
-                            );
-                }
-                
-
-                outputs[i-inputs.size()].IOCircle.render(videoScale,mouse,timer,textRenderer);
-                if(cursorOnBarriers)
-                    outputs[i-inputs.size()].IOCircle.hover = false;
-            }
-        }
-
-        //Position the bar button        
-        barButton.pos = nodePanel.pos;
-        barButton.scale = nodePanel.scale;
-        barButton.scale.y = 1.5f;
-        barButton.pos.z += 0.02f;
-        barButton.pos.y = nodePanel.pos.y - nodePanel.scale.y - barButton.scale.y; 
-
-        //Render the bar button
-        barButton.render(videoScale,mouse,timer,textRenderer);
-        if(cursorOnBarriers){
-            barButton.clickState1 = false;
-            barButton.hover = false;
-        }
-
-        //Move the node panel if bar button is pressed
-        if(barButton.clickState1){ //Pressed
-            nodePanel.pos.x += mouse.mouseOffset.x/videoScale.x * 100.f;
-            nodePanel.pos.y += mouse.mouseOffset.y/videoScale.y * 100.f;
-        }
-
-        if(cursorOnBarriers){ //If mouse is on the barriers don't change the cursor 
-            mouse.setCursor(lastCursor);
-        }
-
-        glClear(GL_DEPTH_BUFFER_BIT);
+        return cursorOnBarriers;
     }
 };
 
