@@ -21,10 +21,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
+
+#include "tinyfiledialogs.h"
 
 #include "Shader.hpp"
 #include "Box.hpp"
@@ -36,7 +39,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Button.hpp"
 #include "Mouse.hpp"
 
-#include <glm/gtc/type_ptr.hpp>
 
 #include <string>
 #include <fstream>
@@ -135,6 +137,8 @@ public:
 
     int buttonImageScaleDivider = 1.5f;
 
+    bool openSelectFolderDialog;
+
     TextBox(){}
 
 
@@ -144,7 +148,7 @@ public:
 
     //Manual constructor
     TextBox(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
-           float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2){
+           float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2,bool openSelectFolderDialog){
         
         this->shader = shader;
         this->text = text;
@@ -158,17 +162,19 @@ public:
         this->panelOffset = panelOffset;
         this->outlineColor = outlineColor;
         this->outlineColor2 = outlineColor2;
+        this->openSelectFolderDialog = openSelectFolderDialog;
 
         activeChar = text.size();
         activeChar2 = text.size();
     }
 
     //Style constructor
-    TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,float panelOffset){
+    TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,float panelOffset,bool openSelectFolderDialog){
         this->shader = shader;
         this->text = text;
         this->scale = scale;
         this->panelOffset = panelOffset;
+        this->openSelectFolderDialog = openSelectFolderDialog;
         
         activeChar = text.size();
         activeChar2 = text.size();
@@ -227,7 +233,16 @@ public:
         
         //---Get the input
         if(active){
-            textRenderer.processTextInput(text,activeChar,activeChar2);
+            if(openSelectFolderDialog){
+                char* test = tinyfd_selectFolderDialog("Select A Folder", "");
+                if(test){
+                    text = test;
+                }
+                active = false;
+            }   
+            else{
+                textRenderer.processTextInput(text,activeChar,activeChar2);
+            }
         }
 
         //Render the button

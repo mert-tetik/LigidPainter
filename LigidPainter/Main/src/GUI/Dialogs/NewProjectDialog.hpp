@@ -72,8 +72,8 @@
                                         Element(Button()),
                                         {
                                             Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"",Texture(),4.f,false)), //Empty
-                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Title",4.f)),
-                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Path",4.f)),
+                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"MyProject",4.f,false)),
+                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Path",4.f,true)),
                                             
                                             Element(ComboBox(0,glm::vec2(4,2),colorPalette,buttonShader,
                                             {
@@ -87,13 +87,14 @@
                                             Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Large",4.f)),
                                             Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Medium",0.f)),
                                             Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Small",0.f)),
-                                            Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"3D Model",Texture(),4.f,false))
+                                            Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"3D Model",Texture(),4.f,false)),
+                                            Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"Create",Texture(),4.f,false))
                                         }
                                     )
                                 },
-                                glm::vec2(40),
+                                glm::vec2(20,40),
                                 glm::vec3(50.f,50.f,0.8f),
-                                colorPalette.secondColor,
+                                colorPalette.mainColor,
                                 colorPalette.thirdColor,
                                 true,
                                 true,
