@@ -25,8 +25,9 @@ class TextRenderer
 {
 private:
     /* data */
-    glm::vec4 rndrTxt(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,int index){
+    glm::vec4 rndrTxt(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,int index,bool render){
 		glm::vec4 data;
+		data.w = 0.f;
 		//.x = Returns the text's starting position int x axis
 		//.y = Returns the text's ending position int x axis
 		//.z = hitTheBoundaries
@@ -86,7 +87,6 @@ private:
 	    for (c = text.begin(); c != text.end(); c++)
 	    {
 	    	character ch = font.characters[*c];//Get the current char
-
 	    	if(*c == '\n'){//New line if the char is \n
                 if(!multipleLines)//Break the for loop & stop rendering the text if multiple lines are not allowed 
                     break;
@@ -116,13 +116,15 @@ private:
 
                 //Draw the char
 	    		glBindTexture(GL_TEXTURE_2D,ch.TextureID);
-	    		glDrawArrays(GL_TRIANGLES, 0, 6);
+				if(render)
+	    			glDrawArrays(GL_TRIANGLES, 0, 6);
+
+				if(counter == index)
+					data.w = x;
 
                 //To the right
 	    		x += (ch.Advance >> 6) * scale / 1.2f;
 
-				if(counter == index)
-					data.w = x;
 
 	    		counter++;
 	    	}
@@ -139,6 +141,7 @@ public:
 	
 	//Current key state
 	bool keyInput = false;
+	bool caps = false;
 	char key = 0;
 	int mods = 0;
 
@@ -150,44 +153,107 @@ public:
 	
 
     glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft){
-		return rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,0);
+		return rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,0,true);
 	}
-    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,bool active,int activeChar){
-		glm::vec4 result = rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,activeChar);
+    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,bool active,int &activeChar,int &activeChar2){
+		
+		glm::vec4 result = rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,activeChar,true);
+		
+		glm::vec4 resultX = rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,activeChar2,false);
 
 		//Set the transform values
-	    shader.setVec2("scale",glm::vec2(5 * scale,35 * scale));
-	    shader.setVec3("pos",glm::vec3(result.w + 5 * scale,y,z));
-
         shader.setFloat("radius",     0    );
         shader.setInt("outline" ,     false      ); 
         shader.setInt("outlineExtra" ,     false     ); 
-        
-		//Draw the char
-	    glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        //shader.setVec4("color"  ,     color     ); //Default button color
-        //shader.setVec4("color2"  ,     color2     ); //Second color that is used by hover or click animations
-        //shader.setFloat("colorMixVal"  ,     (clickedMixVal)   );
+		std::cout << result.w << ' ' << resultX.w << std::endl;
+
+		if(activeChar == text.size()){
+			shader.setVec2("scale",glm::vec2(5 * scale,35 * scale));
+	    	shader.setVec3("pos",glm::vec3(result.y + 5 * scale,y,z));
+		}
+		else{
+			shader.setVec2("scale",glm::vec2(5 * scale,35 * scale));
+	    	shader.setVec3("pos",glm::vec3(result.w + 5 * scale,y,z));
+		}
+
+	    glDrawArrays(GL_TRIANGLES, 0, 6);
+		
+		if(activeChar != activeChar2){
+			if(activeChar == text.size()){
+				shader.setVec2("scale",glm::vec2((result.y - resultX.w)/2.f,35 * scale));
+	    		shader.setVec3("pos",glm::vec3(result.y - ((result.y - resultX.w)/2.f),y,z));
+			}
+			else{
+				shader.setVec2("scale",glm::vec2((result.w - resultX.w)/2.f,35 * scale));
+	    		shader.setVec3("pos",glm::vec3(result.w - ((result.w - resultX.w)/2.f),y,z));
+			}
+
+	    	glDrawArrays(GL_TRIANGLES, 0, 6);
+		}
+
+		//shader.setFloat("colorMixVal"  ,     (clickedMixVal)   );
 
 
 		return result;
 	}
 
-	void processTextInput(std::string &text,int &activeChar){
+	void processTextInput(std::string &text,int &activeChar,int &activeChar2){
 		if(keyInput){
-			if(key == GLFW_KEY_BACKSPACE-256){
-				text.pop_back();
+			//std::cout << activeChar << ' ' << activeChar2 << std::endl;
+			if(key == GLFW_KEY_BACKSPACE-256 && activeChar != 0){
+				if(activeChar2 != activeChar){
+					if(activeChar < activeChar2)
+						text.erase(text.begin()+activeChar,text.begin()+activeChar2);
+					else
+						text.erase(text.begin()+activeChar2,text.begin()+activeChar);
+
+					if(activeChar < 0)
+						activeChar = 0;
+					if(activeChar > text.size())
+						activeChar = text.size();
+					
+					activeChar2 = activeChar;
+				}
+				else{
+					text.erase(text.begin()+activeChar-1);
+					activeChar--;
+					activeChar2 = activeChar;
+				}
+
 			}
 			else if(key == GLFW_KEY_LEFT-256){
-				activeChar--;
+				if(mods == 1){//Shift pressed 
+					if(activeChar2 > 0)
+						activeChar2--;
+				}
+				else{
+					if(activeChar > 0)
+						activeChar--;
+					activeChar2 = activeChar;
+				}
 			}
 			else if(key == GLFW_KEY_RIGHT-256){
-				activeChar++;
+				if(mods == 1){//Shift pressed 
+					if(activeChar2 < text.size())
+						activeChar2++;
+				}
+				else{
+					if(activeChar < text.size())
+						activeChar++;
+					activeChar2 = activeChar;
+				}
 			}
-			else{
-				text.insert(text.begin() + activeChar+1,key);
+			else if(key == GLFW_KEY_CAPS_LOCK-256){
+                this->caps = !this->caps;
+			}
+			else if(mods == 0){
+				if(!this->caps && isalpha(key))
+					key+=32;
+					
+				text.insert(text.begin() + activeChar,key);
 				activeChar++;
+				activeChar2 = activeChar;
 			}
 		}
 	}

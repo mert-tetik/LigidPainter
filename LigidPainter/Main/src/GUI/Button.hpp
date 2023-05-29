@@ -88,7 +88,7 @@ private:
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
-    bool renderTheTexture(glm::vec3 resultPos,glm::vec2 resultScale,float resultScaleText,glm::vec2 videoScale,TextRenderer textRenderer,float &textureRadius){
+    bool renderTheTexture(glm::vec3 resultPos,glm::vec2 resultScale,float resultScaleText,glm::vec2 videoScale,TextRenderer &textRenderer,float &textureRadius){
         //returns the renderthetext
         //If returns yes render the text
         //If not don't render the text

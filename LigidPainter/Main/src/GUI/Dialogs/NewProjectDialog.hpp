@@ -110,7 +110,7 @@
         this->panel.sections[0].elements[0].button.color2 = glm::vec4(0);
     }
     
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer textRenderer,glm::vec2 videoScale){
+    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale){
         panel.render(videoScale,mouse,timer,textRenderer,true);
     }
  };

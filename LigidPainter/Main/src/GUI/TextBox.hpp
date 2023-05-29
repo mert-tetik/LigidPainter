@@ -112,6 +112,7 @@ public:
     glm::vec3 outlineColor2;
 
     int activeChar = 0;
+    int activeChar2 = 0;
 
     int animationStyle; //determines what type of mouse hover or click animation will be used
     //0 = Change thickness for mousehover
@@ -158,7 +159,8 @@ public:
         this->outlineColor = outlineColor;
         this->outlineColor2 = outlineColor2;
 
-        activeChar = text.size()-1;
+        activeChar = text.size();
+        activeChar2 = text.size();
     }
 
     //Style constructor
@@ -168,7 +170,8 @@ public:
         this->scale = scale;
         this->panelOffset = panelOffset;
         
-        activeChar = text.size()-1;
+        activeChar = text.size();
+        activeChar2 = text.size();
 
         if(style == 0){
             this->color = colorPalette.oppositeColor;
@@ -224,7 +227,7 @@ public:
         
         //---Get the input
         if(active){
-            textRenderer.processTextInput(text,activeChar);
+            textRenderer.processTextInput(text,activeChar,activeChar2);
         }
 
         //Render the button
@@ -234,7 +237,7 @@ public:
         shader.setVec4("color"  ,     textColor     );
         shader.setVec4("color2"  ,     textColor2     );
         //Update the parameters of the renderText function in the renderTheTexture function if this function's parameters are changed
-        textRenderer.renderText(shader,text,resultPos.x ,resultPos.y,resultPos.z+0.02f,resultPos.x + resultPos.x,false,resultScaleText,resultPos.x-resultScale.x,active,activeChar);
+        textRenderer.renderText(shader,text,resultPos.x ,resultPos.y,resultPos.z+0.02f,resultPos.x + resultPos.x,false,resultScaleText,resultPos.x-resultScale.x,active,activeChar,activeChar2);
     }
 };
 #endif
