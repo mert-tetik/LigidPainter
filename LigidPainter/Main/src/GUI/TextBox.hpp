@@ -56,11 +56,8 @@ private:
         //Set the transform data (used by vertex shader)
         shader.setVec3("pos"    ,     resultPos );
         shader.setVec2("scale"  ,     resultScale);
-        
-        if(active)//If button is pressed
-            shader.setVec4("color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
-        else
-            shader.setVec4("color"  ,     color     ); //Default button color
+            
+        shader.setVec4("color"  ,     color * glm::vec4(glm::vec3(1. - (1.f*(hoverMixVal/2.f))),1.f)     ); //Button pressing color
         
         shader.setVec4("color2"  ,     color2     ); //Second color that is used by hover or click animations
         
@@ -185,7 +182,7 @@ public:
             this->animationStyle = 0;
             this->textColor = colorPalette.oppositeColor;
             this->textColor2 = colorPalette.themeColor;
-            this->textScale = 0.5f;
+            this->textScale = 0.7f;
             this->outlineColor = {};
             this->outlineColor2 = {};
         }
