@@ -80,6 +80,7 @@ struct Shaders{
     Shader buttonShader;
     Shader prefilteringShader;
     Shader singleCurve;
+    Shader colorPicker;
 };
 struct AppTextures{ //Textures those will be used in UI of the app
     //--Icons
@@ -96,6 +97,7 @@ struct Fonts{ //Fonts those will be used in the app
 #include "GUI/ContextMenu.hpp"
 #include "GUI/Node/Node.hpp"
 #include "GUI/Node/NodeIO.hpp"
+#include "Project.hpp"
 
 
 class Renderer
@@ -204,6 +206,8 @@ public:
 
     int textureRes = 1024; //Textures will be generated with that resolution
 
+    Project project;
+
     Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
         //Hold the videoscale value inside of the scene structure
         scene.videoScale = videoScale;
@@ -228,6 +232,7 @@ public:
         shaders.prefilteringShader = Shader("LigidPainter/Resources/Shaders/Skybox.vert","LigidPainter/Resources/Shaders/PrefilterSkybox.frag",nullptr);
         shaders.buttonShader = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/Button.frag",nullptr);
         shaders.singleCurve = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/SingleCurve.frag",nullptr);
+        shaders.colorPicker = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/ColorPicker.frag",nullptr);
 
         //Update necessary data before callbacks
         updateViewport();
@@ -408,7 +413,7 @@ public:
        
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
-        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes);//Render the UI
+        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project);//Render the UI
 
         box.unbindBuffers(); //Finish rendering the UI
 

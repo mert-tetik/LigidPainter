@@ -209,6 +209,7 @@ struct Section{ //Sections seperates the elements in the panel
 #include "GUI/Panel.hpp"
 #include "GUI/Dialogs/GreetingDialog.hpp"
 #include "GUI/Dialogs/NewProjectDialog.hpp"
+#include "GUI/Dialogs/ColorPickerDialog.hpp"
 #include "GUI/Dialogs/MaterialEditorDialog.hpp"
 #include "GUI/Dialogs/TextureSelectionDialog.hpp"
 #include "Mouse.hpp"
@@ -248,6 +249,7 @@ public:
     //Dialogs    
     GreetingDialog greetingDialog;
     NewProjectDialog newProjectDialog;
+    //ColorPickerDialog colorPickerDialog;
     MaterialEditorDialog materialEditorDialog;
     TextureSelectionDialog textureSelectionDialog;
 
@@ -518,16 +520,20 @@ public:
 
         greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
         newProjectDialog = NewProjectDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
+        //colorPickerDialog = ColorPickerDialog(context,videoScale,colorPalette,shaders.buttonShader,shaders.colorPicker,appTextures);
         materialEditorDialog = MaterialEditorDialog(shaders.buttonShader,shaders.tdModelShader,colorPalette,appTextures,sphereModel);
         textureSelectionDialog = TextureSelectionDialog(shaders.buttonShader,colorPalette);
     }    
 
     void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
-                std::vector<ContextMenu> &contextMenus,int &textureRes){
+                std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project){
         glDepthFunc(GL_LEQUAL);
         
         shaders.singleCurve.use();
         shaders.singleCurve.setMat4("projection",projection); 
+        
+        shaders.colorPicker.use();
+        shaders.colorPicker.setMat4("projection",projection); 
 
         //Use the related shader
         shaders.buttonShader.use();
@@ -679,7 +685,8 @@ public:
         }
 
         //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
-        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
+        //newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
+        //colorPickerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
         
         if(materialEditorDialog.active && library.materials.size()){
             if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)

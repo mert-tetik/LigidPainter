@@ -36,7 +36,8 @@
  #include "GUI/Button.hpp"
  #include "Mouse.hpp"
  #include "Timer.hpp"
-
+ 
+ #include "Project.hpp"
 
  #include <glm/gtc/type_ptr.hpp>
 
@@ -64,6 +65,8 @@
     
 
     NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+        this->buttonShader = buttonShader;
+
         this->panel = Panel(
                                 buttonShader,
                                 colorPalette,
@@ -111,8 +114,13 @@
         this->panel.sections[0].elements[0].button.color2 = glm::vec4(0);
     }
     
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale){
+
+    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,Project &project){
         panel.render(videoScale,mouse,timer,textRenderer,true);
+
+        if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && mouse.LClick){
+            project.createProject(panel.sections[0].elements[2].textBox.text,panel.sections[0].elements[1].textBox.text);
+        }
     }
  };
 
