@@ -155,53 +155,58 @@ public:
     glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft){
 		return rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,0,true);
 	}
-    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,bool active,int &activeChar,int &activeChar2){
-		
+    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,bool active,int &activeChar,int &activeChar2,Timer &timer){
+		//If the active char is not equal to the active char 2 the chars between them will be selected
+
+		//Render the text and get the position of the chars from the text
 		glm::vec4 result = rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,activeChar,true);
 		
+		//Get the position of the chars from the text (w axis will contain the position of the char at the index of activeChar2)
 		glm::vec4 resultX = rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,activeChar2,false);
-
-		//Set the transform values
-        shader.setFloat("radius",     0    );
-        shader.setInt("outline" ,     false      ); 
-        shader.setInt("outlineExtra" ,     false     ); 
-
-		std::cout << result.w << ' ' << resultX.w << std::endl;
-
-		if(activeChar == text.size()){
-			shader.setVec2("scale",glm::vec2(5 * scale,35 * scale));
-	    	shader.setVec3("pos",glm::vec3(result.y + 5 * scale,y,z));
-		}
-		else{
-			shader.setVec2("scale",glm::vec2(5 * scale,35 * scale));
-	    	shader.setVec3("pos",glm::vec3(result.w + 5 * scale,y,z));
-		}
-
-	    glDrawArrays(GL_TRIANGLES, 0, 6);
 		
-		if(activeChar != activeChar2){
-			if(activeChar == text.size()){
-				shader.setVec2("scale",glm::vec2((result.y - resultX.w)/2.f,35 * scale));
-	    		shader.setVec3("pos",glm::vec3(result.y - ((result.y - resultX.w)/2.f),y,z));
+		//Render the insertion point cursor
+		if(active){
+			//Set the transform values
+        	shader.setFloat("radius",     0    );
+        	shader.setInt("outline" ,     false      ); 
+        	shader.setInt("outlineExtra" ,     false     ); 
+
+			if(activeChar == text.size()){ //Render at the end of the text
+				shader.setVec2("scale",glm::vec2(5 * scale,35 * scale));
+	    		shader.setVec3("pos",glm::vec3(result.y + 5 * scale,y,z));
 			}
-			else{
-				shader.setVec2("scale",glm::vec2((result.w - resultX.w)/2.f,35 * scale));
-	    		shader.setVec3("pos",glm::vec3(result.w - ((result.w - resultX.w)/2.f),y,z));
+			else{ //Render near the selected char
+				shader.setVec2("scale",glm::vec2(5 * scale,35 * scale));
+	    		shader.setVec3("pos",glm::vec3(result.w + 5 * scale,y,z));
 			}
 
-	    	glDrawArrays(GL_TRIANGLES, 0, 6);
+			//TODO Special timer for the text renderer
+			if(timer.seconds % 2 == 0) //Hide and show the insertion point cursor every second
+	    		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
+			//Multiselection 
+			if(activeChar != activeChar2){ 
+				if(activeChar == text.size()){
+					shader.setVec2("scale",glm::vec2((result.y - resultX.w)/2.f,35 * scale));
+	    			shader.setVec3("pos",glm::vec3(result.y - ((result.y - resultX.w)/2.f),y,z));
+				}
+				else{
+					shader.setVec2("scale",glm::vec2((result.w - resultX.w)/2.f,35 * scale));
+	    			shader.setVec3("pos",glm::vec3(result.w - ((result.w - resultX.w)/2.f),y,z));
+				}
+
+	    		glDrawArrays(GL_TRIANGLES, 0, 6);
+			}
 		}
-
-		//shader.setFloat("colorMixVal"  ,     (clickedMixVal)   );
-
 
 		return result;
 	}
 
 	void processTextInput(std::string &text,int &activeChar,int &activeChar2){
 		if(keyInput){
-			//std::cout << activeChar << ' ' << activeChar2 << std::endl;
-			if(key == GLFW_KEY_BACKSPACE-256 && activeChar != 0){
+			//Delete
+			if(key == GLFW_KEY_BACKSPACE-256 && activeChar != 0){ //Multiselected
 				if(activeChar2 != activeChar){
 					if(activeChar < activeChar2)
 						text.erase(text.begin()+activeChar,text.begin()+activeChar2);
@@ -215,7 +220,7 @@ public:
 					
 					activeChar2 = activeChar;
 				}
-				else{
+				else{ //Single
 					text.erase(text.begin()+activeChar-1);
 					activeChar--;
 					activeChar2 = activeChar;

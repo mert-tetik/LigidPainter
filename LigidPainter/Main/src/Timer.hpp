@@ -50,6 +50,7 @@ public:
         
     }
 
+    size_t seconds = 0; //How many seconds has passed since the program started
     double FPS = 1;
     double renderingSpeed = 0;
 
@@ -65,6 +66,7 @@ public:
             renderingSpeed = 1000./FPS;
             nbFramesT = 0;
         	lastTimeT += 1.0;
+            seconds++;
         	return true;
         }
         return false;
