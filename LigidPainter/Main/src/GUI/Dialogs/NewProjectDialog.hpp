@@ -72,8 +72,8 @@
                                         Element(Button()),
                                         {
                                             Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"",Texture(),4.f,false)), //Empty
-                                            Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"Title",Texture(),4.f,false)),
-                                            Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"Path",Texture(),4.f,false)),
+                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Title",4.f)),
+                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Path",4.f)),
                                             
                                             Element(ComboBox(0,glm::vec2(4,2),colorPalette,buttonShader,
                                             {

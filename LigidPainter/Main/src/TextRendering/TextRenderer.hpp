@@ -25,19 +25,12 @@ class TextRenderer
 {
 private:
     /* data */
-public:
-    Font font;
-    
-    TextRenderer(/* args */){}
-    TextRenderer(Font font){
-        this->font = font;
-    }
-
-    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft){
-		glm::vec3 data;
+    glm::vec4 rndrTxt(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,int index){
+		glm::vec4 data;
 		//.x = Returns the text's starting position int x axis
 		//.y = Returns the text's ending position int x axis
 		//.z = hitTheBoundaries
+		//.w = position of the char in the given index
 
 
 		//Text is rendered using button shader
@@ -128,6 +121,9 @@ public:
                 //To the right
 	    		x += (ch.Advance >> 6) * scale / 1.2f;
 
+				if(counter == index)
+					data.w = x;
+
 	    		counter++;
 	    	}
 	    }
@@ -137,6 +133,63 @@ public:
 		data.z = hitTheBoundaires;
 
 		return data;
+	}
+public:
+    Font font;
+	
+	//Current key state
+	bool keyInput = false;
+	char key = 0;
+	int mods = 0;
+
+    TextRenderer(/* args */){}
+    TextRenderer(Font font){
+        this->font = font;
+    }
+
+	
+
+    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft){
+		return rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,0);
+	}
+    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,bool active,int activeChar){
+		glm::vec4 result = rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,activeChar);
+
+		//Set the transform values
+	    shader.setVec2("scale",glm::vec2(5 * scale,35 * scale));
+	    shader.setVec3("pos",glm::vec3(result.w + 5 * scale,y,z));
+
+        shader.setFloat("radius",     0    );
+        shader.setInt("outline" ,     false      ); 
+        shader.setInt("outlineExtra" ,     false     ); 
+        
+		//Draw the char
+	    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        //shader.setVec4("color"  ,     color     ); //Default button color
+        //shader.setVec4("color2"  ,     color2     ); //Second color that is used by hover or click animations
+        //shader.setFloat("colorMixVal"  ,     (clickedMixVal)   );
+
+
+		return result;
+	}
+
+	void processTextInput(std::string &text,int &activeChar){
+		if(keyInput){
+			if(key == GLFW_KEY_BACKSPACE-256){
+				text.pop_back();
+			}
+			else if(key == GLFW_KEY_LEFT-256){
+				activeChar--;
+			}
+			else if(key == GLFW_KEY_RIGHT-256){
+				activeChar++;
+			}
+			else{
+				text.insert(text.begin() + activeChar+1,key);
+				activeChar++;
+			}
+		}
 	}
 };
 

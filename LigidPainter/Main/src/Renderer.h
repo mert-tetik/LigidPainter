@@ -143,6 +143,14 @@ private:
         };
 
         glfwSetMouseButtonCallback(context.window, mouseButtonFunc);
+        
+        //Key button callback function casting
+        auto keyFunc = [](GLFWwindow* w, int key, int scancode, int action, int mods)
+        {
+            static_cast<Renderer*>(glfwGetWindowUserPointer(w))->keyCallback(w,key,scancode,action,mods);
+        };
+
+        glfwSetKeyCallback(context.window, keyFunc);
     }
     void initGlad(){
         //Init GLAD
@@ -413,6 +421,11 @@ public:
         mouse.mouseOffset = glm::vec2(0);
         mouse.mods = 0;
 
+        //Set keyboard states to default
+        textRenderer.keyInput = false;
+        textRenderer.mods = 0;
+
+
         //Cursor is changing there
         //Sets the active cursor (mouse.activeCursor) as the cursor
         //Than changes the active cursor as default cursor
@@ -552,6 +565,14 @@ private:
         //This will be used as "last frame's cursor pos" for the cursor offset
         lastMousePos.x = mouse.cursorPos.x;
         lastMousePos.y = mouse.cursorPos.y;
+    }
+    void keyCallback(GLFWwindow* window,int key,int scancode,int action,int mods)
+    {
+        if(action == GLFW_PRESS || action == GLFW_REPEAT){ //1 or 2
+            textRenderer.keyInput = true;
+            textRenderer.key = key;
+            textRenderer.mods = mods;
+        }
     }
 
 };

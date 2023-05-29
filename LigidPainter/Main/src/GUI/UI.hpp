@@ -66,6 +66,7 @@ Example :
 #include "GUI/RangeBar.hpp"
 #include "GUI/CheckBox.hpp"
 #include "GUI/ComboBox.hpp"
+#include "GUI/TextBox.hpp"
 
 struct Element{
     //The UI Element
@@ -76,6 +77,7 @@ struct Element{
     RangeBar rangeBar;
     CheckBox checkBox;
     ComboBox comboBox;
+    TextBox textBox;
     
     int state; //Decide which element will be used 0 = button 
     
@@ -113,12 +115,20 @@ struct Element{
         state = 2;
     }
     Element(ComboBox comboBox){
-        //Init as range bar
+        //Init as combo box
         this->comboBox = comboBox;
         pos = comboBox.pos;
         scale = comboBox.scale;
         panelOffset = comboBox.panelOffset;
         state = 3;
+    }
+    Element(TextBox textBox){
+        //Init as text box
+        this->textBox = textBox;
+        pos = textBox.pos;
+        scale = textBox.scale;
+        panelOffset = textBox.panelOffset;
+        state = 4;
     }
 
 
@@ -169,6 +179,13 @@ struct Element{
             comboBox.panelOffset = panelOffset;
             comboBox.doMouseTracking = doMouseTracking;
             comboBox.render(videoScale,mouse, timer,textRenderer,doMouseTracking);
+        }
+        if(state == 4){ //Render the comboxBox
+            textBox.pos = pos;
+            textBox.scale = scale;
+            textBox.panelOffset = panelOffset;
+            textBox.doMouseTracking = doMouseTracking;
+            textBox.render(videoScale,mouse, timer,textRenderer,doMouseTracking);
         }
     }
 };
