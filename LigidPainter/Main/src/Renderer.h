@@ -43,6 +43,7 @@ Renderer.h : Renders the whole screen
 #include "TextRendering/Font.hpp"
 #include "TextRendering/TextRenderer.hpp"
 #include "3D/Material.hpp"
+#include "Painter.hpp"
 
 
 struct Camera{
@@ -207,6 +208,8 @@ public:
     int textureRes = 1024; //Textures will be generated with that resolution
 
     Project project;
+
+    Painter painter;
 
     Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
         //Hold the videoscale value inside of the scene structure
@@ -413,7 +416,7 @@ public:
        
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
-        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project);//Render the UI
+        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project,painter);//Render the UI
 
         box.unbindBuffers(); //Finish rendering the UI
 

@@ -343,9 +343,16 @@ public:
                                 colorPalette,
                                 {
                                     Section(
-                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Brush"  , appTextures.TDModelIcon, 0.f,true)),
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color"  , appTextures.TDModelIcon, 0.f,true)),
                                         {   
-                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color"  , appTextures.TDModelIcon, 1.f,false)),
+                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color1"  , Texture(), 1.f,false)),
+                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color2"  , Texture(), 1.f,false)),
+                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color3"  , Texture(), 1.f,false))
+                                        }
+                                    ),
+                                    Section(
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Brush"  , appTextures.TDModelIcon, 3.f,true)),
+                                        {   
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Radius"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Strength"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Smoothness"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
@@ -389,7 +396,6 @@ public:
                                         {   
                                             Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Text"  , appTextures.TDModelIcon, 1.f,false)),
                                             Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Font"  , appTextures.TDModelIcon, 1.f,false)),
-                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color"  , appTextures.TDModelIcon, 1.f,false)),
                                             Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Alignment"  , appTextures.TDModelIcon, 1.f,false)),
                                             Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Size"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                             Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Bearing"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
@@ -526,7 +532,8 @@ public:
     }    
 
     void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
-                std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project){
+                std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter){
+        
         glDepthFunc(GL_LEQUAL);
         
         shaders.singleCurve.use();
@@ -534,6 +541,10 @@ public:
         
         shaders.colorPicker.use();
         shaders.colorPicker.setMat4("projection",projection); 
+
+        if(paintingPanel.sections[0].elements[0].button.hover && mouse.LClick){//Pressed to first color button element
+
+        }
 
         //Use the related shader
         shaders.buttonShader.use();

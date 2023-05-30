@@ -61,11 +61,11 @@ public:
 
     }
 
-private:
     void changeColor(glm::vec3 &color,glm::vec3 value){
-        std::cout << tinyfd_colorChooser("Select a color","#000000",{},{}) << std::endl;
+        //tinyfd_colorChooser("Select a color","#000000",{},{}) << std::endl;
         color = value;
     }
+private:
 };
 
 
