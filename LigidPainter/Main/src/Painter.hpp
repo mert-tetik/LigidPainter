@@ -69,6 +69,8 @@ public:
 
     glm::mat4 projection;
 
+    bool threeDimensionalMode = true;
+
     Painter(){
         
     }
