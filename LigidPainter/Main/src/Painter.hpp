@@ -62,10 +62,15 @@ public:
     unsigned int FBO;
     unsigned int paintingTexture;
 
+    int selectedTextureIndex = 0;
+
     glm::vec2 videoScale;
 
     Shader paintingShader;
     Shader buttonShader;
+    Shader tdModelShader;
+
+    bool refreshable = true; //To avoid refreshing every frame in UI.hpp
 
     glm::mat4 projection;
 
@@ -75,10 +80,11 @@ public:
         
     }
 
-    void initPainter(glm::vec2 videoScale, Shader paintingShader, Shader buttonShader){
+    void initPainter(glm::vec2 videoScale, Shader paintingShader, Shader buttonShader, Shader tdModelShader){
         this->videoScale = videoScale;
         this->paintingShader = paintingShader;
         this->buttonShader = buttonShader;
+        this->tdModelShader = tdModelShader;
         
         //Create the texture
         glActiveTexture(GL_TEXTURE0);
@@ -120,6 +126,8 @@ public:
 
     glm::vec2 lastCursorPos = glm::vec2(0); 
     void doPaint(Mouse mouse){
+        glm::vec2 firstCursorPos = mouse.cursorPos;
+        
         glViewport(0,0,videoScale.x,videoScale.y);
         
         glBindFramebuffer(GL_FRAMEBUFFER,FBO);
@@ -133,6 +141,92 @@ public:
         paintingShader.setVec3("pos", pos); //Cover the screen
         paintingShader.setMat4("projection", projection); //Cover the screen
 
+        paintingShader.setVec2("videoScale", videoScale); 
+
+        std::vector<glm::vec2> holdLocations = getCursorSubstitution(mouse);
+
+		paintingShader.setInt("posCount",holdLocations.size());
+
+        for (int i = 0; i < holdLocations.size(); i++)
+		{
+			std::string target = "positions[" + std::to_string(i) + "]";
+            paintingShader.setVec2(target,holdLocations[i]);
+		}
+        
+        glDepthFunc(GL_ALWAYS);
+        glBlendFunc(GL_ONE, GL_ONE);
+		glBlendEquationSeparate(GL_MAX,GL_MAX);	
+
+        glDrawArrays(GL_TRIANGLES,0,6);
+        
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
+        glDepthFunc(GL_LESS);
+
+        
+        //Finish
+        glBindFramebuffer(GL_FRAMEBUFFER,0);
+        lastCursorPos = firstCursorPos;
+        buttonShader.use();
+        
+        refreshable = true;
+        
+        //TODO SET BUTTON SHADER
+    }
+
+    void refreshPainting(){
+        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+        glClearColor(0,0,0,0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glBindFramebuffer(GL_FRAMEBUFFER,0);
+    }
+    
+    void updateTexture(std::vector<Texture> &textures, Model model,int textureRes){
+        unsigned int captureFBO;
+        unsigned int captureTexture;
+        
+        //Create the texture
+        glActiveTexture(GL_TEXTURE0);
+        glGenTextures(1,&captureTexture);
+        glBindTexture(GL_TEXTURE_2D,captureTexture);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        //Create the framebuffer
+        glGenFramebuffers(1,&captureFBO);
+        glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, captureTexture, 0);
+        
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, textures[selectedTextureIndex].ID);
+
+        glViewport(0,0,textureRes,textureRes);
+
+        tdModelShader.use();
+        
+        tdModelShader.setInt("renderTexture",1);
+        
+        glm::mat4 orthoProjection = glm::ortho(0.f,1.f,0.f,1.f);
+        tdModelShader.setMat4("orthoProjection",orthoProjection);
+        
+        model.meshes[0].Draw();
+
+        //Finish
+        glDeleteFramebuffers(1,&captureFBO);
+        glDeleteTextures(1,&textures[selectedTextureIndex].ID);
+        textures[selectedTextureIndex].ID = captureTexture;
+
+        tdModelShader.setInt("renderTexture",0);
+    }
+private:
+    std::vector<glm::vec2> getCursorSubstitution(Mouse &mouse){
         std::vector<glm::vec2> holdLocations;
         
         glm::vec2 fstrokeLocation = glm::vec2(mouse.cursorPos);
@@ -160,36 +254,10 @@ public:
 				holdLocations.push_back(strokeLocation);
 			}
 		}
-
-		paintingShader.setInt("posCount",holdLocations.size());
-
-        for (int i = 0; i < holdLocations.size(); i++)
-		{
-			std::string target = "positions[" + std::to_string(i) + "]";
-            paintingShader.setVec2(target,holdLocations[i]);
-		}
-        glDepthFunc(GL_ALWAYS);
-        glBlendFunc(GL_ONE, GL_ONE);
-		glBlendEquationSeparate(GL_MAX,GL_MAX);	
-        
-        glDrawArrays(GL_TRIANGLES,0,6);
-        
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
-        glDepthFunc(GL_LESS);
-
-        //glClearColor(0,1,1,1);
-        //glClear(GL_COLOR_BUFFER_BIT);
-
-        //Finish
-        glBindFramebuffer(GL_FRAMEBUFFER,0);
-        lastCursorPos = mouse.cursorPos;
-        buttonShader.use();
-
-        //TODO SET BUTTON SHADER
+        return holdLocations;
     }
-    
-private:
+
+
     void changeColor(Color &color){
         unsigned char defRGB[3];
         const char* check = tinyfd_colorChooser("Select a color",NULL,defRGB,defRGB);

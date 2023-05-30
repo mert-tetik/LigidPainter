@@ -336,7 +336,7 @@ public:
         nodeScene.push_back(meshOutputNode);
 
         //Init the painter
-        painter.initPainter(videoScale,shaders.twoDPainting,shaders.buttonShader);
+        painter.initPainter(videoScale,shaders.twoDPainting,shaders.buttonShader,shaders.tdModelShader);
     }
 
     void render(){
@@ -380,12 +380,15 @@ public:
         shaders.tdModelShader.setInt("normalMapTxtr",5);
         shaders.tdModelShader.setInt("heightMapTxtr",6);
         shaders.tdModelShader.setInt("ambientOcclusionTxtr",7);
+        shaders.tdModelShader.setInt("paintingTexture",8);
         shaders.tdModelShader.setVec3("viewPos",scene.camera.cameraPos);
         shaders.tdModelShader.setMat4("view",scene.viewMatrix);
         shaders.tdModelShader.setMat4("projection",scene.projectionMatrix);
         glm::mat4 modelMatrix = glm::mat4(1);
         shaders.tdModelShader.setMat4("modelMatrix",modelMatrix);
 
+        glActiveTexture(GL_TEXTURE8);
+        glBindTexture(GL_TEXTURE_2D,painter.paintingTexture);
 
         std::vector<Material> nodeMaterials = getTheMaterialsConnectedToTheMeshNode(nodeScene,library);
 
@@ -423,9 +426,18 @@ public:
         userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
         userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project,painter);//Render the UI
 
+
+
+        //Painting
+        if(mouse.LPressed)
+            painter.doPaint(mouse);
+        if((painter.refreshable && !mouse.LPressed) || mouse.RPressed || mouse.MPressed){
+            painter.updateTexture(library.textures,model,textureRes);
+            painter.refreshPainting();
+            painter.refreshable = false;
+        }
+
         box.unbindBuffers(); //Finish rendering the UI
-
-
 
         //Set mouse states to default
         mouse.LClick = false;

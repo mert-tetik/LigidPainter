@@ -20,10 +20,16 @@ uniform sampler2D normalMapTxtr;
 uniform sampler2D heightMapTxtr;
 uniform sampler2D ambientOcclusionTxtr;
 
+uniform sampler2D paintingTexture;
+
+in float renderTxtr;
+
 out vec4 fragColor;
 
 
 const float PI = 3.14159265359;
+
+
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
@@ -74,9 +80,24 @@ vec4 getTexture(sampler2D txtr){
     return texture(txtr,TexCoords);
 }
 
+vec3 getPaintedTexture(sampler2D txtr){
+    vec3 screenPos = 0.5 * (vec3(1,1,1) + projectedPos.xyz / projectedPos.w);
+   
+    float intensity = 0.0;
+    
+    intensity = texture(paintingTexture, screenPos.xy).r;
+
+    vec3 paintingColor = vec3(1,0,0);
+
+    return mix(texture(txtr,TexCoords).rgb,paintingColor,intensity);
+}
+
 vec3 getPBR(){
-    vec3 albedo = getTexture(albedoTxtr).rgb;
-    vec3 normal = getTexture(normalMapTxtr).rgb;
+    vec3 albedo = getPaintedTexture(albedoTxtr).rgb;
+    if(renderTxtr == 1)
+        return albedo;
+    //vec3 normal = getTexture(normalMapTxtr).rgb;
+    vec3 normal = vec3(0.5,0.5,1);
     float roughness = getTexture(roughnessTxtr).r;
     float metallic = getTexture(metallicTxtr).r;
 
@@ -193,5 +214,5 @@ vec3 getPBR(){
 }
 
 void main() {
-   fragColor = vec4(getPBR(),1.);
+    fragColor = vec4(getPBR(),1.);
 }

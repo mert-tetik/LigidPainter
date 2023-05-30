@@ -18,8 +18,14 @@ out vec3 Bitangent;
 
 out vec4 projectedPos;
 
+//2D
+out float renderTxtr;
+uniform int renderTexture;
+uniform mat4 orthoProjection;
+
 void main() {
-   
+    renderTxtr = renderTexture;
+
     Tangent = aTangent;
     Bitangent = aBitangent;
     TexCoords = aTexCoords;
@@ -29,5 +35,9 @@ void main() {
     vec4 tPos = modelMatrix * vec4(Pos,1.);
     projectedPos = projection * view * vec4(tPos.xyz, 0.5); 
     
-    gl_Position = projectedPos;
+    if(renderTexture == 0)
+        gl_Position = projectedPos;
+    else
+        gl_Position = orthoProjection * vec4(TexCoords.xy,1,1);
+
 }

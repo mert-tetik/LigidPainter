@@ -10,6 +10,8 @@ const int maxPosSize = 50;
 uniform vec2 positions[maxPosSize];
 uniform int posCount;
 
+uniform vec2 videoScale;
+
 float opacity = 1;
 float radius = 100;
 float hardness = 0.2;
@@ -73,7 +75,7 @@ void main()
         currentPoint.x *= ratio;
         vec4 fragColor = vec4(fRes); 
 
-        float d = length(uv*1000 - currentPoint) / radius;
+        float d = length(uv*videoScale - currentPoint) / radius;
         if (d < 1.0) {
             vec4 src = currentColor;
             src.a *= smoothstep(1.0, hardnessV * max(0.1, 1.0 - (2.0 / (radius))), d);

@@ -732,13 +732,21 @@ public:
         twoDPaintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + twoDPaintingPanel.scale.y; //Keep beneath the navigation bar
         
         Util util;
+        if(selectedLibraryElementIndex == 0){
+            for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++)
+            {
+                if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.LClick)
+                    painter.selectedTextureIndex = i;
+                if(i == painter.selectedTextureIndex)
+                    libraryPanelDisplayer.sections[0].elements[i].button.clickedMixVal = 1.f;
+            }
+        }
         
         selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
+        selectedTextureDisplayer.sections[0].elements[0].button.texture = library.textures[painter.selectedTextureIndex];
         twoDPaintingPanel.sections[0].elements[0].scale.y = twoDPaintingPanel.scale.y;
         twoDPaintingPanel.sections[0].elements[0].button.texture = Texture(painter.paintingTexture);
         
-        //Painting
-        painter.doPaint(mouse);
 
         //Render the nodes
         for (size_t i = 0; i < nodeScene.size(); i++)
