@@ -153,24 +153,25 @@ public:
         return rgb;
     }
 
-    glm::vec3 hexToRgb(const std::string& hex)
-    {
-        // Remove leading '#' if present
-        std::string hexValue = hex;
-        if (hexValue[0] == '#')
-            hexValue.erase(0, 1);
+   glm::vec3 hexToRgb(const std::string& hex)
+{
+    // Remove leading '#' if present
+    std::string hexValue = hex;
+    if (hexValue[0] == '#')
+        hexValue.erase(0, 1);
 
-        // Parse the hex string into RGB components
-        unsigned int r, g, b;
-        std::stringstream ss;
-        ss << std::hex << hexValue;
-        ss >> r >> g >> b;
+    // Parse the hex string into RGB components
+    unsigned int r, g, b;
+    std::istringstream(hexValue.substr(0, 2)) >> std::hex >> r;
+    std::istringstream(hexValue.substr(2, 2)) >> std::hex >> g;
+    std::istringstream(hexValue.substr(4, 2)) >> std::hex >> b;
 
-        // Convert the RGB components to the range [0, 255]
-        glm::vec3 rgb(r / 255.0f, g / 255.0f, b / 255.0f);
-        return rgb;
-    }
+    std::cout << r << ' ' << g << ' ' << b << std::endl;
 
+    // Convert the RGB components to the range [0, 1]
+    glm::vec3 rgb(r, g, b);
+    return rgb;
+}
     std::string rgbToHex(const glm::vec3& rgb)
     {
         // Convert RGB values from [0, 1] range to [0, 255]
@@ -199,7 +200,7 @@ public:
         ss >> r >> g >> b;
 
         // Convert the RGB components to the range [0, 255]
-        glm::vec3 rgb(r / 255.0f, g / 255.0f, b / 255.0f);
+        glm::vec3 rgb(r, g, b);
         return rgbToHsv(rgb);
     }
 

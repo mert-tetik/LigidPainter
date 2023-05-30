@@ -245,6 +245,7 @@ public:
     Panel libraryPanelDisplayer; 
     Panel nodeEditorDisplayer; 
     Panel selectedTextureDisplayer; 
+    Panel twoDPaintingPanel; 
 
     //Dialogs    
     GreetingDialog greetingDialog;
@@ -522,6 +523,32 @@ public:
                                 {},
                                 20.f
                             );
+        twoDPaintingPanel  = Panel(
+                                shaders.buttonShader,
+                                colorPalette,
+                                {
+                                    Section(
+                                        Element(Button()),
+                                        {   
+                                            Element(Button(1,glm::vec2(2,5.5f),colorPalette,shaders.buttonShader,""        , appTextures.greetingDialogImage, 0.f,false)),
+                                        }
+                                    )
+                                },
+                                
+                                glm::vec2(50 ,5), //Initial scale value
+                                glm::vec3(50 ,95 ,0.1f),  //Initial position value
+                                colorPalette.mainColor, //Color of the panel
+                                colorPalette.thirdColor, //Color of the panel
+                                true,
+                                true,
+                                false,
+                                true,
+                                false,
+                                1.f,
+                                1,
+                                {},
+                                20.f
+                            );
         
 
         greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
@@ -543,8 +570,11 @@ public:
         shaders.colorPicker.setMat4("projection",projection); 
 
         if(paintingPanel.sections[0].elements[0].button.hover && mouse.LClick){//Pressed to first color button element
-
+            painter.loadColor1();
         }
+        paintingPanel.sections[0].elements[0].button.color = glm::vec4(painter.color1.RGB/glm::vec3(255.f),1.f);
+        paintingPanel.sections[0].elements[1].button.color = glm::vec4(painter.color2.RGB/glm::vec3(255.f),1.f);
+        paintingPanel.sections[0].elements[2].button.color = glm::vec4(painter.color3.RGB/glm::vec3(255.f),1.f);
 
         //Use the related shader
         shaders.buttonShader.use();
@@ -587,6 +617,7 @@ public:
         libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
+        twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
 
         anyContextMenuActive = false; 
         for (size_t i = 0; i < contextMenus.size(); i++)//Check contextMenus
@@ -684,11 +715,22 @@ public:
         selectedTextureDisplayer.scale.y = nodeEditorDisplayer.scale.y;
         selectedTextureDisplayer.scale.x = libraryPanelDisplayer.scale.x + libraryPanelLeft.scale.x;
         
-        nodeEditorDisplayer.scale.x = 50 - selectedTextureDisplayer.scale.x - (paintingPanel.scale.x+windowPanel.scale.x);
+        nodeEditorDisplayer.scale.x = 50 - screenGapPerc/2.f - selectedTextureDisplayer.scale.x - (paintingPanel.scale.x+windowPanel.scale.x);
+        
+        twoDPaintingPanel.scale.x = 50 - screenGapPerc/2.f - selectedTextureDisplayer.scale.x - (paintingPanel.scale.x+windowPanel.scale.x);
+        twoDPaintingPanel.scale.y = 50 - navigationPanel.scale.y - nodeEditorDisplayer.scale.y;
+        twoDPaintingPanel.pos.x = paintingPanel.pos.x - paintingPanel.scale.x - twoDPaintingPanel.scale.x; //Keep on the left side of the window panel 
+        twoDPaintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + twoDPaintingPanel.scale.y; //Keep beneath the navigation bar
+        
         Util util;
         
         selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
+        twoDPaintingPanel.sections[0].elements[0].scale.y = twoDPaintingPanel.scale.y;
+        twoDPaintingPanel.sections[0].elements[0].button.texture = Texture(painter.paintingTexture);
         
+        //Painting
+        painter.doPaint(mouse);
+
         //Render the nodes
         for (size_t i = 0; i < nodeScene.size(); i++)
         {

@@ -62,7 +62,7 @@ private:
     /* data */
 public:
 	//Cursor pos
-    glm::vec2 cursorPos;
+    glm::vec2 cursorPos = glm::vec2(0);
     glm::vec2 mouseOffset;
 
 	

@@ -82,6 +82,7 @@ struct Shaders{
     Shader prefilteringShader;
     Shader singleCurve;
     Shader colorPicker;
+    Shader twoDPainting;
 };
 struct AppTextures{ //Textures those will be used in UI of the app
     //--Icons
@@ -236,6 +237,7 @@ public:
         shaders.buttonShader = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/Button.frag",nullptr);
         shaders.singleCurve = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/SingleCurve.frag",nullptr);
         shaders.colorPicker = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/ColorPicker.frag",nullptr);
+        shaders.twoDPainting = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/2DPainting.frag",nullptr);
 
         //Update necessary data before callbacks
         updateViewport();
@@ -332,6 +334,9 @@ public:
         appNodes.push_back(meshOutputNode);
 
         nodeScene.push_back(meshOutputNode);
+
+        //Init the painter
+        painter.initPainter(videoScale,shaders.twoDPainting,shaders.buttonShader);
     }
 
     void render(){
@@ -441,6 +446,7 @@ public:
 
 
         glfwSwapBuffers(context.window);
+        
     }
 
 
