@@ -26,6 +26,8 @@ in float renderTxtr;
 
 out vec4 fragColor;
 
+uniform float paintingOpacity;
+uniform vec3 paintingColor;
 
 const float PI = 3.14159265359;
 
@@ -85,9 +87,7 @@ vec3 getPaintedTexture(sampler2D txtr){
    
     float intensity = 0.0;
     
-    intensity = texture(paintingTexture, screenPos.xy).r;
-
-    vec3 paintingColor = vec3(1,0,0);
+    intensity = texture(paintingTexture, screenPos.xy).a * paintingOpacity;
 
     return mix(texture(txtr,TexCoords).rgb,paintingColor,intensity);
 }

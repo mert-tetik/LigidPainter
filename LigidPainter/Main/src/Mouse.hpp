@@ -73,6 +73,8 @@ public:
 	bool RClick = false; //Right click - button 1
 	bool MClick = false; //Middle click - button 2
 
+	bool LDoubleClick = false; //Left click - button 0
+
 	bool LPressed = false;
 	bool RPressed = false;
 	bool MPressed = false;

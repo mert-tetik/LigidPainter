@@ -12,9 +12,8 @@ uniform int posCount;
 
 uniform vec2 videoScale;
 
-float opacity = 1;
-float radius = 100;
-float hardness = 0.2;
+uniform float radius;
+uniform float hardness;
 
 int displayingTheBrush = 0;
 
@@ -92,7 +91,7 @@ void main()
         }
     }
      else{
-        outClr = fRes*opacity;
+        outClr = fRes;
      }
      
      //outClr = vec4(0,1,1,1);

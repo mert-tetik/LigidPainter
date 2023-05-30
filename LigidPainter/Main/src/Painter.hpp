@@ -57,6 +57,8 @@ public:
     Color color1; 
     Color color2; 
     Color color3; 
+    int selectedColorIndex = 0;
+
 
     unsigned int RBO;
     unsigned int FBO;
@@ -124,10 +126,15 @@ public:
         changeColor(color3);
     }
 
+    glm::vec2 startCursorPos = glm::vec2(0); 
     glm::vec2 lastCursorPos = glm::vec2(0); 
-    void doPaint(Mouse mouse){
+    void doPaint(Mouse mouse,float radius,float hardness,float opacity,float spacing){
         glm::vec2 firstCursorPos = mouse.cursorPos;
-        
+        if(mouse.LClick){
+            startCursorPos = mouse.cursorPos;
+            lastCursorPos = mouse.cursorPos;
+        }
+
         glViewport(0,0,videoScale.x,videoScale.y);
         
         glBindFramebuffer(GL_FRAMEBUFFER,FBO);
@@ -141,9 +148,24 @@ public:
         paintingShader.setVec3("pos", pos); //Cover the screen
         paintingShader.setMat4("projection", projection); //Cover the screen
 
+        //Set properties
+        paintingShader.setFloat("radius", radius);
+        paintingShader.setFloat("hardness", hardness);
+        
+        tdModelShader.use();
+        if(selectedColorIndex == 0)
+            tdModelShader.setVec3("paintingColor", color1.RGB / glm::vec3(255.f));
+        if(selectedColorIndex == 1)
+            tdModelShader.setVec3("paintingColor", color2.RGB / glm::vec3(255.f));
+        if(selectedColorIndex == 2)
+            tdModelShader.setVec3("paintingColor", color3.RGB / glm::vec3(255.f));
+        
+        tdModelShader.setFloat("paintingOpacity", opacity);
+        paintingShader.use();
+
         paintingShader.setVec2("videoScale", videoScale); 
 
-        std::vector<glm::vec2> holdLocations = getCursorSubstitution(mouse);
+        std::vector<glm::vec2> holdLocations = getCursorSubstitution(mouse,spacing);
 
 		paintingShader.setInt("posCount",holdLocations.size());
 
@@ -154,11 +176,16 @@ public:
 		}
         
         glDepthFunc(GL_ALWAYS);
-        glBlendFunc(GL_ONE, GL_ONE);
-		glBlendEquationSeparate(GL_MAX,GL_MAX);	
+        glBlendFunc(GL_ONE,GL_ONE);
+		glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);	
+        //glDisable(GL_BLEND);
 
-        glDrawArrays(GL_TRIANGLES,0,6);
+        if(glm::distance(startCursorPos,mouse.cursorPos) > spacing){
+            startCursorPos = mouse.cursorPos;
+            glDrawArrays(GL_TRIANGLES,0,6);
+        }
         
+        //glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
         glDepthFunc(GL_LESS);
@@ -226,7 +253,7 @@ public:
         tdModelShader.setInt("renderTexture",0);
     }
 private:
-    std::vector<glm::vec2> getCursorSubstitution(Mouse &mouse){
+    std::vector<glm::vec2> getCursorSubstitution(Mouse &mouse,float spacing){
         std::vector<glm::vec2> holdLocations;
         
         glm::vec2 fstrokeLocation = glm::vec2(mouse.cursorPos);
@@ -235,9 +262,8 @@ private:
 		//----------------------PAINTING----------------------\\
 
 		int differenceBetweenMousePoints = glm::distance(mouse.cursorPos, lastCursorPos);
-
-		//if(spacingRangeBarVal > -0.1)
-		//	differenceBetweenMousePoints = 1; 
+        if(spacing > 5)
+		    differenceBetweenMousePoints = 1; 
 
 		float xposDif = (mouse.cursorPos.x - lastCursorPos.x) / differenceBetweenMousePoints;
 		float yposDif = (mouse.cursorPos.y - lastCursorPos.y) / differenceBetweenMousePoints;

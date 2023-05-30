@@ -346,17 +346,17 @@ public:
                                     Section(
                                         Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color"  , appTextures.TDModelIcon, 0.f,true)),
                                         {   
-                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color1"  , Texture(), 1.f,false)),
-                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color2"  , Texture(), 1.f,false)),
-                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color3"  , Texture(), 1.f,false))
+                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color1"  , Texture(), 1.f,true)),
+                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color2"  , Texture(), 1.f,true)),
+                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color3"  , Texture(), 1.f,true))
                                         }
                                     ),
                                     Section(
                                         Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Brush"  , appTextures.TDModelIcon, 3.f,true)),
                                         {   
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Radius"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Strength"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Smoothness"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Opacity"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Hardness"  , appTextures.TDModelIcon, 1.f,-100.f,100.f,0.f)),
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Spacing"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                         }
                                     ),
@@ -556,6 +556,13 @@ public:
         //colorPickerDialog = ColorPickerDialog(context,videoScale,colorPalette,shaders.buttonShader,shaders.colorPicker,appTextures);
         materialEditorDialog = MaterialEditorDialog(shaders.buttonShader,shaders.tdModelShader,colorPalette,appTextures,sphereModel);
         textureSelectionDialog = TextureSelectionDialog(shaders.buttonShader,colorPalette);
+
+        for (size_t i = 0; i < 3; i++)
+        {
+            paintingPanel.sections[0].elements[i].button.outlineThickness = 5.f;
+            paintingPanel.sections[0].elements[i].button.animationStyle = 2;
+        }
+        
     }    
 
     void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
@@ -569,9 +576,27 @@ public:
         shaders.colorPicker.use();
         shaders.colorPicker.setMat4("projection",projection); 
 
-        if(paintingPanel.sections[0].elements[0].button.hover && mouse.LClick){//Pressed to first color button element
+        if(paintingPanel.sections[0].elements[0].button.hover && mouse.LDoubleClick){//Pressed to first color button element
             painter.loadColor1();
         }
+        if(paintingPanel.sections[0].elements[1].button.hover && mouse.LDoubleClick){//Pressed to first color button element
+            painter.loadColor2();
+        }
+        if(paintingPanel.sections[0].elements[2].button.hover && mouse.LDoubleClick){//Pressed to first color button element
+            painter.loadColor3();
+        }
+        for (size_t i = 0; i < paintingPanel.sections[0].elements.size(); i++)
+        {
+            if(paintingPanel.sections[0].elements[i].button.clickState1){ //If a button is clicked (textures or materials for example)
+                if(painter.selectedColorIndex != i){ //If the clicked button is not selected 
+                    paintingPanel.sections[0].elements[painter.selectedColorIndex].button.clickState1 = false; //Unselect the selected one
+                    painter.selectedColorIndex = i; //Select the clicked button
+                    break; 
+                }
+            }
+        }
+        
+
         paintingPanel.sections[0].elements[0].button.color = glm::vec4(painter.color1.RGB/glm::vec3(255.f),1.f);
         paintingPanel.sections[0].elements[1].button.color = glm::vec4(painter.color2.RGB/glm::vec3(255.f),1.f);
         paintingPanel.sections[0].elements[2].button.color = glm::vec4(painter.color3.RGB/glm::vec3(255.f),1.f);

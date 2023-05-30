@@ -63,6 +63,8 @@ private:
         
         if(animationStyle == 1) //If hover or clicked change the color of the button
             shader.setFloat("colorMixVal"  ,     (clickedMixVal + hoverMixVal)/2.f   );
+        if(animationStyle == 2) //If hover or clicked change the color of the button
+            shader.setFloat("colorMixVal"  ,     (hover/2.f)   );
         else //If clicked change the color of the button
             shader.setFloat("colorMixVal"  ,     (clickedMixVal)   );
 
@@ -82,6 +84,8 @@ private:
 
         if(animationStyle == 0) //Increase the thicness of the button if hover
             shader.setFloat("thickness" ,    resultOutlineThickness + hoverMixVal*2.f ); 
+        else if(animationStyle == 2)
+            shader.setFloat("thickness" ,    resultOutlineThickness + clickedMixVal*2.f ); 
         else  //Set the thickness value of the button
             shader.setFloat("thickness" ,    resultOutlineThickness); 
         
@@ -213,6 +217,7 @@ public:
         //animationStyle determines what type of mouse hover or click animation will be used
         //0 = Change thickness for mousehover
         //1 = Change color for mousehover
+        //2 = Full outline
 
         this->shader = shader;
         this->text = text;

@@ -430,7 +430,14 @@ public:
 
         //Painting
         if(mouse.LPressed)
-            painter.doPaint(mouse);
+            painter.doPaint(    
+                                mouse,
+                                userInterface.paintingPanel.sections[1].elements[0].rangeBar.value,
+                                userInterface.paintingPanel.sections[1].elements[2].rangeBar.value/10.f,
+                                userInterface.paintingPanel.sections[1].elements[1].rangeBar.value/100.f,
+                                userInterface.paintingPanel.sections[1].elements[3].rangeBar.value
+                            );
+
         if((painter.refreshable && !mouse.LPressed) || mouse.RPressed || mouse.MPressed){
             painter.updateTexture(library.textures,model,textureRes);
             painter.refreshPainting();
@@ -443,6 +450,7 @@ public:
         mouse.LClick = false;
         mouse.RClick = false;
         mouse.MClick = false;
+        mouse.LDoubleClick = false;
         mouse.mouseOffset = glm::vec2(0);
         mouse.mods = 0;
 
@@ -505,8 +513,19 @@ private:
                    context.windowScale.y);
     }
 
-
+    double previousClickTime = 0.0;
     void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
+        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+            double currentTime = glfwGetTime();
+            double timeSinceLastClick = currentTime - previousClickTime;
+
+            if (timeSinceLastClick < 0.3) {
+                mouse.LDoubleClick = true;
+            }
+        
+            previousClickTime = currentTime;
+        }
+        
         if(button == 0){ //Left
             if(action == 1)
                 mouse.LClick = true;
