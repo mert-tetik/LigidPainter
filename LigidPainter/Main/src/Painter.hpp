@@ -76,6 +76,7 @@ public:
     Color color2; 
     Color color3; 
     int selectedColorIndex = 0;
+    Texture brushTexture;
 
 
     unsigned int RBO;
@@ -183,10 +184,8 @@ public:
         paintingShader.setInt("brush.sinWavePattern", sinWavePattern);
         paintingShader.setFloat("brush.txtr", 0);
 
-        std::cout << individualTexture << ' ';
-
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,textures[selectedTextureIndex].ID);
+        glBindTexture(GL_TEXTURE_2D,brushTexture.ID);
 
         paintingShader.setInt("frame", frameCounter);
 

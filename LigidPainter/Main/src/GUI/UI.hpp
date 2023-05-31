@@ -346,18 +346,18 @@ public:
                                     Section(
                                         Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color"  , appTextures.TDModelIcon, 0.f,true)),
                                         {   
-                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color1"  , Texture(), 1.f,true)),
-                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color2"  , Texture(), 1.f,true)),
-                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color3"  , Texture(), 1.f,true))
+                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color1"  , Texture(), 1.f, true)),
+                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color2"  , Texture(), 1.f, true)),
+                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color3"  , Texture(), 1.f, true))
                                         }
                                     ),
                                     Section(
                                         Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Brush"  , appTextures.TDModelIcon, 3.f,true)),
                                         {   
-                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Radius"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Opacity"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Hardness"  , appTextures.TDModelIcon, 1.f,-100.f,100.f,0.f)),
-                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Spacing"  , appTextures.TDModelIcon, 1.f,0.f,100.f,0.f)),
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Radius    "  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Opacity   "  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Hardness  "  , appTextures.TDModelIcon, 1.f,-100.f,100.f,0.f)),
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Spacing   "  , appTextures.TDModelIcon, 1.f,0.f,100.f,0.f)),
                                         }
                                     ),
                                     Section(
@@ -367,11 +367,12 @@ public:
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Fade"  , Texture(), 1.f,0.f,100.f,0.f)),//1
                                             Element(CheckBox(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Sin Wave Pattern"  , 1.f)),//2
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Scatter"  , Texture(), 1.f,0.f,100.f,0.f)),//3
-                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Texture"  , Texture(), 1.f,false)),//4
-                                            Element(CheckBox(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Individual Texture"  , 1.f)),//5
-                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), //6
-                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Rotation Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //7
-                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Alpha Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //8
+                                            Element(Button(1,glm::vec2(2,4),colorPalette,shaders.buttonShader, "Texture"  , appTextures.greetingDialogImage, 1.f,true)),//4
+                                            Element(Button(1,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Remove"  , Texture(), 0.f,false)),//5
+                                            Element(CheckBox(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Individual Texture"  , 1.f)),//6
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), //7
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Rotation Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //8
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Alpha Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //9
                                         }
                                     ),
                                     Section(
@@ -619,12 +620,22 @@ public:
             twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
 
         Util util;
+
+        if(paintingPanel.sections[2].elements[5].button.hover && mouse.LClick){ //If pressed to remove the brush texture button
+            painter.brushTexture = Texture(0);
+        }
+
         //Update the selected texture
         if(selectedLibraryElementIndex == 0){ //Textures selected
             for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
             {
                 if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.LClick){
-                    painter.selectedTextureIndex = i; //Select the texture 
+                    if(paintingPanel.sections[2].elements[4].button.clickState1){//If brush texture displayer is pressed
+                        painter.brushTexture = libraryPanelDisplayer.sections[0].elements[i].button.texture; //Select a brush texture
+                        paintingPanel.sections[2].elements[4].button.clickState1 = false;
+                    } 
+                    else
+                        painter.selectedTextureIndex = i; //Select the texture 
                 } //If any texture button element is pressed
 
                 if(i == painter.selectedTextureIndex) //Highlight the selected texture
@@ -698,6 +709,9 @@ private:
         paintingPanel.sections[0].elements[0].button.color = glm::vec4(painter.color1.RGB/glm::vec3(255.f),1.f);
         paintingPanel.sections[0].elements[1].button.color = glm::vec4(painter.color2.RGB/glm::vec3(255.f),1.f);
         paintingPanel.sections[0].elements[2].button.color = glm::vec4(painter.color3.RGB/glm::vec3(255.f),1.f);
+        
+        //Update the brush texture displayer's texture
+        paintingPanel.sections[2].elements[4].button.texture = painter.brushTexture;
 
 
 
