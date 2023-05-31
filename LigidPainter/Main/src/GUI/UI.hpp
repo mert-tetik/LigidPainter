@@ -55,6 +55,7 @@ Example :
 #include "assimp/postprocess.h"
 
 #include "Shader.hpp"
+#include "Brush.hpp"
 #include "Box.hpp"
 #include "Renderer.h"
 #include "Util.hpp"
@@ -373,6 +374,8 @@ public:
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), //7
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Rotation Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //8
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Alpha Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //9
+                                            Element(Button(2,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Create New Brush"  , Texture(), 2.f,false)),//10
+                                            Element(Button(2,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Export"  , Texture(), 0.5f,false)),//11
                                         }
                                     ),
                                     Section(
@@ -623,6 +626,21 @@ public:
 
         if(paintingPanel.sections[2].elements[5].button.hover && mouse.LClick){ //If pressed to remove the brush texture button
             painter.brushTexture = Texture(0);
+        }
+        if(paintingPanel.sections[2].elements[11].button.hover && mouse.LClick){ //If pressed to export brush file button
+            Brush exportBrush
+                            (    
+                                1.f - paintingPanel.sections[2].elements[0].rangeBar.value/100.f,
+                                1.f - paintingPanel.sections[2].elements[3].rangeBar.value/100.f,
+                                1.f - paintingPanel.sections[2].elements[1].rangeBar.value/100.f,
+                                paintingPanel.sections[2].elements[7].rangeBar.value,
+                                1.f - paintingPanel.sections[2].elements[8].rangeBar.value/100.f,
+                                1.f - paintingPanel.sections[2].elements[9].rangeBar.value/100.f,
+                                paintingPanel.sections[2].elements[6].checkBox.clickState1,
+                                paintingPanel.sections[2].elements[2].checkBox.clickState1
+                            );
+
+            exportBrush.saveFile();
         }
 
         //Update the selected texture

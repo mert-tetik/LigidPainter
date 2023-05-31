@@ -287,7 +287,9 @@ public:
         glDeleteFramebuffers(1,&captureFBO);
         glDeleteTextures(1,&textures[selectedTextureIndex].ID);
         textures[selectedTextureIndex].ID = captureTexture;
-
+        textures[selectedTextureIndex].width = textureRes;
+        textures[selectedTextureIndex].height = textureRes;
+        
         tdModelShader.setInt("renderTexture",0);
     }
 private:
@@ -324,7 +326,7 @@ private:
 
     void changeColor(Color &color){
         unsigned char defRGB[3];
-        const char* check = tinyfd_colorChooser("Select a color",NULL,defRGB,defRGB);
+        const char* check = tinyfd_colorChooser("Select a color",color.hex.c_str(),defRGB,defRGB);
         if(check)
             color.loadHex(check);
     }
