@@ -33,6 +33,13 @@ public:
     	}
     	return words[words.size() - 1];
     }
+    
+    std::string removeExtension(std::string s){
+    	int i = 1;
+    	while (s[s.size() - i] != '.'){i++;}
+    	for (size_t j = 0; j < i; j++){s.pop_back();}
+    	return s;
+    }
 
 };
 

@@ -36,6 +36,7 @@ Renderer.h : Renders the whole screen
 
 #include "3D/Model.hpp"
 #include "Shader.hpp"
+#include "Brush.hpp"
 #include "Skybox.hpp"
 #include "Box.hpp"
 #include "Mouse.hpp"
@@ -70,6 +71,7 @@ struct Scene{
 struct Library{
     std::vector<Texture> textures;
     std::vector<Material> materials;
+    std::vector<Brush> brushes;
 };
 struct Context{
     GLFWwindow* window;
@@ -288,6 +290,16 @@ public:
             texture.load(texturePath.c_str());
 
             library.textures.push_back(texture);
+        }
+        //Load the brushes
+        //*Is a part of the project folder reader
+        for (const auto & entry : std::filesystem::directory_iterator("./LigidPainter/Resources/Brushes")){
+            std::string texturePath = entry.path().string();
+
+            Brush brush;
+            brush.readFile(texturePath);
+
+            library.brushes.push_back(brush);
         }
 
         //Create app nodes

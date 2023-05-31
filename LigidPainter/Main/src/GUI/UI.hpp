@@ -637,7 +637,9 @@ public:
                                 1.f - paintingPanel.sections[2].elements[8].rangeBar.value/100.f,
                                 1.f - paintingPanel.sections[2].elements[9].rangeBar.value/100.f,
                                 paintingPanel.sections[2].elements[6].checkBox.clickState1,
-                                paintingPanel.sections[2].elements[2].checkBox.clickState1
+                                paintingPanel.sections[2].elements[2].checkBox.clickState1,
+                                "brush_1",
+                                painter.brushTexture
                             );
 
             exportBrush.saveFile();
@@ -659,6 +661,19 @@ public:
                 if(i == painter.selectedTextureIndex) //Highlight the selected texture
                     libraryPanelDisplayer.sections[0].elements[i].button.clickState1 = true;
             }
+        }
+        
+        //Check all the library element button is they are pressed
+        for (size_t i = 0; i < libraryPanelLeft.sections[0].elements.size(); i++) 
+        {
+            if(libraryPanelLeft.sections[0].elements[i].button.hover && mouse.LClick){//If any button element is pressed
+                if(selectedLibraryElementIndex != i){
+                    libraryPanelLeft.sections[0].elements[selectedLibraryElementIndex].button.clickState1 = false;
+                    selectedLibraryElementIndex = i;
+                    break;
+                }
+                
+            } 
         }
 
 
@@ -767,16 +782,43 @@ private:
                     libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.materials[i].title       , Texture(library.materials[i].displayingTexture), 0.f,false))) ;
                 }
             }
+            else if(selectedLibraryElementIndex == 2){ //Update materials
+                for (size_t i = 0; i < library.brushes.size(); i++)
+                {
+                    //Push texture elements into the section
+                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.brushes[i].title       , appTextures.greetingDialogImage, 0.f,false))) ;
+                }
+            }
             //Give the section
             libraryPanelDisplayer.sections.push_back(Section(Element(Button()),libSection.elements));
         }
 
         //Add button from the barButtons in the library displayer panel clicked 
-        if(libraryPanelDisplayer.barButtons[0].clickedMixVal == 1.f && selectedLibraryElementIndex == 1){
-            //Add new material to the library & not the panel
-            //Will be displayed right after library panel is updated which happens in every 100 frame
-            library.materials.push_back(Material(textureRes,"material_0",materialIDCounter));
-            materialIDCounter++;
+        if(libraryPanelDisplayer.barButtons[0].clickedMixVal == 1.f){
+            if(selectedLibraryElementIndex == 1){ //Materials
+                //Add new material to the library & not the panel
+                //Will be displayed right after library panel is updated which happens in every 100 frame
+                library.materials.push_back(Material(textureRes,"material_0",materialIDCounter));
+                materialIDCounter++;
+            }
+            if(selectedLibraryElementIndex == 2){ //Brushes
+                library.brushes.push_back(
+                                            Brush
+                                                (    
+                                                    1.f - paintingPanel.sections[2].elements[0].rangeBar.value/100.f,
+                                                    1.f - paintingPanel.sections[2].elements[3].rangeBar.value/100.f,
+                                                    1.f - paintingPanel.sections[2].elements[1].rangeBar.value/100.f,
+                                                    paintingPanel.sections[2].elements[7].rangeBar.value,
+                                                    1.f - paintingPanel.sections[2].elements[8].rangeBar.value/100.f,
+                                                    1.f - paintingPanel.sections[2].elements[9].rangeBar.value/100.f,
+                                                    paintingPanel.sections[2].elements[6].checkBox.clickState1,
+                                                    paintingPanel.sections[2].elements[2].checkBox.clickState1,
+                                                    "brush_1",
+                                                    painter.brushTexture
+                                                )
+                                        );
+                
+            }
         }
         
         
