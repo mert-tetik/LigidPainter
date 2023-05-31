@@ -245,7 +245,7 @@ public:
         updateProjectionMatrix();
 
         //Loads the default model (will be removed)
-        model.loadModel("./LigidPainter/Resources/3D Models/halfCube.fbx",true);
+        model.loadModel("./LigidPainter/Resources/3D Models/plane.fbx",true);
         sphereModel.loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
         
 
@@ -435,7 +435,16 @@ public:
                                 userInterface.paintingPanel.sections[1].elements[0].rangeBar.value,
                                 userInterface.paintingPanel.sections[1].elements[2].rangeBar.value/10.f,
                                 userInterface.paintingPanel.sections[1].elements[1].rangeBar.value/100.f,
-                                userInterface.paintingPanel.sections[1].elements[3].rangeBar.value
+                                userInterface.paintingPanel.sections[1].elements[3].rangeBar.value,
+                                1.f - userInterface.paintingPanel.sections[2].elements[0].rangeBar.value/100.f,
+                                1.f - userInterface.paintingPanel.sections[2].elements[3].rangeBar.value/100.f,
+                                1.f - userInterface.paintingPanel.sections[2].elements[1].rangeBar.value/100.f,
+                                userInterface.paintingPanel.sections[2].elements[6].rangeBar.value,
+                                1.f - userInterface.paintingPanel.sections[2].elements[7].rangeBar.value/100.f,
+                                1.f - userInterface.paintingPanel.sections[2].elements[8].rangeBar.value/100.f,
+                                userInterface.paintingPanel.sections[2].elements[5].checkBox.clickState1,
+                                userInterface.paintingPanel.sections[2].elements[2].checkBox.clickState1,
+                                library.textures
                             );
 
         if((painter.refreshable && !mouse.LPressed) || mouse.RPressed || mouse.MPressed){
@@ -472,7 +481,7 @@ public:
 
 
 private:
-    std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> nodeScene,Library library){
+    std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library){
         std::vector<Material> materials;
 
         //Check all the inputs of the mesh node

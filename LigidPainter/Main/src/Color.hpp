@@ -56,7 +56,9 @@ public:
     std::string hex; //Hex value which starts with char '#'
 
     Color(){
-
+        RGB = glm::vec3(0);
+        HSV = glm::vec3(0);
+        hex = "#000000";
     }
 
     void loadRGB(glm::vec3 value){
@@ -165,8 +167,6 @@ public:
     std::istringstream(hexValue.substr(0, 2)) >> std::hex >> r;
     std::istringstream(hexValue.substr(2, 2)) >> std::hex >> g;
     std::istringstream(hexValue.substr(4, 2)) >> std::hex >> b;
-
-    std::cout << r << ' ' << g << ' ' << b << std::endl;
 
     // Convert the RGB components to the range [0, 1]
     glm::vec3 rgb(r, g, b);

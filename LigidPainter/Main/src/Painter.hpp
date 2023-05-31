@@ -11,6 +11,24 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
+
+Brush Properties - 
+    Hardness if default circle
+    Radius
+
+    Size Jitter
+        Control : Off & Fade
+        Min Diameter
+    Rotation Jitter
+
+    Scatter
+    Count
+    Count Jitter
+
+    Texture
+
+    Alpha Channel Jitter
+
 */
 
 #ifndef LGDPAINTER_HPP
@@ -95,9 +113,9 @@ public:
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, videoScale.x, videoScale.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -128,11 +146,15 @@ public:
 
     glm::vec2 startCursorPos = glm::vec2(0); 
     glm::vec2 lastCursorPos = glm::vec2(0); 
-    void doPaint(Mouse mouse,float radius,float hardness,float opacity,float spacing){
+
+    int frameCounter = 0;
+    void doPaint(Mouse mouse,float radius,float hardness,float opacity,float spacing,float sizeJitter,float scatter,float fade,float rotation,
+                 float rotationJitter,float alphaJitter,bool individualTexture,bool sinWavePattern,std::vector<Texture> textures){
         glm::vec2 firstCursorPos = mouse.cursorPos;
         if(mouse.LClick){
             startCursorPos = mouse.cursorPos;
             lastCursorPos = mouse.cursorPos;
+            frameCounter = 0;
         }
 
         glViewport(0,0,videoScale.x,videoScale.y);
@@ -149,9 +171,26 @@ public:
         paintingShader.setMat4("projection", projection); //Cover the screen
 
         //Set properties
-        paintingShader.setFloat("radius", radius);
-        paintingShader.setFloat("hardness", hardness);
-        
+        paintingShader.setFloat("brush.radius", radius);
+        paintingShader.setFloat("brush.hardness", hardness);
+        paintingShader.setFloat("brush.sizeJitter", sizeJitter);
+        paintingShader.setFloat("brush.scatter", scatter);
+        paintingShader.setFloat("brush.fade", fade);
+        paintingShader.setFloat("brush.rotation", rotation);
+        paintingShader.setFloat("brush.rotationJitter", rotationJitter);
+        paintingShader.setFloat("brush.alphaJitter", alphaJitter);
+        paintingShader.setInt("brush.individualTexture", individualTexture);
+        paintingShader.setInt("brush.sinWavePattern", sinWavePattern);
+        paintingShader.setFloat("brush.txtr", 0);
+
+        std::cout << individualTexture << ' ';
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,textures[selectedTextureIndex].ID);
+
+        paintingShader.setInt("frame", frameCounter);
+
+        //3D Model shader side of the painting        
         tdModelShader.use();
         if(selectedColorIndex == 0)
             tdModelShader.setVec3("paintingColor", color1.RGB / glm::vec3(255.f));
@@ -159,16 +198,14 @@ public:
             tdModelShader.setVec3("paintingColor", color2.RGB / glm::vec3(255.f));
         if(selectedColorIndex == 2)
             tdModelShader.setVec3("paintingColor", color3.RGB / glm::vec3(255.f));
-        
         tdModelShader.setFloat("paintingOpacity", opacity);
+        
         paintingShader.use();
-
         paintingShader.setVec2("videoScale", videoScale); 
 
+        //Stroke positions
         std::vector<glm::vec2> holdLocations = getCursorSubstitution(mouse,spacing);
-
 		paintingShader.setInt("posCount",holdLocations.size());
-
         for (int i = 0; i < holdLocations.size(); i++)
 		{
 			std::string target = "positions[" + std::to_string(i) + "]";
@@ -198,6 +235,8 @@ public:
         
         refreshable = true;
         
+        frameCounter++;
+
         //TODO SET BUTTON SHADER
     }
 
@@ -219,9 +258,9 @@ public:
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
         glGenerateMipmap(GL_TEXTURE_2D);

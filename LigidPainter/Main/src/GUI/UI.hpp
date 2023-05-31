@@ -357,7 +357,21 @@ public:
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Radius"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Opacity"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Hardness"  , appTextures.TDModelIcon, 1.f,-100.f,100.f,0.f)),
-                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Spacing"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Spacing"  , appTextures.TDModelIcon, 1.f,0.f,100.f,0.f)),
+                                        }
+                                    ),
+                                    Section(
+                                        Element(Button(2,glm::vec2(2,1),colorPalette,shaders.buttonShader, "More"  , appTextures.TDModelIcon, 1.f,true)),
+                                        {   
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Size Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //0
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Fade"  , Texture(), 1.f,0.f,100.f,0.f)),//1
+                                            Element(CheckBox(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Sin Wave Pattern"  , 1.f)),//2
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Scatter"  , Texture(), 1.f,0.f,100.f,0.f)),//3
+                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Texture"  , Texture(), 1.f,false)),//4
+                                            Element(CheckBox(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Individual Texture"  , 1.f)),//5
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), //6
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Rotation Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //7
+                                            Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Alpha Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //8
                                         }
                                     ),
                                     Section(
@@ -569,44 +583,15 @@ public:
                 std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter){
         
         glDepthFunc(GL_LEQUAL);
-        
+
+        //Give projection to the curve shader        
         shaders.singleCurve.use();
         shaders.singleCurve.setMat4("projection",projection); 
         
+        //Give projection to the color picker shader 
+        //!Color picker shader is not used rn        
         shaders.colorPicker.use();
         shaders.colorPicker.setMat4("projection",projection); 
-
-        if(paintingPanel.sections[0].elements[0].button.hover && mouse.LDoubleClick){//Pressed to first color button element
-            painter.loadColor1();
-        }
-        if(paintingPanel.sections[0].elements[1].button.hover && mouse.LDoubleClick){//Pressed to first color button element
-            painter.loadColor2();
-        }
-        if(paintingPanel.sections[0].elements[2].button.hover && mouse.LDoubleClick){//Pressed to first color button element
-            painter.loadColor3();
-        }
-        for (size_t i = 0; i < paintingPanel.sections[0].elements.size(); i++)
-        {
-            if(paintingPanel.sections[0].elements[i].button.clickState1){ //If a button is clicked (textures or materials for example)
-                if(painter.selectedColorIndex != i){ //If the clicked button is not selected 
-                    paintingPanel.sections[0].elements[painter.selectedColorIndex].button.clickState1 = false; //Unselect the selected one
-                    painter.selectedColorIndex = i; //Select the clicked button
-                    break; 
-                }
-            }
-        }
-        
-
-        paintingPanel.sections[0].elements[0].button.color = glm::vec4(painter.color1.RGB/glm::vec3(255.f),1.f);
-        paintingPanel.sections[0].elements[1].button.color = glm::vec4(painter.color2.RGB/glm::vec3(255.f),1.f);
-        paintingPanel.sections[0].elements[2].button.color = glm::vec4(painter.color3.RGB/glm::vec3(255.f),1.f);
-        
-        if(windowPanel.sections[0].elements[0].button.hover && mouse.LClick){//Pressed to the 3D painting button of the window panel
-            painter.threeDimensionalMode = true;
-        }
-        if(windowPanel.sections[0].elements[1].button.hover && mouse.LClick){//Pressed to the 2D painting button of the window panel
-            painter.threeDimensionalMode = false;
-        }
 
         //Use the related shader
         shaders.buttonShader.use();
@@ -616,32 +601,13 @@ public:
         //Projection is changing in the renderer.render()
         //userInterface.projection = glm::mat4(...)
         shaders.buttonShader.setMat4("projection",projection); 
+
+
         
-        //Update the library displayer panel every 100 frame
-        if(frameCounter % 100 == 0){
-            Section libSection;
-            libSection.header = Element(Button()); //Has no section button
-            libraryPanelDisplayer.sections.clear();
-            if(selectedLibraryElementIndex == 0){//Update textures
-                for (size_t i = 0; i < library.textures.size(); i++)
-                {
-                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , library.textures[i], 0.f,false))) ;
-                }
-            }
-            else if(selectedLibraryElementIndex == 1){ //Update materials
-                for (size_t i = 0; i < library.materials.size(); i++)
-                {
-                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.materials[i].title       , Texture(library.materials[i].displayingTexture), 0.f,false))) ;
-                }
-            }
-            libraryPanelDisplayer.sections.push_back(Section(Element(Button()),libSection.elements));
-        }
-        
-        float screenGap = videoScale.x - context.windowScale.x; //Use that value to keep panels on the left side
+        float screenGap = videoScale.x - context.windowScale.x; //Use that value to keep panels on the right side
         float screenGapPerc = screenGap / videoScale.x * 100.f; 
 
-        //--Render all the UI elements there
-        
+        //!Render all the UI elements
         navigationPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         windowPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         paintingPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
@@ -649,31 +615,175 @@ public:
         libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
-        
         if(!painter.threeDimensionalMode)
             twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
 
-        anyContextMenuActive = false; 
-        for (size_t i = 0; i < contextMenus.size(); i++)//Check contextMenus
-        {
-            if(contextMenus[i].active){
-                anyContextMenuActive = true;
+        Util util;
+        //Update the selected texture
+        if(selectedLibraryElementIndex == 0){ //Textures selected
+            for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
+            {
+                if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.LClick){
+                    painter.selectedTextureIndex = i; //Select the texture 
+                } //If any texture button element is pressed
+
+                if(i == painter.selectedTextureIndex) //Highlight the selected texture
+                    libraryPanelDisplayer.sections[0].elements[i].button.clickState1 = true;
             }
-            if(i == 1 && selectedLibraryElementIndex == 1){ //Material context menu
-                if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick && contextMenus[i].active){//Clicked to edit button
+        }
+
+
+        elementInteraction(painter,mouse,library,contextMenus,appNodes,nodeScene,context,videoScale,textRenderer,timer,textureRes,screenGapPerc);
+        
+
+        selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
+        selectedTextureDisplayer.sections[0].elements[0].button.texture = library.textures[painter.selectedTextureIndex];
+        twoDPaintingPanel.sections[0].elements[0].scale.y = twoDPaintingPanel.scale.y;
+        twoDPaintingPanel.sections[0].elements[0].button.texture = Texture(painter.paintingTexture);
+        
+        //Render the nodes
+        for (size_t i = 0; i < nodeScene.size(); i++)
+        {
+            nodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,nodeScene,i);
+        }
+
+        
+        //Dialogs
+        
+        //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
+        //newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
+        //colorPickerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
+        if(materialEditorDialog.active && library.materials.size()){
+            if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
+                materialEditorDialog.deactivate(textureSelectionDialog);
+            materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex],textureRes,box,context);
+        }
+        
+        if(textureSelectionDialog.active)
+            textureSelectionDialog.render(videoScale,mouse,timer,textRenderer,library);
+
+        if(frameCounter > 1000)
+            frameCounter = 0;
+    }
+
+
+private: 
+    void elementInteraction(Painter &painter,Mouse &mouse, Library &library,std::vector<ContextMenu> &contextMenus,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
+                            Context &context,glm::vec2 &videoScale,TextRenderer &textRenderer, Timer &timer, int &textureRes,float screenGapPerc){
+
+        //!PAINTING PANEL COLOR BUTTONS
+        if(paintingPanel.sections[0].elements[0].button.hover && mouse.LDoubleClick){//Pressed to first color button element
+            painter.loadColor1();
+        }
+        if(paintingPanel.sections[0].elements[1].button.hover && mouse.LDoubleClick){//Pressed to second color button element
+            painter.loadColor2();
+        }
+        if(paintingPanel.sections[0].elements[2].button.hover && mouse.LDoubleClick){//Pressed to third color button element
+            painter.loadColor3();
+        }
+
+        //Prevent multiple selection and update the painter.selectedColorIndex for colors
+        for (size_t i = 0; i < paintingPanel.sections[0].elements.size(); i++)
+        {
+            if(paintingPanel.sections[0].elements[i].button.clickState1){ //If a color button is clicked
+                if(painter.selectedColorIndex != i){ //If the clicked button is not selected 
+                    paintingPanel.sections[0].elements[painter.selectedColorIndex].button.clickState1 = false; //Unselect the selected one
+                    painter.selectedColorIndex = i; //Select the clicked color button
+                    break; 
+                }
+            }
+        }
+
+        //Update the color values of the color buttons
+        paintingPanel.sections[0].elements[0].button.color = glm::vec4(painter.color1.RGB/glm::vec3(255.f),1.f);
+        paintingPanel.sections[0].elements[1].button.color = glm::vec4(painter.color2.RGB/glm::vec3(255.f),1.f);
+        paintingPanel.sections[0].elements[2].button.color = glm::vec4(painter.color3.RGB/glm::vec3(255.f),1.f);
+
+
+
+        //!WINDOW PANEL BUTTONS
+        if(windowPanel.sections[0].elements[0].button.hover && mouse.LClick){//Pressed to the 3D painting button of the window panel
+            painter.threeDimensionalMode = true;
+        }
+        if(windowPanel.sections[0].elements[1].button.hover && mouse.LClick){//Pressed to the 2D painting button of the window panel
+            painter.threeDimensionalMode = false;
+        }
+
+
+
+        //!LIBRARY PANEL DISPLAYER
+        //Update the library displayer panel every 100 frame
+        if(frameCounter % 100 == 0){
+            libraryPanelDisplayer.sections.clear(); //Remove all the elements of the library panel displayer
+            
+            //Create a new section
+            Section libSection;
+            libSection.header = Element(Button()); //Has no section button
+
+            //Fill the elements of the section using the data in the library structure
+            if(selectedLibraryElementIndex == 0){//Update textures
+                for (size_t i = 0; i < library.textures.size(); i++)
+                {
+                    //Push texture elements into the section
+                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , library.textures[i], 0.f,false))) ;
+                }
+            }
+            else if(selectedLibraryElementIndex == 1){ //Update materials
+                for (size_t i = 0; i < library.materials.size(); i++)
+                {
+                    //Push texture elements into the section
+                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.materials[i].title       , Texture(library.materials[i].displayingTexture), 0.f,false))) ;
+                }
+            }
+            //Give the section
+            libraryPanelDisplayer.sections.push_back(Section(Element(Button()),libSection.elements));
+        }
+
+        //Add button from the barButtons in the library displayer panel clicked 
+        if(libraryPanelDisplayer.barButtons[0].clickedMixVal == 1.f && selectedLibraryElementIndex == 1){
+            //Add new material to the library & not the panel
+            //Will be displayed right after library panel is updated which happens in every 100 frame
+            library.materials.push_back(Material(textureRes,"material_0",materialIDCounter));
+            materialIDCounter++;
+        }
+        
+        
+
+
+        //!CONTEXT MENU
+        anyContextMenuActive = false; 
+        for (size_t i = 0; i < contextMenus.size(); i++)//Check all the contextMenus
+        {
+            if(contextMenus[i].active) //Set anyContextMenuActive UI class variable 
+                anyContextMenuActive = true;
+            
+            //CONTEXT MENU BUTTONS
+            if(i == 1 && selectedLibraryElementIndex == 1 && contextMenus[i].active){ //If material context menu is active
+                if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to edit button
+                    //Select the material that material editor will edit & show the material editor dialog
                     selectedMaterialIndex = contextMenus[i].selectedElement;
                     materialEditorDialog.activate();
                 }
-                if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick && contextMenus[i].active){//Clicked to add to scene button
+                if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){//Clicked to add to scene button
+                    //Create the node of the materail an add to the node scene
                     Node materialNode = appNodes[0];
                     materialNode.barButton.text = library.materials[contextMenus[i].selectedElement].title;
                     materialNode.materialID = library.materials[contextMenus[i].selectedElement].ID;
                     nodeScene.push_back(materialNode); //Add material node
                 }
             }
-            if(mouse.LClick||mouse.RClick||mouse.MClick||glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwGetKey(context.window,GLFW_KEY_ENTER) == GLFW_PRESS){
-               contextMenus[i].active = false; 
+
+            if (   //Conditions to turn any context menu off
+                    mouse.LClick|| //Mouse left click
+                    mouse.RClick|| //Mouse right click
+                    mouse.MClick|| //Mouse middle click
+                    glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS|| //Pressed to escape key 
+                    glfwGetKey(context.window,GLFW_KEY_ENTER) == GLFW_PRESS //Pressed to enter key
+                )
+            {
+               contextMenus[i].active = false; //Turn the context menu offs
             }
+
             //Render the context menu if active
             if(contextMenus[i].active){
                 contextMenus[i].render(videoScale,mouse,timer,textRenderer);
@@ -684,6 +794,9 @@ public:
                 contextMenus[i].selectedElement = 0;
             }
         }
+
+        //*Show context menu
+        //For library panel displayer
         for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++)
         {
             if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.RClick){ //Right clicked to an element
@@ -704,31 +817,12 @@ public:
                     contextMenus[1].pos.z = 0.95f;
                     contextMenus[1].selectedElement = i;
                 }
-
             }
         }
-        
-        
 
-        if(libraryPanelDisplayer.barButtons[0].clickedMixVal == 1.f && selectedLibraryElementIndex == 1){//Add button clicked
-            library.materials.push_back(Material(textureRes,"material_0",materialIDCounter));
-            materialIDCounter++;
-        } 
 
-        //Update the selected library element index
-        for (size_t i = 0; i < libraryPanelLeft.sections[0].elements.size(); i++)
-        {
-            if(libraryPanelLeft.sections[0].elements[i].button.clickState1){ //If a button is clicked (textures or materials for example)
-                if(selectedLibraryElementIndex != i){ //If the clicked button is not selected 
-                    libraryPanelLeft.sections[0].elements[selectedLibraryElementIndex].button.clickState1 = false; //Unselect the selected one
-                    selectedLibraryElementIndex = i; //Select the clicked button
-                    break; 
-                }
-            }
-        }
-        
 
-        //Positioning the panels
+        //!Positioning the panels
         paintingPanel.pos.x = windowPanel.pos.x - windowPanel.scale.x - paintingPanel.scale.x; //Keep on the left side of the window panel 
         windowPanel.pos.x = 100.f - windowPanel.scale.x - screenGapPerc; //Keep on the right side
         libraryPanelDisplayer.pos.x = libraryPanelLeft.pos.x + libraryPanelLeft.scale.x + libraryPanelDisplayer.scale.x; //Keep on the left side of the window panel 
@@ -742,7 +836,6 @@ public:
         libraryPanelLeft.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + libraryPanelDisplayer.scale.y; //Keep beneath the navigation bar
         libraryPanelLeft.scale.y = 50 - navigationPanel.scale.y - nodeEditorDisplayer.scale.y;
 
-
         nodeEditorDisplayer.pos.x = paintingPanel.pos.x - paintingPanel.scale.x - nodeEditorDisplayer.scale.x; //Keep on the left side of the window panel 
         selectedTextureDisplayer.pos.x = libraryPanelDisplayer.pos.x - libraryPanelLeft.pos.x;
         selectedTextureDisplayer.pos.y = nodeEditorDisplayer.pos.y;
@@ -755,45 +848,6 @@ public:
         twoDPaintingPanel.scale.y = 50 - navigationPanel.scale.y - nodeEditorDisplayer.scale.y;
         twoDPaintingPanel.pos.x = paintingPanel.pos.x - paintingPanel.scale.x - twoDPaintingPanel.scale.x; //Keep on the left side of the window panel 
         twoDPaintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + twoDPaintingPanel.scale.y; //Keep beneath the navigation bar
-        
-        Util util;
-        if(selectedLibraryElementIndex == 0){
-            for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++)
-            {
-                if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.LClick)
-                    painter.selectedTextureIndex = i;
-                if(i == painter.selectedTextureIndex)
-                    libraryPanelDisplayer.sections[0].elements[i].button.clickedMixVal = 1.f;
-            }
-        }
-        
-        selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
-        selectedTextureDisplayer.sections[0].elements[0].button.texture = library.textures[painter.selectedTextureIndex];
-        twoDPaintingPanel.sections[0].elements[0].scale.y = twoDPaintingPanel.scale.y;
-        twoDPaintingPanel.sections[0].elements[0].button.texture = Texture(painter.paintingTexture);
-        
-
-        //Render the nodes
-        for (size_t i = 0; i < nodeScene.size(); i++)
-        {
-            nodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,nodeScene,i);
-        }
-
-        //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
-        //newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
-        //colorPickerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
-        
-        if(materialEditorDialog.active && library.materials.size()){
-            if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
-                materialEditorDialog.deactivate(textureSelectionDialog);
-            materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex],textureRes,box,context);
-        }
-        
-        if(textureSelectionDialog.active)
-            textureSelectionDialog.render(videoScale,mouse,timer,textRenderer,library);
-
-        if(frameCounter > 1000)
-            frameCounter = 0;
     }
 };
 

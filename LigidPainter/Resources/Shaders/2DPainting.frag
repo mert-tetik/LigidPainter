@@ -12,33 +12,25 @@ uniform int posCount;
 
 uniform vec2 videoScale;
 
-uniform float radius;
-uniform float hardness;
+uniform int frame; //How many frames passed since started painting
 
-int displayingTheBrush = 0;
+struct Brush {
+    float radius;
+    float hardness;
 
-const float PI = 3.14159265;
-float udRoundBox( vec2 p, vec2 b, float r )
-{
-    return length(max(abs(p)-b+r,0.0))-r;
-}
-float roundUp(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
-{
-    //TODO : Check if round corners effect texture rendering+
-    // setup
-    float t = 0.2 + 0.2 * sin(mod(0.75, 2.0 * PI) - 0.5 * PI);
-    float iRadius = (0.05 + t)*1080;
-    vec2 halfRes = vec2(0.5*1080);
+    float sizeJitter;
+    float fade;
+    int sinWavePattern;
+    float rotation;
+    float rotationJitter;
+    float spacing;
+    float scatter;
+    float alphaJitter;
+    int individualTexture;
+    sampler2D txtr;
+};
 
-    // compute box
-    float b = udRoundBox( uv.xy*1080 - halfRes, halfRes, iRadius );
-    
-    // colorize (red / black )
-	vec3 c = mix( vec3(1.0,0.0,0.0), vec3(0.0,0.0,0.0), smoothstep(0.0,1.0,b) );
-        
-    return c.r;
-}
-
+uniform Brush brush;
 
 void strokeBlendUniColor(vec4 src, float srcA, vec4 dst, out vec4 color)
 {
@@ -49,54 +41,112 @@ void strokeBlendUniColor(vec4 src, float srcA, vec4 dst, out vec4 color)
     }
 }
 
+float hash(float x)
+{
+    return fract(sin(x) * 43758.5453);
+}
+vec2 hash(vec2 p)
+{
+    return vec2(hash(p.x),hash(p.y + 0.1));
+}
+
+float getTextureBrush(vec2 pos,float radius){
+    vec2 uv = texCoords;
+    uv -= (pos/videoScale);
+
+    radius*= 2.;
+    
+    uv.x += radius/videoScale.x/2.;
+    uv.y += radius/videoScale.y/2.;
+
+    uv.x /= radius/videoScale.x;
+    uv.y /= radius/videoScale.y;
+   
+    uv.x /= videoScale.x/videoScale.y;
+
+    // Flip the Y-coordinate to render the texture right-side up
+    float random = hash(frame);
+    float rotation = brush.rotation * random;
+    float rotationGap = rotation - brush.rotation;
+    rotation -= rotationGap * brush.rotationJitter;
+
+    mat2 rotMatrix = mat2(cos(radians(rotation)), sin(radians(rotation)), -sin(radians(rotation)), cos(radians(rotation)));
+    
+    uv = rotMatrix * uv;
+    
+    uv.y = 1.0 - uv.y;
+
+    return texture(brush.txtr, uv).r;
+}
+
 void main()
 {   
-    //TODO : Update ratio (1.7)
     float ratio;
-    
-    if(displayingTheBrush == 1)
-        ratio = 1.;
-    else
-        ratio = 1.77777777778;
+    ratio = videoScale.x/videoScale.y;
  
     vec2 uv = vec2(texCoords.x*ratio,texCoords.y);
     vec4 fRes;
         
-    float hardnessV = min(hardness,1.0);
+    float hardnessV = min(brush.hardness,1.0);
 
+    float radius = brush.radius;
+
+    float random = hash(frame);
+
+    radius *= (random);
+
+    float radiusGap = radius - brush.radius;
+    radius -= radiusGap * brush.sizeJitter;
+
+    if(brush.sinWavePattern == 1)
+        radius *= 1. - clamp(sin(radians(float(frame)*3.)),0.,1.);
+    else
+        radius *= 1. - clamp(frame/100.,0.,1.);
+    
+    radiusGap = radius - brush.radius;
+    radius -= radiusGap * brush.fade;
 
     for(int i = 0; i < min(posCount,maxPosSize); i++) {
+        
+        vec2 pos = positions[i];
+        vec2 random2 = hash(vec2(frame + i));
+        pos *= (random2*2.);
+        vec2 posGap = pos - positions[i];
+        pos -= posGap * brush.scatter;
+        
+        
         vec4 currentColor = vec4(1);
 
-        vec2 lastPoint = positions[i];
+        vec2 lastPoint = pos;
         lastPoint.x *= ratio;
-        vec2 currentPoint = positions[i];
+        vec2 currentPoint = pos;
         currentPoint.x *= ratio;
         vec4 fragColor = vec4(fRes); 
 
         float d = length(uv*videoScale - currentPoint) / radius;
-        if (d < 1.0) {
+        float txtr = getTextureBrush(pos,radius);
+        
+        //if (d < 1.0) {
+            
             vec4 src = currentColor;
-            src.a *= smoothstep(1.0, hardnessV * max(0.1, 1.0 - (2.0 / (radius))), d);
+            if(brush.individualTexture != 1){
+                src.a *= smoothstep(1.0, hardnessV * max(0.1, 1.0 - (2.0 / (radius))), d);
+                src.a *= 1. -txtr;
+            }
+            else{
+                src.a *= txtr;
+            }
             vec4 dst = fragColor;
             strokeBlendUniColor(src, 1., dst, fragColor);
-        }
+        //}
 
         fRes = fragColor ;
     }
-    if(displayingTheBrush == 1){
-        outClr = vec4(vec3((fRes.a)*100),1.);
-        if(roundUp(texCoords) < 0.05){
-            outClr.a = 0.;
-        }
-    }
-     else{
-        outClr = fRes;
-     }
-     
-     //outClr = vec4(0,1,1,1);
-}
-
-
-
     
+    float opacity = 1. * random;
+    float opacityGap = opacity - 1.;
+    opacity -= opacityGap * brush.alphaJitter;
+    
+    outClr = fRes;
+    outClr.a *= opacity;
+}
