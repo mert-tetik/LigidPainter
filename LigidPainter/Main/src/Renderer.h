@@ -206,7 +206,7 @@ public:
 
     ColorPalette colorPalette;
 
-    std::vector<ContextMenu> contextMenus; //0 for textures , 1 for materials
+    std::vector<ContextMenu> contextMenus; //0 for textures , 1 for materials, 2 for brushes
 
     int textureRes = 1024; //Textures will be generated with that resolution
 
@@ -271,6 +271,7 @@ public:
         //Create context menus
         contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Rename" ,"Favourite", "Duplicate" , "Copy Path", "Delete"})); //Textures 
         contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Edit" , "Add To Scene", "Rename" ,"Favourite", "Duplicate" , "Copy Path", "Delete"})); //Materials
+        contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Use" ,"Apply Current","Rename" ,"Favourite", "Duplicate" , "Copy Path", "Delete"})); //Materials
 
         //Init the userinterface
         userInterface.init(shaders,context,appTextures,videoScale,sphereModel);
@@ -443,7 +444,7 @@ public:
 
 
         //Painting
-        if(mouse.LPressed)
+        if(mouse.LPressed){
             painter.doPaint(    
                                 mouse,
                                 userInterface.paintingPanel.sections[1].elements[0].rangeBar.value,
@@ -461,7 +462,16 @@ public:
                                 library.textures
                             );
 
-        if((painter.refreshable && !mouse.LPressed) || mouse.RPressed || mouse.MPressed){
+            
+        }
+
+        if((painter.refreshable && !mouse.LPressed) || mouse.RClick || mouse.MClick){
+            //TODO Prevent updating all the materials
+            for (size_t i = 0; i < library.materials.size(); i++)
+            {
+                userInterface.materialEditorDialog.updateMaterial(library.materials[i],textureRes,box,context);
+            }
+            
             painter.updateTexture(library.textures,model,textureRes);
             painter.refreshPainting();
             painter.refreshable = false;

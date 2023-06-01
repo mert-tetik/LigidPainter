@@ -758,6 +758,93 @@ private:
 
 
 
+        //!CONTEXT MENU
+        anyContextMenuActive = false; 
+        for (size_t i = 0; i < contextMenus.size(); i++)//Check all the contextMenus
+        {
+            if(contextMenus[i].active) //Set anyContextMenuActive UI class variable 
+                anyContextMenuActive = true;
+            
+            //CONTEXT MENU BUTTONS
+            if(i == 1 && selectedLibraryElementIndex == 1 && contextMenus[i].active){ //If material context menu is active
+                if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to edit button
+                    //Select the material that material editor will edit & show the material editor dialog
+                    selectedMaterialIndex = contextMenus[i].selectedElement;
+                    materialEditorDialog.activate();
+                }
+                if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){//Clicked to add to scene button
+                    //Create the node of the materail an add to the node scene
+                    Node materialNode = appNodes[0];
+                    materialNode.barButton.text = library.materials[contextMenus[i].selectedElement].title;
+                    materialNode.materialID = library.materials[contextMenus[i].selectedElement].ID;
+                    nodeScene.push_back(materialNode); //Add material node
+                }
+            }
+            if(i == 1 && selectedLibraryElementIndex == 1 && contextMenus[i].active){ //If brush context menu is active
+                if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to use brush button
+                    //TODO Use the brush here
+                }
+                if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to apply brush settings
+                    //TODO Apply the settings to the brush here
+                }
+            }
+
+            if (   //Conditions to turn any context menu off
+                    mouse.LClick|| //Mouse left click
+                    mouse.RClick|| //Mouse right click
+                    mouse.MClick|| //Mouse middle click
+                    glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS|| //Pressed to escape key 
+                    glfwGetKey(context.window,GLFW_KEY_ENTER) == GLFW_PRESS //Pressed to enter key
+                )
+            {
+               contextMenus[i].active = false; //Turn the context menu offs
+            }
+
+            //Render the context menu if active
+            if(contextMenus[i].active){
+                contextMenus[i].render(videoScale,mouse,timer,textRenderer);
+                if(contextMenus[i].contextPanel.hover == false)
+                    contextMenus[i].active = false; 
+            }
+            else{
+                contextMenus[i].selectedElement = 0;
+            }
+        }
+
+        //*Show context menu
+        //For library panel displayer
+        for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++)
+        {
+            if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.RClick){ //Right clicked to an element
+                if(selectedLibraryElementIndex == 0){//To a texture
+                    //Show the context menu
+                    contextMenus[0].active = true;
+                    contextMenus[0].pos.x = libraryPanelDisplayer.sections[0].elements[i].button.pos.x;
+                    contextMenus[0].pos.y = libraryPanelDisplayer.sections[0].elements[i].button.pos.y;
+                    contextMenus[0].pos.z = 0.95f;
+                    contextMenus[0].selectedElement = i;
+                    
+                }
+                if(selectedLibraryElementIndex == 1){//To a material
+                    //Show the context menu
+                    contextMenus[1].active = true;
+                    contextMenus[1].pos.x = libraryPanelDisplayer.sections[0].elements[i].button.pos.x;
+                    contextMenus[1].pos.y = libraryPanelDisplayer.sections[0].elements[i].button.pos.y;
+                    contextMenus[1].pos.z = 0.95f;
+                    contextMenus[1].selectedElement = i;
+                }
+                if(selectedLibraryElementIndex == 2){//To a brush
+                    //Show the context menu
+                    contextMenus[2].active = true;
+                    contextMenus[2].pos.x = libraryPanelDisplayer.sections[0].elements[i].button.pos.x;
+                    contextMenus[2].pos.y = libraryPanelDisplayer.sections[0].elements[i].button.pos.y;
+                    contextMenus[2].pos.z = 0.95f;
+                    contextMenus[2].selectedElement = i;
+                }
+            }
+        }
+
+
         //!LIBRARY PANEL DISPLAYER
         //Update the library displayer panel every 100 frame
         if(frameCounter % 100 == 0){
@@ -826,75 +913,7 @@ private:
         
 
 
-        //!CONTEXT MENU
-        anyContextMenuActive = false; 
-        for (size_t i = 0; i < contextMenus.size(); i++)//Check all the contextMenus
-        {
-            if(contextMenus[i].active) //Set anyContextMenuActive UI class variable 
-                anyContextMenuActive = true;
-            
-            //CONTEXT MENU BUTTONS
-            if(i == 1 && selectedLibraryElementIndex == 1 && contextMenus[i].active){ //If material context menu is active
-                if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to edit button
-                    //Select the material that material editor will edit & show the material editor dialog
-                    selectedMaterialIndex = contextMenus[i].selectedElement;
-                    materialEditorDialog.activate();
-                }
-                if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){//Clicked to add to scene button
-                    //Create the node of the materail an add to the node scene
-                    Node materialNode = appNodes[0];
-                    materialNode.barButton.text = library.materials[contextMenus[i].selectedElement].title;
-                    materialNode.materialID = library.materials[contextMenus[i].selectedElement].ID;
-                    nodeScene.push_back(materialNode); //Add material node
-                }
-            }
-
-            if (   //Conditions to turn any context menu off
-                    mouse.LClick|| //Mouse left click
-                    mouse.RClick|| //Mouse right click
-                    mouse.MClick|| //Mouse middle click
-                    glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS|| //Pressed to escape key 
-                    glfwGetKey(context.window,GLFW_KEY_ENTER) == GLFW_PRESS //Pressed to enter key
-                )
-            {
-               contextMenus[i].active = false; //Turn the context menu offs
-            }
-
-            //Render the context menu if active
-            if(contextMenus[i].active){
-                contextMenus[i].render(videoScale,mouse,timer,textRenderer);
-                if(contextMenus[i].contextPanel.hover == false)
-                    contextMenus[i].active = false; 
-            }
-            else{
-                contextMenus[i].selectedElement = 0;
-            }
-        }
-
-        //*Show context menu
-        //For library panel displayer
-        for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++)
-        {
-            if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.RClick){ //Right clicked to an element
-                if(selectedLibraryElementIndex == 0){//To a texture
-                    //Show the context menu
-                    contextMenus[0].active = true;
-                    contextMenus[0].pos.x = libraryPanelDisplayer.sections[0].elements[i].button.pos.x;
-                    contextMenus[0].pos.y = libraryPanelDisplayer.sections[0].elements[i].button.pos.y;
-                    contextMenus[0].pos.z = 0.95f;
-                    contextMenus[0].selectedElement = i;
-                    
-                }
-                if(selectedLibraryElementIndex == 1){//To a material
-                    //Show the context menu
-                    contextMenus[1].active = true;
-                    contextMenus[1].pos.x = libraryPanelDisplayer.sections[0].elements[i].button.pos.x;
-                    contextMenus[1].pos.y = libraryPanelDisplayer.sections[0].elements[i].button.pos.y;
-                    contextMenus[1].pos.z = 0.95f;
-                    contextMenus[1].selectedElement = i;
-                }
-            }
-        }
+        
 
 
 

@@ -142,7 +142,7 @@ public:
     void getData(char*& pixels){
 	    glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D,ID);
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
     }
 };
 

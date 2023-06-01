@@ -243,70 +243,6 @@ public:
 
     
 
-private:
-    void updateLayerPanel(Material &material,int &textureRes,Box &box,Context &context){
-        layerPanel.sections.clear(); //Clear the elements of the layerPanel
-        Section layerPanelSection;
-        layerPanelSection.header = Element(Button());
-        //Push the elements one by one from the materialModifiers of the material
-        for (size_t i = 0; i < material.materialModifiers.size(); i++)
-        {
-            layerPanelSection.elements.push_back(
-                Element(Button(1,glm::vec2(2,1.5f),colorPalette,buttonShader,material.materialModifiers[i].title , Texture(), 0.f,true))
-            );
-        }
-        updateMaterial(material,(float)textureRes,box,context);
-        layerPanel.sections.push_back(layerPanelSection);
-    }
-
-    void checkLayerPanel(Material &material){
-        //Update the selected material modifier index
-        if(layerPanel.sections.size()){
-            for (size_t i = 0; i < layerPanel.sections[0].elements.size(); i++)
-            {
-                if(layerPanel.sections[0].elements[i].button.clickState1){ //If a modifier button is clicked 
-                    if(selectedMaterialModifierIndex != i){ //If the clicked button is not selected 
-                        layerPanel.sections[0].elements[selectedMaterialModifierIndex].button.clickState1 = false; //Unselect the selected one
-                        selectedMaterialModifierIndex = i; //Select the clicked button
-                        if(material.materialModifiers.size()){
-                            modifiersPanel.sections = material.materialModifiers[selectedMaterialModifierIndex].sections;
-                        }
-                        break; 
-                    }
-                }
-            }
-        }
-    }
-
-    void checkModifiersPanel(Material &material,float textureRes,Box box,Context context,Mouse &mouse){
-        //Check on modifiers panel if it has to reset.
-        //Check if interacted with it's elements
-
-        if(firstFrameActivated){//Clear the modifiers panel as the panel starts
-            //If you don't there will be unrelated modifier's elements will be displayed as you open the panel to edit another material
-            modifiersPanel.sections.clear();
-        }
-
-        //Update the material if interacted with modifier's panel
-        for (size_t secI = 0; secI < modifiersPanel.sections.size(); secI++)
-        {
-            for (size_t elementI = 0; elementI < modifiersPanel.sections[secI].elements.size(); elementI++)
-            {
-                if(modifiersPanel.sections[secI].elements[elementI].state == 0)
-                    if(modifiersPanel.sections[secI].elements[elementI].button.clickedMixVal == 1.f)
-                        updateMaterial(material,(float)textureRes,box,context);
-
-                if(modifiersPanel.sections[secI].elements[elementI].state == 1)
-                    if(modifiersPanel.sections[secI].elements[elementI].rangeBar.pointerPressed == true)
-                        updateMaterial(material,(float)textureRes,box,context);
-
-                if(modifiersPanel.sections[secI].elements[elementI].state == 2)
-                    if(modifiersPanel.sections[secI].elements[elementI].checkBox.hover && mouse.LClick == true)
-                        updateMaterial(material,(float)textureRes,box,context);
-            }
-        }
-    }
-
     void updateMaterial(Material &material,float textureRes,Box box,Context context){ //Updates textures of the material using modifier shaders
         //layout(location=0) out vec4 albedo;
         //layout(location=1) out vec4 roughness;
@@ -471,6 +407,70 @@ private:
 
         glViewport(0,0,context.windowScale.x,context.windowScale.y);
     }
+private:
+    void updateLayerPanel(Material &material,int &textureRes,Box &box,Context &context){
+        layerPanel.sections.clear(); //Clear the elements of the layerPanel
+        Section layerPanelSection;
+        layerPanelSection.header = Element(Button());
+        //Push the elements one by one from the materialModifiers of the material
+        for (size_t i = 0; i < material.materialModifiers.size(); i++)
+        {
+            layerPanelSection.elements.push_back(
+                Element(Button(1,glm::vec2(2,1.5f),colorPalette,buttonShader,material.materialModifiers[i].title , Texture(), 0.f,true))
+            );
+        }
+        updateMaterial(material,(float)textureRes,box,context);
+        layerPanel.sections.push_back(layerPanelSection);
+    }
+
+    void checkLayerPanel(Material &material){
+        //Update the selected material modifier index
+        if(layerPanel.sections.size()){
+            for (size_t i = 0; i < layerPanel.sections[0].elements.size(); i++)
+            {
+                if(layerPanel.sections[0].elements[i].button.clickState1){ //If a modifier button is clicked 
+                    if(selectedMaterialModifierIndex != i){ //If the clicked button is not selected 
+                        layerPanel.sections[0].elements[selectedMaterialModifierIndex].button.clickState1 = false; //Unselect the selected one
+                        selectedMaterialModifierIndex = i; //Select the clicked button
+                        if(material.materialModifiers.size()){
+                            modifiersPanel.sections = material.materialModifiers[selectedMaterialModifierIndex].sections;
+                        }
+                        break; 
+                    }
+                }
+            }
+        }
+    }
+
+    void checkModifiersPanel(Material &material,float textureRes,Box box,Context context,Mouse &mouse){
+        //Check on modifiers panel if it has to reset.
+        //Check if interacted with it's elements
+
+        if(firstFrameActivated){//Clear the modifiers panel as the panel starts
+            //If you don't there will be unrelated modifier's elements will be displayed as you open the panel to edit another material
+            modifiersPanel.sections.clear();
+        }
+
+        //Update the material if interacted with modifier's panel
+        for (size_t secI = 0; secI < modifiersPanel.sections.size(); secI++)
+        {
+            for (size_t elementI = 0; elementI < modifiersPanel.sections[secI].elements.size(); elementI++)
+            {
+                if(modifiersPanel.sections[secI].elements[elementI].state == 0)
+                    if(modifiersPanel.sections[secI].elements[elementI].button.clickedMixVal == 1.f)
+                        updateMaterial(material,(float)textureRes,box,context);
+
+                if(modifiersPanel.sections[secI].elements[elementI].state == 1)
+                    if(modifiersPanel.sections[secI].elements[elementI].rangeBar.pointerPressed == true)
+                        updateMaterial(material,(float)textureRes,box,context);
+
+                if(modifiersPanel.sections[secI].elements[elementI].state == 2)
+                    if(modifiersPanel.sections[secI].elements[elementI].checkBox.hover && mouse.LClick == true)
+                        updateMaterial(material,(float)textureRes,box,context);
+            }
+        }
+    }
+
 };
 
 #endif

@@ -285,8 +285,24 @@ public:
 
         //Finish
         glDeleteFramebuffers(1,&captureFBO);
-        glDeleteTextures(1,&textures[selectedTextureIndex].ID);
-        textures[selectedTextureIndex].ID = captureTexture;
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,captureTexture);
+        char* pixels = new char[textureRes * textureRes * 4];
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
+        
+        glBindTexture(GL_TEXTURE_2D,textures[selectedTextureIndex].ID);
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_BYTE, pixels);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        
+        delete[] pixels;
         textures[selectedTextureIndex].width = textureRes;
         textures[selectedTextureIndex].height = textureRes;
         

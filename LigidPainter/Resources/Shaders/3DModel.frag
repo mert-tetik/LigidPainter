@@ -81,7 +81,10 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 vec4 getTexture(sampler2D txtr){
     return texture(txtr,TexCoords);
 }
-
+float hash(float x)
+{
+    return fract(sin(x) * 43758.5453);
+}
 vec3 getPaintedTexture(sampler2D txtr){
     vec3 screenPos = 0.5 * (vec3(1,1,1) + projectedPos.xyz / projectedPos.w);
    
@@ -90,6 +93,38 @@ vec3 getPaintedTexture(sampler2D txtr){
     intensity = texture(paintingTexture, screenPos.xy).a * paintingOpacity;
 
     return mix(texture(txtr,TexCoords).rgb,paintingColor,intensity);
+}
+
+vec3 getSmearedTexture(sampler2D txtr){
+    vec3 screenPos = 0.5 * (vec3(1,1,1) + projectedPos.xyz / projectedPos.w);
+   
+    float intensity = 0.0;
+    
+    intensity = texture(paintingTexture, screenPos.xy).a * paintingOpacity;
+
+    // Apply blurring
+    const int Samples = 64; //multiple of 2
+    float Intensity = 0.1;
+
+    vec2 Direction = vec2(0.,-1.);
+
+    vec4 blurredColor = vec4(0.0);  
+    
+    for (int i=1; i<=Samples/2; i++)
+    {
+        vec2 mUV = TexCoords - float(i) * (intensity/10.) / float(Samples/2) * Direction;
+        vec2 pUV = TexCoords + float(i) * (intensity/10.) / float(Samples/2) * Direction;
+
+        mUV.y += 0.05*intensity;
+        pUV.y += 0.05*intensity;
+
+        blurredColor += texture(txtr,pUV);
+        blurredColor += texture(txtr,mUV);
+    }
+    blurredColor = blurredColor/float(Samples);    
+    return blurredColor.rgb;
+
+    //return texture(txtr,vec2(TexCoords.x,TexCoords.y + 0.1*intensity)).rgb;
 }
 
 vec3 getPBR(){

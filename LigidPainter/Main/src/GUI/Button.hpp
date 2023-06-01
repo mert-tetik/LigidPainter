@@ -63,7 +63,7 @@ private:
         
         if(animationStyle == 1) //If hover or clicked change the color of the button
             shader.setFloat("colorMixVal"  ,     (clickedMixVal + hoverMixVal)/2.f   );
-        if(animationStyle == 2) //If hover or clicked change the color of the button
+        else if(animationStyle == 2) //If hover or clicked change the color of the button
             shader.setFloat("colorMixVal"  ,     (hover/2.f)   );
         else //If clicked change the color of the button
             shader.setFloat("colorMixVal"  ,     (clickedMixVal)   );
