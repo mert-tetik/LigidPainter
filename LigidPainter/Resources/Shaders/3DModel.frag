@@ -95,6 +95,32 @@ vec3 getPaintedTexture(sampler2D txtr){
     return mix(texture(txtr,TexCoords).rgb,paintingColor,intensity);
 }
 
+float gaussian(vec2 i,int range) {
+    float sigma = float(range) * .25;
+    return exp( -.5* dot(i/=sigma,i) ) / ( 6.28 * sigma*sigma );
+}
+
+const int LOD = 1,         // gaussian done on MIPmap at scale LOD
+          sLOD = 1 << LOD; // tile size = 2^LOD
+
+vec3 getSoftenedTexture(sampler2D txtr){
+    const float width = 1024;
+    int range = 20;
+
+    vec3 screenPos = 0.5 * (vec3(1,1,1) + projectedPos.xyz / projectedPos.w);
+    float intensity = texture(paintingTexture, screenPos.xy).a * paintingOpacity;
+
+    vec4 O = vec4(0); 
+    int s = range/sLOD;
+    
+    for ( int i = 0; i < s*s; i++ ) {
+        vec2 d = vec2(i%s, i/s)*float(sLOD) - float(range)/2.;
+        O += gaussian(d,range) * textureLod( txtr, TexCoords + vec2(1./width) * d , float(LOD) );
+    }
+    
+    return mix(texture(txtr,TexCoords).rgb,O.rgb/O.a,intensity);
+}
+
 vec3 getSmearedTexture(sampler2D txtr){
     vec3 screenPos = 0.5 * (vec3(1,1,1) + projectedPos.xyz / projectedPos.w);
    
@@ -128,7 +154,7 @@ vec3 getSmearedTexture(sampler2D txtr){
 }
 
 vec3 getPBR(){
-    vec3 albedo = getPaintedTexture(albedoTxtr).rgb;
+    vec3 albedo = getSoftenedTexture(albedoTxtr).rgb;
     if(renderTxtr == 1)
         return albedo;
     //vec3 normal = getTexture(normalMapTxtr).rgb;
