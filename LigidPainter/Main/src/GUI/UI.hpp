@@ -247,6 +247,7 @@ public:
     Panel nodeEditorDisplayer; 
     Panel selectedTextureDisplayer; 
     Panel twoDPaintingPanel; 
+    Panel paintingModesPanel; 
 
     //Dialogs    
     GreetingDialog greetingDialog;
@@ -567,6 +568,35 @@ public:
                                 {},
                                 20.f
                             );
+        paintingModesPanel  = Panel(
+                                shaders.buttonShader,
+                                colorPalette,
+                                {
+                                    Section(
+                                        Element(Button()),
+                                        {   
+                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Draw"        , appTextures.greetingDialogImage, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Soften"        , appTextures.greetingDialogImage, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Smear"        , appTextures.greetingDialogImage, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Area"        , appTextures.greetingDialogImage, 0.f,false)),
+                                        }
+                                    )
+                                },
+                                
+                                glm::vec2(5 ,8), //Initial scale value
+                                glm::vec3(50 ,50 ,0.1f),  //Initial position value
+                                colorPalette.mainColor, //Color of the panel
+                                colorPalette.thirdColor, //Color of the panel
+                                true,
+                                true,
+                                false,
+                                true,
+                                false,
+                                1.f,
+                                1,
+                                {},
+                                20.f
+                            );
         
 
         greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
@@ -619,6 +649,7 @@ public:
         libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
+        paintingModesPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         if(!painter.threeDimensionalMode)
             twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
 
@@ -943,6 +974,8 @@ private:
         twoDPaintingPanel.scale.y = 50 - navigationPanel.scale.y - nodeEditorDisplayer.scale.y;
         twoDPaintingPanel.pos.x = paintingPanel.pos.x - paintingPanel.scale.x - twoDPaintingPanel.scale.x; //Keep on the left side of the window panel 
         twoDPaintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + twoDPaintingPanel.scale.y; //Keep beneath the navigation bar
+
+        paintingModesPanel.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + paintingModesPanel.scale.x;
     }
 };
 
