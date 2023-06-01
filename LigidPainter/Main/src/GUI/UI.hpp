@@ -206,6 +206,10 @@ struct Section{ //Sections seperates the elements in the panel
     }
 };
 
+struct Dropper{
+    glm::vec3 value;
+    bool active = false;
+};
 
 #include "GUI/Panel.hpp"
 #include "GUI/Dialogs/GreetingDialog.hpp"
@@ -248,6 +252,8 @@ public:
     Panel selectedTextureDisplayer; 
     Panel twoDPaintingPanel; 
     Panel paintingModesPanel; 
+
+    Dropper dropper;
 
     //Dialogs    
     GreetingDialog greetingDialog;
@@ -350,7 +356,8 @@ public:
                                         {   
                                             Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color1"  , Texture(), 1.f, true)),
                                             Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color2"  , Texture(), 1.f, true)),
-                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color3"  , Texture(), 1.f, true))
+                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color3"  , Texture(), 1.f, true)),
+                                            Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Dropper"  , Texture(), 1.f, false))
                                         }
                                     ),
                                     Section(
@@ -676,6 +683,7 @@ public:
             exportBrush.saveFile();
         }
 
+
         //Update the selected texture
         if(selectedLibraryElementIndex == 0){ //Textures selected
             for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
@@ -739,6 +747,30 @@ public:
 
         if(frameCounter > 1000)
             frameCounter = 0;
+
+        //!Make sure the execute these after rendering everything
+        if(mouse.LClick && dropper.active){
+            //Dropper active pick color
+            glm::vec3 cursorHoverPixelRGBData;
+            //Read the cursor position from the default frame buffer
+            glReadPixels(mouse.cursorPos.x,mouse.cursorPos.y,1,1,GL_RGB,GL_FLOAT,&cursorHoverPixelRGBData);
+            
+            dropper.value = cursorHoverPixelRGBData; 
+        
+            dropper.active = false;
+
+            if(painter.selectedColorIndex == 0)
+                painter.color1.loadRGB(dropper.value*glm::vec3(255));
+            if(painter.selectedColorIndex == 1)
+                painter.color2.loadRGB(dropper.value*glm::vec3(255));
+            if(painter.selectedColorIndex == 2)
+                painter.color3.loadRGB(dropper.value*glm::vec3(255));
+        }
+        
+        //If clicked to the dropper button activate the dropper
+        if(paintingPanel.sections[0].elements[3].button.hover && mouse.LClick){
+            dropper.active = true;
+        }
     }
 
 
@@ -760,6 +792,8 @@ private:
         //Prevent multiple selection and update the painter.selectedColorIndex for colors
         for (size_t i = 0; i < paintingPanel.sections[0].elements.size(); i++)
         {
+            if(i == 3) 
+                break; //Don't bring the dropper button
             if(paintingPanel.sections[0].elements[i].button.clickState1){ //If a color button is clicked
                 if(painter.selectedColorIndex != i){ //If the clicked button is not selected 
                     paintingPanel.sections[0].elements[painter.selectedColorIndex].button.clickState1 = false; //Unselect the selected one
