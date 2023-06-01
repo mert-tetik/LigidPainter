@@ -786,7 +786,7 @@ private:
                 for (size_t i = 0; i < library.brushes.size(); i++)
                 {
                     //Push texture elements into the section
-                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.brushes[i].title       , appTextures.greetingDialogImage, 0.f,false))) ;
+                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.brushes[i].title       , Texture(library.brushes[i].displayingTexture), 0.f,false))) ;
                 }
             }
             //Give the section
@@ -817,6 +817,8 @@ private:
                                                     painter.brushTexture
                                                 )
                                         );
+                
+                library.brushes[library.brushes.size()-1].updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
                 
             }
         }

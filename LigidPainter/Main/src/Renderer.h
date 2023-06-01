@@ -298,6 +298,8 @@ public:
 
             Brush brush;
             brush.readFile(texturePath);
+            brush.updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
+
 
             library.brushes.push_back(brush);
         }
