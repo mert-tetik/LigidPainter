@@ -85,7 +85,10 @@ public:
     Shader singleCurveShader;  
 
     //int ID; //Unique id for the node (IS NOT USED RN)
+    
     int materialID;
+
+    int nodeIndex; //0 for the mesh output , 1 for the material node
 
     Panel nodePanel;//Node's itself
     Button barButton; //That bar on top of the nodes 
@@ -96,13 +99,14 @@ public:
 
     Node(){}
 
-    void loadIO(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs, Shader buttonShader,Shader singleCurveShader,ColorPalette colorPalette,float heigth,int materialID){
+    void loadIO(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs, Shader buttonShader,Shader singleCurveShader,ColorPalette colorPalette,float heigth,int materialID,int nodeIndex){
         this->buttonShader = buttonShader;
         this->singleCurveShader = singleCurveShader;
         this->inputs = inputs;
         this->outputs = outputs;
         this->scale.y = heigth;
         this->materialID = materialID;
+        this->nodeIndex = nodeIndex;
 
 
         this->nodePanel = Panel(

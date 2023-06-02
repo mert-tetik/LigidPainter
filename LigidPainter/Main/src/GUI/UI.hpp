@@ -710,6 +710,14 @@ public:
         //Render the nodes
         for (size_t i = 0; i < nodeScene.size(); i++)
         {
+            //Update the display texture of the material node
+            if(nodeScene[i].nodeIndex == 1){//Is a material node
+                for (size_t matI = 0; matI < library.materials.size(); matI++)
+                {
+                    if(nodeScene[i].materialID == library.materials[matI].ID)
+                        nodeScene[i].nodePanel.sections[0].elements[0].button.texture = Texture(library.materials[matI].displayingTexture);
+                }
+            }
             nodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,nodeScene,i);
         }
 

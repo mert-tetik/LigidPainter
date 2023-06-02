@@ -339,7 +339,8 @@ public:
             shaders.singleCurve,
             colorPalette,
             12.f,
-            0
+            0,
+            1
         );
 
         Node meshOutputNode;
@@ -360,6 +361,7 @@ public:
             shaders.singleCurve,
             colorPalette,
             25.f,
+            0,
             0
         );
         
