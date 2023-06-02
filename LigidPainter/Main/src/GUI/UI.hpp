@@ -324,10 +324,10 @@ public:
                                     Section(
                                         Element(Button()),
                                         {   
-                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"3D Painting"         , appTextures.TDModelIcon, 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"2D Painting"         , appTextures.TDModelIcon, 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Matarial editor"     , appTextures.TDModelIcon, 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Displayer"           , appTextures.TDModelIcon, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"3D Painting"         , appTextures.threeDIcon, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"2D Painting"         , appTextures.twoDIcon, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Export"              , appTextures.exportIcon, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Displayer"           , appTextures.environmentIcon, 0.f,false)),
                                         }
                                     )
                                 },
@@ -352,7 +352,7 @@ public:
                                 colorPalette,
                                 {
                                     Section(
-                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color"  , appTextures.TDModelIcon, 0.f,true)),
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color"  , appTextures.colorIcon, 0.f,true)),
                                         {   
                                             Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color1"  , Texture(), 1.f, true)),
                                             Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Color2"  , Texture(), 1.f, true)),
@@ -361,7 +361,7 @@ public:
                                         }
                                     ),
                                     Section(
-                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Brush"  , appTextures.TDModelIcon, 3.f,true)),
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Brush"  , appTextures.brushIcon, 3.f,true)),
                                         {   
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Radius    "  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Opacity   "  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
@@ -370,7 +370,7 @@ public:
                                         }
                                     ),
                                     Section(
-                                        Element(Button(2,glm::vec2(2,1),colorPalette,shaders.buttonShader, "More"  , appTextures.TDModelIcon, 1.f,true)),
+                                        Element(Button(2,glm::vec2(2,1),colorPalette,shaders.buttonShader, "More"  , appTextures.modifierIcon, 1.f,true)),
                                         {   
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Size Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //0
                                             Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Fade"  , Texture(), 1.f,0.f,100.f,0.f)),//1
@@ -387,24 +387,17 @@ public:
                                         }
                                     ),
                                     Section(
-                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Soften"  , appTextures.TDModelIcon, 3.f,true)),
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Soften"  , appTextures.softenIcon, 3.f,true)),
                                         {   
                                             Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Radius"  , appTextures.TDModelIcon, 1.f,false)),
                                             Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Strength"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                         }
                                     ),
                                     Section(
-                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Smear"  , appTextures.TDModelIcon, 3.f,true)),
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Smear"  , appTextures.smearIcon, 3.f,true)),
                                         {   
                                             Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Radius"  , appTextures.TDModelIcon, 1.f,false)),
                                             Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Strength"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                        }
-                                    ),
-                                    Section(
-                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Vector"  , appTextures.TDModelIcon, 3.f,true)),
-                                        {   
-                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Fill"  , appTextures.TDModelIcon, 1.f,false)),
-                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Stroke"  , appTextures.TDModelIcon, 1.f,false)),
                                         }
                                     ),
                                     Section(
@@ -418,16 +411,6 @@ public:
                                             Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Circle"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                         }
                                     ),
-                                    Section(
-                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Text"  , appTextures.TDModelIcon, 3.f,true)),
-                                        {   
-                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Text"  , appTextures.TDModelIcon, 1.f,false)),
-                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Font"  , appTextures.TDModelIcon, 1.f,false)),
-                                            Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Alignment"  , appTextures.TDModelIcon, 1.f,false)),
-                                            Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Size"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                            Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Bearing"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                        }
-                                    )
                                 },
                                 
                                 glm::vec2(5,48), //Initial scale value
@@ -582,9 +565,9 @@ public:
                                     Section(
                                         Element(Button()),
                                         {   
-                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Draw"        , appTextures.greetingDialogImage, 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Soften"        , appTextures.greetingDialogImage, 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Smear"        , appTextures.greetingDialogImage, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Draw"        , appTextures.brushIcon, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Soften"        , appTextures.softenIcon, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Smear"        , appTextures.smearIcon, 0.f,false)),
                                             Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Area"        , appTextures.greetingDialogImage, 0.f,false)),
                                         }
                                     )

@@ -88,7 +88,17 @@ struct Shaders{
 };
 struct AppTextures{ //Textures those will be used in UI of the app
     //--Icons
-    Texture TDModelIcon; //3D Model Icon 
+    Texture TDModelIcon; 
+    Texture softenIcon;  
+    Texture smearIcon;
+    Texture modifierIcon;
+    Texture environmentIcon;
+    Texture dropperIcon;
+    Texture colorIcon;
+    Texture brushIcon;
+    Texture threeDIcon;
+    Texture twoDIcon;
+    Texture exportIcon;
     
     //--Textures
     Texture greetingDialogImage;  
@@ -228,7 +238,17 @@ public:
         initGlad();
 
         //--Load the app textures
-        appTextures.TDModelIcon.load("./LigidPainter/Resources/Icons/3DModel.jpg");
+        appTextures.TDModelIcon.load("./LigidPainter/Resources/Icons/TDModel.png");
+        appTextures.softenIcon.load("./LigidPainter/Resources/Icons/Soften.png");
+        appTextures.smearIcon.load("./LigidPainter/Resources/Icons/Smear.png");
+        appTextures.modifierIcon.load("./LigidPainter/Resources/Icons/Modifier.png");
+        appTextures.environmentIcon.load("./LigidPainter/Resources/Icons/Environment.png");
+        appTextures.dropperIcon.load("./LigidPainter/Resources/Icons/Dropper.png");
+        appTextures.colorIcon.load("./LigidPainter/Resources/Icons/Color.png");
+        appTextures.brushIcon.load("./LigidPainter/Resources/Icons/Brush.png");
+        appTextures.threeDIcon.load("./LigidPainter/Resources/Icons/3D.png");
+        appTextures.twoDIcon.load("./LigidPainter/Resources/Icons/2D.png");
+        appTextures.exportIcon.load("./LigidPainter/Resources/Icons/Export.png");
         appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
 
         //Init skyboxes
