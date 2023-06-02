@@ -401,7 +401,7 @@ public:
                                         }
                                     ),
                                     Section(
-                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Area"  , appTextures.TDModelIcon, 3.f,true)),
+                                        Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Area"  , appTextures.areaPaintingIcon, 3.f,true)),
                                         {   
                                             Element(Button(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Box"  , appTextures.TDModelIcon, 1.f,false)),
                                             Element(CheckBox(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Gradient"  , 1.f)),
@@ -568,7 +568,7 @@ public:
                                             Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Draw"        , appTextures.brushIcon, 0.f,false)),
                                             Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Soften"        , appTextures.softenIcon, 0.f,false)),
                                             Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Smear"        , appTextures.smearIcon, 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Area"        , appTextures.greetingDialogImage, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Area"        , appTextures.areaPaintingIcon, 0.f,false)),
                                         }
                                     )
                                 },

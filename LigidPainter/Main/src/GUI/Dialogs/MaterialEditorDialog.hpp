@@ -244,13 +244,6 @@ public:
     
 
     void updateMaterial(Material &material,float textureRes,Box box,Context context){ //Updates textures of the material using modifier shaders
-        //layout(location=0) out vec4 albedo;
-        //layout(location=1) out vec4 roughness;
-        //layout(location=2) out vec4 metallic; 
-        //layout(location=3) out vec4 normalMap;
-        //layout(location=4) out vec4 heightMap;
-        //layout(location=5) out vec4 ambientOcclusion;
-
         glViewport(0,0,textureRes,textureRes);
         
         glm::mat4 projection = glm::ortho(0.f,(float)textureRes,(float)textureRes,0.f);
@@ -259,8 +252,6 @@ public:
         glm::vec2 fragScale = glm::vec2((float)textureRes/2.f,(float)textureRes/2.f);
         glm::vec3 fragPos = glm::vec3((float)textureRes/2.f,(float)textureRes/2.f,1.0f);
 
-        std::cout << "MATERIAL UPDATED " << textureRes << std::endl;
-        
         for (size_t i = 0; i < material.materialModifiers.size(); i++)
         {
 
