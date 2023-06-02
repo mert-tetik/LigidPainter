@@ -85,6 +85,8 @@ public:
 
     int selectedTextureIndex = 0;
 
+    int selectedPaintingModeIndex = 0; 
+
     glm::vec2 videoScale;
 
     Shader paintingShader;

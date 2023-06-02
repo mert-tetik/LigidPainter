@@ -565,10 +565,10 @@ public:
                                     Section(
                                         Element(Button()),
                                         {   
-                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Draw"        , appTextures.brushIcon, 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Soften"        , appTextures.softenIcon, 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Smear"        , appTextures.smearIcon, 0.f,false)),
-                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Area"        , appTextures.areaPaintingIcon, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Draw"          , appTextures.brushIcon,        0.f,true)),
+                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Soften"        , appTextures.softenIcon,       0.f,true)),
+                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Smear"         , appTextures.smearIcon,        0.f,true)),
+                                            Element(Button(1,glm::vec2(2,2.f),colorPalette,shaders.buttonShader,"Area"          , appTextures.areaPaintingIcon, 0.f,true)),
                                         }
                                     )
                                 },
@@ -969,6 +969,21 @@ private:
         
 
 
+        //!PAINTING MODES PANEL
+        for (size_t i = 0; i < paintingModesPanel.sections[0].elements.size(); i++)
+        {
+            if(paintingModesPanel.sections[0].elements[i].button.clickState1){ //Painting mode pressed
+                if(painter.selectedPaintingModeIndex != i){
+                    paintingModesPanel.sections[0].elements[painter.selectedPaintingModeIndex].button.clickState1 = false;
+                    painter.selectedPaintingModeIndex = i;
+                    break;
+                }
+            }
+
+            if(painter.selectedPaintingModeIndex == i){
+                paintingModesPanel.sections[0].elements[painter.selectedPaintingModeIndex].button.clickState1 = true;
+            }
+        }
         
 
 
