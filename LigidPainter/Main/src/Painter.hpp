@@ -81,7 +81,9 @@ public:
 
     unsigned int RBO;
     unsigned int FBO;
-    unsigned int paintingTexture;
+    unsigned int paintingTexture; //Is paintingTexture8 or paintingTexture16f 
+    unsigned int paintingTexture8;
+    unsigned int paintingTexture16f;//Used for smear brush
 
     int selectedTextureIndex = 0;
 
@@ -111,8 +113,8 @@ public:
         
         //Create the texture
         glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1,&paintingTexture);
-        glBindTexture(GL_TEXTURE_2D,paintingTexture);
+        glGenTextures(1,&paintingTexture8);
+        glBindTexture(GL_TEXTURE_2D,paintingTexture8);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -123,10 +125,22 @@ public:
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, videoScale.x, videoScale.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
         glGenerateMipmap(GL_TEXTURE_2D);
 
+        glGenTextures(1,&paintingTexture16f);
+        glBindTexture(GL_TEXTURE_2D,paintingTexture16f);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, videoScale.x, videoScale.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
         //Create the framebuffer
         glGenFramebuffers(1,&FBO);
         glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, paintingTexture, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, paintingTexture8, 0);
         
         //Create the renderbuffer
 		glGenRenderbuffers(1,&RBO);
@@ -163,12 +177,21 @@ public:
         glViewport(0,0,videoScale.x,videoScale.y);
         
         glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+        if(selectedPaintingModeIndex == 2){
+            paintingTexture = paintingTexture16f;
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, paintingTexture16f, 0);
+        }
+        else{
+            paintingTexture = paintingTexture8;
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, paintingTexture8, 0);
+        }
         
         paintingShader.use();
 
         glm::vec2 scale = videoScale / glm::vec2(2);
         glm::vec3 pos = glm::vec3(videoScale / glm::vec2(2),1.f);
         projection = glm::ortho(0.f,videoScale.x,0.f,videoScale.y);
+        
         paintingShader.setVec2("scale", scale); //Cover the screen
         paintingShader.setVec3("pos", pos); //Cover the screen
         paintingShader.setMat4("projection", projection); //Cover the screen
@@ -185,6 +208,7 @@ public:
         paintingShader.setInt("brush.individualTexture", individualTexture);
         paintingShader.setInt("brush.sinWavePattern", sinWavePattern);
         paintingShader.setFloat("brush.txtr", 0);
+        
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D,brushTexture.ID);
@@ -193,6 +217,7 @@ public:
 
         //3D Model shader side of the painting        
         tdModelShader.use();
+        tdModelShader.setInt("brushModeState", selectedPaintingModeIndex);
         if(selectedColorIndex == 0)
             tdModelShader.setVec3("paintingColor", color1.RGB / glm::vec3(255.f));
         if(selectedColorIndex == 1)
@@ -203,6 +228,8 @@ public:
         
         paintingShader.use();
         paintingShader.setVec2("videoScale", videoScale); 
+        paintingShader.setVec2("mouseOffset", mouse.mouseOffset);
+
 
         //Stroke positions
         std::vector<glm::vec2> holdLocations = getCursorSubstitution(mouse,spacing);

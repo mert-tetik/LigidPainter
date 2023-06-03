@@ -14,6 +14,8 @@ uniform vec2 videoScale;
 
 uniform int frame; //How many frames passed since started painting
 
+uniform vec2 mouseOffset; //For the smear brush
+
 struct Brush {
     float radius;
     float hardness;
@@ -148,5 +150,10 @@ void main()
     opacity -= opacityGap * brush.alphaJitter;
     
     outClr = fRes;
+    
+    outClr.rg = mouseOffset/videoScale * 10.;
+    outClr.b = 0;
+    
     outClr.a *= opacity;
+    outClr.rgb *= outClr.a;
 }

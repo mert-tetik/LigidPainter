@@ -22,6 +22,8 @@ uniform sampler2D ambientOcclusionTxtr;
 
 uniform sampler2D paintingTexture;
 
+uniform int brushModeState; //0 : paint, 1 : soften, 2 : smear
+
 in float renderTxtr;
 
 out vec4 fragColor;
@@ -127,23 +129,28 @@ vec3 getSmearedTexture(sampler2D txtr){
     float intensity = 0.0;
     
     intensity = texture(paintingTexture, screenPos.xy).a * paintingOpacity;
+    vec2 Direction =  texture(paintingTexture, screenPos.xy).rg / 10.;
+    //Direction = clamp(Direction,vec2(-1,-1),vec2(1,1));
 
     // Apply blurring
-    const int Samples = 64; //multiple of 2
+    const int Samples = 64*2; //multiple of 2
     float Intensity = 0.1;
 
-    vec2 Direction = vec2(0.,-1.);
 
     vec4 blurredColor = vec4(0.0);  
     
     for (int i=1; i<=Samples/2; i++)
     {
-        vec2 mUV = TexCoords - float(i) * (intensity/10.) / float(Samples/2) * Direction;
-        vec2 pUV = TexCoords + float(i) * (intensity/10.) / float(Samples/2) * Direction;
+        vec2 mUV = TexCoords - float(i) * (intensity) / float(Samples/2) * Direction;
+        vec2 pUV = TexCoords + float(i) * (intensity) / float(Samples/2) * Direction;
 
-        mUV.y += 0.05*intensity;
-        pUV.y += 0.05*intensity;
+        Direction*=-1;
 
+        //mUV += Direction/20.;
+        //pUV += Direction/20.;
+
+        Direction*=-1;
+        
         blurredColor += texture(txtr,pUV);
         blurredColor += texture(txtr,mUV);
     }
@@ -153,8 +160,17 @@ vec3 getSmearedTexture(sampler2D txtr){
     //return texture(txtr,vec2(TexCoords.x,TexCoords.y + 0.1*intensity)).rgb;
 }
 
+vec3 getBrushedTexture(sampler2D txtr){
+    if(brushModeState == 0)
+        return getPaintedTexture(txtr);
+    if(brushModeState == 1)
+        return getSoftenedTexture(txtr);
+    if(brushModeState == 2)
+        return getSmearedTexture(txtr);
+}
+
 vec3 getPBR(){
-    vec3 albedo = getSoftenedTexture(albedoTxtr).rgb;
+    vec3 albedo = getBrushedTexture(albedoTxtr).rgb;
     if(renderTxtr == 1)
         return albedo;
     //vec3 normal = getTexture(normalMapTxtr).rgb;
