@@ -326,16 +326,15 @@ public:
 
         tdModelShader.use();
         
-        tdModelShader.setInt("renderTexture",1);
-        
         glm::mat4 orthoProjection = glm::ortho(0.f,1.f,0.f,1.f);
         tdModelShader.setMat4("oneZeroProjection",orthoProjection);
         
         if(threeDimensionalMode){
             tdModelShader.setInt("useTransformUniforms",0);
             tdModelShader.setInt("returnSingleTxtr",1);
-            tdModelShader.setInt("render2D",0);
+            tdModelShader.setInt("render2D",1);
             model.meshes[0].Draw(); //TODO SELECT THE MESH
+            tdModelShader.setInt("render2D",0);
             tdModelShader.setInt("returnSingleTxtr",0);
         }
         else{
@@ -343,7 +342,9 @@ public:
             tdModelShader.setInt("returnSingleTxtr",1);
             tdModelShader.setVec2("scale",scale2D);
             tdModelShader.setVec3("pos",pos2D);
+            tdModelShader.setInt("render2D",1);
             glDrawArrays(GL_TRIANGLES,0,6);
+            tdModelShader.setInt("render2D",0);
             tdModelShader.setInt("useTransformUniforms",0);
             tdModelShader.setInt("returnSingleTxtr",0);
         }
@@ -370,8 +371,6 @@ public:
         delete[] pixels;
         textures[selectedTextureIndex].width = textureRes;
         textures[selectedTextureIndex].height = textureRes;
-        
-        tdModelShader.setInt("renderTexture",0);
     }
 
     void updateDepthTexture( Model &model){
@@ -385,7 +384,6 @@ public:
         
         depth3DShader.use();
         depth3DShader.setInt("useTransformUniforms",0);
-        depth3DShader.setInt("renderTexture",0);
 
         glm::mat4 modelMatrix = glm::mat4(1);
         depth3DShader.setMat4("modelMatrix",modelMatrix);

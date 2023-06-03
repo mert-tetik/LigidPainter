@@ -172,7 +172,7 @@ bool isPainted(vec3 uv) { //Use mirrored depth texture if isMirrored is true
     
     drawZ = texture(depthTexture, uv.xy).b;
 
-    return abs(drawZ - linearizeDepth(uv.z)/far) < 0.005;
+    return abs(drawZ - linearizeDepth(uv.z)/far) < 0.01;
 }
 
 vec3 getPBR(){

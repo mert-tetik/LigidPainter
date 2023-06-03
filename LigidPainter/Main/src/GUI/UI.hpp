@@ -644,9 +644,8 @@ public:
             
             //Render the painting texture
             shaders.tdModelShader.use();
-            shaders.tdModelShader.setInt("render2D",1);
+            shaders.tdModelShader.setInt("render2D",0);
             shaders.tdModelShader.setInt("useTransformUniforms",1);
-            shaders.tdModelShader.setInt("renderTexture",1);
             shaders.tdModelShader.setMat4("orthoProjection",projection);
 
             shaders.tdModelShader.setInt("returnSingleTxtr",1);
@@ -664,8 +663,6 @@ public:
             painter.pos2D = twoDPaintingPanel.sections[0].elements[0].button.resultPos;
 
             shaders.tdModelShader.setInt("returnSingleTxtr",0);
-            shaders.tdModelShader.setInt("renderTexture",0);
-            shaders.tdModelShader.setInt("render2D",0);
             shaders.tdModelShader.setInt("useTransformUniforms",0);
             shaders.buttonShader.use();
         }

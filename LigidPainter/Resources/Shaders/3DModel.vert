@@ -19,7 +19,6 @@ out vec3 Bitangent;
 out vec4 projectedPos;
 
 //2D
-uniform int renderTexture;
 uniform mat4 oneZeroProjection;
 uniform mat4 orthoProjection;
 
@@ -44,9 +43,7 @@ void main() {
         projectedPos = orthoProjection * vec4(scaledPos + pos, 1.0);
     }
     
-    if(renderTexture == 0)
-        gl_Position = projectedPos;
-    else if(render2D == 1){
+    if(render2D == 0){
         gl_Position = projectedPos;
     }
     else

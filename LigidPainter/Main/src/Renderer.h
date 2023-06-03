@@ -428,7 +428,8 @@ public:
         glBindTexture(GL_TEXTURE_CUBE_MAP,scene.skybox.IDPrefiltered);
         
         
-        
+        shaders.tdModelShader.setInt("useTransformUniforms",0);
+        shaders.tdModelShader.setInt("render2D", 0);
         shaders.tdModelShader.setInt("skybox",0);
         shaders.tdModelShader.setInt("prefilterMap",1);
         shaders.tdModelShader.setInt("albedoTxtr",2);
