@@ -85,6 +85,8 @@ public:
     unsigned int paintingTexture8;
     unsigned int paintingTexture16f;//Used for smear brush
 
+    unsigned int depthTexture;
+
     int selectedTextureIndex = 0;
 
     int selectedPaintingModeIndex = 0; 
@@ -130,6 +132,18 @@ public:
 
         glGenTextures(1,&paintingTexture16f);
         glBindTexture(GL_TEXTURE_2D,paintingTexture16f);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, videoScale.x, videoScale.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glGenTextures(1,&depthTexture);
+        glBindTexture(GL_TEXTURE_2D,depthTexture);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -350,6 +364,8 @@ public:
         
         tdModelShader.setInt("renderTexture",0);
     }
+
+    //void updateDepthTexture
 private:
     std::vector<glm::vec2> getCursorSubstitution(Mouse &mouse,float spacing){
         std::vector<glm::vec2> holdLocations;

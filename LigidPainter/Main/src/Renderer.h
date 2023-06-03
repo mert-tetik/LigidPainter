@@ -85,6 +85,7 @@ struct Shaders{
     Shader singleCurve;
     Shader colorPicker;
     Shader twoDPainting;
+    Shader depth3D;
 };
 struct AppTextures{ //Textures those will be used in UI of the app
     //--Icons
@@ -256,6 +257,7 @@ public:
         //Init skyboxes
         //TODO : Remove those (maybe)
         shaders.tdModelShader = Shader("LigidPainter/Resources/Shaders/3DModel.vert","LigidPainter/Resources/Shaders/3DModel.frag",nullptr);
+        shaders.depth3D = Shader("LigidPainter/Resources/Shaders/3DModel.vert","LigidPainter/Resources/Shaders/Depth3D.frag",nullptr);
         shaders.skyboxShader = Shader("LigidPainter/Resources/Shaders/Skybox.vert","LigidPainter/Resources/Shaders/Skybox.frag",nullptr);
         shaders.prefilteringShader = Shader("LigidPainter/Resources/Shaders/Skybox.vert","LigidPainter/Resources/Shaders/PrefilterSkybox.frag",nullptr);
         shaders.buttonShader = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/Button.frag",nullptr);
