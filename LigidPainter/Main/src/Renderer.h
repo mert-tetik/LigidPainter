@@ -648,27 +648,43 @@ private:
     	if ((glfwGetMouseButton(context.window, 1) == GLFW_PRESS) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { //L Control + L Click
     		//Straight Movement
             //Rotates the Camera in 3 axis using mouse offset & intepreting yaw, pitch & radius values
-            scene.camera.cameraPos.x -= sin(glm::radians(scene.camera.yaw)) * mouse.mouseOffset.x * sensitivity * (sensitivity / 2) + cos(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * mouse.mouseOffset.y) / 4;
-    		scene.camera.originPos.x -= sin(glm::radians(scene.camera.yaw)) * mouse.mouseOffset.x * sensitivity * (sensitivity / 2) + cos(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * mouse.mouseOffset.y) / 4;
+            const float half_sensitivity = sensitivity / 2.0f;
+            const float sin_yaw = sin(glm::radians(scene.camera.yaw));
+            const float cos_yaw = cos(glm::radians(scene.camera.yaw));
+            const float sin_pitch = sin(glm::radians(scene.camera.pitch));
+            const float cos_pitch = cos(glm::radians(scene.camera.pitch));
 
-    		scene.camera.cameraPos.z += cos(glm::radians(scene.camera.yaw)) * mouse.mouseOffset.x * sensitivity * (sensitivity / 2) - sin(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * mouse.mouseOffset.y) / 4;
-    		scene.camera.originPos.z += cos(glm::radians(scene.camera.yaw)) * mouse.mouseOffset.x * sensitivity * (sensitivity / 2) - sin(glm::radians(scene.camera.yaw)) * (sin(glm::radians(scene.camera.pitch)) * mouse.mouseOffset.y) / 4;
+            // Straight Movement
+            float x_offset = sin_yaw * mouse.mouseOffset.x * sensitivity * half_sensitivity;
+            float z_offset = cos_yaw * mouse.mouseOffset.x * sensitivity * half_sensitivity;
+            
+            if(scene.camera.pitch > 60.0f || scene.camera.pitch < -60.0f){
+                x_offset += cos_yaw * sin_pitch * mouse.mouseOffset.y * sensitivity * half_sensitivity;
+                z_offset -= sin_yaw * sin_pitch * mouse.mouseOffset.y * sensitivity * half_sensitivity;
+            }
+            
+            const float y_offset = cos_pitch * mouse.mouseOffset.y * sensitivity * half_sensitivity;
 
-    		scene.camera.cameraPos.y -= cos(glm::radians(scene.camera.pitch)) * mouse.mouseOffset.y * sensitivity * (sensitivity / 2);
-    		scene.camera.originPos.y -= cos(glm::radians(scene.camera.pitch)) * mouse.mouseOffset.y * sensitivity * (sensitivity / 2);
+            scene.camera.cameraPos.x -= x_offset;
+            scene.camera.originPos.x -= x_offset;
+
+            scene.camera.cameraPos.z += z_offset;
+            scene.camera.originPos.z += z_offset;
+
+            scene.camera.cameraPos.y += y_offset;
+            scene.camera.originPos.y += y_offset;
 
             painter.updateTheDepthTexture = true;
     	}
     	else if ((glfwGetMouseButton(context.window, 1) == GLFW_PRESS)) { //L Click
     	    scene.camera.yaw += mouse.mouseOffset.x * sensitivity;
-    		scene.camera.pitch += mouse.mouseOffset.y * sensitivity;
+    		scene.camera.pitch -= mouse.mouseOffset.y * sensitivity;
 
     		//Disable 90+ degrees rotations in y axis
     		if (scene.camera.pitch > 89.0f)
     			scene.camera.pitch = 89.0f;
     		if (scene.camera.pitch < -89.0f)
     			scene.camera.pitch = -89.0f;
-
     
     		//Helical Movement
             //Rotates the Camera in 3 axis using yaw, pitch & radius values
