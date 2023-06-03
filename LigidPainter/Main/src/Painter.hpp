@@ -100,6 +100,9 @@ public:
     glm::mat4 projection;
 
     bool threeDimensionalMode = true;
+    glm::mat4 windowProjection;
+    glm::vec3 pos2D;
+    glm::vec2 scale2D;
 
     Painter(){
         
@@ -246,7 +249,7 @@ public:
         //glDisable(GL_BLEND);
 
         if(glm::distance(startCursorPos,mouse.cursorPos) > spacing){
-            startCursorPos = mouse.cursorPos;
+            startCursorPos = mouse.cursorPos;            
             glDrawArrays(GL_TRIANGLES,0,6);
         }
         
@@ -308,9 +311,19 @@ public:
         tdModelShader.setInt("renderTexture",1);
         
         glm::mat4 orthoProjection = glm::ortho(0.f,1.f,0.f,1.f);
-        tdModelShader.setMat4("orthoProjection",orthoProjection);
+        tdModelShader.setMat4("oneZeroProjection",orthoProjection);
         
-        model.meshes[0].Draw();
+        if(threeDimensionalMode)
+            model.meshes[0].Draw(); //TODO SELECT THE MESH
+        else{
+            tdModelShader.setInt("useTransformUniforms",1);
+            tdModelShader.setInt("returnSingleTxtr",1);
+            tdModelShader.setVec2("scale",scale2D);
+            tdModelShader.setVec3("pos",pos2D);
+            glDrawArrays(GL_TRIANGLES,0,6);
+            tdModelShader.setInt("useTransformUniforms",0);
+            tdModelShader.setInt("returnSingleTxtr",0);
+        }
 
         //Finish
         glDeleteFramebuffers(1,&captureFBO);

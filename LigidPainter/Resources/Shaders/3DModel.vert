@@ -1,7 +1,7 @@
 #version 330 core
 layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aNormal;
-layout(location = 2) in vec2 aTexCoords;
+layout(location = 1) in vec2 aTexCoords;
+layout(location = 2) in vec3 aNormal;
 layout(location = 3) in vec3 aTangent;
 layout(location = 4) in vec3 aBitangent;
 
@@ -19,25 +19,37 @@ out vec3 Bitangent;
 out vec4 projectedPos;
 
 //2D
-out float renderTxtr;
 uniform int renderTexture;
+uniform mat4 oneZeroProjection;
 uniform mat4 orthoProjection;
 
-void main() {
-    renderTxtr = renderTexture;
+uniform int render2D;
+uniform int useTransformUniforms;
+uniform vec2 scale;
+uniform vec3 pos; 
 
+void main() {
     Tangent = aTangent;
     Bitangent = aBitangent;
     TexCoords = aTexCoords;
     Normal = aNormal;
     Pos = aPos;
 
-    vec4 tPos = modelMatrix * vec4(Pos,1.);
-    projectedPos = projection * view * vec4(tPos.xyz, 0.5); 
+    if(useTransformUniforms == 0){
+        vec4 tPos = modelMatrix * vec4(Pos,1.);
+        projectedPos = projection * view * vec4(tPos.xyz, 0.5); 
+    }
+    else{
+        vec3 scaledPos = aPos * vec3(scale,1);
+        projectedPos = orthoProjection * vec4(scaledPos + pos, 1.0);
+    }
     
     if(renderTexture == 0)
         gl_Position = projectedPos;
+    else if(render2D == 1){
+        gl_Position = projectedPos;
+    }
     else
-        gl_Position = orthoProjection * vec4(TexCoords.xy,1,1);
+        gl_Position = oneZeroProjection * vec4(TexCoords.xy,1,1);
 
 }

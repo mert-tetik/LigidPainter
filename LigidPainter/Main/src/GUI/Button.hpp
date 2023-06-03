@@ -195,6 +195,8 @@ public:
     //Values are percentage of the monitor size
     glm::vec2 scale;  //Example : w : 20, h : 30 means cover %20 of the window in x axis & cover 30% of the window in y axis
     glm::vec3 pos; //Same here
+    glm::vec3 resultPos;
+    glm::vec2 resultScale;
 
     bool doMouseTracking;
     
@@ -306,12 +308,12 @@ public:
         this->doMouseTracking = doMouseTracking;
 
         // pos value % of the video scale
-        glm::vec3 resultPos = glm::vec3( 
+        resultPos = glm::vec3( 
                               util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
                               ,pos.z); //Use the original depth value
 
         // scale value % of the video scale
-        glm::vec2 resultScale = util.getPercent(videoScale,scale);
+        resultScale = util.getPercent(videoScale,scale);
         
         // scale value % of the video scale
         float resultRadius = util.getPercent(videoScale.x,radius);

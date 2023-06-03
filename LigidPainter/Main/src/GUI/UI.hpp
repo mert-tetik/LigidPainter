@@ -640,8 +640,37 @@ public:
         nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         paintingModesPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
-        if(!painter.threeDimensionalMode)
+        if(!painter.threeDimensionalMode){
             twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
+            
+            //Render the painting texture
+            shaders.tdModelShader.use();
+            shaders.tdModelShader.setInt("render2D",1);
+            shaders.tdModelShader.setInt("useTransformUniforms",1);
+            shaders.tdModelShader.setInt("renderTexture",1);
+            shaders.tdModelShader.setMat4("orthoProjection",projection);
+
+            shaders.tdModelShader.setInt("returnSingleTxtr",1);
+
+            //Bind the selected texture as albedo
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D,library.textures[painter.selectedTextureIndex].ID);
+
+            shaders.tdModelShader.setVec2("scale",glm::vec2(min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y)));
+            shaders.tdModelShader.setVec3("pos",twoDPaintingPanel.sections[0].elements[0].button.resultPos);
+            glDrawArrays(GL_TRIANGLES,0,6);
+
+            painter.windowProjection = projection;
+            painter.scale2D = glm::vec2(min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y));
+            painter.pos2D = twoDPaintingPanel.sections[0].elements[0].button.resultPos;
+
+            shaders.tdModelShader.setInt("returnSingleTxtr",0);
+            shaders.tdModelShader.setInt("renderTexture",0);
+            shaders.tdModelShader.setInt("render2D",0);
+            shaders.tdModelShader.setInt("useTransformUniforms",0);
+            shaders.buttonShader.use();
+        }
+
 
         Util util;
 
@@ -705,7 +734,6 @@ public:
         selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
         selectedTextureDisplayer.sections[0].elements[0].button.texture = library.textures[painter.selectedTextureIndex];
         twoDPaintingPanel.sections[0].elements[0].scale.y = twoDPaintingPanel.scale.y;
-        twoDPaintingPanel.sections[0].elements[0].button.texture = Texture(painter.paintingTexture);
         
         //Render the nodes
         for (size_t i = 0; i < nodeScene.size(); i++)

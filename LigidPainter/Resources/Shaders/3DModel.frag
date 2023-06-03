@@ -24,7 +24,7 @@ uniform sampler2D paintingTexture;
 
 uniform int brushModeState; //0 : paint, 1 : soften, 2 : smear
 
-in float renderTxtr;
+uniform int returnSingleTxtr;
 
 out vec4 fragColor;
 
@@ -87,12 +87,8 @@ float hash(float x)
 {
     return fract(sin(x) * 43758.5453);
 }
-vec3 getPaintedTexture(sampler2D txtr){
-    vec3 screenPos = 0.5 * (vec3(1,1,1) + projectedPos.xyz / projectedPos.w);
-   
-    float intensity = 0.0;
-    
-    intensity = texture(paintingTexture, screenPos.xy).a * paintingOpacity;
+vec3 getPaintedTexture(sampler2D txtr,vec4 brushTxtr){
+    float intensity = brushTxtr.a;
 
     return mix(texture(txtr,TexCoords).rgb,paintingColor,intensity);
 }
@@ -105,12 +101,9 @@ float gaussian(vec2 i,int range) {
 const int LOD = 1,         // gaussian done on MIPmap at scale LOD
           sLOD = 1 << LOD; // tile size = 2^LOD
 
-vec3 getSoftenedTexture(sampler2D txtr){
+vec3 getSoftenedTexture(sampler2D txtr,vec4 brushTxtr){ //Intensity from the painted texture
     const float width = 1024;
     int range = 20;
-
-    vec3 screenPos = 0.5 * (vec3(1,1,1) + projectedPos.xyz / projectedPos.w);
-    float intensity = texture(paintingTexture, screenPos.xy).a * paintingOpacity;
 
     vec4 O = vec4(0); 
     int s = range/sLOD;
@@ -120,16 +113,13 @@ vec3 getSoftenedTexture(sampler2D txtr){
         O += gaussian(d,range) * textureLod( txtr, TexCoords + vec2(1./width) * d , float(LOD) );
     }
     
-    return mix(texture(txtr,TexCoords).rgb,O.rgb/O.a,intensity);
+    return mix(texture(txtr,TexCoords).rgb,O.rgb/O.a,brushTxtr.a);
 }
 
-vec3 getSmearedTexture(sampler2D txtr){
-    vec3 screenPos = 0.5 * (vec3(1,1,1) + projectedPos.xyz / projectedPos.w);
-   
-    float intensity = 0.0;
+vec3 getSmearedTexture(sampler2D txtr,vec4 brushTxtr){
     
-    intensity = texture(paintingTexture, screenPos.xy).a * paintingOpacity;
-    vec2 Direction =  texture(paintingTexture, screenPos.xy).rg / 10.;
+    float intensity = brushTxtr.a;
+    vec2 Direction = brushTxtr.rg / 10.;
     //Direction = clamp(Direction,vec2(-1,-1),vec2(1,1));
 
     // Apply blurring
@@ -160,18 +150,22 @@ vec3 getSmearedTexture(sampler2D txtr){
     //return texture(txtr,vec2(TexCoords.x,TexCoords.y + 0.1*intensity)).rgb;
 }
 
-vec3 getBrushedTexture(sampler2D txtr){
+vec3 getBrushedTexture(sampler2D txtr,vec4 brushTxtr){
     if(brushModeState == 0)
-        return getPaintedTexture(txtr);
+        return getPaintedTexture(txtr,brushTxtr);
     if(brushModeState == 1)
-        return getSoftenedTexture(txtr);
+        return getSoftenedTexture(txtr,brushTxtr);
     if(brushModeState == 2)
-        return getSmearedTexture(txtr);
+        return getSmearedTexture(txtr,brushTxtr);
 }
 
 vec3 getPBR(){
-    vec3 albedo = getBrushedTexture(albedoTxtr).rgb;
-    if(renderTxtr == 1)
+    vec3 screenPos = 0.5 * (vec3(1,1,1) + projectedPos.xyz / projectedPos.w);
+    vec4 brushTxtr = texture(paintingTexture, screenPos.xy);
+    brushTxtr.a *= paintingOpacity; 
+
+    vec3 albedo = getBrushedTexture(albedoTxtr,brushTxtr).rgb;
+    if(returnSingleTxtr == 1)
         return albedo;
     //vec3 normal = getTexture(normalMapTxtr).rgb;
     vec3 normal = vec3(0.5,0.5,1);
