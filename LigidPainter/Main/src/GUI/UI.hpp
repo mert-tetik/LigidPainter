@@ -639,7 +639,6 @@ public:
         libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
-        paintingModesPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         if(!painter.threeDimensionalMode){
             twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
             
@@ -670,6 +669,7 @@ public:
             shaders.tdModelShader.setInt("useTransformUniforms",0);
             shaders.buttonShader.use();
         }
+        paintingModesPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
 
 
         Util util;
