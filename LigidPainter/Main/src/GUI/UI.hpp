@@ -213,6 +213,7 @@ struct Dropper{
 
 #include "GUI/Panel.hpp"
 #include "GUI/Dialogs/GreetingDialog.hpp"
+#include "GUI/Dialogs/NewTextureDialog.hpp"
 #include "GUI/Dialogs/NewProjectDialog.hpp"
 #include "GUI/Dialogs/ColorPickerDialog.hpp"
 #include "GUI/Dialogs/MaterialEditorDialog.hpp"
@@ -261,6 +262,7 @@ public:
     //ColorPickerDialog colorPickerDialog;
     MaterialEditorDialog materialEditorDialog;
     TextureSelectionDialog textureSelectionDialog;
+    NewTextureDialog newTextureDialog;
 
     int frameCounter = 0; //Reset every 1000 frame
 
@@ -590,6 +592,7 @@ public:
         
 
         greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
+        newTextureDialog = NewTextureDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
         newProjectDialog = NewProjectDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
         //colorPickerDialog = ColorPickerDialog(context,videoScale,colorPalette,shaders.buttonShader,shaders.colorPicker,appTextures);
         materialEditorDialog = MaterialEditorDialog(shaders.buttonShader,shaders.tdModelShader,colorPalette,appTextures,sphereModel);
@@ -752,6 +755,10 @@ public:
         //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
         //newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
         //colorPickerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
+        
+        if(newTextureDialog.active)
+            newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes);
+        
         if(materialEditorDialog.active && library.materials.size()){
             if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
                 materialEditorDialog.deactivate(textureSelectionDialog);
@@ -963,6 +970,9 @@ private:
 
         //Add button from the barButtons in the library displayer panel clicked 
         if(libraryPanelDisplayer.barButtons[0].clickedMixVal == 1.f){
+            if(selectedLibraryElementIndex == 0){//Textures
+                newTextureDialog.active = true;
+            }
             if(selectedLibraryElementIndex == 1){ //Materials
                 //Add new material to the library & not the panel
                 //Will be displayed right after library panel is updated which happens in every 100 frame

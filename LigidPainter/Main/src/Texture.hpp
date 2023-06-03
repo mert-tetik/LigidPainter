@@ -54,6 +54,7 @@ private:
 public:
     unsigned int ID = 0; 
     
+    //TODO Remove these
     int width;
     int height;
     int channels;
