@@ -147,6 +147,13 @@ private:
         };
         glfwSetCursorPosCallback(context.window, cursorPosFunc);
         
+        //Scroll callback function casting
+        auto scrollFunc = [](GLFWwindow* w, double x, double y)
+        {
+            static_cast<Renderer*>(glfwGetWindowUserPointer(w))->scrollCallback(w,x,y);
+        };
+        glfwSetScrollCallback(context.window, scrollFunc);
+        
         //Framebuffer size callback function casting
         auto framebufferSizeFunc = [](GLFWwindow* w, int x, int y)
         {
@@ -271,7 +278,7 @@ public:
         updateProjectionMatrix();
 
         //Loads the default model (will be removed)
-        model.loadModel("./LigidPainter/Resources/3D Models/model.fbx",true);
+        model.loadModel("./LigidPainter/Resources/3D Models/plane.fbx",true);
         sphereModel.loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
         
 
@@ -411,6 +418,7 @@ public:
 
         if(painter.updateTheDepthTexture){
             painter.updateDepthTexture(model);
+            painter.updateTheDepthTexture = false;
         }
         
         shaders.tdModelShader.use();
@@ -633,6 +641,26 @@ private:
     }
 
     glm::vec2 lastMousePos;//This will be used as "last frame's cursor pos" for the cursor offset
+    void scrollCallback(GLFWwindow* window, double xoffset, double yoffset){
+        
+        float originCameraDistance = glm::distance(scene.camera.originPos,scene.camera.cameraPos)/10;
+	    
+        if (yoffset > 0 && scene.camera.radius > 1) {
+	    	scene.camera.radius -= originCameraDistance;
+	    }
+	    else if (yoffset < 0) {
+	    	scene.camera.radius += originCameraDistance;
+	    }
+	    //Zoom in-out
+	    scene.camera.cameraPos.x = cos(glm::radians(scene.camera.yaw)) * cos(glm::radians(scene.camera.pitch)) * scene.camera.radius + scene.camera.originPos.x;
+	    scene.camera.cameraPos.y = sin(glm::radians(scene.camera.pitch)) * -scene.camera.radius + scene.camera.originPos.y;
+	    scene.camera.cameraPos.z = sin(glm::radians(scene.camera.yaw)) * cos(glm::radians(scene.camera.pitch)) * scene.camera.radius + scene.camera.originPos.z;
+
+        updateViewMatrix();
+
+        painter.updateTheDepthTexture = true;
+    }
+    
     void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
     {
         //Take the cursor position data to a global variable
