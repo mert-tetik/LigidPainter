@@ -21,6 +21,7 @@ uniform sampler2D heightMapTxtr;
 uniform sampler2D ambientOcclusionTxtr;
 
 uniform sampler2D paintingTexture;
+uniform sampler2D depthTexture;
 
 uniform int brushModeState; //0 : paint, 1 : soften, 2 : smear
 
@@ -159,10 +160,28 @@ vec3 getBrushedTexture(sampler2D txtr,vec4 brushTxtr){
         return getSmearedTexture(txtr,brushTxtr);
 }
 
+
+float far = 100.0;
+float near = 0.1;
+float linearizeDepth(float depth){
+   return (2.0 * near * far) / (far + near -(depth * 2.0 - 1.0) *(far-near));
+}
+
+bool isPainted(vec3 uv) { //Use mirrored depth texture if isMirrored is true
+   float drawZ;
+    
+    drawZ = texture(depthTexture, uv.xy).b;
+
+    return abs(drawZ - linearizeDepth(uv.z)/far) < 0.005;
+}
+
 vec3 getPBR(){
     vec3 screenPos = 0.5 * (vec3(1,1,1) + projectedPos.xyz / projectedPos.w);
     vec4 brushTxtr = texture(paintingTexture, screenPos.xy);
     brushTxtr.a *= paintingOpacity; 
+
+    if(!isPainted(screenPos))
+        brushTxtr = vec4(0);
 
     vec3 albedo = getBrushedTexture(albedoTxtr,brushTxtr).rgb;
     if(returnSingleTxtr == 1)

@@ -2,6 +2,7 @@
 
 out vec4 color;
 
+//!Update the same function from 3DModel.frag
 float far = 100.0;
 float near = 0.1;
 float linearizeDepth(float depth){

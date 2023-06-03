@@ -31,10 +31,10 @@ using namespace std;
 struct Vertex {
     // position
     glm::vec3 Position;
-    // normal
-    glm::vec3 Normal;
     // texCoords
     glm::vec2 TexCoords;
+    // normal
+    glm::vec3 Normal;
     // tangent
     glm::vec3 Tangent;
     // bitangent
@@ -133,8 +133,8 @@ private:
         glEnableVertexAttribArray(1);	
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
         // vertex normals
-        glEnableVertexAttribArray(1);	
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(5 * sizeof(float)));
+        glEnableVertexAttribArray(2);	
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(5 * sizeof(float)));
         // vertex tangent
         glEnableVertexAttribArray(3);
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(8 * sizeof(float)));

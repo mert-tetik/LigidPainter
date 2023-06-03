@@ -271,7 +271,7 @@ public:
         updateProjectionMatrix();
 
         //Loads the default model (will be removed)
-        model.loadModel("./LigidPainter/Resources/3D Models/plane.fbx",true);
+        model.loadModel("./LigidPainter/Resources/3D Models/model.fbx",true);
         sphereModel.loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
         
 
@@ -377,7 +377,7 @@ public:
         nodeScene.push_back(meshOutputNode);
 
         //Init the painter
-        painter.initPainter(videoScale,shaders.twoDPainting,shaders.buttonShader,shaders.tdModelShader);
+        painter.initPainter(videoScale,shaders.twoDPainting,shaders.buttonShader,shaders.tdModelShader,shaders.depth3D);
     }
 
     void render(){
@@ -405,6 +405,14 @@ public:
         scene.skybox.draw();
 
         //Render 3D Model
+        shaders.depth3D.use();
+        shaders.depth3D.setMat4("view",scene.viewMatrix);
+        shaders.depth3D.setMat4("projection",scene.projectionMatrix);
+
+        if(painter.updateTheDepthTexture){
+            painter.updateDepthTexture(model);
+        }
+        
         shaders.tdModelShader.use();
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP,scene.skybox.ID);
@@ -422,6 +430,7 @@ public:
         shaders.tdModelShader.setInt("heightMapTxtr",6);
         shaders.tdModelShader.setInt("ambientOcclusionTxtr",7);
         shaders.tdModelShader.setInt("paintingTexture",8);
+        shaders.tdModelShader.setInt("depthTexture",9);
         shaders.tdModelShader.setVec3("viewPos",scene.camera.cameraPos);
         shaders.tdModelShader.setMat4("view",scene.viewMatrix);
         shaders.tdModelShader.setMat4("projection",scene.projectionMatrix);
@@ -430,6 +439,8 @@ public:
 
         glActiveTexture(GL_TEXTURE8);
         glBindTexture(GL_TEXTURE_2D,painter.paintingTexture);
+        glActiveTexture(GL_TEXTURE9);
+        glBindTexture(GL_TEXTURE_2D,painter.depthTexture);
 
         std::vector<Material> nodeMaterials = getTheMaterialsConnectedToTheMeshNode(nodeScene,library);
 
@@ -645,6 +656,8 @@ private:
 
     		scene.camera.cameraPos.y -= cos(glm::radians(scene.camera.pitch)) * mouse.mouseOffset.y * sensitivity * (sensitivity / 2);
     		scene.camera.originPos.y -= cos(glm::radians(scene.camera.pitch)) * mouse.mouseOffset.y * sensitivity * (sensitivity / 2);
+
+            painter.updateTheDepthTexture = true;
     	}
     	else if ((glfwGetMouseButton(context.window, 1) == GLFW_PRESS)) { //L Click
     	    scene.camera.yaw += mouse.mouseOffset.x * sensitivity;
@@ -662,6 +675,8 @@ private:
     		scene.camera.cameraPos.y = sin(glm::radians(scene.camera.pitch)) * - scene.camera.radius + scene.camera.originPos.y;
     		scene.camera.cameraPos.x = cos(glm::radians(scene.camera.yaw)) * cos(glm::radians(scene.camera.pitch)) * scene.camera.radius + scene.camera.originPos.x;
     		scene.camera.cameraPos.z = sin(glm::radians(scene.camera.yaw)) * cos(glm::radians(scene.camera.pitch)) * scene.camera.radius + scene.camera.originPos.z;
+         
+            painter.updateTheDepthTexture = true;
     	}
         //Update the view matrix so we can see the changes
         updateViewMatrix();
