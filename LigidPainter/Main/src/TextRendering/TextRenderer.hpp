@@ -168,8 +168,7 @@ public:
 		if(active){
 			//Set the transform values
         	shader.setFloat("radius",     0    );
-        	shader.setInt("outline" ,     false      ); 
-        	shader.setInt("outlineExtra" ,     false     ); 
+        	shader.setInt("outlineState" ,     0     ); 
 
 			if(activeChar == text.size()){ //Render at the end of the text
 				shader.setVec2("scale",glm::vec2(5 * scale,35 * scale));

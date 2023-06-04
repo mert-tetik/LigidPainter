@@ -487,12 +487,12 @@ public:
                                 true,
                                 true,
                                 1.f,
-                                3,
+                                2,
                                 {
                                     Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Add"        , Texture(), 0.f,false),
                                     Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Del"        , Texture(), 0.f,false)
                                 },
-                                20.f
+                                14.f
                             );
         nodeEditorDisplayer  = Panel(
                                 shaders.buttonShader,
@@ -612,6 +612,9 @@ public:
             paintingPanel.sections[0].elements[i].button.animationStyle = 2;
         }
         
+        libraryPanelDisplayer.isLibraryDisplayer = true;
+    
+        frameCounter++;
     }    
 
     void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
@@ -631,8 +634,6 @@ public:
         //Use the related shader
         shaders.buttonShader.use();
         
-        //Send the monitor resolution to the button shader
-        shaders.buttonShader.setVec2("videoScale",videoScale);  
         //Projection is changing in the renderer.render()
         //userInterface.projection = glm::mat4(...)
         shaders.buttonShader.setMat4("projection",projection); 
@@ -951,8 +952,9 @@ private:
 
 
         //!LIBRARY PANEL DISPLAYER
-        //Update the library displayer panel every 100 frame
-        if(frameCounter % 100 == 0){
+        //Update the library displayer panel every frame
+        //if(frameCounter % 100 == 0){
+        if(true){
             libraryPanelDisplayer.sections.clear(); //Remove all the elements of the library panel displayer
             
             //Create a new section

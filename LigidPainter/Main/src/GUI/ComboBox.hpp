@@ -64,14 +64,13 @@ private:
         
         shader.setFloat("colorMixVal"  ,     (aClickedMixVal + aHoverMixVal)/2.f   );
 
-        //Set the resolution of the button (used by fragment shader)
-        shader.setFloat("width" ,     resultScale.x   );
-        shader.setFloat("height",     resultScale.y   );
-
         //Properties
         shader.setFloat("radius",     resultRadius    );
-        shader.setInt("outline" ,     outline      ); 
-        shader.setInt("outlineExtra" ,     false     ); 
+        
+        if(outline)
+            shader.setInt("outlineState" ,     1      ); 
+        else
+            shader.setInt("outlineState" ,    0      ); 
 
         //Outline extra color (affected by the colorMixVal)
         shader.setVec3("outlineColor" ,     outlineColor     );  

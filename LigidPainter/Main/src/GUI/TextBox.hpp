@@ -66,14 +66,11 @@ private:
         else //If clicked change the color of the button
             shader.setFloat("colorMixVal"  ,     (clickedMixVal)   );
 
-        //Set the resolution of the button (used by fragment shader)
-        shader.setFloat("width" ,     resultScale.x   );
-        shader.setFloat("height",     resultScale.y   );
 
         //Properties
         shader.setFloat("radius",     resultRadius    );
-        shader.setInt("outline" ,     true      ); 
-        shader.setInt("outlineExtra" ,     false     ); 
+        
+        shader.setInt("outlineState" ,     1      ); 
 
         //Outline extra color (affected by the colorMixVal)
         shader.setVec3("outlineColor" ,     outlineColor     );  

@@ -68,15 +68,16 @@ private:
         else //If clicked change the color of the button
             shader.setFloat("colorMixVal"  ,     (clickedMixVal)   );
 
-        //Set the resolution of the button (used by fragment shader)
-        shader.setFloat("width" ,     resultScale.x   );
-        shader.setFloat("height",     resultScale.y   );
-
         //Properties
         shader.setFloat("radius",     resultRadius    );
-        shader.setInt("outline" ,     outline      ); 
-        shader.setInt("outlineExtra" ,     outlineExtra     ); 
-
+        
+        if(outline)
+            shader.setInt("outlineState" ,     1      ); 
+        else if(outlineExtra)
+            shader.setInt("outlineState" ,     2      ); 
+        else
+            shader.setInt("outlineState" ,    0      ); 
+        
         //Outline extra color (affected by the colorMixVal)
         shader.setVec3("outlineColor" ,     outlineColor     );  
         shader.setVec3("outlineColor2" ,     outlineColor2     );   
@@ -111,12 +112,15 @@ private:
         bool renderTheText = true;
         if(texture.ID != 0){
             //Scale of the texture
-            glm::vec2 resultScaleTexture = glm::vec2(std::min(resultScale.x/buttonImageScaleDivider,resultScale.y/buttonImageScaleDivider));
+            glm::vec2 resultScaleTexture = glm::vec2(std::min(resultScale.x/buttonImageScaleDivider,resultScale.y/buttonImageScaleDivider)) / glm::vec2(textureSizeScale);
             textureRadius = resultScaleTexture.x;
 
             //Position of the texture
             glm::vec3 resultPosTexture = resultPos;
-
+            
+            if(textureStickToTop)
+                resultPosTexture.y = resultPosTexture.y - resultScale.y + resultScaleTexture.y;
+            
             if(text == ""){
                 //If there is no text get the texture into the middle
                 resultPosTexture.x = textPosData.x; 
@@ -207,6 +211,8 @@ public:
 
     int buttonImageScaleDivider = 1.5f;
 
+    float textureSizeScale = 1.f;
+    bool textureStickToTop = false;
     
     Button(){}
 

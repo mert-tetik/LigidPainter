@@ -196,11 +196,8 @@ private:
         shader.setVec4("color2"  ,     color     );
         shader.setFloat("colorMixVal"  ,   0.f );
         
-        shader.setFloat("width",     resultScale.x  );
-        shader.setFloat("height",     resultScale.y   );
-        
         shader.setFloat("radius",     10.f   );
-        shader.setInt("outline",     false   );
+        shader.setInt("outlineState",     2   );
 
         shader.setInt("outlineExtra" ,    true     ); 
         shader.setVec3("outlineColor" ,    color2     ); 
@@ -304,12 +301,25 @@ private:
                     else
                         prepDrawBtnHorizontally(sections[sI].elements[i],sections[sI].elements[max(i-1,0)],elementPos,btnCounter);
 
+                    if(isLibraryDisplayer){
+                        sections[sI].elements[i].button.textureStickToTop = true;
+                        sections[sI].elements[i].button.textureSizeScale = 1.5f;
+                    }
                     //Draw the button
                     if(sections[sI].elements[i].pos.y - sections[sI].elements[i].scale.y < (pos.y + scale.y) && sections[sI].elements[i].pos.y + sections[sI].elements[i].scale.y > (pos.y - scale.y)) //Don't render the unshown elements
                         sections[sI].elements[i].render(videoScale,mouse,timer,textRenderer,doMouseTracking);
+
+                    if(isLibraryDisplayer){
+                        sections[sI].elements[i].button.textureStickToTop = true;
+                        sections[sI].elements[i].button.textureSizeScale = 1.5f;
+                        glm::vec4 textColor = glm::vec4(1) - sections[sI].elements[i].button.color;
+                        textColor.a = 1.;
+                        shader.setVec4("color"  ,    textColor      ); //Default button color
+
+                        textRenderer.renderText(shader,sections[sI].elements[i].button.text,sections[sI].elements[i].button.resultPos.x,sections[sI].elements[i].button.resultPos.y + sections[sI].elements[i].button.resultScale.y/1.4f,sections[sI].elements[i].button.resultPos.z+0.02,sections[sI].elements[i].button.resultPos.x + sections[sI].elements[i].button.resultScale.x,false,0.25f,sections[sI].elements[i].button.resultPos.x - sections[sI].elements[i].button.resultScale.x);
+                    }
                         
                     btnCounter++; //Indexing buttons to position them
-
                 }
             }
         }
@@ -381,6 +391,8 @@ public:
     float maxScaleVal;    
 
     bool doMouseTracking;
+
+    bool isLibraryDisplayer = false;
 
     Button sliderButton;
 

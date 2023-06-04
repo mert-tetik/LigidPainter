@@ -6,12 +6,14 @@ layout(location = 1) in vec2 aTexCoords;
 
 out vec3 fragPos;
 out vec2 texCoords;
+out vec2 uniScale;
 
 uniform mat4 projection;
 uniform vec3 pos;
 uniform vec2 scale;
 
 void main() {
+    uniScale = scale;
     texCoords = aTexCoords;
     fragPos = aPos;
 

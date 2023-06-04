@@ -6,10 +6,10 @@
 out vec4 fragColor;
 
 in vec2 texCoords;
+in vec2 uniScale;
 //in vec3 fragPos;
 
-uniform int outline;
-uniform int outlineExtra;
+uniform int outlineState;
 
 uniform vec4 color;
 uniform vec4 color2;
@@ -20,11 +20,6 @@ uniform float colorMixVal;
 
 uniform float thickness;
 uniform float radius;
-
-uniform float width;
-uniform float height;
-
-uniform vec2 videoScale;
 
 uniform int renderText;
 uniform int renderTexture;
@@ -45,10 +40,10 @@ float roundUp(vec2 uv,bool doOutline) //! https://www.shadertoy.com/view/ldfSDj
 
     //Radius of the corners
     float iRadius = radius;
-    vec2 halfRes = vec2(0.5*vec2(width,height));
+    vec2 halfRes = vec2(0.5*uniScale);
 
     //Compute box
-    float b = udRoundBox( uv.xy*vec2(width,height) * divider - halfRes * divider, halfRes, iRadius );
+    float b = udRoundBox( uv.xy*uniScale * divider - halfRes * divider, halfRes, iRadius );
    
     //Fade of the outline (greater the value is smoother outline becomes)
     float fade = 1.115;
@@ -82,7 +77,7 @@ void main(){
         //Create round corners
         //Returns only the outline if outline uniform is set to 1
         bool doOutline = false;
-        if(outline == 1)
+        if(outlineState == 1)
             doOutline = true;
 
         float roundVal = roundUp(texCoords,doOutline); 
@@ -90,7 +85,7 @@ void main(){
             fragColor.a = roundVal; //Give the outline or curves to the corners
     }
     
-    if(outlineExtra == 1){
+    if(outlineState == 2){
         float outlineVal = roundUp(texCoords,true); 
         vec3 outlineClr = mix(outlineColor,outlineColor2,colorMixVal);
         fragColor.rgb = mix(fragColor.rgb,outlineClr,outlineVal);
