@@ -101,6 +101,7 @@ struct AppTextures{ //Textures those will be used in UI of the app
     Texture twoDIcon;
     Texture exportIcon;
     Texture areaPaintingIcon;
+    Texture gearIcon;
     
     //--Textures
     Texture greetingDialogImage;  
@@ -259,6 +260,7 @@ public:
         appTextures.twoDIcon.load("./LigidPainter/Resources/Icons/2D.png");
         appTextures.exportIcon.load("./LigidPainter/Resources/Icons/Export.png");
         appTextures.areaPaintingIcon.load("./LigidPainter/Resources/Icons/Area.png");
+        appTextures.gearIcon.load("./LigidPainter/Resources/Icons/Gear.png");
         appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
 
         //Init skyboxes

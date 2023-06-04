@@ -330,6 +330,7 @@ public:
                                             Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"2D Painting"         , appTextures.twoDIcon, 0.f,false)),
                                             Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Export"              , appTextures.exportIcon, 0.f,false)),
                                             Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Displayer"           , appTextures.environmentIcon, 0.f,false)),
+                                            Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Settings"           , appTextures.gearIcon, 0.f,false))
                                         }
                                     )
                                 },
