@@ -103,7 +103,7 @@
         //Clicked to the create button
         if(panel.sections[0].elements[2].button.hover && mouse.LClick){
             Texture txtr;
-            //txtr.text = panel.sections[0].elements[1].textBox.text;
+            txtr.title = panel.sections[0].elements[1].textBox.text;
             //Create the texture
             std::vector<GLubyte> colorData(textureRes * textureRes * 4, 0); // RGBA format
             for (int i = 0; i < textureRes * textureRes; ++i) {

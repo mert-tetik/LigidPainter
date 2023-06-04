@@ -50,13 +50,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 class Texture
 {
 private:
-    /* data */
+    #if defined(_WIN32) || defined(_WIN64)
+		char folderDistinguisher = '\\';
+	#else
+		char folderDistinguisher = '/'; 
+	#endif
 public:
     unsigned int ID = 0; 
     
     std::string path = "";
 
-    //For program textures
+    std::string title = "";
+
     std::string tmpPath;
     bool isTexture = true; //Otherwise is a folder
 
@@ -67,6 +72,9 @@ public:
     }
 
     void load(const char* path){
+        Util util;
+        this->title = util.getLastWordBySeparatingWithChar(path,folderDistinguisher);
+        this->title = util.removeExtension(this->title);
         this->path = path;
 
         glActiveTexture(GL_TEXTURE0);
