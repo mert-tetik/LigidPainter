@@ -711,7 +711,6 @@ public:
                     else if(renamingIndices.x == 2)
                         library.brushes[renamingIndices.y].title = lastTitleBeforeRenaming;
                 }
-
             }
 
             renamingTextBoxClosed = true;
@@ -923,6 +922,14 @@ private:
                     renamingIndices.x = 0;
                     renamingIndices.y = contextMenus[i].selectedElement;
                 }
+                if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){//Clicked to duplicate button
+                    Texture duplicatedTexture;
+                    duplicatedTexture = library.textures[contextMenus[i].selectedElement];
+
+                    duplicatedTexture.ID = library.textures[contextMenus[i].selectedElement].duplicateTexture();
+
+                    library.textures.push_back(duplicatedTexture);
+                }
             }
             
             if(i == 1 && selectedLibraryElementIndex == 1 && contextMenus[i].active){ //If material context menu is active
@@ -950,6 +957,16 @@ private:
                     renamingIndices.x = 1;
                     renamingIndices.y = contextMenus[i].selectedElement;
                 }
+                if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){//Clicked to duplicate button
+                    Material duplicatedMaterial;
+                    duplicatedMaterial = library.materials[contextMenus[i].selectedElement];
+
+                    duplicatedMaterial.ID = materialIDCounter;
+
+                    library.materials.push_back(duplicatedMaterial);
+                    
+                    materialIDCounter++;
+                }
             }
 
             if(i == 2 && selectedLibraryElementIndex == 2 && contextMenus[i].active){ //If brush context menu is active
@@ -970,6 +987,9 @@ private:
                     renamingTextBox.activeChar2 = renamingTextBox.activeChar;
                     renamingIndices.x = 2;
                     renamingIndices.y = contextMenus[i].selectedElement;
+                }
+                if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to duplicate button
+                    library.brushes.push_back(library.brushes[contextMenus[i].selectedElement]);
                 }
             }
 

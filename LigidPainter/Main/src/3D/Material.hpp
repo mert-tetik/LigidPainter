@@ -41,7 +41,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 class MaterialModifier;
 
-class Material
+class Material //TODO DON'T USE UNIQUE IDS. CALCULATE ID VALUES OF THE TEXTURE WHEN READING THE PROJECT FOLDER
 {
 private:
     void initTexture(Texture &txtr,int textureRes){
