@@ -930,6 +930,9 @@ private:
 
                     library.textures.push_back(duplicatedTexture);
                 }
+                if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){//Clicked to delete button
+                    library.textures.erase(library.textures.begin() + contextMenus[i].selectedElement);
+                }
             }
             
             if(i == 1 && selectedLibraryElementIndex == 1 && contextMenus[i].active){ //If material context menu is active
@@ -967,6 +970,9 @@ private:
                     
                     materialIDCounter++;
                 }
+                if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){//Clicked to delete button
+                    library.materials.erase(library.materials.begin() + contextMenus[i].selectedElement);
+                }
             }
 
             if(i == 2 && selectedLibraryElementIndex == 2 && contextMenus[i].active){ //If brush context menu is active
@@ -988,8 +994,11 @@ private:
                     renamingIndices.x = 2;
                     renamingIndices.y = contextMenus[i].selectedElement;
                 }
-                if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to duplicate button
+                if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){//Clicked to duplicate button
                     library.brushes.push_back(library.brushes[contextMenus[i].selectedElement]);
+                }
+                if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){//Clicked to delete button
+                    library.brushes.erase(library.brushes.begin() + contextMenus[i].selectedElement);
                 }
             }
 
