@@ -611,7 +611,7 @@ public:
     }    
 
     void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
-                std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter){
+                std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter,bool &VSync){
         
         glDepthFunc(GL_LEQUAL);
 
@@ -633,8 +633,6 @@ public:
         //userInterface.projection = glm::mat4(...)
         shaders.buttonShader.setMat4("projection",projection); 
 
-        std::cout << "textureRes : " << textureRes << std::endl;
-        
         float screenGap = videoScale.x - context.windowScale.x; //Use that value to keep panels on the right side
         float screenGapPerc = screenGap / videoScale.x * 100.f; 
 
@@ -764,7 +762,7 @@ public:
             newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes);
         
         if(settingsDialog.active)
-            settingsDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes);
+            settingsDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes,VSync);
         
         if(materialEditorDialog.active && library.materials.size()){
             if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)

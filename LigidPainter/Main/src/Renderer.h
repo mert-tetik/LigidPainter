@@ -234,6 +234,8 @@ public:
 
     Painter painter;
 
+    bool VSync = false; //Set glfwSwapInterval(1) if true
+
     Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
         //Hold the videoscale value inside of the scene structure
         scene.videoScale = videoScale;
@@ -398,6 +400,12 @@ public:
         
         updateViewport();
 
+        //VSYNC
+        if(VSync)
+            glfwSwapInterval(1);
+        else
+            glfwSwapInterval(0);
+
         glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
@@ -487,7 +495,7 @@ public:
        
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
-        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project,painter);//Render the UI
+        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project,painter,VSync);//Render the UI
 
 
 

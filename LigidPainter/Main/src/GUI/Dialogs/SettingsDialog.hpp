@@ -85,7 +85,7 @@
         },glm::vec2(9.f),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f);
     }
     
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,glm::vec2 videoScale,int &textureRes){
+    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,glm::vec2 videoScale,int &textureRes,bool &VSync){
         
         //Set the combo box selected index as the textureRes
         int txtrRes = 256;
@@ -97,6 +97,9 @@
             txtrRes*=2;
         }
         
+        
+        VSync = panel.sections[0].elements[1].checkBox.clickState1;
+
         
         panel.render(videoScale,mouse,timer,textRenderer,true);
 
