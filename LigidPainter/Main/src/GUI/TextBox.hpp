@@ -78,7 +78,7 @@ private:
 
 
         if(animationStyle == 0) //Increase the thicness of the button if hover
-            shader.setFloat("thickness" ,    resultOutlineThickness + clickedMixVal*4.f ); 
+            shader.setFloat("thickness" ,    resultOutlineThickness + clickedMixVal*2.f ); 
         else  //Set the thickness value of the button
             shader.setFloat("thickness" ,    resultOutlineThickness); 
         
@@ -132,6 +132,9 @@ public:
     int buttonImageScaleDivider = 1.5f;
 
     bool openSelectFolderDialog;
+
+    float thickness = 2.f;
+    float radius = 0.35f;
 
     TextBox(){}
 
@@ -199,13 +202,13 @@ public:
         glm::vec2 resultScale = util.getPercent(videoScale,scale);
 
         // scale value % of the video scale
-        float resultRadius = util.getPercent(videoScale.x,0.35f); //0.25F = radius val
+        float resultRadius = util.getPercent(videoScale.x,radius);
         
         // Real scale value of the text
         float resultScaleText = videoScale.x/1920/2*textScale;
         
         // Real outline value of the text
-        float resultOutlineThickness = videoScale.x/1920/2 * (2.f);//2.f = outline thickness
+        float resultOutlineThickness = videoScale.x/1920/2 * (thickness);
 
         //Check if mouse on top of the button
         if(doMouseTracking)

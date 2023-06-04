@@ -273,6 +273,7 @@ public:
     TextBox renamingTextBox; //This textbox is used to rename library elements
     bool renamingTextBoxClosed = false;
     glm::ivec2 renamingIndices; //x for the context menu index, y for the element index
+    std::string lastTitleBeforeRenaming;
 
     int frameCounter = 0; //Reset every 1000 frame
 
@@ -619,6 +620,9 @@ public:
         libraryPanelDisplayer.isLibraryDisplayer = true;
 
         renamingTextBox = TextBox(0,glm::vec2(4,2),colorPalette,shaders.buttonShader,"",4.f,false),context.window;
+        renamingTextBox.thickness = 0.f;
+        renamingTextBox.animationStyle = 1;
+        renamingTextBox.radius = 10000.f;
     
         frameCounter++;
     }    
@@ -691,12 +695,23 @@ public:
         else{
             //The first frame renamingTextBox is closed 
             if(!renamingTextBoxClosed){
-                if(renamingIndices.x == 0)
-                    library.textures[renamingIndices.y].title = renamingTextBox.text;
-                else if(renamingIndices.x == 1)
-                    library.materials[renamingIndices.y].title = renamingTextBox.text;
-                else if(renamingIndices.x == 2)
-                    library.brushes[renamingIndices.y].title = renamingTextBox.text;
+                if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_RELEASE){
+                    if(renamingIndices.x == 0)
+                        library.textures[renamingIndices.y].title = renamingTextBox.text;
+                    else if(renamingIndices.x == 1)
+                        library.materials[renamingIndices.y].title = renamingTextBox.text;
+                    else if(renamingIndices.x == 2)
+                        library.brushes[renamingIndices.y].title = renamingTextBox.text;
+                }
+                else{
+                    if(renamingIndices.x == 0)
+                        library.textures[renamingIndices.y].title = lastTitleBeforeRenaming;
+                    else if(renamingIndices.x == 1)
+                        library.materials[renamingIndices.y].title = lastTitleBeforeRenaming;
+                    else if(renamingIndices.x == 2)
+                        library.brushes[renamingIndices.y].title = lastTitleBeforeRenaming;
+                }
+
             }
 
             renamingTextBoxClosed = true;
@@ -899,7 +914,12 @@ private:
                 if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to rename button
                     renamingTextBox.active = true;
                     renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
+                    renamingTextBox.pos.y += 2.8f;
+                    lastTitleBeforeRenaming = library.textures[contextMenus[i].selectedElement].title;
+                    library.textures[contextMenus[i].selectedElement].title = "";
                     renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
+                    renamingTextBox.activeChar = renamingTextBox.text.size();
+                    renamingTextBox.activeChar2 = renamingTextBox.activeChar;
                     renamingIndices.x = 0;
                     renamingIndices.y = contextMenus[i].selectedElement;
                 }
@@ -921,7 +941,12 @@ private:
                 if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to rename button
                     renamingTextBox.active = true;
                     renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
+                    renamingTextBox.pos.y += 2.8f;
+                    lastTitleBeforeRenaming = library.materials[contextMenus[i].selectedElement].title;
+                    library.materials[contextMenus[i].selectedElement].title = "";
                     renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
+                    renamingTextBox.activeChar = renamingTextBox.text.size();
+                    renamingTextBox.activeChar2 = renamingTextBox.activeChar;
                     renamingIndices.x = 1;
                     renamingIndices.y = contextMenus[i].selectedElement;
                 }
@@ -937,7 +962,12 @@ private:
                 if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to rename button
                     renamingTextBox.active = true;
                     renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
+                    renamingTextBox.pos.y += 2.8f;
+                    lastTitleBeforeRenaming = library.brushes[contextMenus[i].selectedElement].title;
+                    library.brushes[contextMenus[i].selectedElement].title = "";
                     renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
+                    renamingTextBox.activeChar = renamingTextBox.text.size();
+                    renamingTextBox.activeChar2 = renamingTextBox.activeChar;
                     renamingIndices.x = 2;
                     renamingIndices.y = contextMenus[i].selectedElement;
                 }
