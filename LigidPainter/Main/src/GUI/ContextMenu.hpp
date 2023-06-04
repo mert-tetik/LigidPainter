@@ -86,6 +86,8 @@ public:
             section.elements.push_back(Element(Button(1,glm::vec2(1,1),colorPalette,buttonShader,elements[i],Texture(),0.f,false)));
         }
         contextPanel.sections.push_back(section);
+
+        contextPanel.scale.y = elements.size();
     }
 
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){
