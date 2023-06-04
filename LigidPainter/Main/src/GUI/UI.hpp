@@ -492,7 +492,7 @@ public:
                                     Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Add"        , Texture(), 0.f,false),
                                     Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Del"        , Texture(), 0.f,false)
                                 },
-                                14.f
+                                11.f
                             );
         nodeEditorDisplayer  = Panel(
                                 shaders.buttonShader,
@@ -966,7 +966,7 @@ private:
                 for (size_t i = 0; i < library.textures.size(); i++)
                 {
                     //Push texture elements into the section
-                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,"texture_0"       , library.textures[i], 0.f,false))) ;
+                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.textures[i].title       , library.textures[i], 0.f,false))) ;
                 }
             }
             else if(selectedLibraryElementIndex == 1){ //Update materials

@@ -304,9 +304,9 @@ public:
         textRenderer = TextRenderer(fonts.Arial);
 
         //Create context menus
-        contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Rename" ,"Favourite", "Duplicate" , "Copy Path", "Delete"})); //Textures 
-        contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Edit" , "Add To Scene", "Rename" ,"Favourite", "Duplicate" , "Copy Path", "Delete"})); //Materials
-        contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Use" ,"Apply Current","Rename" ,"Favourite", "Duplicate" , "Copy Path", "Delete"})); //Materials
+        contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Rename" , "Duplicate" , "Copy Path", "Delete"})); //Textures 
+        contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Edit" , "Add To Scene", "Rename" , "Duplicate" , "Copy Path", "Delete"})); //Materials
+        contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Use" ,"Apply Current","Rename" , "Duplicate" , "Copy Path", "Delete"})); //Materials
 
         //Init the userinterface
         userInterface.init(shaders,context,appTextures,videoScale,sphereModel);
