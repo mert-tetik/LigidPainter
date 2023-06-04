@@ -352,12 +352,16 @@ public:
         glm::mat4 view = glm::lookAt(glm::vec3(3.f,0,0), 
                                      glm::vec3(0), 
                                      glm::vec3(0.0, 1.0, 0.0));
+        
+        glm::vec3 viewPos = glm::vec3(3.f,0,0);
+
         glm::mat4 projectionMatrix = glm::perspective(glm::radians(90.f), 
                                          1.f, 
                                          100.f, 
                                          0.1f);
 
 
+        tdModelShader.setVec3("viewPos",viewPos);
         tdModelShader.setMat4("view",view);
         tdModelShader.setMat4("projection",projectionMatrix);
         
