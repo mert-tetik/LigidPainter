@@ -268,33 +268,21 @@ public:
 
                 if(channelI == 0){
                     textureBuffer = material.albedo.ID;
-                    material.albedo.width = textureRes;
-                    material.albedo.height = textureRes;
                 }
                 if(channelI == 1){
                     textureBuffer = material.roughness.ID;
-                    material.roughness.width = textureRes;
-                    material.roughness.height = textureRes;
                 }
                 if(channelI == 2){
                     textureBuffer = material.metallic.ID;
-                    material.metallic.width = textureRes;
-                    material.metallic.height = textureRes;
                 }
                 if(channelI == 3){
                     textureBuffer = material.normalMap.ID;
-                    material.normalMap.width = textureRes;
-                    material.normalMap.height = textureRes;
                 }
                 if(channelI == 4){
                     textureBuffer = material.heightMap.ID;
-                    material.heightMap.width = textureRes;
-                    material.heightMap.height = textureRes;
                 }
                 if(channelI == 5){
                     textureBuffer = material.ambientOcclusion.ID;
-                    material.ambientOcclusion.width = textureRes;
-                    material.ambientOcclusion.height = textureRes;
                 }
                 
                 glActiveTexture(GL_TEXTURE0);

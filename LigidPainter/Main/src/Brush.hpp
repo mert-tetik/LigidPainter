@@ -187,8 +187,8 @@ public:
 
             if(haveTexture){
                 //Write texture resolution
-                uint64_t txtrWidth = texture.width;
-                uint64_t txtrHeight = texture.height;
+                uint64_t txtrWidth = texture.getResolution().x;
+                uint64_t txtrHeight = texture.getResolution().y;
                 wf.write(reinterpret_cast<char*>(   &txtrWidth     ),sizeof(uint64_t));
                 wf.write(reinterpret_cast<char*>(   &txtrHeight     ),sizeof(uint64_t));
 
@@ -249,16 +249,16 @@ public:
             rf.read(reinterpret_cast<char*>(   &haveTexture     ),sizeof(bool));
 
             if(haveTexture){
+                uint64_t w = 0,h = 0;
                 //read texture resolution
-                rf.read(reinterpret_cast<char*>(   &texture.width     ),sizeof(uint64_t));
-                rf.read(reinterpret_cast<char*>(   &texture.height     ),sizeof(uint64_t));
+                rf.read(reinterpret_cast<char*>(   &w     ),sizeof(uint64_t));
+                rf.read(reinterpret_cast<char*>(   &h     ),sizeof(uint64_t));
 
                 //Get pixels of the texture
-                char* pixels = new char[texture.width * texture.height * 4];
-                texture.getData(pixels);
+                char* pixels = new char[w * h * 4];
 
                 //read texture data
-                rf.read(pixels , texture.width * texture.height * 4 * sizeof(char));
+                rf.read(pixels , w * h * 4 * sizeof(char));
 
                 glGenTextures(1,&texture.ID);
                 glActiveTexture(GL_TEXTURE0);
@@ -271,7 +271,7 @@ public:
 	            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 
-		        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.width, texture.height, 0, GL_RGBA, GL_BYTE, pixels);
+		        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_BYTE, pixels);
                 glGenerateMipmap(GL_TEXTURE_2D);
 
                 delete[] pixels;

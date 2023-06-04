@@ -369,8 +369,6 @@ public:
         glGenerateMipmap(GL_TEXTURE_2D);
         
         delete[] pixels;
-        textures[selectedTextureIndex].width = textureRes;
-        textures[selectedTextureIndex].height = textureRes;
     }
 
     void updateDepthTexture( Model &model){

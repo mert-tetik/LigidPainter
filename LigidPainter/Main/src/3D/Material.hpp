@@ -57,11 +57,6 @@ private:
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
         glGenerateMipmap(GL_TEXTURE_2D);
-
-
-        txtr.width = textureRes;
-        txtr.height = textureRes;
-        txtr.channels = 4;
     }
 public:
     std::string title;

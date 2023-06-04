@@ -54,11 +54,6 @@ private:
 public:
     unsigned int ID = 0; 
     
-    //TODO Remove these
-    int width;
-    int height;
-    int channels;
-    
     std::string path = "";
 
     //For program textures
@@ -69,9 +64,6 @@ public:
     
     Texture(unsigned int ID){
         this->ID = ID;
-        width = 2048;
-        height = 2048;
-        channels = 4;
     }
 
     void load(const char* path){
@@ -89,6 +81,7 @@ public:
 	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 	    
         stbi_set_flip_vertically_on_load(true);
+        int width, height, channels;
 
         unsigned char* data = stbi_load(path, &width, &height, &channels, 4);
 
@@ -144,6 +137,17 @@ public:
 	    glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D,ID);
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
+    }
+
+    glm::ivec2 getResolution(){
+        int w,h;
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,ID);
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+    
+        return glm::ivec2(w,h);
     }
 };
 
