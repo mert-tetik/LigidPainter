@@ -190,7 +190,7 @@ public:
 
 
 
-    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
+    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking,GLFWwindow* window){
         Util util;
 
         this->doMouseTracking = doMouseTracking;
@@ -223,6 +223,9 @@ public:
         if(hover && mouse.LClick){
             //Mouse left button pressed on top of the button
             active = !active;
+        }
+        if((!hover && mouse.LClick) || glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_ENTER) == GLFW_PRESS){
+            active = false;
         }
 
         timer.transition(hover,hoverMixVal,0.2f); 

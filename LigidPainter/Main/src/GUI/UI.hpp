@@ -79,6 +79,8 @@ struct Element{
     CheckBox checkBox;
     ComboBox comboBox;
     TextBox textBox;
+
+    GLFWwindow* window;
     
     int state; //Decide which element will be used 0 = button 
     
@@ -115,17 +117,19 @@ struct Element{
         panelOffset = checkBox.panelOffset;
         state = 2;
     }
-    Element(ComboBox comboBox){
+    Element(ComboBox comboBox,GLFWwindow* window){
         //Init as combo box
         this->comboBox = comboBox;
+        this->window = window;
         pos = comboBox.pos;
         scale = comboBox.scale;
         panelOffset = comboBox.panelOffset;
         state = 3;
     }
-    Element(TextBox textBox){
+    Element(TextBox textBox,GLFWwindow* window){
         //Init as text box
         this->textBox = textBox;
+        this->window = window;
         pos = textBox.pos;
         scale = textBox.scale;
         panelOffset = textBox.panelOffset;
@@ -179,14 +183,14 @@ struct Element{
             comboBox.scale = scale;
             comboBox.panelOffset = panelOffset;
             comboBox.doMouseTracking = doMouseTracking;
-            comboBox.render(videoScale,mouse, timer,textRenderer,doMouseTracking);
+            comboBox.render(videoScale,mouse, timer,textRenderer,doMouseTracking,window);
         }
-        if(state == 4){ //Render the comboxBox
+        if(state == 4){ //Render the textbox
             textBox.pos = pos;
             textBox.scale = scale;
             textBox.panelOffset = panelOffset;
             textBox.doMouseTracking = doMouseTracking;
-            textBox.render(videoScale,mouse, timer,textRenderer,doMouseTracking);
+            textBox.render(videoScale,mouse, timer,textRenderer,doMouseTracking,window);
         }
     }
 };
@@ -755,7 +759,7 @@ public:
         //Dialogs
         
         //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
-        //newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
+        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
         //colorPickerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
         
         if(newTextureDialog.active)

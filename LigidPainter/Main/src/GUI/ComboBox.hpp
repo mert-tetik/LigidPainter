@@ -179,7 +179,7 @@ public:
 
 
 
-    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
+    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking,GLFWwindow* window){
         Util util;
 
         this->doMouseTracking = doMouseTracking;
@@ -270,7 +270,9 @@ public:
 
             if(i == 0 && !pressed && clickedMixVal[0] < 0.2f)
                 break;
-            
+        }
+        if((!hover[0] && mouse.LClick) || glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_ENTER) == GLFW_PRESS){
+            pressed = false;
         }
         
 

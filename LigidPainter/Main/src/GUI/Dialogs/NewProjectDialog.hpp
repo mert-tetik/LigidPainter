@@ -75,8 +75,8 @@
                                         Element(Button()),
                                         {
                                             Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"",Texture(),4.f,false)), //Empty
-                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"MyProject",4.f,false)),
-                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Path",4.f,true)),
+                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"MyProject",4.f,false),context.window),
+                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Path",4.f,true),context.window),
                                             
                                             Element(ComboBox(0,glm::vec2(4,2),colorPalette,buttonShader,
                                             {
@@ -85,7 +85,7 @@
                                                 "1024",
                                                 "2048",
                                                 "4096"
-                                            },4.f)),
+                                            },4.f),context.window),
 
                                             Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Large",4.f)),
                                             Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Medium",0.f)),

@@ -77,7 +77,7 @@
                             "1024",
                             "2048",
                             "4096"
-                        },4.f)),
+                        },4.f),context.window),
                         Element(CheckBox(0,glm::vec2(2,2),colorPalette,buttonShader, "VSync"  , 1.f)),
                     }
                 )
