@@ -270,6 +270,10 @@ public:
     NewTextureDialog newTextureDialog;
     SettingsDialog settingsDialog;
 
+    TextBox renamingTextBox; //This textbox is used to rename library elements
+    bool renamingTextBoxClosed = false;
+    glm::ivec2 renamingIndices; //x for the context menu index, y for the element index
+
     int frameCounter = 0; //Reset every 1000 frame
 
     int selectedLibraryElementIndex = 0; //0 For the textures , 1 for the materials bla bla
@@ -613,6 +617,8 @@ public:
         }
         
         libraryPanelDisplayer.isLibraryDisplayer = true;
+
+        renamingTextBox = TextBox(0,glm::vec2(4,2),colorPalette,shaders.buttonShader,"",4.f,false),context.window;
     
         frameCounter++;
     }    
@@ -678,6 +684,23 @@ public:
         }
         paintingModesPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
 
+        if(renamingTextBox.active){
+            renamingTextBox.render(videoScale,mouse,timer,textRenderer,false,context.window);
+            renamingTextBoxClosed = false;
+        }
+        else{
+            //The first frame renamingTextBox is closed 
+            if(!renamingTextBoxClosed){
+                if(renamingIndices.x == 0)
+                    library.textures[renamingIndices.y].title = renamingTextBox.text;
+                else if(renamingIndices.x == 1)
+                    library.materials[renamingIndices.y].title = renamingTextBox.text;
+                else if(renamingIndices.x == 2)
+                    library.brushes[renamingIndices.y].title = renamingTextBox.text;
+            }
+
+            renamingTextBoxClosed = true;
+        }
 
         Util util;
 
@@ -872,6 +895,16 @@ private:
                 anyContextMenuActive = true;
             
             //CONTEXT MENU BUTTONS
+            if(i == 0 && selectedLibraryElementIndex == 0 && contextMenus[i].active){ //If texture context menu is active
+                if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to rename button
+                    renamingTextBox.active = true;
+                    renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
+                    renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
+                    renamingIndices.x = 0;
+                    renamingIndices.y = contextMenus[i].selectedElement;
+                }
+            }
+            
             if(i == 1 && selectedLibraryElementIndex == 1 && contextMenus[i].active){ //If material context menu is active
                 if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to edit button
                     //Select the material that material editor will edit & show the material editor dialog
@@ -885,13 +918,28 @@ private:
                     materialNode.materialID = library.materials[contextMenus[i].selectedElement].ID;
                     nodeScene.push_back(materialNode); //Add material node
                 }
+                if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to rename button
+                    renamingTextBox.active = true;
+                    renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
+                    renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
+                    renamingIndices.x = 1;
+                    renamingIndices.y = contextMenus[i].selectedElement;
+                }
             }
-            if(i == 1 && selectedLibraryElementIndex == 1 && contextMenus[i].active){ //If brush context menu is active
+
+            if(i == 2 && selectedLibraryElementIndex == 2 && contextMenus[i].active){ //If brush context menu is active
                 if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to use brush button
                     //TODO Use the brush here
                 }
                 if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to apply brush settings
                     //TODO Apply the settings to the brush here
+                }
+                if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to rename button
+                    renamingTextBox.active = true;
+                    renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
+                    renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
+                    renamingIndices.x = 2;
+                    renamingIndices.y = contextMenus[i].selectedElement;
                 }
             }
 

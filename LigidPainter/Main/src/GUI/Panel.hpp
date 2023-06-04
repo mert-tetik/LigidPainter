@@ -171,6 +171,7 @@ private:
             elementPos += (button.scale.y + previousButton.scale.y) + button.panelOffset;
 
         button.pos.z += 0.01f;
+        float screenGapY = 50 - scale.y*1.f;
         button.pos.y = elementPos - slideVal * slideRatio;
     }
     void prepDrawBtnHorizontally(Element &button,Element &previousButton,float& elementPos,int btnCounter){
@@ -233,7 +234,7 @@ private:
         //Panel's buttons
 
         float elementPos = 0.f; //Starting pos
-        
+        float lastElementScale = 0.f;
         //Get the starting position
         if(vertical){//If the panel is vertical
             if(sections.size()){//If there are sections
@@ -305,20 +306,23 @@ private:
                         sections[sI].elements[i].button.textureStickToTop = true;
                         sections[sI].elements[i].button.textureSizeScale = 1.5f;
                     }
+
+                    lastElementScale = sections[sI].elements[i].scale.y; 
+
                     //Draw the button
-                    if(sections[sI].elements[i].pos.y - sections[sI].elements[i].scale.y < (pos.y + scale.y) && sections[sI].elements[i].pos.y + sections[sI].elements[i].scale.y > (pos.y - scale.y)) //Don't render the unshown elements
-                        sections[sI].elements[i].render(videoScale,mouse,timer,textRenderer,doMouseTracking);
-
-                    if(isLibraryDisplayer){
-                        sections[sI].elements[i].button.textureStickToTop = true;
-                        sections[sI].elements[i].button.textureSizeScale = 1.5f;
-                        glm::vec4 textColor = glm::vec4(1) - sections[sI].elements[i].button.color;
-                        textColor.a = 1.;
-                        shader.setVec4("color"  ,    textColor      ); //Default button color
-
-                        textRenderer.renderText(shader,sections[sI].elements[i].button.text,sections[sI].elements[i].button.resultPos.x,sections[sI].elements[i].button.resultPos.y + sections[sI].elements[i].button.resultScale.y/1.4f,sections[sI].elements[i].button.resultPos.z+0.02,sections[sI].elements[i].button.resultPos.x + sections[sI].elements[i].button.resultScale.x,false,0.25f,sections[sI].elements[i].button.resultPos.x - sections[sI].elements[i].button.resultScale.x);
-                    }
+                    if(sections[sI].elements[i].pos.y - sections[sI].elements[i].scale.y < (pos.y + scale.y) && sections[sI].elements[i].pos.y + sections[sI].elements[i].scale.y > (pos.y - scale.y)){
+                        //Don't render the unshown elements
                         
+                        sections[sI].elements[i].render(videoScale,mouse,timer,textRenderer,doMouseTracking);
+                        
+                        if(isLibraryDisplayer){
+                            glm::vec4 textColor = glm::vec4(1) - sections[sI].elements[i].button.color;
+                            textColor.a = 1.;
+                            shader.setVec4("color"  ,    textColor      ); //Default button color
+
+                            textRenderer.renderText(shader,sections[sI].elements[i].button.text,sections[sI].elements[i].button.resultPos.x,sections[sI].elements[i].button.resultPos.y + sections[sI].elements[i].button.resultScale.y/1.4f,sections[sI].elements[i].button.resultPos.z+0.02,sections[sI].elements[i].button.resultPos.x + sections[sI].elements[i].button.resultScale.x,false,0.25f,sections[sI].elements[i].button.resultPos.x - sections[sI].elements[i].button.resultScale.x);
+                        }
+                    }
                     btnCounter++; //Indexing buttons to position them
                 }
             }
@@ -332,20 +336,30 @@ private:
         else
             sliderButton.pos.x = pos.x - sliderButton.scale.x - scale.x;
 
-        slideRatio = elementPos / (pos.y + scale.y);
+        slideRatio = (elementPos + lastElementScale + (lastElementScale*2.f)) / (pos.y + scale.y);
         
         if(slideRatio > 1 && vertical){
+
             sliderButton.scale.y = scale.y / slideRatio;
             sliderButton.pos.y = (pos.y - scale.y) + sliderButton.scale.y + slideVal;  
+            
             sliderButton.render(videoScale,mouse,timer,textRenderer,doMouseTracking);
+            
             if(sliderButton.clickState1){ //Pressed
+                
+                //Move the slidebar
                 slideVal += mouse.mouseOffset.y/videoScale.y*100.f;
-                if(slideVal < 0)
-                    slideVal = 0;
-                if(sliderButton.pos.y + sliderButton.scale.y >= pos.y + scale.y && mouse.mouseOffset.y > 0)
-                    slideVal -= mouse.mouseOffset.y/videoScale.y*100.f;
+                
             } 
         }
+        if(slideVal < 0) //If the slider is out of boundaries
+            slideVal = 0; //Get the slide bar back
+        
+        if (sliderButton.pos.y + sliderButton.scale.y >= pos.y + scale.y && mouse.mouseOffset.y > 0) {
+            // If the slider is out of boundaries
+            slideVal = sliderButton.pos.y - (pos.y - scale.y) - sliderButton.scale.y; // Set slideVal to its maximum value
+        }
+        
         if(clearDepthBuffer)
             glClear(GL_DEPTH_BUFFER_BIT);
     }
