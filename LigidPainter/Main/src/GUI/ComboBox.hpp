@@ -257,11 +257,7 @@ public:
 
             timer.transition(hover[i],hoverMixVal[i],0.2f); 
             timer.transition(pressed,clickedMixVal[i],0.15f);
-            clickedMixVal[i] = std::sin(clickedMixVal[i]); 
 
-            if(clickedMixVal[i] > 0.8f)
-                clickedMixVal[i] = 1.f;
-            
 
             render(resultPos,resultScale,resultRadius,resultOutlineThickness,hoverMixVal[i],clickedMixVal[i],true,color);
             

@@ -218,6 +218,7 @@ struct Dropper{
 #include "GUI/Dialogs/ColorPickerDialog.hpp"
 #include "GUI/Dialogs/MaterialEditorDialog.hpp"
 #include "GUI/Dialogs/TextureSelectionDialog.hpp"
+#include "GUI/Dialogs/SettingsDialog.hpp"
 #include "Mouse.hpp"
 #include "GUI/ContextMenu.hpp"
 #include "GUI/Node/Node.hpp"
@@ -263,6 +264,7 @@ public:
     MaterialEditorDialog materialEditorDialog;
     TextureSelectionDialog textureSelectionDialog;
     NewTextureDialog newTextureDialog;
+    SettingsDialog settingsDialog;
 
     int frameCounter = 0; //Reset every 1000 frame
 
@@ -598,6 +600,7 @@ public:
         //colorPickerDialog = ColorPickerDialog(context,videoScale,colorPalette,shaders.buttonShader,shaders.colorPicker,appTextures);
         materialEditorDialog = MaterialEditorDialog(shaders.buttonShader,shaders.tdModelShader,colorPalette,appTextures,sphereModel);
         textureSelectionDialog = TextureSelectionDialog(shaders.buttonShader,colorPalette);
+        settingsDialog = SettingsDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
 
         for (size_t i = 0; i < 3; i++)
         {
@@ -630,7 +633,7 @@ public:
         //userInterface.projection = glm::mat4(...)
         shaders.buttonShader.setMat4("projection",projection); 
 
-
+        std::cout << "textureRes : " << textureRes << std::endl;
         
         float screenGap = videoScale.x - context.windowScale.x; //Use that value to keep panels on the right side
         float screenGapPerc = screenGap / videoScale.x * 100.f; 
@@ -760,6 +763,9 @@ public:
         if(newTextureDialog.active)
             newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes);
         
+        if(settingsDialog.active)
+            settingsDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes);
+        
         if(materialEditorDialog.active && library.materials.size()){
             if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
                 materialEditorDialog.deactivate(textureSelectionDialog);
@@ -796,6 +802,11 @@ public:
             dropper.active = true;
         }
     }
+
+
+
+
+
 
 
 private: 
@@ -841,8 +852,11 @@ private:
         if(windowPanel.sections[0].elements[0].button.hover && mouse.LClick){//Pressed to the 3D painting button of the window panel
             painter.threeDimensionalMode = true;
         }
-        if(windowPanel.sections[0].elements[1].button.hover && mouse.LClick){//Pressed to the 2D painting button of the window panel
+        else if(windowPanel.sections[0].elements[1].button.hover && mouse.LClick){//Pressed to the 2D painting button of the window panel
             painter.threeDimensionalMode = false;
+        }
+        else if(windowPanel.sections[0].elements[4].button.hover && mouse.LClick){//Pressed to the settings button of the window panel
+            settingsDialog.activate();
         }
 
 
