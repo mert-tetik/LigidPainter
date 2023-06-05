@@ -349,15 +349,15 @@ private:
                 
                 //Move the slidebar
                 slideVal += mouse.mouseOffset.y/videoScale.y*100.f;
-                
             } 
-        }
-        if(slideVal < 0) //If the slider is out of boundaries
-            slideVal = 0; //Get the slide bar back
-        
-        if (sliderButton.pos.y + sliderButton.scale.y >= pos.y + scale.y && mouse.mouseOffset.y > 0) {
-            // If the slider is out of boundaries
-            slideVal = sliderButton.pos.y - (pos.y - scale.y) - sliderButton.scale.y; // Set slideVal to its maximum value
+            
+            if(slideVal < 0) //If the slider is out of boundaries
+                slideVal = 0; //Get the slide bar back
+
+            if (sliderButton.pos.y + sliderButton.scale.y >= pos.y + scale.y && mouse.mouseOffset.y > 0) {
+                // If the slider is out of boundaries
+                slideVal = sliderButton.pos.y - (pos.y - scale.y) - sliderButton.scale.y; // Set slideVal to its maximum value
+            }
         }
         
         if(clearDepthBuffer)
