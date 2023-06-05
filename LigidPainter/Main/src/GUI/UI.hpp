@@ -977,10 +977,24 @@ private:
 
             if(i == 2 && selectedLibraryElementIndex == 2 && contextMenus[i].active){ //If brush context menu is active
                 if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to use brush button
-                    //TODO Use the brush here
+                    paintingPanel.sections[2].elements[0].rangeBar.value        =   library.brushes[contextMenus[i].selectedElement].sizeJitter;
+                    paintingPanel.sections[2].elements[3].rangeBar.value        =   library.brushes[contextMenus[i].selectedElement].scatter;
+                    paintingPanel.sections[2].elements[1].rangeBar.value        =   library.brushes[contextMenus[i].selectedElement].fade;
+                    paintingPanel.sections[2].elements[7].rangeBar.value        =   library.brushes[contextMenus[i].selectedElement].rotation;
+                    paintingPanel.sections[2].elements[8].rangeBar.value        =   library.brushes[contextMenus[i].selectedElement].rotationJitter;
+                    paintingPanel.sections[2].elements[9].rangeBar.value        =   library.brushes[contextMenus[i].selectedElement].alphaJitter;
+                    paintingPanel.sections[2].elements[6].checkBox.clickState1  =   library.brushes[contextMenus[i].selectedElement].individualTexture;
+                    paintingPanel.sections[2].elements[2].checkBox.clickState1  =   library.brushes[contextMenus[i].selectedElement].sinWavePattern;
                 }
-                if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to apply brush settings
-                    //TODO Apply the settings to the brush here
+                if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){//Clicked to apply brush settings
+                    library.brushes[contextMenus[i].selectedElement].sizeJitter         =   paintingPanel.sections[2].elements[0].rangeBar.value;          
+                    library.brushes[contextMenus[i].selectedElement].scatter            =   paintingPanel.sections[2].elements[3].rangeBar.value;          
+                    library.brushes[contextMenus[i].selectedElement].fade               =   paintingPanel.sections[2].elements[1].rangeBar.value;          
+                    library.brushes[contextMenus[i].selectedElement].rotation           =   paintingPanel.sections[2].elements[7].rangeBar.value;          
+                    library.brushes[contextMenus[i].selectedElement].rotationJitter     =   paintingPanel.sections[2].elements[8].rangeBar.value;          
+                    library.brushes[contextMenus[i].selectedElement].alphaJitter        =   paintingPanel.sections[2].elements[9].rangeBar.value;          
+                    library.brushes[contextMenus[i].selectedElement].individualTexture  =   paintingPanel.sections[2].elements[6].checkBox.clickState1;    
+                    library.brushes[contextMenus[i].selectedElement].sinWavePattern     =   paintingPanel.sections[2].elements[2].checkBox.clickState1;    
                 }
                 if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to rename button
                     renamingTextBox.active = true;
@@ -1109,12 +1123,12 @@ private:
                 library.brushes.push_back(
                                             Brush
                                                 (    
-                                                    1.f - paintingPanel.sections[2].elements[0].rangeBar.value/100.f,
-                                                    1.f - paintingPanel.sections[2].elements[3].rangeBar.value/100.f,
-                                                    1.f - paintingPanel.sections[2].elements[1].rangeBar.value/100.f,
+                                                    paintingPanel.sections[2].elements[0].rangeBar.value,
+                                                    paintingPanel.sections[2].elements[3].rangeBar.value,
+                                                    paintingPanel.sections[2].elements[1].rangeBar.value,
                                                     paintingPanel.sections[2].elements[7].rangeBar.value,
-                                                    1.f - paintingPanel.sections[2].elements[8].rangeBar.value/100.f,
-                                                    1.f - paintingPanel.sections[2].elements[9].rangeBar.value/100.f,
+                                                    paintingPanel.sections[2].elements[8].rangeBar.value,
+                                                    paintingPanel.sections[2].elements[9].rangeBar.value,
                                                     paintingPanel.sections[2].elements[6].checkBox.clickState1,
                                                     paintingPanel.sections[2].elements[2].checkBox.clickState1,
                                                     "brush_1",
