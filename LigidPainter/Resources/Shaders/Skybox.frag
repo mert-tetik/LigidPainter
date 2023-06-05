@@ -5,9 +5,10 @@
 in vec3 Pos;
 
 uniform samplerCube skybox;
+uniform float lod;
 
 out vec4 color;
 
 void main(){
-    color = vec4(textureLod(skybox, Pos, 0.0).rgb * 1,1);
+    color = vec4(textureLod(skybox, Pos, lod).rgb * 1 , 1);
 }

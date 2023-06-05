@@ -52,6 +52,7 @@ public:
     unsigned int VAO;
 
 	glm::mat4 transformMatrix = glm::mat4(1);//Used to rotate the skybox
+	float lod = 0.; //Used to blur the skybox
 
     Skybox(){}
     

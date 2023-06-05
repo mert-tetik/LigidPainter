@@ -88,7 +88,7 @@
         skybox.transformMatrix = glm::mat4(1);
         skybox.transformMatrix = glm::rotate(skybox.transformMatrix,glm::radians(panel.sections[0].elements[1].rangeBar.value),glm::vec3(0,1,0));
     
-    
+        skybox.lod = panel.sections[0].elements[2].rangeBar.value/25.f;
     }
 
     void activate(){
