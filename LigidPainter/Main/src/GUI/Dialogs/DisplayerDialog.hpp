@@ -82,8 +82,13 @@
         },glm::vec2(15.f),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f);
     }
     
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,glm::vec2 videoScale){
-        panel.render(videoScale,mouse,timer,textRenderer,true);   
+    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,glm::vec2 videoScale,Skybox &skybox){
+        panel.render(videoScale,mouse,timer,textRenderer,true);
+
+        skybox.transformMatrix = glm::mat4(1);
+        skybox.transformMatrix = glm::rotate(skybox.transformMatrix,glm::radians(panel.sections[0].elements[1].rangeBar.value),glm::vec3(0,1,0));
+    
+    
     }
 
     void activate(){

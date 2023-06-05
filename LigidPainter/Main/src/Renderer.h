@@ -482,6 +482,8 @@ public:
         shaders.skyboxShader.use();
         shaders.skyboxShader.setMat4("view",scene.viewMatrix);
         shaders.skyboxShader.setMat4("projection",scene.projectionMatrix);
+        shaders.skyboxShader.setMat4("transformMatrix",scene.skybox.transformMatrix);
+
 
         shaders.skyboxShader.setInt("skybox",0);
         scene.skybox.draw(true);
@@ -560,7 +562,7 @@ public:
        
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
-        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project,painter,VSync);//Render the UI
+        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project,painter,VSync,scene.skybox);//Render the UI
 
 
 

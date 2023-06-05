@@ -51,6 +51,8 @@ public:
     unsigned int VBO;
     unsigned int VAO;
 
+	glm::mat4 transformMatrix = glm::mat4(1);//Used to rotate the skybox
+
     Skybox(){}
     
     void init(){
@@ -270,6 +272,7 @@ public:
 			
 			prefilteringShader.setInt("environmentMap",0);
 			prefilteringShader.setMat4("projection",captureProjection);
+			prefilteringShader.setMat4("transformMatrix",glm::mat4(1));
 
 			//Bind the skybox to the Slot 0
 			glActiveTexture(GL_TEXTURE0);

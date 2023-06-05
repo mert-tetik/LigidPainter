@@ -631,7 +631,7 @@ public:
     }    
 
     void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
-                std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter,bool &VSync){
+                std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter,bool &VSync,Skybox &skybox){
         
         glDepthFunc(GL_LEQUAL);
 
@@ -806,7 +806,7 @@ public:
         //newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
         //colorPickerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
         
-        displayerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale);
+        displayerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,skybox);
         
         if(newTextureDialog.active)
             newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes);
