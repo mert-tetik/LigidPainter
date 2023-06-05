@@ -484,6 +484,8 @@ public:
         shaders.skyboxShader.setMat4("projection",scene.projectionMatrix);
         shaders.skyboxShader.setMat4("transformMatrix",scene.skybox.transformMatrix);
         shaders.skyboxShader.setFloat("lod",scene.skybox.lod);
+        shaders.skyboxShader.setVec3("bgColor",scene.skybox.bgColor);
+        shaders.skyboxShader.setFloat("opacity",scene.skybox.opacity);
 
 
         shaders.skyboxShader.setInt("skybox",0);

@@ -85,10 +85,24 @@
     void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,glm::vec2 videoScale,Skybox &skybox){
         panel.render(videoScale,mouse,timer,textRenderer,true);
 
+        panel.sections[0].elements[0].button.color = glm::vec4(skybox.bgColor,1);
+
+        if(panel.sections[0].elements[0].button.hover && mouse.LClick){
+            unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
+            const char* hex0Val = "#000000";
+            auto check = tinyfd_colorChooser("Select a color",hex0Val,defRGB,defRGB);
+
+            Color clr;
+            if(check)
+                skybox.bgColor = clr.hexToRgb(check)/glm::vec3(255.f);
+        }
+
         skybox.transformMatrix = glm::mat4(1);
         skybox.transformMatrix = glm::rotate(skybox.transformMatrix,glm::radians(panel.sections[0].elements[1].rangeBar.value),glm::vec3(0,1,0));
     
         skybox.lod = panel.sections[0].elements[2].rangeBar.value/25.f;
+        
+        skybox.opacity = panel.sections[0].elements[3].rangeBar.value/100.f;
     }
 
     void activate(){

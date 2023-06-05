@@ -51,8 +51,11 @@ public:
     unsigned int VBO;
     unsigned int VAO;
 
+
 	glm::mat4 transformMatrix = glm::mat4(1);//Used to rotate the skybox
 	float lod = 0.; //Used to blur the skybox
+	glm::vec3 bgColor = glm::vec3(0.1);
+	float opacity = 0.f;
 
     Skybox(){}
     
