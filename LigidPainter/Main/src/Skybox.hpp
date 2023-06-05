@@ -188,11 +188,13 @@ public:
 	    }
 	}
 
-    void draw(){ //Draw the skybox
+    void draw(bool bindTxtr){ //Draw the skybox
         //Bind the skybox texture to the texture slot 0
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP,ID);
-        
+        if(bindTxtr){
+			glActiveTexture(GL_TEXTURE0);
+        	glBindTexture(GL_TEXTURE_CUBE_MAP,IDPrefiltered);
+		}
+
         //Disable the depth testing
         glDisable(GL_DEPTH_TEST);
 	    glDepthMask(GL_FALSE);
@@ -301,7 +303,7 @@ public:
 			                               GL_TEXTURE_CUBE_MAP_POSITIVE_X + txtrI, IDPrefiltered, mip);
 
 			        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-					draw(); //Draw the skybox
+					draw(false); //Draw the skybox
 			    }
 			}
 		

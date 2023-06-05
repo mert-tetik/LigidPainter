@@ -484,7 +484,7 @@ public:
         shaders.skyboxShader.setMat4("projection",scene.projectionMatrix);
 
         shaders.skyboxShader.setInt("skybox",0);
-        scene.skybox.draw();
+        scene.skybox.draw(true);
 
         //Render 3D Model
         shaders.depth3D.use();

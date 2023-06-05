@@ -223,6 +223,7 @@ struct Dropper{
 #include "GUI/Dialogs/MaterialEditorDialog.hpp"
 #include "GUI/Dialogs/TextureSelectionDialog.hpp"
 #include "GUI/Dialogs/SettingsDialog.hpp"
+#include "GUI/Dialogs/DisplayerDialog.hpp"
 #include "Mouse.hpp"
 #include "GUI/ContextMenu.hpp"
 #include "GUI/Node/Node.hpp"
@@ -269,6 +270,7 @@ public:
     TextureSelectionDialog textureSelectionDialog;
     NewTextureDialog newTextureDialog;
     SettingsDialog settingsDialog;
+    DisplayerDialog displayerDialog;
 
     TextBox renamingTextBox; //This textbox is used to rename library elements
     bool renamingTextBoxClosed = false;
@@ -605,6 +607,7 @@ public:
 
         greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
         newTextureDialog = NewTextureDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
+        displayerDialog = DisplayerDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
         newProjectDialog = NewProjectDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
         //colorPickerDialog = ColorPickerDialog(context,videoScale,colorPalette,shaders.buttonShader,shaders.colorPicker,appTextures);
         materialEditorDialog = MaterialEditorDialog(shaders.buttonShader,shaders.tdModelShader,colorPalette,appTextures,sphereModel);
@@ -800,8 +803,10 @@ public:
         //Dialogs
         
         //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
-        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
+        //newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
         //colorPickerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
+        
+        displayerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale);
         
         if(newTextureDialog.active)
             newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes);
