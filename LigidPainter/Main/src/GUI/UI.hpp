@@ -651,6 +651,9 @@ public:
         float screenGap = videoScale.x - context.windowScale.x; //Use that value to keep panels on the right side
         float screenGapPerc = screenGap / videoScale.x * 100.f; 
 
+        //TODO Don't call that everyframe (maybe)
+        library.uniqueNameControl();
+
         //!Render all the UI elements
         navigationPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
         windowPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
