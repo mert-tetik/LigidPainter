@@ -145,6 +145,7 @@ struct Context{
 struct Shaders{
     Shader tdModelShader;
     Shader skyboxShader;
+    Shader skyboxBall;
     Shader buttonShader;
     Shader prefilteringShader;
     Shader singleCurve;
@@ -335,6 +336,7 @@ public:
         shaders.tdModelShader = Shader("LigidPainter/Resources/Shaders/3DModel.vert","LigidPainter/Resources/Shaders/3DModel.frag",nullptr);
         shaders.depth3D = Shader("LigidPainter/Resources/Shaders/3DModel.vert","LigidPainter/Resources/Shaders/Depth3D.frag",nullptr);
         shaders.skyboxShader = Shader("LigidPainter/Resources/Shaders/Skybox.vert","LigidPainter/Resources/Shaders/Skybox.frag",nullptr);
+        shaders.skyboxBall = Shader("LigidPainter/Resources/Shaders/3DModel.vert","LigidPainter/Resources/Shaders/SkyboxBall.frag",nullptr);
         shaders.prefilteringShader = Shader("LigidPainter/Resources/Shaders/Skybox.vert","LigidPainter/Resources/Shaders/PrefilterSkybox.frag",nullptr);
         shaders.buttonShader = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/Button.frag",nullptr);
         shaders.singleCurve = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/UI/SingleCurve.frag",nullptr);
@@ -361,6 +363,8 @@ public:
         //Loads the default skybox
         scene.skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky2");
         scene.skybox.createPrefilterMap(shaders.prefilteringShader,videoScale);
+        scene.skybox.createDisplayingTxtr(shaders.skyboxBall,sphereModel,context.windowScale);
+        
         
         //Load the fonts
         fonts.Arial.loadFont("./LigidPainter/Resources/Fonts/Arial.ttf");
@@ -495,6 +499,10 @@ public:
         shaders.depth3D.use();
         shaders.depth3D.setMat4("view",scene.viewMatrix);
         shaders.depth3D.setMat4("projection",scene.projectionMatrix);
+        
+        shaders.skyboxBall.use();
+        shaders.skyboxBall.setMat4("view",scene.viewMatrix);
+        shaders.skyboxBall.setMat4("projection",scene.projectionMatrix);
 
         if(painter.updateTheDepthTexture){
             painter.updateDepthTexture(model);

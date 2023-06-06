@@ -52,6 +52,10 @@
  {
  private:
     Context context;
+    
+    Shader prefilteringShader;
+    Shader skyboxBallShader;
+    Model sphereModel;
  public:
     Panel panel;
 
@@ -62,15 +66,20 @@
     bool active = false;
     bool firstActivation = false;
 
-    DisplayerDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
-        this->context = context;
+    std::vector<Element> skyboxes;
 
+
+    DisplayerDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures,Shader prefilteringShader,Shader skyboxBallShader,Model &sphereModel){
+        this->context = context;
+        this->prefilteringShader = prefilteringShader;
+        this->skyboxBallShader = skyboxBallShader;
+        this->sphereModel = sphereModel;
         this->panel = Panel(buttonShader,colorPalette,{
             {
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(1,glm::vec2(2,4),colorPalette,buttonShader, "Texture"  , appTextures.greetingDialogImage, 1.f,true)),
+                        Element(Button(1,glm::vec2(2,6),colorPalette,buttonShader, ""  , appTextures.greetingDialogImage, 1.f,true)),
                         Element(RangeBar(0,glm::vec2(2,1),colorPalette,buttonShader, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), 
                         Element(RangeBar(0,glm::vec2(2,1),colorPalette,buttonShader, "Blur"  , Texture(), 1.f,0.f,100.f,0.f)), 
                         
@@ -80,14 +89,59 @@
                 )
             }
         },glm::vec2(15.f),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f);
+        for (size_t i = 0; i < 6; i++)
+        {
+            Element btn;
+            btn = Element(Button(1,glm::vec2(1,1),colorPalette,buttonShader,""    ,Texture(), 0.f,false));
+            if(i == 0)
+                btn.button.color = glm::vec4(glm::vec3(0.56,0.64,0.73),1.);
+            if(i == 1)
+                btn.button.color = glm::vec4(glm::vec3(0.79,0.76,0.88),1.);
+            if(i == 2)
+                btn.button.color = glm::vec4(glm::vec3(0.41,0.48,0.56),1.);
+            if(i == 3)
+                btn.button.color = glm::vec4(glm::vec3(0.37,0.60,0.75),1.);
+            if(i == 4)
+                btn.button.color = glm::vec4(glm::vec3(0.8,0.8,0.8),1.);
+            if(i == 5)
+                btn.button.color = glm::vec4(glm::vec3(0.27,0.27,0.12),1.);
+            
+            skyboxes.push_back(btn);
+        }
     }
     
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,glm::vec2 videoScale,Skybox &skybox){
+    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+                Library &library,glm::vec2 videoScale,Skybox &skybox){
         panel.render(videoScale,mouse,timer,textRenderer,true);
 
-        panel.sections[0].elements[0].button.color = glm::vec4(skybox.bgColor,1);
+        panel.sections[0].elements[0].button.texture = Texture(skybox.displayingTexture);
+        
+        if(panel.sections[0].elements[0].button.clickState1){
+            for (size_t i = 0; i < skyboxes.size(); i++)
+            {
+                skyboxes[i].pos = panel.sections[0].elements[0].button.pos;
+                skyboxes[i].pos.y -= panel.sections[0].elements[0].button.scale.y;
+                skyboxes[i].pos.x -= panel.sections[0].elements[0].button.scale.x;
 
-        if(panel.sections[0].elements[0].button.hover && mouse.LClick){
+                skyboxes[i].pos.y -= skyboxes[i].scale.y;
+                skyboxes[i].pos.x += skyboxes[i].scale.x;
+
+                skyboxes[i].pos.x += skyboxes[i].scale.x * 2 * i;
+                
+                skyboxes[i].scale.x = panel.sections[0].elements[0].button.scale.x/skyboxes.size();
+                skyboxes[i].render(videoScale,mouse,timer,textRenderer,true);
+                
+                if(skyboxes[i].button.hover && mouse.LClick){
+                    skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky" + std::to_string(i+1));
+                    skybox.createPrefilterMap(prefilteringShader,videoScale);
+                    skybox.createDisplayingTxtr(skyboxBallShader,sphereModel,context.windowScale);
+                }
+            }
+        }
+
+        panel.sections[0].elements[4].button.color = glm::vec4(skybox.bgColor,1);
+
+        if(panel.sections[0].elements[4].button.hover && mouse.LClick){
             unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
             const char* hex0Val = "#000000";
             auto check = tinyfd_colorChooser("Select a color",hex0Val,defRGB,defRGB);

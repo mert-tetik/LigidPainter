@@ -607,7 +607,7 @@ public:
 
         greetingDialog = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
         newTextureDialog = NewTextureDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
-        displayerDialog = DisplayerDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
+        displayerDialog = DisplayerDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures,shaders.prefilteringShader,shaders.skyboxBall,sphereModel);
         newProjectDialog = NewProjectDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
         //colorPickerDialog = ColorPickerDialog(context,videoScale,colorPalette,shaders.buttonShader,shaders.colorPicker,appTextures);
         materialEditorDialog = MaterialEditorDialog(shaders.buttonShader,shaders.tdModelShader,colorPalette,appTextures,sphereModel);
