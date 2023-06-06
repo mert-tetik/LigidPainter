@@ -386,28 +386,7 @@ public:
         mouse.loadCursors();
 
 
-        //Load the textures
-        //*Is a part of the project folder reader
-        for (const auto & entry : std::filesystem::directory_iterator("C:/Users/CASPER/Desktop/textures")){
-            std::string texturePath = entry.path().string();
 
-            Texture texture;
-            texture.load(texturePath.c_str());
-
-            library.textures.push_back(texture);
-        }
-        //Load the brushes
-        //*Is a part of the project folder reader
-        for (const auto & entry : std::filesystem::directory_iterator("./LigidPainter/Resources/Brushes")){
-            std::string texturePath = entry.path().string();
-
-            Brush brush;
-            brush.readFile(texturePath);
-            brush.updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
-
-
-            library.brushes.push_back(brush);
-        }
 
         //Create app nodes
         Node materialNode;

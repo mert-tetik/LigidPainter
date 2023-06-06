@@ -45,11 +45,39 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 #include <filesystem>
+#include <ctime>
 
 class Project
 {
 private:
-    /* data */
+    void updateLigidFile(){
+        std::ofstream wf(this->ligidFilePath, std::ios::out | std::ios::binary);
+		
+        if(!wf) {
+            std::cout << "ERROR WHILE WRITING LIGID FILE! Cannot open file : " << this->ligidFilePath << std::endl;
+            return;
+        }
+
+        //!HEADER
+            
+        //!Description
+        uint64_t h1 = 0xBBBBBBBB; 
+        uint64_t h2 = 0xCA4B6C78; 
+        uint64_t h3 = 0x9A9A2C48; 
+
+        wf.write(reinterpret_cast<char*>(   &h1    ),sizeof(uint64_t));
+        wf.write(reinterpret_cast<char*>(   &h2    ),sizeof(uint64_t));
+        wf.write(reinterpret_cast<char*>(   &h3    ),sizeof(uint64_t));
+
+        //! Write the creation date
+        time_t currentDate = time(0);
+        wf.write(reinterpret_cast<char*>(   &currentDate    ),sizeof(time_t));
+        
+        //! Write the last opened date
+        time_t lastOpenedDate = time(0);
+        wf.write(reinterpret_cast<char*>(   &lastOpenedDate    ),sizeof(time_t));
+    
+    }
 public:
     //Project folder
 
@@ -72,42 +100,124 @@ public:
         if(destinationPath[destinationPath.size()-1] == '/' || destinationPath[destinationPath.size()-1] == '\\') //Make sure destination path doesn't have seperator at the end
             destinationPath.pop_back();
 
-        std::string resultPath = destinationPath + folderDistinguisher + name;
+        this->folderPath = destinationPath + folderDistinguisher + name;
+        this->ligidFilePath = folderPath + folderDistinguisher + name + ".ligid";
+        this->projectName = name;
+        
 
         //Create the project folder
-        std::filesystem::create_directory(resultPath);
+        std::filesystem::create_directory(this->folderPath);
     
         //Create the textures folder
-        std::string textureFolderPath = resultPath + folderDistinguisher + "Textures";
+        std::string textureFolderPath = this->folderPath + folderDistinguisher + "Textures";
         std::filesystem::create_directory(textureFolderPath);
 
         //Materials
-        std::string materialsFolderPath = resultPath + folderDistinguisher + "Materials";
+        std::string materialsFolderPath = this->folderPath + folderDistinguisher + "Materials";
         std::filesystem::create_directory(materialsFolderPath);
         
         //Brushes
-        std::string brushesFolderPath = resultPath + folderDistinguisher + "Brushes";
+        std::string brushesFolderPath = this->folderPath + folderDistinguisher + "Brushes";
         std::filesystem::create_directory(brushesFolderPath);
         
         //Fonts
-        std::string fontsFolderPath = resultPath + folderDistinguisher + "Fonts";
+        std::string fontsFolderPath = this->folderPath + folderDistinguisher + "Fonts";
         std::filesystem::create_directory(fontsFolderPath);
         
         //Scripts
-        std::string scriptsFolderPath = resultPath + folderDistinguisher + "Scripts";
+        std::string scriptsFolderPath = this->folderPath + folderDistinguisher + "Scripts";
         std::filesystem::create_directory(scriptsFolderPath);
         
         //Filters
-        std::string filtersFolderPath = resultPath + folderDistinguisher + "Filters";
+        std::string filtersFolderPath = this->folderPath + folderDistinguisher + "Filters";
         std::filesystem::create_directory(filtersFolderPath);
         
         //Layers
-        std::string layersFolderPath = resultPath + folderDistinguisher + "Layers";
+        std::string layersFolderPath = this->folderPath + folderDistinguisher + "Layers";
         std::filesystem::create_directory(layersFolderPath);
         
         //3D Models
-        std::string tdModelFolderPath = resultPath + folderDistinguisher + "3DModels";
+        std::string tdModelFolderPath = this->folderPath + folderDistinguisher + "3DModels";
         std::filesystem::create_directory(tdModelFolderPath);
+
+        //Create the .ligid file
+        updateLigidFile();
+    }
+
+
+
+
+
+    void loadProject(std::string ligidFilePath,Library &library,Shaders shaders){
+        Util util;
+
+        //Return if the ligidFilePath doesn't exists
+        if(!std::filesystem::exists(ligidFilePath)){
+            std::cout << "ERROR CAN'T LOCATE THE LIGID FILE : " << ligidFilePath << std::endl;
+            return;
+        }
+
+        std::ifstream rf(ligidFilePath, std::ios::out | std::ios::binary);
+		
+        //Return if can't open the ligidFilePath
+        if(!rf) {
+            std::cout << "ERROR WHILE READING THE LIGID FILE! Cannot open file : " << ligidFilePath << std::endl;
+            return;
+        }
+
+        uint64_t h1 = 0xBBBBBBBB; 
+        uint64_t h2 = 0xCA4B6C78; 
+        uint64_t h3 = 0x9A9A2C48; 
+        
+        uint64_t ch1; 
+        uint64_t ch2; 
+        uint64_t ch3; 
+        
+        //Read the description of the ligid file
+        rf.read(reinterpret_cast<char*>(   &ch1    ),sizeof(uint64_t));
+        rf.read(reinterpret_cast<char*>(   &ch2    ),sizeof(uint64_t));
+        rf.read(reinterpret_cast<char*>(   &ch3    ),sizeof(uint64_t));
+        
+        //If the description doesn't matches
+        if(ch1 != h1 || ch2 != h2 || ch3 != h3){
+            std::cout << "ERROR THIS IS NOT A LIGID FILE! Description header doesn't match : " << ligidFilePath << std::endl;
+            return;
+        }
+
+        this->ligidFilePath = ligidFilePath;
+        this->folderPath = util.removeExtension(ligidFilePath);
+        if(this->folderPath[this->folderPath.size()-1] == '/' || this->folderPath[this->folderPath.size()-1] == '\\') //Make sure folder path doesn't have seperator at the end
+            this->folderPath.pop_back();
+        this->projectName = util.getLastWordBySeparatingWithChar(folderPath,folderDistinguisher);
+
+        //Remove the / or \ from the projectName if there are any     
+        if(projectName[projectName.size()-1] == '/' || projectName[projectName.size()-1] == '\\')
+            projectName.pop_back();
+        if(projectName[0] == '/' || projectName[0] == '\\')
+            projectName.erase(projectName.begin());
+    
+        
+        //Load the textures
+        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "Textures")){
+            std::string texturePath = entry.path().string();
+
+            Texture texture;
+            texture.load(texturePath.c_str());
+
+            library.textures.push_back(texture);
+        }
+
+        //Load the brushes
+        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "Brushes")){
+            std::string brushPath = entry.path().string();
+
+            Brush brush;
+            brush.readFile(brushPath);
+            brush.updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
+
+
+            library.brushes.push_back(brush);
+        }
     }
 };
 
