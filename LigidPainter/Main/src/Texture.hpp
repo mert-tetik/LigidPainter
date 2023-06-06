@@ -141,6 +141,20 @@ public:
 
     }
 
+    void export(const std::string path){
+        glm::vec2 scale;
+
+        char* pixels;
+        getData(pixels);
+
+        scale = getResolution();
+        
+        const int channels = 4;
+        if(!stbi_write_png((path + folderDistinguisher + title + ".png").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){
+            std::cout << "ERROR Failed to write texture file : " << path << std::endl;
+        }
+    }
+
     void getData(char*& pixels){
 	    glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D,ID);

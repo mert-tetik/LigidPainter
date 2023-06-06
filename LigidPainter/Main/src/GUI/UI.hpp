@@ -742,7 +742,7 @@ public:
                                 painter.brushTexture
                             );
 
-            exportBrush.saveFile();
+            exportBrush.saveFile("");
         }
 
 

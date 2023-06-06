@@ -50,6 +50,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 class Project
 {
 private:
+    void deleteFilesInFolder(const std::string folderPath) {
+        for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
+            if (entry.is_regular_file()) {
+                std::filesystem::remove(entry.path());
+            }
+        }
+    }
+    
     void updateLigidFile(){
         std::ofstream wf(this->ligidFilePath, std::ios::out | std::ios::binary);
 		
@@ -145,7 +153,39 @@ public:
     }
 
 
+    void updateProject(Library &library){
+        if(!std::filesystem::exists(folderPath)){
+            std::cout << "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << ligidFilePath << std::endl;
+            return;
+        }
+        
+        //!Textures
+        std::string textureFolderPath = this->folderPath + folderDistinguisher + "Textures";
+    
+        //Clear the textures folder
+        deleteFilesInFolder(textureFolderPath);
 
+        //Write the textures
+        for (size_t i = 0; i < library.textures.size(); i++)
+        {
+            //Export texture
+            library.textures[i].export(textureFolderPath);
+        }
+        
+        //!Brushes
+        std::string brushFolderPath = this->folderPath + folderDistinguisher + "Brushes";
+    
+        //Clear the brushes folder
+        deleteFilesInFolder(brushFolderPath);
+
+        //Write the brushes
+        for (size_t i = 0; i < library.brushes.size(); i++)
+        {
+            //Export brush
+            library.brushes[i].saveFile(brushFolderPath);
+        }
+        
+    }
 
 
     void loadProject(std::string ligidFilePath,Library &library,Shaders shaders){
@@ -190,6 +230,10 @@ public:
             this->folderPath.pop_back();
         this->projectName = util.getLastWordBySeparatingWithChar(folderPath,folderDistinguisher);
 
+        
+        updateLigidFile();
+
+        
         //Remove the / or \ from the projectName if there are any     
         if(projectName[projectName.size()-1] == '/' || projectName[projectName.size()-1] == '\\')
             projectName.pop_back();

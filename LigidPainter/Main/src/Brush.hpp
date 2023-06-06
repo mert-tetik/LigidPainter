@@ -148,9 +148,11 @@ public:
         initDisplayingTexture();
     }
 
-    void saveFile(){
+    void saveFile(std::string path){
         //Saves the brush file
-        std::string path = tinyfd_selectFolderDialog("Select a folder to export the brush file", "");
+        if(path == "")
+            path = tinyfd_selectFolderDialog("Select a folder to export the brush file", "");
+        
         if(path.size()){
 
             std::ofstream wf(path + folderDistinguisher + title + ".lgdbrush", std::ios::out | std::ios::binary);
