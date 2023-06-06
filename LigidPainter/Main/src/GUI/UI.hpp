@@ -806,7 +806,8 @@ public:
         //newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
         //colorPickerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
         
-        displayerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,skybox);
+        if(displayerDialog.active)
+            displayerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,skybox);
         
         if(newTextureDialog.active)
             newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes);
@@ -905,6 +906,9 @@ private:
         }
         else if(windowPanel.sections[0].elements[4].button.hover && mouse.LClick){//Pressed to the settings button of the window panel
             settingsDialog.activate();
+        }
+        else if(windowPanel.sections[0].elements[3].button.hover && mouse.LClick){//Pressed to the displayer button of the window panel
+            displayerDialog.activate();
         }
 
 

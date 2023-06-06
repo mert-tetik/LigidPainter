@@ -133,8 +133,8 @@ public:
 		{
 		    path + "/px.png", 
 		    path + "/nx.png",
-		    path + "/py.png",
 		    path + "/ny.png",
+		    path + "/py.png",
 		    path + "/pz.png",
 		    path + "/nz.png"
 		};
@@ -142,23 +142,6 @@ public:
 	    int width, height, nrChannels;//Of the face of the skybox
 	    for (unsigned int i = 0; i < faces.size(); i++)
 	    {
-
-            //Cube's faces are determined that way cause macOS having trouble indexing cubemap's faces.
-            //That doesn't solve the problem tho
-		    unsigned int cubePos;
-			if(i == 0)
-				cubePos = GL_TEXTURE_CUBE_MAP_POSITIVE_X;
-			if(i == 1)
-				cubePos = GL_TEXTURE_CUBE_MAP_NEGATIVE_X;
-			if(i == 2)
-				cubePos = GL_TEXTURE_CUBE_MAP_POSITIVE_Y;
-			if(i == 3)
-				cubePos = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y;
-			if(i == 4)
-				cubePos = GL_TEXTURE_CUBE_MAP_POSITIVE_Z;
-			if(i == 5)
-				cubePos = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z;
-
             Texture txtr;
             unsigned char *data = txtr.getTextureDataViaPath(faces[i].c_str(),width,height,nrChannels,3,true);
 
@@ -173,7 +156,7 @@ public:
 	            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 	            
-                glTexImage2D(cubePos, 
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X+i, 
 	                         0, 
                              GL_RGB8, 
                              width, 
@@ -244,8 +227,10 @@ public:
 		{
 		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
 		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+		   
 		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
 		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+		   
 		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
 		   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
 		};	
@@ -259,7 +244,7 @@ public:
 			for (unsigned int txtrI = 0; txtrI < 6; ++txtrI)
 			{
 				//Every side
-    			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + txtrI, 0, GL_RGB16F, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
+    			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + txtrI, 0, GL_RGB16F, 1024, 1024, 0, GL_RGB, GL_FLOAT, nullptr);
 			}
 
 			//Texture Parameters
@@ -293,9 +278,9 @@ public:
 				//Every level
 
 			    //resize framebuffer according to mip-level size.
-			    unsigned int mipWidth  = 128 * std::pow(0.5, mip);
-			    unsigned int mipHeight = 128 * std::pow(0.5, mip);
-			    glViewport(0, 0, mipWidth, mipHeight);
+			    unsigned int mipWidth  = 1024 * std::pow(0.5, mip);
+			    unsigned int mipHeight = 1024 * std::pow(0.5, mip);
+			    glViewport(0, 0, mipWidth+5, mipHeight+5);
 
 				//Adjust the roughness value
 			    float roughness = (float)mip / (float)(maxMipLevels - 1);

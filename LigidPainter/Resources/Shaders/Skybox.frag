@@ -13,6 +13,6 @@ uniform float opacity;
 out vec4 color;
 
 void main(){
-    color = vec4(textureLod(skybox, Pos, lod).rgb * 1 , 1);
+    color = vec4(textureLod(skybox, Pos*-1, lod).rgb * 1 , 1);
     color.rgb = mix(bgColor,color.rgb,opacity);
 }

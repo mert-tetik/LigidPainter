@@ -135,6 +135,7 @@
                     skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky" + std::to_string(i+1));
                     skybox.createPrefilterMap(prefilteringShader,videoScale);
                     skybox.createDisplayingTxtr(skyboxBallShader,sphereModel,context.windowScale);
+                    panel.sections[0].elements[0].button.clickState1 = false;
                 }
             }
         }
@@ -157,6 +158,15 @@
         skybox.lod = panel.sections[0].elements[2].rangeBar.value/25.f;
         
         skybox.opacity = panel.sections[0].elements[3].rangeBar.value/100.f;
+
+        //End the dialog
+        if((panel.sections[0].elements[2].button.hover && mouse.LClick) || glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || (!panel.hover && mouse.LClick)){
+            if(!firstActivation){
+                panel.sections[0].elements[0].button.clickState1 = false;
+                active = false;
+            }
+        }
+        firstActivation = false;
     }
 
     void activate(){
