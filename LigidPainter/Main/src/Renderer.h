@@ -673,10 +673,12 @@ private:
                                        glm::vec3(0.0, 1.0, 0.0));
     }
     void updateProjectionMatrix(){
-        scene.projectionMatrix = glm::perspective(glm::radians(scene.fov), 
-                                         (float)context.windowScale.x / (float)context.windowScale.y, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
-                                         scene.near, 
-                                         scene.far);
+        if(context.windowScale.x){
+            scene.projectionMatrix = glm::perspective(glm::radians(scene.fov), 
+                                             (float)context.windowScale.x / (float)context.windowScale.y, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
+                                             scene.near, 
+                                             scene.far);
+        }
     }
     void updateViewport(){
         glViewport(0, 
