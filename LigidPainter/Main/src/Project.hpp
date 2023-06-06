@@ -104,9 +104,32 @@ public:
     Project(){
 
     }
-    void createProject(std::string destinationPath,std::string name){
+    bool createProject(std::string destinationPath,std::string name){
         if(destinationPath[destinationPath.size()-1] == '/' || destinationPath[destinationPath.size()-1] == '\\') //Make sure destination path doesn't have seperator at the end
             destinationPath.pop_back();
+
+        if(!std::filesystem::exists(destinationPath)){
+            const char* title = "Warning";
+            const char* message = "Project path is not valid! Please try another directory.";
+            const char* icon = "warning";
+            const char* button = "Ok";
+            
+            tinyfd_messageBox(title, message, button, icon, 1);
+            return false;
+        }
+        if(std::filesystem::exists(destinationPath + folderDistinguisher + name)){
+            const char* title = "Warning";
+            const char* message = "This folder is already exists. Do you want to overwrite?";
+            const char* icon = "warning";
+            const char* button = "yesno";
+            
+            int res = tinyfd_messageBox(title, message, button, icon, 0);
+
+            if(res == 0)
+                return false;
+            else if(res == 1)
+                std::filesystem::remove_all(destinationPath + folderDistinguisher + name);
+        }
 
         this->folderPath = destinationPath + folderDistinguisher + name;
         this->ligidFilePath = folderPath + folderDistinguisher + name + ".ligid";
@@ -150,6 +173,10 @@ public:
 
         //Create the .ligid file
         updateLigidFile();
+
+
+        return true;
+
     }
 
 
@@ -169,7 +196,7 @@ public:
         for (size_t i = 0; i < library.textures.size(); i++)
         {
             //Export texture
-            library.textures[i].export(textureFolderPath);
+            library.textures[i].exportTexture(textureFolderPath);
         }
         
         //!Brushes

@@ -141,7 +141,7 @@ public:
 
     }
 
-    void export(const std::string path){
+    void exportTexture(const std::string path){
         glm::vec2 scale;
 
         char* pixels;

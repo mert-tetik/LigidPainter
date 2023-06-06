@@ -595,6 +595,7 @@ public:
             painter.refreshable = false;
         }
 
+
         box.unbindBuffers(); //Finish rendering the UI
 
         //Set mouse states to default

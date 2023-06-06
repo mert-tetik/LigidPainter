@@ -34,6 +34,7 @@
 
  #include "GUI/UI.hpp"
  #include "GUI/Button.hpp"
+ #include "GUI/Dialogs/NewProjectDialog.hpp"
  #include "Mouse.hpp"
  #include "Timer.hpp"
 
@@ -67,7 +68,7 @@
 
      Shader buttonShader;
 
-    
+    bool active = true;
 
     GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
 
@@ -100,13 +101,18 @@
         this->bgPanel = Panel(buttonShader,colorPalette,{},glm::vec2(20),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,false,true,true,true,true,1.f,1.f,{},0.25f);
     }
     
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale){
+    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale, NewProjectDialog &newProjectDialog){
         bgPanel.render(videoScale,mouse,timer,textRenderer,false);
         loadProjectButton.render(videoScale,mouse,timer,textRenderer,true);
         createProjectButton.render(videoScale,mouse,timer,textRenderer,true);
         
         textButton1.render(videoScale,mouse,timer,textRenderer,false);
         
+        if(createProjectButton.hover && mouse.LClick){
+            newProjectDialog.active = true;
+            this->active = false;
+        }
+
         glDepthFunc(GL_ALWAYS);
         textureDisplayerButton.scale.x = bgPanel.scale.y;
         textureDisplayerButton.scale.y = bgPanel.scale.y;

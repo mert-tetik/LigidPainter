@@ -97,7 +97,7 @@ private:
         //returns the renderthetext
         //If returns yes render the text
         //If not don't render the text
-
+            
         //Get the position data of the text before rendering
         //The texture's position will be interpreted by the text's position data
         shader.setVec4("color"  ,     glm::vec4(0)     );

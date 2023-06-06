@@ -320,7 +320,8 @@ public:
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, captureTexture, 0);
         
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, textures[selectedTextureIndex].ID);
+        if(textures.size())
+            glBindTexture(GL_TEXTURE_2D, textures[selectedTextureIndex].ID);
 
         glViewport(0,0,textureRes,textureRes);
 
@@ -356,8 +357,8 @@ public:
         glBindTexture(GL_TEXTURE_2D,captureTexture);
         char* pixels = new char[textureRes * textureRes * 4];
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
-        
-        glBindTexture(GL_TEXTURE_2D,textures[selectedTextureIndex].ID);
+        if(textures.size())
+            glBindTexture(GL_TEXTURE_2D,textures[selectedTextureIndex].ID);
         
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

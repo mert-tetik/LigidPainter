@@ -644,6 +644,7 @@ public:
         shaders.colorPicker.use();
         shaders.colorPicker.setMat4("projection",projection); 
 
+
         //Use the related shader
         shaders.buttonShader.use();
         
@@ -678,7 +679,8 @@ public:
 
             //Bind the selected texture as albedo
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D,library.textures[painter.selectedTextureIndex].ID);
+            if(library.textures.size())
+                glBindTexture(GL_TEXTURE_2D,library.textures[painter.selectedTextureIndex].ID);
 
             shaders.tdModelShader.setVec2("scale",glm::vec2(min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y)));
             shaders.tdModelShader.setVec3("pos",twoDPaintingPanel.sections[0].elements[0].button.resultPos);
@@ -693,6 +695,8 @@ public:
             shaders.buttonShader.use();
         }
         paintingModesPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
+
+
 
         if(renamingTextBox.active){
             renamingTextBox.render(videoScale,mouse,timer,textRenderer,false,context.window);
@@ -782,9 +786,11 @@ public:
         
 
         selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
-        selectedTextureDisplayer.sections[0].elements[0].button.texture = library.textures[painter.selectedTextureIndex];
+        if(library.textures.size())
+            selectedTextureDisplayer.sections[0].elements[0].button.texture = library.textures[painter.selectedTextureIndex];
         twoDPaintingPanel.sections[0].elements[0].scale.y = twoDPaintingPanel.scale.y;
         
+
         //Render the nodes
         for (size_t i = 0; i < nodeScene.size(); i++)
         {
@@ -802,8 +808,11 @@ public:
         
         //Dialogs
         
-        //greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale);
-        //newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
+        if(greetingDialog.active)
+            greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog);
+            
+        if(newProjectDialog.active)
+            newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.active);
         //colorPickerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
         
         if(displayerDialog.active)
@@ -850,6 +859,7 @@ public:
         if(paintingPanel.sections[0].elements[3].button.hover && mouse.LClick){
             dropper.active = true;
         }
+
     }
 
 

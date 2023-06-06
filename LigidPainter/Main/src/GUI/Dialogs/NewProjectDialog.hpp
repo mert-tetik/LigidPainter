@@ -62,7 +62,7 @@
 
      Shader buttonShader;
 
-    
+    bool active = false;
 
     NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
         this->buttonShader = buttonShader;
@@ -74,9 +74,9 @@
                                     Section(
                                         Element(Button()),
                                         {
-                                            Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"",Texture(),4.f,false)), //Empty
-                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"MyProject",4.f,false),context.window),
-                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Path",4.f,true),context.window),
+                                            Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"New Project",Texture(),4.f,false)), 
+                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"MyProject",2.f,false),context.window),
+                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"./Projects",2.f,true),context.window),
                                             
                                             Element(ComboBox(0,glm::vec2(4,2),colorPalette,buttonShader,
                                             {
@@ -87,15 +87,15 @@
                                                 "4096"
                                             },4.f),context.window),
 
-                                            Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Large",4.f)),
+                                            Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Large",2.f)),
                                             Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Medium",0.f)),
                                             Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Small",0.f)),
-                                            Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"3D Model",Texture(),4.f,false)),
-                                            Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"Create",Texture(),4.f,false))
+                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"3D Model",2.f,true),context.window),
+                                            Element(Button(1,glm::vec2(4,2),colorPalette,buttonShader,"Create",Texture(),2.f,false))
                                         }
                                     )
                                 },
-                                glm::vec2(20,40),
+                                glm::vec2(15,30),
                                 glm::vec3(50.f,50.f,0.8f),
                                 colorPalette.mainColor,
                                 colorPalette.thirdColor,
@@ -110,16 +110,26 @@
                                 0.25f
                             );
 
-        this->panel.sections[0].elements[0].button.color = glm::vec4(0);
-        this->panel.sections[0].elements[0].button.color2 = glm::vec4(0);
+        this->panel.sections[0].elements[0].button.color = colorPalette.secondColor;
+        this->panel.sections[0].elements[0].button.color2 = colorPalette.thirdColor;
+        this->panel.sections[0].elements[0].button.outlineColor = colorPalette.thirdColor;
+        this->panel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
     }
     
 
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,Project &project){
+    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,Project &project,bool &greetingDialogActive){
         panel.render(videoScale,mouse,timer,textRenderer,true);
+        
 
         if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && mouse.LClick){
-            project.createProject(panel.sections[0].elements[2].textBox.text,panel.sections[0].elements[1].textBox.text);
+            if(project.createProject(panel.sections[0].elements[2].textBox.text,panel.sections[0].elements[1].textBox.text)){
+                this->active = false;
+            }
+        }
+
+        if(glfwGetKey(originalWindow,GLFW_KEY_ESCAPE) == GLFW_PRESS || panel.sections[0].elements[0].button.hover && mouse.LDoubleClick){
+            greetingDialogActive = true;
+            this->active = false;
         }
     }
  };
