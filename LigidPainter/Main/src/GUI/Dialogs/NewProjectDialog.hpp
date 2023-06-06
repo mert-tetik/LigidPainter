@@ -90,7 +90,7 @@
                                             Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Large",2.f)),
                                             Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Medium",0.f)),
                                             Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Small",0.f)),
-                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"3D Model",2.f,true),context.window),
+                                            Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"3D Model",2.f,2),context.window),
                                             Element(Button(1,glm::vec2(4,2),colorPalette,buttonShader,"Create",Texture(),2.f,false))
                                         }
                                     )
@@ -122,7 +122,7 @@
         
 
         if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && mouse.LClick){
-            if(project.createProject(panel.sections[0].elements[2].textBox.text,panel.sections[0].elements[1].textBox.text)){
+            if(project.createProject(panel.sections[0].elements[2].textBox.text,panel.sections[0].elements[1].textBox.text,panel.sections[0].elements[7].textBox.text)){
                 this->active = false;
             }
         }

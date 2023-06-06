@@ -131,7 +131,7 @@ public:
 
     int buttonImageScaleDivider = 1.5f;
 
-    bool openSelectFolderDialog;
+    int openSelectFolderDialog; //0 Default textbox , 1 select folder dialog , 2 select 3D model dialog , 3 select texture dialog
 
     float thickness = 2.f;
     float radius = 0.35f;
@@ -145,7 +145,7 @@ public:
 
     //Manual constructor
     TextBox(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
-           float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2,bool openSelectFolderDialog){
+           float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2,int openSelectFolderDialog){
         
         this->shader = shader;
         this->text = text;
@@ -166,7 +166,7 @@ public:
     }
 
     //Style constructor
-    TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,float panelOffset,bool openSelectFolderDialog){
+    TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,float panelOffset,int openSelectFolderDialog){
         this->shader = shader;
         this->text = text;
         this->scale = scale;
@@ -233,13 +233,47 @@ public:
         
         //---Get the input
         if(active){
-            if(openSelectFolderDialog){
+            if(openSelectFolderDialog == 1){
                 char* test = tinyfd_selectFolderDialog("Select A Folder", "");
                 if(test){
                     text = test;
                 }
                 active = false;
+            }
+            else if(openSelectFolderDialog == 2){
+                //Select 3D Model
+                char const* lFilterPatterns[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
+	
+	            char* test = tinyfd_openFileDialog("Select a 3D model","",11, lFilterPatterns,"",false);
+                if(test){
+                    text = test;
+                }
+                active = false;
             }   
+            else if(openSelectFolderDialog == 3){
+                //Select Texture
+                char const* lFilterPatterns[12] = 
+                                                { 
+                                                    "*.png",                     //(Portable Network Graphics)
+                                                    "*.jpeg",                    //(Joint Photographic Experts Group)
+                                                    "*.jpg",                    //(Joint Photographic Experts Group but 3 letters)
+                                                    "*.bmp",                     //(Bitmap)
+                                                    "*.gif",                     //(Graphics Interchange Format)
+                                                    "*.tga",                     //(Truevision Targa)
+                                                    "*.hdr",                     //(High Dynamic Range)
+                                                    "*.pic",                     //(Softimage PIC)
+                                                    "*.pnm",                     //(Portable Any Map)
+                                                    "*.ppm",                     //(Portable Pixel Map)
+                                                    "*.pgm",                     //(Portable Gray Map)
+                                                    "*.pbm"                     //(Portable Bitmap) };
+                                                };   
+
+	            char* test = tinyfd_openFileDialog("Select a texture","", 12, lFilterPatterns,"",false);
+                if(test){
+                    text = test;
+                }
+                active = false;
+            }
             else{
                 textRenderer.processTextInput(text,activeChar,activeChar2);
             }

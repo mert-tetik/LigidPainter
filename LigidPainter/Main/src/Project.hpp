@@ -104,13 +104,22 @@ public:
     Project(){
 
     }
-    bool createProject(std::string destinationPath,std::string name){
+    bool createProject(std::string destinationPath,std::string name,std::string TDModelPath){
         if(destinationPath[destinationPath.size()-1] == '/' || destinationPath[destinationPath.size()-1] == '\\') //Make sure destination path doesn't have seperator at the end
             destinationPath.pop_back();
 
         if(!std::filesystem::exists(destinationPath)){
             const char* title = "Warning";
             const char* message = "Project path is not valid! Please try another directory.";
+            const char* icon = "warning";
+            const char* button = "Ok";
+            
+            tinyfd_messageBox(title, message, button, icon, 1);
+            return false;
+        }
+        if(!std::filesystem::exists(TDModelPath)){
+            const char* title = "Warning";
+            const char* message = "3D model path is not valid. Please try another 3D model file.";
             const char* icon = "warning";
             const char* button = "Ok";
             
@@ -170,6 +179,7 @@ public:
         //3D Models
         std::string tdModelFolderPath = this->folderPath + folderDistinguisher + "3DModels";
         std::filesystem::create_directory(tdModelFolderPath);
+        std::filesystem::copy(TDModelPath,tdModelFolderPath);
 
         //Create the .ligid file
         updateLigidFile();
