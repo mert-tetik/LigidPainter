@@ -458,6 +458,11 @@ public:
 
         //Init the painter
         painter.initPainter(videoScale,shaders.twoDPainting,shaders.buttonShader,shaders.tdModelShader,shaders.depth3D);
+
+        //Create the projects folder if it's not exists
+        if(!std::filesystem::exists("./Projects")){
+            std::filesystem::create_directory("./Projects");
+        }
     }
 
     void render(){
