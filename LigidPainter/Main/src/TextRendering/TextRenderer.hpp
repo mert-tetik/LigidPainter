@@ -25,7 +25,7 @@ class TextRenderer
 {
 private:
     /* data */
-    glm::vec4 rndrTxt(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,int index,bool render){
+    glm::vec4 rndrTxt(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,int index,bool render,bool leftAlign){
 		glm::vec4 data;
 		data.w = 0.f;
 		//.x = Returns the text's starting position int x axis
@@ -51,34 +51,38 @@ private:
         shader.setInt("txtr",0);
 	    shader.setInt("renderText",1);
 
-		//Get the location of the text's last char
-	    float overallX = 0.f;
-		for (std::string::const_iterator aC = text.begin(); aC != text.end(); aC++){
-	    	character ch = font.characters[*aC];//Get the current char
-            
-			//To the right
-	    	overallX += (ch.Advance >> 6) * scale / 1.2f;
-		}
-		
-		x-=overallX/2.f; //Allign the text in the middle
-
-		//Check if the text's left side is out of the boundaries
-	    float overallX2 = 0.f;
 		bool hitTheBoundaires = false;
-		for (std::string::const_iterator aC = text.begin(); aC != text.end(); aC++){
-	    	character ch = font.characters[*aC];//Get the current char
-            
-			if(maxX < x + overallX2) {
-				hitTheBoundaires = true;
-				break;
-			}
-			
-			//To the right
-	    	overallX2 += (ch.Advance >> 6) * scale / 1.2f;
-		}
 
-		if(hitTheBoundaires) //If the text's left side is out of the boundaries align the text on the left side of the button
-			x = mostLeft;
+		if(!leftAlign){
+
+			//Get the location of the text's last char
+	    	float overallX = 0.f;
+			for (std::string::const_iterator aC = text.begin(); aC != text.end(); aC++){
+	    		character ch = font.characters[*aC];//Get the current char
+	
+				//To the right
+	    		overallX += (ch.Advance >> 6) * scale / 1.2f;
+			}
+
+			x-=overallX/2.f; //Allign the text in the middle
+
+			//Check if the text's left side is out of the boundaries
+	    	float overallX2 = 0.f;
+			for (std::string::const_iterator aC = text.begin(); aC != text.end(); aC++){
+	    		character ch = font.characters[*aC];//Get the current char
+	
+				if(maxX < x + overallX2) {
+					hitTheBoundaires = true;
+					break;
+				}
+
+				//To the right
+	    		overallX2 += (ch.Advance >> 6) * scale / 1.2f;
+			}
+
+			if(hitTheBoundaires) //If the text's left side is out of the boundaries align the text on the left side of the button
+				x = mostLeft;
+		}
 
 		data.x = x;
 
@@ -152,17 +156,17 @@ public:
 
 	
 
-    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft){
-		return rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,0,true);
+    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,bool leftAlign){
+		return rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,0,true,leftAlign);
 	}
-    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,bool active,int &activeChar,int &activeChar2,Timer &timer){
+    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,bool active,int &activeChar,int &activeChar2,Timer &timer,bool leftAlign){
 		//If the active char is not equal to the active char 2 the chars between them will be selected
 
 		//Render the text and get the position of the chars from the text
-		glm::vec4 result = rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,activeChar,true);
+		glm::vec4 result = rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,activeChar,true,leftAlign);
 		
 		//Get the position of the chars from the text (w axis will contain the position of the char at the index of activeChar2)
-		glm::vec4 resultX = rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,activeChar2,false);
+		glm::vec4 resultX = rndrTxt(shader,text,x,y,z,maxX,multipleLines,scale,mostLeft,activeChar2,false,leftAlign);
 		
 		//Render the insertion point cursor
 		if(active){

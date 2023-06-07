@@ -136,7 +136,7 @@
         for (const auto& entry : std::filesystem::directory_iterator("./Projects")) {
             std::string projectPath = entry.path().string();
 
-            Button btn = Button(0,glm::vec2(4,2),colorPalette,buttonShader,projectPath,Texture(),4.f,false);
+            Button btn = Button(2,glm::vec2(4,2),colorPalette,buttonShader,projectPath,Texture(),4.f,false);
             btn.scale.x = projectsPanel.scale.x;
             btn.pos =  projectsPanel.pos;
             btn.pos.y -= projectsPanel.scale.y;
@@ -144,9 +144,50 @@
 
             btn.pos.y += btn.scale.y * 2 * counter;
 
-            btn.render(videoScale,mouse,timer,textRenderer,true);
-        
-            counter++;
+            std::string ligidFilePath = project.locateLigidFileInFolder(projectPath);
+
+            if(ligidFilePath.size()){
+                time_t creationDate;
+                time_t lastOpeningDate;
+                project.returnLigidFileData(ligidFilePath,creationDate,lastOpeningDate);
+                
+                std::string creationDateStr = (std::string)std::ctime(&creationDate);
+                std::string lastOpeningDateStr = (std::string)std::ctime(&lastOpeningDate);
+                
+                creationDateStr.pop_back(); //Remove suspecious '\n' character
+                
+
+                if (projectPath.length() >= 50) {
+                    projectPath = projectPath.substr(0, 49);
+                }
+
+                btn.text = projectPath;
+
+                for (size_t i = 0; i < 50 - projectPath.size(); i++)
+                {
+                    btn.text += " ";
+                }
+                
+                btn.text += creationDateStr + "                          " + lastOpeningDateStr;
+
+
+                btn.render(videoScale,mouse,timer,textRenderer,true);
+
+                if(btn.hover && mouse.LClick){
+                    if(project.loadProject(ligidFilePath,library,shaders,model))
+                        this->active = false;
+                    else{
+                        const char* title = "Warning";
+                        const char* message = "Error while reading the *.ligid file! Detailed error message is printed to the terminal.";
+                        const char* icon = "warning";
+                        const char* button = "Ok";
+
+                        tinyfd_messageBox(title, message, button, icon, 1);
+                    }
+                }
+
+                counter++;
+            }
         }
 
         if(loadButton.hover && mouse.LClick){

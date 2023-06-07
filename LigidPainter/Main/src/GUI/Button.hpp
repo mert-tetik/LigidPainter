@@ -103,7 +103,14 @@ private:
         shader.setVec4("color"  ,     glm::vec4(0)     );
         shader.setVec4("color2"  ,     glm::vec4(0)     );
         //Update the parameters if original renderer's parameters are changed
-        glm::vec3 textPosData = textRenderer.renderText(shader,text,resultPos.x,resultPos.y,-10000.1,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x);
+        glm::vec3 textPosData;
+        if(textAlignLeft){
+            textPosData = textRenderer.renderText(shader,text,resultPos.x-resultScale.x,resultPos.y,-10000.1,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x,true);
+        }
+        else{
+            textPosData = textRenderer.renderText(shader,text,resultPos.x,resultPos.y,-10000.1,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x,false);
+        }
+
         //textPosData.x is where the text is started in x axis
         //textPosData.y is where the text is ended in x axis
         //textPosData.z is boolean value if text is reached to the boundaries
@@ -213,6 +220,8 @@ public:
 
     float textureSizeScale = 1.f;
     bool textureStickToTop = false;
+
+    bool textAlignLeft = false;
     
     Button(){}
 
@@ -375,7 +384,10 @@ public:
             shader.setVec4("color"  ,     textColor     );
             shader.setVec4("color2"  ,     textColor2     );
             //Update the parameters of the renderText function in the renderTheTexture function if this function's parameters are changed
-            textRenderer.renderText(shader,text,resultPos.x+textureRadius ,resultPos.y,resultPos.z+0.002f,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x);
+            if(textAlignLeft)
+                textRenderer.renderText(shader,text,resultPos.x+textureRadius - resultScale.x ,resultPos.y,resultPos.z+0.002f,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,true);
+            else
+                textRenderer.renderText(shader,text,resultPos.x+textureRadius ,resultPos.y,resultPos.z+0.002f,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,false);
         }
     }
 };

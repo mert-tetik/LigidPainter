@@ -275,7 +275,7 @@ public:
         std::string textResult; 
         textResult = text;
         textResult += "(" + std::to_string(value) + ")";
-        textRenderer.renderText(shader,textResult,resultPos.x ,resultPos.y,1,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x);
+        textRenderer.renderText(shader,textResult,resultPos.x ,resultPos.y,1,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,false);
     }
 };
 #endif

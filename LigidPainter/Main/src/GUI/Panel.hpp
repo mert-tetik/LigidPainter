@@ -320,7 +320,7 @@ private:
                             textColor.a = 1.;
                             shader.setVec4("color"  ,    textColor      ); //Default button color
 
-                            textRenderer.renderText(shader,sections[sI].elements[i].button.text,sections[sI].elements[i].button.resultPos.x,sections[sI].elements[i].button.resultPos.y + sections[sI].elements[i].button.resultScale.y/1.4f,sections[sI].elements[i].button.resultPos.z+0.02,sections[sI].elements[i].button.resultPos.x + sections[sI].elements[i].button.resultScale.x,false,0.25f,sections[sI].elements[i].button.resultPos.x - sections[sI].elements[i].button.resultScale.x);
+                            textRenderer.renderText(shader,sections[sI].elements[i].button.text,sections[sI].elements[i].button.resultPos.x,sections[sI].elements[i].button.resultPos.y + sections[sI].elements[i].button.resultScale.y/1.4f,sections[sI].elements[i].button.resultPos.z+0.02,sections[sI].elements[i].button.resultPos.x + sections[sI].elements[i].button.resultScale.x,false,0.25f,sections[sI].elements[i].button.resultPos.x - sections[sI].elements[i].button.resultScale.x,false);
                         }
                     }
                     btnCounter++; //Indexing buttons to position them

@@ -225,13 +225,13 @@ public:
     }
 
 
-    void loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model){
+    bool loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model){
         Util util;
 
         //Return if the ligidFilePath doesn't exists
         if(!std::filesystem::exists(ligidFilePath)){
             std::cout << "ERROR CAN'T LOCATE THE LIGID FILE : " << ligidFilePath << std::endl;
-            return;
+            return false;
         }
 
         std::ifstream rf(ligidFilePath, std::ios::out | std::ios::binary);
@@ -239,7 +239,7 @@ public:
         //Return if can't open the ligidFilePath
         if(!rf) {
             std::cout << "ERROR WHILE READING THE LIGID FILE! Cannot open file : " << ligidFilePath << std::endl;
-            return;
+            return false;
         }
 
         uint64_t h1 = 0xBBBBBBBB; 
@@ -258,7 +258,7 @@ public:
         //If the description doesn't matches
         if(ch1 != h1 || ch2 != h2 || ch3 != h3){
             std::cout << "ERROR THIS IS NOT A LIGID FILE! Description header doesn't match : " << ligidFilePath << std::endl;
-            return;
+            return false;
         }
 
         this->ligidFilePath = ligidFilePath;
@@ -316,6 +316,71 @@ public:
 
         if(library.TDModels.size())
             model = library.TDModels[0];
+
+        return true
+    }
+
+    std::string locateLigidFileInFolder(const std::string& folderPath)
+    {
+        const std::string extension = ".ligid";
+        std::vector<std::string> matchingFiles;
+
+        for (const auto& entry : std::filesystem::directory_iterator(folderPath))
+        {
+            if (entry.is_regular_file() && entry.path().extension() == extension)
+            {
+                matchingFiles.push_back(entry.path().string());
+            }
+        }
+
+        if (matchingFiles.empty())
+        {
+            return ""; // No file with the given extension found
+        }
+        else
+        {
+            // Return the first matching file path
+            return matchingFiles[0];
+        }
+    }
+
+    bool returnLigidFileData(std::string path,time_t &creationDate,time_t &lastOpenedDate){ //Returns true if path is a ligid file
+        
+        if(path.size()){
+            std::ifstream rf(path, std::ios::out | std::ios::binary);
+		
+            if(!rf) {
+                std::cout << "ERROR WHILE READING LIGID FILE! Cannot open file : " << path << std::endl;
+                return false;
+            }
+
+            //!HEADER
+
+            //!Description
+            uint64_t h1 = 0xBBBBBBBB; 
+            uint64_t h2 = 0xCA4B6C78; 
+            uint64_t h3 = 0x9A9A2C48; 
+            
+            uint64_t ch1; 
+            uint64_t ch2; 
+            uint64_t ch3; 
+
+            rf.read(reinterpret_cast<char*>(   &ch1    ),sizeof(uint64_t));
+            rf.read(reinterpret_cast<char*>(   &ch2    ),sizeof(uint64_t));
+            rf.read(reinterpret_cast<char*>(   &ch3    ),sizeof(uint64_t));
+
+            if(ch1 != h1 || ch2 != h2 || ch3 != h3){
+                return false;
+            }
+
+            //! Read the creation date
+            rf.read(reinterpret_cast<char*>(   &creationDate    ),sizeof(time_t));
+
+            //! Read the last opened date
+            rf.read(reinterpret_cast<char*>(   &lastOpenedDate    ),sizeof(time_t));
+            
+            return true;
+        }
     }
 };
 
