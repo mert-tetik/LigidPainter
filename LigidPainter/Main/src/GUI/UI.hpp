@@ -811,14 +811,15 @@ public:
         
         //Dialogs
         
-        if(greetingDialog.active)
-            greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);
             
         if(newProjectDialog.active)
             newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.active,library,shaders,model);
         
         if(loadProjectDialog.active)
             loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.active,library,shaders,model);
+        
+        if(greetingDialog.active)
+            greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);
         //colorPickerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
         
         if(displayerDialog.active)

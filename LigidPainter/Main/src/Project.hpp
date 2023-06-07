@@ -317,7 +317,7 @@ public:
         if(library.TDModels.size())
             model = library.TDModels[0];
 
-        return true
+        return true;
     }
 
     std::string locateLigidFileInFolder(const std::string& folderPath)
