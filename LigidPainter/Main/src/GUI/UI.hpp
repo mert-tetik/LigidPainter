@@ -286,6 +286,8 @@ public:
     
     bool anyContextMenuActive = false;
 
+    bool anyDialogActive = false;
+
     //UI Rendering projection
     //Has the screen resolution
     //Example : L = 0, R = 1920, B = 1080, T = 0  
@@ -662,15 +664,27 @@ public:
         library.uniqueNameControl();
 
         //!Render all the UI elements
-        navigationPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
-        windowPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
-        paintingPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
-        libraryPanelLeft.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
-        libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
-        nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
-        selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
+        
+        anyDialogActive = 
+                            textureSelectionDialog.active   || 
+                            materialEditorDialog.active     || 
+                            anyContextMenuActive            || 
+                            displayerDialog.active          || 
+                            greetingDialog.active           || 
+                            settingsDialog.active           || 
+                            newProjectDialog.active         || 
+                            newTextureDialog.active         || 
+                            loadProjectDialog.active; 
+        
+        navigationPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+        windowPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+        paintingPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+        libraryPanelLeft.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+        libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+        nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+        selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
         if(!painter.threeDimensionalMode){
-            twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
+            twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
             
             //Render the painting texture
             shaders.tdModelShader.use();
@@ -697,7 +711,7 @@ public:
             shaders.tdModelShader.setInt("useTransformUniforms",0);
             shaders.buttonShader.use();
         }
-        paintingModesPanel.render(videoScale,mouse,timer,textRenderer,!(textureSelectionDialog.active || materialEditorDialog.active || anyContextMenuActive));
+        paintingModesPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
 
 
 

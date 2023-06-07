@@ -731,23 +731,25 @@ private:
 
     glm::vec2 lastMousePos;//This will be used as "last frame's cursor pos" for the cursor offset
     void scrollCallback(GLFWwindow* window, double xoffset, double yoffset){
-        
-        float originCameraDistance = glm::distance(scene.camera.originPos,scene.camera.cameraPos)/10;
-	    
-        if (yoffset > 0 && scene.camera.radius > 1) {
-	    	scene.camera.radius -= originCameraDistance;
-	    }
-	    else if (yoffset < 0) {
-	    	scene.camera.radius += originCameraDistance;
-	    }
-	    //Zoom in-out
-	    scene.camera.cameraPos.x = cos(glm::radians(scene.camera.yaw)) * cos(glm::radians(scene.camera.pitch)) * scene.camera.radius + scene.camera.originPos.x;
-	    scene.camera.cameraPos.y = sin(glm::radians(scene.camera.pitch)) * -scene.camera.radius + scene.camera.originPos.y;
-	    scene.camera.cameraPos.z = sin(glm::radians(scene.camera.yaw)) * cos(glm::radians(scene.camera.pitch)) * scene.camera.radius + scene.camera.originPos.z;
+        if(!userInterface.anyDialogActive)
+        {
+            float originCameraDistance = glm::distance(scene.camera.originPos,scene.camera.cameraPos)/10;
+    
+            if (yoffset > 0 && scene.camera.radius > 1) {
+	        	scene.camera.radius -= originCameraDistance;
+	        }
+	        else if (yoffset < 0) {
+	        	scene.camera.radius += originCameraDistance;
+	        }
+	        //Zoom in-out
+	        scene.camera.cameraPos.x = cos(glm::radians(scene.camera.yaw)) * cos(glm::radians(scene.camera.pitch)) * scene.camera.radius + scene.camera.originPos.x;
+	        scene.camera.cameraPos.y = sin(glm::radians(scene.camera.pitch)) * -scene.camera.radius + scene.camera.originPos.y;
+	        scene.camera.cameraPos.z = sin(glm::radians(scene.camera.yaw)) * cos(glm::radians(scene.camera.pitch)) * scene.camera.radius + scene.camera.originPos.z;
 
-        updateViewMatrix();
+            updateViewMatrix();
 
-        painter.updateTheDepthTexture = true;
+            painter.updateTheDepthTexture = true;
+        }
     }
     
     void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
@@ -761,8 +763,7 @@ private:
     	mouse.mouseOffset.y = mouse.cursorPos.y - lastMousePos.y;
 
         const float sensitivity = 0.2f; //Mouse sensivity (Increase the value to go brrrrrbrbrbrb)
-
-    	if ((glfwGetMouseButton(context.window, 1) == GLFW_PRESS) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { //L Control + L Click
+    	if ((glfwGetMouseButton(context.window, 1) == GLFW_PRESS) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && !userInterface.anyDialogActive) { //L Control + L Click
     		//Straight Movement
             //Rotates the Camera in 3 axis using mouse offset & intepreting yaw, pitch & radius values
             const float half_sensitivity = sensitivity / 2.0f;
@@ -793,7 +794,7 @@ private:
 
             painter.updateTheDepthTexture = true;
     	}
-    	else if ((glfwGetMouseButton(context.window, 1) == GLFW_PRESS)) { //L Click
+    	else if ((glfwGetMouseButton(context.window, 1) == GLFW_PRESS && !userInterface.anyDialogActive)) { //L Press
     	    scene.camera.yaw += mouse.mouseOffset.x * sensitivity;
     		scene.camera.pitch -= mouse.mouseOffset.y * sensitivity;
 
