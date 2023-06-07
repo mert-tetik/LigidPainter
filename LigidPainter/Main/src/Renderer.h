@@ -72,6 +72,7 @@ struct Library{
     std::vector<Texture> textures;
     std::vector<Material> materials;
     std::vector<Brush> brushes;
+    std::vector<Model> TDModels;
 
     void uniqueName(std::string &s,std::vector<std::string> sArray){
 	    bool isTheSame = false;
@@ -135,6 +136,18 @@ struct Library{
             }
 
             uniqueName(brushes[i].title,brushesStr);    
+        }
+        
+        for (size_t i = 0; i < TDModels.size(); i++)
+        {
+            std::vector<std::string> TDModelsStr;
+            for (size_t istr = 0; istr < TDModels.size(); istr++)
+            {
+                if(i != istr)
+                    TDModelsStr.push_back(TDModels[istr].title);
+            }
+
+            uniqueName(TDModels[i].title,TDModelsStr);    
         }
     }
 };
@@ -557,7 +570,7 @@ public:
        
         //Update the UI projection using window size
         userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
-        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project,painter,VSync,scene.skybox);//Render the UI
+        userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project,painter,VSync,scene.skybox,model);//Render the UI
 
 
 

@@ -16,7 +16,6 @@ Model.hpp : Model class stores a 3D Model's data
 
 */
 
-
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 
@@ -29,6 +28,7 @@ Model.hpp : Model class stores a 3D Model's data
 
 #include "Mesh.hpp"
 #include "Shader.hpp"
+#include "Util.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -37,8 +37,6 @@ Model.hpp : Model class stores a 3D Model's data
 #include <sstream>
 #include <iostream>
 
-
-
 #include <map>
 #include <vector>
 #include <cstdlib>
@@ -46,12 +44,20 @@ Model.hpp : Model class stores a 3D Model's data
 using namespace std;
 
 class Model{
+private:
+    #if defined(_WIN32) || defined(_WIN64)
+		    char folderDistinguisher = '\\';
+	#else
+			char folderDistinguisher = '/'; 
+	#endif
+
+    string directory;
 public:
     // model data 
     vector<TextureMs> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
     vector<Mesh>    meshes;
-    string directory;
     string filePath;
+    string title;
 
     unsigned int mVAO;
     unsigned int mVBO;
@@ -71,7 +77,9 @@ public:
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void loadModel(string const &path,bool triangulate)
     {
+        Util util;
         filePath = path;
+        util.getLastWordBySeparatingWithChar(filePath,folderDistinguisher);
         
         meshes.clear();
         // read file via ASSIMP

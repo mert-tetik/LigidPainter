@@ -225,7 +225,7 @@ public:
     }
 
 
-    void loadProject(std::string ligidFilePath,Library &library,Shaders shaders){
+    void loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model){
         Util util;
 
         //Return if the ligidFilePath doesn't exists
@@ -262,7 +262,7 @@ public:
         }
 
         this->ligidFilePath = ligidFilePath;
-        this->folderPath = util.removeExtension(ligidFilePath);
+        this->folderPath = util.removeLastWordBySeparatingWithChar(ligidFilePath,folderDistinguisher);
         if(this->folderPath[this->folderPath.size()-1] == '/' || this->folderPath[this->folderPath.size()-1] == '\\') //Make sure folder path doesn't have seperator at the end
             this->folderPath.pop_back();
         this->projectName = util.getLastWordBySeparatingWithChar(folderPath,folderDistinguisher);
@@ -279,6 +279,8 @@ public:
     
         
         //Load the textures
+        std::cout << this->folderPath + folderDistinguisher + "Textures" << std::endl;
+        library.textures.clear();
         for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "Textures")){
             std::string texturePath = entry.path().string();
 
@@ -289,6 +291,7 @@ public:
         }
 
         //Load the brushes
+        library.brushes.clear();
         for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "Brushes")){
             std::string brushPath = entry.path().string();
 
@@ -299,6 +302,20 @@ public:
 
             library.brushes.push_back(brush);
         }
+        
+        //Load the tdmodels
+        library.TDModels.clear();
+        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "3DModels")){
+            std::string modelPath = entry.path().string();
+
+            Model TDModel;
+            TDModel.loadModel(modelPath,true);
+
+            library.TDModels.push_back(TDModel);
+        }
+
+        if(library.TDModels.size())
+            model = library.TDModels[0];
     }
 };
 

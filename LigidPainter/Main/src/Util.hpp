@@ -33,6 +33,17 @@ public:
     	}
     	return words[words.size() - 1];
     }
+    string removeLastWordBySeparatingWithChar(string s, char del)
+    {
+    	for (int i = s.size()-1; i >= 0; i--)
+    	{
+    		if(s[i] == del){
+    			s.erase(s.begin()+i,s.end());
+    			break;
+    		}
+    	}
+    	return s;
+    }
     
     std::string removeExtension(std::string s){
     	int i = 1;

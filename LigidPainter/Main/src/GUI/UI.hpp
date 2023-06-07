@@ -219,6 +219,7 @@ struct Dropper{
 #include "GUI/Dialogs/GreetingDialog.hpp"
 #include "GUI/Dialogs/NewTextureDialog.hpp"
 #include "GUI/Dialogs/NewProjectDialog.hpp"
+#include "GUI/Dialogs/LoadProjectDialog.hpp"
 #include "GUI/Dialogs/ColorPickerDialog.hpp"
 #include "GUI/Dialogs/MaterialEditorDialog.hpp"
 #include "GUI/Dialogs/TextureSelectionDialog.hpp"
@@ -265,6 +266,7 @@ public:
     //Dialogs    
     GreetingDialog greetingDialog;
     NewProjectDialog newProjectDialog;
+    LoadProjectDialog loadProjectDialog;
     //ColorPickerDialog colorPickerDialog;
     MaterialEditorDialog materialEditorDialog;
     TextureSelectionDialog textureSelectionDialog;
@@ -454,11 +456,11 @@ public:
                                             Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Textures"        , Texture(), 0.f,true)),
                                             Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Materials"       , Texture(), 0.f,true)),
                                             Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Brushes"         , Texture(), 0.f,true)),
+                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"3D Models"       , Texture(), 0.f,true)),
                                             Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Fonts"           , Texture(), 0.f,true)),
                                             Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Scripts"         , Texture(), 0.f,true)),
                                             Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Filters"         , Texture(), 0.f,true)),
                                             Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Layers"          , Texture(), 0.f,true)),
-                                            Element(Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"3D Models"       , Texture(), 0.f,true)),
                                         }
                                     )
                                 },
@@ -609,6 +611,7 @@ public:
         newTextureDialog = NewTextureDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
         displayerDialog = DisplayerDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures,shaders.prefilteringShader,shaders.skyboxBall,sphereModel);
         newProjectDialog = NewProjectDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
+        loadProjectDialog = LoadProjectDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
         //colorPickerDialog = ColorPickerDialog(context,videoScale,colorPalette,shaders.buttonShader,shaders.colorPicker,appTextures);
         materialEditorDialog = MaterialEditorDialog(shaders.buttonShader,shaders.tdModelShader,colorPalette,appTextures,sphereModel);
         textureSelectionDialog = TextureSelectionDialog(shaders.buttonShader,colorPalette);
@@ -631,7 +634,7 @@ public:
     }    
 
     void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
-                std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter,bool &VSync,Skybox &skybox){
+                std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter,bool &VSync,Skybox &skybox,Model &model){
         
         glDepthFunc(GL_LEQUAL);
 
@@ -809,10 +812,13 @@ public:
         //Dialogs
         
         if(greetingDialog.active)
-            greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog);
+            greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);
             
         if(newProjectDialog.active)
-            newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.active);
+            newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.active,library,shaders,model);
+        
+        if(loadProjectDialog.active)
+            loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.active,library,shaders,model);
         //colorPickerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
         
         if(displayerDialog.active)
@@ -1124,6 +1130,13 @@ private:
                 {
                     //Push texture elements into the section
                     libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.brushes[i].title       , Texture(library.brushes[i].displayingTexture), 0.f,false))) ;
+                }
+            }
+            else if(selectedLibraryElementIndex == 3){ //Update tdmodels
+                for (size_t i = 0; i < library.TDModels.size(); i++)
+                {
+                    //Push texture elements into the section
+                    libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.TDModels[i].title       , Texture(), 0.f,false))) ;
                 }
             }
             //Give the section

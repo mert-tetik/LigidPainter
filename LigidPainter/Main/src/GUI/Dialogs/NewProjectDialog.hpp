@@ -117,12 +117,13 @@
     }
     
 
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,Project &project,bool &greetingDialogActive){
+    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model){
         panel.render(videoScale,mouse,timer,textRenderer,true);
         
 
         if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && mouse.LClick){
             if(project.createProject(panel.sections[0].elements[2].textBox.text,panel.sections[0].elements[1].textBox.text,panel.sections[0].elements[7].textBox.text)){
+                project.loadProject(project.ligidFilePath,library,shaders,model);
                 this->active = false;
             }
         }

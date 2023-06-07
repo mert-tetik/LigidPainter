@@ -35,6 +35,7 @@
  #include "GUI/UI.hpp"
  #include "GUI/Button.hpp"
  #include "GUI/Dialogs/NewProjectDialog.hpp"
+ #include "GUI/Dialogs/LoadProjectDialog.hpp"
  #include "Mouse.hpp"
  #include "Timer.hpp"
 
@@ -101,7 +102,7 @@
         this->bgPanel = Panel(buttonShader,colorPalette,{},glm::vec2(20),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,false,true,true,true,true,1.f,1.f,{},0.25f);
     }
     
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale, NewProjectDialog &newProjectDialog){
+    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale, NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog){
         bgPanel.render(videoScale,mouse,timer,textRenderer,false);
         loadProjectButton.render(videoScale,mouse,timer,textRenderer,true);
         createProjectButton.render(videoScale,mouse,timer,textRenderer,true);
@@ -110,6 +111,10 @@
         
         if(createProjectButton.hover && mouse.LClick){
             newProjectDialog.active = true;
+            this->active = false;
+        }
+        if(loadProjectButton.hover && mouse.LClick){
+            loadProjectDialog.active = true;
             this->active = false;
         }
 
