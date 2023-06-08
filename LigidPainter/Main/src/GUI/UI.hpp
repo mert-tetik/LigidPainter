@@ -697,7 +697,7 @@ public:
             //Bind the selected texture as albedo
             glActiveTexture(GL_TEXTURE2);
             if(library.textures.size())
-                glBindTexture(GL_TEXTURE_2D,library.textures[painter.selectedTextureIndex].ID);
+                glBindTexture(GL_TEXTURE_2D,painter.selectedTexture.ID);
 
             shaders.tdModelShader.setVec2("scale",glm::vec2(min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y)));
             shaders.tdModelShader.setVec3("pos",twoDPaintingPanel.sections[0].elements[0].button.resultPos);
@@ -777,10 +777,10 @@ public:
                         paintingPanel.sections[2].elements[4].button.clickState1 = false;
                     } 
                     else
-                        painter.selectedTextureIndex = i; //Select the texture 
+                        painter.selectedTexture = library.textures[i]; //Select the texture 
                 } //If any texture button element is pressed
             
-                if(i == painter.selectedTextureIndex) //Highlight the selected texture
+                if(library.textures[i].ID == painter.selectedTexture.ID) //Highlight the selected texture
                     libraryPanelDisplayer.sections[0].elements[i].button.clickState1 = true;
             }
             if(selectedLibraryElementIndex == 3){ //Models selected
@@ -809,7 +809,7 @@ public:
 
         selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
         if(library.textures.size())
-            selectedTextureDisplayer.sections[0].elements[0].button.texture = library.textures[painter.selectedTextureIndex];
+            selectedTextureDisplayer.sections[0].elements[0].button.texture = painter.selectedTexture;
         twoDPaintingPanel.sections[0].elements[0].scale.y = twoDPaintingPanel.scale.y;
         
 

@@ -89,7 +89,7 @@ public:
     unsigned int depthTexture;
     bool updateTheDepthTexture = false;
 
-    int selectedTextureIndex = 0;
+    Texture selectedTexture;
 
     int selectedPaintingModeIndex = 0; 
 
@@ -321,7 +321,7 @@ public:
         
         glActiveTexture(GL_TEXTURE2);
         if(textures.size())
-            glBindTexture(GL_TEXTURE_2D, textures[selectedTextureIndex].ID);
+            glBindTexture(GL_TEXTURE_2D, selectedTexture.ID);
 
         glViewport(0,0,textureRes,textureRes);
 
@@ -358,7 +358,7 @@ public:
         char* pixels = new char[textureRes * textureRes * 4];
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
         if(textures.size())
-            glBindTexture(GL_TEXTURE_2D,textures[selectedTextureIndex].ID);
+            glBindTexture(GL_TEXTURE_2D,selectedTexture.ID);
         
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
