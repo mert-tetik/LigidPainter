@@ -618,6 +618,7 @@ public:
         mouse.LDoubleClick = false;
         mouse.mouseOffset = glm::vec2(0);
         mouse.mods = 0;
+        mouse.mouseScroll = 0;
 
         //Set keyboard states to default
         textRenderer.keyInput = false;
@@ -729,12 +730,14 @@ private:
         updateViewport(); //And ofc the OpenGL viewport
     }
 
-    glm::vec2 lastMousePos;//This will be used as "last frame's cursor pos" for the cursor offset
+    glm::vec2 lastMousePos;//This will be used as "last frame's cursor pos" for the cursor offset 
     void scrollCallback(GLFWwindow* window, double xoffset, double yoffset){
         if(!userInterface.anyDialogActive)
         {
             float originCameraDistance = glm::distance(scene.camera.originPos,scene.camera.cameraPos)/10;
     
+            mouse.mouseScroll = yoffset;
+
             if (yoffset > 0 && scene.camera.radius > 1) {
 	        	scene.camera.radius -= originCameraDistance;
 	        }

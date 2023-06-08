@@ -79,6 +79,7 @@ public:
 	bool RPressed = false;
 	bool MPressed = false;
 
+	double mouseScroll = 0.;
 
 	//Cursors
 	GLFWcursor* defaultCursor;

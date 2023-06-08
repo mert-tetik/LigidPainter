@@ -501,7 +501,7 @@ public:
                                 2,
                                 {
                                     Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Add"        , Texture(), 0.f,false),
-                                    Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Del"        , Texture(), 0.f,false)
+                                    Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Import"        , Texture(), 0.f,false)
                                 },
                                 11.f
                             );
@@ -768,9 +768,9 @@ public:
 
 
         //Update the selected texture
-        if(selectedLibraryElementIndex == 0){ //Textures selected
-            for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
-            {
+        for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
+        {
+            if(selectedLibraryElementIndex == 0){ //Textures selected
                 if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.LClick){
                     if(paintingPanel.sections[2].elements[4].button.clickState1){//If brush texture displayer is pressed
                         painter.brushTexture = libraryPanelDisplayer.sections[0].elements[i].button.texture; //Select a brush texture
@@ -779,9 +779,14 @@ public:
                     else
                         painter.selectedTextureIndex = i; //Select the texture 
                 } //If any texture button element is pressed
-
+            
                 if(i == painter.selectedTextureIndex) //Highlight the selected texture
                     libraryPanelDisplayer.sections[0].elements[i].button.clickState1 = true;
+            }
+            if(selectedLibraryElementIndex == 3){ //Models selected
+                if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.LClick){
+                    model = library.TDModels[i]; //Select the model 
+                } 
             }
         }
         
@@ -1189,6 +1194,85 @@ private:
                 library.brushes[library.brushes.size()-1].updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
                 
             }
+            if(selectedLibraryElementIndex == 3){ //3D Models
+                
+                char const* lFilterPatterns[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
+	
+	            char* test = tinyfd_openFileDialog("Select a 3D model","",11, lFilterPatterns,"",false);
+                if(test){
+                    Model tdModel;
+                    tdModel.loadModel(test,true);
+                    library.TDModels.push_back(tdModel);
+                }
+                
+            }
+        }
+        if(libraryPanelDisplayer.barButtons[1].clickedMixVal == 1.f){ //Import button
+            if(selectedLibraryElementIndex == 0){//Textures
+                //Select Texture
+                char const* lFilterPatterns[12] = 
+                                                { 
+                                                    "*.png",                     //(Portable Network Graphics)
+                                                    "*.jpeg",                    //(Joint Photographic Experts Group)
+                                                    "*.jpg",                    //(Joint Photographic Experts Group but 3 letters)
+                                                    "*.bmp",                     //(Bitmap)
+                                                    "*.gif",                     //(Graphics Interchange Format)
+                                                    "*.tga",                     //(Truevision Targa)
+                                                    "*.hdr",                     //(High Dynamic Range)
+                                                    "*.pic",                     //(Softimage PIC)
+                                                    "*.pnm",                     //(Portable Any Map)
+                                                    "*.ppm",                     //(Portable Pixel Map)
+                                                    "*.pgm",                     //(Portable Gray Map)
+                                                    "*.pbm"                     //(Portable Bitmap) };
+                                                };   
+
+	            char* test = tinyfd_openFileDialog("Select a texture","", 12, lFilterPatterns,"",false);
+                if(test){
+                    Texture txtr;
+                    txtr.load(test);
+                    library.textures.push_back(txtr);
+                }
+
+            }
+            if(selectedLibraryElementIndex == 1){ //Materials
+                //Add new material to the library & not the panel
+                //Will be displayed right after library panel is updated which happens in every 100 frame
+                library.materials.push_back(Material(textureRes,"material_0",materialIDCounter));
+                materialIDCounter++;
+            }
+            if(selectedLibraryElementIndex == 2){ //Brushes
+                library.brushes.push_back(
+                                            Brush
+                                                (    
+                                                    paintingPanel.sections[2].elements[0].rangeBar.value,
+                                                    paintingPanel.sections[2].elements[3].rangeBar.value,
+                                                    paintingPanel.sections[2].elements[1].rangeBar.value,
+                                                    paintingPanel.sections[2].elements[7].rangeBar.value,
+                                                    paintingPanel.sections[2].elements[8].rangeBar.value,
+                                                    paintingPanel.sections[2].elements[9].rangeBar.value,
+                                                    paintingPanel.sections[2].elements[6].checkBox.clickState1,
+                                                    paintingPanel.sections[2].elements[2].checkBox.clickState1,
+                                                    "brush_1",
+                                                    painter.brushTexture
+                                                )
+                                        );
+                
+                library.brushes[library.brushes.size()-1].updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
+                
+            }
+            if(selectedLibraryElementIndex == 3){ //3D Models
+                
+                char const* lFilterPatterns[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
+	
+	            char* test = tinyfd_openFileDialog("Select a 3D model","",11, lFilterPatterns,"",false);
+                if(test){
+                    Model tdModel;
+                    tdModel.loadModel(test,true);
+                    library.TDModels.push_back(tdModel);
+                }
+                
+            }
+            
         }
         
         

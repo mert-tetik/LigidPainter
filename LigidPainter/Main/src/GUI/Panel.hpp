@@ -345,8 +345,10 @@ private:
             
             sliderButton.render(videoScale,mouse,timer,textRenderer,doMouseTracking);
             
+            //if(hover)
+            //    slideVal += mouse.mouseScroll;
+            
             if(sliderButton.clickState1){ //Pressed
-                
                 //Move the slidebar
                 slideVal += mouse.mouseOffset.y/videoScale.y*100.f;
             } 

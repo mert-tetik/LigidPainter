@@ -79,7 +79,7 @@ public:
     {
         Util util;
         filePath = path;
-        util.getLastWordBySeparatingWithChar(filePath,folderDistinguisher);
+        title = util.getLastWordBySeparatingWithChar(filePath,folderDistinguisher);
         
         meshes.clear();
         // read file via ASSIMP
