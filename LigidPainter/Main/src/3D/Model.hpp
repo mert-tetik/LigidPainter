@@ -80,6 +80,7 @@ public:
         Util util;
         filePath = path;
         title = util.getLastWordBySeparatingWithChar(filePath,folderDistinguisher);
+        title = util.removeExtension(title);
         
         meshes.clear();
         // read file via ASSIMP

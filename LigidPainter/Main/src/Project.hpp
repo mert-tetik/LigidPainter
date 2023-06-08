@@ -209,6 +209,21 @@ public:
             library.textures[i].exportTexture(textureFolderPath);
         }
         
+        
+        //!Materials
+        std::string materialFolderPath = this->folderPath + folderDistinguisher + "Materials";
+    
+        //Clear the materials folder
+        deleteFilesInFolder(materialFolderPath);
+
+        //Write the materials
+        for (size_t i = 0; i < library.materials.size(); i++)
+        {
+            //Export material
+            library.materials[i].writeFile(materialFolderPath);
+        }
+
+
         //!Brushes
         std::string brushFolderPath = this->folderPath + folderDistinguisher + "Brushes";
     
@@ -222,10 +237,23 @@ public:
             library.brushes[i].saveFile(brushFolderPath);
         }
         
+        
+        //!Brushes
+        std::string tdModelFolderPath = this->folderPath + folderDistinguisher + "3DModels";
+    
+        //Clear the brushes folder
+        deleteFilesInFolder(tdModelFolderPath);
+
+        //Write the brushes
+        for (size_t i = 0; i < library.TDModels.size(); i++)
+        {
+            //Export brush
+            library.TDModels[i].export(tdModelFolderPath);
+        }
     }
 
 
-    bool loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model){
+    bool loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette){
         Util util;
 
         //Return if the ligidFilePath doesn't exists
@@ -279,7 +307,6 @@ public:
     
         
         //Load the textures
-        std::cout << this->folderPath + folderDistinguisher + "Textures" << std::endl;
         library.textures.clear();
         for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "Textures")){
             std::string texturePath = entry.path().string();
@@ -290,6 +317,17 @@ public:
             library.textures.push_back(texture);
         }
 
+        //Load the materials
+        library.materials.clear();
+        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "Materials")){
+            std::string materialPath = entry.path().string();
+
+            Material material;
+            material.readFile(materialPath,colorPalette,shaders.buttonShader,appTextures);
+
+            library.materials.push_back(material);
+        }
+        
         //Load the brushes
         library.brushes.clear();
         for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "Brushes")){

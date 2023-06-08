@@ -799,7 +799,6 @@ public:
                     selectedLibraryElementIndex = i;
                     break;
                 }
-                
             } 
         }
 
@@ -1235,10 +1234,19 @@ private:
 
             }
             if(selectedLibraryElementIndex == 1){ //Materials
-                //Add new material to the library & not the panel
-                //Will be displayed right after library panel is updated which happens in every 100 frame
-                library.materials.push_back(Material(textureRes,"material_0",materialIDCounter));
-                materialIDCounter++;
+                //Select material
+                char const* lFilterPatterns[12] = 
+                                                { 
+                                                    "*.lgdmaterial",
+                                                };   
+
+	            char* test = tinyfd_openFileDialog("Select a material","", 12, lFilterPatterns,"",false);
+                
+                if(test){
+                    Material material;
+                    material.readFile(test,colorPalette,shaders.buttonShader,appTextures);
+                    library.materials.push_back(material);
+                }
             }
             if(selectedLibraryElementIndex == 2){ //Brushes
                 library.brushes.push_back(
