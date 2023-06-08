@@ -70,6 +70,22 @@ public:
     Texture(unsigned int ID){
         this->ID = ID;
     }
+    
+    Texture(char* pixels, int w, int h){
+        glActiveTexture(GL_TEXTURE0);
+        
+        glGenTextures(1,&ID);
+	    glBindTexture(GL_TEXTURE_2D, ID);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+		glGenerateMipmap(GL_TEXTURE_2D);
+    }
 
     void load(const char* path){
         Util util;
@@ -153,6 +169,8 @@ public:
         if(!stbi_write_png((path + folderDistinguisher + title + ".png").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){
             std::cout << "ERROR Failed to write texture file : " << path << std::endl;
         }
+
+        delete[] pixels;
     }
 
     void getData(char*& pixels){

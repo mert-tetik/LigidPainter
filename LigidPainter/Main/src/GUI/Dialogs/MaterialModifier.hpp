@@ -63,15 +63,31 @@ public:
     std::string title;
 
     MaterialModifier(){}
-    MaterialModifier(std::string title,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures, std::vector<Section> sections,int modifierIndex,
-                    std::string shaderPath){
+    MaterialModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures,int modifierIndex){
+        if(modifierIndex == 0){
+            this->sections = createTextureModifier(colorPalette,buttonShader,appTextures);
+            this->title = "Texture Modifier";    
+            shader = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag");
+        }
 
-
-        shader = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert",shaderPath.c_str());
-
-        this->title = title;    
-        this->sections = sections;
         this->modifierIndex = modifierIndex;
+    }
+
+    std::vector<Section> createTextureModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+            
+            return {
+                Section(
+                    Element(Button(1,glm::vec2(1,2.f),colorPalette,buttonShader,"Channels",Texture(),0.f,true)),
+                    {
+                        Element(Button(1,glm::vec2(1,1.5f),colorPalette,buttonShader,"Albedo",              appTextures.greetingDialogImage,0.f,false)),
+                        Element(Button(1,glm::vec2(1,1.5f),colorPalette,buttonShader,"Roughness",           appTextures.greetingDialogImage,0.f,false)),
+                        Element(Button(1,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",            appTextures.greetingDialogImage,0.f,false)),
+                        Element(Button(1,glm::vec2(1,1.5f),colorPalette,buttonShader,"Normal map",          appTextures.greetingDialogImage,0.f,false)),
+                        Element(Button(1,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height map",          appTextures.greetingDialogImage,0.f,false)),
+                        Element(Button(1,glm::vec2(1,1.5f),colorPalette,buttonShader,"Ambient Occlusion",   appTextures.greetingDialogImage,0.f,false))
+                    }
+                )
+            };
     }
 };
 
