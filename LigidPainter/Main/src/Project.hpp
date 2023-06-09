@@ -248,7 +248,7 @@ public:
         for (size_t i = 0; i < library.TDModels.size(); i++)
         {
             //Export brush
-            library.TDModels[i].export(tdModelFolderPath);
+            library.TDModels[i].exportModel(tdModelFolderPath);
         }
     }
 
