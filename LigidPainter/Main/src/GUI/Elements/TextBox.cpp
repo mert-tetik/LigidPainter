@@ -211,6 +211,5 @@ void TextBox::render(
     shader.setVec4("color2"  ,     textColor2     );
     
     //Render the text
-    //!Update the parameters of the renderText function in the renderTheTexture function if this function's parameters are changed
-    textRenderer.renderText(shader,text,resultPos.x ,resultPos.y,resultPos.z+0.02f,resultPos.x + resultPos.x,false,resultScaleText,resultPos.x-resultScale.x,active,activeChar,activeChar2,timer,true);
+    textRenderer.renderText(shader,text,resultPos.x - resultScale.x ,resultPos.y,resultPos.z+0.02f,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x - resultScale.x,active,activeChar,activeChar2,timer,true);
 }
