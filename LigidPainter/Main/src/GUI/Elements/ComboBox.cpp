@@ -190,10 +190,10 @@ void ComboBox::render(
         render(resultPos,resultScale,resultRadius,resultOutlineThickness,hoverMixVal[i],clickedMixVal[i],true,color);
         
         if(!pressed){
-            textRenderer.renderText(shader,texts[selectedIndex],resultPos.x,resultPos.y,resultPos.z+0.02f,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x,false);
+            textRenderer.renderText(shader,texts[selectedIndex],resultPos.x,resultPos.y,resultPos.z+0.02f,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x,false,false);
         }
         else{
-            textRenderer.renderText(shader,texts[i],resultPos.x,resultPos.y,resultPos.z+0.02f,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x,false);
+            textRenderer.renderText(shader,texts[i],resultPos.x,resultPos.y,resultPos.z+0.02f,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x,false,false);
         }
         if(i == 0 && !pressed && clickedMixVal[0] < 0.2f)
             break;

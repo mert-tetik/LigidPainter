@@ -80,10 +80,10 @@ bool Button::renderTheTexture(glm::vec3 resultPos,glm::vec2 resultScale,float re
     //Update the parameters if original renderer's parameters are changed
     glm::vec3 textPosData;
     if(textAlignLeft){
-        textPosData = textRenderer.renderText(shader,text,resultPos.x-resultScale.x,resultPos.y,-10000.1,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x,true);
+        textPosData = textRenderer.renderText(shader,text,resultPos.x-resultScale.x,resultPos.y,-10000.1,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x,true,false);
     }
     else{
-        textPosData = textRenderer.renderText(shader,text,resultPos.x,resultPos.y,-10000.1,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x,false);
+        textPosData = textRenderer.renderText(shader,text,resultPos.x,resultPos.y,-10000.1,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x,false,false);
     }
     //textPosData.x is where the text is started in x axis
     //textPosData.y is where the text is ended in x axis
@@ -283,8 +283,8 @@ void Button::render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer
         shader.setVec4("color2"  ,     textColor2     );
         //Update the parameters of the renderText function in the renderTheTexture function if this function's parameters are changed
         if(textAlignLeft)
-            textRenderer.renderText(shader,text,resultPos.x+textureRadius - resultScale.x ,resultPos.y,resultPos.z+0.002f,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,true);
+            textRenderer.renderText(shader,text,resultPos.x+textureRadius - resultScale.x ,resultPos.y,resultPos.z+0.002f,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,true,false);
         else
-            textRenderer.renderText(shader,text,resultPos.x+textureRadius ,resultPos.y,resultPos.z+0.002f,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,false);
+            textRenderer.renderText(shader,text,resultPos.x+textureRadius ,resultPos.y,resultPos.z+0.002f,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,false,false);
     }
 }

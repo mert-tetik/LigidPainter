@@ -135,6 +135,7 @@ public:
     int openSelectFolderDialog;
     float thickness = 2.f;
     float radius = 0.35f; 
+    int textPosCharIndex = 0;
 
     //Constructors
     TextBox();
@@ -195,7 +196,9 @@ public:
 class TextRenderer
 {
 private:
-    glm::vec4 rndrTxt(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,int index,bool render,bool leftAlign);
+    void renderLeftToRight(std::string text, bool multipleLines, float &x, float &y,float &z , float maxX, float lastXText, float scale, Shader shader, bool render, int &counter,glm::vec4 &data, int index,float overallX,bool leftAlign,float mostLeft);
+    void renderRightToLeft(std::string text, bool multipleLines, float &x, float &y,float &z , float maxX, float lastXText, float scale, Shader shader, bool render, int &counter,glm::vec4 &data, int index, float mostLeft);
+    glm::vec4 rndrTxt(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,int index,bool render,bool leftAlign,bool rightToLeft,int textPosCharIndex);
 
 public:
     Font font;
@@ -209,9 +212,13 @@ public:
     TextRenderer(Font font);
 
     //Public member functions
-    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,bool leftAlign);
     glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,
-                            float mostLeft,bool active,int &activeChar,int &activeChar2,Timer &timer,bool leftAlign);
+                         float mostLeft,bool leftAlign,bool rightToLeft);
+    
+    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,
+                            float mostLeft,bool active,int &activeChar,int &activeChar2,Timer &timer,bool leftAlign,
+                            bool rightToLeft,int &textPosCharIndex);
+
 	void processTextInput(std::string &text,int &activeChar,int &activeChar2);
 };
 

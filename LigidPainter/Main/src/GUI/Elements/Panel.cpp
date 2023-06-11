@@ -256,7 +256,7 @@ void Panel::drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm
                         glm::vec4 textColor = glm::vec4(1) - sections[sI].elements[i].button.color;
                         textColor.a = 1.;
                         shader.setVec4("color"  ,    textColor      ); //Default button color
-                        textRenderer.renderText(shader,sections[sI].elements[i].button.text,sections[sI].elements[i].button.resultPos.x,sections[sI].elements[i].button.resultPos.y + sections[sI].elements[i].button.resultScale.y/1.4f,sections[sI].elements[i].button.resultPos.z+0.02,sections[sI].elements[i].button.resultPos.x + sections[sI].elements[i].button.resultScale.x,false,0.25f,sections[sI].elements[i].button.resultPos.x - sections[sI].elements[i].button.resultScale.x,false);
+                        textRenderer.renderText(shader,sections[sI].elements[i].button.text,sections[sI].elements[i].button.resultPos.x,sections[sI].elements[i].button.resultPos.y + sections[sI].elements[i].button.resultScale.y/1.4f,sections[sI].elements[i].button.resultPos.z+0.02,sections[sI].elements[i].button.resultPos.x + sections[sI].elements[i].button.resultScale.x,false,0.25f,sections[sI].elements[i].button.resultPos.x - sections[sI].elements[i].button.resultScale.x,false,false);
                     }
                 }
                 btnCounter++; //Indexing buttons to position them

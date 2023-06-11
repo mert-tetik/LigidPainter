@@ -56,7 +56,7 @@ void RangeBar::render(glm::vec3 posVal,glm::vec2 scaleVal,float radiusVal,glm::v
 
 //Manual constructor
 RangeBar::RangeBar(){
-    
+
 }
 
 RangeBar::RangeBar(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 pointerColor,glm::vec4 pointerColor2,bool outlineExtra,glm::vec3 outlineColor,
@@ -203,5 +203,5 @@ void RangeBar::render(
     std::string textResult; 
     textResult = text;
     textResult += "(" + std::to_string(value) + ")";
-    textRenderer.renderText(shader,textResult,resultPos.x ,resultPos.y,1,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,false);
+    textRenderer.renderText(shader,textResult,resultPos.x ,resultPos.y,1,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,false,false);
 }

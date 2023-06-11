@@ -211,5 +211,5 @@ void TextBox::render(
     shader.setVec4("color2"  ,     textColor2     );
     
     //Render the text
-    textRenderer.renderText(shader,text,resultPos.x - resultScale.x ,resultPos.y,resultPos.z+0.02f,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x - resultScale.x,active,activeChar,activeChar2,timer,true);
+    textRenderer.renderText(shader,text,resultPos.x - resultScale.x ,resultPos.y,resultPos.z+0.02f,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x - resultScale.x,active,activeChar,activeChar2,timer,true,false,textPosCharIndex);
 }
