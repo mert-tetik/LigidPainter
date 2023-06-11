@@ -185,17 +185,17 @@ void Panel::drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm
     if(vertical){//If the panel is vertical
         if(sections.size()){//If there are sections
             if(sections[0].header.button.text.size()) //If there is a header in the section
-                elementPos = pos.y-scale.y + sections[0].header.scale.y; //Take the starting position by including the height of the section header
+                elementPos = pos.y-scale.y + sections[0].header.scale.y + sections[0].header.panelOffset; //Take the starting position by including the height of the section header
             else if(sections[0].elements.size()) //If there are buttons in the first section
-                elementPos = pos.y-scale.y + sections[0].elements[0].scale.y; //Take the starting position by including the height of the first button of the section
+                elementPos = pos.y-scale.y + sections[0].elements[0].scale.y + sections[0].elements[0].panelOffset; //Take the starting position by including the height of the first button of the section
         }
     }
     else{//If the panel is horizontal
         if(sections.size()){//If there are sections
             if(sections[0].header.button.text.size())  //If there is a header in the section
-                elementPos = pos.x-scale.x + sections[0].header.scale.x; //Take the starting position by including the height of the section header
+                elementPos = pos.x-scale.x + sections[0].header.scale.x + sections[0].header.panelOffset; //Take the starting position by including the height of the section header
             else if(sections[0].elements.size())//If there are buttons in the first section
-                elementPos = pos.x-scale.x + sections[0].elements[0].scale.x; //Take the starting position by including the width of the first button of the section
+                elementPos = pos.x-scale.x + sections[0].elements[0].scale.x + sections[0].elements[0].panelOffset; //Take the starting position by including the width of the first button of the section
         }
     }
     
