@@ -19,9 +19,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <GLFW/glfw3.h>
 
 #include "../../thirdparty/include/glm/glm.hpp"
-#include "../../thirdparty/include/glm/gtc/matrix_transform.hpp"
-#include "../../thirdparty/include/glm/gtc/type_ptr.hpp"
-#include "../../thirdparty/include/glm/gtx/string_cast.hpp"
 
 #include "Renderer.h"
 
