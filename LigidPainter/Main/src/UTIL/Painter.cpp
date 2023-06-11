@@ -312,6 +312,7 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
 }
 
 void Painter::updateDepthTexture(Model &model){
+    std::cout << "aAAAaaAaAaAaaAaA" << std::endl;
     unsigned int captureFBO;
     glGenFramebuffers(1,&captureFBO);
     glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);

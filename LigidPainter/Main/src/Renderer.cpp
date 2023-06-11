@@ -284,7 +284,7 @@ void Renderer::render(){
     shaders.skyboxBall.setMat4("view",scene.viewMatrix);
     shaders.skyboxBall.setMat4("projection",scene.projectionMatrix);
 
-    if(painter.updateTheDepthTexture){
+    if(painter.updateTheDepthTexture && !mouse.RPressed){
         painter.updateDepthTexture(model);
         painter.updateTheDepthTexture = false;
     }
