@@ -170,129 +170,11 @@ Section::Section(Element header,std::vector<Element> elements){
 }
 
 UI::UI(){} 
-
-void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
-            std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter,bool &VSync,Skybox &skybox,Model &model){
     
-    glDepthFunc(GL_LEQUAL);
-    //Give projection to the curve shader        
-    shaders.singleCurve.use();
-    shaders.singleCurve.setMat4("projection",projection); 
+void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std::vector<ContextMenu> &contextMenus,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
+                        Context &context,glm::vec2 &videoScale,TextRenderer &textRenderer, Timer &timer, int &textureRes,float screenGapPerc,Model &model){
     
-    //Give projection to the color picker shader 
-    //!Color picker shader is not used rn        
-    shaders.colorPicker.use();
-    shaders.colorPicker.setMat4("projection",projection); 
-    //Use the related shader
-    shaders.buttonShader.use();
     
-    //Projection is changing in the renderer.render()
-    //userInterface.projection = glm::mat4(...)
-    shaders.buttonShader.setMat4("projection",projection); 
-    float screenGap = videoScale.x - context.windowScale.x; //Use that value to keep panels on the right side
-    float screenGapPerc = screenGap / videoScale.x * 100.f; 
-    //TODO Don't call that everyframe (maybe)
-    library.uniqueNameControl();
-    //!Render all the UI elements
-    
-    anyDialogActive = 
-                        textureSelectionDialog.active   || 
-                        materialEditorDialog.active     || 
-                        anyContextMenuActive            || 
-                        displayerDialog.active          || 
-                        greetingDialog.active           || 
-                        settingsDialog.active           || 
-                        newProjectDialog.active         || 
-                        newTextureDialog.active         || 
-                        loadProjectDialog.active; 
-
-    anyPanelHover = 
-                    navigationPanel.hover               ||
-                    windowPanel.hover                   ||
-                    paintingPanel.hover                 ||
-                    libraryPanelLeft.hover              ||
-                    libraryPanelDisplayer.hover         ||
-                    nodeEditorDisplayer.hover           ||
-                    selectedTextureDisplayer.hover      || 
-                    paintingModesPanel.hover;
-
-    navigationPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
-    windowPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
-    paintingPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
-    libraryPanelLeft.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
-    libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
-    nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
-    selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
-    if(!painter.threeDimensionalMode){
-        twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
-        
-        //Render the painting texture
-        shaders.tdModelShader.use();
-        shaders.tdModelShader.setInt("render2D",0);
-        shaders.tdModelShader.setInt("useTransformUniforms",1);
-        shaders.tdModelShader.setMat4("orthoProjection",projection);
-        shaders.tdModelShader.setInt("returnSingleTxtr",1);
-        //Bind the selected texture as albedo
-        glActiveTexture(GL_TEXTURE2);
-        if(library.textures.size())
-            glBindTexture(GL_TEXTURE_2D,painter.selectedTexture.ID);
-        shaders.tdModelShader.setVec2("scale",glm::vec2(glm::min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y)));
-        shaders.tdModelShader.setVec3("pos",twoDPaintingPanel.sections[0].elements[0].button.resultPos);
-        glDrawArrays(GL_TRIANGLES,0,6);
-        painter.windowProjection = projection;
-        painter.scale2D = glm::vec2(std::min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y));
-        painter.pos2D = twoDPaintingPanel.sections[0].elements[0].button.resultPos;
-        shaders.tdModelShader.setInt("returnSingleTxtr",0);
-        shaders.tdModelShader.setInt("useTransformUniforms",0);
-        shaders.buttonShader.use();
-    }
-    paintingModesPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
-    if(renamingTextBox.active){
-        renamingTextBox.render(videoScale,mouse,timer,textRenderer,false,context.window);
-        renamingTextBoxClosed = false;
-    }
-    else{
-        //The first frame renamingTextBox is closed 
-        if(!renamingTextBoxClosed){
-            if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_RELEASE){
-                if(renamingIndices.x == 0)
-                    library.textures[renamingIndices.y].title = renamingTextBox.text;
-                else if(renamingIndices.x == 1)
-                    library.materials[renamingIndices.y].title = renamingTextBox.text;
-                else if(renamingIndices.x == 2)
-                    library.brushes[renamingIndices.y].title = renamingTextBox.text;
-            }
-            else{
-                if(renamingIndices.x == 0)
-                    library.textures[renamingIndices.y].title = lastTitleBeforeRenaming;
-                else if(renamingIndices.x == 1)
-                    library.materials[renamingIndices.y].title = lastTitleBeforeRenaming;
-                else if(renamingIndices.x == 2)
-                    library.brushes[renamingIndices.y].title = lastTitleBeforeRenaming;
-            }
-        }
-        renamingTextBoxClosed = true;
-    }
-    Util util;
-    if(paintingPanel.sections[2].elements[5].button.hover && mouse.LClick){ //If pressed to remove the brush texture button
-        painter.brushTexture = Texture(0);
-    }
-    if(paintingPanel.sections[2].elements[11].button.hover && mouse.LClick){ //If pressed to export brush file button
-        Brush exportBrush
-                        (    
-                            1.f - paintingPanel.sections[2].elements[0].rangeBar.value/100.f,
-                            1.f - paintingPanel.sections[2].elements[3].rangeBar.value/100.f,
-                            1.f - paintingPanel.sections[2].elements[1].rangeBar.value/100.f,
-                            paintingPanel.sections[2].elements[7].rangeBar.value,
-                            1.f - paintingPanel.sections[2].elements[8].rangeBar.value/100.f,
-                            1.f - paintingPanel.sections[2].elements[9].rangeBar.value/100.f,
-                            paintingPanel.sections[2].elements[6].checkBox.clickState1,
-                            paintingPanel.sections[2].elements[2].checkBox.clickState1,
-                            "brush_1",
-                            painter.brushTexture
-                        );
-        exportBrush.saveFile("");
-    }
     //Update the selected texture
     for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
     {
@@ -327,90 +209,9 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
             }
         } 
     }
-    elementInteraction(painter,mouse,library,contextMenus,appNodes,nodeScene,context,videoScale,textRenderer,timer,textureRes,screenGapPerc);
-    
-    selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
-    if(library.textures.size())
-        selectedTextureDisplayer.sections[0].elements[0].button.texture = painter.selectedTexture;
-    twoDPaintingPanel.sections[0].elements[0].scale.y = twoDPaintingPanel.scale.y;
-    
-    //Render the nodes
-    for (size_t i = 0; i < nodeScene.size(); i++)
-    {
-        //Update the display texture of the material node
-        if(nodeScene[i].nodeIndex == 1){//Is a material node
-            for (size_t matI = 0; matI < library.materials.size(); matI++)
-            {
-                if(nodeScene[i].materialID == library.materials[matI].ID)
-                    nodeScene[i].nodePanel.sections[0].elements[0].button.texture = Texture(library.materials[matI].displayingTexture);
-            }
-        }
-        nodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,nodeScene,i);
-    }
-    
-    //Dialogs
-    
-        
-    if(newProjectDialog.active)
-        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.active,library,shaders,model);
-    
-    if(loadProjectDialog.active)
-        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.active,library,shaders,model);
-    
-    if(greetingDialog.active)
-        greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);
-    //colorPickerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project);
-    
-    if(displayerDialog.active)
-        displayerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,skybox);
-    
-    if(newTextureDialog.active)
-        newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes);
-    
-    if(settingsDialog.active)
-        settingsDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes,VSync);
-    
-    if(materialEditorDialog.active && library.materials.size()){
-        if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            materialEditorDialog.deactivate(textureSelectionDialog);
-        materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex],textureRes,box,context);
-    }
-    
-    if(textureSelectionDialog.active)
-        textureSelectionDialog.render(videoScale,mouse,timer,textRenderer,library);
-    if(frameCounter > 1000)
-        frameCounter = 0;
-    //!Make sure the execute these after rendering everything
-    if(mouse.LClick && dropper.active){
-        //Dropper active pick color
-        glm::vec3 cursorHoverPixelRGBData;
-        //Read the cursor position from the default frame buffer
-        glReadPixels(mouse.cursorPos.x,mouse.cursorPos.y,1,1,GL_RGB,GL_FLOAT,&cursorHoverPixelRGBData);
-        
-        dropper.value = cursorHoverPixelRGBData; 
-    
-        dropper.active = false;
-        if(painter.selectedColorIndex == 0)
-            painter.color1.loadRGB(dropper.value*glm::vec3(255));
-        if(painter.selectedColorIndex == 1)
-            painter.color2.loadRGB(dropper.value*glm::vec3(255));
-        if(painter.selectedColorIndex == 2)
-            painter.color3.loadRGB(dropper.value*glm::vec3(255));
-    }
-    
-    //If clicked to the dropper button activate the dropper
-    if(paintingPanel.sections[0].elements[3].button.hover && mouse.LClick){
-        dropper.active = true;
-    }
-    frameCounter++;
-}
     
     
     
-    
-    
-void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std::vector<ContextMenu> &contextMenus,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
-                        Context &context,glm::vec2 &videoScale,TextRenderer &textRenderer, Timer &timer, int &textureRes,float screenGapPerc){
     //!PAINTING PANEL COLOR BUTTONS
     if(paintingPanel.sections[0].elements[0].button.hover && mouse.LDoubleClick){//Pressed to first color button element
         painter.loadColor1();
@@ -441,6 +242,35 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
     
     //Update the brush texture displayer's texture
     paintingPanel.sections[2].elements[4].button.texture = painter.brushTexture;
+
+    //If clicked to the dropper button activate the dropper
+    if(paintingPanel.sections[0].elements[3].button.hover && mouse.LClick){
+        dropper.active = true;
+    }
+
+
+    if(paintingPanel.sections[2].elements[5].button.hover && mouse.LClick){ //If pressed to remove the brush texture button from brush/more
+        painter.brushTexture = Texture(0);
+    }
+    
+    if(paintingPanel.sections[2].elements[11].button.hover && mouse.LClick){ //If pressed to export brush file button from brush/more
+        Brush exportBrush
+                        (    
+                            1.f - paintingPanel.sections[2].elements[0].rangeBar.value/100.f,
+                            1.f - paintingPanel.sections[2].elements[3].rangeBar.value/100.f,
+                            1.f - paintingPanel.sections[2].elements[1].rangeBar.value/100.f,
+                            paintingPanel.sections[2].elements[7].rangeBar.value,
+                            1.f - paintingPanel.sections[2].elements[8].rangeBar.value/100.f,
+                            1.f - paintingPanel.sections[2].elements[9].rangeBar.value/100.f,
+                            paintingPanel.sections[2].elements[6].checkBox.clickState1,
+                            paintingPanel.sections[2].elements[2].checkBox.clickState1,
+                            "brush_1",
+                            painter.brushTexture
+                        );
+        exportBrush.saveFile("");
+    }
+
+
     //!WINDOW PANEL BUTTONS
     if(windowPanel.sections[0].elements[0].button.hover && mouse.LClick){//Pressed to the 3D painting button of the window panel
         painter.threeDimensionalMode = true;
@@ -844,6 +674,31 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
         }
     }
     
+
+
+    //!Dialog & panel state
+    anyDialogActive = 
+                    textureSelectionDialog.active   || 
+                    materialEditorDialog.active     || 
+                    anyContextMenuActive            || 
+                    displayerDialog.active          || 
+                    greetingDialog.active           || 
+                    settingsDialog.active           || 
+                    newProjectDialog.active         || 
+                    newTextureDialog.active         || 
+                    loadProjectDialog.active; 
+
+    anyPanelHover = 
+                    navigationPanel.hover               ||
+                    windowPanel.hover                   ||
+                    paintingPanel.hover                 ||
+                    libraryPanelLeft.hover              ||
+                    libraryPanelDisplayer.hover         ||
+                    nodeEditorDisplayer.hover           ||
+                    selectedTextureDisplayer.hover      || 
+                    paintingModesPanel.hover;
+
+
     //!Positioning the panels
     paintingPanel.pos.x = windowPanel.pos.x - windowPanel.scale.x - paintingPanel.scale.x; //Keep on the left side of the window panel 
     windowPanel.pos.x = 100.f - windowPanel.scale.x - screenGapPerc; //Keep on the right side
@@ -870,4 +725,9 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
     twoDPaintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + twoDPaintingPanel.scale.y; //Keep beneath the navigation bar
     paintingModesPanel.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + paintingModesPanel.scale.x + 1;
     paintingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + paintingModesPanel.scale.y;
+
+    selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
+    if(library.textures.size())
+        selectedTextureDisplayer.sections[0].elements[0].button.texture = painter.selectedTexture;
+    twoDPaintingPanel.sections[0].elements[0].scale.y = twoDPaintingPanel.scale.y;
 }
