@@ -111,7 +111,10 @@ private:
     void updateViewMatrix();
     void updateProjectionMatrix();
     void updateViewport();
-
+    
+    //Rendering stuff
+    void renderSkyBox();
+    void set3DUniforms();
 
     //CALLBACKS
     double previousClickTime = 0.0;

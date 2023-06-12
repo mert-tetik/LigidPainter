@@ -11,9 +11,6 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
-
-    Renderer.h : Renders the whole screen
-
 */
 
 #include <iostream>
@@ -33,22 +30,25 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
 
-
 void Renderer::render(){
+    
+    //Handle user input and interact with the windowing system
     glfwPollEvents();
     
-    //Update timer data
+    //Update local timer data
     if(timer.runTimer())
         std::cout << timer.FPS << std::endl; //Print the fps every second
     
+    //Update OpenGL viewport every frame
     updateViewport();
 
-    //VSYNC
+    //VSync
     if(VSync)
-        glfwSwapInterval(1);
+        glfwSwapInterval(1); //Enable VSync
     else
-        glfwSwapInterval(0);
-
+        glfwSwapInterval(0); //Disable VSync
+    
+    //Default blending settings
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
@@ -57,67 +57,46 @@ void Renderer::render(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     //Render skybox
-    shaders.skyboxShader.use();
-    shaders.skyboxShader.setMat4("view",scene.viewMatrix);
-    shaders.skyboxShader.setMat4("projection",scene.projectionMatrix);
-    shaders.skyboxShader.setMat4("transformMatrix",skybox.transformMatrix);
-    shaders.skyboxShader.setFloat("lod",skybox.lod);
-    shaders.skyboxShader.setVec3("bgColor",skybox.bgColor);
-    shaders.skyboxShader.setFloat("opacity",skybox.opacity);
+    renderSkyBox();
 
+    //Set the uniforms regarding 3D models (mostly vertex shader) 
+    set3DUniforms();
 
-    shaders.skyboxShader.setInt("skybox",0);
-    skybox.draw(true);
-
-    //Render 3D Model
-    shaders.depth3D.use();
-    shaders.depth3D.setMat4("view",scene.viewMatrix);
-    shaders.depth3D.setMat4("projection",scene.projectionMatrix);
-    
-    shaders.skyboxBall.use();
-    shaders.skyboxBall.setMat4("view",scene.viewMatrix);
-    shaders.skyboxBall.setMat4("projection",scene.projectionMatrix);
-
-    if(painter.updateTheDepthTexture && !mouse.RPressed){
+    //Update the depth texture if necessary
+    if(painter.updateTheDepthTexture && !mouse.RPressed){ //Last frame camera changed position
+        //Update the depth texture
         painter.updateDepthTexture(model);
+
         painter.updateTheDepthTexture = false;
     }
-    
+
+    //3D Model    
     shaders.tdModelShader.use();
+
+    //Bind the skybox
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP,skybox.ID);
+    
+    //Bind the prefiltered skybox
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_CUBE_MAP,skybox.IDPrefiltered);
     
-    
-    shaders.tdModelShader.setInt("useTransformUniforms",0);
-    shaders.tdModelShader.setInt("render2D", 0);
-    shaders.tdModelShader.setInt("skybox",0);
-    shaders.tdModelShader.setInt("prefilterMap",1);
-    shaders.tdModelShader.setInt("albedoTxtr",2);
-    shaders.tdModelShader.setInt("roughnessTxtr",3);
-    shaders.tdModelShader.setInt("metallicTxtr",4);
-    shaders.tdModelShader.setInt("normalMapTxtr",5);
-    shaders.tdModelShader.setInt("heightMapTxtr",6);
-    shaders.tdModelShader.setInt("ambientOcclusionTxtr",7);
-    shaders.tdModelShader.setInt("paintingTexture",8);
-    shaders.tdModelShader.setInt("depthTexture",9);
-    shaders.tdModelShader.setVec3("viewPos",scene.camera.cameraPos);
-    shaders.tdModelShader.setMat4("view",scene.viewMatrix);
-    shaders.tdModelShader.setMat4("projection",scene.projectionMatrix);
-    glm::mat4 modelMatrix = glm::mat4(1);
-    shaders.tdModelShader.setMat4("modelMatrix",modelMatrix);
-
+    //Bind the painting texture
     glActiveTexture(GL_TEXTURE8);
     glBindTexture(GL_TEXTURE_2D,painter.paintingTexture);
+    
+    //Bind the depth texture
     glActiveTexture(GL_TEXTURE9);
     glBindTexture(GL_TEXTURE_2D,painter.depthTexture);
 
-    std::vector<Material> nodeMaterials = getTheMaterialsConnectedToTheMeshNode(nodeScene,library);
+    //Get the nodes connected to the mesh node (output node)
+    std::vector<Material> nodeMaterials = getTheMaterialsConnectedToTheMeshNode(nodeScene,library); //TODO Move this function to the node
 
+    //Render each mesh
     for (size_t i = 0; i < model.meshes.size(); i++)
     {
         if(library.materials.size()){
+            //Bind the material
             glActiveTexture(GL_TEXTURE2);
             glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].albedo.ID);
             glActiveTexture(GL_TEXTURE3);
@@ -131,28 +110,25 @@ void Renderer::render(){
             glActiveTexture(GL_TEXTURE7);
             glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].ambientOcclusion.ID);
         }
+        //Draw the mesh
         model.meshes[i].Draw();
     }
-    
-
-    //model.Draw();
 
     //Clear the depth buffer before rendering the UI elements (prevent coliding)
     glClear(GL_DEPTH_BUFFER_BIT);
-
-    //Render UI
 
     //Bind 2D square vertex buffers
     box.bindBuffers();
     
     //Update the UI projection using window size
     userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
+    
+    //Render the UI
     userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project,painter,VSync,skybox,model);//Render the UI
 
-
-
     //Painting
-    if(mouse.LPressed && !userInterface.anyPanelHover && !userInterface.anyDialogActive){
+    if(mouse.LPressed && !userInterface.anyPanelHover && !userInterface.anyDialogActive){ //If mouse hover 3D viewport and left mouse button pressed
+        //Paint
         painter.doPaint(    
                             mouse,
                             userInterface.paintingPanel.sections[1].elements[0].rangeBar.value,
@@ -169,24 +145,27 @@ void Renderer::render(){
                             userInterface.paintingPanel.sections[2].elements[2].checkBox.clickState1,
                             library.textures
                         );
-
-        
     }
 
-    if((painter.refreshable && !mouse.LPressed) || mouse.RClick || mouse.MClick){
+    //Painting done (refresh)
+    if((painter.refreshable && !mouse.LPressed) || mouse.RClick || mouse.MClick){ //Last frame painting done or once mouse right click or mouse wheel click
         //TODO Prevent updating all the materials
         for (size_t i = 0; i < library.materials.size(); i++)
-        {
+        {   
+            //Update the material after painting
             userInterface.materialEditorDialog.updateMaterial(library.materials[i],textureRes,box,context);
         }
-        
+        //Update the selected texture after painting
         painter.updateTexture(library.textures,model,textureRes);
+        //Refresh the 2D painting texture
         painter.refreshPainting();
+
         painter.refreshable = false;
     }
 
 
     box.unbindBuffers(); //Finish rendering the UI
+
 
     //Set mouse states to default
     mouse.LClick = false;
@@ -201,15 +180,13 @@ void Renderer::render(){
     textRenderer.keyInput = false;
     textRenderer.mods = 0;
 
-
     //Cursor is changing there
     //Sets the active cursor (mouse.activeCursor) as the cursor
     //Than changes the active cursor as default cursor
     mouse.updateCursor();  
 
-
+    //Swap the front and back buffers of the window
     glfwSwapBuffers(context.window);
-    
 }
 
 
@@ -236,11 +213,13 @@ std::vector<Material> Renderer::getTheMaterialsConnectedToTheMeshNode(std::vecto
     }
     return materials;
 }
+
 void Renderer::updateViewMatrix(){
     scene.viewMatrix = glm::lookAt(scene.camera.cameraPos, 
                                     scene.camera.originPos, 
                                     glm::vec3(0.0, 1.0, 0.0));
 }
+
 void Renderer::updateProjectionMatrix(){
     if(context.windowScale.x){
         scene.projectionMatrix = glm::perspective(glm::radians(scene.fov), 
@@ -249,9 +228,67 @@ void Renderer::updateProjectionMatrix(){
                                             scene.far);
     }
 }
+
 void Renderer::updateViewport(){
     glViewport(0, 
                 0, 
                 context.windowScale.x, 
                 context.windowScale.y);
+}
+
+void Renderer::set3DUniforms(){
+    
+    //3D Model Shader
+    shaders.tdModelShader.use();
+    shaders.tdModelShader.setInt("useTransformUniforms",0);
+    shaders.tdModelShader.setInt("render2D", 0);
+    shaders.tdModelShader.setInt("skybox",0);
+    shaders.tdModelShader.setInt("prefilterMap",1);
+    shaders.tdModelShader.setInt("albedoTxtr",2);
+    shaders.tdModelShader.setInt("roughnessTxtr",3);
+    shaders.tdModelShader.setInt("metallicTxtr",4);
+    shaders.tdModelShader.setInt("normalMapTxtr",5);
+    shaders.tdModelShader.setInt("heightMapTxtr",6);
+    shaders.tdModelShader.setInt("ambientOcclusionTxtr",7);
+    shaders.tdModelShader.setInt("paintingTexture",8);
+    shaders.tdModelShader.setInt("depthTexture",9);
+    shaders.tdModelShader.setVec3("viewPos",scene.camera.cameraPos);
+    shaders.tdModelShader.setMat4("view",scene.viewMatrix);
+    shaders.tdModelShader.setMat4("projection",scene.projectionMatrix);
+    glm::mat4 modelMatrix = glm::mat4(1);
+    shaders.tdModelShader.setMat4("modelMatrix",modelMatrix);
+
+    //Shader (used to render the model with depth)
+    shaders.depth3D.use();
+    shaders.depth3D.setMat4("view",scene.viewMatrix);
+    shaders.depth3D.setMat4("projection",scene.projectionMatrix);
+
+    //Skybox ball shader 
+    shaders.skyboxBall.use();
+    shaders.skyboxBall.setMat4("view",scene.viewMatrix);
+    shaders.skyboxBall.setMat4("projection",scene.projectionMatrix);
+
+}
+
+
+
+
+
+//UTILITY FUNCTIONS
+
+
+void Renderer::renderSkyBox(){
+    
+    //Skybox shader
+    shaders.skyboxShader.use();
+    shaders.skyboxShader.setMat4("view",scene.viewMatrix);
+    shaders.skyboxShader.setMat4("projection",scene.projectionMatrix);
+    shaders.skyboxShader.setMat4("transformMatrix",skybox.transformMatrix);
+    shaders.skyboxShader.setFloat("lod",skybox.lod);
+    shaders.skyboxShader.setVec3("bgColor",skybox.bgColor);
+    shaders.skyboxShader.setFloat("opacity",skybox.opacity);
+    shaders.skyboxShader.setInt("skybox",0);
+    
+    //Render the skybox
+    skybox.draw(true);
 }
