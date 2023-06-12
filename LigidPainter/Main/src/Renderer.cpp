@@ -181,6 +181,12 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Undo"    , "Redo"            ,}));                                                               //Painting  4
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Website" , "YouTube"         ,}));                                                               //Help      5
 
+    
+    //Init websites
+    websites.ligidTools     =   Website("https://ligidtools.com/");
+    websites.youTube        =   Website("https://www.youtube.com/channel/UCMVLfsYsd5WAKEWsgM7fjtA");
+
+
     //Init the userinterface
     userInterface.init(shaders,context,appTextures,websites,videoScale,sphereModel);
 
@@ -188,11 +194,6 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     mouse = Mouse(context.window);
     //Load the cursors of the LigidPainter
     mouse.loadCursors();
-
-
-    //Init websites
-    websites.ligidTools     =   Website("https://ligidtools.com/");
-    websites.youTube        =   Website("https://www.youtube.com/channel/UCMVLfsYsd5WAKEWsgM7fjtA");
 
 
     //Create app nodes

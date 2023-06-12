@@ -18,18 +18,21 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
+#include <iostream>
 #include <cstdlib>
 
 Website::Website(){}
 
-Website::Website(const char* url){
+Website::Website(std::string url){
     this->url = url;
 }
 
 void Website::open(){
+    std::cout << url << std::endl;
+
     #if defined(_WIN32) || defined(_WIN64)
     //Windows
-    std::string command = "start " + (std::string)url;
+    std::string command = "start " + url;
     std::system(command.c_str());
 
     #elif defined(__APPLE__)
@@ -49,6 +52,6 @@ void Website::open(){
     #endif
 }
 
-const char* Website::getURL(){
+std::string Website::getURL(){
     return url;
 }

@@ -341,15 +341,15 @@ public:
 class Website
 {
 private:
-    const char* url;
+    std::string url;
 public:
     //Constructor
     Website();
-    Website(const char* url);
+    Website(std::string url);
     
     //Public member functions
     void open();
-    const char* getURL();
+    std::string getURL();
 };
 
 // RENDERER UTIL STRUCTURES

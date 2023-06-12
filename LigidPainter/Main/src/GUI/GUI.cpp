@@ -891,6 +891,28 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
                 library.brushes.erase(library.brushes.begin() + contextMenus[i].selectedElement);
             }
         }
+        if(i == 3 && contextMenus[i].active){ //If project context menu is active
+            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
+                
+            }
+        }
+        if(i == 4 && contextMenus[i].active){ //If painting context menu is active
+            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
+                
+            }
+        }
+        if(i == 5 && contextMenus[i].active){ //If help context menu is active
+            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
+                websites.ligidTools.open();
+            }
+            if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){
+                websites.youTube.open();
+            }
+        }
+
+
+
+
         if (   //Conditions to turn any context menu off
                 mouse.LClick|| //Mouse left click
                 mouse.RClick|| //Mouse right click
