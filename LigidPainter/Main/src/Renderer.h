@@ -18,12 +18,6 @@ Renderer.h : Renders the whole screen
 #ifndef LGDRENDERER_HPP
 #define LGDRENDERER_HPP
 
-/*
-    Bugs :
-    ! Multiple material nodes unconnecting bug
-    ! Material editor - modifier panel bug (changing between materials)
-*/
-
 #include <iostream>
 #include <filesystem>
 
@@ -104,9 +98,13 @@ public:
     void render();
 private:
 
-    //Init
+    //Init.cpp
     void initGLFW(glm::vec2 videoScale);
     void initGlad();
+    void loadAppTextures();
+    void loadShaders();
+    void createContextMenus();
+    void createAppNodes(glm::vec2 videoScale);
 
     //Stuff
     std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library);
