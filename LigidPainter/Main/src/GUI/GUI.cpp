@@ -184,9 +184,8 @@ void UI::init(Shaders shaders,Context context,AppTextures appTextures,glm::vec2 
                                 Section(
                                     Element(Button()),
                                     {   
-                                        Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"File"    ,Texture(), 0.f,false)),
-                                        Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Edit"    ,Texture(), 0.f,false)),
-                                        Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Panels"  ,Texture(), 0.f,false)),
+                                        Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Project"    ,Texture(), 0.f,false)),
+                                        Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Painting"    ,Texture(), 0.f,false)),
                                         Element(Button(1,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Help"    ,Texture(), 0.f,false)),
                                     }
                                 )
@@ -911,6 +910,7 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
             contextMenus[i].selectedElement = 0;
         }
     }
+    
     //*Show context menu
     //For library panel displayer
     for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++)
@@ -919,8 +919,8 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
             if(selectedLibraryElementIndex == 0){//To a texture
                 //Show the context menu
                 contextMenus[0].active = true;
-                contextMenus[0].pos.x = libraryPanelDisplayer.sections[0].elements[i].button.pos.x;
-                contextMenus[0].pos.y = libraryPanelDisplayer.sections[0].elements[i].button.pos.y;
+                contextMenus[0].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
+                contextMenus[0].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[0].contextPanel.scale.y;
                 contextMenus[0].pos.z = 0.95f;
                 contextMenus[0].selectedElement = i;
                 
@@ -928,21 +928,52 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
             if(selectedLibraryElementIndex == 1){//To a material
                 //Show the context menu
                 contextMenus[1].active = true;
-                contextMenus[1].pos.x = libraryPanelDisplayer.sections[0].elements[i].button.pos.x;
-                contextMenus[1].pos.y = libraryPanelDisplayer.sections[0].elements[i].button.pos.y;
+                contextMenus[1].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
+                contextMenus[1].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[1].contextPanel.scale.y;
                 contextMenus[1].pos.z = 0.95f;
                 contextMenus[1].selectedElement = i;
             }
             if(selectedLibraryElementIndex == 2){//To a brush
                 //Show the context menu
                 contextMenus[2].active = true;
-                contextMenus[2].pos.x = libraryPanelDisplayer.sections[0].elements[i].button.pos.x;
-                contextMenus[2].pos.y = libraryPanelDisplayer.sections[0].elements[i].button.pos.y;
+                contextMenus[2].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
+                contextMenus[2].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[2].contextPanel.scale.y;
                 contextMenus[2].pos.z = 0.95f;
                 contextMenus[2].selectedElement = i;
             }
         }
     }
+
+
+
+    if(navigationPanel.sections[0].elements[0].button.hover && mouse.LClick){ //If pressed to "Project" button in the menu bar (navigation panel)
+        //Show the context menu
+        contextMenus[3].active = true;
+        contextMenus[3].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
+        contextMenus[3].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[3].contextPanel.scale.y;
+        contextMenus[3].pos.z = 0.95f;
+        contextMenus[3].selectedElement = 0;
+    }
+    if(navigationPanel.sections[0].elements[1].button.hover && mouse.LClick){ //If pressed to "Painting" button in the menu bar (navigation panel)
+        //Show the context menu
+        contextMenus[4].active = true;
+        contextMenus[4].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
+        contextMenus[4].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[4].contextPanel.scale.y;
+        contextMenus[4].pos.z = 0.95f;
+        contextMenus[4].selectedElement = 0;
+    }
+    
+    if(navigationPanel.sections[0].elements[2].button.hover && mouse.LClick){ //If pressed to "Help" button in the menu bar (navigation panel)
+        //Show the context menu
+        contextMenus[5].active = true;
+        contextMenus[5].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
+        contextMenus[5].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[5].contextPanel.scale.y;
+        contextMenus[5].pos.z = 0.95f;
+        contextMenus[5].selectedElement = 0;
+    }
+
+
+
     //!LIBRARY PANEL DISPLAYER
     //Update the library displayer panel every frame
     //if(frameCounter % 100 == 0){

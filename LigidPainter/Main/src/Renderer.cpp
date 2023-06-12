@@ -170,10 +170,16 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     //Init the text renderer
     textRenderer = TextRenderer(fonts.Arial);
 
-    //Create context menus                                                     0            1               2               3                     4           5  
-    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Rename"  , "Duplicate"       , "Copy Path"   , "Delete"})); //Textures 
-    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Edit"    , "Add To Scene"    , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete"})); //Materials
-    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Use"     ,"Apply Current"    , "Rename"       , "Duplicate"  ,    "Copy Path" ,  "Delete"})); //Brushes
+    
+    //!Create context menus                                                     0            1               2               3                     4           5  
+    //Library panel
+    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Rename"  , "Duplicate"       , "Copy Path"   , "Delete"}));                                      //Textures  0
+    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Edit"    , "Add To Scene"    , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete"}));    //Materials 1
+    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Use"     , "Apply Current"   , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete"}));    //Brushes   2
+    //Menu Bar (navigation panel)
+    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Save"    , "Save as"         , "Create new"  , "Load new"    ,    "Copy Path"}));                //Project   3 
+    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Undo"    , "Redo"            ,}));                                                               //Painting  4
+    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Website" , "YouTube"         ,}));                                                               //Help      5
 
     //Init the userinterface
     userInterface.init(shaders,context,appTextures,videoScale,sphereModel);
