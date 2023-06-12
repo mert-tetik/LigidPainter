@@ -68,6 +68,7 @@ void TextRenderer::renderLeftToRight(std::string text, bool multipleLines, float
 		}
 	}
 }
+
 void TextRenderer::renderRightToLeft(std::string text, bool multipleLines, float &x, float &y,float &z , float maxX, float lastXText, float scale, Shader shader, bool render, int &counter,glm::vec4 &data, int index,float mostLeft){
 	x = maxX;
 	
