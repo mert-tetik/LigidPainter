@@ -544,7 +544,6 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
                     selectedTextureDisplayer.hover      || 
                     paintingModesPanel.hover;
 
-    
     navigationPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     windowPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     paintingPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);

@@ -119,4 +119,6 @@ bool Mouse::isMouseHover(glm::vec2 scale, glm::vec2 position){ //In screen coord
 			return false;
 		}
 	}
+	
+	return false;
 }
