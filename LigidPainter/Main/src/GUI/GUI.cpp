@@ -171,10 +171,11 @@ Section::Section(Element header,std::vector<Element> elements){
 
 UI::UI(){}
 
-void UI::init(Shaders shaders,Context context,AppTextures appTextures,glm::vec2 videoScale,Model &sphereModel){
+void UI::init(Shaders shaders,Context context,AppTextures appTextures,Websites websites,glm::vec2 videoScale,Model &sphereModel){
     this->shaders = shaders;
     this->appTextures = appTextures;
     this->sphereModel = sphereModel;
+    this->websites = websites;
     
     //Init the painting panel
     navigationPanel = Panel(

@@ -182,7 +182,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Website" , "YouTube"         ,}));                                                               //Help      5
 
     //Init the userinterface
-    userInterface.init(shaders,context,appTextures,videoScale,sphereModel);
+    userInterface.init(shaders,context,appTextures,websites,videoScale,sphereModel);
 
     //Init mouse class
     mouse = Mouse(context.window);
@@ -190,6 +190,9 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     mouse.loadCursors();
 
 
+    //Init websites
+    websites.ligidTools     =   Website("https://ligidtools.com/");
+    websites.youTube        =   Website("https://www.youtube.com/channel/UCMVLfsYsd5WAKEWsgM7fjtA");
 
 
     //Create app nodes

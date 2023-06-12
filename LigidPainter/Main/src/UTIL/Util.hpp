@@ -325,8 +325,6 @@ public:
 
 class Box
 {
-private:
-    /* data */
 public:
     unsigned int VBO;
     unsigned int VAO;
@@ -340,7 +338,19 @@ public:
 };
 
 
-
+class Website
+{
+private:
+    const char* url;
+public:
+    //Constructor
+    Website();
+    Website(const char* url);
+    
+    //Public member functions
+    void open();
+    const char* getURL();
+};
 
 // RENDERER UTIL STRUCTURES
 struct Camera{
@@ -387,6 +397,12 @@ struct Shaders{
     Shader twoDPainting;
     Shader depth3D;
 };
+
+struct Websites{
+    Website ligidTools;
+    Website youTube;
+};
+
 struct AppTextures{ //Textures those will be used in UI of the app
     //--Icons
     Texture TDModelIcon; 

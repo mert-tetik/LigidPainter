@@ -44,6 +44,7 @@ private:
     Shaders shaders; 
 	AppTextures appTextures;
     Model sphereModel;
+    Websites websites;
 public:
     //UI Elements
     //(Mostly panels)
@@ -101,7 +102,7 @@ public:
     UI();
 
     //Public member functions
-    void init(Shaders shaders,Context context,AppTextures appTextures,glm::vec2 videoScale,Model &sphereModel);
+    void init(Shaders shaders,Context context,AppTextures appTextures,Websites websites,glm::vec2 videoScale,Model &sphereModel);
     void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
                 std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter,bool &VSync,Skybox &skybox,Model &model);
 

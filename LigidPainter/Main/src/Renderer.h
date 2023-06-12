@@ -64,6 +64,8 @@ public:
     //Structure that holds the font classes that will be used by the text renderer (TextRenderer.hpp)
     Fonts fonts;
 
+    Websites websites;
+
     //That class is responisble of rendering texts
     //Constructor takes a font class
     //You can change the font in the runtime
