@@ -19,6 +19,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "GUI/Elements.hpp"
 
@@ -92,7 +93,19 @@ bool Button::renderTheTexture(glm::vec3 resultPos,glm::vec2 resultScale,float re
     bool renderTheText = true;
     if(texture.ID != 0){
         //Scale of the texture
+        glm::vec2 txtrResDivider = glm::vec2(1);
+       
+        if(texture.getResolution().x > texture.getResolution().y){
+            txtrResDivider.y = (float)texture.getResolution().x / (float)texture.getResolution().y;
+        }
+        else{
+            txtrResDivider.x = (float)texture.getResolution().y / (float)texture.getResolution().x;
+        }
+
+
         glm::vec2 resultScaleTexture = glm::vec2(std::min(resultScale.x/buttonImageScaleDivider,resultScale.y/buttonImageScaleDivider)) / glm::vec2(textureSizeScale);
+        resultScaleTexture /= txtrResDivider;
+        
         textureRadius = resultScaleTexture.x;
         //Position of the texture
         glm::vec3 resultPosTexture = resultPos;
