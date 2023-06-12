@@ -61,6 +61,7 @@ Example :
 
 #include "tinyfiledialogs.h"
 
+
 Element::Element(){}
 
 Element::Element(Button button){
@@ -532,6 +533,17 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
                         newProjectDialog.active         || 
                         newTextureDialog.active         || 
                         loadProjectDialog.active; 
+
+    anyPanelHover = 
+                    navigationPanel.hover               ||
+                    windowPanel.hover                   ||
+                    paintingPanel.hover                 ||
+                    libraryPanelLeft.hover              ||
+                    libraryPanelDisplayer.hover         ||
+                    nodeEditorDisplayer.hover           ||
+                    selectedTextureDisplayer.hover      || 
+                    paintingModesPanel.hover;
+
     
     navigationPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     windowPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);

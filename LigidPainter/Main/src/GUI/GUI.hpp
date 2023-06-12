@@ -57,6 +57,8 @@ public:
     Panel twoDPaintingPanel; 
     Panel paintingModesPanel; 
 
+    bool anyPanelHover = false;
+
     Dropper dropper;
 
     //Dialogs    
