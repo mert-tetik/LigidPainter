@@ -58,6 +58,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     loadShaders();
 
     //Load the sphere model
+    model.loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
     sphereModel.loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
 
     //Init the skybox    
