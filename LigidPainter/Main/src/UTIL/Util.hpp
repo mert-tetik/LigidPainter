@@ -174,7 +174,7 @@ public:
     std::string projectName;
 
     //Constructor
-    Project();
+    Project(){}
 
     //Public member functions
     bool createProject(std::string destinationPath,std::string name,std::string TDModelPath);

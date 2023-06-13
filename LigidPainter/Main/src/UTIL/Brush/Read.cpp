@@ -12,6 +12,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
 
+    * read the *.lgdbrush file 
+
     Description header
     64bit 64bit 64bit
     0x4B4B9AAA
