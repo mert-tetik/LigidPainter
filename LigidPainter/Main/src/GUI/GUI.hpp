@@ -119,6 +119,10 @@ private:
     void renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene,Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync, Box &box);
 
     void renderDropper(Mouse &mouse,Painter &painter);
+
+    void contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Library &library,std::vector<Node>& appNodes ,std::vector<Node> &nodeScene,Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer);
+
+    void panelPositioning();
 };
 
 #endif //GUI_HPP

@@ -85,7 +85,8 @@
         "thread": "cpp",
         "unordered_set": "cpp",
         "variant": "cpp",
-        "bit": "cpp"
+        "bit": "cpp",
+        "*.rh": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }
