@@ -35,6 +35,8 @@ TextureSelectionDialog::TextureSelectionDialog(Shader buttonShader,ColorPalette 
 }
 
 void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &timer,TextRenderer &textRenderer,Library library){
+    
+    //Update the panel elements
     texturePanel.sections.clear();
     std::vector<Element> sectionElements;
     for (size_t i = 0; i < library.textures.size(); i++)
@@ -42,6 +44,7 @@ void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &tim
         sectionElements.push_back(Element(Button(1,glm::vec2(2,2.f),colorPalette,buttonShader,"texture_0"       , library.textures[i], 0.f,false)));
     }
     
+    //Push the section elements to the texture panel
     texturePanel.sections.push_back(
         Section
                 (
@@ -49,11 +52,21 @@ void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &tim
                     sectionElements
                 )
     );
+
+    //Render the panel
     texturePanel.render(videoScale,mouse,timer,textRenderer,true);
+    
+    //If pressed any of the texture select the texture
     for (size_t i = 0; i < texturePanel.sections[0].elements.size(); i++)
     {
         if(texturePanel.sections[0].elements[i].button.hover && mouse.LClick){
             selectedTextureIndex = i;
         }
+    }
+
+    //End the dialog
+    if((textRenderer.key == GLFW_KEY_ESCAPE && textRenderer.keyInput) || (!texturePanel.hover && mouse.LClick)){
+        active = false;
+        selectedTextureIndex = 1000;
     }
 }

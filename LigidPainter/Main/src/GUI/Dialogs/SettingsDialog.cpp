@@ -31,6 +31,8 @@ SettingsDialog::SettingsDialog(){}
 
 SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
     this->context = context;
+    
+    //Create the panel
     this->panel = Panel(buttonShader,colorPalette,{
         {
             Section(
@@ -62,23 +64,27 @@ void SettingsDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette
         
         txtrRes*=2;
     }
-    
-    
+
+    //Set the vsync option as the vsync checkbox element
     VSync = panel.sections[0].elements[1].checkBox.clickState1;
-    
+
+    //Render the panel    
     panel.render(videoScale,mouse,timer,textRenderer,true);
-    //End the dialog
-    if((glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || (!panel.hover && mouse.LClick)) && !firstActivation){
-        active = false;
-    }
-    firstActivation = false;
+    
+    //If pressed to any of the combo box element change the texture res
     for (size_t i = 0; i < panel.sections[0].elements[0].comboBox.hover.size(); i++)
     {
-        //If pressed to any of the combo box element
         if(panel.sections[0].elements[0].comboBox.hover[i] && mouse.LClick){
             textureRes = stoi(panel.sections[0].elements[0].comboBox.texts[panel.sections[0].elements[0].comboBox.selectedIndex]);
         }
     }
+    
+    //End the dialog
+    if((glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || (!panel.hover && mouse.LClick)) && !firstActivation){
+        active = false;
+    }
+    
+    firstActivation = false;
 }
 
 void SettingsDialog::activate(){
