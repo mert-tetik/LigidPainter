@@ -12,6 +12,9 @@
  Official Web Page : https:ligidtools.com/ligidpainter
 
  ---------------------------------------------------------------------------
+ 
+    TODO USE ALL THE PROJECT SETTINGS WHILE CREATING A PROJECT 
+
  */
 
 #include<glad/glad.h>
@@ -31,8 +34,12 @@
 NewProjectDialog::NewProjectDialog(){}
 
 NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+    
+    //Take the parameters to the class member variables 
     this->buttonShader = buttonShader;
     this->appTextures = appTextures;
+    
+    //Create the panel
     this->panel = Panel(
                             buttonShader,
                             colorPalette,
@@ -40,6 +47,8 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
                                 Section(
                                     Element(Button()),
                                     {
+                                        //Project settings
+
                                         Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"New Project",Texture(),4.f,false)), 
                                         Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"MyProject",2.f,false),context.window),
                                         Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"./Projects",2.f,true),context.window),
@@ -52,6 +61,7 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
                                             "2048",
                                             "4096"
                                         },4.f),context.window),
+
                                         Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Large",2.f)),
                                         Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Medium",0.f)),
                                         Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Small",0.f)),
@@ -81,14 +91,27 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
 }
 
 void NewProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model){
+    
+    //Render the panel
     panel.render(videoScale,mouse,timer,textRenderer,true);
     
+    //If pressed to the last button of the panel (Create the project button)
     if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && mouse.LClick){
-        if(project.createProject(panel.sections[0].elements[2].textBox.text,panel.sections[0].elements[1].textBox.text,panel.sections[0].elements[7].textBox.text)){
+        
+        //Create the project
+        if(project.createProject(   
+                                    panel.sections[0].elements[2].textBox.text, //Destination path
+                                    panel.sections[0].elements[1].textBox.text, //Title of the project
+                                    panel.sections[0].elements[7].textBox.text  //3D model path
+                                 ))
+        {
             project.loadProject(project.ligidFilePath,library,shaders,model,appTextures,colorPalette);
             this->active = false;
         }
+    
     }
+    
+    //Close the dialog
     if(glfwGetKey(originalWindow,GLFW_KEY_ESCAPE) == GLFW_PRESS || panel.sections[0].elements[0].button.hover && mouse.LDoubleClick){
         greetingDialogActive = true;
         this->active = false;
