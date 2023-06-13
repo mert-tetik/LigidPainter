@@ -182,7 +182,9 @@ private:
     //Private member functions
     void updateLayerPanel(Material &material,int &textureRes,Box &box,Context &context);
     void checkLayerPanel(Material &material);
-    void checkModifiersPanel(Material &material,float textureRes,Box box,Context context,Mouse &mouse);
+    void checkModifiersPanel(Material &material,float textureRes,Box box,Context context,Mouse &mouse,TextureSelectionDialog &textureSelectionDialog);
+    void updateLayerPanelElements(Material &material,int &textureRes,Box &box,Context &context);
+    void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Library &library,float textureRes,Box box,Context context);
 
 public:
     bool firstFrameActivated = false; //To detect the first frame activated
