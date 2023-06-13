@@ -20,29 +20,29 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "assimp/Exporter.hpp"
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
+#include <stb_image.h>
+
+#define STBI_MSC_SECURE_CRT
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "../../thirdparty/stb_image_write.h"
 
 #include <string>
+#include <fstream>
 #include <iostream>
 #include <vector>
 
 #include "UTIL/Util.hpp"
-#include "3D/ThreeD.hpp"
 
-using namespace std;
+//Path : folder path
+void Texture::exportTexture(const std::string path){
+    glm::vec2 scale;
+    char* pixels;
+    getData(pixels);
+    scale = getResolution();
     
-void Model::Draw()
-{
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    for(unsigned int i = 0; i < meshes.size(); i++){
-        if(meshes[i].submeshes.size() <= 1){
-            meshes[i].Draw();
-        }
+    const int channels = 4;
+    if(!stbi_write_png((path + folderDistinguisher + title + ".png").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){
+        std::cout << "ERROR Failed to write texture file : " << path << std::endl;
     }
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBindVertexArray(mVAO);
+    delete[] pixels;
 }

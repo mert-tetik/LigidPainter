@@ -122,7 +122,7 @@ private:
 
     void contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Library &library,std::vector<Node>& appNodes ,std::vector<Node> &nodeScene,Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer);
 
-    void panelPositioning();
+    void panelPositioning(float &screenGapPerc, Library &library, Painter &painter);
 };
 
 #endif //GUI_HPP

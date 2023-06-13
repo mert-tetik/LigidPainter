@@ -22,11 +22,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include <stb_image.h>
 
-
-#define STBI_MSC_SECURE_CRT
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "../../thirdparty/stb_image_write.h"
-
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -34,61 +29,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
-Texture::Texture(){}
-
-Texture::Texture(unsigned int ID){
-    this->ID = ID;
-}
-
-Texture::Texture(char* pixels, int w, int h){
-    glActiveTexture(GL_TEXTURE0);
-    
-    glGenTextures(1,&ID);
-    glBindTexture(GL_TEXTURE_2D, ID);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-	glGenerateMipmap(GL_TEXTURE_2D);
-}
-
-void Texture::load(const char* path){
-    Util util;
-    this->title = util.getLastWordBySeparatingWithChar(path,folderDistinguisher);
-    this->title = util.removeExtension(this->title);
-    this->path = path;
-    glActiveTexture(GL_TEXTURE0);
-    if(ID == 0)
-        glGenTextures(1,&ID);
-    glBindTexture(GL_TEXTURE_2D, ID);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-    
-    stbi_set_flip_vertically_on_load(true);
-    int width, height, channels;
-    unsigned char* data = stbi_load(path, &width, &height, &channels, 4);
-	if (data != NULL)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		std::cout << "Loaded " << path << std::endl;
-	}
-	else
-	{
-		const char* reason = "[unknown reason]";
-		if (stbi_failure_reason())
-		{
-			reason = stbi_failure_reason();
-		}
-		std::cout << "Failed to load texture! " << path << " Reason : " << reason<< std::endl;
-	}
-    stbi_image_free(data);
-}
 //Returns the texture data from the given path
 //Is not related with the class object
 unsigned char* Texture::getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip){
@@ -113,18 +53,7 @@ unsigned char* Texture::getTextureDataViaPath(const char* aPath,int &aWidth,int 
         return aData;
     }
 }
-void Texture::exportTexture(const std::string path){
-    glm::vec2 scale;
-    char* pixels;
-    getData(pixels);
-    scale = getResolution();
-    
-    const int channels = 4;
-    if(!stbi_write_png((path + folderDistinguisher + title + ".png").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){
-        std::cout << "ERROR Failed to write texture file : " << path << std::endl;
-    }
-    delete[] pixels;
-}
+
 void Texture::getData(char*& pixels){
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,ID);

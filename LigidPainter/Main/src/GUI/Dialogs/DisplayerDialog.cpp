@@ -185,6 +185,7 @@ void DisplayerDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalett
     //
     firstActivation = false;
 }
+
 void DisplayerDialog::activate(){
     active = true;
     firstActivation = true;

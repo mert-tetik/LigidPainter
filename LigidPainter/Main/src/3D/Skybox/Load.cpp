@@ -30,9 +30,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 
-#ifndef STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
-#endif
 #include "../../thirdparty/stb_image.h"
 
 
