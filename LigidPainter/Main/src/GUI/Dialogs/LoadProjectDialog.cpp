@@ -36,8 +36,12 @@
 LoadProjectDialog::LoadProjectDialog(){}
 
 LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+    
+    //Take the parameters to the class member variables 
     this->buttonShader = buttonShader;
     this->appTextures = appTextures;
+
+    //Create the bg panel
     this->bgPanel = Panel(
                             buttonShader,
                             colorPalette,
@@ -63,6 +67,8 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
                             {},
                             0.25f
                         );
+
+    //Create the projects panel                        
     this->projectsPanel = Panel(
                             buttonShader,
                             colorPalette,
@@ -82,11 +88,13 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
                             {},
                             0.25f
                         );
+
     //Panel's navigation (kinda) bar
     this->bgPanel.sections[0].elements[0].button.color = colorPalette.secondColor;
     this->bgPanel.sections[0].elements[0].button.color2 = colorPalette.thirdColor;
     this->bgPanel.sections[0].elements[0].button.outlineColor = colorPalette.thirdColor;
     this->bgPanel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
+    
     //The load a project button
     this->loadButton = Button(0,glm::vec2(4,2),colorPalette,buttonShader,"Load",Texture(),0.f,false);
     this->loadButton.pos.x = 30;
@@ -99,6 +107,8 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
     this->textBtn1.pos.z = 0.9f;
     this->textBtn1.textScale = 1.0f;
     
+    //Texts
+
     this->textBtn2 = Button(0,glm::vec2(8,2),colorPalette,buttonShader,"The *.ligid file is a binary file located",Texture(),0.f,false);
     this->textBtn2.color = glm::vec4(0);
     this->textBtn2.pos.x = 30;
@@ -122,18 +132,26 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
 }
 
 void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model){
+    //Render panels
     bgPanel.render(videoScale,mouse,timer,textRenderer,true);
     loadButton.render(videoScale,mouse,timer,textRenderer,true);
+    
+    //Render texts
     textBtn1.render(videoScale,mouse,timer,textRenderer,false);
     textBtn2.render(videoScale,mouse,timer,textRenderer,false);
     textBtn3.render(videoScale,mouse,timer,textRenderer,false);
     textBtn4.render(videoScale,mouse,timer,textRenderer,false);
+    
+
     if(loadButton.hover && mouse.LClick){
-        //Select 3D Model
+        //Select a project file inside of a project folder
         char const* lFilterPatterns[1] = { "*.ligid" };
         char* test = tinyfd_openFileDialog("Select a ligid file","",1, lFilterPatterns,"",false);
-        
+
+        //If a file is selected        
         if(test){
+            
+            //Load the project
             if(project.loadProject(test,library,shaders,model,appTextures,colorPalette))
                 this->active = false;
             else{
@@ -148,46 +166,68 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
     }
     
     int counter = 0;
-    
+
+    //Create a new section to give the projects panel    
     Section projectSection;
+
+    //Clear the elements of the projects panel (will be updated)
     projectsPanel.sections.clear();
+    
     for (const auto& entry : std::filesystem::directory_iterator("./Projects")) {
+        
+        //Project folder path inside of the ./Projects directory
         std::string projectPath = entry.path().string();
+        
+        //Create the button for the project path
         Button btn = Button(2,glm::vec2(4,2),colorPalette,buttonShader,projectPath,Texture(),0.f,false);
+        
+        //Scale the button in x axis
         btn.scale.x = projectsPanel.scale.x;
+        
+        //Get the ligid file path inside of the project folder 
         std::string ligidFilePath = project.locateLigidFileInFolder(projectPath);
+        
+        //If a ligid file is loacted
         if(ligidFilePath.size()){
+            //Date data stored in the ligid file
             time_t creationDate;
             time_t lastOpeningDate;
+            
+            //Get the ligid file data
             project.returnLigidFileData(ligidFilePath,creationDate,lastOpeningDate);
             
+            //Date to string 
             std::string creationDateStr = (std::string)std::ctime(&creationDate);
             std::string lastOpeningDateStr = (std::string)std::ctime(&lastOpeningDate);
             
-            creationDateStr.pop_back(); //Remove suspecious '\n' character
-            //if (projectPath.length() >= 50) {
-            //    projectPath = projectPath.substr(0, 49);
-            //}
-            //btn.text = projectPath;
-            //for (size_t i = 0; i < 50 - projectPath.size(); i++)
-            //{
-            //    btn.text += " ";
-            //}
-            //
-            //btn.text += creationDateStr + "                          " + lastOpeningDateStr;
-            
+            //Remove suspecious '\n' character
+            creationDateStr.pop_back(); 
+
+            //TODO Do something with the date (maybe)
+
+            //Transfer the button to the new section
             projectSection.elements.push_back(btn);
             
             counter++;
         }
     }
+    
+    //Give the new section to the projects panel
     projectsPanel.sections.push_back(projectSection);
+    
+    //After refreshing the elements render the projects panel
     projectsPanel.render(videoScale,mouse,timer,textRenderer,true);
+    
+    //Check all the projects element if one them is pressed
     for (size_t i = 0; i < projectsPanel.sections[0].elements.size(); i++)
     {
+        //If pressed to the project button
         if(projectsPanel.sections[0].elements[i].button.hover && mouse.LClick){
             
+            //Get the ligid file path using the button's text as a project folder path source
             std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
+            
+            //Load the project
             if(project.loadProject(ligidFilePath,library,shaders,model,appTextures,colorPalette))
                 this->active = false;
             else{
@@ -200,10 +240,7 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
         }
     }
     
-    if(loadButton.hover && mouse.LClick){
-        //project.loadProject(project.ligidFilePath,library,shaders,model);
-        //this->active = false;
-    }
+    //Close the dialog
     if(glfwGetKey(originalWindow,GLFW_KEY_ESCAPE) == GLFW_PRESS || bgPanel.sections[0].elements[0].button.hover && mouse.LDoubleClick){
         greetingDialogActive = true;
         this->active = false;
