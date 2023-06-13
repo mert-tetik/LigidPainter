@@ -61,7 +61,6 @@ Example :
 
 #include "tinyfiledialogs.h"
 
-
 Element::Element(){}
 
 Element::Element(Button button){
