@@ -29,6 +29,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 ContextMenu::ContextMenu(){}
 
 ContextMenu::ContextMenu(Shader buttonShader,ColorPalette colorPalette,std::vector<std::string> elements){
+    
+    //Create the context panel
     contextPanel = Panel(
         buttonShader,
         colorPalette,
@@ -49,6 +51,8 @@ ContextMenu::ContextMenu(Shader buttonShader,ColorPalette colorPalette,std::vect
         {},
         20.f
     );
+
+    //Push the elements taken from parameter into the context panel
     Section section;
     for (size_t i = 0; i < elements.size(); i++)
     {
@@ -59,6 +63,9 @@ ContextMenu::ContextMenu(Shader buttonShader,ColorPalette colorPalette,std::vect
 }
 
 void ContextMenu::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){
+    //Update the position of the context panel
     contextPanel.pos = pos;
+
+    //Render the context panel
     contextPanel.render(videoScale,mouse,timer,textRenderer,true);
 }
