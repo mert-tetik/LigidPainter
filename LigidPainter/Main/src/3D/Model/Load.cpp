@@ -11,9 +11,6 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
-
-Model.hpp : Model class stores a 3D Model's data
-
 */
 
 #include<glad/glad.h>
@@ -35,24 +32,8 @@ Model.hpp : Model class stores a 3D Model's data
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 
-using namespace std;
-    
-void Model::Draw()
-{
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    for(unsigned int i = 0; i < meshes.size(); i++){
-        if(meshes[i].submeshes.size() <= 1){
-            meshes[i].Draw();
-        }
-    }
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBindVertexArray(mVAO);
-}
-
-
 // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
-void Model::loadModel(string const &path,bool triangulate)
+void Model::loadModel(std::string const &path,bool triangulate)
 {
     Util util;
     filePath = path;
@@ -72,7 +53,7 @@ void Model::loadModel(string const &path,bool triangulate)
     // check for errors
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
     {
-        cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << endl;
+        std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
         return;
     }
     // retrieve the directory path of the filepath
@@ -107,9 +88,9 @@ void Model::processNode(aiNode *node, const aiScene *scene)
 Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 {
     // data to fill
-    vector<Vertex> vertices;
-    vector<unsigned int> indices;
-    vector<TextureMs> textures;
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
+    std::vector<TextureMs> textures;
     std::string materialName;
     int materialIndex = 0;
 
@@ -175,9 +156,9 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 
 // checks all material textures of a given type and loads the textures if they're not loaded yet.
 // the required info is returned as a TextureMs struct.
-vector<TextureMs> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName)
+std::vector<TextureMs> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
 {
-    vector<TextureMs> textures;
+    std::vector<TextureMs> textures;
     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
