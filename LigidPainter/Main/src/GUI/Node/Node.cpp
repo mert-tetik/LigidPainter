@@ -140,27 +140,42 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
 
                     //A IO circle is hovered
                     if(hoveredNodeI != 1000 && hoveredIOI != 1000){
-                        //Create a connection
-                        IOs[i].connections.push_back(NodeConnection(hoveredNodeI,hoveredNodeI));//Connect to the input button
+                        
+                        //Delete the previous connection if an input IO is connected
+                        if(IOs[i].state == 0)
+                            clearConnections(currentNodeIndex,i,nodeScene);
+
+                        //If the circle hovered already has a connection & is an input
+                        if(doHaveConnection(hoveredNodeI,hoveredNodeI,nodeScene) && getStateData(hoveredNodeI,hoveredNodeI,nodeScene) == 0){
+                           //Than remove the connections of the circle hovered
+                            clearConnections(hoveredNodeI,hoveredIOI,nodeScene);
+                        }
+                        //TODO CHECK IF CAN CONNECT BOTH
+                        //Create a connection 
+                        createConnection(hoveredNodeI,hoveredNodeI,currentNodeIndex,i,nodeScene);
                     }
                 }
             }
 
-            //Render the connections of the IO
-            for (size_t conI = 0; conI < IOs[i].connections.size(); conI++)
-            {
+            //Render the connections of the IO if is an output
+            if(IOs[i].state == 2){
 
-                //Which node the connection is connected to
-                Node connectedNode = nodeScene[IOs[i].connections[conI].nodeIndex];
-                
-                //Which IO circle the connection is connected to
-                NodeIO connectedIO = connectedNode.IOs[IOs[i].connections[conI].inputIndex]; 
+                for (size_t conI = 0; conI < IOs[i].connections.size(); conI++)
+                {
 
-                drawLine(
-                            glm::vec2(IOs[i].IOCircle.pos.x,IOs[i].IOCircle.pos.y), //Circle pos
-                            glm::vec2(connectedIO.IOCircle.pos.x,connectedIO.IOCircle.pos.y), //Connected Circle pos
-                            videoScale,
-                            nodeEditorPanel);
+                    //Which node the connection is connected to
+                    Node connectedNode = nodeScene[IOs[i].connections[conI].nodeIndex];
+
+                    //Which IO circle the connection is connected to
+                    NodeIO connectedIO = connectedNode.IOs[IOs[i].connections[conI].inputIndex]; 
+
+                    drawLine(
+                                glm::vec2(IOs[i].IOCircle.pos.x,IOs[i].IOCircle.pos.y), //Circle pos
+                                glm::vec2(connectedIO.IOCircle.pos.x,connectedIO.IOCircle.pos.y), //Connected Circle pos
+                                videoScale,
+                                nodeEditorPanel);
+
+                }
             }
             
 

@@ -56,17 +56,86 @@ void Node::drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nod
     buttonShader.use();
 }
 
-bool Node::doHaveConnection(int nodeI,int outI){
-    //for (size_t outi = 0; outi < outputs.size(); outi++)
-    //{
-    //    for (size_t coni = 0; coni < outputs[outi].connections.size(); coni++)
-    //    {
-    //        if(outputs[outi].connections[coni].inputIndex == outI && outputs[outi].connections[coni].nodeIndex == nodeI)
-    //            return true;
-    //    }
-    //}
+
+void Node::createConnection(int nodeIParam,int IOIParam,int currentNodeI,int currentIOI,std::vector<Node> &nodeScene){
+    
+    IOs[currentIOI].connections.push_back(NodeConnection(nodeIParam,IOIParam));
+    nodeScene[nodeIParam].IOs[IOIParam].connections.push_back(NodeConnection(currentNodeI,currentIOI));
+}
+
+void Node::clearConnections(int nodeIParam,int IOIParam,std::vector<Node> &nodeScene){
+    
+    nodeScene[nodeIParam].IOs[IOIParam].connections.clear();
+
+    //Check all the nodes in the nodescene
+    for (size_t nodeI = 0; nodeI < nodeScene.size(); nodeI++)
+    {
+        //Check all the IO in the node
+        for (size_t IOI = 0; IOI < nodeScene[nodeI].IOs.size(); IOI++)
+        {
+            //Check all the connections in the IO
+            for (size_t conI = 0; conI < nodeScene[nodeI].IOs[IOI].connections.size(); conI++)
+            {
+                //Does the node matches
+                bool nodeMatches = false;
+                
+                if(nodeScene[nodeI].IOs[IOI].connections[conI].nodeIndex == nodeIParam)
+                    nodeMatches = true;
+                
+                
+                //Does the IO matches
+                bool IOMatches = false;
+                
+                if(nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex == IOIParam)
+                    IOMatches = true;
+
+                
+                //If the both node & IOI indices matches than the input has connection
+                if(nodeMatches && IOMatches)
+                    nodeScene[nodeI].IOs[IOI].connections.erase(nodeScene[nodeI].IOs[IOI].connections.begin() + conI);
+            }
+        }
+    }
+}
+
+
+bool Node::doHaveConnection(int nodeIParam,int IOIParam,std::vector<Node> nodeScene){
+    
+    //Check all the nodes in the nodescene
+    for (size_t nodeI = 0; nodeI < nodeScene.size(); nodeI++)
+    {
+        //Check all the IO in the node
+        for (size_t IOI = 0; IOI < nodeScene[nodeI].IOs.size(); IOI++)
+        {
+            //Check all the connections in the IO
+            for (size_t conI = 0; conI < nodeScene[nodeI].IOs[IOI].connections.size(); conI++)
+            {
+                //Does the node matches
+                bool nodeMatches = false;
+                
+                if(nodeScene[nodeI].IOs[IOI].connections[conI].nodeIndex == nodeIParam)
+                    nodeMatches = true;
+                
+                
+                //Does the IO matches
+                bool IOMatches = false;
+                
+                if(nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex == IOIParam)
+                    IOMatches = true;
+
+                
+                //If the both node & IOI indices matches than the input has connection
+                if(nodeMatches && IOMatches)
+                    return true;
+            }
+        }
+    }
 
     return false;
+}
+
+int Node::getStateData(int nodeI, int IOI,std::vector<Node> nodeScene){
+    return nodeScene[nodeI].IOs[IOI].state;
 }
 
 void Node::getHoveredInputs(int &nodeIParam, int &IOIndexParam, std::vector<Node> nodeScene){
