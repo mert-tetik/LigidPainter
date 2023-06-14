@@ -180,6 +180,12 @@ void UI::init
                                         Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Circle"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                     }
                                 ),
+                                Section(
+                                    Element(Button(2,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Meshes"  , appTextures.modifierIcon, 3.f,true)),
+                                    {   
+                                    
+                                    }
+                                ),
                             },
                             
                             glm::vec2(5,48), //Initial scale value

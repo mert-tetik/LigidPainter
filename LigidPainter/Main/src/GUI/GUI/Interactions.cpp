@@ -239,7 +239,7 @@ void libraryPanelLeftInteraction(Panel &libraryPanelLeft, int &selectedLibraryEl
 }
 
 
-void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &painter, Dropper &dropper){
+void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &painter, Dropper &dropper,ColorPalette colorPalette,Shader buttonShader, AppTextures appTextures, Model &model){
     if(paintingPanel.sections[0].elements[0].button.hover && mouse.LDoubleClick){//Pressed to first color button element
         painter.loadColor1();
     }
@@ -295,6 +295,14 @@ void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &paint
                         );
         exportBrush.saveFile("");
     }
+
+    //Update the meshes section of the painting panel
+    for (size_t i = 0; i < model.meshes.size(); i++)
+    {
+        paintingPanel.sections[6].elements.clear();
+        paintingPanel.sections[6].elements.push_back(Element(Button(1,glm::vec2(2,2),colorPalette,buttonShader, model.meshes[i].materialName , Texture(), 0.f,false)));
+    }
+    
 }
 
 
@@ -593,7 +601,7 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
     
     libraryPanelLeftInteraction(libraryPanelLeft,selectedLibraryElementIndex,mouse);
     
-    paintingPanelInteraction(paintingPanel,mouse,painter,dropper);
+    paintingPanelInteraction(paintingPanel,mouse,painter,dropper,colorPalette,shaders.buttonShader,appTextures,model);
     
     windowPanelInteraction(windowPanel, mouse, painter, settingsDialog, displayerDialog);
 
