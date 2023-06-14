@@ -211,6 +211,7 @@ void Renderer::loadShaders(){
 }
 
 void Renderer::createContextMenus(){
+
     //!Create context menus                                                   0            1                  2               3                     4           5  
     //Library panel
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Rename"  , "Duplicate"       , "Copy Path"   , "Delete"}));                                      //Textures  0
@@ -228,10 +229,10 @@ void Renderer::createAppNodes(glm::vec2 videoScale){
     materialNode.loadIO
     (
         {
-            NodeIO("Input1",Element(Button(1,glm::vec2(1,8),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false),1),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale),
+            NodeIO("Input1",Element(Button(1,glm::vec2(1,8),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,1),
         },
         {
-            NodeIO("Input1",Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false),2),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale),
+            NodeIO("Input1",Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,2),
         },
         shaders.buttonShader,
         shaders.singleCurve,
@@ -248,7 +249,7 @@ void Renderer::createAppNodes(glm::vec2 videoScale){
     std::vector <NodeIO> meshOutputNodeInputElements;
     for (size_t i = 0; i < model.meshes.size(); i++)
     {
-        meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,model.meshes[i].materialName,Texture(),2.f,false),0),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale));
+        meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,model.meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,0));
     }
     
     //Create the mesh output node

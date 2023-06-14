@@ -11,6 +11,9 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
+
+    TODO UPDATE LIGID FILE DATE
+
 */
 
 #include<glad/glad.h>
@@ -33,6 +36,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 #include "tinyfiledialogs.h"
+
+
 
 void Project::updateProject(Library &library){
     if(!std::filesystem::exists(folderPath)){

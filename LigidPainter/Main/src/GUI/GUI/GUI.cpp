@@ -66,12 +66,13 @@ Element::Element(){}
 Element::Element(Button button){
     //Init as button
     this->button = button;
-    pos = button.pos;
-    scale = button.scale;
-    panelOffset = button.panelOffset;
-    state = 0;
+    this->pos = button.pos;
+    this->scale = button.scale;
+    this->panelOffset = button.panelOffset;
+    this->state = 0;
 }
 Element::Element(RangeBar rangeBar){
+    
     //Init as range bar
     this->rangeBar = rangeBar;
     pos = rangeBar.pos;
@@ -104,24 +105,6 @@ Element::Element(TextBox textBox,GLFWwindow* window){
     scale = textBox.scale;
     panelOffset = textBox.panelOffset;
     state = 4;
-}
-Element::Element(Button button,int nodeState){
-    //Init as button
-    this->button = button;
-    pos = button.pos;
-    scale = button.scale;
-    panelOffset = button.panelOffset;
-    state = 0;
-    this->nodeState = nodeState;
-}
-Element::Element(RangeBar rangeBar,int nodeState){
-    //Init as range bar
-    this->rangeBar = rangeBar;
-    pos = rangeBar.pos;
-    scale = rangeBar.scale;
-    panelOffset = rangeBar.panelOffset;
-    state = 1;
-    this->nodeState = nodeState;
 }
 
 void Element::render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){

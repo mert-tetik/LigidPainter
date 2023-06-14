@@ -232,6 +232,8 @@ Button::Button(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader
         this->outlineThickness = 2.f;
         this->buttonImageScaleDivider = 2.f;
     }
+
+
 }
 
 

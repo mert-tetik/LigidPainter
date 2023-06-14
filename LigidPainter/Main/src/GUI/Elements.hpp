@@ -318,7 +318,8 @@ public:
 struct Element{
     //The UI Element
 
-    int nodeState; //Used by the elements of nodes (0 : Input , 1 : Input no connection , 2 : Output , 3 : Output no connection)
+    //! THIS IS NOT USED IDK BUT DELETING THAT SHI CAUSES RUNTIME ERROR LOL
+    int V231313515165; //Used by the elements of nodes (0 : Input , 1 : Input no connection , 2 : Output , 3 : Output no connection)
 
     Button button;
     RangeBar rangeBar;
@@ -343,8 +344,6 @@ struct Element{
     Element(CheckBox checkBox);
     Element(ComboBox comboBox,GLFWwindow* window);
     Element(TextBox textBox,GLFWwindow* window);
-    Element(Button button,int nodeState);
-    Element(RangeBar rangeBar,int nodeState);
 
     //Public member function
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
@@ -432,9 +431,10 @@ public:
     Button IOCircle;
     glm::vec4 color; 
     unsigned int result; 
+    int state;
 
     //Constructor
-    NodeIO(std::string title ,Element element,glm::vec4 color,ColorPalette colorPalette,Shader buttonShader,glm::vec2 videoScale);
+    NodeIO(std::string title ,Element element,glm::vec4 color,ColorPalette colorPalette,Shader buttonShader,glm::vec2 videoScale,int state);
 };
 
 class Node
@@ -443,10 +443,11 @@ private:
     bool renderBarriers(Panel &nodeEditorPanel,Mouse &mouse);
     void drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nodeEditorPanel);
     bool doHaveConnection(int nodeI,int outI);
+    void addVectors(std::vector<NodeIO>& orgVec, std::vector<NodeIO>& addedVec);
+    void createPanelUsingIOs();
     
 public:
-    std::vector<NodeIO> inputs;
-    std::vector<NodeIO> outputs;
+    std::vector<NodeIO> IOs;
     Shader buttonShader;  
     Shader singleCurveShader;  
     int materialID;
