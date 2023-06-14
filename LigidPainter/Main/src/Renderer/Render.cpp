@@ -89,31 +89,31 @@ void Renderer::render(){
     glActiveTexture(GL_TEXTURE9);
     glBindTexture(GL_TEXTURE_2D,painter.depthTexture);
 
-    ////Get the nodes connected to the mesh node (output node)
-    //std::vector<Material> nodeMaterials = getTheMaterialsConnectedToTheMeshNode(nodeScene,library); //TODO Move this function to the node
-//
-//    ////Render each mesh
-    //for (size_t i = 0; i < model.meshes.size(); i++)
-    //{
-    //    if(library.materials.size()){
-    //        //Bind the material
-    //        glActiveTexture(GL_TEXTURE2);
-    //        glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].albedo.ID);
-    //        glActiveTexture(GL_TEXTURE3);
-    //        glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].roughness.ID);
-    //        glActiveTexture(GL_TEXTURE4);
-    //        glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].metallic.ID);
-    //        glActiveTexture(GL_TEXTURE5);
-    //        glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].normalMap.ID);
-    //        glActiveTexture(GL_TEXTURE6);
-    //        glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].heightMap.ID);
-    //        glActiveTexture(GL_TEXTURE7);
-    //        glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].ambientOcclusion.ID);
-    //    }
-    //    //Draw the mesh
-    //    model.meshes[i].Draw();
-    //}
-//
+    //Get the nodes connected to the mesh node (output node)
+    std::vector<Material> nodeMaterials = getTheMaterialsConnectedToTheMeshNode(nodeScene,library); //TODO Move this function to the node
+
+//  ////Render each mesh
+    for (size_t i = 0; i < model.meshes.size(); i++)
+    {
+        if(library.materials.size()){
+            //Bind the material
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].albedo.ID);
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].roughness.ID);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].metallic.ID);
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].normalMap.ID);
+            glActiveTexture(GL_TEXTURE6);
+            glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].heightMap.ID);
+            glActiveTexture(GL_TEXTURE7);
+            glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].ambientOcclusion.ID);
+        }
+        //Draw the mesh
+        model.meshes[i].Draw();
+    }
+
     //Clear the depth buffer before rendering the UI elements (prevent coliding)
     glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -209,8 +209,8 @@ std::vector<Material> Renderer::getTheMaterialsConnectedToTheMeshNode(std::vecto
                     materials.push_back(library.materials[matI]);
             }
         }
-        
     }
+
     return materials;
 }
 
