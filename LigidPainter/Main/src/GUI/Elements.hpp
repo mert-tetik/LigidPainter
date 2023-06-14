@@ -445,6 +445,8 @@ private:
     bool doHaveConnection(int nodeI,int outI);
     void addVectors(std::vector<NodeIO>& orgVec, std::vector<NodeIO>& addedVec);
     void createPanelUsingIOs();
+    void getHoveredInputs(int &nodeIParam, int &IOIndexParam, std::vector<Node> nodeScene);
+
     
 public:
     std::vector<NodeIO> IOs;

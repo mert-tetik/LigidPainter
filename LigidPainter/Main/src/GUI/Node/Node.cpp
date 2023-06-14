@@ -97,12 +97,77 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
     //Render & process all the inputs & outputs
     for (size_t i = 0; i < IOs.size(); i++)
     {
-        //Move the IO Circle to the left side of the the input element
-        IOs[i].IOCircle.pos = nodePanel.sections[0].elements[i].pos;
-        IOs[i].IOCircle.pos.x -= nodePanel.sections[0].elements[i].scale.x;
-        IOs[i].IOCircle.pos.z = nodePanel.sections[0].elements[i].pos.z + 0.01f;        
+        //IO state 0 = input
+        //IO state 1 = input without connection
+        //IO state 2 = output
+        //IO state 3 = output without connection
 
-        IOs[i].IOCircle.render(videoScale,mouse,timer,textRenderer,true);
+        //Don't render the IO circle if the IO has no connection
+        if(IOs[i].state != 1 && IOs[i].state != 3){
+
+            //Move the IO circle to the node panel IO button             
+            IOs[i].IOCircle.pos = nodePanel.sections[0].elements[i].pos;
+            IOs[i].IOCircle.pos.z += 0.01f;        
+            
+            //Move the IO Circle to the left side of the the IO element if is input
+            if(IOs[i].state == 0){//Is input
+                IOs[i].IOCircle.pos.x -= nodePanel.sections[0].elements[i].scale.x;
+            }
+
+            //Move the IO Circle to the right side of the the IO element if is input
+            else if(IOs[i].state == 2){//Is output
+                IOs[i].IOCircle.pos.x += nodePanel.sections[0].elements[i].scale.x;
+            }
+
+            //If pressed to the circle
+            if(IOs[i].IOCircle.clickState1){
+                
+                //Draw a line from the circle to the cursor
+                drawLine(
+                            glm::vec2(IOs[i].IOCircle.pos.x,IOs[i].IOCircle.pos.y), //Circle pos
+                            mouse.cursorPos/videoScale * 100.f, //Cursor pos in the range of 0 - 100
+                            videoScale,
+                            nodeEditorPanel);
+
+                //First frame line released
+                if(!mouse.LPressed){
+                    
+                    //Those values will remain 1000 if no IO circle is hovered
+                    int hoveredNodeI = 1000;
+                    int hoveredIOI = 1000;
+
+                    getHoveredInputs(hoveredNodeI,hoveredIOI,nodeScene);
+
+                    //A IO circle is hovered
+                    if(hoveredNodeI != 1000 && hoveredIOI != 1000){
+                        //Create a connection
+                        IOs[i].connections.push_back(NodeConnection(hoveredNodeI,hoveredNodeI));//Connect to the input button
+                    }
+                }
+            }
+
+            //Render the connections of the IO
+            for (size_t conI = 0; conI < IOs[i].connections.size(); conI++)
+            {
+
+                //Which node the connection is connected to
+                Node connectedNode = nodeScene[IOs[i].connections[conI].nodeIndex];
+                
+                //Which IO circle the connection is connected to
+                NodeIO connectedIO = connectedNode.IOs[IOs[i].connections[conI].inputIndex]; 
+
+                drawLine(
+                            glm::vec2(IOs[i].IOCircle.pos.x,IOs[i].IOCircle.pos.y), //Circle pos
+                            glm::vec2(connectedIO.IOCircle.pos.x,connectedIO.IOCircle.pos.y), //Connected Circle pos
+                            videoScale,
+                            nodeEditorPanel);
+            }
+            
+
+
+            //Render the IO circle
+            IOs[i].IOCircle.render(videoScale,mouse,timer,textRenderer,true);
+        }
     }
 
 
