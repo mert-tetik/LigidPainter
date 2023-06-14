@@ -28,9 +28,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-//TODO Make the node editor panel movable
-//TODO Prevent connection to connected input
-
 
 NodeConnection::NodeConnection(int nodeIndex,int inputIndex){
     this->nodeIndex = nodeIndex;
@@ -121,6 +118,9 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
 
             //If pressed to the circle
             if(IOs[i].IOCircle.clickState1){
+
+                nodePanel.leftSide.pressed = false;
+                nodePanel.rightSide.pressed = false;
                 
                 //If an input is pressed that already has a connection
                 if(IOs[i].state == 0 && IOs[i].connections.size()){
