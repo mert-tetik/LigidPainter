@@ -577,6 +577,37 @@ void paintingModesPanelInteraction(Panel &paintingModesPanel, Painter &painter){
     }
 }
 
+void nodeInteraction(Model &model, std::vector<Node> &nodeScene,std::vector<Node> &appNodes,Shaders shaders,ColorPalette colorPalette,glm::vec2 videoScale){
+    
+    //Update the mesh node if a new model is added
+    if(model.newModelAdded){
+        Node meshOutputNode;
+        std::vector <NodeIO> meshOutputNodeInputElements;
+        for (size_t i = 0; i < model.meshes.size(); i++)
+        {
+            meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,model.meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,0));
+        }
+
+        //Create the mesh output node
+        meshOutputNode.loadIO
+        (
+            meshOutputNodeInputElements,
+            {
+
+            },
+            shaders.buttonShader,
+            shaders.singleCurve,
+            colorPalette,
+            0,
+            0
+        );
+
+        appNodes[0] = meshOutputNode;
+        nodeScene[0] = meshOutputNode;
+    }
+}
+
+
 void UI::panelPositioning(float &screenGapPerc, Library &library, Painter &painter){
     //!Positioning the panels
     paintingPanel.pos.x = windowPanel.pos.x - windowPanel.scale.x - paintingPanel.scale.x; //Keep on the left side of the window panel 
@@ -633,6 +664,8 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
     windowPanelInteraction(windowPanel, mouse, painter, settingsDialog, displayerDialog);
 
     paintingModesPanelInteraction(paintingModesPanel,painter);
+
+    nodeInteraction(model,nodeScene,appNodes,shaders,colorPalette,videoScale);
     
     panelPositioning(screenGapPerc,library,painter);
 

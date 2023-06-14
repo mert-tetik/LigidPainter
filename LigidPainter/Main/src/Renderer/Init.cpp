@@ -244,7 +244,6 @@ void Renderer::createAppNodes(glm::vec2 videoScale){
     //Mesh output node
 
     //Create inputs with meshes of the model 
-    //TODO : These inputs will be updated every time a 3D model is loaded
     Node meshOutputNode;
     std::vector <NodeIO> meshOutputNodeInputElements;
     for (size_t i = 0; i < model.meshes.size(); i++)
