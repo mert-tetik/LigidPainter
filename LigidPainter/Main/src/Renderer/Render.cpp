@@ -180,6 +180,12 @@ void Renderer::render(){
     textRenderer.keyInput = false;
     textRenderer.mods = 0;
 
+    //Let the model.newModelAdded be true for an another cycle
+    if(previousModelNewModelAdded == true)
+        model.newModelAdded = false;
+
+    previousModelNewModelAdded = model.newModelAdded; 
+
     //Cursor is changing there
     //Sets the active cursor (mouse.activeCursor) as the cursor
     //Than changes the active cursor as default cursor

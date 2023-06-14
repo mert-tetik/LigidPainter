@@ -131,6 +131,8 @@ public:
     unsigned int mVAO;
     unsigned int mVBO;
 
+    bool newModelAdded = false; //Returns true in the same frame a new model is imported
+
     //Public member functions
     void Draw();
     void exportModel(std::string path);

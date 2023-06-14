@@ -318,9 +318,6 @@ public:
 struct Element{
     //The UI Element
 
-    //! THIS IS NOT USED IDK BUT DELETING THAT SHI CAUSES RUNTIME ERROR LOL
-    int V231313515165; //Used by the elements of nodes (0 : Input , 1 : Input no connection , 2 : Output , 3 : Output no connection)
-
     Button button;
     RangeBar rangeBar;
     CheckBox checkBox;

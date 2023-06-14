@@ -296,11 +296,38 @@ void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &paint
         exportBrush.saveFile("");
     }
 
-    //Update the meshes section of the painting panel
-    for (size_t i = 0; i < model.meshes.size(); i++)
-    {
+    //Update the meshes section of the painting panel if a new model is added
+    if(model.newModelAdded){
+        painter.selectedMeshIndex = 0;
+        
         paintingPanel.sections[6].elements.clear();
-        paintingPanel.sections[6].elements.push_back(Element(Button(1,glm::vec2(2,2),colorPalette,buttonShader, model.meshes[i].materialName , Texture(), 0.f,false)));
+        
+        for (size_t i = 0; i < model.meshes.size(); i++)
+        {
+
+            Element meshButton = Element(Button(1,glm::vec2(2,2),colorPalette,buttonShader, model.meshes[i].materialName , Texture(), 0.f,true));
+
+            paintingPanel.sections[6].elements.push_back(meshButton);
+        }
+    }
+
+    //Check all the mesh buttons if they are pressed
+    for (size_t i = 0; i < paintingPanel.sections[6].elements.size(); i++) 
+    {
+        if(paintingPanel.sections[6].elements[i].button.hover && mouse.LClick){//If any button element is pressed
+            if(painter.selectedMeshIndex != i){
+                paintingPanel.sections[6].elements[painter.selectedMeshIndex].button.clickState1 = false;
+                painter.selectedMeshIndex = i;
+                break;
+            }
+        } 
+    }
+
+    //Set the selected mesh button as selected 
+    for (size_t i = 0; i < paintingPanel.sections[6].elements.size(); i++)
+    {
+        if(i == painter.selectedMeshIndex)
+            paintingPanel.sections[6].elements[i].button.clickState1 = true;
     }
     
 }

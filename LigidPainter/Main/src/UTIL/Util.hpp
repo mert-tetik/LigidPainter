@@ -202,6 +202,7 @@ public:
     bool updateTheDepthTexture = false;
     Texture selectedTexture;
     int selectedPaintingModeIndex = 0; 
+    int selectedMeshIndex = 0;
     glm::vec2 videoScale;
     Shader paintingShader;
     Shader buttonShader;

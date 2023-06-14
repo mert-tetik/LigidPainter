@@ -97,6 +97,7 @@ public:
 
     void render();
 private:
+    bool previousModelNewModelAdded = false;
 
     //Init.cpp
     void initGLFW(glm::vec2 videoScale);

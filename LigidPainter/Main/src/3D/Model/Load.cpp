@@ -39,7 +39,9 @@ void Model::loadModel(std::string const &path,bool triangulate)
     filePath = path;
     title = util.getLastWordBySeparatingWithChar(filePath,folderDistinguisher);
     title = util.removeExtension(title);
-    
+
+    this->newModelAdded = true;
+
     meshes.clear();
     // read file via ASSIMP
     Assimp::Importer importer;
@@ -56,6 +58,7 @@ void Model::loadModel(std::string const &path,bool triangulate)
         std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
         return;
     }
+    
     // retrieve the directory path of the filepath
     directory = path.substr(0, path.find_last_of('/'));
 

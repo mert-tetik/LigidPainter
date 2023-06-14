@@ -108,7 +108,8 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
         tdModelShader.setInt("render2D",1);
 
         //Draw the UV of the selected model
-        model.meshes[0].Draw(); //TODO SELECT THE MESH
+        if(selectedMeshIndex < model.meshes.size())
+            model.meshes[selectedMeshIndex].Draw(); 
         
         //Set to default
         tdModelShader.setInt("render2D",0);

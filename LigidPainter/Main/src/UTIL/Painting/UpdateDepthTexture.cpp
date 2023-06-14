@@ -59,7 +59,8 @@ void Painter::updateDepthTexture(Model &model){
     depth3DShader.setMat4("modelMatrix",modelMatrix);
 
     //Draw the selected mesh in 3D
-    model.meshes[0].Draw();//TODO SELECT THE MESH
+    if(selectedMeshIndex < model.meshes.size())
+        model.meshes[selectedMeshIndex].Draw();
 
     //!Finished
 
