@@ -154,6 +154,40 @@ void Node::getHoveredInputs(int &nodeIParam, int &IOIndexParam, std::vector<Node
     }
 }
 
+void Node::getTheIOConnectedToTheInput(int &nodeIParam, int &IOIParam,int currentNodeI, int currentIOI, std::vector<Node> nodeScene){
+    //Check all the nodes in the nodescene
+    for (size_t nodeI = 0; nodeI < nodeScene.size(); nodeI++)
+    {
+        //Check all the IO in the node
+        for (size_t IOI = 0; IOI < nodeScene[nodeI].IOs.size(); IOI++)
+        {
+            //Check all the connections in the IO
+            for (size_t conI = 0; conI < nodeScene[nodeI].IOs[IOI].connections.size(); conI++)
+            {
+                //Does the node matches
+                bool nodeMatches = false;
+                
+                if(nodeScene[nodeI].IOs[IOI].connections[conI].nodeIndex == currentNodeI)
+                    nodeMatches = true;
+                
+                
+                //Does the IO matches
+                bool IOMatches = false;
+                
+                if(nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex == currentIOI)
+                    IOMatches = true;
+
+                
+                //If the both node & IOI indices matches than the input has connection
+                if(nodeMatches && IOMatches){
+                    nodeIParam = nodeI;
+                    IOIParam = IOI;
+                }   
+            }
+        }
+    }
+}
+
 bool Node::renderBarriers(Panel &nodeEditorPanel,Mouse &mouse){
     //Renders the barriers and returns if the cursor is inside of the barriers
     //Barriers prevents the node rendering outside of the node editor panel

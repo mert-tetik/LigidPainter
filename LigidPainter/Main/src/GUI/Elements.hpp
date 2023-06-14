@@ -449,6 +449,7 @@ private:
     void createPanelUsingIOs();
     void getHoveredInputs(int &nodeIParam, int &IOIndexParam, std::vector<Node> nodeScene);
     int getStateData(int nodeI, int outI,std::vector<Node> nodeScene);
+    void getTheIOConnectedToTheInput(int &nodeIParam, int &IOIParam,int currentNodeI, int currentIOI, std::vector<Node> nodeScene);
 
 public:
     std::vector<NodeIO> IOs;

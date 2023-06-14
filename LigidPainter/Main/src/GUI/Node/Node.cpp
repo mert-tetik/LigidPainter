@@ -122,6 +122,22 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
             //If pressed to the circle
             if(IOs[i].IOCircle.clickState1){
                 
+                //If an input is pressed that already has a connection
+                if(IOs[i].state == 0 && IOs[i].connections.size()){
+                    int resNodeI = 1000;
+                    int resIOI = 1000;
+                    
+                    getTheIOConnectedToTheInput(resNodeI,resIOI,currentNodeIndex,i,nodeScene);
+
+                    if(resNodeI != 1000 && resIOI != 1000){
+                        nodeScene[resNodeI].IOs[resIOI].IOCircle.clickState1 = true;
+                        IOs[i].IOCircle.clickState1 = false;
+                    }
+                    
+                    clearConnections(currentNodeIndex,i,nodeScene);
+
+                }
+
                 //Draw a line from the circle to the cursor
                 drawLine(
                             glm::vec2(IOs[i].IOCircle.pos.x,IOs[i].IOCircle.pos.y), //Circle pos
@@ -150,7 +166,7 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
                            //Than remove the connections of the circle hovered
                             clearConnections(hoveredNodeI,hoveredIOI,nodeScene);
                         }
-                        //TODO CHECK IF CAN CONNECT BOTH
+
                         //Create a connection 
                         createConnection(hoveredNodeI,hoveredNodeI,currentNodeIndex,i,nodeScene);
                     }
