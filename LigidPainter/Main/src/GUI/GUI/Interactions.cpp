@@ -587,6 +587,8 @@ void UI::panelPositioning(float &screenGapPerc, Library &library, Painter &paint
 void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std::vector<ContextMenu> &contextMenus,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
                         Context &context,glm::vec2 &videoScale,TextRenderer &textRenderer, Timer &timer, int &textureRes,float screenGapPerc,Model &model){
     
+    contextMenuInteraction(contextMenus,mouse,library,appNodes,nodeScene,context,videoScale,timer,textRenderer);
+    
     libraryPanelDisplayerInteraction(libraryPanelDisplayer,selectedLibraryElementIndex,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,materialIDCounter,appTextures);
     
     libraryPanelLeftInteraction(libraryPanelLeft,selectedLibraryElementIndex,mouse);
@@ -594,8 +596,6 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
     paintingPanelInteraction(paintingPanel,mouse,painter,dropper);
     
     windowPanelInteraction(windowPanel, mouse, painter, settingsDialog, displayerDialog);
-
-    contextMenuInteraction(contextMenus,mouse,library,appNodes,nodeScene,context,videoScale,timer,textRenderer);
 
     paintingModesPanelInteraction(paintingModesPanel,painter);
     
