@@ -85,7 +85,8 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                             1.f,
                             1,
                             {},
-                            0.25f
+                            0.25f,
+                            false
                         );
 
     this->panel.sections[0].elements[0].button.color = colorPalette.secondColor;

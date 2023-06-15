@@ -264,32 +264,35 @@ void Panel::drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm
         }
     }
     endRenderingTheButtons:
-    sliderButton.pos = pos;
-    if(leftSide.locked)
-        sliderButton.pos.x = pos.x + sliderButton.scale.x + scale.x;
-    else
-        sliderButton.pos.x = pos.x - sliderButton.scale.x - scale.x;
-    slideRatio = (elementPos + lastElementScale + (lastElementScale*2.f)) / (pos.y + scale.y);
-    
-    if(slideRatio > 1 && vertical){
-        sliderButton.scale.y = scale.y / slideRatio;
-        sliderButton.pos.y = (pos.y - scale.y) + sliderButton.scale.y + slideVal;  
-        
-        sliderButton.render(videoScale,mouse,timer,textRenderer,doMouseTracking);
-        
-        //if(hover)
-        //    slideVal += mouse.mouseScroll;
-        
-        if(sliderButton.clickState1){ //Pressed
-            //Move the slidebar
-            slideVal += mouse.mouseOffset.y/videoScale.y*100.f;
-        } 
-        
-        if(slideVal < 0) //If the slider is out of boundaries
-            slideVal = 0; //Get the slide bar back
-        if (sliderButton.pos.y + sliderButton.scale.y >= pos.y + scale.y && mouse.mouseOffset.y > 0) {
-            // If the slider is out of boundaries
-            slideVal = sliderButton.pos.y - (pos.y - scale.y) - sliderButton.scale.y; // Set slideVal to its maximum value
+
+    if(hasSlider){
+        sliderButton.pos = pos;
+        if(leftSide.locked)
+            sliderButton.pos.x = pos.x + sliderButton.scale.x + scale.x;
+        else
+            sliderButton.pos.x = pos.x - sliderButton.scale.x - scale.x;
+        slideRatio = (elementPos + lastElementScale + (lastElementScale*2.f)) / (pos.y + scale.y);
+
+        if(slideRatio > 1 && vertical){
+            sliderButton.scale.y = scale.y / slideRatio;
+            sliderButton.pos.y = (pos.y - scale.y) + sliderButton.scale.y + slideVal;  
+
+            sliderButton.render(videoScale,mouse,timer,textRenderer,doMouseTracking);
+
+            //if(hover)
+            //    slideVal += mouse.mouseScroll;
+
+            if(sliderButton.clickState1){ //Pressed
+                //Move the slidebar
+                slideVal += mouse.mouseOffset.y/videoScale.y*100.f;
+            } 
+
+            if(slideVal < 0) //If the slider is out of boundaries
+                slideVal = 0; //Get the slide bar back
+            if (sliderButton.pos.y + sliderButton.scale.y >= pos.y + scale.y && mouse.mouseOffset.y > 0) {
+                // If the slider is out of boundaries
+                slideVal = sliderButton.pos.y - (pos.y - scale.y) - sliderButton.scale.y; // Set slideVal to its maximum value
+            }
         }
     }
     
@@ -300,7 +303,7 @@ void Panel::drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm
 
 Panel::Panel(){}
 Panel::Panel(Shader shader,ColorPalette colorPalette,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,bool vertical,bool lockL,bool lockR,bool lockB,bool lockT,
-      float outlineThickness,int rowCount,std::vector<Button> barButtons,float maxScaleVal){
+      float outlineThickness,int rowCount,std::vector<Button> barButtons,float maxScaleVal,bool hasSlider){
     this->shader = shader;
     this->vertical = vertical;
     this->scale = scale;
@@ -320,6 +323,7 @@ Panel::Panel(Shader shader,ColorPalette colorPalette,std::vector<Section> sectio
     this->sliderButton.color = colorPalette.mainColor;
     this->sliderButton.color2 = colorPalette.themeColor;
     this->sliderButton.radius = 0.25f;
+    this->hasSlider = hasSlider;
 }
 
 void Panel::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){

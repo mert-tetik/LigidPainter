@@ -68,7 +68,7 @@ GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette
     this->textureDisplayerButton.outlineColor2 = glm::vec4(0);
     
     //Background panel
-    this->bgPanel = Panel(buttonShader,colorPalette,{},glm::vec2(20),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,false,true,true,true,true,1.f,1.f,{},0.25f);
+    this->bgPanel = Panel(buttonShader,colorPalette,{},glm::vec2(20),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,false,true,true,true,true,1.f,1.f,{},0.25f,false);
 
     bgPanel.scale.x = textureDisplayerButton.scale.x;
 }

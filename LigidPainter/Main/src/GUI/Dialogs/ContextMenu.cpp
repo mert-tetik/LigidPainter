@@ -49,7 +49,8 @@ ContextMenu::ContextMenu(Shader buttonShader,ColorPalette colorPalette,std::vect
         1.f,
         1,
         {},
-        20.f
+        20.f,
+        false
     );
 
     //Push the elements taken from parameter into the context panel

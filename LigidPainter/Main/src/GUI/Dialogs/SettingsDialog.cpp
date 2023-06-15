@@ -50,7 +50,7 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
                 }
             )
         }
-    },glm::vec2(9.f),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f);
+    },glm::vec2(9.f),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
 }
 
 void SettingsDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,glm::vec2 videoScale,int &textureRes,bool &VSync){

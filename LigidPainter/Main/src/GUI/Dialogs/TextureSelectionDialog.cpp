@@ -31,7 +31,7 @@ TextureSelectionDialog::TextureSelectionDialog(Shader buttonShader,ColorPalette 
     this->colorPalette = colorPalette;
     this->buttonShader = buttonShader;
     
-    texturePanel = Panel(buttonShader,colorPalette,{},scale,pos,colorPalette.mainColor,colorPalette.thirdColor,true,true,false,true,true,1.f,15.f,{},20.f);
+    texturePanel = Panel(buttonShader,colorPalette,{},scale,pos,colorPalette.mainColor,colorPalette.thirdColor,true,true,false,true,true,1.f,15.f,{},20.f,true);
 }
 
 void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &timer,TextRenderer &textRenderer,Library library){

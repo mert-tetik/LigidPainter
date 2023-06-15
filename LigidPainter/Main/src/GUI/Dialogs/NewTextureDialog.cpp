@@ -61,7 +61,8 @@ NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPal
         1.f,
         1.f,
         {},
-        0.25f
+        0.25f,
+        false
     );
     
     //Change the color button's color to black

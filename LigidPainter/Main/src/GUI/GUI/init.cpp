@@ -80,7 +80,8 @@ void UI::init
                             1.f,
                             1,
                             {},
-                            20.f
+                            20.f,
+                            false
                         );
 
     //Init the window panel
@@ -112,7 +113,8 @@ void UI::init
                             1.f,
                             1,
                             {},
-                            20.f
+                            20.f,
+                            false
                         );
     
     //Init the painting panel 
@@ -200,7 +202,8 @@ void UI::init
                             1.f,
                             1,
                             {},
-                            20.f
+                            20.f,
+                            true
                         );
     
     //Init the library panel (left)
@@ -235,7 +238,8 @@ void UI::init
                             1.f,
                             1,
                             {},
-                            20.f
+                            20.f,
+                            false
                         );
 
     //Init the library panel displayer 
@@ -261,7 +265,8 @@ void UI::init
                                 Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Add"        , Texture(), 0.f,false),
                                 Button(1,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,"Import"        , Texture(), 0.f,false)
                             },
-                            11.f
+                            11.f,
+                            true
                         );
 
     //Init the node editor displayer
@@ -284,7 +289,8 @@ void UI::init
                             1.f,
                             1,
                             {},
-                            45.f
+                            45.f,
+                            false
                         );
 
     //Init the selected texture displayer
@@ -312,7 +318,8 @@ void UI::init
                             1.f,
                             1,
                             {},
-                            20.f
+                            20.f,
+                            false
                         );
 
     //Init the 2D painting panel
@@ -340,7 +347,8 @@ void UI::init
                             1.f,
                             1,
                             {},
-                            20.f
+                            20.f,
+                            false
                         );
 
 
@@ -372,7 +380,8 @@ void UI::init
                             1.f,
                             1,
                             {},
-                            20.f
+                            20.f,
+                            false
                         );
 
     //Init dialogs

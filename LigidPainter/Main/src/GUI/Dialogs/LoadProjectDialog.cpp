@@ -65,7 +65,8 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
                             1.f,
                             1,
                             {},
-                            0.25f
+                            0.25f,
+                            false
                         );
 
     //Create the projects panel                        
@@ -86,7 +87,8 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
                             1.f,
                             1,
                             {},
-                            0.25f
+                            0.25f,
+                            true
                         );
 
     //Panel's navigation (kinda) bar

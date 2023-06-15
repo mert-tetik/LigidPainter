@@ -62,7 +62,8 @@ void Node::loadIO(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs, Shade
         0.5f,
         1,
         {},
-        20.f
+        20.f,
+        false
     );
     
     //Don't clear the depth buffer right after rendering the panel

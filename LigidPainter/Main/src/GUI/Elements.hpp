@@ -401,12 +401,14 @@ public:
     float maxScaleVal;    
     bool doMouseTracking;
     bool isLibraryDisplayer = false;
+    bool hasSlider = false;
     Button sliderButton;
 
     //Constructors
     Panel();
     Panel(Shader shader,ColorPalette colorPalette,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,
-          bool vertical,bool lockL,bool lockR,bool lockB,bool lockT,float outlineThickness,int rowCount,std::vector<Button> barButtons,float maxScaleVal);
+          bool vertical,bool lockL,bool lockR,bool lockB,bool lockT,float outlineThickness,int rowCount,std::vector<Button> barButtons,float maxScaleVal,
+          bool hasSlider);
 
     /// @brief Public member function to render the panel
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);

@@ -82,7 +82,8 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
                             1.f,
                             1,
                             {},
-                            0.25f
+                            0.25f,
+                            false
                         );
     this->panel.sections[0].elements[0].button.color = colorPalette.secondColor;
     this->panel.sections[0].elements[0].button.color2 = colorPalette.thirdColor;

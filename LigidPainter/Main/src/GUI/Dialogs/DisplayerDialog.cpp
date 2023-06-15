@@ -83,7 +83,8 @@ DisplayerDialog::DisplayerDialog(
         1.f,
         1.f,
         {},
-        0.25f
+        0.25f,
+        false
     );
     
     //For each default skybox generate a button with a unique color (there are 6 default skyboxes)
