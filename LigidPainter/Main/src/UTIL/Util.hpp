@@ -116,7 +116,7 @@ public:
 
     void load(const char* path);
     unsigned char* getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip);
-    void exportTexture(const std::string path);
+    void exportTexture(const std::string path,const std::string format);
     void getData(char*& pixels);
     glm::ivec2 getResolution();
     unsigned int duplicateTexture();

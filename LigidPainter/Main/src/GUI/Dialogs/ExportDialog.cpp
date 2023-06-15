@@ -64,7 +64,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                                             "PNG", 
                                             "JPEG", 
                                             "BMP", 
-                                            "TIFF"
+                                            "TGA"
                                         },4.f),context.window),
 
                                         Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"Export",Texture(),5.f,false))
