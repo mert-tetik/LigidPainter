@@ -349,7 +349,7 @@ void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, 
         settingsDialog.activate();
     }
     else if(windowPanel.sections[0].elements[3].button.hover && mouse.LClick){//Pressed to the displayer button of the window panel
-        displayerDialog.activate();
+        displayerDialog.dialogControl.activate();
     }
     else if(windowPanel.sections[0].elements[2].button.hover && mouse.LClick){//Pressed to the export button of the window panel
         exportDialog.active = true;
@@ -683,10 +683,10 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
                     textureSelectionDialog.active               || 
                     materialEditorDialog.active                 || 
                     anyContextMenuActive                        || 
-                    displayerDialog.active                      || 
+                    displayerDialog.dialogControl.isActive()    || 
                     greetingDialog.dialogControl.isActive()     || 
                     settingsDialog.active                       || 
-                    newProjectDialog.dialogControl.isActive()  || 
+                    newProjectDialog.dialogControl.isActive()   || 
                     newTextureDialog.active                     || 
                     loadProjectDialog.dialogControl.isActive();   
 

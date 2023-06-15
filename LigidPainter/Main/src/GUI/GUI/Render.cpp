@@ -191,7 +191,7 @@ void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRen
     if(greetingDialog.dialogControl.isActive())
         greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);
 
-    if(displayerDialog.active)
+    if(displayerDialog.dialogControl.isActive())
         displayerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,skybox);
     
     if(exportDialog.active)

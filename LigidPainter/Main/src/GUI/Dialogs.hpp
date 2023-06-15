@@ -147,8 +147,7 @@ class DisplayerDialog
  public:
     Panel panel;
     Shader buttonShader;
-    bool active = false;
-    bool firstActivation = false;
+    DialogControl dialogControl;
     std::vector<Element> skyboxes;
 
     //Constructors
@@ -159,7 +158,6 @@ class DisplayerDialog
     //Public member functions
     void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
                 Library &library,glm::vec2 videoScale,Skybox &skybox);
-    void activate();
  };
 
 

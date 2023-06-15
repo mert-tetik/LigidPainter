@@ -46,7 +46,9 @@ DisplayerDialog::DisplayerDialog(
                                     Shader skyboxBallShader,
                                     Model &sphereModel //Skybox's displaying texture is rendered using this sphere model
                                 ){
+                                    
     //Take the parameters to the class member variables
+    this->buttonShader = buttonShader;
     this->context = context;
     this->prefilteringShader = prefilteringShader;
     this->skyboxBallShader = skyboxBallShader;
@@ -116,6 +118,8 @@ DisplayerDialog::DisplayerDialog(
 void DisplayerDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
             Library &library,glm::vec2 videoScale,Skybox &skybox){
     
+    dialogControl.updateStart(buttonShader);
+
     //Render the panel
     panel.render(videoScale,mouse,timer,textRenderer,true);
     
@@ -177,17 +181,11 @@ void DisplayerDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalett
     
     //End the dialog
     if((panel.sections[0].elements[2].button.hover && mouse.LClick) || glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || (!panel.hover && mouse.LClick)){
-        if(!firstActivation){
+        if(!dialogControl.firstFrameActivated){
             panel.sections[0].elements[0].button.clickState1 = false;
-            active = false;
+            dialogControl.unActivate();
         }
     }
 
-    //
-    firstActivation = false;
-}
-
-void DisplayerDialog::activate(){
-    active = true;
-    firstActivation = true;
+    dialogControl.updateEnd(timer,buttonShader,0.3);
 }
