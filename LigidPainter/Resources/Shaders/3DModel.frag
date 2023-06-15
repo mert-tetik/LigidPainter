@@ -218,7 +218,8 @@ vec3 getPBR(){
 
 
     vec3 V = normalize(tangentViewPos - tangentPosModel);
-    vec3 R = reflect(-V, N); 
+    
+    vec3 R = reflect(-normalize(viewPos - Pos), Normal); 
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
