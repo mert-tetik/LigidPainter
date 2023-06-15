@@ -66,6 +66,10 @@ void main(){
         //Render the texture
         vec2 uv = texCoords;
         fragColor = texture(txtr, uv);
+
+        float roundVal = roundUp(texCoords,false);
+        if(roundVal < 0.2)
+            fragColor.a = roundVal;
     }
     else if(renderText == 1){
         //Render the text
