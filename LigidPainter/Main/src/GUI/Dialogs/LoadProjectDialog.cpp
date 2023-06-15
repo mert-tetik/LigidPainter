@@ -138,8 +138,8 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
     dialogControl.updateStart(buttonShader);
 
     //Render panels
-    bgPanel.render(videoScale,mouse,timer,textRenderer,true);
-    loadButton.render(videoScale,mouse,timer,textRenderer,true);
+    bgPanel.render(videoScale,mouse,timer,textRenderer,dialogControl.isComplete());
+    loadButton.render(videoScale,mouse,timer,textRenderer,dialogControl.isComplete());
     
     //Render texts
     textBtn1.render(videoScale,mouse,timer,textRenderer,false);
@@ -221,7 +221,7 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
     projectsPanel.sections.push_back(projectSection);
     
     //After refreshing the elements render the projects panel
-    projectsPanel.render(videoScale,mouse,timer,textRenderer,true);
+    projectsPanel.render(videoScale,mouse,timer,textRenderer,dialogControl.isComplete());
     
     //Check all the projects element if one them is pressed
     for (size_t i = 0; i < projectsPanel.sections[0].elements.size(); i++)

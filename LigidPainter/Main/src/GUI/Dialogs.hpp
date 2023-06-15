@@ -51,6 +51,7 @@ public:
     void activate();
     void unActivate();
     bool isActive();
+    bool isComplete();
 };
 
 //!------------------------------SETTINGS DIALOG------------------------------
@@ -245,7 +246,7 @@ class NewProjectDialog
     Panel panel;
     Box box;
     Shader buttonShader;
-    bool active = false;
+    DialogControl dialogControl;
 
     //Constructors
     NewProjectDialog();

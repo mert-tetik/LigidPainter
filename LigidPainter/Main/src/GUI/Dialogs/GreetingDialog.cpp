@@ -87,15 +87,15 @@ void GreetingDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette
     textureDisplayerButton.render(videoScale,mouse,timer,textRenderer,false);
 
     //bgPanel.render(videoScale,mouse,timer,textRenderer,false);
-    loadProjectButton.render(videoScale,mouse,timer,textRenderer,true);
-    createProjectButton.render(videoScale,mouse,timer,textRenderer,true);
+    loadProjectButton.render(videoScale,mouse,timer,textRenderer,dialogControl.isComplete());
+    createProjectButton.render(videoScale,mouse,timer,textRenderer,dialogControl.isComplete());
     
     //Render text elements
     // textButton1.render(videoScale,mouse,timer,textRenderer,false);
     
     //Show new project dialog if create project button is pressed
     if(createProjectButton.hover && mouse.LClick){
-        newProjectDialog.active = true;
+        newProjectDialog.dialogControl.activate();
         this->dialogControl.unActivate();
     }
 
