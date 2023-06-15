@@ -188,7 +188,7 @@ void UI::init
                                 ),
                             },
                             
-                            glm::vec2(5,48), //Initial scale value
+                            glm::vec2(8,48), //Initial scale value
                             glm::vec3(50,50,0.1f),  //Initial position value
                             colorPalette.mainColor, //Color of the panel
                             colorPalette.thirdColor, //Color of the panel
@@ -223,8 +223,8 @@ void UI::init
                                 )
                             },
                             
-                            glm::vec2(1,48), //Initial scale value
-                            glm::vec3(1,50,0.1f),  //Initial position value
+                            glm::vec2(5,48), //Initial scale value
+                            glm::vec3(5,50,0.1f),  //Initial position value
                             colorPalette.mainColor, //Color of the panel
                             colorPalette.thirdColor, //Color of the panel
                             true,
@@ -246,8 +246,8 @@ void UI::init
                                 {}
                             },
                             
-                            glm::vec2(1,48), //Initial scale value
-                            glm::vec3(1,50,0.1f),  //Initial position value
+                            glm::vec2(7,48), //Initial scale value
+                            glm::vec3(7,50,0.1f),  //Initial position value
                             colorPalette.mainColor, //Color of the panel
                             colorPalette.thirdColor, //Color of the panel
                             true,
@@ -374,7 +374,7 @@ void UI::init
                             {},
                             20.f
                         );
-    
+
     //Init dialogs
     greetingDialog              = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
     newTextureDialog            = NewTextureDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
@@ -384,7 +384,7 @@ void UI::init
     materialEditorDialog        = MaterialEditorDialog(shaders.buttonShader,shaders.tdModelShader,colorPalette,appTextures,sphereModel);
     textureSelectionDialog      = TextureSelectionDialog(shaders.buttonShader,colorPalette);
     settingsDialog              = SettingsDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
-    exportDialog = ExportDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
+    exportDialog                = ExportDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
 
     //Change the properties of the color elements in the painting panel (color section)
     for (size_t i = 0; i < 3; i++)
