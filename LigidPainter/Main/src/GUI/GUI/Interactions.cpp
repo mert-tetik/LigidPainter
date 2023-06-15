@@ -337,7 +337,7 @@ void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &paint
 }
 
 
-void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog){
+void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog){
     //!WINDOW PANEL BUTTONS
     if(windowPanel.sections[0].elements[0].button.hover && mouse.LClick){//Pressed to the 3D painting button of the window panel
         painter.threeDimensionalMode = true;
@@ -350,6 +350,9 @@ void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, 
     }
     else if(windowPanel.sections[0].elements[3].button.hover && mouse.LClick){//Pressed to the displayer button of the window panel
         displayerDialog.activate();
+    }
+    else if(windowPanel.sections[0].elements[2].button.hover && mouse.LClick){//Pressed to the export button of the window panel
+        exportDialog.active = true;
     }
 }
 
@@ -667,7 +670,7 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
 
     paintingPanelInteraction(paintingPanel,mouse,painter,dropper,colorPalette,shaders.buttonShader,appTextures,model);
     
-    windowPanelInteraction(windowPanel, mouse, painter, settingsDialog, displayerDialog);
+    windowPanelInteraction(windowPanel, mouse, painter, settingsDialog, displayerDialog,exportDialog);
 
     paintingModesPanelInteraction(paintingModesPanel,painter);
 

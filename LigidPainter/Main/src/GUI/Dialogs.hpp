@@ -239,6 +239,28 @@ class NewProjectDialog
  };
 
 
+//!------------------------------EXPORT DIALOG------------------------------
+
+class ExportDialog
+ {
+ private:
+    AppTextures appTextures;
+ public:
+    Panel panel;
+    Box box;
+    Shader buttonShader;
+    bool active = false;
+
+    //Constructors
+    ExportDialog();
+    ExportDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+
+    //Public member functions
+    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
+                Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model);
+ };
+
+
 //!------------------------------TEXTURE SELECTION DIALOG------------------------------
 
 class TextureSelectionDialog

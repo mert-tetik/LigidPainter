@@ -65,6 +65,7 @@ public:
     //Dialogs    
     GreetingDialog greetingDialog;
     NewProjectDialog newProjectDialog;
+    ExportDialog exportDialog;
     LoadProjectDialog loadProjectDialog;
     //ColorPickerDialog colorPickerDialog;
     MaterialEditorDialog materialEditorDialog;

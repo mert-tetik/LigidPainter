@@ -384,6 +384,7 @@ void UI::init
     materialEditorDialog        = MaterialEditorDialog(shaders.buttonShader,shaders.tdModelShader,colorPalette,appTextures,sphereModel);
     textureSelectionDialog      = TextureSelectionDialog(shaders.buttonShader,colorPalette);
     settingsDialog              = SettingsDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
+    exportDialog = ExportDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
 
     //Change the properties of the color elements in the painting panel (color section)
     for (size_t i = 0; i < 3; i++)
