@@ -396,7 +396,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
             if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){//Clicked to add to scene button
                 //Create the node of the materail an add to the node scene
-                Node materialNode = appNodes[0];
+                Node materialNode = appNodes[1];
                 materialNode.barButton.text = library.materials[contextMenus[i].selectedElement].title;
                 materialNode.materialID = library.materials[contextMenus[i].selectedElement].ID;
                 nodeScene.push_back(materialNode); //Add material node

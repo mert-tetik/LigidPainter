@@ -266,8 +266,8 @@ void Renderer::createAppNodes(glm::vec2 videoScale){
     );
     
     //Send nodes to the appNodes
-    appNodes.push_back(materialNode);
     appNodes.push_back(meshOutputNode);
+    appNodes.push_back(materialNode);
 
     //Send the mesh output node to the 
     nodeScene.push_back(meshOutputNode);                                                         
