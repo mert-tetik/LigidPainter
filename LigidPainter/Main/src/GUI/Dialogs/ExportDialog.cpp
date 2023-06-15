@@ -99,6 +99,8 @@ void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,M
                           glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,
                           Model &model,MaterialEditorDialog &materialEditorDialog,std::vector<Node> &nodeScene){
     
+    dialogControl.updateStart(buttonShader);
+
     //Render the panel
     panel.render(videoScale,mouse,timer,textRenderer,true);
     
@@ -163,6 +165,8 @@ void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,M
     
     //Close the dialog
     if(glfwGetKey(originalWindow,GLFW_KEY_ESCAPE) == GLFW_PRESS || panel.sections[0].elements[0].button.hover && mouse.LDoubleClick){
-        this->active = false;
+        this->dialogControl.unActivate();
     }
+
+    dialogControl.updateEnd(timer,buttonShader,0.3f);
 }

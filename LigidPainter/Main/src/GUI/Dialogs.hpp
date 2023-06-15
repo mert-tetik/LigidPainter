@@ -274,7 +274,7 @@ class ExportDialog
     Panel panel;
     Box box;
     Shader buttonShader;
-    bool active = false;
+    DialogControl dialogControl;
 
     //Constructors
     ExportDialog();

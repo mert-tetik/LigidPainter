@@ -194,7 +194,7 @@ void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRen
     if(displayerDialog.dialogControl.isActive())
         displayerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,skybox);
     
-    if(exportDialog.active)
+    if(exportDialog.dialogControl.isActive())
         exportDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,shaders,model,materialEditorDialog,nodeScene);
     
     if(newTextureDialog.active)

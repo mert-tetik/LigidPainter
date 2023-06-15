@@ -352,7 +352,7 @@ void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, 
         displayerDialog.dialogControl.activate();
     }
     else if(windowPanel.sections[0].elements[2].button.hover && mouse.LClick){//Pressed to the export button of the window panel
-        exportDialog.active = true;
+        exportDialog.dialogControl.activate();
     }
 }
 
