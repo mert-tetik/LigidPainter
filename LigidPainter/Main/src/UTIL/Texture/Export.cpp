@@ -36,11 +36,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 /// @brief 
 /// @param path is folder path 
 /// @param format PNG , JPEG , BMP , TGA
-void Texture::exportTexture(const std::string path,const std::string format){
-    glm::vec2 scale;
-    char* pixels;
-    getData(pixels);
+void Texture::exportTexture(std::string path,const std::string format){
+    glm::ivec2 scale;
     scale = getResolution();
+    
+    char* pixels = new char[scale.x * scale.y * 4];;
+    getData(pixels);
+    
     
     const int channels = 4;
 

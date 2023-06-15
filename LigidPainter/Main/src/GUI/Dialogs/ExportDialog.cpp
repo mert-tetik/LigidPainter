@@ -106,20 +106,23 @@ void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,M
         
         Util util;
 
+        int resolution = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
+
         //All the materials connected to the mesh output
-        std::vector<Material> materials = util.getTheMaterialsConnectedToTheMeshNode(nodeScene,library);
+        std::vector<Material> materials = util.getTheMaterialsConnectedToTheMeshNode(nodeScene,library,resolution);
         
         //Update all the materials connected to the mesh output & export it's textures
         for (size_t i = 0; i < materials.size(); i++)
         {
             //Update the material
-            materialEditorDialog.updateMaterial(materials[i],std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]),box,context);
+            materialEditorDialog.updateMaterial(materials[i],resolution,box,context);
+
 
             if(i >= model.meshes.size())
                 break;
             
             std::string materialFolderPath = panel.sections[0].elements[1].textBox.text + folderDistinguisher + model.meshes[i].materialName;
-
+            
             std::filesystem::create_directories(materialFolderPath);
 
             //For all the channels
@@ -128,27 +131,27 @@ void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,M
                 Texture channelTxtr;
                 
                 if(channelI == 0){
-                    channelTxtr = materials[i].albedo.ID;
+                    channelTxtr = materials[i].albedo;
                     channelTxtr.title = "albedo";
                 }
                 if(channelI == 1){
-                    channelTxtr = materials[i].roughness.ID;
+                    channelTxtr = materials[i].roughness;
                     channelTxtr.title = "roughness";
                 }
                 if(channelI == 2){
-                    channelTxtr = materials[i].metallic.ID;
+                    channelTxtr = materials[i].metallic;
                     channelTxtr.title = "metallic";
                 }
                 if(channelI == 3){
-                    channelTxtr = materials[i].normalMap.ID;
+                    channelTxtr = materials[i].normalMap;
                     channelTxtr.title = "normalMap";
                 }
                 if(channelI == 4){
-                    channelTxtr = materials[i].heightMap.ID;
+                    channelTxtr = materials[i].heightMap;
                     channelTxtr.title = "heightMap";
                 }
                 if(channelI == 5){
-                    channelTxtr = materials[i].ambientOcclusion.ID;
+                    channelTxtr = materials[i].ambientOcclusion;
                     channelTxtr.title = "ambientOcclusion";
                 }
 

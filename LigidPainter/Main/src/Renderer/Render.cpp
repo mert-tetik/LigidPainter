@@ -91,7 +91,7 @@ void Renderer::render(){
 
     //Get the nodes connected to the mesh node (output node)
     Util util;
-    std::vector<Material> nodeMaterials = util.getTheMaterialsConnectedToTheMeshNode(nodeScene,library); //TODO Move this function to the node
+    std::vector<Material> nodeMaterials = util.getTheMaterialsConnectedToTheMeshNode(nodeScene,library,0); 
 
 //  ////Render each mesh
     for (size_t i = 0; i < model.meshes.size(); i++)

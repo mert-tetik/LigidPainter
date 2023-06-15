@@ -52,7 +52,7 @@ public:
     std::string removeLastWordBySeparatingWithChar(std::string s, char del);
     std::string removeExtension(std::string s);
 
-    std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library);
+    std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library,int textureRes);
 };
 
 
@@ -119,7 +119,7 @@ public:
 
     void load(const char* path);
     unsigned char* getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip);
-    void exportTexture(const std::string path,const std::string format);
+    void exportTexture(std::string path,const std::string format);
     void getData(char*& pixels);
     glm::ivec2 getResolution();
     unsigned int duplicateTexture();
