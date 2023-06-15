@@ -55,7 +55,8 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
         }
         if(selectedLibraryElementIndex == 3){ //Models selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.LClick){
-                model = library.TDModels[i]; //Select the model 
+                model = library.TDModels[i]; //Select the model
+                model.newModelAdded = true; 
             } 
         }
     }

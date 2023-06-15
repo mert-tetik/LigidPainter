@@ -65,7 +65,7 @@ void Renderer::render(){
     //Update the depth texture if necessary
     if(painter.updateTheDepthTexture && !mouse.RPressed){ //Last frame camera changed position
         //Update the depth texture
-        painter.updateDepthTexture(model);
+        painter.updateDepthTexture(model,context.windowScale);
 
         painter.updateTheDepthTexture = false;
     }

@@ -36,18 +36,29 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "tinyfiledialogs.h"
 
-void Painter::updateDepthTexture(Model &model){
+void Painter::updateDepthTexture(Model &model, glm::vec2 windowScale){
+    glDepthFunc(GL_LESS);
+    
     //Create the capture framebuffer
     unsigned int captureFBO;
     glGenFramebuffers(1,&captureFBO);
     glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);
     
+    //Render buffer for depth testing
+    unsigned int RBO;
+	glGenRenderbuffers(1,&RBO);
+	glBindRenderbuffer(GL_RENDERBUFFER,RBO);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, videoScale.x,videoScale.y);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
+
     //Bind the depth texture (Painter class public member variable)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthTexture, 0);
 
+    glViewport(0,0,videoScale.x,videoScale.y);
+
     //Clear the depth texture
     glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     //Use the depth 3D shader
     depth3DShader.use();
@@ -69,4 +80,9 @@ void Painter::updateDepthTexture(Model &model){
 
     //Delete the capture framebuffer
     glDeleteFramebuffers(1,&captureFBO);
+
+    glViewport(0,0,windowScale.x,windowScale.y);
+
+    glDepthFunc(GL_LEQUAL);
+
 }

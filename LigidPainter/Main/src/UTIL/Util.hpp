@@ -222,7 +222,7 @@ public:
                  float rotationJitter,float alphaJitter,bool individualTexture,bool sinWavePattern,std::vector<Texture> textures);
     void refreshPainting();
     void updateTexture(std::vector<Texture> &textures, Model &model,int textureRes);
-    void updateDepthTexture( Model &model);
+    void updateDepthTexture( Model &model,glm::vec2 windowScale);
 
     void loadColor1();
     void loadColor2();
