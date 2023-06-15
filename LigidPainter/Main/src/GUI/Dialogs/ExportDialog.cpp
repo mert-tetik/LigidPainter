@@ -27,6 +27,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <filesystem>
 
 ExportDialog::ExportDialog(){}
 
@@ -35,6 +36,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
     //Take the parameters to the class member variables 
     this->buttonShader = buttonShader;
     this->appTextures = appTextures;
+    this->context = context;
 
     
 
@@ -92,19 +94,71 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
     this->panel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
 }
 
-void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model,MaterialEditorDialog &materialEditorDialog){
+void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+                          glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,
+                          Model &model,MaterialEditorDialog &materialEditorDialog,std::vector<Node> &nodeScene){
     
     //Render the panel
     panel.render(videoScale,mouse,timer,textRenderer,true);
     
     //If pressed to the last button of the panel (Export button)
     if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && mouse.LClick){
-        //materialEditorDialog.updateMaterial()
+        
+        Util util;
+
+        //All the materials connected to the mesh output
+        std::vector<Material> materials = util.getTheMaterialsConnectedToTheMeshNode(nodeScene,library);
+        
+        //Update all the materials connected to the mesh output & export it's textures
+        for (size_t i = 0; i < materials.size(); i++)
+        {
+            //Update the material
+            materialEditorDialog.updateMaterial(materials[i],std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]),box,context);
+
+            if(i >= model.meshes.size())
+                break;
+            
+            std::string materialFolderPath = panel.sections[0].elements[1].textBox.text + folderDistinguisher + model.meshes[i].materialName;
+
+            std::filesystem::create_directories(materialFolderPath);
+
+            //For all the channels
+            for (size_t channelI = 0; channelI < 6; channelI++)
+            {
+                Texture channelTxtr;
+                
+                if(channelI == 0){
+                    channelTxtr = materials[i].albedo.ID;
+                    channelTxtr.title = "albedo";
+                }
+                if(channelI == 1){
+                    channelTxtr = materials[i].roughness.ID;
+                    channelTxtr.title = "roughness";
+                }
+                if(channelI == 2){
+                    channelTxtr = materials[i].metallic.ID;
+                    channelTxtr.title = "metallic";
+                }
+                if(channelI == 3){
+                    channelTxtr = materials[i].normalMap.ID;
+                    channelTxtr.title = "normalMap";
+                }
+                if(channelI == 4){
+                    channelTxtr = materials[i].heightMap.ID;
+                    channelTxtr.title = "heightMap";
+                }
+                if(channelI == 5){
+                    channelTxtr = materials[i].ambientOcclusion.ID;
+                    channelTxtr.title = "ambientOcclusion";
+                }
+
+                channelTxtr.exportTexture(materialFolderPath,panel.sections[0].elements[3].comboBox.texts[panel.sections[0].elements[3].comboBox.selectedIndex]);
+            }
+        }
     }
     
     //Close the dialog
     if(glfwGetKey(originalWindow,GLFW_KEY_ESCAPE) == GLFW_PRESS || panel.sections[0].elements[0].button.hover && mouse.LDoubleClick){
-        greetingDialogActive = true;
         this->active = false;
     }
 }

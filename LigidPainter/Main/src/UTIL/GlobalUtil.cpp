@@ -73,7 +73,7 @@ std::string Util::removeExtension(std::string s){
 
 std::vector<Material> Util::getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library){
     std::vector<Material> materials;
-
+    
     //Check all the inputs of the mesh node
     for (size_t i = 0; i < nodeScene[0].IOs.size(); i++)
     {
