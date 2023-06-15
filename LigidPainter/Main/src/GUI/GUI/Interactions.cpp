@@ -36,7 +36,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selectedLibraryElementIndex, Mouse &mouse, Panel &paintingPanel, 
                                       Painter &painter, Library &library, Model &model, ColorPalette& colorPalette, Shaders &shaders, int &textureRes,
-                                      NewTextureDialog &newTextureDialog,int &materialIDCounter,AppTextures &appTextures){
+                                      NewTextureDialog &newTextureDialog,int &materialIDCounter,AppTextures &appTextures,int frameCounter){
+    
     //Update the selected texture
     for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
     {
@@ -60,49 +61,6 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
             } 
         }
     }
-
-    //!LIBRARY PANEL DISPLAYER
-    //Update the library displayer panel every frame
-    //if(frameCounter % 100 == 0){
-    if(true){
-        libraryPanelDisplayer.sections.clear(); //Remove all the elements of the library panel displayer
-        
-        //Create a new section
-        Section libSection;
-        libSection.header = Element(Button()); //Has no section button
-        //Fill the elements of the section using the data in the library structure
-        if(selectedLibraryElementIndex == 0){//Update textures
-            for (size_t i = 0; i < library.textures.size(); i++)
-            {
-                //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.textures[i].title       , library.textures[i], 0.f,false))) ;
-            }
-        }
-        else if(selectedLibraryElementIndex == 1){ //Update materials
-            for (size_t i = 0; i < library.materials.size(); i++)
-            {
-                //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.materials[i].title       , Texture(library.materials[i].displayingTexture), 0.f,false))) ;
-            }
-        }
-        else if(selectedLibraryElementIndex == 2){ //Update materials
-            for (size_t i = 0; i < library.brushes.size(); i++)
-            {
-                //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.brushes[i].title       , Texture(library.brushes[i].displayingTexture), 0.f,false))) ;
-            }
-        }
-        else if(selectedLibraryElementIndex == 3){ //Update tdmodels
-            for (size_t i = 0; i < library.TDModels.size(); i++)
-            {
-                //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.TDModels[i].title       , Texture(), 0.f,false))) ;
-            }
-        }
-        //Give the section
-        libraryPanelDisplayer.sections.push_back(Section(Element(Button()),libSection.elements));
-    }
-
 
     //Add button from the barButtons in the library displayer panel clicked 
     if(libraryPanelDisplayer.barButtons[0].clickedMixVal == 1.f){
@@ -223,6 +181,51 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
     }
 }
 
+void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, int &selectedLibraryElementIndex, 
+                                      Library &library, ColorPalette& colorPalette, Shaders &shaders,
+                                      int frameCounter){
+    
+    //!LIBRARY PANEL DISPLAYER
+    //Update the library displayer panel every frame
+    if(true){
+        libraryPanelDisplayer.sections.clear(); //Remove all the elements of the library panel displayer
+        
+        //Create a new section
+        Section libSection;
+        libSection.header = Element(Button()); //Has no section button
+        //Fill the elements of the section using the data in the library structure
+        if(selectedLibraryElementIndex == 0){//Update textures
+            for (size_t i = 0; i < library.textures.size(); i++)
+            {
+                //Push texture elements into the section
+                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.textures[i].title       , library.textures[i], 0.f,false))) ;
+            }
+        }
+        else if(selectedLibraryElementIndex == 1){ //Update materials
+            for (size_t i = 0; i < library.materials.size(); i++)
+            {
+                //Push texture elements into the section
+                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.materials[i].title       , Texture(library.materials[i].displayingTexture), 0.f,false))) ;
+            }
+        }
+        else if(selectedLibraryElementIndex == 2){ //Update materials
+            for (size_t i = 0; i < library.brushes.size(); i++)
+            {
+                //Push texture elements into the section
+                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.brushes[i].title       , Texture(library.brushes[i].displayingTexture), 0.f,false))) ;
+            }
+        }
+        else if(selectedLibraryElementIndex == 3){ //Update tdmodels
+            for (size_t i = 0; i < library.TDModels.size(); i++)
+            {
+                //Push texture elements into the section
+                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.TDModels[i].title       , Texture(), 0.f,false))) ;
+            }
+        }
+        //Give the section
+        libraryPanelDisplayer.sections.push_back(Section(Element(Button()),libSection.elements));
+    }
+}
 
 void libraryPanelLeftInteraction(Panel &libraryPanelLeft, int &selectedLibraryElementIndex, Mouse &mouse){
     
@@ -656,10 +659,12 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
     
     contextMenuInteraction(contextMenus,mouse,library,appNodes,nodeScene,context,videoScale,timer,textRenderer);
     
-    libraryPanelDisplayerInteraction(libraryPanelDisplayer,selectedLibraryElementIndex,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,materialIDCounter,appTextures);
+    libraryPanelDisplayerInteraction(libraryPanelDisplayer,selectedLibraryElementIndex,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,materialIDCounter,appTextures,frameCounter);
     
     libraryPanelLeftInteraction(libraryPanelLeft,selectedLibraryElementIndex,mouse);
     
+    updateLibraryPanelDisplayerElements(libraryPanelDisplayer,selectedLibraryElementIndex,library,colorPalette,shaders,frameCounter);
+
     paintingPanelInteraction(paintingPanel,mouse,painter,dropper,colorPalette,shaders.buttonShader,appTextures,model);
     
     windowPanelInteraction(windowPanel, mouse, painter, settingsDialog, displayerDialog);
