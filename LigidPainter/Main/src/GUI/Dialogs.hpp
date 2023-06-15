@@ -35,6 +35,24 @@ class ColorPalette;
 #include "3D/ThreeD.hpp"
 
 
+class DialogControl
+{
+private:
+public:
+    bool active = false;
+    float mixVal = 0.;
+    bool firstFrameActivated = false;
+
+    DialogControl();
+    DialogControl(bool active);
+    
+    void updateStart(Shader buttonShader);
+    void updateEnd(Timer timer,Shader buttonShader,float transitionDuration);
+    void activate();
+    void unActivate();
+    bool isActive();
+};
+
 //!------------------------------SETTINGS DIALOG------------------------------
 
 class NewProjectDialog;
@@ -103,7 +121,7 @@ class LoadProjectDialog
     Box box;
     Shader buttonShader;
     AppTextures appTextures;
-    bool active = false;
+    DialogControl dialogControl;
 
     //Constructors
     LoadProjectDialog();
@@ -157,7 +175,7 @@ public:
    Panel bgPanel;
    Shader buttonShader;
    Box box;
-   bool active = true;
+   DialogControl dialogControl;
    
    //Constructors
    GreetingDialog();

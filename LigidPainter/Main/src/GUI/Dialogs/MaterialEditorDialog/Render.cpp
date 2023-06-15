@@ -220,7 +220,7 @@ void MaterialEditorDialog::render
     checkTextureSelectionDialog(textureSelectionDialog,material,library,textureRes,box,context);
 
     //Render the material displayer
-    materialDisplayer.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.active);
+    materialDisplayer.render(videoScale,mouse,timer,textRenderer,false);
     
     firstFrameActivated = false;
 }

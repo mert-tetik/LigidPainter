@@ -44,6 +44,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     //Set pass less or equal
     glDepthFunc(GL_LEQUAL);
 
+
     //Give projection to the curve shader        
     shaders.singleCurve.use();
     shaders.singleCurve.setMat4("projection",projection); 
@@ -54,6 +55,9 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     
     //Use the related shader 
     shaders.buttonShader.use();
+
+    shaders.buttonShader.setFloat("groupOpacity", 1.f);
+
 
     //Set the ortho projection     
     shaders.buttonShader.setMat4("projection",projection); 
@@ -104,10 +108,10 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     libraryPanelLeft.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
-    selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,false);
     
     if(!painter.threeDimensionalMode){
-        twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+        twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,false);
         
         //Render the painting texture
         shaders.tdModelShader.use();
@@ -179,19 +183,19 @@ void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRende
 
 void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene, Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync, Box &box){
     if(newProjectDialog.active)
-        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.active,library,shaders,model);
+        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,shaders,model);
     
-    if(loadProjectDialog.active)
-        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.active,library,shaders,model);
+    if(loadProjectDialog.dialogControl.isActive())
+        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,shaders,model);
     
-    if(greetingDialog.active)
+    if(greetingDialog.dialogControl.isActive())
         greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);
 
     if(displayerDialog.active)
         displayerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,skybox);
     
     if(exportDialog.active)
-        exportDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.active,library,shaders,model,materialEditorDialog,nodeScene);
+        exportDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,shaders,model,materialEditorDialog,nodeScene);
     
     if(newTextureDialog.active)
         newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes);

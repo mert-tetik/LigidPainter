@@ -31,6 +31,8 @@ GreetingDialog::GreetingDialog(){}
 
 GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
     
+    this->buttonShader = buttonShader;
+
     //First text button
     this->textButton1 = Button(0,glm::vec2(8,2),colorPalette,buttonShader,"Welcome To The LigidPainter",Texture(),0.f,false);
     this->textButton1.color = glm::vec4(0);
@@ -71,11 +73,15 @@ GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette
     this->bgPanel = Panel(buttonShader,colorPalette,{},glm::vec2(20),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,false,true,true,true,true,1.f,1.f,{},0.25f,false);
 
     bgPanel.scale.x = textureDisplayerButton.scale.x;
+
+    this->dialogControl.activate();
 }
 
 void GreetingDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale, NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog){
-    //Render elements 
 
+    dialogControl.updateStart(buttonShader);
+
+    //Render elements 
     
     //Render the texture displayer button 
     textureDisplayerButton.render(videoScale,mouse,timer,textRenderer,false);
@@ -90,13 +96,13 @@ void GreetingDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette
     //Show new project dialog if create project button is pressed
     if(createProjectButton.hover && mouse.LClick){
         newProjectDialog.active = true;
-        this->active = false;
+        this->dialogControl.unActivate();
     }
 
     //Show load project dialog if load project button is pressed
     if(loadProjectButton.hover && mouse.LClick){
-        loadProjectDialog.active = true;
-        this->active = false;
+        loadProjectDialog.dialogControl.activate();
+        this->dialogControl.unActivate();
     }
 
     //Render the decoration texture displayer button without depth testing
@@ -104,4 +110,6 @@ void GreetingDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette
     
     //Set the depth func back to default (less or equal)
     glDepthFunc(GL_LEQUAL);
+
+    dialogControl.updateEnd(timer,buttonShader,1.f);
 }

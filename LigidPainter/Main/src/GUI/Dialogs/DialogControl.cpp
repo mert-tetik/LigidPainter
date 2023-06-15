@@ -1,0 +1,65 @@
+
+ /*
+ ---------------------------------------------------------------------------
+ LigidPainter - 3D Model texturing software / Texture generator   
+ ---------------------------------------------------------------------------
+
+ Copyright (c) 2022-2023, LigidTools 
+
+ All rights reserved.
+
+ Official GitHub Link : https:github.com/mert-tetik/LigidPainter
+ Official Web Page : https:ligidtools.com/ligidpainter
+
+ ---------------------------------------------------------------------------
+ */
+#include<glad/glad.h>
+#include<GLFW/glfw3.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "GUI/GUI.hpp"
+
+#include "3D/ThreeD.hpp"
+
+#include <string>
+#include <iostream>
+#include <vector>
+
+DialogControl::DialogControl(){
+
+}
+
+DialogControl::DialogControl(bool active){
+    this->active = active;
+}
+
+void DialogControl::updateStart(Shader buttonShader){
+    buttonShader.setFloat("groupOpacity", mixVal);
+}
+
+void DialogControl::updateEnd(Timer timer,Shader buttonShader,float transitionDuration){
+    
+    timer.transition(active,mixVal,transitionDuration);
+    firstFrameActivated = false;
+
+    buttonShader.setFloat("groupOpacity", 1.);
+}
+
+void DialogControl::activate(){
+    active = true;
+    firstFrameActivated = true;
+}
+
+void DialogControl::unActivate(){
+    active = false;
+}
+
+bool DialogControl::isActive(){
+    if(!active && mixVal > 0.1)
+        return true;
+    
+    return active;
+}

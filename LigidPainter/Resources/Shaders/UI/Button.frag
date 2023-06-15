@@ -21,6 +21,8 @@ uniform float colorMixVal;
 uniform float thickness;
 uniform float radius;
 
+uniform float groupOpacity;
+
 uniform int renderText;
 uniform int renderTexture;
 uniform sampler2D txtr;
@@ -94,4 +96,6 @@ void main(){
         vec3 outlineClr = mix(outlineColor,outlineColor2,colorMixVal);
         fragColor.rgb = mix(fragColor.rgb,outlineClr,outlineVal);
     }
+
+    fragColor.a *= groupOpacity;
 }

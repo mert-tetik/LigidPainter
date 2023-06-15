@@ -680,15 +680,15 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
 
     //!Dialog & panel state
     anyDialogActive = 
-                    textureSelectionDialog.active   || 
-                    materialEditorDialog.active     || 
-                    anyContextMenuActive            || 
-                    displayerDialog.active          || 
-                    greetingDialog.active           || 
-                    settingsDialog.active           || 
-                    newProjectDialog.active         || 
-                    newTextureDialog.active         || 
-                    loadProjectDialog.active; 
+                    textureSelectionDialog.active           || 
+                    materialEditorDialog.active             || 
+                    anyContextMenuActive                    || 
+                    displayerDialog.active                  || 
+                    greetingDialog.dialogControl.isActive() || 
+                    settingsDialog.active                   || 
+                    newProjectDialog.active                 || 
+                    newTextureDialog.active                 || 
+                    loadProjectDialog.dialogControl.isActive();   
 
     anyPanelHover = 
                     navigationPanel.hover               ||
