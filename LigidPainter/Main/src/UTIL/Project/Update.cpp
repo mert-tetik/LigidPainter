@@ -55,7 +55,7 @@ void Project::updateProject(Library &library){
     for (size_t i = 0; i < library.textures.size(); i++)
     {
         //Export texture
-        library.textures[i].exportTexture(textureFolderPath);
+        library.textures[i].exportTexture(textureFolderPath,"PNG");
     }
     
     

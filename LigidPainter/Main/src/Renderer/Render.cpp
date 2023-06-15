@@ -90,7 +90,8 @@ void Renderer::render(){
     glBindTexture(GL_TEXTURE_2D,painter.depthTexture);
 
     //Get the nodes connected to the mesh node (output node)
-    std::vector<Material> nodeMaterials = getTheMaterialsConnectedToTheMeshNode(nodeScene,library); //TODO Move this function to the node
+    Util util;
+    std::vector<Material> nodeMaterials = util.getTheMaterialsConnectedToTheMeshNode(nodeScene,library); //TODO Move this function to the node
 
 //  ////Render each mesh
     for (size_t i = 0; i < model.meshes.size(); i++)
@@ -196,29 +197,7 @@ void Renderer::render(){
 }
 
 
-std::vector<Material> Renderer::getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library){
-    std::vector<Material> materials;
 
-    //Check all the inputs of the mesh node
-    for (size_t i = 0; i < nodeScene[0].IOs.size(); i++)
-    {
-        int materialID = 1000;
-        if(nodeScene[0].IOs[i].connections.size())
-            materialID = nodeScene[nodeScene[0].IOs[i].connections[0].nodeIndex].materialID;
-        else
-            materials.push_back(Material());
-
-        if(materialID != 1000){
-            for (size_t matI = 0; matI < library.materials.size(); matI++)
-            {
-                if(library.materials[matI].ID == materialID)
-                    materials.push_back(library.materials[matI]);
-            }
-        }
-    }
-
-    return materials;
-}
 
 void Renderer::updateViewMatrix(){
     scene.viewMatrix = glm::lookAt(scene.camera.cameraPos, 

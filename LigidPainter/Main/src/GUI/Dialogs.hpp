@@ -257,7 +257,7 @@ class ExportDialog
 
     //Public member functions
     void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
-                Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model);
+                Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model,MaterialEditorDialog &materialEditorDialog);
  };
 
 

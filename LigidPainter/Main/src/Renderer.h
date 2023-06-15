@@ -108,7 +108,6 @@ private:
     void createAppNodes(glm::vec2 videoScale);
 
     //Stuff
-    std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library);
     void updateViewMatrix();
     void updateProjectionMatrix();
     void updateViewport();

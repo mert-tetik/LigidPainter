@@ -92,14 +92,14 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
     this->panel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
 }
 
-void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model){
+void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model,MaterialEditorDialog &materialEditorDialog){
     
     //Render the panel
     panel.render(videoScale,mouse,timer,textRenderer,true);
     
     //If pressed to the last button of the panel (Export button)
     if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && mouse.LClick){
-        
+        //materialEditorDialog.updateMaterial()
     }
     
     //Close the dialog

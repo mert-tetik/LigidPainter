@@ -36,6 +36,7 @@ class Texture;
 class Material;
 class Brush;
 class Mouse;
+class Node;
 
 
 class Util
@@ -50,6 +51,8 @@ public:
     std::string getLastWordBySeparatingWithChar(std::string s, char del);
     std::string removeLastWordBySeparatingWithChar(std::string s, char del);
     std::string removeExtension(std::string s);
+
+    std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library);
 };
 
 
