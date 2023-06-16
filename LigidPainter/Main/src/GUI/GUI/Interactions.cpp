@@ -65,7 +65,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
     //Add button from the barButtons in the library displayer panel clicked 
     if(libraryPanelDisplayer.barButtons[0].clickedMixVal == 1.f){
         if(selectedLibraryElementIndex == 0){//Textures
-            newTextureDialog.active = true;
+            newTextureDialog.dialogControl.activate();
         }
         if(selectedLibraryElementIndex == 1){ //Materials
             //Add new material to the library & not the panel
@@ -687,7 +687,7 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
                     greetingDialog.dialogControl.isActive()         || 
                     settingsDialog.dialogControl.isActive()         || 
                     newProjectDialog.dialogControl.isActive()       || 
-                    newTextureDialog.active                         || 
+                    newTextureDialog.dialogControl.isActive()       || 
                     loadProjectDialog.dialogControl.isActive();   
 
     anyPanelHover = 

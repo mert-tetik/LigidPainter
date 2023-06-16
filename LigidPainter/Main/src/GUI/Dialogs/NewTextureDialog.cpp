@@ -32,6 +32,7 @@
 NewTextureDialog::NewTextureDialog(){}
 NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
     this->context = context;
+    this->buttonShader = buttonShader;
     
     //Create the panel
     this->panel = Panel(
@@ -71,6 +72,8 @@ NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPal
 
 void NewTextureDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,glm::vec2 videoScale,int textureRes){
     
+    dialogControl.updateStart(buttonShader);
+
     //Render the panel
     panel.render(videoScale,mouse,timer,textRenderer,true);
     
@@ -133,6 +136,8 @@ void NewTextureDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalet
     if((panel.sections[0].elements[2].button.hover && mouse.LClick) || glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || (!panel.hover && mouse.LClick)){
         panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
         panel.sections[0].elements[1].textBox.text = "NewTexture";
-        active = false;
+        dialogControl.unActivate();
     }
+
+    dialogControl.updateEnd(timer,buttonShader,0.3f);
 }

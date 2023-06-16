@@ -93,7 +93,7 @@ class NewTextureDialog
      Panel panel;
      NewTextureDialog();
      Shader buttonShader;
-     bool active = false;
+     DialogControl dialogControl;
 
     //Constructor
     NewTextureDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
