@@ -36,6 +36,8 @@ TextureSelectionDialog::TextureSelectionDialog(Shader buttonShader,ColorPalette 
 
 void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &timer,TextRenderer &textRenderer,Library library){
     
+    dialogControl.updateStart(buttonShader);
+
     //Update the panel elements
     texturePanel.sections.clear();
     std::vector<Element> sectionElements;
@@ -66,7 +68,9 @@ void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &tim
 
     //End the dialog
     if((textRenderer.key == GLFW_KEY_ESCAPE && textRenderer.keyInput) || (!texturePanel.hover && mouse.LClick)){
-        active = false;
+        dialogControl.unActivate();
         selectedTextureIndex = 1000;
     }
+
+    dialogControl.updateEnd(timer,buttonShader,0.3f);
 }

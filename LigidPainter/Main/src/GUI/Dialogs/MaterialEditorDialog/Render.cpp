@@ -124,7 +124,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,float textureR
                 if(modifiersPanel.sections[0].elements[i].button.clickedMixVal){ //If clicked to any channel button in the texture modifier's panel
                     //Show the texture selection dialog
                     textureModifierTextureSelectingButtonIndex = i;
-                    textureSelectionDialog.active = true;
+                    textureSelectionDialog.dialogControl.activate();
                 }
             }
         }
@@ -150,7 +150,7 @@ void MaterialEditorDialog::updateLayerPanelElements(Material &material,int &text
 
 void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Library &library,float textureRes,Box box,Context context){
     //If the texture selection dialog is active and indexing number indicates a channel button 
-    if(textureSelectionDialog.active && textureModifierTextureSelectingButtonIndex != 1000){
+    if(textureSelectionDialog.dialogControl.isActive() && textureModifierTextureSelectingButtonIndex != 1000){
         if(textureSelectionDialog.selectedTextureIndex != 1000){// If a texture is selected in the texture selection dialog
             
             //Change the texture of the channel button
@@ -162,7 +162,7 @@ void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &t
             //Return to default after a texture is selected
             textureModifierTextureSelectingButtonIndex = 1000;
             textureSelectionDialog.selectedTextureIndex = 1000;
-            textureSelectionDialog.active = false;
+            textureSelectionDialog.dialogControl.unActivate();
             
             //Update the material after a selection is made
             updateMaterial(material,(float)textureRes,box,context);
@@ -187,15 +187,15 @@ void MaterialEditorDialog::render
                                 ){
     
     //Render the panels & material displayer button
-    bgPanel.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.active);
-    layerPanel.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.active);
-    modifiersPanel.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.active);
+    bgPanel.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.dialogControl.isActive());
+    layerPanel.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.dialogControl.isActive());
+    modifiersPanel.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.dialogControl.isActive());
     
     //Update the texture, scale & position of the material displayer button
     updateMaterialDisplayerButton(materialDisplayer, material, bgPanel, modifiersPanel, layerPanel);
     
     //If texture selection dialog is not active reset the index values used to navigate textures
-    if(textureSelectionDialog.active == false){
+    if(textureSelectionDialog.dialogControl.isActive() == false){
         textureModifierTextureSelectingButtonIndex = 1000;
         textureSelectionDialog.selectedTextureIndex = 1000;
     }

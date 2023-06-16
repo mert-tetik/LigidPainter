@@ -208,7 +208,7 @@ void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRen
             materialEditorDialog.deactivate(textureSelectionDialog);
         materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex],textureRes,box,context);
     }
-    if(textureSelectionDialog.active)
+    if(textureSelectionDialog.dialogControl.isActive())
         textureSelectionDialog.render(videoScale,mouse,timer,textRenderer,library);
 }
 

@@ -296,11 +296,11 @@ private:
     Shader buttonShader;
 public:
     Panel texturePanel;
-    bool active = false;
     int selectedTextureIndex = 1000; 
     bool clicked = false; 
     glm::vec3 pos = glm::vec3(50,50,0.95f);
     glm::vec2 scale = glm::vec2(10); 
+    DialogControl dialogControl;
 
     //Constructors
     TextureSelectionDialog();

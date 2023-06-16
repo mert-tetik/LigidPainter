@@ -37,5 +37,5 @@ void MaterialEditorDialog::deactivate(TextureSelectionDialog &textureSelectionDi
     selectedMaterialModifierIndex = 0;
     active = false;
     firstFrameActivated = false;
-    textureSelectionDialog.active = false;
+    textureSelectionDialog.dialogControl.unActivate();
 }
