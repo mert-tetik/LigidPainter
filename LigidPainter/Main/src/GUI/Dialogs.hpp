@@ -69,8 +69,7 @@ class SettingsDialog
  public:
     Panel panel;
     Shader buttonShader;
-    bool active = false;
-    bool firstActivation = false;
+    DialogControl dialogControl;
 
     //Constructor
     SettingsDialog();
@@ -79,7 +78,6 @@ class SettingsDialog
     //Public member functions    
     void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,
                 glm::vec2 videoScale,int &textureRes,bool &VSync);
-    void activate();
  };
 
 
@@ -204,8 +202,7 @@ private:
     void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Library &library,float textureRes,Box box,Context context);
 
 public:
-    bool firstFrameActivated = false; //To detect the first frame activated
-    bool active = false; //Render the dialog
+    DialogControl dialogControl;
     glm::vec3 pos = glm::vec3(50.f,50.f,0.8f); ///Position of the dialog
     glm::vec2 scale = glm::vec2(40,40); ///Scale of the dialog
     glm::vec3 posLayer = glm::vec3(20.f,50.f,0.8f); ///Position of the layer panel

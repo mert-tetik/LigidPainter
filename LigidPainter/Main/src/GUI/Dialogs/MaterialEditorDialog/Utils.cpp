@@ -29,13 +29,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void MaterialEditorDialog::activate(){
     selectedMaterialModifierIndex = 0;
-    active = true;
-    firstFrameActivated = true;
+    dialogControl.activate();
 }
 
 void MaterialEditorDialog::deactivate(TextureSelectionDialog &textureSelectionDialog){
     selectedMaterialModifierIndex = 0;
-    active = false;
-    firstFrameActivated = false;
+    dialogControl.unActivate();
     textureSelectionDialog.dialogControl.unActivate();
 }

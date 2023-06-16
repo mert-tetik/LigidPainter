@@ -31,6 +31,7 @@ SettingsDialog::SettingsDialog(){}
 
 SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
     this->context = context;
+    this->buttonShader = buttonShader;
     
     //Create the panel
     this->panel = Panel(buttonShader,colorPalette,{
@@ -55,6 +56,8 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
 
 void SettingsDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,glm::vec2 videoScale,int &textureRes,bool &VSync){
     
+    dialogControl.updateStart(buttonShader);   
+
     //Set the combo box selected index as the textureRes
     int txtrRes = 256;
     for (size_t i = 0; i < panel.sections[0].elements[0].comboBox.texts.size(); i++)
@@ -80,14 +83,9 @@ void SettingsDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette
     }
     
     //End the dialog
-    if((glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || (!panel.hover && mouse.LClick)) && !firstActivation){
-        active = false;
+    if((glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || (!panel.hover && mouse.LClick)) && !dialogControl.firstFrameActivated){
+        dialogControl.unActivate();
     }
-    
-    firstActivation = false;
-}
 
-void SettingsDialog::activate(){
-    active = true;
-    firstActivation = true;
+    dialogControl.updateEnd(timer,buttonShader,0.3f);   
 }

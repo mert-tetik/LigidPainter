@@ -89,7 +89,7 @@ void MaterialEditorDialog::checkLayerPanel(Material &material){
 void MaterialEditorDialog::checkModifiersPanel(Material &material,float textureRes,Box box,Context context,Mouse &mouse, TextureSelectionDialog &textureSelectionDialog){
     
     //Clear the modifiers panel as the panel starts
-    if(firstFrameActivated){
+    if(dialogControl.firstFrameActivated){
         modifiersPanel.sections.clear();
     }
     
@@ -135,12 +135,12 @@ void MaterialEditorDialog::updateLayerPanelElements(Material &material,int &text
     //Update layer panal elements
     if  (
             layerPanel.barButtons[0].clickedMixVal == 1.f || //Pressed to add modifier button in the layer panel
-            firstFrameActivated // Or in the first frame this dialog is activated
+            dialogControl.firstFrameActivated // Or in the first frame this dialog is activated
         )
     { 
         
         //If clicked to add modifier button add the texture modifier to the modifiers of the material
-        if(!firstFrameActivated) 
+        if(!dialogControl.firstFrameActivated) 
             material.materialModifiers.push_back(appMaterialModifiers.textureModifier);
 
         //Creates layer panel elements from scratch using material.materialModifiers
@@ -186,6 +186,8 @@ void MaterialEditorDialog::render
                                     Context context
                                 ){
     
+    dialogControl.updateStart(buttonShader);
+
     //Render the panels & material displayer button
     bgPanel.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.dialogControl.isActive());
     layerPanel.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.dialogControl.isActive());
@@ -222,5 +224,5 @@ void MaterialEditorDialog::render
     //Render the material displayer
     materialDisplayer.render(videoScale,mouse,timer,textRenderer,false);
     
-    firstFrameActivated = false;
+    dialogControl.updateEnd(timer,buttonShader,0.3f);
 }

@@ -200,10 +200,10 @@ void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRen
     if(newTextureDialog.active)
         newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes);
     
-    if(settingsDialog.active)
+    if(settingsDialog.dialogControl.isActive())
         settingsDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes,VSync);
     
-    if(materialEditorDialog.active && library.materials.size()){
+    if(materialEditorDialog.dialogControl.isActive() && library.materials.size()){
         if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
             materialEditorDialog.deactivate(textureSelectionDialog);
         materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex],textureRes,box,context);

@@ -346,7 +346,7 @@ void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, 
         painter.threeDimensionalMode = false;
     }
     else if(windowPanel.sections[0].elements[4].button.hover && mouse.LClick){//Pressed to the settings button of the window panel
-        settingsDialog.activate();
+        settingsDialog.dialogControl.activate();
     }
     else if(windowPanel.sections[0].elements[3].button.hover && mouse.LClick){//Pressed to the displayer button of the window panel
         displayerDialog.dialogControl.activate();
@@ -681,11 +681,11 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
     //!Dialog & panel state
     anyDialogActive = 
                     textureSelectionDialog.dialogControl.isActive() || 
-                    materialEditorDialog.active                     || 
+                    materialEditorDialog.dialogControl.isActive()   || 
                     anyContextMenuActive                            || 
                     displayerDialog.dialogControl.isActive()        || 
                     greetingDialog.dialogControl.isActive()         || 
-                    settingsDialog.active                           || 
+                    settingsDialog.dialogControl.isActive()         || 
                     newProjectDialog.dialogControl.isActive()       || 
                     newTextureDialog.active                         || 
                     loadProjectDialog.dialogControl.isActive();   
