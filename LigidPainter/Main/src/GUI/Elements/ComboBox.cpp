@@ -90,9 +90,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
     }
 
     //Style constructor
-    ComboBox::ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::vector<std::string> texts,float panelOffset){
+    ComboBox::ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::vector<std::string> texts,std::string text,float panelOffset){
         this->shader = shader;
         this->texts = texts;
+        this->text = text;
         this->scale = scale;
         this->panelOffset = panelOffset;
         
@@ -203,6 +204,12 @@ void ComboBox::render(
         pressed = false;
     }
     
+    glm::vec3 resultPos = glm::vec3( 
+          util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+          ,pos.z); //Use the original depth value
+
     //Render the text
-    //Update the parameters of the renderText function in the renderTheTexture function if this function's parameters are changed
+    textRenderer.renderText(shader,text,resultPos.x ,resultPos.y - resultScale.y,resultPos.z+0.002f,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,false,false);
+
+
 }

@@ -59,7 +59,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                                             "1024",
                                             "2048",
                                             "4096"
-                                        },4.f),context.window),
+                                        },"Texture Resolution",4.f),context.window),
                                         
                                         Element(ComboBox(0,glm::vec2(4,2),colorPalette,buttonShader,
                                         {
@@ -67,7 +67,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                                             "JPEG", 
                                             "BMP", 
                                             "TGA"
-                                        },4.f),context.window),
+                                        },"File Format",4.f),context.window),
 
                                         Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"Export",Texture(),5.f,false))
                                     }

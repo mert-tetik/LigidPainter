@@ -60,7 +60,7 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
                                             "1024",
                                             "2048",
                                             "4096"
-                                        },4.f),context.window),
+                                        },"Texture Resolution",4.f),context.window),
 
                                         Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Large",2.f)),
                                         Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Medium",0.f)),

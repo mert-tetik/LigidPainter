@@ -46,7 +46,7 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
                         "1024",
                         "2048",
                         "4096"
-                    },4.f),context.window),
+                    },"Texture Resolution",4.f),context.window),
                     Element(CheckBox(0,glm::vec2(2,2),colorPalette,buttonShader, "VSync"  , 1.f)),
                 }
             )

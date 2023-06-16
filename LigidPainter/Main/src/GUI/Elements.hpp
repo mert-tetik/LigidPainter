@@ -161,6 +161,7 @@ public:
     Shader shader;
     float panelOffset = 0.f; 
     std::vector<std::string> texts; 
+    std::string text;
     glm::vec4 color; 
     glm::vec4 color2;
     glm::vec4 textColor; 
@@ -182,7 +183,8 @@ public:
     ComboBox();
     ComboBox(Shader shader,std::vector<std::string> texts, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 textColor,glm::vec4 textColor2,
            float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2);
-    ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::vector<std::string> texts,float panelOffset);
+           
+    ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::vector<std::string> texts,std::string text,float panelOffset);
 
     //Public member functions
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking,GLFWwindow* window);
