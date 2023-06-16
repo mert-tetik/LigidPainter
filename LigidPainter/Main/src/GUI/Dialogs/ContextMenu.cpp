@@ -30,6 +30,8 @@ ContextMenu::ContextMenu(){}
 
 ContextMenu::ContextMenu(Shader buttonShader,ColorPalette colorPalette,std::vector<std::string> elements){
     
+    this->buttonShader = buttonShader;
+
     //Create the context panel
     contextPanel = Panel(
         buttonShader,
@@ -65,9 +67,13 @@ ContextMenu::ContextMenu(Shader buttonShader,ColorPalette colorPalette,std::vect
 }
 
 void ContextMenu::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){
+    dialogControl.updateStart(buttonShader);
+    
     //Update the position of the context panel
     contextPanel.pos = pos;
 
     //Render the context panel
     contextPanel.render(videoScale,mouse,timer,textRenderer,true);
+    
+    dialogControl.updateEnd(timer,buttonShader,0.15f);
 }

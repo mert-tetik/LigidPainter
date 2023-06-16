@@ -360,11 +360,11 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
     anyContextMenuActive = false; 
     for (size_t i = 0; i < contextMenus.size(); i++)//Check all the contextMenus
     {
-        if(contextMenus[i].active) //Set anyContextMenuActive UI class variable 
+        if(contextMenus[i].dialogControl.isActive()) //Set anyContextMenuActive UI class variable 
             anyContextMenuActive = true;
         
         //CONTEXT MENU BUTTONS
-        if(i == 0 && selectedLibraryElementIndex == 0 && contextMenus[i].active){ //If texture context menu is active
+        if(i == 0 && selectedLibraryElementIndex == 0 && contextMenus[i].dialogControl.isActive()){ //If texture context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to rename button
                 renamingTextBox.active = true;
                 renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
@@ -388,7 +388,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
         }
         
-        if(i == 1 && selectedLibraryElementIndex == 1 && contextMenus[i].active){ //If material context menu is active
+        if(i == 1 && selectedLibraryElementIndex == 1 && contextMenus[i].dialogControl.isActive()){ //If material context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to edit button
                 //Select the material that material editor will edit & show the material editor dialog
                 selectedMaterialIndex = contextMenus[i].selectedElement;
@@ -425,7 +425,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 library.materials.erase(library.materials.begin() + contextMenus[i].selectedElement);
             }
         }
-        if(i == 2 && selectedLibraryElementIndex == 2 && contextMenus[i].active){ //If brush context menu is active
+        if(i == 2 && selectedLibraryElementIndex == 2 && contextMenus[i].dialogControl.isActive()){ //If brush context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to use brush button
                 paintingPanel.sections[2].elements[0].rangeBar.value        =   library.brushes[contextMenus[i].selectedElement].sizeJitter;
                 paintingPanel.sections[2].elements[3].rangeBar.value        =   library.brushes[contextMenus[i].selectedElement].scatter;
@@ -465,17 +465,17 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 library.brushes.erase(library.brushes.begin() + contextMenus[i].selectedElement);
             }
         }
-        if(i == 3 && contextMenus[i].active){ //If project context menu is active
+        if(i == 3 && contextMenus[i].dialogControl.isActive()){ //If project context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
                 
             }
         }
-        if(i == 4 && contextMenus[i].active){ //If painting context menu is active
+        if(i == 4 && contextMenus[i].dialogControl.isActive()){ //If painting context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
                 
             }
         }
-        if(i == 5 && contextMenus[i].active){ //If help context menu is active
+        if(i == 5 && contextMenus[i].dialogControl.isActive()){ //If help context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
                 websites.ligidTools.open();
             }
@@ -493,13 +493,13 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 glfwGetKey(context.window,GLFW_KEY_ENTER) == GLFW_PRESS //Pressed to enter key
             )
         {
-           contextMenus[i].active = false; //Turn the context menu offs
+           contextMenus[i].dialogControl.unActivate(); //Turn the context menu offs
         }
         //Render the context menu if active
-        if(contextMenus[i].active){
+        if(contextMenus[i].dialogControl.isActive()){
             contextMenus[i].render(videoScale,mouse,timer,textRenderer);
             if(contextMenus[i].contextPanel.hover == false)
-                contextMenus[i].active = false; 
+                contextMenus[i].dialogControl.unActivate(); 
         }
         else{
             contextMenus[i].selectedElement = 0;
@@ -514,7 +514,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.RClick){ //Right clicked to an element
             if(selectedLibraryElementIndex == 0){//To a texture
                 //Show the context menu
-                contextMenus[0].active = true;
+                contextMenus[0].dialogControl.activate();
                 contextMenus[0].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
                 contextMenus[0].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[0].contextPanel.scale.y;
                 contextMenus[0].pos.z = 0.95f;
@@ -523,7 +523,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
             if(selectedLibraryElementIndex == 1){//To a material
                 //Show the context menu
-                contextMenus[1].active = true;
+                contextMenus[1].dialogControl.activate();
                 contextMenus[1].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
                 contextMenus[1].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[1].contextPanel.scale.y;
                 contextMenus[1].pos.z = 0.95f;
@@ -531,7 +531,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
             if(selectedLibraryElementIndex == 2){//To a brush
                 //Show the context menu
-                contextMenus[2].active = true;
+                contextMenus[2].dialogControl.activate();
                 contextMenus[2].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
                 contextMenus[2].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[2].contextPanel.scale.y;
                 contextMenus[2].pos.z = 0.95f;
@@ -541,7 +541,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
     }
     if(navigationPanel.sections[0].elements[0].button.hover && mouse.LClick){ //If pressed to "Project" button in the menu bar (navigation panel)
         //Show the context menu
-        contextMenus[3].active = true;
+        contextMenus[3].dialogControl.activate();
         contextMenus[3].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
         contextMenus[3].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[3].contextPanel.scale.y;
         contextMenus[3].pos.z = 0.95f;
@@ -549,7 +549,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
     }
     if(navigationPanel.sections[0].elements[1].button.hover && mouse.LClick){ //If pressed to "Painting" button in the menu bar (navigation panel)
         //Show the context menu
-        contextMenus[4].active = true;
+        contextMenus[4].dialogControl.activate();
         contextMenus[4].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
         contextMenus[4].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[4].contextPanel.scale.y;
         contextMenus[4].pos.z = 0.95f;
@@ -558,7 +558,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
     
     if(navigationPanel.sections[0].elements[2].button.hover && mouse.LClick){ //If pressed to "Help" button in the menu bar (navigation panel)
         //Show the context menu
-        contextMenus[5].active = true;
+        contextMenus[5].dialogControl.activate();
         contextMenus[5].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
         contextMenus[5].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[5].contextPanel.scale.y;
         contextMenus[5].pos.z = 0.95f;

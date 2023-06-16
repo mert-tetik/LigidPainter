@@ -313,12 +313,12 @@ public:
 class ContextMenu
 {
 private:
-    /* data */
+    Shader buttonShader;
 public:
     Panel contextPanel;
     glm::vec3 pos;
     int selectedElement = 0;
-    bool active = false; 
+    DialogControl dialogControl; 
     
     //Constructors
     ContextMenu();
