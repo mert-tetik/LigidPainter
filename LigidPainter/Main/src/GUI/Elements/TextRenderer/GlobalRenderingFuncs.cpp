@@ -39,7 +39,7 @@ void TextRenderer::renderText(Shader shader){
 /// @brief text rendering for the textbox
 /// @param shader 
 /// @param textPosCharIndex 
-void TextRenderer::renderText(Shader shader,int &textPosCharIndex){
+void TextRenderer::renderText(Shader shader,int &textPosCharIndex, glm::vec4 textColor){
 	//If the active char is not equal to the active char 2 the chars between them will be selected
 
 	//Get the position of the chars from the text (w axis will contain the position of the char at the index of activeChar2)
@@ -51,7 +51,11 @@ void TextRenderer::renderText(Shader shader,int &textPosCharIndex){
 			this->timer.lastTimeT = glfwGetTime();
 
 		this->timer.runTimer(0.5f);
-	}
+	}	
+
+	//Change the alpha value of the insertion pointer cursor 
+	textColor.a = 0.5;
+    shader.setVec4("color2"  ,     textColor    );
 
 	//Render the insertion pointer cursor
 	renderInsertionPointCursor(shader,textPosCharIndex);

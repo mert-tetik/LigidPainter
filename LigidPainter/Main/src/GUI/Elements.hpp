@@ -254,7 +254,7 @@ public:
 
     void renderText(Shader shader);
     
-    void renderText(Shader shader,int &textPosCharIndex);
+    void renderText(Shader shader,int &textPosCharIndex,glm::vec4 textColor);
 
 	void processTextInput(std::string &text,int &activeChar,int &activeChar2,int &textPosCharIndex);
 };

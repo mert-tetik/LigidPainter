@@ -44,7 +44,7 @@ float TextRenderer::getTextLastCharOffset(){
         character ch = font.characters[*aC];//Get the current char
 
         //To the right
-        overallX += (ch.Advance >> 6) * textDataScale / 1.2f;
+        overallX += (ch.Advance >> 6) * textDataScale;
     }
 
     return overallX;
@@ -67,7 +67,7 @@ float TextRenderer::getIndexOffset(int charIndex){
         character ch = font.characters[*aC];//Get the current char
 
         //To the right
-        overallX += (ch.Advance >> 6) * textDataScale / 1.2f;
+        overallX += (ch.Advance >> 6) * textDataScale;
 
         if(counter == charIndex){
             break;
@@ -101,7 +101,7 @@ bool TextRenderer::doesTheTextOverflow(float x){
         }
 
         //To the right
-        overallX += (ch.Advance >> 6) * textDataScale / 1.2f;
+        overallX += (ch.Advance >> 6) * textDataScale;
     }
 
     return hitTheBoundaires;
@@ -174,7 +174,7 @@ void TextRenderer::renderLeftToRight(
 			float ypos = pos.y + (ch.Size.y - ch.Bearing.y ) * textDataScale;
 
 			//Calculate the size of the char
-			float w = ch.Size.x * textDataScale * 0.8f;
+			float w = ch.Size.x * textDataScale;
 			float h = ch.Size.y * textDataScale;
 
 			//Set the transform values
@@ -188,7 +188,7 @@ void TextRenderer::renderLeftToRight(
 				glDrawArrays(GL_TRIANGLES, 0, 6);
 
 			//To the right
-			pos.x += (ch.Advance >> 6) * textDataScale / 1.2f;
+			pos.x += (ch.Advance >> 6) * textDataScale;
 		}
 	}
 }

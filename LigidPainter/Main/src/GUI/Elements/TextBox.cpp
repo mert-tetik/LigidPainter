@@ -227,5 +227,5 @@ void TextBox::render(
                                 textPosCharIndex
                             );
 
-    textRenderer.renderText(shader,textPosCharIndex);
+    textRenderer.renderText(shader,textPosCharIndex,textColor2);
 }
