@@ -240,7 +240,7 @@ public:
     //Util public member functions
     float getTextLastCharOffset();
     float getIndexOffset(int charIndex);
-    bool doesTheTextOverflowFromLeftSide(float x);
+    bool doesTheTextOverflow(float x);
     glm::vec3 positionTheText();
 
 

@@ -31,7 +31,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 
 /// @brief 
-/// @return returns position gap between the text start pos and ending pos  
+/// @return position gap between the text start pos and ending pos  
 float TextRenderer::getTextLastCharOffset(){
     
     float overallX = 0.f;
@@ -50,7 +50,9 @@ float TextRenderer::getTextLastCharOffset(){
     return overallX;
 }
 
-
+/// @brief 
+/// @param charIndex which char's position will be returned
+/// @return position gap between the text start pos and the position of the given char index  
 float TextRenderer::getIndexOffset(int charIndex){
     
     float overallX = 0.f;
@@ -77,8 +79,10 @@ float TextRenderer::getIndexOffset(int charIndex){
     return overallX;
 }
 
-
-bool TextRenderer::doesTheTextOverflowFromLeftSide(float x){
+/// @brief 
+/// @param x position of the text
+/// @return if the text overflow from it's boundaries (textDataMaxX & textDataMinX)
+bool TextRenderer::doesTheTextOverflow(float x){
     
     float overallX = 0.f;
 
@@ -90,6 +94,7 @@ bool TextRenderer::doesTheTextOverflowFromLeftSide(float x){
     for (std::string::const_iterator aC = textDataText.begin(); aC != textDataText.end(); aC++){
         character ch = font.characters[*aC];//Get the current char
 
+        //TODO Implement the other side
         if(textDataMaxX < x + overallX) {
             hitTheBoundaires = true;
             break;
@@ -102,7 +107,8 @@ bool TextRenderer::doesTheTextOverflowFromLeftSide(float x){
     return hitTheBoundaires;
 }
 
-
+/// @brief 
+/// @return the position of the text after position is recalculated for the alignment & stuff 
 glm::vec3 TextRenderer::positionTheText(){
     
     glm::vec3 textPos = textDataPos; 
@@ -113,7 +119,7 @@ glm::vec3 TextRenderer::positionTheText(){
 		textPos.x -= overallX/2.f; //Allign the text in the middle
 
 		//Check if the text's left side is out of the boundaries
-		bool hitTheBoundaires = doesTheTextOverflowFromLeftSide(textPos.x);
+		bool hitTheBoundaires = doesTheTextOverflow(textPos.x);
 
 		//If the text's left side is out of the boundaries align the text on the left side of the button
 		if(hitTheBoundaires) 

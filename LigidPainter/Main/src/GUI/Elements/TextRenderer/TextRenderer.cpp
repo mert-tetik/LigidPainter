@@ -30,50 +30,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements.hpp"
 #include "UTIL/Util.hpp"
 
-/// @brief Render the text or get data regarding text after loading data
-/// @param shader buttonShader
-/// @param text the text
-/// @param pos position of the text
-/// @param multipleLines allow multiple lines if true
-/// @param scale in 0 - 2 range / 1 is pretty big tho
-/// @param minX Text boundaries min position in y axis
-/// @param maxX Text boundaries max position in y axis
-/// @param alignment 0 : L to R | 1 : M | 2 : R to L
-void TextRenderer::loadTextData(Shader shader, std::string text, glm::vec3 pos, bool multipleLines, 
-                      float scale, float minX,float maxX, int alignment)
-{
-	this->textDataShader = shader;
-	this->textDataText = text;
-	this->textDataPos = pos;
-	this->textDataMultipleLines = multipleLines; 
-	this->textDataScale = scale;
-	this->textDataMinX = minX;
-	this->textDataMaxX = maxX;
-	this->textDataAlignment = alignment;
-	this->textDataActive = false;
-    this->textDataActiveChar = 0;
-	this->textDataActiveChar2 = 0;
-	this->textDataTextPosCharIndex = 0;  
-}
-
-    void TextRenderer::loadTextData(Shader shader, std::string text, glm::vec3 pos, bool multipleLines, 
-                      float scale, float minX,float maxX, int alignment,bool active,
-                      int activeChar, int activeChar2, int textPosCharIndex)
-	{
-		this->textDataShader = shader;
-		this->textDataText = text;
-		this->textDataPos = pos;
-		this->textDataMultipleLines = multipleLines; 
-		this->textDataScale = scale;
-		this->textDataMinX = minX;
-		this->textDataMaxX = maxX;
-		this->textDataAlignment = alignment;
-		this->textDataActive = active;
-        this->textDataActiveChar = activeChar;
-		this->textDataActiveChar2 = activeChar2;
-		this->textDataTextPosCharIndex = textPosCharIndex;  
-	}
-
 
 void TextRenderer::renderLeftToRight(Shader shader,glm::vec3 pos){
 
@@ -148,13 +104,6 @@ void TextRenderer::rndrTxt(Shader shader, int textPosCharIndex){
 	shader.setInt("renderText",0);
 }
 
-TextRenderer::TextRenderer(/* args */){}
-TextRenderer::TextRenderer(Font font){
-	this->font = font;
-	this->timer = Timer();
-}
-
-
 
 void TextRenderer::renderText(Shader shader){
 	rndrTxt(shader,0);
@@ -224,67 +173,3 @@ void TextRenderer::renderText(Shader shader,int &textPosCharIndex){
 	}
 }
 
-void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activeChar2, int &textPosCharIndex){
-	if(keyInput){
-		this->timer.seconds = 2;
-		this->timer.lastTimeT = glfwGetTime();
-		
-		//Delete
-		if(key == GLFW_KEY_BACKSPACE-256 && activeChar != 0){ //Multiselected
-			if(activeChar2 != activeChar){
-				if(activeChar < activeChar2)
-					text.erase(text.begin()+activeChar + 1,text.begin()+activeChar2 + 1);
-				else
-					text.erase(text.begin()+activeChar2 + 1,text.begin()+activeChar + 1);
-
-				if(activeChar < 0)
-					activeChar = 0;
-				if(activeChar > text.size()-1)
-					activeChar = text.size()-1;
-				
-				activeChar2 = activeChar;
-			}
-			else{ //Single
-				text.erase(text.begin() + activeChar);
-				activeChar--;
-				activeChar2 = activeChar;
-			}
-
-		}
-		else if(key == GLFW_KEY_LEFT-256){
-			if(mods == 1){//Shift pressed 
-				if(activeChar2 > 0)
-					activeChar2--;
-			}
-			else{
-				if(activeChar > 0)
-					activeChar--;
-				activeChar2 = activeChar;
-			}
-		}
-		else if(key == GLFW_KEY_RIGHT-256){
-
-			if(mods == 1){//Shift pressed 
-				if(activeChar2 < text.size()-1)
-					activeChar2++;
-			}
-			else{
-				if(activeChar < text.size()-1)
-					activeChar++;
-				activeChar2 = activeChar;
-			}
-		}
-		else if(key == GLFW_KEY_CAPS_LOCK-256){
-			this->caps = !this->caps;
-		}
-		else if(mods == 0){
-			if(!this->caps && isalpha(key))
-				key+=32;
-
-			text.insert(text.begin() + (activeChar+1),key);
-
-			activeChar++;
-			activeChar2 = activeChar;
-		}
-	}
-}
