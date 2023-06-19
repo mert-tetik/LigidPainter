@@ -72,7 +72,8 @@ void TextRenderer::renderLeftToRight(Shader shader,glm::vec3 pos){
  
 			//Draw the char
 			glBindTexture(GL_TEXTURE_2D,ch.TextureID);
-			if(textDataMinX < pos.x)
+			
+			if(textDataMinX < xpos)
 				glDrawArrays(GL_TRIANGLES, 0, 6);
 
 			//To the right

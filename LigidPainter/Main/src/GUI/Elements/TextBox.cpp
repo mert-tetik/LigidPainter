@@ -215,7 +215,7 @@ void TextBox::render(
     textRenderer.loadTextData(  
                                 shader,
                                 text,
-                                glm::vec3(resultPos.x - resultScale.x,resultPos.y,resultPos.z),
+                                glm::vec3(resultPos.x - resultScale.x / 1.1,resultPos.y,resultPos.z),
                                 false,
                                 resultScaleText,
                                 resultPos.x - resultScale.x,
@@ -225,7 +225,6 @@ void TextBox::render(
                                 activeChar,
                                 activeChar2,
                                 textPosCharIndex
-
                             );
 
     textRenderer.renderText(shader,textPosCharIndex);
