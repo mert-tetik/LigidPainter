@@ -49,7 +49,7 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
                                     {
                                         //Project settings
 
-                                        Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"New Project",Texture(),0.f,false)), 
+                                        Element(Button(BUTTON_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,buttonShader,"New Project",Texture(),0.f,false)), 
                                         Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"MyProject",2.f,false),context.window),
                                         Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"./Projects",2.f,true),context.window),
                                         
@@ -66,7 +66,7 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
                                         Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Medium",0.f)),
                                         Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Small",0.f)),
                                         Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"3D Model",2.f,2),context.window),
-                                        Element(Button(1,glm::vec2(4,2),colorPalette,buttonShader,"Create",Texture(),2.f,false))
+                                        Element(Button(BUTTON_STYLE_SOLID,glm::vec2(4,2),colorPalette,buttonShader,"Create",Texture(),2.f,false))
                                     }
                                 )
                             },

@@ -49,7 +49,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                                     Element(Button()),
                                     {
                                         //Project settings
-                                        Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"Export",Texture(),0.f,false)), 
+                                        Element(Button(BUTTON_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,buttonShader,"Export",Texture(),0.f,false)), 
                                         Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Select A Path",2.f,true),context.window),
                                         
                                         Element(ComboBox(0,glm::vec2(4,2),colorPalette,buttonShader,
@@ -69,7 +69,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                                             "TGA"
                                         },"File Format",4.f),context.window),
 
-                                        Element(Button(0,glm::vec2(4,2),colorPalette,buttonShader,"Export",Texture(),5.f,false))
+                                        Element(Button(BUTTON_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,buttonShader,"Export",Texture(),5.f,false))
                                     }
                                 )
                             },

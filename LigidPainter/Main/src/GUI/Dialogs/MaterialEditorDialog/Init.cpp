@@ -57,7 +57,7 @@ MaterialEditorDialog::MaterialEditorDialog
             //     Section(
             //             Element(Button()),
             //             {
-            //                 Element(Button(1,glm::vec2(30,30),colorPalette,buttonShader,"Add"        , appTextures.greetingDialogImage, 0.f,false))
+            //                 Element(Button(BUTTON_STYLE_SOLID,glm::vec2(30,30),colorPalette,buttonShader,"Add"        , appTextures.greetingDialogImage, 0.f,false))
             //             }
             //         )
             // }
@@ -81,8 +81,8 @@ MaterialEditorDialog::MaterialEditorDialog
     //That panel where you add the modifiers (on the left side)
     layerPanel = Panel(buttonShader,colorPalette,{},scaleLayer,posLayer,colorPalette.mainColor,colorPalette.thirdColor,true,true,false,true,true,1.f,1.f,                                
                             {
-                                Button(1,glm::vec2(2,1.5f),colorPalette,buttonShader,"Add"        , Texture(), 0.f,false),
-                                Button(1,glm::vec2(2,1.5f),colorPalette,buttonShader,"Del"        , Texture(), 0.f,false)
+                                Button(BUTTON_STYLE_SOLID,glm::vec2(2,1.5f),colorPalette,buttonShader,"Add"        , Texture(), 0.f,false),
+                                Button(BUTTON_STYLE_SOLID,glm::vec2(2,1.5f),colorPalette,buttonShader,"Del"        , Texture(), 0.f,false)
                             },
                             20.f,
                             true
@@ -98,7 +98,7 @@ MaterialEditorDialog::MaterialEditorDialog
                       );
 
     //Material display is a button (is taking the material's display texture as a texture) (right in the middle)
-    materialDisplayer = Button(1,glm::vec2(45,45),colorPalette,buttonShader,"Material"        , appTextures.greetingDialogImage, 0.f,false);
+    materialDisplayer = Button(BUTTON_STYLE_SOLID,glm::vec2(45,45),colorPalette,buttonShader,"Material"        , appTextures.greetingDialogImage, 0.f,false);
     
     //Init the texture modifier
     appMaterialModifiers.textureModifier = MaterialModifier(colorPalette,buttonShader,appTextures,0);

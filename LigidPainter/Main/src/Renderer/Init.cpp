@@ -229,10 +229,10 @@ void Renderer::createAppNodes(glm::vec2 videoScale){
     materialNode.loadIO
     (
         {
-            NodeIO("Input1",Element(Button(1,glm::vec2(1,8),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,1),
+            NodeIO("Input1",Element(Button(BUTTON_STYLE_SOLID,glm::vec2(1,8),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,1),
         },
         {
-            NodeIO("Input1",Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,2),
+            NodeIO("Input1",Element(Button(BUTTON_STYLE_SOLID,glm::vec2(1,1),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,2),
         },
         shaders.buttonShader,
         shaders.singleCurve,
@@ -248,7 +248,7 @@ void Renderer::createAppNodes(glm::vec2 videoScale){
     std::vector <NodeIO> meshOutputNodeInputElements;
     for (size_t i = 0; i < model.meshes.size(); i++)
     {
-        meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,model.meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,0));
+        meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(BUTTON_STYLE_SOLID,glm::vec2(1,1),colorPalette,shaders.buttonShader,model.meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,0));
     }
     
     //Create the mesh output node

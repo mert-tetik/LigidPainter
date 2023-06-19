@@ -50,6 +50,9 @@ struct Element;
 
 //!------------------------------BUTTON------------------------------
 
+#define BUTTON_STYLE_STYLIZED 0
+#define BUTTON_STYLE_SOLID 1
+#define BUTTON_STYLE_BASIC 2
 
 class Button
 {
@@ -57,6 +60,9 @@ private:
     //Private member functions
     void render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadius,float resultOutlineThickness);
     bool renderTheTexture(glm::vec3 resultPos,glm::vec2 resultScale,float resultScaleText,glm::vec2 videoScale,TextRenderer &textRenderer,float &textureRadius);
+    void manageMouseActivity(Mouse &mouse);
+    void renderTextAndTexture(TextRenderer &textRenderer, glm::vec2 videoScale, float resultScaleText);
+
 public:
     Shader shader;
     bool clickState1 = false;
@@ -84,7 +90,6 @@ public:
     bool hover = false;
     float hoverMixVal = 0.f;
     float clickedMixVal = 0.f;
-    int buttonImageScaleDivider = 1.5f;
     float textureSizeScale = 1.f;
     bool textureStickToTop = false;
     bool textAlignLeft = false;
@@ -281,7 +286,6 @@ public:
     bool hover = false;
     float hoverMixVal = 0.f;
     float clickedMixVal = 0.f;
-    int buttonImageScaleDivider = 1.5f;
 
     //Constructors 
     CheckBox();

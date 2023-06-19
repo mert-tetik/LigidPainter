@@ -70,7 +70,7 @@ void Node::loadIO(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs, Shade
     nodePanel.clearDepthBuffer = false;
     
     //Create the barbutton
-    this->barButton = Button(2,nodePanel.scale,colorPalette,buttonShader,"Node",Texture(),0.f,false);
+    this->barButton = Button(BUTTON_STYLE_BASIC,nodePanel.scale,colorPalette,buttonShader,"Node",Texture(),0.f,false);
 
     //Create the elements of the node panel
     createPanelUsingIOs();

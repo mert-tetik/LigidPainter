@@ -198,28 +198,28 @@ void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, int &sele
             for (size_t i = 0; i < library.textures.size(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.textures[i].title       , library.textures[i], 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.textures[i].title       , library.textures[i], 0.f,false))) ;
             }
         }
         else if(selectedLibraryElementIndex == 1){ //Update materials
             for (size_t i = 0; i < library.materials.size(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.materials[i].title       , Texture(library.materials[i].displayingTexture), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.materials[i].title       , Texture(library.materials[i].displayingTexture), 0.f,false))) ;
             }
         }
         else if(selectedLibraryElementIndex == 2){ //Update materials
             for (size_t i = 0; i < library.brushes.size(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.brushes[i].title       , Texture(library.brushes[i].displayingTexture), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.brushes[i].title       , Texture(library.brushes[i].displayingTexture), 0.f,false))) ;
             }
         }
         else if(selectedLibraryElementIndex == 3){ //Update tdmodels
             for (size_t i = 0; i < library.TDModels.size(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(1,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.TDModels[i].title       , Texture(), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.TDModels[i].title       , Texture(), 0.f,false))) ;
             }
         }
         //Give the section
@@ -309,7 +309,7 @@ void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &paint
         for (size_t i = 0; i < model.meshes.size(); i++)
         {
 
-            Element meshButton = Element(Button(1,glm::vec2(2,2),colorPalette,buttonShader, model.meshes[i].materialName , Texture(), 0.f,true));
+            Element meshButton = Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,2),colorPalette,buttonShader, model.meshes[i].materialName , Texture(), 0.f,true));
 
             paintingPanel.sections[6].elements.push_back(meshButton);
         }
@@ -592,7 +592,7 @@ void nodeInteraction(Model &model, std::vector<Node> &nodeScene,std::vector<Node
         std::vector <NodeIO> meshOutputNodeInputElements;
         for (size_t i = 0; i < model.meshes.size(); i++)
         {
-            meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(1,glm::vec2(1,1),colorPalette,shaders.buttonShader,model.meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,0));
+            meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(BUTTON_STYLE_SOLID,glm::vec2(1,1),colorPalette,shaders.buttonShader,model.meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,0));
         }
 
         //Create the mesh output node

@@ -34,7 +34,7 @@ GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette
     this->buttonShader = buttonShader;
 
     //First text button
-    this->textButton1 = Button(0,glm::vec2(8,2),colorPalette,buttonShader,"Welcome To The LigidPainter",Texture(),0.f,false);
+    this->textButton1 = Button(BUTTON_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"Welcome To The LigidPainter",Texture(),0.f,false);
     this->textButton1.color = glm::vec4(0);
     this->textButton1.pos.x = 40;
     this->textButton1.pos.y = 40;
@@ -42,7 +42,7 @@ GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette
     this->textButton1.textScale = 1.0f;
     
     //Load project button
-    this->loadProjectButton = Button(0,glm::vec2(4,2),colorPalette,buttonShader,"Load",Texture(),0.f,false);
+    this->loadProjectButton = Button(BUTTON_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,buttonShader,"Load",Texture(),0.f,false);
     this->loadProjectButton.pos.x = 45;
     this->loadProjectButton.pos.y = 58;
     this->loadProjectButton.pos.z = 0.9f;
@@ -51,7 +51,7 @@ GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette
     this->loadProjectButton.textColor = glm::vec4(1);
     
     //Create project button
-    this->createProjectButton = Button(0,glm::vec2(4,2),colorPalette,buttonShader,"Create",Texture(),0.f,false);
+    this->createProjectButton = Button(BUTTON_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,buttonShader,"Create",Texture(),0.f,false);
     this->createProjectButton.pos.x = 55;
     this->createProjectButton.pos.y = 58;
     this->createProjectButton.pos.z = 0.9f;
@@ -60,7 +60,7 @@ GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette
     this->createProjectButton.textColor = glm::vec4(1);
     
     //Decoration texture displayer button
-    this->textureDisplayerButton = Button(0,glm::vec2(30,30),colorPalette,buttonShader,"",appTextures.greetingDialogImage,0.f,false);
+    this->textureDisplayerButton = Button(BUTTON_STYLE_STYLIZED,glm::vec2(30,30),colorPalette,buttonShader,"",appTextures.greetingDialogImage,0.f,false);
     this->textureDisplayerButton.pos.x = 50;
     this->textureDisplayerButton.pos.y = 50;
     this->textureDisplayerButton.pos.z = 0.8f;

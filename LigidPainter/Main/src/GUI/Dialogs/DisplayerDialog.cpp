@@ -63,12 +63,12 @@ DisplayerDialog::DisplayerDialog(
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(1,glm::vec2(2,6),colorPalette,buttonShader, ""  , appTextures.greetingDialogImage, 1.f,true)),
+                        Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,6),colorPalette,buttonShader, ""  , appTextures.greetingDialogImage, 1.f,true)),
                         Element(RangeBar(0,glm::vec2(2,1),colorPalette,buttonShader, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), 
                         Element(RangeBar(0,glm::vec2(2,1),colorPalette,buttonShader, "Blur"  , Texture(), 1.f,0.f,100.f,0.f)), 
 
                         Element(RangeBar(0,glm::vec2(2,1),colorPalette,buttonShader, "Opacity"  , Texture(), 1.f,0.f,100.f,0.f)), 
-                        Element(Button(2,glm::vec2(2,2),colorPalette,buttonShader, "Color"  , Texture(), 1.f, false)),
+                        Element(Button(BUTTON_STYLE_BASIC,glm::vec2(2,2),colorPalette,buttonShader, "Color"  , Texture(), 1.f, false)),
                     }
                 )
             }
@@ -94,7 +94,7 @@ DisplayerDialog::DisplayerDialog(
     {
         //Create the button
         Element btn;
-        btn = Element(Button(1,glm::vec2(1,1),colorPalette,buttonShader,""    ,Texture(), 0.f,false));
+        btn = Element(Button(BUTTON_STYLE_SOLID,glm::vec2(1,1),colorPalette,buttonShader,""    ,Texture(), 0.f,false));
         
         //Unique color for the button (color represents the skybox)
         if(i == 0)

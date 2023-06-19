@@ -43,9 +43,9 @@ NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPal
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(2,glm::vec2(2,2),colorPalette,buttonShader, "Color"  , Texture(), 1.f, false)),
+                        Element(Button(BUTTON_STYLE_BASIC,glm::vec2(2,2),colorPalette,buttonShader, "Color"  , Texture(), 1.f, false)),
                         Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"NewTexture",1.f,false),context.window),
-                        Element(Button(0,glm::vec2(2,2),colorPalette,buttonShader, "Create"  , Texture(), 4.f, true))
+                        Element(Button(BUTTON_STYLE_STYLIZED,glm::vec2(2,2),colorPalette,buttonShader, "Create"  , Texture(), 4.f, true))
                     }
                 )
             }

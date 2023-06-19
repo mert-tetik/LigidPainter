@@ -59,7 +59,7 @@ ContextMenu::ContextMenu(Shader buttonShader,ColorPalette colorPalette,std::vect
     Section section;
     for (size_t i = 0; i < elements.size(); i++)
     {
-        section.elements.push_back(Element(Button(1,glm::vec2(1,1),colorPalette,buttonShader,elements[i],Texture(),0.f,false)));
+        section.elements.push_back(Element(Button(BUTTON_STYLE_SOLID,glm::vec2(1,1),colorPalette,buttonShader,elements[i],Texture(),0.f,false)));
     }
     
     contextPanel.sections.push_back(section);
