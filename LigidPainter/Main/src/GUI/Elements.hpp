@@ -183,7 +183,7 @@ public:
     ComboBox();
     ComboBox(Shader shader,std::vector<std::string> texts, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 textColor,glm::vec4 textColor2,
            float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2);
-           
+
     ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::vector<std::string> texts,std::string text,float panelOffset);
 
     //Public member functions
@@ -193,14 +193,16 @@ public:
 
 //!------------------------------TEXT RENDERER------------------------------
 
-
+#define TEXTRENDERER_ALIGNMENT_LEFT 0
+#define TEXTRENDERER_ALIGNMENT_MID 1
+#define TEXTRENDERER_ALIGNMENT_RIGHT 2
 
 class TextRenderer
 {
 private:
-    void renderLeftToRight(std::string text, bool multipleLines, float &x, float &y,float &z , float maxX, float lastXText, float scale, Shader shader, bool render, int &counter,glm::vec4 &data, int index,float overallX,bool leftAlign,float mostLeft);
-    void renderRightToLeft(std::string text, bool multipleLines, float &x, float &y,float &z , float maxX, float lastXText, float scale, Shader shader, bool render, int &counter,glm::vec4 &data, int index, float mostLeft);
-    glm::vec4 rndrTxt(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,float mostLeft,int index,bool render,bool leftAlign,bool rightToLeft,int textPosCharIndex);
+    void renderLeftToRight(Shader shader,glm::vec3 pos);
+    void renderRightToLeft(Shader shader,glm::vec3 pos);
+    void rndrTxt(Shader shader, int textPosCharIndex);
 
 public:
     Font font;
@@ -209,17 +211,43 @@ public:
 	char key = 0;
 	int mods = 0;
 
+    //Text data
+    Shader textDataShader;
+    std::string textDataText;
+    glm::vec3 textDataPos;
+    bool textDataMultipleLines;
+    float textDataScale;
+    float textDataMinX;
+    float textDataMaxX;
+    bool textDataAlignment;
+
+    //Aditional text data for the text box
+    bool textDataActive;
+    int textDataActiveChar;
+    int textDataActiveChar2;
+    int textDataTextPosCharIndex;
+
     //Constructors
     TextRenderer(/* args */);
     TextRenderer(Font font);
 
-    //Public member functions
-    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,
-                         float mostLeft,bool leftAlign,bool rightToLeft);
+    //Util public member functions
+    float getTextLastCharOffset();
+    float getIndexOffset(int charIndex);
+    bool doesTheTextOverflowFromLeftSide(float x);
+    glm::vec3 positionTheText();
+
+
+    void loadTextData(Shader shader, std::string text, glm::vec3 pos, bool multipleLines, 
+                      float scale, float minX,float maxX, int alignment);
     
-    glm::vec3 renderText(Shader shader,std::string text,float x,float y,float z,float maxX,bool multipleLines,float scale,
-                            float mostLeft,bool active,int &activeChar,int &activeChar2,Timer &timer,bool leftAlign,
-                            bool rightToLeft,int &textPosCharIndex);
+    void loadTextData(Shader shader, std::string text, glm::vec3 pos, bool multipleLines, 
+                      float scale, float minX,float maxX, int alignment,bool active,
+                      int activeChar, int activeChar2, int textPosCharIndex);
+
+    void renderText(Shader shader);
+    
+    void renderText(Shader shader,int &textPosCharIndex);
 
 	void processTextInput(std::string &text,int &activeChar,int &activeChar2);
 };

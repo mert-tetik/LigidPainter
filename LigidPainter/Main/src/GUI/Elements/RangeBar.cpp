@@ -203,5 +203,17 @@ void RangeBar::render(
     std::string textResult; 
     textResult = text;
     textResult += "(" + std::to_string(value) + ")";
-    textRenderer.renderText(shader,textResult,resultPos.x ,resultPos.y,1,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,false,false);
+    
+    textRenderer.loadTextData(
+                                shader,
+                                textResult,
+                                glm::vec3(resultPos.x,resultPos.y,1),
+                                false,
+                                resultScaleText,
+                                resultPos.x - resultScale.x,
+                                resultPos.x + resultScale.x,
+                                TEXTRENDERER_ALIGNMENT_MID
+                             );
+
+    textRenderer.renderText(shader);
 }

@@ -148,6 +148,17 @@ void CheckBox::render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRender
     //Render the text
     shader.setVec4("color"  ,     textColor     );
     shader.setVec4("color2"  ,     textColor2     );
-    //Update the parameters of the renderText function in the renderTheTexture function if this function's parameters are changed
-    textRenderer.renderText(shader,text,resultTextPos .x ,resultPos.y,resultPos.z+0.02f,orgResultPos.x + orgResultScale.x,false,resultScaleText,resultTextPos.x-resultScale.x,false,false);
+    
+    textRenderer.loadTextData(
+                                shader,
+                                text,
+                                glm::vec3(resultTextPos.x,resultTextPos.y,resultTextPos.z + 0.02f),
+                                false,
+                                resultScaleText,
+                                resultTextPos.x-resultScale.x,
+                                orgResultPos.x + orgResultScale.x,
+                                TEXTRENDERER_ALIGNMENT_MID
+                             );
+
+    textRenderer.renderText(shader);
 }

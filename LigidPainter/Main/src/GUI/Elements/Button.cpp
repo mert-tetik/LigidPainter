@@ -78,17 +78,9 @@ bool Button::renderTheTexture(glm::vec3 resultPos,glm::vec2 resultScale,float re
     //The texture's position will be interpreted by the text's position data
     shader.setVec4("color"  ,     glm::vec4(0)     );
     shader.setVec4("color2"  ,     glm::vec4(0)     );
-    //Update the parameters if original renderer's parameters are changed
-    glm::vec3 textPosData;
-    if(textAlignLeft){
-        textPosData = textRenderer.renderText(shader,text,resultPos.x-resultScale.x,resultPos.y,-10000.1,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x,true,false);
-    }
-    else{
-        textPosData = textRenderer.renderText(shader,text,resultPos.x,resultPos.y,-10000.1,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x,false,false);
-    }
-    //textPosData.x is where the text is started in x axis
-    //textPosData.y is where the text is ended in x axis
-    //textPosData.z is boolean value if text is reached to the boundaries
+
+
+
     //Render the texture
     bool renderTheText = true;
     if(texture.ID != 0){
@@ -112,17 +104,19 @@ bool Button::renderTheTexture(glm::vec3 resultPos,glm::vec2 resultScale,float re
         
         if(textureStickToTop)
             resultPosTexture.y = resultPosTexture.y - resultScale.y + resultScaleTexture.y;
+
+        glm::vec3 textStartPos = textRenderer.positionTheText();
         
         if(text == ""){
             //If there is no text get the texture into the middle
-            resultPosTexture.x = textPosData.x; 
+            resultPosTexture.x = textStartPos.x; 
         }
         else{
             //If there is text get the texture left side of the button
             resultPosTexture.x = resultPos.x - resultScale.x + resultScaleTexture.x * 2.f; 
         }
         //If the button is small enough get the texture into middle and don't render the text
-        if(textPosData.x - resultScaleTexture.x * 4.f < resultPos.x - resultScale.x){
+        if(textStartPos.x - resultScaleTexture.x * 4.f < resultPos.x - resultScale.x){
             resultPosTexture.x = resultPos.x; //Button's position
             renderTheText = false;
         }
@@ -290,16 +284,38 @@ void Button::render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer
     
     //Render the button
     render(resultPos,resultScale,resultRadius,resultOutlineThickness);
+    
+    if(textAlignLeft)
+        textRenderer.loadTextData(  
+                                    shader,
+                                    text,
+                                    glm::vec3(resultPos.x - resultScale.x,resultPos.y,resultPos.z),
+                                    false,
+                                    resultScaleText,
+                                    resultPos.x - resultScale.x,
+                                    resultPos.x + resultScale.x,
+                                    TEXTRENDERER_ALIGNMENT_LEFT
+                                  );
+    else
+        textRenderer.loadTextData(  
+                                    shader,
+                                    text,
+                                    glm::vec3(resultPos.x,resultPos.y,resultPos.z),
+                                    false,
+                                    resultScaleText,
+                                    resultPos.x - resultScale.x,
+                                    resultPos.x + resultScale.x,
+                                    TEXTRENDERER_ALIGNMENT_MID
+                                  );
+    
     float textureRadius = 0.f;
     bool renderTheText = renderTheTexture(resultPos,resultScale,resultScaleText,videoScale,textRenderer,textureRadius);
+    
     //Render the text
     if(renderTheText){
         shader.setVec4("color"  ,     textColor     );
         shader.setVec4("color2"  ,     textColor2     );
-        //Update the parameters of the renderText function in the renderTheTexture function if this function's parameters are changed
-        if(textAlignLeft)
-            textRenderer.renderText(shader,text,resultPos.x+textureRadius - resultScale.x ,resultPos.y,resultPos.z+0.002f,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,true,false);
-        else
-            textRenderer.renderText(shader,text,resultPos.x+textureRadius ,resultPos.y,resultPos.z+0.002f,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,false,false);
+        
+        textRenderer.renderText(shader);
     }
 }

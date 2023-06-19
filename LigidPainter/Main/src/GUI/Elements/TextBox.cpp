@@ -211,5 +211,21 @@ void TextBox::render(
     shader.setVec4("color2"  ,     textColor2     );
     
     //Render the text
-    textRenderer.renderText(shader,text,resultPos.x - resultScale.x ,resultPos.y,resultPos.z+0.02f,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x - resultScale.x,active,activeChar,activeChar2,timer,true,false,textPosCharIndex);
+
+    textRenderer.loadTextData(  
+                                shader,
+                                text,
+                                glm::vec3(resultPos.x - resultScale.x,resultPos.y,resultPos.z),
+                                false,
+                                resultScaleText,
+                                resultPos.x - resultScale.x,
+                                resultPos.x + resultScale.x,
+                                TEXTRENDERER_ALIGNMENT_LEFT,
+                                active,
+                                activeChar,
+                                activeChar2,
+                                textPosCharIndex
+                            );
+
+    textRenderer.renderText(shader,textPosCharIndex);
 }

@@ -189,13 +189,29 @@ void ComboBox::render(
         timer.transition(hover[i],hoverMixVal[i],0.2f); 
         timer.transition(pressed,clickedMixVal[i],0.15f);
         render(resultPos,resultScale,resultRadius,resultOutlineThickness,hoverMixVal[i],clickedMixVal[i],true,color);
-        
+
+        std::string boxText;
+
         if(!pressed){
-            textRenderer.renderText(shader,texts[selectedIndex],resultPos.x,resultPos.y,resultPos.z+0.02f,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x,false,false);
+            boxText = texts[selectedIndex];
         }
         else{
-            textRenderer.renderText(shader,texts[i],resultPos.x,resultPos.y,resultPos.z+0.02f,resultPos.x + resultScale.x,false,resultScaleText,resultPos.x-resultScale.x,false,false);
+            boxText = texts[i];
         }
+
+        textRenderer.loadTextData(
+                                    shader,
+                                    texts[selectedIndex],
+                                    glm::vec3(resultPos.x,resultPos.y,resultPos.z + 0.02f),
+                                    false,
+                                    resultScaleText,
+                                    resultPos.x - resultScale.x,
+                                    resultPos.x + resultScale.x,
+                                    TEXTRENDERER_ALIGNMENT_MID
+                                );
+
+        textRenderer.renderText(shader);
+
         if(i == 0 && !pressed && clickedMixVal[0] < 0.2f)
             break;
     }
@@ -208,8 +224,7 @@ void ComboBox::render(
           util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
           ,pos.z); //Use the original depth value
 
+    
     //Render the text
-    textRenderer.renderText(shader,text,resultPos.x ,resultPos.y - resultScale.y,resultPos.z+0.002f,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,false,false);
-
-
+    //textRenderer.renderText(shader,text,resultPos.x ,resultPos.y - resultScale.y,resultPos.z+0.002f,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,false,false);
 }
