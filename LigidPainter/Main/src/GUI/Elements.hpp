@@ -209,6 +209,7 @@ private:
     void renderRightToLeft(Shader shader,glm::vec3 pos);
     void rndrTxt(Shader shader, int textPosCharIndex);
 
+    Timer timer; //Timer of the text renderer (used for animation of the insertion point cursor)
 public:
     Font font;
 	bool keyInput = false;

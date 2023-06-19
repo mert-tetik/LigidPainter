@@ -153,6 +153,7 @@ void TextRenderer::rndrTxt(Shader shader, int textPosCharIndex){
 TextRenderer::TextRenderer(/* args */){}
 TextRenderer::TextRenderer(Font font){
 	this->font = font;
+	this->timer = Timer();
 }
 
 
@@ -163,11 +164,6 @@ void TextRenderer::renderText(Shader shader){
 
 
 void TextRenderer::renderText(Shader shader,int &textPosCharIndex){
-	//.x = Returns the text's starting position int x axis
-	//.y = Returns the text's ending position int x axis
-	//.z = hitTheBoundaries
-	//.w = position of the char in the given index
-
 	float activeCharPos = getIndexOffset(textDataActiveChar) + textDataPos.x;
 	float activeChar2Pos = getIndexOffset(textDataActiveChar2) + textDataPos.x;
 	
@@ -181,6 +177,13 @@ void TextRenderer::renderText(Shader shader,int &textPosCharIndex){
 	//Get the position of the chars from the text (w axis will contain the position of the char at the index of activeChar2)
 	rndrTxt(shader,textPosCharIndex);
 	
+	if(textDataActive){
+		if(glfwGetTime() - this->timer.lastTimeT > 5.)
+			this->timer.lastTimeT = glfwGetTime();
+
+		this->timer.runTimer(0.5f);
+	}
+
 	//Render the insertion point cursor
 	if(textDataActive){
 		glm::vec3 ipcPos; //insertion point cursor position
@@ -210,8 +213,8 @@ void TextRenderer::renderText(Shader shader,int &textPosCharIndex){
 		this->textDataTextPosCharIndex = textPosCharIndex; 
 
 		//TODO Special timer for the text renderer
-		//if(timer.seconds % 2 == 0) //Hide and show the insertion point cursor every second
-		//	glDrawArrays(GL_TRIANGLES, 0, 6);
+		if(this->timer.seconds % 2 == 0) //Hide and show the insertion point cursor every second
+			glDrawArrays(GL_TRIANGLES, 0, 6);
 
 
 		//Multiselection 
@@ -255,6 +258,9 @@ void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activ
 
 		}
 		else if(key == GLFW_KEY_LEFT-256){
+			this->timer.seconds = 2;
+			this->timer.lastTimeT = glfwGetTime();
+
 			if(mods == 1){//Shift pressed 
 				if(activeChar2 > 0)
 					activeChar2--;
@@ -266,6 +272,9 @@ void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activ
 			}
 		}
 		else if(key == GLFW_KEY_RIGHT-256){
+			this->timer.seconds = 2;
+			this->timer.lastTimeT = glfwGetTime();
+
 			if(mods == 1){//Shift pressed 
 				if(activeChar2 < text.size())
 					activeChar2++;
@@ -283,6 +292,7 @@ void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activ
 			if(!this->caps && isalpha(key))
 				key+=32;
 				
+			 
 			text.insert(text.begin() + activeChar,key);
 			activeChar++;
 			activeChar2 = activeChar;

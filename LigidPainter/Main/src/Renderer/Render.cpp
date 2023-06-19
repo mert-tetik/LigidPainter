@@ -36,7 +36,7 @@ void Renderer::render(){
     glfwPollEvents();
     
     //Update local timer data
-    if(timer.runTimer())
+    if(timer.runTimer(1.f))
         std::cout << timer.FPS << std::endl; //Print the fps every second
     
     //Update OpenGL viewport every frame

@@ -33,16 +33,18 @@ Timer::Timer(/* args */){
     
 }
 
-bool Timer::runTimer(){ 
+bool Timer::runTimer(float cycleTime){ 
     //Returns true every second
     double currentTime = glfwGetTime();
     nbFramesT++;
-    if (currentTime - lastTimeT >= 1.0) {
+    if (currentTime - lastTimeT >= cycleTime) {
+        
     	if(nbFramesT > 5 && nbFramesT < 800)
             FPS = (double)nbFramesT;
+            
         renderingSpeed = 1000./FPS;
         nbFramesT = 0;
-    	lastTimeT += 1.0;
+    	lastTimeT += cycleTime;
         seconds++;
     	return true;
     }

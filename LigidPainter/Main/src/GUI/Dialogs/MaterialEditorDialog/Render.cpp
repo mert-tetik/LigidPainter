@@ -118,7 +118,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,float textureR
 
     //If pressed to any of the texture modifier's channel button show the texture selection panel    
     if(modifiersPanel.sections.size() && material.materialModifiers.size()){
-        if(material.materialModifiers[selectedMaterialModifierIndex].modifierIndex == 0) { //If is a texture modifier
+        if(material.materialModifiers[selectedMaterialModifierIndex].modifierIndex == TEXTURE_MATERIAL_MODIFIER) { //If is a texture modifier
             for (size_t i = 0; i < modifiersPanel.sections[0].elements.size(); i++) //For each channel
             {
                 if(modifiersPanel.sections[0].elements[i].button.clickedMixVal){ //If clicked to any channel button in the texture modifier's panel

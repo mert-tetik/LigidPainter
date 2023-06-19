@@ -158,7 +158,7 @@ public:
     //5 = ambient Occlusion
 
     Shader shader;  
-    int modifierIndex;//0 for the texture modifier
+    int modifierIndex;
     std::vector<Section> sections;   
     std::string title;
 
