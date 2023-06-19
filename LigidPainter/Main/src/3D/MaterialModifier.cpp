@@ -37,8 +37,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //5 = ambient Occlusion
 
 MaterialModifier::MaterialModifier(){}
+
+
 MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures,int modifierIndex){
-    if(modifierIndex == 0){
+    
+    if(modifierIndex == TEXTURE_MATERIAL_MODIFIER){
         this->sections = createTextureModifier(colorPalette,buttonShader,appTextures);
         this->title = "Texture Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",nullptr);
@@ -46,6 +49,7 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader
 
     this->modifierIndex = modifierIndex;
 }
+
 
 std::vector<Section> MaterialModifier::createTextureModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
         

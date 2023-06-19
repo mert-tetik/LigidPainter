@@ -101,6 +101,6 @@ MaterialEditorDialog::MaterialEditorDialog
     materialDisplayer = Button(BUTTON_STYLE_SOLID,glm::vec2(45,45),colorPalette,buttonShader,"Material"        , appTextures.greetingDialogImage, 0.f,false);
     
     //Init the texture modifier
-    appMaterialModifiers.textureModifier = MaterialModifier(colorPalette,buttonShader,appTextures,0);
+    appMaterialModifiers.textureModifier = MaterialModifier(colorPalette,buttonShader,appTextures,TEXTURE_MATERIAL_MODIFIER);
     appMaterialModifiers.textureModifier.sections[0].header.button.clickState1 = true;
 }

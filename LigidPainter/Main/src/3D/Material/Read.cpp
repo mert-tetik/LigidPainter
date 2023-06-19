@@ -80,7 +80,7 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
             
             MaterialModifier modifier(colorPalette , buttonShader , appTextures , materialModifierModifierIndex);
 
-            if(materialModifierModifierIndex == 0){ //Is a texture modifier
+            if(materialModifierModifierIndex == TEXTURE_MATERIAL_MODIFIER){ //Is a texture modifier
                 for (size_t channelI = 0; channelI < 6; channelI++) //For each material channel (albedo, roughness, metallic, normal map, etc.)
                 {
                     //Get the resolution of the texture from the panel of the modifier

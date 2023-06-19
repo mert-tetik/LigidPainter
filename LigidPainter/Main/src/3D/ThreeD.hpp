@@ -143,7 +143,9 @@ public:
     std::vector<TextureMs> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 };
 
+//-------------- MATERIAL MODIFIER ------------
 
+#define TEXTURE_MATERIAL_MODIFIER 0
 
 class MaterialModifier
 {

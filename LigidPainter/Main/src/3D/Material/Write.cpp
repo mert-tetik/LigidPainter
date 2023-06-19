@@ -70,7 +70,7 @@ void Material::writeFile(std::string path){
             size_t materialModifierModifierIndex = materialModifiers[i].modifierIndex;
             wf.write(reinterpret_cast<char*>(   &materialModifierModifierIndex     ),sizeof(uint64_t));
 
-            if(materialModifierModifierIndex == 0){ //Is a texture modifier
+            if(materialModifierModifierIndex == TEXTURE_MATERIAL_MODIFIER){ //Is a texture modifier
                 for (size_t channelI = 0; channelI < 6; channelI++) //For each material channel (albedo, roughness, metallic, normal map, etc.)
                 {
                     //Get the resolution of the texture from the panel of the modifier
