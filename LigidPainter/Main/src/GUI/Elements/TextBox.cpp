@@ -79,8 +79,8 @@ TextBox::TextBox(Shader shader,std::string text, glm::vec2 scale, glm::vec4 colo
     this->outlineColor = outlineColor;
     this->outlineColor2 = outlineColor2;
     this->openSelectFolderDialog = openSelectFolderDialog;
-    activeChar = text.size();
-    activeChar2 = text.size();
+    activeChar = text.size()-1;
+    activeChar2 = text.size()-1;
 }
 
 //Style constructor
@@ -91,8 +91,8 @@ TextBox::TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shad
     this->panelOffset = panelOffset;
     this->openSelectFolderDialog = openSelectFolderDialog;
     
-    activeChar = text.size();
-    activeChar2 = text.size();
+    activeChar = text.size()-1;
+    activeChar2 = text.size()-1;
     if(style == 0){
         this->color = colorPalette.oppositeColor;
         this->color2 = colorPalette.themeColor;
@@ -219,7 +219,7 @@ void TextBox::render(
                                 false,
                                 resultScaleText,
                                 resultPos.x - resultScale.x,
-                                resultPos.x + resultScale.x,
+                                resultPos.x + resultScale.x / 1.1,
                                 TEXTRENDERER_ALIGNMENT_LEFT,
                                 active,
                                 activeChar,

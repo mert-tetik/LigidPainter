@@ -80,9 +80,6 @@ void TextRenderer::renderLeftToRight(Shader shader,glm::vec3 pos){
 	glm::vec3 startingPoint = pos;
 
 	float overallX = getTextLastCharOffset();
-
-	if(overallX + pos.x > textDataMaxX && textDataAlignment == 0)
-		pos.x -= (overallX + pos.x) - textDataMaxX;
 	
 	std::string::const_iterator c;
 	for (c = textDataText.begin(); c != textDataText.end(); c++)
@@ -164,10 +161,11 @@ void TextRenderer::renderText(Shader shader){
 
 
 void TextRenderer::renderText(Shader shader,int &textPosCharIndex){
-	float activeCharPos = getIndexOffset(textDataActiveChar) + textDataPos.x;
-	float activeChar2Pos = getIndexOffset(textDataActiveChar2) + textDataPos.x;
 	
-	float textEndingPos = getTextLastCharOffset() + textDataPos.x;
+	float activeCharPos = getIndexOffset(textDataActiveChar) + positionTheText().x;
+	float activeChar2Pos = getIndexOffset(textDataActiveChar2) + positionTheText().x;
+	
+	float textEndingPos = getTextLastCharOffset() + positionTheText().x;
 
 	//If the active char is not equal to the active char 2 the chars between them will be selected
 
@@ -192,18 +190,10 @@ void TextRenderer::renderText(Shader shader,int &textPosCharIndex){
 		shader.setFloat("radius",     0    );
 		shader.setInt("outlineState" ,     0     ); 
 
-		if(textDataActiveChar == textDataText.size()){ //Render at the end of the text
-			shader.setVec2("scale",glm::vec2(5 * textDataScale,35 * textDataScale));
+		shader.setVec2("scale",glm::vec2(5 * textDataScale,35 * textDataScale));
 			
-			ipcPos = glm::vec3(textEndingPos + 5 * textDataScale, textDataPos.y , textDataPos.z );
-			shader.setVec3("pos",ipcPos);
-		}
-		else{ //Render near the selected char
-			shader.setVec2("scale",glm::vec2(5 * textDataScale,35 * textDataScale));
-			
-			ipcPos = glm::vec3(activeCharPos + 5 * textDataScale,textDataPos.y,textDataPos.z);
-			shader.setVec3("pos",ipcPos);
-		}
+		ipcPos = glm::vec3(activeCharPos + 5 * textDataScale,textDataPos.y,textDataPos.z);
+		shader.setVec3("pos",ipcPos);
 
 		if(ipcPos.x < textDataMinX && key == GLFW_KEY_LEFT-256 && textDataActiveChar > 0)
 			textPosCharIndex++;
@@ -235,6 +225,9 @@ void TextRenderer::renderText(Shader shader,int &textPosCharIndex){
 
 void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activeChar2){
 	if(keyInput){
+		this->timer.seconds = 2;
+		this->timer.lastTimeT = glfwGetTime();
+		
 		//Delete
 		if(key == GLFW_KEY_BACKSPACE-256 && activeChar != 0){ //Multiselected
 			if(activeChar2 != activeChar){
@@ -245,8 +238,8 @@ void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activ
 
 				if(activeChar < 0)
 					activeChar = 0;
-				if(activeChar > text.size())
-					activeChar = text.size();
+				if(activeChar > text.size()-1)
+					activeChar = text.size()-1;
 				
 				activeChar2 = activeChar;
 			}
@@ -258,9 +251,6 @@ void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activ
 
 		}
 		else if(key == GLFW_KEY_LEFT-256){
-			this->timer.seconds = 2;
-			this->timer.lastTimeT = glfwGetTime();
-
 			if(mods == 1){//Shift pressed 
 				if(activeChar2 > 0)
 					activeChar2--;
@@ -272,15 +262,13 @@ void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activ
 			}
 		}
 		else if(key == GLFW_KEY_RIGHT-256){
-			this->timer.seconds = 2;
-			this->timer.lastTimeT = glfwGetTime();
 
 			if(mods == 1){//Shift pressed 
-				if(activeChar2 < text.size())
+				if(activeChar2 < text.size()-1)
 					activeChar2++;
 			}
 			else{
-				if(activeChar < text.size())
+				if(activeChar < text.size()-1)
 					activeChar++;
 				activeChar2 = activeChar;
 			}
@@ -291,9 +279,8 @@ void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activ
 		else if(mods == 0){
 			if(!this->caps && isalpha(key))
 				key+=32;
-				
 			 
-			text.insert(text.begin() + activeChar,key);
+			text.insert(text.begin() + (activeChar+1),key);
 			activeChar++;
 			activeChar2 = activeChar;
 		}

@@ -118,7 +118,12 @@ glm::vec3 TextRenderer::positionTheText(){
 		//If the text's left side is out of the boundaries align the text on the left side of the button
 		if(hitTheBoundaires) 
 			textPos.x = textDataMinX;
+        
 	}
+    
+    //Get the last chars of the textbox to the right side if overflowed
+    if(overallX + textPos.x > textDataMaxX && textDataAlignment == 0)
+	    textPos.x -= (overallX + textPos.x) - textDataMaxX;
 
     return textPos;
 }
