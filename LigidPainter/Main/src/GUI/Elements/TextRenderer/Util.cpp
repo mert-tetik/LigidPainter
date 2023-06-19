@@ -179,7 +179,7 @@ void TextRenderer::renderLeftToRight(
 
 			//Set the transform values
 			shader.setVec2("scale",glm::vec2(w/1.7,h/1.7));
-			shader.setVec3("pos",glm::vec3(xpos + w/1.7,ypos - h/1.7, textDataPos.z));
+			shader.setVec3("pos",glm::vec3(xpos + w/1.7,ypos - (h/1.7) + this->videoScale.y / 210, textDataPos.z));
  
 			//Draw the char
 			glBindTexture(GL_TEXTURE_2D,ch.TextureID);

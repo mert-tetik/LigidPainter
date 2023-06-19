@@ -39,8 +39,9 @@ TextRenderer::TextRenderer(/* args */){}
 
 /// @brief give the font to the class member variable and creates a timer
 /// @param font which font will be used for the text rendering
-TextRenderer::TextRenderer(Font font){
+TextRenderer::TextRenderer(Font font,glm::vec2 videoScale){
 	this->font = font;
+	this->videoScale = videoScale;
 	this->timer = Timer();
 }
 

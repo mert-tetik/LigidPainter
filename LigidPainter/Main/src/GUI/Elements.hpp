@@ -210,6 +210,7 @@ private:
     void rndrTxt(Shader shader, int textPosCharIndex);
     void renderInsertionPointCursor(Shader shader, int &textPosCharIndex);
 
+    glm::vec2 videoScale;
     Timer timer; //Timer of the text renderer (used for animation of the insertion point cursor)
 public:
     Font font;
@@ -236,7 +237,7 @@ public:
 
     //Constructors
     TextRenderer(/* args */);
-    TextRenderer(Font font);
+    TextRenderer(Font font, glm::vec2 videoScale);
 
     //Util public member functions
     float getTextLastCharOffset();

@@ -76,7 +76,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     fonts.Arial.loadFont("./LigidPainter/Resources/Fonts/Arial.ttf");
 
     //Init the text renderer
-    textRenderer = TextRenderer(fonts.Arial);
+    textRenderer = TextRenderer(fonts.Arial, videoScale);
     
     //Create context menus
     createContextMenus();
