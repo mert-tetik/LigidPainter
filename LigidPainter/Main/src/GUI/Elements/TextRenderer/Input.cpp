@@ -37,7 +37,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //Forward declerations for the util functions
 void updateInsertionPointCursor(Timer &timer);
 void deletion(int& activeChar, int& activeChar2, std::string &text);
-void leftArrow(int mods, int &activeChar, int &activeChar2);
+void leftArrow(int mods, int &activeChar, int &activeChar2, std::string &text);
 void rightArrow(int mods, int &activeChar, int &activeChar2, std::string &text);
 void charInput(char &key, bool &caps, std::string& text, int& activeChar, int& activeChar2);
 
@@ -58,7 +58,7 @@ void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activ
 
         //Left arrow
 		else if(key == GLFW_KEY_LEFT-256){
-            leftArrow(mods,activeChar,activeChar2);
+            leftArrow(mods,activeChar,activeChar2,text);
 		}
 
         //Right arrow
@@ -120,14 +120,74 @@ void deletion(int& activeChar, int& activeChar2, std::string &text){
     }
 }
 
-void leftArrow(int mods, int &activeChar, int &activeChar2){
+
+void charInput(char &key, bool &caps, std::string& text, int& activeChar, int& activeChar2){
+    
+    //If char is a letter & capslock is false lowercase the char
+    if(!caps && isalpha(key))
+        key+=32;
+
+    text.insert(text.begin() + (activeChar + 1),key);
+
+    activeChar++;
+    activeChar2 = activeChar;
+}
+
+//direction 0 is left and 1 is right
+int getTheIndexOfTheSpace(int currentIndex, std::string text, int direction){
+
+    if(direction == 0){
+        int counter = 0;
+        int i = currentIndex;
+
+        while(text[i] != ' ' || counter == 0){
+            i--;
+
+            if(i < 0)
+                return 0;
+
+            counter++;
+        }
+        return i;
+    }
+    
+    if(direction == 1){
+        int counter = 0;
+        int i = currentIndex;
+        
+        while(text[i] != ' ' || counter == 0){
+            i++;
+
+            if(i > text.size()-1)
+                return text.size()-1;
+        
+            counter++;
+        }
+        return i;
+    }
+}
+
+void leftArrow(int mods, int &activeChar, int &activeChar2, std::string &text){
 	//Shift pressed (multiselected)
     if(mods == 1){
 		if(activeChar2 > 0)
 			activeChar2--;
 	}
+
+	//Control pressed or control and shift (pass to the end)
+    else if(mods == 2 || mods == 3){
+        //If multiselected
+        if(activeChar2 != activeChar)
+            activeChar2 = getTheIndexOfTheSpace(activeChar,text,0);
+        
+        //If not multiselected
+        else{
+            activeChar = getTheIndexOfTheSpace(activeChar,text,0);
+            activeChar2 = activeChar;
+        }
+    }
 	
-    //Shift is not pressed
+    //Shift nor control is not pressed
     else{
 		if(activeChar > 0)
 			activeChar--;
@@ -142,22 +202,23 @@ void rightArrow(int mods, int &activeChar, int &activeChar2, std::string &text){
 			activeChar2++;
 	}
     
-    //Shift is not pressed
+    //Control pressed (pass to the end)
+    else if(mods == 2){
+        //If multiselected
+        if(activeChar2 != activeChar)
+            activeChar2 = getTheIndexOfTheSpace(activeChar,text,1);
+        
+        //If not multiselected
+        else{
+            activeChar = getTheIndexOfTheSpace(activeChar,text,1);
+            activeChar2 = activeChar;
+        }
+    }
+
+    //Shift nor control is not pressed
 	else{
 		if(activeChar < text.size()-1)
 			activeChar++;
 		activeChar2 = activeChar;
 	}
-}
-
-void charInput(char &key, bool &caps, std::string& text, int& activeChar, int& activeChar2){
-    
-    //If char is a letter & capslock is false lowercase the char
-    if(!caps && isalpha(key))
-        key+=32;
-
-    text.insert(text.begin() + (activeChar + 1),key);
-
-    activeChar++;
-    activeChar2 = activeChar;
 }
