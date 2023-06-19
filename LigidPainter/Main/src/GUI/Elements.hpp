@@ -208,6 +208,7 @@ private:
     void renderLeftToRight(Shader shader,glm::vec3 pos);
     void renderRightToLeft(Shader shader,glm::vec3 pos);
     void rndrTxt(Shader shader, int textPosCharIndex);
+    void renderInsertionPointCursor(Shader shader, int &textPosCharIndex);
 
     Timer timer; //Timer of the text renderer (used for animation of the insertion point cursor)
 public:
