@@ -96,7 +96,8 @@ void TextRenderer::renderLeftToRight(Shader shader,glm::vec3 pos){
 			
 			if(textDataMaxX < pos.x){ //Go to new line if the text is out of it's boundaries
 				pos.x = startingPoint.x;
-				pos.y -= (ch.Size.y) * textDataScale * 1.3f;
+				pos.y += (ch.Size.y) * textDataScale * 1.3f;
+				
 				if(!textDataMultipleLines) //Break the for loop & stop rendering the text if multiple lines are not allowed 
 					break;
 			}
@@ -197,7 +198,7 @@ void TextRenderer::renderText(Shader shader,int &textPosCharIndex){
 
 		if(ipcPos.x < textDataMinX && key == GLFW_KEY_LEFT-256 && textDataActiveChar > 0)
 			textPosCharIndex++;
-		if(ipcPos.x > textDataMaxX && key == GLFW_KEY_RIGHT-256 && textDataActiveChar < textDataText.size())
+		if(ipcPos.x > textDataMaxX && key == GLFW_KEY_RIGHT-256 && textDataActiveChar < textDataText.size()-1)
 			textPosCharIndex--;
 
 		this->textDataTextPosCharIndex = textPosCharIndex; 
@@ -223,7 +224,7 @@ void TextRenderer::renderText(Shader shader,int &textPosCharIndex){
 	}
 }
 
-void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activeChar2){
+void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activeChar2, int &textPosCharIndex){
 	if(keyInput){
 		this->timer.seconds = 2;
 		this->timer.lastTimeT = glfwGetTime();
@@ -232,9 +233,9 @@ void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activ
 		if(key == GLFW_KEY_BACKSPACE-256 && activeChar != 0){ //Multiselected
 			if(activeChar2 != activeChar){
 				if(activeChar < activeChar2)
-					text.erase(text.begin()+activeChar,text.begin()+activeChar2);
+					text.erase(text.begin()+activeChar + 1,text.begin()+activeChar2 + 1);
 				else
-					text.erase(text.begin()+activeChar2,text.begin()+activeChar);
+					text.erase(text.begin()+activeChar2 + 1,text.begin()+activeChar + 1);
 
 				if(activeChar < 0)
 					activeChar = 0;
@@ -244,7 +245,7 @@ void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activ
 				activeChar2 = activeChar;
 			}
 			else{ //Single
-				text.erase(text.begin()+activeChar-1);
+				text.erase(text.begin() + activeChar);
 				activeChar--;
 				activeChar2 = activeChar;
 			}
@@ -279,8 +280,9 @@ void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activ
 		else if(mods == 0){
 			if(!this->caps && isalpha(key))
 				key+=32;
-			 
+
 			text.insert(text.begin() + (activeChar+1),key);
+
 			activeChar++;
 			activeChar2 = activeChar;
 		}

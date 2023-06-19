@@ -255,7 +255,7 @@ public:
     
     void renderText(Shader shader,int &textPosCharIndex);
 
-	void processTextInput(std::string &text,int &activeChar,int &activeChar2);
+	void processTextInput(std::string &text,int &activeChar,int &activeChar2,int &textPosCharIndex);
 };
 
 
