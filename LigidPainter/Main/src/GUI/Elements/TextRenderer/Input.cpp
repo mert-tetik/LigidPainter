@@ -40,6 +40,8 @@ void deletion(int& activeChar, int& activeChar2, std::string &text);
 void leftArrow(int mods, int &activeChar, int &activeChar2, std::string &text);
 void rightArrow(int mods, int &activeChar, int &activeChar2, std::string &text);
 void charInput(char &key, bool &caps, std::string& text, int& activeChar, int& activeChar2);
+void modsControl(char &key, int &activeChar, int &activeChar2, std::string &text, GLFWwindow* window);
+
 
 
 
@@ -81,19 +83,7 @@ void TextRenderer::processTextInput(std::string &text,GLFWwindow* window,int &ac
 		
         }
         else if(mods == 2){ //Control pressed
-            
-            if(activeChar2 != activeChar)
-                deletion(activeChar,activeChar2,text);
-            
-            //Control + V
-            if(key == GLFW_KEY_V){
-                std::string clipText = glfwGetClipboardString(window);
-                
-                text.insert( (activeChar + 1) , clipText );
-                    
-                activeChar += clipText.size();  
-                activeChar2 = activeChar; 
-            }
+            modsControl(key, activeChar, activeChar2, text, window);
         }
 	}
 }
@@ -245,4 +235,38 @@ void rightArrow(int mods, int &activeChar, int &activeChar2, std::string &text){
             
 		activeChar2 = activeChar;
 	}
+}
+
+void modsControl(char &key, int &activeChar, int &activeChar2, std::string &text, GLFWwindow* window){
+    //Control + V
+    if(key == GLFW_KEY_V){
+        if(activeChar2 != activeChar)
+            deletion(activeChar,activeChar2,text);
+        
+        std::string clipText = glfwGetClipboardString(window);
+        
+        text.insert( (activeChar + 1) , clipText );
+            
+        activeChar += clipText.size();  
+        activeChar2 = activeChar; 
+    }
+
+    //Control + C
+    if(key == GLFW_KEY_C){
+        std::string clipText;
+        
+        if(activeChar2 != activeChar){
+            if(activeChar > activeChar2)
+                clipText = text.substr(activeChar2 + 1, activeChar - activeChar2);
+            else
+                clipText = text.substr(activeChar + 1, activeChar2 - activeChar);
+        }
+
+        else{
+            clipText = text;
+        }
+
+        glfwSetClipboardString(window, clipText.c_str());
+
+    }
 }
