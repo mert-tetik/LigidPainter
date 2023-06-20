@@ -98,3 +98,17 @@ std::vector<Material> Util::getTheMaterialsConnectedToTheMeshNode(std::vector<No
 
     return materials;
 }
+
+
+std::string Util::rmvPath(std::string startingPath, std::string fullPath) 
+{
+	// look for starting path in the fullpath
+	int index = fullPath.find(startingPath);
+
+	if (index != std::string::npos)
+	{
+		fullPath = fullPath.erase(0, startingPath.length());
+	}
+
+	return fullPath;
+}

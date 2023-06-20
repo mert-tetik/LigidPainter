@@ -468,11 +468,6 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
         }
         if(i == 3 && contextMenus[i].dialogControl.isActive()){ //If project context menu is active
-            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
-                
-            }
-        }
-        if(i == 4 && contextMenus[i].dialogControl.isActive()){ //If painting context menu is active
             //Save
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
                 project.updateProject(library);
@@ -497,6 +492,9 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             if(contextMenus[i].contextPanel.sections[0].elements[4].button.hover && mouse.LClick){
             
             }
+        }
+        if(i == 4 && contextMenus[i].dialogControl.isActive()){ //If painting context menu is active
+            
         }
         if(i == 5 && contextMenus[i].dialogControl.isActive()){ //If help context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){

@@ -53,6 +53,8 @@ public:
     std::string removeExtension(std::string s);
 
     std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library,int textureRes);
+
+    std::string rmvPath(std::string startingPath, std::string fullPath);
 };
 
 
@@ -184,6 +186,10 @@ public:
     bool createProject(std::string destinationPath,std::string name,std::string TDModelPath);
     void updateProject(Library &library);
     bool loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette);
+    void duplicateFolder(std::string dstPath);
+
+    
+
     std::string locateLigidFileInFolder(const std::string& folderPath);
     bool returnLigidFileData(std::string path,time_t &creationDate,time_t &lastOpenedDate);
 };
