@@ -39,8 +39,8 @@ void updateInsertionPointCursor(Timer &timer);
 void deletion(int& activeChar, int& activeChar2, std::string &text);
 void leftArrow(int mods, int &activeChar, int &activeChar2, std::string &text);
 void rightArrow(int mods, int &activeChar, int &activeChar2, std::string &text);
-void charInput(char &key, bool &caps, std::string& text, int& activeChar, int& activeChar2);
-void modsControl(char &key, int &activeChar, int &activeChar2, std::string &text, GLFWwindow* window);
+void charInput(int &key, bool &caps, std::string& text, int& activeChar, int& activeChar2);
+void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text, GLFWwindow* window);
 
 
 
@@ -50,31 +50,32 @@ void TextRenderer::processTextInput(std::string &text,GLFWwindow* window,int &ac
 	//If pressed to a key
     if(keyInput){
 
+
         //Show the insertion point cursor in case if invisible
         updateInsertionPointCursor(timer);
 		
 		//Delete
-		if(key == GLFW_KEY_BACKSPACE - 256){
+		if(key == GLFW_KEY_BACKSPACE){
             deletion(activeChar,activeChar2,text);
 		}
 
         //Left arrow
-		else if(key == GLFW_KEY_LEFT-256){
+		else if(key == GLFW_KEY_LEFT){
             leftArrow(mods,activeChar,activeChar2,text);
 		}
 
         //Right arrow
-		else if(key == GLFW_KEY_RIGHT-256){
+		else if(key == GLFW_KEY_RIGHT){
             rightArrow(mods,activeChar,activeChar2,text);
 		}
 
         //Caps lock
-		else if(key == GLFW_KEY_CAPS_LOCK-256){
+		else if(key == GLFW_KEY_CAPS_LOCK){
 			this->caps = !this->caps;
 		}
 
         //Basic char input
-		else if(mods == 0 && key < 127){ //If shift, control & alt keys are released
+		else if(mods == 0){ //If shift, control & alt keys are released
             
             if(activeChar2 != activeChar)
                 deletion(activeChar,activeChar2,text);
@@ -131,13 +132,18 @@ void deletion(int& activeChar, int& activeChar2, std::string &text){
 }
 
 
-void charInput(char &key, bool &caps, std::string& text, int& activeChar, int& activeChar2){
-    
+void charInput(int &key, bool &caps, std::string& text, int& activeChar, int& activeChar2){
     //If char is a letter & capslock is false lowercase the char
-    if(!caps && isalpha(key))
-        key+=32;
+    if(key < 127)
+        if(!caps && isalpha(key))
+            key+=32;
 
-    text.insert(text.begin() + (activeChar + 1),key);
+    if(key >= 320 && key <=329){
+		//Numpad Optimization
+		key -= 272;
+	}
+
+    text.insert(text.begin() + (activeChar + 1), key);
 
     activeChar++;
     activeChar2 = activeChar;
@@ -237,7 +243,7 @@ void rightArrow(int mods, int &activeChar, int &activeChar2, std::string &text){
 	}
 }
 
-void modsControl(char &key, int &activeChar, int &activeChar2, std::string &text, GLFWwindow* window){
+void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text, GLFWwindow* window){
     //Control + V
     if(key == GLFW_KEY_V){
         if(activeChar2 != activeChar)

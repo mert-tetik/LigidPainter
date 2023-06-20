@@ -216,7 +216,7 @@ public:
     Font font;
 	bool keyInput = false;
 	bool caps = false;
-	char key = 0;
+	int key = 0;
 	int mods = 0;
 
     //Text data
