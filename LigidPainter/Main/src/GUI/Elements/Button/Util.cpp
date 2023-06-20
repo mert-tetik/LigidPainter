@@ -206,6 +206,9 @@ void Button::manageMouseActivity(
             clickState1 = true;
     }
 
+    if(clicked)
+        clicked = false;
+
     //Set the clickedMixVal to 1.f if button is pressed and released while the cursor is on top of the button
     //(Than the clickedMixVal will be set to 0 gradually by the click animation managment)
     if(!mouse.LPressed && !keepPressingState){
@@ -213,6 +216,7 @@ void Button::manageMouseActivity(
         if(clickState1 && hover){
             //Clicked
             clickedMixVal = 1.f;
+            clicked = true;
         }
         clickState1 = false;
     }

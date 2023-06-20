@@ -93,6 +93,7 @@ public:
     float textureSizeScale = 1.f;
     bool textureStickToTop = false;
     bool textAlignLeft = false;
+    bool clicked = false;
     
 
     //Constructors 

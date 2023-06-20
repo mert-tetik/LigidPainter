@@ -63,7 +63,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
     }
 
     //Add button from the barButtons in the library displayer panel clicked 
-    if(libraryPanelDisplayer.barButtons[0].clickedMixVal == 1.f){
+    if(libraryPanelDisplayer.barButtons[0].clicked){
         if(selectedLibraryElementIndex == 0){//Textures
             newTextureDialog.dialogControl.activate();
         }
