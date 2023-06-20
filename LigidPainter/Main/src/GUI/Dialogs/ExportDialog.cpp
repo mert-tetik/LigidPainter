@@ -53,7 +53,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                                         //Project settings
                                         Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Select A Path",2.f,true),context.window),
                                         
-                                        Element(ComboBox(0,glm::vec2(4,2),colorPalette,buttonShader,
+                                        Element(ComboBox(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,
                                         {
                                             "256",
                                             "512",
@@ -62,7 +62,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                                             "4096"
                                         },"Texture Resolution",4.f),context.window),
                                         
-                                        Element(ComboBox(0,glm::vec2(4,2),colorPalette,buttonShader,
+                                        Element(ComboBox(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,
                                         {
                                             "PNG", 
                                             "JPEG", 

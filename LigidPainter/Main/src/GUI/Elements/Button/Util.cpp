@@ -53,6 +53,7 @@ void Button::render(
     else
         shader.setVec4("color"  ,     color     ); //Default button color
     
+
     shader.setVec4("color2"  ,     color2     ); //Second color that is used by hover or click animations
     
 
@@ -77,6 +78,8 @@ void Button::render(
 
     //Outline extra color (affected by the colorMixVal)
     shader.setVec3("outlineColor" ,     outlineColor     );  
+    
+    
     shader.setVec3("outlineColor2" ,     outlineColor2     );   
 
 
@@ -86,6 +89,7 @@ void Button::render(
         shader.setFloat("thickness" ,    resultOutlineThickness + clickedMixVal*2.f ); 
     else  //Set the thickness value of the button
         shader.setFloat("thickness" ,    resultOutlineThickness); 
+   
     
     //Render
     glDrawArrays(GL_TRIANGLES, 0, 6);

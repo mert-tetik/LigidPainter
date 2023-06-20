@@ -49,11 +49,11 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
                                     {
                                         //Project settings
 
-                                        Element(Button(BUTTON_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,buttonShader,"New Project",Texture(),0.f,false)), 
+                                        Element(Button(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"New Project",Texture(),0.f,false)), 
                                         Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"MyProject",2.f,false),context.window),
                                         Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"./Projects",2.f,true),context.window),
                                         
-                                        Element(ComboBox(0,glm::vec2(4,2),colorPalette,buttonShader,
+                                        Element(ComboBox(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,
                                         {
                                             "256",
                                             "512",
@@ -62,9 +62,9 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
                                             "4096"
                                         },"Texture Resolution",4.f),context.window),
 
-                                        Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Large",2.f)),
-                                        Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Medium",0.f)),
-                                        Element(CheckBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Small",0.f)),
+                                        Element(CheckBox(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Large",2.f)),
+                                        Element(CheckBox(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Medium",0.f)),
+                                        Element(CheckBox(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Small",0.f)),
                                         Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"3D Model",2.f,2),context.window),
                                         Element(Button(BUTTON_STYLE_SOLID,glm::vec2(4,2),colorPalette,buttonShader,"Create",Texture(),2.f,false))
                                     }

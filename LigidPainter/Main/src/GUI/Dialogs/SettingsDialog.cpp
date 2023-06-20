@@ -41,7 +41,7 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
                 {
                     Element(Button(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Settings",Texture(),0.f,false)), 
 
-                    Element(ComboBox(0,glm::vec2(4,2),colorPalette,buttonShader,
+                    Element(ComboBox(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,
                     {
                         "256",
                         "512",
@@ -50,7 +50,7 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
                         "4096"
                     },"Texture Resolution",4.f),context.window),
                     
-                    Element(CheckBox(0,glm::vec2(2,2),colorPalette,buttonShader, "VSync"  , 2.f)),
+                    Element(CheckBox(BUTTON_STYLE_BASIC,glm::vec2(2,2),colorPalette,buttonShader, "VSync"  , 2.f)),
                 }
             )
         }

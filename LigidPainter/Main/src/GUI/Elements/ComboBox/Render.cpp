@@ -30,94 +30,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
-    void ComboBox::render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadius,float resultOutlineThickness,float aClickedMixVal,float aHoverMixVal,
-                bool outline,glm::vec4 aColor){
-        
-        //Set the transform data (used by vertex shader)
-        shader.setVec3("pos"    ,     resultPos );
-        shader.setVec2("scale"  ,     resultScale);
-        
-        if(pressed)//If button is pressed
-            shader.setVec4("color"  ,     aColor * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
-        else
-            shader.setVec4("color"  ,     aColor     ); //Default button color
-        
-        shader.setVec4("color2"  ,     color2     ); //Second color that is used by hover or click animations
-        
-        shader.setFloat("colorMixVal"  ,     (aClickedMixVal + aHoverMixVal)/2.f   );
-
-        //Properties
-        shader.setFloat("radius",     resultRadius    );
-        
-        if(outline)
-            shader.setInt("outlineState" ,     1      ); 
-        else
-            shader.setInt("outlineState" ,    0      ); 
-
-        //Outline extra color (affected by the colorMixVal)
-        shader.setVec3("outlineColor" ,     outlineColor     );  
-        shader.setVec3("outlineColor2" ,     outlineColor2     );   
-
-        shader.setFloat("thickness" ,    resultOutlineThickness + aClickedMixVal*4.f ); 
-        
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-    }
-    
-    ComboBox::ComboBox(){}
-    
-    //Manual constructor
-    ComboBox::ComboBox(Shader shader,std::vector<std::string> texts, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 textColor,glm::vec4 textColor2,
-           float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2){
-        
-        this->shader = shader;
-        this->texts = texts;
-        this->color = color;
-        this->color2 = color2;
-        this->scale = scale;
-        this->textColor = textColor;
-        this->textColor2 = textColor2;
-        this->textScale = textScale;
-        this->panelOffset = panelOffset;
-        this->outlineColor = outlineColor;
-        this->outlineColor2 = outlineColor2;
-
-        for (size_t i = 0; i < texts.size(); i++)
-        {
-            hover.push_back(0);
-            hoverMixVal.push_back(0);
-            clickedMixVal.push_back(0);
-        }
-    }
-
-    //Style constructor
-    ComboBox::ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::vector<std::string> texts,std::string text,float panelOffset){
-        this->shader = shader;
-        this->texts = texts;
-        this->text = text;
-        this->scale = scale;
-        this->panelOffset = panelOffset;
-        
-        if(style == 0){
-            this->bgColor = colorPalette.mainColor;
-            this->color = colorPalette.oppositeColor;
-            this->color2 = colorPalette.themeColor;
-            this->textColor = colorPalette.oppositeColor;
-            this->textColor2 = colorPalette.themeColor;
-            this->textScale = 0.5f;
-            this->outlineColor = {};
-            this->outlineColor2 = {};
-        }
-
-        for (size_t i = 0; i < texts.size(); i++)
-        {
-            hover.push_back(0);
-            hoverMixVal.push_back(0);
-            clickedMixVal.push_back(0);
-        }
-    }
-
-
-
 void ComboBox::render(
                         glm::vec2 videoScale, //Resolution of the monitor
                         Mouse& mouse, //Mouse class to access mouse events
@@ -126,52 +38,104 @@ void ComboBox::render(
                         bool doMouseTracking, //If there is need to check if mouse hover
                         GLFWwindow* window //To take the key inputs
                     ){
+    
+    //The utilities class
     Util util;
     
+    //Take the doMouseTracking param to the public class member variable
     this->doMouseTracking = doMouseTracking;
     
+    //ComboBox's depth value is always 0.95f (idk why might remove that line later)
     pos.z = 0.95f;
     
+    //Original position in the screen coordinates
     glm::vec3 orgResultPos = glm::vec3( 
                           util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
     
+    //Modified position in the screen coordinates
     glm::vec3 resultTextPos = glm::vec3( 
                           util.getPercent(videoScale,glm::vec2(pos.x+2.5,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
     
+
+    //Original scale in the screen coordinates
     glm::vec2 orgResultScale = util.getPercent(videoScale,scale);
     
+    //Modified scale in the screen coordinates
     glm::vec2 resultScale = util.getPercent(videoScale,scale);
 
+    //Radius in the screen coordinates
     float resultRadius = util.getPercent(videoScale.x,0.35f); //0.25F = radius val
     
+    //Text scale value in the screen coordinates
     float resultScaleText = videoScale.x/1920/2*textScale;
     
+    //Thickness in the screen coordinates
     float resultOutlineThickness = videoScale.x/1920/2 * (2.f);//2.f = outline thickness
 
+    //Background position in the screen coordinates (background that covers the back when the combobox is pressed) (beneath the elements)
     glm::vec3 bgResultPos = glm::vec3( 
               util.getPercent(videoScale,glm::vec2(pos.x,pos.y + (texts.size() * scale.y*2.f * clickedMixVal[0])/2.f - scale.y)) //Don't include the depth
               ,pos.z); //Use the original depth value
     
+    //Background scale in the screen coordinates (background that covers the back when the combobox is pressed) (beneath the elements)
     glm::vec2 bgResultScale = util.getPercent(videoScale,glm::vec2(scale.x,(texts.size() * scale.y * clickedMixVal[0])));
     
+    //Render the background
     render(bgResultPos,bgResultScale,resultRadius,resultOutlineThickness,0.f,0.f,false,bgColor);
     
-    //Render the buttons
+    glm::vec3 resultPos = glm::vec3( 
+      util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+      ,pos.z); //Use the original depth value
+    
+    
+    //Render the combobox title
+    textRenderer.loadTextData(
+                                shader,
+                                text,
+                                glm::vec3(resultPos.x ,resultPos.y - resultScale.y,resultPos.z+0.002f),
+                                false,
+                                resultScaleText,
+                                resultPos.x - resultScale.x,
+                                resultPos.x + resultScale.x,
+                                TEXTRENDERER_ALIGNMENT_MID
+                             );
+    
+    if(pressed)//If button is pressed
+        shader.setVec4("color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
+    else
+        shader.setVec4("color"  ,     color     ); //Default button color
+    
+
+    shader.setVec4("color2"  ,     color2     ); //Second color that is used by hover or click animations
+
+    textRenderer.renderText(shader);
+
+    //Render the title barrier
+    glm::vec2 textBoxScale = resultScale;
+    textBoxScale.x = textRenderer.getTextLastCharOffset();
+    render(glm::vec3(resultPos.x ,resultPos.y - resultScale.y,1.),textBoxScale,0.f,0.f,0.f,0.f,true,glm::vec4(0));
+
+    //Render the buttons (elements)
     for (size_t i = 0; i < texts.size(); i++)
     {
+        //Position value in the screen coordinates
         glm::vec3 resultPos = glm::vec3( 
                   util.getPercent(videoScale,glm::vec2(pos.x,pos.y + i * scale.y*2.f * clickedMixVal[0])) //Don't include the depth
                   ,pos.z); //Use the original depth value
-        //Check if mouse on top of the button
+        
+        //Check if mouse on top of the element
         if(doMouseTracking)
             hover[i] = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
         else 
             hover[i] = false;
+        
+        //Set the cursor as pointer if hovers the element
         if(hover[i])
-        //Set the cursor as pointer
-            mouse.setCursor(mouse.pointerCursor);// mouse.activeCursor = mouse.pointerCursor
+            mouse.setCursor(mouse.pointerCursor); //mouse.activeCursor = mouse.pointerCursor
+        
+        //If clicked to the element
         if(hover[i] && mouse.LClick){
             if(i != 0){
                 if(clickedMixVal[0] > 0.8f){
@@ -186,12 +150,18 @@ void ComboBox::render(
                 pressed = !pressed;
             }
         }
+
+        //Element hover animation
         timer.transition(hover[i],hoverMixVal[i],0.2f); 
+        
+        //Element pressing animation 
         timer.transition(pressed,clickedMixVal[i],0.15f);
+        
+        //Render the element
         render(resultPos,resultScale,resultRadius,resultOutlineThickness,hoverMixVal[i],clickedMixVal[i],true,color);
 
+        //Determine the text of the element
         std::string boxText;
-
         if(!pressed){
             boxText = texts[selectedIndex];
         }
@@ -199,6 +169,7 @@ void ComboBox::render(
             boxText = texts[i];
         }
 
+        //Render the text
         textRenderer.loadTextData(
                                     shader,
                                     texts[selectedIndex],
@@ -209,22 +180,17 @@ void ComboBox::render(
                                     resultPos.x + resultScale.x,
                                     TEXTRENDERER_ALIGNMENT_MID
                                 );
-
+        glDisable(GL_DEPTH_TEST);
         textRenderer.renderText(shader);
+        glEnable(GL_DEPTH_TEST);
 
+        //Just render the first element if not pressed
         if(i == 0 && !pressed && clickedMixVal[0] < 0.2f)
             break;
     }
     
+    //Unpress
     if((!hover[0] && mouse.LClick) || glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_ENTER) == GLFW_PRESS){
         pressed = false;
     }
-    
-    glm::vec3 resultPos = glm::vec3( 
-          util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
-          ,pos.z); //Use the original depth value
-
-    
-    //Render the text
-    //textRenderer.renderText(shader,text,resultPos.x ,resultPos.y - resultScale.y,resultPos.z+0.002f,resultPos.x + resultScale.x ,false,resultScaleText,resultPos.x-resultScale.x,false,false);
 }
