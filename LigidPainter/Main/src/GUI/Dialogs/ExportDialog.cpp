@@ -29,6 +29,8 @@
 #include <vector>
 #include <filesystem>
 
+#include "tinyfiledialogs.h"
+
 ExportDialog::ExportDialog(){}
 
 ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
@@ -107,10 +109,24 @@ void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,M
     
     //If pressed to the last button of the panel (Export button)
     if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && mouse.LClick){
+
         
         Util util;
 
         int resolution = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
+        
+        std::string destPath = panel.sections[0].elements[1].textBox.text;
+
+        if(!std::filesystem::exists(destPath)){
+            
+            const char* title = "Warning";
+            const char* message = "Error! Invalid exporting path.";
+            const char* icon = "warning";
+            const char* button = "Ok";
+            tinyfd_messageBox(title, message, button, icon, 1);
+            
+            return;
+        }
 
         //All the materials connected to the mesh output
         std::vector<Material> materials = util.getTheMaterialsConnectedToTheMeshNode(nodeScene,library,resolution);
@@ -125,7 +141,7 @@ void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,M
             if(i >= model.meshes.size())
                 break;
             
-            std::string materialFolderPath = panel.sections[0].elements[1].textBox.text + folderDistinguisher + model.meshes[i].materialName;
+            std::string materialFolderPath = destPath + folderDistinguisher + model.meshes[i].materialName;
             
             std::filesystem::create_directories(materialFolderPath);
 
