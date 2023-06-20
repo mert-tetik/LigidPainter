@@ -20,6 +20,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <iostream>
 #include <sstream>
+#include <cstdlib>
 
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
@@ -111,4 +112,24 @@ std::string Util::rmvPath(std::string startingPath, std::string fullPath)
 	}
 
 	return fullPath;
+}
+
+
+void Util::openInFileExplorer(const char* path) {
+#ifdef _WIN32
+    // Windows
+    std::string command = std::string("explorer ") + path;
+    std::system(command.c_str());
+#elif __linux__
+    // Linux
+    std::string command = std::string("xdg-open ") + path;
+    std::system(command.c_str());
+#elif __APPLE__
+    // macOS
+    std::string command = std::string("open ") + path;
+    std::system(command.c_str());
+#else
+    // Unsupported platform
+    // Add error handling or alternative implementation here
+#endif
 }

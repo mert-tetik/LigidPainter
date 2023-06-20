@@ -51,10 +51,10 @@ public:
     std::string getLastWordBySeparatingWithChar(std::string s, char del);
     std::string removeLastWordBySeparatingWithChar(std::string s, char del);
     std::string removeExtension(std::string s);
+    std::string rmvPath(std::string startingPath, std::string fullPath);
+    void openInFileExplorer(const char* path);
 
     std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library,int textureRes);
-
-    std::string rmvPath(std::string startingPath, std::string fullPath);
 };
 
 
