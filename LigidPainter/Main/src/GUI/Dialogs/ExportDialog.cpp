@@ -49,7 +49,8 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                                     Element(Button()),
                                     {
                                         //Project settings
-                                        Element(Button(BUTTON_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,buttonShader,"Export",Texture(),0.f,false)), 
+                                        Element(Button(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Export",Texture(),0.f,false)), 
+                                        
                                         Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Select A Path",2.f,true),context.window),
                                         
                                         Element(ComboBox(0,glm::vec2(4,2),colorPalette,buttonShader,
@@ -164,8 +165,9 @@ void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,M
     }
     
     //Close the dialog
-    if(glfwGetKey(originalWindow,GLFW_KEY_ESCAPE) == GLFW_PRESS || panel.sections[0].elements[0].button.hover && mouse.LDoubleClick){
-        this->dialogControl.unActivate();
+    if(glfwGetKey(originalWindow,GLFW_KEY_ESCAPE) == GLFW_PRESS || (!panel.hover && mouse.LClick) || (panel.sections[0].elements[0].button.hover && mouse.LDoubleClick)){
+        if(!dialogControl.firstFrameActivated)
+            this->dialogControl.unActivate();
     }
 
     dialogControl.updateEnd(timer,buttonShader,0.3f);
