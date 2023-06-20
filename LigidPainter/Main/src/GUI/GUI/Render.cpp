@@ -79,7 +79,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     renderRenamingTextbox(videoScale,mouse,timer,textRenderer,painter,library,context);
 
     //Interactions of the UI elements
-    elementInteraction(painter,mouse,library,contextMenus,appNodes,nodeScene,context,videoScale,textRenderer,timer,textureRes,screenGapPerc,model);
+    elementInteraction(painter,mouse,library,contextMenus,appNodes,nodeScene,context,videoScale,textRenderer,timer,textureRes,screenGapPerc,model,project);
     
     //Render the nodes
     renderNodes(videoScale,mouse,timer,textRenderer,library,nodeScene);

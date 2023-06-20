@@ -356,7 +356,9 @@ void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, 
     }
 }
 
-void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Library &library,std::vector<Node>& appNodes ,std::vector<Node> &nodeScene,Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer){
+void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Library &library,std::vector<Node>& appNodes ,
+                                std::vector<Node> &nodeScene,Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,
+                                Project& project){
     anyContextMenuActive = false; 
     for (size_t i = 0; i < contextMenus.size(); i++)//Check all the contextMenus
     {
@@ -471,8 +473,29 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
         }
         if(i == 4 && contextMenus[i].dialogControl.isActive()){ //If painting context menu is active
+            //Save
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
-                
+                project.updateProject(library);
+            }
+            
+            //Save as
+            if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){
+                //project.
+            }
+            
+            //Create new
+            if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){
+            
+            }
+            
+            //Load new
+            if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){
+            
+            }
+            
+            //Copy path
+            if(contextMenus[i].contextPanel.sections[0].elements[4].button.hover && mouse.LClick){
+            
             }
         }
         if(i == 5 && contextMenus[i].dialogControl.isActive()){ //If help context menu is active
@@ -658,9 +681,9 @@ void UI::panelPositioning(float &screenGapPerc, Library &library, Painter &paint
 
 
 void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std::vector<ContextMenu> &contextMenus,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
-                        Context &context,glm::vec2 &videoScale,TextRenderer &textRenderer, Timer &timer, int &textureRes,float screenGapPerc,Model &model){
+                        Context &context,glm::vec2 &videoScale,TextRenderer &textRenderer, Timer &timer, int &textureRes,float screenGapPerc,Model &model, Project& project){
     
-    contextMenuInteraction(contextMenus,mouse,library,appNodes,nodeScene,context,videoScale,timer,textRenderer);
+    contextMenuInteraction(contextMenus,mouse,library,appNodes,nodeScene,context,videoScale,timer,textRenderer,project);
     
     libraryPanelDisplayerInteraction(libraryPanelDisplayer,selectedLibraryElementIndex,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,materialIDCounter,appTextures,frameCounter);
     
