@@ -132,3 +132,7 @@ bool Project::returnLigidFileData(std::string path,time_t &creationDate,time_t &
         return true;
     }
 }
+
+void Project::copyTheProjectPathToTheClipboard(GLFWwindow* window){
+    glfwSetClipboardString(window, std::filesystem::absolute(folderPath).string().c_str());
+}

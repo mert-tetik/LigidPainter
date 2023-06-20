@@ -187,6 +187,7 @@ public:
     void updateProject(Library &library);
     bool loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette);
     void duplicateFolder(std::string dstPath);
+    void copyTheProjectPathToTheClipboard(GLFWwindow* window);
 
     
 

@@ -480,17 +480,17 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             
             //Create new
             if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){
-            
+                newProjectDialog.dialogControl.activate();
             }
             
             //Load new
             if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){
-            
+                loadProjectDialog.dialogControl.activate();
             }
             
             //Copy path
             if(contextMenus[i].contextPanel.sections[0].elements[4].button.hover && mouse.LClick){
-            
+                project.copyTheProjectPathToTheClipboard(context.window);
             }
         }
         if(i == 4 && contextMenus[i].dialogControl.isActive()){ //If painting context menu is active
