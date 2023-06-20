@@ -40,9 +40,12 @@ void Texture::exportTexture(std::string path,const std::string format){
     glm::ivec2 scale;
     scale = getResolution();
     
-    char* pixels = new char[scale.x * scale.y * 4];;
-    getData(pixels);
+    unsigned char* pixels = new unsigned char[scale.x * scale.y * 4];;
     
+    //getData function with unsigned byte
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,ID);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     
     const int channels = 4;
 
