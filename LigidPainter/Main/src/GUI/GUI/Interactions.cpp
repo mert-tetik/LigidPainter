@@ -475,7 +475,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             
             //Save as
             if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){
-                //project.
+                project.duplicateFolder("");
             }
             
             //Create new

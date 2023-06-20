@@ -36,6 +36,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void Project::duplicateFolder(std::string dstPath)
 {
+
+    if(dstPath == ""){
+        dstPath = tinyfd_selectFolderDialog("Select a folder to duplicate the project folder file", "");
+    }
+
+    if(!dstPath.size())
+        return;
+
     //Remove the / or \ at the end of the destination path if there are any
     if(dstPath.size()){
         if(dstPath[dstPath.size() - 1] == '/' || dstPath[dstPath.size() - 1] == '\\'){
@@ -80,4 +88,9 @@ void Project::duplicateFolder(std::string dstPath)
 
         }
     }
+
+    //Update the project data
+    this->folderPath = dstProjectPath;
+    this->ligidFilePath = locateLigidFileInFolder(dstProjectPath);
+    this->projectName = util.getLastWordBySeparatingWithChar(folderPath,folderDistinguisher);
 }
