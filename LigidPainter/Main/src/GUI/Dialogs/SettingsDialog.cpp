@@ -39,6 +39,8 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
             Section(
                 Element(Button()),
                 {
+                    Element(Button(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Settings",Texture(),0.f,false)), 
+
                     Element(ComboBox(0,glm::vec2(4,2),colorPalette,buttonShader,
                     {
                         "256",
@@ -47,11 +49,12 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
                         "2048",
                         "4096"
                     },"Texture Resolution",4.f),context.window),
-                    Element(CheckBox(0,glm::vec2(2,2),colorPalette,buttonShader, "VSync"  , 1.f)),
+                    
+                    Element(CheckBox(0,glm::vec2(2,2),colorPalette,buttonShader, "VSync"  , 2.f)),
                 }
             )
         }
-    },glm::vec2(9.f),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
+    },glm::vec2(15.f),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
 }
 
 void SettingsDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,glm::vec2 videoScale,int &textureRes,bool &VSync){
@@ -60,30 +63,35 @@ void SettingsDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette
 
     //Set the combo box selected index as the textureRes
     int txtrRes = 256;
-    for (size_t i = 0; i < panel.sections[0].elements[0].comboBox.texts.size(); i++)
+    for (size_t i = 0; i < panel.sections[0].elements[1].comboBox.texts.size(); i++)
     {
         if(textureRes == txtrRes)
-            panel.sections[0].elements[0].comboBox.selectedIndex = i;
+            panel.sections[0].elements[1].comboBox.selectedIndex = i;
         
         txtrRes*=2;
     }
 
     //Set the vsync option as the vsync checkbox element
-    VSync = panel.sections[0].elements[1].checkBox.clickState1;
+    VSync = panel.sections[0].elements[2].checkBox.clickState1;
 
     //Render the panel    
     panel.render(videoScale,mouse,timer,textRenderer,true);
     
     //If pressed to any of the combo box element change the texture res
-    for (size_t i = 0; i < panel.sections[0].elements[0].comboBox.hover.size(); i++)
+    for (size_t i = 0; i < panel.sections[0].elements[1].comboBox.hover.size(); i++)
     {
-        if(panel.sections[0].elements[0].comboBox.hover[i] && mouse.LClick){
-            textureRes = stoi(panel.sections[0].elements[0].comboBox.texts[panel.sections[0].elements[0].comboBox.selectedIndex]);
+        if(panel.sections[0].elements[1].comboBox.hover[i] && mouse.LClick){
+            textureRes = stoi(panel.sections[0].elements[1].comboBox.texts[panel.sections[0].elements[1].comboBox.selectedIndex]);
         }
     }
     
     //End the dialog
-    if((glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || (!panel.hover && mouse.LClick)) && !dialogControl.firstFrameActivated){
+    if  (
+            glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || //Escape key pressed 
+            ((!panel.hover && mouse.LClick)) && !dialogControl.firstFrameActivated || //Mouse Lclick out of the panel
+            (panel.sections[0].elements[0].button.hover && mouse.LDoubleClick) //If the menu button double clicked
+        )
+    {
         dialogControl.unActivate();
     }
 

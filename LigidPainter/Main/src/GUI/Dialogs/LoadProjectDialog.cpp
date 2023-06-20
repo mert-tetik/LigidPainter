@@ -49,7 +49,7 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
                                 Section(
                                     Element(Button()),
                                     {
-                                        Element(Button(BUTTON_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,buttonShader,"Load Project",Texture(),0.f,false)), 
+                                        Element(Button(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Load Project",Texture(),0.f,false)), 
                                     }
                                 )
                             },

@@ -48,9 +48,9 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                                 Section(
                                     Element(Button()),
                                     {
-                                        //Project settings
                                         Element(Button(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Export",Texture(),0.f,false)), 
                                         
+                                        //Project settings
                                         Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Select A Path",2.f,true),context.window),
                                         
                                         Element(ComboBox(0,glm::vec2(4,2),colorPalette,buttonShader,

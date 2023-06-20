@@ -28,55 +28,68 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 void CheckBox::render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
+    
+    //Define the common utilities class
     Util util;
+    
     this->doMouseTracking = doMouseTracking;
-    // pos value % of the video scale
+
+    //Original position in the screen coordinates
     glm::vec3 orgResultPos = glm::vec3( 
                           util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
     
+    //Modified position in the screen coordinates
     glm::vec3 resultPos = glm::vec3( 
                           util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
+    
+    //Text position in the screen coordinates
     glm::vec3 resultTextPos = glm::vec3( 
                           util.getPercent(videoScale,glm::vec2(pos.x+2.5,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
-    // scale value % of the video scale
+    
+    //Original scale value in the screen coordinates
     glm::vec2 orgResultScale = util.getPercent(videoScale,scale);
     
+    //Modified scale value in the screen coordinates
     glm::vec2 resultScale = util.getPercent(videoScale,scale);
-    resultScale = glm::vec2(std::min(resultScale.x,resultScale.y)); //Make it a square
-    resultScale /= 2.f; //Make the box smaller
-    resultPos.x -= orgResultScale.x/4.f; //Take the checkbox to the left side
-    // scale value % of the video scale
+    
+    //Make the circle a square
+    resultScale = glm::vec2(std::min(resultScale.x,resultScale.y));
+    
+    //Make the circle smaller
+    resultScale /= 2.f;
+    
+    //Take the circle to the left side
+    resultPos.x -= orgResultScale.x/4.f;
+    
+    //Radius value in the screen coordinates
     float resultRadius = util.getPercent(videoScale.x,0.35f); //0.25F = radius val
     
-    // Real scale value of the text
+    //Text scale value in the screen coordinates
     float resultScaleText = videoScale.x/1920/2*textScale;
     
-    // Real outline value of the text
+    //Outline thickness value in the screen coordinates
     float resultOutlineThickness = videoScale.x/1920/2 * (2.f);//2.f = outline thickness
-    //Check if mouse on top of the button
-    if(doMouseTracking)
-        hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
-    else 
-        hover = false;
-    if(hover)
-        //Set the cursor as pointer
-        mouse.setCursor(mouse.pointerCursor);// mouse.activeCursor = mouse.pointerCursor
-    if(hover && mouse.LClick){
-        //Mouse left button pressed on top of the button
-        clickState1 = !clickState1;
-    }
+    
+    //Mouse activites
+    manageMouseActivity(mouse,resultScale,resultPos);
+
+    //Mouse hover animation
     timer.transition(hover,hoverMixVal,0.2f); 
+    
+    //Pressing animation
     timer.transition(clickState1,clickedMixVal,0.15f); 
     
     //Render the button
     render(resultPos,resultScale,resultRadius,resultOutlineThickness);
-    //Render the text
+    
+    //Set the color of the text 
     shader.setVec4("color"  ,     textColor     );
     shader.setVec4("color2"  ,     textColor2     );
-    
+
+    //Render the text
     textRenderer.loadTextData(
                                 shader,
                                 text,

@@ -270,6 +270,8 @@ class CheckBox
 private:
     //Private member functions
     void render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadius,float resultOutlineThickness);
+    void manageMouseActivity(Mouse &mouse, glm::vec2 resultScale, glm::vec3 resultPos);
+
 public:
     Shader shader;
     bool clickState1 = false;

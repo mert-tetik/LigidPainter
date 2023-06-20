@@ -27,6 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 TextureSelectionDialog::TextureSelectionDialog(){}
+
 TextureSelectionDialog::TextureSelectionDialog(Shader buttonShader,ColorPalette colorPalette){
     this->colorPalette = colorPalette;
     this->buttonShader = buttonShader;
