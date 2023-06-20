@@ -224,13 +224,24 @@ void TextRenderer::rndrTxt(Shader shader, int textPosCharIndex){
 
 void TextRenderer::renderInsertionPointCursor(Shader shader, int &textPosCharIndex){
     
-	float activeCharPos = getIndexOffset(textDataActiveChar) + positionTheText().x;
-	float activeChar2Pos = getIndexOffset(textDataActiveChar2) + positionTheText().x;
+	float activeCharPos;
+	float activeChar2Pos;
 	float textEndingPos = getTextLastCharOffset() + positionTheText().x;
+
+    if(textDataActiveChar == -1)
+        activeCharPos = positionTheText().x;
+    else
+	    activeCharPos = getIndexOffset(textDataActiveChar) + positionTheText().x;
+
+    if(textDataActiveChar2 == -1)
+        activeChar2Pos = positionTheText().x;
+	else
+        activeChar2Pos = getIndexOffset(textDataActiveChar2) + positionTheText().x;
     
+
     //Render the insertion point cursor
 	if(textDataActive){
-		
+    
 		//insertion point cursor position
 		glm::vec3 ipcPos; 
 		
@@ -246,7 +257,7 @@ void TextRenderer::renderInsertionPointCursor(Shader shader, int &textPosCharInd
 		shader.setVec3("pos",ipcPos);
 
 		//Move the text if the insertion point cursor is forcing from the boundaries
-		if(ipcPos.x < textDataMinX && key == GLFW_KEY_LEFT-256 && textDataActiveChar > 0)
+		if(ipcPos.x < textDataMinX && key == GLFW_KEY_LEFT-256 && textDataActiveChar > -1)
 			textPosCharIndex++;
 		if(ipcPos.x > textDataMaxX && key == GLFW_KEY_RIGHT-256 && textDataActiveChar < textDataText.size()-1)
 			textPosCharIndex--;

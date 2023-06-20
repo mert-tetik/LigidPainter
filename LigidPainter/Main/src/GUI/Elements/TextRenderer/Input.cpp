@@ -103,8 +103,8 @@ void deletion(int& activeChar, int& activeChar2, std::string &text){
         else
             text.erase(text.begin() + activeChar2 + 1,text.begin()+activeChar + 1);
 
-        if(activeChar < 0)
-            activeChar = 0;
+        if(activeChar < -1)
+            activeChar = -1;
         
         if(activeChar > text.size()-1)
             activeChar = text.size()-1;
@@ -113,7 +113,7 @@ void deletion(int& activeChar, int& activeChar2, std::string &text){
     }
 
     //If selected a single character
-    else if (activeChar != 0){ 
+    else if (activeChar != -1){ 
         text.erase(text.begin() + activeChar);
         activeChar--;
         activeChar2 = activeChar;
@@ -136,6 +136,9 @@ void charInput(char &key, bool &caps, std::string& text, int& activeChar, int& a
 //direction 0 is left and 1 is right
 int getTheIndexOfTheSpace(int currentIndex, std::string text, int direction){
 
+    if(currentIndex < 1)
+        return -1;
+
     if(direction == 0){
         int counter = 0;
         int i = currentIndex;
@@ -144,7 +147,7 @@ int getTheIndexOfTheSpace(int currentIndex, std::string text, int direction){
             i--;
 
             if(i < 0)
-                return 0;
+                return -1;
 
             counter++;
         }
@@ -170,7 +173,7 @@ int getTheIndexOfTheSpace(int currentIndex, std::string text, int direction){
 void leftArrow(int mods, int &activeChar, int &activeChar2, std::string &text){
 	//Shift pressed (multiselected)
     if(mods == 1){
-		if(activeChar2 > 0)
+		if(activeChar2 > -1)
 			activeChar2--;
 	}
 
@@ -189,7 +192,7 @@ void leftArrow(int mods, int &activeChar, int &activeChar2, std::string &text){
 	
     //Shift nor control is not pressed
     else{
-		if(activeChar > 0)
+		if(activeChar > -1)
 			activeChar--;
 		activeChar2 = activeChar;
 	}
@@ -217,8 +220,9 @@ void rightArrow(int mods, int &activeChar, int &activeChar2, std::string &text){
 
     //Shift nor control is not pressed
 	else{
-		if(activeChar < text.size()-1)
+		if(activeChar < (int)text.size()-1)
 			activeChar++;
+            
 		activeChar2 = activeChar;
 	}
 }
