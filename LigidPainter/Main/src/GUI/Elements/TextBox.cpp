@@ -199,7 +199,7 @@ void TextBox::render(
         }
         else{
             //Take key input
-            textRenderer.processTextInput(text,activeChar,activeChar2,textPosCharIndex);
+            textRenderer.processTextInput(text,window,activeChar,activeChar2,textPosCharIndex);
         }
     }
 

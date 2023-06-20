@@ -44,7 +44,7 @@ void charInput(char &key, bool &caps, std::string& text, int& activeChar, int& a
 
 
 
-void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activeChar2, int &textPosCharIndex){
+void TextRenderer::processTextInput(std::string &text,GLFWwindow* window,int &activeChar,int &activeChar2, int &textPosCharIndex){
 	//If pressed to a key
     if(keyInput){
 
@@ -73,8 +73,28 @@ void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activ
 
         //Basic char input
 		else if(mods == 0 && key < 127){ //If shift, control & alt keys are released
+            
+            if(activeChar2 != activeChar)
+                deletion(activeChar,activeChar2,text);
+            
             charInput(key,caps,text,activeChar,activeChar2);
-		}
+		
+        }
+        else if(mods == 2){ //Control pressed
+            
+            if(activeChar2 != activeChar)
+                deletion(activeChar,activeChar2,text);
+            
+            //Control + V
+            if(key == GLFW_KEY_V){
+                std::string clipText = glfwGetClipboardString(window);
+                
+                text.insert( (activeChar + 1) , clipText );
+                    
+                activeChar += clipText.size();  
+                activeChar2 = activeChar; 
+            }
+        }
 	}
 }
 
