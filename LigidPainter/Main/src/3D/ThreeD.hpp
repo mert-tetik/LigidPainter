@@ -206,7 +206,7 @@ public:
 
     //Public member functions
     void writeFile(std::string path);
-    void readFile(std::string path,ColorPalette colorPalette ,Shader buttonShader ,AppTextures appTextures);
+    void readFile(std::string path,ColorPalette colorPalette ,Shader buttonShader ,AppTextures appTextures, const std::vector<Material> materials);
     Material duplicateMaterial(int textureRes);
 };
 

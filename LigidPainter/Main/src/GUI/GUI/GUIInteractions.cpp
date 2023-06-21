@@ -140,7 +140,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
             
             if(test){
                 Material material(textureRes, "", 0);
-                material.readFile(test,colorPalette,shaders.buttonShader,appTextures);
+                material.readFile(test,colorPalette,shaders.buttonShader,appTextures,library.materials);
                 library.materials.push_back(material);
             }
         }
