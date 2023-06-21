@@ -91,7 +91,9 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
     this->panel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
 }
 
-void NewProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model, int textureRes){
+void NewProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+                                glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,
+                                Model &model, int textureRes, std::vector<Node> &nodeScene , std::vector<Node> &appNodes){
     
     dialogControl.updateStart(buttonShader);
 
@@ -108,7 +110,7 @@ void NewProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalet
                                     panel.sections[0].elements[7].textBox.text  //3D model path
                                  ))
         {
-            project.loadProject(project.ligidFilePath,library,shaders,model,appTextures,colorPalette,textureRes);
+            project.loadProject(project.ligidFilePath,library,shaders,model,appTextures,colorPalette,textureRes,nodeScene , appNodes);
             this->dialogControl.unActivate();
         }
     

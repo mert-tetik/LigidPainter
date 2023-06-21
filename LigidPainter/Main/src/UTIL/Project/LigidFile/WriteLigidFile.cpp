@@ -35,6 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //Forward declerations for the util functions
 void writeDescriptionHeader(std::ofstream &wf);
 void writeDateData(std::ofstream &wf);
+void writeNodeSceneData(std::ofstream &wf, std::vector<Node> nodeScene);
 
 
 
@@ -84,10 +85,10 @@ void writeDateData(std::ofstream &wf){
 void writeNodeSceneData(std::ofstream &wf, std::vector<Node> nodeScene){
     //Write the node size
     uint64_t nodeSize = nodeScene.size();
-    wf.write(reinterpret_cast<char*>(   &nodeSize    )    , sizeof(int));
-
+    wf.write(reinterpret_cast<char*>(   &nodeSize    )    , sizeof(uint64_t));
+    
     //For each node
-    for (size_t i = 1; i < nodeSize; i++)
+    for (size_t i = 0; i < nodeSize; i++)
     {
         //Write the node index, (MATERIAL_NODE , MESH_NODE)
         wf.write(reinterpret_cast<char*>(   &nodeScene[i].nodeIndex    ), sizeof(int));
@@ -95,9 +96,12 @@ void writeNodeSceneData(std::ofstream &wf, std::vector<Node> nodeScene){
         //Write the material ID
         wf.write(reinterpret_cast<char*>(   &nodeScene[i].materialID    ), sizeof(int));
 
+        //Write the node pos
+        wf.write(reinterpret_cast<char*>(   &nodeScene[i].nodePanel.pos    ), sizeof(glm::vec3));
+
         //Write the IO size
         uint64_t IOSize = nodeScene[i].IOs.size();
-        wf.write(reinterpret_cast<char*>(   &IOSize    )    , sizeof(int));
+        wf.write(reinterpret_cast<char*>(   &IOSize    )    , sizeof(uint64_t));
         
         //For each IO
         for (size_t IOI = 0; IOI < IOSize; IOI++)
@@ -105,7 +109,7 @@ void writeNodeSceneData(std::ofstream &wf, std::vector<Node> nodeScene){
 
             //Write the connection size
             uint64_t connectionSize = nodeScene[i].IOs[IOI].connections.size();
-            wf.write(reinterpret_cast<char*>(   &connectionSize    )    , sizeof(int));
+            wf.write(reinterpret_cast<char*>(   &connectionSize    )    , sizeof(uint64_t));
             
             //For each connection of the IO
             for (size_t conI = 0; conI < connectionSize; conI++)

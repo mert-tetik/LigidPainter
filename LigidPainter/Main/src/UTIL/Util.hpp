@@ -190,7 +190,8 @@ public:
     //Public member functions
     bool createProject(std::string destinationPath,std::string name,std::string TDModelPath);
     void updateProject(Library &library, std::vector<Node> &nodeScene);
-    bool loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette,int textureRes);
+    bool loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,
+                    ColorPalette colorPalette,int textureRes,std::vector<Node> &nodeScene , std::vector<Node> &appNodes);
     void duplicateFolder(std::string dstPath);
     void copyTheProjectPathToTheClipboard(GLFWwindow* window);
 

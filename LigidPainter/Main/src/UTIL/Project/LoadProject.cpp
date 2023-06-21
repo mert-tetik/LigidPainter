@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "tinyfiledialogs.h"
 
 bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette, 
-                          int textureRes){
+                          int textureRes, std::vector<Node> &nodeScene , std::vector<Node> &appNodes){
     Util util;
 
     //Return if the ligidFilePath doesn't exists
@@ -44,32 +44,12 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         return false;
     }
 
-    std::ifstream rf(ligidFilePath, std::ios::out | std::ios::binary);
-		
-    //Return if can't open the ligidFilePath
-    if(!rf) {
-        std::cout << "ERROR WHILE READING THE LIGID FILE! Cannot open file : " << ligidFilePath << std::endl;
-        return false;
-    }
+    //TODO Do smt with these variables
+    time_t creationDate;
+    time_t lastOpenedDate;
+    
+    readLigidFile(ligidFilePath, creationDate, lastOpenedDate, nodeScene, appNodes);
 
-    uint64_t h1 = 0xBBBBBBBB; 
-    uint64_t h2 = 0xCA4B6C78; 
-    uint64_t h3 = 0x9A9A2C48; 
-    
-    uint64_t ch1; 
-    uint64_t ch2; 
-    uint64_t ch3; 
-    
-    //Read the description of the ligid file
-    rf.read(reinterpret_cast<char*>(   &ch1    ),sizeof(uint64_t));
-    rf.read(reinterpret_cast<char*>(   &ch2    ),sizeof(uint64_t));
-    rf.read(reinterpret_cast<char*>(   &ch3    ),sizeof(uint64_t));
-    
-    //If the description doesn't matches
-    if(ch1 != h1 || ch2 != h2 || ch3 != h3){
-        std::cout << "ERROR THIS IS NOT A LIGID FILE! Description header doesn't match : " << ligidFilePath << std::endl;
-        return false;
-    }
 
     this->ligidFilePath = ligidFilePath;
     this->folderPath = util.removeLastWordBySeparatingWithChar(ligidFilePath,folderDistinguisher);

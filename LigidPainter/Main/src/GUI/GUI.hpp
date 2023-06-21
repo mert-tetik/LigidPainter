@@ -114,7 +114,7 @@ private:
 
     void renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene);
 
-    void renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene,Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync, Box &box);
+    void renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene,Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync, Box &box, std::vector<Node> &appNodes);
 
     void renderDropper(Mouse &mouse,Painter &painter);
 

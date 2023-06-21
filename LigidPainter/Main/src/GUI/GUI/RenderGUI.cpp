@@ -85,7 +85,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     renderNodes(videoScale,mouse,timer,textRenderer,library,nodeScene);
     
     //Render the dialogs
-    renderDialogs(videoScale,mouse,timer,textRenderer,library,nodeScene,context,project,model,skybox,textureRes,VSync,box);
+    renderDialogs(videoScale,mouse,timer,textRenderer,library,nodeScene,context,project,model,skybox,textureRes,VSync,box, appNodes);
 
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(mouse,painter);
@@ -181,12 +181,12 @@ void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRende
     }
 }
 
-void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene, Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync, Box &box){
+void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene, Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync, Box &box, std::vector<Node> &appNodes){
     if(newProjectDialog.dialogControl.isActive())
-        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,shaders,model,textureRes);
+        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,shaders,model,textureRes, nodeScene , appNodes);
     
     if(loadProjectDialog.dialogControl.isActive())
-        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,shaders,model,textureRes);
+        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,shaders,model,textureRes,nodeScene , appNodes);
     
     if(greetingDialog.dialogControl.isActive())
         greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);

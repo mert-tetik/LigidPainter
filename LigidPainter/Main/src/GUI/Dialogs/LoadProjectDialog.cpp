@@ -133,7 +133,9 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
     this->textBtn4.textScale = 0.5f;
 }
 
-void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model,int textureRes){
+void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+                                glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,
+                                Shaders shaders,Model &model,int textureRes,std::vector<Node> &nodeScene , std::vector<Node> &appNodes){
     
     dialogControl.updateStart(buttonShader);
 
@@ -157,7 +159,7 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
         if(test){
             
             //Load the project
-            if(project.loadProject(test,library,shaders,model,appTextures,colorPalette,textureRes))
+            if(project.loadProject(test,library,shaders,model,appTextures,colorPalette,textureRes,nodeScene, appNodes))
                 this->dialogControl.unActivate();
             else{
                 const char* title = "Warning";
@@ -194,22 +196,6 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
         
         //If a ligid file is loacted
         if(ligidFilePath.size()){
-            //Date data stored in the ligid file
-            time_t creationDate;
-            time_t lastOpeningDate;
-            
-            //Get the ligid file data
-            project.readLigidFile(ligidFilePath,creationDate,lastOpeningDate);
-            
-            //Date to string 
-            std::string creationDateStr = (std::string)std::ctime(&creationDate);
-            std::string lastOpeningDateStr = (std::string)std::ctime(&lastOpeningDate);
-            
-            //Remove suspecious '\n' character
-            creationDateStr.pop_back(); 
-
-            //TODO Do something with the date (maybe)
-
             //Transfer the button to the new section
             projectSection.elements.push_back(btn);
             
@@ -233,7 +219,7 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
             std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
             
             //Load the project
-            if(project.loadProject(ligidFilePath,library,shaders,model,appTextures,colorPalette,textureRes))
+            if(project.loadProject(ligidFilePath,library,shaders,model,appTextures,colorPalette,textureRes,nodeScene, appNodes))
                 this->dialogControl.unActivate();
             else{
                 const char* title = "Warning";
