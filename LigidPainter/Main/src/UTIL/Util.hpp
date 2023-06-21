@@ -53,10 +53,13 @@ public:
     std::string removeExtension(std::string s);
     std::string rmvPath(std::string startingPath, std::string fullPath);
     void openInFileExplorer(const char* path);
+    void giveUniqueId(int &ID ,const std::vector<int> otherIDs);
+    void giveUniqueId(int &ID ,const std::vector<Texture> textures);
+    void giveUniqueId(int &ID ,const std::vector<Material> materials);
 
     std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library,int textureRes);
-};
 
+};
 
 class Color
 {
@@ -115,6 +118,8 @@ public:
     std::string title = "";
     std::string tmpPath;
     bool isTexture = true; //Otherwise is a folder
+
+    int uniqueId;
 
     Texture();
     Texture(unsigned int ID);
@@ -392,6 +397,12 @@ struct Library{
 
     void uniqueName(std::string &s,std::vector<std::string> sArray);
     void uniqueNameControl();
+
+    //Add elements
+    void addTexture(Texture& texture);
+    void addMaterial(Material& material);
+    void addBrush(Brush& brush);
+    void addModel(Model& model);
 };
 
 struct Context{

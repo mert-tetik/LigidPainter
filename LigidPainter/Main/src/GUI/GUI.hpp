@@ -95,9 +95,6 @@ public:
 
     ColorPalette colorPalette;
 
-    int materialIDCounter = 0;
-    
-
 
     //Constructor
     UI();

@@ -129,7 +129,7 @@ void NewTextureDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalet
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Send the created texture to the library
-        library.textures.push_back(txtr);
+        library.addTexture(txtr);
     }
     
     //End the dialog

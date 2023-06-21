@@ -91,7 +91,7 @@ std::vector<Material> Util::getTheMaterialsConnectedToTheMeshNode(std::vector<No
         if(materialID != 1000){
             for (size_t matI = 0; matI < library.materials.size(); matI++)
             {
-                if(library.materials[matI].ID == materialID)
+                if(library.materials[matI].uniqueID == materialID)
                     materials.push_back(library.materials[matI]);
             }
         }
@@ -132,4 +132,40 @@ void Util::openInFileExplorer(const char* path) {
     // Unsupported platform
     // Add error handling or alternative implementation here
 #endif
+}
+
+void Util::giveUniqueId(int &ID ,const std::vector<int> otherIDs){
+	int newID = 0;
+
+    // Find the next available ID that is not in the otherIDs vector
+    while (std::find(otherIDs.begin(), otherIDs.end(), newID) != otherIDs.end()) {
+        newID++;
+    }
+
+    // Assign the unique ID to the reference variable
+    ID = newID;
+}
+
+/// @brief give unique ID to the texture
+void Util::giveUniqueId(int &ID ,const std::vector<Texture> textures){
+	std::vector<int> IDArray;
+
+	for (size_t i = 0; i < textures.size(); i++)
+	{
+		IDArray.push_back(textures[i].uniqueId);
+	}
+	
+	giveUniqueId(ID, IDArray);
+}
+
+/// @brief give unique ID to the material
+void Util::giveUniqueId(int &ID ,const std::vector<Material> materials){
+	std::vector<int> IDArray;
+
+	for (size_t i = 0; i < materials.size(); i++)
+	{
+		IDArray.push_back(materials[i].uniqueID);
+	}
+
+	giveUniqueId(ID, IDArray);
 }

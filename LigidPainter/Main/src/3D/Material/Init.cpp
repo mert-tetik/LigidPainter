@@ -55,7 +55,7 @@ Material::Material(){}
 
 Material::Material(int textureRes,std::string title,int ID){
     this->title = title;
-    this->ID = ID;
+    this->uniqueID = ID;
     initTexture(albedo,textureRes);
     initTexture(roughness,textureRes);
     initTexture(metallic,textureRes);

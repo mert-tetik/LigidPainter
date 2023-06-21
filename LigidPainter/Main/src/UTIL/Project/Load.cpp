@@ -95,7 +95,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         Texture texture;
         texture.load(texturePath.c_str());
 
-        library.textures.push_back(texture);
+        library.addTexture(texture);
     }
 
     //Load the materials
@@ -106,7 +106,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         Material material;
         material.readFile(materialPath,colorPalette,shaders.buttonShader,appTextures);
 
-        library.materials.push_back(material);
+        library.addMaterial(material);
     }
     
     //Load the brushes
@@ -119,7 +119,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         brush.updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
 
 
-        library.brushes.push_back(brush);
+        library.addBrush(brush);
     }
     
     //Load the tdmodels
@@ -130,7 +130,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         Model TDModel;
         TDModel.loadModel(modelPath,true);
 
-        library.TDModels.push_back(TDModel);
+        library.addModel(TDModel);
     }
 
     if(library.TDModels.size())

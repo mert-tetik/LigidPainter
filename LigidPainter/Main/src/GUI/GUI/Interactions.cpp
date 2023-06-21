@@ -36,7 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selectedLibraryElementIndex, Mouse &mouse, Panel &paintingPanel, 
                                       Painter &painter, Library &library, Model &model, ColorPalette& colorPalette, Shaders &shaders, int &textureRes,
-                                      NewTextureDialog &newTextureDialog,int &materialIDCounter,AppTextures &appTextures,int frameCounter){
+                                      NewTextureDialog &newTextureDialog,AppTextures &appTextures,int frameCounter){
     
     //Update the selected texture
     for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
@@ -69,12 +69,11 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
         }
         if(selectedLibraryElementIndex == 1){ //Materials
             //Add new material to the library & not the panel
-            //Will be displayed right after library panel is updated which happens in every 100 frame
-            library.materials.push_back(Material(textureRes,"material_0",materialIDCounter));
-            materialIDCounter++;
+            //Will be displayed right after library panel is updated
+            library.addMaterial(Material(textureRes, "material_0", 0));
         }
         if(selectedLibraryElementIndex == 2){ //Brushes
-            library.brushes.push_back(
+            library.addBrush(
                                         Brush
                                             (    
                                                 paintingPanel.sections[2].elements[0].rangeBar.value,
@@ -101,7 +100,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
             if(test){
                 Model tdModel;
                 tdModel.loadModel(test,true);
-                library.TDModels.push_back(tdModel);
+                library.addModel(tdModel);
             }
             
         }
@@ -128,7 +127,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
             if(test){
                 Texture txtr;
                 txtr.load(test);
-                library.textures.push_back(txtr);
+                library.addTexture(txtr);
             }
         }
         if(selectedLibraryElementIndex == 1){ //Materials
@@ -142,11 +141,11 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
             if(test){
                 Material material;
                 material.readFile(test,colorPalette,shaders.buttonShader,appTextures);
-                library.materials.push_back(material);
+                library.addMaterial(material);
             }
         }
         if(selectedLibraryElementIndex == 2){ //Brushes
-            library.brushes.push_back(
+            library.addBrush(
                                         Brush
                                             (    
                                                 paintingPanel.sections[2].elements[0].rangeBar.value,
@@ -173,7 +172,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
             if(test){
                 Model tdModel;
                 tdModel.loadModel(test,true);
-                library.TDModels.push_back(tdModel);
+                library.addModel(tdModel);
             }
             
         }
@@ -383,7 +382,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 Texture duplicatedTexture;
                 duplicatedTexture = library.textures[contextMenus[i].selectedElement];
                 duplicatedTexture.ID = library.textures[contextMenus[i].selectedElement].duplicateTexture();
-                library.textures.push_back(duplicatedTexture);
+                library.addTexture(duplicatedTexture);
             }
             if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){//Clicked to delete button
                 library.textures.erase(library.textures.begin() + contextMenus[i].selectedElement);
@@ -400,7 +399,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 //Create the node of the materail an add to the node scene
                 Node materialNode = appNodes[1];
                 materialNode.barButton.text = library.materials[contextMenus[i].selectedElement].title;
-                materialNode.materialID = library.materials[contextMenus[i].selectedElement].ID;
+                materialNode.materialID = library.materials[contextMenus[i].selectedElement].uniqueID;
                 nodeScene.push_back(materialNode); //Add material node
             }
             if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to rename button
@@ -418,10 +417,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){//Clicked to duplicate button
                 Material duplicatedMaterial;
                 duplicatedMaterial = library.materials[contextMenus[i].selectedElement];
-                duplicatedMaterial.ID = materialIDCounter;
-                library.materials.push_back(duplicatedMaterial);
-                
-                materialIDCounter++;
+                library.addMaterial(duplicatedMaterial);
             }
             if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){//Clicked to delete button
                 library.materials.erase(library.materials.begin() + contextMenus[i].selectedElement);
@@ -461,7 +457,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 renamingIndices.y = contextMenus[i].selectedElement;
             }
             if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){//Clicked to duplicate button
-                library.brushes.push_back(library.brushes[contextMenus[i].selectedElement]);
+                library.addBrush(library.brushes[contextMenus[i].selectedElement]);
             }
             if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){//Clicked to delete button
                 library.brushes.erase(library.brushes.begin() + contextMenus[i].selectedElement);
@@ -689,7 +685,7 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
     
     contextMenuInteraction(contextMenus,mouse,library,appNodes,nodeScene,context,videoScale,timer,textRenderer,project);
     
-    libraryPanelDisplayerInteraction(libraryPanelDisplayer,selectedLibraryElementIndex,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,materialIDCounter,appTextures,frameCounter);
+    libraryPanelDisplayerInteraction(libraryPanelDisplayer,selectedLibraryElementIndex,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,appTextures,frameCounter);
     
     libraryPanelLeftInteraction(libraryPanelLeft,selectedLibraryElementIndex,mouse);
     

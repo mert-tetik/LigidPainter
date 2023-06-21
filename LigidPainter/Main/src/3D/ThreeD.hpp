@@ -197,7 +197,7 @@ public:
     Texture heightMap;
     Texture ambientOcclusion;
     unsigned int displayingTexture;
-    int ID; //Unique ID
+    int uniqueID;
     std::vector<MaterialModifier> materialModifiers;
 
     //Constructors
