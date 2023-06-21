@@ -133,7 +133,7 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
     this->textBtn4.textScale = 0.5f;
 }
 
-void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model){
+void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model,int textureRes){
     
     dialogControl.updateStart(buttonShader);
 
@@ -157,7 +157,7 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
         if(test){
             
             //Load the project
-            if(project.loadProject(test,library,shaders,model,appTextures,colorPalette))
+            if(project.loadProject(test,library,shaders,model,appTextures,colorPalette,textureRes))
                 this->dialogControl.unActivate();
             else{
                 const char* title = "Warning";
@@ -233,7 +233,7 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
             std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
             
             //Load the project
-            if(project.loadProject(ligidFilePath,library,shaders,model,appTextures,colorPalette))
+            if(project.loadProject(ligidFilePath,library,shaders,model,appTextures,colorPalette,textureRes))
                 this->dialogControl.unActivate();
             else{
                 const char* title = "Warning";

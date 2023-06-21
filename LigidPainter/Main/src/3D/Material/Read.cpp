@@ -68,6 +68,9 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
             return;
         }
 
+        //!ID
+        rf.read(reinterpret_cast<char*>(   &this->uniqueID    ),sizeof(int));
+
         //!Modifiers
         uint64_t materialModifierSize;
         rf.read(reinterpret_cast<char*>(   &materialModifierSize     ),sizeof(uint64_t));
@@ -103,6 +106,8 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
                     delete[] pixels;
                 }
             }
+
+            this->materialModifiers.push_back(modifier);
         }
     }
 }

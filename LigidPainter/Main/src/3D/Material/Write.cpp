@@ -60,6 +60,9 @@ void Material::writeFile(std::string path){
         wf.write(reinterpret_cast<char*>(   &h2    ),sizeof(uint64_t));
         wf.write(reinterpret_cast<char*>(   &h3    ),sizeof(uint64_t));
         
+        //!ID
+        wf.write(reinterpret_cast<char*>(   &this->uniqueID    ),sizeof(int));
+
         //!Modifiers
         uint64_t materialModifierSize = materialModifiers.size();
         wf.write(reinterpret_cast<char*>(   &materialModifierSize     ),sizeof(uint64_t));

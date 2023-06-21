@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "tinyfiledialogs.h"
 
-bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette){
+bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette, int textureRes){
     Util util;
 
     //Return if the ligidFilePath doesn't exists
@@ -103,7 +103,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
     for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "Materials")){
         std::string materialPath = entry.path().string();
 
-        Material material;
+        Material material(textureRes, "", 0);;
         material.readFile(materialPath,colorPalette,shaders.buttonShader,appTextures);
 
         library.addMaterial(material);

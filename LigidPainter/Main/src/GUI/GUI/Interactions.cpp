@@ -139,7 +139,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
             char* test = tinyfd_openFileDialog("Select a material","", 12, lFilterPatterns,"",false);
             
             if(test){
-                Material material;
+                Material material(textureRes, "", 0);
                 material.readFile(test,colorPalette,shaders.buttonShader,appTextures);
                 library.addMaterial(material);
             }

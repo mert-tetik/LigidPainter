@@ -173,7 +173,7 @@ void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRende
         if(nodeScene[i].nodeIndex == 1){//Is a material node
             for (size_t matI = 0; matI < library.materials.size(); matI++)
             {
-                if(nodeScene[i].materialID == library.materials[matI].ID)
+                if(nodeScene[i].materialID == library.materials[matI].uniqueID)
                     nodeScene[i].nodePanel.sections[0].elements[0].button.texture = Texture(library.materials[matI].displayingTexture);
             }
         }
@@ -183,10 +183,10 @@ void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRende
 
 void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene, Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync, Box &box){
     if(newProjectDialog.dialogControl.isActive())
-        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,shaders,model);
+        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,shaders,model,textureRes);
     
     if(loadProjectDialog.dialogControl.isActive())
-        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,shaders,model);
+        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,shaders,model,textureRes);
     
     if(greetingDialog.dialogControl.isActive())
         greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);
