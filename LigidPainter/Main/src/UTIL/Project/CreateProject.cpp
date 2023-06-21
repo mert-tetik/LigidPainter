@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "tinyfiledialogs.h"
 
 
-bool Project::createProject(std::string destinationPath,std::string name,std::string TDModelPath){
+bool Project::createProject(std::string destinationPath,std::string name,std::string TDModelPath,int textureRes){
     if(destinationPath[destinationPath.size()-1] == '/' || destinationPath[destinationPath.size()-1] == '\\') //Make sure destination path doesn't have seperator at the end
         destinationPath.pop_back();
 
@@ -113,7 +113,7 @@ bool Project::createProject(std::string destinationPath,std::string name,std::st
     std::filesystem::copy(TDModelPath,tdModelFolderPath);
 
     //Create the .ligid file
-    writeLigidFile({});
+    writeLigidFile({}, textureRes);
 
     return true;
 }

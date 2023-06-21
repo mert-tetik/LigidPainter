@@ -177,7 +177,6 @@ private:
 	#endif
     
     void deleteFilesInFolder(const std::string folderPath);
-    void writeLigidFile(const std::vector<Node> nodeScene);
 
 public:
     std::string folderPath;
@@ -188,15 +187,17 @@ public:
     Project(){}
 
     //Public member functions
-    bool createProject(std::string destinationPath,std::string name,std::string TDModelPath);
-    void updateProject(Library &library, std::vector<Node> &nodeScene);
+    bool createProject(std::string destinationPath,std::string name,std::string TDModelPath,int textureRes);
+    void updateProject(Library &library, std::vector<Node> &nodeScene, int& textureRes);
     bool loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,
-                    ColorPalette colorPalette,int textureRes,std::vector<Node> &nodeScene , std::vector<Node> &appNodes);
+                    ColorPalette colorPalette,int &textureRes,std::vector<Node> &nodeScene , std::vector<Node> &appNodes);
     void duplicateFolder(std::string dstPath);
     void copyTheProjectPathToTheClipboard(GLFWwindow* window);
 
     std::string locateLigidFileInFolder(const std::string& folderPath);
-    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,std::vector<Node> &nodeScene, std::vector<Node> &appNodes);
+    
+    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,std::vector<Node> &nodeScene, std::vector<Node> &appNodes, int& textureRes);
+    void writeLigidFile(const std::vector<Node> nodeScene, int textureRes);
 };
 
 

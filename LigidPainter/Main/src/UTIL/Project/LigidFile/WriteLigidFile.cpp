@@ -39,7 +39,7 @@ void writeNodeSceneData(std::ofstream &wf, std::vector<Node> nodeScene);
 
 
 
-void Project::writeLigidFile(const std::vector<Node> nodeScene){
+void Project::writeLigidFile(const std::vector<Node> nodeScene, int textureRes){
     std::ofstream wf(this->ligidFilePath, std::ios::out | std::ios::binary);
 		
     if(!wf) {
@@ -55,6 +55,10 @@ void Project::writeLigidFile(const std::vector<Node> nodeScene){
 
     //!NodeScene
     writeNodeSceneData(wf,nodeScene);
+
+    //!Texture resolution
+    wf.write(reinterpret_cast<char*>(   &textureRes    ),sizeof(int));
+
 }
 
 

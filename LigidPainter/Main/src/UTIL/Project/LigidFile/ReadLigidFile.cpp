@@ -47,7 +47,8 @@ bool Project::readLigidFile(
                                 time_t &creationDate,
                                 time_t &lastOpenedDate, 
                                 std::vector<Node> &nodeScene, 
-                                std::vector<Node> &appNodes
+                                std::vector<Node> &appNodes,
+                                int& textureRes
                             ){ //Returns true if path is a ligid file
     
     if(path.size()){
@@ -83,7 +84,12 @@ bool Project::readLigidFile(
         //! Read the last opened date
         rf.read(reinterpret_cast<char*>(   &lastOpenedDate    ),sizeof(time_t));
 
+        //!NodeScene
         readNodeSceneData(rf, nodeScene, appNodes);
+
+        //!Texture resolution
+        rf.read(reinterpret_cast<char*>(   &textureRes    ),sizeof(int));
+
         
         return true;
     }

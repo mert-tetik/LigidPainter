@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "tinyfiledialogs.h"
 
 bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette, 
-                          int textureRes, std::vector<Node> &nodeScene , std::vector<Node> &appNodes){
+                          int& textureRes, std::vector<Node> &nodeScene , std::vector<Node> &appNodes){
     Util util;
 
     //Return if the ligidFilePath doesn't exists
@@ -48,7 +48,8 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
     time_t creationDate;
     time_t lastOpenedDate;
     
-    readLigidFile(ligidFilePath, creationDate, lastOpenedDate, nodeScene, appNodes);
+
+    readLigidFile(ligidFilePath, creationDate, lastOpenedDate, nodeScene, appNodes, textureRes);
 
 
     this->ligidFilePath = ligidFilePath;

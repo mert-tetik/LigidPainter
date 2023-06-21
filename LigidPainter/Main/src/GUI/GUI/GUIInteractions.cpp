@@ -357,7 +357,7 @@ void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, 
 
 void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Library &library,std::vector<Node>& appNodes ,
                                 std::vector<Node> &nodeScene,Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,
-                                Project& project, int textureRes){
+                                Project& project, int &textureRes){
     anyContextMenuActive = false; 
     for (size_t i = 0; i < contextMenus.size(); i++)//Check all the contextMenus
     {
@@ -465,12 +465,12 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         if(i == 3 && contextMenus[i].dialogControl.isActive()){ //If project context menu is active
             //Save
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
-                project.updateProject(library,nodeScene);
+                project.updateProject(library,nodeScene,textureRes);
             }
             
             //Save as
             if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){
-                project.updateProject(library,nodeScene);
+                project.updateProject(library,nodeScene,textureRes);
                 project.duplicateFolder("");
             }
             

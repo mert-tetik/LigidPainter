@@ -93,7 +93,7 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
 
 void NewProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
                                 glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,Shaders shaders,
-                                Model &model, int textureRes, std::vector<Node> &nodeScene , std::vector<Node> &appNodes){
+                                Model &model, int &textureRes, std::vector<Node> &nodeScene , std::vector<Node> &appNodes){
     
     dialogControl.updateStart(buttonShader);
 
@@ -107,7 +107,8 @@ void NewProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalet
         if(project.createProject(   
                                     panel.sections[0].elements[2].textBox.text, //Destination path
                                     panel.sections[0].elements[1].textBox.text, //Title of the project
-                                    panel.sections[0].elements[7].textBox.text  //3D model path
+                                    panel.sections[0].elements[7].textBox.text,  //3D model path
+                                    textureRes
                                  ))
         {
             project.loadProject(project.ligidFilePath,library,shaders,model,appTextures,colorPalette,textureRes,nodeScene , appNodes);
