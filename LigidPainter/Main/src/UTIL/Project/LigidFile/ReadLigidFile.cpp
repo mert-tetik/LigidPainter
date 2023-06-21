@@ -32,7 +32,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-bool Project::readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate){ //Returns true if path is a ligid file
+//Front declerations of the util functions
+void readNodeSceneData(std::ifstream &rf, std::vector<Node> &nodeScene, std::vector<Node> &appNodes);
+
+
+bool Project::readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate, std::vector<Node> &nodeScene, std::vector<Node> &appNodes){ //Returns true if path is a ligid file
     
     if(path.size()){
         std::ifstream rf(path, std::ios::out | std::ios::binary);
@@ -66,7 +70,64 @@ bool Project::readLigidFile(std::string path,time_t &creationDate,time_t &lastOp
 
         //! Read the last opened date
         rf.read(reinterpret_cast<char*>(   &lastOpenedDate    ),sizeof(time_t));
+
+        readNodeSceneData(rf, nodeScene, appNodes);
         
         return true;
+    }
+}
+
+
+void readNodeSceneData(std::ifstream &rf, std::vector<Node> &nodeScene, std::vector<Node> &appNodes){
+    
+    nodeScene.clear();
+
+    nodeScene.push_back(appNodes[0]);
+    
+    //Read the node size
+    uint64_t nodeSize;
+    rf.read(reinterpret_cast<char*>(   &nodeSize    )    , sizeof(int));
+
+    //For each node
+    for (size_t i = 1; i < nodeSize; i++)
+    {
+        Node node;
+
+        //Read the node index, (MATERIAL_NODE , MESH_NODE)
+        int nodeIndex;
+        rf.read(reinterpret_cast<char*>(   &nodeScene[i].nodeIndex    ), sizeof(int));
+
+        if(nodeIndex == MATERIAL_NODE)
+            node = appNodes[1];
+
+        //Read the material ID
+        rf.read(reinterpret_cast<char*>(   &node.materialID    ), sizeof(int));
+
+        //Read the IO size
+        uint64_t IOSize;
+        rf.read(reinterpret_cast<char*>(   &IOSize    )    , sizeof(int));
+        
+        //For each IO
+        for (size_t IOI = 0; IOI < IOSize; IOI++)
+        {   
+            //Read the connection size
+            uint64_t connectionSize;
+            rf.read(reinterpret_cast<char*>(   &connectionSize    )    , sizeof(int));
+            
+            //For each connection of the IO
+            for (size_t conI = 0; conI < connectionSize; conI++)
+            {
+                int inputIndex;
+                int nodeIndex;
+                rf.read(reinterpret_cast<char*>(   &inputIndex    )    , sizeof(int));
+                rf.read(reinterpret_cast<char*>(   &nodeIndex     )    , sizeof(int));
+            
+                NodeConnection connection(nodeIndex,inputIndex);
+
+                node.IOs[IOI].connections.push_back(connection);
+            }
+        }
+
+        nodeScene.push_back(node);
     }
 }

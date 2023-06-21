@@ -87,9 +87,8 @@ void writeNodeSceneData(std::ofstream &wf, std::vector<Node> nodeScene){
     wf.write(reinterpret_cast<char*>(   &nodeSize    )    , sizeof(int));
 
     //For each node
-    for (size_t i = 0; i < nodeSize; i++)
+    for (size_t i = 1; i < nodeSize; i++)
     {
-        
         //Write the node index, (MATERIAL_NODE , MESH_NODE)
         wf.write(reinterpret_cast<char*>(   &nodeScene[i].nodeIndex    ), sizeof(int));
         

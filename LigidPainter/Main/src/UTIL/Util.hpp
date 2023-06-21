@@ -194,10 +194,8 @@ public:
     void duplicateFolder(std::string dstPath);
     void copyTheProjectPathToTheClipboard(GLFWwindow* window);
 
-    
-
     std::string locateLigidFileInFolder(const std::string& folderPath);
-    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate);
+    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,std::vector<Node> &nodeScene, std::vector<Node> &appNodes);
 };
 
 
