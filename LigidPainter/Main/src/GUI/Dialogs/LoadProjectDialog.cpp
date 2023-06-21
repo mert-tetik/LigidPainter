@@ -199,7 +199,7 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
             time_t lastOpeningDate;
             
             //Get the ligid file data
-            project.returnLigidFileData(ligidFilePath,creationDate,lastOpeningDate);
+            project.readLigidFile(ligidFilePath,creationDate,lastOpeningDate);
             
             //Date to string 
             std::string creationDateStr = (std::string)std::ctime(&creationDate);

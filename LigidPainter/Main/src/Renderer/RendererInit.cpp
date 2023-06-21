@@ -225,6 +225,7 @@ void Renderer::createContextMenus(){
 }
 
 void Renderer::createAppNodes(glm::vec2 videoScale){
+    
     //Material node
     Node materialNode;
     materialNode.loadIO
@@ -239,7 +240,7 @@ void Renderer::createAppNodes(glm::vec2 videoScale){
         shaders.singleCurve,
         colorPalette,
         0,
-        1
+        MATERIAL_NODE
     );
 
     //Mesh output node
@@ -263,7 +264,7 @@ void Renderer::createAppNodes(glm::vec2 videoScale){
         shaders.singleCurve,
         colorPalette,
         0,
-        0
+        MESH_NODE
     );
     
     //Send nodes to the appNodes

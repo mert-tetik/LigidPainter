@@ -476,6 +476,12 @@ public:
     NodeIO(std::string title ,Element element,glm::vec4 color,ColorPalette colorPalette,Shader buttonShader,glm::vec2 videoScale,int state);
 };
 
+//!------------------------------NODE-----------------------------
+
+#define MATERIAL_NODE 1
+#define MESH_NODE 0
+
+
 class Node
 {
 private:

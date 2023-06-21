@@ -170,7 +170,7 @@ void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRende
     for (size_t i = 0; i < nodeScene.size(); i++)
     {
         //Update the display texture of the material node
-        if(nodeScene[i].nodeIndex == 1){//Is a material node
+        if(nodeScene[i].nodeIndex == MATERIAL_NODE){//Is a material node
             for (size_t matI = 0; matI < library.materials.size(); matI++)
             {
                 if(nodeScene[i].materialID == library.materials[matI].uniqueID)

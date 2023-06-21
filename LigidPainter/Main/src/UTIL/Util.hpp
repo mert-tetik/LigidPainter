@@ -177,7 +177,7 @@ private:
 	#endif
     
     void deleteFilesInFolder(const std::string folderPath);
-    void updateLigidFile();
+    void writeLigidFile(const std::vector<Node> nodeScene);
 
 public:
     std::string folderPath;
@@ -189,7 +189,7 @@ public:
 
     //Public member functions
     bool createProject(std::string destinationPath,std::string name,std::string TDModelPath);
-    void updateProject(Library &library);
+    void updateProject(Library &library, std::vector<Node> &nodeScene);
     bool loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette,int textureRes);
     void duplicateFolder(std::string dstPath);
     void copyTheProjectPathToTheClipboard(GLFWwindow* window);
@@ -197,7 +197,7 @@ public:
     
 
     std::string locateLigidFileInFolder(const std::string& folderPath);
-    bool returnLigidFileData(std::string path,time_t &creationDate,time_t &lastOpenedDate);
+    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate);
 };
 
 

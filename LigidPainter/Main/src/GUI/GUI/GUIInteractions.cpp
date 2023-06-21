@@ -465,7 +465,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         if(i == 3 && contextMenus[i].dialogControl.isActive()){ //If project context menu is active
             //Save
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
-                project.updateProject(library);
+                project.updateProject(library,nodeScene);
             }
             
             //Save as

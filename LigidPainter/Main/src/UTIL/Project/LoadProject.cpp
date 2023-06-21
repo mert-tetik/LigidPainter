@@ -34,7 +34,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "tinyfiledialogs.h"
 
-bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette, int textureRes){
+bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette, 
+                          int textureRes){
     Util util;
 
     //Return if the ligidFilePath doesn't exists
@@ -77,7 +78,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
     this->projectName = util.getLastWordBySeparatingWithChar(folderPath,folderDistinguisher);
 
     
-    updateLigidFile();
+    //writeLigidFile(nodeScene);
 
     
     //Remove the / or \ from the projectName if there are any     

@@ -113,7 +113,7 @@ bool Project::createProject(std::string destinationPath,std::string name,std::st
     std::filesystem::copy(TDModelPath,tdModelFolderPath);
 
     //Create the .ligid file
-    updateLigidFile();
+    writeLigidFile({});
 
     return true;
 }
