@@ -207,6 +207,7 @@ public:
     //Public member functions
     void writeFile(std::string path);
     void readFile(std::string path,ColorPalette colorPalette ,Shader buttonShader ,AppTextures appTextures);
+    Material duplicateMaterial(int textureRes);
 };
 
 #endif //THREED_HPP

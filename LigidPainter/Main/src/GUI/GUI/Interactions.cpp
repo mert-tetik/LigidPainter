@@ -141,7 +141,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
             if(test){
                 Material material(textureRes, "", 0);
                 material.readFile(test,colorPalette,shaders.buttonShader,appTextures);
-                library.addMaterial(material);
+                library.materials.push_back(material);
             }
         }
         if(selectedLibraryElementIndex == 2){ //Brushes
@@ -357,7 +357,7 @@ void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, 
 
 void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Library &library,std::vector<Node>& appNodes ,
                                 std::vector<Node> &nodeScene,Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,
-                                Project& project){
+                                Project& project, int textureRes){
     anyContextMenuActive = false; 
     for (size_t i = 0; i < contextMenus.size(); i++)//Check all the contextMenus
     {
@@ -415,8 +415,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 renamingIndices.y = contextMenus[i].selectedElement;
             }
             if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){//Clicked to duplicate button
-                Material duplicatedMaterial;
-                duplicatedMaterial = library.materials[contextMenus[i].selectedElement];
+                Material duplicatedMaterial = library.materials[contextMenus[i].selectedElement].duplicateMaterial(textureRes);
                 library.addMaterial(duplicatedMaterial);
             }
             if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){//Clicked to delete button
@@ -683,7 +682,7 @@ void UI::panelPositioning(float &screenGapPerc, Library &library, Painter &paint
 void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std::vector<ContextMenu> &contextMenus,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
                         Context &context,glm::vec2 &videoScale,TextRenderer &textRenderer, Timer &timer, int &textureRes,float screenGapPerc,Model &model, Project& project){
     
-    contextMenuInteraction(contextMenus,mouse,library,appNodes,nodeScene,context,videoScale,timer,textRenderer,project);
+    contextMenuInteraction(contextMenus,mouse,library,appNodes,nodeScene,context,videoScale,timer,textRenderer,project,textureRes);
     
     libraryPanelDisplayerInteraction(libraryPanelDisplayer,selectedLibraryElementIndex,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,appTextures,frameCounter);
     
