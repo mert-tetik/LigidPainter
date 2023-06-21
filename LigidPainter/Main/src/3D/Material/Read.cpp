@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "tinyfiledialogs.h"
 
 
-void Material::readFile(std::string path,ColorPalette colorPalette ,Shader buttonShader ,AppTextures appTextures){
+void Material::readFile(std::string path,ColorPalette colorPalette ,Shader buttonShader ,AppTextures appTextures, const std::vector<Material> materials){
     if(path.size()){
         std::ifstream rf(path, std::ios::out | std::ios::binary);
         
@@ -109,5 +109,19 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
 
             this->materialModifiers.push_back(modifier);
         }
+    }
+
+    //Check if there is already a material with the same ID
+    bool uniqueIDRepeats = false; 
+    for (size_t i = 0; i < materials.size(); i++)
+    {
+        if(materials[i].uniqueID == this->uniqueID)
+            uniqueIDRepeats = true;
+    }
+    
+    //If there is give a new unique id
+    if(uniqueIDRepeats){
+        Util util;
+        util.giveUniqueId(this->uniqueID, materials);
     }
 }
