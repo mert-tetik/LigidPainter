@@ -62,6 +62,7 @@ void UI::init
                                 Section(
                                     Element(Button()),
                                     {   
+                                        Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,5),colorPalette,shaders.buttonShader,""    ,appTextures.ligidPainterIcon, 0.f,false)),
                                         Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Project"    ,Texture(), 0.f,false)),
                                         Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Painting"    ,Texture(), 0.f,false)),
                                         Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,5),colorPalette,shaders.buttonShader,"Help"    ,Texture(), 0.f,false)),
@@ -70,7 +71,7 @@ void UI::init
                             },
                             glm::vec2(50,1), //Initial scale value
                             glm::vec3(50,1,0.1f),  //Initial position value
-                            colorPalette.mainColor, //Color of the panel
+                            colorPalette.secondColor, //Color of the panel
                             colorPalette.thirdColor, //Color of the panel
                             false,
                             true,

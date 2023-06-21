@@ -430,6 +430,7 @@ struct AppTextures{ //Textures those will be used in UI of the app
     Texture exportIcon;
     Texture areaPaintingIcon;
     Texture gearIcon;
+    Texture ligidPainterIcon;
     
     //--Textures
     Texture greetingDialogImage;  

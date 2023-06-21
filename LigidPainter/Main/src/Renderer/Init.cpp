@@ -195,6 +195,7 @@ void Renderer::loadAppTextures(){
     appTextures.exportIcon.load("./LigidPainter/Resources/Icons/Export.png");
     appTextures.areaPaintingIcon.load("./LigidPainter/Resources/Icons/Area.png");
     appTextures.gearIcon.load("./LigidPainter/Resources/Icons/Gear.png");
+    appTextures.ligidPainterIcon.load("./LigidPainter/Resources/Icons/LigidPainter.png");
     appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
 }
 

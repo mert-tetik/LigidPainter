@@ -566,7 +566,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
         }
     }
-    if(navigationPanel.sections[0].elements[0].button.hover && mouse.LClick){ //If pressed to "Project" button in the menu bar (navigation panel)
+    if(navigationPanel.sections[0].elements[1].button.hover && mouse.LClick){ //If pressed to "Project" button in the menu bar (navigation panel)
         //Show the context menu
         contextMenus[3].dialogControl.activate();
         contextMenus[3].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
@@ -574,7 +574,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         contextMenus[3].pos.z = 0.95f;
         contextMenus[3].selectedElement = 0;
     }
-    if(navigationPanel.sections[0].elements[1].button.hover && mouse.LClick){ //If pressed to "Painting" button in the menu bar (navigation panel)
+    if(navigationPanel.sections[0].elements[2].button.hover && mouse.LClick){ //If pressed to "Painting" button in the menu bar (navigation panel)
         //Show the context menu
         contextMenus[4].dialogControl.activate();
         contextMenus[4].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
@@ -583,7 +583,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         contextMenus[4].selectedElement = 0;
     }
     
-    if(navigationPanel.sections[0].elements[2].button.hover && mouse.LClick){ //If pressed to "Help" button in the menu bar (navigation panel)
+    if(navigationPanel.sections[0].elements[3].button.hover && mouse.LClick){ //If pressed to "Help" button in the menu bar (navigation panel)
         //Show the context menu
         contextMenus[5].dialogControl.activate();
         contextMenus[5].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
