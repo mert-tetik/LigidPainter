@@ -90,9 +90,6 @@ bool Project::readLigidFile(
         //!Texture resolution
         rf.read(reinterpret_cast<char*>(   &textureRes    ),sizeof(int));
         
-        std::cout << textureRes << std::endl;
-
-        
         return true;
     }
 }

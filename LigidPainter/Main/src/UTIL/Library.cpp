@@ -98,6 +98,8 @@ void Library::uniqueNameControl(){
     }
 }
 
+/// @brief Add a texture to the textures vector
+/// @param texture the texture
 void Library::addTexture(Texture& texture){
     texture.uniqueId = 0; 
 
@@ -107,6 +109,9 @@ void Library::addTexture(Texture& texture){
 
     this->textures.push_back(texture);
 }
+
+/// @brief Add a material to the materials vector
+/// @param material the material
 void Library::addMaterial(Material& material){
     material.uniqueID = 0; 
 
@@ -116,9 +121,59 @@ void Library::addMaterial(Material& material){
 
     this->materials.push_back(material);
 }
+
+/// @brief Add a brush to the brushes vector
+/// @param brush the brush
 void Library::addBrush(Brush& brush){
     this->brushes.push_back(brush);
 }
+
+/// @brief Add a model to the tdmodels vector
+/// @param model the model
 void Library::addModel(Model& model){
     this->TDModels.push_back(model);
+}
+
+/// @brief Delete a texture from the textures vector
+/// @param index the texture corresponding to that index will be deleted
+void Library::eraseTexture   (int index){
+    this->textures.erase(this->textures.begin() + index);
+}
+
+/// @brief Delete a material from the materials vector
+/// @param index the material corresponding to that index will be deleted
+void Library::eraseMaterial  (int index){
+    this->materials.erase(this->materials.begin() + index);
+}
+
+/// @brief Delete a brush from the brushes vector
+/// @param index the brush corresponding to that index will be deleted
+void Library::eraseBrush     (int index){
+    this->brushes.erase(this->brushes.begin() + index);
+}
+
+/// @brief Delete a model from the tdmodels vector
+/// @param index the model corresponding to that index will be deleted
+void Library::eraseModel     (int index){
+    this->TDModels.erase(this->TDModels.begin() + index);
+}
+
+/// @brief Clear the textures array 
+void Library::clearTextures   (){
+    this->textures.clear();
+}
+
+/// @brief Clear the materials array 
+void Library::clearMaterials  (){
+    this->materials.clear();
+}
+
+/// @brief Clear the brushes array 
+void Library::clearBrushes     (){
+    this->brushes.clear();
+}
+
+/// @brief Clear the TDModels array 
+void Library::clearModels     (){
+    this->TDModels.clear();
 }

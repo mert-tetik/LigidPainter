@@ -399,10 +399,22 @@ struct Library{
     void uniqueNameControl();
 
     //Add elements
-    void addTexture(Texture& texture);
-    void addMaterial(Material& material);
-    void addBrush(Brush& brush);
-    void addModel(Model& model);
+    void addTexture     (Texture& texture);
+    void addMaterial    (Material& material);
+    void addBrush       (Brush& brush);
+    void addModel       (Model& model);
+
+    //Erase elements
+    void eraseTexture   (int index);
+    void eraseMaterial  (int index);
+    void eraseBrush     (int index);
+    void eraseModel     (int index);
+    
+    //Clear vectors
+    void clearTextures   ();
+    void clearMaterials  ();
+    void clearBrushes    ();
+    void clearModels     ();
 };
 
 struct Context{

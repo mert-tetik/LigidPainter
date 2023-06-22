@@ -141,7 +141,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
             if(test){
                 Material material(textureRes, "", 0);
                 material.readFile(test,colorPalette,shaders.buttonShader,appTextures,library.materials);
-                library.materials.push_back(material);
+                library.addMaterial(material);
             }
         }
         if(selectedLibraryElementIndex == 2){ //Brushes
@@ -385,7 +385,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 library.addTexture(duplicatedTexture);
             }
             if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){//Clicked to delete button
-                library.textures.erase(library.textures.begin() + contextMenus[i].selectedElement);
+                library.eraseTexture(contextMenus[i].selectedElement);
             }
         }
         
@@ -419,7 +419,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 library.addMaterial(duplicatedMaterial);
             }
             if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){//Clicked to delete button
-                library.materials.erase(library.materials.begin() + contextMenus[i].selectedElement);
+                library.eraseMaterial(contextMenus[i].selectedElement);
             }
         }
         if(i == 2 && selectedLibraryElementIndex == 2 && contextMenus[i].dialogControl.isActive()){ //If brush context menu is active
@@ -459,7 +459,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 library.addBrush(library.brushes[contextMenus[i].selectedElement]);
             }
             if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){//Clicked to delete button
-                library.brushes.erase(library.brushes.begin() + contextMenus[i].selectedElement);
+                library.eraseBrush(contextMenus[i].selectedElement);
             }
         }
         if(i == 3 && contextMenus[i].dialogControl.isActive()){ //If project context menu is active

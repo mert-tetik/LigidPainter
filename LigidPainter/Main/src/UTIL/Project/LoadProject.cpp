@@ -74,7 +74,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
 
     
     //Load the textures
-    library.textures.clear();
+    library.clearTextures();
     for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "Textures")){
         std::string texturePath = entry.path().string();
 
@@ -85,7 +85,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
     }
 
     //Load the materials
-    library.materials.clear();
+    library.clearMaterials();
     for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "Materials")){
         std::string materialPath = entry.path().string();
 
@@ -96,7 +96,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
     }
     
     //Load the brushes
-    library.brushes.clear();
+    library.clearBrushes();
     for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "Brushes")){
         std::string brushPath = entry.path().string();
 
@@ -109,7 +109,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
     }
     
     //Load the tdmodels
-    library.TDModels.clear();
+    library.clearModels();
     for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "3DModels")){
         std::string modelPath = entry.path().string();
 
