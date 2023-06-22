@@ -108,7 +108,7 @@ void NewProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalet
                                     panel.sections[0].elements[2].textBox.text, //Destination path
                                     panel.sections[0].elements[1].textBox.text, //Title of the project
                                     panel.sections[0].elements[7].textBox.text,  //3D model path
-                                    textureRes
+                                    std::stoi(panel.sections[0].elements[3].comboBox.texts[panel.sections[0].elements[3].comboBox.selectedIndex])
                                  ))
         {
             project.loadProject(project.ligidFilePath,library,shaders,model,appTextures,colorPalette,textureRes,nodeScene , appNodes);
