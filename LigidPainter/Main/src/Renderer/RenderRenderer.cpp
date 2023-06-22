@@ -47,7 +47,7 @@ void Renderer::render(){
         glfwSwapInterval(1); //Enable VSync
     else
         glfwSwapInterval(0); //Disable VSync
-    
+
     //Default blending settings
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -56,6 +56,8 @@ void Renderer::render(){
     //Refresh the default framebuffer    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+    glDisable(GL_CULL_FACE);
+
     //Render skybox
     renderSkyBox();
 
@@ -69,6 +71,11 @@ void Renderer::render(){
 
         painter.updateTheDepthTexture = false;
     }
+
+    if(backfaceCulling)
+        glEnable(GL_CULL_FACE);
+    else
+        glDisable(GL_CULL_FACE);
 
     //3D Model    
     shaders.tdModelShader.use();
@@ -125,7 +132,7 @@ void Renderer::render(){
     userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
     
     //Render the UI
-    userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project,painter,VSync,skybox,model);//Render the UI
+    userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project,painter,VSync,backfaceCulling,skybox,model);//Render the UI
 
     //Painting
     if(mouse.LPressed && !userInterface.anyPanelHover && !userInterface.anyDialogActive){ //If mouse hover 3D viewport and left mouse button pressed

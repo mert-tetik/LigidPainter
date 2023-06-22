@@ -51,13 +51,16 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
                     },"Texture Resolution",4.f),context.window),
                     
                     Element(CheckBox(BUTTON_STYLE_BASIC,glm::vec2(2,2),colorPalette,buttonShader, "VSync"  , 2.f)),
+                    
+                    Element(CheckBox(BUTTON_STYLE_BASIC,glm::vec2(2,2),colorPalette,buttonShader, "Backface Culling"  , 2.f)),
                 }
             )
         }
     },glm::vec2(15.f),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
 }
 
-void SettingsDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,glm::vec2 videoScale,int &textureRes,bool &VSync){
+void SettingsDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+                            Library &library,glm::vec2 videoScale,int &textureRes,bool &VSync, bool &backfaceCulling){
     
     dialogControl.updateStart(buttonShader);   
 
@@ -73,6 +76,9 @@ void SettingsDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette
 
     //Set the vsync option as the vsync checkbox element
     VSync = panel.sections[0].elements[2].checkBox.clickState1;
+    
+    //Set the backface culling option as the backface culling checkbox element
+    backfaceCulling = panel.sections[0].elements[3].checkBox.clickState1;
 
     //Render the panel    
     panel.render(videoScale,mouse,timer,textRenderer,true);

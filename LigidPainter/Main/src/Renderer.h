@@ -89,6 +89,7 @@ public:
     Painter painter;
 
     bool VSync = false; //Set glfwSwapInterval(1) if true
+    bool backfaceCulling = false;
 
 
 

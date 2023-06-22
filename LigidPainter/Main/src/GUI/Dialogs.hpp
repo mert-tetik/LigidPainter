@@ -77,7 +77,7 @@ class SettingsDialog
 
     //Public member functions    
     void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,
-                glm::vec2 videoScale,int &textureRes,bool &VSync);
+                glm::vec2 videoScale,int &textureRes,bool &VSync,bool &backfaceCulling);
  };
 
 

@@ -102,7 +102,7 @@ public:
     //Public member functions
     void init(Shaders shaders,Context context,AppTextures appTextures,Websites websites,glm::vec2 videoScale,Model &sphereModel);
     void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
-                std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter,bool &VSync,Skybox &skybox,Model &model);
+                std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter,bool &VSync,bool &backfaceCulling,Skybox &skybox,Model &model);
 
 private: 
     void elementInteraction(Painter &painter,Mouse &mouse, Library &library,std::vector<ContextMenu> &contextMenus,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
@@ -114,7 +114,7 @@ private:
 
     void renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene);
 
-    void renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene,Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync, Box &box, std::vector<Node> &appNodes);
+    void renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene,Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync,bool &backfaceCulling, Box &box, std::vector<Node> &appNodes);
 
     void renderDropper(Mouse &mouse,Painter &painter);
 

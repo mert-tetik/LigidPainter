@@ -39,7 +39,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
-            std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter,bool &VSync,Skybox &skybox,Model &model){
+            std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter,bool &VSync,bool &backfaceCulling,Skybox &skybox,Model &model){
     
     //Set pass less or equal
     glDepthFunc(GL_LEQUAL);
@@ -85,7 +85,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     renderNodes(videoScale,mouse,timer,textRenderer,library,nodeScene);
     
     //Render the dialogs
-    renderDialogs(videoScale,mouse,timer,textRenderer,library,nodeScene,context,project,model,skybox,textureRes,VSync,box, appNodes);
+    renderDialogs(videoScale,mouse,timer,textRenderer,library,nodeScene,context,project,model,skybox,textureRes,VSync,backfaceCulling,box, appNodes);
 
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(mouse,painter);
@@ -181,7 +181,7 @@ void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRende
     }
 }
 
-void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene, Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync, Box &box, std::vector<Node> &appNodes){
+void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene, Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync, bool &backfaceCulling,Box &box, std::vector<Node> &appNodes){
     if(newProjectDialog.dialogControl.isActive())
         newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,library,shaders,model,textureRes, nodeScene , appNodes);
     
@@ -201,7 +201,7 @@ void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRen
         newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes);
     
     if(settingsDialog.dialogControl.isActive())
-        settingsDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes,VSync);
+        settingsDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes,VSync,backfaceCulling);
     
     if(materialEditorDialog.dialogControl.isActive() && library.materials.size()){
         if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
