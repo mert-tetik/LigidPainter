@@ -34,6 +34,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "tinyfiledialogs.h"
 
+#define TD_MODEL_FOLDER_CREATION 0
+#define BRUSH_FOLDER_CREATION 1
+
+void completeFolder(std::string path, int action);
 
 bool Project::createProject(std::string destinationPath,std::string name,std::string TDModelPath,int textureRes){
     if(destinationPath[destinationPath.size()-1] == '/' || destinationPath[destinationPath.size()-1] == '\\') //Make sure destination path doesn't have seperator at the end
@@ -42,15 +46,6 @@ bool Project::createProject(std::string destinationPath,std::string name,std::st
     if(!std::filesystem::exists(destinationPath)){
         const char* title = "Warning";
         const char* message = "Project path is not valid! Please try another directory.";
-        const char* icon = "warning";
-        const char* button = "Ok";
-        
-        tinyfd_messageBox(title, message, button, icon, 1);
-        return false;
-    }
-    if(!std::filesystem::exists(TDModelPath)){
-        const char* title = "Warning";
-        const char* message = "3D model path is not valid. Please try another 3D model file.";
         const char* icon = "warning";
         const char* button = "Ok";
         
@@ -110,10 +105,30 @@ bool Project::createProject(std::string destinationPath,std::string name,std::st
     //3D Models
     std::string tdModelFolderPath = this->folderPath + folderDistinguisher + "3DModels";
     std::filesystem::create_directory(tdModelFolderPath);
-    std::filesystem::copy(TDModelPath,tdModelFolderPath);
+    completeFolder(tdModelFolderPath, TD_MODEL_FOLDER_CREATION);
+    
+    if(std::filesystem::exists(TDModelPath)){
+        std::filesystem::copy(TDModelPath,tdModelFolderPath);
+    }
 
     //Create the .ligid file
     writeLigidFile({}, textureRes);
 
     return true;
+}
+
+/// @brief add the contents off the related folder
+void completeFolder(std::string path, int action){
+    
+    #if defined(_WIN32) || defined(_WIN64)
+		    char folderDistinguisher = '\\';
+	#else
+			char folderDistinguisher = '/'; 
+	#endif
+
+    if(action == TD_MODEL_FOLDER_CREATION){
+        std::filesystem::copy("./LigidPainter/Resources/3D Models/sphere.fbx", path + folderDistinguisher + "sphere.fbx");
+        std::filesystem::copy("./LigidPainter/Resources/3D Models/plane.fbx", path + folderDistinguisher + "plane.fbx");
+    }
+
 }

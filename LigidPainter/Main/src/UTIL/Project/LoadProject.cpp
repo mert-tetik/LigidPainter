@@ -45,12 +45,14 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
     }
 
     //TODO Do smt with these variables
-    time_t creationDate;
+    time_t creationDate; 
     time_t lastOpenedDate;
     
 
     if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate, nodeScene, appNodes, textureRes)){
         std::cout << "ERROR CAN'T READ THE LIGID FILE : " << ligidFilePath << ". The file is might not be a ligid file." << std::endl;
+
+        return false;
     }
 
 

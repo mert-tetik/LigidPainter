@@ -236,7 +236,7 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
                 const char* message = "Error while reading the *.ligid file! Detailed error message is printed to the terminal.";
                 const char* icon = "warning";
                 const char* button = "Ok";
-                tinyfd_messageBox(title, message, button, icon, 1);
+                tinyfd_messageBox(title, message, button, icon, 1); 
             }
         }
     }
