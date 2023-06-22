@@ -96,7 +96,7 @@ void CheckBox::render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRender
                                 glm::vec3(resultTextPos.x,resultTextPos.y,resultTextPos.z + 0.02f),
                                 false,
                                 resultScaleText,
-                                resultTextPos.x-resultScale.x,
+                                orgResultPos.x - orgResultScale.x,
                                 orgResultPos.x + orgResultScale.x,
                                 TEXTRENDERER_ALIGNMENT_MID
                              );
