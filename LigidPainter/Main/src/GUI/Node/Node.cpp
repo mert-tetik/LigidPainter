@@ -106,6 +106,7 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
             //Move the IO circle to the node panel IO button             
             IOs[i].IOCircle.pos = nodePanel.sections[0].elements[i].pos;
             IOs[i].IOCircle.pos.z += 0.01f;        
+        
             
             //Move the IO Circle to the left side of the the IO element if is input
             if(IOs[i].state == 0){//Is input
@@ -169,7 +170,7 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
                         }
 
                         //Create a connection 
-                        createConnection(hoveredNodeI,hoveredNodeI,currentNodeIndex,i,nodeScene);
+                        createConnection(hoveredNodeI,hoveredIOI,currentNodeIndex,i,nodeScene);
                     }
                 }
             }

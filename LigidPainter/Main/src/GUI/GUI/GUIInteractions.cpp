@@ -242,7 +242,7 @@ void libraryPanelLeftInteraction(Panel &libraryPanelLeft, Library &library,Mouse
 }
 
 
-void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &painter, Dropper &dropper,ColorPalette colorPalette,Shader buttonShader, AppTextures appTextures, Model &model){
+void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &painter, Dropper &dropper,ColorPalette colorPalette,Shader buttonShader, AppTextures appTextures, Model &model, std::vector<Node> &nodeScene){
     if(paintingPanel.sections[0].elements[0].button.hover && mouse.LDoubleClick){//Pressed to first color button element
         painter.loadColor1();
     }
@@ -311,6 +311,7 @@ void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &paint
             Element meshButton = Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,2),colorPalette,buttonShader, model.meshes[i].materialName , Texture(), 0.f,true));
 
             paintingPanel.sections[6].elements.push_back(meshButton);
+        
         }
     }
 
@@ -620,7 +621,10 @@ void nodeInteraction(Model &model, std::vector<Node> &nodeScene,std::vector<Node
     
     //Update the mesh node if a new model is added
     if(model.newModelAdded){
+        
+        Node previousNode; //(Current node (unchanged))
         Node meshOutputNode;
+
         std::vector <NodeIO> meshOutputNodeInputElements;
         for (size_t i = 0; i < model.meshes.size(); i++)
         {
@@ -641,8 +645,21 @@ void nodeInteraction(Model &model, std::vector<Node> &nodeScene,std::vector<Node
             0
         );
 
+        for (size_t i = 0; i < previousNode.IOs.size(); i++)
+        {
+            if(i >= meshOutputNode.IOs.size())
+                break;
+
+            meshOutputNode.IOs[i].connections = previousNode.IOs[i].connections;
+        }
+        
+
         appNodes[0] = meshOutputNode;
         nodeScene[0] = meshOutputNode;
+    
+        //Update all the connections
+        Util util;
+        util.updateAllTheNodeConnections(nodeScene);
     }
 }
 
@@ -721,7 +738,7 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
     
     updateLibraryPanelDisplayerElements(libraryPanelDisplayer,library,colorPalette,shaders,frameCounter);
 
-    paintingPanelInteraction(paintingPanel,mouse,painter,dropper,colorPalette,shaders.buttonShader,appTextures,model);
+    paintingPanelInteraction(paintingPanel,mouse,painter,dropper,colorPalette,shaders.buttonShader,appTextures,model, nodeScene);
     
     windowPanelInteraction(windowPanel, mouse, painter, settingsDialog, displayerDialog,exportDialog);
 

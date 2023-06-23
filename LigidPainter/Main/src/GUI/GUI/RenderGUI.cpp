@@ -79,6 +79,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     renderRenamingTextbox(videoScale,mouse,timer,textRenderer,painter,library,context);
     
     //Render the nodes
+
     renderNodes(videoScale,mouse,timer,textRenderer,library,nodeScene);
     
     //Render the dialogs
@@ -169,6 +170,7 @@ void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer,
 void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene){
     for (size_t i = 0; i < nodeScene.size(); i++)
     {
+
         //Update the display texture of the material node
         if(nodeScene[i].nodeIndex == MATERIAL_NODE){//Is a material node
             for (size_t matI = 0; matI < library.materials.size(); matI++)
@@ -177,6 +179,8 @@ void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRende
                     nodeScene[i].nodePanel.sections[0].elements[0].button.texture = Texture(library.materials[matI].displayingTexture);
             }
         }
+
+
         nodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,nodeScene,i);
     }
 }

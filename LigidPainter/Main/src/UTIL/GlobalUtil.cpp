@@ -100,6 +100,27 @@ std::vector<Material> Util::getTheMaterialsConnectedToTheMeshNode(std::vector<No
     return materials;
 }
 
+void Util::updateAllTheNodeConnections(std::vector<Node> &nodeScene){
+	//Check all the nodes
+	for (size_t ii = 0; ii < nodeScene.size(); ii++)
+	{
+		for (size_t IOI = 0; IOI < nodeScene[ii].IOs.size(); IOI++)
+		{
+			for (size_t conI = 0; conI < nodeScene[ii].IOs[IOI].connections.size(); conI++)
+			{
+				NodeConnection connection = nodeScene[ii].IOs[IOI].connections[conI];
+				
+				//If the input or the node is disapeared 
+				if(connection.inputIndex >= nodeScene[connection.nodeIndex].IOs.size() || connection.nodeIndex >= nodeScene.size()){
+					//Severe the connection
+					nodeScene[ii].IOs[IOI].connections.erase(nodeScene[ii].IOs[IOI].connections.begin() + conI);
+					conI--;
+				}
+			}
+		}
+	}
+}
+
 
 std::string Util::rmvPath(std::string startingPath, std::string fullPath) 
 {

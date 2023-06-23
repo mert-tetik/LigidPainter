@@ -57,7 +57,10 @@ public:
     void giveUniqueId(int &ID ,const std::vector<Texture> textures);
     void giveUniqueId(int &ID ,const std::vector<Material> materials);
 
+    //Nodes
     std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library,int textureRes);
+    void updateAllTheNodeConnections(std::vector<Node> &nodeScene);
+
 
 };
 

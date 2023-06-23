@@ -100,7 +100,7 @@ void Renderer::render(){
     Util util;
     std::vector<Material> nodeMaterials = util.getTheMaterialsConnectedToTheMeshNode(nodeScene,library,0); 
 
-//  ////Render each mesh
+    //Render each mesh
     for (size_t i = 0; i < model.meshes.size(); i++)
     {
         if(library.materials.size()){
@@ -121,6 +121,7 @@ void Renderer::render(){
         //Draw the mesh
         model.meshes[i].Draw();
     }
+
 
     //Clear the depth buffer before rendering the UI elements (prevent coliding)
     glClear(GL_DEPTH_BUFFER_BIT);
