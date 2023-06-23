@@ -40,7 +40,7 @@ void Texture::writeTMP(){
     std::string tmpTitle = generateTMPTitle();
 
     //Destination path of the tmp file (smt like ./tmp/13_3.tmp)
-    std::string tmpFilePath = (std::string)"./tmp" + std::to_string(folderDistinguisher) + tmpTitle + (std::string)".tmp"; 
+    std::string tmpFilePath = (std::string)"./tmp/" + tmpTitle + (std::string)".tmp"; 
 
     std::cout << "tmpFilePath was : " << tmpFilePath << std::endl;
 
@@ -97,8 +97,7 @@ std::string Texture::generateTMPTitle(){
         }
     }
     
-    int fileI;
-
+    int fileI = 0;
     // Find the next available index that is not in the indices vector
     while (std::find(indices.begin(), indices.end(), fileI) != indices.end()) {
         fileI++;
