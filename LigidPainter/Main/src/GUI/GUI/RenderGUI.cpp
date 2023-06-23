@@ -77,19 +77,19 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
 
     //Render renaming textbox
     renderRenamingTextbox(videoScale,mouse,timer,textRenderer,painter,library,context);
-
-    //Interactions of the UI elements
-    elementInteraction(painter,mouse,library,contextMenus,appNodes,nodeScene,context,videoScale,textRenderer,timer,textureRes,screenGapPerc,model,project);
     
     //Render the nodes
     renderNodes(videoScale,mouse,timer,textRenderer,library,nodeScene);
     
     //Render the dialogs
     renderDialogs(videoScale,mouse,timer,textRenderer,library,nodeScene,context,project,model,skybox,textureRes,VSync,backfaceCulling,box, appNodes);
-
+    
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(mouse,painter);
 
+    //Interactions of the UI elements
+    elementInteraction(painter,mouse,library,contextMenus,appNodes,nodeScene,context,videoScale,textRenderer,timer,textureRes,screenGapPerc,model,project);
+    
     frameCounter++;
 
     if(frameCounter > 1000)
