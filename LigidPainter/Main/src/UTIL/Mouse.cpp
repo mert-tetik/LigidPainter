@@ -81,63 +81,28 @@ void Mouse::updateCursor(){//Call that every frame after rendering the UI elemen
 	activeCursor = defaultCursor;
 }
 
-bool Mouse::isMouseHover(glm::vec2 scale, glm::vec2 position){ //In screen coordinates
-	std::vector<float> buttonCoor{
-		// first triangle
-			scale.x + position.x,  scale.y + position.y, 1,1,0,0,0,0,  // top right
-			scale.x + position.x, -scale.y + position.y, 1,0,0,0,0,0,  // bottom right
-		-scale.x + position.x,  scale.y + position.y, 0,1,0,0,0,0,  // top left 
-		
-		// second triangle
-			scale.x + position.x, -scale.y + position.y, 1,0,0,0,0,0,  // bottom right
-		-scale.x + position.x, -scale.y + position.y, 0,0,0,0,0,0,  // bottom left
-		-scale.x + position.x,  scale.y + position.y, 0,1,0,0,0,0  // top left
-	};
+struct Rectangle {
+    int x;
+    int y;
+    int width;
+    int height;
+};
 
-	float mouseFX = (float)cursorPos.x;
-	float mouseFY = (float)cursorPos.y;
+bool Mouse::isMouseHover(glm::vec2 scale, glm::vec2 pos) {
+    // Calculate the rectangle's coordinates
+    Rectangle rectangle;
+    rectangle.width = scale.x*2;
+    rectangle.height = scale.y*2;
+    rectangle.x = pos.x - scale.x;
+    rectangle.y = pos.y - scale.y;
 
-	//Barycentric calculations
-	for (size_t i = 0; i < 2; i++)
-	{
-		float ax = buttonCoor[0 + (24*i)];
-		float ay = buttonCoor[1 + (24 * i)];
-		float bx = buttonCoor[8 + (24 * i)];
-		float by = buttonCoor[9 + (24 * i)];
-		float cx = buttonCoor[16 + (24 * i)];
-		float cy = buttonCoor[17 + (24 * i)];
+    // Check if the cursor position is within the rectangle's bounds
+    if (this->cursorPos.x >= rectangle.x && this->cursorPos.x <= (rectangle.x + rectangle.width) &&
+        
+		this->cursorPos.y >= rectangle.y && this->cursorPos.y <= (rectangle.y + rectangle.height)) {
+        
+		return true;
+    }
 
-		if (cy - ay == 0) {
-			cy += 0.0001f;
-		}
-
-		float x1 = (ax * (cy - ay) + (mouseFY - ay) * (cx - ax) - mouseFX * (cy - ay));
-		float x2 =  ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay));
-
-		if(x1 == 0)
-			x1 += 0.0001;
-		if(x2 == 0)
-			x2 += 0.0001;
-
-		float w1 = x1 / x2;
-		
-		float x3 = (mouseFY - ay - w1 * (by - ay));
-		float x4 = (cy - ay);
-		
-		if(x3 == 0)
-			x3 += 0.0001;
-		if(x4 == 0)
-			x4 += 0.0001;
-
-		float w2 = x3 / x4;
-		
-		if (w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1) {
-			return true;
-		}
-		else if (i == 1) {
-			return false;
-		}
-	}
-	
-	return false;
+    return false;
 }
