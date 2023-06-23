@@ -79,7 +79,6 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     renderRenamingTextbox(videoScale,mouse,timer,textRenderer,painter,library,context);
     
     //Render the nodes
-
     renderNodes(videoScale,mouse,timer,textRenderer,library,nodeScene);
     
     //Render the dialogs
@@ -168,6 +167,7 @@ void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer,
 }
 
 void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene){
+    
     for (size_t i = 0; i < nodeScene.size(); i++)
     {
 
