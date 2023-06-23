@@ -87,10 +87,18 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
     nodePanel.render(videoScale,mouse,timer,textRenderer,!cursorOnBarriers);
     
     //Auto scaling the node panel compatible with it's elements
-    const float nodePanelTopPos = nodePanel.pos.y - nodePanel.scale.y; //In y axis ofc 
-    const float nodePanelLastElementPos = nodePanel.sections[0].elements[nodePanel.sections[0].elements.size() - 1].button.pos.y; //In y axis
-    const float nodePanelLastElementScale = nodePanel.sections[0].elements[nodePanel.sections[0].elements.size() - 1].button.scale.y; //In y axis
-    nodePanel.scale.y = (nodePanelLastElementPos + nodePanelLastElementScale) - nodePanelTopPos; 
+    if(nodePanel.sections.size()){
+        
+        nodePanel.scale.y = 0;
+        for (size_t i = 0; i < nodePanel.sections[0].elements.size(); i++)
+        {
+            nodePanel.scale.y += nodePanel.sections[0].elements[i].scale.y;
+            nodePanel.scale.y += nodePanel.sections[0].elements[i].panelOffset/2.f;
+        }
+
+        nodePanel.scale.y += 2;
+
+    }
     
     //Render & process all the inputs & outputs
     for (size_t i = 0; i < IOs.size(); i++)
