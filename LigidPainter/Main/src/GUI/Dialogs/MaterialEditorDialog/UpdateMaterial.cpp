@@ -40,10 +40,10 @@ void MaterialEditorDialog::updateMaterial(Material &material,float textureRes,Bo
     glm::vec3 fragPos = glm::vec3((float)textureRes/2.f,(float)textureRes/2.f,1.0f);
     
     //For every modifier the material has (Output every modifier the material has)
-    for (size_t i = 0; i < material.materialModifiers.size(); i++)
+    for (int i = material.materialModifiers.size() - 1; i >= 0; --i)    
     {
         //For all the material channels
-        for (size_t channelI = 0; channelI < 6; channelI++) 
+        for (int channelI = 0; channelI < 6; channelI++) 
         {
             //Disable the depth test (just in case)
             glDisable(GL_DEPTH_TEST);

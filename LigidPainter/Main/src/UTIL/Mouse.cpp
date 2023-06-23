@@ -41,12 +41,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+/// @brief Default constructor (just in case)
 Mouse::Mouse(){}
 
+/// @brief Main constructor 
 Mouse::Mouse(GLFWwindow* window){
 	this->window = window;
 }
 
+/// @brief Load all the cursors (that function is called in renderer constructor)
 void Mouse::loadCursors(){
 	//Help importing texture
 	Texture texture;
@@ -72,10 +75,13 @@ void Mouse::loadCursors(){
 	//stbi_image_free(images[0].pixels);
 }
 
+/// @brief Set a cursor
+/// @param cursor a GLFWcursor* variable from the Mouse class public member varibles 
 void Mouse::setCursor(GLFWcursor* cursor){
 	activeCursor = cursor;
 }
 
+/// @brief Was called at the end of the renderer.render (every frame)
 void Mouse::updateCursor(){//Call that every frame after rendering the UI elements
 	glfwSetCursor(window,activeCursor);
 	activeCursor = defaultCursor;
@@ -88,6 +94,8 @@ struct Rectangle {
     int height;
 };
 
+/// @brief 
+/// @return if the cursor position is on top of a rectangle with the transform values of given parameters 
 bool Mouse::isMouseHover(glm::vec2 scale, glm::vec2 pos) {
     // Calculate the rectangle's coordinates
     Rectangle rectangle;

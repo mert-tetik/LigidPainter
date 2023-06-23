@@ -134,7 +134,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,float textureR
 void MaterialEditorDialog::updateLayerPanelElements(Material &material,int &textureRes,Box &box,Context &context){
     //Update layer panal elements
     if  (
-            layerPanel.barButtons[0].clickedMixVal == 1.f || //Pressed to add modifier button in the layer panel
+            layerPanel.barButtons[0].clicked || //Pressed to add modifier button in the layer panel
             dialogControl.firstFrameActivated // Or in the first frame this dialog is activated
         )
     { 
