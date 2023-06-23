@@ -114,6 +114,7 @@ private:
 	#endif
 
     std::string generateTMPTitle();
+    std::string getTMPTitleWithGreatestIndex();
 
 public:
     unsigned int ID = 0; 

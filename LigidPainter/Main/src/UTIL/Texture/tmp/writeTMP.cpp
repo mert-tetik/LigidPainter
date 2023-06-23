@@ -42,13 +42,11 @@ void Texture::writeTMP(){
     //Destination path of the tmp file (smt like ./tmp/13_3.tmp)
     std::string tmpFilePath = (std::string)"./tmp/" + tmpTitle + (std::string)".tmp"; 
 
-    std::cout << "tmpFilePath was : " << tmpFilePath << std::endl;
-
     //Binary file stream
     std::ofstream wf(tmpFilePath , std::ios::out | std::ios::binary);
 
     if(!wf) {
-        std::cout << "ERROR WHILE WRITING TMP FILE! Cannot create file : " << path << std::endl;
+        std::cout << "ERROR WHILE WRITING A TMP FILE! Cannot create file : " << path << std::endl;
         return;
     }   
 
@@ -61,6 +59,9 @@ void Texture::writeTMP(){
     //Write the pixels of the texture to the pixels array
     getData(pixels);
 
+    //Write the resolution data to the tmp file
+    wf.write(reinterpret_cast<char*>(   &txtrResolution    ),sizeof(glm::ivec2));
+    
     //Write the pixels to the tmp file (no compression algorithm is used)
     wf.write(pixels, txtrResolution.x * txtrResolution.y * 4);
 
