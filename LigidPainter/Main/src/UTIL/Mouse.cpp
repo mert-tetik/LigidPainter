@@ -87,6 +87,7 @@ bool Mouse::isMouseHover(glm::vec2 scale, glm::vec2 position){ //In screen coord
 			scale.x + position.x,  scale.y + position.y, 1,1,0,0,0,0,  // top right
 			scale.x + position.x, -scale.y + position.y, 1,0,0,0,0,0,  // bottom right
 		-scale.x + position.x,  scale.y + position.y, 0,1,0,0,0,0,  // top left 
+		
 		// second triangle
 			scale.x + position.x, -scale.y + position.y, 1,0,0,0,0,0,  // bottom right
 		-scale.x + position.x, -scale.y + position.y, 0,0,0,0,0,0,  // bottom left
@@ -110,8 +111,26 @@ bool Mouse::isMouseHover(glm::vec2 scale, glm::vec2 position){ //In screen coord
 			cy += 0.0001f;
 		}
 
-		float w1 = (ax * (cy - ay) + (mouseFY - ay) * (cx - ax) - mouseFX * (cy - ay)) / ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay));
-		float w2 = (mouseFY - ay - w1 * (by - ay)) / (cy - ay);
+		float x1 = (ax * (cy - ay) + (mouseFY - ay) * (cx - ax) - mouseFX * (cy - ay));
+		float x2 =  ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay));
+
+		if(x1 == 0)
+			x1 += 0.0001;
+		if(x2 == 0)
+			x2 += 0.0001;
+
+		float w1 = x1 / x2;
+		
+		float x3 = (mouseFY - ay - w1 * (by - ay));
+		float x4 = (cy - ay);
+		
+		if(x3 == 0)
+			x3 += 0.0001;
+		if(x4 == 0)
+			x4 += 0.0001;
+
+		float w2 = x3 / x4;
+		
 		if (w1 >= 0 && w2 >= 0 && (w1 + w2) <= 1) {
 			return true;
 		}

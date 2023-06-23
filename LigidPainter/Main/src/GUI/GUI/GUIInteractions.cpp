@@ -357,7 +357,7 @@ void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, 
 
 void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Library &library,std::vector<Node>& appNodes ,
                                 std::vector<Node> &nodeScene,Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,
-                                Project& project, int &textureRes){
+                                Project& project, int &textureRes, Painter &painter){
     anyContextMenuActive = false; 
     for (size_t i = 0; i < contextMenus.size(); i++)//Check all the contextMenus
     {
@@ -498,7 +498,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         if(i == 4 && contextMenus[i].dialogControl.isActive()){ //If painting context menu is active
             //Undo
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
-                
+                painter.selectedTexture.readTMP();
             }
             
             //Redo
@@ -691,25 +691,6 @@ void UI::panelPositioning(float &screenGapPerc, Library &library, Painter &paint
 
 void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std::vector<ContextMenu> &contextMenus,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
                         Context &context,glm::vec2 &videoScale,TextRenderer &textRenderer, Timer &timer, int &textureRes,float screenGapPerc,Model &model, Project& project){
-    
-    contextMenuInteraction(contextMenus,mouse,library,appNodes,nodeScene,context,videoScale,timer,textRenderer,project,textureRes);
-    
-    libraryPanelDisplayerInteraction(libraryPanelDisplayer,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,appTextures,frameCounter);
-    
-    libraryPanelLeftInteraction(libraryPanelLeft,library,mouse);
-    
-    updateLibraryPanelDisplayerElements(libraryPanelDisplayer,library,colorPalette,shaders,frameCounter);
-
-    paintingPanelInteraction(paintingPanel,mouse,painter,dropper,colorPalette,shaders.buttonShader,appTextures,model);
-    
-    windowPanelInteraction(windowPanel, mouse, painter, settingsDialog, displayerDialog,exportDialog);
-
-    paintingModesPanelInteraction(paintingModesPanel,painter);
-
-    nodeInteraction(model,nodeScene,appNodes,shaders,colorPalette,videoScale);
-    
-    panelPositioning(screenGapPerc,library,painter);
-
     //!Dialog & panel state
     anyDialogActive = 
                     textureSelectionDialog.dialogControl.isActive() || 
@@ -731,4 +712,22 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
                     nodeEditorDisplayer.hover           ||
                     selectedTextureDisplayer.hover      || 
                     paintingModesPanel.hover;
+
+    contextMenuInteraction(contextMenus,mouse,library,appNodes,nodeScene,context,videoScale,timer,textRenderer,project,textureRes, painter);
+    
+    libraryPanelDisplayerInteraction(libraryPanelDisplayer,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,appTextures,frameCounter);
+    
+    libraryPanelLeftInteraction(libraryPanelLeft,library,mouse);
+    
+    updateLibraryPanelDisplayerElements(libraryPanelDisplayer,library,colorPalette,shaders,frameCounter);
+
+    paintingPanelInteraction(paintingPanel,mouse,painter,dropper,colorPalette,shaders.buttonShader,appTextures,model);
+    
+    windowPanelInteraction(windowPanel, mouse, painter, settingsDialog, displayerDialog,exportDialog);
+
+    paintingModesPanelInteraction(paintingModesPanel,painter);
+
+    nodeInteraction(model,nodeScene,appNodes,shaders,colorPalette,videoScale);
+    
+    panelPositioning(screenGapPerc,library,painter);
 }

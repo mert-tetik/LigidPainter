@@ -29,9 +29,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void Panel::mouseTracking(Mouse& mouse){
     //Check if mouse on the panel or any side of the panel 
     const float grabbingRange = 20; 
+    
     //Check if mouse on top of the panel
+    hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
+    
     if(doMouseTracking){
-        hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
         //Check if mouse on top of the left side of the panel
         leftSide.hover = mouse.isMouseHover(glm::vec2(grabbingRange,resultScale.y),glm::vec2(resultPos.x-resultScale.x,resultPos.y)) && !leftSide.locked;
         //Check if mouse on top of the right side of the panel
@@ -40,14 +42,17 @@ void Panel::mouseTracking(Mouse& mouse){
         bottomSide.hover = mouse.isMouseHover(glm::vec2(resultScale.x,grabbingRange),glm::vec2(resultPos.x,resultPos.y + resultScale.y)) && !bottomSide.locked;
         //Check if mouse on top of the top side of the panel
         topSide.hover = mouse.isMouseHover(glm::vec2(resultScale.x,grabbingRange),glm::vec2(resultPos.x,resultPos.y - resultScale.y)) && !topSide.locked;
+    
     }
     else{
-        hover = false;
         leftSide.hover = false;
         rightSide.hover = false;
         bottomSide.hover = false;
         topSide.hover = false;
     }
+    
+    hover = hover || leftSide.hover || rightSide.hover || bottomSide.hover || topSide.hover;
+    
     //Keep the left corner in the pressed state from the left click to left mouse button release
     if(leftSide.hover && mouse.LClick) //Clicked to the corner
         leftSide.pressed = true;

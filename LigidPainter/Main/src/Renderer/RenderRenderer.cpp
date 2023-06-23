@@ -135,7 +135,7 @@ void Renderer::render(){
     userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project,painter,VSync,backfaceCulling,skybox,model);//Render the UI
 
     //Painting
-    if(mouse.LPressed && !userInterface.anyPanelHover && !userInterface.anyDialogActive){ //If mouse hover 3D viewport and left mouse button pressed
+    if(mouse.LPressed && !userInterface.anyContextMenuActive && !userInterface.anyPanelHover && !userInterface.anyDialogActive){ //If mouse hover 3D viewport and left mouse button pressed
         //Paint
         painter.doPaint(    
                             mouse,
@@ -153,10 +153,11 @@ void Renderer::render(){
                             userInterface.paintingPanel.sections[2].elements[2].checkBox.clickState1,
                             library.textures
                         );
+
     }
 
     //Painting done (refresh)
-    if((painter.refreshable && !mouse.LPressed) || mouse.RClick || mouse.MClick){ //Last frame painting done or once mouse right click or mouse wheel click
+    if((painter.refreshable && !mouse.LPressed) || (painter.refreshable && (mouse.RClick || mouse.MClick))){ //Last frame painting done or once mouse right click or mouse wheel click
         //TODO Prevent updating all the materials
         for (size_t i = 0; i < library.materials.size(); i++)
         {   

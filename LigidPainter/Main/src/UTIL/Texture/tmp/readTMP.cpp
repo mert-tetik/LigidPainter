@@ -43,10 +43,10 @@ void Texture::readTMP(){
     std::string tmpFilePath = (std::string)"./tmp/" + tmpTitle + (std::string)".tmp"; 
 
     //Binary file stream
-    std::ifstream rf(tmpFilePath , std::ios::out | std::ios::binary);
+    std::ifstream rf(tmpFilePath , std::ios::in | std::ios::binary);
 
     if(!rf) {
-        std::cout << "ERROR WHILE WRITING A TMP FILE! Cannot create file : " << path << std::endl;
+        std::cout << "ERROR WHILE READING A TMP FILE! Cannot open file : " << path << std::endl;
         return;
     }   
     
@@ -78,6 +78,12 @@ void Texture::readTMP(){
 
     //Release the allocated memory
     delete[] pixels;
+
+    //Close the binary reading stream
+    rf.close();
+
+    //Deleate the tmp file after reading
+    std::filesystem::remove(tmpFilePath);
 }
 
 std::string Texture::getTMPTitleWithGreatestIndex(){
