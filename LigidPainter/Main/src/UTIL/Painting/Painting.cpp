@@ -36,67 +36,16 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "tinyfiledialogs.h"
 
- 
-static void setBrushProperties (    Shader paintingShader,
-                                    float radius,
-                                    float hardness,
-                                    float opacity,
-                                    float spacing,
-                                    float sizeJitter,
-                                    float scatter,
-                                    float fade,
-                                    float rotation,
-                                    float rotationJitter,
-                                    float alphaJitter,
-                                    bool individualTexture,
-                                    bool sinWavePattern,
-                                    unsigned int textureID
-                               ){
+//Front declerations for the utility functions
+static void setBrushProperties (Shader paintingShader,float radius,float hardness,float opacity,float spacing,float sizeJitter,float scatter,float fade,float rotation,float rotationJitter,float alphaJitter,bool individualTexture,bool sinWavePattern,unsigned int textureID);
+static void setShaderUniforms(Shader paintingShader, glm::mat4 &projection, glm::vec2 videoScale, int frameCounter, Mouse mouse);
+static void set3DShaderSideUniforms(Shader tdModelShader,int selectedColorIndex,Color color1,Color color2,Color color3,float opacity ,int selectedPaintingModeIndex);
 
-    paintingShader.setFloat("brush.radius", radius);
-    paintingShader.setFloat("brush.hardness", hardness);
-    paintingShader.setFloat("brush.sizeJitter", sizeJitter);
-    paintingShader.setFloat("brush.scatter", scatter);
-    paintingShader.setFloat("brush.fade", fade);
-    paintingShader.setFloat("brush.rotation", rotation);
-    paintingShader.setFloat("brush.rotationJitter", rotationJitter);
-    paintingShader.setFloat("brush.alphaJitter", alphaJitter);
-    paintingShader.setInt("brush.individualTexture", individualTexture);
-    paintingShader.setInt("brush.sinWavePattern", sinWavePattern);
-    
-    //Bind the texture of the brush
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,textureID);
-    paintingShader.setFloat("brush.txtr", 0);
-}
 
-static void setShaderUniforms(Shader paintingShader, glm::mat4 &projection, glm::vec2 videoScale, int frameCounter, Mouse mouse){
-    glm::vec2 scale = videoScale / glm::vec2(2);
-    glm::vec3 pos = glm::vec3(videoScale / glm::vec2(2),1.f);
-    projection = glm::ortho(0.f,videoScale.x,0.f,videoScale.y);
-    
-    paintingShader.setVec2("scale", scale); //Cover the screen
-    paintingShader.setVec3("pos", pos); //Cover the screen
-    paintingShader.setMat4("projection", projection); //Cover the screen
-    paintingShader.setVec2("videoScale", videoScale); 
-    paintingShader.setVec2("mouseOffset", mouse.mouseOffset);
-    paintingShader.setInt("frame", frameCounter);
-}
-
-static void set3DShaderSideUniforms(Shader tdModelShader,int selectedColorIndex,Color color1,Color color2,Color color3,float opacity ,int selectedPaintingModeIndex){
-    tdModelShader.setInt("brushModeState", selectedPaintingModeIndex);
-    if(selectedColorIndex == 0)
-        tdModelShader.setVec3("paintingColor", color1.RGB / glm::vec3(255.f));
-    if(selectedColorIndex == 1)
-        tdModelShader.setVec3("paintingColor", color2.RGB / glm::vec3(255.f));
-    if(selectedColorIndex == 2)
-        tdModelShader.setVec3("paintingColor", color3.RGB / glm::vec3(255.f));
-    tdModelShader.setFloat("paintingOpacity", opacity);
-}
 
 void Painter::doPaint(Mouse mouse,float radius,float hardness,float opacity,float spacing,float sizeJitter,float scatter,float fade,float rotation,
                       float rotationJitter,float alphaJitter,bool individualTexture,bool sinWavePattern,std::vector<Texture> textures){
-    
+
     glm::vec2 firstCursorPos = mouse.cursorPos;
     
     //First frame the painting is started
@@ -164,7 +113,6 @@ void Painter::doPaint(Mouse mouse,float radius,float hardness,float opacity,floa
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
     glDepthFunc(GL_LESS);
 
-    
     glBindFramebuffer(GL_FRAMEBUFFER,0); //Bind the default framebuffer
     
     lastCursorPos = firstCursorPos;
@@ -174,4 +122,67 @@ void Painter::doPaint(Mouse mouse,float radius,float hardness,float opacity,floa
     refreshable = true;
     
     frameCounter++;
+}
+
+
+
+
+//---------- UTIL FUNCTIONS ---------
+
+
+static void setBrushProperties (    Shader paintingShader,
+                                    float radius,
+                                    float hardness,
+                                    float opacity,
+                                    float spacing,
+                                    float sizeJitter,
+                                    float scatter,
+                                    float fade,
+                                    float rotation,
+                                    float rotationJitter,
+                                    float alphaJitter,
+                                    bool individualTexture,
+                                    bool sinWavePattern,
+                                    unsigned int textureID
+                               ){
+
+    paintingShader.setFloat("brush.radius", radius);
+    paintingShader.setFloat("brush.hardness", hardness);
+    paintingShader.setFloat("brush.sizeJitter", sizeJitter);
+    paintingShader.setFloat("brush.scatter", scatter);
+    paintingShader.setFloat("brush.fade", fade);
+    paintingShader.setFloat("brush.rotation", rotation);
+    paintingShader.setFloat("brush.rotationJitter", rotationJitter);
+    paintingShader.setFloat("brush.alphaJitter", alphaJitter);
+    paintingShader.setInt("brush.individualTexture", individualTexture);
+    paintingShader.setInt("brush.sinWavePattern", sinWavePattern);
+    
+    //Bind the texture of the brush
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,textureID);
+    paintingShader.setFloat("brush.txtr", 0);
+}
+
+static void setShaderUniforms(Shader paintingShader, glm::mat4 &projection, glm::vec2 videoScale, int frameCounter, Mouse mouse){
+    glm::vec2 scale = videoScale / glm::vec2(2);
+    glm::vec3 pos = glm::vec3(videoScale / glm::vec2(2),1.f);
+    projection = glm::ortho(0.f,videoScale.x,0.f,videoScale.y);
+    
+    paintingShader.setVec2("scale", scale); //Cover the screen
+    paintingShader.setVec3("pos", pos); //Cover the screen
+    paintingShader.setMat4("projection", projection); //Cover the screen
+    paintingShader.setVec2("videoScale", videoScale); 
+    paintingShader.setVec2("mouseOffset", mouse.mouseOffset);
+    paintingShader.setInt("frame", frameCounter);
+}
+
+static void set3DShaderSideUniforms(Shader tdModelShader,int selectedColorIndex,Color color1,Color color2,Color color3,float opacity ,int selectedPaintingModeIndex){
+    tdModelShader.setInt("brushModeState", selectedPaintingModeIndex);
+    if(selectedColorIndex == 0)
+        tdModelShader.setVec3("paintingColor", color1.RGB / glm::vec3(255.f));
+    if(selectedColorIndex == 1)
+        tdModelShader.setVec3("paintingColor", color2.RGB / glm::vec3(255.f));
+    if(selectedColorIndex == 2)
+        tdModelShader.setVec3("paintingColor", color3.RGB / glm::vec3(255.f));
+    tdModelShader.setFloat("paintingOpacity", opacity);
 }

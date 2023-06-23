@@ -112,6 +112,9 @@ private:
 	#else
 		char folderDistinguisher = '/'; 
 	#endif
+
+    std::string generateTMPTitle();
+
 public:
     unsigned int ID = 0; 
     std::string path = "";
@@ -131,6 +134,8 @@ public:
     void getData(char*& pixels);
     glm::ivec2 getResolution();
     unsigned int duplicateTexture();
+    void writeTMP();
+    void readTMP();
 };
 
 

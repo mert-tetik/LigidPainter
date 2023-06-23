@@ -59,6 +59,10 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, int textureRes
 
 
 void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int textureRes){
+    
+    //Write the tmp file of the selected texture before updating the texture (for undo)
+    selectedTexture.writeTMP();
+    
     unsigned int captureFBO;
     unsigned int captureTexture;
     
