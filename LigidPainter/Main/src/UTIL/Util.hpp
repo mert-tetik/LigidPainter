@@ -389,11 +389,17 @@ struct Scene{
 
     Camera camera;
 };
+
+/// @brief Don't directly manipulate vectors! Instead use public member functions. Same goes for the selectedElementIndex.
 struct Library{
     std::vector<Texture> textures;
     std::vector<Material> materials;
     std::vector<Brush> brushes;
     std::vector<Model> TDModels;
+
+    int selectedElementIndex = 0;
+
+    bool changed = true;
 
     void uniqueName(std::string &s,std::vector<std::string> sArray);
     void uniqueNameControl();
@@ -415,6 +421,9 @@ struct Library{
     void clearMaterials  ();
     void clearBrushes    ();
     void clearModels     ();
+
+    void changeSelectedElementIndex(int newI);
+
 };
 
 struct Context{

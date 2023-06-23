@@ -81,7 +81,6 @@ public:
 
     int frameCounter = 0; //Reset every 1000 frame
 
-    int selectedLibraryElementIndex = 0; //0 For the textures , 1 for the materials bla bla
     int selectedMaterialIndex = 0; //In the library (to manipulate with )
     
     bool anyContextMenuActive = false;

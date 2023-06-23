@@ -34,14 +34,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "tinyfiledialogs.h"
 
-void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selectedLibraryElementIndex, Mouse &mouse, Panel &paintingPanel, 
+void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse, Panel &paintingPanel, 
                                       Painter &painter, Library &library, Model &model, ColorPalette& colorPalette, Shaders &shaders, int &textureRes,
                                       NewTextureDialog &newTextureDialog,AppTextures &appTextures,int frameCounter){
     
     //Update the selected texture
     for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
     {
-        if(selectedLibraryElementIndex == 0){ //Textures selected
+        if(library.selectedElementIndex == 0){ //Textures selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.LClick){
                 if(paintingPanel.sections[2].elements[4].button.clickState1){//If brush texture displayer is pressed
                     painter.brushTexture = libraryPanelDisplayer.sections[0].elements[i].button.texture; //Select a brush texture
@@ -54,7 +54,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
             if(library.textures[i].ID == painter.selectedTexture.ID) //Highlight the selected texture
                 libraryPanelDisplayer.sections[0].elements[i].button.clickState1 = true;
         }
-        if(selectedLibraryElementIndex == 3){ //Models selected
+        if(library.selectedElementIndex == 3){ //Models selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.LClick){
                 model = library.TDModels[i]; //Select the model
                 model.newModelAdded = true; 
@@ -64,15 +64,15 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
 
     //Add button from the barButtons in the library displayer panel clicked 
     if(libraryPanelDisplayer.barButtons[0].clicked){
-        if(selectedLibraryElementIndex == 0){//Textures
+        if(library.selectedElementIndex == 0){//Textures
             newTextureDialog.dialogControl.activate();
         }
-        if(selectedLibraryElementIndex == 1){ //Materials
+        if(library.selectedElementIndex == 1){ //Materials
             //Add new material to the library & not the panel
             //Will be displayed right after library panel is updated
             library.addMaterial(Material(textureRes, "material_0", 0));
         }
-        if(selectedLibraryElementIndex == 2){ //Brushes
+        if(library.selectedElementIndex == 2){ //Brushes
             library.addBrush(
                                         Brush
                                             (    
@@ -92,7 +92,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
             library.brushes[library.brushes.size()-1].updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
             
         }
-        if(selectedLibraryElementIndex == 3){ //3D Models
+        if(library.selectedElementIndex == 3){ //3D Models
             
             char const* lFilterPatterns[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
 
@@ -106,7 +106,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
         }
     }
     if(libraryPanelDisplayer.barButtons[1].clickedMixVal == 1.f){ //Import button
-        if(selectedLibraryElementIndex == 0){//Textures
+        if(library.selectedElementIndex == 0){//Textures
             //Select Texture
             char const* lFilterPatterns[12] = 
                                             { 
@@ -130,7 +130,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
                 library.addTexture(txtr);
             }
         }
-        if(selectedLibraryElementIndex == 1){ //Materials
+        if(library.selectedElementIndex == 1){ //Materials
             //Select material
             char const* lFilterPatterns[12] = 
                                             { 
@@ -144,7 +144,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
                 library.addMaterial(material);
             }
         }
-        if(selectedLibraryElementIndex == 2){ //Brushes
+        if(library.selectedElementIndex == 2){ //Brushes
             library.addBrush(
                                         Brush
                                             (    
@@ -164,7 +164,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
             library.brushes[library.brushes.size()-1].updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
             
         }
-        if(selectedLibraryElementIndex == 3){ //3D Models
+        if(library.selectedElementIndex == 3){ //3D Models
             
             char const* lFilterPatterns[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
 
@@ -180,41 +180,41 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, int &selecte
     }
 }
 
-void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, int &selectedLibraryElementIndex, 
+void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, 
                                       Library &library, ColorPalette& colorPalette, Shaders &shaders,
                                       int frameCounter){
     
     //!LIBRARY PANEL DISPLAYER
-    //Update the library displayer panel every frame
-    if(true){
+    //Update the library displayer panel every time library changed
+    if(library.changed){
         libraryPanelDisplayer.sections.clear(); //Remove all the elements of the library panel displayer
         
         //Create a new section
         Section libSection;
         libSection.header = Element(Button()); //Has no section button
         //Fill the elements of the section using the data in the library structure
-        if(selectedLibraryElementIndex == 0){//Update textures
+        if(library.selectedElementIndex == 0){//Update textures
             for (size_t i = 0; i < library.textures.size(); i++)
             {
                 //Push texture elements into the section
                 libSection.elements.push_back(Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.textures[i].title       , library.textures[i], 0.f,false))) ;
             }
         }
-        else if(selectedLibraryElementIndex == 1){ //Update materials
+        else if(library.selectedElementIndex == 1){ //Update materials
             for (size_t i = 0; i < library.materials.size(); i++)
             {
                 //Push texture elements into the section
                 libSection.elements.push_back(Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.materials[i].title       , Texture(library.materials[i].displayingTexture), 0.f,false))) ;
             }
         }
-        else if(selectedLibraryElementIndex == 2){ //Update materials
+        else if(library.selectedElementIndex == 2){ //Update materials
             for (size_t i = 0; i < library.brushes.size(); i++)
             {
                 //Push texture elements into the section
                 libSection.elements.push_back(Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.brushes[i].title       , Texture(library.brushes[i].displayingTexture), 0.f,false))) ;
             }
         }
-        else if(selectedLibraryElementIndex == 3){ //Update tdmodels
+        else if(library.selectedElementIndex == 3){ //Update tdmodels
             for (size_t i = 0; i < library.TDModels.size(); i++)
             {
                 //Push texture elements into the section
@@ -226,15 +226,15 @@ void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, int &sele
     }
 }
 
-void libraryPanelLeftInteraction(Panel &libraryPanelLeft, int &selectedLibraryElementIndex, Mouse &mouse){
+void libraryPanelLeftInteraction(Panel &libraryPanelLeft, Library &library,Mouse &mouse){
     
     //Check all the library element button if they are pressed
     for (size_t i = 0; i < libraryPanelLeft.sections[0].elements.size(); i++) 
     {
         if(libraryPanelLeft.sections[0].elements[i].button.hover && mouse.LClick){//If any button element is pressed
-            if(selectedLibraryElementIndex != i){
-                libraryPanelLeft.sections[0].elements[selectedLibraryElementIndex].button.clickState1 = false;
-                selectedLibraryElementIndex = i;
+            if(library.selectedElementIndex != i){
+                libraryPanelLeft.sections[0].elements[library.selectedElementIndex].button.clickState1 = false;
+                library.changeSelectedElementIndex(i);
                 break;
             }
         } 
@@ -365,7 +365,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             anyContextMenuActive = true;
         
         //CONTEXT MENU BUTTONS
-        if(i == 0 && selectedLibraryElementIndex == 0 && contextMenus[i].dialogControl.isActive()){ //If texture context menu is active
+        if(i == 0 && library.selectedElementIndex == 0 && contextMenus[i].dialogControl.isActive()){ //If texture context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to rename button
                 renamingTextBox.active = true;
                 renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
@@ -389,7 +389,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
         }
         
-        if(i == 1 && selectedLibraryElementIndex == 1 && contextMenus[i].dialogControl.isActive()){ //If material context menu is active
+        if(i == 1 && library.selectedElementIndex == 1 && contextMenus[i].dialogControl.isActive()){ //If material context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to edit button
                 //Select the material that material editor will edit & show the material editor dialog
                 selectedMaterialIndex = contextMenus[i].selectedElement;
@@ -422,7 +422,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 library.eraseMaterial(contextMenus[i].selectedElement);
             }
         }
-        if(i == 2 && selectedLibraryElementIndex == 2 && contextMenus[i].dialogControl.isActive()){ //If brush context menu is active
+        if(i == 2 && library.selectedElementIndex == 2 && contextMenus[i].dialogControl.isActive()){ //If brush context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to use brush button
                 paintingPanel.sections[2].elements[0].rangeBar.value        =   library.brushes[contextMenus[i].selectedElement].sizeJitter;
                 paintingPanel.sections[2].elements[3].rangeBar.value        =   library.brushes[contextMenus[i].selectedElement].scatter;
@@ -535,7 +535,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
     for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++)
     {
         if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.RClick){ //Right clicked to an element
-            if(selectedLibraryElementIndex == 0){//To a texture
+            if(library.selectedElementIndex == 0){//To a texture
                 //Show the context menu
                 contextMenus[0].dialogControl.activate();
                 contextMenus[0].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
@@ -544,7 +544,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 contextMenus[0].selectedElement = i;
                 
             }
-            if(selectedLibraryElementIndex == 1){//To a material
+            if(library.selectedElementIndex == 1){//To a material
                 //Show the context menu
                 contextMenus[1].dialogControl.activate();
                 contextMenus[1].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
@@ -552,7 +552,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 contextMenus[1].pos.z = 0.95f;
                 contextMenus[1].selectedElement = i;
             }
-            if(selectedLibraryElementIndex == 2){//To a brush
+            if(library.selectedElementIndex == 2){//To a brush
                 //Show the context menu
                 contextMenus[2].dialogControl.activate();
                 contextMenus[2].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
@@ -685,11 +685,11 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
     
     contextMenuInteraction(contextMenus,mouse,library,appNodes,nodeScene,context,videoScale,timer,textRenderer,project,textureRes);
     
-    libraryPanelDisplayerInteraction(libraryPanelDisplayer,selectedLibraryElementIndex,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,appTextures,frameCounter);
+    libraryPanelDisplayerInteraction(libraryPanelDisplayer,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,appTextures,frameCounter);
     
-    libraryPanelLeftInteraction(libraryPanelLeft,selectedLibraryElementIndex,mouse);
+    libraryPanelLeftInteraction(libraryPanelLeft,library,mouse);
     
-    updateLibraryPanelDisplayerElements(libraryPanelDisplayer,selectedLibraryElementIndex,library,colorPalette,shaders,frameCounter);
+    updateLibraryPanelDisplayerElements(libraryPanelDisplayer,library,colorPalette,shaders,frameCounter);
 
     paintingPanelInteraction(paintingPanel,mouse,painter,dropper,colorPalette,shaders.buttonShader,appTextures,model);
     

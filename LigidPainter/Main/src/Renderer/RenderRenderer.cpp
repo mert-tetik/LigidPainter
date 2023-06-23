@@ -184,6 +184,9 @@ void Renderer::render(){
     mouse.mods = 0;
     mouse.mouseScroll = 0;
 
+    //Set library changed to false after updating some stuff after library change
+    library.changed = false;
+
     //Set keyboard states to default
     textRenderer.keyInput = false;
     textRenderer.mods = 0;
