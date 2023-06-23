@@ -84,7 +84,7 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
     bool cursorOnBarriers = renderBarriers(nodeEditorPanel,mouse);
 
     //Render the node panel which contains the input buttons and stuff
-    nodePanel.render(videoScale,mouse,timer,textRenderer,!cursorOnBarriers);
+    nodePanel.render(videoScale,mouse,timer,textRenderer,false);
     
     //Auto scaling the node panel compatible with it's elements
     if(nodePanel.sections.size()){
@@ -217,7 +217,7 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
     barButton.scale = nodePanel.scale;
     barButton.scale.y = 1.5f;
     barButton.pos.z += 0.02f;
-    barButton.pos.y = nodePanel.pos.y - nodePanel.scale.y - barButton.scale.y; 
+    barButton.pos.y = nodePanel.pos.y - nodePanel.scale.y; 
     //Render the bar button
     barButton.render(videoScale,mouse,timer,textRenderer,!cursorOnBarriers);
     //Move the node panel if bar button is pressed
