@@ -100,9 +100,20 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     //Init the painter
     painter.initPainter(videoScale,shaders.twoDPainting,shaders.buttonShader,shaders.tdModelShader,shaders.depth3D);
 
-    //Create the projects folder if it's not exists
+    //Create the projects folder if not exists
     if(!std::filesystem::exists("./Projects")){
         std::filesystem::create_directory("./Projects");
+    }
+    
+    //If the tmp directory doesn't exist then create 
+    if(!std::filesystem::exists("./tmp")){
+        std::filesystem::create_directory("./tmp");
+    }
+
+    //If the tmp directory exists empty the folder
+    else{
+        std::filesystem::remove_all("./tmp");
+        std::filesystem::create_directory("./tmp");
     }
 }
 

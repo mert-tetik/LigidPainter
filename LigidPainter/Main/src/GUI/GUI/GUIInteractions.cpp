@@ -496,6 +496,15 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
         }
         if(i == 4 && contextMenus[i].dialogControl.isActive()){ //If painting context menu is active
+            //Undo
+            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
+                
+            }
+            
+            //Redo
+            if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){
+
+            }
             
         }
         if(i == 5 && contextMenus[i].dialogControl.isActive()){ //If help context menu is active
