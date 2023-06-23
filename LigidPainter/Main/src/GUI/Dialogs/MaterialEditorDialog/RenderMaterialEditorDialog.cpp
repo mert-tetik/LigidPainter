@@ -192,6 +192,8 @@ void MaterialEditorDialog::render
     bgPanel.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.dialogControl.isActive());
     layerPanel.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.dialogControl.isActive());
     modifiersPanel.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.dialogControl.isActive());
+    barButton.render(videoScale,mouse,timer,textRenderer,!textureSelectionDialog.dialogControl.isActive());
+
     
     //Update the texture, scale & position of the material displayer button
     updateMaterialDisplayerButton(materialDisplayer, material, bgPanel, modifiersPanel, layerPanel);
@@ -225,4 +227,9 @@ void MaterialEditorDialog::render
     materialDisplayer.render(videoScale,mouse,timer,textRenderer,false);
     
     dialogControl.updateEnd(timer,buttonShader,0.3f);
+
+    //Close the dialog
+    if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || (!bgPanel.hover && mouse.LClick) || (barButton.hover && mouse.LDoubleClick))
+        deactivate(textureSelectionDialog);
+
 }

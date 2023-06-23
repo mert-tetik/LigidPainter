@@ -216,6 +216,7 @@ public:
     Panel bgPanel; //To cover the bg
     Panel layerPanel; //Modifiers will be displayed in there
     Panel modifiersPanel; //Modifiers will be displayed in there
+    Button barButton; //Modifiers will be displayed in there
     int textureModifierTextureSelectingButtonIndex = 1000; //1000 if none of them is selecting
     AppMaterialModifiers appMaterialModifiers;
     int selectedMaterialModifierIndex = 0;

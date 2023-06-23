@@ -103,4 +103,8 @@ MaterialEditorDialog::MaterialEditorDialog
     //Init the texture modifier
     appMaterialModifiers.textureModifier = MaterialModifier(colorPalette,buttonShader,appTextures,TEXTURE_MATERIAL_MODIFIER);
     appMaterialModifiers.textureModifier.sections[0].header.button.clickState1 = true;
+
+    //Bar button
+    this->barButton = Button(BUTTON_STYLE_BASIC,glm::vec2(bgPanel.scale.x, bgPanel.scale.y / 20),colorPalette,buttonShader,"Material Editor",Texture(),0.f,false);
+    barButton.pos = glm::vec3(bgPanel.pos.x, bgPanel.pos.y - bgPanel.scale.y - barButton.scale.y, bgPanel.pos.z);
 }
