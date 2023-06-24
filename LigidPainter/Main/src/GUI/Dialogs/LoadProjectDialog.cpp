@@ -167,11 +167,12 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
             
             }
             else{
-                const char* title = "Warning";
-                const char* message = "Error while reading the *.ligid file! Detailed error message is printed to the terminal.";
-                const char* icon = "warning";
-                const char* button = "Ok";
-                tinyfd_messageBox(title, message, button, icon, 1);
+                showMessageBox(
+                            "Warning!", 
+                            "Error while reading the *.ligid file! Detailed error message is printed to the terminal.", 
+                            MESSAGEBOX_TYPE_WARNING, 
+                            MESSAGEBOX_BUTTON_OK
+                        );
             }
         }
         
@@ -232,11 +233,14 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
             
             }
             else{
-                const char* title = "Warning";
-                const char* message = "Error while reading the *.ligid file! Detailed error message is printed to the terminal.";
-                const char* icon = "warning";
-                const char* button = "Ok";
-                tinyfd_messageBox(title, message, button, icon, 1); 
+
+                showMessageBox(
+                                "Warning!", 
+                                "Error while reading the *.ligid file! Detailed error message is printed to the terminal." , 
+                                MESSAGEBOX_TYPE_WARNING, 
+                                MESSAGEBOX_BUTTON_OK
+                            );
+
             }
         }
     }

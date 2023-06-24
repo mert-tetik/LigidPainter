@@ -21,7 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "UTIL/Util.hpp"
-#include "GUI/Elements.hpp"
+#include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 
 #include <string>
@@ -32,7 +32,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-#include "tinyfiledialogs.h"
 
 #define TD_MODEL_FOLDER_CREATION 0
 #define BRUSH_FOLDER_CREATION 1
@@ -40,25 +39,30 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void completeFolder(std::string path, int action);
 
 bool Project::createProject(std::string destinationPath,std::string name,std::string TDModelPath,int textureRes){
+    
     if(destinationPath[destinationPath.size()-1] == '/' || destinationPath[destinationPath.size()-1] == '\\') //Make sure destination path doesn't have seperator at the end
         destinationPath.pop_back();
 
     if(!std::filesystem::exists(destinationPath)){
-        const char* title = "Warning";
-        const char* message = "Project path is not valid! Please try another directory.";
-        const char* icon = "warning";
-        const char* button = "Ok";
-        
-        tinyfd_messageBox(title, message, button, icon, 1);
+        showMessageBox(
+                            "Warning!", 
+                            "Project path is not valid! Please try another directory.", 
+                            MESSAGEBOX_TYPE_WARNING, 
+                            MESSAGEBOX_BUTTON_OK
+                        );
+
         return false;
     }
+    
     if(std::filesystem::exists(destinationPath + folderDistinguisher + name)){
-        const char* title = "Warning";
-        const char* message = "This folder is already exists. Do you want to overwrite?";
-        const char* icon = "warning";
-        const char* button = "yesno";
-        
-        int res = tinyfd_messageBox(title, message, button, icon, 0);
+
+        int res = showMessageBox
+                (
+                    "Warning!", 
+                    "This folder is already exists. Do you want to overwrite?", 
+                    MESSAGEBOX_TYPE_WARNING, 
+                    MESSAGEBOX_BUTTON_YESNO
+                );
 
         if(res == 0)
             return false;

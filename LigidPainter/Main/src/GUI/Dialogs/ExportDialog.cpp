@@ -118,13 +118,14 @@ void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,M
         std::string destPath = panel.sections[0].elements[1].textBox.text;
 
         if(!std::filesystem::exists(destPath)){
-            
-            const char* title = "Warning";
-            const char* message = "Error! Invalid exporting path.";
-            const char* icon = "warning";
-            const char* button = "Ok";
-            tinyfd_messageBox(title, message, button, icon, 1);
-            
+
+            showMessageBox(
+                            "Warning!", 
+                            "Error! Invalid exporting path.", 
+                            MESSAGEBOX_TYPE_WARNING, 
+                            MESSAGEBOX_BUTTON_OK
+                        );
+
             return;
         }
 

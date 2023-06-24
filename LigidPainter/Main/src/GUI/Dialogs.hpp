@@ -54,6 +54,20 @@ public:
     bool isComplete();
 };
 
+//!------------------------------MESSAGE BOX------------------------------
+
+#define MESSAGEBOX_TYPE_ERROR 0
+#define MESSAGEBOX_TYPE_WARNING 1
+#define MESSAGEBOX_TYPE_INFO 2
+#define MESSAGEBOX_TYPE_QUESTION 3
+
+#define MESSAGEBOX_BUTTON_OK 0
+#define MESSAGEBOX_BUTTON_OKCANCEL 1
+#define MESSAGEBOX_BUTTON_YESNO 2
+#define MESSAGEBOX_BUTTON_YESNOCANCEL 3
+
+int showMessageBox(const std::string title, const std::string message, const int type, const int button);
+
 //!------------------------------SETTINGS DIALOG------------------------------
 
 class NewProjectDialog;

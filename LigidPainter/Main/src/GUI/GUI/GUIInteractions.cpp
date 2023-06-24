@@ -125,9 +125,9 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
                                             };   
             char* test = tinyfd_openFileDialog("Select a texture","", 12, lFilterPatterns,"",false);
             if(test){
-                Texture txtr;
-                txtr.load(test);
-                library.addTexture(txtr);
+                Texture importedTxtr;
+                importedTxtr.load(test);
+                library.addTexture(importedTxtr);
             }
         }
         if(library.selectedElementIndex == 1){ //Materials
@@ -139,9 +139,9 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
             char* test = tinyfd_openFileDialog("Select a material","", 1, lFilterPatterns,"",false);
             
             if(test){
-                Material material(textureRes, "", 0);
-                material.readFile(test,colorPalette,shaders.buttonShader,appTextures,library.materials);
-                library.addMaterial(material);
+                Material importedMaterial(textureRes, "", 0);
+                importedMaterial.readFile(test,colorPalette,shaders.buttonShader,appTextures,library.materials);
+                library.addMaterial(importedMaterial);
             }
         }
         if(library.selectedElementIndex == 2){ //Brushes
@@ -157,6 +157,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
             if(test){
                 Brush importedBrush;
                 importedBrush.readFile(test);
+                importedBrush.updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
                 library.addBrush(importedBrush);
             }
             
