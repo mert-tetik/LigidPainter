@@ -32,8 +32,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-#include "tinyfiledialogs.h"
-
 bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette, 
                           int& textureRes, std::vector<Node> &nodeScene , std::vector<Node> &appNodes){
     Util util;

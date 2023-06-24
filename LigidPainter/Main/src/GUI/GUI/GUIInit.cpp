@@ -35,8 +35,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
-#include "tinyfiledialogs.h"
-
 
 void UI::init
             (  

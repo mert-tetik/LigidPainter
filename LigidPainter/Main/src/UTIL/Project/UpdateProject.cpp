@@ -35,9 +35,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-#include "tinyfiledialogs.h"
-
-
 
 void Project::updateProject(Library &library, std::vector<Node> &nodeScene, int& textureRes){
     if(!std::filesystem::exists(folderPath)){

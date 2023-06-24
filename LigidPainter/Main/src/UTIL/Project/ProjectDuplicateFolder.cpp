@@ -21,7 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "UTIL/Util.hpp"
-#include "GUI/Elements.hpp"
+#include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 
 #include <string>
@@ -32,13 +32,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-#include "tinyfiledialogs.h"
 
 void Project::duplicateFolder(std::string dstPath)
 {
 
     if(dstPath == ""){
-        dstPath = tinyfd_selectFolderDialog("Select a folder to duplicate the project folder file", "");
+        dstPath = showFileSystemObjectSelectionDialog("Select a folder to duplicate the project folder file.", "", {}, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER);
     }
 
     if(!dstPath.size())

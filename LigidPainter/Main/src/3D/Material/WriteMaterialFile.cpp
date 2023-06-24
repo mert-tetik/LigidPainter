@@ -32,13 +32,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
 
-#include "tinyfiledialogs.h"
-
 
 void Material::writeFile(std::string path){
     //Saves the brush file
-    if(path == "")
-        path = tinyfd_selectFolderDialog("Select a folder to export the material file", "");
+    if(path == ""){
+        path = showFileSystemObjectSelectionDialog("Select a folder to export the material file", "", {}, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER);
+    }
     
     if(path.size()){
 

@@ -32,8 +32,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
 
-#include "tinyfiledialogs.h"
-
 //TODO Handle unique ids better
 
 void Material::initTexture(Texture &txtr,int textureRes){

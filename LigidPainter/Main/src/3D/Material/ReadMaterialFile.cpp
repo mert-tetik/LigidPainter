@@ -32,9 +32,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
 
-#include "tinyfiledialogs.h"
-
-
 void Material::readFile(std::string path,ColorPalette colorPalette ,Shader buttonShader ,AppTextures appTextures, const std::vector<Material> materials){
     if(path.size()){
         std::ifstream rf(path, std::ios::out | std::ios::binary);

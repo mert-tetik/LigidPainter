@@ -32,8 +32,6 @@
 #include <iostream>
 #include <vector>
 
-#include "tinyfiledialogs.h"
-
 DisplayerDialog::DisplayerDialog(){}
 
 DisplayerDialog::DisplayerDialog(

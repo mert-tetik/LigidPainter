@@ -31,8 +31,6 @@
 #include <fstream>
 #include <sstream>
 
-#include "tinyfiledialogs.h"
-
 LoadProjectDialog::LoadProjectDialog(){}
 
 LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
@@ -152,11 +150,11 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
 
     if(loadButton.hover && mouse.LClick){
         //Select a project file inside of a project folder
-        char const* lFilterPatterns[1] = { "*.ligid" };
-        char* test = tinyfd_openFileDialog("Select a ligid file","",1, lFilterPatterns,"",false);
+        std::vector<std::string> filters = { "*.ligid" };
+        std::string test = showFileSystemObjectSelectionDialog("Select a ligid file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
         //If a file is selected        
-        if(test){
+        if(test.size()){
             
             //Load the project
             if(project.loadProject(test,library,shaders,model,appTextures,colorPalette,textureRes,nodeScene, appNodes)){

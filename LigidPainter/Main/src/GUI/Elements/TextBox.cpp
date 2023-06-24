@@ -23,9 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
-#include "tinyfiledialogs.h"
-
-#include "GUI/Elements.hpp"
+#include "GUI/GUI.hpp"
 
 #include <iostream>
 #include <string>
@@ -158,41 +156,44 @@ void TextBox::render(
     //---Get the input
     if(active){
         if(openSelectFolderDialog == 1){
-            char* test = tinyfd_selectFolderDialog("Select A Folder", "");
-            if(test){
+            std::string test = showFileSystemObjectSelectionDialog("Select a folder.", "", {}, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER);
+
+            if(test.size()){
                 text = test;
             }
             active = false;
         }
         else if(openSelectFolderDialog == 2){
             //Select 3D Model
-            char const* lFilterPatterns[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
+            std::vector<std::string> filters = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
 
-            char* test = tinyfd_openFileDialog("Select a 3D model","",11, lFilterPatterns,"",false);
-            if(test){
+            std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+            
+            if(test.size()){
                 text = test;
             }
+            
             active = false;
         }   
         else if(openSelectFolderDialog == 3){
             //Select Texture
-            char const* lFilterPatterns[12] = 
-                                            { 
-                                                "*.png",                     //(Portable Network Graphics)
-                                                "*.jpeg",                    //(Joint Photographic Experts Group)
-                                                "*.jpg",                    //(Joint Photographic Experts Group but 3 letters)
-                                                "*.bmp",                     //(Bitmap)
-                                                "*.gif",                     //(Graphics Interchange Format)
-                                                "*.tga",                     //(Truevision Targa)
-                                                "*.hdr",                     //(High Dynamic Range)
-                                                "*.pic",                     //(Softimage PIC)
-                                                "*.pnm",                     //(Portable Any Map)
-                                                "*.ppm",                     //(Portable Pixel Map)
-                                                "*.pgm",                     //(Portable Gray Map)
-                                                "*.pbm"                     //(Portable Bitmap) };
-                                            };   
-            char* test = tinyfd_openFileDialog("Select a texture","", 12, lFilterPatterns,"",false);
-            if(test){
+            std::vector<std::string> filters = 
+                                                        { 
+                                                            "*.png",                     //(Portable Network Graphics)
+                                                            "*.jpeg",                    //(Joint Photographic Experts Group)
+                                                            "*.jpg",                    //(Joint Photographic Experts Group but 3 letters)
+                                                            "*.bmp",                     //(Bitmap)
+                                                            "*.gif",                     //(Graphics Interchange Format)
+                                                            "*.tga",                     //(Truevision Targa)
+                                                            "*.hdr",                     //(High Dynamic Range)
+                                                            "*.pic",                     //(Softimage PIC)
+                                                            "*.pnm",                     //(Portable Any Map)
+                                                            "*.ppm",                     //(Portable Pixel Map)
+                                                            "*.pgm",                     //(Portable Gray Map)
+                                                            "*.pbm"                     //(Portable Bitmap) };
+                                                        };   
+            std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+            if(test.size()){
                 text = test;
             }
             active = false;

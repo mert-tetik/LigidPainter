@@ -59,8 +59,6 @@ Example :
 #include <vector>
 #include <cstdlib>
 
-#include "tinyfiledialogs.h"
-
 Element::Element(){}
 
 Element::Element(Button button){

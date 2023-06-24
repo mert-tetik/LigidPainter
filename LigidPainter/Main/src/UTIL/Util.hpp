@@ -56,6 +56,8 @@ public:
     void giveUniqueId(int &ID ,const std::vector<int> otherIDs);
     void giveUniqueId(int &ID ,const std::vector<Texture> textures);
     void giveUniqueId(int &ID ,const std::vector<Material> materials);
+    char* const* convertStringArray(const std::vector<std::string> strings);
+
 
     //Nodes
     std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library,int textureRes);

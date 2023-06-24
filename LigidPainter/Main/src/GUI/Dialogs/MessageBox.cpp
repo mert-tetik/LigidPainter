@@ -40,7 +40,8 @@ int showMessageBox(
                     const std::string message,
                     const int type, 
                     const int button
-                ){
+                )
+{
     
     //Get the type
     const char* typeStr = "warning";

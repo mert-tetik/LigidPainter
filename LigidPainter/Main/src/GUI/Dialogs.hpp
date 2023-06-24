@@ -66,7 +66,16 @@ public:
 #define MESSAGEBOX_BUTTON_YESNO 2
 #define MESSAGEBOX_BUTTON_YESNOCANCEL 3
 
-int showMessageBox(const std::string title, const std::string message, const int type, const int button);
+std::string showMessageBox(const std::string title, const std::string message, const int type, const int button);
+
+//!------------------------------SELECT FILE SYSTEM OBJECT DIALOG------------------------------
+
+
+#define FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE 0
+#define FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER 1
+#define FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_EXPORT_FILE 2
+
+std::string showFileSystemObjectSelectionDialog(const std::string title, const std::string defaultPath, const std::vector<std::string> filters, const bool multipleSelection, const int type);
 
 //!------------------------------SETTINGS DIALOG------------------------------
 

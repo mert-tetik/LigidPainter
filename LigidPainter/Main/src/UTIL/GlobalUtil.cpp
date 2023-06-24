@@ -190,3 +190,14 @@ void Util::giveUniqueId(int &ID ,const std::vector<Material> materials){
 
 	giveUniqueId(ID, IDArray);
 }
+
+char* const* Util::convertStringArray(const std::vector<std::string> strings){
+    char** convertedArray = new char*[strings.size()];
+
+    for (size_t i = 0; i < strings.size(); i++)
+    {
+        convertedArray[i] = const_cast<char*>(strings[i].c_str());
+    }
+
+    return convertedArray;
+}

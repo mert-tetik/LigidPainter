@@ -27,8 +27,6 @@
 #include <iostream>
 #include <vector>
 
-#include "tinyfiledialogs.h"
-
 NewTextureDialog::NewTextureDialog(){}
 NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
     this->context = context;

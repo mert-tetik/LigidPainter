@@ -29,7 +29,6 @@
 #include <vector>
 #include <filesystem>
 
-#include "tinyfiledialogs.h"
 
 ExportDialog::ExportDialog(){}
 

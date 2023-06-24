@@ -30,8 +30,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
-#include "tinyfiledialogs.h"
-
 #include "UTIL/Util.hpp"
 
 void Brush::updateDisplayTexture(Shader paintingShader, Shader buttonShader){

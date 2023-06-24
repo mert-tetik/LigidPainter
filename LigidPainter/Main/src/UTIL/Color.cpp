@@ -31,9 +31,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
-#include "tinyfiledialogs.h"
-
-
 Color::Color(){
     RGB = glm::vec3(0);
     HSV = glm::vec3(0);

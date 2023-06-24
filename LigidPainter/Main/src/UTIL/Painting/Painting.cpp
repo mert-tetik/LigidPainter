@@ -34,8 +34,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
-#include "tinyfiledialogs.h"
-
 //Front declerations for the utility functions
 static void setBrushProperties (Shader paintingShader,float radius,float hardness,float opacity,float spacing,float sizeJitter,float scatter,float fade,float rotation,float rotationJitter,float alphaJitter,bool individualTexture,bool sinWavePattern,unsigned int textureID);
 static void setShaderUniforms(Shader paintingShader, glm::mat4 &projection, glm::vec2 videoScale, int frameCounter, Mouse mouse);

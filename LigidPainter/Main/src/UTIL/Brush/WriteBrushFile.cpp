@@ -60,15 +60,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
-#include "tinyfiledialogs.h"
-
 #include "UTIL/Util.hpp"
+#include "GUI/GUI.hpp"
     
 
 void Brush::saveFile(std::string path){
     //Saves the brush file
     if(path == "")
-        path = tinyfd_selectFolderDialog("Select a folder to export the brush file", "");
+        path = showFileSystemObjectSelectionDialog("Select a folder to export the brush file.", "", {}, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER);
     
     if(path.size()){
 

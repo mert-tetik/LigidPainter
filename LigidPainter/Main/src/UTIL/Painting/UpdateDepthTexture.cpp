@@ -34,8 +34,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
-#include "tinyfiledialogs.h"
-
 void Painter::updateDepthTexture(Model &model, glm::vec2 windowScale){
     glDepthFunc(GL_LESS);
     

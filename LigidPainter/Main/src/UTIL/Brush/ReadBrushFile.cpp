@@ -60,8 +60,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
-#include "tinyfiledialogs.h"
-
 #include "UTIL/Util.hpp"
     
 

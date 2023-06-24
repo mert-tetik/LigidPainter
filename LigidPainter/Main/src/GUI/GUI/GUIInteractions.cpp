@@ -32,8 +32,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
-#include "tinyfiledialogs.h"
-
 void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse, Panel &paintingPanel, 
                                       Painter &painter, Library &library, Model &model, ColorPalette& colorPalette, Shaders &shaders, int &textureRes,
                                       NewTextureDialog &newTextureDialog,AppTextures &appTextures,int frameCounter){
@@ -94,10 +92,10 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
         }
         if(library.selectedElementIndex == 3){ //3D Models
             
-            char const* lFilterPatterns[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
+            std::vector<std::string> filters = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
 
-            char* test = tinyfd_openFileDialog("Select a 3D model","",11, lFilterPatterns,"",false);
-            if(test){
+            std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+            if(test.size()){
                 Model tdModel;
                 tdModel.loadModel(test,true);
                 library.addModel(tdModel);
@@ -108,7 +106,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
     if(libraryPanelDisplayer.barButtons[1].clicked){ //Import button
         if(library.selectedElementIndex == 0){//Textures
             //Select Texture
-            char const* lFilterPatterns[12] = 
+            std::vector<std::string> filters = 
                                             { 
                                                 "*.png",                     //(Portable Network Graphics)
                                                 "*.jpeg",                    //(Joint Photographic Experts Group)
@@ -123,22 +121,22 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
                                                 "*.pgm",                     //(Portable Gray Map)
                                                 "*.pbm"                     //(Portable Bitmap) };
                                             };   
-            char* test = tinyfd_openFileDialog("Select a texture","", 12, lFilterPatterns,"",false);
-            if(test){
+            std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+            if(test.size()){
                 Texture importedTxtr;
-                importedTxtr.load(test);
+                importedTxtr.load(test.c_str());
                 library.addTexture(importedTxtr);
             }
         }
         if(library.selectedElementIndex == 1){ //Materials
             //Select material
-            char const* lFilterPatterns[12] = 
-                                            { 
-                                                "*.lgdmaterial",
-                                            };   
-            char* test = tinyfd_openFileDialog("Select a material","", 1, lFilterPatterns,"",false);
+            std::vector<std::string> filters = 
+                                                { 
+                                                    "*.lgdmaterial",
+                                                };   
+            std::string test = showFileSystemObjectSelectionDialog("Select a material file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             
-            if(test){
+            if(test.size()){
                 Material importedMaterial(textureRes, "", 0);
                 importedMaterial.readFile(test,colorPalette,shaders.buttonShader,appTextures,library.materials);
                 library.addMaterial(importedMaterial);
@@ -147,14 +145,14 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
         if(library.selectedElementIndex == 2){ //Brushes
             
             //Select material
-            char const* lFilterPatterns[12] = 
-                                            { 
-                                                "*.lgdbrush",
-                                            };   
+            std::vector<std::string> filters = 
+                                                { 
+                                                    "*.lgdbrush",
+                                                };   
             
-            char* test = tinyfd_openFileDialog("Select a brush file","", 1, lFilterPatterns,"",false);
+            std::string test = showFileSystemObjectSelectionDialog("Select a brush file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
-            if(test){
+            if(test.size()){
                 Brush importedBrush;
                 importedBrush.readFile(test);
                 importedBrush.updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
@@ -164,10 +162,11 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
         }
         if(library.selectedElementIndex == 3){ //3D Models
             
-            char const* lFilterPatterns[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
+            std::vector<std::string> filters = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
 
-            char* test = tinyfd_openFileDialog("Select a 3D model","",11, lFilterPatterns,"",false);
-            if(test){
+            std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+            
+            if(test.size()){
                 Model tdModel;
                 tdModel.loadModel(test,true);
                 library.addModel(tdModel);
