@@ -47,7 +47,7 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
                                 Section(
                                     Element(Button()),
                                     {
-                                        Element(Button(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Load Project",Texture(),0.f,false)), 
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Load Project",Texture(),0.f,false)), 
                                     }
                                 )
                             },
@@ -96,11 +96,11 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
     this->bgPanel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
     
     //The load a project button
-    this->loadButton = Button(BUTTON_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,buttonShader,"Load",Texture(),0.f,false);
+    this->loadButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,buttonShader,"Load",Texture(),0.f,false);
     this->loadButton.pos.x = 30;
     this->loadButton.pos.y = 35;
     this->loadButton.pos.z = 0.9f;
-    this->textBtn1 = Button(BUTTON_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"Load a *.ligid file",Texture(),0.f,false);
+    this->textBtn1 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"Load a *.ligid file",Texture(),0.f,false);
     this->textBtn1.color = glm::vec4(0);
     this->textBtn1.pos.x = 30;
     this->textBtn1.pos.y = 30;
@@ -109,21 +109,21 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
     
     //Texts
 
-    this->textBtn2 = Button(BUTTON_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"The *.ligid file is a binary file located",Texture(),0.f,false);
+    this->textBtn2 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"The *.ligid file is a binary file located",Texture(),0.f,false);
     this->textBtn2.color = glm::vec4(0);
     this->textBtn2.pos.x = 30;
     this->textBtn2.pos.y = 45;
     this->textBtn2.pos.z = 0.9f;
     this->textBtn2.textScale = 0.7f;
     
-    this->textBtn3 = Button(BUTTON_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"in a project folder capable of contain project data.",Texture(),0.f,false);
+    this->textBtn3 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"in a project folder capable of contain project data.",Texture(),0.f,false);
     this->textBtn3.color = glm::vec4(0);
     this->textBtn3.pos.x = 30;
     this->textBtn3.pos.y = 48;
     this->textBtn3.pos.z = 0.9f;
     this->textBtn3.textScale = 0.7f;
     
-    this->textBtn4 = Button(BUTTON_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"Please create a project folder if you don't have access to a project folder",Texture(),0.f,false);
+    this->textBtn4 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"Please create a project folder if you don't have access to a project folder",Texture(),0.f,false);
     this->textBtn4.color = glm::vec4(0);
     this->textBtn4.pos.x = 30;
     this->textBtn4.pos.y = 54;
@@ -150,8 +150,7 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
 
     if(loadButton.hover && mouse.LClick){
         //Select a project file inside of a project folder
-        std::vector<std::string> filters = { "*.ligid" };
-        std::string test = showFileSystemObjectSelectionDialog("Select a ligid file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+        std::string test = showFileSystemObjectSelectionDialog("Select a ligid file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_LIGID, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
         //If a file is selected        
         if(test.size()){
@@ -190,7 +189,7 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
         std::string projectPath = entry.path().string();
         
         //Create the button for the project path
-        Button btn = Button(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,projectPath,Texture(),0.f,false);
+        Button btn = Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,projectPath,Texture(),0.f,false);
         
         //Scale the button in x axis
         btn.scale.x = projectsPanel.scale.x;

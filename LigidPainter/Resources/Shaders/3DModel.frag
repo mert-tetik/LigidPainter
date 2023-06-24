@@ -120,33 +120,30 @@ vec3 getSoftenedTexture(sampler2D txtr,vec4 brushTxtr){ //Intensity from the pai
 vec3 getSmearedTexture(sampler2D txtr,vec4 brushTxtr){
     
     float intensity = brushTxtr.a;
-    vec2 Direction = brushTxtr.rg / 10.;
+    vec2 Direction = brushTxtr.rg / 20.;
     //Direction = clamp(Direction,vec2(-1,-1),vec2(1,1));
 
     // Apply blurring
-    const int Samples = 64*2; //multiple of 2
+    const int Samples = 64*4; //multiple of 2
     float Intensity = 0.1;
 
 
     vec4 blurredColor = vec4(0.0);  
     
-    for (int i=1; i<=Samples/2; i++)
+    for (int i=0; i<=Samples/2; i++)
     {
         vec2 mUV = TexCoords - float(i) * (intensity) / float(Samples/2) * Direction;
         vec2 pUV = TexCoords + float(i) * (intensity) / float(Samples/2) * Direction;
-
-        Direction*=-1;
-
-        //mUV += Direction/20.;
-        //pUV += Direction/20.;
-
-        Direction*=-1;
         
         blurredColor += texture(txtr,pUV);
         blurredColor += texture(txtr,mUV);
     }
+    
     blurredColor = blurredColor/float(Samples);    
-    return blurredColor.rgb;
+    if(intensity > 0.05)
+        return blurredColor.rgb;
+    else
+        return texture(txtr,TexCoords).rgb;
 
     //return texture(txtr,vec2(TexCoords.x,TexCoords.y + 0.1*intensity)).rgb;
 }

@@ -53,7 +53,7 @@ void MaterialEditorDialog::updateLayerPanel(Material &material,int &textureRes,B
     for (size_t i = 0; i < material.materialModifiers.size(); i++)
     {
         layerPanelSection.elements.push_back(
-            Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,1.5f),colorPalette,buttonShader,material.materialModifiers[i].title , Texture(), 0.f,true))
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),colorPalette,buttonShader,material.materialModifiers[i].title , Texture(), 0.f,true))
         );
     }
 

@@ -91,7 +91,7 @@ Button::Button(
 
 
 /// @brief style constructor
-/// @param style is BUTTON_STYLE_BASIC, BUTTON_STYLE_SOLID or BUTTON_STYLE_STYLIZED
+/// @param style is ELEMENT_STYLE_BASIC, ELEMENT_STYLE_SOLID or ELEMENT_STYLE_STYLIZED
 /// @param scale scale value of the button in the range of 0 - 100 
 /// @param colorPalette color theme of the LigidPainter
 /// @param shader buttonShader
@@ -117,7 +117,7 @@ Button::Button(
     this->panelOffset = panelOffset;
     this->keepPressingState = keepPressingState;
     
-    if(style == BUTTON_STYLE_STYLIZED){
+    if(style == ELEMENT_STYLE_STYLIZED){
         this->color = colorPalette.oppositeColor;
         this->color2 = colorPalette.themeColor;
         this->outline = true;
@@ -131,7 +131,7 @@ Button::Button(
         this->outlineColor2 = {};
         this->outlineThickness = 2.f;
     }
-    if(style == BUTTON_STYLE_SOLID){
+    if(style == ELEMENT_STYLE_SOLID){
         this->color = colorPalette.secondColor;
         this->color2 = colorPalette.themeColor;
         this->outline = false;
@@ -146,7 +146,7 @@ Button::Button(
         this->outlineThickness = 1.f;
         this->textureSizeScale = 1.f;
     }
-    if(style == BUTTON_STYLE_BASIC){
+    if(style == ELEMENT_STYLE_BASIC){
         this->color = colorPalette.secondColor;
         this->color2 = colorPalette.themeColor;
         this->outline = false;

@@ -44,7 +44,7 @@ void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &tim
     std::vector<Element> sectionElements;
     for (size_t i = 0; i < library.textures.size(); i++)
     {
-        sectionElements.push_back(Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,buttonShader,"texture_0"       , library.textures[i], 0.f,false)));
+        sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,buttonShader,"texture_0"       , library.textures[i], 0.f,false)));
     }
     
     //Push the section elements to the texture panel

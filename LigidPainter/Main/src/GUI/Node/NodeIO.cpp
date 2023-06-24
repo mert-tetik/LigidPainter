@@ -34,6 +34,6 @@ NodeIO::NodeIO(std::string title ,Element element,glm::vec4 color,ColorPalette c
     this->color = color;
     this->state = state;
     
-    IOCircle = Button(BUTTON_STYLE_STYLIZED,glm::vec2(videoScale.y,videoScale.x)/glm::vec2(videoScale.y*2.5f),colorPalette,buttonShader,"",Texture(),0.f,false);
+    IOCircle = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(videoScale.y,videoScale.x)/glm::vec2(videoScale.y*2.5f),colorPalette,buttonShader,"",Texture(),0.f,false);
     IOCircle.radius = 0.25f;
 }

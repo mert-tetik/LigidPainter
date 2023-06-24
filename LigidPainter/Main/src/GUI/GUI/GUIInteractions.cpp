@@ -92,9 +92,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
         }
         if(library.selectedElementIndex == 3){ //3D Models
             
-            std::vector<std::string> filters = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
-
-            std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+            std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             if(test.size()){
                 Model tdModel;
                 tdModel.loadModel(test,true);
@@ -104,24 +102,8 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
         }
     }
     if(libraryPanelDisplayer.barButtons[1].clicked){ //Import button
-        if(library.selectedElementIndex == 0){//Textures
-            //Select Texture
-            std::vector<std::string> filters = 
-                                            { 
-                                                "*.png",                     //(Portable Network Graphics)
-                                                "*.jpeg",                    //(Joint Photographic Experts Group)
-                                                "*.jpg",                    //(Joint Photographic Experts Group but 3 letters)
-                                                "*.bmp",                     //(Bitmap)
-                                                "*.gif",                     //(Graphics Interchange Format)
-                                                "*.tga",                     //(Truevision Targa)
-                                                "*.hdr",                     //(High Dynamic Range)
-                                                "*.pic",                     //(Softimage PIC)
-                                                "*.pnm",                     //(Portable Any Map)
-                                                "*.ppm",                     //(Portable Pixel Map)
-                                                "*.pgm",                     //(Portable Gray Map)
-                                                "*.pbm"                     //(Portable Bitmap) };
-                                            };   
-            std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+        if(library.selectedElementIndex == 0){//Textures  
+            std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             if(test.size()){
                 Texture importedTxtr;
                 importedTxtr.load(test.c_str());
@@ -130,11 +112,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
         }
         if(library.selectedElementIndex == 1){ //Materials
             //Select material
-            std::vector<std::string> filters = 
-                                                { 
-                                                    "*.lgdmaterial",
-                                                };   
-            std::string test = showFileSystemObjectSelectionDialog("Select a material file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+            std::string test = showFileSystemObjectSelectionDialog("Select a material file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             
             if(test.size()){
                 Material importedMaterial(textureRes, "", 0);
@@ -144,13 +122,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
         }
         if(library.selectedElementIndex == 2){ //Brushes
             
-            //Select material
-            std::vector<std::string> filters = 
-                                                { 
-                                                    "*.lgdbrush",
-                                                };   
-            
-            std::string test = showFileSystemObjectSelectionDialog("Select a brush file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+            std::string test = showFileSystemObjectSelectionDialog("Select a brush file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_BRUSH, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
             if(test.size()){
                 Brush importedBrush;
@@ -162,9 +134,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
         }
         if(library.selectedElementIndex == 3){ //3D Models
             
-            std::vector<std::string> filters = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
-
-            std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+            std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             
             if(test.size()){
                 Model tdModel;
@@ -192,28 +162,28 @@ void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer,
             for (size_t i = 0; i < library.textures.size(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.textures[i].title       , library.textures[i], 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.textures[i].title       , library.textures[i], 0.f,false))) ;
             }
         }
         else if(library.selectedElementIndex == 1){ //Update materials
             for (size_t i = 0; i < library.materials.size(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.materials[i].title       , Texture(library.materials[i].displayingTexture), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.materials[i].title       , Texture(library.materials[i].displayingTexture), 0.f,false))) ;
             }
         }
         else if(library.selectedElementIndex == 2){ //Update materials
             for (size_t i = 0; i < library.brushes.size(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.brushes[i].title       , Texture(library.brushes[i].displayingTexture), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.brushes[i].title       , Texture(library.brushes[i].displayingTexture), 0.f,false))) ;
             }
         }
         else if(library.selectedElementIndex == 3){ //Update tdmodels
             for (size_t i = 0; i < library.TDModels.size(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.TDModels[i].title       , Texture(), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.TDModels[i].title       , Texture(), 0.f,false))) ;
             }
         }
         //Give the section
@@ -252,14 +222,26 @@ void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &paint
     {
         if(i == 3) 
             break; //Don't bring the dropper button
+        
         if(paintingPanel.sections[0].elements[i].button.clickState1){ //If a color button is clicked
+         
             if(painter.selectedColorIndex != i){ //If the clicked button is not selected 
                 paintingPanel.sections[0].elements[painter.selectedColorIndex].button.clickState1 = false; //Unselect the selected one
                 painter.selectedColorIndex = i; //Select the clicked color button
                 break; 
             }
+        
+        }
+
+    }
+
+    //Keep the selected color button pressed
+    for (size_t i = 0; i < paintingPanel.sections[0].elements.size(); i++){
+        if(i == painter.selectedColorIndex){
+            paintingPanel.sections[0].elements[i].button.clickState1 = true;           
         }
     }
+    
     //Update the color values of the color buttons
     paintingPanel.sections[0].elements[0].button.color = glm::vec4(painter.color1.RGB/glm::vec3(255.f),1.f);
     paintingPanel.sections[0].elements[1].button.color = glm::vec4(painter.color2.RGB/glm::vec3(255.f),1.f);
@@ -298,24 +280,24 @@ void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &paint
     if(model.newModelAdded){
         painter.selectedMeshIndex = 0;
         
-        paintingPanel.sections[6].elements.clear();
+        paintingPanel.sections[3].elements.clear();
         
         for (size_t i = 0; i < model.meshes.size(); i++)
         {
 
-            Element meshButton = Element(Button(BUTTON_STYLE_SOLID,glm::vec2(2,2),colorPalette,buttonShader, model.meshes[i].materialName , Texture(), 0.f,true));
+            Element meshButton = Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),colorPalette,buttonShader, model.meshes[i].materialName , Texture(), 0.f,true));
 
-            paintingPanel.sections[6].elements.push_back(meshButton);
+            paintingPanel.sections[3].elements.push_back(meshButton);
         
         }
     }
 
     //Check all the mesh buttons if they are pressed
-    for (size_t i = 0; i < paintingPanel.sections[6].elements.size(); i++) 
+    for (size_t i = 0; i < paintingPanel.sections[3].elements.size(); i++) 
     {
-        if(paintingPanel.sections[6].elements[i].button.hover && mouse.LClick){//If any button element is pressed
+        if(paintingPanel.sections[3].elements[i].button.hover && mouse.LClick){//If any button element is pressed
             if(painter.selectedMeshIndex != i){
-                paintingPanel.sections[6].elements[painter.selectedMeshIndex].button.clickState1 = false;
+                paintingPanel.sections[3].elements[painter.selectedMeshIndex].button.clickState1 = false;
                 painter.selectedMeshIndex = i;
                 break;
             }
@@ -323,10 +305,10 @@ void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &paint
     }
 
     //Set the selected mesh button as selected 
-    for (size_t i = 0; i < paintingPanel.sections[6].elements.size(); i++)
+    for (size_t i = 0; i < paintingPanel.sections[3].elements.size(); i++)
     {
         if(i == painter.selectedMeshIndex)
-            paintingPanel.sections[6].elements[i].button.clickState1 = true;
+            paintingPanel.sections[3].elements[i].button.clickState1 = true;
     }
     
 }
@@ -623,7 +605,7 @@ void nodeInteraction(Model &model, std::vector<Node> &nodeScene,std::vector<Node
         std::vector <NodeIO> meshOutputNodeInputElements;
         for (size_t i = 0; i < model.meshes.size(); i++)
         {
-            meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(BUTTON_STYLE_SOLID,glm::vec2(1,1),colorPalette,shaders.buttonShader,model.meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,0));
+            meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,shaders.buttonShader,model.meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,0));
         }
 
         //Create the mesh output node

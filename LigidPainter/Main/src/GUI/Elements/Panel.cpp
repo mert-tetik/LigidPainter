@@ -336,7 +336,7 @@ Panel::Panel(Shader shader,ColorPalette colorPalette,std::vector<Section> sectio
     this->rowCount = rowCount; 
     this->maxScaleVal = maxScaleVal; 
     this->barButtons = barButtons; 
-    this->sliderButton = Button(BUTTON_STYLE_STYLIZED,glm::vec2(0.25f,20),colorPalette,shader,"",Texture(),0.f,false);
+    this->sliderButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(0.25f,20),colorPalette,shader,"",Texture(),0.f,false);
     this->sliderButton.color = colorPalette.mainColor;
     this->sliderButton.color2 = colorPalette.themeColor;
     this->sliderButton.radius = 0.25f;

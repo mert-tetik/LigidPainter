@@ -53,7 +53,7 @@ CheckBox::CheckBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader sh
     this->scale = scale;
     this->panelOffset = panelOffset;
     
-    if(style == BUTTON_STYLE_BASIC){
+    if(style == ELEMENT_STYLE_BASIC){
         this->color = colorPalette.oppositeColor;
         this->color2 = colorPalette.themeColor;
         this->animationStyle = 0;

@@ -39,9 +39,9 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
             Section(
                 Element(Button()),
                 {
-                    Element(Button(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Settings",Texture(),0.f,false)), 
+                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Settings",Texture(),0.f,false)), 
 
-                    Element(ComboBox(BUTTON_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,
+                    Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,
                     {
                         "256",
                         "512",
@@ -50,9 +50,9 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
                         "4096"
                     },"Texture Resolution",4.f),context.window),
                     
-                    Element(CheckBox(BUTTON_STYLE_BASIC,glm::vec2(2,2),colorPalette,buttonShader, "VSync"  , 2.f)),
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,buttonShader, "VSync"  , 2.f)),
                     
-                    Element(CheckBox(BUTTON_STYLE_BASIC,glm::vec2(2,2),colorPalette,buttonShader, "Backface Culling"  , 2.f)),
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,buttonShader, "Backface Culling"  , 2.f)),
                 }
             )
         }

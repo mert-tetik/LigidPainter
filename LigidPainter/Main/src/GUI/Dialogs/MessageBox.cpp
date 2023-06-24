@@ -77,7 +77,7 @@ int showMessageBox(
 
 
     //Show the message box
-    tinyfd_messageBox(
+    return tinyfd_messageBox(
                         title.c_str(), 
                         message.c_str(), 
                         buttonStr, 

@@ -164,10 +164,7 @@ void TextBox::render(
             active = false;
         }
         else if(openSelectFolderDialog == 2){
-            //Select 3D Model
-            std::vector<std::string> filters = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
-
-            std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+            std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             
             if(test.size()){
                 text = test;
@@ -177,22 +174,7 @@ void TextBox::render(
         }   
         else if(openSelectFolderDialog == 3){
             //Select Texture
-            std::vector<std::string> filters = 
-                                                        { 
-                                                            "*.png",                     //(Portable Network Graphics)
-                                                            "*.jpeg",                    //(Joint Photographic Experts Group)
-                                                            "*.jpg",                    //(Joint Photographic Experts Group but 3 letters)
-                                                            "*.bmp",                     //(Bitmap)
-                                                            "*.gif",                     //(Graphics Interchange Format)
-                                                            "*.tga",                     //(Truevision Targa)
-                                                            "*.hdr",                     //(High Dynamic Range)
-                                                            "*.pic",                     //(Softimage PIC)
-                                                            "*.pnm",                     //(Portable Any Map)
-                                                            "*.ppm",                     //(Portable Pixel Map)
-                                                            "*.pgm",                     //(Portable Gray Map)
-                                                            "*.pbm"                     //(Portable Bitmap) };
-                                                        };   
-            std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", filters, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+            std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             if(test.size()){
                 text = test;
             }

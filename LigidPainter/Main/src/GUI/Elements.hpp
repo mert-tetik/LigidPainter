@@ -14,68 +14,122 @@ Official Web Page : https://ligidtools.com/ligidpainter
 ---------------------------------------------------------------------------
 */
 
+//
 #ifndef ELEMENTS_HPP
 #define ELEMENTS_HPP
 
-//Forward declarations
-class ColorPalette;
+//OpenGL & GLFW
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 
+//GLM - Math library
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <string>
-#include <iostream>
-#include <vector>
+#include <string> //std::string
+#include <iostream> //input & outputs file streams
+#include <vector> //std::vector
 
 #include "UTIL/Util.hpp"
 
+/// @brief Represent a side of a panel (Left Side, Bottom Side etc.)
 struct PanelSide{ 
+    //Used in the GUI/Elements/panel.cpp 
+    
+    //Cursor on the panel side
     bool hover = false;
+    //Is the side is pressed (drag the side & scale the panel if pressed)
     bool pressed = false;
+    //Set hover false no matter what if locked
     bool locked = false;
 };
 
+/// @brief Represents a single node connection
 struct NodeConnection{
-    int nodeIndex; //Connected to which node
-    int inputIndex; //Connected to which input
+    //Both inputs & outputs of the node use that structure.
+    //std::vector<NodeConnection> connections from the NodeIO class
+    //Example :
+    //NodeIO connectedIO = nodeScene[nodeIndex].IOs[inputIndex];
 
+    //Which node the connection is connected
+    int nodeIndex; 
+    //Which input the connection is connected
+    int inputIndex;
+
+    //Constructor for the connection
     NodeConnection(int nodeIndex,int inputIndex);
 };
 
-class TextRenderer;
+//Forward declarations
+class ColorPalette;
+class TextRenderer; 
 struct Element;
 
 //!------------------------------BUTTON------------------------------
 
-#define BUTTON_STYLE_STYLIZED 0
-#define BUTTON_STYLE_SOLID 1
-#define BUTTON_STYLE_BASIC 2
+//Use these macros to define the style parameter in a GUI elements constructor (affects the button mostly)
+//Most GUI constructors has only 1 style
 
+//Stylized button (outline only & smooth edges)
+#define ELEMENT_STYLE_STYLIZED 0
+
+//Solid button (slim outline & sharp edges)
+#define ELEMENT_STYLE_SOLID 1
+
+//Basic button (outline & half-smooth edges)
+#define ELEMENT_STYLE_BASIC 2
+
+/// @brief To render & manage activites of a button (functions were declared at the GUI/Elements/Button)
 class Button
 {
 private:
     //Private member functions
+    
     void render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadius,float resultOutlineThickness);
     bool renderTheTexture(glm::vec3 resultPos,glm::vec2 resultScale,float resultScaleText,glm::vec2 videoScale,TextRenderer &textRenderer,float &textureRadius);
     void manageMouseActivity(Mouse &mouse);
     void renderTextAndTexture(TextRenderer &textRenderer, glm::vec2 videoScale, float resultScaleText);
+    
+    //This shader (buttonShader) is used to render the button
+    Shader shader;
 
 public:
-    Shader shader;
+    //Pressed to the button
+    //Returns true if a button is pressed
+    //Returns back to false once the mouse left key is released (if true) 
     bool clickState1 = false;
+    
+    //While rendering IN THE PANEL put that much additional space
     float panelOffset = 0.f;
+    
+    //Text of the button
     std::string text;
+
+    //Main color of the button
     glm::vec4 color;
+    
+    //Animation color (switch to that color if hover or clicked)
     glm::vec4 color2;
+    
+    //Main color of the text of the button
     glm::vec4 textColor;
+
+    //Animation color of the text (switch to that color if hover or clicked)
     glm::vec4 textColor2;
+    
+    //Text's scale value
     float textScale;
+
+    //Render only the outline if set to true
     bool outline; 
+
+    //Put an additional outline to the button if set to true (both outline & outlineExtra can't be true)
     bool outlineExtra;
+    
+    //Thickness value of the button
     float outlineThickness;
+    
     glm::vec3 outlineColor;
     glm::vec3 outlineColor2;
     bool keepPressingState;
@@ -525,11 +579,11 @@ private:
 public:
     ColorPalette(/* args */);
     
-    glm::vec4 themeColor = glm::vec4(       0.043f      ,0.635f     ,0.823f     ,1.f    );  //LigidPainter's theme color which is cyan-like light blue 
-    glm::vec4 mainColor = glm::vec4(        0.26        ,0.26       ,0.26       ,0.9f   );  //That color will be used oftenly
-    glm::vec4 secondColor = glm::vec4(      0.16        ,0.16       ,0.16       ,1.f    );  //That too
-    glm::vec4 thirdColor = glm::vec4(       0.46        ,0.46       ,0.46       ,1.f    );  //Will be used few times
-    glm::vec4 oppositeColor = glm::vec4(    0.8         ,0.8        ,0.8        ,1.f    );  //Will be used for text / icon color etc.
+    glm::vec4 themeColor = glm::vec4(       0.043f      ,0.635f     ,0.823f     ,1.f / 1.2f    );  //LigidPainter's theme color which is cyan-like light blue 
+    glm::vec4 mainColor = glm::vec4(        0.26        ,0.26       ,0.26       ,0.9f / 1.2f   );  //That color will be used oftenly
+    glm::vec4 secondColor = glm::vec4(      0.16        ,0.16       ,0.16       ,1.f / 1.2f    );  //That too
+    glm::vec4 thirdColor = glm::vec4(       0.46        ,0.46       ,0.46       ,1.f / 1.2f    );  //Will be used few times
+    glm::vec4 oppositeColor = glm::vec4(    0.8         ,0.8        ,0.8        ,1.f / 1.2f    );  //Will be used for text / icon color etc.
 
     void newPalette(glm::vec4 themeColor,glm::vec4 mainColor,glm::vec4 secondColor,glm::vec4 thirdColor,glm::vec4 oppositeColor);
 };

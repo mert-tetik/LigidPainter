@@ -31,7 +31,7 @@
 /// @brief Shows dialogs regarding file system objects (take input from user on files/directories)
 /// @param title Title of the dialog
 /// @param defaultPath Default path for the searcher
-/// @param filters Extension filters for the file dialogs
+/// @param filterTemplate FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_BRUSH, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_LIGID
 /// @param multipleSelection Enable multiple selection if the type is FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE
 /// @param type FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE , FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER , FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_EXPORT_FILE
 /// @return the path to the selected file system object
@@ -39,7 +39,7 @@ std::string showFileSystemObjectSelectionDialog
                                                 (
                                                     const std::string title, 
                                                     const std::string defaultPath, 
-                                                    const std::vector<std::string> filters, 
+                                                    const int filterTemplate, 
                                                     const bool multipleSelection, 
                                                     const int type
                                                 )
@@ -57,31 +57,128 @@ std::string showFileSystemObjectSelectionDialog
 
     //Select file dialog
     else if(type == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE){
-        Util util;
-        const char * const * filterPatterns = util.convertStringArray(filters);
+        
+        if(filterTemplate == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE){
+            const char* filters[12] = { "*.png","*.jpeg","*.jpg","*.bmp", "*.gif", "*.tga", "*.hdr", "*.pic", "*.pnm", "*.ppm", "*.pgm", "*.pbm"  };   
+            path = tinyfd_openFileDialog(
+                                            title.c_str(), //Title of the dialog
+                                            defaultPath.c_str(), //The default path
+                                            12,  //Size of the filters array
+                                            filters, //File extension filters
+                                            "", //Single extension description (not used)
+                                            multipleSelection //Enable multiple selections
+                                        );
+        }
 
-        path = tinyfd_openFileDialog(
-                                        title.c_str(), //Title of the dialog
-                                        defaultPath.c_str(), //The default path
-                                        (int)filters.size(),  //Size of the filters array
-                                        filterPatterns, //File extension filters
-                                        "", //Single extension description (not used)
-                                        multipleSelection //Enable multiple selections
-                                    );
+        else if(filterTemplate == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL){
+            const char* filters[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
+            path = tinyfd_openFileDialog(
+                                            title.c_str(), //Title of the dialog
+                                            defaultPath.c_str(), //The default path
+                                            11,  //Size of the filters array
+                                            filters, //File extension filters
+                                            "", //Single extension description (not used)
+                                            multipleSelection //Enable multiple selections
+                                        );
+        }
+        
+        else if(filterTemplate == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_LIGID){
+            const char* filters[1] = { "*.ligid" };
+            path = tinyfd_openFileDialog(
+                                            title.c_str(), //Title of the dialog
+                                            defaultPath.c_str(), //The default path
+                                            1,  //Size of the filters array
+                                            filters, //File extension filters
+                                            "", //Single extension description (not used)
+                                            multipleSelection //Enable multiple selections
+                                        );
+        }
+        
+        else if(filterTemplate == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_BRUSH){
+            const char* filters[1] = { "*.lgdbrush" };
+            path = tinyfd_openFileDialog(
+                                            title.c_str(), //Title of the dialog
+                                            defaultPath.c_str(), //The default path
+                                            1,  //Size of the filters array
+                                            filters, //File extension filters
+                                            "", //Single extension description (not used)
+                                            multipleSelection //Enable multiple selections
+                                        );
+        }
+        
+        else if(filterTemplate == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL){
+            const char* filters[1] = { "*.lgdmaterial" };
+            path = tinyfd_openFileDialog(
+                                            title.c_str(), //Title of the dialog
+                                            defaultPath.c_str(), //The default path
+                                            1,  //Size of the filters array
+                                            filters, //File extension filters
+                                            "", //Single extension description (not used)
+                                            multipleSelection //Enable multiple selections
+                                        );
+        }
+
     }
     
     //Export (extract / save) file dialog
     else if(type == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_EXPORT_FILE){
         Util util;
-        const char * const * filterPatterns = util.convertStringArray(filters);
 
-        path = tinyfd_saveFileDialog(
-                                        title.c_str(), //Title of the dialog
-                                        defaultPath.c_str(), //The default path
-                                        (int)filters.size(),  //Size of the filters array
-                                        filterPatterns, //File extension filters
-                                        "" //Single extension description (not used)
-                                    );
+        if(filterTemplate == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE){
+            const char* filters[12] = { "*.png","*.jpeg","*.jpg","*.bmp", "*.gif", "*.tga", "*.hdr", "*.pic", "*.pnm", "*.ppm", "*.pgm", "*.pbm"  };   
+            path = tinyfd_saveFileDialog(
+                                title.c_str(), //Title of the dialog
+                                defaultPath.c_str(), //The default path
+                                12,  //Size of the filters array
+                                filters, //File extension filters
+                                "" //Single extension description (not used)
+                            );
+        }
+
+        else if(filterTemplate == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL){
+            const char* filters[11] = { "*.obj","*.gltf", "*.fbx", "*.stp", "*.max","*.x3d","*.obj","*.vrml","*.3ds","*.stl","*.dae" };
+            path = tinyfd_saveFileDialog(
+                                title.c_str(), //Title of the dialog
+                                defaultPath.c_str(), //The default path
+                                11,  //Size of the filters array
+                                filters, //File extension filters
+                                "" //Single extension description (not used)
+                            );
+        }
+        
+        else if(filterTemplate == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_LIGID){
+            const char* filters[1] = { "*.ligid" };
+            path = tinyfd_saveFileDialog(
+                                title.c_str(), //Title of the dialog
+                                defaultPath.c_str(), //The default path
+                                1,  //Size of the filters array
+                                filters, //File extension filters
+                                "" //Single extension description (not used)
+                            );
+        }
+        
+        else if(filterTemplate == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_BRUSH){
+            const char* filters[1] = { "*.lgdbrush" };
+            path = tinyfd_saveFileDialog(
+                                title.c_str(), //Title of the dialog
+                                defaultPath.c_str(), //The default path
+                                1,  //Size of the filters array
+                                filters, //File extension filters
+                                "" //Single extension description (not used)
+                            );
+        }
+        
+        else if(filterTemplate == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL){
+            const char* filters[1] = { "*.lgdmaterial" };
+        
+            path = tinyfd_saveFileDialog(
+                                title.c_str(), //Title of the dialog
+                                defaultPath.c_str(), //The default path
+                                1,  //Size of the filters array
+                                filters, //File extension filters
+                                "" //Single extension description (not used)
+                            );
+        }
     }
 
     //Return the retrieved path
