@@ -100,7 +100,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,float textureR
         {
             //If button is clicked update the material
             if(modifiersPanel.sections[secI].elements[elementI].state == 0)
-                if(modifiersPanel.sections[secI].elements[elementI].button.clickedMixVal == 1.f)
+                if(modifiersPanel.sections[secI].elements[elementI].button.clicked)
                     updateMaterial(material,(float)textureRes,box,context);
 
             //If range bar's value changed update the material

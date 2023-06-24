@@ -105,7 +105,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
             
         }
     }
-    if(libraryPanelDisplayer.barButtons[1].clickedMixVal == 1.f){ //Import button
+    if(libraryPanelDisplayer.barButtons[1].clicked){ //Import button
         if(library.selectedElementIndex == 0){//Textures
             //Select Texture
             char const* lFilterPatterns[12] = 
@@ -136,7 +136,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
                                             { 
                                                 "*.lgdmaterial",
                                             };   
-            char* test = tinyfd_openFileDialog("Select a material","", 12, lFilterPatterns,"",false);
+            char* test = tinyfd_openFileDialog("Select a material","", 1, lFilterPatterns,"",false);
             
             if(test){
                 Material material(textureRes, "", 0);
@@ -145,23 +145,20 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
             }
         }
         if(library.selectedElementIndex == 2){ //Brushes
-            library.addBrush(
-                                        Brush
-                                            (    
-                                                paintingPanel.sections[2].elements[0].rangeBar.value,
-                                                paintingPanel.sections[2].elements[3].rangeBar.value,
-                                                paintingPanel.sections[2].elements[1].rangeBar.value,
-                                                paintingPanel.sections[2].elements[7].rangeBar.value,
-                                                paintingPanel.sections[2].elements[8].rangeBar.value,
-                                                paintingPanel.sections[2].elements[9].rangeBar.value,
-                                                paintingPanel.sections[2].elements[6].checkBox.clickState1,
-                                                paintingPanel.sections[2].elements[2].checkBox.clickState1,
-                                                "brush_1",
-                                                painter.brushTexture
-                                            )
-                                    );
             
-            library.brushes[library.brushes.size()-1].updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
+            //Select material
+            char const* lFilterPatterns[12] = 
+                                            { 
+                                                "*.lgdbrush",
+                                            };   
+            
+            char* test = tinyfd_openFileDialog("Select a brush file","", 1, lFilterPatterns,"",false);
+
+            if(test){
+                Brush importedBrush;
+                importedBrush.readFile(test);
+                library.addBrush(importedBrush);
+            }
             
         }
         if(library.selectedElementIndex == 3){ //3D Models
@@ -174,9 +171,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
                 tdModel.loadModel(test,true);
                 library.addModel(tdModel);
             }
-            
         }
-        
     }
 }
 
