@@ -540,7 +540,7 @@ class Node
 {
 private:
     bool renderBarriers(Panel &nodeEditorPanel,Mouse &mouse);
-    void drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nodeEditorPanel);
+    void drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nodeEditorPanel, int direction);
     void createConnection(int nodeIParam,int IOIParam,int currentNodeI,int currentIOI,std::vector<Node> &nodeScene);
     void clearConnections(int nodeIParam,int IOIParam,std::vector<Node> &nodeScene);
     bool doHaveConnection(int nodeIParam,int IOIParam,std::vector<Node> nodeScene);

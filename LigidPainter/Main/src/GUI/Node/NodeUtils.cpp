@@ -28,7 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-void Node::drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nodeEditorPanel){
+void Node::drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nodeEditorPanel, int direction){
     glm::vec2 gap = src - dest;
     
     glm::vec2 pos = src - gap/2.f;
@@ -47,6 +47,8 @@ void Node::drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nod
     
     singleCurveShader.setVec3("pos",       nodeEditorPanel.resultPos);
     singleCurveShader.setVec2("scale",     nodeEditorPanel.resultScale);
+    
+    singleCurveShader.setInt("direction",       direction);
     
     singleCurveShader.setVec2("startPos",       src);
     singleCurveShader.setVec2("destPos",       dest);

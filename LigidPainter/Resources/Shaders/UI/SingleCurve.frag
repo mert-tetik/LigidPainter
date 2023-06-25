@@ -29,6 +29,8 @@ uniform vec2 percScale;
 uniform vec2 startPos;
 uniform vec2 destPos;
 
+uniform int direction; //0 : to the left, 1 : to the right
+
 // signed distance function for Circle, for control points
 float SDFCircle( in vec2 coords, in vec2 offset )
 {
@@ -71,7 +73,11 @@ void main()
     vec2 C = destPos/100.;
 
     vec2 B = A;
-    B.x += 0.1;
+    
+    if(direction == 0)
+        B.x -= 0.1;
+    else if(direction == 1)
+        B.x += 0.1;
 
     vec3 color = vec3(1.0,1.0,1.0);
     float dist = SDFCircle(percent, A);

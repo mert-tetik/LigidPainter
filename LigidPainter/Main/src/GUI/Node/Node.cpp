@@ -153,7 +153,9 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
                             glm::vec2(IOs[i].IOCircle.pos.x,IOs[i].IOCircle.pos.y), //Circle pos
                             mouse.cursorPos/videoScale * 100.f, //Cursor pos in the range of 0 - 100
                             videoScale,
-                            nodeEditorPanel);
+                            nodeEditorPanel,
+                            IOs[i].state == 2   
+                        );
 
                 //First frame line released
                 if(!mouse.LPressed){
@@ -199,7 +201,9 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
                                 glm::vec2(IOs[i].IOCircle.pos.x,IOs[i].IOCircle.pos.y), //Circle pos
                                 glm::vec2(connectedIO.IOCircle.pos.x,connectedIO.IOCircle.pos.y), //Connected Circle pos
                                 videoScale,
-                                nodeEditorPanel);
+                                nodeEditorPanel,
+                                1
+                            );
 
                 }
             }
