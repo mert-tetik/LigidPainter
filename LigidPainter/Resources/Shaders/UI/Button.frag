@@ -1,7 +1,7 @@
 //Most of the GUI elements is rendered here
 //Such as buttons, range bars, checkbox etc.
 
-#version 330 core
+#version 400 core
 
 out vec4 fragColor;
 

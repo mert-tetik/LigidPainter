@@ -1,6 +1,6 @@
 //! I've stolen it from https://www.shadertoy.com/view/4s33WB
 
-#version 330 core
+#version 400 core
 
 out vec4 outClr;
 
