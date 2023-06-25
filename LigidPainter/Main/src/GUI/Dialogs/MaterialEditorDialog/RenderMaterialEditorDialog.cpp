@@ -85,6 +85,11 @@ void MaterialEditorDialog::checkLayerPanel(Material &material, Mouse &mouse, std
                     modifiersPanel.sections = material.materialModifiers[selectedMaterialModifierIndex].sections;
                 }
             }
+
+            //Keep the selected material modifier as selected
+            if(i == selectedMaterialModifierIndex){
+                layerPanel.sections[0].elements[i].button.clickState1 = true;
+            }
         }
     }
 
