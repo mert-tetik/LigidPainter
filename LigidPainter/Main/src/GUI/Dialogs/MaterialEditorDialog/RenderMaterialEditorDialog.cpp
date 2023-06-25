@@ -268,6 +268,7 @@ void MaterialEditorDialog::render
 
     //Close the dialog
     if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || ((!bgPanel.hover && !barButton.hover) && mouse.LClick) || (barButton.hover && mouse.LDoubleClick))
-        deactivate(textureSelectionDialog);
+        if(!textureSelectionDialog.dialogControl.isActive())
+            deactivate(textureSelectionDialog);
 
 }
