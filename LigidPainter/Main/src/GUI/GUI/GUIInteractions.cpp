@@ -68,7 +68,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
         if(library.selectedElementIndex == 1){ //Materials
             //Add new material to the library & not the panel
             //Will be displayed right after library panel is updated
-            library.addMaterial(Material(textureRes, "material_0", 0));
+            library.addMaterial(Material(textureRes, "material", 0));
         }
         if(library.selectedElementIndex == 2){ //Brushes
             library.addBrush(
