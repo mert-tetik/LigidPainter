@@ -141,7 +141,7 @@ void MaterialEditorDialog::updateLayerPanelElements(Material &material,int &text
         
         //If clicked to add modifier button add the texture modifier to the modifiers of the material
         if(!dialogControl.firstFrameActivated) 
-            material.materialModifiers.push_back(appMaterialModifiers.textureModifier);
+            material.materialModifiers.insert(material.materialModifiers.begin(),appMaterialModifiers.textureModifier);
 
         //Creates layer panel elements from scratch using material.materialModifiers
         updateLayerPanel(material,textureRes,box,context);
