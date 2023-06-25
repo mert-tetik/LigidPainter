@@ -204,6 +204,14 @@ void libraryPanelLeftInteraction(Panel &libraryPanelLeft, Library &library,Mouse
             }
         } 
     }
+    
+    //Keep the selected element as selected
+    for (size_t i = 0; i < libraryPanelLeft.sections[0].elements.size(); i++) 
+    {
+        if(library.selectedElementIndex == i){
+            libraryPanelLeft.sections[0].elements[library.selectedElementIndex].button.clickState1 = true;
+        }
+    }
 }
 
 
