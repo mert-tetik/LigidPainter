@@ -17,8 +17,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #ifndef DIALOGS_HPP
 #define DIALOGS_HPP
 
-//Forward declarations
-class ColorPalette;
 
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
@@ -34,6 +32,9 @@ class ColorPalette;
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 
+//Forward declarations
+class ColorPalette;
+class ContextMenu;
 
 class DialogControl
 {
@@ -228,7 +229,7 @@ private:
 
     //Private member functions
     void updateLayerPanel(Material &material,int &textureRes,Box &box,Context &context);
-    void checkLayerPanel(Material &material);
+    void checkLayerPanel(Material &material,Mouse &mouse,std::vector<ContextMenu> &contextMenus,glm::vec2 videoScale);
     void checkModifiersPanel(Material &material,float textureRes,Box box,Context context,Mouse &mouse,TextureSelectionDialog &textureSelectionDialog);
     void updateLayerPanelElements(Material &material,int &textureRes,Box &box,Context &context);
     void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Library &library,float textureRes,Box box,Context context);
@@ -256,7 +257,7 @@ public:
 
     //Public member functions
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library,
-        Material &material, int textureRes,Box box,Context context);
+        Material &material, int textureRes,Box box,Context context,std::vector<ContextMenu> &contextMenus);
     void activate();
     void deactivate(TextureSelectionDialog &textureSelectionDialog);
     void updateMaterial(Material &material,float textureRes,Box box,Context context);

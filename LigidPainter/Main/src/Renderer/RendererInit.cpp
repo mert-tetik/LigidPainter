@@ -229,10 +229,15 @@ void Renderer::createContextMenus(){
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Rename"  , "Duplicate"       , "Copy Path"   , "Delete"}));                                      //Textures  0
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Edit"    , "Add To Scene"    , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete"}));    //Materials 1
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Use"     , "Apply Current"   , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete"}));    //Brushes   2
+    
     //Menu Bar (navigation panel)
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Save"    , "Save as"         , "Create new"  , "Load new"    ,    "Copy Path", "File Explorer"}));                //Project   3 
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Undo"    , "Redo"    }));                                                                        //Painting  4
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Website" , "YouTube" }));                                                                        //Help      5
+    
+    //Material editor
+    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Delete", "Move To Top" , "Move To Bottom"}));                                                                        //Help      5
+
 }
 
 void Renderer::createAppNodes(glm::vec2 videoScale){

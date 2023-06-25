@@ -574,6 +574,21 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         contextMenus[5].pos.z = 0.95f;
         contextMenus[5].selectedElement = 0;
     }
+    
+    if(materialEditorDialog.layerPanel.sections.size()){
+        for (size_t i = 0; i < materialEditorDialog.layerPanel.sections[0].elements.size(); i++)
+        {
+            if(materialEditorDialog.layerPanel.sections[0].elements[i].button.hover && mouse.RClick){
+
+                contextMenus[6].dialogControl.activate();
+                contextMenus[6].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
+                contextMenus[6].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[6].contextPanel.scale.y;
+                contextMenus[6].pos.z = 0.95f;
+                contextMenus[6].selectedElement = i;
+
+            }
+        }
+    }
 }
 
 
