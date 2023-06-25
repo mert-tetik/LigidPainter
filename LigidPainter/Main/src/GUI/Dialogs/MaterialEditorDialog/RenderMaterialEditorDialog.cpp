@@ -75,14 +75,19 @@ void MaterialEditorDialog::checkLayerPanel(Material &material, Mouse &mouse, std
                 if(selectedMaterialModifierIndex != i){ //If the clicked button is not selected 
                     layerPanel.sections[0].elements[selectedMaterialModifierIndex].button.clickState1 = false; //Unselect the selected one
                     selectedMaterialModifierIndex = i; //Select the clicked button
-                    if(material.materialModifiers.size()){
-                        modifiersPanel.sections = material.materialModifiers[selectedMaterialModifierIndex].sections;
-                    }
                     break; 
+                }
+            }
+
+            //If clicked to a mofifier button
+            if(layerPanel.sections[0].elements[i].button.hover && mouse.LClick){
+                if(material.materialModifiers.size()){
+                    modifiersPanel.sections = material.materialModifiers[selectedMaterialModifierIndex].sections;
                 }
             }
         }
     }
+
 }
 
 
