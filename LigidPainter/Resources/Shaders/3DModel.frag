@@ -17,7 +17,6 @@ uniform sampler2D albedoTxtr;
 uniform sampler2D roughnessTxtr;
 uniform sampler2D metallicTxtr;
 uniform sampler2D normalMapTxtr;
-uniform sampler2D heightMapTxtr;
 uniform sampler2D ambientOcclusionTxtr;
 
 uniform sampler2D paintingTexture;

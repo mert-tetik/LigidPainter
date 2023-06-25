@@ -211,15 +211,15 @@ void Renderer::loadAppTextures(){
 }
 
 void Renderer::loadShaders(){
-    shaders.tdModelShader =         Shader("LigidPainter/Resources/Shaders/3DModel.vert"    ,   "LigidPainter/Resources/Shaders/3DModel.frag"           ,nullptr);
-    shaders.depth3D =               Shader("LigidPainter/Resources/Shaders/3DModel.vert"    ,   "LigidPainter/Resources/Shaders/Depth3D.frag"           ,nullptr);
-    shaders.skyboxShader =          Shader("LigidPainter/Resources/Shaders/Skybox.vert"     ,   "LigidPainter/Resources/Shaders/Skybox.frag"            ,nullptr);
-    shaders.skyboxBall =            Shader("LigidPainter/Resources/Shaders/3DModel.vert"    ,   "LigidPainter/Resources/Shaders/SkyboxBall.frag"        ,nullptr);
-    shaders.prefilteringShader =    Shader("LigidPainter/Resources/Shaders/Skybox.vert"     ,   "LigidPainter/Resources/Shaders/PrefilterSkybox.frag"   ,nullptr);
-    shaders.buttonShader =          Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert"   ,   "LigidPainter/Resources/Shaders/UI/Button.frag"         ,nullptr);
-    shaders.singleCurve =           Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert"   ,   "LigidPainter/Resources/Shaders/UI/SingleCurve.frag"    ,nullptr);
-    shaders.colorPicker =           Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert"   ,   "LigidPainter/Resources/Shaders/UI/ColorPicker.frag"    ,nullptr);
-    shaders.twoDPainting =          Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert"   ,   "LigidPainter/Resources/Shaders/2DPainting.frag"        ,nullptr);
+    shaders.tdModelShader =         Shader("LigidPainter/Resources/Shaders/3DModel.vert"    ,   "LigidPainter/Resources/Shaders/3DModel.frag"           ,nullptr    ,"./LigidPainter/Resources/Shaders/Tesellation/Height.tc",   "./LigidPainter/Resources/Shaders/Tesellation/Height.te");
+    shaders.depth3D =               Shader("LigidPainter/Resources/Shaders/3DModel.vert"    ,   "LigidPainter/Resources/Shaders/Depth3D.frag"           ,nullptr    ,nullptr                                                 ,   nullptr    );
+    shaders.skyboxShader =          Shader("LigidPainter/Resources/Shaders/Skybox.vert"     ,   "LigidPainter/Resources/Shaders/Skybox.frag"            ,nullptr    ,nullptr                                                 ,   nullptr    );
+    shaders.skyboxBall =            Shader("LigidPainter/Resources/Shaders/3DModel.vert"    ,   "LigidPainter/Resources/Shaders/SkyboxBall.frag"        ,nullptr    ,nullptr                                                 ,   nullptr    );
+    shaders.prefilteringShader =    Shader("LigidPainter/Resources/Shaders/Skybox.vert"     ,   "LigidPainter/Resources/Shaders/PrefilterSkybox.frag"   ,nullptr    ,nullptr                                                 ,   nullptr    );
+    shaders.buttonShader =          Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert"   ,   "LigidPainter/Resources/Shaders/UI/Button.frag"         ,nullptr    ,nullptr                                                 ,   nullptr    );
+    shaders.singleCurve =           Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert"   ,   "LigidPainter/Resources/Shaders/UI/SingleCurve.frag"    ,nullptr    ,nullptr                                                 ,   nullptr    );
+    shaders.colorPicker =           Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert"   ,   "LigidPainter/Resources/Shaders/UI/ColorPicker.frag"    ,nullptr    ,nullptr                                                 ,   nullptr    );
+    shaders.twoDPainting =          Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert"   ,   "LigidPainter/Resources/Shaders/2DPainting.frag"        ,nullptr    ,nullptr                                                 ,   nullptr    );
 }
 
 void Renderer::createContextMenus(){

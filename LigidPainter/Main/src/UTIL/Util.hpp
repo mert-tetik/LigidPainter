@@ -151,9 +151,9 @@ class Shader
 public:
     unsigned int ID;
 
-    //Constructor
     Shader();
-    Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath);
+
+    Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath, const char* tessControlPath, const char* tessEvalPath);
 
     void use();
     
