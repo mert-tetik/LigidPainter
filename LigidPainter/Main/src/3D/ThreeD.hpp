@@ -115,11 +115,6 @@ private:
 
 class Model{
 private:
-    #if defined(_WIN32) || defined(_WIN64)
-		    char folderDistinguisher = '\\';
-	#else
-			char folderDistinguisher = '/'; 
-	#endif
 
     std::string directory;
 public:
@@ -180,12 +175,6 @@ struct AppMaterialModifiers{
 class Material 
 {
 private:
-    #if defined(_WIN32) || defined(_WIN64)
-		    char folderDistinguisher = '\\';
-	#else
-			char folderDistinguisher = '/'; 
-	#endif
-
     void initTexture(Texture &txtr,int textureRes);
 public:
     std::string title;

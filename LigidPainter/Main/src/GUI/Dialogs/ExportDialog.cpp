@@ -141,7 +141,7 @@ void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,M
             if(i >= model.meshes.size())
                 break;
             
-            std::string materialFolderPath = destPath + folderDistinguisher + model.meshes[i].materialName;
+            std::string materialFolderPath = destPath + UTIL::folderDistinguisher() + model.meshes[i].materialName;
             
             std::filesystem::create_directories(materialFolderPath);
 

@@ -54,7 +54,7 @@ bool Project::createProject(std::string destinationPath,std::string name,std::st
         return false;
     }
     
-    if(std::filesystem::exists(destinationPath + folderDistinguisher + name)){
+    if(std::filesystem::exists(destinationPath + UTIL::folderDistinguisher() + name)){
 
         int res = showMessageBox
                 (
@@ -67,11 +67,11 @@ bool Project::createProject(std::string destinationPath,std::string name,std::st
         if(res == 0)
             return false;
         else if(res == 1)
-            std::filesystem::remove_all(destinationPath + folderDistinguisher + name);
+            std::filesystem::remove_all(destinationPath + UTIL::folderDistinguisher() + name);
     }
 
-    this->folderPath = destinationPath + folderDistinguisher + name;
-    this->ligidFilePath = folderPath + folderDistinguisher + name + ".ligid";
+    this->folderPath = destinationPath + UTIL::folderDistinguisher() + name;
+    this->ligidFilePath = folderPath + UTIL::folderDistinguisher() + name + ".ligid";
     this->projectName = name;
     
 
@@ -79,35 +79,35 @@ bool Project::createProject(std::string destinationPath,std::string name,std::st
     std::filesystem::create_directory(this->folderPath);
 
     //Create the textures folder
-    std::string textureFolderPath = this->folderPath + folderDistinguisher + "Textures";
+    std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";
     std::filesystem::create_directory(textureFolderPath);
 
     //Materials
-    std::string materialsFolderPath = this->folderPath + folderDistinguisher + "Materials";
+    std::string materialsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Materials";
     std::filesystem::create_directory(materialsFolderPath);
     
     //Brushes
-    std::string brushesFolderPath = this->folderPath + folderDistinguisher + "Brushes";
+    std::string brushesFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Brushes";
     std::filesystem::create_directory(brushesFolderPath);
     
     //Fonts
-    std::string fontsFolderPath = this->folderPath + folderDistinguisher + "Fonts";
+    std::string fontsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Fonts";
     std::filesystem::create_directory(fontsFolderPath);
     
     //Scripts
-    std::string scriptsFolderPath = this->folderPath + folderDistinguisher + "Scripts";
+    std::string scriptsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Scripts";
     std::filesystem::create_directory(scriptsFolderPath);
     
     //Filters
-    std::string filtersFolderPath = this->folderPath + folderDistinguisher + "Filters";
+    std::string filtersFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Filters";
     std::filesystem::create_directory(filtersFolderPath);
     
     //Layers
-    std::string layersFolderPath = this->folderPath + folderDistinguisher + "Layers";
+    std::string layersFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Layers";
     std::filesystem::create_directory(layersFolderPath);
     
     //3D Models
-    std::string tdModelFolderPath = this->folderPath + folderDistinguisher + "3DModels";
+    std::string tdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels";
     std::filesystem::create_directory(tdModelFolderPath);
     completeFolder(tdModelFolderPath, TD_MODEL_FOLDER_CREATION);
     
@@ -124,15 +124,9 @@ bool Project::createProject(std::string destinationPath,std::string name,std::st
 /// @brief add the contents off the related folder
 void completeFolder(std::string path, int action){
     
-    #if defined(_WIN32) || defined(_WIN64)
-		    char folderDistinguisher = '\\';
-	#else
-			char folderDistinguisher = '/'; 
-	#endif
-
     if(action == TD_MODEL_FOLDER_CREATION){
-        std::filesystem::copy("./LigidPainter/Resources/3D Models/sphere.fbx", path + folderDistinguisher + "sphere.fbx");
-        std::filesystem::copy("./LigidPainter/Resources/3D Models/plane.fbx", path + folderDistinguisher + "plane.fbx");
+        std::filesystem::copy("./LigidPainter/Resources/3D Models/sphere.fbx", path + UTIL::folderDistinguisher() + "sphere.fbx");
+        std::filesystem::copy("./LigidPainter/Resources/3D Models/plane.fbx", path + UTIL::folderDistinguisher() + "plane.fbx");
     }
 
 }

@@ -31,7 +31,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void Texture::load(const char* path){
     ;
-    this->title = UTIL::getLastWordBySeparatingWithChar(path,folderDistinguisher);
+    this->title = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());
     this->title = UTIL::removeExtension(this->title);
     this->path = path;
     glActiveTexture(GL_TEXTURE0);

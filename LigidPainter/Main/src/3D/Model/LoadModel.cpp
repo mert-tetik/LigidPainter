@@ -37,7 +37,7 @@ void Model::loadModel(std::string const &path,bool triangulate)
 {
     ;
     filePath = path;
-    title = UTIL::getLastWordBySeparatingWithChar(filePath,folderDistinguisher);
+    title = UTIL::getLastWordBySeparatingWithChar(filePath,UTIL::folderDistinguisher());
     title = UTIL::removeExtension(title);
 
     this->newModelAdded = true;

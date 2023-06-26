@@ -84,7 +84,7 @@ std::string Texture::generateTMPTitle(){
         std::string file = entry.path().string();
 
         //Remove the directory from the file name
-        file = UTIL::getLastWordBySeparatingWithChar(file, folderDistinguisher);
+        file = UTIL::getLastWordBySeparatingWithChar(file, UTIL::folderDistinguisher());
 
         //Remove the extension from the file name
         file = UTIL::removeExtension(file);

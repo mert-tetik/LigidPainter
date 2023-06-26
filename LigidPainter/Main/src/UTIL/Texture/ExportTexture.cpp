@@ -50,22 +50,22 @@ void Texture::exportTexture(std::string path,const std::string format){
     const int channels = 4;
 
     if(format == "PNG"){
-        if(!stbi_write_png((path + folderDistinguisher + title + ".png").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){
+        if(!stbi_write_png((path + UTIL::folderDistinguisher() + title + ".png").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){
             std::cout << "ERROR Failed to write texture file : " << path << std::endl;
         }
     }
     else if(format == "JPEG"){
-        if(!stbi_write_jpg((path + folderDistinguisher + title + ".jpeg").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){
+        if(!stbi_write_jpg((path + UTIL::folderDistinguisher() + title + ".jpeg").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){
             std::cout << "ERROR Failed to write texture file : " << path << std::endl;
         }
     }
     else if(format == "BMP"){
-        if(!stbi_write_bmp((path + folderDistinguisher + title + ".bmp").c_str(), scale.x, scale.y, channels, pixels)){
+        if(!stbi_write_bmp((path + UTIL::folderDistinguisher() + title + ".bmp").c_str(), scale.x, scale.y, channels, pixels)){
             std::cout << "ERROR Failed to write texture file : " << path << std::endl;
         }
     }
     else if(format == "TGA"){
-        if(!stbi_write_tga((path + folderDistinguisher + title + ".tga").c_str(), scale.x, scale.y, channels, pixels)){
+        if(!stbi_write_tga((path + UTIL::folderDistinguisher() + title + ".tga").c_str(), scale.x, scale.y, channels, pixels)){
             std::cout << "ERROR Failed to write texture file : " << path << std::endl;
         }
     }

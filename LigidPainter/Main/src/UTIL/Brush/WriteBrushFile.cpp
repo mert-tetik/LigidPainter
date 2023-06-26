@@ -71,7 +71,7 @@ void Brush::saveFile(std::string path){
     
     if(path.size()){
 
-        std::ofstream wf(path + folderDistinguisher + title + ".lgdbrush", std::ios::out | std::ios::binary);
+        std::ofstream wf(path + UTIL::folderDistinguisher() + title + ".lgdbrush", std::ios::out | std::ios::binary);
 
         if(!wf) {
             std::cout << "ERROR WHILE WRITING BRUSH FILE! Cannot open file : " << path << std::endl;

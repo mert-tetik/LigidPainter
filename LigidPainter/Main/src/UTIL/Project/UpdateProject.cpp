@@ -43,7 +43,7 @@ void Project::updateProject(Library &library, std::vector<Node> &nodeScene, int&
     }
     
     //!Textures
-    std::string textureFolderPath = this->folderPath + folderDistinguisher + "Textures";
+    std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";
 
     //Clear the textures folder
     deleteFilesInFolder(textureFolderPath);
@@ -57,7 +57,7 @@ void Project::updateProject(Library &library, std::vector<Node> &nodeScene, int&
     
     
     //!Materials
-    std::string materialFolderPath = this->folderPath + folderDistinguisher + "Materials";
+    std::string materialFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Materials";
 
     //Clear the materials folder
     deleteFilesInFolder(materialFolderPath);
@@ -71,7 +71,7 @@ void Project::updateProject(Library &library, std::vector<Node> &nodeScene, int&
 
 
     //!Brushes
-    std::string brushFolderPath = this->folderPath + folderDistinguisher + "Brushes";
+    std::string brushFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Brushes";
 
     //Clear the brushes folder
     deleteFilesInFolder(brushFolderPath);
@@ -85,7 +85,7 @@ void Project::updateProject(Library &library, std::vector<Node> &nodeScene, int&
     
     
     //!3D Models
-    std::string tdModelFolderPath = this->folderPath + folderDistinguisher + "3DModels";
+    std::string tdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels";
 
     //Clear the brushes folder
     deleteFilesInFolder(tdModelFolderPath);

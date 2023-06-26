@@ -144,6 +144,10 @@ namespace UTIL{
     /// @param nodeScene 
     /// @param index remove the nodeScene[index]
     void deleteNode(std::vector<Node>& nodeScene, int index);
+
+    /// @brief the folder distinguisher 
+    /// @return '/' if unix based OS defined '\\' if the windows defined
+    char folderDistinguisher();
 }
 
 
@@ -162,7 +166,7 @@ public:
     Color(std::string hexColor);
 
     //Public member functions
-    
+
     void loadRGB(glm::vec3 value);
     void loadHSV(glm::vec3 value);
     void loadHex(std::string value);
@@ -196,12 +200,6 @@ public:
 class Texture
 {
 private:
-    #if defined(_WIN32) || defined(_WIN64)
-		char folderDistinguisher = '\\';
-	#else
-		char folderDistinguisher = '/'; 
-	#endif
-
     std::string generateTMPTitle();
     std::string getTMPTitleWithGreatestIndex();
 
@@ -266,12 +264,6 @@ class Project
 {
 private:
 
-    #if defined(_WIN32) || defined(_WIN64)
-		    char folderDistinguisher = '\\';
-	#else
-			char folderDistinguisher = '/'; 
-	#endif
-    
     void deleteFilesInFolder(const std::string folderPath);
 
 public:
@@ -404,12 +396,6 @@ public:
 
 class Brush
 {
-private:
-    #if defined(_WIN32) || defined(_WIN64)
-		    char folderDistinguisher = '\\';
-	#else
-			char folderDistinguisher = '/'; 
-	#endif
 public:
     float sizeJitter;
     float scatter;

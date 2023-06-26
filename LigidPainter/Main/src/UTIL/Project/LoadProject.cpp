@@ -55,10 +55,10 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
 
 
     this->ligidFilePath = ligidFilePath;
-    this->folderPath = UTIL::removeLastWordBySeparatingWithChar(ligidFilePath,folderDistinguisher);
+    this->folderPath = UTIL::removeLastWordBySeparatingWithChar(ligidFilePath,UTIL::folderDistinguisher());
     if(this->folderPath[this->folderPath.size()-1] == '/' || this->folderPath[this->folderPath.size()-1] == '\\') //Make sure folder path doesn't have seperator at the end
         this->folderPath.pop_back();
-    this->projectName = UTIL::getLastWordBySeparatingWithChar(folderPath,folderDistinguisher);
+    this->projectName = UTIL::getLastWordBySeparatingWithChar(folderPath,UTIL::folderDistinguisher());
 
     
     //writeLigidFile(nodeScene);
@@ -73,7 +73,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
     
     //Load the textures
     library.clearTextures();
-    for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "Textures")){
+    for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Textures")){
         std::string texturePath = entry.path().string();
 
         Texture texture;
@@ -84,7 +84,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
 
     //Load the materials
     library.clearMaterials();
-    for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "Materials")){
+    for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Materials")){
         std::string materialPath = entry.path().string();
 
         Material material(textureRes, "", 0);;
@@ -95,7 +95,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
     
     //Load the brushes
     library.clearBrushes();
-    for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "Brushes")){
+    for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Brushes")){
         std::string brushPath = entry.path().string();
 
         Brush brush;
@@ -108,7 +108,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
     
     //Load the tdmodels
     library.clearModels();
-    for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + folderDistinguisher + "3DModels")){
+    for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "3DModels")){
         std::string modelPath = entry.path().string();
 
         Model TDModel;

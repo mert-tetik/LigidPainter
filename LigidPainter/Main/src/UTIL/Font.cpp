@@ -96,15 +96,9 @@ void Font::loadFont(const char* path){
 
 		std::cout << "Loaded " << path << std::endl; 
 		
-		#if defined(_WIN32) || defined(_WIN64)
-			char folderDistinguisher = '\\';
-		#else
-			char folderDistinguisher = '/'; 
-		#endif
-
 		//Get the name of the font file
 		;
-		name = UTIL::getLastWordBySeparatingWithChar(path,folderDistinguisher);
+		name = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());
 	}
 
 	// destroy FreeType once we're finished

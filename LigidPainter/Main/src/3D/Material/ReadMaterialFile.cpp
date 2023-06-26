@@ -29,6 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+#include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
 
@@ -37,7 +38,7 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
         std::ifstream rf(path, std::ios::out | std::ios::binary);
         
         ;
-        title = UTIL::getLastWordBySeparatingWithChar(path,folderDistinguisher);
+        title = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());
         title = UTIL::removeExtension(title);
         
         if(!rf) {

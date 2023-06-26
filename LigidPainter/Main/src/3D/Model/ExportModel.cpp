@@ -55,7 +55,7 @@ void Model::exportModel(std::string path){
     std::string exportFileName = "output_file.fbx";
 
     //Full exporting path with the file name
-    std::string destination = path + folderDistinguisher + exportFileName;
+    std::string destination = path + UTIL::folderDistinguisher() + exportFileName;
 
     //Create the scene
     aiScene* scene = createAssimpScene();

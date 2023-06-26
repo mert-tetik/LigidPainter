@@ -293,13 +293,6 @@ class NewProjectDialog
 class ExportDialog
  {
  private:
-    
-    #if defined(_WIN32) || defined(_WIN64)
-		    char folderDistinguisher = '\\';
-	#else
-			char folderDistinguisher = '/'; 
-	#endif
-
     AppTextures appTextures;
     Context context;
  public:

@@ -68,7 +68,7 @@ void Brush::readFile(std::string path){
 
     //Get the title(name) of the brush
     ;
-    title = UTIL::getLastWordBySeparatingWithChar(path,folderDistinguisher);
+    title = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());
     title = UTIL::removeExtension(title);
 
     if(!rf) {

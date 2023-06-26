@@ -187,7 +187,6 @@ void UTIL::giveUniqueId(int &ID ,const std::vector<int> otherIDs){
     ID = newID;
 }
 
-/// @brief give unique ID to the texture
 void UTIL::giveUniqueId(int &ID ,const std::vector<Texture> textures){
 	std::vector<int> IDArray;
 
@@ -199,7 +198,6 @@ void UTIL::giveUniqueId(int &ID ,const std::vector<Texture> textures){
 	giveUniqueId(ID, IDArray);
 }
 
-/// @brief give unique ID to the material
 void UTIL::giveUniqueId(int &ID ,const std::vector<Material> materials){
 	std::vector<int> IDArray;
 
@@ -220,4 +218,14 @@ char* const* UTIL::convertStringArray(const std::vector<std::string> strings){
     }
 
     return convertedArray;
+}
+
+char UTIL::folderDistinguisher(){
+	//If the user is on a windows OS
+	#if defined(_WIN32) || defined(_WIN64)
+		return '\\';
+	//If the user is on a unix based OS
+	#else
+		return '/'; 
+	#endif
 }
