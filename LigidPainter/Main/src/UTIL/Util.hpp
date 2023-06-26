@@ -16,47 +16,133 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
+//OpenGL & GLFW
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 
+//OpenGL Math Library GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <vector>
-#include <string>
-#include <map>
+#include <vector> //std::vector
+#include <string> //std::string
+#include <map> //std::map
 
+//Front declerations :
+
+/// @brief Front declared Library class
 struct Library;
+/// @brief Front declared Library Shaders structure
 struct Shaders;
+/// @brief Front declared Library AppTextures structure
 struct AppTextures;
+/// @brief Front declared ColorPalette class
 class ColorPalette;
+/// @brief Front declared Model class
 class Model;
+/// @brief Front declared Texture class
 class Texture;
+/// @brief Front declared Material class
 class Material;
+/// @brief Front declared Brush class
 class Brush;
+/// @brief Front declared Mouse class
 class Mouse;
+/// @brief Front declared Node class
 class Node;
 
-/// @brief Global utility functions
+/// @brief Global utility functions to help to do stuff
 namespace UTIL{
+    
+    /// @brief get the percentage of the value
+    /// @param value the value
+    /// @param percent % value
+    /// @return value / 100 * percent
     float getPercent(float value, float percent);
+    
+    /// @brief get the percentage of the value in vec2
+    /// @param value the value in vec2
+    /// @param percent % value in vec2
+    /// @return value / 100 * percent for each axis
     glm::vec2 getPercent(glm::vec2 value, glm::vec2 percent);
+    
+    /// @brief get the percentage of the value in vec3
+    /// @param value the value in vec3
+    /// @param percent % value in vec3
+    /// @return value / 100 * percent for each axis
     glm::vec3 getPercent(glm::vec3 value, glm::vec3 percent);
-
+    
+    /// @brief finds the biggest index of the 'del' char in the 's' string and returns the string in the right side of the 'del' char
+    /// @param s 'aaa/bbb/ccc'
+    /// @param del : '/' 
+    /// @return 'ccc'
     std::string getLastWordBySeparatingWithChar(std::string s, char del);
+    
+    /// @brief finds the biggest index of the 'del' char in the 's' string and removes the string in the right side of the 'del' char
+    /// @param s 'aaa/bbb/ccc'
+    /// @param del : '/' 
+    /// @return 'aaa/bbb/' 
     std::string removeLastWordBySeparatingWithChar(std::string s, char del);
+    
+    /// @brief removes an extension from the given param
+    /// @param s MyImage.png
+    /// @return MyImage
     std::string removeExtension(std::string s);
+    
+    /// @brief removes the starting path from the full path
+    /// @param startingPath ./AAA/BBB/
+    /// @param fullPath ./AAA/BBB/CCC/Dest.tmp
+    /// @return CCC/Dest.tmp
     std::string rmvPath(std::string startingPath, std::string fullPath);
+    
+    /// @brief opens the path param in the file explorer
+    /// @param path a path to a directory
     void openInFileExplorer(const char* path);
+    
+    /// @brief generates an unique ID based on otherIDs vector(unique to these values) and assigns the value to the ID reference variable   
+    /// @param ID 
+    /// @param otherIDs 
     void giveUniqueId(int &ID ,const std::vector<int> otherIDs);
+    
+    /// @brief uses void giveUniqueId(int &ID ,const std::vector<int> otherIDs); (implementation for the textures)
+    /// @param ID 
+    /// @param textures 
     void giveUniqueId(int &ID ,const std::vector<Texture> textures);
+
+    /// @brief uses void giveUniqueId(int &ID ,const std::vector<int> otherIDs); (implementation for the materials)
+    /// @param ID 
+    /// @param materials 
     void giveUniqueId(int &ID ,const std::vector<Material> materials);
+    
+    /// @brief Converts std::vector<std::string> to char* const* (char**)
+    /// @param strings 
+    /// @return 
     char* const* convertStringArray(const std::vector<std::string> strings);
 
-    //Nodes
+
+    //! NODES
+
+
+    /// @brief 
+    /// @param nodeScene the node scene 
+    /// @param library 
+    /// @param textureRes 1024 , 2048 , 512 etc. 
+    ///         (the selected texture resolution) 
+    ///         (used to create the textures of the material) 
+    ///         (set to 0 for no texture creation (if will be called every frame))
+    /// @return a vector of materials connected to the mesh node (has the size of a model.meshes)  
     std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library,int textureRes);
+    
+    /// @brief remove the connections with invalid indices 
+    ///        (if the node is connected to a nonexistent node or an input)
+    ///        (for example : connection node index = 5 & the nodeScene size : 4)
+    /// @param nodeScene 
     void updateAllTheNodeConnections(std::vector<Node> &nodeScene);
+    
+    /// @brief deletes the node with the given index from nodeScene and updates all the nodes
+    /// @param nodeScene 
+    /// @param index remove the nodeScene[index]
     void deleteNode(std::vector<Node>& nodeScene, int index);
 }
 
@@ -76,6 +162,7 @@ public:
     Color(std::string hexColor);
 
     //Public member functions
+    
     void loadRGB(glm::vec3 value);
     void loadHSV(glm::vec3 value);
     void loadHex(std::string value);
