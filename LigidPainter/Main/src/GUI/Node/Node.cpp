@@ -226,7 +226,7 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
     barButton.render(videoScale,mouse,timer,textRenderer,!cursorOnBarriers);
     
     //Move the node panel if bar button is pressed
-    if(barButton.clickState1){ //Pressed
+    if(barButton.clickState1 && !nodePanel.topSide.pressed){ //Pressed
 
         //Prevent moving multiple nodes
         for (size_t i = 0; i < nodeScene.size(); i++)
@@ -234,7 +234,6 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
             if(i != currentNodeIndex)
                 nodeScene[i].barButton.clickState1 = false;
         }
-        
 
         nodePanel.pos.x += mouse.mouseOffset.x/videoScale.x * 100.f;
         nodePanel.pos.y += mouse.mouseOffset.y/videoScale.y * 100.f;
