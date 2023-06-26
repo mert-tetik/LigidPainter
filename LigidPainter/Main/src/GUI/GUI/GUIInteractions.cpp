@@ -191,7 +191,7 @@ void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer,
     }
 }
 
-void libraryPanelLeftInteraction(Panel &libraryPanelLeft, Library &library,Mouse &mouse){
+void UI::libraryPanelLeftInteraction(Panel &libraryPanelLeft, Library &library,Mouse &mouse){
     
     //Check all the library element button if they are pressed
     for (size_t i = 0; i < libraryPanelLeft.sections[0].elements.size(); i++) 
@@ -200,6 +200,7 @@ void libraryPanelLeftInteraction(Panel &libraryPanelLeft, Library &library,Mouse
             if(library.selectedElementIndex != i){
                 libraryPanelLeft.sections[0].elements[library.selectedElementIndex].button.clickState1 = false;
                 library.changeSelectedElementIndex(i);
+                renamingTextBox.active = false;
                 break;
             }
         } 
@@ -354,12 +355,13 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         if(i == 0 && library.selectedElementIndex == 0 && contextMenus[i].dialogControl.isActive()){ //If texture context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to rename button
                 renamingTextBox.active = true;
+                library.changed = true;
                 renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
                 renamingTextBox.pos.y += 2.8f;
                 lastTitleBeforeRenaming = library.textures[contextMenus[i].selectedElement].title;
                 library.textures[contextMenus[i].selectedElement].title = "";
                 renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
-                renamingTextBox.activeChar = renamingTextBox.text.size();
+                renamingTextBox.activeChar = renamingTextBox.text.size()-1;
                 renamingTextBox.activeChar2 = renamingTextBox.activeChar;
                 renamingIndices.x = 0;
                 renamingIndices.y = contextMenus[i].selectedElement;
@@ -390,12 +392,13 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
             if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to rename button
                 renamingTextBox.active = true;
+                library.changed = true;
                 renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
                 renamingTextBox.pos.y += 2.8f;
                 lastTitleBeforeRenaming = library.materials[contextMenus[i].selectedElement].title;
                 library.materials[contextMenus[i].selectedElement].title = "";
                 renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
-                renamingTextBox.activeChar = renamingTextBox.text.size();
+                renamingTextBox.activeChar = renamingTextBox.text.size()-1;
                 renamingTextBox.activeChar2 = renamingTextBox.activeChar;
                 renamingIndices.x = 1;
                 renamingIndices.y = contextMenus[i].selectedElement;
@@ -416,7 +419,6 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                     }
                         
                 }
-                
                 
                 //Delete the material
                 library.eraseMaterial(contextMenus[i].selectedElement);
@@ -445,12 +447,13 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
             if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to rename button
                 renamingTextBox.active = true;
+                library.changed = true;
                 renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
                 renamingTextBox.pos.y += 2.8f;
                 lastTitleBeforeRenaming = library.brushes[contextMenus[i].selectedElement].title;
                 library.brushes[contextMenus[i].selectedElement].title = "";
                 renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
-                renamingTextBox.activeChar = renamingTextBox.text.size();
+                renamingTextBox.activeChar = renamingTextBox.text.size()-1;
                 renamingTextBox.activeChar2 = renamingTextBox.activeChar;
                 renamingIndices.x = 2;
                 renamingIndices.y = contextMenus[i].selectedElement;

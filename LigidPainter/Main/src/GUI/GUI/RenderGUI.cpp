@@ -158,6 +158,7 @@ void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer,
                 else if(renamingIndices.x == 2)
                     library.brushes[renamingIndices.y].title = lastTitleBeforeRenaming;
             }
+            
         }
         renamingTextBoxClosed = true;
     }
