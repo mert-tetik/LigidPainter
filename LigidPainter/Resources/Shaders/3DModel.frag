@@ -180,13 +180,17 @@ vec3 getPBR(){
         brushTxtr = vec4(0);
 
     vec3 albedo = getBrushedTexture(albedoTxtr,brushTxtr).rgb;
+    
     if(returnSingleTxtr == 1)
         return albedo;
-    //vec3 normal = getTexture(normalMapTxtr).rgb;
-    vec3 normal = vec3(0.5,0.5,1);
+    
+    vec3 normal = getTexture(normalMapTxtr).rgb;
+    
     float roughness = getTexture(roughnessTxtr).r;
+    
     float metallic = getTexture(metallicTxtr).r;
 
+    float ao = getTexture(metallicTxtr).r;
 
     vec3 T = normalize(vec3(vec4(Tangent, 0.0)));
     vec3 aN = normalize(vec3(vec4(Normal, 0.0)));
@@ -202,7 +206,6 @@ vec3 getPBR(){
 
     N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
 
-   float ao = 1;
 
    
    vec3 lightPos1 = vec3(-10.0,  10.0, 10.0);
