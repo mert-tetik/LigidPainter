@@ -22,6 +22,14 @@ uniform sampler2D ambientOcclusionTxtr;
 uniform sampler2D paintingTexture;
 uniform sampler2D depthTexture;
 
+//0 = paint the albedo
+//1 = paint the roughness
+//2 = paint the metallic 
+//3 = paint the normal map
+//4 = paint the height map
+//5 = paint the ambient Occlusion
+uniform int paintedTxtrStateIndex;
+
 uniform int brushModeState; //0 : paint, 1 : soften, 2 : smear
 
 uniform int returnSingleTxtr;
@@ -179,18 +187,42 @@ vec3 getPBR(){
     if(!isPainted(screenPos))
         brushTxtr = vec4(0);
 
-    vec3 albedo = getBrushedTexture(albedoTxtr,brushTxtr).rgb;
+    vec3 albedo;
+    float roughness;
+    float metallic;
+    vec3 normal;
+    float ao;
     
+    if(paintedTxtrStateIndex == 0)
+        albedo = getBrushedTexture(albedoTxtr,brushTxtr).rgb;
+    else
+        albedo = texture(albedoTxtr,TexCoords).rgb;
+    
+    if(paintedTxtrStateIndex == 1)
+        roughness = getBrushedTexture(roughnessTxtr,brushTxtr).r;
+    else
+        roughness = texture(roughnessTxtr,TexCoords).r;
+    
+    if(paintedTxtrStateIndex == 2)
+        metallic = getBrushedTexture(metallicTxtr,brushTxtr).r;
+    else
+        metallic = texture(metallicTxtr,TexCoords).r;
+
+    if(paintedTxtrStateIndex == 3)
+        normal = getBrushedTexture(normalMapTxtr,brushTxtr).rgb;
+    else
+        normal = texture(normalMapTxtr,TexCoords).rgb;
+    
+    if(paintedTxtrStateIndex == 5)
+        ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr).r;
+    else
+        ao = texture(ambientOcclusionTxtr,TexCoords).r;
+    
+
+
     if(returnSingleTxtr == 1)
         return albedo;
     
-    vec3 normal = getTexture(normalMapTxtr).rgb;
-    
-    float roughness = getTexture(roughnessTxtr).r;
-    
-    float metallic = getTexture(metallicTxtr).r;
-
-    float ao = getTexture(metallicTxtr).r;
 
     vec3 T = normalize(vec3(vec4(Tangent, 0.0)));
     vec3 aN = normalize(vec3(vec4(Normal, 0.0)));

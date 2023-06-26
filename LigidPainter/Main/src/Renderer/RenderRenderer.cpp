@@ -118,6 +118,34 @@ void Renderer::render(){
             glActiveTexture(GL_TEXTURE7);
             glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].ambientOcclusion.ID);
         }
+        int paintedTxtrStateIndex = 0;
+
+        //If painting an albedo texture
+        if(painter.selectedTexture.ID == nodeMaterials[i].albedo.ID)
+            paintedTxtrStateIndex = 0;
+        
+        //If painting an roughness texture
+        if(painter.selectedTexture.ID == nodeMaterials[i].roughness.ID)
+            paintedTxtrStateIndex = 1;
+
+        //If painting an metallic texture
+        if(painter.selectedTexture.ID == nodeMaterials[i].metallic.ID)
+            paintedTxtrStateIndex = 2;
+        
+        //If painting an normal map texture
+        if(painter.selectedTexture.ID == nodeMaterials[i].normalMap.ID)
+            paintedTxtrStateIndex = 3;
+        
+        //If painting an ambient occlusion texture
+        if(painter.selectedTexture.ID == nodeMaterials[i].heightMap.ID)
+            paintedTxtrStateIndex = 5;
+        
+        //If painting an ambient occlusion texture
+        if(painter.selectedTexture.ID == nodeMaterials[i].ambientOcclusion.ID)
+            paintedTxtrStateIndex = 5;
+
+
+        shaders.tdModelShader.setInt("paintedTxtrStateIndex", paintedTxtrStateIndex);
         //Draw the mesh
         model.meshes[i].Draw();
     }
