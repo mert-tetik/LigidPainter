@@ -50,7 +50,7 @@ void Library::uniqueName(std::string &s,std::vector<std::string> sArray){
 }
 
 void Library::uniqueNameControl(){
-    for (size_t i = 0; i < textures.size(); i++)
+    for (int i = textures.size()-1; i >= 0; i--)
     {
         std::vector<std::string> texturesStr;
         for (size_t istr = 0; istr < textures.size(); istr++)
@@ -62,7 +62,7 @@ void Library::uniqueNameControl(){
         uniqueName(textures[i].title,texturesStr);    
     }
 
-    for (size_t i = 0; i < materials.size(); i++)
+    for (int i = materials.size()-1; i >= 0; i--)
     {
         std::vector<std::string> materialsStr;
         for (size_t istr = 0; istr < materials.size(); istr++)
@@ -74,7 +74,7 @@ void Library::uniqueNameControl(){
         uniqueName(materials[i].title,materialsStr);    
     }
 
-    for (size_t i = 0; i < brushes.size(); i++)
+    for (int i = brushes.size()-1; i >= 0; i--)
     {
         std::vector<std::string> brushesStr;
         for (size_t istr = 0; istr < brushes.size(); istr++)
@@ -86,7 +86,7 @@ void Library::uniqueNameControl(){
         uniqueName(brushes[i].title,brushesStr);    
     }
     
-    for (size_t i = 0; i < TDModels.size(); i++)
+    for (int i = TDModels.size()-1; i >= 0; i--)
     {
         std::vector<std::string> TDModelsStr;
         for (size_t istr = 0; istr < TDModels.size(); istr++)

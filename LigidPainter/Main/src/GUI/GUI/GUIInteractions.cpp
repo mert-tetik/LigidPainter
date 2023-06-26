@@ -398,7 +398,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 lastTitleBeforeRenaming = library.materials[contextMenus[i].selectedElement].title;
                 library.materials[contextMenus[i].selectedElement].title = "";
                 renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
-                renamingTextBox.activeChar = renamingTextBox.text.size()-1+;
+                renamingTextBox.activeChar = renamingTextBox.text.size()-1;
                 renamingTextBox.activeChar2 = renamingTextBox.activeChar;
                 renamingIndices.x = 1;
                 renamingIndices.y = contextMenus[i].selectedElement;
