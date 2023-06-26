@@ -50,7 +50,7 @@ void Project::duplicateFolder(std::string dstPath)
         }
     }
 
-    Util util;
+    ;
 
     //If the destination path doesn't exists
     if(!std::filesystem::exists(dstPath)){
@@ -71,7 +71,7 @@ void Project::duplicateFolder(std::string dstPath)
     for (const auto& entry : std::filesystem::recursive_directory_iterator(this->folderPath)){
         std::string file = entry.path().string();  
 
-        std::string dst = dstProjectPath + folderDistinguisher + util.rmvPath(this->folderPath, file);
+        std::string dst = dstProjectPath + folderDistinguisher + UTIL::rmvPath(this->folderPath, file);
         
         //If a folder then create a folder
         if(std::filesystem::is_directory(file)){
@@ -91,5 +91,5 @@ void Project::duplicateFolder(std::string dstPath)
     //Update the project data
     this->folderPath = dstProjectPath;
     this->ligidFilePath = locateLigidFileInFolder(dstProjectPath);
-    this->projectName = util.getLastWordBySeparatingWithChar(folderPath,folderDistinguisher);
+    this->projectName = UTIL::getLastWordBySeparatingWithChar(folderPath,folderDistinguisher);
 }

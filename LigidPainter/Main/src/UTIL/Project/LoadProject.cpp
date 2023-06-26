@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette, 
                           int& textureRes, std::vector<Node> &nodeScene , std::vector<Node> &appNodes){
-    Util util;
+    ;
 
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
@@ -55,10 +55,10 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
 
 
     this->ligidFilePath = ligidFilePath;
-    this->folderPath = util.removeLastWordBySeparatingWithChar(ligidFilePath,folderDistinguisher);
+    this->folderPath = UTIL::removeLastWordBySeparatingWithChar(ligidFilePath,folderDistinguisher);
     if(this->folderPath[this->folderPath.size()-1] == '/' || this->folderPath[this->folderPath.size()-1] == '\\') //Make sure folder path doesn't have seperator at the end
         this->folderPath.pop_back();
-    this->projectName = util.getLastWordBySeparatingWithChar(folderPath,folderDistinguisher);
+    this->projectName = UTIL::getLastWordBySeparatingWithChar(folderPath,folderDistinguisher);
 
     
     //writeLigidFile(nodeScene);

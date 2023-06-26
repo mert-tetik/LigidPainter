@@ -107,8 +107,8 @@ void Library::addTexture(Texture& texture){
     texture.uniqueId = 0; 
 
     //Give unique ID to the texture
-    Util util;
-    util.giveUniqueId(texture.uniqueId,textures);
+    ;
+    UTIL::giveUniqueId(texture.uniqueId,textures);
 
     this->textures.push_back(texture);
 }
@@ -121,8 +121,8 @@ void Library::addMaterial(Material& material){
     material.uniqueID = 0; 
 
     //Give unique ID to the material
-    Util util;
-    util.giveUniqueId(material.uniqueID,materials);
+    ;
+    UTIL::giveUniqueId(material.uniqueID,materials);
 
     this->materials.push_back(material);
 }

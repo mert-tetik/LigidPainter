@@ -30,30 +30,30 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void CheckBox::render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
     
     //Define the common utilities class
-    Util util;
+    ;
     
     this->doMouseTracking = doMouseTracking;
 
     //Original position in the screen coordinates
     glm::vec3 orgResultPos = glm::vec3( 
-                          util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                          UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
     
     //Modified position in the screen coordinates
     glm::vec3 resultPos = glm::vec3( 
-                          util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                          UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
     
     //Text position in the screen coordinates
     glm::vec3 resultTextPos = glm::vec3( 
-                          util.getPercent(videoScale,glm::vec2(pos.x+2.5,pos.y)) //Don't include the depth
+                          UTIL::getPercent(videoScale,glm::vec2(pos.x+2.5,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
     
     //Original scale value in the screen coordinates
-    glm::vec2 orgResultScale = util.getPercent(videoScale,scale);
+    glm::vec2 orgResultScale = UTIL::getPercent(videoScale,scale);
     
     //Modified scale value in the screen coordinates
-    glm::vec2 resultScale = util.getPercent(videoScale,scale);
+    glm::vec2 resultScale = UTIL::getPercent(videoScale,scale);
     
     //Make the circle a square
     resultScale = glm::vec2(std::min(resultScale.x,resultScale.y));
@@ -65,7 +65,7 @@ void CheckBox::render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRender
     resultPos.x -= orgResultScale.x/4.f;
     
     //Radius value in the screen coordinates
-    float resultRadius = util.getPercent(videoScale.x,0.35f); //0.25F = radius val
+    float resultRadius = UTIL::getPercent(videoScale.x,0.35f); //0.25F = radius val
     
     //Text scale value in the screen coordinates
     float resultScaleText = videoScale.x/1920/2*textScale;

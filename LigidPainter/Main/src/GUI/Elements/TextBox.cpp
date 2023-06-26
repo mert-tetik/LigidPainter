@@ -113,18 +113,18 @@ void TextBox::render(
                         bool doMouseTracking, //If there is need to check if mouse hover
                         GLFWwindow* window //To take the key inputs
                     ){
-    Util util;
+    ;
     
     this->doMouseTracking = doMouseTracking;
     
     glm::vec3 resultPos = glm::vec3( 
-                          util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                          UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
     
-    glm::vec2 resultScale = util.getPercent(videoScale,scale);
+    glm::vec2 resultScale = UTIL::getPercent(videoScale,scale);
     resultScale.x /= 1.2f;
 
-    float resultRadius = util.getPercent(videoScale.x,radius);
+    float resultRadius = UTIL::getPercent(videoScale.x,radius);
 
     float resultScaleText = videoScale.x/1920/2*textScale;
     

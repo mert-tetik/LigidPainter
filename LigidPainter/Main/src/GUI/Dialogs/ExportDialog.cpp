@@ -110,7 +110,7 @@ void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,M
     if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && mouse.LClick){
 
         
-        Util util;
+        ;
 
         int resolution = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
         
@@ -129,7 +129,7 @@ void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,M
         }
 
         //All the materials connected to the mesh output
-        std::vector<Material> materials = util.getTheMaterialsConnectedToTheMeshNode(nodeScene,library,resolution);
+        std::vector<Material> materials = UTIL::getTheMaterialsConnectedToTheMeshNode(nodeScene,library,resolution);
         
         //Update all the materials connected to the mesh output & export it's textures
         for (size_t i = 0; i < materials.size(); i++)

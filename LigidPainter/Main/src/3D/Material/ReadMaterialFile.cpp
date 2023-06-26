@@ -36,9 +36,9 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
     if(path.size()){
         std::ifstream rf(path, std::ios::out | std::ios::binary);
         
-        Util util;
-        title = util.getLastWordBySeparatingWithChar(path,folderDistinguisher);
-        title = util.removeExtension(title);
+        ;
+        title = UTIL::getLastWordBySeparatingWithChar(path,folderDistinguisher);
+        title = UTIL::removeExtension(title);
         
         if(!rf) {
             std::cout << "ERROR WHILE READING MATERIAL FILE! Cannot open file : " << path << std::endl;
@@ -118,7 +118,7 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
     
     //If there is give a new unique id
     if(uniqueIDRepeats){
-        Util util;
-        util.giveUniqueId(this->uniqueID, materials);
+        ;
+        UTIL::giveUniqueId(this->uniqueID, materials);
     }
 }

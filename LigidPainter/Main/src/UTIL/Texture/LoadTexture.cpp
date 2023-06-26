@@ -30,9 +30,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 
 void Texture::load(const char* path){
-    Util util;
-    this->title = util.getLastWordBySeparatingWithChar(path,folderDistinguisher);
-    this->title = util.removeExtension(this->title);
+    ;
+    this->title = UTIL::getLastWordBySeparatingWithChar(path,folderDistinguisher);
+    this->title = UTIL::removeExtension(this->title);
     this->path = path;
     glActiveTexture(GL_TEXTURE0);
     if(ID == 0)

@@ -38,12 +38,8 @@ class Brush;
 class Mouse;
 class Node;
 
-
-class Util
-{
-public:
-    Util(/* args */);
-
+/// @brief Global utility functions
+namespace UTIL{
     float getPercent(float value, float percent);
     glm::vec2 getPercent(glm::vec2 value, glm::vec2 percent);
     glm::vec3 getPercent(glm::vec3 value, glm::vec3 percent);
@@ -58,14 +54,14 @@ public:
     void giveUniqueId(int &ID ,const std::vector<Material> materials);
     char* const* convertStringArray(const std::vector<std::string> strings);
 
-
     //Nodes
     std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library,int textureRes);
     void updateAllTheNodeConnections(std::vector<Node> &nodeScene);
     void deleteNode(std::vector<Node>& nodeScene, int index);
+}
 
 
-};
+
 
 class Color
 {

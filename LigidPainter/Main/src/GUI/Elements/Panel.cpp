@@ -347,13 +347,13 @@ void Panel::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &
     this->doMouseTracking = doMouseTracking;
     
     //Panel's itself
-    Util util;
+    ;
     // pos value % of the video scale
     resultPos = glm::vec3( 
-                          util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                          UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
     // scale value % of the video scale
-    resultScale = util.getPercent(videoScale,scale);
+    resultScale = UTIL::getPercent(videoScale,scale);
     mouseTracking(mouse);
     resizeThePanel(mouse,videoScale);
 

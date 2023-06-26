@@ -97,8 +97,8 @@ void Renderer::render(){
     glBindTexture(GL_TEXTURE_2D,painter.depthTexture);
 
     //Get the nodes connected to the mesh node (output node)
-    Util util;
-    std::vector<Material> nodeMaterials = util.getTheMaterialsConnectedToTheMeshNode(nodeScene,library,0); 
+    ;
+    std::vector<Material> nodeMaterials = UTIL::getTheMaterialsConnectedToTheMeshNode(nodeScene,library,0); 
 
     //Render each mesh
     for (size_t i = 0; i < model.meshes.size(); i++)

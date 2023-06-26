@@ -33,12 +33,12 @@ void Node::drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nod
     
     glm::vec2 pos = src - gap/2.f;
     glm::vec2 scale = glm::abs(gap/2.f);
-    Util util;
+    ;
     glm::vec3 resultPos = glm::vec3( 
-                                    util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                                    UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
                                     ,0.9f); 
     // scale value % of the video scale
-    glm::vec2 resultScale = util.getPercent(videoScale,scale);
+    glm::vec2 resultScale = UTIL::getPercent(videoScale,scale);
     singleCurveShader.use();
     nodeEditorPanel.resultPos.x = videoScale.x/2.f;
     nodeEditorPanel.resultPos.y = videoScale.y/2.f;

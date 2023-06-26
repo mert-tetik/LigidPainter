@@ -122,7 +122,7 @@ std::string showFileSystemObjectSelectionDialog
     
     //Export (extract / save) file dialog
     else if(type == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_EXPORT_FILE){
-        Util util;
+        ;
 
         if(filterTemplate == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE){
             const char* filters[12] = { "*.png","*.jpeg","*.jpg","*.bmp", "*.gif", "*.tga", "*.hdr", "*.pic", "*.pnm", "*.ppm", "*.pgm", "*.pbm"  };   

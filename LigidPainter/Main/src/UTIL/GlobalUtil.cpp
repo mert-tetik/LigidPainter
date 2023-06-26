@@ -26,19 +26,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 
-Util::Util(/* args */){}
 
-float Util::getPercent(float value, float percent){
+float UTIL::getPercent(float value, float percent){
     return value / 100.f * percent;
 }
-glm::vec2 Util::getPercent(glm::vec2 value, glm::vec2 percent){
+glm::vec2 UTIL::getPercent(glm::vec2 value, glm::vec2 percent){
     return glm::vec2(value.x / 100.f * percent.x,value.y / 100.f * percent.y);
 }
-glm::vec3 Util::getPercent(glm::vec3 value, glm::vec3 percent){
+glm::vec3 UTIL::getPercent(glm::vec3 value, glm::vec3 percent){
     return glm::vec3(value.x / 100.f * percent.x,value.y / 100.f * percent.y,value.z / 100.f * percent.z);
 }
 
-std::string Util::getLastWordBySeparatingWithChar(std::string s, char del)
+std::string UTIL::getLastWordBySeparatingWithChar(std::string s, char del)
 {
 	if(s == "" || s.size() == 1 || s.size() == 2)
 		return "";
@@ -53,7 +52,7 @@ std::string Util::getLastWordBySeparatingWithChar(std::string s, char del)
 	return words[words.size() - 1];
 }
 
-std::string Util::removeLastWordBySeparatingWithChar(std::string s, char del)
+std::string UTIL::removeLastWordBySeparatingWithChar(std::string s, char del)
 {
 	for (int i = s.size()-1; i >= 0; i--)
 	{
@@ -65,14 +64,14 @@ std::string Util::removeLastWordBySeparatingWithChar(std::string s, char del)
 	return s;
 }
 
-std::string Util::removeExtension(std::string s){
+std::string UTIL::removeExtension(std::string s){
 	int i = 1;
 	while (s[s.size() - i] != '.'){i++;}
 	for (size_t j = 0; j < i; j++){s.pop_back();}
 	return s;
 }
 
-std::vector<Material> Util::getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library,int textureRes){
+std::vector<Material> UTIL::getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library,int textureRes){
     std::vector<Material> materials;
     
     //Check all the inputs of the mesh node
@@ -100,7 +99,7 @@ std::vector<Material> Util::getTheMaterialsConnectedToTheMeshNode(std::vector<No
     return materials;
 }
 
-void Util::updateAllTheNodeConnections(std::vector<Node> &nodeScene){
+void UTIL::updateAllTheNodeConnections(std::vector<Node> &nodeScene){
 	//Check all the nodes
 	for (size_t ii = 0; ii < nodeScene.size(); ii++)
 	{
@@ -121,7 +120,7 @@ void Util::updateAllTheNodeConnections(std::vector<Node> &nodeScene){
 	}
 }
 
-void Util::deleteNode(std::vector<Node>& nodeScene, int index){
+void UTIL::deleteNode(std::vector<Node>& nodeScene, int index){
 	//If the deleted node is a material node
     if(nodeScene[index].nodeIndex == MATERIAL_NODE){
         
@@ -143,7 +142,7 @@ void Util::deleteNode(std::vector<Node>& nodeScene, int index){
 }
 
 
-std::string Util::rmvPath(std::string startingPath, std::string fullPath) 
+std::string UTIL::rmvPath(std::string startingPath, std::string fullPath) 
 {
 	// look for starting path in the fullpath
 	int index = fullPath.find(startingPath);
@@ -157,7 +156,7 @@ std::string Util::rmvPath(std::string startingPath, std::string fullPath)
 }
 
 
-void Util::openInFileExplorer(const char* path) {
+void UTIL::openInFileExplorer(const char* path) {
 #ifdef _WIN32
     // Windows
     std::string command = std::string("explorer ") + path;
@@ -176,7 +175,7 @@ void Util::openInFileExplorer(const char* path) {
 #endif
 }
 
-void Util::giveUniqueId(int &ID ,const std::vector<int> otherIDs){
+void UTIL::giveUniqueId(int &ID ,const std::vector<int> otherIDs){
 	int newID = 0;
 
     // Find the next available ID that is not in the otherIDs vector
@@ -189,7 +188,7 @@ void Util::giveUniqueId(int &ID ,const std::vector<int> otherIDs){
 }
 
 /// @brief give unique ID to the texture
-void Util::giveUniqueId(int &ID ,const std::vector<Texture> textures){
+void UTIL::giveUniqueId(int &ID ,const std::vector<Texture> textures){
 	std::vector<int> IDArray;
 
 	for (size_t i = 0; i < textures.size(); i++)
@@ -201,7 +200,7 @@ void Util::giveUniqueId(int &ID ,const std::vector<Texture> textures){
 }
 
 /// @brief give unique ID to the material
-void Util::giveUniqueId(int &ID ,const std::vector<Material> materials){
+void UTIL::giveUniqueId(int &ID ,const std::vector<Material> materials){
 	std::vector<int> IDArray;
 
 	for (size_t i = 0; i < materials.size(); i++)
@@ -212,7 +211,7 @@ void Util::giveUniqueId(int &ID ,const std::vector<Material> materials){
 	giveUniqueId(ID, IDArray);
 }
 
-char* const* Util::convertStringArray(const std::vector<std::string> strings){
+char* const* UTIL::convertStringArray(const std::vector<std::string> strings){
     char** convertedArray = new char*[strings.size()];
 
     for (size_t i = 0; i < strings.size(); i++)

@@ -35,10 +35,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
 void Model::loadModel(std::string const &path,bool triangulate)
 {
-    Util util;
+    ;
     filePath = path;
-    title = util.getLastWordBySeparatingWithChar(filePath,folderDistinguisher);
-    title = util.removeExtension(title);
+    title = UTIL::getLastWordBySeparatingWithChar(filePath,folderDistinguisher);
+    title = UTIL::removeExtension(title);
 
     this->newModelAdded = true;
 

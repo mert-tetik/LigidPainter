@@ -67,9 +67,9 @@ void Brush::readFile(std::string path){
     std::ifstream rf(path, std::ios::in | std::ios::binary);
 
     //Get the title(name) of the brush
-    Util util;
-    title = util.getLastWordBySeparatingWithChar(path,folderDistinguisher);
-    title = util.removeExtension(title);
+    ;
+    title = UTIL::getLastWordBySeparatingWithChar(path,folderDistinguisher);
+    title = UTIL::removeExtension(title);
 
     if(!rf) {
         std::cout << "ERROR WHILE WRITING BRUSH FILE! Cannot open file : " << path << std::endl;

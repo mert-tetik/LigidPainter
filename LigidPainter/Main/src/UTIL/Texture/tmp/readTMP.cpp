@@ -89,7 +89,7 @@ void Texture::readTMP(){
 std::string Texture::getTMPTitleWithGreatestIndex(){
     std::string uniqueTitle = std::to_string(this->uniqueId);
 
-    Util util;
+    ;
 
     const char idSeperator = '_';
 
@@ -101,17 +101,17 @@ std::string Texture::getTMPTitleWithGreatestIndex(){
         std::string file = entry.path().string();
 
         //Remove the directory from the file name
-        file = util.getLastWordBySeparatingWithChar(file, folderDistinguisher);
+        file = UTIL::getLastWordBySeparatingWithChar(file, folderDistinguisher);
 
         //Remove the extension from the file name
-        file = util.removeExtension(file);
+        file = UTIL::removeExtension(file);
 
         //Unique ID value of the tmp file
-        std::string fileID = util.removeLastWordBySeparatingWithChar(file, idSeperator);
+        std::string fileID = UTIL::removeLastWordBySeparatingWithChar(file, idSeperator);
 
         //Shares the same unique ids
         if(fileID == uniqueTitle){
-            indices.push_back(std::stoi(util.getLastWordBySeparatingWithChar(file,idSeperator)));
+            indices.push_back(std::stoi(UTIL::getLastWordBySeparatingWithChar(file,idSeperator)));
         }
     }
     

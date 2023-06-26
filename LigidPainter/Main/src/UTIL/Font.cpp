@@ -103,8 +103,8 @@ void Font::loadFont(const char* path){
 		#endif
 
 		//Get the name of the font file
-		Util util;
-		name = util.getLastWordBySeparatingWithChar(path,folderDistinguisher);
+		;
+		name = UTIL::getLastWordBySeparatingWithChar(path,folderDistinguisher);
 	}
 
 	// destroy FreeType once we're finished

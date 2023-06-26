@@ -123,28 +123,28 @@ void RangeBar::render(
                         TextRenderer &textRenderer, //TextRenderer that handles text rendering
                         bool doMouseTracking //If there is need to check if mouse hover
                     ){
-    Util util;
+    ;
 
     this->doMouseTracking = doMouseTracking;
 
     // pos value % of the video scale
     glm::vec3 resultPos = glm::vec3( 
-                          util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                          UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
 
     // scale value % of the video scale
-    glm::vec2 resultScale = util.getPercent(videoScale,scale);
+    glm::vec2 resultScale = UTIL::getPercent(videoScale,scale);
     resultScale.x /= 1.2f;
         
     // scale value % of the video scale
-    float resultRadius = util.getPercent(videoScale.x,radius);
+    float resultRadius = UTIL::getPercent(videoScale.x,radius);
 
     // Real value of the thickness
     float resultOutlineThickness = videoScale.x/1920/2*outlineThickness;
 
     float normalizedVal = ((value+0.000001f) - minValue) / (maxValue-minValue);//0-1
     float resultVal = ((normalizedVal*2.f)-1.f)*50.f; //-50,50
-    float displayValue = util.getPercent(resultScale.x,resultVal);
+    float displayValue = UTIL::getPercent(resultScale.x,resultVal);
 
         
     //Check if mouse on top of the slider

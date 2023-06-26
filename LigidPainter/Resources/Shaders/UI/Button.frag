@@ -3,9 +3,6 @@
 
 #version 400 core
 
-#pragma LIGID_INCLUDE(C:/Users/CASPER/source/repos/LigidPainter/LigidPainter/Resources/Shaders/try.frag)
-
-
 out vec4 fragColor;
 
 in vec2 texCoords;

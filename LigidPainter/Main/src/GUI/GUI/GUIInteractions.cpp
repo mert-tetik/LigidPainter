@@ -413,8 +413,8 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 for (int nodeI = 0; nodeI < nodeScene.size(); nodeI++)
                 {
                     if(nodeScene[nodeI].materialID == library.materials[contextMenus[i].selectedElement].uniqueID){
-                        Util util;
-                        util.deleteNode(nodeScene, nodeI);
+                        ;
+                        UTIL::deleteNode(nodeScene, nodeI);
                         nodeI--;
                     }
                         
@@ -494,8 +494,8 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
 
             //Open in file explorer
             if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){
-                Util util;
-                util.openInFileExplorer(std::filesystem::absolute(project.folderPath).string().c_str());
+                ;
+                UTIL::openInFileExplorer(std::filesystem::absolute(project.folderPath).string().c_str());
             }
         }
         if(i == 4 && contextMenus[i].dialogControl.isActive()){ //If painting context menu is active
@@ -524,8 +524,8 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             //Delete the node
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick && contextMenus[i].selectedElement){
 
-                Util util;
-                util.deleteNode(nodeScene,contextMenus[i].selectedElement);                
+                ;
+                UTIL::deleteNode(nodeScene,contextMenus[i].selectedElement);                
 
             }
         
@@ -699,8 +699,8 @@ void nodeInteraction(Model &model, std::vector<Node> &nodeScene,std::vector<Node
         nodeScene[0] = meshOutputNode;
     
         //Update all the connections
-        Util util;
-        util.updateAllTheNodeConnections(nodeScene);
+        ;
+        UTIL::updateAllTheNodeConnections(nodeScene);
     }
 }
 

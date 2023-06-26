@@ -40,7 +40,7 @@ void ComboBox::render(
                     ){
     
     //The utilities class
-    Util util;
+    ;
     
     //Take the doMouseTracking param to the public class member variable
     this->doMouseTracking = doMouseTracking;
@@ -50,23 +50,23 @@ void ComboBox::render(
     
     //Original position in the screen coordinates
     glm::vec3 orgResultPos = glm::vec3( 
-                          util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                          UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
     
     //Modified position in the screen coordinates
     glm::vec3 resultTextPos = glm::vec3( 
-                          util.getPercent(videoScale,glm::vec2(pos.x+2.5,pos.y)) //Don't include the depth
+                          UTIL::getPercent(videoScale,glm::vec2(pos.x+2.5,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
     
 
     //Original scale in the screen coordinates
-    glm::vec2 orgResultScale = util.getPercent(videoScale,scale);
+    glm::vec2 orgResultScale = UTIL::getPercent(videoScale,scale);
     
     //Modified scale in the screen coordinates
-    glm::vec2 resultScale = util.getPercent(videoScale,scale);
+    glm::vec2 resultScale = UTIL::getPercent(videoScale,scale);
 
     //Radius in the screen coordinates
-    float resultRadius = util.getPercent(videoScale.x,0.35f); //0.25F = radius val
+    float resultRadius = UTIL::getPercent(videoScale.x,0.35f); //0.25F = radius val
     
     //Text scale value in the screen coordinates
     float resultScaleText = videoScale.x/1920/2*textScale;
@@ -76,17 +76,17 @@ void ComboBox::render(
 
     //Background position in the screen coordinates (background that covers the back when the combobox is pressed) (beneath the elements)
     glm::vec3 bgResultPos = glm::vec3( 
-              util.getPercent(videoScale,glm::vec2(pos.x,pos.y + (texts.size() * scale.y*2.f * clickedMixVal[0])/2.f - scale.y)) //Don't include the depth
+              UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y + (texts.size() * scale.y*2.f * clickedMixVal[0])/2.f - scale.y)) //Don't include the depth
               ,pos.z); //Use the original depth value
     
     //Background scale in the screen coordinates (background that covers the back when the combobox is pressed) (beneath the elements)
-    glm::vec2 bgResultScale = util.getPercent(videoScale,glm::vec2(scale.x,(texts.size() * scale.y * clickedMixVal[0])));
+    glm::vec2 bgResultScale = UTIL::getPercent(videoScale,glm::vec2(scale.x,(texts.size() * scale.y * clickedMixVal[0])));
     
     //Render the background
     render(bgResultPos,bgResultScale,resultRadius,resultOutlineThickness,0.f,0.f,false,bgColor);
     
     glm::vec3 resultPos = glm::vec3( 
-      util.getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+      UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
       ,pos.z); //Use the original depth value
     
     
@@ -121,7 +121,7 @@ void ComboBox::render(
     {
         //Position value in the screen coordinates
         glm::vec3 resultPos = glm::vec3( 
-                  util.getPercent(videoScale,glm::vec2(pos.x,pos.y + i * scale.y*2.f * clickedMixVal[0])) //Don't include the depth
+                  UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y + i * scale.y*2.f * clickedMixVal[0])) //Don't include the depth
                   ,pos.z); //Use the original depth value
         
         //Check if mouse on top of the element
