@@ -211,7 +211,7 @@ void Renderer::loadAppTextures(){
 }
 
 void Renderer::loadShaders(){
-    shaders.tdModelShader =         Shader("LigidPainter/Resources/Shaders/3DModel.vert"    ,   "LigidPainter/Resources/Shaders/3DModel.frag"           ,nullptr    ,"./LigidPainter/Resources/Shaders/Tesellation/Height.tc",   "./LigidPainter/Resources/Shaders/Tesellation/Height.te");
+    shaders.tdModelShader =         Shader("LigidPainter/Resources/Shaders/3DModel.vert"    ,   "LigidPainter/Resources/Shaders/3DModel.frag"           ,nullptr    ,nullptr                                                 ,   nullptr);
     shaders.depth3D =               Shader("LigidPainter/Resources/Shaders/3DModel.vert"    ,   "LigidPainter/Resources/Shaders/Depth3D.frag"           ,nullptr    ,nullptr                                                 ,   nullptr    );
     shaders.skyboxShader =          Shader("LigidPainter/Resources/Shaders/Skybox.vert"     ,   "LigidPainter/Resources/Shaders/Skybox.frag"            ,nullptr    ,nullptr                                                 ,   nullptr    );
     shaders.skyboxBall =            Shader("LigidPainter/Resources/Shaders/3DModel.vert"    ,   "LigidPainter/Resources/Shaders/SkyboxBall.frag"        ,nullptr    ,nullptr                                                 ,   nullptr    );

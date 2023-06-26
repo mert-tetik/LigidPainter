@@ -27,6 +27,7 @@ void Library::uniqueName(std::string &s,std::vector<std::string> sArray){
     {
         if(sArray[i] == s){
             isTheSame = true;
+            this->changed = true;
         }
     }
 
