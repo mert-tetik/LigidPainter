@@ -405,6 +405,20 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 library.addMaterial(duplicatedMaterial);
             }
             if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){//Clicked to delete button
+                
+                //Delete the nodes using same material
+                for (int nodeI = 0; nodeI < nodeScene.size(); nodeI++)
+                {
+                    if(nodeScene[nodeI].materialID == library.materials[contextMenus[i].selectedElement].uniqueID){
+                        Util util;
+                        util.deleteNode(nodeScene, nodeI);
+                        nodeI--;
+                    }
+                        
+                }
+                
+                
+                //Delete the material
                 library.eraseMaterial(contextMenus[i].selectedElement);
             }
         }
@@ -506,26 +520,9 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             
             //Delete the node
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick && contextMenus[i].selectedElement){
-                
-                //If the deleted node is a material node
-                if(nodeScene[contextMenus[i].selectedElement].nodeIndex == MATERIAL_NODE){
-                    
-                    //Remove the related input connections
-                    for (size_t IOI = 0; IOI < nodeScene[contextMenus[i].selectedElement].IOs.size(); IOI++)
-                    {
-                        for (size_t conI = 0; conI < nodeScene[contextMenus[i].selectedElement].IOs[IOI].connections.size(); conI++)
-                        {
-                            int nodeI = nodeScene[contextMenus[i].selectedElement].IOs[IOI].connections[conI].nodeIndex; 
-                            int inputI = nodeScene[contextMenus[i].selectedElement].IOs[IOI].connections[conI].inputIndex; 
-                            
-                            //Remove the connection from the connected node/IO
-                            nodeScene[nodeI].IOs[inputI].connections.clear();
-                        }
-                    }
-                    
-                    nodeScene.erase(nodeScene.begin() + contextMenus[i].selectedElement);
-                }
 
+                Util util;
+                util.deleteNode(nodeScene,contextMenus[i].selectedElement);                
 
             }
         

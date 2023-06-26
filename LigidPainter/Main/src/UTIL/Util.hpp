@@ -62,6 +62,7 @@ public:
     //Nodes
     std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library,int textureRes);
     void updateAllTheNodeConnections(std::vector<Node> &nodeScene);
+    void deleteNode(std::vector<Node>& nodeScene, int index);
 
 
 };

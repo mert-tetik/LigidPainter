@@ -121,6 +121,27 @@ void Util::updateAllTheNodeConnections(std::vector<Node> &nodeScene){
 	}
 }
 
+void Util::deleteNode(std::vector<Node>& nodeScene, int index){
+	//If the deleted node is a material node
+    if(nodeScene[index].nodeIndex == MATERIAL_NODE){
+        
+        //Remove the related input connections
+        for (size_t IOI = 0; IOI < nodeScene[index].IOs.size(); IOI++)
+        {
+            for (size_t conI = 0; conI < nodeScene[index].IOs[IOI].connections.size(); conI++)
+            {
+                int nodeI = nodeScene[index].IOs[IOI].connections[conI].nodeIndex; 
+                int inputI = nodeScene[index].IOs[IOI].connections[conI].inputIndex; 
+                
+                //Remove the connection from the connected node/IO
+                nodeScene[nodeI].IOs[inputI].connections.clear();
+            }
+        }
+        
+        nodeScene.erase(nodeScene.begin() + index);
+    }
+}
+
 
 std::string Util::rmvPath(std::string startingPath, std::string fullPath) 
 {
