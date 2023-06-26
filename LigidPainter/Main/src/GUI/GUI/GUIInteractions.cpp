@@ -501,6 +501,35 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 websites.youTube.open();
             }
         }
+        
+        if(i == 7 && contextMenus[i].dialogControl.isActive()){ //If node context menu is active
+            
+            //Delete the node
+            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick && contextMenus[i].selectedElement){
+                
+                //If the deleted node is a material node
+                if(nodeScene[contextMenus[i].selectedElement].nodeIndex == MATERIAL_NODE){
+                    
+                    //Remove the related input connections
+                    for (size_t IOI = 0; IOI < nodeScene[contextMenus[i].selectedElement].IOs.size(); IOI++)
+                    {
+                        for (size_t conI = 0; conI < nodeScene[contextMenus[i].selectedElement].IOs[IOI].connections.size(); conI++)
+                        {
+                            int nodeI = nodeScene[contextMenus[i].selectedElement].IOs[IOI].connections[conI].nodeIndex; 
+                            int inputI = nodeScene[contextMenus[i].selectedElement].IOs[IOI].connections[conI].inputIndex; 
+                            
+                            //Remove the connection from the connected node/IO
+                            nodeScene[nodeI].IOs[inputI].connections.clear();
+                        }
+                    }
+                    
+                    nodeScene.erase(nodeScene.begin() + contextMenus[i].selectedElement);
+                }
+
+
+            }
+        
+        }
 
 
         if (   //Conditions to turn any context menu off
@@ -597,6 +626,18 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
         }
     }
+
+    for (size_t i = 0; i < nodeScene.size(); i++)
+    {
+        if((nodeScene[i].nodePanel.hover || nodeScene[i].barButton.hover) && mouse.RClick){
+            contextMenus[7].dialogControl.activate();
+            contextMenus[7].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
+            contextMenus[7].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[7].contextPanel.scale.y;
+            contextMenus[7].pos.z = 0.95f;
+            contextMenus[7].selectedElement = i;
+        }
+    }
+    
 }
 
 
