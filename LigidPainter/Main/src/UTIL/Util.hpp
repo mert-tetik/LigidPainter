@@ -156,9 +156,10 @@ public:
 
     Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath, const char* tessControlPath, const char* tessEvalPath);
 
+    void processShaderCode(std::string &code);
+
+    // Utility uniform functions
     void use();
-    
-    // tility uniform functions
     void setBool(const std::string &name, bool value);
     void setInt(const std::string &name, int value);
     void setFloat(const std::string &name, float value);

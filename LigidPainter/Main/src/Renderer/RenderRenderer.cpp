@@ -138,7 +138,7 @@ void Renderer::render(){
         
         //If painting an ambient occlusion texture
         if(painter.selectedTexture.ID == nodeMaterials[i].heightMap.ID)
-            paintedTxtrStateIndex = 5;
+            paintedTxtrStateIndex = 4;
         
         //If painting an ambient occlusion texture
         if(painter.selectedTexture.ID == nodeMaterials[i].ambientOcclusion.ID)
@@ -146,6 +146,7 @@ void Renderer::render(){
 
 
         shaders.tdModelShader.setInt("paintedTxtrStateIndex", paintedTxtrStateIndex);
+        
         //Draw the mesh
         model.meshes[i].Draw();
     }
