@@ -50,7 +50,6 @@ void Project::duplicateFolder(std::string dstPath)
         }
     }
 
-    ;
 
     //If the destination path doesn't exists
     if(!std::filesystem::exists(dstPath)){

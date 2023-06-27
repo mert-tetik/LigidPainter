@@ -1,5 +1,7 @@
 #version 400 core
 
+#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Painting.frag)
+
 in vec2 TexCoords;
 in vec3 Normal;
 in vec3 Pos;
@@ -95,89 +97,7 @@ float hash(float x)
 {
     return fract(sin(x) * 43758.5453);
 }
-vec3 getPaintedTexture(sampler2D txtr,vec4 brushTxtr){
-    float intensity = brushTxtr.a;
 
-    return mix(texture(txtr,TexCoords).rgb,paintingColor,intensity);
-}
-
-float gaussian(vec2 i,int range) {
-    float sigma = float(range) * .25;
-    return exp( -.5* dot(i/=sigma,i) ) / ( 6.28 * sigma*sigma );
-}
-
-const int LOD = 1,         // gaussian done on MIPmap at scale LOD
-          sLOD = 1 << LOD; // tile size = 2^LOD
-
-vec3 getSoftenedTexture(sampler2D txtr,vec4 brushTxtr){ //Intensity from the painted texture
-    const float width = 1024;
-    int range = 20;
-
-    vec4 O = vec4(0); 
-    int s = range/sLOD;
-    
-    for ( int i = 0; i < s*s; i++ ) {
-        vec2 d = vec2(i%s, i/s)*float(sLOD) - float(range)/2.;
-        O += gaussian(d,range) * textureLod( txtr, TexCoords + vec2(1./width) * d , float(LOD) );
-    }
-    
-    return mix(texture(txtr,TexCoords).rgb,O.rgb/O.a,brushTxtr.a);
-}
-
-vec3 getSmearedTexture(sampler2D txtr,vec4 brushTxtr){
-    
-    float intensity = brushTxtr.a;
-    vec2 Direction = brushTxtr.rg / 20.;
-    //Direction = clamp(Direction,vec2(-1,-1),vec2(1,1));
-
-    // Apply blurring
-    const int Samples = 64*4; //multiple of 2
-    float Intensity = 0.1;
-
-
-    vec4 blurredColor = vec4(0.0);  
-    
-    for (int i=0; i<=Samples/2; i++)
-    {
-        vec2 mUV = TexCoords - float(i) * (intensity) / float(Samples/2) * Direction;
-        vec2 pUV = TexCoords + float(i) * (intensity) / float(Samples/2) * Direction;
-        
-        blurredColor += texture(txtr,pUV);
-        blurredColor += texture(txtr,mUV);
-    }
-    
-    blurredColor = blurredColor/float(Samples);    
-    if(intensity > 0.05)
-        return blurredColor.rgb;
-    else
-        return texture(txtr,TexCoords).rgb;
-
-    //return texture(txtr,vec2(TexCoords.x,TexCoords.y + 0.1*intensity)).rgb;
-}
-
-vec3 getBrushedTexture(sampler2D txtr,vec4 brushTxtr){
-    if(brushModeState == 0)
-        return getPaintedTexture(txtr,brushTxtr);
-    if(brushModeState == 1)
-        return getSoftenedTexture(txtr,brushTxtr);
-    if(brushModeState == 2)
-        return getSmearedTexture(txtr,brushTxtr);
-}
-
-
-float far = 100.0;
-float near = 0.1;
-float linearizeDepth(float depth){
-   return (2.0 * near * far) / (far + near -(depth * 2.0 - 1.0) *(far-near));
-}
-
-bool isPainted(vec3 uv) { //Use mirrored depth texture if isMirrored is true
-   float drawZ;
-    
-    drawZ = texture(depthTexture, uv.xy).b;
-
-    return abs(drawZ - linearizeDepth(uv.z)/far) < 0.01;
-}
 
 vec3 getPBR(){
     vec3 screenPos = 0.5 * (vec3(1,1,1) + projectedPos.xyz / projectedPos.w);
@@ -194,27 +114,27 @@ vec3 getPBR(){
     float ao;
     
     if(paintedTxtrStateIndex == 0)
-        albedo = getBrushedTexture(albedoTxtr,brushTxtr).rgb;
+        albedo = getBrushedTexture(albedoTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).rgb;
     else
         albedo = texture(albedoTxtr,TexCoords).rgb;
     
     if(paintedTxtrStateIndex == 1)
-        roughness = getBrushedTexture(roughnessTxtr,brushTxtr).r;
+        roughness = getBrushedTexture(roughnessTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).r;
     else
         roughness = texture(roughnessTxtr,TexCoords).r;
     
     if(paintedTxtrStateIndex == 2)
-        metallic = getBrushedTexture(metallicTxtr,brushTxtr).r;
+        metallic = getBrushedTexture(metallicTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).r;
     else
         metallic = texture(metallicTxtr,TexCoords).r;
 
     if(paintedTxtrStateIndex == 3)
-        normal = getBrushedTexture(normalMapTxtr,brushTxtr).rgb;
+        normal = getBrushedTexture(normalMapTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).rgb;
     else
         normal = texture(normalMapTxtr,TexCoords).rgb;
     
     if(paintedTxtrStateIndex == 5)
-        ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr).r;
+        ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).r;
     else
         ao = texture(ambientOcclusionTxtr,TexCoords).r;
     

@@ -45,17 +45,48 @@ std::string readTheWord(std::string text, size_t &i){
     
     return res;
 }
-
 void Shader::processShaderCode(std::string &code){
     //Including other shader files using #pragma macro : 
     //#pragma LIGID_INCLUDE(exactPathToSourceFile.vert)
+
+    bool inCommentLine = false;
+    
+    bool inWCommentLine = false;
+
+
+    if(!code.size())
+        return;
 
     try
     {
         for (size_t i = 0; i < code.size(); i++)
         {
+
+            if(i == code.size() - 1)
+                break;
+            if(i == code.size() - 2)
+                break;
+            if(i == code.size() - 3)
+                break;
+                
+            if(code[i] == '/' && code[i + 1] == '/')
+                inCommentLine = true;
+            
+            
+            if(code[i] == '\n' || code[i] == '\0')
+                inCommentLine == false;
+            
+
+            if(code[i] == '/' && code[i + 1] == '*')
+                inWCommentLine = true;
+            
+            if(code[i] == '*' && code[i + 1] == '/')
+                inWCommentLine = false;
+            
+
+
             //Hash symbol detected
-            if(code[i] == '#'){
+            if(code[i] == '#' && !inCommentLine && !inWCommentLine){
                 i++;
 
                 std::string word = readTheWord(code, i);
@@ -75,7 +106,7 @@ void Shader::processShaderCode(std::string &code){
 
                             //Came to end of the code
                             if(i == code.size())
-                                break;
+                                return;
 
                             if(code[i] == '\n')
                                 break;
@@ -84,6 +115,7 @@ void Shader::processShaderCode(std::string &code){
 
                         i++;
 
+                        
                         //The path to the included file
                         std::string path;
 
@@ -95,7 +127,7 @@ void Shader::processShaderCode(std::string &code){
 
                             //Came to end of the code
                             if(i == code.size())
-                                break;
+                                return;
 
                             // ')' didn't detected
                             if(code[i] == '\n')
@@ -103,10 +135,6 @@ void Shader::processShaderCode(std::string &code){
                         }
 
                         i++;
-
-
-
-
 
                         std::ifstream shaderFile;
                         shaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
@@ -140,5 +168,7 @@ void Shader::processShaderCode(std::string &code){
     {
         std::cout << "ERROR! While processing the shader code : " << code << std::endl;
     }
+
+
     
 }

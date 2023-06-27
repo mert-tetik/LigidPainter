@@ -32,13 +32,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-void Project::deleteFilesInFolder(const std::string folderPath) {
-    for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
-        if (entry.is_regular_file()) {
-            std::filesystem::remove(entry.path());
-        }
-    }
-}
 
 std::string Project::locateLigidFileInFolder(const std::string& folderPath)
 {

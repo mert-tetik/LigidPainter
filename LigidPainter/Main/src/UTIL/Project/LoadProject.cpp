@@ -34,7 +34,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette, 
                           int& textureRes, std::vector<Node> &nodeScene , std::vector<Node> &appNodes){
-    ;
 
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){

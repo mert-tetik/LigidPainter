@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
+#include <filesystem>
 
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
@@ -228,4 +229,12 @@ char UTIL::folderDistinguisher(){
 	#else
 		return '/'; 
 	#endif
+}
+
+void UTIL::deleteFilesInFolder(const std::string folderPath) {
+    for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
+        if (entry.is_regular_file()) {
+            std::filesystem::remove(entry.path());
+        }
+    }
 }

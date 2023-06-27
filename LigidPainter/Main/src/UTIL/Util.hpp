@@ -148,6 +148,10 @@ namespace UTIL{
     /// @brief the folder distinguisher 
     /// @return '/' if unix based OS defined '\\' if the windows defined
     char folderDistinguisher();
+
+    /// @brief deletes all the file system objects in the given folder path
+    /// @param folderPath 
+    void deleteFilesInFolder(const std::string folderPath);
 }
 
 
@@ -207,8 +211,6 @@ public:
     unsigned int ID = 0; 
     std::string path = "";
     std::string title = "";
-    std::string tmpPath;
-    bool isTexture = true; //Otherwise is a folder
 
     int uniqueId;
 
@@ -253,6 +255,7 @@ public:
     void setMat2(const std::string &name, const glm::mat2 &mat);
     void setMat3(const std::string &name, const glm::mat3 &mat);
     void setMat4(const std::string &name, const glm::mat4 &mat);
+    
 
 private:
     void checkCompileErrors(GLuint shader, std::string type);
@@ -262,29 +265,76 @@ private:
 
 class Project
 {
-private:
-
-    void deleteFilesInFolder(const std::string folderPath);
-
 public:
+    /// @brief Folder path of the project 
+    ///        (AAA/MyProject)
     std::string folderPath;
+
+    /// @brief Ligid file path of the project
+    ///        (AAA/MyProject/MyProject.ligid)
     std::string ligidFilePath;
+
+    /// @brief Title of the project
+    ///        (MyProject)
     std::string projectName;
 
     //Constructor
     Project(){}
 
-    //Public member functions
+    /// @brief Create a project from scratch
+    /// @param destinationPath where will be the project folder be created
+    /// @param name project name
+    /// @param TDModelPath 3D Model file path. Copies that file to the Project/3DModels
+    /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
+    /// @return true if success
     bool createProject(std::string destinationPath,std::string name,std::string TDModelPath,int textureRes);
+    
+    /// @brief update the existing project (in the destination of the public member variable folderPath) (write files in the library)
+    /// @param library library structure (holds the textures / materials / brushes & TDModels)
+    /// @param nodeScene The main nodeScene which has the mesh node
+    /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
     void updateProject(Library &library, std::vector<Node> &nodeScene, int& textureRes);
+    
+    /// @brief load an existing project using ligid file path
+    /// @param ligidFilePath path to the ligid file
+    /// @param library library structure (holds the textures / materials / brushes & TDModels)
+    /// @param shaders shaders structure (holds all the shader programs)
+    /// @param model The 3D models
+    /// @param appTextures appTextures structure (holds all the textures used by the GUI)
+    /// @param colorPalette colorPalette class (color theme of the ligidpainter)
+    /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
+    /// @param nodeScene The main nodeScene which has the mesh node
+    /// @param appNodes 
+    /// @return 
     bool loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,
                     ColorPalette colorPalette,int &textureRes,std::vector<Node> &nodeScene , std::vector<Node> &appNodes);
+
+    /// @brief Used to save as
+    /// @param dstPath where to duplicate
     void duplicateFolder(std::string dstPath);
+    
+    /// @brief Copies the project path to the clipboard
+    /// @param window 
     void copyTheProjectPathToTheClipboard(GLFWwindow* window);
 
+    /// @brief Locates the ligid file in the folderPath 
+    /// @param folderPath 
+    /// @return path to the ligidpainter "" if not located
     std::string locateLigidFileInFolder(const std::string& folderPath);
     
+    /// @brief Retrieve data from the ligid file
+    /// @param path 
+    /// @param creationDate 
+    /// @param lastOpenedDate 
+    /// @param nodeScene 
+    /// @param appNodes 
+    /// @param textureRes 
+    /// @return True if success
     bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,std::vector<Node> &nodeScene, std::vector<Node> &appNodes, int& textureRes);
+    
+    /// @brief Write ligid file to the project folder
+    /// @param nodeScene 
+    /// @param textureRes 
     void writeLigidFile(const std::vector<Node> nodeScene, int textureRes);
 };
 
