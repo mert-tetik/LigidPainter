@@ -12,13 +12,16 @@ uniform mat4 projection;
 uniform mat4 modelMatrix;
 
 
-out vec2 TexCoords;
-out vec3 Normal;
-out vec3 Pos;
-out vec3 Tangent;
-out vec3 Bitangent;
+struct VertexData{
+    vec2 TexCoords;
+    vec3 Normal;
+    vec3 Pos;
+    vec3 Tangent;
+    vec3 Bitangent;
+    vec4 ProjectedPos;
+};
 
-out vec4 projectedPos;
+out VertexData vertexData;
 
 //2D
 uniform mat4 oneZeroProjection;
@@ -30,25 +33,25 @@ uniform vec2 scale;
 uniform vec3 pos; 
 
 void main() {
-    Tangent = aTangent;
-    Bitangent = aBitangent;
-    TexCoords = aTexCoords;
-    Normal = aNormal;
-    Pos = aPos;
+    vertexData.Tangent = aTangent;
+    vertexData.Bitangent = aBitangent;
+    vertexData.TexCoords = aTexCoords;
+    vertexData.Normal = aNormal;
+    vertexData.Pos = aPos;
 
     if(useTransformUniforms == 0){
-        vec4 tPos = modelMatrix * vec4(Pos,1.);
-        projectedPos = projection * view * vec4(tPos.xyz, 0.5); 
+        vec4 tPos = modelMatrix * vec4(vertexData.Pos,1.);
+        vertexData.ProjectedPos = projection * view * vec4(tPos.xyz, 0.5); 
     }
     else{
         vec3 scaledPos = aPos * vec3(scale,1);
-        projectedPos = orthoProjection * vec4(scaledPos + pos, 1.0);
+        vertexData.ProjectedPos = orthoProjection * vec4(scaledPos + pos, 1.0);
     }
     
     if(render2D == 0){
-        gl_Position = projectedPos;
+        gl_Position = vertexData.ProjectedPos;
     }
     else
-        gl_Position = oneZeroProjection * vec4(TexCoords.xy,1,1);
+        gl_Position = oneZeroProjection * vec4(vertexData.TexCoords.xy,1,1);
 
 }

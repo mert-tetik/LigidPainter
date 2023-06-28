@@ -23,28 +23,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
-std::string readTheWord(std::string text, size_t &i){
-    //! isalpha may cause problems
+//Front decleration for the util function
+std::string readTheWord(std::string text, size_t &i);
+void removeThePragma(std::string &code, int i);
 
-    //Skip the spaces
-    while(text[i] == ' ')
-        i++;
 
-    std::string res;
-
-    while (isalpha(text[i]) || text[i] == '_' || text[i] == '-')
-    {
-        res += text[i];
-        
-        //At the end of the text
-        if(i == text.size() - 1)
-            break;
-        
-        i++;
-    }
-    
-    return res;
-}
 void Shader::processShaderCode(std::string &code){
     //Including other shader files using #pragma macro : 
     //#pragma LIGID_INCLUDE(exactPathToSourceFile.vert)
@@ -52,6 +35,8 @@ void Shader::processShaderCode(std::string &code){
     bool inCommentLine = false;
     
     bool inWCommentLine = false;
+
+    
 
 
     if(!code.size())
@@ -61,27 +46,37 @@ void Shader::processShaderCode(std::string &code){
     {
         for (size_t i = 0; i < code.size(); i++)
         {
-
+            //Skip processing if only 3 char left
             if(i == code.size() - 1)
                 break;
             if(i == code.size() - 2)
                 break;
             if(i == code.size() - 3)
                 break;
-                
-            if(code[i] == '/' && code[i + 1] == '/')
-                inCommentLine = true;
-            
-            
-            if(code[i] == '\n' || code[i] == '\0')
-                inCommentLine == false;
-            
 
-            if(code[i] == '/' && code[i + 1] == '*')
+
+            // Process comment lines
+            if (code[i] == '/' && code[i + 1] == '/' && !inWCommentLine)
+            {
+                inCommentLine = true;
+                i += 2;
+            }
+
+            if (code[i] == '\n' || code[i] == '\0')
+            {
+                inCommentLine = false;
+            }
+
+            if (code[i] == '/' && code[i + 1] == '*' && !inCommentLine)
+            {
                 inWCommentLine = true;
-            
-            if(code[i] == '*' && code[i + 1] == '/')
+                i += 2;
+            }
+
+            if (code[i] == '*' && code[i + 1] == '/')
+            {
                 inWCommentLine = false;
+            }
             
 
 
@@ -99,26 +94,28 @@ void Shader::processShaderCode(std::string &code){
 
                     //LIGID_INCLUDE detected
                     if(pragWord == "LIGID_INCLUDE"){
-                        
+                        //Skip to the (
                         while (code[i] != '(')
                         {
                             i++;
 
                             //Came to end of the code
-                            if(i == code.size())
-                                return;
+                            //if(i == code.size())
+                            //    return;
 
                             if(code[i] == '\n')
                                 break;
 
                         }
 
+                        //Skip the '(' char
                         i++;
 
                         
                         //The path to the included file
                         std::string path;
 
+                        //Read the path between the '()'
                         while (code[i] != ')')
                         {
                             path += code[i];
@@ -126,14 +123,15 @@ void Shader::processShaderCode(std::string &code){
                             i++;
 
                             //Came to end of the code
-                            if(i == code.size())
-                                return;
+                            //if(i == code.size())
+                            //    return;
 
                             // ')' didn't detected
                             if(code[i] == '\n')
                                 break;
                         }
 
+                        //Skip the ) char
                         i++;
 
                         std::ifstream shaderFile;
@@ -153,11 +151,16 @@ void Shader::processShaderCode(std::string &code){
 
                         i++;
 
+                        removeThePragma(code, i);
+
                         //Insert a new line at the end of the macro
                         code.insert(code.begin() + i - 1, '\n');
 
                         //Insert the code 
                         code.insert(i, incCode);
+                        
+                        //Skip the included code
+                        i += incCode.size() - 1;
                     }
                 }
             }
@@ -169,6 +172,48 @@ void Shader::processShaderCode(std::string &code){
         std::cout << "ERROR! While processing the shader code : " << code << std::endl;
     }
 
+}
 
+std::string readTheWord(std::string text, size_t &i){
+    //! isalpha may cause problems
+
+    //Skip the spaces
+    while(text[i] == ' ')
+        i++;
+
+    std::string res;
+
+    //Read until the end of the word
+    while (isalpha(text[i]) || text[i] == '_' || text[i] == '-')
+    {
+        res += text[i];
+        
+        //At the end of the text
+        if(i == text.size() - 1)
+            break;
+        
+        i++;
+    }
     
+    return res;
+}
+
+void removeThePragma(
+                        std::string &code, 
+                        int i //Last index of the pragma
+                    ){
+    int lastP = i;
+
+    //Detect the index range of the pragma
+    int begP;
+    for (begP = i; begP >= 0; begP--)
+    {
+        if(code[begP] == '#')
+            break;
+    }
+
+    code.erase(
+                code.begin() + begP, //From
+                code.begin() + lastP //To
+            );
 }

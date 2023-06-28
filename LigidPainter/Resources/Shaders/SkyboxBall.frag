@@ -1,13 +1,22 @@
 #version 400 core
 
-in vec3 Normal;
+struct VertexData{
+    vec2 TexCoords;
+    vec3 Normal;
+    vec3 Pos;
+    vec3 Tangent;
+    vec3 Bitangent;
+    vec4 ProjectedPos;
+};
+
+in VertexData vertexData;
 
 uniform samplerCube skybox;
 
 out vec4 fragColor;
 
 vec3 getPBR(){
-    vec3 N = Normal;
+    vec3 N = vertexData.Normal;
 
     N = normalize(N * 2.0 - 1.0);  // this normal is in tangent space
 

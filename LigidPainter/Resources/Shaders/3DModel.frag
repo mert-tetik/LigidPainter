@@ -1,27 +1,45 @@
 #version 400 core
 
-#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Painting.frag)
+//Painting
+#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Painting.frag)
 
-in vec2 TexCoords;
-in vec3 Normal;
-in vec3 Pos;
-in vec3 Tangent;
-in vec3 Bitangent;
 
-in vec4 projectedPos;
+//Functions related to PBR 
+#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Physics_Math.frag)
 
+struct VertexData{
+    vec2 TexCoords;
+    vec3 Normal;
+    vec3 Pos;
+    vec3 Tangent;
+    vec3 Bitangent;
+    vec4 ProjectedPos;
+};
+
+//Vertex data : pos , normal , texture coordinates , tangent , bitangent , projected position
+in VertexData vertexData;
+
+//Position of the camera
 uniform vec3 viewPos;
 
+//Used for ambient
+//TODO : Don't use the skybox use prefilterMap instead & use blury
 uniform samplerCube skybox;
+
+//Used for reflection
 uniform samplerCube prefilterMap;
 
-uniform sampler2D albedoTxtr;
-uniform sampler2D roughnessTxtr;
-uniform sampler2D metallicTxtr;
-uniform sampler2D normalMapTxtr;
-uniform sampler2D ambientOcclusionTxtr;
+//Material channels
+uniform sampler2D albedoTxtr; //Albedo
+uniform sampler2D roughnessTxtr; //Roughness
+uniform sampler2D metallicTxtr; //Metallic
+uniform sampler2D normalMapTxtr; //Normal Map
+uniform sampler2D ambientOcclusionTxtr; //Ambient occlusion (ao)
 
+//Contains the brush strokes
 uniform sampler2D paintingTexture;
+
+//3D Model rendered with depth shader (to compare depth)
 uniform sampler2D depthTexture;
 
 //0 = paint the albedo
@@ -32,80 +50,26 @@ uniform sampler2D depthTexture;
 //5 = paint the ambient Occlusion
 uniform int paintedTxtrStateIndex;
 
-uniform int brushModeState; //0 : paint, 1 : soften, 2 : smear
+//0 = paint
+//1 = soften
+//2 = smear
+uniform int brushModeState; 
 
+//Return only the solid texture instead of the pbr 
 uniform int returnSingleTxtr;
 
-out vec4 fragColor;
-
+//Selected opacity for painting
 uniform float paintingOpacity;
+
+//Selected color for painting
 uniform vec3 paintingColor;
 
-const float PI = 3.14159265359;
-
-
-
-float DistributionGGX(vec3 N, vec3 H, float roughness)
-{
-    float a = roughness*roughness;
-    float a2 = a*a;
-    float NdotH = max(dot(N, H), 0.0);
-    float NdotH2 = NdotH*NdotH;
-
-    float nom   = a2;
-    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
-    denom = PI * denom * denom;
-
-    return nom / denom;
-}
-// ----------------------------------------------------------------------------
-float GeometrySchlickGGX(float NdotV, float roughness)
-{
-    float r = (roughness + 1.0);
-    float k = (r*r) / 8.0;
-
-    float nom   = NdotV;
-    float denom = NdotV * (1.0 - k) + k;
-
-    return nom / denom;
-}
-// ----------------------------------------------------------------------------
-float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
-{
-    float NdotV = max(dot(N, V), 0.0);
-    float NdotL = max(dot(N, L), 0.0);
-    float ggx2 = GeometrySchlickGGX(NdotV, roughness);
-    float ggx1 = GeometrySchlickGGX(NdotL, roughness);
-
-    return ggx1 * ggx2;
-}
-// ----------------------------------------------------------------------------
-vec3 fresnelSchlick(float cosTheta, vec3 F0)
-{
-    return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
-}
-// ----------------------------------------------------------------------------
-vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
-{
-    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
-}   
-
-vec4 getTexture(sampler2D txtr){
-    return texture(txtr,TexCoords);
-}
-float hash(float x)
-{
-    return fract(sin(x) * 43758.5453);
-}
-
+//Fragment shader output
+out vec4 fragColor;
 
 vec3 getPBR(){
-    vec3 screenPos = 0.5 * (vec3(1,1,1) + projectedPos.xyz / projectedPos.w);
-    vec4 brushTxtr = texture(paintingTexture, screenPos.xy);
-    brushTxtr.a *= paintingOpacity; 
-
-    if(!isPainted(screenPos))
-        brushTxtr = vec4(0);
+    
+    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, vertexData.ProjectedPos, paintingOpacity);
 
     vec3 albedo;
     float roughness;
@@ -113,46 +77,57 @@ vec3 getPBR(){
     vec3 normal;
     float ao;
     
-    if(paintedTxtrStateIndex == 0)
-        albedo = getBrushedTexture(albedoTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).rgb;
+    if(paintedTxtrStateIndex == 0){
+        albedo = getBrushedTexture(albedoTxtr,brushTxtr,vertexData.TexCoords, paintingColor, brushModeState).rgb;
+        if(returnSingleTxtr == 1)
+            return albedo;
+    }
     else
-        albedo = texture(albedoTxtr,TexCoords).rgb;
+        albedo = texture(albedoTxtr,vertexData.TexCoords).rgb;
     
-    if(paintedTxtrStateIndex == 1)
-        roughness = getBrushedTexture(roughnessTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).r;
+    if(paintedTxtrStateIndex == 1){
+        roughness = getBrushedTexture(roughnessTxtr,brushTxtr,vertexData.TexCoords, paintingColor, brushModeState).r;
+        if(returnSingleTxtr == 1)
+            return roughness;
+    }
     else
-        roughness = texture(roughnessTxtr,TexCoords).r;
+        roughness = texture(roughnessTxtr,vertexData.TexCoords).r;
     
-    if(paintedTxtrStateIndex == 2)
-        metallic = getBrushedTexture(metallicTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).r;
+    if(paintedTxtrStateIndex == 2){
+        metallic = getBrushedTexture(metallicTxtr,brushTxtr,vertexData.TexCoords, paintingColor, brushModeState).r;
+        if(returnSingleTxtr == 1)
+            return metallic;
+    }
     else
-        metallic = texture(metallicTxtr,TexCoords).r;
+        metallic = texture(metallicTxtr,vertexData.TexCoords).r;
 
-    if(paintedTxtrStateIndex == 3)
-        normal = getBrushedTexture(normalMapTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).rgb;
+    if(paintedTxtrStateIndex == 3){
+        normal = getBrushedTexture(normalMapTxtr,brushTxtr,vertexData.TexCoords, paintingColor, brushModeState).rgb;
+        if(returnSingleTxtr == 1)
+            return normal;
+    }
     else
-        normal = texture(normalMapTxtr,TexCoords).rgb;
+        normal = texture(normalMapTxtr,vertexData.TexCoords).rgb;
     
-    if(paintedTxtrStateIndex == 5)
-        ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).r;
+    if(paintedTxtrStateIndex == 5){
+        ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr,vertexData.TexCoords, paintingColor, brushModeState).r;
+        if(returnSingleTxtr == 1)
+            return ao;
+    }
     else
-        ao = texture(ambientOcclusionTxtr,TexCoords).r;
+        ao = texture(ambientOcclusionTxtr,vertexData.TexCoords).r;
+    
     
 
-
-    if(returnSingleTxtr == 1)
-        return albedo;
-    
-
-    vec3 T = normalize(vec3(vec4(Tangent, 0.0)));
-    vec3 aN = normalize(vec3(vec4(Normal, 0.0)));
+    vec3 T = normalize(vec3(vec4(vertexData.Tangent, 0.0)));
+    vec3 aN = normalize(vec3(vec4(vertexData.Normal, 0.0)));
     T = normalize(T - dot(T, aN) * aN);
     vec3 B = cross(aN, T);
     
     mat3 TBN = transpose(mat3(T, B, aN));    
     
     vec3 tangentViewPos  = TBN * viewPos;
-    vec3 tangentPosModel  = TBN * Pos;
+    vec3 tangentPosModel  = TBN * vertexData.Pos;
 
     vec3 N = normal;
 
@@ -170,7 +145,7 @@ vec3 getPBR(){
 
     vec3 V = normalize(tangentViewPos - tangentPosModel);
     
-    vec3 R = reflect(-normalize(viewPos - Pos), Normal); 
+    vec3 R = reflect(-normalize(viewPos - vertexData.Pos), vertexData.Normal); 
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    

@@ -1,6 +1,6 @@
 #version 400 core
 
-#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Painting.frag)
+#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Painting.frag)
 
 out vec4 color;
 

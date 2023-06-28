@@ -229,20 +229,35 @@ public:
 };
 
 
-
+/// @brief Manages shader programs
 class Shader
 {
 public:
+    //OpenGL shader pipeline : .vert -> .tc -> .te -> .geom -> .frag
+
+    /// @brief Id of the shader in an OpenGL context
     unsigned int ID;
 
+    /// @brief Default constructor (is not used) 
     Shader();
 
+    /// @brief Create the shader program compiling the shader code in the given paths (give nullptr if the shader is not used)
+    /// @param vertexPath Vertex shader file (.vert file)
+    /// @param fragmentPath Fragment shader file (.frag file)
+    /// @param geometryPath Geometry shader file (.geom file)
+    /// @param tessControlPath Tessellation control shader file (.tc file)
+    /// @param tessEvalPath Tessellation evaluation shader file (.te file)
     Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath, const char* tessControlPath, const char* tessEvalPath);
 
+    /// @brief replace the #pragma LIGID_INCLUDE with the code in the given path (LIGID_INCLUDE(givenPath))
+    /// @param code the code
     void processShaderCode(std::string &code);
 
-    // Utility uniform functions
+    /// @brief use the shader program 
     void use();
+    
+    // Utility uniform functions
+    
     void setBool(const std::string &name, bool value);
     void setInt(const std::string &name, int value);
     void setFloat(const std::string &name, float value);
@@ -258,6 +273,9 @@ public:
     
 
 private:
+    /// @brief Checks if an error is occured (print the error msg to the terminal)
+    /// @param shader shader id
+    /// @param type indicate if compiling a .frag file, .tc file or .vert file etc. (to print to the terminal) 
     void checkCompileErrors(GLuint shader, std::string type);
 };
 

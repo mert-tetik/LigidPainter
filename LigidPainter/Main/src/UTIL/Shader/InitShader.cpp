@@ -57,6 +57,18 @@ Shader::Shader(
     teShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
     try
     {
+        //Print the shader file paths 
+        if(vertexPath != nullptr)
+            std::cout << "Loading : " << vertexPath << std::endl;        
+        if(fragmentPath != nullptr)
+            std::cout << "Loading : " << fragmentPath << std::endl;    
+        if(geometryPath != nullptr)
+            std::cout << "Loading : " << geometryPath << std::endl;    
+        if(tessControlPath != nullptr)
+            std::cout << "Loading : " << tessControlPath << std::endl;    
+        if(tessEvalPath != nullptr)
+            std::cout << "Loading : " << tessEvalPath << std::endl;    
+
         // open files
         vShaderFile.open(vertexPath);
         fShaderFile.open(fragmentPath);
@@ -100,6 +112,7 @@ Shader::Shader(
         this->processShaderCode(geometryCode);
         this->processShaderCode(tessControlCode);
         this->processShaderCode(tessEvalCode);
+
 
     }
     catch (std::ifstream::failure& e)
@@ -160,6 +173,7 @@ Shader::Shader(
         glAttachShader(ID, tessControl);
     if(tessEvalPath != nullptr)
         glAttachShader(ID, tessEval);
+    
     glLinkProgram(ID);
     checkCompileErrors(ID, "PROGRAM");
     // delete the shaders as they're linked into our program now and no longer necessary
@@ -167,5 +181,4 @@ Shader::Shader(
     glDeleteShader(fragment);
     if(geometryPath != nullptr)
         glDeleteShader(geometry);
-
 }

@@ -14,7 +14,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
     *This file is included to other shader code using painting
 
-    *Include that file : using #pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Painting.frag)
+    *Include that file using : #pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Painting.frag)
 
     And don't forget to disable the squiggles for the GLSL 
     (squiggles becomes annoying since the vscode compiler doesn't recognise including other shader files) 
@@ -54,6 +54,7 @@ bool isPainted  (
     //3D Model's depth value in the given coordinate (where the painting will be done)
     float modelZ = texture(depthTexture, uv.xy).b;
 
+    //TODO : Don't divide with far for the better result
     //Return true if the 3D Model's depth value & the screen position values are similiar
     return abs(modelZ - linearizeDepth(uv.z)/far) < 0.01;
 }
@@ -262,4 +263,25 @@ vec3 getBrushedTexture (
     //If the brushModeState value is not valid
     else
         return vec3(0);
+}
+
+/**
+*   Returns the brush value interpreting the paintingTexture (calculate screen pos & depth test)
+**/
+vec4 getBrushValue(
+                    sampler2D paintingTexture, //Painting texture 
+                    sampler2D depthTexture, //Model depth texture
+                    vec4 ProjectedPos, //Screen pos of the model 
+                    float opacity //Brush opacity
+                )
+{
+    
+    vec3 screenPos = 0.5 * (vec3(1,1,1) + ProjectedPos.xyz / ProjectedPos.w);
+    vec4 brushTxtr = texture(paintingTexture, screenPos.xy);
+    brushTxtr.a *= opacity; 
+
+    if(!isPainted(screenPos,depthTexture))
+        brushTxtr = vec4(0);
+
+    return brushTxtr;
 }
