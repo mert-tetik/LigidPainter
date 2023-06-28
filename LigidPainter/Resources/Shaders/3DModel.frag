@@ -88,7 +88,7 @@ vec3 getPBR(){
     if(paintedTxtrStateIndex == 1){
         roughness = getBrushedTexture(roughnessTxtr,brushTxtr,vertexData.TexCoords, paintingColor, brushModeState).r;
         if(returnSingleTxtr == 1)
-            return roughness;
+            return vec3(roughness);
     }
     else
         roughness = texture(roughnessTxtr,vertexData.TexCoords).r;
@@ -96,7 +96,7 @@ vec3 getPBR(){
     if(paintedTxtrStateIndex == 2){
         metallic = getBrushedTexture(metallicTxtr,brushTxtr,vertexData.TexCoords, paintingColor, brushModeState).r;
         if(returnSingleTxtr == 1)
-            return metallic;
+            return vec3(metallic);
     }
     else
         metallic = texture(metallicTxtr,vertexData.TexCoords).r;
@@ -112,7 +112,7 @@ vec3 getPBR(){
     if(paintedTxtrStateIndex == 5){
         ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr,vertexData.TexCoords, paintingColor, brushModeState).r;
         if(returnSingleTxtr == 1)
-            return ao;
+            return vec3(ao);
     }
     else
         ao = texture(ambientOcclusionTxtr,vertexData.TexCoords).r;

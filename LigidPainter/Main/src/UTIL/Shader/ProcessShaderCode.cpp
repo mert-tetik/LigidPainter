@@ -25,7 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 //Front decleration for the util function
 std::string readTheWord(std::string text, size_t &i);
-void removeThePragma(std::string &code, int i);
+void removeThePragma(std::string &code, size_t& i);
 
 
 void Shader::processShaderCode(std::string &code){
@@ -154,13 +154,15 @@ void Shader::processShaderCode(std::string &code){
                         removeThePragma(code, i);
 
                         //Insert a new line at the end of the macro
-                        code.insert(code.begin() + i - 1, '\n');
+                        //code.insert(code.begin() + i - 1, '\n');
+
+                        i += 1;
 
                         //Insert the code 
                         code.insert(i, incCode);
                         
                         //Skip the included code
-                        i += incCode.size() - 1;
+                        i += incCode.size();
                     }
                 }
             }
@@ -199,8 +201,8 @@ std::string readTheWord(std::string text, size_t &i){
 }
 
 void removeThePragma(
-                        std::string &code, 
-                        int i //Last index of the pragma
+                        std::string& code, 
+                        size_t& i //Last index of the pragma
                     ){
     int lastP = i;
 
@@ -208,9 +210,13 @@ void removeThePragma(
     int begP;
     for (begP = i; begP >= 0; begP--)
     {
+        
         if(code[begP] == '#')
             break;
+    
     }
+
+    i = begP - 1; 
 
     code.erase(
                 code.begin() + begP, //From

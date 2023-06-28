@@ -261,8 +261,7 @@ vec3 getBrushedTexture (
         return getSmearedTexture(txtr,brushTxtr,TexCoords);
 
     //If the brushModeState value is not valid
-    else
-        return vec3(0);
+    return vec3(0);
 }
 
 /**

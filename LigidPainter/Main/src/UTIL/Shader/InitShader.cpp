@@ -69,19 +69,23 @@ Shader::Shader(
         if(tessEvalPath != nullptr)
             std::cout << "Loading : " << tessEvalPath << std::endl;    
 
-        // open files
-        vShaderFile.open(vertexPath);
-        fShaderFile.open(fragmentPath);
-        std::stringstream vShaderStream, fShaderStream;
-        // read file's buffer contents into streams
-        vShaderStream << vShaderFile.rdbuf();
-        fShaderStream << fShaderFile.rdbuf();
-        // close file handlers
-        vShaderFile.close();
-        fShaderFile.close();
-        // convert stream into string
-        vertexCode = vShaderStream.str();
-        fragmentCode = fShaderStream.str();
+
+        if(vertexPath != nullptr)
+        {
+            vShaderFile.open(vertexPath);
+            std::stringstream vShaderStream;
+            vShaderStream << vShaderFile.rdbuf();
+            vShaderFile.close();
+            vertexCode = vShaderStream.str();
+        }
+        if(fragmentPath != nullptr)
+        {
+            fShaderFile.open(fragmentPath);
+            std::stringstream fShaderStream;
+            fShaderStream << fShaderFile.rdbuf();
+            fShaderFile.close();
+            fragmentCode = fShaderStream.str();
+        }
         // if geometry shader path is present, also load a geometry shader
         if(geometryPath != nullptr)
         {
@@ -174,6 +178,7 @@ Shader::Shader(
     if(tessEvalPath != nullptr)
         glAttachShader(ID, tessEval);
     
+
     glLinkProgram(ID);
     checkCompileErrors(ID, "PROGRAM");
     // delete the shaders as they're linked into our program now and no longer necessary
@@ -181,4 +186,5 @@ Shader::Shader(
     glDeleteShader(fragment);
     if(geometryPath != nullptr)
         glDeleteShader(geometry);
+
 }
