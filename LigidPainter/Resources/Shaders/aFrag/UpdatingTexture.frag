@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Painting.frag)
 
 in vec2 TexCoords;
+in vec4 ProjectedPos;
 
 //The texture that will be updated
 uniform sampler2D txtr; 
@@ -49,7 +50,7 @@ out vec4 fragColor;
 
 void main(){
 
-    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, gl_FragCoord, paintingOpacity);
+    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, ProjectedPos, paintingOpacity, false);
 
     float txtrAlpha = texture(txtr, TexCoords).a; 
 

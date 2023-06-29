@@ -99,6 +99,15 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
     //Since the UV is between 0 - 1
     glm::mat4 orthoProjection = glm::ortho(0.f,1.f,0.f,1.f);
     
+    glm::vec2 destScale = glm::vec2(glm::min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y));
+
+    glm::mat4 twoDProjection = glm::ortho(
+                                            twoDPaintingPanel.sections[0].elements[0].button.resultPos.x - destScale.x,
+                                            twoDPaintingPanel.sections[0].elements[0].button.resultPos.x + destScale.x,
+                                            twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + destScale.y,
+                                            twoDPaintingPanel.sections[0].elements[0].button.resultPos.y - destScale.y
+                                        );
+    
     if(threeDimensionalMode){
         
         textureUpdatingShader.use();
@@ -145,10 +154,12 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
         twoDPaintingModeAreaShader.setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
         twoDPaintingModeAreaShader.setVec3("paintingColor", this->getSelectedColor().RGB / glm::vec3(255.f));
 
+
         //*Vertex
-        twoDPaintingModeAreaShader.setMat4("projection", windowOrtho);
+        twoDPaintingModeAreaShader.setMat4("projectedPosProjection", windowOrtho);
+        twoDPaintingModeAreaShader.setMat4("projection", twoDProjection);
         twoDPaintingModeAreaShader.setVec3("pos", twoDPaintingPanel.sections[0].elements[0].button.resultPos);
-        twoDPaintingModeAreaShader.setVec2("scale", twoDPaintingPanel.sections[0].elements[0].button.resultScale);
+        twoDPaintingModeAreaShader.setVec2("scale", destScale);
 
         //* Bind the textures
         //painted texture

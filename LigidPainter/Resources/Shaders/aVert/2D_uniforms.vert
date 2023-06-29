@@ -67,6 +67,7 @@ layout(location = 1) in vec2 aTexCoords;
 
 //Orthographic projection matrix (retrieved from the CPU)
 uniform mat4 projection;
+uniform mat4 projectedPosProjection;
 
 //Position value of the box
 uniform vec3 pos;
@@ -88,6 +89,8 @@ out vec2 TexCoords;
 //Scale value of the vertex (send to the fragment shader)
 out vec2 uniScale;
 
+
+out vec4 ProjectedPos;
 
 
 
@@ -114,5 +117,7 @@ void main() {
     //Move the position data of the vertex to the pos uniform 
     vec3 positionedPos = scaledPos + pos;
 
-    gl_Position = projection * vec4(positionedPos, 1.0);
+    ProjectedPos = projectedPosProjection * vec4(positionedPos, 1.0); 
+
+    gl_Position = projection * vec4(positionedPos, 1.0);;
 }

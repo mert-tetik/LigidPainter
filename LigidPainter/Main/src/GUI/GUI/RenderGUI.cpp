@@ -113,6 +113,35 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
         //Render the painting texture
         shaders.twoDPaintingModeAreaShader.use();
 
+        //*Fragment
+        shaders.twoDPaintingModeAreaShader.setInt("txtr", 5);
+        shaders.twoDPaintingModeAreaShader.setInt("paintingTexture", 6);
+        shaders.twoDPaintingModeAreaShader.setInt("depthTexture", 7);
+        shaders.twoDPaintingModeAreaShader.setInt("brushModeState", painter.selectedPaintingModeIndex);
+        shaders.twoDPaintingModeAreaShader.setFloat("paintingOpacity", painter.brushProperties.opacity / 100.f);
+        shaders.twoDPaintingModeAreaShader.setVec3("paintingColor", painter.getSelectedColor().RGB / glm::vec3(255.f));
+
+        glm::vec2 destScale = glm::vec2(glm::min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y));
+
+        //*Vertex
+        shaders.twoDPaintingModeAreaShader.setMat4("projectedPosProjection", this->projection);
+        shaders.twoDPaintingModeAreaShader.setMat4("projection", this->projection);
+        shaders.twoDPaintingModeAreaShader.setVec3("pos", twoDPaintingPanel.sections[0].elements[0].button.resultPos);
+        shaders.twoDPaintingModeAreaShader.setVec2("scale", destScale);
+
+        //* Bind the textures
+        //painted texture
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
+        
+        //paintingTexture 
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, painter.paintingTexture);
+        
+        //depthTexture 
+        glActiveTexture(GL_TEXTURE7);
+        glBindTexture(GL_TEXTURE_2D, painter.depthTexture);
+
         glDrawArrays(GL_TRIANGLES,0,6);
 
         shaders.buttonShader.use();

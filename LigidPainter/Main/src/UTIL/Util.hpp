@@ -489,6 +489,8 @@ public:
     void loadColor2();
     void loadColor3();
 
+    Color getSelectedColor();
+
 private:
     
     /// @brief primary monitor resolution data
@@ -525,7 +527,6 @@ private:
     
     std::vector<glm::vec2> getCursorSubstitution(Mouse &mouse,float spacing);
     void changeColor(Color &color);
-    Color getSelectedColor();
 };
 
 
