@@ -34,22 +34,22 @@ void RangeBar::render(glm::vec3 posVal,glm::vec2 scaleVal,float radiusVal,glm::v
     shader.setVec3("pos"    ,     posVal );
     shader.setVec2("scale"  ,     scaleVal);
     
-    shader.setVec4("color"  ,     color1Val     ); //Default button color
-    shader.setVec4("color2"  ,     color2Val     ); //Second color that is used by hover or click animations
+    shader.setVec4("properties.color"  ,     color1Val     ); //Default button color
+    shader.setVec4("properties.color2"  ,     color2Val     ); //Second color that is used by hover or click animations
     
-    shader.setFloat("colorMixVal"  ,     mixVal   );
+    shader.setFloat("properties.colorMixVal"  ,     mixVal   );
     //Properties
-    shader.setFloat("radius",     radiusVal    );
+    shader.setFloat("properties.radius",     radiusVal    );
     
     if(outlineExtra)
-        shader.setInt("outlineState" ,     2      ); //Outline is not used 
+        shader.setInt("properties.outline.state" ,     2      ); //Outline is not used 
     else
-        shader.setInt("outlineState" ,     0      ); //Outline is not used 
+        shader.setInt("properties.outline.state" ,     0      ); //Outline is not used 
     
     //Outline extra color (affected by the colorMixVal)
-    shader.setVec3("outlineColor" ,     outlineColor     );  
-    shader.setVec3("outlineColor2" ,     outlineColor2     );  
-    shader.setFloat("thickness" ,    resultOutlineThickness);
+    shader.setVec3("properties.outline.color" ,     outlineColor     );  
+    shader.setVec3("properties.outline.color2" ,     outlineColor2     );  
+    shader.setFloat("properties.outline.thickness" ,    resultOutlineThickness);
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
@@ -196,8 +196,8 @@ void RangeBar::render(
     float resultScaleText = videoScale.x/1920/2*textScale;
 
     //Set color of the text
-    shader.setVec4("color"  ,     textColor     );
-    shader.setVec4("color2"  ,     textColor2     );
+    shader.setVec4("properties.color"  ,     textColor     );
+    shader.setVec4("properties.color2"  ,     textColor2     );
         
     //Render the text
     std::string textResult; 

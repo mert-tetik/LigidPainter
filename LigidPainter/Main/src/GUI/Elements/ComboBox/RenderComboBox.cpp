@@ -104,10 +104,10 @@ void ComboBox::render(
     
     //Set the color of the title
     if(pressed)//If button is pressed
-        shader.setVec4("color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
+        shader.setVec4("properties.color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
     else
-        shader.setVec4("color"  ,     color     ); //Default button color
-    shader.setVec4("color2"  ,     color2     ); //Second color that is used by hover or click animations
+        shader.setVec4("properties.color"  ,     color     ); //Default button color
+    shader.setVec4("properties.color2"  ,     color2     ); //Second color that is used by hover or click animations
 
     textRenderer.renderText(shader);
 

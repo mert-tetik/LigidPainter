@@ -103,3 +103,87 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0) {
 vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness) {
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
+
+/*
+* Function to compute the radical inverse of a given 32-bit unsigned integer using the Van der Corput sequence.
+* The function takes a 32-bit unsigned integer 'bits' as input.
+* It performs a series of bitwise operations to shuffle the bits and calculate the radical inverse.
+* The result is a floating-point value between 0 and 1.
+*/
+float RadicalInverse_VdC(uint bits) 
+{
+    // Shuffle the bits by swapping the 16 high bits with the 16 low bits
+    bits = (bits << 16u) | (bits >> 16u);
+
+    // Swap adjacent pairs of bits using bitwise AND and OR operations
+    bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
+
+    // Swap groups of 4 bits using bitwise AND and OR operations
+    bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u);
+
+    // Swap groups of 8 bits using bitwise AND and OR operations
+    bits = ((bits & 0x0F0F0F0Fu) << 4u) | ((bits & 0xF0F0F0F0u) >> 4u);
+
+    // Swap groups of 16 bits using bitwise AND and OR operations
+    bits = ((bits & 0x00FF00FFu) << 8u) | ((bits & 0xFF00FF00u) >> 8u);
+
+    // Convert the shuffled bits back to a floating-point value between 0 and 1
+    return float(bits) * 2.3283064365386963e-10; // Divide by 0x100000000 (2^32) to normalize the value
+}
+
+/*
+* Function to generate a 2D Hammersley point based on the given index and total number of points.
+* The function takes two unsigned integers 'i' and 'N' as input.
+* 'i' represents the index of the point.
+* 'N' represents the total number of points.
+* The function returns a 2D vector (vec2) representing the Hammersley point.
+*/
+vec2 Hammersley(uint i, uint N)
+{
+    // Calculate the first component of the Hammersley point by dividing the index by the total number of points
+    float firstComponent = float(i) / float(N);
+
+    // Calculate the second component of the Hammersley point using the RadicalInverse_VdC function
+    float secondComponent = RadicalInverse_VdC(i);
+
+    // Return the Hammersley point as a vec2
+    return vec2(firstComponent, secondComponent);
+}
+
+/*
+* Function to perform importance sampling for GGX (Trowbridge-Reitz) distribution.
+* The function takes three inputs: 
+* - Xi: A 2D vector representing a random sample point in [0,1] range.
+* - N: A 3D vector representing the surface normal.
+* - roughness: A float representing the roughness parameter.
+* The function returns a 3D vector representing the sampled direction.
+*/
+vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
+{
+    // Calculate squared roughness parameter
+    float a = roughness * roughness;
+
+    // Calculate phi angle based on the first component of the random sample point
+    float phi = 2.0 * PI * Xi.x;
+
+    // Calculate the cosine and sine of the theta angle based on the second component of the random sample point
+    float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a * a - 1.0) * Xi.y));
+    float sinTheta = sqrt(1.0 - cosTheta * cosTheta);
+
+    // Convert spherical coordinates (phi, theta) to cartesian coordinates (H)
+    vec3 H;
+    H.x = cos(phi) * sinTheta;
+    H.y = sin(phi) * sinTheta;
+    H.z = cosTheta;
+
+    // Convert tangent-space H vector to world-space sample vector
+    vec3 up = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
+    vec3 tangent = normalize(cross(up, N));
+    vec3 bitangent = cross(N, tangent);
+
+    // Calculate the final sample vector by combining the tangent, bitangent, and normal vectors
+    vec3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
+
+    // Normalize and return the sample vector
+    return normalize(sampleVec);
+}

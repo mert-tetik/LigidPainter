@@ -1,3 +1,7 @@
+//!! IS NOT USED 
+
+//!! SAMPLE FILE 
+
 #version 400 core
 
 in vec2 texCoords;

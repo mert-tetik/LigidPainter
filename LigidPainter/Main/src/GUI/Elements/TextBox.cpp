@@ -36,25 +36,25 @@ void TextBox::render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadiu
     shader.setVec3("pos"    ,     resultPos );
     shader.setVec2("scale"  ,     resultScale);
         
-    shader.setVec4("color"  ,     color * glm::vec4(glm::vec3(1. - (1.f*(hoverMixVal/2.f))),1.f)     ); //Button pressing color
+    shader.setVec4("properties.color"  ,     color * glm::vec4(glm::vec3(1. - (1.f*(hoverMixVal/2.f))),1.f)     ); //Button pressing color
     
-    shader.setVec4("color2"  ,     color2     ); //Second color that is used by hover or click animations
+    shader.setVec4("properties.color2"  ,     color2     ); //Second color that is used by hover or click animations
     
     if(animationStyle == 1) //If hover or clicked change the color of the button
-        shader.setFloat("colorMixVal"  ,     (clickedMixVal + hoverMixVal)/2.f   );
+        shader.setFloat("properties.colorMixVal"  ,     (clickedMixVal + hoverMixVal)/2.f   );
     else //If clicked change the color of the button
-        shader.setFloat("colorMixVal"  ,     (clickedMixVal)   );
+        shader.setFloat("properties.colorMixVal"  ,     (clickedMixVal)   );
     //Properties
-    shader.setFloat("radius",     resultRadius    );
+    shader.setFloat("properties.radius",     resultRadius    );
     
-    shader.setInt("outlineState" ,     1      ); 
+    shader.setInt("properties.outline.state" ,     1      ); 
     //Outline extra color (affected by the colorMixVal)
-    shader.setVec3("outlineColor" ,     outlineColor     );  
-    shader.setVec3("outlineColor2" ,     outlineColor2     );   
+    shader.setVec3("properties.outline.color" ,     outlineColor     );  
+    shader.setVec3("properties.outline.color2" ,     outlineColor2     );   
     if(animationStyle == 0) //Increase the thicness of the button if hover
-        shader.setFloat("thickness" ,    resultOutlineThickness + clickedMixVal*2.f ); 
+        shader.setFloat("properties.outline.thickness" ,    resultOutlineThickness + clickedMixVal*2.f ); 
     else  //Set the thickness value of the button
-        shader.setFloat("thickness" ,    resultOutlineThickness); 
+        shader.setFloat("properties.outline.thickness" ,    resultOutlineThickness); 
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
@@ -190,8 +190,8 @@ void TextBox::render(
     render(resultPos,resultScale,resultRadius,resultOutlineThickness);
 
     //Color of the text
-    shader.setVec4("color"  ,     textColor     );
-    shader.setVec4("color2"  ,     textColor2     );
+    shader.setVec4("properties.color"  ,     textColor     );
+    shader.setVec4("properties.color2"  ,     textColor2     );
     
     //Render the text
 

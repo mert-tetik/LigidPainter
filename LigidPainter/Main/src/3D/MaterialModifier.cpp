@@ -44,7 +44,7 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader
     if(modifierIndex == TEXTURE_MATERIAL_MODIFIER){
         this->sections = createTextureModifier(colorPalette,buttonShader,appTextures);
         this->title = "Texture Modifier";    
-        shader = Shader("LigidPainter/Resources/Shaders/UI/2DBox.vert","LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",nullptr,nullptr,nullptr);
+        shader = Shader("LigidPainter/Resources/Shaders/aVert/2DBox.vert","LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",nullptr,nullptr,nullptr);
     }
 
     this->modifierIndex = modifierIndex;

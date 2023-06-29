@@ -5,8 +5,9 @@ in vec3 fragPos;
 
 out vec4 fragColor;
 
+//!! FROM https://www.shadertoy.com/view/MtS3Dy
+
 /*
-!!FROM https://www.shadertoy.com/view/MtS3Dy
 
 Info on curves:
 http://research.microsoft.com/en-us/um/people/hoppe/ravg.pdf

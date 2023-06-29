@@ -46,36 +46,36 @@ void CheckBox::render(
     
     
     if(clickState1)//If button is pressed
-        shader.setVec4("color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
+        shader.setVec4("properties.color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
     else
-        shader.setVec4("color"  ,     color     ); //Default button color
+        shader.setVec4("properties.color"  ,     color     ); //Default button color
     
     
-    shader.setVec4("color2"  ,     color2     ); //Second color that is used by hover or click animations
+    shader.setVec4("properties.color2"  ,     color2     ); //Second color that is used by hover or click animations
     
     
     if(animationStyle == 1) //If hover or clicked change the color of the button
-        shader.setFloat("colorMixVal"  ,     (clickedMixVal + hoverMixVal)/2.f   );
+        shader.setFloat("properties.colorMixVal"  ,     (clickedMixVal + hoverMixVal)/2.f   );
     else //If clicked change the color of the button
-        shader.setFloat("colorMixVal"  ,     (clickedMixVal)   );
+        shader.setFloat("properties.colorMixVal"  ,     (clickedMixVal)   );
 
 
-    shader.setFloat("radius",     resultRadius    );
+    shader.setFloat("properties.radius",     resultRadius    );
 
 
-    shader.setInt("outlineState" ,     1      ); 
+    shader.setInt("properties.outline.state" ,     1      ); 
 
 
-    shader.setVec3("outlineColor" ,     outlineColor     );  
+    shader.setVec3("properties.outline.color" ,     outlineColor     );  
 
 
-    shader.setVec3("outlineColor2" ,     outlineColor2     );   
+    shader.setVec3("properties.outline.color2" ,     outlineColor2     );   
 
 
     if(animationStyle == 0) //Increase the thicness of the button if hover
-        shader.setFloat("thickness" ,    resultOutlineThickness + clickedMixVal*4.f ); 
+        shader.setFloat("properties.outline.thickness" ,    resultOutlineThickness + clickedMixVal*4.f ); 
     else  //Set the thickness value of the button
-        shader.setFloat("thickness" ,    resultOutlineThickness); 
+        shader.setFloat("properties.outline.thickness" ,    resultOutlineThickness); 
 
 
     glDrawArrays(GL_TRIANGLES, 0, 6);

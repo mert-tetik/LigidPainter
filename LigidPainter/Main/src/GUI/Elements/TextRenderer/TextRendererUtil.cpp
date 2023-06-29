@@ -204,8 +204,8 @@ void TextRenderer::renderRightToLeft(Shader shader, glm::vec3 pos){
 void TextRenderer::rndrTxt(Shader shader, int textPosCharIndex){
 	glActiveTexture(GL_TEXTURE0);
 	
-	shader.setInt("txtr",0);
-	shader.setInt("renderText",1);
+	shader.setInt("properties.txtr",0);
+	shader.setInt("states.renderText",1);
 
 	glm::vec3 textPos = positionTheText();
 
@@ -217,7 +217,7 @@ void TextRenderer::rndrTxt(Shader shader, int textPosCharIndex){
 	else
 		renderLeftToRight(shader,textPos);
 
-	shader.setInt("renderText",0);
+	shader.setInt("states.renderText",0);
 }
 
 
@@ -246,8 +246,8 @@ void TextRenderer::renderInsertionPointCursor(Shader shader, int &textPosCharInd
 		glm::vec3 ipcPos; 
 		
 		//Set the transform values
-		shader.setFloat("radius",     0    );
-		shader.setInt("outlineState" ,     0     ); 
+		shader.setFloat("properties.radius",     0    );
+		shader.setInt("properties.outline.state" ,     0     ); 
 
 		//Scale of the insertion point cursor
 		shader.setVec2("scale", glm::vec2(5 * textDataScale,35 * textDataScale));

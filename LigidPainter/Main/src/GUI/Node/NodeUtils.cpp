@@ -198,12 +198,12 @@ bool Node::renderBarriers(Panel &nodeEditorPanel,Mouse &mouse){
     //Bottom
     buttonShader.setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y + nodeEditorPanel.resultScale.y + 5000,1.f)); //To the bottom
     buttonShader.setVec2("scale",     glm::vec2(5000));
-    buttonShader.setFloat("radius",     0.f   ); 
+    buttonShader.setFloat("properties.radius",     0.f   ); 
     buttonShader.setInt("outlineExtra" ,    false     ); 
-    buttonShader.setVec4("color",     glm::vec4(0)   ); //Invisible
-    buttonShader.setVec4("color2",     glm::vec4(0)   ); //Invisible
-    buttonShader.setFloat("colorMixVal"  ,   0.f );
-    buttonShader.setVec3("outlineColor" ,    glm::vec4(0)     ); //Invisible
+    buttonShader.setVec4("properties.color",     glm::vec4(0)   ); //Invisible
+    buttonShader.setVec4("properties.color2",     glm::vec4(0)   ); //Invisible
+    buttonShader.setFloat("properties.colorMixVal"  ,   0.f );
+    buttonShader.setVec3("properties.outline.color" ,    glm::vec4(0)     ); //Invisible
     
     if(mouse.isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y + nodeEditorPanel.resultScale.y + 5000,1.f))){
         cursorOnBarriers = true;

@@ -86,8 +86,8 @@ void CheckBox::render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRender
     render(resultPos,resultScale,resultRadius,resultOutlineThickness);
     
     //Set the color of the text 
-    shader.setVec4("color"  ,     textColor     );
-    shader.setVec4("color2"  ,     textColor2     );
+    shader.setVec4("properties.color"  ,     textColor     );
+    shader.setVec4("properties.color2"  ,     textColor2     );
 
     //Render the text
     textRenderer.loadTextData(

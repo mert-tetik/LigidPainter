@@ -32,7 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-//Front declerations of the util functions
+//forward declerations of the util functions
 void readNodeSceneData(std::ifstream &rf, std::vector<Node> &nodeScene, std::vector<Node> &appNodes);
 
 /// @brief 

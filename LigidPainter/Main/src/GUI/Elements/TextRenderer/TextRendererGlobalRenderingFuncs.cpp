@@ -55,7 +55,7 @@ void TextRenderer::renderText(Shader shader,int &textPosCharIndex, glm::vec4 tex
 
 	//Change the alpha value of the insertion pointer cursor 
 	textColor.a = 0.5;
-    shader.setVec4("color2"  ,     textColor    );
+    shader.setVec4("properties.color2"  ,     textColor    );
 
 	//Render the insertion pointer cursor
 	renderInsertionPointCursor(shader,textPosCharIndex);

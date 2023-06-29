@@ -37,7 +37,7 @@ DialogControl::DialogControl(bool active){
 }
 
 void DialogControl::updateStart(Shader buttonShader){
-    buttonShader.setFloat("groupOpacity", mixVal);
+    buttonShader.setFloat("properties.groupOpacity", mixVal);
 }
 
 void DialogControl::updateEnd(Timer timer,Shader buttonShader,float transitionDuration){
@@ -45,7 +45,7 @@ void DialogControl::updateEnd(Timer timer,Shader buttonShader,float transitionDu
     timer.transition(active,mixVal,transitionDuration);
     firstFrameActivated = false;
 
-    buttonShader.setFloat("groupOpacity", 1.);
+    buttonShader.setFloat("properties.groupOpacity", 1.);
 }
 
 void DialogControl::activate(){

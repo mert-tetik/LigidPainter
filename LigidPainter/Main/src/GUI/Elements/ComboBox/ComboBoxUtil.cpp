@@ -39,35 +39,35 @@ void ComboBox::render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadi
     
     
     if(pressed)//If button is pressed
-        shader.setVec4("color"  ,     aColor * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
+        shader.setVec4("properties.color"  ,     aColor * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
     else
-        shader.setVec4("color"  ,     aColor     ); //Default button color
+        shader.setVec4("properties.color"  ,     aColor     ); //Default button color
     
 
-    shader.setVec4("color2"  ,     color2     ); //Second color that is used by hover or click animations
+    shader.setVec4("properties.color2"  ,     color2     ); //Second color that is used by hover or click animations
     
 
-    shader.setFloat("colorMixVal"  ,     (aClickedMixVal + aHoverMixVal)/2.f   );
+    shader.setFloat("properties.colorMixVal"  ,     (aClickedMixVal + aHoverMixVal)/2.f   );
 
 
     //Properties
-    shader.setFloat("radius",     resultRadius    );
+    shader.setFloat("properties.radius",     resultRadius    );
 
 
     if(outline)
-        shader.setInt("outlineState" ,     1      ); 
+        shader.setInt("properties.outline.state" ,     1      ); 
     else
-        shader.setInt("outlineState" ,    0      ); 
+        shader.setInt("properties.outline.state" ,    0      ); 
 
 
     //Outline extra color (affected by the colorMixVal)
-    shader.setVec3("outlineColor" ,     outlineColor     );  
+    shader.setVec3("properties.outline.color" ,     outlineColor     );  
 
 
-    shader.setVec3("outlineColor2" ,     outlineColor2     );   
+    shader.setVec3("properties.outline.color2" ,     outlineColor2     );   
 
 
-    shader.setFloat("thickness" ,    resultOutlineThickness + aClickedMixVal*4.f ); 
+    shader.setFloat("properties.outline.thickness" ,    resultOutlineThickness + aClickedMixVal*4.f ); 
     
     
     glDrawArrays(GL_TRIANGLES, 0, 6);

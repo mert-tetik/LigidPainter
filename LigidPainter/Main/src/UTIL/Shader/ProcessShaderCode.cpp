@@ -23,7 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
-//Front decleration for the util function
+//forward decleration for the util function
 std::string readTheWord(std::string text, size_t &i);
 void removeThePragma(std::string &code, size_t& i);
 

@@ -53,7 +53,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     //Use the related shader 
     shaders.buttonShader.use();
 
-    shaders.buttonShader.setFloat("groupOpacity", 1.f);
+    shaders.buttonShader.setFloat("properties.groupOpacity", 1.f);
 
 
     //Set the ortho projection     

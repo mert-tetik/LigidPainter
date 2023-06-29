@@ -29,27 +29,27 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <string> //std::string
 #include <map> //std::map
 
-//Front declerations :
+//forward declerations :
 
-/// @brief Front declared Library class
+/// @brief forward declared Library class
 struct Library;
-/// @brief Front declared Library Shaders structure
+/// @brief forward declared Library Shaders structure
 struct Shaders;
-/// @brief Front declared Library AppTextures structure
+/// @brief forward declared Library AppTextures structure
 struct AppTextures;
-/// @brief Front declared ColorPalette class
+/// @brief forward declared ColorPalette class
 class ColorPalette;
-/// @brief Front declared Model class
+/// @brief forward declared Model class
 class Model;
-/// @brief Front declared Texture class
+/// @brief forward declared Texture class
 class Texture;
-/// @brief Front declared Material class
+/// @brief forward declared Material class
 class Material;
-/// @brief Front declared Brush class
+/// @brief forward declared Brush class
 class Brush;
-/// @brief Front declared Mouse class
+/// @brief forward declared Mouse class
 class Mouse;
-/// @brief Front declared Node class
+/// @brief forward declared Node class
 class Node;
 
 /// @brief Global utility functions to help to do stuff
