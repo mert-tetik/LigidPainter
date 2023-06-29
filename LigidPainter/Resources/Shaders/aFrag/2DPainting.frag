@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //OpenGL version used in the app (Major 4 , Minor 0, Profile core)
 #version 400 core
 
+
 //Hash functions to calculate the jitter effect
 #pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Hash.frag)
 

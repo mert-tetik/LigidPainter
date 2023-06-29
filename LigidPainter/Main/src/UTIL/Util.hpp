@@ -51,6 +51,8 @@ class Brush;
 class Mouse;
 /// @brief forward declared Node class
 class Node;
+/// @brief forward declared Scene struct
+struct Scene;
 
 /// @brief Global utility functions to help to do stuff
 namespace UTIL{
@@ -356,6 +358,21 @@ public:
     void writeLigidFile(const std::vector<Node> nodeScene, int textureRes);
 };
 
+struct BrushProperties{
+    float radius;
+    float hardness;
+    float opacity;
+    float spacing;
+    float sizeJitter;
+    float scatter;
+    float fade;
+    float rotation;
+    float rotationJitter;
+    float alphaJitter;
+    bool individualTexture;
+    bool sinWavePattern;
+    Texture brushTexture;
+};
 
 class Painter
 {
@@ -364,7 +381,6 @@ public:
     Color color2; 
     Color color3; 
     int selectedColorIndex = 0;
-    Texture brushTexture;
     unsigned int RBO;
     unsigned int FBO;
     unsigned int paintingTexture; //Is paintingTexture8 or paintingTexture16f 
@@ -380,6 +396,7 @@ public:
     Shader buttonShader;
     Shader tdModelShader;
     Shader depth3DShader;
+    Shader textureUpdatingShader;
     bool refreshable = true; //To avoid refreshing every frame in UI.hpp
     glm::mat4 projection;
     bool threeDimensionalMode = true;
@@ -387,13 +404,14 @@ public:
     glm::vec3 pos2D;
     glm::vec2 scale2D;
 
+    BrushProperties brushProperties;
+
     Painter();
 
-    void initPainter(glm::vec2 videoScale, Shader paintingShader, Shader buttonShader, Shader tdModelShader,Shader depth3DShader);
-    void doPaint(Mouse mouse,float radius,float hardness,float opacity,float spacing,float sizeJitter,float scatter,float fade,float rotation,
-                 float rotationJitter,float alphaJitter,bool individualTexture,bool sinWavePattern,std::vector<Texture> textures);
+    void initPainter(glm::vec2 videoScale, Shader paintingShader, Shader buttonShader, Shader tdModelShader, Shader depth3DShader, Shader textureUpdatingShader);
+    void doPaint(Mouse mouse,std::vector<Texture> textures);
     void refreshPainting();
-    void updateTexture(std::vector<Texture> &textures, Model &model,int textureRes);
+    void updateTexture(std::vector<Texture> &textures, Model &model,int textureRes, Scene scene);
     void updateDepthTexture( Model &model,glm::vec2 windowScale);
 
     void loadColor1();
@@ -406,6 +424,7 @@ private:
     
     std::vector<glm::vec2> getCursorSubstitution(Mouse &mouse,float spacing);
     void changeColor(Color &color);
+    Color getSelectedColor();
 };
 
 
@@ -590,6 +609,7 @@ struct Shaders{
     Shader colorPicker;
     Shader twoDPainting;
     Shader depth3D;
+    Shader textureUpdatingShader;
 };
 
 struct Websites{

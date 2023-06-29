@@ -55,10 +55,11 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, int textureRes
     glGenerateMipmap(GL_TEXTURE_2D);
 
     delete[] pixels; //Remove the capture texture's pixels out of the memory
+    glDeleteTextures(1, &captureTexture);
 }
 
 
-void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int textureRes){
+void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int textureRes, Scene scene){
     
     //Write the tmp file of the selected texture before updating the texture (for undo)
     selectedTexture.writeTMP();
@@ -94,53 +95,48 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
     //Set the viewport to the resolution of the texture
     glViewport(0,0,textureRes,textureRes);
 
-    //Render the model with it's UV using the 3D Model shader (same with the one used to render the 3D model)
-    tdModelShader.use();
     
     //Since the UV is between 0 - 1
     glm::mat4 orthoProjection = glm::ortho(0.f,1.f,0.f,1.f);
-    tdModelShader.setMat4("oneZeroProjection",orthoProjection);
     
     if(threeDimensionalMode){
-        //Make sure to not use the transform uniforms (Use UV instead (in render 2D mode))
-        tdModelShader.setInt("useTransformUniforms",0);
-
-        //Don't use pbr function
-        tdModelShader.setInt("returnSingleTxtr",1);
         
-        //2D Mode
-        tdModelShader.setInt("render2D",1);
+        textureUpdatingShader.use();
+
+        //*Fragment
+        textureUpdatingShader.setInt("txtr", 5);
+        textureUpdatingShader.setInt("paintingTexture", 6);
+        textureUpdatingShader.setInt("depthTexture", 7);
+        textureUpdatingShader.setInt("brushModeState", this->selectedPaintingModeIndex);
+        textureUpdatingShader.setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
+        textureUpdatingShader.setVec3("paintingColor", this->getSelectedColor().RGB / glm::vec3(255.f));
+
+        //Vertex
+        textureUpdatingShader.setMat4("orthoProjection", orthoProjection);
+        textureUpdatingShader.setMat4("perspectiveProjection", scene.projectionMatrix);
+        textureUpdatingShader.setMat4("view", scene.viewMatrix);
+
+        //* Bind the textures
+        //painted texture
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, this->selectedTexture.ID);
+        
+        //paintingTexture 
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, this->paintingTexture);
+        
+        //depthTexture 
+        glActiveTexture(GL_TEXTURE7);
+        glBindTexture(GL_TEXTURE_2D, this->depthTexture);
 
         //Draw the UV of the selected model
         if(selectedMeshIndex < model.meshes.size())
             model.meshes[selectedMeshIndex].Draw(); 
-        
-        //Set to default
-        tdModelShader.setInt("render2D",0);
-        tdModelShader.setInt("returnSingleTxtr",0);
     }
     else{
 
-        //Don't use pbr function
-        tdModelShader.setInt("returnSingleTxtr",1);
-        
-        //Enable transform uniforms
-        tdModelShader.setInt("useTransformUniforms",1);
-
-        //Transform uniforms
-        tdModelShader.setVec2("scale",scale2D);
-        tdModelShader.setVec3("pos",pos2D);
-        
-        //2D Mode
-        tdModelShader.setInt("render2D",1);
-        
         //Render
         glDrawArrays(GL_TRIANGLES,0,6);
-        
-        //Set to default
-        tdModelShader.setInt("render2D",0);
-        tdModelShader.setInt("useTransformUniforms",0);
-        tdModelShader.setInt("returnSingleTxtr",0);
     }
 
     //Delete the capture framebuffer

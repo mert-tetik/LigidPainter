@@ -110,7 +110,7 @@ void main() {
     setOutputs();
 
     //Calculate the screen coordinates
-    vertexData.ProjectedPos = projection * view * vec4(tPos.xyz, 0.5); 
+    vertexData.ProjectedPos = projection * view * vec4(aPos.xyz, 0.5); 
     
     //Set the vertex position
     gl_Position = vertexData.ProjectedPos;

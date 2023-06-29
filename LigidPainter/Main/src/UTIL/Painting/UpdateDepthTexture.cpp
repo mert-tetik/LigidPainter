@@ -61,7 +61,6 @@ void Painter::updateDepthTexture(Model &model, glm::vec2 windowScale){
     //Use the depth 3D shader
     depth3DShader.use();
     //Since that shader is using the same vertex shader with 3d model shader
-    depth3DShader.setInt("useTransformUniforms",0); //Disable transform uniforms
 
     //Set the model matrix
     glm::mat4 modelMatrix = glm::mat4(1);

@@ -130,6 +130,7 @@ void UI::init
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Dropper"  , Texture(), 1.f, false))
                                     }
                                 ),
+
                                 Section(
                                     Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Brush"  , appTextures.brushIcon, 3.f,true)),
                                     {   

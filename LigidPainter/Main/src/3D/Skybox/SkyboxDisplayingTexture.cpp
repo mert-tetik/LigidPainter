@@ -82,7 +82,7 @@ void Skybox::createDisplayingTxtr(Shader skyboxBall,Model &sphereModel,glm::vec2
 	skyboxBall.setMat4("view",view);
 	skyboxBall.setMat4("projection",projectionMatrix);
 
-	skyboxBall.setInt("useTransformUniforms",0);
+	// skyboxBall.setInt("useTransformUniforms",0);
 
 	glm::mat4 modelMatrix = glm::mat4(1);
 	skyboxBall.setMat4("modelMatrix",modelMatrix);

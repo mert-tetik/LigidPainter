@@ -42,7 +42,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
         if(library.selectedElementIndex == 0){ //Textures selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.LClick){
                 if(paintingPanel.sections[2].elements[4].button.clickState1){//If brush texture displayer is pressed
-                    painter.brushTexture = libraryPanelDisplayer.sections[0].elements[i].button.texture; //Select a brush texture
+                    paintingPanel.sections[2].elements[4].button.texture = libraryPanelDisplayer.sections[0].elements[i].button.texture; //Select a brush texture
                     paintingPanel.sections[2].elements[4].button.clickState1 = false;
                 } 
                 else
@@ -74,16 +74,16 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
             library.addBrush(
                                         Brush
                                             (    
-                                                paintingPanel.sections[2].elements[0].rangeBar.value,
-                                                paintingPanel.sections[2].elements[3].rangeBar.value,
-                                                paintingPanel.sections[2].elements[1].rangeBar.value,
-                                                paintingPanel.sections[2].elements[7].rangeBar.value,
-                                                paintingPanel.sections[2].elements[8].rangeBar.value,
-                                                paintingPanel.sections[2].elements[9].rangeBar.value,
-                                                paintingPanel.sections[2].elements[6].checkBox.clickState1,
-                                                paintingPanel.sections[2].elements[2].checkBox.clickState1,
+                                                painter.brushProperties.sizeJitter,
+                                                painter.brushProperties.scatter,
+                                                painter.brushProperties.fade,
+                                                painter.brushProperties.rotation,
+                                                painter.brushProperties.rotationJitter,
+                                                painter.brushProperties.alphaJitter,
+                                                painter.brushProperties.individualTexture,
+                                                painter.brushProperties.sinWavePattern,
                                                 "brush_1",
-                                                painter.brushTexture
+                                                painter.brushProperties.brushTexture
                                             )
                                     );
             
@@ -217,6 +217,23 @@ void UI::libraryPanelLeftInteraction(Panel &libraryPanelLeft, Library &library,M
 
 
 void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &painter, Dropper &dropper,ColorPalette colorPalette,Shader buttonShader, AppTextures appTextures, Model &model, std::vector<Node> &nodeScene){
+
+    //Get the brush data from GUI to the painter class
+    painter.brushProperties.radius = paintingPanel.sections[1].elements[0].rangeBar.value;
+    painter.brushProperties.opacity = paintingPanel.sections[1].elements[1].rangeBar.value;
+    painter.brushProperties.hardness = paintingPanel.sections[1].elements[2].rangeBar.value;
+    painter.brushProperties.spacing = paintingPanel.sections[1].elements[3].rangeBar.value;
+    painter.brushProperties.sizeJitter = paintingPanel.sections[2].elements[0].rangeBar.value;
+    painter.brushProperties.fade = paintingPanel.sections[2].elements[1].rangeBar.value;
+    painter.brushProperties.sinWavePattern = paintingPanel.sections[2].elements[2].checkBox.clickState1;
+    painter.brushProperties.scatter = paintingPanel.sections[2].elements[3].rangeBar.value;
+    painter.brushProperties.brushTexture = paintingPanel.sections[2].elements[4].button.texture;
+    painter.brushProperties.individualTexture = paintingPanel.sections[2].elements[6].checkBox.clickState1;
+    painter.brushProperties.rotation = paintingPanel.sections[2].elements[7].rangeBar.value;
+    painter.brushProperties.rotationJitter = paintingPanel.sections[2].elements[8].rangeBar.value;
+    painter.brushProperties.alphaJitter = paintingPanel.sections[2].elements[9].rangeBar.value;
+
+    
     if(paintingPanel.sections[0].elements[0].button.hover && mouse.LDoubleClick){//Pressed to first color button element
         painter.loadColor1();
     }
@@ -256,8 +273,6 @@ void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &paint
     paintingPanel.sections[0].elements[1].button.color = glm::vec4(painter.color2.RGB/glm::vec3(255.f),1.f);
     paintingPanel.sections[0].elements[2].button.color = glm::vec4(painter.color3.RGB/glm::vec3(255.f),1.f);
     
-    //Update the brush texture displayer's texture
-    paintingPanel.sections[2].elements[4].button.texture = painter.brushTexture;
 
     //If clicked to the dropper button activate the dropper
     if(paintingPanel.sections[0].elements[3].button.hover && mouse.LClick){
@@ -265,22 +280,22 @@ void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &paint
     }
 
     if(paintingPanel.sections[2].elements[5].button.hover && mouse.LClick){ //If pressed to remove the brush texture button from brush/more
-        painter.brushTexture = Texture(0);
+        paintingPanel.sections[2].elements[4].button.texture = Texture(0);
     }
     
     if(paintingPanel.sections[2].elements[11].button.hover && mouse.LClick){ //If pressed to export brush file button from brush/more
         Brush exportBrush
                         (    
-                            1.f - paintingPanel.sections[2].elements[0].rangeBar.value/100.f,
-                            1.f - paintingPanel.sections[2].elements[3].rangeBar.value/100.f,
-                            1.f - paintingPanel.sections[2].elements[1].rangeBar.value/100.f,
-                            paintingPanel.sections[2].elements[7].rangeBar.value,
-                            1.f - paintingPanel.sections[2].elements[8].rangeBar.value/100.f,
-                            1.f - paintingPanel.sections[2].elements[9].rangeBar.value/100.f,
-                            paintingPanel.sections[2].elements[6].checkBox.clickState1,
-                            paintingPanel.sections[2].elements[2].checkBox.clickState1,
+                            painter.brushProperties.sizeJitter,
+                            painter.brushProperties.scatter,
+                            painter.brushProperties.fade,
+                            painter.brushProperties.rotation,
+                            painter.brushProperties.rotationJitter,
+                            painter.brushProperties.alphaJitter,
+                            painter.brushProperties.individualTexture,
+                            painter.brushProperties.sinWavePattern,
                             "brush_1",
-                            painter.brushTexture
+                            painter.brushProperties.brushTexture
                         );
         exportBrush.saveFile("");
     }

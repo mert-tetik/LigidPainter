@@ -38,12 +38,13 @@ Painter::Painter(){
     
 }
 
-void Painter::initPainter(glm::vec2 videoScale, Shader paintingShader, Shader buttonShader, Shader tdModelShader,Shader depth3DShader){
+void Painter::initPainter(glm::vec2 videoScale, Shader paintingShader, Shader buttonShader, Shader tdModelShader,Shader depth3DShader, Shader textureUpdatingShader){
     this->videoScale = videoScale;
     this->paintingShader = paintingShader;
     this->buttonShader = buttonShader;
     this->tdModelShader = tdModelShader;
     this->depth3DShader = depth3DShader;
+    this->textureUpdatingShader = textureUpdatingShader;
     
     //Create the texture
     glActiveTexture(GL_TEXTURE0);
@@ -146,4 +147,13 @@ std::vector<glm::vec2> Painter::getCursorSubstitution(Mouse &mouse,float spacing
         }
     }
     return holdLocations;
+}
+
+Color Painter::getSelectedColor(){
+    if(this->selectedColorIndex == 0)  
+        return this->color1;
+    if(this->selectedColorIndex == 1)  
+        return this->color2;
+    if(this->selectedColorIndex == 2)  
+        return this->color3;
 }

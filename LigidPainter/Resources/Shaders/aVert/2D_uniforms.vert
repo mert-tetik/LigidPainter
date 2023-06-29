@@ -65,7 +65,14 @@ layout(location = 1) in vec2 aTexCoords;
 
 //---------------- UNFIFORMS ----------------
 
-uniform mat4 modelMatrix;
+//Orthographic projection matrix (retrieved from the CPU)
+uniform mat4 projection;
+
+//Position value of the box
+uniform vec3 pos;
+
+//Scale value of the box
+uniform vec2 scale;
 
 
 

@@ -151,6 +151,6 @@ vec4 hash_normalized_vec4(float p)
                     hash_normalized_float(p),
                     hash_normalized_float(p + 0.1),
                     hash_normalized_float(p + 0.2),
-                    hash_normalized_float(p + 0.3),
+                    hash_normalized_float(p + 0.3)
                 );
 }

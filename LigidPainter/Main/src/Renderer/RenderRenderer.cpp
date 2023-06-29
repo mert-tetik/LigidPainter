@@ -169,18 +169,6 @@ void Renderer::render(){
         //Paint
         painter.doPaint(    
                             mouse,
-                            userInterface.paintingPanel.sections[1].elements[0].rangeBar.value,
-                            userInterface.paintingPanel.sections[1].elements[2].rangeBar.value/10.f,
-                            userInterface.paintingPanel.sections[1].elements[1].rangeBar.value/100.f,
-                            userInterface.paintingPanel.sections[1].elements[3].rangeBar.value,
-                            1.f - userInterface.paintingPanel.sections[2].elements[0].rangeBar.value/100.f,
-                            1.f - userInterface.paintingPanel.sections[2].elements[3].rangeBar.value/100.f,
-                            1.f - userInterface.paintingPanel.sections[2].elements[1].rangeBar.value/100.f,
-                            userInterface.paintingPanel.sections[2].elements[7].rangeBar.value,
-                            1.f - userInterface.paintingPanel.sections[2].elements[8].rangeBar.value/100.f,
-                            1.f - userInterface.paintingPanel.sections[2].elements[9].rangeBar.value/100.f,
-                            userInterface.paintingPanel.sections[2].elements[6].checkBox.clickState1,
-                            userInterface.paintingPanel.sections[2].elements[2].checkBox.clickState1,
                             library.textures
                         );
 
@@ -195,7 +183,7 @@ void Renderer::render(){
             userInterface.materialEditorDialog.updateMaterial(library.materials[i],textureRes,box,context);
         }
         //Update the selected texture after painting
-        painter.updateTexture(library.textures,model,textureRes);
+        painter.updateTexture(library.textures, model, textureRes, scene);
         //Refresh the 2D painting texture
         painter.refreshPainting();
 
@@ -266,8 +254,7 @@ void Renderer::set3DUniforms(){
     
     //3D Model Shader
     shaders.tdModelShader.use();
-    shaders.tdModelShader.setInt("useTransformUniforms",0);
-    shaders.tdModelShader.setInt("render2D", 0);
+    //shaders.tdModelShader.setInt("render2D", 0);
     shaders.tdModelShader.setInt("skybox",0);
     shaders.tdModelShader.setInt("prefilterMap",1);
     shaders.tdModelShader.setInt("albedoTxtr",2);

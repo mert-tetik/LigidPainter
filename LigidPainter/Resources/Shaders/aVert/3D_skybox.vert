@@ -63,7 +63,7 @@ void main(){
 
     vec4 cubePos = projection * viewUpperLeft3x3  * vec4(-transformedPos);
     
-    screenCoordinates = cubePos.xyww;
+    vec4 screenCoordinates = cubePos.xyww;
 
     gl_Position = screenCoordinates;
 }
