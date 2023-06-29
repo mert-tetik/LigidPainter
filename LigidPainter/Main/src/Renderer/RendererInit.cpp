@@ -211,11 +211,11 @@ void Renderer::loadAppTextures(){
 }
 
 void Renderer::loadShaders(){
-    shaders.tdModelShader =         Shader("LigidPainter/Resources/Shaders/aVert/3DModel.vert"      ,   "LigidPainter/Resources/Shaders/aFrag/PBR.frag"           ,nullptr    ,nullptr,   nullptr      );
-    shaders.depth3D =               Shader("LigidPainter/Resources/Shaders/aVert/3DModel.vert"      ,   "LigidPainter/Resources/Shaders/aFrag/Depth3D.frag"           ,nullptr    ,nullptr,   nullptr      );
-    shaders.skyboxShader =          Shader("LigidPainter/Resources/Shaders/aVert/Skybox.vert"       ,   "LigidPainter/Resources/Shaders/aFrag/Skybox.frag"            ,nullptr    ,nullptr,   nullptr      );
-    shaders.skyboxBall =            Shader("LigidPainter/Resources/Shaders/aVert/3DModel.vert"      ,   "LigidPainter/Resources/Shaders/aFrag/SkyboxBall.frag"        ,nullptr    ,nullptr,   nullptr      );
-    shaders.prefilteringShader =    Shader("LigidPainter/Resources/Shaders/aVert/Skybox.vert"       ,   "LigidPainter/Resources/Shaders/aFrag/PrefilterSkybox.frag"   ,nullptr    ,nullptr,   nullptr      );
+    shaders.tdModelShader =         Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"      ,   "LigidPainter/Resources/Shaders/aFrag/PBR.frag"           ,nullptr    ,nullptr,   nullptr      );
+    shaders.depth3D =               Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"      ,   "LigidPainter/Resources/Shaders/aFrag/Depth3D.frag"           ,nullptr    ,nullptr,   nullptr      );
+    shaders.skyboxShader =          Shader("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert"       ,   "LigidPainter/Resources/Shaders/aFrag/Skybox.frag"            ,nullptr    ,nullptr,   nullptr      );
+    shaders.skyboxBall =            Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"      ,   "LigidPainter/Resources/Shaders/aFrag/SkyboxBall.frag"        ,nullptr    ,nullptr,   nullptr      );
+    shaders.prefilteringShader =    Shader("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert"       ,   "LigidPainter/Resources/Shaders/aFrag/PrefilterSkybox.frag"   ,nullptr    ,nullptr,   nullptr      );
     shaders.buttonShader =          Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Button.frag"            ,nullptr    ,nullptr,   nullptr      );
     shaders.singleCurve =           Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ConnectionCurve.frag"   ,nullptr    ,nullptr,   nullptr      );
     shaders.colorPicker =           Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ColorPicker.frag"       ,nullptr    ,nullptr,   nullptr      );
