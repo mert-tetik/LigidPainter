@@ -42,12 +42,8 @@ void Painter::updateDepthTexture(Model &model, glm::vec2 windowScale){
     glGenFramebuffers(1,&captureFBO);
     glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);
     
-    //Render buffer for depth testing
-    unsigned int RBO;
-	glGenRenderbuffers(1,&RBO);
-	glBindRenderbuffer(GL_RENDERBUFFER,RBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, videoScale.x,videoScale.y);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
+    //Render buffer for depth testing (refresh the RBO if the videoscale value is changed)
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, this->depthRBO);
 
     //Bind the depth texture (Painter class public member variable)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthTexture, 0);

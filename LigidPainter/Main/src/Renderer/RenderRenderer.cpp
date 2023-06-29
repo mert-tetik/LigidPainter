@@ -169,6 +169,7 @@ void Renderer::render(){
         //Paint
         painter.doPaint(    
                             mouse,
+                            userInterface.projection,
                             library.textures
                         );
 

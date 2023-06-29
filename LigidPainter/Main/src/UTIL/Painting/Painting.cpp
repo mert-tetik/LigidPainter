@@ -41,7 +41,7 @@ static void set3DShaderSideUniforms(Shader tdModelShader,int selectedColorIndex,
 
 
 
-void Painter::doPaint(Mouse mouse,std::vector<Texture> textures){
+void Painter::doPaint(Mouse mouse, glm::mat4 windowOrtho, std::vector<Texture> textures){
 
     glm::vec2 firstCursorPos = mouse.cursorPos;
     
@@ -55,8 +55,8 @@ void Painter::doPaint(Mouse mouse,std::vector<Texture> textures){
     //Cover the whole monitor (since we are painting to the screen)
     glViewport(0,0,videoScale.x,videoScale.y);
 
-    //Bind the painting texture to the framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    //Bind the painting texture to the painting framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
 
     if(selectedPaintingModeIndex == 2){//If smearing 
         //(Use the 16-bit floating-point RGBA color format)
@@ -73,7 +73,7 @@ void Painter::doPaint(Mouse mouse,std::vector<Texture> textures){
     paintingShader.use();
 
     //Set uniforms of the painting shader (scale, pos, projection, videoScale, mouseOffset, frame)
-    setShaderUniforms(paintingShader,projection,videoScale,frameCounter,mouse);
+    setShaderUniforms(paintingShader,windowOrtho,videoScale,frameCounter,mouse);
 
     //Set brush properties
     setBrushProperties(paintingShader, this->brushProperties);

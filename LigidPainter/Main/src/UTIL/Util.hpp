@@ -358,6 +358,12 @@ public:
     void writeLigidFile(const std::vector<Node> nodeScene, int textureRes);
 };
 
+/*!
+* @brief Kinda holds the same values as the brush class
+* Holds the brush data of the app
+* Same values as the brush settings GUI elements
+* Special to the painter class
+*/
 struct BrushProperties{
     float radius;
     float hardness;
@@ -377,47 +383,138 @@ struct BrushProperties{
 class Painter
 {
 public:
+    
+    /// @brief 1st painting color value in the 3 others, set by the user using the GUI elements (color pickers)
     Color color1; 
+    /// @brief 2nd painting color value in the 3 others, set by the user using the GUI elements (color pickers)
     Color color2; 
+    /// @brief 3rd painting color value in the 3 others, set by the user using the GUI elements (color pickers)
     Color color3; 
-    int selectedColorIndex = 0;
-    unsigned int RBO;
-    unsigned int FBO;
-    unsigned int paintingTexture; //Is paintingTexture8 or paintingTexture16f 
-    unsigned int paintingTexture8;
-    unsigned int paintingTexture16f;//Used for smear brush
-    unsigned int depthTexture;
-    bool updateTheDepthTexture = false;
-    Texture selectedTexture;
-    int selectedPaintingModeIndex = 0; 
-    int selectedMeshIndex = 0;
-    glm::vec2 videoScale;
-    Shader paintingShader;
-    Shader buttonShader;
-    Shader tdModelShader;
-    Shader depth3DShader;
-    Shader textureUpdatingShader;
-    bool refreshable = true; //To avoid refreshing every frame in UI.hpp
-    glm::mat4 projection;
-    bool threeDimensionalMode = true;
-    glm::mat4 windowProjection;
-    glm::vec3 pos2D;
-    glm::vec2 scale2D;
 
+    /// @brief which color value is selected (1 , 2 or 3)
+    int selectedColorIndex = 0;
+    
+    /// @brief Is paintingTexture16f if smearBrush used, paintingTexture8 if not
+    unsigned int paintingTexture;  
+
+    /// @brief 3D model linearized depth texture (3d model rendered with a depth shader) 
+    unsigned int depthTexture;
+
+    /// @brief Is set to true in the callbacks and is set to false after updating the depth texture
+    ///  (Update the depth texture if set to true)
+    bool updateTheDepthTexture = false;
+
+    /// @brief The selected texture selected by user from the library.textures
+    /// (This texture's id will be painted) 
+    Texture selectedTexture;
+
+    /*!
+    * @brief Indicates which painting mode is selected
+    * Set by the user using GUI elements (paintingModePanel)
+    * 0 : Default painting    
+    * 1 : Soften brush    
+    * 2 : Smear brush 
+    */
+    int selectedPaintingModeIndex = 0;
+    
+    /// @brief Indicates which mesh (material) (out of the model class) is selected.
+    /// Set by the user using GUI elements (paintingPanel)
+    int selectedMeshIndex = 0;
+    
+    /// @brief To avoid refreshing every frame in RendererRender.cpp
+    /// Refreshing : Update the selected texture & clean the capturing framebuffer
+    bool refreshable = true; 
+    
+    /// @brief Indicates if the 3D painting mode is enabled 
+    /// Is changed in the windowpanel(the 2D & 3D painting buttons)
+    bool threeDimensionalMode = true;
+    
+    /// @brief Brush property values 
+    /// Set by the GUI elements (painting panel (brush sections) )
+    /// Is the same as the GUI elements
     BrushProperties brushProperties;
 
+    /// @brief Painter constructor (use initPainter to initialize the painter class)
     Painter();
-
+    
+    /*! 
+    * @brief Init the painter class. Create textures, buffer objects & get necessary member variables
+    * @param videoScale resolution value of the primary monitor
+    * @param paintingShader the painting shader
+    * @param buttonShader the button shader
+    * @param tdModelShader the 3D model shader
+    * @param depth3DShader depth shader
+    * @param textureUpdatingShader texture updating shader
+    */
     void initPainter(glm::vec2 videoScale, Shader paintingShader, Shader buttonShader, Shader tdModelShader, Shader depth3DShader, Shader textureUpdatingShader);
-    void doPaint(Mouse mouse,std::vector<Texture> textures);
+    
+    /*! 
+    * @brief do painting (paint 2D). Called every frame if painting conditions are set. 
+    *           painting conditions are : mouse left button pressed & cursor not hover any panel etc. 
+    * @param mouse mouse class
+    * @param windowOrtho orthographics projection matrix created with window size value.
+    * @param textures textures in the library
+    */
+    void doPaint(Mouse mouse,glm::mat4 windowOrtho,std::vector<Texture> textures);
+    
+    /*!
+    * @brief call that function in a single frame as the painting is completed (Mouse left button released)
+    *        refreshPainting clears the @ref paintingFBO's color data (clears the paintingTexture)      
+    */
     void refreshPainting();
+
+    /*!
+    * @brief updates the @ref selectedTexture right after painting is done.
+    *        Use this right before the @ref refreshPainting  
+    * @param textures textures in the library 
+    * @param model the 3D model
+    * @param textureRes texture resolution : 512, 1024, 2048, 4096
+    * @param scene structure contains matrices related to 3D model rendering & cam pos
+    */
     void updateTexture(std::vector<Texture> &textures, Model &model,int textureRes, Scene scene);
+    
+
+    /*!
+    * @brief updates the @ref depthTexture right after painting is done.
+    *        Use this right before the @ref refreshPainting  
+    * @param model the 3D model
+    * @param windowScale size of the window
+    */
     void updateDepthTexture( Model &model,glm::vec2 windowScale);
 
     void loadColor1();
     void loadColor2();
     void loadColor3();
+
 private:
+    
+    /// @brief primary monitor resolution data
+    glm::vec2 videoScale;
+
+
+    //Shaders used by the painter class
+
+    Shader paintingShader;
+    Shader buttonShader;
+    Shader tdModelShader;
+    Shader depth3DShader;
+    Shader textureUpdatingShader;
+
+    /// @brief renderbuffer object used to depth test (used to create the depth texture)
+    unsigned int depthRBO; 
+
+    /*!
+    * @brief framebuffer object used to capture paintingTexture
+    *   Always uses the paintingTexture as it's texture buffer
+    */
+    unsigned int paintingFBO; 
+
+    /// @brief RGBA8
+    unsigned int paintingTexture8; 
+    
+    /// @brief RGBA16F (Used for smear brush)
+    unsigned int paintingTexture16f;
+
     glm::vec2 startCursorPos = glm::vec2(0); 
     glm::vec2 lastCursorPos = glm::vec2(0); 
     int frameCounter = 0;

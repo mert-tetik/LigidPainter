@@ -122,9 +122,6 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
         // shaders.tdModelShader.setVec2("scale",glm::vec2(glm::min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y)));
         //shaders.tdModelShader.setVec3("pos",twoDPaintingPanel.sections[0].elements[0].button.resultPos);
         glDrawArrays(GL_TRIANGLES,0,6);
-        painter.windowProjection = projection;
-        painter.scale2D = glm::vec2(std::min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y));
-        painter.pos2D = twoDPaintingPanel.sections[0].elements[0].button.resultPos;
         //shaders.tdModelShader.setInt("returnSingleTxtr",0);
         // shaders.tdModelShader.setInt("useTransformUniforms",0);
         shaders.buttonShader.use();

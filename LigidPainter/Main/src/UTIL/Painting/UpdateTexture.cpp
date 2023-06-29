@@ -111,7 +111,7 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
         textureUpdatingShader.setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
         textureUpdatingShader.setVec3("paintingColor", this->getSelectedColor().RGB / glm::vec3(255.f));
 
-        //Vertex
+        //*Vertex
         textureUpdatingShader.setMat4("orthoProjection", orthoProjection);
         textureUpdatingShader.setMat4("perspectiveProjection", scene.projectionMatrix);
         textureUpdatingShader.setMat4("view", scene.viewMatrix);
@@ -150,7 +150,7 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
 
 //Clear the painting texture
 void Painter::refreshPainting(){
-    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER,0);
