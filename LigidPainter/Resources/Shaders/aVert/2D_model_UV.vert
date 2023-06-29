@@ -78,17 +78,12 @@ uniform mat4 view;
 //---------------- OUTPUTS ----------------
 
 //Vertex data of the 3D model
-struct VertexData{
-    vec2 TexCoords;
-    vec3 Normal;
-    vec3 Pos;
-    vec3 Tangent;
-    vec3 Bitangent;
-    vec4 ProjectedPos;
-};
-
-//Send the vertex data to the fragment shader
-out VertexData vertexData;
+out vec2 TexCoords;
+out vec3 Normal;
+out vec3 Pos;
+out vec3 Tangent;
+out vec3 Bitangent;
+out vec4 ProjectedPos;
 
 
 
@@ -96,11 +91,11 @@ out VertexData vertexData;
 //---------------- MAIN ----------------
 
 void setOutputs(){
-    vertexData.Tangent = aTangent;
-    vertexData.Bitangent = aBitangent;
-    vertexData.TexCoords = aTexCoords;
-    vertexData.Normal = aNormal;
-    vertexData.Pos = aPos;
+    Tangent = aTangent;
+    Bitangent = aBitangent;
+    TexCoords = aTexCoords;
+    Normal = aNormal;
+    Pos = aPos;
 }
 
 void main() {
@@ -109,9 +104,9 @@ void main() {
     setOutputs();
 
     //Calculate the screen coordinates
-    vertexData.ProjectedPos = perspectiveProjection * view * vec4(vertexData.Pos, 0.5); 
+    ProjectedPos = perspectiveProjection * view * vec4(Pos, 0.5); 
 
     //Set the vertex position
-    gl_Position = orthoProjection * vec4(vertexData.TexCoords, 1.0, 1.0); 
+    gl_Position = orthoProjection * vec4(TexCoords, 1.0, 1.0); 
 
 }

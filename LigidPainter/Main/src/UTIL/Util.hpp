@@ -53,6 +53,8 @@ class Mouse;
 class Node;
 /// @brief forward declared Scene struct
 struct Scene;
+/// @brief forward declared Panel class
+class Panel;
 
 /// @brief Global utility functions to help to do stuff
 namespace UTIL{
@@ -446,7 +448,7 @@ public:
     * @param depth3DShader depth shader
     * @param textureUpdatingShader texture updating shader
     */
-    void initPainter(glm::vec2 videoScale, Shader paintingShader, Shader buttonShader, Shader tdModelShader, Shader depth3DShader, Shader textureUpdatingShader);
+    void initPainter(glm::vec2 videoScale, Shader paintingShader, Shader buttonShader, Shader tdModelShader, Shader depth3DShader, Shader textureUpdatingShader, Shader twoDPaintingModeAreaShader);
     
     /*! 
     * @brief do painting (paint 2D). Called every frame if painting conditions are set. 
@@ -470,8 +472,9 @@ public:
     * @param model the 3D model
     * @param textureRes texture resolution : 512, 1024, 2048, 4096
     * @param scene structure contains matrices related to 3D model rendering & cam pos
+    * @param twoDPaintingPanel if the painting mode is 2D use this panel's transform data 
     */
-    void updateTexture(std::vector<Texture> &textures, Model &model,int textureRes, Scene scene);
+    void updateTexture(std::vector<Texture> &textures, Model &model,int textureRes, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho);
     
 
     /*!
@@ -499,6 +502,7 @@ private:
     Shader tdModelShader;
     Shader depth3DShader;
     Shader textureUpdatingShader;
+    Shader twoDPaintingModeAreaShader;
 
     /// @brief renderbuffer object used to depth test (used to create the depth texture)
     unsigned int depthRBO; 
@@ -707,6 +711,7 @@ struct Shaders{
     Shader twoDPainting;
     Shader depth3D;
     Shader textureUpdatingShader;
+    Shader twoDPaintingModeAreaShader;
 };
 
 struct Websites{

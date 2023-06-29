@@ -645,6 +645,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
     for (size_t i = 0; i < nodeScene.size(); i++)
     {
         if((nodeScene[i].nodePanel.hover || nodeScene[i].barButton.hover) && mouse.RClick){
+            //TODO Don't activate if node is outside of the boundaries
             contextMenus[7].dialogControl.activate();
             contextMenus[7].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
             contextMenus[7].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[7].contextPanel.scale.y;

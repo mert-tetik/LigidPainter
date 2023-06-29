@@ -83,7 +83,7 @@ uniform vec2 scale;
 out vec3 fragPos;
 
 //Texture coordinate data of the vertex (send to the fragment shader)
-out vec2 texCoords;
+out vec2 TexCoords;
 
 //Scale value of the vertex (send to the fragment shader)
 out vec2 uniScale;
@@ -99,7 +99,7 @@ out vec2 uniScale;
 
 void setOutputs(){
     uniScale = scale;
-    texCoords = aTexCoords;
+    TexCoords = aTexCoords;
     fragPos = aPos;
 }
 

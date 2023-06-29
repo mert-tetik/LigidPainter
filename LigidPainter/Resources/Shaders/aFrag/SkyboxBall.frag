@@ -24,17 +24,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #version 400 core
 
 //3D Model single vertex data
-struct VertexData{
-    vec2 TexCoords;
-    vec3 Normal;
-    vec3 Pos;
-    vec3 Tangent;
-    vec3 Bitangent;
-    vec4 ProjectedPos;
-};
-
-//Get the vertex data from the vertex shader
-in VertexData vertexData;
+in vec2 TexCoords;
+in vec3 Normal;
+in vec3 Pos;
+in vec3 Tangent;
+in vec3 Bitangent;
+in vec4 ProjectedPos;
 
 //Skybox texture (cubemap)
 uniform samplerCube skybox;
@@ -45,7 +40,7 @@ out vec4 fragColor;
 vec3 getReflection(){
 
     //Normal vector of the vertex
-    vec3 N = vertexData.Normal;
+    vec3 N = Normal;
 
     //Idk might be useful 
     //! BUT IS NOT RN

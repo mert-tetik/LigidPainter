@@ -1,6 +1,6 @@
 #version 400 core
 
-in vec2 texCoords;
+in vec2 TexCoords;
 in vec3 fragPos;
 
 out vec4 fragColor;
@@ -65,7 +65,7 @@ float approx_distance(vec2 p, vec2 b0, vec2 b1, vec2 b2) {
 void main()
 {	
     float aspectRatio = percScale.x / percScale.y; //TODO Update that with node editor scale
-    vec2 uv = texCoords;
+    vec2 uv = TexCoords;
     vec2 percent = uv;
     percent.y = 1.-uv.y;
     //percent.y /= aspectRatio;

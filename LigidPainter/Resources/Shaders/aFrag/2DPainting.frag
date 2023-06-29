@@ -27,7 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 //Retrieve the texture coordinates from the 2DBox vertex shader
-in vec2 texCoords;
+in vec2 TexCoords;
 
 //Constant max position count value 
 const int maxPosSize = 50;
@@ -91,7 +91,7 @@ void strokeBlendUniColor(
 float calculateBrushTexture(vec2 pos,float radius){
    
     //The uv value
-    vec2 uv = texCoords;
+    vec2 uv = TexCoords;
 
     //Positioning the brush position
     uv -= (pos/videoScale);
@@ -183,7 +183,7 @@ void main()
     float ratio = videoScale.x/videoScale.y;
  
     //Expand the uv value to match with the monitor ratio
-    vec2 uv = vec2(texCoords.x*ratio,texCoords.y);
+    vec2 uv = vec2(TexCoords.x*ratio,TexCoords.y);
     
     //Brush hardness value
     float hardnessV = min(brush.hardness,1.0);

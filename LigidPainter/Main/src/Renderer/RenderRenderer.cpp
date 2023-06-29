@@ -184,7 +184,7 @@ void Renderer::render(){
             userInterface.materialEditorDialog.updateMaterial(library.materials[i],textureRes,box,context);
         }
         //Update the selected texture after painting
-        painter.updateTexture(library.textures, model, textureRes, scene);
+        painter.updateTexture(library.textures, model, textureRes, scene, userInterface.twoDPaintingPanel, userInterface.projection);
         //Refresh the 2D painting texture
         painter.refreshPainting();
 

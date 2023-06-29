@@ -4,7 +4,7 @@
 
 #version 400 core
 
-in vec2 texCoords;
+in vec2 TexCoords;
 out vec4 fragColor;
 
 uniform int renderHSCircle;
@@ -47,7 +47,7 @@ void calcHSCircle()
     vec3 accumulatedColor = vec3(0.0);
     
     // Convert the fragment coordinate to UV coordinates
-    vec2 uv = texCoords;
+    vec2 uv = TexCoords;
     
     // Calculate the center and radius of the circle
     vec2 center = vec2(0.5);
@@ -91,7 +91,7 @@ void calcHSCircle()
 }
 
 void calcValBar(){
-    fragColor = vec4(vec3(texCoords.y),1);
+    fragColor = vec4(vec3(TexCoords.y),1);
 }
 
 void main(){

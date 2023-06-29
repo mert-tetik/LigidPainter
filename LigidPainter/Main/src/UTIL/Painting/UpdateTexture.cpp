@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
+#include "GUI/GUI.hpp"
 
 #include <string>
 #include <iostream>
@@ -59,7 +60,7 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, int textureRes
 }
 
 
-void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int textureRes, Scene scene){
+void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int textureRes, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho){
     
     //Write the tmp file of the selected texture before updating the texture (for undo)
     selectedTexture.writeTMP();
@@ -94,7 +95,6 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
 
     //Set the viewport to the resolution of the texture
     glViewport(0,0,textureRes,textureRes);
-
     
     //Since the UV is between 0 - 1
     glm::mat4 orthoProjection = glm::ortho(0.f,1.f,0.f,1.f);
@@ -135,8 +135,37 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
     }
     else{
 
+        twoDPaintingModeAreaShader.use();
+
+        //*Fragment
+        twoDPaintingModeAreaShader.setInt("txtr", 5);
+        twoDPaintingModeAreaShader.setInt("paintingTexture", 6);
+        twoDPaintingModeAreaShader.setInt("depthTexture", 7);
+        twoDPaintingModeAreaShader.setInt("brushModeState", this->selectedPaintingModeIndex);
+        twoDPaintingModeAreaShader.setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
+        twoDPaintingModeAreaShader.setVec3("paintingColor", this->getSelectedColor().RGB / glm::vec3(255.f));
+
+        //*Vertex
+        twoDPaintingModeAreaShader.setMat4("projection", windowOrtho);
+        twoDPaintingModeAreaShader.setVec3("pos", twoDPaintingPanel.sections[0].elements[0].button.resultPos);
+        twoDPaintingModeAreaShader.setVec2("scale", twoDPaintingPanel.sections[0].elements[0].button.resultScale);
+
+        //* Bind the textures
+        //painted texture
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, this->selectedTexture.ID);
+        
+        //paintingTexture 
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, this->paintingTexture);
+        
+        //depthTexture 
+        glActiveTexture(GL_TEXTURE7);
+        glBindTexture(GL_TEXTURE_2D, this->depthTexture);
+
         //Render
         glDrawArrays(GL_TRIANGLES,0,6);
+    
     }
 
     //Delete the capture framebuffer

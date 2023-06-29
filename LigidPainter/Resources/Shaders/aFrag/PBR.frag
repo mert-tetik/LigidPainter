@@ -8,17 +8,13 @@
 #pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Physics_Math.frag)
 
 
-struct VertexData{
-    vec2 TexCoords;
-    vec3 Normal;
-    vec3 Pos;
-    vec3 Tangent;
-    vec3 Bitangent;
-    vec4 ProjectedPos;
-};
+in vec2 TexCoords;
+in vec3 Normal;
+in vec3 Pos;
+in vec3 Tangent;
+in vec3 Bitangent;
+in vec4 ProjectedPos;
 
-//Vertex data : pos , normal , texture coordinates , tangent , bitangent , projected position
-in VertexData vertexData;
 
 //Position of the camera
 uniform vec3 viewPos;
@@ -67,7 +63,7 @@ out vec4 fragColor;
 
 vec3 getPBR(){
     
-    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, vertexData.ProjectedPos, paintingOpacity);
+    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, ProjectedPos, paintingOpacity);
 
     vec3 albedo;
     float roughness;
@@ -76,46 +72,46 @@ vec3 getPBR(){
     float ao;
     
     if(paintedTxtrStateIndex == 0){
-        albedo = getBrushedTexture(albedoTxtr,brushTxtr,vertexData.TexCoords, paintingColor, brushModeState).rgb;
+        albedo = getBrushedTexture(albedoTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).rgb;
     }
     else
-        albedo = texture(albedoTxtr,vertexData.TexCoords).rgb;
+        albedo = texture(albedoTxtr,TexCoords).rgb;
     
     if(paintedTxtrStateIndex == 1){
-        roughness = getBrushedTexture(roughnessTxtr,brushTxtr,vertexData.TexCoords, paintingColor, brushModeState).r;
+        roughness = getBrushedTexture(roughnessTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).r;
     }
     else
-        roughness = texture(roughnessTxtr,vertexData.TexCoords).r;
+        roughness = texture(roughnessTxtr,TexCoords).r;
     
     if(paintedTxtrStateIndex == 2){
-        metallic = getBrushedTexture(metallicTxtr,brushTxtr,vertexData.TexCoords, paintingColor, brushModeState).r;
+        metallic = getBrushedTexture(metallicTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).r;
     }
     else
-        metallic = texture(metallicTxtr,vertexData.TexCoords).r;
+        metallic = texture(metallicTxtr,TexCoords).r;
 
     if(paintedTxtrStateIndex == 3){
-        normal = getBrushedTexture(normalMapTxtr,brushTxtr,vertexData.TexCoords, paintingColor, brushModeState).rgb;
+        normal = getBrushedTexture(normalMapTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).rgb;
     }
     else
-        normal = texture(normalMapTxtr,vertexData.TexCoords).rgb;
+        normal = texture(normalMapTxtr,TexCoords).rgb;
     
     if(paintedTxtrStateIndex == 5){
-        ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr,vertexData.TexCoords, paintingColor, brushModeState).r;
+        ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).r;
     }
     else
-        ao = texture(ambientOcclusionTxtr,vertexData.TexCoords).r;
+        ao = texture(ambientOcclusionTxtr,TexCoords).r;
     
     
 
-    vec3 T = normalize(vec3(vec4(vertexData.Tangent, 0.0)));
-    vec3 aN = normalize(vec3(vec4(vertexData.Normal, 0.0)));
+    vec3 T = normalize(vec3(vec4(Tangent, 0.0)));
+    vec3 aN = normalize(vec3(vec4(Normal, 0.0)));
     T = normalize(T - dot(T, aN) * aN);
     vec3 B = cross(aN, T);
     
     mat3 TBN = transpose(mat3(T, B, aN));    
     
     vec3 tangentViewPos  = TBN * viewPos;
-    vec3 tangentPosModel  = TBN * vertexData.Pos;
+    vec3 tangentPosModel  = TBN * Pos;
 
     vec3 N = normal;
 
@@ -133,7 +129,7 @@ vec3 getPBR(){
 
     vec3 V = normalize(tangentViewPos - tangentPosModel);
     
-    vec3 R = reflect(-normalize(viewPos - vertexData.Pos), vertexData.Normal); 
+    vec3 R = reflect(-normalize(viewPos - Pos), Normal); 
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    

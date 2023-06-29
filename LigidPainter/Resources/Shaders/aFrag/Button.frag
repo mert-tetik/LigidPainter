@@ -23,7 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #version 400 core
 
 //Texture coordinate data from the vertex shader
-in vec2 texCoords;
+in vec2 TexCoords;
 //Scale value of the box (GUI element)
 in vec2 uniScale;
 
@@ -127,11 +127,11 @@ void main(){
     
     //TEXTURE RENDERING MODE
     if(states.renderTexture == 1){
-        vec2 uv = texCoords;
+        vec2 uv = TexCoords;
         fragColor = texture(properties.txtr, uv);
 
         //Round corners for the texture
-        float roundVal = applyRoundCorners(texCoords);
+        float roundVal = applyRoundCorners(TexCoords);
         if(roundVal < 0.2)
             fragColor.a = roundVal;
     }
@@ -139,7 +139,7 @@ void main(){
     //CHARACTER RENDERING MODE
     else if(states.renderText == 1){
         //Render the text
-        vec2 uv = texCoords;
+        vec2 uv = TexCoords;
         uv.y = 1.0 - uv.y;
         fragColor.a = texture(properties.txtr, uv).r;
     }
@@ -147,7 +147,7 @@ void main(){
     //ROUND CORNERS
     else if(properties.radius != 0){
 
-        float roundVal = applyRoundCorners(texCoords); 
+        float roundVal = applyRoundCorners(TexCoords); 
         
         if(roundVal < 0.2)
             fragColor.a = roundVal; //Give the outline or curves to the corners
@@ -156,7 +156,7 @@ void main(){
     //OUTLINE
     if(properties.outline.state != 0 && states.renderText == 0 && states.renderTexture == 0){
         
-        float outlineVal = applyOutline(texCoords); 
+        float outlineVal = applyOutline(TexCoords); 
         
         //Only the outline
         if(properties.outline.state == 1){

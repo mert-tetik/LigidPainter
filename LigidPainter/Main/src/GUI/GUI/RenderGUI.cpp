@@ -109,21 +109,12 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     
     if(!painter.threeDimensionalMode){
         twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,false);
-        
+
         //Render the painting texture
-        shaders.tdModelShader.use();
-        //shaders.tdModelShader.setInt("render2D",0);
-        // shaders.tdModelShader.setInt("useTransformUniforms",1);
-        //shaders.tdModelShader.setMat4("orthoProjection",projection);
-        // shaders.tdModelShader.setInt("returnSingleTxtr",1);
-        //Bind the selected texture as albedo
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D,painter.selectedTexture.ID);
-        // shaders.tdModelShader.setVec2("scale",glm::vec2(glm::min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y)));
-        //shaders.tdModelShader.setVec3("pos",twoDPaintingPanel.sections[0].elements[0].button.resultPos);
+        shaders.twoDPaintingModeAreaShader.use();
+
         glDrawArrays(GL_TRIANGLES,0,6);
-        //shaders.tdModelShader.setInt("returnSingleTxtr",0);
-        // shaders.tdModelShader.setInt("useTransformUniforms",0);
+
         shaders.buttonShader.use();
     }
 
