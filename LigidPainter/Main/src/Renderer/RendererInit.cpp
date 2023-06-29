@@ -216,10 +216,10 @@ void Renderer::loadShaders(){
     shaders.skyboxShader =          Shader("LigidPainter/Resources/Shaders/aVert/Skybox.vert"       ,   "LigidPainter/Resources/Shaders/aFrag/Skybox.frag"            ,nullptr    ,nullptr,   nullptr      );
     shaders.skyboxBall =            Shader("LigidPainter/Resources/Shaders/aVert/3DModel.vert"      ,   "LigidPainter/Resources/Shaders/aFrag/SkyboxBall.frag"        ,nullptr    ,nullptr,   nullptr      );
     shaders.prefilteringShader =    Shader("LigidPainter/Resources/Shaders/aVert/Skybox.vert"       ,   "LigidPainter/Resources/Shaders/aFrag/PrefilterSkybox.frag"   ,nullptr    ,nullptr,   nullptr      );
-    shaders.buttonShader =          Shader("LigidPainter/Resources/Shaders/aVert/2DBox.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Button.frag"            ,nullptr    ,nullptr,   nullptr      );
-    shaders.singleCurve =           Shader("LigidPainter/Resources/Shaders/aVert/2DBox.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ConnectionCurve.frag"   ,nullptr    ,nullptr,   nullptr      );
-    shaders.colorPicker =           Shader("LigidPainter/Resources/Shaders/aVert/2DBox.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ColorPicker.frag"       ,nullptr    ,nullptr,   nullptr      );
-    shaders.twoDPainting =          Shader("LigidPainter/Resources/Shaders/aVert/2DBox.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/2DPainting.frag"        ,nullptr    ,nullptr,   nullptr      );
+    shaders.buttonShader =          Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Button.frag"            ,nullptr    ,nullptr,   nullptr      );
+    shaders.singleCurve =           Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ConnectionCurve.frag"   ,nullptr    ,nullptr,   nullptr      );
+    shaders.colorPicker =           Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ColorPicker.frag"       ,nullptr    ,nullptr,   nullptr      );
+    shaders.twoDPainting =          Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/2DPainting.frag"        ,nullptr    ,nullptr,   nullptr      );
 }
 
 void Renderer::createContextMenus(){
