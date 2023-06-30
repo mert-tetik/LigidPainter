@@ -45,12 +45,15 @@ uniform float paintingOpacity;
 //Selected color for painting
 uniform vec3 paintingColor;
 
+//Do depth testing (painting) if set to 1
+uniform int doDepthTest;
+
 //Fragment shader output
 out vec4 fragColor;
 
 void main(){
 
-    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, ProjectedPos, paintingOpacity, false);
+    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, ProjectedPos, paintingOpacity, doDepthTest);
 
     float txtrAlpha = texture(txtr, TexCoords).a; 
 

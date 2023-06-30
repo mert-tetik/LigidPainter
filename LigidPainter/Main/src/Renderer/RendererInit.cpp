@@ -98,7 +98,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     createAppNodes(videoScale);
 
     //Init the painter
-    painter.initPainter(videoScale,shaders.twoDPainting,shaders.buttonShader,shaders.tdModelShader,shaders.depth3D,shaders.textureUpdatingShader, shaders.twoDPaintingModeAreaShader);
+    painter.initPainter(videoScale, shaders.twoDPainting, shaders.buttonShader, shaders.tdModelShader, shaders.depth3D, shaders.textureUpdatingShader, shaders.twoDPaintingModeAreaShader);
 
     //Create the projects folder if not exists
     if(!std::filesystem::exists("./Projects")){

@@ -272,7 +272,7 @@ vec4 getBrushValue(
                     sampler2D depthTexture, //Model depth texture
                     vec4 ProjectedPos, //Screen pos of the model 
                     float opacity, //Brush opacity
-                    bool testDepth
+                    int testDepth
                 )
 {
     
@@ -280,7 +280,7 @@ vec4 getBrushValue(
     vec4 brushTxtr = texture(paintingTexture, screenPos.xy);
     brushTxtr.a *= opacity; 
 
-    if(testDepth){
+    if(testDepth == 1){
         if(!isPainted(screenPos,depthTexture))
             brushTxtr = vec4(0);
     }

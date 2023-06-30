@@ -63,7 +63,7 @@ out vec4 fragColor;
 
 vec3 getPBR(){
     
-    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, ProjectedPos, paintingOpacity, true);
+    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, ProjectedPos, paintingOpacity, 1);
 
     vec3 albedo;
     float roughness;

@@ -113,6 +113,7 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
         textureUpdatingShader.use();
 
         //*Fragment
+        textureUpdatingShader.setInt("doDepthTest", 1);
         textureUpdatingShader.setInt("txtr", 5);
         textureUpdatingShader.setInt("paintingTexture", 6);
         textureUpdatingShader.setInt("depthTexture", 7);
@@ -120,21 +121,23 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
         textureUpdatingShader.setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
         textureUpdatingShader.setVec3("paintingColor", this->getSelectedColor().RGB / glm::vec3(255.f));
 
+
         //*Vertex
         textureUpdatingShader.setMat4("orthoProjection", orthoProjection);
         textureUpdatingShader.setMat4("perspectiveProjection", scene.projectionMatrix);
         textureUpdatingShader.setMat4("view", scene.viewMatrix);
+
 
         //* Bind the textures
         //painted texture
         glActiveTexture(GL_TEXTURE5);
         glBindTexture(GL_TEXTURE_2D, this->selectedTexture.ID);
         
-        //paintingTexture 
+        ///@ref paintingTexture 
         glActiveTexture(GL_TEXTURE6);
         glBindTexture(GL_TEXTURE_2D, this->paintingTexture);
         
-        //depthTexture 
+        ///@ref depthTexture 
         glActiveTexture(GL_TEXTURE7);
         glBindTexture(GL_TEXTURE_2D, this->depthTexture);
 
@@ -147,6 +150,7 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
         twoDPaintingModeAreaShader.use();
 
         //*Fragment
+        twoDPaintingModeAreaShader.setInt("doDepthTest", 0);
         twoDPaintingModeAreaShader.setInt("txtr", 5);
         twoDPaintingModeAreaShader.setInt("paintingTexture", 6);
         twoDPaintingModeAreaShader.setInt("depthTexture", 7);
