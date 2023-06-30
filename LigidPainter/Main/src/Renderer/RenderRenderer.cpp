@@ -97,27 +97,31 @@ void Renderer::render(){
     glBindTexture(GL_TEXTURE_2D,painter.depthTexture);
 
     //Get the nodes connected to the mesh node (output node)
-    ;
-    std::vector<Material> nodeMaterials = UTIL::getTheMaterialsConnectedToTheMeshNode(nodeScene,library,0); 
+    
+    std::vector<Material> nodeMaterials = UTIL::getTheMaterialsConnectedToTheMeshNode(nodeScene,library,0,appTextures); 
 
     //Render each mesh
     for (size_t i = 0; i < model.meshes.size(); i++)
     {
-        if(library.materials.size()){
             //Bind the material
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].albedo.ID);
+            glBindTexture(GL_TEXTURE_2D, nodeMaterials[i].albedo.ID);
+
             glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].roughness.ID);
+            glBindTexture(GL_TEXTURE_2D, nodeMaterials[i].roughness.ID);
+            
             glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].metallic.ID);
+            glBindTexture(GL_TEXTURE_2D, nodeMaterials[i].metallic.ID);
+            
             glActiveTexture(GL_TEXTURE5);
-            glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].normalMap.ID);
+            glBindTexture(GL_TEXTURE_2D, nodeMaterials[i].normalMap.ID);
+            
             glActiveTexture(GL_TEXTURE6);
-            glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].heightMap.ID);
+            glBindTexture(GL_TEXTURE_2D, nodeMaterials[i].heightMap.ID);
+            
             glActiveTexture(GL_TEXTURE7);
-            glBindTexture(GL_TEXTURE_2D,nodeMaterials[i].ambientOcclusion.ID);
-        }
+            glBindTexture(GL_TEXTURE_2D, nodeMaterials[i].ambientOcclusion.ID);
+
         int paintedTxtrStateIndex = 0;
 
         //If painting an albedo texture

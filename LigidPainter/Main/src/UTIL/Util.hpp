@@ -136,7 +136,7 @@ namespace UTIL{
     ///         (used to create the textures of the material) 
     ///         (set to 0 for no texture creation (if will be called every frame))
     /// @return a vector of materials connected to the mesh node (has the size of a model.meshes)  
-    std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library,int textureRes);
+    std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene, Library &library, int textureRes, AppTextures appTextures);
     
     /// @brief remove the connections with invalid indices 
     ///        (if the node is connected to a nonexistent node or an input)
@@ -739,6 +739,7 @@ struct AppTextures{ //Textures those will be used in UI of the app
     
     //--Textures
     Texture greetingDialogImage;  
+    Texture noMaterialConnectedToTheMeshWarningImage;  
 };
 struct Fonts{ //Fonts those will be used in the app
     Font Arial;

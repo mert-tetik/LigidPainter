@@ -208,6 +208,7 @@ void Renderer::loadAppTextures(){
     appTextures.gearIcon.load("./LigidPainter/Resources/Icons/Gear.png");
     appTextures.ligidPainterIcon.load("./LigidPainter/Resources/Icons/LigidPainter.png");
     appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
+    appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");
 }
 
 void Renderer::loadShaders(){

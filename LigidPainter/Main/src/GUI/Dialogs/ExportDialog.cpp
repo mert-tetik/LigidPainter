@@ -127,9 +127,8 @@ void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,M
 
             return;
         }
-
         //All the materials connected to the mesh output
-        std::vector<Material> materials = UTIL::getTheMaterialsConnectedToTheMeshNode(nodeScene,library,resolution);
+        std::vector<Material> materials = UTIL::getTheMaterialsConnectedToTheMeshNode(nodeScene,library,resolution,appTextures);
         
         //Update all the materials connected to the mesh output & export it's textures
         for (size_t i = 0; i < materials.size(); i++)
