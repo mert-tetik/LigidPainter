@@ -29,91 +29,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 
-NodeConnection::NodeConnection(int nodeIndex,int inputIndex){
-    this->nodeIndex = nodeIndex;
-    this->inputIndex = inputIndex;
-}
-
-Node::Node(){}
-
-Node::Node(int nodeIndex, int materialID, Shader buttonShader, Shader connectionCurveShader, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale){
-    
-    //Get the shaders to the member variables
-    this->buttonShader = buttonShader;
-    this->connectionCurveShader = connectionCurveShader;
-
-    //Get the other stuff to the member variables
-    this->appTextures = appTextures; 
-    this->videoScale = videoScale; 
-
-    //Get the material ID data to a member variable 
-    this->materialID = materialID;
-
-    //Get the node index data to a member variable 
-    this->nodeIndex = nodeIndex;
-
-
-    std::vector<NodeIO> inputs;
-    std::vector<NodeIO> outputs;
-    
-    if(nodeIndex == MATERIAL_NODE){
-        //Material node
-        inputs =    {
-                        NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),colorPalette,buttonShader,"Input1",appTextures.TDModelIcon,2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,1),
-                    };
-            
-        outputs =   {
-                        NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,buttonShader,"Input1",appTextures.TDModelIcon,2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,2),
-                    };
-    }    
-    else if(nodeIndex == MESH_NODE){
-        //Insert the inputs later
-    }
-
-    //Add inputs & outputs to the IOs vector
-    this->addVectors(this->IOs, inputs);
-    this->addVectors(this->IOs, outputs);
-
-    this->nodePanel = Panel(
-        buttonShader,
-        colorPalette,
-        {
-            //Sections
-        },
-        this->scale, //Scale of the node
-        this->pos, //Pos of the node
-        colorPalette.mainColor,
-        colorPalette.secondColor,
-        true,
-        false,
-        false,
-        true,
-        true,
-        0.5f,
-        1,
-        {},
-        20.f,
-        false
-    );
-    
-    //Don't clear the depth buffer right after rendering the panel
-    nodePanel.clearDepthBuffer = false;
-    
-    //Create the barbutton
-    this->barButton = Button(ELEMENT_STYLE_BASIC,nodePanel.scale,colorPalette,buttonShader,"Node",Texture(),0.f,false);
-
-    //Create the elements of the node panel
-    createPanelUsingIOs();
-}
-
-
-
-
-
 void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &nodeScene,int currentNodeIndex){
     
     //Barriers (In order to prevent the overflow)
-    bool cursorOnBarriers = renderBarriers(nodeEditorPanel,mouse);
+    this->cursorOnBarriers = renderBarriers(nodeEditorPanel,mouse);
 
     //Render the node panel which contains the input buttons and stuff
     nodePanel.render(videoScale,mouse,timer,textRenderer,false);

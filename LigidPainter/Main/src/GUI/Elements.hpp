@@ -563,6 +563,7 @@ public:
     Button barButton; 
     glm::vec2 scale = glm::vec2(10,20); 
     glm::vec3 pos = glm::vec3(50,50,0.8f); 
+    bool cursorOnBarriers;
 
     /// @brief Default constructor
     Node();
