@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
-void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &nodeScene,
+void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &meshNodeScene,
             std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter,bool &VSync,bool &backfaceCulling,Skybox &skybox,Model &model){
     
     //Set pass less or equal
@@ -76,16 +76,16 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     renderRenamingTextbox(videoScale, mouse, timer, textRenderer, painter, library, context);
     
     //Render the nodes
-    renderNodes(videoScale,mouse,timer,textRenderer,library,nodeScene);
+    renderNodes(videoScale,mouse,timer,textRenderer,library,meshNodeScene);
     
     //Render the dialogs
-    renderDialogs(videoScale, mouse, timer, textRenderer, library, nodeScene, context, project, model, skybox, textureRes, VSync, backfaceCulling, box, contextMenus);
+    renderDialogs(videoScale, mouse, timer, textRenderer, library, meshNodeScene, context, project, model, skybox, textureRes, VSync, backfaceCulling, box, contextMenus);
     
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(mouse,painter);
 
     //Interactions of the UI elements
-    elementInteraction(painter, mouse, library, contextMenus, nodeScene, context, videoScale, textRenderer, timer, textureRes, screenGapPerc, model, project);
+    elementInteraction(painter, mouse, library, contextMenus, meshNodeScene, context, videoScale, textRenderer, timer, textureRes, screenGapPerc, model, project);
 
     frameCounter++;
 
@@ -183,31 +183,31 @@ void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer,
     }
 }
 
-void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene){
+void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &meshNodeScene){
     
-    for (size_t i = 0; i < nodeScene.size(); i++)
+    for (size_t i = 0; i < meshNodeScene.size(); i++)
     {
 
         //Update the display texture of the material node
-        if(nodeScene[i].nodeIndex == MATERIAL_NODE){//Is a material node
+        if(meshNodeScene[i].nodeIndex == MATERIAL_NODE){//Is a material node
             for (size_t matI = 0; matI < library.materials.size(); matI++)
             {
-                if(nodeScene[i].materialID == library.materials[matI].uniqueID)
-                    nodeScene[i].nodePanel.sections[0].elements[0].button.texture = Texture(library.materials[matI].displayingTexture);
+                if(meshNodeScene[i].materialID == library.materials[matI].uniqueID)
+                    meshNodeScene[i].nodePanel.sections[0].elements[0].button.texture = Texture(library.materials[matI].displayingTexture);
             }
         }
 
 
-        nodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,nodeScene,i);
+        meshNodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,meshNodeScene,i);
     }
 }
 
-void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene, Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync, bool &backfaceCulling,Box &box,  std::vector<ContextMenu> &contextMenus){
+void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &meshNodeScene, Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync, bool &backfaceCulling,Box &box,  std::vector<ContextMenu> &contextMenus){
     if(newProjectDialog.dialogControl.isActive())
-        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,library,shaders,model,textureRes, nodeScene);
+        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,library,shaders,model,textureRes, meshNodeScene);
     
     if(loadProjectDialog.dialogControl.isActive())
-        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,library,shaders,model,textureRes,nodeScene);
+        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,library,shaders,model,textureRes,meshNodeScene);
     
     if(greetingDialog.dialogControl.isActive())
         greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);
@@ -216,7 +216,7 @@ void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRen
         displayerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,skybox);
     
     if(exportDialog.dialogControl.isActive())
-        exportDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,shaders,model,materialEditorDialog,nodeScene);
+        exportDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,shaders,model,materialEditorDialog,meshNodeScene);
     
     if(newTextureDialog.dialogControl.isActive())
         newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,textureRes);

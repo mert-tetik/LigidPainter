@@ -158,7 +158,7 @@ class LoadProjectDialog
     
     //Public member functions
     void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
-                Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,Shaders shaders,Model &model,int &textureRes,std::vector<Node> &nodeScene);
+                Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,Shaders shaders,Model &model,int &textureRes,std::vector<Node> &meshNodeScene);
  };
 
 
@@ -282,7 +282,7 @@ class NewProjectDialog
 
     //Public member functions
     void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
-                Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,Shaders shaders,Model &model,int &textureRes,std::vector<Node> &nodeScene);
+                Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,Shaders shaders,Model &model,int &textureRes,std::vector<Node> &meshNodeScene);
  };
 
 
@@ -306,7 +306,7 @@ class ExportDialog
     //Public member functions
     void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
                 Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model,MaterialEditorDialog &materialEditorDialog
-                ,std::vector<Node> &nodeScene);
+                ,std::vector<Node> &meshNodeScene);
  };
 
 

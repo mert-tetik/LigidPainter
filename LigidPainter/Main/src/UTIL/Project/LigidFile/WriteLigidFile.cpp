@@ -35,11 +35,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //Forward declerations for the util functions
 void writeDescriptionHeader(std::ofstream &wf);
 void writeDateData(std::ofstream &wf);
-void writeNodeSceneData(std::ofstream &wf, std::vector<Node> nodeScene);
+void writemeshNodeSceneData(std::ofstream &wf, std::vector<Node> meshNodeScene);
 
 
 
-void Project::writeLigidFile(const std::vector<Node> nodeScene, int textureRes){
+void Project::writeLigidFile(const std::vector<Node> meshNodeScene, int textureRes){
     std::ofstream wf(this->ligidFilePath, std::ios::out | std::ios::binary);
 		
     if(!wf) {
@@ -53,8 +53,8 @@ void Project::writeLigidFile(const std::vector<Node> nodeScene, int textureRes){
     //!Date
     writeDateData(wf);
 
-    //!NodeScene
-    writeNodeSceneData(wf,nodeScene);
+    //!meshNodeScene
+    writemeshNodeSceneData(wf,meshNodeScene);
 
     //!Texture resolution
     wf.write(reinterpret_cast<char*>(   &textureRes    ),sizeof(int));
@@ -86,25 +86,25 @@ void writeDateData(std::ofstream &wf){
     wf.write(reinterpret_cast<char*>(   &lastOpenedDate    ),sizeof(time_t));
 }
 
-void writeNodeSceneData(std::ofstream &wf, std::vector<Node> nodeScene){
+void writemeshNodeSceneData(std::ofstream &wf, std::vector<Node> meshNodeScene){
     //Write the node size
-    uint64_t nodeSize = nodeScene.size();
+    uint64_t nodeSize = meshNodeScene.size();
     wf.write(reinterpret_cast<char*>(   &nodeSize    )    , sizeof(uint64_t));
     
     //For each node
     for (size_t i = 0; i < nodeSize; i++)
     {
         //Write the node index, (MATERIAL_NODE , MESH_NODE)
-        wf.write(reinterpret_cast<char*>(   &nodeScene[i].nodeIndex    ), sizeof(int));
+        wf.write(reinterpret_cast<char*>(   &meshNodeScene[i].nodeIndex    ), sizeof(int));
         
         //Write the material ID
-        wf.write(reinterpret_cast<char*>(   &nodeScene[i].materialID    ), sizeof(int));
+        wf.write(reinterpret_cast<char*>(   &meshNodeScene[i].materialID    ), sizeof(int));
 
         //Write the node pos
-        wf.write(reinterpret_cast<char*>(   &nodeScene[i].nodePanel.pos    ), sizeof(glm::vec3));
+        wf.write(reinterpret_cast<char*>(   &meshNodeScene[i].nodePanel.pos    ), sizeof(glm::vec3));
 
         //Write the IO size
-        uint64_t IOSize = nodeScene[i].IOs.size();
+        uint64_t IOSize = meshNodeScene[i].IOs.size();
         wf.write(reinterpret_cast<char*>(   &IOSize    )    , sizeof(uint64_t));
         
         //For each IO
@@ -112,14 +112,14 @@ void writeNodeSceneData(std::ofstream &wf, std::vector<Node> nodeScene){
         {   
 
             //Write the connection size
-            uint64_t connectionSize = nodeScene[i].IOs[IOI].connections.size();
+            uint64_t connectionSize = meshNodeScene[i].IOs[IOI].connections.size();
             wf.write(reinterpret_cast<char*>(   &connectionSize    )    , sizeof(uint64_t));
             
             //For each connection of the IO
             for (size_t conI = 0; conI < connectionSize; conI++)
             {
-                wf.write(reinterpret_cast<char*>(   &nodeScene[i].IOs[IOI].connections[conI].inputIndex    )    , sizeof(int));
-                wf.write(reinterpret_cast<char*>(   &nodeScene[i].IOs[IOI].connections[conI].nodeIndex     )    , sizeof(int));
+                wf.write(reinterpret_cast<char*>(   &meshNodeScene[i].IOs[IOI].connections[conI].inputIndex    )    , sizeof(int));
+                wf.write(reinterpret_cast<char*>(   &meshNodeScene[i].IOs[IOI].connections[conI].nodeIndex     )    , sizeof(int));
             }
         }
     }

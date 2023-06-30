@@ -33,13 +33,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 //forward declerations of the util functions
-void readNodeSceneData(std::ifstream &rf, std::vector<Node> &nodeScene, Shaders shaders, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
+void readmeshNodeSceneData(std::ifstream &rf, std::vector<Node> &meshNodeScene, Shaders shaders, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
 
 bool Project::readLigidFile(
                                 std::string path,
                                 time_t &creationDate,
                                 time_t &lastOpenedDate, 
-                                std::vector<Node> &nodeScene, 
+                                std::vector<Node> &meshNodeScene, 
                                 int& textureRes,
                                 Shaders shaders, 
                                 ColorPalette colorPalette, 
@@ -80,8 +80,8 @@ bool Project::readLigidFile(
         //! Read the last opened date
         rf.read(reinterpret_cast<char*>(   &lastOpenedDate    ),sizeof(time_t));
 
-        //!NodeScene
-        readNodeSceneData(rf, nodeScene, shaders, colorPalette, appTextures, videoScale);
+        //!meshNodeScene
+        readmeshNodeSceneData(rf, meshNodeScene, shaders, colorPalette, appTextures, videoScale);
 
         //!Texture resolution
         rf.read(reinterpret_cast<char*>(   &textureRes    ),sizeof(int));
@@ -91,14 +91,14 @@ bool Project::readLigidFile(
 }
 
 
-void readNodeSceneData(std::ifstream &rf, std::vector<Node> &nodeScene, Shaders shaders, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale){
+void readmeshNodeSceneData(std::ifstream &rf, std::vector<Node> &meshNodeScene, Shaders shaders, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale){
     
     //Read the node size
     uint64_t nodeSize;
     rf.read(reinterpret_cast<char*>(   &nodeSize    )    , sizeof(uint64_t));
 
     if(nodeSize)
-        nodeScene.clear();
+        meshNodeScene.clear();
     
     //For each node
     for (size_t i = 0; i < nodeSize; i++)
@@ -149,6 +149,6 @@ void readNodeSceneData(std::ifstream &rf, std::vector<Node> &nodeScene, Shaders 
             }
         }
 
-        nodeScene.push_back(node);
+        meshNodeScene.push_back(node);
     }
 }

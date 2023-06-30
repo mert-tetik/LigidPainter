@@ -68,7 +68,7 @@ public:
     //Textures those will be used in UI of the app
     AppTextures appTextures;
 
-    std::vector<Node> nodeScene; //Contains app nodes
+    std::vector<Node> meshNodeScene; //Contains app nodes
 
     Library library;
 

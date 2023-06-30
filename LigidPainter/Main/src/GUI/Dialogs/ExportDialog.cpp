@@ -99,7 +99,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
 
 void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
                           glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,
-                          Model &model,MaterialEditorDialog &materialEditorDialog,std::vector<Node> &nodeScene){
+                          Model &model,MaterialEditorDialog &materialEditorDialog,std::vector<Node> &meshNodeScene){
     
     dialogControl.updateStart(buttonShader);
 
@@ -128,7 +128,7 @@ void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,M
             return;
         }
         //All the materials connected to the mesh output
-        std::vector<Material> materials = UTIL::getTheMaterialsConnectedToTheMeshNode(nodeScene,library,resolution,appTextures);
+        std::vector<Material> materials = UTIL::getTheMaterialsConnectedToTheMeshNode(meshNodeScene,library,resolution,appTextures);
         
         //Update all the materials connected to the mesh output & export it's textures
         for (size_t i = 0; i < materials.size(); i++)

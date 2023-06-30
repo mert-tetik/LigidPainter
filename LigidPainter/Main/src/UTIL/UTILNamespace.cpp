@@ -72,15 +72,15 @@ std::string UTIL::removeExtension(std::string s){
 	return s;
 }
 
-std::vector<Material> UTIL::getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene,Library &library,int textureRes, AppTextures appTextures){
+std::vector<Material> UTIL::getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &meshNodeScene,Library &library,int textureRes, AppTextures appTextures){
     std::vector<Material> materials;
     
     //Check all the inputs of the mesh node
-    for (size_t i = 0; i < nodeScene[0].IOs.size(); i++)
+    for (size_t i = 0; i < meshNodeScene[0].IOs.size(); i++)
     {
         int materialID = 1000;
-        if(nodeScene[0].IOs[i].connections.size())
-            materialID = nodeScene[nodeScene[0].IOs[i].connections[0].nodeIndex].materialID;
+        if(meshNodeScene[0].IOs[i].connections.size())
+            materialID = meshNodeScene[meshNodeScene[0].IOs[i].connections[0].nodeIndex].materialID;
         else{
 			if(textureRes == 0){
             	materials.push_back(Material());
@@ -108,20 +108,20 @@ std::vector<Material> UTIL::getTheMaterialsConnectedToTheMeshNode(std::vector<No
     return materials;
 }
 
-void UTIL::updateAllTheNodeConnections(std::vector<Node> &nodeScene){
+void UTIL::updateAllTheNodeConnections(std::vector<Node> &meshNodeScene){
 	//Check all the nodes
-	for (size_t ii = 0; ii < nodeScene.size(); ii++)
+	for (size_t ii = 0; ii < meshNodeScene.size(); ii++)
 	{
-		for (size_t IOI = 0; IOI < nodeScene[ii].IOs.size(); IOI++)
+		for (size_t IOI = 0; IOI < meshNodeScene[ii].IOs.size(); IOI++)
 		{
-			for (size_t conI = 0; conI < nodeScene[ii].IOs[IOI].connections.size(); conI++)
+			for (size_t conI = 0; conI < meshNodeScene[ii].IOs[IOI].connections.size(); conI++)
 			{
-				NodeConnection connection = nodeScene[ii].IOs[IOI].connections[conI];
+				NodeConnection connection = meshNodeScene[ii].IOs[IOI].connections[conI];
 				
 				//If the input or the node is disapeared 
-				if(connection.inputIndex >= nodeScene[connection.nodeIndex].IOs.size() || connection.nodeIndex >= nodeScene.size()){
+				if(connection.inputIndex >= meshNodeScene[connection.nodeIndex].IOs.size() || connection.nodeIndex >= meshNodeScene.size()){
 					//Severe the connection
-					nodeScene[ii].IOs[IOI].connections.erase(nodeScene[ii].IOs[IOI].connections.begin() + conI);
+					meshNodeScene[ii].IOs[IOI].connections.erase(meshNodeScene[ii].IOs[IOI].connections.begin() + conI);
 					conI--;
 				}
 			}
@@ -129,24 +129,24 @@ void UTIL::updateAllTheNodeConnections(std::vector<Node> &nodeScene){
 	}
 }
 
-void UTIL::deleteNode(std::vector<Node>& nodeScene, int index){
+void UTIL::deleteNode(std::vector<Node>& meshNodeScene, int index){
 	//If the deleted node is a material node
-    if(nodeScene[index].nodeIndex == MATERIAL_NODE){
+    if(meshNodeScene[index].nodeIndex == MATERIAL_NODE){
         
         //Remove the related input connections
-        for (size_t IOI = 0; IOI < nodeScene[index].IOs.size(); IOI++)
+        for (size_t IOI = 0; IOI < meshNodeScene[index].IOs.size(); IOI++)
         {
-            for (size_t conI = 0; conI < nodeScene[index].IOs[IOI].connections.size(); conI++)
+            for (size_t conI = 0; conI < meshNodeScene[index].IOs[IOI].connections.size(); conI++)
             {
-                int nodeI = nodeScene[index].IOs[IOI].connections[conI].nodeIndex; 
-                int inputI = nodeScene[index].IOs[IOI].connections[conI].inputIndex; 
+                int nodeI = meshNodeScene[index].IOs[IOI].connections[conI].nodeIndex; 
+                int inputI = meshNodeScene[index].IOs[IOI].connections[conI].inputIndex; 
                 
                 //Remove the connection from the connected node/IO
-                nodeScene[nodeI].IOs[inputI].connections.clear();
+                meshNodeScene[nodeI].IOs[inputI].connections.clear();
             }
         }
         
-        nodeScene.erase(nodeScene.begin() + index);
+        meshNodeScene.erase(meshNodeScene.begin() + index);
     }
 }
 

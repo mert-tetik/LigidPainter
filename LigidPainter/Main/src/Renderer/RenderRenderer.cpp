@@ -98,7 +98,7 @@ void Renderer::render(){
 
     //Get the nodes connected to the mesh node (output node)
     
-    std::vector<Material> nodeMaterials = UTIL::getTheMaterialsConnectedToTheMeshNode(nodeScene,library,0,appTextures); 
+    std::vector<Material> nodeMaterials = UTIL::getTheMaterialsConnectedToTheMeshNode(meshNodeScene,library,0,appTextures); 
 
     //Render each mesh
     for (size_t i = 0; i < model.meshes.size(); i++)
@@ -174,7 +174,7 @@ void Renderer::render(){
                             context,
                             box,
                             library,
-                            nodeScene,
+                            meshNodeScene,
                             contextMenus,
                             textureRes,
                             project,

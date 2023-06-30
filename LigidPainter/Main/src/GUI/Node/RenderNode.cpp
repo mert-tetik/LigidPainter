@@ -29,7 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 
-void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &nodeScene,int currentNodeIndex){
+void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &meshNodeScene,int currentNodeIndex){
     
     //Barriers (In order to prevent the overflow)
     this->cursorOnBarriers = renderBarriers(nodeEditorPanel,mouse);
@@ -88,14 +88,14 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
                     int resNodeI = 1000;
                     int resIOI = 1000;
                     
-                    getTheIOConnectedToTheInput(resNodeI,resIOI,currentNodeIndex,i,nodeScene);
+                    getTheIOConnectedToTheInput(resNodeI,resIOI,currentNodeIndex,i,meshNodeScene);
 
                     if(resNodeI != 1000 && resIOI != 1000){
-                        nodeScene[resNodeI].IOs[resIOI].IOCircle.clickState1 = true;
+                        meshNodeScene[resNodeI].IOs[resIOI].IOCircle.clickState1 = true;
                         IOs[i].IOCircle.clickState1 = false;
                     }
                     
-                    clearConnections(currentNodeIndex,i,nodeScene);
+                    clearConnections(currentNodeIndex,i,meshNodeScene);
 
                 }
 
@@ -115,23 +115,23 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
                     int hoveredNodeI = 1000;
                     int hoveredIOI = 1000;
 
-                    getHoveredInputs(hoveredNodeI,hoveredIOI,nodeScene);
+                    getHoveredInputs(hoveredNodeI,hoveredIOI,meshNodeScene);
 
                     //A IO circle is hovered
                     if(hoveredNodeI != 1000 && hoveredIOI != 1000){
                         
                         //Delete the previous connection if an input IO is connected
                         if(IOs[i].state == 0)
-                            clearConnections(currentNodeIndex,i,nodeScene);
+                            clearConnections(currentNodeIndex,i,meshNodeScene);
 
                         //If the circle hovered already has a connection & is an input
-                        if(doHaveConnection(hoveredNodeI,hoveredNodeI,nodeScene) && getStateData(hoveredNodeI,hoveredNodeI,nodeScene) == 0){
+                        if(doHaveConnection(hoveredNodeI,hoveredNodeI,meshNodeScene) && getStateData(hoveredNodeI,hoveredNodeI,meshNodeScene) == 0){
                            //Than remove the connections of the circle hovered
-                            clearConnections(hoveredNodeI,hoveredIOI,nodeScene);
+                            clearConnections(hoveredNodeI,hoveredIOI,meshNodeScene);
                         }
 
                         //Create a connection 
-                        createConnection(hoveredNodeI,hoveredIOI,currentNodeIndex,i,nodeScene);
+                        createConnection(hoveredNodeI,hoveredIOI,currentNodeIndex,i,meshNodeScene);
                     }
                 }
             }
@@ -143,7 +143,7 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
                 {
 
                     //Which node the connection is connected to
-                    Node connectedNode = nodeScene[IOs[i].connections[conI].nodeIndex];
+                    Node connectedNode = meshNodeScene[IOs[i].connections[conI].nodeIndex];
 
                     //Which IO circle the connection is connected to
                     NodeIO connectedIO = connectedNode.IOs[IOs[i].connections[conI].inputIndex]; 
@@ -180,10 +180,10 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
     if(barButton.clickState1 && !nodePanel.topSide.pressed){ //Pressed
 
         //Prevent moving multiple nodes
-        for (size_t i = 0; i < nodeScene.size(); i++)
+        for (size_t i = 0; i < meshNodeScene.size(); i++)
         {
             if(i != currentNodeIndex)
-                nodeScene[i].barButton.clickState1 = false;
+                meshNodeScene[i].barButton.clickState1 = false;
         }
 
         nodePanel.pos.x += mouse.mouseOffset.x/videoScale.x * 100.f;

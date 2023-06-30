@@ -36,7 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 
-void Project::updateProject(Library &library, std::vector<Node> &nodeScene, int& textureRes){
+void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, int& textureRes){
     if(!std::filesystem::exists(folderPath)){
         std::cout << "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << ligidFilePath << std::endl;
         return;
@@ -97,5 +97,5 @@ void Project::updateProject(Library &library, std::vector<Node> &nodeScene, int&
         library.TDModels[i].exportModel(tdModelFolderPath);
     }
 
-    writeLigidFile(nodeScene, textureRes);
+    writeLigidFile(meshNodeScene, textureRes);
 }

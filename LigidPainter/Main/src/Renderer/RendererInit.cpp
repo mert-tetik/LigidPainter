@@ -98,10 +98,10 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     painter.initPainter(videoScale, shaders.twoDPainting, shaders.buttonShader, shaders.tdModelShader, shaders.depth3D, shaders.textureUpdatingShader, shaders.twoDPaintingModeAreaShader);
 
     //Create the mesh node
-    nodeScene.push_back(Node(MESH_NODE, 0, shaders.buttonShader, shaders.connectionCurve, colorPalette, appTextures, videoScale));
+    meshNodeScene.push_back(Node(MESH_NODE, 0, shaders.buttonShader, shaders.connectionCurve, colorPalette, appTextures, videoScale));
 
     //Load the inputs of the mesh node
-    nodeScene[0].uploadNewIOs(model, colorPalette);
+    meshNodeScene[0].uploadNewIOs(model, colorPalette);
 
     //Create the projects folder if not exists
     if(!std::filesystem::exists("./Projects")){

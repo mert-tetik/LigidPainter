@@ -50,7 +50,7 @@ struct NodeConnection{
     //Both inputs & outputs of the node use that structure.
     //std::vector<NodeConnection> connections from the NodeIO class
     //Example :
-    //NodeIO connectedIO = nodeScene[nodeIndex].IOs[inputIndex];
+    //NodeIO connectedIO = meshNodeScene[nodeIndex].IOs[inputIndex];
 
     //Which node the connection is connected
     int nodeIndex; 
@@ -544,14 +544,14 @@ private:
 
     bool renderBarriers(Panel &nodeEditorPanel,Mouse &mouse);
     void drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nodeEditorPanel, int direction);
-    void createConnection(int nodeIParam,int IOIParam,int currentNodeI,int currentIOI,std::vector<Node> &nodeScene);
-    void clearConnections(int nodeIParam,int IOIParam,std::vector<Node> &nodeScene);
-    bool doHaveConnection(int nodeIParam,int IOIParam,std::vector<Node> nodeScene);
+    void createConnection(int nodeIParam,int IOIParam,int currentNodeI,int currentIOI,std::vector<Node> &meshNodeScene);
+    void clearConnections(int nodeIParam,int IOIParam,std::vector<Node> &meshNodeScene);
+    bool doHaveConnection(int nodeIParam,int IOIParam,std::vector<Node> meshNodeScene);
     void addVectors(std::vector<NodeIO>& orgVec, std::vector<NodeIO>& addedVec);
     void createPanelUsingIOs();
-    void getHoveredInputs(int &nodeIParam, int &IOIndexParam, std::vector<Node> nodeScene);
-    int getStateData(int nodeI, int outI,std::vector<Node> nodeScene);
-    void getTheIOConnectedToTheInput(int &nodeIParam, int &IOIParam,int currentNodeI, int currentIOI, std::vector<Node> nodeScene);
+    void getHoveredInputs(int &nodeIParam, int &IOIndexParam, std::vector<Node> meshNodeScene);
+    int getStateData(int nodeI, int outI,std::vector<Node> meshNodeScene);
+    void getTheIOConnectedToTheInput(int &nodeIParam, int &IOIParam,int currentNodeI, int currentIOI, std::vector<Node> meshNodeScene);
 
 public:
     std::vector<NodeIO> IOs;
@@ -581,7 +581,7 @@ public:
     Node(int nodeIndex, int materialID, Shader buttonShader, Shader connectionCurveShader, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
 
 
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &nodeScene,int currentNodeIndex);
+    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &meshNodeScene,int currentNodeIndex);
 
 
     void uploadNewIOs(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs);

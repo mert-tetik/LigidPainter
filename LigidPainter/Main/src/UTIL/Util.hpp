@@ -129,25 +129,25 @@ namespace UTIL{
 
 
     /// @brief 
-    /// @param nodeScene the node scene 
+    /// @param meshNodeScene the node scene 
     /// @param library 
     /// @param textureRes 1024 , 2048 , 512 etc. 
     ///         (the selected texture resolution) 
     ///         (used to create the textures of the material) 
     ///         (set to 0 for no texture creation (if will be called every frame))
     /// @return a vector of materials connected to the mesh node (has the size of a model.meshes)  
-    std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &nodeScene, Library &library, int textureRes, AppTextures appTextures);
+    std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &meshNodeScene, Library &library, int textureRes, AppTextures appTextures);
     
     /// @brief remove the connections with invalid indices 
     ///        (if the node is connected to a nonexistent node or an input)
-    ///        (for example : connection node index = 5 & the nodeScene size : 4)
-    /// @param nodeScene 
-    void updateAllTheNodeConnections(std::vector<Node> &nodeScene);
+    ///        (for example : connection node index = 5 & the meshNodeScene size : 4)
+    /// @param meshNodeScene 
+    void updateAllTheNodeConnections(std::vector<Node> &meshNodeScene);
     
-    /// @brief deletes the node with the given index from nodeScene and updates all the nodes
-    /// @param nodeScene 
-    /// @param index remove the nodeScene[index]
-    void deleteNode(std::vector<Node>& nodeScene, int index);
+    /// @brief deletes the node with the given index from meshNodeScene and updates all the nodes
+    /// @param meshNodeScene 
+    /// @param index remove the meshNodeScene[index]
+    void deleteNode(std::vector<Node>& meshNodeScene, int index);
 
     /// @brief the folder distinguisher 
     /// @return '/' if unix based OS defined '\\' if the windows defined
@@ -313,9 +313,9 @@ public:
     
     /// @brief update the existing project (in the destination of the public member variable folderPath) (write files in the library)
     /// @param library library structure (holds the textures / materials / brushes & TDModels)
-    /// @param nodeScene The main nodeScene which has the mesh node
+    /// @param meshNodeScene The main meshNodeScene which has the mesh node
     /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
-    void updateProject(Library &library, std::vector<Node> &nodeScene, int& textureRes);
+    void updateProject(Library &library, std::vector<Node> &meshNodeScene, int& textureRes);
     
     /// @brief load an existing project using ligid file path
     /// @param ligidFilePath path to the ligid file
@@ -325,10 +325,10 @@ public:
     /// @param appTextures appTextures structure (holds all the textures used by the GUI)
     /// @param colorPalette colorPalette class (color theme of the ligidpainter)
     /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
-    /// @param nodeScene The main nodeScene which has the mesh node
+    /// @param meshNodeScene The main meshNodeScene which has the mesh node
     /// @return 
     bool loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,
-                    ColorPalette colorPalette,int &textureRes,std::vector<Node> &nodeScene, glm::vec2 videoScale);
+                    ColorPalette colorPalette,int &textureRes,std::vector<Node> &meshNodeScene, glm::vec2 videoScale);
 
     /// @brief Used to save as
     /// @param dstPath where to duplicate
@@ -347,15 +347,15 @@ public:
     /// @param path 
     /// @param creationDate 
     /// @param lastOpenedDate 
-    /// @param nodeScene 
+    /// @param meshNodeScene 
     /// @param textureRes 
     /// @return True if success
-    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,std::vector<Node> &nodeScene,  int& textureRes, Shaders shaders, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
+    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,std::vector<Node> &meshNodeScene,  int& textureRes, Shaders shaders, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
     
     /// @brief Write ligid file to the project folder
-    /// @param nodeScene 
+    /// @param meshNodeScene 
     /// @param textureRes 
-    void writeLigidFile(const std::vector<Node> nodeScene, int textureRes);
+    void writeLigidFile(const std::vector<Node> meshNodeScene, int textureRes);
 };
 
 /*!
