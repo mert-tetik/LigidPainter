@@ -45,7 +45,7 @@ std::string showFileSystemObjectSelectionDialog
                                                 )
 {
     //The result
-    std::string path;
+    char* path;
 
     //Select folder dialog
     if(type == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER){
@@ -181,6 +181,13 @@ std::string showFileSystemObjectSelectionDialog
         }
     }
 
-    //Return the retrieved path
-    return path;
+    if(path == nullptr)
+        return "";
+
+    else{
+        std::string castedPath(path);
+
+        //Return the retrieved path
+        return castedPath;
+    }
 }

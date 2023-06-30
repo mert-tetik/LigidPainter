@@ -113,8 +113,9 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
         if(library.selectedElementIndex == 1){ //Materials
             //Select material
             std::string test = showFileSystemObjectSelectionDialog("Select a material file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
-            
+
             if(test.size()){
+                
                 Material importedMaterial(textureRes, "", 0);
                 importedMaterial.readFile(test,colorPalette,shaders.buttonShader,appTextures,library.materials);
                 library.addMaterial(importedMaterial);
