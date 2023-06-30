@@ -33,22 +33,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 //forward declerations of the util functions
-void readNodeSceneData(std::ifstream &rf, std::vector<Node> &nodeScene, std::vector<Node> &appNodes);
+void readNodeSceneData(std::ifstream &rf, std::vector<Node> &nodeScene, Shaders shaders, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
 
-/// @brief 
-/// @param path 
-/// @param creationDate 
-/// @param lastOpenedDate 
-/// @param nodeScene 
-/// @param appNodes 
-/// @return true if is a ligid file
 bool Project::readLigidFile(
                                 std::string path,
                                 time_t &creationDate,
                                 time_t &lastOpenedDate, 
                                 std::vector<Node> &nodeScene, 
-                                std::vector<Node> &appNodes,
-                                int& textureRes
+                                int& textureRes,
+                                Shaders shaders, 
+                                ColorPalette colorPalette, 
+                                AppTextures appTextures, 
+                                glm::vec2 videoScale
                             ){ //Returns true if path is a ligid file
     
     if(path.size()){
@@ -85,7 +81,7 @@ bool Project::readLigidFile(
         rf.read(reinterpret_cast<char*>(   &lastOpenedDate    ),sizeof(time_t));
 
         //!NodeScene
-        readNodeSceneData(rf, nodeScene, appNodes);
+        readNodeSceneData(rf, nodeScene, shaders, colorPalette, appTextures, videoScale);
 
         //!Texture resolution
         rf.read(reinterpret_cast<char*>(   &textureRes    ),sizeof(int));
@@ -95,7 +91,7 @@ bool Project::readLigidFile(
 }
 
 
-void readNodeSceneData(std::ifstream &rf, std::vector<Node> &nodeScene, std::vector<Node> &appNodes){
+void readNodeSceneData(std::ifstream &rf, std::vector<Node> &nodeScene, Shaders shaders, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale){
     
     //Read the node size
     uint64_t nodeSize;
@@ -107,16 +103,20 @@ void readNodeSceneData(std::ifstream &rf, std::vector<Node> &nodeScene, std::vec
     //For each node
     for (size_t i = 0; i < nodeSize; i++)
     {
-        Node node;
 
         //Read the node index, (MATERIAL_NODE , MESH_NODE)
         int nodeIndex;
         rf.read(reinterpret_cast<char*>(   &nodeIndex    ), sizeof(int));
 
-        if(nodeIndex == MESH_NODE)
-            node = appNodes[0];
-        if(nodeIndex == MATERIAL_NODE)
-            node = appNodes[1];
+        Node node = Node(
+                            nodeIndex, 
+                            0,
+                            shaders.buttonShader,
+                            shaders.connectionCurve,
+                            colorPalette,
+                            appTextures,
+                            videoScale
+                        );
 
         //Read the material ID 
         rf.read(reinterpret_cast<char*>(   &node.materialID    ), sizeof(int));

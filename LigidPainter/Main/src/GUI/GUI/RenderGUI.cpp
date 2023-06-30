@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
-void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
+void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &nodeScene,
             std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter,bool &VSync,bool &backfaceCulling,Skybox &skybox,Model &model){
     
     //Set pass less or equal
@@ -43,8 +43,8 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
 
 
     //Give projection to the curve shader        
-    shaders.singleCurve.use();
-    shaders.singleCurve.setMat4("projection",projection); 
+    shaders.connectionCurve.use();
+    shaders.connectionCurve.setMat4("projection",projection); 
     
     //Give projection to the color picker shader !IS NOT USED RN 
     shaders.colorPicker.use();
@@ -70,22 +70,22 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     library.uniqueNameControl();
 
     //Render the panels
-    renderPanels(videoScale,mouse,timer,textRenderer,painter,library);
+    renderPanels(videoScale, mouse, timer, textRenderer, painter, library);
 
     //Render renaming textbox
-    renderRenamingTextbox(videoScale,mouse,timer,textRenderer,painter,library,context);
+    renderRenamingTextbox(videoScale, mouse, timer, textRenderer, painter, library, context);
     
     //Render the nodes
     renderNodes(videoScale,mouse,timer,textRenderer,library,nodeScene);
     
     //Render the dialogs
-    renderDialogs(videoScale,mouse,timer,textRenderer,library,nodeScene,context,project,model,skybox,textureRes,VSync,backfaceCulling,box, appNodes, contextMenus);
+    renderDialogs(videoScale, mouse, timer, textRenderer, library, nodeScene, context, project, model, skybox, textureRes, VSync, backfaceCulling, box, contextMenus);
     
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(mouse,painter);
 
     //Interactions of the UI elements
-    elementInteraction(painter,mouse,library,contextMenus,appNodes,nodeScene,context,videoScale,textRenderer,timer,textureRes,screenGapPerc,model,project);
+    elementInteraction(painter, mouse, library, contextMenus, nodeScene, context, videoScale, textRenderer, timer, textureRes, screenGapPerc, model, project);
 
     frameCounter++;
 
@@ -200,12 +200,12 @@ void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRende
     }
 }
 
-void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene, Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync, bool &backfaceCulling,Box &box, std::vector<Node> &appNodes, std::vector<ContextMenu> &contextMenus){
+void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &nodeScene, Context &context, Project &project, Model& model, Skybox &skybox, int &textureRes, bool &VSync, bool &backfaceCulling,Box &box,  std::vector<ContextMenu> &contextMenus){
     if(newProjectDialog.dialogControl.isActive())
-        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,library,shaders,model,textureRes, nodeScene , appNodes);
+        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,library,shaders,model,textureRes, nodeScene);
     
     if(loadProjectDialog.dialogControl.isActive())
-        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,library,shaders,model,textureRes,nodeScene , appNodes);
+        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,library,shaders,model,textureRes,nodeScene);
     
     if(greetingDialog.dialogControl.isActive())
         greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);

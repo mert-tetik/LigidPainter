@@ -39,20 +39,20 @@ void Node::drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nod
                                     ,0.9f); 
     // scale value % of the video scale
     glm::vec2 resultScale = UTIL::getPercent(videoScale,scale);
-    singleCurveShader.use();
+    connectionCurveShader.use();
     nodeEditorPanel.resultPos.x = videoScale.x/2.f;
     nodeEditorPanel.resultPos.y = videoScale.y/2.f;
     nodeEditorPanel.resultScale.x = videoScale.x/2.f;
     nodeEditorPanel.resultScale.y = videoScale.y/2.f;
     
-    singleCurveShader.setVec3("pos",       nodeEditorPanel.resultPos);
-    singleCurveShader.setVec2("scale",     nodeEditorPanel.resultScale);
+    connectionCurveShader.setVec3("pos",       nodeEditorPanel.resultPos);
+    connectionCurveShader.setVec2("scale",     nodeEditorPanel.resultScale);
     
-    singleCurveShader.setInt("direction",       direction);
+    connectionCurveShader.setInt("direction",       direction);
     
-    singleCurveShader.setVec2("startPos",       src);
-    singleCurveShader.setVec2("destPos",       dest);
-    singleCurveShader.setVec2("percScale",       nodeEditorPanel.scale);
+    connectionCurveShader.setVec2("startPos",       src);
+    connectionCurveShader.setVec2("destPos",       dest);
+    connectionCurveShader.setVec2("percScale",       nodeEditorPanel.scale);
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
     buttonShader.use();
@@ -245,6 +245,8 @@ void Node::addVectors(std::vector<NodeIO>& orgVec, std::vector<NodeIO>& addedVec
 }
 
 void Node::createPanelUsingIOs(){
+    nodePanel.sections.clear();
+    
     Section section;
     section.header = Element(Button());
     
@@ -254,4 +256,33 @@ void Node::createPanelUsingIOs(){
     }
     
     nodePanel.sections.push_back(section);
+}
+
+void Node::uploadNewIOs(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs){
+    
+    //Clear the IOs vector
+    this->IOs.clear();
+
+    //Add inputs & outputs to the IOs vector
+    this->addVectors(this->IOs, inputs);
+    this->addVectors(this->IOs, outputs);
+
+    createPanelUsingIOs();
+}
+
+void Node::uploadNewIOs(Model &model, ColorPalette colorPalette){
+    
+    std::vector <NodeIO> meshOutputNodeInputElements;
+    for (size_t i = 0; i < model.meshes.size(); i++)
+    {
+        meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,buttonShader,model.meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,0));
+    }
+
+    //Clear the IOs vector
+    this->IOs.clear();
+
+    //Add inputs & outputs to the IOs vector
+    this->addVectors(this->IOs, meshOutputNodeInputElements);
+
+    createPanelUsingIOs();
 }

@@ -357,7 +357,7 @@ void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, 
     }
 }
 
-void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Library &library,std::vector<Node>& appNodes ,
+void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Library &library,
                                 std::vector<Node> &nodeScene,Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,
                                 Project& project, int &textureRes, Painter &painter){
     anyContextMenuActive = false; 
@@ -400,9 +400,16 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
             if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){//Clicked to add to scene button
                 //Create the node of the materail an add to the node scene
-                Node materialNode = appNodes[1];
+                Node materialNode = Node(
+                                            MATERIAL_NODE, 
+                                            library.materials[contextMenus[i].selectedElement].uniqueID,
+                                            shaders.buttonShader,
+                                            shaders.connectionCurve,
+                                            colorPalette,
+                                            appTextures,
+                                            videoScale
+                                        );
                 materialNode.barButton.text = library.materials[contextMenus[i].selectedElement].title;
-                materialNode.materialID = library.materials[contextMenus[i].selectedElement].uniqueID;
                 nodeScene.push_back(materialNode); //Add material node
             }
             if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to rename button
@@ -674,48 +681,24 @@ void paintingModesPanelInteraction(Panel &paintingModesPanel, Painter &painter){
     }
 }
 
-void nodeInteraction(Model &model, std::vector<Node> &nodeScene,std::vector<Node> &appNodes,Shaders shaders,ColorPalette colorPalette,glm::vec2 videoScale){
+void nodeInteraction(Model &model, std::vector<Node> &nodeScene,Shaders shaders,ColorPalette colorPalette,glm::vec2 videoScale){
     
     //Update the mesh node if a new model is added
     if(model.newModelAdded){
         
-        Node previousNode; //(Current node (unchanged))
-        Node meshOutputNode;
+        Node previousNode = nodeScene[0]; //(Current node (unchanged))
 
-        std::vector <NodeIO> meshOutputNodeInputElements;
-        for (size_t i = 0; i < model.meshes.size(); i++)
-        {
-            meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,shaders.buttonShader,model.meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,0));
-        }
-
-        //Create the mesh output node
-        meshOutputNode.loadIO
-        (
-            meshOutputNodeInputElements,
-            {
-
-            },
-            shaders.buttonShader,
-            shaders.singleCurve,
-            colorPalette,
-            0,
-            0
-        );
+        nodeScene[0].uploadNewIOs(model, colorPalette);
 
         for (size_t i = 0; i < previousNode.IOs.size(); i++)
         {
-            if(i >= meshOutputNode.IOs.size())
+            if(i >= nodeScene[0].IOs.size())
                 break;
 
-            meshOutputNode.IOs[i].connections = previousNode.IOs[i].connections;
+            nodeScene[0].IOs[i].connections = previousNode.IOs[i].connections;
         }
         
-
-        appNodes[0] = meshOutputNode;
-        nodeScene[0] = meshOutputNode;
-    
         //Update all the connections
-        ;
         UTIL::updateAllTheNodeConnections(nodeScene);
     }
 }
@@ -763,7 +746,7 @@ void UI::panelPositioning(float &screenGapPerc, Library &library, Painter &paint
 
 
 
-void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std::vector<ContextMenu> &contextMenus,std::vector<Node> &appNodes,std::vector<Node> &nodeScene,
+void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std::vector<ContextMenu> &contextMenus,std::vector<Node> &nodeScene,
                         Context &context,glm::vec2 &videoScale,TextRenderer &textRenderer, Timer &timer, int &textureRes,float screenGapPerc,Model &model, Project& project){
     //!Dialog & panel state
     anyDialogActive = 
@@ -787,7 +770,7 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
                     selectedTextureDisplayer.hover      || 
                     paintingModesPanel.hover;
 
-    contextMenuInteraction(contextMenus,mouse,library,appNodes,nodeScene,context,videoScale,timer,textRenderer,project,textureRes, painter);
+    contextMenuInteraction(contextMenus,mouse,library,nodeScene,context,videoScale,timer,textRenderer,project,textureRes, painter);
     
     libraryPanelDisplayerInteraction(libraryPanelDisplayer,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,appTextures,frameCounter);
     
@@ -801,7 +784,7 @@ void UI::elementInteraction(Painter &painter,Mouse &mouse, Library &library,std:
 
     paintingModesPanelInteraction(paintingModesPanel,painter);
 
-    nodeInteraction(model,nodeScene,appNodes,shaders,colorPalette,videoScale);
+    nodeInteraction(model,nodeScene,shaders,colorPalette,videoScale);
     
     panelPositioning(screenGapPerc,library,painter);
 }

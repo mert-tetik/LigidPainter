@@ -411,5 +411,4 @@ void UI::init
     renamingTextBox.thickness = 0.f;
     renamingTextBox.animationStyle = 1;
     renamingTextBox.radius = 10000.f;
-
 }   

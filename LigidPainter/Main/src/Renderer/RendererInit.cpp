@@ -94,11 +94,14 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     //Load the cursors of the LigidPainter
     mouse.loadCursors();
 
-    //Create app nodes
-    createAppNodes(videoScale);
-
     //Init the painter
     painter.initPainter(videoScale, shaders.twoDPainting, shaders.buttonShader, shaders.tdModelShader, shaders.depth3D, shaders.textureUpdatingShader, shaders.twoDPaintingModeAreaShader);
+
+    //Create the mesh node
+    nodeScene.push_back(Node(MESH_NODE, 0, shaders.buttonShader, shaders.connectionCurve, colorPalette, appTextures, videoScale));
+
+    //Load the inputs of the mesh node
+    nodeScene[0].uploadNewIOs(model, colorPalette);
 
     //Create the projects folder if not exists
     if(!std::filesystem::exists("./Projects")){
@@ -226,7 +229,7 @@ void Renderer::loadShaders(){
     
     shaders.buttonShader =                  Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Button.frag"                    ,nullptr    ,nullptr,   nullptr      );
     
-    shaders.singleCurve =                   Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ConnectionCurve.frag"           ,nullptr    ,nullptr,   nullptr      );
+    shaders.connectionCurve =                   Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ConnectionCurve.frag"           ,nullptr    ,nullptr,   nullptr      );
     
     shaders.colorPicker =                   Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ColorPicker.frag"               ,nullptr    ,nullptr,   nullptr      );
     
@@ -254,55 +257,4 @@ void Renderer::createContextMenus(){
     //Nodes
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Delete"})); //Node context menu 7
 
-}
-
-void Renderer::createAppNodes(glm::vec2 videoScale){
-    
-    //Material node
-    Node materialNode;
-    materialNode.loadIO
-    (
-        {
-            NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,1),
-        },
-        {
-            NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,shaders.buttonShader,"Input1",appTextures.TDModelIcon,2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,2),
-        },
-        shaders.buttonShader,
-        shaders.singleCurve,
-        colorPalette,
-        0,
-        MATERIAL_NODE
-    );
-
-    //Mesh output node
-
-    //Create inputs with meshes of the model 
-    Node meshOutputNode;
-    std::vector <NodeIO> meshOutputNodeInputElements;
-    for (size_t i = 0; i < model.meshes.size(); i++)
-    {
-        meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,shaders.buttonShader,model.meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,shaders.buttonShader,videoScale,0));
-    }
-    
-    //Create the mesh output node
-    meshOutputNode.loadIO
-    (
-        meshOutputNodeInputElements,
-        {
-
-        },
-        shaders.buttonShader,
-        shaders.singleCurve,
-        colorPalette,
-        0,
-        MESH_NODE
-    );
-    
-    //Send nodes to the appNodes
-    appNodes.push_back(meshOutputNode);
-    appNodes.push_back(materialNode);
-
-    //Send the mesh output node to the 
-    nodeScene.push_back(meshOutputNode);                                                         
 }

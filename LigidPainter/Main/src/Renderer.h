@@ -68,10 +68,6 @@ public:
     //Textures those will be used in UI of the app
     AppTextures appTextures;
 
-    //0 = materialNode
-    //1 = meshOutputNode
-    std::vector<Node> appNodes;
-    
     std::vector<Node> nodeScene; //Contains app nodes
 
     Library library;
@@ -106,7 +102,6 @@ private:
     void loadAppTextures();
     void loadShaders();
     void createContextMenus();
-    void createAppNodes(glm::vec2 videoScale);
 
     //Stuff
     void updateViewMatrix();

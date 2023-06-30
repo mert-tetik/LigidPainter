@@ -326,10 +326,9 @@ public:
     /// @param colorPalette colorPalette class (color theme of the ligidpainter)
     /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
     /// @param nodeScene The main nodeScene which has the mesh node
-    /// @param appNodes 
     /// @return 
     bool loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,
-                    ColorPalette colorPalette,int &textureRes,std::vector<Node> &nodeScene , std::vector<Node> &appNodes);
+                    ColorPalette colorPalette,int &textureRes,std::vector<Node> &nodeScene, glm::vec2 videoScale);
 
     /// @brief Used to save as
     /// @param dstPath where to duplicate
@@ -349,10 +348,9 @@ public:
     /// @param creationDate 
     /// @param lastOpenedDate 
     /// @param nodeScene 
-    /// @param appNodes 
     /// @param textureRes 
     /// @return True if success
-    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,std::vector<Node> &nodeScene, std::vector<Node> &appNodes, int& textureRes);
+    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,std::vector<Node> &nodeScene,  int& textureRes, Shaders shaders, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
     
     /// @brief Write ligid file to the project folder
     /// @param nodeScene 
@@ -707,7 +705,7 @@ struct Shaders{
     Shader skyboxBall;
     Shader buttonShader;
     Shader prefilteringShader;
-    Shader singleCurve;
+    Shader connectionCurve;
     Shader colorPicker;
     Shader twoDPainting;
     Shader depth3D;

@@ -166,7 +166,24 @@ void Renderer::render(){
     userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
     
     //Render the UI
-    userInterface.render(scene.videoScale,mouse,timer,textRenderer,context,box,library,appNodes,nodeScene,contextMenus,textureRes,project,painter,VSync,backfaceCulling,skybox,model);//Render the UI
+    userInterface.render(   //Params
+                            scene.videoScale,
+                            mouse,
+                            timer,
+                            textRenderer,
+                            context,
+                            box,
+                            library,
+                            nodeScene,
+                            contextMenus,
+                            textureRes,
+                            project,
+                            painter,
+                            VSync,
+                            backfaceCulling,
+                            skybox,
+                            model
+                        );
 
     //Painting
     if(mouse.LPressed && !userInterface.anyContextMenuActive && !userInterface.anyPanelHover && !userInterface.anyDialogActive){ //If mouse hover 3D viewport and left mouse button pressed

@@ -539,6 +539,9 @@ public:
 class Node
 {
 private:
+    AppTextures appTextures;
+    glm::vec2 videoScale;
+
     bool renderBarriers(Panel &nodeEditorPanel,Mouse &mouse);
     void drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nodeEditorPanel, int direction);
     void createConnection(int nodeIParam,int IOIParam,int currentNodeI,int currentIOI,std::vector<Node> &nodeScene);
@@ -553,7 +556,7 @@ private:
 public:
     std::vector<NodeIO> IOs;
     Shader buttonShader;  
-    Shader singleCurveShader;  
+    Shader connectionCurveShader;  
     int materialID;
     int nodeIndex; 
     Panel nodePanel;  
@@ -561,13 +564,28 @@ public:
     glm::vec2 scale = glm::vec2(10,20); 
     glm::vec3 pos = glm::vec3(50,50,0.8f); 
 
-    //Constructor
+    /// @brief Default constructor
     Node();
+    
+    /*!
+    * @brief Create the node class
+    * @param nodeIndex is @ref MATERIAL_NODE or @ref MESH_NODE. Indicates what form does the node has.
+    * @param materialID used if the nodeIndex is : @ref MATERIAL_NODE indicates the unique ID value of the material used by the material node 
+    * @param buttonShader button shader used to render the GUI elements
+    * @param connectionCurveShader curve shader used to render connection line curves 
+    * @param colorPalette LigidPainter color theme
+    * @param appTextures textures used by the LigidPainter
+    * @param videoScale primary monitor resolution value
+    */
+    Node(int nodeIndex, int materialID, Shader buttonShader, Shader connectionCurveShader, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
 
-    //Public member functions
-    void loadIO(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs, Shader buttonShader,Shader singleCurveShader,ColorPalette colorPalette,
-                int materialID,int nodeIndex);
+
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &nodeScene,int currentNodeIndex);
+
+
+    void uploadNewIOs(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs);
+    void uploadNewIOs(Model &model, ColorPalette colorPalette);
+    
 };
 
 //!------------------------------COLOR PALETTE-----------------------------

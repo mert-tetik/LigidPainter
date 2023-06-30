@@ -133,7 +133,7 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
 
 void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
                                 glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,
-                                Shaders shaders,Model &model,int &textureRes,std::vector<Node> &nodeScene , std::vector<Node> &appNodes){
+                                Shaders shaders,Model &model,int &textureRes,std::vector<Node> &nodeScene ){
     
     dialogControl.updateStart(buttonShader);
 
@@ -156,7 +156,7 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
         if(test.size()){
             
             //Load the project
-            if(project.loadProject(test,library,shaders,model,appTextures,colorPalette,textureRes,nodeScene, appNodes)){
+            if(project.loadProject(test,library,shaders,model,appTextures,colorPalette,textureRes,nodeScene, videoScale)){
                 
                 startScreen = false;
                 
@@ -222,7 +222,7 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
             std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
             
             //Load the project
-            if(project.loadProject(ligidFilePath,library,shaders,model,appTextures,colorPalette,textureRes,nodeScene, appNodes)){
+            if(project.loadProject(ligidFilePath,library,shaders,model,appTextures,colorPalette,textureRes,nodeScene,videoScale)){
                 
                 startScreen = false;
                 
