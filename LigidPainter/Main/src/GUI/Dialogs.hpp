@@ -221,8 +221,7 @@ public:
 class MaterialEditorDialog
 {
 private:
-    Shader buttonShader;
-    Shader tdModelShader;
+    Shaders shaders;
     ColorPalette colorPalette;
     Model sphereModel;
 
@@ -232,6 +231,7 @@ private:
     void checkModifiersPanel(Material &material,float textureRes,Box box,Context context,Mouse &mouse,TextureSelectionDialog &textureSelectionDialog);
     void updateLayerPanelElements(Material &material,int &textureRes,Box &box,Context &context);
     void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Library &library,float textureRes,Box box,Context context);
+    void manageContextMenuActions(Library &library, Mouse &mouse, Material &material, int textureRes, Box box, Context context, std::vector<ContextMenu> &contextMenus);
 
 public:
     DialogControl dialogControl;
@@ -252,14 +252,13 @@ public:
     
     //Constructors
     MaterialEditorDialog();
-    MaterialEditorDialog(Shader buttonShader,Shader tdModelShader,ColorPalette colorPalette,AppTextures appTextures,Model &sphereModel);
+    MaterialEditorDialog(Shaders shaders,ColorPalette colorPalette,AppTextures appTextures,Model &sphereModel);
 
     //Public member functions
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library,
         Material &material, int textureRes,Box box,Context context,std::vector<ContextMenu> &contextMenus);
     void activate();
     void deactivate(TextureSelectionDialog &textureSelectionDialog);
-    void updateMaterial(Material &material,float textureRes,Box box,Context context);
 };
 
 
@@ -306,7 +305,7 @@ class ExportDialog
     //Public member functions
     void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
                 Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model,MaterialEditorDialog &materialEditorDialog
-                ,std::vector<Node> &meshNodeScene);
+                ,std::vector<Node> &meshNodeScene, Model sphereModel);
  };
 
 

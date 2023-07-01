@@ -202,7 +202,7 @@ void Renderer::render(){
         for (size_t i = 0; i < library.materials.size(); i++)
         {   
             //Update the material after painting
-            userInterface.materialEditorDialog.updateMaterial(library.materials[i],textureRes,box,context);
+            library.materials[i].updateMaterial(textureRes, box, context, shaders, sphereModel);
         }
         //Update the selected texture after painting
         painter.updateTexture(library.textures, model, textureRes, scene, userInterface.twoDPaintingPanel, userInterface.projection);

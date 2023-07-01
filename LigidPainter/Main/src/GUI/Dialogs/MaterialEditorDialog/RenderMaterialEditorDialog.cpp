@@ -38,6 +38,93 @@ void updateMaterialDisplayerButton(Button &materialDisplayer, Material &material
     materialDisplayer.pos.x = modifiersPanel.pos.x - modifiersPanel.scale.x - materialDisplayer.scale.x;
 }
 
+void MaterialEditorDialog::render
+                                (
+                                    glm::vec2 videoScale,
+                                    Mouse& mouse,
+                                    Timer &timer,
+                                    TextRenderer &textRenderer,
+                                    TextureSelectionDialog &textureSelectionDialog,
+                                    Library &library,
+                                    Material &material,
+                                    int textureRes,
+                                    Box box,
+                                    Context context,
+                                    std::vector<ContextMenu> &contextMenus
+                                ){
+    
+    dialogControl.updateStart(shaders.buttonShader);
+
+    //Render the panels & material displayer button
+    bgPanel.render(videoScale,mouse,timer,textRenderer,         !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
+    layerPanel.render(videoScale,mouse,timer,textRenderer,      !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
+    modifiersPanel.render(videoScale,mouse,timer,textRenderer,  !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
+    barButton.render(videoScale,mouse,timer,textRenderer,       !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
+
+    //Manage actions of the context menus 
+    this->manageContextMenuActions(library, mouse, material, textureRes, box, context, contextMenus);
+    
+    //Update the texture, scale & position of the material displayer button
+    updateMaterialDisplayerButton(materialDisplayer, material, bgPanel, modifiersPanel, layerPanel);
+    
+    //If texture selection dialog is not active reset the index values used to navigate textures
+    if(textureSelectionDialog.dialogControl.isActive() == false){
+        textureModifierTextureSelectingButtonIndex = 1000;
+        textureSelectionDialog.selectedTextureIndex = 1000;
+    }
+
+    //Make sure selectedMaterialModifierIndex won't cause any vector out of range error
+    if(selectedMaterialModifierIndex >= material.materialModifiers.size()){
+        selectedMaterialModifierIndex = material.materialModifiers.size()-1;
+        if(selectedMaterialModifierIndex < 0)
+            selectedMaterialModifierIndex = 0;
+    }
+
+    //Check the modifier's panel and update the material if interacted with any of the GUI element (show the texture selection dialog if pressed to a texture modifier's channel button)
+    checkModifiersPanel(material,textureRes,box,context,mouse,textureSelectionDialog);
+
+    //Check layerpanel if any modifier is clicked & change selectedMaterialModifierIndex if clicked
+    checkLayerPanel(material,mouse,contextMenus,videoScale );
+
+    //Update the layer panel recreate all the modifiers using material.materialModifiers vector & add a new modifier if add is pressed to that vector
+    updateLayerPanelElements(material,textureRes,box,context);
+    
+    //If texture selection done
+    checkTextureSelectionDialog(textureSelectionDialog,material,library,textureRes,box,context);
+
+    //Render the material displayer
+    materialDisplayer.render(videoScale,mouse,timer,textRenderer,false);
+    
+    dialogControl.updateEnd(timer,shaders.buttonShader,0.3f);
+
+    //Close the dialog
+    if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || ((!bgPanel.hover && !barButton.hover) && mouse.LClick) || (barButton.hover && mouse.LDoubleClick))
+        if(!textureSelectionDialog.dialogControl.isActive())
+            deactivate(textureSelectionDialog);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// -------------------- UTILITY FUNCTIONS --------------------
+
 
 void MaterialEditorDialog::updateLayerPanel(Material &material,int &textureRes,Box &box,Context &context){
     //Clear the elements of the layerPanel
@@ -53,7 +140,7 @@ void MaterialEditorDialog::updateLayerPanel(Material &material,int &textureRes,B
     for (size_t i = 0; i < material.materialModifiers.size(); i++)
     {
         layerPanelSection.elements.push_back(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),colorPalette,buttonShader,material.materialModifiers[i].title , Texture(), 0.f,true))
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,material.materialModifiers[i].title , Texture(), 0.f,true))
         );
     }
 
@@ -61,7 +148,8 @@ void MaterialEditorDialog::updateLayerPanel(Material &material,int &textureRes,B
     layerPanel.sections.push_back(layerPanelSection);
     
     //Update the material after updating layerPanel
-    updateMaterial(material,(float)textureRes,box,context);
+    material.updateMaterial((float)textureRes, box, context, shaders, sphereModel);
+
     
 }
 
@@ -111,17 +199,17 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,float textureR
             //If button is clicked update the material
             if(modifiersPanel.sections[secI].elements[elementI].state == 0)
                 if(modifiersPanel.sections[secI].elements[elementI].button.clicked)
-                    updateMaterial(material,(float)textureRes,box,context);
+                    material.updateMaterial((float)textureRes, box, context, shaders, sphereModel);
 
             //If range bar's value changed update the material
             if(modifiersPanel.sections[secI].elements[elementI].state == 1)
                 if(modifiersPanel.sections[secI].elements[elementI].rangeBar.pointerPressed == true)
-                    updateMaterial(material,(float)textureRes,box,context);
+                    material.updateMaterial((float)textureRes, box, context, shaders, sphereModel);
 
             //If checkbox clicked update the material
             if(modifiersPanel.sections[secI].elements[elementI].state == 2)
                 if(modifiersPanel.sections[secI].elements[elementI].checkBox.hover && mouse.LClick == true)
-                    updateMaterial(material,(float)textureRes,box,context);
+                    material.updateMaterial((float)textureRes, box, context, shaders, sphereModel);
         }
     }
 
@@ -175,43 +263,25 @@ void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &t
             textureSelectionDialog.dialogControl.unActivate();
             
             //Update the material after a selection is made
-            updateMaterial(material,(float)textureRes,box,context);
+            material.updateMaterial((float)textureRes, box, context, shaders, sphereModel);
+
         }
     }
 }
 
-
-
-void MaterialEditorDialog::render
-                                (
-                                    glm::vec2 videoScale,
-                                    Mouse& mouse,
-                                    Timer &timer,
-                                    TextRenderer &textRenderer,
-                                    TextureSelectionDialog &textureSelectionDialog,
-                                    Library &library,
-                                    Material &material,
-                                    int textureRes,
-                                    Box box,
-                                    Context context,
-                                    std::vector<ContextMenu> &contextMenus
-                                ){
-    
-    dialogControl.updateStart(buttonShader);
-
-    //Render the panels & material displayer button
-    bgPanel.render(videoScale,mouse,timer,textRenderer,         !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
-    layerPanel.render(videoScale,mouse,timer,textRenderer,      !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
-    modifiersPanel.render(videoScale,mouse,timer,textRenderer,  !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
-    barButton.render(videoScale,mouse,timer,textRenderer,       !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
-
+void MaterialEditorDialog::manageContextMenuActions(Library &library, Mouse &mouse, Material &material, int textureRes, Box box, Context context, std::vector<ContextMenu> &contextMenus)
+{
     if(contextMenus[6].dialogControl.isActive()){ //If material modifier context menu is active
-        if(contextMenus[6].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){ //Delete
+        
+        //Delete button pressed
+        if(contextMenus[6].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){ 
             material.materialModifiers.erase(material.materialModifiers.begin() + contextMenus[6].selectedElement);
             dialogControl.firstFrameActivated = true;
             selectedMaterialModifierIndex = 0;
         }
-        if(contextMenus[6].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){ //Move to top
+        
+        //Move to top button pressed
+        if(contextMenus[6].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){ 
             
             if(contextMenus[6].selectedElement != 0){
                 MaterialModifier topModifier = material.materialModifiers[contextMenus[6].selectedElement - 1];
@@ -224,7 +294,9 @@ void MaterialEditorDialog::render
                 selectedMaterialModifierIndex--;
             }
         }
-        if(contextMenus[6].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){ //Move to bottom
+
+        //Move to bottom button pressed
+        if(contextMenus[6].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){ 
             if(contextMenus[6].selectedElement != material.materialModifiers.size()-1){
                 MaterialModifier bottomModifier = material.materialModifiers[contextMenus[6].selectedElement + 1];
                 MaterialModifier currentModifier = material.materialModifiers[contextMenus[6].selectedElement];
@@ -237,43 +309,4 @@ void MaterialEditorDialog::render
             }
         }
     }
-    
-    //Update the texture, scale & position of the material displayer button
-    updateMaterialDisplayerButton(materialDisplayer, material, bgPanel, modifiersPanel, layerPanel);
-    
-    //If texture selection dialog is not active reset the index values used to navigate textures
-    if(textureSelectionDialog.dialogControl.isActive() == false){
-        textureModifierTextureSelectingButtonIndex = 1000;
-        textureSelectionDialog.selectedTextureIndex = 1000;
-    }
-
-    //Make sure selectedMaterialModifierIndex won't cause any vector out of range error
-    if(selectedMaterialModifierIndex >= material.materialModifiers.size()){
-        selectedMaterialModifierIndex = material.materialModifiers.size()-1;
-        if(selectedMaterialModifierIndex < 0)
-            selectedMaterialModifierIndex = 0;
-    }
-
-    //Check the modifier's panel and update the material if interacted with any of the GUI element (show the texture selection dialog if pressed to a texture modifier's channel button)
-    checkModifiersPanel(material,textureRes,box,context,mouse,textureSelectionDialog);
-
-    //Check layerpanel if any modifier is clicked & change selectedMaterialModifierIndex if clicked
-    checkLayerPanel(material,mouse,contextMenus,videoScale );
-
-    //Update the layer panel recreate all the modifiers using material.materialModifiers vector & add a new modifier if add is pressed to that vector
-    updateLayerPanelElements(material,textureRes,box,context);
-    
-    //If texture selection done
-    checkTextureSelectionDialog(textureSelectionDialog,material,library,textureRes,box,context);
-
-    //Render the material displayer
-    materialDisplayer.render(videoScale,mouse,timer,textRenderer,false);
-    
-    dialogControl.updateEnd(timer,buttonShader,0.3f);
-
-    //Close the dialog
-    if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || ((!bgPanel.hover && !barButton.hover) && mouse.LClick) || (barButton.hover && mouse.LDoubleClick))
-        if(!textureSelectionDialog.dialogControl.isActive())
-            deactivate(textureSelectionDialog);
-
 }

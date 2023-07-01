@@ -119,7 +119,6 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
     
     //If there is give a new unique id
     if(uniqueIDRepeats){
-        ;
         UTIL::giveUniqueId(this->uniqueID, materials);
     }
 }

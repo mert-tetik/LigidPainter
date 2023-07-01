@@ -27,6 +27,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
+#include "3D/Material/Material.hpp"
+
+//Front decleration
 struct Section;
 
 struct Vertex {
@@ -58,7 +61,6 @@ struct SubMeshMs{
     int materialIndex = 0;
     float modelMaterialButtonMixVal = 0.f;
 };
-
 
 
 
@@ -138,65 +140,4 @@ public:
     std::vector<TextureMs> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 };
 
-//-------------- MATERIAL MODIFIER ------------
-
-#define TEXTURE_MATERIAL_MODIFIER 0
-
-class MaterialModifier
-{
-public:
-    //0 = albedo
-    //1 = roughness
-    //2 = metallic 
-    //3 = normal map
-    //4 = height map
-    //5 = ambient Occlusion
-
-    Shader shader;  
-    int modifierIndex;
-    std::vector<Section> sections;   
-    std::string title;
-
-    //Constructors
-    MaterialModifier();
-    MaterialModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures,int modifierIndex);
-
-    //Public member functions
-    std::vector<Section> createTextureModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
-};
-
-
-struct AppMaterialModifiers{
-    MaterialModifier textureModifier;
-};
-
-
-
-class Material 
-{
-private:
-    void initTexture(Texture &txtr,int textureRes);
-public:
-    std::string title;
-
-    Texture albedo;
-    Texture roughness;
-    Texture metallic; 
-    Texture normalMap;
-    Texture heightMap;
-    Texture ambientOcclusion;
-    unsigned int displayingTexture;
-    int uniqueID;
-    std::vector<MaterialModifier> materialModifiers;
-
-    //Constructors
-    Material();
-    Material(int textureRes,std::string title,int ID);
-
-    //Public member functions
-    void writeFile(std::string path);
-    void readFile(std::string path,ColorPalette colorPalette ,Shader buttonShader ,AppTextures appTextures, const std::vector<Material> materials);
-    Material duplicateMaterial(int textureRes);
-};
-
-#endif //THREED_HPP
+#endif

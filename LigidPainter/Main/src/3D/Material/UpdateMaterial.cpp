@@ -28,7 +28,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 
-void MaterialEditorDialog::updateMaterial(Material &material,float textureRes,Box box,Context context){ //Updates textures of the material using modifier shaders
+void Material::updateMaterial(
+                                float textureRes,
+                                Box box,
+                                Context context,
+                                Shaders shaders,
+                                Model sphereModel
+                            ){ 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureRes,textureRes);
     
@@ -40,7 +46,7 @@ void MaterialEditorDialog::updateMaterial(Material &material,float textureRes,Bo
     glm::vec3 fragPos = glm::vec3((float)textureRes/2.f,(float)textureRes/2.f,1.0f);
     
     //For every modifier the material has (Output every modifier the material has)
-    for (int i = material.materialModifiers.size() - 1; i >= 0; --i)    
+    for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
     {
         //For all the material channels
         for (int channelI = 0; channelI < 6; channelI++) 
@@ -56,22 +62,22 @@ void MaterialEditorDialog::updateMaterial(Material &material,float textureRes,Bo
             //Get the channel's texture from material
             unsigned int textureBuffer; //Material's texture
             if(channelI == 0){
-                textureBuffer = material.albedo.ID;
+                textureBuffer = this->albedo.ID;
             }
             if(channelI == 1){
-                textureBuffer = material.roughness.ID;
+                textureBuffer = this->roughness.ID;
             }
             if(channelI == 2){
-                textureBuffer = material.metallic.ID;
+                textureBuffer = this->metallic.ID;
             }
             if(channelI == 3){
-                textureBuffer = material.normalMap.ID;
+                textureBuffer = this->normalMap.ID;
             }
             if(channelI == 4){
-                textureBuffer = material.heightMap.ID;
+                textureBuffer = this->heightMap.ID;
             }
             if(channelI == 5){
-                textureBuffer = material.ambientOcclusion.ID;
+                textureBuffer = this->ambientOcclusion.ID;
             }
             
             //Bind the channel texture
@@ -90,12 +96,12 @@ void MaterialEditorDialog::updateMaterial(Material &material,float textureRes,Bo
             glGenerateMipmap(GL_TEXTURE_2D);
 
             //Set the uniforms of the modifier's shader
-            material.materialModifiers[i].shader.use(); //Use the shader of the modifier
-            material.materialModifiers[i].shader.setMat4("projection",projection); //Set the projection
-            material.materialModifiers[i].shader.setVec2("scale",fragScale); //Set the scale
-            material.materialModifiers[i].shader.setVec3("pos",fragPos); //Set the position
-            material.materialModifiers[i].shader.setInt("theTexture",0); //Set the texture slot
-            material.materialModifiers[i].shader.setInt("state",channelI); //Set the texture slot
+            this->materialModifiers[i].shader.use(); //Use the shader of the modifier
+            this->materialModifiers[i].shader.setMat4("projection",projection); //Set the projection
+            this->materialModifiers[i].shader.setVec2("scale",fragScale); //Set the scale
+            this->materialModifiers[i].shader.setVec3("pos",fragPos); //Set the position
+            this->materialModifiers[i].shader.setInt("theTexture",0); //Set the texture slot
+            this->materialModifiers[i].shader.setInt("state",channelI); //Set the texture slot
 
             //Bind the channel texture to the capture framebuffer
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
@@ -108,8 +114,8 @@ void MaterialEditorDialog::updateMaterial(Material &material,float textureRes,Bo
             glActiveTexture(GL_TEXTURE0);
             
             //If the modifier is a texture modifier bind the texture from the materialModifier's button element texture
-            if(material.materialModifiers[i].modifierIndex == 0) 
-                glBindTexture(GL_TEXTURE_2D,material.materialModifiers[i].sections[0].elements[channelI].button.texture.ID);
+            if(this->materialModifiers[i].modifierIndex == 0) 
+                glBindTexture(GL_TEXTURE_2D,this->materialModifiers[i].sections[0].elements[channelI].button.texture.ID);
             //else
             //  glBindTexture(GL_TEXTURE_2D,previousTexture);
             
@@ -152,14 +158,14 @@ void MaterialEditorDialog::updateMaterial(Material &material,float textureRes,Bo
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
     
     //Bind the displaying texture of the material to the capture framebuffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, material.displayingTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->displayingTexture, 0);
     
     //Clear the capture framebuffer (displaying texture) with alpha zero color
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     //Use the 3D model rendering shader
-    tdModelShader.use();
+    shaders.tdModelShader.use();
 
     //Move the camera to the side
     glm::vec3 viewPos = glm::vec3(3.f,0,0);
@@ -175,23 +181,23 @@ void MaterialEditorDialog::updateMaterial(Material &material,float textureRes,Bo
                                                 );
 
     //Throw the camera data to the shader
-    tdModelShader.setVec3("viewPos",viewPos);
-    tdModelShader.setMat4("view",view);
-    tdModelShader.setMat4("projection",projectionMatrix);
+    shaders.tdModelShader.setVec3("viewPos",viewPos);
+    shaders.tdModelShader.setMat4("view",view);
+    shaders.tdModelShader.setMat4("projection",projectionMatrix);
     
     //Bind the channels of the material
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D,material.albedo.ID);
+    glBindTexture(GL_TEXTURE_2D,this->albedo.ID);
     glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D,material.roughness.ID);
+    glBindTexture(GL_TEXTURE_2D,this->roughness.ID);
     glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D,material.metallic.ID);
+    glBindTexture(GL_TEXTURE_2D,this->metallic.ID);
     glActiveTexture(GL_TEXTURE5);
-    glBindTexture(GL_TEXTURE_2D,material.normalMap.ID);
+    glBindTexture(GL_TEXTURE_2D,this->normalMap.ID);
     glActiveTexture(GL_TEXTURE6);
-    glBindTexture(GL_TEXTURE_2D,material.heightMap.ID);
+    glBindTexture(GL_TEXTURE_2D,this->heightMap.ID);
     glActiveTexture(GL_TEXTURE7);
-    glBindTexture(GL_TEXTURE_2D,material.ambientOcclusion.ID);
+    glBindTexture(GL_TEXTURE_2D,this->ambientOcclusion.ID);
     
 
     //Draw the sphere
@@ -203,7 +209,7 @@ void MaterialEditorDialog::updateMaterial(Material &material,float textureRes,Bo
     //!Finish (prepeare rendering the GUI)
 
     //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
-    buttonShader.use();
+    shaders.buttonShader.use();
 
     //Bind the default framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER,0);
