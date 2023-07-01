@@ -52,7 +52,6 @@ void Brush::updateDisplayTexture(Shader paintingShader, Shader buttonShader){
             );
     }
     
-
     //Create the framebuffer
     unsigned int captureFBO;
     glGenFramebuffers(1,&captureFBO);

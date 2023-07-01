@@ -583,28 +583,59 @@ public:
 
 class Brush
 {
-public:
-    float sizeJitter;
-    float scatter;
-    float fade;
-    float rotation;
-    float rotationJitter;
-    float alphaJitter;
-    bool individualTexture;
-    bool sinWavePattern;
-    std::string title;
-    unsigned int displayingTexture;
-    Texture texture; //Brush texture
-
-    //Constructors
-    Brush();
-    Brush(float sizeJitter,float scatter,float fade,float rotation,float rotationJitter,float alphaJitter,bool individualTexture,bool sinWavePattern,
-          std::string title,Texture texture);
-
+private:
+    /// @brief Initializes the displaying texture
     void initDisplayingTexture();
+
+public:
+    
+    /*  --------- Brush Properties --------- */
+        float sizeJitter;
+        float scatter;
+        float fade;
+        float rotation;
+        float rotationJitter;
+        float alphaJitter;
+        bool individualTexture;
+        bool sinWavePattern;
+        Texture texture; 
+    /*  A brush class holds these values
+      Then applies these values to the GUI  
+        If clicked to a use brush button
+    */
+
+    /// @brief Title of the brush (smt like myBrush_1)    
+    std::string title;
+    
+    /// @brief The OpenGL texture buffer used to display the brush 
+    ///        (a curvy stroke created with the brush)
+    ///         Is initialized once and have a certain resolution value (W : 100, H : 100, C : RGBA)
+    unsigned int displayingTexture;
+    
+
+    /// @brief Default constructor (just initializes the @ref displayingTexture)
+    Brush();
+    
+    /// @brief Initializes the @ref displayingTexture and assings the given params
+    Brush(float sizeJitter, float scatter, float fade, float rotation, float rotationJitter, 
+          float alphaJitter, bool individualTexture, bool sinWavePattern, 
+          std::string title, Texture texture);
+
+    /// @brief Writes the brush data to the given path
+    /// @param path folder path
     void saveFile(std::string path);
+
+    /// @brief Reads the brush data from given *.lgdbrush file path
     void readFile(std::string path);
+
+    /// @brief Updates the displaying texture using brush properties.
     void updateDisplayTexture(Shader paintingShader, Shader buttonShader);
+
+    /// @brief move brush properties to the painting panel
+    void useBrush(Panel &paintingPanel);
+
+    /// @brief move painting panel brush properties to the class's brush properties
+    void applyToBrush(Panel &paintingPanel, Shaders shaders);
 };
 
 

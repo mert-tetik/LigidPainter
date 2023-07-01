@@ -32,6 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 Brush::Brush(){
     initDisplayingTexture();
 }
+
 Brush::Brush(
         float sizeJitter,
         float scatter,
@@ -59,7 +60,10 @@ Brush::Brush(
     initDisplayingTexture();
 }
 
-//Init-Util
+
+
+
+//-------- INIT UTIL ---------
 
 void Brush::initDisplayingTexture(){
     glGenTextures(1,&displayingTexture);
