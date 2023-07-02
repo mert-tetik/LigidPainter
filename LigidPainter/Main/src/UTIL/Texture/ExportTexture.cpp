@@ -38,9 +38,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 /// @param format PNG , JPEG , BMP , TGA
 void Texture::exportTexture(std::string path,const std::string format){
     glm::ivec2 scale;
-    scale = getResolution();
+    scale = this->getResolution();
     
-    unsigned char* pixels = new unsigned char[scale.x * scale.y * 4];;
+    unsigned char* pixels = new unsigned char[scale.x * scale.y * 4];
     
     //getData function with unsigned byte
     glActiveTexture(GL_TEXTURE0);
@@ -48,6 +48,8 @@ void Texture::exportTexture(std::string path,const std::string format){
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     
     const int channels = 4;
+
+    stbi_flip_vertically_on_write(1);  // Enable flipping
 
     if(format == "PNG"){
         if(!stbi_write_png((path + UTIL::folderDistinguisher() + title + ".png").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){

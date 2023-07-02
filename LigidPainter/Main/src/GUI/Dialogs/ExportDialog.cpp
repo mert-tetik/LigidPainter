@@ -174,7 +174,7 @@ void ExportDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,M
                     channelTxtr.title = "ambientOcclusion";
                 }
 
-                channelTxtr.exportTexture(materialFolderPath,panel.sections[0].elements[3].comboBox.texts[panel.sections[0].elements[3].comboBox.selectedIndex]);
+                channelTxtr.exportTexture(materialFolderPath, panel.sections[0].elements[3].comboBox.texts[panel.sections[0].elements[3].comboBox.selectedIndex]);
             }
         }
     }

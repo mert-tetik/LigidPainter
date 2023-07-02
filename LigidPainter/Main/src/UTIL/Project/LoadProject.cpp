@@ -71,6 +71,18 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         Texture texture;
         texture.load(texturePath.c_str());
 
+        //Check if the texture is a png file
+        if(UTIL::getLastWordBySeparatingWithChar(texturePath, '.') != "png"){
+            //The texture in the project folder is not an png file
+
+            //Delete the non-png file
+            std::filesystem::remove(texturePath);
+        
+            //Recreate the png file
+            texture.exportTexture(UTIL::removeLastWordBySeparatingWithChar(texturePath, UTIL::folderDistinguisher()), "PNG");
+        }
+
+
         library.addTexture(texture);
     }
 
@@ -106,7 +118,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         Model TDModel;
         TDModel.loadModel(modelPath,true);
 
-        //Check if the model is a obj file
+        //Check if the model is an obj file
         if(UTIL::getLastWordBySeparatingWithChar(modelPath, '.') != "obj"){
             //The 3D model in the project folder is not an obj file
 
