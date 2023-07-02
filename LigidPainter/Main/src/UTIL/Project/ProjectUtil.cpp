@@ -60,3 +60,11 @@ std::string Project::locateLigidFileInFolder(const std::string& folderPath)
 void Project::copyTheProjectPathToTheClipboard(GLFWwindow* window){
     glfwSetClipboardString(window, std::filesystem::absolute(folderPath).string().c_str());
 }
+
+std::string Project::ligidFilePath(){
+    return this->locateLigidFileInFolder(this->folderPath);
+}
+
+std::string Project::projectName(){
+    return UTIL::getLastWordBySeparatingWithChar(this->folderPath, UTIL::folderDistinguisher());
+}

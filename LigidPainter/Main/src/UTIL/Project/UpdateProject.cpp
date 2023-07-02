@@ -37,8 +37,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, int& textureRes){
+    
     if(!std::filesystem::exists(folderPath)){
-        std::cout << "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << ligidFilePath << std::endl;
+        std::cout << "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << this->folderPath << std::endl;
         return;
     }
     
@@ -87,14 +88,14 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
     //!3D Models
     std::string tdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels";
 
-    //Clear the brushes folder
+    //Clear the 3D models folder
     UTIL::deleteFilesInFolder(tdModelFolderPath);
 
-    //Write the brushes
+    //Write the 3D models
     for (size_t i = 0; i < library.TDModels.size(); i++)
     {
-        //Export brush
-        library.TDModels[i].exportModel(tdModelFolderPath);
+        //Export 3D model
+        FileHandler::writeOBJFile(tdModelFolderPath + library.TDModels[i].title + ".obj", library.TDModels[i]);
     }
 
     writeLigidFile(meshNodeScene, textureRes);

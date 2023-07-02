@@ -111,7 +111,7 @@ void NewProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalet
                                     std::stoi(panel.sections[0].elements[3].comboBox.texts[panel.sections[0].elements[3].comboBox.selectedIndex])
                                  ))
         {
-            project.loadProject(project.ligidFilePath,library,shaders,model,appTextures,colorPalette,textureRes,meshNodeScene,videoScale);
+            project.loadProject(project.ligidFilePath(), library, shaders, model, appTextures, colorPalette, textureRes, meshNodeScene, videoScale);
             
             startScreen = false;
 

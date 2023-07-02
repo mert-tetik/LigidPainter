@@ -52,24 +52,17 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         return false;
     }
 
+    //Remove the file from the path (./myProject/myProject.ligid -> ./myProject/) 
+    this->folderPath = UTIL::removeLastWordBySeparatingWithChar(ligidFilePath, UTIL::folderDistinguisher());
 
-    this->ligidFilePath = ligidFilePath;
-    this->folderPath = UTIL::removeLastWordBySeparatingWithChar(ligidFilePath,UTIL::folderDistinguisher());
-    if(this->folderPath[this->folderPath.size()-1] == '/' || this->folderPath[this->folderPath.size()-1] == '\\') //Make sure folder path doesn't have seperator at the end
+    //Make sure folder path doesn't have seperator at the end (./myProject/ -> ./myProject)
+    if(this->folderPath[this->folderPath.size()-1] == '/' || this->folderPath[this->folderPath.size()-1] == '\\') 
         this->folderPath.pop_back();
-    this->projectName = UTIL::getLastWordBySeparatingWithChar(folderPath,UTIL::folderDistinguisher());
 
-    
+
     //writeLigidFile(meshNodeScene);
 
-    
-    //Remove the / or \ from the projectName if there are any     
-    if(projectName[projectName.size()-1] == '/' || projectName[projectName.size()-1] == '\\')
-        projectName.pop_back();
-    if(projectName[0] == '/' || projectName[0] == '\\')
-        projectName.erase(projectName.begin());
 
-    
     //Load the textures
     library.clearTextures();
     for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Textures")){
@@ -113,8 +106,21 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         Model TDModel;
         TDModel.loadModel(modelPath,true);
 
+        //Check if the model is a obj file
+        if(UTIL::getLastWordBySeparatingWithChar(modelPath, '.') != "obj"){
+            //The 3D model in the project folder is not an obj file
+
+            //Delete the non-obj file
+            std::filesystem::remove(modelPath);
+        
+            //Recreate the obj file
+            FileHandler::writeOBJFile(UTIL::removeExtension(modelPath) + ".obj",TDModel);
+        }
+
+
         library.addModel(TDModel);
     }
+
 
     if(library.TDModels.size())
         model = library.TDModels[0];

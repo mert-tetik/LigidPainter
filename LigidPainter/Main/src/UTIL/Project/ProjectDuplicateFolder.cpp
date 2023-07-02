@@ -58,37 +58,17 @@ void Project::duplicateFolder(std::string dstPath)
     }
 
     // DestinationPath/MyProject
-    std::string dstProjectPath = dstPath + UTIL::folderDistinguisher() + this->projectName;
+    std::string dstProjectPath = dstPath + UTIL::folderDistinguisher() + this->projectName();
 
-    //If there is already a folder with that names 
+    //If there is already a folder with that name
     if(std::filesystem::exists(dstProjectPath)){
         std::cout << "ERROR : Can't duplicate the project folder! There is already a folder with the same name : " << dstPath << std::endl;
         return;
     }
 
     //Duplicate files and folders from the original path to destination path
-    for (const auto& entry : std::filesystem::recursive_directory_iterator(this->folderPath)){
-        std::string file = entry.path().string();  
+    UTIL::duplicateFolder(this->folderPath, dstProjectPath);
 
-        std::string dst = dstProjectPath + UTIL::folderDistinguisher() + UTIL::rmvPath(this->folderPath, file);
-        
-        //If a folder then create a folder
-        if(std::filesystem::is_directory(file)){
-            
-            std::filesystem::create_directories(dst);
-        
-        }
-
-        //If a file then duplicate the file
-        else{
-
-            std::filesystem::copy_file(file,dst);
-
-        }
-    }
-
-    //Update the project data
+    //Update the project path
     this->folderPath = dstProjectPath;
-    this->ligidFilePath = locateLigidFileInFolder(dstProjectPath);
-    this->projectName = UTIL::getLastWordBySeparatingWithChar(folderPath,UTIL::folderDistinguisher());
 }

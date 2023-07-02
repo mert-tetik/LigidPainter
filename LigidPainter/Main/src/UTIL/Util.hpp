@@ -124,6 +124,17 @@ namespace UTIL{
     /// @return 
     char* const* convertStringArray(const std::vector<std::string> strings);
 
+    /// @brief the folder distinguisher 
+    /// @return '/' if unix based OS defined '\\' if the windows defined
+    char folderDistinguisher();
+
+    /// @brief deletes all the file system objects in the given folder path
+    /// @param folderPath 
+    void deleteFilesInFolder(const std::string folderPath);
+
+    /// @brief duplicates the folder in the @param src to the @param dest path
+    void duplicateFolder(const std::string src, const std::string dest);
+
 
     //! NODES
 
@@ -148,14 +159,6 @@ namespace UTIL{
     /// @param meshNodeScene 
     /// @param index remove the meshNodeScene[index]
     void deleteNode(std::vector<Node>& meshNodeScene, int index);
-
-    /// @brief the folder distinguisher 
-    /// @return '/' if unix based OS defined '\\' if the windows defined
-    char folderDistinguisher();
-
-    /// @brief deletes all the file system objects in the given folder path
-    /// @param folderPath 
-    void deleteFilesInFolder(const std::string folderPath);
 }
 
 
@@ -285,20 +288,14 @@ private:
 
 
 
+
 class Project
 {
 public:
     /// @brief Folder path of the project 
     ///        (AAA/MyProject)
+    ///         Doesn't have '/' at the end
     std::string folderPath;
-
-    /// @brief Ligid file path of the project
-    ///        (AAA/MyProject/MyProject.ligid)
-    std::string ligidFilePath;
-
-    /// @brief Title of the project
-    ///        (MyProject)
-    std::string projectName;
 
     //Constructor
     Project(){}
@@ -356,6 +353,14 @@ public:
     /// @param meshNodeScene 
     /// @param textureRes 
     void writeLigidFile(const std::vector<Node> meshNodeScene, int textureRes);
+
+        /// @brief Returns the ligid file path of the project
+    ///        (AAA/MyProject/MyProject.ligid)
+    std::string ligidFilePath();
+
+    /// @brief Returns the title of the project
+    ///        (MyProject)
+    std::string projectName();
 };
 
 /*!
@@ -773,6 +778,13 @@ struct AppTextures{ //Textures those will be used in UI of the app
 struct Fonts{ //Fonts those will be used in the app
     Font Arial;
 };
+
+namespace FileHandler{
+    /*!
+    * Writes model data into a obj file in the given file path
+    */
+    bool writeOBJFile(std::string path, Model model);
+}
 
 
 #endif

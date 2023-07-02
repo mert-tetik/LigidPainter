@@ -11,6 +11,18 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
+
+
+
+
+
+    ! THIS SECTION & MODEL.EXPORT IS COMPLETELY USELESS USE THE FILEHANDLER INSTEAD!!!!!!!!!!!!!!!S
+    
+
+
+
+
+
 */
 
 #include<glad/glad.h>
@@ -32,8 +44,96 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 
+// dae
+// collada
+// 0
+// X Files
+// x
+// x
+// 1
+// Step Files
+// stp
+// stp
+// 2
+// Wavefront OBJ format
+// obj
+// obj
+// 3
+// Wavefront OBJ format without material file
+// obj
+// objnomtl
+// 4
+// Stereolithography
+// stl
+// stl
+// 5
+// Stereolithography (binary)
+// stl
+// stlb
+// 6
+// Stanford Polygon Library
+// ply
+// ply
+// 7
+// Stanford Polygon Library (binary)
+// ply
+// plyb
+// 8
+// Autodesk 3DS (legacy)
+// 3ds
+// 3ds
+// 9
+// GL Transmission Format v. 2
+// gltf
+// gltf2
+// 10
+// GL Transmission Format v. 2 (binary)
+// glb
+// glb2
+// 11
+// GL Transmission Format
+// gltf
+// gltf
+// 12
+// GL Transmission Format (binary)
+// glb
+// glb
+// 13
+// Assimp Binary File
+// assbin
+// assbin
+// 14
+// Assimp XML Document
+// assxml
+// assxml
+// 15
+// Extensible 3D
+// x3d
+// x3d
+// 16
+// Autodesk FBX (binary)
+// fbx
+// fbx
+// 17
+// Autodesk FBX (ascii)
+// fbx
+// fbxa
+// 18
+// The 3MF-File-Format
+// 3mf
+// 3mf
+// 19
+// pbrt-v4 scene description file
+// pbrt
+// pbrt
+// 20
+// Assimp JSON Document
+// json
+// assjson
+// 21
+
 /// @brief Exports the 3D model in fbx format
-/// @param Folder path 
+/// @param path folder path
 void Model::exportModel(std::string path){
 
     //Remove the / at the end of the path if there are 
@@ -44,98 +144,70 @@ void Model::exportModel(std::string path){
     Assimp::Exporter exporter;
 
     // Set the export format to FBX
-    const aiExportFormatDesc* exportFormat = exporter.GetExportFormatDescription(1);
+    const aiExportFormatDesc* exportFormat = exporter.GetExportFormatDescription(3);
     
     if (!exportFormat) {
         // FBX format is not available, handle the error
         return;
     }
 
-    // Define the export file name
-    std::string exportFileName = "output_file.fbx";
-
     //Full exporting path with the file name
-    std::string destination = path + UTIL::folderDistinguisher() + exportFileName;
+    std::string destination = path + UTIL::folderDistinguisher() + this->title + ".obj";
 
     //Create the scene
     aiScene* scene = createAssimpScene();
 
     // Export the scene to FBX format
-    exporter.Export(scene, destination, exportFormat->id, aiProcess_Triangulate);
+    exporter.Export(scene, exportFormat->id, destination);
+
 }
+
+
+/// IS NOT USED & DOESN'T WORK PROPERLY USE this-> scene
 
 aiScene* Model::createAssimpScene() {
     // Create an instance of aiScene
     aiScene* scene = new aiScene();
 
     // Create an array of aiMesh pointers
-    scene->mMeshes = new aiMesh*[meshes.size()];
-    scene->mNumMeshes = meshes.size();
+    scene->mMeshes = new aiMesh*[1];
+    scene->mNumMeshes = 1;
 
-    // Convert each Mesh to Assimp-compatible structures
-    for (unsigned int i = 0; i < meshes.size(); ++i) {
-        const Mesh& meshData = meshes[i];
+    // Create an instance of aiMesh
+    aiMesh* mesh = new aiMesh();
+    scene->mMeshes[0] = mesh;
 
-        // Create an instance of aiMesh
-        aiMesh* mesh = new aiMesh();
-        scene->mMeshes[i] = mesh;
+    // Create three vertices for the triangle
+    aiVector3D vertices[3];
+    vertices[0] = aiVector3D(-1.0f, -1.0f, 0.0f);
+    vertices[1] = aiVector3D(1.0f, -1.0f, 0.0f);
+    vertices[2] = aiVector3D(0.0f, 1.0f, 0.0f);
 
-        // Convert Vertex data to Assimp-compatible structures
-        std::vector<aiVector3D> positions;
-        std::vector<aiVector2D> texCoords;
-        std::vector<aiVector3D> normals;
-        std::vector<aiVector3D> tangents;
-        std::vector<aiVector3D> bitangents;
-        std::vector<unsigned int> boneIDs;
-        std::vector<float> weights;
+    // Set the vertex positions in the mesh
+    mesh->mVertices = new aiVector3D[3];
+    std::copy(vertices, vertices + 3, mesh->mVertices);
+    mesh->mNumVertices = 3;
 
-        for (const auto& vertex : meshData.vertices) {
-            positions.push_back(aiVector3D(vertex.Position.x, vertex.Position.y, vertex.Position.z));
-            texCoords.push_back(aiVector2D(vertex.TexCoords.x, vertex.TexCoords.y));
-            normals.push_back(aiVector3D(vertex.Normal.x, vertex.Normal.y, vertex.Normal.z));
-            tangents.push_back(aiVector3D(vertex.Tangent.x, vertex.Tangent.y, vertex.Tangent.z));
-            bitangents.push_back(aiVector3D(vertex.Bitangent.x, vertex.Bitangent.y, vertex.Bitangent.z));
+    // Set the faces in the mesh
+    mesh->mFaces = new aiFace[1];
+    mesh->mFaces[0].mIndices = new unsigned int[3];
+    mesh->mFaces[0].mIndices[0] = 0;
+    mesh->mFaces[0].mIndices[1] = 1;
+    mesh->mFaces[0].mIndices[2] = 2;
+    mesh->mFaces[0].mNumIndices = 3;
 
-            for (int i = 0; i < MAX_BONE_INFLUENCE; ++i) {
-                boneIDs.push_back(vertex.m_BoneIDs[i]);
-                weights.push_back(vertex.m_Weights[i]);
-            }
-        }
+    // Set the scene root node
+    scene->mRootNode = new aiNode();
+    scene->mRootNode->mMeshes = new unsigned int[1];
+    scene->mRootNode->mMeshes[0] = 0;
+    scene->mRootNode->mNumMeshes = 1;
 
-        // Set the vertex positions in the mesh
-        mesh->mVertices = new aiVector3D[positions.size()];
-        std::copy(positions.begin(), positions.end(), mesh->mVertices);
-        mesh->mNumVertices = positions.size();
-
-        // Set the texture coordinates in the mesh
-        mesh->mTextureCoords[0] = new aiVector3D[texCoords.size()];
-        for (size_t i = 0; i < texCoords.size(); ++i) {
-            mesh->mTextureCoords[0][i] = aiVector3D(texCoords[i].x, texCoords[i].y, 0.0f);
-        }
-
-        // Set the normals in the mesh
-        mesh->mNormals = new aiVector3D[normals.size()];
-        std::copy(normals.begin(), normals.end(), mesh->mNormals);
-
-        // Set the tangents in the mesh
-        mesh->mTangents = new aiVector3D[tangents.size()];
-        std::copy(tangents.begin(), tangents.end(), mesh->mTangents);
-
-        // Set the bitangents in the mesh
-        mesh->mBitangents = new aiVector3D[bitangents.size()];
-        std::copy(bitangents.begin(), bitangents.end(), mesh->mBitangents);
-
-        // Set the bone IDs and weights in the mesh
-        mesh->mBones = new aiBone*[1];
-        mesh->mBones[0] = new aiBone();
-        mesh->mBones[0]->mNumWeights = weights.size();
-        mesh->mBones[0]->mWeights = new aiVertexWeight[weights.size()];
-
-        for (unsigned int j = 0; j < weights.size(); ++j) {
-            mesh->mBones[0]->mWeights[j].mVertexId = j;
-            mesh->mBones[0]->mWeights[j].mWeight = weights[j];
-        }
-    }
+    // Update scene metadata
+    scene->mNumMaterials = 0;
+    scene->mNumAnimations = 0;
+    scene->mNumTextures = 0;
+    scene->mNumLights = 0;
+    scene->mNumCameras = 0;
 
     return scene;
 }

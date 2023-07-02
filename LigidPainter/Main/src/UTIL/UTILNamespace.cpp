@@ -246,3 +246,26 @@ void UTIL::deleteFilesInFolder(const std::string folderPath) {
         }
     }
 }
+
+void UTIL::duplicateFolder(const std::string src, const std::string dest){
+	for (const auto& entry : std::filesystem::recursive_directory_iterator(src)){
+        
+		std::string file = entry.path().string();  
+
+        std::string dst = dest + UTIL::folderDistinguisher() + UTIL::rmvPath(src, file);
+        
+        //If a folder then create a folder
+        if(std::filesystem::is_directory(file)){
+            
+            std::filesystem::create_directories(dst);
+        
+        }
+
+        //If a file then duplicate the file
+        else{
+
+            std::filesystem::copy_file(file, dst);
+
+        }
+    }
+}

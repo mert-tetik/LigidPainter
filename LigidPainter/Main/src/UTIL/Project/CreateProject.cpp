@@ -36,13 +36,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define TD_MODEL_FOLDER_CREATION 0
 #define BRUSH_FOLDER_CREATION 1
 
+//Forward declaration for the util functions
 void completeFolder(std::string path, int action);
 
-bool Project::createProject(std::string destinationPath,std::string name,std::string TDModelPath,int textureRes){
+
+bool Project::createProject(std::string destinationPath, std::string name, std::string TDModelPath, int textureRes){
     
-    if(destinationPath[destinationPath.size()-1] == '/' || destinationPath[destinationPath.size()-1] == '\\') //Make sure destination path doesn't have seperator at the end
+    //Make sure destination path doesn't have / at the end
+    if(destinationPath[destinationPath.size()-1] == '/' || destinationPath[destinationPath.size()-1] == '\\') 
         destinationPath.pop_back();
 
+    //If the destination path doesn't exist give warning message box and return 
     if(!std::filesystem::exists(destinationPath)){
         showMessageBox(
                             "Warning!", 
@@ -54,6 +58,7 @@ bool Project::createProject(std::string destinationPath,std::string name,std::st
         return false;
     }
     
+    //If there is already a project with the same name and the same directory
     if(std::filesystem::exists(destinationPath + UTIL::folderDistinguisher() + name)){
 
         int res = showMessageBox
@@ -64,15 +69,18 @@ bool Project::createProject(std::string destinationPath,std::string name,std::st
                     MESSAGEBOX_BUTTON_YESNO
                 );
 
+        //If pressed the 'no' abort the process
         if(res == 0)
             return false;
+
+        //If pressed to 'yes' remove the folder named same
         else if(res == 1)
             std::filesystem::remove_all(destinationPath + UTIL::folderDistinguisher() + name);
     }
 
+
+    //Update the folder path of the project
     this->folderPath = destinationPath + UTIL::folderDistinguisher() + name;
-    this->ligidFilePath = folderPath + UTIL::folderDistinguisher() + name + ".ligid";
-    this->projectName = name;
     
 
     //Create the project folder
