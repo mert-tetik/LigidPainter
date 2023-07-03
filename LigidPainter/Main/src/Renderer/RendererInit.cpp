@@ -118,6 +118,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
         std::filesystem::remove_all("./tmp");
         std::filesystem::create_directory("./tmp");
     }
+
 }
 
 

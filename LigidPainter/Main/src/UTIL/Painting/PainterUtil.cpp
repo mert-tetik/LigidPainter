@@ -48,7 +48,7 @@ void Painter::loadColor3(){
 
 void Painter::changeColor(Color &color){
     unsigned char defRGB[3];
-    const char* check = tinyfd_colorChooser("Select a color",color.hex.c_str(),defRGB,defRGB);
+    const char* check = tinyfd_colorChooser("Select a color", color.HEX().c_str(),defRGB,defRGB);
     if(check)
         color.loadHex(check);
 }

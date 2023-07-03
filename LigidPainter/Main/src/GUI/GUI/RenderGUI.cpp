@@ -119,7 +119,7 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
         shaders.twoDPaintingModeAreaShader.setInt("depthTexture", 7);
         shaders.twoDPaintingModeAreaShader.setInt("brushModeState", painter.selectedPaintingModeIndex);
         shaders.twoDPaintingModeAreaShader.setFloat("paintingOpacity", painter.brushProperties.opacity / 100.f);
-        shaders.twoDPaintingModeAreaShader.setVec3("paintingColor", painter.getSelectedColor().RGB / glm::vec3(255.f));
+        shaders.twoDPaintingModeAreaShader.setVec3("paintingColor", painter.getSelectedColor().RGB_normalized());
 
         glm::vec2 destScale = glm::vec2(glm::min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y));
 

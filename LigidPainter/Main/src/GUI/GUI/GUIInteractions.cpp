@@ -270,9 +270,9 @@ void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &paint
     }
     
     //Update the color values of the color buttons
-    paintingPanel.sections[0].elements[0].button.color = glm::vec4(painter.color1.RGB/glm::vec3(255.f),1.f);
-    paintingPanel.sections[0].elements[1].button.color = glm::vec4(painter.color2.RGB/glm::vec3(255.f),1.f);
-    paintingPanel.sections[0].elements[2].button.color = glm::vec4(painter.color3.RGB/glm::vec3(255.f),1.f);
+    paintingPanel.sections[0].elements[0].button.color = glm::vec4(painter.color1.RGB_normalized(), 1.f);
+    paintingPanel.sections[0].elements[1].button.color = glm::vec4(painter.color2.RGB_normalized(), 1.f);
+    paintingPanel.sections[0].elements[2].button.color = glm::vec4(painter.color3.RGB_normalized(), 1.f);
     
 
     //If clicked to the dropper button activate the dropper

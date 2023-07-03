@@ -165,11 +165,11 @@ static void setShaderUniforms(Shader paintingShader, glm::mat4 &projection, glm:
 static void set3DShaderSideUniforms(Shader tdModelShader,int selectedColorIndex,Color color1,Color color2,Color color3,float opacity ,int selectedPaintingModeIndex){
     tdModelShader.setInt("brushModeState", selectedPaintingModeIndex);
     if(selectedColorIndex == 0)
-        tdModelShader.setVec3("paintingColor", color1.RGB / glm::vec3(255.f));
+        tdModelShader.setVec3("paintingColor", color1.RGB_normalized());
     if(selectedColorIndex == 1)
-        tdModelShader.setVec3("paintingColor", color2.RGB / glm::vec3(255.f));
+        tdModelShader.setVec3("paintingColor", color2.RGB_normalized());
     if(selectedColorIndex == 2)
-        tdModelShader.setVec3("paintingColor", color3.RGB / glm::vec3(255.f));
+        tdModelShader.setVec3("paintingColor", color3.RGB_normalized());
     
     tdModelShader.setFloat("paintingOpacity", opacity / 100);
 }

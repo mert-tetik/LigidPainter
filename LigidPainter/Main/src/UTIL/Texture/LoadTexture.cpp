@@ -35,10 +35,10 @@ void Texture::load(const char* path){
 
     glActiveTexture(GL_TEXTURE0);
    
-   // If the texture is not generated then generate it
+    // If the texture is not generated then generate it
     if(ID == 0)
         glGenTextures(1,&ID);
-   
+    
     glBindTexture(GL_TEXTURE_2D, ID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -47,6 +47,7 @@ void Texture::load(const char* path){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
     
     stbi_set_flip_vertically_on_load(true);
+    
     int width, height, channels;
     unsigned char* data = stbi_load(path, &width, &height, &channels, 4);
 	if (data != NULL)

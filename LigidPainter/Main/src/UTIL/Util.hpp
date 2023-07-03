@@ -163,31 +163,60 @@ namespace UTIL{
 
 
 
-
+/// @brief Manages color.
+/// Definitions are in the : UTIL/Color
 class Color
 {
-public:
-    glm::vec3 RGB; //Red, Green, Blue 
-    glm::vec3 HSV; //Hue, Saturation, Value
-    std::string hex; //Hex value which starts with char '#'
+private:
+    /*
+     --- util color convertion functions ---
+        !Inputs & Outputs are not normalized
+    */
+    glm::vec3 rgbToHsv(glm::vec3 rgb);
+    glm::vec3 hsvToRgb(glm::vec3 hsv);
+    glm::vec3 hexToRgb(std::string hex);
+    std::string rgbToHex(glm::vec3 rgb);
+    glm::vec3 hexToHsv(std::string hex);
+    std::string hsvToHex(glm::vec3 hsv);
 
-    //Constructors
+
+    /// @brief The color value in the range of 0 - 255
+    glm::vec3 priv_rgb;
+
+public:
+
+    /// @brief @return the Red, Green, Blue value of the color in the range of 0 - 255 
+    glm::vec3 RGB();  
+    
+    /// @brief @return the Hue, Saturation, Value value of the color in the range of hsv values (Hue : 0 - 360, others : 0 - 100) 
+    glm::vec3 HSV(); 
+    
+    /// @brief @return the Red, Green, Blue value of the color in the range of 0 - 1 
+    glm::vec3 RGB_normalized();  
+    
+    /// @brief @return the hex value of the color (starts with '#') 
+    std::string HEX();
+
+    /// @brief Default constructor
     Color();
+
+    /// @brief Constructor (loads @param rgbColor in the range of 0 - 255)
     Color(glm::vec3 rgbColor);
+    
+    /// @brief Constructor (loads @param hexColor)
     Color(std::string hexColor);
 
-    //Public member functions
-
+    /// @brief loads a rgb value in the range of 0 - 255
     void loadRGB(glm::vec3 value);
-    void loadHSV(glm::vec3 value);
-    void loadHex(std::string value);
+    
+    /// @brief loads a rgb value in the range of 0 - 1
+    void loadRGB_normalized(glm::vec3 value);
 
-    glm::vec3 rgbToHsv(const glm::vec3& rgb);
-    glm::vec3 hsvToRgb(const glm::vec3& hsv);
-    glm::vec3 hexToRgb(const std::string& hex);
-    std::string rgbToHex(const glm::vec3& rgb);
-    glm::vec3 hexToHsv(const std::string& hex);
-    std::string hsvToHex(const glm::vec3& hsv);
+    /// @brief loads a hsv value in the range of hsv values (Hue : 0 - 360, others : 0 - 100)  
+    void loadHSV(glm::vec3 value);
+
+    /// @brief loads a hex value
+    void loadHex(std::string value);
 };
 
 class Timer

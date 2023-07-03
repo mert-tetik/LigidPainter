@@ -33,9 +33,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
-/// @brief 
-/// @param path is folder path 
-/// @param format PNG , JPEG , BMP , TGA
 void Texture::exportTexture(std::string path,const std::string format){
     glm::ivec2 scale;
     scale = this->getResolution();
