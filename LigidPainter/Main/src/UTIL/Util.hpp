@@ -211,27 +211,62 @@ public:
 class Texture
 {
 private:
+    // --- util functions --- 
+
     std::string generateTMPTitle();
     std::string getTMPTitleWithGreatestIndex();
 
 public:
+    /// @brief OpenGL texture buffer object id
     unsigned int ID = 0; 
-    std::string path = "";
+
+    /// @brief Title of the texture (myTexture)
     std::string title = "";
 
+    /// @brief unique id (unique to the other texture elements in the library.textures)
+    ///        (used to generate tmp file names)
     int uniqueId;
 
+    /// @brief default constructor (ID is generated when @ref load is called)
     Texture();
+    
+    /// @brief create a texture class with existing OpenGL texture buffer object id
     Texture(unsigned int ID);
+    
+    /// @brief Create a texture class using texture data & generate OpenGL texture buffer object id (channels is always rgba)
+    /// @param pixels pixels of the texture
+    /// @param w width
+    /// @param h height
     Texture(char* pixels, int w, int h);
 
+    /// @brief Load a texture by importing the texture in the given path via STBI
     void load(const char* path);
+    
+    /// @brief Returns texture data in the given path & doesn't write anything to the member variables
     unsigned char* getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip);
+    
+    /// @brief Exports the texture to the given directory path
+    /// @param path folder path (will be completed as : @param path + / + @ref title + . + format (in lowercase))
+    /// @param format is PNG JPEG BMP TGA
     void exportTexture(std::string path,const std::string format);
+    
+    /// @brief writes the texture data to the given @param pixels parameter
+    /// glm::ivec2 textureRes = txtr.getResolution();
+    /// char* pixels = new pixels[textureRes.x * textureRes.y * 4];
+    /// getData(pixels); //Write the data to the pixels variable
     void getData(char*& pixels);
+    
+    /// @brief @return the resolution value of the texture 
     glm::ivec2 getResolution();
+
+    /// @brief creates a copy of the texture and returns the OpenGL texture buffer object ID of the duplicated texture.
+    ///         Use like that : Texture newTexture(duplicatedTexture.duplicateTexture());
     unsigned int duplicateTexture();
+    
+    /// @brief Write the tmp file of the texture from the tmp folder
     void writeTMP();
+    
+    /// @brief Read the tmp file of the texture from the tmp folder and delete the readen file
     void readTMP();
 };
 
@@ -564,23 +599,28 @@ public:
     bool isMouseHover(glm::vec2 scale, glm::vec2 position);
 };
 
-
-struct character { //A single char
+/// @brief A single char
+struct character { 
 	unsigned int TextureID;
 	glm::ivec2   Size;
 	glm::ivec2   Bearing;
 	unsigned int Advance;
 };
 
-
+/// @brief Manages font related stuff & contains all the characters of a font
 class Font
 {
 public:
+    /// @brief Name of the font (title)
     std::string name = "";
-    std::string path = "";
+
+	/// @brief Characters of the font 
 	std::map<char, character> characters;
 
+    /// @brief Default constructor (does nothing)
     Font(/* args */);
+
+    /// @brief Loads the font into the characters map in the given @param path
     void loadFont(const char* path);
 };
 
@@ -643,36 +683,75 @@ public:
     void applyToBrush(Panel &paintingPanel, Shaders shaders);
 };
 
+/// @brief handles 2D square vertex objects.
+/*
+    int main(){
+        Box box;
+        box.init();
 
+        while(true){
+            box.bindBuffers();
 
+            Shader related stuff
+            ...
+
+            glDrawArrays(GL_TRIANGLES, 0 , 6); 
+            
+            Shader related stuff
+            ...
+            
+            glDrawArrays(GL_TRIANGLES, 0 , 6); 
+
+            box.unbindBuffers();
+        }
+    }
+
+*/
 class Box
 {
 public:
     unsigned int VBO;
     unsigned int VAO;
 
+    /// @brief Default constructor (does nothing) (use @ref init instead to init the OpenGL objects)
     Box();
 
+    /// @brief Initializes / Creates OpenGL vertex objects regarding 2D square rendering
     void init();
+
+    /// @brief Binds the 2D square vertex objects
     void bindBuffers();
+    
+    /// @brief Unbinds the 2D square vertex objects
     void unbindBuffers();
+    
+    /// @brief Draw the square (is not used) 
     void draw(Shader shader,glm::vec3 pos,glm::vec2 scale);
 };
 
 
+/// @brief handles websites
 class Website
 {
 private:
+
+    /// @brief a website url (loaded with the constructor)
     std::string url;
+
 public:
-    //Constructor
+    /// @brief default constructor
     Website();
+
+    /// @brief constructor with url value
     Website(std::string url);
     
-    //Public member functions
+    /// @brief open the website in the primary search engine
     void open();
+    
+    /// @brief @return the url 
     std::string getURL();
 };
+
 
 // RENDERER UTIL STRUCTURES
 struct Camera{
@@ -754,7 +833,8 @@ struct Websites{
     Website youTube;
 };
 
-struct AppTextures{ //Textures those will be used in UI of the app
+/// @brief Static textures will be used in the app
+struct AppTextures{ 
     //--Icons
     Texture TDModelIcon; 
     Texture softenIcon;  
@@ -775,7 +855,9 @@ struct AppTextures{ //Textures those will be used in UI of the app
     Texture greetingDialogImage;  
     Texture noMaterialConnectedToTheMeshWarningImage;  
 };
-struct Fonts{ //Fonts those will be used in the app
+
+/// @brief Fonts will be used in the app
+struct Fonts{ 
     Font Arial;
 };
 

@@ -27,7 +27,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
-Texture::Texture(){}
+Texture::Texture(){
+
+}
 
 Texture::Texture(unsigned int ID){
     this->ID = ID;
@@ -37,12 +39,16 @@ Texture::Texture(char* pixels, int w, int h){
     glActiveTexture(GL_TEXTURE0);
     
     glGenTextures(1,&ID);
+
     glBindTexture(GL_TEXTURE_2D, ID);
+    
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+    
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-	glGenerateMipmap(GL_TEXTURE_2D);
+	
+    glGenerateMipmap(GL_TEXTURE_2D);
 }

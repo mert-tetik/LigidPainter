@@ -73,6 +73,7 @@ void Box::bindBuffers(){
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 }
+
 void Box::unbindBuffers(){
     //Bind vertex objects
     glBindVertexArray(0);

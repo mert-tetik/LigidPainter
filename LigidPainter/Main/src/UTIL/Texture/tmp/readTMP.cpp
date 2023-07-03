@@ -46,7 +46,7 @@ void Texture::readTMP(){
     std::ifstream rf(tmpFilePath , std::ios::in | std::ios::binary);
 
     if(!rf) {
-        std::cout << "ERROR WHILE READING A TMP FILE! Cannot open file : " << path << std::endl;
+        std::cout << "ERROR WHILE READING A TMP FILE! Cannot open file : " << tmpFilePath << std::endl;
         return;
     }   
     
@@ -88,8 +88,6 @@ void Texture::readTMP(){
 
 std::string Texture::getTMPTitleWithGreatestIndex(){
     std::string uniqueTitle = std::to_string(this->uniqueId);
-
-    ;
 
     const char idSeperator = '_';
 

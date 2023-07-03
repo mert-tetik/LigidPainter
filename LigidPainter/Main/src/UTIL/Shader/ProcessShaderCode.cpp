@@ -36,8 +36,6 @@ void Shader::processShaderCode(std::string &code){
     
     bool inWCommentLine = false;
 
-    
-
 
     if(!code.size())
         return;

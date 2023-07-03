@@ -46,7 +46,7 @@ void Texture::writeTMP(){
     std::ofstream wf(tmpFilePath , std::ios::out | std::ios::binary);
 
     if(!wf) {
-        std::cout << "ERROR WHILE WRITING A TMP FILE! Cannot create file : " << path << std::endl;
+        std::cout << "ERROR WHILE WRITING A TMP FILE! Cannot create file : " << tmpFilePath << std::endl;
         return;
     }   
 
@@ -71,8 +71,6 @@ void Texture::writeTMP(){
 
 std::string Texture::generateTMPTitle(){
     std::string uniqueTitle = std::to_string(this->uniqueId);
-
-    ;
 
     const char idSeperator = '_';
 

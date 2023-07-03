@@ -29,8 +29,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
-//Returns the texture data from the given path
-//Is not related with the class object
 unsigned char* Texture::getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip){
     stbi_set_flip_vertically_on_load(flip);
     unsigned char* data = stbi_load(aPath, &aWidth, &aHeight, &aChannels, desiredChannels);
@@ -59,6 +57,7 @@ void Texture::getData(char*& pixels){
     glBindTexture(GL_TEXTURE_2D,ID);
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
 }
+
 glm::ivec2 Texture::getResolution(){
     int w,h;
     glActiveTexture(GL_TEXTURE0);
@@ -68,6 +67,7 @@ glm::ivec2 Texture::getResolution(){
 
     return glm::ivec2(w,h);
 }
+
 unsigned int Texture::duplicateTexture(){
     unsigned int newTexture;
     //Get the resolution data of the texture

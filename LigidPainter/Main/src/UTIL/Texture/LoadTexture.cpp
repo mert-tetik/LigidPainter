@@ -30,13 +30,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 
 void Texture::load(const char* path){
-    ;
     this->title = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());
     this->title = UTIL::removeExtension(this->title);
-    this->path = path;
+
     glActiveTexture(GL_TEXTURE0);
+   
+   // If the texture is not generated then generate it
     if(ID == 0)
         glGenTextures(1,&ID);
+   
     glBindTexture(GL_TEXTURE_2D, ID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
