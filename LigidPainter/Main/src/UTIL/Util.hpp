@@ -805,6 +805,7 @@ struct Scene{
 
 /// @brief Don't directly manipulate vectors! Instead use public member functions. Same goes for the selectedElementIndex.
 struct Library{
+    
     std::vector<Texture> textures;
     std::vector<Material> materials;
     std::vector<Brush> brushes;

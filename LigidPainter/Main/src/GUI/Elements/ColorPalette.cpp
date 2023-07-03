@@ -33,6 +33,7 @@ void ColorPalette::newPalette(
                     glm::vec4 thirdColor,
                     glm::vec4 oppositeColor
                 ){
+    
     this->themeColor = themeColor;
     this->mainColor = mainColor;
     this->secondColor = secondColor;
