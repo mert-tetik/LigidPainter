@@ -1,0 +1,9 @@
+C:/Users/CASPER/source/repos/LigidPainter/CMakeFiles/Ligid.dir
+C:/Users/CASPER/source/repos/LigidPainter/CMakeFiles/package.dir
+C:/Users/CASPER/source/repos/LigidPainter/CMakeFiles/package_source.dir
+C:/Users/CASPER/source/repos/LigidPainter/CMakeFiles/edit_cache.dir
+C:/Users/CASPER/source/repos/LigidPainter/CMakeFiles/rebuild_cache.dir
+C:/Users/CASPER/source/repos/LigidPainter/CMakeFiles/list_install_components.dir
+C:/Users/CASPER/source/repos/LigidPainter/CMakeFiles/install.dir
+C:/Users/CASPER/source/repos/LigidPainter/CMakeFiles/install/local.dir
+C:/Users/CASPER/source/repos/LigidPainter/CMakeFiles/install/strip.dir

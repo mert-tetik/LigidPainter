@@ -14,7 +14,7 @@ file(GLOB_RECURSE LIGID_SOURCES
 )
 
 # Disable warnings
-add_definitions(-w)
+# add_definitions(-w)
 
 # Set C++ standard to C++17
 set(CMAKE_CXX_STANDARD 17)
@@ -25,22 +25,21 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 
 
-# Fixes the linker errors in the unix environment
-if(UNIX)
-   if(APPLE)
-      # Apparently fixes numerous glfw3 linker errors
-      # Might be deleted if it causes any problems
-      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINKER_FLAGS} -I/usr/local/lib -framework Cocoa -framework IOKit -framework CoreVideo -framework OpenGL -lglfw3")
-   endif(APPLE)
-
-   # Find GLFW3 and X11 packages
-   find_package(glfw3 REQUIRED)
-   find_package(X11 REQUIRED)
+ # Fixes the linker errors 
    
-   # Find BZip2 and ZLIB packages (used by Assimp)
-   find_package(BZip2 REQUIRED)
-   find_package(ZLIB REQUIRED)
-endif(UNIX)
+   # Apparently fixes numerous glfw3 linker errors
+   # Might be deleted if it causes any problems
+   #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINKER_FLAGS} -lglfw3 -lfreetype -lassimp-vc142-mtd -lOpenAL32")
+   #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINKER_FLAGS} -I/usr/local/lib -framework Cocoa -framework IOKit -framework CoreVideo -framework OpenGL -lglfw3")
+   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINKER_FLAGS} -lglfw3 -lopengl32")
+
+    # Find GLFW3 and X11 packages
+    #find_package(glfw3 REQUIRED)
+    #find_package(X11 REQUIRED)
+   
+    # Find BZip2 and ZLIB packages (used by Assimp)
+    #find_package(BZip2 REQUIRED)
+    #find_package(ZLIB REQUIRED)
 
 
 
@@ -50,11 +49,11 @@ endif(UNIX)
 add_definitions(-DCMAKE_HAS_X)
 
 # Set GLFW build options
-set(GLFW_BUILD_EXAMPLES OFF)
-set(GLFW_BUILD_TESTS OFF)
-set(GLFW_BUILD_DOCS OFF)
-set(GLFW_INSTALL OFF)
-set(NMGFX_FIND_GLFW OFF)
+#set(GLFW_BUILD_EXAMPLES OFF)
+#set(GLFW_BUILD_TESTS OFF)
+#set(GLFW_BUILD_DOCS OFF)
+#set(GLFW_INSTALL OFF)
+#set(NMGFX_FIND_GLFW OFF)
 
 
 
@@ -129,23 +128,54 @@ include(CPack)
 
 
 
+# Cross compiling
+#set(CMAKE_SYSTEM_NAME Darwin)
+#set(CMAKE_SYSTEM_PROCESSOR x86_64)
+
+# Set the path to the macOS SDK
+#set(MACOSX_SYSROOT ${PROJECT_SOURCE_DIR}/Cross/MacOS/MacOSX10.13.sdk)
+
+# Set the path to the cross compilation tools (C)
+# set(CMAKE_C_COMPILER "C:/mingw64/bin/gcc.exe")
+# Set the path to the cross compilation tools (C++)
+# set(CMAKE_C_COMPILER "C:/mingw64/bin/g++.exe")
+
+# Set the MacOS version you want to target
+# set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13 CACHE STRING "Minimum macOS version to target")
+
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+add_subdirectory("C:/Users/CASPER/source/repos/LigidPainter/glfw-3.3.8")
+
+find_package(OpenGL REQUIRED)
+
 # Add include directories for Ligid target
+target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/LigidPainter/Main/thirdparty/include/assimp)
+target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/LigidPainter/Main/thirdparty/include/GLFW)
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/LigidPainter/Main/thirdparty/include/)
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/LigidPainter/Main/thirdparty)
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/LigidPainter/Main/src)
 
 # Add link directories for Ligid target
-target_link_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/LigidPainter/Main/thirdparty/lib)
-target_link_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/LigidPainter/Main/thirdparty/lib/freetype)
+target_link_directories(Ligid PRIVATE 
+    ${PROJECT_SOURCE_DIR}/LigidPainter/Main/thirdparty/lib
+    ${PROJECT_SOURCE_DIR}/LigidPainter/Main/thirdparty/lib/freetype
+    ${PROJECT_SOURCE_DIR}
+)
 
 # Include directories for X11 and GLFW
 include_directories(${X11_INCLUDE_DIR})
 include_directories(${GLFW_INCLUDE_DIRS})
 
-if(UNIX)
-   # Link libraries for Unix
-   target_link_libraries(Ligid PRIVATE freetype assimp OpenAL32 glfw3 ZLIB::ZLIB BZip2::BZip2 ${X11_LIBRARIES} ${GLFW_LIBRARIES})
-elseif(WIN32)
-   # Link libraries for Windows
-   target_link_libraries(Ligid PRIVATE freetype OpenAL32 assimp-vc142-mtd glfw3)
-endif(UNIX)
+# Link libraries for Ligid target
+target_link_libraries(Ligid PRIVATE 
+    freetype 
+    assimp-vc142-mtd
+    OpenAL32 
+    glfw3 
+    OpenGL::GL
+    ${X11_LIBRARIES} 
+    ${GLFW_LIBRARIES}
+)

@@ -133,7 +133,6 @@ public:
     //Public member functions
     void Draw();
     void exportModel(std::string path);
-    aiScene* createAssimpScene();
     void loadModel(std::string const &path,bool triangulate);
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);

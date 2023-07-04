@@ -1,0 +1,24 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-3.24/Modules/CMakeCInformation.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/CMakeCXXInformation.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/CMakeCommonLanguageInclude.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/CMakeGenericSystem.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/CMakeInitializeConfigs.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/CMakeLanguageInformation.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/CMakeSystemSpecificInformation.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/CMakeSystemSpecificInitialize.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/CPack.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/CPackComponent.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/Compiler/CMakeCommonCompilerMacros.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/Compiler/MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/Compiler/MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/Compiler/MSVC.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/Platform/Darwin-Initialize.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/Platform/Darwin.cmake
+C:/Program Files/CMake/share/cmake-3.24/Modules/Platform/UnixPaths.cmake
+C:/Program Files/CMake/share/cmake-3.24/Templates/CPackConfig.cmake.in
+C:/Users/CASPER/source/repos/LigidPainter/CMakeFiles/3.24.3/CMakeCCompiler.cmake
+C:/Users/CASPER/source/repos/LigidPainter/CMakeFiles/3.24.3/CMakeCXXCompiler.cmake
+C:/Users/CASPER/source/repos/LigidPainter/CMakeFiles/3.24.3/CMakeSystem.cmake
+C:/Users/CASPER/source/repos/LigidPainter/CMakeLists.txt
+C:/Users/CASPER/source/repos/LigidPainter/Toolchain-macosx

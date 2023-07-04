@@ -96,10 +96,16 @@ std::string Texture::generateTMPTitle(){
         }
     }
     
-    int fileI = 0;
     // Find the next available index that is not in the indices vector
-    while (std::find(indices.begin(), indices.end(), fileI) != indices.end()) {
-        fileI++;
+    int fileI = 0;
+    bool found = false;
+    
+    while (!found && fileI < indices.size()) {
+        if (indices[fileI] == fileI) {
+            fileI++;
+        } else {
+            found = true;
+        }
     }
 
     //Add the index to the unique id

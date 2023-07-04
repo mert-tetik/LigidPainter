@@ -1,0 +1,3 @@
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\Ligid.dir/objects.a
+C:\compiling\mingw64\bin\ar.exe qc CMakeFiles\Ligid.dir/objects.a @CMakeFiles\Ligid.dir\objects1.rsp
+C:\compiling\mingw64\bin\c++.exe   -lglfw3 -lfreetype -lassimp-vc142-mtd -lOpenAL32 -Wl,--whole-archive CMakeFiles\Ligid.dir/objects.a -Wl,--no-whole-archive -o Ligid.exe -Wl,--out-implib,libLigid.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Ligid.dir\linklibs.rsp

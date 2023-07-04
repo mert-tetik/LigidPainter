@@ -819,10 +819,10 @@ struct Library{
     void uniqueNameControl();
 
     //Add elements
-    void addTexture     (Texture& texture);
-    void addMaterial    (Material& material);
-    void addBrush       (Brush& brush);
-    void addModel       (Model& model);
+    void addTexture     (Texture texture);
+    void addMaterial    (Material material);
+    void addBrush       (Brush brush);
+    void addModel       (Model model);
 
     //Erase elements
     void eraseTexture   (int index);

@@ -86,7 +86,15 @@
         "unordered_set": "cpp",
         "variant": "cpp",
         "bit": "cpp",
-        "*.rh": "cpp"
+        "*.rh": "cpp",
+        "complex": "cpp",
+        "cwctype": "cpp",
+        "*.tcc": "cpp",
+        "hash_map": "cpp",
+        "hash_set": "cpp",
+        "slist": "cpp",
+        "cfenv": "cpp",
+        "hashtable": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

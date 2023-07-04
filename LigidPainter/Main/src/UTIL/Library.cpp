@@ -101,7 +101,7 @@ void Library::uniqueNameControl(){
 
 /// @brief Add a texture to the textures vector
 /// @param texture the texture
-void Library::addTexture(Texture& texture){
+void Library::addTexture(Texture texture){
     this->changed = true;
     
     texture.uniqueId = 0; 
@@ -115,7 +115,7 @@ void Library::addTexture(Texture& texture){
 
 /// @brief Add a material to the materials vector
 /// @param material the material
-void Library::addMaterial(Material& material){
+void Library::addMaterial(Material material){
     this->changed = true;
     
     material.uniqueID = 0; 
@@ -129,7 +129,7 @@ void Library::addMaterial(Material& material){
 
 /// @brief Add a brush to the brushes vector
 /// @param brush the brush
-void Library::addBrush(Brush& brush){
+void Library::addBrush(Brush brush){
     this->changed = true;
     
     this->brushes.push_back(brush);
@@ -137,7 +137,7 @@ void Library::addBrush(Brush& brush){
 
 /// @brief Add a model to the tdmodels vector
 /// @param model the model
-void Library::addModel(Model& model){
+void Library::addModel(Model model){
     this->changed = true;
     
     this->TDModels.push_back(model);
