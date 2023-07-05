@@ -83,6 +83,20 @@ void LigidWindow::pollEvents(){
     // The window procedure handles the message and performs appropriate actions based on the message type.
     DispatchMessage(&this->msg);
 
+
+    //--- Call the callback functions ---
+
+    // If received a mouse position change message
+    if(this->msg.message == WM_MOUSEMOVE){
+
+        // Call the mouse position callback function set by the user using message data
+        this->mousePosCallback(
+                                LOWORD(msg.lParam), //Received mouse x pos  
+                                HIWORD(msg.lParam)  //Received mouse y pos
+                            );
+    
+    }
+
 #endif
 }
 
@@ -111,12 +125,36 @@ void LigidWindow::makeContextCurrent(){
     this->openGLContext = wglCreateContext(hdc);    // Create an OpenGL rendering context
     wglMakeCurrent(hdc, this->openGLContext);       // Make the created context current for the given device context
 
+
 #elif(__APPLE__)
-    
+
+
     //* User in MacOS environment
     
     // Make the OpenGL context current
     this->openGLContext->makeCurrentContext();
+
+
+#elif(__linux__)
+
+
+    //TODO Ask for a existing display 
+
+    // Open the X11 display connection
+    Display* display = XOpenDisplay(NULL);
+    if (display == NULL) {
+        // Failed to open X11 display
+        // Handle the error here
+    }
+
+    // Get the default screen
+    int screen = DefaultScreen(display);
+
+    // Make the GLX context current
+    if (!glXMakeCurrent(display, this->window, this->glxContext)) {
+        // Failed to make context current
+        std::cout << "ERROR : Can't make the context current!" << std::endl;
+    }
 
 #endif
 

@@ -19,6 +19,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 
 #include "LigidGL/LigidGL.hpp"
+#include <utility>
+
 
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -45,7 +47,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
     //User has Linux
     #include <X11/Xlib.h>
     #include <GL/glx.h>
-    #include <utility>
 
     // Forward declarations for the Linux utilities
     std::pair<Window, GLXContext> LinuxCreateOpenGLWindow(int width, int height, const char* title);

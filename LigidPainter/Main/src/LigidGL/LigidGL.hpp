@@ -79,6 +79,18 @@ private:
     GLXContext openGLContext;
 
     #endif
+
+    /*!
+    *   @brief The mouse callback function of the window set by the user.
+    *   
+    *   Set the function using @ref setMousePosCallback function
+    * 
+    *   First param : cursor pos in the y axis
+    * 
+    *   Second param : cursor pos in the y axis
+    */
+    void (*mousePosCallback)(int,int);
+
 public:
     /*! 
     * @brief Default constructor for the LigidWindows
@@ -113,6 +125,8 @@ public:
     *   @brief Translates and dispatches a message to the appropriate window procedure for processing.
     *
     *   this->msg contains the message to be processed (for windows) 
+    * 
+    *   Also calls the callback functions
     */
     void pollEvents();
 
@@ -139,6 +153,18 @@ public:
         !!! Creating a window already makes it's OpenGL rendering context current
     */
     void makeContextCurrent();
+
+    /*!
+    *  @brief sets the private member variable mousePosCallback function as the func parameter
+    *   
+    *   Example mouse position callback function :
+    * 
+    *   void mouse_pos_callback(int mouse_x_pos, int mouse_y_pos){
+    *       std::cout << mouse_x_pos << ' ' << int mouse_y_pos << std::endl //Print the mouse position data to the terminal
+    *   }
+    * 
+    */
+    void setMousePosCallback( void (*func)(int,int));
 };
 
 #endif
