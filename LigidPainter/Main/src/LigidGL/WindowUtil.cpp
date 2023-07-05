@@ -95,3 +95,20 @@ void LigidWindow::close(){
     
 #endif
 } 
+
+
+void LigidWindow::makeContextCurrent(){
+
+#if defined(_WIN32) || defined(_WIN64)
+    
+    //* User in windows environment
+
+    HDC hdc = GetDC(this->window);    // Obtain the device context handle for the window
+
+    // Create and activate the OpenGL rendering context
+    this->openGLContext = wglCreateContext(hdc);    // Create an OpenGL rendering context
+    wglMakeCurrent(hdc, this->openGLContext);       // Make the created context current for the given device context
+
+#endif
+
+}

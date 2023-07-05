@@ -63,6 +63,7 @@ int LigidWindow::createWindow(
 
     std::pair<HWND, HGLRC> windowContextPair;
 
+
     windowContextPair = WinCreateOpenGLWindow(
                                                 800, // Width 
                                                 600, // Height

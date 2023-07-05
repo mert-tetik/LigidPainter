@@ -87,6 +87,10 @@ public:
     * @param h The height of the window.
     * @param title The title of the window.
     * @return Returns 1 if success  
+    * 
+    * !!! Creating a window already makes it's OpenGL rendering context current!
+    *     Update the OpenGL rendering context after creating a new window ( @ref this->makeContextCurrent function ) if you don't want to
+    *     render to the most recent created window class
     */
     int createWindow(int w, int h, std::string title);
 
@@ -108,6 +112,25 @@ public:
         @brief Closes the window when called
     */
     void close();
+
+    /*!
+        @brief Makes the OpenGL rendering context of the window current rendering context.
+        
+        Use like that :
+
+        window1.makeContextCurrent();
+
+        Render stuff
+        ...
+
+        window2.makeContextCurrent();
+
+        Render stuff
+        ...
+
+        !!! Creating a window already makes it's OpenGL rendering context current
+    */
+    void makeContextCurrent();
 };
 
 #endif
