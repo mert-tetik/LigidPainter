@@ -362,8 +362,19 @@ public:
         @brief learn if a key is pressed
         @param key is LIGIDGL_KEY_<Desired key>
         @return Returns LIGIDGL_PRESS if the given key is pressed LIGIDGL_RELEASE if not  
+        
+        TODO : Move that function to a namespace
     */
     bool isKeyPressed(char key);
+
+    /*!
+        @brief learn if a mouse button is pressed
+        @param key is LIGIDGL_MOUSE_BUTTON_LEFT, LIGIDGL_MOUSE_BUTTON_RIGHT or LIGIDGL_MOUSE_BUTTON_MIDDLE
+        @return Returns LIGIDGL_PRESS if the given button is pressed LIGIDGL_RELEASE if not  
+        
+        TODO : Move that function to a namespace
+    */
+    bool isMouseButtonPressed(int button);
 };
 
 #endif

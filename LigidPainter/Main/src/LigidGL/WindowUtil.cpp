@@ -235,3 +235,36 @@ bool LigidWindow::isKeyPressed(char key){
 #endif
 
 }
+
+bool LigidWindow::isMouseButtonPressed(int button){
+#if defined(_WIN32) || defined(_WIN64)
+    
+    //* User in windows environment
+    
+    // Returns true if the button is pressed
+    
+    if (GetAsyncKeyState(VK_LBUTTON) & 0x8000 && button == LIGIDGL_MOUSE_BUTTON_LEFT) {
+        return true;
+    }
+
+    if (GetAsyncKeyState(VK_RBUTTON) & 0x8000 && button == LIGIDGL_MOUSE_BUTTON_RIGHT) {
+        return true;
+    }
+
+    if (GetAsyncKeyState(VK_MBUTTON) & 0x8000 && button == LIGIDGL_MOUSE_BUTTON_MIDDLE) {
+        return true;
+    }
+
+    return false;
+
+#elif(__APPLE__)
+
+    //* User in MacOS environment
+    
+#elif(__linux__)
+
+    //* User in Linux environment
+
+#endif
+
+}
