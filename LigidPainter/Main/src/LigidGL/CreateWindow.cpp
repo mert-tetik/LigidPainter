@@ -54,7 +54,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #endif
 
-
+void emptyFunc2int(int, int){}
+    
+void emptyFunc3int(int, int, int){}
 
 int LigidWindow::createWindow(
                                 int w, 
@@ -139,6 +141,11 @@ int LigidWindow::createWindow(
 
 #endif
     
+    //-- Init the callback functions of the window --
+
+    this->mousePosCallback = emptyFunc2int;
+    this->mouseButtonCallback = emptyFunc3int;
+
     return 1;
 }
 

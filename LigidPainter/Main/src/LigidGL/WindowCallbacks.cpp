@@ -46,3 +46,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void LigidWindow::setMousePosCallback(void (*mousePosCallback)(int, int)) {
     this->mousePosCallback = mousePosCallback;
 }
+
+void LigidWindow::setMouseButtonCallback(void (*mouseButtonCallback)(int, int, int)) {
+    this->mouseButtonCallback = mouseButtonCallback;
+}

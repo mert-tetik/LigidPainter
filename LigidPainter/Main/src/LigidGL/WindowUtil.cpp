@@ -97,6 +97,49 @@ void LigidWindow::pollEvents(){
     
     }
 
+
+
+    // Check if any message is received regarding the left mouse button
+    bool LButtonReceived = this->msg.message == WM_LBUTTONDOWN || this->msg.message == WM_LBUTTONDBLCLK || this->msg.message == WM_LBUTTONUP;
+    
+    // Check if any message is received regarding the right mouse button
+    bool RButtonReceived = this->msg.message == WM_RBUTTONDOWN || this->msg.message == WM_RBUTTONDBLCLK || this->msg.message == WM_RBUTTONUP; 
+    
+    // Check if any message is received regarding the middle mouse button
+    bool MButtonReceived = this->msg.message == WM_MBUTTONDOWN || this->msg.message == WM_MBUTTONDBLCLK || this->msg.message == WM_MBUTTONUP; 
+
+    // If received a mouse button message
+    if(
+            LButtonReceived ||  //If left button action received 
+            RButtonReceived ||  //If right button action received
+            MButtonReceived     //If middle button action received
+        )
+    {
+
+        // Set the button
+        int button = 0;
+        if(LButtonReceived)
+            button = 0;
+        if(RButtonReceived)
+            button = 1;
+        if(MButtonReceived)
+            button = 2;
+        
+        //If pressed to the button
+        int action = this->msg.message == WM_LBUTTONDOWN || this->msg.message == WM_RBUTTONDOWN || this->msg.message ==WM_MBUTTONDOWN;
+
+        //TODO : MODS CALCULATION
+        int mods;
+
+        // Call the mouse button callback function set by the user using message data
+        this->mouseButtonCallback(
+                                button, //Received mouse x pos  
+                                action,  //Received mouse y pos
+                                0
+                            );
+    
+    }
+
 #endif
 }
 

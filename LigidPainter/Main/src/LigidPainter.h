@@ -24,8 +24,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "LigidGL/LigidGL.hpp"
 
-void mousePsCallback(int x, int y){
-    std::cout << x << ' ' << y << std::endl;
+void mouseBtnCallback(int button, int action, int mods){
+    std::cout << button << ' ' << action << ' ' << mods << std::endl;
 }
 
 class LigidPainter{
@@ -37,7 +37,7 @@ public:
         LigidWindow ligidWindow;
         ligidWindow.createWindow(800, 800, "ASDFSAFD"); 
 
-        ligidWindow.setMousePosCallback(mousePsCallback);
+        ligidWindow.setMouseButtonCallback(mouseBtnCallback);
         
         while (!ligidWindow.shouldClose())
         {

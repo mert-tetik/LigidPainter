@@ -81,15 +81,28 @@ private:
     #endif
 
     /*!
-    *   @brief The mouse callback function of the window set by the user.
+    *   @brief The mouse position callback function of the window set by the user.
     *   
     *   Set the function using @ref setMousePosCallback function
     * 
-    *   First param : cursor pos in the y axis
+    *   First param : cursor pos in the x axis
     * 
     *   Second param : cursor pos in the y axis
     */
-    void (*mousePosCallback)(int,int);
+    void (*mousePosCallback)(int, int);
+    
+    /*!
+    *   @brief The mouse button callback function of the window set by the user.
+    *   
+    *   Set the function using @ref setMouseButtonCallback function
+    * 
+    *   First param : button
+    * 
+    *   Second param : action
+    *   
+    *   Third param : mods
+    */
+    void (*mouseButtonCallback)(int, int, int);
 
 public:
     /*! 
@@ -155,16 +168,36 @@ public:
     void makeContextCurrent();
 
     /*!
-    *  @brief sets the private member variable mousePosCallback function as the func parameter
+    *  @brief sets the private member variable @ref mousePosCallback function as the func parameter
     *   
     *   Example mouse position callback function :
     * 
     *   void mouse_pos_callback(int mouse_x_pos, int mouse_y_pos){
-    *       std::cout << mouse_x_pos << ' ' << int mouse_y_pos << std::endl //Print the mouse position data to the terminal
+    *       std::cout << mouse_x_pos << ' ' << mouse_y_pos << std::endl //Print the mouse position data to the terminal
     *   }
     * 
+    *   How to use the function :
+    * 
+    *   setMousePosCallback(mouse_pos_callback);
+    * 
     */
-    void setMousePosCallback( void (*func)(int,int));
+    void setMousePosCallback( void (*func)(int,int) );
+
+    /*!
+    *  @brief sets the private member variable @ref mouseButtonCallback function as the func parameter
+    *   
+    *   Example mouse button callback function :
+    * 
+    *   void mouse_btn_callback(int button, int action, int mods){
+    *       std::cout << button << ' ' << action << ' ' << mods << std::endl //Print the mouse button data to the terminal
+    *   }
+    * 
+    *   How to use the function :
+    * 
+    *   setMouseButtonCallback(mouse_btn_callback);
+    * 
+    */
+    void setMouseButtonCallback( void (*func)(int,int,int) );
 };
 
 #endif
