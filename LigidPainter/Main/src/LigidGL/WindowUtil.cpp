@@ -83,3 +83,15 @@ void LigidWindow::pollEvents(){
 
 #endif
 }
+
+
+void LigidWindow::close(){
+#if defined(_WIN32) || defined(_WIN64)
+
+    //* User in windows environment
+    
+    // Closes / destroys the hwnd window
+    DestroyWindow(this->hWnd);
+    
+#endif
+} 

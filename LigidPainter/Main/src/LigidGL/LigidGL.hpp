@@ -85,12 +85,16 @@ public:
     bool shouldClose();
 
     /*!
-    *   Translates and dispatches a message to the appropriate window procedure for processing.
+    *   @brief Translates and dispatches a message to the appropriate window procedure for processing.
     *
     *   this->msg contains the message to be processed (for windows) 
     */
     void pollEvents();
 
+    /*!
+        @brief Closes the window when called
+    */
+    void close();
 };
 
 #endif
