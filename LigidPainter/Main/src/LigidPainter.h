@@ -34,6 +34,12 @@ public:
         
         LigidWindow ligidWindow;
         ligidWindow.createWindow(800, 800, "ASDFSAFD"); 
+
+        while (!ligidWindow.shouldClose())
+        {
+            ligidWindow.pollEvents();
+        }
+        
         
         //while(!glfwWindowShouldClose(renderer.context.window))
         //{   

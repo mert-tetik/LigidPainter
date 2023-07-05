@@ -17,27 +17,88 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include <iostream>
+
 #include "LigidGL/LigidGL.hpp"
 
 
 #if defined(_WIN32) || defined(_WIN64)
-//User has Windows
-#include <Windows.h>
+    
+    //User has Windows
+    #include <Windows.h>
+
+    // Forward declarations for the windows utilities
+    LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    HWND WinCreateOpenGLWindow(int width, int height, const char* title);
 
 #elif defined(__APPLE__)
-//User has MacOS
-#import <Cocoa/Cocoa.h>
+
+
+    //User has MacOS
+    #import <Cocoa/Cocoa.h>
 
 
 #elif defined(__linux__)
-//User has Linux
-#include <X11/Xlib.h>
+
+
+    //User has Linux
+    #include <X11/Xlib.h>
 
 #endif
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-HWND CreateOpenGLWindow(int width, int height, const char* title) {
+
+int LigidWindow::createWindow(
+                                int w, 
+                                int h, 
+                                std::string title
+                            ){
+#if defined(_WIN32) || defined(_WIN64)
+
+this->hWnd = WinCreateOpenGLWindow(
+                                    800, // Width 
+                                    600, // Height
+                                    title.c_str() // Title of the window
+                                );
+
+if (!this->hWnd) {
+    // Window creation failed
+    std::cout << "Can't create HWND window" << std::endl;
+    return 0;
+}
+
+#elif defined(__APPLE__)
+
+
+
+
+#elif defined(__linux__)
+
+
+
+#endif
+    
+    return 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#if defined(_WIN32) || defined(_WIN64)
+
+//  --------------------    WINDOWS UTIL    --------------------
+
+HWND WinCreateOpenGLWindow(int width, int height, const char* title) {
     // Get the instance handle of the current module
     HINSTANCE hInstance = GetModuleHandle(NULL);
 
@@ -46,7 +107,7 @@ HWND CreateOpenGLWindow(int width, int height, const char* title) {
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wc.lpfnWndProc = DefWindowProc;
     wc.hInstance = hInstance;
-    wc.lpszClassName = reinterpret_cast<LPCWSTR>(L"OpenGLWindowClass");
+    wc.lpszClassName = L"OpenGLWindowClass";
 
     if (!RegisterClass(&wc)) {
         // Class registration failed
@@ -104,26 +165,15 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-void LigidWindow::createWindow(
-                                int w, 
-                                int h, 
-                                std::string title
-                            ){
-    
-    HWND hWnd = CreateOpenGLWindow(800, 600, "OpenGL Window");
-    
-    if (!hWnd) {
-        // Window creation failed
-        std::cout << "Can't create HWND window" << std::endl;
-        return;
-        
-    }
+#elif defined(__APPLE__)
 
-    // Main message loop
-    MSG msg;
-    while (GetMessage(&msg, NULL, 0, 0)) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
+//  --------------------    MACOS UTIL    --------------------
 
-}
+
+
+#elif defined(__linux__)
+
+//  --------------------    LINUX UTIL    --------------------
+
+
+#endif
