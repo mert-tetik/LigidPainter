@@ -34,8 +34,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
     #include <Cocoa/Cocoa.h>
-    #include <OpenGL/OpenGL.h>
-    #include <OpenGL/gl3.h>
 
     // Forward declarations for the MacOS utilities
     std::pair<NSWindow, NSOpenGLContext*> MacOSCreateOpenGLWindow(int width, int height, const char* title);
@@ -46,6 +44,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
     //User has Linux
     #include <X11/Xlib.h>
+    #include <GL/glx.h>
+    #include <utility>
+
+    // Forward declarations for the Linux utilities
+    std::pair<Window, GLXContext> LinuxCreateOpenGLWindow(int width, int height, const char* title);
+
 
 #endif
 
@@ -108,6 +112,28 @@ int LigidWindow::createWindow(
 
 #elif defined(__linux__)
 
+    //* User using Linux environment
+
+    std::pair<Window, GLXContext> windowContextPair;
+
+
+    windowContextPair = LinuxCreateOpenGLWindow(
+                                                800, // Width 
+                                                600, // Height
+                                                title.c_str() // Title of the window
+                                            );
+
+    this->window = windowContextPair.first;
+    
+    this->openGLContext = windowContextPair.second;
+
+    if (!this->window) {
+        
+        // Window creation failed
+        std::cout << "Can't create Linux window" << std::endl;
+        return 0;
+    
+    }
 
 
 #endif
@@ -190,7 +216,6 @@ std::pair<HWND, HGLRC> WinCreateOpenGLWindow(int width, int height, const char* 
     UpdateWindow(hWnd);
 
     return std::make_pair(hWnd, hRC);
-;
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -214,5 +239,68 @@ std::pair<NSWindow, NSOpenGLContext*> MacOSCreateOpenGLWindow(int width, int hei
 
 //  --------------------    LINUX UTIL    --------------------
 
+std::pair<Window, GLXContext> LinuxCreateOpenGLWindow(int width, int height, const char* title) {
+    // Open a connection to the X server
+    Display* display = XOpenDisplay(NULL);
+    if (display == NULL) {
+        return std::make_pair(None, nullptr);
+    }
+
+    // Get the default screen
+    int screen = DefaultScreen(display);
+
+    // Create a window
+    Window root = RootWindow(display, screen);
+    XSetWindowAttributes windowAttributes;
+    windowAttributes.background_pixel = 0;
+    Window window = XCreateWindow(display, root, 0, 0, width, height, 0, CopyFromParent, InputOutput,
+                                  CopyFromParent, CWBackPixel, &windowAttributes);
+    if (window == None) {
+        XCloseDisplay(display);
+        return std::make_pair(None, nullptr);
+    }
+
+    // Create a visual info
+    static int visualAttributes[] = {
+        GLX_RGBA,
+        GLX_DOUBLEBUFFER,
+        GLX_DEPTH_SIZE, 24,
+        GLX_STENCIL_SIZE, 8,
+        None
+    };
+    XVisualInfo* visualInfo = glXChooseVisual(display, screen, visualAttributes);
+    if (visualInfo == nullptr) {
+        XDestroyWindow(display, window);
+        XCloseDisplay(display);
+        return std::make_pair(None, nullptr);
+    }
+
+    // Create a GLX context
+    GLXContext context = glXCreateContext(display, visualInfo, nullptr, True);
+    if (context == nullptr) {
+        XFree(visualInfo);
+        XDestroyWindow(display, window);
+        XCloseDisplay(display);
+        return std::make_pair(None, nullptr);
+    }
+
+    // Make the context current
+    if (!glXMakeCurrent(display, window, context)) {
+        glXDestroyContext(display, context);
+        XFree(visualInfo);
+        XDestroyWindow(display, window);
+        XCloseDisplay(display);
+        return std::make_pair(None, nullptr);
+    }
+
+    // Set the window title
+    XStoreName(display, window, title);
+
+    // Map the window to the screen
+    XMapWindow(display, window);
+    XFlush(display);
+
+    return std::make_pair(window, context);
+}
 
 #endif

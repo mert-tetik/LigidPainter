@@ -33,6 +33,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #elif defined(__linux__)
 //User has Linux
 #include <X11/Xlib.h>
+#include <GL/glx.h>
+#include <utility>
 
 #endif
 

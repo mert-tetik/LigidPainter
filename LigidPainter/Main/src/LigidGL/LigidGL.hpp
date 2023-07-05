@@ -36,6 +36,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 //User has Linux
 #include <X11/Xlib.h>
+#include <GL/glx.h>
+#include <utility>
 
 #endif
 
@@ -69,6 +71,12 @@ private:
     #elif defined(__linux__)
 
     //User has Linux
+    
+    /// @brief The window object for the Linux
+    Window window; 
+    
+    /// @brief The OpenGL context for the Linux
+    GLXContext openGLContext;
 
     #endif
 public:
