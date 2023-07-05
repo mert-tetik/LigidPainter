@@ -56,7 +56,7 @@ bool LigidWindow::shouldClose(){
     */
     return !GetMessage(
                         &this->msg, 
-                        this->hWnd, 
+                        this->window, 
                         0, 
                         0
                     );
@@ -74,12 +74,12 @@ void LigidWindow::pollEvents(){
     // It is typically called to process keyboard input before dispatching it to the appropriate window procedure.
     // This function is necessary for translating virtual-key messages (such as WM_KEYDOWN and WM_KEYUP)
     // into character messages (such as WM_CHAR) for proper handling of keyboard input.
-    TranslateMessage(&msg);
+    TranslateMessage(&this->msg);
 
     // The DispatchMessage function dispatches a message to a window procedure.
     // It sends the message to the window procedure that the message's hWnd and message type specify.
     // The window procedure handles the message and performs appropriate actions based on the message type.
-    DispatchMessage(&msg);
+    DispatchMessage(&this->msg);
 
 #endif
 }
@@ -91,7 +91,7 @@ void LigidWindow::close(){
     //* User in windows environment
     
     // Closes / destroys the hwnd window
-    DestroyWindow(this->hWnd);
+    DestroyWindow(this->window);
     
 #endif
 } 

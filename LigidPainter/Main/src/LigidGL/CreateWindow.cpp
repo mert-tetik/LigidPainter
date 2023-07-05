@@ -28,13 +28,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
     // Forward declarations for the windows utilities
     LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-    HWND WinCreateOpenGLWindow(int width, int height, const char* title);
+    std::pair<HWND, HGLRC> WinCreateOpenGLWindow(int width, int height, const char* title);
 
 #elif defined(__APPLE__)
 
 
-    //User has MacOS
-    #import <Cocoa/Cocoa.h>
+    #include <Cocoa/Cocoa.h>
+    #include <OpenGL/OpenGL.h>
+    #include <OpenGL/gl3.h>
+
+    // Forward declarations for the MacOS utilities
+    std::pair<NSWindow, NSOpenGLContext*> MacOSCreateOpenGLWindow(int width, int height, const char* title);
 
 
 #elif defined(__linux__)
@@ -51,24 +55,54 @@ int LigidWindow::createWindow(
                                 int w, 
                                 int h, 
                                 std::string title
-                            ){
+                            )
+{
 #if defined(_WIN32) || defined(_WIN64)
 
-this->hWnd = WinCreateOpenGLWindow(
-                                    800, // Width 
-                                    600, // Height
-                                    title.c_str() // Title of the window
-                                );
+    //* User using Windows environment
 
-if (!this->hWnd) {
-    // Window creation failed
-    std::cout << "Can't create HWND window" << std::endl;
-    return 0;
-}
+    std::pair<HWND, HGLRC> windowContextPair;
+
+    windowContextPair = WinCreateOpenGLWindow(
+                                                800, // Width 
+                                                600, // Height
+                                                title.c_str() // Title of the window
+                                            );
+    this->window = windowContextPair.first;
+    
+    this->openGLContext = windowContextPair.second;
+
+    if (!this->window) {
+        
+        // Window creation failed
+        std::cout << "Can't create HWND window" << std::endl;
+        return 0;
+    
+    }
 
 #elif defined(__APPLE__)
 
+    //* User using Apple environment
 
+
+    std::pair<NSWindow, NSOpenGLContext*> windowContextPair;
+
+    windowContextPair = MacOSCreateOpenGLWindow(
+                                                800, // Width 
+                                                600, // Height
+                                                title.c_str() // Title of the window
+                                            );
+    this->window = windowContextPair.first;
+    
+    this->openGLContext = windowContextPair.second;
+
+    if (!this->window) {
+        
+        // Window creation failed
+        std::cout << "Can't create cocoa window" << std::endl;
+        return 0;
+    
+    }
 
 
 #elif defined(__linux__)
@@ -98,7 +132,7 @@ if (!this->hWnd) {
 
 //  --------------------    WINDOWS UTIL    --------------------
 
-HWND WinCreateOpenGLWindow(int width, int height, const char* title) {
+std::pair<HWND, HGLRC> WinCreateOpenGLWindow(int width, int height, const char* title) {
     // Get the instance handle of the current module
     HINSTANCE hInstance = GetModuleHandle(NULL);
 
@@ -109,9 +143,9 @@ HWND WinCreateOpenGLWindow(int width, int height, const char* title) {
     wc.hInstance = hInstance;
     wc.lpszClassName = L"OpenGLWindowClass";
 
+    // Class registration failed
     if (!RegisterClass(&wc)) {
-        // Class registration failed
-        return NULL;
+        return std::make_pair(HWND(NULL), HGLRC(NULL));
     }
 
     // Adjust the window size to include the window frame
@@ -123,9 +157,10 @@ HWND WinCreateOpenGLWindow(int width, int height, const char* title) {
         CW_USEDEFAULT, CW_USEDEFAULT, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
         NULL, NULL, hInstance, NULL);
 
-    if (!hWnd) {
-        // Window creation failed
-        return NULL;
+    // Window creation failed
+    if (!hWnd) 
+    {
+        return std::make_pair(HWND(NULL), HGLRC(NULL));
     }
 
     // Get the device context
@@ -153,7 +188,8 @@ HWND WinCreateOpenGLWindow(int width, int height, const char* title) {
     ShowWindow(hWnd, SW_SHOWDEFAULT);
     UpdateWindow(hWnd);
 
-    return hWnd;
+    return std::make_pair(hWnd, hRC);
+;
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -169,7 +205,55 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
 //  --------------------    MACOS UTIL    --------------------
 
+std::pair<NSWindow, NSOpenGLContext*> MacOSCreateOpenGLWindow(int width, int height, const char* title) {
+    // Create the NSAutoreleasePool for Objective-C memory management
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
+    // Create the NSApplication instance
+    [NSApplication sharedApplication];
+
+    // Create the NSWindow instance
+    NSRect contentRect = NSMakeRect(0, 0, width, height);
+    NSUInteger windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask;
+    NSWindow* window = [[NSWindow alloc] initWithContentRect:contentRect
+                                                   styleMask:windowStyle
+                                                     backing:NSBackingStoreBuffered
+                                                       defer:NO];
+    
+    // Set the window title
+    [window setTitle:@(title)];
+
+    // Create the NSOpenGLPixelFormatAttribute array
+    NSOpenGLPixelFormatAttribute attrs[] = {
+        NSOpenGLPFADoubleBuffer,
+        NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
+        NSOpenGLPFAColorSize, 24,
+        NSOpenGLPFAAlphaSize, 8,
+        NSOpenGLPFADepthSize, 24,
+        NSOpenGLPFAStencilSize, 8,
+        0
+    };
+
+    // Create the NSOpenGLPixelFormat instance
+    NSOpenGLPixelFormat* pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
+
+    // Create the NSOpenGLContext instance
+    NSOpenGLContext* context = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:nil];
+
+    // Assign the OpenGL context to the window
+    [window setContentView:[[NSOpenGLView alloc] initWithFrame:contentRect pixelFormat:pixelFormat]];
+    [window makeFirstResponder:window.contentView];
+    [context setView:window.contentView];
+
+    // Make the window and OpenGL context visible
+    [window makeKeyAndOrderFront:nil];
+    [window center];
+
+    // Release the memory allocated for the AutoreleasePool
+    [pool release];
+
+    return std::make_pair(window, context);
+}
 
 #elif defined(__linux__)
 

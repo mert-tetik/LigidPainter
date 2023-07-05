@@ -44,13 +44,26 @@ class LigidWindow
 private:
     #if defined(_WIN32) || defined(_WIN64)
 
-    //User has Windows
-    HWND hWnd;
+    //* User has Windows
+    
+    /// @brief The window object for the Windows
+    HWND window;
+
+    /// @brief The OpenGL context for the Windows
+    HGLRC openGLContext;
+
+    /// @brief The message object for the windows
     MSG msg;
 
     #elif defined(__APPLE__)
 
     //User has MacOS
+
+    /// @brief The window object for the MacOS
+    NSWindow window; 
+    
+    /// @brief The OpenGL context for the MacOS
+    NSOpenGLContext openGLContext;
 
 
     #elif defined(__linux__)
