@@ -125,17 +125,30 @@ void LigidWindow::pollEvents(){
         if(MButtonReceived)
             button = 2;
         
-        //If pressed to the button
+        // If pressed to the button
         int action = this->msg.message == WM_LBUTTONDOWN || this->msg.message == WM_RBUTTONDOWN || this->msg.message ==WM_MBUTTONDOWN;
 
-        //TODO : MODS CALCULATION
-        int mods;
+        // Mods
+        int mods = LIGIDGL_MOD_DEFAULT;
+        if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
+            mods = LIGIDGL_MOD_CONTROL;
+        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
+            mods = LIGIDGL_MOD_ALT;
+        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
+            mods = LIGIDGL_MOD_SHIFT;
+        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
+            mods = LIGIDGL_MOD_CONTROL_ALT;
+        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
+            mods = LIGIDGL_MOD_CONTROL_SHIFT;
+        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
+            mods = LIGIDGL_MOD_CONTROL_ALT_SHIFT;
+            
 
         // Call the mouse button callback function set by the user using message data
         this->mouseButtonCallback(
                                 button, //Received mouse x pos  
                                 action,  //Received mouse y pos
-                                0
+                                mods
                             );
     
     }
@@ -198,6 +211,26 @@ void LigidWindow::makeContextCurrent(){
         // Failed to make context current
         std::cout << "ERROR : Can't make the context current!" << std::endl;
     }
+
+#endif
+
+}
+
+bool LigidWindow::isKeyPressed(char key){
+#if defined(_WIN32) || defined(_WIN64)
+    
+    //* User in windows environment
+    
+    // Returns true if the key is pressed
+    return GetAsyncKeyState(key) & 0x8000;
+
+#elif(__APPLE__)
+
+    //* User in MacOS environment
+    
+#elif(__linux__)
+
+    //* User in Linux environment
 
 #endif
 

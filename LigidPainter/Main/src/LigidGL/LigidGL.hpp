@@ -33,11 +33,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 /* Printable keys */
 #define LIGIDGL_KEY_SPACE              32
-#define LIGIDGL_KEY_APOSTROPHE         39  /* ' */
-#define LIGIDGL_KEY_COMMA              44  /* , */
-#define LIGIDGL_KEY_MINUS              45  /* - */
-#define LIGIDGL_KEY_PERIOD             46  /* . */
-#define LIGIDGL_KEY_SLASH              47  /* / */
+#define LIGIDGL_KEY_APOSTROPHE         39  
+#define LIGIDGL_KEY_COMMA              44  
+#define LIGIDGL_KEY_MINUS              45  
+#define LIGIDGL_KEY_PERIOD             46  
+#define LIGIDGL_KEY_SLASH              47  
 #define LIGIDGL_KEY_0                  48
 #define LIGIDGL_KEY_1                  49
 #define LIGIDGL_KEY_2                  50
@@ -48,8 +48,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define LIGIDGL_KEY_7                  55
 #define LIGIDGL_KEY_8                  56
 #define LIGIDGL_KEY_9                  57
-#define LIGIDGL_KEY_SEMICOLON          59  /* ; */
-#define LIGIDGL_KEY_EQUAL              61  /* = */
+#define LIGIDGL_KEY_SEMICOLON          59  
+#define LIGIDGL_KEY_EQUAL              61  
 #define LIGIDGL_KEY_A                  65
 #define LIGIDGL_KEY_B                  66
 #define LIGIDGL_KEY_C                  67
@@ -76,12 +76,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define LIGIDGL_KEY_X                  88
 #define LIGIDGL_KEY_Y                  89
 #define LIGIDGL_KEY_Z                  90
-#define LIGIDGL_KEY_LEFT_BRACKET       91  /* [ */
-#define LIGIDGL_KEY_BACKSLASH          92  /* \ */
-#define LIGIDGL_KEY_RIGHT_BRACKET      93  /* ] */
-#define LIGIDGL_KEY_GRAVE_ACCENT       96  /* ` */
-#define LIGIDGL_KEY_WORLD_1            161 /* non-US #1 */
-#define LIGIDGL_KEY_WORLD_2            162 /* non-US #2 */
+#define LIGIDGL_KEY_LEFT_BRACKET       91  
+#define LIGIDGL_KEY_BACKSLASH          92  
+#define LIGIDGL_KEY_RIGHT_BRACKET      93  
+#define LIGIDGL_KEY_GRAVE_ACCENT       96  
+#define LIGIDGL_KEY_WORLD_1            161 
+#define LIGIDGL_KEY_WORLD_2            162 
 
 /* Function keys */
 #define LIGIDGL_KEY_ESCAPE             256
@@ -156,6 +156,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define LIGIDGL_KEY_MENU               348
 
 /* Mods */
+#define LIGIDGL_MOD_DEFAULT             0
 #define LIGIDGL_MOD_SHIFT               1
 #define LIGIDGL_MOD_CONTROL             2
 #define LIGIDGL_MOD_ALT                 3
@@ -249,11 +250,11 @@ private:
     *   
     *   Set the function using @ref setMouseButtonCallback function
     * 
-    *   First param : button
+    *   First param : button (LIGIDGL_MOUSE_BUTTON_LEFT , LIGIDGL_MOUSE_BUTTON_RIGHT , LIGIDGL_MOUSE_BUTTON_MIDDLE)
     * 
-    *   Second param : action
+    *   Second param : action (LIGIDGL_PRESS , LIGIDGL_RELEASE)
     *   
-    *   Third param : mods
+    *   Third param : mods (LIGIDGL_MOD_DEFAULT, LIGIDGL_MOD_SHIFT, LIGIDGL_MOD_ALT, LIGIDGL_MOD_CONTROL etc.) 
     */
     void (*mouseButtonCallback)(int, int, int);
 
@@ -343,6 +344,11 @@ public:
     * 
     *   void mouse_btn_callback(int button, int action, int mods){
     *       std::cout << button << ' ' << action << ' ' << mods << std::endl //Print the mouse button data to the terminal
+    * 
+    *       if(button == LIGIDGL_MOUSE_BUTTON_LEFT && action == LIGIDGL_PRESS && mods == LIGIDGL_MOD_DEFAULT){
+    *           Pressed to the left mouse button
+    *           ...
+    *       }
     *   }
     * 
     *   How to use the function :
@@ -351,6 +357,13 @@ public:
     * 
     */
     void setMouseButtonCallback( void (*func)(int,int,int) );
+
+    /*!
+        @brief learn if a key is pressed
+        @param key is LIGIDGL_KEY_<Desired key>
+        @return Returns LIGIDGL_PRESS if the given key is pressed LIGIDGL_RELEASE if not  
+    */
+    bool isKeyPressed(char key);
 };
 
 #endif
