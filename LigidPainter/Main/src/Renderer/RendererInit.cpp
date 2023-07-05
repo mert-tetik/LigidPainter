@@ -33,7 +33,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
 
+#include "LigidGL/LigidGL.hpp"
+
 Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
+    
+
+
     //Hold the videoscale value inside of the scene structure
     scene.videoScale = videoScale;
 
@@ -119,6 +124,8 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
         std::filesystem::create_directory("./tmp");
     }
 
+   
+
 }
 
 
@@ -144,7 +151,7 @@ void Renderer::initGLFW(glm::vec2 videoScale){
         std::cout << "Failed to create GLFW window" << std::endl;
     }
     
-    glfwMakeContextCurrent(context.window);
+    //glfwMakeContextCurrent(context.window);
     
 
     //Pointing a function that is a class member

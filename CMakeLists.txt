@@ -80,6 +80,9 @@ endif(WIN32)
 
 
 
+# Set the character set to Unicode
+target_compile_definitions(Ligid PRIVATE UNICODE _UNICODE)
+
 
 
 # Installer
@@ -148,6 +151,7 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 find_package(OpenGL REQUIRED)
+
 
 # Add include directories for Ligid target
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/LigidPainter/Main/thirdparty/include/assimp)

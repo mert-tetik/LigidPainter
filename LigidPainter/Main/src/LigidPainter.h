@@ -20,18 +20,25 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "../../thirdparty/include/glm/glm.hpp"
 
-#include "Renderer.h"
+//#include "Renderer.h"
+
+#include "LigidGL/LigidGL.hpp"
+
+
 
 class LigidPainter{
 public:
     int run(){
-        glfwInit();//Init the glfw before initializing renderer
-        Renderer renderer(glm::vec2(glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height));
+        //glfwInit();//Init the glfw before initializing renderer
+        //Renderer renderer(glm::vec2(glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height));
         
-        while(!glfwWindowShouldClose(renderer.context.window))
-        {   
-            renderer.render();
-        }
+        LigidWindow ligidWindow;
+        ligidWindow.createWindow(800, 800, "ASDFSAFD"); 
+        
+        //while(!glfwWindowShouldClose(renderer.context.window))
+        //{   
+        //    //renderer.render();
+        //}
         
         glfwTerminate();
         return 1;
