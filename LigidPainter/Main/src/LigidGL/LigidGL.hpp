@@ -195,6 +195,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #endif
 
+namespace LigidGL{
+    void setClipboardText(const std::string& text);
+};
+
+
+
 class LigidWindow
 {
 private:

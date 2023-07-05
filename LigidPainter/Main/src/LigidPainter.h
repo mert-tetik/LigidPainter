@@ -47,7 +47,7 @@ public:
             int h = 0;
             ligidWindow.getWindowSize(w,h);
 
-            std::cout << w << ' ' << h << std::endl;
+            LigidGL::setClipboardText("MEHMET YILDIZ");
         }
         
         //while(!glfwWindowShouldClose(renderer.context.window))
