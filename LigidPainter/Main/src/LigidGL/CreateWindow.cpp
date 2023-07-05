@@ -207,53 +207,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 //  --------------------    MACOS UTIL    --------------------
 
 std::pair<NSWindow, NSOpenGLContext*> MacOSCreateOpenGLWindow(int width, int height, const char* title) {
-    // Create the NSAutoreleasePool for Objective-C memory management
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-    // Create the NSApplication instance
-    [NSApplication sharedApplication];
-
-    // Create the NSWindow instance
-    NSRect contentRect = NSMakeRect(0, 0, width, height);
-    NSUInteger windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask;
-    NSWindow* window = [[NSWindow alloc] initWithContentRect:contentRect
-                                                   styleMask:windowStyle
-                                                     backing:NSBackingStoreBuffered
-                                                       defer:NO];
-    
-    // Set the window title
-    [window setTitle:@(title)];
-
-    // Create the NSOpenGLPixelFormatAttribute array
-    NSOpenGLPixelFormatAttribute attrs[] = {
-        NSOpenGLPFADoubleBuffer,
-        NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
-        NSOpenGLPFAColorSize, 24,
-        NSOpenGLPFAAlphaSize, 8,
-        NSOpenGLPFADepthSize, 24,
-        NSOpenGLPFAStencilSize, 8,
-        0
-    };
-
-    // Create the NSOpenGLPixelFormat instance
-    NSOpenGLPixelFormat* pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
-
-    // Create the NSOpenGLContext instance
-    NSOpenGLContext* context = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:nil];
-
-    // Assign the OpenGL context to the window
-    [window setContentView:[[NSOpenGLView alloc] initWithFrame:contentRect pixelFormat:pixelFormat]];
-    [window makeFirstResponder:window.contentView];
-    [context setView:window.contentView];
-
-    // Make the window and OpenGL context visible
-    [window makeKeyAndOrderFront:nil];
-    [window center];
-
-    // Release the memory allocated for the AutoreleasePool
-    [pool release];
-
-    return std::make_pair(window, context);
+    //TODO : Complete that
 }
 
 #elif defined(__linux__)

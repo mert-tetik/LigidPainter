@@ -109,6 +109,13 @@ void LigidWindow::makeContextCurrent(){
     this->openGLContext = wglCreateContext(hdc);    // Create an OpenGL rendering context
     wglMakeCurrent(hdc, this->openGLContext);       // Make the created context current for the given device context
 
+#elif(__APPLE__)
+    
+    //* User in MacOS environment
+    
+    // Make the OpenGL context current
+    this->openGLContext->makeCurrentContext();
+
 #endif
 
 }
