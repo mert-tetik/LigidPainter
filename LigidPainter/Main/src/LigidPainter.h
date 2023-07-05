@@ -42,6 +42,12 @@ public:
         while (!ligidWindow.shouldClose())
         {
             ligidWindow.pollEvents();
+
+            int w = 0;
+            int h = 0;
+            ligidWindow.getWindowSize(w,h);
+
+            std::cout << w << ' ' << h << std::endl;
         }
         
         //while(!glfwWindowShouldClose(renderer.context.window))

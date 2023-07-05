@@ -242,7 +242,7 @@ bool LigidWindow::isMouseButtonPressed(int button){
     //* User in windows environment
     
     // Returns true if the button is pressed
-    
+
     if (GetAsyncKeyState(VK_LBUTTON) & 0x8000 && button == LIGIDGL_MOUSE_BUTTON_LEFT) {
         return true;
     }
@@ -267,4 +267,24 @@ bool LigidWindow::isMouseButtonPressed(int button){
 
 #endif
 
+}
+
+void LigidWindow::getWindowSize(int& w, int& h){
+#if defined(_WIN32) || defined(_WIN64)
+    
+    RECT windowRect;
+    GetWindowRect(this->window, &windowRect);
+
+    w = windowRect.right - windowRect.left;
+    h = windowRect.bottom - windowRect.top;
+
+#elif(__APPLE__)
+
+    //* User in MacOS environment
+    
+#elif(__linux__)
+
+    //* User in Linux environment
+
+#endif
 }
