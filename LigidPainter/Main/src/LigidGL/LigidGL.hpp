@@ -337,6 +337,10 @@ public:
     */
     void makeContextCurrent();
 
+
+
+    //----------    CALLLBACKS  ----------
+
     /*!
     *  @brief sets the private member variable @ref mousePosCallback function as the func parameter
     *   
@@ -374,6 +378,10 @@ public:
     */
     void setMouseButtonCallback( void (*func)(int,int,int) );
 
+
+
+    //----------    GET - SET   ----------
+
     /*!
     *    @brief learn if a key is pressed
     *    @param key is LIGIDGL_KEY_<Desired key>
@@ -391,13 +399,20 @@ public:
     *    TODO : Move that function to a namespace
     */
     bool isMouseButtonPressed(int button);
-
+    
     /*!
-    *   @brief @return the resolution (size) of the window
+    *   @brief writes the resolution (size) of the window to the parameters
     *   @param w : size of the window in x axis (width) 
     *   @param h : size of the window in y axis (height)
     */
     void getWindowSize(int& w, int& h);
+
+    /*!
+    *   @brief sets the resolution of the window
+    *   @param w : size of the window in x axis (width) 
+    *   @param h : size of the window in y axis (height)
+    */
+    void setWindowSize(const int w, const int h);
 };
 
 #endif

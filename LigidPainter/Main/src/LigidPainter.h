@@ -43,13 +43,6 @@ public:
         {
             ligidWindow.pollEvents();
 
-            int w = 0;
-            int h = 0;
-            ligidWindow.getWindowSize(w,h);
-
-            LigidGL::setClipboardText("LILIGIDPINPER");
-            
-            std::cout << LigidGL::getClipboardText() << std::endl;
         }
         
         //while(!glfwWindowShouldClose(renderer.context.window))

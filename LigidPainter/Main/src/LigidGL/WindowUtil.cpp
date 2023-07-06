@@ -288,3 +288,26 @@ void LigidWindow::getWindowSize(int& w, int& h){
 
 #endif
 }
+
+void LigidWindow::setWindowSize(const int w, const int h){
+#if defined(_WIN32) || defined(_WIN64)
+    //* User in Windows environment
+    
+    // Calculate the new window position
+    int newX = CW_USEDEFAULT; // Use default X position
+    int newY = CW_USEDEFAULT; // Use default Y position
+
+    if (!SetWindowPos(this->window, nullptr, newX, newY, w, h, SWP_NOMOVE | SWP_NOZORDER)) {
+        std::cerr << "Failed to change window size." << std::endl;
+    }
+
+#elif(__APPLE__)
+
+    //* User in MacOS environment
+    
+#elif(__linux__)
+
+    //* User in Linux environment
+
+#endif
+}
