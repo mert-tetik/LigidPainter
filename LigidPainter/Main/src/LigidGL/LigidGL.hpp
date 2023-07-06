@@ -207,6 +207,9 @@ namespace LigidGL{
     
     /*! @brief returns the text from the clipboard*/
     std::string getClipboardText();
+
+    /*! @brief writes resolution & refresh rate of the primary monitor to the reference parameters */
+    void getPrimaryMonitorData(int& monitorWidth, int& monitorHeight, int& monitorRefreshRate);
 };
 
 

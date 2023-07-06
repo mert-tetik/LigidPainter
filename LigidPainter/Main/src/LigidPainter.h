@@ -40,7 +40,13 @@ public:
         ligidWindow.setMouseButtonCallback(mouseBtnCallback);
 
         ligidWindow.setWindowPos(1000,500);
-        
+
+        int monitorWidth = 0;
+        int monitorHeight = 0;
+        int monitorRefreshRate = 0;
+
+        LigidGL::getPrimaryMonitorData(monitorWidth, monitorHeight, monitorRefreshRate);
+
         while (!ligidWindow.shouldClose())
         {
             ligidWindow.pollEvents();
@@ -49,9 +55,9 @@ public:
             int x = 0;
             int y = 0;
 
-            ligidWindow.getFramebufferSize(x, y);
+            //ligidWindow.getFramebufferSize(x, y);
         
-            std::cout << x << ' ' << y << std::endl;
+            //std::cout << x << ' ' << y << std::endl;
         }
         
         //while(!glfwWindowShouldClose(renderer.context.window))
