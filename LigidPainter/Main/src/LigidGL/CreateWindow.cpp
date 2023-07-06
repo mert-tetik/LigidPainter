@@ -54,8 +54,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #endif
 
+/* --Empty function used to init the LigidWindow private callback functions-- */ 
 void emptyFunc2int(int, int){}
-    
 void emptyFunc3int(int, int, int){}
 
 int LigidWindow::createWindow(
@@ -145,6 +145,7 @@ int LigidWindow::createWindow(
 
     this->mousePosCallback = emptyFunc2int;
     this->mouseButtonCallback = emptyFunc3int;
+    this->keyCallback = emptyFunc3int;
 
     return 1;
 }

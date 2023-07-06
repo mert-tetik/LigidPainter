@@ -433,6 +433,27 @@ public:
     */
     void setMouseButtonCallback( void (*func)(int,int,int) );
 
+    /*!
+    *  @brief sets the private member variable @ref keyCallback function as the func parameter
+    *   
+    *   Example mouse button callback function :
+    * 
+    *   void key_callback(int key, int action, int mods){
+    *       std::cout << button << ' ' << action << ' ' << mods << std::endl //Print the key data to the terminal
+    * 
+    *       if(key == LIGID_KEY_A && action == LIGIDGL_PRESS && mods == LIGIDGL_MOD_DEFAULT){
+    *           Pressed to the 'A' key
+    *           ...
+    *       }
+    *   }
+    * 
+    *   How to use the function :
+    * 
+    *   setMouseButtonCallback(mouse_btn_callback);
+    * 
+    */
+    void setKeyCallback( void (*func)(int,int,int) );
+
 
 
     //----------    GET - SET   ----------

@@ -153,6 +153,48 @@ void LigidWindow::pollEvents(){
     
     }
 
+
+    // If received a key message
+    if( msg.message == WM_KEYDOWN || msg.message == WM_KEYFIRST || msg.message == WM_KEYUP)
+    {
+        
+        // The key code
+        int keyCode = static_cast<int>(msg.wParam);
+        
+        // The action
+        int action = 0;
+        if(msg.message == WM_KEYFIRST)
+            action = LIGIDGL_PRESS;
+        if(msg.message == WM_KEYDOWN)
+            action = LIGIDGL_REPEAT;
+        if(msg.message == WM_KEYUP)
+            action = LIGIDGL_RELEASE;
+
+        // Mods
+        int mods = LIGIDGL_MOD_DEFAULT;
+        if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
+            mods = LIGIDGL_MOD_CONTROL;
+        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
+            mods = LIGIDGL_MOD_ALT;
+        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
+            mods = LIGIDGL_MOD_SHIFT;
+        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
+            mods = LIGIDGL_MOD_CONTROL_ALT;
+        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
+            mods = LIGIDGL_MOD_CONTROL_SHIFT;
+        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
+            mods = LIGIDGL_MOD_CONTROL_ALT_SHIFT;
+            
+
+        // Call the key callback function set by the user using message data
+        this->keyCallback(
+                                keyCode, //Received mouse x pos  
+                                action,  //Received mouse y pos
+                                mods
+                            );
+    
+    }
+
 #endif
 }
 

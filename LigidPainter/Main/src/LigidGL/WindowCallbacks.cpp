@@ -50,3 +50,7 @@ void LigidWindow::setMousePosCallback(void (*mousePosCallback)(int, int)) {
 void LigidWindow::setMouseButtonCallback(void (*mouseButtonCallback)(int, int, int)) {
     this->mouseButtonCallback = mouseButtonCallback;
 }
+
+void LigidWindow::setKeyCallback(void (*keyCallback)(int, int, int)) {
+    this->keyCallback = keyCallback;
+}
