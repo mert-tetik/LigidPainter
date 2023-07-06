@@ -54,3 +54,7 @@ void LigidWindow::setMouseButtonCallback(void (*mouseButtonCallback)(int, int, i
 void LigidWindow::setKeyCallback(void (*keyCallback)(int, int, int)) {
     this->keyCallback = keyCallback;
 }
+
+void LigidWindow::setWindowSizeCallback(void (*windowSizeCallback)(int, int)) {
+    this->windowSizeCallback = windowSizeCallback;
+}

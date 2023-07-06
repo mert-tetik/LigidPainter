@@ -146,6 +146,7 @@ int LigidWindow::createWindow(
     this->mousePosCallback = emptyFunc2int;
     this->mouseButtonCallback = emptyFunc3int;
     this->keyCallback = emptyFunc3int;
+    this->windowSizeCallback = emptyFunc2int;
 
     return 1;
 }

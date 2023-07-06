@@ -195,6 +195,13 @@ void LigidWindow::pollEvents(){
     
     }
 
+    // Check if the window size has changed
+    if (msg.message == WM_SIZE) {
+        
+        this->windowSizeCallback(LOWORD(msg.lParam), HIWORD(msg.lParam));
+
+    }
+
 #endif
 }
 

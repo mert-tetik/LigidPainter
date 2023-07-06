@@ -461,10 +461,30 @@ public:
     * 
     *   How to use the function :
     * 
-    *   setMouseButtonCallback(mouse_btn_callback);
+    *   setMouseButtonCallback(key_callback);
     * 
     */
     void setKeyCallback( void (*func)(int,int,int) );
+
+    /*!
+    *  @brief sets the private member variable @ref windowSizeCallback function as the func parameter
+    *   
+    *   Example window size callback function :
+    * 
+    *   void window_size_callback(int windowSizeX, int windowSizeY){
+    *       std::cout << windowSizeX << ' ' << windowSizeY << std::endl //Print the window size data to the terminal
+    *       
+    *       Do smt with the window size values
+    *       ...  
+    *  
+    *   }
+    * 
+    *   How to use the function :
+    * 
+    *   setWindowSizeCallback(window_size_callback);
+    * 
+    */
+    void setWindowSizeCallback( void (*func)(int,int) );
 
 
 
