@@ -320,6 +320,44 @@ void LigidWindow::setWindowSize(
 #endif
 }
 
+void LigidWindow::getFramebufferSize(
+                                    int& w, //Width of the framebuffer 
+                                    int& h  //Height of the framebuffer
+                                )
+{
+#if defined(_WIN32) || defined(_WIN64)
+    
+    if (this->window == nullptr || this->openGLContext == nullptr) {
+        w = 0;
+        w = 0;
+        return;
+    }
+
+    // Get the device context (DC) associated with the HWND
+    HDC hDC = GetDC(this->window);
+
+    // Make the OpenGL rendering context current
+    wglMakeCurrent(hDC, this->openGLContext);
+
+    // Get the framebuffer size
+    w = GetDeviceCaps(hDC, HORZRES);
+    h = GetDeviceCaps(hDC, VERTRES);
+
+    // Cleanup
+    wglMakeCurrent(nullptr, nullptr);
+    ReleaseDC(this->window, hDC);
+
+#elif(__APPLE__)
+
+    //* User in MacOS environment
+    
+#elif(__linux__)
+
+    //* User in Linux environment
+
+#endif
+}
+
 void LigidWindow::getWindowPos(
                                 int& x, //Position of the window in the x axis 
                                 int& y  //Position of the window in the y axis

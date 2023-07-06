@@ -416,6 +416,7 @@ public:
     *   ...
     */
     void getWindowSize(int& w, int& h);
+    
 
     /*!
     *   @brief sets the resolution of the window
@@ -423,6 +424,27 @@ public:
     *   @param h : size of the window in y axis (height)
     */
     void setWindowSize(const int w, const int h);
+
+    /*!
+    *   @brief writes the resolution (size) of the framebuffer to the parameters
+    *   @param w : size of the framebuffer in x axis (width) 
+    *   @param h : size of the framebuffer in y axis (height)
+    * 
+    *   TODO : Is not functional
+    * 
+    *   Use the framebuffer size as the window size. 
+    * 
+    *   Use that way :
+    * 
+    *   int framebufferWidth = 0;
+    *   int framebbuferHeight = 0;
+    * 
+    *   myLigidWindow.getWindowSize(framebufferWidth, framebbuferHeight);
+    * 
+    *   do smt with the width & height values
+    *   ...
+    */
+    void getFramebufferSize(int& w, int& h);
     
     /*!
     *   @brief writes the position data of the window to the parameters

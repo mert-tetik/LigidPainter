@@ -49,7 +49,7 @@ public:
             int x = 0;
             int y = 0;
 
-            ligidWindow.getWindowPos(x, y);
+            ligidWindow.getFramebufferSize(x, y);
         
             std::cout << x << ' ' << y << std::endl;
         }
