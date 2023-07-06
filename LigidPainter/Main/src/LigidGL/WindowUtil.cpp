@@ -54,14 +54,14 @@ bool LigidWindow::shouldClose(){
         The next two parameters (wMsgFilterMin and wMsgFilterMax) filter the messages to be retrieved.
         In this case, they are set to 0, which means all messages are retrieved.
 
-        Returns false if there are no messages which means user is trying to close the window
+        Returns false if there are no messages which means user is trying to close the window (getMessage function returned -1)
     */
-    return !GetMessage(
+    return GetMessage(
                         &this->msg, 
                         this->window, 
                         0, 
                         0
-                    );
+                    ) == -1;
 #endif
 
 }
