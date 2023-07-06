@@ -39,7 +39,7 @@ public:
 
         ligidWindow.setMouseButtonCallback(mouseBtnCallback);
 
-        ligidWindow.setWindowPos(1000,500);
+        ligidWindow.setWindowPos(500,200);
 
         //int monitorWidth = 0;
         //int monitorHeight = 0;
@@ -47,6 +47,7 @@ public:
 //
         //LigidGL::getPrimaryMonitorData(monitorWidth, monitorHeight, monitorRefreshRate);
 
+        ligidWindow.style(3);
 
         while (!ligidWindow.shouldClose())
         {

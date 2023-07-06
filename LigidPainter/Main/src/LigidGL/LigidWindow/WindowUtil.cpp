@@ -510,3 +510,33 @@ void LigidWindow::setCursor(LigidCursor cursor){
 
 #endif
 }
+
+void LigidWindow::style(const int styleKey){
+    
+    int64_t windowStyle = WS_CAPTION;
+    
+    //Default
+    if(styleKey == 0)
+        windowStyle = WS_OVERLAPPEDWINDOW;
+    
+    //Borderless
+    if(styleKey == 1)
+        windowStyle = WS_POPUP;
+    
+    //Caption
+    if(styleKey == 2)
+        windowStyle = WS_CAPTION;
+    
+    //Full screen
+    if(styleKey == 3)
+        windowStyle = WS_POPUP;
+    
+
+    SetWindowLongPtr(this->window, GWL_STYLE, windowStyle); //3d argument=style
+    
+    //Full screen
+    if(styleKey == 3)
+        SetWindowPos(this->window, nullptr, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), SWP_SHOWWINDOW);
+    else
+        SetWindowPos(this->window, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE); 
+}

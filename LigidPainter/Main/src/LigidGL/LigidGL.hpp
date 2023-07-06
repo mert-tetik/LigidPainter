@@ -426,6 +426,14 @@ public:
     */
     void makeContextCurrent();
 
+    /*!
+        @brief changes the style of the window
+
+        @param styleKey 0 : Default | 1 : Borderless | 2 : Caption Only | 3 : FullScreen
+    */
+    void style(const int styleKey);
+
+
 
 
     //----------    CALLLBACKS  ----------

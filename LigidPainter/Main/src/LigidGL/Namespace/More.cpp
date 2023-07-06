@@ -51,3 +51,4 @@ void LigidGL::setSwapInterval(int interval){
     if (wglSwapIntervalEXT != nullptr) {
         wglSwapIntervalEXT(interval);
     }
+}
