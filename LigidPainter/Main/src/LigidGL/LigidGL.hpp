@@ -316,6 +316,19 @@ private:
     */
     void (*mouseButtonCallback)(int, int, int);
 
+    /*!
+    *   @brief The key callback function of the window set by the user.
+    *   
+    *   Set the function using @ref setKeyCallback function
+    * 
+    *   First param : key (LIGIDGL_KEY_<desired key>)
+    * 
+    *   Second param : action (LIGIDGL_PRESS , LIGIDGL_RELEASE)
+    *   
+    *   Third param : mods (LIGIDGL_MOD_DEFAULT, LIGIDGL_MOD_SHIFT, LIGIDGL_MOD_ALT, LIGIDGL_MOD_CONTROL etc.) 
+    */
+    void (*keyCallback)(int, int, int);
+
 public:
     /*! 
     * @brief Default constructor for the LigidWindows
