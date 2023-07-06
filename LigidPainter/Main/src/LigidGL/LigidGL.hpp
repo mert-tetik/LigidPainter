@@ -216,6 +216,30 @@ namespace LigidGL{
 };
 
 
+/// @brief Structure representing a custom cursor.
+/// Call the create cursor right after initializings
+struct LigidCursor
+{
+public:
+    /// @brief Function to create a custom cursor
+    /// @param cursorPixelData Size must be cursorWidth * cursorHeight * 4 
+    void createCursor(int cursorWidth, int cursorHeight, int cursorHotspotX, int cursorHotspotY, char* cursorPixelData);
+
+private:
+    // Platform-specific cursor handle
+    #if defined(_WIN32) || defined(_WIN64)
+    // User has Windows
+    HCURSOR cursorHandle;
+    #elif defined(__APPLE__)
+    // User has MacOS
+    // Add MacOS-specific cursor handle or implementation here
+    #elif defined(__linux__)
+    // User has Linux
+    // Add Linux-specific cursor handle or implementation here
+    #endif
+};
+
+
 
 class LigidWindow
 {
@@ -480,6 +504,7 @@ public:
     * 
     */
     void setWindowPos(const int x, const int y);
+    
 };
 
 #endif

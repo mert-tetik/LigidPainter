@@ -413,4 +413,27 @@ void LigidWindow::setWindowPos(
 
 #endif
 }
+void LigidWindow::setCursor(
+                                int cursorWidth, 
+                                int cursorHeight, 
+                                int cursorHotspotX,
+                                int cursorHotspotY, 
+                                char* cursorPixelData
+                            )
+{
+#if defined(_WIN32) || defined(_WIN64)
+    //* User in Windows environment
+    
+
+
+#elif(__APPLE__)
+
+    //* User in MacOS environment
+    
+#elif(__linux__)
+
+    //* User in Linux environment
+
+#endif
+}
 
