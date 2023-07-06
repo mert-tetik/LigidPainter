@@ -213,6 +213,12 @@ namespace LigidGL{
 
     /*! @brief returns the current time since the program started in seconds */
     double getTime();
+
+    /*! 
+    *   @brief Sets the buffer swap interval for the current context. 
+    *   @param interval : 1 = VSync & 0 = no VSync 
+    */
+    void setSwapInterval(int interval);
 };
 
 
@@ -249,6 +255,7 @@ private:
     // User has Linux
     // Add Linux-specific cursor handle or implementation here
     #endif
+    
 };
 
 

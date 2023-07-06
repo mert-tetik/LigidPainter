@@ -20,10 +20,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "LigidGL/LigidGL.hpp"
 
+#include <GL/GL.h>
+#include <GL/GLU.h>
+
 
 #if defined(_WIN32) || defined(_WIN64)
 //User has Windows
 #include <Windows.h>
+
 
 #elif defined(__APPLE__)
 //User has MacOS
@@ -38,10 +42,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #endif
 
+
 void LigidWindow::swapBuffers(){
     
     HDC hDC = GetDC(this->window);
-    
+
     if (hDC != nullptr) {
         wglSwapLayerBuffers(hDC, WGL_SWAP_MAIN_PLANE);
         ReleaseDC(this->window, hDC);
