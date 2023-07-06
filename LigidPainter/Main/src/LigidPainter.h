@@ -41,11 +41,12 @@ public:
 
         ligidWindow.setWindowPos(1000,500);
 
-        int monitorWidth = 0;
-        int monitorHeight = 0;
-        int monitorRefreshRate = 0;
+        //int monitorWidth = 0;
+        //int monitorHeight = 0;
+        //int monitorRefreshRate = 0;
+//
+        //LigidGL::getPrimaryMonitorData(monitorWidth, monitorHeight, monitorRefreshRate);
 
-        LigidGL::getPrimaryMonitorData(monitorWidth, monitorHeight, monitorRefreshRate);
 
         while (!ligidWindow.shouldClose())
         {
@@ -55,6 +56,7 @@ public:
             int x = 0;
             int y = 0;
 
+        std::cout << LigidGL::getTime() << std::endl;
             //ligidWindow.getFramebufferSize(x, y);
         
             //std::cout << x << ' ' << y << std::endl;

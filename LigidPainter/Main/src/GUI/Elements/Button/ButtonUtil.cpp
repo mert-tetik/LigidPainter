@@ -47,7 +47,6 @@ void Button::render(
     shader.setVec3("pos"    ,     resultPos );
     shader.setVec2("scale"  ,     resultScale);
     
-
     if(clickState1)//If button is pressed
         shader.setVec4("properties.color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
     else

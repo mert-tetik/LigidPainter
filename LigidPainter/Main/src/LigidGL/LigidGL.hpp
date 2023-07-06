@@ -210,6 +210,9 @@ namespace LigidGL{
 
     /*! @brief writes resolution & refresh rate of the primary monitor to the reference parameters */
     void getPrimaryMonitorData(int& monitorWidth, int& monitorHeight, int& monitorRefreshRate);
+
+    /*! @brief returns the current time since the program started in seconds */
+    double getTime();
 };
 
 
