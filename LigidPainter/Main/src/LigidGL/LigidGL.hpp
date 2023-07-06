@@ -429,6 +429,8 @@ public:
     *   @param w : position of the window in x axis  
     *   @param h : position of the window in y axis 
     * 
+    *   Position of the window : Position of the Left-Top corner 
+    * 
     *   Use that way :
     * 
     *   int windowPosX = 0;
@@ -440,6 +442,16 @@ public:
     *   ...
     */
     void getWindowPos(int& x, int& y);
+
+    /*!
+    *   @brief sets the position of the window
+    *   @param w : position of the window in x axis (can be negative) 
+    *   @param h : position of the window in y axis (can be negative)
+    * 
+    *   Position of the window : Position of the Left-Top corner 
+    * 
+    */
+    void setWindowPos(const int x, const int y);
 };
 
 #endif

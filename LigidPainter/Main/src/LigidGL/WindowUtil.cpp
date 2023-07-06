@@ -302,10 +302,10 @@ void LigidWindow::setWindowSize(
     //* User in Windows environment
     
     // Calculate the new window position
-    int newX = CW_USEDEFAULT; // Use default X position
-    int newY = CW_USEDEFAULT; // Use default Y position
+    int originalX = CW_USEDEFAULT; // Use default X position
+    int originalY = CW_USEDEFAULT; // Use default Y position
 
-    if (!SetWindowPos(this->window, nullptr, newX, newY, w, h, SWP_NOMOVE | SWP_NOZORDER)) {
+    if (!SetWindowPos(this->window, nullptr, originalX, originalY, w, h, SWP_NOMOVE | SWP_NOZORDER)) {
         std::cerr << "Failed to change window size." << std::endl;
     }
 
@@ -337,6 +337,33 @@ void LigidWindow::getWindowPos(
     // Write the position data to the reference parameters
     x = windowRect.left;
     y = windowRect.top;
+
+#elif(__APPLE__)
+
+    //* User in MacOS environment
+    
+#elif(__linux__)
+
+    //* User in Linux environment
+
+#endif
+}
+
+void LigidWindow::setWindowPos(
+                                const int x, //Position of the window in the x axis 
+                                const int y  //Position of the window in the y axis
+                            )
+{
+#if defined(_WIN32) || defined(_WIN64)
+    //* User in Windows environment
+    
+    // Calculate the new window size
+    int originalW = CW_USEDEFAULT; // Use default width
+    int originalH = CW_USEDEFAULT; // Use default height
+
+    if (!SetWindowPos(this->window, nullptr, x, y, originalW, originalH, SWP_NOSIZE | SWP_NOZORDER)) {
+        std::cerr << "Failed to change the window position." << std::endl;
+    }
 
 #elif(__APPLE__)
 

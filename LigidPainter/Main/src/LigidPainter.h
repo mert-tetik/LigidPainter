@@ -38,6 +38,8 @@ public:
         ligidWindow.createWindow(800, 800, "ASDFSAFD"); 
 
         ligidWindow.setMouseButtonCallback(mouseBtnCallback);
+
+        ligidWindow.setWindowPos(1000,500);
         
         while (!ligidWindow.shouldClose())
         {
