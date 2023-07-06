@@ -364,6 +364,9 @@ public:
     */
     int createWindow(int w, int h, std::string title);
 
+    /*! @brief Swaps the front and back buffers of the window. */
+    void swapBuffers();
+
     /*!
     *   @brief @return Returns true if window should close.
     *    

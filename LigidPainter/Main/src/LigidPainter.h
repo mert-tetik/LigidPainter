@@ -52,14 +52,7 @@ public:
         {
             ligidWindow.pollEvents();
 
-
-            int x = 0;
-            int y = 0;
-
-        std::cout << LigidGL::getTime() << std::endl;
-            //ligidWindow.getFramebufferSize(x, y);
-        
-            //std::cout << x << ' ' << y << std::endl;
+            ligidWindow.swapBuffers();
         }
         
         //while(!glfwWindowShouldClose(renderer.context.window))

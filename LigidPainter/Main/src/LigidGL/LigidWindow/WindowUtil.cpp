@@ -38,6 +38,16 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #endif
 
+void LigidWindow::swapBuffers(){
+    
+    HDC hDC = GetDC(this->window);
+    
+    if (hDC != nullptr) {
+        wglSwapLayerBuffers(hDC, WGL_SWAP_MAIN_PLANE);
+        ReleaseDC(this->window, hDC);
+    }
+}
+
 
 bool LigidWindow::shouldClose(){
 
