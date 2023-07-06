@@ -43,6 +43,13 @@ public:
         {
             ligidWindow.pollEvents();
 
+
+            int x = 0;
+            int y = 0;
+
+            ligidWindow.getWindowPos(x, y);
+        
+            std::cout << x << ' ' << y << std::endl;
         }
         
         //while(!glfwWindowShouldClose(renderer.context.window))

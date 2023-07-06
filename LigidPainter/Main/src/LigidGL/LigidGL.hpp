@@ -404,6 +404,16 @@ public:
     *   @brief writes the resolution (size) of the window to the parameters
     *   @param w : size of the window in x axis (width) 
     *   @param h : size of the window in y axis (height)
+    * 
+    *   Use that way :
+    * 
+    *   int windowWidth = 0;
+    *   int windowHeight = 0;
+    * 
+    *   myLigidWindow.getWindowSize(windowWidth, windowHeight);
+    * 
+    *   do smt with the width & height values
+    *   ...
     */
     void getWindowSize(int& w, int& h);
 
@@ -413,6 +423,23 @@ public:
     *   @param h : size of the window in y axis (height)
     */
     void setWindowSize(const int w, const int h);
+    
+    /*!
+    *   @brief writes the position data of the window to the parameters
+    *   @param w : position of the window in x axis  
+    *   @param h : position of the window in y axis 
+    * 
+    *   Use that way :
+    * 
+    *   int windowPosX = 0;
+    *   int windowPosY = 0;
+    * 
+    *   myLigidWindow.getWindowPos(windowPosX, windowPosY);
+    * 
+    *   do smt with the position values
+    *   ...
+    */
+    void getWindowPos(int& x, int& y);
 };
 
 #endif

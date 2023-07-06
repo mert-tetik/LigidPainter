@@ -269,7 +269,11 @@ bool LigidWindow::isMouseButtonPressed(int button){
 
 }
 
-void LigidWindow::getWindowSize(int& w, int& h){
+void LigidWindow::getWindowSize(
+                                    int& w, //Width of the window 
+                                    int& h  //Height of the window
+                                )
+{
 #if defined(_WIN32) || defined(_WIN64)
     
     RECT windowRect;
@@ -289,7 +293,11 @@ void LigidWindow::getWindowSize(int& w, int& h){
 #endif
 }
 
-void LigidWindow::setWindowSize(const int w, const int h){
+void LigidWindow::setWindowSize(
+                                    const int w, //Width of the window 
+                                    const int h //Height of the window
+                                )
+{
 #if defined(_WIN32) || defined(_WIN64)
     //* User in Windows environment
     
@@ -311,3 +319,33 @@ void LigidWindow::setWindowSize(const int w, const int h){
 
 #endif
 }
+
+void LigidWindow::getWindowPos(
+                                int& x, //Position of the window in the x axis 
+                                int& y  //Position of the window in the y axis
+                            )
+{
+#if defined(_WIN32) || defined(_WIN64)
+    //* User in Windows environment
+    
+    // Get the window position
+    RECT windowRect;
+    if (!GetWindowRect(this->window, &windowRect)) {
+        std::cerr << "Failed to get window position." << std::endl;
+    }
+
+    // Write the position data to the reference parameters
+    x = windowRect.left;
+    y = windowRect.top;
+
+#elif(__APPLE__)
+
+    //* User in MacOS environment
+    
+#elif(__linux__)
+
+    //* User in Linux environment
+
+#endif
+}
+
