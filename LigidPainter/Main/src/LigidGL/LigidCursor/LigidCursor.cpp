@@ -71,3 +71,18 @@ void LigidCursor::createCursor(int cursorWidth, int cursorHeight, int cursorHots
 
 #endif
 }
+
+#if defined(_WIN32) || defined(_WIN64)
+//User has Windows
+
+HCURSOR LigidCursor::getCursorHandle(){
+    return this->cursorHandle;
+}
+
+#elif defined(__APPLE__)
+//User has MacOS
+
+#elif defined(__linux__)
+//User has Linux
+
+#endif

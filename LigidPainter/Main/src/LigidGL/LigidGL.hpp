@@ -225,6 +225,18 @@ public:
     /// @param cursorPixelData Size must be cursorWidth * cursorHeight * 4 
     void createCursor(int cursorWidth, int cursorHeight, int cursorHotspotX, int cursorHotspotY, char* cursorPixelData);
 
+    // Platform-specific 
+    #if defined(_WIN32) || defined(_WIN64)
+    // User has Windows
+    HCURSOR getCursorHandle(); // Returns the cursor handle for the Windows OS
+    #elif defined(__APPLE__)
+    // User has MacOS
+    // Add MacOS-specific cursor handle or implementation here
+    #elif defined(__linux__)
+    // User has Linux
+    // Add Linux-specific cursor handle or implementation here
+    #endif
+
 private:
     // Platform-specific cursor handle
     #if defined(_WIN32) || defined(_WIN64)
@@ -505,6 +517,36 @@ public:
     */
     void setWindowPos(const int x, const int y);
     
+    /*!
+    *   @brief Sets the cursor of the window
+    *
+    *   Use that way : 
+    * 
+    *   LigidCursor pointerCursor;
+    *   LigidCursor arrowCursor;
+    * 
+    *   int cursorW = 50;
+    *   int cursorH = 50;
+    * 
+    *   char* pointerCursorPixels = new char[cursorW * cursorH * 4];
+    *   char* arrowCursorPixels = new char[cursorW * cursorH * 4];
+    * 
+    *   imageFileLoader.load("path/To/Pointer/Cursor/Image/File.ico", cursorH,cursorW,4, &pointerCursorPixels);
+    *   imageFileLoader.load("path/To/Arrow/Cursor/Image/File.ico", cursorH,cursorW,4, &arrowCursorPixels);
+    * 
+    *   pointerCursor.createCursor(cursorW, cursorH, 0, 0, pointerCursorPixels);
+    *   arrowCursor.createCursor(cursorW, cursorH, 0, 0, arrowCursorPixels);
+    * 
+    *   Then in your rendering loop : 
+    * 
+    *   while(!ligidWindow.shouldClose()){
+    *       if(mouseOnAnyButton)
+    *           ligidWindow.setCursor(pointerCursor);
+    *       else
+    *           ligidWindow.setCursor(arrowCursor);
+    *   }
+    */
+    void setCursor(LigidCursor cursor);
 };
 
 #endif

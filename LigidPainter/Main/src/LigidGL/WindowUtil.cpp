@@ -413,18 +413,13 @@ void LigidWindow::setWindowPos(
 
 #endif
 }
-void LigidWindow::setCursor(
-                                int cursorWidth, 
-                                int cursorHeight, 
-                                int cursorHotspotX,
-                                int cursorHotspotY, 
-                                char* cursorPixelData
-                            )
-{
+
+void LigidWindow::setCursor(LigidCursor cursor){
 #if defined(_WIN32) || defined(_WIN64)
     //* User in Windows environment
     
-
+    SetCursor(cursor.getCursorHandle());
+    SetClassLongPtr(this->window, GCLP_HCURSOR, reinterpret_cast<LONG_PTR>(cursor.getCursorHandle()));
 
 #elif(__APPLE__)
 
@@ -436,4 +431,3 @@ void LigidWindow::setCursor(
 
 #endif
 }
-
