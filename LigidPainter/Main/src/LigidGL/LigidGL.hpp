@@ -347,6 +347,18 @@ private:
     *   
     */
     void (*windowSizeCallback)(int, int);
+    
+    /*!
+    *   @brief The mouse scroll callback function of the window set by the user.
+    *   
+    *   Set the function using @ref setScrollCallback function
+    * 
+    *   First param : xOffset
+    * 
+    *   Second param : yOffset
+    *   
+    */
+    void (*scrollCallback)(double, double);
 
 public:
     /*! 
@@ -495,6 +507,29 @@ public:
     * 
     */
     void setWindowSizeCallback( void (*func)(int,int) );
+    
+    /*!
+    *  @brief sets the private member variable @ref scrollCallback function as the func parameter
+    *   
+    *   Example window size callback function :
+    * 
+    *   void scroll_callback(double xOffset, int yOffset){
+    *       
+    *       std::cout << xOffset << ' ' << yOffset << std::endl //Print the scroll data to the terminal
+    *       
+    *       Do smt with the scroll values
+    *       ...  
+    *  
+    *   }
+    * 
+    *   How to use the function :
+    * 
+    *   setScrollCallback(scroll_callback);
+    * 
+    *   (Use the yOffset for the basic mouse scroll)
+    * 
+    */
+    void setScrollCallback( void (*func)(double,double) );
 
 
 

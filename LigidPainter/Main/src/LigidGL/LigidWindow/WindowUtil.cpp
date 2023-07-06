@@ -207,7 +207,7 @@ void LigidWindow::pollEvents(){
                                 action,  //Received mouse y pos
                                 mods
                             );
-    
+
     }
 
     // Check if the window size has changed
@@ -216,6 +216,21 @@ void LigidWindow::pollEvents(){
         this->windowSizeCallback(LOWORD(msg.lParam), HIWORD(msg.lParam));
 
     }
+
+    // Check if mouse/touchpad scrolled horizontally
+    if (msg.message == WM_MOUSEHWHEEL) {
+        double delta = GET_WHEEL_DELTA_WPARAM(msg.wParam);
+
+        this->scrollCallback(delta, 0);
+    } 
+    
+    // Check if mouse scrolled vertically
+    else if (msg.message == WM_MOUSEWHEEL) {
+        double delta = GET_WHEEL_DELTA_WPARAM(msg.wParam);
+
+        this->scrollCallback(0, delta);
+    }
+    
 
 #endif
 }

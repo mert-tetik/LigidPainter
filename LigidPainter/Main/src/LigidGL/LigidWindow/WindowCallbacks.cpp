@@ -58,3 +58,7 @@ void LigidWindow::setKeyCallback(void (*keyCallback)(int, int, int)) {
 void LigidWindow::setWindowSizeCallback(void (*windowSizeCallback)(int, int)) {
     this->windowSizeCallback = windowSizeCallback;
 }
+
+void LigidWindow::setScrollCallback(void (*scrollCallback)(double, double)) {
+    this->scrollCallback = scrollCallback;
+}
