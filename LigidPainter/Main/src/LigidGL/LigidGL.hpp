@@ -195,8 +195,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #endif
 
+/*!
+*   @brief Contains functions might help you related to your window-OpenGL context. 
+*
+*   See the LigidWindow 
+*/  
 namespace LigidGL{
+
+    /*! @brief copies the param text to the clipboard*/
     void setClipboardText(const std::string& text);
+    
+    /*! @brief returns the text from the clipboard*/
+    std::string getClipboardText();
 };
 
 
