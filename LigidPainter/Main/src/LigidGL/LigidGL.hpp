@@ -328,6 +328,18 @@ private:
     *   Third param : mods (LIGIDGL_MOD_DEFAULT, LIGIDGL_MOD_SHIFT, LIGIDGL_MOD_ALT, LIGIDGL_MOD_CONTROL etc.) 
     */
     void (*keyCallback)(int, int, int);
+ 
+    /*!
+    *   @brief The window size callback function of the window set by the user.
+    *   
+    *   Set the function using @ref setWindowSizeCallback function
+    * 
+    *   First param : windowSizeX
+    * 
+    *   Second param : windowSizeY
+    *   
+    */
+    void (*windowSizeCallback)(int, int);
 
 public:
     /*! 
