@@ -15,7 +15,7 @@
  */
  
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -70,7 +70,7 @@ NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPal
     panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
 }
 
-void NewTextureDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,glm::vec2 videoScale,int textureRes){
+void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,glm::vec2 videoScale,int textureRes){
     
     dialogControl.updateStart(buttonShader);
 
@@ -88,7 +88,7 @@ void NewTextureDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalet
         Color clr(check);
 
         if(check)
-            panel.sections[0].elements[0].button.color = glm::vec4(clr.RGB_normalized(),1.f);
+            panel.sections[0].elements[0].button.color = glm::vec4(clr.getRGB_normalized(),1.f);
     }
 
     //Clicked to the create button
@@ -134,7 +134,7 @@ void NewTextureDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalet
     }
     
     //End the dialog
-    if((panel.sections[0].elements[2].button.hover && mouse.LClick) || glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || (!panel.hover && mouse.LClick)){
+    if((panel.sections[0].elements[2].button.hover && mouse.LClick) || context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && mouse.LClick)){
         panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
         panel.sections[0].elements[1].textBox.text = "NewTexture";
         dialogControl.unActivate();

@@ -29,7 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -45,7 +45,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 Mouse::Mouse(){}
 
 /// @brief Main constructor 
-Mouse::Mouse(GLFWwindow* window){
+Mouse::Mouse(LigidWindow window){
 	this->window = window;
 }
 
@@ -54,40 +54,43 @@ void Mouse::loadCursors(){
 	//Help importing texture
 	Texture texture;
 
-	GLFWimage images[1];
-	int channels = 0;
-	
-	images[0].pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/PointerIcon.png", images[0].width, images[0].height, channels, 4,false); //rgba channels 
-	pointerCursor = glfwCreateCursor(images,15,0);
+	int cursorScaleX = 50;
+	int cursorScaleY = 50;
+	int channel = 0;
+
+	unsigned char* pixels = new unsigned char[50 * 50 * 4];
+
+	pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/PointerIcon.png", cursorScaleX, cursorScaleY, channel , 4,false); //rgba 0 
+	pointerCursor.createCursor(cursorScaleX, cursorScaleY, 15, 0, pixels);
 	activeCursor = pointerCursor;
-	//stbi_image_free(images[0].pixels);
+	//stbi_image_free(pixels);
 
-	images[0].pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/DefaultIcon.png", images[0].width, images[0].height, channels, 4,false);
-	defaultCursor = glfwCreateCursor(images,7,0);
-	//stbi_image_free(images[0].pixels);
+	pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/DefaultIcon.png", cursorScaleX, cursorScaleY, channel , 4,false);
+	defaultCursor.createCursor(cursorScaleX, cursorScaleY, 7,0 , pixels);
+	//stbi_image_free(pixels);
 
-	images[0].pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/hSlideCursor.png", images[0].width, images[0].height, channels, 4,false); //rgba channels 
-	hSlideCursor = glfwCreateCursor(images,15,0);
-	//stbi_image_free(images[0].pixels);
+	pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/hSlideCursor.png", cursorScaleX, cursorScaleY, channel , 4,false); //rgba 0 
+	hSlideCursor.createCursor(cursorScaleX, cursorScaleY, 15, 0, pixels);
+	//stbi_image_free(pixels);
 	
-	images[0].pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/vSlideCursor.png", images[0].width, images[0].height, channels, 4,false); //rgba channels 
-	vSlideCursor = glfwCreateCursor(images,15,0);
-	//stbi_image_free(images[0].pixels);
+	pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/vSlideCursor.png", cursorScaleX, cursorScaleY, channel , 4,false); //rgba 0 
+	vSlideCursor.createCursor(cursorScaleX, cursorScaleY, 15, 0, pixels);
+	//stbi_image_free(pixels);
 }
 
 /// @brief Set a cursor
-/// @param cursor a GLFWcursor* variable from the Mouse class public member varibles 
-void Mouse::setCursor(GLFWcursor* cursor){
+/// @param cursor a LigidCursor variable from the Mouse class public member varibles 
+void Mouse::setCursor(LigidCursor cursor){
 	activeCursor = cursor;
 }
 
 /// @brief Was called at the end of the renderer.render (every frame)
 void Mouse::updateCursor(){//Call that every frame after rendering the UI elements
-	glfwSetCursor(window,activeCursor);
+	this->window.setCursor(activeCursor);
 	activeCursor = defaultCursor;
 }
 
-struct Rectangle {
+struct aRectangle {
     int x;
     int y;
     int width;
@@ -98,7 +101,7 @@ struct Rectangle {
 /// @return if the cursor position is on top of a rectangle with the transform values of given parameters 
 bool Mouse::isMouseHover(glm::vec2 scale, glm::vec2 pos) {
     // Calculate the rectangle's coordinates
-    Rectangle rectangle;
+    aRectangle rectangle;
     rectangle.width = scale.x*2;
     rectangle.height = scale.y*2;
     rectangle.x = pos.x - scale.x;

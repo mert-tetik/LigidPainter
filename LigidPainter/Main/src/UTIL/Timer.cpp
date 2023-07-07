@@ -17,7 +17,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -35,7 +35,7 @@ Timer::Timer(/* args */){
 
 bool Timer::runTimer(float cycleTime){ 
     //Returns true every second
-    double currentTime = glfwGetTime();
+    double currentTime = LigidGL::getTime();
     nbFramesT++;
     if (currentTime - lastTimeT >= cycleTime) {
         

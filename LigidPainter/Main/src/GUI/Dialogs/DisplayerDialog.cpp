@@ -18,7 +18,7 @@
 
  */
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -37,7 +37,7 @@
 DisplayerDialog::DisplayerDialog(){}
 
 DisplayerDialog::DisplayerDialog(
-                                    Context context, //GLFW window and stuff
+                                    Context context, //Window and stuff
                                     glm::vec2 videoScale, //Monitor resolution
                                     ColorPalette colorPalette, //LigidPainter's theme
                                     Shader buttonShader, //Button shader
@@ -115,7 +115,7 @@ DisplayerDialog::DisplayerDialog(
     }
 }
 
-void DisplayerDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
             Library &library,glm::vec2 videoScale,Skybox &skybox){
     
     dialogControl.updateStart(buttonShader);
@@ -166,7 +166,7 @@ void DisplayerDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalett
 
         //If a color is selected change the color of the skybox bgcolor (than the bg color element's color will be set to skybox bgcolor)
         if(check)
-            skybox.bgColor = clr.RGB_normalized();
+            skybox.bgColor = clr.getRGB_normalized();
     }
     
     //Change the transform matrix of the skybox (rotate it using the rotation range bar element)
@@ -180,7 +180,7 @@ void DisplayerDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalett
     skybox.opacity = panel.sections[0].elements[3].rangeBar.value/100.f;
     
     //End the dialog
-    if((panel.sections[0].elements[2].button.hover && mouse.LClick) || glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || (!panel.hover && mouse.LClick)){
+    if((panel.sections[0].elements[2].button.hover && mouse.LClick) || context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && mouse.LClick)){
         if(!dialogControl.firstFrameActivated){
             panel.sections[0].elements[0].button.clickState1 = false;
             dialogControl.unActivate();

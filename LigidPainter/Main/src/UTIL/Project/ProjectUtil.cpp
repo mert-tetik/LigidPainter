@@ -14,7 +14,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -57,8 +57,8 @@ std::string Project::locateLigidFileInFolder(const std::string& folderPath)
     }
 }
 
-void Project::copyTheProjectPathToTheClipboard(GLFWwindow* window){
-    glfwSetClipboardString(window, std::filesystem::absolute(folderPath).string().c_str());
+void Project::copyTheProjectPathToTheClipboard(LigidWindow window){
+    LigidGL::setClipboardText(std::filesystem::absolute(folderPath).string().c_str());
 }
 
 std::string Project::ligidFilePath(){

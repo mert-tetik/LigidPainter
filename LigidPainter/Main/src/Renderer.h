@@ -22,7 +22,7 @@ Renderer.h : Renders the whole screen
 #include <filesystem>
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include "../../thirdparty/include/glm/glm.hpp"
 #include "../../thirdparty/include/glm/gtc/matrix_transform.hpp"
@@ -84,7 +84,7 @@ public:
 
     Painter painter;
 
-    bool VSync = false; //Set glfwSwapInterval(1) if true
+    bool VSync = false; //Set swapInterval(1) if true
     bool backfaceCulling = false;
 
 
@@ -97,7 +97,6 @@ private:
     bool previousModelNewModelAdded = false;
 
     //Init.cpp
-    void initGLFW(glm::vec2 videoScale);
     void initGlad();
     void loadAppTextures();
     void loadShaders();
@@ -116,11 +115,11 @@ private:
     double previousClickTime = 0.0;
     glm::vec2 lastMousePos;//This will be used as "last frame's cursor pos" for the cursor offset 
     
-    void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-    void framebufferSizeCallback(GLFWwindow* window, int width, int height);
-    void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-    void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
-    void keyCallback(GLFWwindow* window,int key,int scancode,int action,int mods);
+    void mouseButtonCallback(LigidWindow window, int button, int action, int mods);
+    void framebufferSizeCallback(LigidWindow window, int width, int height);
+    void scrollCallback(LigidWindow window, double xoffset, double yoffset);
+    void cursorPositionCallback(LigidWindow window, double xpos, double ypos);
+    void keyCallback(LigidWindow window,int key,int scancode,int action,int mods);
 
 };
 #endif

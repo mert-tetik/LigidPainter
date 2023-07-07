@@ -20,7 +20,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include "../../thirdparty/include/glm/glm.hpp"
 #include "../../thirdparty/include/glm/gtc/matrix_transform.hpp"
@@ -37,16 +37,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
     
-
+    context.window.createWindow(videoScale.x, videoScale.y, "LigidPainter");
 
     //Hold the videoscale value inside of the scene structure
     scene.videoScale = videoScale;
 
-    //Initialize the GLFW, create the main window & set callbacks
-    initGLFW(videoScale);
-
     //Get the window size
-    glfwGetFramebufferSize(context.window,&context.windowScale.x,&context.windowScale.y);
+    context.window.getFramebufferSize(context.windowScale.x,context.windowScale.y);
 
     //Initialize the GLAD
     initGlad();
@@ -136,72 +133,42 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
 
 
 
-void Renderer::initGLFW(glm::vec2 videoScale){
-    //Init GLFW
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    #ifdef __APPLE__
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    #endif
-    context.window = glfwCreateWindow(videoScale.x, videoScale.y, "LigidPainter", NULL, NULL);
-    
-    if (context.window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
+typedef void* (WINAPI* PFNWGLGETPROCADDRESSPROC)(LPCSTR);
+
+void Renderer::initGlad() {
+    // Load opengl32.dll module
+    HMODULE openglModule = GetModuleHandleA("opengl32.dll");
+    if (openglModule == nullptr) {
+        std::cout << "Initializing glad : module loading error" << std::endl;
     }
-    
-    //glfwMakeContextCurrent(context.window);
-    
 
-    //Pointing a function that is a class member
-    glfwSetWindowUserPointer(context.window, this);
-    
-    //Cursor position callback function casting
-    auto cursorPosFunc = [](GLFWwindow* w, double x, double y)
-    {
-        static_cast<Renderer*>(glfwGetWindowUserPointer(w))->cursorPositionCallback(w,x,y);
-    };
-    glfwSetCursorPosCallback(context.window, cursorPosFunc);
-    
-    //Scroll callback function casting
-    auto scrollFunc = [](GLFWwindow* w, double x, double y)
-    {
-        static_cast<Renderer*>(glfwGetWindowUserPointer(w))->scrollCallback(w,x,y);
-    };
-    glfwSetScrollCallback(context.window, scrollFunc);
-    
-    //Framebuffer size callback function casting
-    auto framebufferSizeFunc = [](GLFWwindow* w, int x, int y)
-    {
-        static_cast<Renderer*>(glfwGetWindowUserPointer(w))->framebufferSizeCallback(w,x,y);
-    };
-    glfwSetFramebufferSizeCallback(context.window, framebufferSizeFunc);
-    
-    //Mouse button callback function casting
-    auto mouseButtonFunc = [](GLFWwindow* w, int button, int action, int mods)
-    {
-        static_cast<Renderer*>(glfwGetWindowUserPointer(w))->mouseButtonCallback(w,button,action,mods);
-    };
+    // Retrieve the function pointer for wglGetProcAddress
+    PFNWGLGETPROCADDRESSPROC wglGetProcAddress = reinterpret_cast<PFNWGLGETPROCADDRESSPROC>(GetProcAddress(openglModule, "wglGetProcAddress"));
+    if (wglGetProcAddress == nullptr) {
+        std::cout << "Initializing glad : pointer retrieval error  1" << std::endl;
+    }
 
-    glfwSetMouseButtonCallback(context.window, mouseButtonFunc);
-    
-    //Key button callback function casting
-    auto keyFunc = [](GLFWwindow* w, int key, int scancode, int action, int mods)
-    {
-        static_cast<Renderer*>(glfwGetWindowUserPointer(w))->keyCallback(w,key,scancode,action,mods);
-    };
+    // Retrieve the function pointer for gladGetProcAddress
+    GLADloadproc gladGetProcAddress = reinterpret_cast<GLADloadproc>(wglGetProcAddress("gladGetProcAddress"));
+    if (gladGetProcAddress == nullptr) {
+        std::cout << "Initializing glad : pointer retrieval error   2" << std::endl;
+    }
 
-    glfwSetKeyCallback(context.window, keyFunc);
+    // Initialize GLAD
+    if (!gladLoadGLLoader(gladGetProcAddress)) {
+        // Handle GLAD initialization error
+
+        std::cout << "Failed to initialize glad" << std::endl;
+    }
+
 }
 
-void Renderer::initGlad(){
-    //Init GLAD
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-    }    
-}
+
+
+
+
+
+
 
 void Renderer::loadAppTextures(){
     appTextures.TDModelIcon.load("./LigidPainter/Resources/Icons/TDModel.png");

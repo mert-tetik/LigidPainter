@@ -16,52 +16,27 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include "../../thirdparty/include/glm/glm.hpp"
 
-//#include "Renderer.h"
-
-#include "LigidGL/LigidGL.hpp"
-
-void mouseBtnCallback(int button, int action, int mods){
-    std::cout << button << ' ' << action << ' ' << mods << std::endl;
-}
+#include "Renderer.h"
 
 class LigidPainter{
 public:
     int run(){
-        //glfwInit();//Init the glfw before initializing renderer
-        //Renderer renderer(glm::vec2(glfwGetVideoMode(glfwGetPrimaryMonitor())->width,glfwGetVideoMode(glfwGetPrimaryMonitor())->height));
         
-        LigidWindow ligidWindow;
-        ligidWindow.createWindow(800, 800, "ASDFSAFD"); 
+        // .x : width | .y : height | .z : refresh rate  
+        glm::ivec3 primaryMonitorData;
+        LigidGL::getPrimaryMonitorData(primaryMonitorData.x, primaryMonitorData.y, primaryMonitorData.z);
 
-        ligidWindow.setMouseButtonCallback(mouseBtnCallback);
-
-        ligidWindow.setWindowPos(500,200);
-
-        //int monitorWidth = 0;
-        //int monitorHeight = 0;
-        //int monitorRefreshRate = 0;
-//
-        //LigidGL::getPrimaryMonitorData(monitorWidth, monitorHeight, monitorRefreshRate);
-
-        ligidWindow.style(3);
-
-        while (!ligidWindow.shouldClose())
-        {
-            ligidWindow.pollEvents();
-
-            ligidWindow.swapBuffers();
+        Renderer renderer(glm::vec2(primaryMonitorData.x,primaryMonitorData.y));
+        
+        while(!renderer.context.window.shouldClose())
+        {   
+            renderer.render();
         }
         
-        //while(!glfwWindowShouldClose(renderer.context.window))
-        //{   
-        //    //renderer.render();
-        //}
-        
-        glfwTerminate();
         return 1;
     }
 };

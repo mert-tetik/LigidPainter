@@ -16,9 +16,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-//OpenGL & GLFW
+//OpenGL & window 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 //OpenGL Math Library GLM
 #include <glm/glm.hpp>
@@ -186,16 +186,16 @@ private:
 public:
 
     /// @brief @return the Red, Green, Blue value of the color in the range of 0 - 255 
-    glm::vec3 RGB();  
+    glm::vec3 getRGB();  
     
     /// @brief @return the Hue, Saturation, Value value of the color in the range of hsv values (Hue : 0 - 360, others : 0 - 100) 
-    glm::vec3 HSV(); 
+    glm::vec3 getHSV(); 
     
     /// @brief @return the Red, Green, Blue value of the color in the range of 0 - 1 
-    glm::vec3 RGB_normalized();  
+    glm::vec3 getRGB_normalized();  
     
     /// @brief @return the hex value of the color (starts with '#') 
-    std::string HEX();
+    std::string getHEX();
 
     /// @brief Default constructor
     Color();
@@ -223,7 +223,7 @@ class Timer
 {
 private:
 public:
-    double lastTimeT = glfwGetTime();
+    double lastTimeT = 0;
     int nbFramesT = 0;
     
     size_t seconds = 0; //How many seconds has passed since the program started
@@ -397,7 +397,7 @@ public:
     
     /// @brief Copies the project path to the clipboard
     /// @param window 
-    void copyTheProjectPathToTheClipboard(GLFWwindow* window);
+    void copyTheProjectPathToTheClipboard(LigidWindow window);
 
     /// @brief Locates the ligid file in the folderPath 
     /// @param folderPath 
@@ -612,18 +612,18 @@ public:
 	bool RPressed = false;
 	bool MPressed = false;
 	double mouseScroll = 0.;
-	GLFWcursor* defaultCursor;
-	GLFWcursor* pointerCursor;
-	GLFWcursor* hSlideCursor;
-	GLFWcursor* vSlideCursor;
-	GLFWcursor* activeCursor; //updateCursor sets that cursor as the cursor
-    GLFWwindow* window;
+	LigidCursor defaultCursor;
+	LigidCursor pointerCursor;
+	LigidCursor hSlideCursor;
+	LigidCursor vSlideCursor;
+	LigidCursor activeCursor; //updateCursor sets that cursor as the cursor
+    LigidWindow window;
 
     Mouse();
-    Mouse(GLFWwindow* window);
+    Mouse(LigidWindow window);
 
 	void loadCursors();
-	void setCursor(GLFWcursor* cursor);
+	void setCursor(LigidCursor cursor);
 	void updateCursor();
     bool isMouseHover(glm::vec2 scale, glm::vec2 position);
 };
@@ -795,8 +795,8 @@ struct Scene{
     glm::mat4 viewMatrix;
 
     const float fov = 45.f;
-    const float near = 0.1f;
-    const float far = 1000.0f;
+    const float aNear = 0.1f;
+    const float aFar = 1000.0f;
 
     glm::vec2 videoScale;
 
@@ -841,7 +841,7 @@ struct Library{
 };
 
 struct Context{
-    GLFWwindow* window;
+    LigidWindow window;
     glm::ivec2 windowScale;
 };
 struct Shaders{

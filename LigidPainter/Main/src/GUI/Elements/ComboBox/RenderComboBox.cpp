@@ -14,7 +14,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -36,7 +36,7 @@ void ComboBox::render(
                         Timer &timer, //Timer that handles the animations
                         TextRenderer &textRenderer, //TextRenderer that handles text rendering
                         bool doMouseTracking, //If there is need to check if mouse hover
-                        GLFWwindow* window //To take the key inputs
+                        LigidWindow window //To take the key inputs
                     ){
     
     //The utilities class
@@ -189,7 +189,7 @@ void ComboBox::render(
     }
     
     //Unpress
-    if((!hover[0] && mouse.LClick) || glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwGetKey(window,GLFW_KEY_ENTER) == GLFW_PRESS){
+    if((!hover[0] && mouse.LClick) || window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS){
         pressed = false;
     }
 }

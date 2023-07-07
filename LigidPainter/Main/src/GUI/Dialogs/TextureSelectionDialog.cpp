@@ -14,7 +14,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -68,7 +68,7 @@ void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &tim
     }
 
     //End the dialog
-    if((textRenderer.key == GLFW_KEY_ESCAPE && textRenderer.keyInput) || (!texturePanel.hover && mouse.LClick)){
+    if((textRenderer.key == LIGIDGL_KEY_ESCAPE && textRenderer.keyInput) || (!texturePanel.hover && mouse.LClick)){
         dialogControl.unActivate();
         selectedTextureIndex = 1000;
     }

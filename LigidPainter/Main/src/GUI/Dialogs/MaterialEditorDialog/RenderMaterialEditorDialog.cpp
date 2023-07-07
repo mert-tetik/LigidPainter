@@ -14,7 +14,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -98,7 +98,7 @@ void MaterialEditorDialog::render
     dialogControl.updateEnd(timer,shaders.buttonShader,0.3f);
 
     //Close the dialog
-    if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || ((!bgPanel.hover && !barButton.hover) && mouse.LClick) || (barButton.hover && mouse.LDoubleClick))
+    if(context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || ((!bgPanel.hover && !barButton.hover) && mouse.LClick) || (barButton.hover && mouse.LDoubleClick))
         if(!textureSelectionDialog.dialogControl.isActive())
             deactivate(textureSelectionDialog);
 

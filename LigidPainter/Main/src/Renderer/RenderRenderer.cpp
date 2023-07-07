@@ -17,7 +17,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include "../../thirdparty/include/glm/glm.hpp"
 #include "../../thirdparty/include/glm/gtc/matrix_transform.hpp"
@@ -32,8 +32,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void Renderer::render(){
     
-    //Handle user input and interact with the windowing system
-    glfwPollEvents();
+    //Handle user input and interact with the windowing system & call the callback functions
+    context.window.pollEvents();
     
     //Update local timer data
     if(timer.runTimer(1.f))
@@ -44,9 +44,9 @@ void Renderer::render(){
 
     //VSync
     if(VSync)
-        glfwSwapInterval(1); //Enable VSync
+        LigidGL::setSwapInterval(1); //Enable VSync
     else
-        glfwSwapInterval(0); //Disable VSync
+        LigidGL::setSwapInterval(0); //Disable VSync
 
     //Default blending settings
     glEnable(GL_BLEND);
@@ -244,7 +244,7 @@ void Renderer::render(){
     mouse.updateCursor();  
 
     //Swap the front and back buffers of the window
-    glfwSwapBuffers(context.window);
+    context.window.swapBuffers();
 }
 
 
@@ -260,8 +260,8 @@ void Renderer::updateProjectionMatrix(){
     if(context.windowScale.x){
         scene.projectionMatrix = glm::perspective(glm::radians(scene.fov), 
                                             (float)context.windowScale.x / (float)context.windowScale.y, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
-                                            scene.near, 
-                                            scene.far);
+                                            scene.aNear, 
+                                            scene.aFar);
     }
 }
 

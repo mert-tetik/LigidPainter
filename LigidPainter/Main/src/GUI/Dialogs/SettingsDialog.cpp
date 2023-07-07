@@ -15,7 +15,7 @@
  */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -59,7 +59,7 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
     },glm::vec2(15.f),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
 }
 
-void SettingsDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+void SettingsDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
                             Library &library,glm::vec2 videoScale,int &textureRes,bool &VSync, bool &backfaceCulling){
     
     dialogControl.updateStart(buttonShader);   
@@ -93,7 +93,7 @@ void SettingsDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette
     
     //End the dialog
     if  (
-            glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS || //Escape key pressed 
+            context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Escape key pressed 
             ((!panel.hover && mouse.LClick)) && !dialogControl.firstFrameActivated || //Mouse Lclick out of the panel
             (panel.sections[0].elements[0].button.hover && mouse.LDoubleClick) //If the menu button double clicked
         )

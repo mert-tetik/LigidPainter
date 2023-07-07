@@ -219,6 +219,7 @@ namespace LigidGL{
     *   @param interval : 1 = VSync & 0 = no VSync 
     */
     void setSwapInterval(int interval);
+
 };
 
 
@@ -229,7 +230,7 @@ struct LigidCursor
 public:
     /// @brief Function to create a custom cursor
     /// @param cursorPixelData Size must be cursorWidth * cursorHeight * 4 
-    void createCursor(int cursorWidth, int cursorHeight, int cursorHotspotX, int cursorHotspotY, char* cursorPixelData);
+    void createCursor(int cursorWidth, int cursorHeight, int cursorHotspotX, int cursorHotspotY, unsigned char* cursorPixelData);
 
     // Platform-specific 
     #if defined(_WIN32) || defined(_WIN64)
@@ -546,9 +547,8 @@ public:
     /*!
     *    @brief learn if a key is pressed
     *    @param key is LIGIDGL_KEY_<Desired key>
-    *    @return Returns LIGIDGL_PRESS if the given key is pressed LIGIDGL_RELEASE if not  
+    *    @return Returns LIGIDGL_PRESS if the given key is pressed LIGIDGL_RELEASE if not (returns false if the window is not focused)  
     *    
-    *    TODO : Move that function to a namespace
     */
     bool isKeyPressed(char key);
 

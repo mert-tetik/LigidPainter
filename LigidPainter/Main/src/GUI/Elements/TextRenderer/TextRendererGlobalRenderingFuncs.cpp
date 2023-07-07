@@ -14,7 +14,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -47,8 +47,8 @@ void TextRenderer::renderText(Shader shader,int &textPosCharIndex, glm::vec4 tex
 	
 	//If textbox is active update the timer
 	if(textDataActive){
-		if(glfwGetTime() - this->timer.lastTimeT > 5.)
-			this->timer.lastTimeT = glfwGetTime();
+		if(LigidGL::getTime() - this->timer.lastTimeT > 5.)
+			this->timer.lastTimeT = LigidGL::getTime();
 
 		this->timer.runTimer(0.5f);
 	}	

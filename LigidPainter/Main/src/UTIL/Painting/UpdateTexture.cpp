@@ -17,7 +17,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -119,7 +119,7 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
         textureUpdatingShader.setInt("depthTexture", 7);
         textureUpdatingShader.setInt("brushModeState", this->selectedPaintingModeIndex);
         textureUpdatingShader.setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
-        textureUpdatingShader.setVec3("paintingColor", this->getSelectedColor().RGB_normalized());
+        textureUpdatingShader.setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
 
 
         //*Vertex
@@ -156,7 +156,7 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
         twoDPaintingModeAreaShader.setInt("depthTexture", 7);
         twoDPaintingModeAreaShader.setInt("brushModeState", this->selectedPaintingModeIndex);
         twoDPaintingModeAreaShader.setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
-        twoDPaintingModeAreaShader.setVec3("paintingColor", this->getSelectedColor().RGB_normalized());
+        twoDPaintingModeAreaShader.setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
 
 
         //*Vertex

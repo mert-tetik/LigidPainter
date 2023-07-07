@@ -18,7 +18,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -119,7 +119,7 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
         shaders.twoDPaintingModeAreaShader.setInt("depthTexture", 7);
         shaders.twoDPaintingModeAreaShader.setInt("brushModeState", painter.selectedPaintingModeIndex);
         shaders.twoDPaintingModeAreaShader.setFloat("paintingOpacity", painter.brushProperties.opacity / 100.f);
-        shaders.twoDPaintingModeAreaShader.setVec3("paintingColor", painter.getSelectedColor().RGB_normalized());
+        shaders.twoDPaintingModeAreaShader.setVec3("paintingColor", painter.getSelectedColor().getRGB_normalized());
 
         glm::vec2 destScale = glm::vec2(glm::min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y));
 
@@ -159,7 +159,7 @@ void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer,
     else{
         //The first frame renamingTextBox is closed 
         if(!renamingTextBoxClosed){
-            if(glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_RELEASE){
+            if(context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_RELEASE){
                 if(renamingIndices.x == 0)
                     library.textures[renamingIndices.y].title = renamingTextBox.text;
                 else if(renamingIndices.x == 1)

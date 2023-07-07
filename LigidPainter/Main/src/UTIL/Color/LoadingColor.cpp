@@ -14,7 +14,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -61,18 +61,18 @@ void Color::loadHex(std::string value){
     this->priv_rgb = this->hexToRgb(value);
 }
 
-glm::vec3 Color::RGB(){
+glm::vec3 Color::getRGB(){
     return this->priv_rgb;
 }  
     
-glm::vec3 Color::HSV(){
+glm::vec3 Color::getHSV(){
     return this->rgbToHsv(this->priv_rgb);
 }
     
-glm::vec3 Color::RGB_normalized(){
+glm::vec3 Color::getRGB_normalized(){
     return this->priv_rgb / 255.f;
 }
     
-std::string Color::HEX(){
+std::string Color::getHEX(){
     return this->rgbToHex(this->priv_rgb);
 }

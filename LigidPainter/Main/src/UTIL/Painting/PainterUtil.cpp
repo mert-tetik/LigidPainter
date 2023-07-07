@@ -14,7 +14,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -48,7 +48,7 @@ void Painter::loadColor3(){
 
 void Painter::changeColor(Color &color){
     unsigned char defRGB[3];
-    const char* check = tinyfd_colorChooser("Select a color", color.HEX().c_str(),defRGB,defRGB);
+    const char* check = tinyfd_colorChooser("Select a color", color.getHEX().c_str(),defRGB,defRGB);
     if(check)
         color.loadHex(check);
 }

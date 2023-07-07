@@ -42,7 +42,7 @@ Example :
 */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -86,7 +86,7 @@ Element::Element(CheckBox checkBox){
     panelOffset = checkBox.panelOffset;
     state = 2;
 }
-Element::Element(ComboBox comboBox,GLFWwindow* window){
+Element::Element(ComboBox comboBox,LigidWindow window){
     //Init as combo box
     this->comboBox = comboBox;
     this->window = window;
@@ -95,7 +95,7 @@ Element::Element(ComboBox comboBox,GLFWwindow* window){
     panelOffset = comboBox.panelOffset;
     state = 3;
 }
-Element::Element(TextBox textBox,GLFWwindow* window){
+Element::Element(TextBox textBox,LigidWindow window){
     //Init as text box
     this->textBox = textBox;
     this->window = window;

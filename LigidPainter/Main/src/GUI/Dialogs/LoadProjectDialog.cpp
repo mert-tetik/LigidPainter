@@ -15,7 +15,7 @@
  */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -131,7 +131,7 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
     this->textBtn4.textScale = 0.5f;
 }
 
-void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
                                 glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,
                                 Shaders shaders,Model &model,int &textureRes,std::vector<Node> &meshNodeScene ){
     
@@ -243,7 +243,7 @@ void LoadProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPale
     }
     
     //Close the dialog
-    if(glfwGetKey(originalWindow,GLFW_KEY_ESCAPE) == GLFW_PRESS || bgPanel.sections[0].elements[0].button.hover && mouse.LDoubleClick){
+    if(originalWindow.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || bgPanel.sections[0].elements[0].button.hover && mouse.LDoubleClick){
         
         if(startScreen)
             greetingDialogActive = true;

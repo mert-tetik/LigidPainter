@@ -301,7 +301,13 @@ bool LigidWindow::isKeyPressed(char key){
     //* User in windows environment
     
     // Returns true if the key is pressed
-    return GetAsyncKeyState(key) & 0x8000;
+    HWND foregroundWindow = GetForegroundWindow();
+    if(foregroundWindow == this->window){
+        return GetAsyncKeyState(key) & 0x8000;
+    }
+    else{
+        return false;
+    }
 
 #elif(__APPLE__)
 

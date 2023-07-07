@@ -14,7 +14,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -257,9 +257,9 @@ void TextRenderer::renderInsertionPointCursor(Shader shader, int &textPosCharInd
 		shader.setVec3("pos",ipcPos);
 
 		//Move the text if the insertion point cursor is forcing from the boundaries
-		if(ipcPos.x < textDataMinX && key == GLFW_KEY_LEFT-256 && textDataActiveChar > -1)
+		if(ipcPos.x < textDataMinX && key == LIGIDGL_KEY_LEFT-256 && textDataActiveChar > -1)
 			textPosCharIndex++;
-		if(ipcPos.x > textDataMaxX && key == GLFW_KEY_RIGHT-256 && textDataActiveChar < textDataText.size()-1)
+		if(ipcPos.x > textDataMaxX && key == LIGIDGL_KEY_RIGHT-256 && textDataActiveChar < textDataText.size()-1)
 			textPosCharIndex--;
 		this->textDataTextPosCharIndex = textPosCharIndex; 
 

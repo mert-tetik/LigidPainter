@@ -15,7 +15,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -270,9 +270,9 @@ void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &paint
     }
     
     //Update the color values of the color buttons
-    paintingPanel.sections[0].elements[0].button.color = glm::vec4(painter.color1.RGB_normalized(), 1.f);
-    paintingPanel.sections[0].elements[1].button.color = glm::vec4(painter.color2.RGB_normalized(), 1.f);
-    paintingPanel.sections[0].elements[2].button.color = glm::vec4(painter.color3.RGB_normalized(), 1.f);
+    paintingPanel.sections[0].elements[0].button.color = glm::vec4(painter.color1.getRGB_normalized(), 1.f);
+    paintingPanel.sections[0].elements[1].button.color = glm::vec4(painter.color2.getRGB_normalized(), 1.f);
+    paintingPanel.sections[0].elements[2].button.color = glm::vec4(painter.color3.getRGB_normalized(), 1.f);
     
 
     //If clicked to the dropper button activate the dropper
@@ -549,8 +549,8 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 mouse.LClick|| //Mouse left click
                 mouse.RClick|| //Mouse right click
                 mouse.MClick|| //Mouse middle click
-                glfwGetKey(context.window,GLFW_KEY_ESCAPE) == GLFW_PRESS|| //Pressed to escape key 
-                glfwGetKey(context.window,GLFW_KEY_ENTER) == GLFW_PRESS //Pressed to enter key
+                context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS|| //Pressed to escape key 
+                context.window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS //Pressed to enter key
             )
         {
            contextMenus[i].dialogControl.unActivate(); //Turn the context menu offs

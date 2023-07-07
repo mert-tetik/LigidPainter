@@ -19,7 +19,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -106,7 +106,7 @@ class SettingsDialog
     SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
 
     //Public member functions    
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,
+    void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,
                 glm::vec2 videoScale,int &textureRes,bool &VSync,bool &backfaceCulling);
  };
 
@@ -129,7 +129,7 @@ class NewTextureDialog
     NewTextureDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
     
     //Public member function
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+    void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
                 Library &library,glm::vec2 videoScale,int textureRes);
  };
 
@@ -157,7 +157,7 @@ class LoadProjectDialog
     LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
     
     //Public member functions
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
+    void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
                 Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,Shaders shaders,Model &model,int &textureRes,std::vector<Node> &meshNodeScene);
  };
 
@@ -184,7 +184,7 @@ class DisplayerDialog
                     Shader prefilteringShader,Shader skyboxBallShader,Model &sphereModel);
     
     //Public member functions
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+    void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
                 Library &library,glm::vec2 videoScale,Skybox &skybox);
  };
 
@@ -211,7 +211,7 @@ public:
    GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
    
    //Public member functions
-   void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+   void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
                glm::vec2 videoScale, NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog);
 };
 
@@ -280,7 +280,7 @@ class NewProjectDialog
     NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
 
     //Public member functions
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
+    void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
                 Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,Shaders shaders,Model &model,int &textureRes,std::vector<Node> &meshNodeScene);
  };
 
@@ -303,7 +303,7 @@ class ExportDialog
     ExportDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
 
     //Public member functions
-    void render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
+    void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
                 Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model,MaterialEditorDialog &materialEditorDialog
                 ,std::vector<Node> &meshNodeScene, Model sphereModel);
  };

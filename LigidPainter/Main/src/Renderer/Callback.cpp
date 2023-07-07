@@ -12,7 +12,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
 
-    Callback.cpp - Contains the callback functions provided by the GLFW
+    Callback.cpp - Contains the callback functions
 
 */
 
@@ -20,7 +20,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include "../../thirdparty/include/glm/glm.hpp"
 #include "../../thirdparty/include/glm/gtc/matrix_transform.hpp"
@@ -34,10 +34,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Renderer.h"
 
 /// @brief Mouse button callback (every time a mouse button cliked)
-void Renderer::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
+void Renderer::mouseButtonCallback(LigidWindow window, int button, int action, int mods){
     //Calculate double click
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        double currentTime = glfwGetTime();
+    if (button == LIGIDGL_MOUSE_BUTTON_LEFT && action == LIGIDGL_PRESS) {
+        double currentTime = LigidGL::getTime();
         double timeSinceLastClick = currentTime - previousClickTime;
 
         //Double click done if clicked in 0.3s
@@ -82,7 +82,7 @@ void Renderer::mouseButtonCallback(GLFWwindow* window, int button, int action, i
 }
 
 /// @brief Framebuffer size callback (every time window size changed)
-void Renderer::framebufferSizeCallback(GLFWwindow* window, int width, int height){
+void Renderer::framebufferSizeCallback(LigidWindow window, int width, int height){
     
     //Update the window size from context
     context.windowScale.x = width;
@@ -96,7 +96,7 @@ void Renderer::framebufferSizeCallback(GLFWwindow* window, int width, int height
 }
 
 /// @brief Mouse scroll callback (every time wheel is scrolled)
-void Renderer::scrollCallback(GLFWwindow* window, double xoffset, double yoffset){
+void Renderer::scrollCallback(LigidWindow window, double xoffset, double yoffset){
     if(!userInterface.anyDialogActive && !userInterface.anyPanelHover )
     {
         //The distance between the camera & center 
@@ -128,7 +128,7 @@ void Renderer::scrollCallback(GLFWwindow* window, double xoffset, double yoffset
 
 /// @brief Cursor position callback (every time cursor's position is changed)
 void Renderer::cursorPositionCallback(
-                                        GLFWwindow* window,
+                                        LigidWindow window,
                                         double xpos, //Mouse x position
                                         double ypos  //Mouse y position
                                     )
@@ -144,8 +144,8 @@ void Renderer::cursorPositionCallback(
     const float sensitivity = 0.2f; //Mouse sensivity (Increase the value to go brrrrrbrbrbrb) (effects the 3D model)
 
     if ((
-            glfwGetMouseButton(context.window, 1) == GLFW_PRESS) && //If pressed to right mouse button
-            glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS &&  //If pressed to CTRL button
+            context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS) && //If pressed to right mouse button
+            window.isKeyPressed( LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS &&  //If pressed to CTRL button
             !userInterface.anyDialogActive && //If there is no active dialog (don't move the camera if a dialog is active)
             !userInterface.anyPanelHover        //Don't move the camera if cursor hover a panel
         ) 
@@ -194,7 +194,7 @@ void Renderer::cursorPositionCallback(
 
 
     else if (
-                glfwGetMouseButton(context.window, 1) == GLFW_PRESS && //If pressed to right mouse button
+                context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
                 !userInterface.anyDialogActive && //If there is no active dialog (don't move the camera if a dialog is active)
                 !userInterface.anyPanelHover  //Don't move the camera if cursor hover a panel
             ) 
@@ -230,14 +230,14 @@ void Renderer::cursorPositionCallback(
 
 /// @brief Key callback (every time a key is pressed in the keyboard)
 void Renderer::keyCallback(
-                                GLFWwindow* window, //Window
+                                LigidWindow window, //Window
                                 int key, //Pressed key
                                 int scancode, //Scancode (related to the keyboard I guess)
-                                int action, //GLFW_PRESS , GLFW_REPEAT , GLFW_RELEASE
+                                int action, //LIGIDGL_PRESS , LIGIDGL_REPEAT , LIGIDGL_RELEASE
                                 int mods //Pressed with CTRL, CTRL + ALT , ALT , etc.
                             )
 {
-    if(action == GLFW_PRESS || action == GLFW_REPEAT){ //1 or 2
+    if(action == LIGIDGL_PRESS || action == LIGIDGL_REPEAT){ //1 or 2
         textRenderer.keyInput = true;
         textRenderer.key = key;
         textRenderer.mods = mods;

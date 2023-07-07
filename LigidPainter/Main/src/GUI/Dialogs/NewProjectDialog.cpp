@@ -18,7 +18,7 @@
  */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -91,7 +91,7 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
     this->panel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
 }
 
-void NewProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+void NewProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
                                 glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,Shaders shaders,
                                 Model &model, int &textureRes, std::vector<Node> &meshNodeScene ){
     
@@ -121,7 +121,7 @@ void NewProjectDialog::render(GLFWwindow* originalWindow,ColorPalette colorPalet
     }
     
     //Close the dialog
-    if(glfwGetKey(originalWindow,GLFW_KEY_ESCAPE) == GLFW_PRESS || panel.sections[0].elements[0].button.hover && mouse.LDoubleClick){
+    if(originalWindow.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || panel.sections[0].elements[0].button.hover && mouse.LDoubleClick){
         if(startScreen)
             greetingDialogActive = true;
         

@@ -18,7 +18,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -39,7 +39,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void UI::init
             (  
                 Shaders shaders, //All the shaders
-                Context context, //GLfW window & stuff
+                Context context, //window & stuff
                 AppTextures appTextures, //Textures used in GUI
                 Websites websites, //Websites related to the LigidPainter
                 glm::vec2 videoScale, //Monitor resolution

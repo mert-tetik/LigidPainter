@@ -17,9 +17,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #ifndef NODE_HPP
 #define NODE_HPP
 
-//OpenGL & GLFW
+//OpenGL & Window
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 //GLM - Math library
 #include <glm/glm.hpp>

@@ -17,7 +17,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include<glad/glad.h>
-#include<GLFW/glfw3.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -40,13 +40,13 @@ void deletion(int& activeChar, int& activeChar2, std::string &text);
 void leftArrow(int mods, int &activeChar, int &activeChar2, std::string &text);
 void rightArrow(int mods, int &activeChar, int &activeChar2, std::string &text);
 void charInput(int &key, bool &caps, std::string& text, int& activeChar, int& activeChar2);
-void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text, GLFWwindow* window);
+void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text, LigidWindow window);
 
 
 
 
 
-void TextRenderer::processTextInput(std::string &text,GLFWwindow* window,int &activeChar,int &activeChar2, int &textPosCharIndex){
+void TextRenderer::processTextInput(std::string &text,LigidWindow window,int &activeChar,int &activeChar2, int &textPosCharIndex){
 	//If pressed to a key
     if(keyInput){
 
@@ -55,22 +55,22 @@ void TextRenderer::processTextInput(std::string &text,GLFWwindow* window,int &ac
         updateInsertionPointCursor(timer);
 		
 		//Delete
-		if(key == GLFW_KEY_BACKSPACE){
+		if(key == LIGIDGL_KEY_BACKSPACE){
             deletion(activeChar,activeChar2,text);
 		}
 
         //Left arrow
-		else if(key == GLFW_KEY_LEFT){
+		else if(key == LIGIDGL_KEY_LEFT){
             leftArrow(mods,activeChar,activeChar2,text);
 		}
 
         //Right arrow
-		else if(key == GLFW_KEY_RIGHT){
+		else if(key == LIGIDGL_KEY_RIGHT){
             rightArrow(mods,activeChar,activeChar2,text);
 		}
 
         //Caps lock
-		else if(key == GLFW_KEY_CAPS_LOCK){
+		else if(key == LIGIDGL_KEY_CAPS_LOCK){
 			this->caps = !this->caps;
 		}
 
@@ -98,7 +98,7 @@ void TextRenderer::processTextInput(std::string &text,GLFWwindow* window,int &ac
 
 void updateInsertionPointCursor(Timer &timer){
 	timer.seconds = 2;
-	timer.lastTimeT = glfwGetTime();
+	timer.lastTimeT = LigidGL::getTime();
 }
 
 void deletion(int& activeChar, int& activeChar2, std::string &text){
@@ -243,13 +243,13 @@ void rightArrow(int mods, int &activeChar, int &activeChar2, std::string &text){
 	}
 }
 
-void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text, GLFWwindow* window){
+void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text, LigidWindow window){
     //Control + V
-    if(key == GLFW_KEY_V){
+    if(key == LIGIDGL_KEY_V){
         if(activeChar2 != activeChar)
             deletion(activeChar,activeChar2,text);
         
-        std::string clipText = glfwGetClipboardString(window);
+        std::string clipText = LigidGL::getClipboardText();
         
         text.insert( (activeChar + 1) , clipText );
             
@@ -258,7 +258,7 @@ void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text,
     }
 
     //Control + C
-    if(key == GLFW_KEY_C){
+    if(key == LIGIDGL_KEY_C){
         std::string clipText;
         
         if(activeChar2 != activeChar){
@@ -272,7 +272,7 @@ void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text,
             clipText = text;
         }
 
-        glfwSetClipboardString(window, clipText.c_str());
+        LigidGL::setClipboardText(clipText.c_str());
 
     }
 }

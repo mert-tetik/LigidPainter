@@ -16,6 +16,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include <iostream>
 
+#include <glad/glad.h>
+
 #include "LigidGL/LigidGL.hpp"
 
 
