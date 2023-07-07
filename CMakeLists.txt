@@ -25,21 +25,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 
 
- # Fixes the linker errors 
    
-   # Apparently fixes numerous glfw3 linker errors
-   # Might be deleted if it causes any problems
-   #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINKER_FLAGS} -lglfw3 -lfreetype -lassimp-vc142-mtd -lOpenAL32")
-   #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINKER_FLAGS} -I/usr/local/lib -framework Cocoa -framework IOKit -framework CoreVideo -framework OpenGL -lglfw3")
-   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINKER_FLAGS} -lglfw3 -lopengl32")
-
-    # Find GLFW3 and X11 packages
-    #find_package(glfw3 REQUIRED)
-    #find_package(X11 REQUIRED)
-   
-    # Find BZip2 and ZLIB packages (used by Assimp)
-    #find_package(BZip2 REQUIRED)
-    #find_package(ZLIB REQUIRED)
+# Apparently fixes numerous glfw3 linker errors
+#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINKER_FLAGS} -I/usr/local/lib -framework Cocoa -framework IOKit -framework CoreVideo -framework OpenGL -lglfw3")
 
 
 
@@ -47,14 +35,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Define CMAKE_HAS_X
 add_definitions(-DCMAKE_HAS_X)
-
-# Set GLFW build options
-#set(GLFW_BUILD_EXAMPLES OFF)
-#set(GLFW_BUILD_TESTS OFF)
-#set(GLFW_BUILD_DOCS OFF)
-#set(GLFW_INSTALL OFF)
-#set(NMGFX_FIND_GLFW OFF)
-
 
 
 
@@ -146,16 +126,10 @@ include(CPack)
 # Set the MacOS version you want to target
 # set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13 CACHE STRING "Minimum macOS version to target")
 
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-
 find_package(OpenGL REQUIRED)
 
 
 # Add include directories for Ligid target
-target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/LigidPainter/Main/thirdparty/include/assimp)
-target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/LigidPainter/Main/thirdparty/include/GLFW)
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/LigidPainter/Main/thirdparty/include/)
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/LigidPainter/Main/thirdparty)
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/LigidPainter/Main/src)
@@ -167,17 +141,10 @@ target_link_directories(Ligid PRIVATE
     ${PROJECT_SOURCE_DIR}
 )
 
-# Include directories for X11 and GLFW
-include_directories(${X11_INCLUDE_DIR})
-include_directories(${GLFW_INCLUDE_DIRS})
-
 # Link libraries for Ligid target
 target_link_libraries(Ligid PRIVATE 
     freetype 
     assimp-vc142-mtd
     OpenAL32 
-    glfw3 
     OpenGL::GL
-    ${X11_LIBRARIES} 
-    ${GLFW_LIBRARIES}
 )
