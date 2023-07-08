@@ -23,9 +23,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 /* -- Current OpenGL version -- 
     Change these macros as your OpenGL version
 */
+#define LIGIDGL_OPENGL_PROFILE_CORE 0
+#define LIGIDGL_OPENGL_PROFILE_COMPATIBILITY 1 
+
 #define LIGIDGL_OPENGL_VERSION_MAJOR 4
 #define LIGIDGL_OPENGL_VERSION_MINOR 0
-#define LIGIDGL_OPENGL_VERSION_PROFILE "core" //All lowercase (can be compatibility)
+#define LIGIDGL_OPENGL_VERSION_PROFILE LIGIDGL_OPENGL_PROFILE_CORE 
 
 
 /* Actions */
@@ -317,6 +320,11 @@ private:
     #endif
 
     /*!
+        @brief Retrieves window should close data from the window's proc callback function (located in the CreateWindow.cpp (interprets the global variables))
+    */
+    bool _get_WindowProcCloseWindow();
+
+    /*!
     *   @brief The mouse position callback function of the window set by the user.
     *   
     *   Set the function using @ref setMousePosCallback function
@@ -325,7 +333,7 @@ private:
     * 
     *   Second param : cursor pos in the y axis
     */
-    void (*mousePosCallback)(int, int);
+    void (*mousePosCallback)(LigidWindow,double, double);
     
     /*!
     *   @brief The mouse button callback function of the window set by the user.
@@ -338,7 +346,7 @@ private:
     *   
     *   Third param : mods (LIGIDGL_MOD_DEFAULT, LIGIDGL_MOD_SHIFT, LIGIDGL_MOD_ALT, LIGIDGL_MOD_CONTROL etc.) 
     */
-    void (*mouseButtonCallback)(int, int, int);
+    void (*mouseButtonCallback)(LigidWindow,int, int, int);
 
     /*!
     *   @brief The key callback function of the window set by the user.
@@ -351,7 +359,7 @@ private:
     *   
     *   Third param : mods (LIGIDGL_MOD_DEFAULT, LIGIDGL_MOD_SHIFT, LIGIDGL_MOD_ALT, LIGIDGL_MOD_CONTROL etc.) 
     */
-    void (*keyCallback)(int, int, int);
+    void (*keyCallback)(LigidWindow,int, int, int);
 
     /*!
     *   @brief The window size callback function of the window set by the user.
@@ -363,7 +371,7 @@ private:
     *   Second param : windowSizeY
     *   
     */
-    void (*windowSizeCallback)(int, int);
+    void (*windowSizeCallback)(LigidWindow,int, int);
     
     /*!
     *   @brief The mouse scroll callback function of the window set by the user.
@@ -375,7 +383,7 @@ private:
     *   Second param : yOffset
     *   
     */
-    void (*scrollCallback)(double, double);
+    void (*scrollCallback)(LigidWindow,double, double);
 
 public:
     /*! 
@@ -489,7 +497,7 @@ public:
     *   setMousePosCallback(mouse_pos_callback);
     * 
     */
-    void setMousePosCallback( void (*func)(int,int) );
+    void setMousePosCallback( void (*func)(LigidWindow,double,double) );
 
     /*!
     *  @brief sets the private member variable @ref mouseButtonCallback function as the func parameter
@@ -510,7 +518,7 @@ public:
     *   setMouseButtonCallback(mouse_btn_callback);
     * 
     */
-    void setMouseButtonCallback( void (*func)(int,int,int) );
+    void setMouseButtonCallback( void (*func)(LigidWindow,int,int,int) );
 
     /*!
     *  @brief sets the private member variable @ref keyCallback function as the func parameter
@@ -531,7 +539,7 @@ public:
     *   setMouseButtonCallback(key_callback);
     * 
     */
-    void setKeyCallback( void (*func)(int,int,int) );
+    void setKeyCallback( void (*func)(LigidWindow,int,int,int) );
 
     /*!
     *  @brief sets the private member variable @ref windowSizeCallback function as the func parameter
@@ -551,7 +559,7 @@ public:
     *   setWindowSizeCallback(window_size_callback);
     * 
     */
-    void setWindowSizeCallback( void (*func)(int,int) );
+    void setWindowSizeCallback( void (*func)(LigidWindow,int,int) );
     
     /*!
     *  @brief sets the private member variable @ref scrollCallback function as the func parameter
@@ -574,7 +582,7 @@ public:
     *   (Use the yOffset for the basic mouse scroll)
     * 
     */
-    void setScrollCallback( void (*func)(double,double) );
+    void setScrollCallback( void (*func)(LigidWindow,double,double) );
 
 
 
@@ -702,6 +710,9 @@ public:
     *   }
     */
     void setCursor(LigidCursor cursor);
+
+    void* getWindowUserPointer();
+
 };
 
 #endif

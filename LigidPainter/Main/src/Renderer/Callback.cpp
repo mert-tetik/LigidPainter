@@ -35,6 +35,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 /// @brief Mouse button callback (every time a mouse button cliked)
 void Renderer::mouseButtonCallback(LigidWindow window, int button, int action, int mods){
+    
+    
     //Calculate double click
     if (button == LIGIDGL_MOUSE_BUTTON_LEFT && action == LIGIDGL_PRESS) {
         double currentTime = LigidGL::getTime();

@@ -28,8 +28,6 @@ Website::Website(std::string url){
 }
 
 void Website::open(){
-    std::cout << url << std::endl;
-
     #if defined(_WIN32) || defined(_WIN64)
     //Windows
     std::string command = "start " + url;

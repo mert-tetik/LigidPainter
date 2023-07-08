@@ -37,7 +37,7 @@ public:
         {   
             renderer.render();
         }
-        
+
         return 1;
     }
 };

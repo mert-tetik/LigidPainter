@@ -43,22 +43,22 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #endif
 
-void LigidWindow::setMousePosCallback(void (*mousePosCallback)(int, int)) {
+void LigidWindow::setMousePosCallback(void (*mousePosCallback)(LigidWindow,double, double)) {
     this->mousePosCallback = mousePosCallback;
 }
 
-void LigidWindow::setMouseButtonCallback(void (*mouseButtonCallback)(int, int, int)) {
+void LigidWindow::setMouseButtonCallback(void (*mouseButtonCallback)(LigidWindow,int, int, int)) {
     this->mouseButtonCallback = mouseButtonCallback;
 }
 
-void LigidWindow::setKeyCallback(void (*keyCallback)(int, int, int)) {
+void LigidWindow::setKeyCallback(void (*keyCallback)(LigidWindow,int, int, int)) {
     this->keyCallback = keyCallback;
 }
 
-void LigidWindow::setWindowSizeCallback(void (*windowSizeCallback)(int, int)) {
+void LigidWindow::setWindowSizeCallback(void (*windowSizeCallback)(LigidWindow,int, int)) {
     this->windowSizeCallback = windowSizeCallback;
 }
 
-void LigidWindow::setScrollCallback(void (*scrollCallback)(double, double)) {
+void LigidWindow::setScrollCallback(void (*scrollCallback)(LigidWindow,double, double)) {
     this->scrollCallback = scrollCallback;
 }

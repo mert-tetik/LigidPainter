@@ -44,6 +44,42 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     //Show the created window
     context.window.show();
 
+    auto cursorPosFunc = [](LigidWindow w, double x, double y)
+    {
+        static_cast<Renderer*>(w.getWindowUserPointer()) -> cursorPositionCallback(w,x,y);
+    };    
+    context.window.setMousePosCallback(cursorPosFunc);
+    
+    //Scroll callback function casting
+    auto scrollFunc = [](LigidWindow w, double x, double y)
+    {
+        static_cast<Renderer*>(w.getWindowUserPointer())->scrollCallback(w,x,y);
+    };
+    context.window.setScrollCallback(scrollFunc);
+
+    //Framebuffer size callback function casting
+    auto framebufferSizeFunc = [](LigidWindow w, int x, int y)
+    {
+        static_cast<Renderer*>(w.getWindowUserPointer())->framebufferSizeCallback(w,x,y);
+    };
+    context.window.setWindowSizeCallback(framebufferSizeFunc);
+
+    //Mouse button callback function casting
+    auto mouseButtonFunc = [](LigidWindow w, int button, int action, int mods)
+    {
+        static_cast<Renderer*>(w.getWindowUserPointer())->mouseButtonCallback(w,button,action,mods);
+    };
+
+    context.window.setMouseButtonCallback(mouseButtonFunc);
+
+    //Key button callback function casting
+    auto keyFunc = [](LigidWindow w, int key, int action, int mods)
+    {
+        static_cast<Renderer*>(w.getWindowUserPointer())->keyCallback(w, key, 0, action, mods);
+    };
+
+    context.window.setKeyCallback(keyFunc);
+
     //Hold the videoscale value inside of the scene structure
     scene.videoScale = videoScale;
 

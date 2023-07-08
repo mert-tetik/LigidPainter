@@ -59,9 +59,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #endif
 
 /* --Empty function used to init the LigidWindow private callback functions-- */ 
-void emptyFunc2int(int, int){}
-void emptyFunc3int(int, int, int){}
-void emptyFunc2double(double, double){}
+void emptyFunc2int(LigidWindow,int, int){}
+void emptyFunc3int(LigidWindow,int, int, int){}
+void emptyFunc2double(LigidWindow,double, double){}
 
 int LigidWindow::createWindow(
                                 int w, 
@@ -144,7 +144,7 @@ int LigidWindow::createWindow(
     
     //-- Init the callback functions of the window --
 
-    this->mousePosCallback = emptyFunc2int;
+    this->mousePosCallback = emptyFunc2double;
     this->mouseButtonCallback = emptyFunc3int;
     this->keyCallback = emptyFunc3int;
     this->windowSizeCallback = emptyFunc2int;
@@ -316,9 +316,10 @@ static HGLRC init_opengl(HDC real_dc)
     }
 
     int64_t glVersionProfile = 0;
-    if(LIGIDGL_OPENGL_VERSION_PROFILE == "core")
+    
+    if(LIGIDGL_OPENGL_VERSION_PROFILE == LIGIDGL_OPENGL_PROFILE_CORE)
         glVersionProfile = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
-    else if(LIGIDGL_OPENGL_VERSION_PROFILE == "compatibility")
+    else if(LIGIDGL_OPENGL_VERSION_PROFILE == LIGIDGL_OPENGL_PROFILE_COMPATIBILITY)
         glVersionProfile = WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
     else
         fatal_error("Invalid OpenGL profile! See the LIGIDGL_OPENGL_VERSION_PROFILE macro in the LigidGL header");
@@ -343,17 +344,40 @@ static HGLRC init_opengl(HDC real_dc)
     return gl33_context;
 }
 
-static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+bool _WindowProcCloseWindow = false;
+HWND _WindowProcHWND = NULL;
+
+bool LigidWindow::_get_WindowProcCloseWindow(){
+#if defined(_WIN32) || defined(_WIN64)
+    LigidWindow wnd = *this;
+    if(_WindowProcHWND == wnd.window)
+        return _WindowProcCloseWindow;
+    else 
+        false;
+
+#endif
+}
+
+LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    // Custom window procedure to handle window events
+    _WindowProcHWND = hWnd;
+
     switch (uMsg)
     {
-        case WM_DESTROY:
-            PostQuitMessage(0);
+        case WM_CLOSE:
+            // Optionally add custom logic here to confirm the close request or perform other actions
+            // To prevent the window from closing, do not call the default window procedure
+            _WindowProcCloseWindow = true;
             return 0;
-        default:
-            return DefWindowProc(hwnd, uMsg, wParam, lParam);
+        case WM_DESTROY:
+            // Handle window destroy message
+            PostQuitMessage(0);
+            break;
+        // Handle other messages as needed
     }
+
+    // Call the default window procedure for remaining messages
+    return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 static HWND create_window(int width, int height, const wchar_t* title)

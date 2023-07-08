@@ -59,24 +59,8 @@ bool LigidWindow::shouldClose(){
 #if defined(_WIN32) || defined(_WIN64)
     
     //* User in windows environment
-    
-    /* 
-        The GetMessage function retrieves a message from the calling thread's message queue.
-        If there are no messages, it blocks until a message arrives or the application is terminated.
-        Here, we are checking if GetMessage returns 0, which indicates there are no more messages in the queue.
-        The message structure (msg) is filled with the message details if GetMessage retrieves a message.
-        The hWnd parameter specifies the handle of the window whose messages are to be retrieved.
-        The next two parameters (wMsgFilterMin and wMsgFilterMax) filter the messages to be retrieved.
-        In this case, they are set to 0, which means all messages are retrieved.
-
-        Returns false if there are no messages which means user is trying to close the window (getMessage function returned -1)
-    */
-    return GetMessage(
-                        &this->msg, 
-                        this->window, 
-                        0, 
-                        0
-                    ) == -1;
+            
+    return this->_get_WindowProcCloseWindow();
 #endif
 
 }
@@ -86,6 +70,24 @@ void LigidWindow::pollEvents(){
 #if defined(_WIN32) || defined(_WIN64)
     
     //* User in windows environment
+
+    //The PeekMessage function retrieves a message from the message queue without removing it from the queue. Here's a breakdown of the parameters:
+    PeekMessage(
+        &this->msg,   // [in/out] A pointer to an MSG structure that receives the retrieved message.
+        this->window,         // [in] A handle to the window whose messages are to be retrieved.
+                      //      NULL indicates that the function should retrieve messages for any window that belongs to the current thread.
+        0,            // [in] The minimum value for the message filter.
+                      //      Specifies the value of the first message to be retrieved.
+                      //      In this case, 0 indicates that all message types should be retrieved.
+        0,            // [in] The maximum value for the message filter.
+                      //      Specifies the value of the last message to be retrieved.
+                      //      In this case, 0 indicates that all message types should be retrieved.
+        PM_REMOVE     // [in] The removal options.
+                      //      Specifies how the message should be handled after retrieval.
+                      //      PM_REMOVE indicates that the retrieved message should be removed from the queue.
+    );
+
+    
 
     // The TranslateMessage function translates virtual-key messages into character messages.
     // It is typically called to process keyboard input before dispatching it to the appropriate window procedure.
@@ -99,13 +101,22 @@ void LigidWindow::pollEvents(){
     DispatchMessage(&this->msg);
 
 
+    if(this->msg.message == WM_QUIT)
+        std::cout << "AAAAAAAAAAA " << std::endl;
+
+
+
+    //UpdateWindow(this->window);
+
+
     //--- Call the callback functions ---
 
     // If received a mouse position change message
-    if(this->msg.message == WM_MOUSEMOVE){
+    /*if(this->msg.message == WM_MOUSEMOVE){
 
         // Call the mouse position callback function set by the user using message data
         this->mousePosCallback(
+                                *this,
                                 LOWORD(msg.lParam), //Received mouse x pos  
                                 HIWORD(msg.lParam)  //Received mouse y pos
                             );
@@ -130,7 +141,6 @@ void LigidWindow::pollEvents(){
             MButtonReceived     //If middle button action received
         )
     {
-
         // Set the button
         int button = 0;
         if(LButtonReceived)
@@ -159,10 +169,14 @@ void LigidWindow::pollEvents(){
             mods = LIGIDGL_MOD_CONTROL_ALT_SHIFT;
             
 
+    //std::cout << mods << std::endl;
+        
+
         // Call the mouse button callback function set by the user using message data
         this->mouseButtonCallback(
-                                button, //Received mouse x pos  
-                                action,  //Received mouse y pos
+                                *this,
+                                button, 
+                                action, 
                                 mods
                             );
     
@@ -203,6 +217,7 @@ void LigidWindow::pollEvents(){
 
         // Call the key callback function set by the user using message data
         this->keyCallback(
+                                *this,
                                 keyCode, //Received mouse x pos  
                                 action,  //Received mouse y pos
                                 mods
@@ -213,7 +228,11 @@ void LigidWindow::pollEvents(){
     // Check if the window size has changed
     if (msg.message == WM_SIZE) {
         
-        this->windowSizeCallback(LOWORD(msg.lParam), HIWORD(msg.lParam));
+        this->windowSizeCallback(
+                                    *this,
+                                    LOWORD(msg.lParam), 
+                                    HIWORD(msg.lParam)
+                                );
 
     }
 
@@ -221,17 +240,25 @@ void LigidWindow::pollEvents(){
     if (msg.message == WM_MOUSEHWHEEL) {
         double delta = GET_WHEEL_DELTA_WPARAM(msg.wParam);
 
-        this->scrollCallback(delta, 0);
+        this->scrollCallback(
+                                *this,
+                                delta, 
+                                0
+                            );
     } 
     
     // Check if mouse scrolled vertically
     else if (msg.message == WM_MOUSEWHEEL) {
         double delta = GET_WHEEL_DELTA_WPARAM(msg.wParam);
 
-        this->scrollCallback(0, delta);
+        this->scrollCallback(
+                                *this,
+                                0, 
+                                delta
+                            );
     }
     
-
+*/
 #endif
 }
 
@@ -561,4 +588,10 @@ void LigidWindow::style(const int styleKey){
         SetWindowPos(this->window, nullptr, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), SWP_SHOWWINDOW);
     else
         SetWindowPos(this->window, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE); 
+}
+
+void* LigidWindow::getWindowUserPointer()
+{
+    LONG_PTR userPointer = GetWindowLongPtr(this->window, GWLP_USERDATA);
+    return reinterpret_cast<void*>(userPointer);
 }

@@ -42,7 +42,6 @@ void Panel::mouseTracking(Mouse& mouse){
         bottomSide.hover = mouse.isMouseHover(glm::vec2(resultScale.x,grabbingRange),glm::vec2(resultPos.x,resultPos.y + resultScale.y)) && !bottomSide.locked;
         //Check if mouse on top of the top side of the panel
         topSide.hover = mouse.isMouseHover(glm::vec2(resultScale.x,grabbingRange),glm::vec2(resultPos.x,resultPos.y - resultScale.y)) && !topSide.locked;
-    
     }
     else{
         leftSide.hover = false;
