@@ -55,14 +55,7 @@ void LigidWindow::swapBuffers(){
 
 
 bool LigidWindow::shouldClose(){
-
-#if defined(_WIN32) || defined(_WIN64)
-    
-    //* User in windows environment
-            
-    return this->_get_WindowProcCloseWindow();
-#endif
-
+    return this->_get_WindowProcCloseWindow(); 
 }
 
 
@@ -101,9 +94,6 @@ void LigidWindow::pollEvents(){
     DispatchMessage(&this->msg);
 
 
-    if(this->msg.message == WM_QUIT)
-        std::cout << "AAAAAAAAAAA " << std::endl;
-
 
 
     //UpdateWindow(this->window);
@@ -112,7 +102,7 @@ void LigidWindow::pollEvents(){
     //--- Call the callback functions ---
 
     // If received a mouse position change message
-    /*if(this->msg.message == WM_MOUSEMOVE){
+    if(this->msg.message == WM_MOUSEMOVE){
 
         // Call the mouse position callback function set by the user using message data
         this->mousePosCallback(
@@ -258,7 +248,6 @@ void LigidWindow::pollEvents(){
                             );
     }
     
-*/
 #endif
 }
 
@@ -594,4 +583,8 @@ void* LigidWindow::getWindowUserPointer()
 {
     LONG_PTR userPointer = GetWindowLongPtr(this->window, GWLP_USERDATA);
     return reinterpret_cast<void*>(userPointer);
+}
+
+void LigidWindow::setWindowUserPointer(void* pointer){
+    SetWindowLongPtr(this->window, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pointer));
 }

@@ -713,6 +713,7 @@ public:
 
     void* getWindowUserPointer();
 
+    void setWindowUserPointer(void* pointer);
 };
 
 #endif

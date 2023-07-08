@@ -44,10 +44,17 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     //Show the created window
     context.window.show();
 
+    context.window.setWindowUserPointer(this);
+
     auto cursorPosFunc = [](LigidWindow w, double x, double y)
     {
-        static_cast<Renderer*>(w.getWindowUserPointer()) -> cursorPositionCallback(w,x,y);
-    };    
+        Renderer* renderer = static_cast<Renderer*>(w.getWindowUserPointer());
+        if (renderer)
+        {
+            renderer->cursorPositionCallback(w, x, y);
+        }
+    };
+    
     context.window.setMousePosCallback(cursorPosFunc);
     
     //Scroll callback function casting
