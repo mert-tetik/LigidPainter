@@ -24,171 +24,16 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <gl/GL.h>
 #include <stdbool.h>
 
+#include <Windows.h>
 
+//  --------------------    WGL    --------------------
 
-#if defined(_WIN32) || defined(_WIN64)
-    
-    //User has Windows
-    #include <Windows.h>
-
-    // Forward declarations for the windows utilities
-    static void fatal_error(char *uMsg);
-    static void init_opengl_extensions(void);
-    static HGLRC init_opengl(HDC real_dc);
-    static HWND create_window(int width, int height, const wchar_t* title);
-#elif defined(__APPLE__)
-
-
-    #include <Cocoa/Cocoa.h>
-
-    // Forward declarations for the MacOS utilities
-    std::pair<NSWindow, NSOpenGLContext*> MacOSCreateOpenGLWindow(int width, int height, const char* title);
-
-
-#elif defined(__linux__)
-
-
-    //User has Linux
-    #include <X11/Xlib.h>
-    #include <GL/glx.h>
-
-    // Forward declarations for the Linux utilities
-    std::pair<Window, GLXContext> LinuxCreateOpenGLWindow(int width, int height, const char* title);
-
-
-#endif
-
-/* --Empty function used to init the LigidWindow private callback functions-- */ 
-void emptyFunc2int(LigidWindow,int, int){}
-void emptyFunc3int(LigidWindow,int, int, int){}
-void emptyFunc2double(LigidWindow,double, double){}
-
-int LigidWindow::createWindow(
-                                int w, 
-                                int h, 
-                                const wchar_t* title
-                            )
-{
-#if defined(_WIN32) || defined(_WIN64)
-
-    //* User using Windows environment
-
-
-    this->window = create_window(w, h, title);
-    
-    
-    if (!this->window) {
-        
-        // Window creation failed
-        std::cout << "Can't create HWND window" << std::endl;
-        return 0;
-    
-    }
-    
-    HDC gldc = GetDC(this->window);
-    
-    this->openGLContext = init_opengl(gldc);
-
-#elif defined(__APPLE__)
-
-    //* User using Apple environment
-
-
-    std::pair<NSWindow, NSOpenGLContext*> windowContextPair;
-
-    windowContextPair = MacOSCreateOpenGLWindow(
-                                                800, // Width 
-                                                600, // Height
-                                                title.c_str() // Title of the window
-                                            );
-    this->window = windowContextPair.first;
-    
-    this->openGLContext = windowContextPair.second;
-
-    if (!this->window) {
-        
-        // Window creation failed
-        std::cout << "Can't create cocoa window" << std::endl;
-        return 0;
-    
-    }
-
-
-#elif defined(__linux__)
-
-    //* User using Linux environment
-
-    std::pair<Window, GLXContext> windowContextPair;
-
-
-    windowContextPair = LinuxCreateOpenGLWindow(
-                                                800, // Width 
-                                                600, // Height
-                                                title.c_str() // Title of the window
-                                            );
-
-    this->window = windowContextPair.first;
-    
-    this->openGLContext = windowContextPair.second;
-
-    if (!this->window) {
-        
-        // Window creation failed
-        std::cout << "Can't create Linux window" << std::endl;
-        return 0;
-    
-    }
-
-
-#endif
-    
-    //-- Init the callback functions of the window --
-
-    this->mousePosCallback = emptyFunc2double;
-    this->mouseButtonCallback = emptyFunc3int;
-    this->keyCallback = emptyFunc3int;
-    this->windowSizeCallback = emptyFunc2int;
-    this->scrollCallback = emptyFunc2double;
-
-    return 1;
-}
-
-
-
-
-LigidWindow _procLigidWindow;
-void (*_procMousePosCallback)(LigidWindow,double, double);
-void (*_procMouseButtonCallback)(LigidWindow,int, int, int);
-void (*_procKeyCallback)(LigidWindow,int, int, int);
-void (*_procWindowSizeCallback)(LigidWindow,int, int);
-void (*_procScrollCallback)(LigidWindow,double, double);
-int _procFuncsInitialized = 0;
-
-void LigidWindow::_setProcFunctions(
-                                        LigidWindow __procLigidWindow,
-                                        void (*__procMousePosCallback)(LigidWindow,double, double),
-                                        void (*__procMouseButtonCallback)(LigidWindow,int, int, int),
-                                        void (*__procKeyCallback)(LigidWindow,int, int, int),
-                                        void (*__procWindowSizeCallback)(LigidWindow,int, int),
-                                        void (*__procScrollCallback)(LigidWindow,double, double)
-                                    )
-{
-    _procFuncsInitialized = 1;
-    _procLigidWindow = __procLigidWindow; 
-    _procMousePosCallback = __procMousePosCallback;
-    _procMouseButtonCallback = __procMouseButtonCallback;
-    _procKeyCallback = __procKeyCallback;
-    _procWindowSizeCallback = __procWindowSizeCallback;
-    _procScrollCallback = __procScrollCallback;
-}
-
-
-#if defined(_WIN32) || defined(_WIN64)
-
-//  --------------------    WINDOWS UTIL    --------------------
-
-typedef HGLRC WINAPI wglCreateContextAttribsARB_type(HDC hdc, HGLRC hShareContext,
-        const int *attribList);
+// Later that function is loaded in the init_opengl_extensions function
+typedef HGLRC WINAPI wglCreateContextAttribsARB_type(
+                                                        HDC hdc, 
+                                                        HGLRC hShareContext, 
+                                                        const int *attribList
+                                                    );
 wglCreateContextAttribsARB_type *wglCreateContextAttribsARB;
 
 // See https://www.khronos.org/registry/OpenGL/extensions/ARB/WGL_ARB_create_context.txt for all values
@@ -199,8 +44,16 @@ wglCreateContextAttribsARB_type *wglCreateContextAttribsARB;
 #define WGL_CONTEXT_CORE_PROFILE_BIT_ARB          0x00000001
 #define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
 
-typedef BOOL WINAPI wglChoosePixelFormatARB_type(HDC hdc, const int *piAttribIList,
-        const FLOAT *pfAttribFList, UINT nMaxFormats, int *piFormats, UINT *nNumFormats);
+// Later that function is loaded in the init_opengl_extensions function
+typedef BOOL WINAPI wglChoosePixelFormatARB_type(
+                                                    HDC hdc, 
+                                                    const int *piAttribIList, 
+                                                    const FLOAT *pfAttribFList, 
+                                                    UINT nMaxFormats, 
+                                                    int *piFormats, 
+                                                    UINT *nNumFormats
+                                                );
+
 wglChoosePixelFormatARB_type *wglChoosePixelFormatARB;
 
 // See https://www.khronos.org/registry/OpenGL/extensions/ARB/WGL_ARB_pixel_format.txt for all values
@@ -216,12 +69,19 @@ wglChoosePixelFormatARB_type *wglChoosePixelFormatARB;
 #define WGL_FULL_ACCELERATION_ARB                 0x2027
 #define WGL_TYPE_RGBA_ARB                         0x202B
 
+
+
+//  --------------------    WINDOW & OPENGL CONTEXT CREATION    --------------------
+
 static void fatal_error(char *uMsg)
 {
     std::cout << "ERROR : " << uMsg << std::endl;
     //exit(EXIT_FAILURE);
 }
 
+/* 
+    Loads the WGL functions 
+*/
 static void init_opengl_extensions(void)
 {
     // Before we can load extensions, we need a dummy OpenGL context, created using a dummy window.
@@ -302,6 +162,9 @@ static void init_opengl_extensions(void)
     DestroyWindow(dummy_window);
 }
 
+/*
+    Create OpenGL rendering context handle
+*/
 static HGLRC init_opengl(HDC real_dc)
 {
     init_opengl_extensions();
@@ -365,9 +228,111 @@ static HGLRC init_opengl(HDC real_dc)
     return gl33_context;
 }
 
+
+LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+/*
+    HWND Window handle creation
+*/
+static HWND create_window(int width, int height, const wchar_t* title)
+{
+    // Get the instance handle of the current module
+    HINSTANCE hInstance = GetModuleHandle(NULL);
+
+    // Register the window class
+    WNDCLASS wc = {0};
+    wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+    wc.lpfnWndProc = WindowProc;
+    wc.hInstance = hInstance;
+    wc.lpszClassName = L"OpenGLWindowClass";
+
+    // Class registration failed
+    if (!RegisterClass(&wc)) {
+        fatal_error("Class registration failed");
+        return nullptr;
+    }
+
+    // Adjust the window size to include the window frame
+    RECT windowRect = {0, 0, width, height};
+    AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
+
+    // Create the window
+    HWND hWnd = CreateWindow(
+                                L"OpenGLWindowClass", 
+                                title, 
+                                WS_OVERLAPPEDWINDOW,
+                                CW_USEDEFAULT, 
+                                CW_USEDEFAULT, 
+                                windowRect.right - windowRect.left, 
+                                windowRect.bottom - windowRect.top,
+                                NULL, 
+                                NULL, 
+                                hInstance, 
+                                NULL
+                            );
+
+    // Window creation failed
+    if (!hWnd) 
+    {
+        return nullptr;
+    }
+
+    return hWnd;
+}
+
+
+
+
+
+
+//  ---------   CALLBACKS ---------
+
+// Current window calls the pollEvents 
+LigidWindow _procLigidWindow;
+
+/* -- Callback functions of the current window -- */
+/* 
+    currentLigidWindow.pollEvents calls the _setProcFunctions 
+    function and sends it's callback functions to there
+*/
+
+void (*_procMousePosCallback)(LigidWindow,double, double);
+void (*_procMouseButtonCallback)(LigidWindow,int, int, int);
+void (*_procKeyCallback)(LigidWindow,int, int, int);
+void (*_procWindowSizeCallback)(LigidWindow,int, int);
+void (*_procScrollCallback)(LigidWindow,double, double);
+
+//Set to 0 if the callback functions are not initialized
+int _procFuncsInitialized = 0; 
+
+void LigidWindow::_setProcFunctions(
+                                        LigidWindow __procLigidWindow,
+                                        void (*__procMousePosCallback)(LigidWindow,double, double),
+                                        void (*__procMouseButtonCallback)(LigidWindow,int, int, int),
+                                        void (*__procKeyCallback)(LigidWindow,int, int, int),
+                                        void (*__procWindowSizeCallback)(LigidWindow,int, int),
+                                        void (*__procScrollCallback)(LigidWindow,double, double)
+                                    )
+{
+    _procFuncsInitialized = 1;
+    _procLigidWindow = __procLigidWindow; 
+    _procMousePosCallback = __procMousePosCallback;
+    _procMouseButtonCallback = __procMouseButtonCallback;
+    _procKeyCallback = __procKeyCallback;
+    _procWindowSizeCallback = __procWindowSizeCallback;
+    _procScrollCallback = __procScrollCallback;
+}
+
+
+//HWND proc callback sets true if the window should close (window.shouldClose will always return this value if the window handles matches)
 bool _WindowProcCloseWindow = false;
+
+//Which window should close
 HWND _WindowProcHWND = NULL;
 
+/*
+    Check if HWND proc callback function message detected WM_CLOSE flag
+    Used by the LigidWindow.shouldClose function
+*/
 bool LigidWindow::_get_WindowProcCloseWindow(){
 #if defined(_WIN32) || defined(_WIN64)
     LigidWindow wnd = *this;
@@ -378,6 +343,8 @@ bool LigidWindow::_get_WindowProcCloseWindow(){
 
 #endif
 }
+
+
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -571,127 +538,3 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     // Call the default window procedure for remaining messages
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
-
-static HWND create_window(int width, int height, const wchar_t* title)
-{
-    // Get the instance handle of the current module
-    HINSTANCE hInstance = GetModuleHandle(NULL);
-
-    // Register the window class
-    WNDCLASS wc = {0};
-    wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-    wc.lpfnWndProc = WindowProc;
-    wc.hInstance = hInstance;
-    wc.lpszClassName = L"OpenGLWindowClass";
-
-    // Class registration failed
-    if (!RegisterClass(&wc)) {
-        fatal_error("Class registration failed");
-        return nullptr;
-    }
-
-    // Adjust the window size to include the window frame
-    RECT windowRect = {0, 0, width, height};
-    AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
-
-    // Create the window
-    HWND hWnd = CreateWindow(
-                                L"OpenGLWindowClass", 
-                                title, 
-                                WS_OVERLAPPEDWINDOW,
-                                CW_USEDEFAULT, 
-                                CW_USEDEFAULT, 
-                                windowRect.right - windowRect.left, 
-                                windowRect.bottom - windowRect.top,
-                                NULL, 
-                                NULL, 
-                                hInstance, 
-                                NULL
-                            );
-
-    // Window creation failed
-    if (!hWnd) 
-    {
-        return nullptr;
-    }
-
-    return hWnd;
-}
-
-#elif defined(__APPLE__)
-
-//  --------------------    MACOS UTIL    --------------------
-
-std::pair<NSWindow, NSOpenGLContext*> MacOSCreateOpenGLWindow(int width, int height, const char* title) {
-    //TODO : Complete that
-}
-
-#elif defined(__linux__)
-
-//  --------------------    LINUX UTIL    --------------------
-
-std::pair<Window, GLXContext> LinuxCreateOpenGLWindow(int width, int height, const char* title) {
-    // Open a connection to the X server
-    Display* display = XOpenDisplay(NULL);
-    if (display == NULL) {
-        return std::make_pair(None, nullptr);
-    }
-
-    // Get the default screen
-    int screen = DefaultScreen(display);
-
-    // Create a window
-    Window root = RootWindow(display, screen);
-    XSetWindowAttributes windowAttributes;
-    windowAttributes.background_pixel = 0;
-    Window window = XCreateWindow(display, root, 0, 0, width, height, 0, CopyFromParent, InputOutput,
-                                  CopyFromParent, CWBackPixel, &windowAttributes);
-    if (window == None) {
-        XCloseDisplay(display);
-        return std::make_pair(None, nullptr);
-    }
-
-    // Create a visual info
-    static int visualAttributes[] = {
-        GLX_RGBA,
-        GLX_DOUBLEBUFFER,
-        GLX_DEPTH_SIZE, 24,
-        GLX_STENCIL_SIZE, 8,
-        None
-    };
-    XVisualInfo* visualInfo = glXChooseVisual(display, screen, visualAttributes);
-    if (visualInfo == nullptr) {
-        XDestroyWindow(display, window);
-        XCloseDisplay(display);
-        return std::make_pair(None, nullptr);
-    }
-
-    // Create a GLX context
-    GLXContext context = glXCreateContext(display, visualInfo, nullptr, True);
-    if (context == nullptr) {
-        XFree(visualInfo);
-        XDestroyWindow(display, window);
-        XCloseDisplay(display);
-        return std::make_pair(None, nullptr);
-    }
-
-    // Make the context current
-    if (!glXMakeCurrent(display, window, context)) {
-        glXDestroyContext(display, context);
-        XFree(visualInfo);
-        XDestroyWindow(display, window);
-        XCloseDisplay(display);
-        return std::make_pair(None, nullptr);
-    }
-
-    // Set the window title
-    XStoreName(display, window, title);
-
-    // Map the window to the screen
-    XMapWindow(display, window);
-    XFlush(display);
-
-    return std::make_pair(window, context);
-}
-
-#endif

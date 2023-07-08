@@ -435,7 +435,6 @@ public:
     *
     *   this->msg contains the message to be processed (for windows) 
     * 
-    *   Also calls the callback functions
     */
     void pollEvents();
 
