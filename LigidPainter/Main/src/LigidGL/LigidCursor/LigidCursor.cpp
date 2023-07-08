@@ -40,36 +40,50 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void LigidCursor::createCursor(int cursorWidth, int cursorHeight, int cursorHotspotX, int cursorHotspotY, unsigned char* cursorPixelData) {
 #if defined(_WIN32) || defined(_WIN64)
-    // User has Windows
+    // Calculate the number of bytes per row in the cursorPixelData
+    int bytesPerRow = cursorWidth * 4;
 
-    // Allocate memory for the AND and XOR masks
-    BYTE* andMask = new BYTE[cursorWidth * cursorHeight / 8];
-    BYTE* xorMask = new BYTE[cursorWidth * cursorHeight / 8];
+    // Create a BITMAPINFO structure to describe the cursor bitmap
+    BITMAPINFO bitmapInfo = {0};
+    bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bitmapInfo.bmiHeader.biWidth = cursorWidth;
+    bitmapInfo.bmiHeader.biHeight = -cursorHeight;  // Negative height to indicate a top-down bitmap
+    bitmapInfo.bmiHeader.biPlanes = 1;
+    bitmapInfo.bmiHeader.biBitCount = 32;
+    bitmapInfo.bmiHeader.biCompression = BI_RGB;
 
-    // Convert pixel data to mask data
-    for (int i = 0; i < cursorWidth * cursorHeight; ++i) {
-        int pixelIndex = i * 4;  // Assuming RGBA format (4 channels)
-        
-        BYTE red = cursorPixelData[pixelIndex];
-        BYTE green = cursorPixelData[pixelIndex + 1];
-        BYTE blue = cursorPixelData[pixelIndex + 2];
-        BYTE alpha = cursorPixelData[pixelIndex + 3];
-
-        BYTE pixelValue = (alpha > 0) ? 1 : 0;  // Determine if the pixel is opaque or transparent
-
-        andMask[i / 8] |= (pixelValue == 0 ? 0x80 : 0);
-        xorMask[i / 8] |= (pixelValue == 1 ? 0x80 : 0);
-
-        if (i % 8 < 7) {
-            // Shift the bits to the right for the next pixel
-            andMask[i / 8] >>= 1;
-            xorMask[i / 8] >>= 1;
-        }
+    // Create a device-independent bitmap (DIB) section for the cursor bitmap
+    void* pBitmapBits;
+    HBITMAP hBitmap = CreateDIBSection(NULL, &bitmapInfo, DIB_RGB_COLORS, &pBitmapBits, NULL, 0);
+    if (!hBitmap)
+    {
+        // Failed to create the DIB section
+        return ;
     }
 
-    // Create the cursor using the AND and XOR masks
-    this->cursorHandle = CreateIcon(GetModuleHandle(nullptr), cursorWidth, cursorHeight, 1, 1, andMask, xorMask);
+    // Copy the pixel data into the DIB section
+    memcpy(pBitmapBits, cursorPixelData, cursorHeight * bytesPerRow);
 
+    // Create the mask bitmap
+    BYTE* pMaskBits = new BYTE[cursorWidth * cursorHeight / 8];
+    memset(pMaskBits, 0xFF, cursorWidth * cursorHeight / 8);
+
+    // Create the cursor
+    ICONINFO iconInfo;
+    iconInfo.fIcon = FALSE;
+    iconInfo.xHotspot = cursorHotspotX;
+    iconInfo.yHotspot = cursorHotspotY;
+    iconInfo.hbmMask = CreateBitmap(cursorWidth, cursorHeight, 1, 1, pMaskBits);
+    iconInfo.hbmColor = hBitmap;
+
+    HCURSOR hCursor = CreateIconIndirect(&iconInfo);
+
+    // Clean up resources
+    delete[] pMaskBits;
+    DeleteObject(hBitmap);
+    DeleteObject(iconInfo.hbmMask);
+
+    this->cursorHandle = hCursor;
     // Clean up allocated memory
 
 #elif defined(__APPLE__)
