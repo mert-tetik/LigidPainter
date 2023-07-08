@@ -85,7 +85,7 @@ void Renderer::mouseButtonCallback(LigidWindow window, int button, int action, i
 
 /// @brief Framebuffer size callback (every time window size changed)
 void Renderer::framebufferSizeCallback(LigidWindow window, int width, int height){
-    
+    std::cout << width << ' ' << height << std::endl;
     //Update the window size from context
     context.windowScale.x = width;
     context.windowScale.y = height;

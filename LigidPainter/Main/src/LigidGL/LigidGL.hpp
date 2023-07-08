@@ -323,6 +323,7 @@ private:
         @brief Retrieves window should close data from the window's proc callback function (located in the CreateWindow.cpp (interprets the global variables))
     */
     bool _get_WindowProcCloseWindow();
+    
 
     /*!
     *   @brief The mouse position callback function of the window set by the user.
@@ -384,6 +385,15 @@ private:
     *   
     */
     void (*scrollCallback)(LigidWindow,double, double);
+
+    void LigidWindow::_setProcFunctions(
+                                        LigidWindow __procLigidWindow,
+                                        void (*__procMousePosCallback)(LigidWindow,double, double),
+                                        void (*__procMouseButtonCallback)(LigidWindow,int, int, int),
+                                        void (*__procKeyCallback)(LigidWindow,int, int, int),
+                                        void (*__procWindowSizeCallback)(LigidWindow,int, int),
+                                        void (*__procScrollCallback)(LigidWindow,double, double)
+                                    );
 
 public:
     /*! 

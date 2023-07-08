@@ -32,7 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void Renderer::render(){
     
-    //Handle user input and interact with the windowing system & call the callback functions
+    //Handle user input and interact with the windowing system
     context.window.pollEvents();
     //Update local timer data
     if(timer.runTimer(1.f))

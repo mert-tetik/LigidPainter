@@ -65,7 +65,7 @@ void LigidWindow::pollEvents(){
     //* User in windows environment
 
     //The PeekMessage function retrieves a message from the message queue without removing it from the queue. Here's a breakdown of the parameters:
-    PeekMessage(
+    while(PeekMessage(
         &this->msg,   // [in/out] A pointer to an MSG structure that receives the retrieved message.
         this->window,         // [in] A handle to the window whose messages are to be retrieved.
                       //      NULL indicates that the function should retrieve messages for any window that belongs to the current thread.
@@ -75,178 +75,43 @@ void LigidWindow::pollEvents(){
         0,            // [in] The maximum value for the message filter.
                       //      Specifies the value of the last message to be retrieved.
                       //      In this case, 0 indicates that all message types should be retrieved.
-        PM_REMOVE     // [in] The removal options.
-                      //      Specifies how the message should be handled after retrieval.
-                      //      PM_REMOVE indicates that the retrieved message should be removed from the queue.
-    );
-
-    
-
-    // The TranslateMessage function translates virtual-key messages into character messages.
-    // It is typically called to process keyboard input before dispatching it to the appropriate window procedure.
-    // This function is necessary for translating virtual-key messages (such as WM_KEYDOWN and WM_KEYUP)
-    // into character messages (such as WM_CHAR) for proper handling of keyboard input.
-    TranslateMessage(&this->msg);
-
-    // The DispatchMessage function dispatches a message to a window procedure.
-    // It sends the message to the window procedure that the message's hWnd and message type specify.
-    // The window procedure handles the message and performs appropriate actions based on the message type.
-    DispatchMessage(&this->msg);
-
-
-
-
-    //UpdateWindow(this->window);
-
-
-    //--- Call the callback functions ---
-
-    // If received a mouse position change message
-    if(this->msg.message == WM_MOUSEMOVE){
-
-        // Call the mouse position callback function set by the user using message data
-        this->mousePosCallback(
-                                *this,
-                                LOWORD(msg.lParam), //Received mouse x pos  
-                                HIWORD(msg.lParam)  //Received mouse y pos
-                            );
-    
-    }
-
-
-
-    // Check if any message is received regarding the left mouse button
-    bool LButtonReceived = this->msg.message == WM_LBUTTONDOWN || this->msg.message == WM_LBUTTONDBLCLK || this->msg.message == WM_LBUTTONUP;
-    
-    // Check if any message is received regarding the right mouse button
-    bool RButtonReceived = this->msg.message == WM_RBUTTONDOWN || this->msg.message == WM_RBUTTONDBLCLK || this->msg.message == WM_RBUTTONUP; 
-    
-    // Check if any message is received regarding the middle mouse button
-    bool MButtonReceived = this->msg.message == WM_MBUTTONDOWN || this->msg.message == WM_MBUTTONDBLCLK || this->msg.message == WM_MBUTTONUP; 
-
-    // If received a mouse button message
-    if(
-            LButtonReceived ||  //If left button action received 
-            RButtonReceived ||  //If right button action received
-            MButtonReceived     //If middle button action received
-        )
+        PM_REMOVE | PM_NOREMOVE     // [in] The removal options.
+                      //                Specifies how the message should be handled after retrieval.
+                      //                PM_REMOVE indicates that the retrieved message should be removed from the queue.
+                  ))
     {
-        // Set the button
-        int button = 0;
-        if(LButtonReceived)
-            button = 0;
-        if(RButtonReceived)
-            button = 1;
-        if(MButtonReceived)
-            button = 2;
-        
-        // If pressed to the button
-        int action = this->msg.message == WM_LBUTTONDOWN || this->msg.message == WM_RBUTTONDOWN || this->msg.message ==WM_MBUTTONDOWN;
 
-        // Mods
-        int mods = LIGIDGL_MOD_DEFAULT;
-        if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
-            mods = LIGIDGL_MOD_CONTROL;
-        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
-            mods = LIGIDGL_MOD_ALT;
-        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
-            mods = LIGIDGL_MOD_SHIFT;
-        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
-            mods = LIGIDGL_MOD_CONTROL_ALT;
-        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
-            mods = LIGIDGL_MOD_CONTROL_SHIFT;
-        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
-            mods = LIGIDGL_MOD_CONTROL_ALT_SHIFT;
-            
+        //UpdateWindow(this->window);
 
-    //std::cout << mods << std::endl;
-        
-
-        // Call the mouse button callback function set by the user using message data
-        this->mouseButtonCallback(
-                                *this,
-                                button, 
-                                action, 
-                                mods
-                            );
-    
-    }
-
-
-    // If received a key message
-    if( msg.message == WM_KEYDOWN || msg.message == WM_KEYFIRST || msg.message == WM_KEYUP)
-    {
-        
-        // The key code
-        int keyCode = static_cast<int>(msg.wParam);
-        
-        // The action
-        int action = 0;
-        if(msg.message == WM_KEYFIRST)
-            action = LIGIDGL_PRESS;
-        if(msg.message == WM_KEYDOWN)
-            action = LIGIDGL_REPEAT;
-        if(msg.message == WM_KEYUP)
-            action = LIGIDGL_RELEASE;
-
-        // Mods
-        int mods = LIGIDGL_MOD_DEFAULT;
-        if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
-            mods = LIGIDGL_MOD_CONTROL;
-        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
-            mods = LIGIDGL_MOD_ALT;
-        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
-            mods = LIGIDGL_MOD_SHIFT;
-        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
-            mods = LIGIDGL_MOD_CONTROL_ALT;
-        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
-            mods = LIGIDGL_MOD_CONTROL_SHIFT;
-        else if(this->isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && this->isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
-            mods = LIGIDGL_MOD_CONTROL_ALT_SHIFT;
-            
-
-        // Call the key callback function set by the user using message data
-        this->keyCallback(
-                                *this,
-                                keyCode, //Received mouse x pos  
-                                action,  //Received mouse y pos
-                                mods
-                            );
-
-    }
-
-    // Check if the window size has changed
-    if (msg.message == WM_SIZE) {
-        
-        this->windowSizeCallback(
-                                    *this,
-                                    LOWORD(msg.lParam), 
-                                    HIWORD(msg.lParam)
+        /*
+            Send the callback functions to the where main window callback function belongs (CreateWindow.cpp)
+        */
+        this->_setProcFunctions(
+                                    *this, 
+                                    this->mousePosCallback, 
+                                    this->mouseButtonCallback, 
+                                    this->keyCallback, 
+                                    this->windowSizeCallback, 
+                                    this->scrollCallback
                                 );
 
+        /*
+            The TranslateMessage function translates virtual-key messages into character messages.
+            It is typically called to process keyboard input before dispatching it to the appropriate window procedure.
+            This function is necessary for translating virtual-key messages (such as WM_KEYDOWN and WM_KEYUP)
+            into character messages (such as WM_CHAR) for proper handling of keyboard input.
+        */
+        TranslateMessage(&this->msg);
+
+        /*
+         The DispatchMessage function dispatches a message to a window procedure.
+         It sends the message to the window procedure that the message's hWnd and message type specify.
+         The window procedure handles the message and performs appropriate actions based on the message type.
+        */
+        DispatchMessage(&this->msg);
     }
 
-    // Check if mouse/touchpad scrolled horizontally
-    if (msg.message == WM_MOUSEHWHEEL) {
-        double delta = GET_WHEEL_DELTA_WPARAM(msg.wParam);
-
-        this->scrollCallback(
-                                *this,
-                                delta, 
-                                0
-                            );
-    } 
     
-    // Check if mouse scrolled vertically
-    else if (msg.message == WM_MOUSEWHEEL) {
-        double delta = GET_WHEEL_DELTA_WPARAM(msg.wParam);
-
-        this->scrollCallback(
-                                *this,
-                                0, 
-                                delta
-                            );
-    }
     
 #endif
 }

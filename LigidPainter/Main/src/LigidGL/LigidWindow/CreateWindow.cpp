@@ -32,7 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
     #include <Windows.h>
 
     // Forward declarations for the windows utilities
-    static void fatal_error(char *msg);
+    static void fatal_error(char *uMsg);
     static void init_opengl_extensions(void);
     static HGLRC init_opengl(HDC real_dc);
     static HWND create_window(int width, int height, const wchar_t* title);
@@ -156,10 +156,31 @@ int LigidWindow::createWindow(
 
 
 
+LigidWindow _procLigidWindow;
+void (*_procMousePosCallback)(LigidWindow,double, double);
+void (*_procMouseButtonCallback)(LigidWindow,int, int, int);
+void (*_procKeyCallback)(LigidWindow,int, int, int);
+void (*_procWindowSizeCallback)(LigidWindow,int, int);
+void (*_procScrollCallback)(LigidWindow,double, double);
+int _procFuncsInitialized = 0;
 
-
-
-
+void LigidWindow::_setProcFunctions(
+                                        LigidWindow __procLigidWindow,
+                                        void (*__procMousePosCallback)(LigidWindow,double, double),
+                                        void (*__procMouseButtonCallback)(LigidWindow,int, int, int),
+                                        void (*__procKeyCallback)(LigidWindow,int, int, int),
+                                        void (*__procWindowSizeCallback)(LigidWindow,int, int),
+                                        void (*__procScrollCallback)(LigidWindow,double, double)
+                                    )
+{
+    _procFuncsInitialized = 1;
+    _procLigidWindow = __procLigidWindow; 
+    _procMousePosCallback = __procMousePosCallback;
+    _procMouseButtonCallback = __procMouseButtonCallback;
+    _procKeyCallback = __procKeyCallback;
+    _procWindowSizeCallback = __procWindowSizeCallback;
+    _procScrollCallback = __procScrollCallback;
+}
 
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -195,9 +216,9 @@ wglChoosePixelFormatARB_type *wglChoosePixelFormatARB;
 #define WGL_FULL_ACCELERATION_ARB                 0x2027
 #define WGL_TYPE_RGBA_ARB                         0x202B
 
-static void fatal_error(char *msg)
+static void fatal_error(char *uMsg)
 {
-    std::cout << "ERROR : " << msg << std::endl;
+    std::cout << "ERROR : " << uMsg << std::endl;
     //exit(EXIT_FAILURE);
 }
 
@@ -361,19 +382,190 @@ bool LigidWindow::_get_WindowProcCloseWindow(){
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     _WindowProcHWND = hWnd;
+ 
+    if(!_procFuncsInitialized)
+        return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
     switch (uMsg)
     {
         case WM_CLOSE:
+        {
             // Optionally add custom logic here to confirm the close request or perform other actions
             // To prevent the window from closing, do not call the default window procedure
             _WindowProcCloseWindow = true;
             return 0;
+        }
+        
         case WM_DESTROY:
+        {
             // Handle window destroy message
             PostQuitMessage(0);
             break;
-        // Handle other messages as needed
+        }
+        
+        case WM_EXITSIZEMOVE:
+        {
+            // Handle the end of window resizing here
+            // Perform any necessary actions after window resizing has finished
+            // ...
+            break;
+        }
+        
+        case WM_NCHITTEST:
+        {
+            // Handle non-client area hit test to customize behavior during resizing or cursor hovering
+            // Determine the hit test result based on the mouse position and return the appropriate value
+            // ...
+            break;
+        }
+        
+        case WM_MOUSEMOVE:
+        {
+            // Call the mouse position callback function set by the user using message data
+            _procMousePosCallback(
+                                    _procLigidWindow,
+                                    LOWORD(lParam), //Received mouse x pos  
+                                    HIWORD(lParam)  //Received mouse y pos
+                                );
+            break;
+        }
+
+        case WM_LBUTTONDOWN:
+        case WM_RBUTTONDOWN:
+        case WM_MBUTTONDOWN:
+        case WM_XBUTTONDOWN:
+        case WM_LBUTTONUP:
+        case WM_RBUTTONUP:
+        case WM_MBUTTONUP:
+        case WM_XBUTTONUP:
+        {
+            // Check if any message is received regarding the left mouse button
+            bool LButtonReceived = uMsg == WM_LBUTTONDOWN || uMsg == WM_LBUTTONDBLCLK || uMsg == WM_LBUTTONUP;
+
+            // Check if any message is received regarding the right mouse button
+            bool RButtonReceived = uMsg == WM_RBUTTONDOWN || uMsg == WM_RBUTTONDBLCLK || uMsg == WM_RBUTTONUP; 
+
+            // Check if any message is received regarding the middle mouse button
+            bool MButtonReceived = uMsg == WM_MBUTTONDOWN || uMsg == WM_MBUTTONDBLCLK || uMsg == WM_MBUTTONUP; 
+            
+            // Set the button
+            int button = 0;
+            if(LButtonReceived)
+                button = 0;
+            if(RButtonReceived)
+                button = 1;
+            if(MButtonReceived)
+                button = 2;
+
+            // If pressed to the button
+            int action = uMsg == WM_LBUTTONDOWN || uMsg == WM_RBUTTONDOWN || uMsg ==WM_MBUTTONDOWN;
+
+            // Mods
+            int mods = LIGIDGL_MOD_DEFAULT;
+            if(_procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
+                mods = LIGIDGL_MOD_CONTROL;
+            else if(_procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_RELEASE && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
+                mods = LIGIDGL_MOD_ALT;
+            else if(_procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_RELEASE && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
+                mods = LIGIDGL_MOD_SHIFT;
+            else if(_procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
+                mods = LIGIDGL_MOD_CONTROL_ALT;
+            else if(_procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
+                mods = LIGIDGL_MOD_CONTROL_SHIFT;
+            else if(_procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
+                mods = LIGIDGL_MOD_CONTROL_ALT_SHIFT;
+
+
+
+            // Call the mouse button callback function set by the user using message data
+            _procMouseButtonCallback(
+                                    _procLigidWindow,
+                                    button, 
+                                    action, 
+                                    mods
+                                );
+            break;
+        }
+
+        case WM_KEYDOWN:
+        case WM_KEYUP:
+        {
+
+            // The key code
+            int keyCode = static_cast<int>(wParam);
+
+            // The action
+            int action = 0;
+            if(uMsg == WM_KEYFIRST)
+                action = LIGIDGL_PRESS;
+            if(uMsg == WM_KEYDOWN)
+                action = LIGIDGL_REPEAT;
+            if(uMsg == WM_KEYUP)
+                action = LIGIDGL_RELEASE;
+
+            // Mods
+            int mods = LIGIDGL_MOD_DEFAULT;
+            if(_procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
+                mods = LIGIDGL_MOD_CONTROL;
+            else if(_procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_RELEASE && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
+                mods = LIGIDGL_MOD_ALT;
+            else if(_procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_RELEASE && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
+                mods = LIGIDGL_MOD_SHIFT;
+            else if(_procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_RELEASE)
+                mods = LIGIDGL_MOD_CONTROL_ALT;
+            else if(_procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_RELEASE && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
+                mods = LIGIDGL_MOD_CONTROL_SHIFT;
+            else if(_procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
+                mods = LIGIDGL_MOD_CONTROL_ALT_SHIFT;
+
+
+            // Call the key callback function set by the user using message data
+            _procKeyCallback(
+                                    _procLigidWindow,
+                                    keyCode, //Received mouse x pos  
+                                    action,  //Received mouse y pos
+                                    mods
+                                );
+
+            break;
+        }
+        
+        case WM_SIZE:
+        {
+
+            _procWindowSizeCallback(
+                                        _procLigidWindow,
+                                        LOWORD(lParam), 
+                                        HIWORD(lParam)
+                                    );
+            break;
+        }
+
+        // Check if mouse/touchpad scrolled horizontally
+        case WM_MOUSEHWHEEL: 
+        {
+            double delta = GET_WHEEL_DELTA_WPARAM(wParam);
+
+            _procScrollCallback(
+                                    _procLigidWindow,
+                                    delta, 
+                                    0
+                                );
+            break;
+        } 
+
+        case WM_MOUSEWHEEL:
+        {
+            double delta = GET_WHEEL_DELTA_WPARAM(wParam);
+
+            _procScrollCallback(
+                                    _procLigidWindow,
+                                    0, 
+                                    delta
+                                );
+            break;
+        }
+    
     }
 
     // Call the default window procedure for remaining messages
