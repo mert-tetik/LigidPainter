@@ -34,11 +34,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Renderer.h"
 
 #include "LigidGL/LigidGL.hpp"
+typedef const char* (WINAPI* PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC hdc);
 
 Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
-    
-    context.window.createWindow(videoScale.x, videoScale.y, "LigidPainter");
 
+    //Create the window and make it's OpenGL context current    
+    context.window.createWindow(videoScale.x, videoScale.y, "LigidPainter");
+    
     //Hold the videoscale value inside of the scene structure
     scene.videoScale = videoScale;
 
@@ -131,44 +133,13 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
 //FUNCTIONS
 
 
-
-
-typedef void* (WINAPI* PFNWGLGETPROCADDRESSPROC)(LPCSTR);
-
-void Renderer::initGlad() {
-    // Load opengl32.dll module
-    HMODULE openglModule = GetModuleHandleA("opengl32.dll");
-    if (openglModule == nullptr) {
-        std::cout << "Initializing glad : module loading error" << std::endl;
-    }
-
-    // Retrieve the function pointer for wglGetProcAddress
-    PFNWGLGETPROCADDRESSPROC wglGetProcAddress = reinterpret_cast<PFNWGLGETPROCADDRESSPROC>(GetProcAddress(openglModule, "wglGetProcAddress"));
-    if (wglGetProcAddress == nullptr) {
-        std::cout << "Initializing glad : pointer retrieval error  1" << std::endl;
-    }
-
-    // Retrieve the function pointer for gladGetProcAddress
-    GLADloadproc gladGetProcAddress = reinterpret_cast<GLADloadproc>(wglGetProcAddress("gladGetProcAddress"));
-    if (gladGetProcAddress == nullptr) {
-        std::cout << "Initializing glad : pointer retrieval error   2" << std::endl;
-    }
-
-    // Initialize GLAD
-    if (!gladLoadGLLoader(gladGetProcAddress)) {
-        // Handle GLAD initialization error
-
-        std::cout << "Failed to initialize glad" << std::endl;
-    }
-
+void Renderer::initGlad(){
+    //Init GLAD
+    if (!gladLoadGLLoader((GLADloadproc)LigidGL::getProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+    }    
 }
-
-
-
-
-
-
-
 
 void Renderer::loadAppTextures(){
     appTextures.TDModelIcon.load("./LigidPainter/Resources/Icons/TDModel.png");

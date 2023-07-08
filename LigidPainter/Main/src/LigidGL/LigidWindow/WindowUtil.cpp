@@ -256,9 +256,13 @@ void LigidWindow::makeContextCurrent(){
 
     HDC hdc = GetDC(this->window);    // Obtain the device context handle for the window
 
-    // Create and activate the OpenGL rendering context
-    this->openGLContext = wglCreateContext(hdc);    // Create an OpenGL rendering context
-    wglMakeCurrent(hdc, this->openGLContext);       // Make the created context current for the given device context
+    // activate the OpenGL rendering context
+
+    // Make the created context current for the given device context
+    if(!wglMakeCurrent(hdc, this->openGLContext)){
+        std::cout << "Window OpenGL context - failed to make current" << std::endl;
+    }       
+    
 
 
 #elif(__APPLE__)
@@ -421,16 +425,9 @@ void LigidWindow::getFramebufferSize(
     // Get the device context (DC) associated with the HWND
     HDC hDC = GetDC(this->window);
 
-    // Make the OpenGL rendering context current
-    wglMakeCurrent(hDC, this->openGLContext);
-
     // Get the framebuffer size
     w = GetDeviceCaps(hDC, HORZRES);
     h = GetDeviceCaps(hDC, VERTRES);
-
-    // Cleanup
-    wglMakeCurrent(nullptr, nullptr);
-    ReleaseDC(this->window, hDC);
 
 #elif(__APPLE__)
 

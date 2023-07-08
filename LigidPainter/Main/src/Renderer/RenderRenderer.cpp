@@ -34,7 +34,6 @@ void Renderer::render(){
     
     //Handle user input and interact with the windowing system & call the callback functions
     context.window.pollEvents();
-    
     //Update local timer data
     if(timer.runTimer(1.f))
         std::cout << timer.FPS << std::endl; //Print the fps every second

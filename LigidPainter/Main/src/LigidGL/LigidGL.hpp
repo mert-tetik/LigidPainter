@@ -220,6 +220,17 @@ namespace LigidGL{
     */
     void setSwapInterval(int interval);
 
+    /*!
+    *   @brief Core OpenGL loader.
+    *          Use this function to load your OpenGL functions.
+    *          Give that function to the glad or load by yourself
+    *            
+    *   @param name : Name of the core OpenGL function like "glClear"
+    * 
+    *   @return Returns the retrieved function
+    */
+    void* LigidGL::getProcAddress(const char *name);
+
 };
 
 
@@ -336,7 +347,7 @@ private:
     *   Third param : mods (LIGIDGL_MOD_DEFAULT, LIGIDGL_MOD_SHIFT, LIGIDGL_MOD_ALT, LIGIDGL_MOD_CONTROL etc.) 
     */
     void (*keyCallback)(int, int, int);
- 
+
     /*!
     *   @brief The window size callback function of the window set by the user.
     *   

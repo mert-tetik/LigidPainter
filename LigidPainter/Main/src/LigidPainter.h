@@ -26,6 +26,7 @@ class LigidPainter{
 public:
     int run(){
         
+        
         // .x : width | .y : height | .z : refresh rate  
         glm::ivec3 primaryMonitorData;
         LigidGL::getPrimaryMonitorData(primaryMonitorData.x, primaryMonitorData.y, primaryMonitorData.z);
