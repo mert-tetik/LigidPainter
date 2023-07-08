@@ -101,7 +101,7 @@ private:
     void loadAppTextures();
     void loadShaders();
     void createContextMenus();
-#
+
     //Stuff
     void updateViewMatrix();
     void updateProjectionMatrix();

@@ -33,9 +33,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
 
-/// @brief Mouse button callback (every time a mouse button cliked)
-void Renderer::mouseButtonCallback(LigidWindow window, int button, int action, int mods){
-    
+void Renderer::mouseButtonCallback(
+                                        LigidWindow window, 
+                                        int button, 
+                                        int action, 
+                                        int mods
+                                    )
+{
     
     //Calculate double click
     if (button == LIGIDGL_MOUSE_BUTTON_LEFT && action == LIGIDGL_PRESS) {
@@ -44,7 +48,7 @@ void Renderer::mouseButtonCallback(LigidWindow window, int button, int action, i
 
         //Double click done if clicked in 0.3s
         if (timeSinceLastClick < 0.3) {
-            mouse.LDoubleClick = true;
+            this->mouse.LDoubleClick = true;
         }
     
         previousClickTime = currentTime;
@@ -53,82 +57,88 @@ void Renderer::mouseButtonCallback(LigidWindow window, int button, int action, i
     //Left click
     if(button == 0){ 
         if(action == 1)
-            mouse.LClick = true;
+            this->mouse.LClick = true;
     }  
     //Right click
     if(button == 1){
         if(action == 1)
-            mouse.RClick = true;
+            this->mouse.RClick = true;
     }  
     //Mid click
     if(button == 2){
         if(action == 1)
-            mouse.MClick = true;
+            this->mouse.MClick = true;
     }  
 
     //Left pressed
     if(button == 0){ 
-        mouse.LPressed = action;
+        this->mouse.LPressed = action;
     }  
     //Right pressed
     if(button == 1){
-        mouse.RPressed = action;
+        this->mouse.RPressed = action;
     }  
     //Mid pressed
     if(button == 2){
-        mouse.MPressed = action;
+        this->mouse.MPressed = action;
     }  
     
     //Mods
-    mouse.mods = mods;
+    this->mouse.mods = mods;
 }
 
-/// @brief Framebuffer size callback (every time window size changed)
-void Renderer::framebufferSizeCallback(LigidWindow window, int width, int height){
-    std::cout << width << ' ' << height << std::endl;
+void Renderer::framebufferSizeCallback(
+                                            LigidWindow window, 
+                                            int width, 
+                                            int height
+                                        )
+{
     //Update the window size from context
-    context.windowScale.x = width;
-    context.windowScale.y = height;
+    this->context.windowScale.x = width;
+    this->context.windowScale.y = height;
 
     //Update the perspective projection matrix to keep the ratio of the 3D model
-    updateProjectionMatrix(); 
+    this->updateProjectionMatrix(); 
 
     //And ofc update the OpenGL viewport
-    updateViewport(); 
+    this->updateViewport(); 
 }
 
-/// @brief Mouse scroll callback (every time wheel is scrolled)
-void Renderer::scrollCallback(LigidWindow window, double xoffset, double yoffset){
-    if(!userInterface.anyDialogActive && !userInterface.anyPanelHover )
+void Renderer::scrollCallback(
+                                LigidWindow window, 
+                                double xoffset, 
+                                double yoffset
+                            )
+{
+    if(!this->userInterface.anyDialogActive && !this->userInterface.anyPanelHover )
     {
         //The distance between the camera & center 
-        float originCameraDistance = glm::distance(scene.camera.originPos,scene.camera.cameraPos)/10;
+        float originCameraDistance = glm::distance(this->scene.camera.originPos,this->scene.camera.cameraPos)/10;
 
         //Update the scroll value of the mouse class
-        mouse.mouseScroll = yoffset;
+        this->mouse.mouseScroll = yoffset;
 
         //Change the distance between camera & center (radius)
-        if (yoffset > 0 && scene.camera.radius > 1) {
-            scene.camera.radius -= originCameraDistance;
+        if (yoffset > 0 && this->scene.camera.radius > 1) {
+            this->scene.camera.radius -= originCameraDistance;
         }
         else if (yoffset < 0) {
-            scene.camera.radius += originCameraDistance;
+            this->scene.camera.radius += originCameraDistance;
         }
         
         //Zoom in-out
-        scene.camera.cameraPos.x = cos(glm::radians(scene.camera.yaw)) * cos(glm::radians(scene.camera.pitch)) * scene.camera.radius + scene.camera.originPos.x;
-        scene.camera.cameraPos.y = sin(glm::radians(scene.camera.pitch)) * -scene.camera.radius + scene.camera.originPos.y;
-        scene.camera.cameraPos.z = sin(glm::radians(scene.camera.yaw)) * cos(glm::radians(scene.camera.pitch)) * scene.camera.radius + scene.camera.originPos.z;
+        this->scene.camera.cameraPos.x = cos(glm::radians(this->scene.camera.yaw)) * cos(glm::radians(this->scene.camera.pitch)) * this->scene.camera.radius + this->scene.camera.originPos.x;
+        this->scene.camera.cameraPos.y = sin(glm::radians(this->scene.camera.pitch)) * -this->scene.camera.radius + this->scene.camera.originPos.y;
+        this->scene.camera.cameraPos.z = sin(glm::radians(this->scene.camera.yaw)) * cos(glm::radians(this->scene.camera.pitch)) * this->scene.camera.radius + this->scene.camera.originPos.z;
 
         //Update the view matrix after the camera position is changed
-        updateViewMatrix();
+        this->updateViewMatrix();
 
         //Since the 3D model's position in the screen is changed update the painter's depth texture
-        painter.updateTheDepthTexture = true;
+        this->painter.updateTheDepthTexture = true;
     }
 }
 
-/// @brief Cursor position callback (every time cursor's position is changed)
 void Renderer::cursorPositionCallback(
                                         LigidWindow window,
                                         double xpos, //Mouse x position
@@ -136,20 +146,20 @@ void Renderer::cursorPositionCallback(
                                     )
 {
     //Update the mouse position of the mouse class
-    mouse.cursorPos.x = xpos;
-    mouse.cursorPos.y = ypos;
+    this->mouse.cursorPos.x = xpos;
+    this->mouse.cursorPos.y = ypos;
     
     //Get the mouse offset by subtracting current cursor position from last frame's cursor pos
-    mouse.mouseOffset.x = mouse.cursorPos.x - lastMousePos.x;
-    mouse.mouseOffset.y = mouse.cursorPos.y - lastMousePos.y;
+    this->mouse.mouseOffset.x = this->mouse.cursorPos.x - lastMousePos.x;
+    this->mouse.mouseOffset.y = this->mouse.cursorPos.y - lastMousePos.y;
 
     const float sensitivity = 0.2f; //Mouse sensivity (Increase the value to go brrrrrbrbrbrb) (effects the 3D model)
 
     if ((
-            context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS) && //If pressed to right mouse button
+            this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS) && //If pressed to right mouse button
             window.isKeyPressed( LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS &&  //If pressed to CTRL button
-            !userInterface.anyDialogActive && //If there is no active dialog (don't move the camera if a dialog is active)
-            !userInterface.anyPanelHover        //Don't move the camera if cursor hover a panel
+            !this->userInterface.anyDialogActive && //If there is no active dialog (don't move the camera if a dialog is active)
+            !this->userInterface.anyPanelHover        //Don't move the camera if cursor hover a panel
         ) 
     { 
         // Straight Movement
@@ -158,79 +168,78 @@ void Renderer::cursorPositionCallback(
         const float half_sensitivity = sensitivity / 2.0f;
 
         // Calculate sine and cosine of yaw and pitch angles in radians
-        const float sin_yaw = sin(glm::radians(scene.camera.yaw));
-        const float cos_yaw = cos(glm::radians(scene.camera.yaw));
-        const float sin_pitch = sin(glm::radians(scene.camera.pitch));
-        const float cos_pitch = cos(glm::radians(scene.camera.pitch));
+        const float sin_yaw = sin(glm::radians(this->scene.camera.yaw));
+        const float cos_yaw = cos(glm::radians(this->scene.camera.yaw));
+        const float sin_pitch = sin(glm::radians(this->scene.camera.pitch));
+        const float cos_pitch = cos(glm::radians(this->scene.camera.pitch));
 
         // Calculate the x and z offsets based on yaw angle, mouse movement, sensitivity, and half sensitivity
-        float x_offset = sin_yaw * mouse.mouseOffset.x * sensitivity * half_sensitivity;
-        float z_offset = cos_yaw * mouse.mouseOffset.x * sensitivity * half_sensitivity;
+        float x_offset = sin_yaw * this->mouse.mouseOffset.x * sensitivity * half_sensitivity;
+        float z_offset = cos_yaw * this->mouse.mouseOffset.x * sensitivity * half_sensitivity;
 
         // Check if pitch is greater than 60 degrees or less than -60 degrees
-        if (scene.camera.pitch > 60.0f || scene.camera.pitch < -60.0f) {
+        if (this->scene.camera.pitch > 60.0f || this->scene.camera.pitch < -60.0f) {
             
             // Add additional x and z offsets based on yaw, pitch, mouse movement, sensitivity, and half sensitivity
-            x_offset += cos_yaw * sin_pitch * mouse.mouseOffset.y * sensitivity * half_sensitivity;
-            z_offset -= sin_yaw * sin_pitch * mouse.mouseOffset.y * sensitivity * half_sensitivity;
+            x_offset += cos_yaw * sin_pitch * this->mouse.mouseOffset.y * sensitivity * half_sensitivity;
+            z_offset -= sin_yaw * sin_pitch * this->mouse.mouseOffset.y * sensitivity * half_sensitivity;
         }
 
         // Calculate the y offset based on pitch, mouse movement, sensitivity, and half sensitivity
-        const float y_offset = cos_pitch * mouse.mouseOffset.y * sensitivity * half_sensitivity;
+        const float y_offset = cos_pitch * this->mouse.mouseOffset.y * sensitivity * half_sensitivity;
 
         // Update camera's x position and origin position by subtracting x offset
-        scene.camera.cameraPos.x -= x_offset;
-        scene.camera.originPos.x -= x_offset;
+        this->scene.camera.cameraPos.x -= x_offset;
+        this->scene.camera.originPos.x -= x_offset;
 
         // Update camera's z position and origin position by adding z offset
-        scene.camera.cameraPos.z += z_offset;
-        scene.camera.originPos.z += z_offset;
+        this->scene.camera.cameraPos.z += z_offset;
+        this->scene.camera.originPos.z += z_offset;
 
         // Update camera's y position and origin position by adding y offset
-        scene.camera.cameraPos.y += y_offset;
-        scene.camera.originPos.y += y_offset;
+        this->scene.camera.cameraPos.y += y_offset;
+        this->scene.camera.originPos.y += y_offset;
 
         //Since the 3D model's position in the screen is changed update the painter's depth texture
-        painter.updateTheDepthTexture = true;
+        this->painter.updateTheDepthTexture = true;
     }
 
 
     else if (
-                context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
-                !userInterface.anyDialogActive && //If there is no active dialog (don't move the camera if a dialog is active)
-                !userInterface.anyPanelHover  //Don't move the camera if cursor hover a panel
+                this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
+                !this->userInterface.anyDialogActive && //If there is no active dialog (don't move the camera if a dialog is active)
+                !this->userInterface.anyPanelHover  //Don't move the camera if cursor hover a panel
             ) 
     { 
         
-        scene.camera.yaw += mouse.mouseOffset.x * sensitivity;
-        scene.camera.pitch -= mouse.mouseOffset.y * sensitivity;
+        this->scene.camera.yaw += this->mouse.mouseOffset.x * sensitivity;
+        this->scene.camera.pitch -= this->mouse.mouseOffset.y * sensitivity;
 
         //Disable 90+ degrees rotations in y axis
-        if (scene.camera.pitch > 89.0f)
-            scene.camera.pitch = 89.0f;
-        if (scene.camera.pitch < -89.0f)
-            scene.camera.pitch = -89.0f;
+        if (this->scene.camera.pitch > 89.0f)
+            this->scene.camera.pitch = 89.0f;
+        if (this->scene.camera.pitch < -89.0f)
+            this->scene.camera.pitch = -89.0f;
 
         //Helical Movement
         //Rotates the Camera in 3 axis using yaw, pitch & radius values
-        scene.camera.cameraPos.y = sin(glm::radians(scene.camera.pitch)) * -scene.camera.radius + scene.camera.originPos.y;
-        scene.camera.cameraPos.x = cos(glm::radians(scene.camera.yaw)) * cos(glm::radians(scene.camera.pitch)) * scene.camera.radius + scene.camera.originPos.x;
-        scene.camera.cameraPos.z = sin(glm::radians(scene.camera.yaw)) * cos(glm::radians(scene.camera.pitch)) * scene.camera.radius + scene.camera.originPos.z;
+        this->scene.camera.cameraPos.y = sin(glm::radians(this->scene.camera.pitch)) * -this->scene.camera.radius + this->scene.camera.originPos.y;
+        this->scene.camera.cameraPos.x = cos(glm::radians(this->scene.camera.yaw)) * cos(glm::radians(this->scene.camera.pitch)) * this->scene.camera.radius + this->scene.camera.originPos.x;
+        this->scene.camera.cameraPos.z = sin(glm::radians(this->scene.camera.yaw)) * cos(glm::radians(this->scene.camera.pitch)) * this->scene.camera.radius + this->scene.camera.originPos.z;
         
         //Since the 3D model's position in the screen is changed update the painter's depth texture
-        painter.updateTheDepthTexture = true;
+        this->painter.updateTheDepthTexture = true;
     }
 
 
     //Update the view matrix after the camera position is changed
-    updateViewMatrix();
+    this->updateViewMatrix();
     
     //This will be used as "last frame's cursor pos" for the cursor offset
-    lastMousePos.x = mouse.cursorPos.x;
-    lastMousePos.y = mouse.cursorPos.y;
+    this->lastMousePos.x = this->mouse.cursorPos.x;
+    this->lastMousePos.y = this->mouse.cursorPos.y;
 }
 
-/// @brief Key callback (every time a key is pressed in the keyboard)
 void Renderer::keyCallback(
                                 LigidWindow window, //Window
                                 int key, //Pressed key
@@ -240,8 +249,8 @@ void Renderer::keyCallback(
                             )
 {
     if(action == LIGIDGL_PRESS || action == LIGIDGL_REPEAT){ //1 or 2
-        textRenderer.keyInput = true;
-        textRenderer.key = key;
-        textRenderer.mods = mods;
+        this->textRenderer.keyInput = true;
+        this->textRenderer.key = key;
+        this->textRenderer.mods = mods;
     }
 }
