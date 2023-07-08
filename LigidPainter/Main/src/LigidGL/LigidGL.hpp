@@ -20,7 +20,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define LIGIDWINDOW_HPP 
 
 
-
+/* -- Current OpenGL version -- 
+    Change these macros as your OpenGL version
+*/
+#define LIGIDGL_OPENGL_VERSION_MAJOR 4
+#define LIGIDGL_OPENGL_VERSION_MINOR 0
+#define LIGIDGL_OPENGL_VERSION_PROFILE "core" //All lowercase (can be compatibility)
 
 
 /* Actions */

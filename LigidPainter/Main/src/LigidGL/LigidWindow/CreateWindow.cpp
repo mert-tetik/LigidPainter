@@ -176,6 +176,7 @@ wglCreateContextAttribsARB_type *wglCreateContextAttribsARB;
 #define WGL_CONTEXT_PROFILE_MASK_ARB              0x9126
 
 #define WGL_CONTEXT_CORE_PROFILE_BIT_ARB          0x00000001
+#define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
 
 typedef BOOL WINAPI wglChoosePixelFormatARB_type(HDC hdc, const int *piAttribIList,
         const FLOAT *pfAttribFList, UINT nMaxFormats, int *piFormats, UINT *nNumFormats);
@@ -314,10 +315,18 @@ static HGLRC init_opengl(HDC real_dc)
         fatal_error("Failed to set the OpenGL 3.3 pixel format.");
     }
 
+    int64_t glVersionProfile = 0;
+    if(LIGIDGL_OPENGL_VERSION_PROFILE == "core")
+        glVersionProfile = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
+    else if(LIGIDGL_OPENGL_VERSION_PROFILE == "compatibility")
+        glVersionProfile = WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
+    else
+        fatal_error("Invalid OpenGL profile! See the LIGIDGL_OPENGL_VERSION_PROFILE macro in the LigidGL header");
+
     // Specify that we want to create an OpenGL 3.3 core profile context
     int gl33_attribs[] = {
-        WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-        WGL_CONTEXT_MINOR_VERSION_ARB, 3,
+        WGL_CONTEXT_MAJOR_VERSION_ARB, LIGIDGL_OPENGL_VERSION_MAJOR,
+        WGL_CONTEXT_MINOR_VERSION_ARB, LIGIDGL_OPENGL_VERSION_MINOR,
         WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
         0,
     };

@@ -41,6 +41,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     //Create the window and make it's OpenGL context current    
     context.window.createWindow(videoScale.x, videoScale.y, L"LigidPainter");
     
+    //Show the created window
     context.window.show();
 
     //Hold the videoscale value inside of the scene structure
