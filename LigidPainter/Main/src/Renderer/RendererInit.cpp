@@ -39,8 +39,10 @@ typedef const char* (WINAPI* PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC hdc);
 Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
 
     //Create the window and make it's OpenGL context current    
-    context.window.createWindow(videoScale.x, videoScale.y, "LigidPainter");
+    context.window.createWindow(videoScale.x, videoScale.y, L"LigidPainter");
     
+    context.window.show();
+
     //Hold the videoscale value inside of the scene structure
     scene.videoScale = videoScale;
 
@@ -123,7 +125,6 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
         std::filesystem::create_directory("./tmp");
     }
 
-   
 
 }
 

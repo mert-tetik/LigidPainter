@@ -32,10 +32,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 unsigned char* Texture::getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip){
     stbi_set_flip_vertically_on_load(flip);
     unsigned char* data = stbi_load(aPath, &aWidth, &aHeight, &aChannels, desiredChannels);
+    
     if(data != NULL){
         std::cout << "Loaded " << aPath << std::endl;
         return data;
     }
+    
     else{
         const char* reason = "[unknown reason]";
 		if (stbi_failure_reason())

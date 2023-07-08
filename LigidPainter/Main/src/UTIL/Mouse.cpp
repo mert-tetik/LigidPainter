@@ -54,13 +54,13 @@ void Mouse::loadCursors(){
 	//Help importing texture
 	Texture texture;
 
-	int cursorScaleX = 50;
-	int cursorScaleY = 50;
+	int cursorScaleX = 0;
+	int cursorScaleY = 0;
 	int channel = 0;
 
-	unsigned char* pixels = new unsigned char[50 * 50 * 4];
+	unsigned char* pixels;
 
-	pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/PointerIcon.png", cursorScaleX, cursorScaleY, channel , 4,false); //rgba 0 
+	pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/PointerIcon.png", cursorScaleX, cursorScaleY, channel , 4, false); //rgba 0 
 	pointerCursor.createCursor(cursorScaleX, cursorScaleY, 15, 0, pixels);
 	activeCursor = pointerCursor;
 	//stbi_image_free(pixels);

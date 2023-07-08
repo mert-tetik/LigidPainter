@@ -229,7 +229,7 @@ namespace LigidGL{
     * 
     *   @return Returns the retrieved function
     */
-    void* LigidGL::getProcAddress(const char *name);
+    void* getProcAddress(const char *name);
 
 };
 
@@ -389,11 +389,13 @@ public:
     * @param title The title of the window.
     * @return Returns 1 if success  
     * 
+    * !!! Don't forget to call the @ref show function right after creating a window
+    * 
     * !!! Creating a window already makes it's OpenGL rendering context current!
     *     Update the OpenGL rendering context after creating a new window ( @ref this->makeContextCurrent function ) if you don't want to
     *     render to the most recent created window class
     */
-    int createWindow(int w, int h, std::string title);
+    int createWindow(int w, int h, const wchar_t* title);
 
     /*! @brief Swaps the front and back buffers of the window. */
     void swapBuffers();
@@ -415,11 +417,6 @@ public:
     void pollEvents();
 
     /*!
-        @brief Closes the window when called
-    */
-    void close();
-
-    /*!
         @brief Makes the OpenGL rendering context of the window current rendering context.
         
         Use like that :
@@ -439,13 +436,36 @@ public:
     void makeContextCurrent();
 
     /*!
-        @brief changes the style of the window
-
-        @param styleKey 0 : Default | 1 : Borderless | 2 : Caption Only | 3 : FullScreen
+    *    @brief changes the style of the window
+    *
+    *    @param styleKey 0 : Default | 1 : Borderless | 2 : Caption Only | 3 : FullScreen
     */
     void style(const int styleKey);
 
+    /*!
+    *   @brief Closes the window when called
+    */
+    void close();
 
+    /*!
+    *   @brief Shows the window (don't forget to call that function after creating a window)
+    */
+    void show();
+
+    /*!
+    *   @brief Hides the window
+    */
+    void hide();
+    
+    /*!
+    *   @brief Maximize the window
+    */
+    void maximize();
+    
+    /*!
+    *   @brief Minimize the window
+    */
+    void minimize();
 
 
     //----------    CALLLBACKS  ----------

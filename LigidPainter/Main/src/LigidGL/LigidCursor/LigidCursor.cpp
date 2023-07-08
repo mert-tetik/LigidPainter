@@ -48,7 +48,15 @@ void LigidCursor::createCursor(int cursorWidth, int cursorHeight, int cursorHots
 
     // Convert pixel data to mask data
     for (int i = 0; i < cursorWidth * cursorHeight; ++i) {
-        BYTE pixelValue = cursorPixelData[i];
+        int pixelIndex = i * 4;  // Assuming RGBA format (4 channels)
+        
+        BYTE red = cursorPixelData[pixelIndex];
+        BYTE green = cursorPixelData[pixelIndex + 1];
+        BYTE blue = cursorPixelData[pixelIndex + 2];
+        BYTE alpha = cursorPixelData[pixelIndex + 3];
+
+        BYTE pixelValue = (alpha > 0) ? 1 : 0;  // Determine if the pixel is opaque or transparent
+
         andMask[i / 8] |= (pixelValue == 0 ? 0x80 : 0);
         xorMask[i / 8] |= (pixelValue == 1 ? 0x80 : 0);
 
@@ -63,18 +71,22 @@ void LigidCursor::createCursor(int cursorWidth, int cursorHeight, int cursorHots
     this->cursorHandle = CreateIcon(GetModuleHandle(nullptr), cursorWidth, cursorHeight, 1, 1, andMask, xorMask);
 
     // Clean up allocated memory
-    delete[] andMask;
-    delete[] xorMask;
 
 #elif defined(__APPLE__)
-//User has MacOS
-
+    // User has MacOS
 
 #elif defined(__linux__)
-//User has Linux
+    // User has Linux
 
 #endif
 }
+
+
+
+
+
+
+
 
 #if defined(_WIN32) || defined(_WIN64)
 //User has Windows

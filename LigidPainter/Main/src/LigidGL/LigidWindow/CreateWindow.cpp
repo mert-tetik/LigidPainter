@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
     static void fatal_error(char *msg);
     static void init_opengl_extensions(void);
     static HGLRC init_opengl(HDC real_dc);
-    static HWND create_window(int width, int height, const char* title);
+    static HWND create_window(int width, int height, const wchar_t* title);
 #elif defined(__APPLE__)
 
 
@@ -66,7 +66,7 @@ void emptyFunc2double(double, double){}
 int LigidWindow::createWindow(
                                 int w, 
                                 int h, 
-                                std::string title
+                                const wchar_t* title
                             )
 {
 #if defined(_WIN32) || defined(_WIN64)
@@ -74,7 +74,7 @@ int LigidWindow::createWindow(
     //* User using Windows environment
 
 
-    this->window = create_window(w,h,title.c_str());
+    this->window = create_window(w, h, title);
     
     
     if (!this->window) {
@@ -334,7 +334,20 @@ static HGLRC init_opengl(HDC real_dc)
     return gl33_context;
 }
 
-static HWND create_window(int width, int height, const char* title)
+static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    // Custom window procedure to handle window events
+    switch (uMsg)
+    {
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            return 0;
+        default:
+            return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
+}
+
+static HWND create_window(int width, int height, const wchar_t* title)
 {
     // Get the instance handle of the current module
     HINSTANCE hInstance = GetModuleHandle(NULL);
@@ -342,7 +355,7 @@ static HWND create_window(int width, int height, const char* title)
     // Register the window class
     WNDCLASS wc = {0};
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-    wc.lpfnWndProc = DefWindowProc;
+    wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
     wc.lpszClassName = L"OpenGLWindowClass";
 
@@ -357,9 +370,19 @@ static HWND create_window(int width, int height, const char* title)
     AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
     // Create the window
-    HWND hWnd = CreateWindow(L"OpenGLWindowClass", L"OpenGL Window", WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
-        NULL, NULL, hInstance, NULL);
+    HWND hWnd = CreateWindow(
+                                L"OpenGLWindowClass", 
+                                title, 
+                                WS_OVERLAPPEDWINDOW,
+                                CW_USEDEFAULT, 
+                                CW_USEDEFAULT, 
+                                windowRect.right - windowRect.left, 
+                                windowRect.bottom - windowRect.top,
+                                NULL, 
+                                NULL, 
+                                hInstance, 
+                                NULL
+                            );
 
     // Window creation failed
     if (!hWnd) 

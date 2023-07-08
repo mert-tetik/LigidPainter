@@ -247,6 +247,25 @@ void LigidWindow::close(){
 #endif
 } 
 
+void LigidWindow::show(){
+    ShowWindow(this->window, SW_SHOWDEFAULT);
+    UpdateWindow(this->window);
+}
+
+void LigidWindow::hide(){
+    ShowWindow(this->window, SW_HIDE);
+    UpdateWindow(this->window);
+}
+
+void LigidWindow::minimize(){
+    ShowWindow(this->window, SW_MINIMIZE);
+    UpdateWindow(this->window);
+}
+
+void LigidWindow::maximize(){
+    ShowWindow(this->window, SW_MAXIMIZE);
+    UpdateWindow(this->window);
+}
 
 void LigidWindow::makeContextCurrent(){
 
