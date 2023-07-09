@@ -244,6 +244,8 @@ void Renderer::render(){
 
     //Swap the front and back buffers of the window
     context.window.swapBuffers();
+
+
 }
 
 

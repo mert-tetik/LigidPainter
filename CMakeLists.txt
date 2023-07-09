@@ -71,7 +71,6 @@ install(TARGETS Ligid)
 install(
             FILES
             ${CMAKE_SOURCE_DIR}/freetype.dll
-            ${CMAKE_SOURCE_DIR}/assimp-vc142-mtd.dll
             ${CMAKE_SOURCE_DIR}/OpenAL32.dll
             DESTINATION bin
         )
@@ -144,7 +143,6 @@ target_link_directories(Ligid PRIVATE
 # Link libraries for Ligid target
 target_link_libraries(Ligid PRIVATE 
     freetype 
-    assimp-vc142-mtd
     OpenAL32 
     OpenGL::GL
 )

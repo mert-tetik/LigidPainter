@@ -20,11 +20,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "assimp/Exporter.hpp"
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
-
 #include <string>
 #include <iostream>
 #include <vector>
@@ -39,9 +34,7 @@ void Model::Draw()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     for(unsigned int i = 0; i < meshes.size(); i++){
-        if(meshes[i].submeshes.size() <= 1){
-            meshes[i].Draw();
-        }
+        meshes[i].Draw();
     }
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
     glBindVertexArray(mVAO);

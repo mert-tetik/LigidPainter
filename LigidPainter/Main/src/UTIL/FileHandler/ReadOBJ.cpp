@@ -48,6 +48,8 @@ void generateTangentBitangent(std::vector<Vertex>& faceData);
 
 
 Model FileHandler::readOBJFile(std::string path){
+
+    
     std::ifstream rf(path, std::ios::in);
     
     if(!rf){
@@ -207,7 +209,6 @@ Model FileHandler::readOBJFile(std::string path){
     std::vector<std::vector<unsigned int>> meshIndices;
 
     
-
     // Unique vertices
     for (size_t unMatI = 0; unMatI < unitedVertices.size(); unMatI++)
     {
@@ -232,9 +233,10 @@ Model FileHandler::readOBJFile(std::string path){
 
     for (int i = 0; i < meshVertices.size(); i++)
     {
-        model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], {}, (std::string)"DefMat_", i));
+        model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], (std::string)"DefMat_", i));
     }
-    
+
+    model.newModelAdded = true;
 
     return model;
 
@@ -291,7 +293,7 @@ int getVertexIndex(const std::vector<Vertex>& vertexArray, const Vertex& targetV
     return i; // Vertex not found in the array
 }
 
-void CalculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2) {
+void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2) {
     // Calculate position differences
     glm::vec3 deltaPos1 = v1.Position - v0.Position;
     glm::vec3 deltaPos2 = v2.Position - v0.Position;
@@ -317,7 +319,7 @@ void CalculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2) {
     v2.Bitangent += bitangent;
 }
 
-void GenerateTangentBitangent(std::vector<Vertex>& faceData) {
+void generateTangentBitangent(std::vector<Vertex>& faceData) {
     // Initialize tangent and bitangent vectors to zero
     for (auto& vertex : faceData) {
         vertex.Tangent = glm::vec3(0.0f);
@@ -330,7 +332,7 @@ void GenerateTangentBitangent(std::vector<Vertex>& faceData) {
         Vertex& v1 = faceData[i + 1];
         Vertex& v2 = faceData[i + 2];
 
-        CalculateTangentBitangent(v0, v1, v2);
+        calculateTangentBitangent(v0, v1, v2);
     }
 
     // Normalize tangent and bitangent vectors

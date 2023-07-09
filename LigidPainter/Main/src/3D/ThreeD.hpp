@@ -16,14 +16,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #ifndef THREED_HPP
 #define THREED_HPP
 
-#ifndef MAX_BONE_INFLUENCE
-#define MAX_BONE_INFLUENCE 4
-#endif
-
-#include "assimp/Exporter.hpp"
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
 
 #include "UTIL/Util.hpp"
 
@@ -43,25 +35,7 @@ struct Vertex {
     glm::vec3 Tangent = glm::vec3(0);
     // bitangent
     glm::vec3 Bitangent = glm::vec3(0);
-	//bone indexes which will influence this vertex
-	int m_BoneIDs[MAX_BONE_INFLUENCE];
-	//weights from each bone
-	float m_Weights[MAX_BONE_INFLUENCE];
 };
-
-struct TextureMs {
-    unsigned int id;
-    std::string type;
-    std::string path;
-};
-
-struct SubMeshMs{
-    unsigned int maskTexture = 0;
-    bool textureSelectionState = false;
-    int materialIndex = 0;
-    float modelMaterialButtonMixVal = 0.f;
-};
-
 
 
 class Skybox{
@@ -90,10 +64,8 @@ public:
 class Mesh {
 public:
     // mesh Data
-    std::vector<SubMeshMs> submeshes;
     std::vector<Vertex>       vertices;
     std::vector<unsigned int> indices;
-    std::vector<TextureMs>      textures;
     unsigned int VAO;
     std::string materialName;
     int materialIndex;
@@ -103,7 +75,7 @@ public:
     Mesh(){}
     
     //Constructor
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<TextureMs> textures,std::string materialName,int materialIndex);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName,int materialIndex);
 
     void Draw();
 
@@ -124,7 +96,6 @@ private:
     std::string directory;
 public:
     // model data 
-    std::vector<TextureMs> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
     std::vector<Mesh>    meshes;
     std::string filePath;
     std::string title;
@@ -137,9 +108,6 @@ public:
     void Draw();
     void exportModel(std::string path);
     void loadModel(std::string const &path,bool triangulate);
-    void processNode(aiNode *node, const aiScene *scene);
-    Mesh processMesh(aiMesh *mesh, const aiScene *scene);
-    std::vector<TextureMs> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 };
 
 #endif

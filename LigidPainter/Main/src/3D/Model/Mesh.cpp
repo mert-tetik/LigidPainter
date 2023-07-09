@@ -25,11 +25,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 using namespace std;
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<TextureMs> textures,std::string materialName,int materialIndex)
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, int materialIndex)
 {
     this->vertices = vertices;
     this->indices = indices;
-    this->textures = textures;
     this->materialName = materialName;
     this->materialIndex = materialIndex;
 

@@ -38,6 +38,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &meshNodeScene,
             std::vector<ContextMenu> &contextMenus,int &textureRes, Project &project, Painter &painter,bool &VSync,bool &backfaceCulling,Skybox &skybox,Model &model){
     
+    
     //Set pass less or equal
     glDepthFunc(GL_LEQUAL);
 
@@ -91,6 +92,8 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
 
     if(frameCounter > 1000)
         frameCounter = 0;
+
+    
 }
 
 
