@@ -59,6 +59,7 @@ Model FileHandler::readOBJFile(std::string path){
     std::vector<glm::vec3> uniquePositions;
     std::vector<glm::vec2> uniqueUVS;
     std::vector<glm::vec3> uniqueNormals;
+    std::vector<std::string> matTitles;
     std::vector< // Material
                 std::vector< // Faces
                             std::vector< // A face
@@ -127,6 +128,16 @@ Model FileHandler::readOBJFile(std::string path){
 
         else if(line.substr(0,6) == "usemtl "){
             faces.push_back({});
+
+            std::stringstream ss(line); // Create a stringstream object with the input string
+            
+            std::string fStr;
+            ss >> fStr; // Read and discard the first string "usemtl"
+
+            std::string matStr;
+            ss >> matStr; // Read the material title
+
+            matTitles.push_back(matStr);
         }
 
         else if(line.substr(0,2) == "f "){
@@ -233,7 +244,14 @@ Model FileHandler::readOBJFile(std::string path){
 
     for (int i = 0; i < meshVertices.size(); i++)
     {
-        model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], (std::string)"DefMat_", i));
+        std::string matTitle;
+        
+        if(matTitles.size())
+            matTitle = matTitles[i];
+        else
+            matTitle = "DefaultMat";
+
+        model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], matTitle, i));
     }
 
     model.newModelAdded = true;
