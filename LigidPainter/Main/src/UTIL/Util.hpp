@@ -896,6 +896,8 @@ namespace FileHandler{
     * Writes model data into a obj file in the given file path
     */
     bool writeOBJFile(std::string path, Model model);
+    Model readOBJFile(std::string path);
+
 }
 
 

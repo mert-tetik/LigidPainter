@@ -116,7 +116,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         std::string modelPath = entry.path().string();
 
         Model TDModel;
-        TDModel.loadModel(modelPath,true);
+        TDModel = FileHandler::readOBJFile(modelPath);
 
         //Check if the model is an obj file
         if(UTIL::getLastWordBySeparatingWithChar(modelPath, '.') != "obj"){

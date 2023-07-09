@@ -165,7 +165,7 @@ static void init_opengl_extensions(void)
 /*
     Create OpenGL rendering context handle
 */
-static HGLRC init_opengl(HDC real_dc)
+HGLRC init_opengl(HDC real_dc)
 {
     init_opengl_extensions();
 
@@ -233,7 +233,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 /*
     HWND Window handle creation
 */
-static HWND create_window(int width, int height, const wchar_t* title)
+HWND create_window(int width, int height, const wchar_t* title)
 {
     // Get the instance handle of the current module
     HINSTANCE hInstance = GetModuleHandle(NULL);

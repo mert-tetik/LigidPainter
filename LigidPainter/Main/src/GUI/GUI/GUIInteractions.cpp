@@ -95,7 +95,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
             std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             if(test.size()){
                 Model tdModel;
-                tdModel.loadModel(test,true);
+                tdModel = FileHandler::readOBJFile(test);
                 library.addModel(tdModel);
             }
             
@@ -139,7 +139,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse
             
             if(test.size()){
                 Model tdModel;
-                tdModel.loadModel(test,true);
+                tdModel = FileHandler::readOBJFile(test);
                 library.addModel(tdModel);
             }
         }

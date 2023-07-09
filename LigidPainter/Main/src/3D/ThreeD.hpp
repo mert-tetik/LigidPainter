@@ -40,9 +40,9 @@ struct Vertex {
     // normal
     glm::vec3 Normal;
     // tangent
-    glm::vec3 Tangent;
+    glm::vec3 Tangent = glm::vec3(0);
     // bitangent
-    glm::vec3 Bitangent;
+    glm::vec3 Bitangent = glm::vec3(0);
 	//bone indexes which will influence this vertex
 	int m_BoneIDs[MAX_BONE_INFLUENCE];
 	//weights from each bone
@@ -99,6 +99,9 @@ public:
     int materialIndex;
     float modelMaterialButtonMixVal = 0.f;
 
+    //Default constructor
+    Mesh(){}
+    
     //Constructor
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<TextureMs> textures,std::string materialName,int materialIndex);
 

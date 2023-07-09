@@ -31,8 +31,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
     #include <Windows.h>
 
     // Forward declarations for the window creation utilities from CreateWindowWin.cpp
-    static HGLRC init_opengl(HDC real_dc);
-    static HWND create_window(int width, int height, const wchar_t* title);
+    HGLRC init_opengl(HDC real_dc);
+    HWND create_window(int width, int height, const wchar_t* title);
 
 #elif defined(__APPLE__)
 
@@ -86,6 +86,7 @@ int LigidWindow::createWindow(
     // Get the device handle
     HDC gldc = GetDC(this->window);
     
+    // Get the OpenGl context
     this->openGLContext = init_opengl(gldc);
 
 #elif defined(__APPLE__)
@@ -157,7 +158,7 @@ int LigidWindow::createWindow(
 
 
 
-/*#elif defined(__APPLE__)
+#if defined(__APPLE__)
 
 //  --------------------    MACOS UTIL    --------------------
 
@@ -234,4 +235,3 @@ std::pair<Window, GLXContext> LinuxCreateOpenGLWindow(int width, int height, con
 }
 
 #endif
-*/
