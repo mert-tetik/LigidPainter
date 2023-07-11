@@ -93,7 +93,15 @@ namespace UTIL{
     /// @param s MyImage.png
     /// @return MyImage
     std::string removeExtension(std::string s);
-    
+
+    /// @brief returns the extension from the given param
+    /// @param s MyImage.png
+    /// @return png
+    std::string getFileExtension(std::string s);
+
+    /// @brief Transforms the uppercase characters into lowercase in the given str param.
+    std::string toLowercase(const std::string& str);
+
     /// @brief removes the starting path from the full path
     /// @param startingPath ./AAA/BBB/
     /// @param fullPath ./AAA/BBB/CCC/Dest.tmp
@@ -892,12 +900,9 @@ struct Fonts{
 };
 
 namespace FileHandler{
-    /*!
-    * Writes model data into a obj file in the given file path
-    */
     bool writeOBJFile(std::string path, Model model);
     Model readOBJFile(std::string path);
-
+    Model readFBXFile(std::string path);
 }
 
 

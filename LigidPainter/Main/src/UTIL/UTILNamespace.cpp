@@ -72,6 +72,23 @@ std::string UTIL::removeExtension(std::string s){
 	return s;
 }
 
+std::string UTIL::getFileExtension(std::string s) {
+    size_t dotIndex = s.find_last_of('.');
+    if (dotIndex != std::string::npos) {
+        return s.substr(dotIndex + 1);
+    }
+    return "";
+}
+
+std::string UTIL::toLowercase(const std::string& str) {
+    std::string result = str;
+    std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) {
+        return std::tolower(c);
+    });
+    return result;
+}
+
+
 std::vector<Material> UTIL::getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &meshNodeScene,Library &library,int textureRes, AppTextures appTextures){
     std::vector<Material> materials;
     

@@ -37,25 +37,20 @@ void Model::loadModel(std::string const &path,bool triangulate)
     this->newModelAdded = true;
 
     meshes.clear();
-    // read file via ASSIMP
-    // Assimp::Importer importer;
+ 
+    std::cout << "Loading : " << path << std::endl;
 
-    // const aiScene* scene;
-    // if(triangulate)
-    //     scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals  | aiProcess_CalcTangentSpace );
-    // else
-    //     scene = importer.ReadFile(path, aiProcess_GenSmoothNormals  | aiProcess_CalcTangentSpace);
+    if(UTIL::toLowercase(UTIL::getFileExtension(path)) == "obj"){
+        Model model = FileHandler::readOBJFile(path);
+        this->meshes = model.meshes;
+    }
+    else if(UTIL::toLowercase(UTIL::getFileExtension(path)) == "fbx"){
+        Model model = FileHandler::readFBXFile(path);
+        this->meshes = model.meshes;
+    }
+    else{
+        std::cout << "ERROR : Can't read 3D model file. LigidPainter does not have a valid importer for the file format : " << UTIL::toLowercase(UTIL::getFileExtension(path)) << std::endl;
+    }
 
-    // // check for errors
-    // if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
-    // {
-    //     std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
-    //     return;
-    // }
-    
-    // // retrieve the directory path of the filepath
-    // directory = path.substr(0, path.find_last_of('/'));
 
-    // // process ASSIMP's root node recursively
-    // processNode(scene->mRootNode, scene);
 }

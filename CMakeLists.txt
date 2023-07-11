@@ -142,7 +142,8 @@ target_link_directories(Ligid PRIVATE
 
 # Link libraries for Ligid target
 target_link_libraries(Ligid PRIVATE 
-    freetype 
+    freetype
+    zlibd 
     OpenAL32 
     OpenGL::GL
 )
