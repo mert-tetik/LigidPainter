@@ -85,10 +85,11 @@ void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
         unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
         const char* hex0Val = "#000000";
         auto check = tinyfd_colorChooser("Select a color",hex0Val,defRGB,defRGB);
-        Color clr(check);
 
-        if(check)
+        if(check){
+            Color clr(check);
             panel.sections[0].elements[0].button.color = glm::vec4(clr.getRGB_normalized(),1.f);
+        }
     }
 
     //Clicked to the create button

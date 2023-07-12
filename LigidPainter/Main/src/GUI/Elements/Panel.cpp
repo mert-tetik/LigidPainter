@@ -317,31 +317,6 @@ void Panel::drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm
 }
 
 
-Panel::Panel(){}
-Panel::Panel(Shader shader,ColorPalette colorPalette,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,bool vertical,bool lockL,bool lockR,bool lockB,bool lockT,
-      float outlineThickness,int rowCount,std::vector<Button> barButtons,float maxScaleVal,bool hasSlider){
-    this->shader = shader;
-    this->vertical = vertical;
-    this->scale = scale;
-    this->color = color;
-    this->color2 = color2;
-    this->pos = pos;
-    this->sections = sections;
-    this->outlineThickness = outlineThickness;
-    this->leftSide.locked = lockL;
-    this->rightSide.locked = lockR;
-    this->bottomSide.locked = lockB;
-    this->topSide.locked = lockT;
-    this->rowCount = rowCount; 
-    this->maxScaleVal = maxScaleVal; 
-    this->barButtons = barButtons; 
-    this->sliderButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(0.25f,20),colorPalette,shader,"",Texture(),0.f,false);
-    this->sliderButton.color = colorPalette.mainColor;
-    this->sliderButton.color2 = colorPalette.themeColor;
-    this->sliderButton.radius = 0.25f;
-    this->hasSlider = hasSlider;
-}
-
 void Panel::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
     this->doMouseTracking = doMouseTracking;
     

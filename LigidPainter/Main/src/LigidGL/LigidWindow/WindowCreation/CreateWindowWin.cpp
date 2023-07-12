@@ -462,13 +462,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             int keyCode = static_cast<int>(wParam);
 
             // The action
-            int action = 0;
-            if(uMsg == WM_KEYFIRST)
-                action = LIGIDGL_PRESS;
-            if(uMsg == WM_KEYDOWN)
-                action = LIGIDGL_REPEAT;
-            if(uMsg == WM_KEYUP)
-                action = LIGIDGL_RELEASE;
+            const int action = (HIWORD(lParam) & KF_UP) ? LIGIDGL_RELEASE : LIGIDGL_PRESS;
 
             // Mods
             int mods = LIGIDGL_MOD_DEFAULT;

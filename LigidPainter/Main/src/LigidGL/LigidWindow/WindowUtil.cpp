@@ -199,7 +199,7 @@ void LigidWindow::makeContextCurrent(){
 
 }
 
-bool LigidWindow::isKeyPressed(char key){
+bool LigidWindow::isKeyPressed(int key){
 #if defined(_WIN32) || defined(_WIN64)
     
     //* User in windows environment

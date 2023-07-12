@@ -30,6 +30,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define LIGIDGL_OPENGL_VERSION_MINOR 0
 #define LIGIDGL_OPENGL_VERSION_PROFILE LIGIDGL_OPENGL_PROFILE_CORE 
 
+/* -- Keys Are Defined Based On The Standard US Keyboard Layout. -- */
+/*              TODO : Use scancode (maybeee)*/
 
 /* Actions */
 #define LIGIDGL_RELEASE                0
@@ -92,76 +94,76 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define LIGIDGL_KEY_WORLD_2            162 
 
 /* Function keys */
-#define LIGIDGL_KEY_ESCAPE             256
-#define LIGIDGL_KEY_ENTER              257
-#define LIGIDGL_KEY_TAB                258
-#define LIGIDGL_KEY_BACKSPACE          259
-#define LIGIDGL_KEY_INSERT             260
-#define LIGIDGL_KEY_DELETE             261
-#define LIGIDGL_KEY_RIGHT              262
-#define LIGIDGL_KEY_LEFT               263
-#define LIGIDGL_KEY_DOWN               264
-#define LIGIDGL_KEY_UP                 265
-#define LIGIDGL_KEY_PAGE_UP            266
-#define LIGIDGL_KEY_PAGE_DOWN          267
-#define LIGIDGL_KEY_HOME               268
-#define LIGIDGL_KEY_END                269
-#define LIGIDGL_KEY_CAPS_LOCK          280
-#define LIGIDGL_KEY_SCROLL_LOCK        281
-#define LIGIDGL_KEY_NUM_LOCK           282
-#define LIGIDGL_KEY_PRINT_SCREEN       283
-#define LIGIDGL_KEY_PAUSE              284
-#define LIGIDGL_KEY_F1                 290
-#define LIGIDGL_KEY_F2                 291
-#define LIGIDGL_KEY_F3                 292
-#define LIGIDGL_KEY_F4                 293
-#define LIGIDGL_KEY_F5                 294
-#define LIGIDGL_KEY_F6                 295
-#define LIGIDGL_KEY_F7                 296
-#define LIGIDGL_KEY_F8                 297
-#define LIGIDGL_KEY_F9                 298
-#define LIGIDGL_KEY_F10                299
-#define LIGIDGL_KEY_F11                300
-#define LIGIDGL_KEY_F12                301
-#define LIGIDGL_KEY_F13                302
-#define LIGIDGL_KEY_F14                303
-#define LIGIDGL_KEY_F15                304
-#define LIGIDGL_KEY_F16                305
-#define LIGIDGL_KEY_F17                306
-#define LIGIDGL_KEY_F18                307
-#define LIGIDGL_KEY_F19                308
-#define LIGIDGL_KEY_F20                309
-#define LIGIDGL_KEY_F21                310
-#define LIGIDGL_KEY_F22                311
-#define LIGIDGL_KEY_F23                312
-#define LIGIDGL_KEY_F24                313
-#define LIGIDGL_KEY_F25                314
-#define LIGIDGL_KEY_KP_0               320
-#define LIGIDGL_KEY_KP_1               321
-#define LIGIDGL_KEY_KP_2               322
-#define LIGIDGL_KEY_KP_3               323
-#define LIGIDGL_KEY_KP_4               324
-#define LIGIDGL_KEY_KP_5               325
-#define LIGIDGL_KEY_KP_6               326
-#define LIGIDGL_KEY_KP_7               327
-#define LIGIDGL_KEY_KP_8               328
-#define LIGIDGL_KEY_KP_9               329
-#define LIGIDGL_KEY_KP_DECIMAL         330
-#define LIGIDGL_KEY_KP_DIVIDE          331
-#define LIGIDGL_KEY_KP_MULTIPLY        332
-#define LIGIDGL_KEY_KP_SUBTRACT        333
-#define LIGIDGL_KEY_KP_ADD             334
-#define LIGIDGL_KEY_KP_ENTER           335
-#define LIGIDGL_KEY_KP_EQUAL           336
-#define LIGIDGL_KEY_LEFT_SHIFT         340
-#define LIGIDGL_KEY_LEFT_CONTROL       341
-#define LIGIDGL_KEY_LEFT_ALT           342
-#define LIGIDGL_KEY_LEFT_SUPER         343
-#define LIGIDGL_KEY_RIGHT_SHIFT        344
-#define LIGIDGL_KEY_RIGHT_CONTROL      345
-#define LIGIDGL_KEY_RIGHT_ALT          346
-#define LIGIDGL_KEY_RIGHT_SUPER        347
-#define LIGIDGL_KEY_MENU               348
+#define LIGIDGL_KEY_ESCAPE             27
+#define LIGIDGL_KEY_ENTER              13
+#define LIGIDGL_KEY_TAB                9
+#define LIGIDGL_KEY_BACKSPACE          8
+#define LIGIDGL_KEY_INSERT             45
+#define LIGIDGL_KEY_DELETE             46
+#define LIGIDGL_KEY_RIGHT              39
+#define LIGIDGL_KEY_LEFT               37
+#define LIGIDGL_KEY_DOWN               40
+#define LIGIDGL_KEY_UP                 38
+#define LIGIDGL_KEY_PAGE_UP            33
+#define LIGIDGL_KEY_PAGE_DOWN          34
+#define LIGIDGL_KEY_HOME               36
+#define LIGIDGL_KEY_END                35
+#define LIGIDGL_KEY_CAPS_LOCK          20
+#define LIGIDGL_KEY_SCROLL_LOCK        145
+#define LIGIDGL_KEY_NUM_LOCK           144
+#define LIGIDGL_KEY_PRINT_SCREEN       44
+#define LIGIDGL_KEY_PAUSE              19
+#define LIGIDGL_KEY_F1                 112
+#define LIGIDGL_KEY_F2                 113
+#define LIGIDGL_KEY_F3                 114
+#define LIGIDGL_KEY_F4                 115
+#define LIGIDGL_KEY_F5                 116
+#define LIGIDGL_KEY_F6                 117
+#define LIGIDGL_KEY_F7                 118
+#define LIGIDGL_KEY_F8                 119
+#define LIGIDGL_KEY_F9                 120
+#define LIGIDGL_KEY_F10                121
+#define LIGIDGL_KEY_F11                122
+#define LIGIDGL_KEY_F12                123
+#define LIGIDGL_KEY_F13                124
+#define LIGIDGL_KEY_F14                125
+#define LIGIDGL_KEY_F15                126
+#define LIGIDGL_KEY_F16                127
+#define LIGIDGL_KEY_F17                128
+#define LIGIDGL_KEY_F18                129
+#define LIGIDGL_KEY_F19                130
+#define LIGIDGL_KEY_F20                131
+#define LIGIDGL_KEY_F21                132
+#define LIGIDGL_KEY_F22                133
+#define LIGIDGL_KEY_F23                134
+#define LIGIDGL_KEY_F24                135
+#define LIGIDGL_KEY_F25                136
+#define LIGIDGL_KEY_KP_0               96
+#define LIGIDGL_KEY_KP_1               97
+#define LIGIDGL_KEY_KP_2               98
+#define LIGIDGL_KEY_KP_3               99
+#define LIGIDGL_KEY_KP_4               100
+#define LIGIDGL_KEY_KP_5               101
+#define LIGIDGL_KEY_KP_6               102
+#define LIGIDGL_KEY_KP_7               103
+#define LIGIDGL_KEY_KP_8               104
+#define LIGIDGL_KEY_KP_9               105
+#define LIGIDGL_KEY_KP_DECIMAL         110
+#define LIGIDGL_KEY_KP_DIVIDE          111
+#define LIGIDGL_KEY_KP_MULTIPLY        106
+#define LIGIDGL_KEY_KP_SUBTRACT        109
+#define LIGIDGL_KEY_KP_ADD             107
+#define LIGIDGL_KEY_KP_ENTER           13
+#define LIGIDGL_KEY_KP_EQUAL           187
+#define LIGIDGL_KEY_LEFT_SHIFT         16
+#define LIGIDGL_KEY_LEFT_CONTROL       17
+#define LIGIDGL_KEY_LEFT_ALT           18
+#define LIGIDGL_KEY_LEFT_SUPER         91
+#define LIGIDGL_KEY_RIGHT_SHIFT        16
+#define LIGIDGL_KEY_RIGHT_CONTROL      17
+#define LIGIDGL_KEY_RIGHT_ALT          18
+#define LIGIDGL_KEY_RIGHT_SUPER        92
+#define LIGIDGL_KEY_MENU               93
 
 /* Mods */
 #define LIGIDGL_MOD_DEFAULT             0
@@ -603,7 +605,7 @@ public:
     *    @return Returns LIGIDGL_PRESS if the given key is pressed LIGIDGL_RELEASE if not (returns false if the window is not focused)  
     *    
     */
-    bool isKeyPressed(char key);
+    bool isKeyPressed(int key);
 
     /*!
     *    @brief learn if a mouse button is pressed
