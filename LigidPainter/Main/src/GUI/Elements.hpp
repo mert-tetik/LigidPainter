@@ -448,47 +448,131 @@ class Panel
 {
 private:
     float slideRatio = 1.f;
+    Shader shader;
     
-    /// Private member functions
     void mouseTracking(Mouse& mouse);
     void resizeThePanel(Mouse &mouse, glm::vec2 videoScale);
     void prepDrawBtnVertically(Element &button,Element &previousButton,float& elementPos,int btnCounter);
     void prepDrawBtnHorizontally(Element &button,Element &previousButton,float& elementPos,int btnCounter);
+    void renderTheHeader(int sectionI,float &elementPos, int &btnCounter, glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer);
     void drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm::vec2 resultScale,Timer &timer,TextRenderer &textRenderer); //Draws the panel and it's elements
 
 public:
-    Shader shader;
+    /*! 
+        @brief Sections of the panel 
+    
+        A section consists of one header and GUI elements
+
+        Panel renders the elements
+    */ 
     std::vector<Section> sections;
+    
+    /*! @brief Scale of the panel in the range of 0 - 100*/
     glm::vec2 scale;  
+    
+    /*! @brief Position of the panel in the range of 0 - 100*/
     glm::vec3 pos; 
+    
+    /*! @brief Color of the panel*/
     glm::vec4 color;
+    
+    /*! @brief Second color of the panel (used for the outline color)*/
     glm::vec4 color2;
+    
+    /*! @brief True if the cursor hovers the panel*/
     bool hover = false; 
+    
+    /*! @brief Takes the value from the constructor. Indicates whether the panel is vertical or horizontal*/
     bool vertical = true;
+    
+    /*! 
+        @brief Indicates how many elements can be in a row 
+        (Column if panel is horizontal)
+        (Is mostly 1)
+    */
     int rowCount; 
+    
+    /*!
+        @brief Buttons on top of the panel
+        Just like a title bar for the panel
+    */
     std::vector<Button> barButtons;
+
+    /*! @brief Outline thickness of the panel*/
     float outlineThickness;
+    
+    /*! 
+        @brief Set to false if you don't want to clear the 
+        depth buffer of the framebuffer after rendering the panel
+    */
     bool clearDepthBuffer = true;
+
+    /*-- Sides of the panel --*/
+
     PanelSide leftSide;
     PanelSide rightSide;
     PanelSide bottomSide;
     PanelSide topSide;
+
+    /*!
+        @brief Scale value of the panel in the screen coordinates.
+        Generated using the @ref scale value after rendering the panel
+    */
     glm::vec2 resultScale;
+    
+    /*!
+        @brief Position value of the panel in the screen coordinates.
+        Generated using the @ref pos value after rendering the panel
+    */
     glm::vec3 resultPos;
+
+    /*!
+        @brief If the panel has a slider. Indicates how much got scrolled. 
+    */
     float slideVal = 0.f;
+
+    /*! @brief Panel's optional scale value can't be higher than this value (scale.y for horizontal panels)*/
     float maxScaleVal;    
+    
+    /*! @brief Set to false if the panel is locked or smt*/
     bool doMouseTracking;
+    
+    /*! @brief Is true (special for the library displayer panel)*/
     bool isLibraryDisplayer = false;
+    
+    /*! @brief Indicate if the panel will use a slider if elements overflows */
     bool hasSlider = false;
+    
+    /*! @brief This button is used for the slider */
     Button sliderButton;
 
-    //Constructors
+    /*! @brief Default constructor */
     Panel();
+
+    /*!
+        @param shader ButtonShader used for rendering the panel & it's elements 
+        @param colorPalette LigidPainter theme color palette
+        @param sections Sections of the panel
+        @param scale Initial scale of the panel
+        @param pos Initial position of the panel
+        @param color Color of the panel
+        @param color2 Outline color of the panel
+        @param vertical Is the panel vertical?
+        @param lockL Disable resizing from the left side
+        @param lockR Disable resizing from the right side
+        @param lockB Disable resizing from the bottom side
+        @param lockT Disable resizing from the top side
+        @param outlineThickness 
+        @param rowCount 
+        @param barButtons 
+        @param maxScaleVal 
+        @param hasSlider 
+    */
     Panel(Shader shader,ColorPalette colorPalette,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,
           bool vertical,bool lockL,bool lockR,bool lockB,bool lockT,float outlineThickness,int rowCount,std::vector<Button> barButtons,float maxScaleVal,
           bool hasSlider);
 
-    /// @brief Public member function to render the panel
+    /// @brief Renders the panel
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
 };
 

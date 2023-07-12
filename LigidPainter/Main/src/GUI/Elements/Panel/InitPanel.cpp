@@ -11,6 +11,9 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
+
+    Contains constructors of the Panel class
+
 */
 
 #include<glad/glad.h>
@@ -27,8 +30,28 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 Panel::Panel(){}
-Panel::Panel(Shader shader,ColorPalette colorPalette,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,bool vertical,bool lockL,bool lockR,bool lockB,bool lockT,
-      float outlineThickness,int rowCount,std::vector<Button> barButtons,float maxScaleVal,bool hasSlider){
+
+Panel::Panel(
+                Shader shader,
+                ColorPalette colorPalette,
+                std::vector<Section> sections,
+                glm::vec2 scale,
+                glm::vec3 pos,
+                glm::vec4 color,
+                glm::vec4 color2,
+                bool vertical,
+                bool lockL,
+                bool lockR,
+                bool lockB,
+                bool lockT,
+                float outlineThickness,
+                int rowCount,
+                std::vector<Button> barButtons,
+                float maxScaleVal,
+                bool hasSlider
+            )
+    {
+    
     this->shader = shader;
     this->vertical = vertical;
     this->scale = scale;
