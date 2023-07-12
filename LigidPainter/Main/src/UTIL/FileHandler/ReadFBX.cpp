@@ -66,7 +66,7 @@ struct FbxNode {
 
 // Forward declarations for the fbx file processing functions
 void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes);
-void ProcessNodeHierarchy( std::vector<FbxNode>& nodes, std::vector<glm::vec3>& vertPositions, std::vector<glm::vec2>& vertUVs, std::vector<glm::vec3>& vertNormals, std::vector<int>& polygonVertexIndices, std::vector<int>& edges, std::vector<int>& uvIndices); 
+void ProcessNodeHierarchy( std::vector<FbxNode>& nodes, std::vector<glm::vec3>& vertPositions, std::vector<glm::vec2>& vertUVs, std::vector<glm::vec3>& vertNormals, std::vector<int>& polygonVertexIndices, std::vector<int>& edges, std::vector<int>& uvIndices, std::vector<std::string> matTitles, std::vector<int> materials); 
 
 int __node_counter = 0;
 int _FBX_totalBitsRead = 0;
@@ -130,10 +130,10 @@ Model FileHandler::readFBXFile(std::string path) {
     std::vector<int> polygonVertexIndices;
     std::vector<int> edges;
     std::vector<int> uvIndices;
+    std::vector<int> materials;
 
     // Process the FBX data
-    ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges);
-
+    ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges, matTitles, materials, matTitles, materials);
 
     
     std::vector<std::vector<Vertex>> meshVertices;
@@ -726,7 +726,9 @@ void ProcessNodeHierarchy(
                             std::vector<glm::vec3>& vertNormals, 
                             std::vector<int>& polygonVertexIndices, 
                             std::vector<int>& edges, 
-                            std::vector<int>& uvIndices
+                            std::vector<int>& uvIndices,
+                            std::vector<std::string> matTitles,
+                            std::vector<int> materials
                         ) 
 {
     for ( auto& node : nodes) {
@@ -737,6 +739,7 @@ void ProcessNodeHierarchy(
             
             // Process vertex properties
             for (auto& prop : node.properties) {
+                
                 if(node.nodeType == "Vertices"){
                     if (prop.typeCode == 'd') {
                         size_t arrayLength = prop.data.size() / sizeof(double);
@@ -853,10 +856,32 @@ void ProcessNodeHierarchy(
                     }
                 }
 
+                if(node.nodeType == "Material"){
+                    if (prop.typeCode == 'S') {
+                        std::string infoStr(prop.data.begin(), prop.data.end());
+
+                        matTitles.push_back(infoStr);
+                    }
+                }
+                
+                if(node.nodeType == "Materials"){
+                    if (prop.typeCode == 'i') {
+                        size_t arrayLength = prop.data.size() / sizeof(int);
+                        std::vector<int> intArray(arrayLength);
+
+                        std::memcpy(intArray.data(), prop.data.data(), prop.data.size());
+
+                        for (size_t i = 0; i < intArray.size(); i++)
+                        {
+                            materials.push_back(intArray[i]);                            
+                        }
+                    }
+                }
+
                 if(node.nodeType == "MappingInformationType"){
                     if (prop.typeCode == 'S') {
                         std::string infoStr(prop.data.begin(), prop.data.end());
-                        if(infoStr != "ByPolygonVertex")
+                        if(infoStr != "ByPolygonVertex" && infoStr != "ByPolygon")
                             std::cout << "WARNING : MappingInformationType is : " << infoStr << "! Results might be unexpected."  << std::endl;
                     }
                 }
@@ -864,7 +889,7 @@ void ProcessNodeHierarchy(
         }
 
         // Recursively process nested nodes
-        ProcessNodeHierarchy(node.nestedNodes, vertPositions, vertUVs, vertNormals, polygonVertexIndices, edges, uvIndices);
+        ProcessNodeHierarchy(node.nestedNodes, vertPositions, vertUVs, vertNormals, polygonVertexIndices, edges, uvIndices, matTitles, materials);
     }
 }
 
