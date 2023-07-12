@@ -84,35 +84,6 @@ Model FileHandler::readOBJFile(std::string path){
 
     Model model = createModel(meshVertices, meshIndices, matTitles);
 
-    std::cout << "Pos : " << std::endl;
-    for (size_t i = 0; i < model.meshes[0].vertices.size(); i++)
-    {
-        std::cout << glm::to_string(model.meshes[0].vertices[i].Position);
-    }
-    std::cout << std::endl;
-    
-    std::cout << "UV : " << std::endl;
-    for (size_t i = 0; i < model.meshes[0].vertices.size(); i++)
-    {
-        std::cout << glm::to_string(model.meshes[0].vertices[i].TexCoords);
-    }
-    std::cout << std::endl;
-    
-    std::cout << "Normal : " << std::endl;
-    for (size_t i = 0; i < model.meshes[0].vertices.size(); i++)
-    {
-        std::cout << glm::to_string(model.meshes[0].vertices[i].Normal);
-    }
-    std::cout << std::endl;
-    
-    std::cout << "Indices : " << std::endl;
-    for (size_t i = 0; i < model.meshes[0].indices.size(); i++)
-    {
-        std::cout << model.meshes[0].indices[i];
-    }
-    std::cout << std::endl;
-    
-
     return model;
 
 }

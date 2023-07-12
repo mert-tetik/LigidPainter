@@ -719,10 +719,21 @@ public:
     *   }
     */
     void setCursor(LigidCursor cursor);
+    
+    /*!
+        Returns true if the cursor hovers the title bar
+    */
+    bool isCursorOnTitleBar();
+    
+    /*!
+        Returns true if the cursor hovers the resizing area
+    */
+    bool isCursorOnResizingArea();
 
     void* getWindowUserPointer();
 
     void setWindowUserPointer(void* pointer);
+
 };
 
 #endif

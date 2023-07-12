@@ -53,22 +53,24 @@ std::vector<double> DecompressZlibDouble(const std::vector<char>& compressedData
 std::vector<long long> DecompressZlibLongLong(const std::vector<char>& compressedData, size_t numLongLongs);
 std::vector<int> DecompressZlibInt(const std::vector<char>& compressedData, size_t numInts);
 
-// Forward declarations for the fbx file processing functions
-void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes);
-void ProcessNodeHierarchy( std::vector<FbxNode>& nodes, std::vector<glm::vec3>& vertPositions, std::vector<glm::vec2>& vertUVs, std::vector<glm::vec3>& vertNormals, std::vector<int>& polygonVertexIndices, std::vector<int>& edges, std::vector<int>& uvIndices, int depth = 0); 
-
-int _FBX_totalBitsRead = 0;
-
-struct Property {
+struct FbxProperty {
     char typeCode;
     std::vector<char> data;
 };
 
 struct FbxNode {
     std::string nodeType;
-    std::vector<Property> properties;
+    std::vector<FbxProperty> properties;
     std::vector<FbxNode> nestedNodes;
 };
+
+// Forward declarations for the fbx file processing functions
+void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes);
+void ProcessNodeHierarchy( std::vector<FbxNode>& nodes, std::vector<glm::vec3>& vertPositions, std::vector<glm::vec2>& vertUVs, std::vector<glm::vec3>& vertNormals, std::vector<int>& polygonVertexIndices, std::vector<int>& edges, std::vector<int>& uvIndices); 
+
+int __node_counter = 0;
+int _FBX_totalBitsRead = 0;
+
 
 
 /*
@@ -80,7 +82,7 @@ struct FbxNode {
 */
 Model FileHandler::readFBXFile(std::string path) {
     _FBX_totalBitsRead = 0;
-    __ne_c_cc = 0;
+    __node_counter = 0;
 
     std::ifstream file(path, std::ios::binary);
 
@@ -261,11 +263,11 @@ Model FileHandler::readFBXFile(std::string path) {
         4	            Uint32	        Length
         Length	        byte/char	    Data
 */
-void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint32_t numProperties) {
+void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, uint32_t numProperties) {
     
 // Loop through the properties
     for (int i = 0; i < numProperties; i++) {
-        Property prop;
+        FbxProperty prop;
 
 
         if(!file.read(&prop.typeCode, sizeof(char)))
@@ -371,7 +373,7 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
                     std::vector<char> byteArray(sizeof(float) * arrayLength);
                     std::memcpy(byteArray.data(), floatArray.data(), sizeof(float) * arrayLength);
                 
-                    // Store the byte vector in the Property struct
+                    // Store the byte vector in the FbxProperty struct
                     prop.data = byteArray;
                 }
 
@@ -388,7 +390,7 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
                     std::vector<char> byteArray(sizeof(float) * arrayLength);
                     std::memcpy(byteArray.data(), decompressedData.data(), sizeof(float) * arrayLength);
                 
-                    // Store the byte vector in the Property struct
+                    // Store the byte vector in the FbxProperty struct
                     prop.data = byteArray;
                 }
                 else {
@@ -424,7 +426,7 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
                     std::vector<char> byteArray(sizeof(double) * arrayLength);
                     std::memcpy(byteArray.data(), doubleArray.data(), sizeof(double) * arrayLength);
                 
-                    // Store the byte vector in the Property struct
+                    // Store the byte vector in the FbxProperty struct
                     prop.data = byteArray;
                 }
 
@@ -441,7 +443,7 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
                     std::vector<char> byteArray(sizeof(double) * arrayLength);
                     std::memcpy(byteArray.data(), decompressedData.data(), sizeof(double) * arrayLength);
                 
-                    // Store the byte vector in the Property struct
+                    // Store the byte vector in the FbxProperty struct
                     prop.data = byteArray;
                
                 }
@@ -478,7 +480,7 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
                     std::vector<char> byteArray(sizeof(long long) * arrayLength);
                     std::memcpy(byteArray.data(), longlongArray.data(), sizeof(long long) * arrayLength);
                 
-                    // Store the byte vector in the Property struct
+                    // Store the byte vector in the FbxProperty struct
                     prop.data = byteArray;
                 }
 
@@ -494,7 +496,7 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
                     std::vector<char> byteArray(sizeof(long long) * arrayLength);
                     std::memcpy(byteArray.data(), decompressedData.data(), sizeof(long long) * arrayLength);
                 
-                    // Store the byte vector in the Property struct
+                    // Store the byte vector in the FbxProperty struct
                     prop.data = byteArray;            
                 }
                 else {
@@ -530,7 +532,7 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
                     std::vector<char> byteArray(sizeof(int) * arrayLength);
                     std::memcpy(byteArray.data(), intArray.data(), sizeof(int) * arrayLength);
                 
-                    // Store the byte vector in the Property struct
+                    // Store the byte vector in the FbxProperty struct
                     prop.data = byteArray;
                 }
 
@@ -546,7 +548,7 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
                     std::vector<char> byteArray(sizeof(int) * arrayLength);
                     std::memcpy(byteArray.data(), decompressedData.data(), sizeof(int) * arrayLength);
                 
-                    // Store the byte vector in the Property struct
+                    // Store the byte vector in the FbxProperty struct
                     prop.data = byteArray;         
                 }
                 else {
@@ -583,7 +585,7 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
                     std::vector<char> byteArray(sizeof(bool) * arrayLength);
                     std::memcpy(byteArray.data(), &boolArray[0], sizeof(bool) * arrayLength);
                 
-                    //// Store the byte vector in the Property struct
+                    //// Store the byte vector in the FbxProperty struct
                     prop.data = byteArray;
                 }//
 
@@ -656,12 +658,11 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
     4	        Uint32	PropertyListLen
     1	        Uint8t	NameLen
     NameLen	    char	Name
-    ?	        ?	    Property[n], for n in 0:PropertyListLen
+    ?	        ?	    FbxProperty[n], for n in 0:PropertyListLen
     Optional		
     ?	        ?	    NestedList
     13	        uint8[]	NULL-record
 */
-int __ne_c_cc = 0;
 
 void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
         FbxNode nestedNode; // Move the declaration inside the while loop
@@ -700,7 +701,7 @@ void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
         
         // Recursively read nested nodes
         while(endOffset != file.tellg().seekpos() + 13){
-            __ne_c_cc++;
+            __node_counter++;
             ReadNestedNodes(file, nestedNode.nestedNodes);
             if(file.eof())
                 break; 
@@ -711,11 +712,11 @@ void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
 
         nestedNodes.push_back(nestedNode);
         
-        if(__ne_c_cc == 0){
+        if(__node_counter == 0){
             //Nested node list ended            
         }
         
-        __ne_c_cc--;
+        __node_counter--;
 }
 
 void ProcessNodeHierarchy( 
@@ -725,8 +726,7 @@ void ProcessNodeHierarchy(
                             std::vector<glm::vec3>& vertNormals, 
                             std::vector<int>& polygonVertexIndices, 
                             std::vector<int>& edges, 
-                            std::vector<int>& uvIndices, 
-                            int depth = 0
+                            std::vector<int>& uvIndices
                         ) 
 {
     for ( auto& node : nodes) {
@@ -864,7 +864,7 @@ void ProcessNodeHierarchy(
         }
 
         // Recursively process nested nodes
-        ProcessNodeHierarchy(node.nestedNodes, vertPositions, vertUVs, vertNormals, polygonVertexIndices, edges, uvIndices, depth + 1);
+        ProcessNodeHierarchy(node.nestedNodes, vertPositions, vertUVs, vertNormals, polygonVertexIndices, edges, uvIndices);
     }
 }
 

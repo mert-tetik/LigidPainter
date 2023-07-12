@@ -398,10 +398,16 @@ void LigidWindow::setWindowPos(
 
 void LigidWindow::setCursor(LigidCursor cursor){
 #if defined(_WIN32) || defined(_WIN64)
-    //* User in Windows environment
     
-    SetCursor(cursor.getCursorHandle());
-    SetClassLongPtr(this->window, GCLP_HCURSOR, reinterpret_cast<LONG_PTR>(cursor.getCursorHandle()));
+    //* User in Windows environment
+
+    /* Don't change the cursor if cursor hovers the title bar or the resizing area */
+    if(!this->isCursorOnTitleBar() && !this->isCursorOnResizingArea()){
+
+        SetCursor(cursor.getCursorHandle());
+
+        SetClassLongPtr(this->window, GCLP_HCURSOR, reinterpret_cast<LONG_PTR>(cursor.getCursorHandle()));
+    }
 
 #elif(__APPLE__)
 
@@ -452,4 +458,69 @@ void* LigidWindow::getWindowUserPointer()
 
 void LigidWindow::setWindowUserPointer(void* pointer){
     SetWindowLongPtr(this->window, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pointer));
+}
+
+bool LigidWindow::isCursorOnTitleBar(){
+    POINT cursorPos;
+    RECT windowRect;
+    RECT clientRect;
+
+    // Get the cursor position in screen coordinates
+    GetCursorPos(&cursorPos);
+
+    // Convert the cursor position to client coordinates
+    ScreenToClient(this->window, &cursorPos);
+
+    // Get the window and client area rectangles
+    GetWindowRect(this->window, &windowRect);
+    GetClientRect(this->window, &clientRect);
+
+    // Calculate the height of the non-client area (including the title bar)
+    int nonClientHeight = (windowRect.bottom - windowRect.top) - (clientRect.bottom - clientRect.top);
+
+    // Check if the cursor Y-coordinate is within the non-client area height
+    return cursorPos.y < nonClientHeight;
+}
+
+bool LigidWindow::isCursorOnResizingArea() {
+    // Get the screen coordinates of the cursor
+    POINT ptCursor;
+    GetCursorPos(&ptCursor);
+
+    // Get the window rectangle
+    RECT rcWindow;
+    GetWindowRect(this->window, &rcWindow);
+
+    // Calculate the resizing areas (you can adjust the values as needed)
+    int nResizeAreaSize = 8;
+    RECT rcBottomRight = {
+        rcWindow.right - nResizeAreaSize,
+        rcWindow.bottom - nResizeAreaSize,
+        rcWindow.right,
+        rcWindow.bottom
+    };
+
+    RECT rcBottom = {
+        rcWindow.left + nResizeAreaSize,
+        rcWindow.bottom - nResizeAreaSize,
+        rcWindow.right - nResizeAreaSize,
+        rcWindow.bottom
+    };
+
+    RECT rcRight = {
+        rcWindow.right - nResizeAreaSize,
+        rcWindow.top + nResizeAreaSize,
+        rcWindow.right,
+        rcWindow.bottom - nResizeAreaSize
+    };
+
+    RECT rcLeft = {
+        rcWindow.left,
+        rcWindow.top + nResizeAreaSize,
+        rcWindow.left + nResizeAreaSize,
+        rcWindow.bottom - nResizeAreaSize
+    };
+
+    // Check if the cursor is within any of the resizing areas
+    return PtInRect(&rcBottomRight, ptCursor) || PtInRect(&rcBottom, ptCursor) || PtInRect(&rcRight, ptCursor) || PtInRect(&rcLeft, ptCursor);
 }
