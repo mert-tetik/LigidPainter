@@ -30,6 +30,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
 
+bool _ligid_renderer_render_first_frame = true;
+
 void Renderer::render(){
     
     //Handle user input and interact with the windowing system
@@ -38,6 +40,10 @@ void Renderer::render(){
     if(timer.runTimer(1.f))
         std::cout << timer.FPS << std::endl; //Print the fps every second
     
+    if(_ligid_renderer_render_first_frame)
+        this->context.window.setWindowSize(scene.videoScale.x,scene.videoScale.y);
+
+
     //Update OpenGL viewport every frame
     updateViewport();
 
@@ -245,7 +251,7 @@ void Renderer::render(){
     //Swap the front and back buffers of the window
     context.window.swapBuffers();
 
-
+    _ligid_renderer_render_first_frame = false;
 }
 
 

@@ -91,7 +91,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     scene.videoScale = videoScale;
 
     //Get the window size
-    context.window.getFramebufferSize(context.windowScale.x,context.windowScale.y);
+    context.windowScale = videoScale;
 
     //Initialize the GLAD
     initGlad();
@@ -168,7 +168,6 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
         std::filesystem::remove_all("./tmp");
         std::filesystem::create_directory("./tmp");
     }
-
 
 }
 
