@@ -91,6 +91,8 @@ void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, st
 Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles){
     Model model;
 
+    std::cout << "AAAAAAAAAAAAA" << std::endl;
+
     for (int i = 0; i < meshVertices.size(); i++)
     {
         std::string matTitle;
@@ -108,6 +110,8 @@ Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std
     }
 
     model.newModelAdded = true;
+    std::cout << "BBBBBBBBBBBBB" << std::endl;
+
 
     return model;
 }
@@ -164,28 +168,27 @@ void generateTangentBitangent(std::vector<Vertex>& faceData) {
 /// @brief Triangulates the given face data
 /// @return Triangulated faces 
 std::vector<std::vector<Vertex>> triangulateFaces(const std::vector<Vertex>& faceData) {
-    std::vector<std::vector<Vertex>> triangulatedData;
+    std::vector<std::vector<Vertex>> triangulatedFaces;
 
     std::vector<Vertex> currentFace;
+    int vertCounter = 0;
 
-    // Triangulate each face
-    for (const auto& vertex : faceData) {
+    for (const Vertex& vertex : faceData) {
         currentFace.push_back(vertex);
+        vertCounter++;
 
-        if (currentFace.size() >= 3) {
-            triangulatedData.push_back(currentFace);
+        if (vertCounter > 2) {
+            // Triangulate the face when there are more than 2 vertices
+            std::vector<Vertex> triangulatedFace;
+            triangulatedFace.push_back(currentFace[0]);
+            triangulatedFace.push_back(currentFace[vertCounter - 2]);
+            triangulatedFace.push_back(currentFace[vertCounter - 1]);
 
-            if (currentFace.size() > 3) {
-                std::vector<Vertex> newFace;
-                newFace.push_back(currentFace[0]);
-                newFace.push_back(currentFace[currentFace.size() - 2]);
-                newFace.push_back(currentFace[currentFace.size() - 1]);
-                triangulatedData.push_back(newFace);
-            }
+            triangulatedFaces.push_back(triangulatedFace);
         }
     }
 
-    return triangulatedData;
+    return triangulatedFaces;
 }
 
 std::vector<std::vector<Vertex>> getUnitedVerticesData(std::vector<glm::vec3>& uniquePositions, std::vector<glm::vec2>& uniqueUVS, std::vector<glm::vec3>& uniqueNormals, std::vector<std::vector<std::vector<glm::vec3>>>& faces){
@@ -205,9 +208,9 @@ std::vector<std::vector<Vertex>> getUnitedVerticesData(std::vector<glm::vec3>& u
                 Vertex vert;
 
                 // Decreasing 1 from the indices cause obj file format start's counting indices from 1
-                int vPosI = faces[matI][fI][vI].x ;
-                int vUVI = faces[matI][fI][vI].y ;
-                int vNI = faces[matI][fI][vI].z ;
+                int vPosI = faces[matI][fI][vI].x - 1;
+                int vUVI = faces[matI][fI][vI].y - 1;
+                int vNI = faces[matI][fI][vI].z - 1;
 
                 //std::cout << vPosI << ' ' << vUVI << ' ' << vNI << std::endl;
 

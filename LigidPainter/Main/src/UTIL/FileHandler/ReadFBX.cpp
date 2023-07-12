@@ -20,7 +20,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/string_cast.hpp>
 
 
 #include <string>
@@ -35,1045 +34,149 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 
-/*
-*   0 : Don't print anything to the terminal
-*   1 : Print node titles
-*   2 : Print node titles with the property data
-*/
-#define LIGID_FBX_IMPORTER_PRINT_TEXT_STATE 2
+#include <UTIL/FileHandler/OpenFBX/miniz.h>
+#include <UTIL/FileHandler/OpenFBX/ofbx.h>
 
+Model readFBXFile(std::string path){
+    // Ignoring certain nodes will only stop them from being processed not tokenised (i.e. they will still be in the tree)
+	ofbx::LoadFlags flags =
+		ofbx::LoadFlags::TRIANGULATE |
+//		ofbx::LoadFlags::IGNORE_MODELS |
+		ofbx::LoadFlags::IGNORE_BLEND_SHAPES |
+		ofbx::LoadFlags::IGNORE_CAMERAS |
+		ofbx::LoadFlags::IGNORE_LIGHTS |
+//		ofbx::LoadFlags::IGNORE_TEXTURES |
+		ofbx::LoadFlags::IGNORE_SKIN |
+		ofbx::LoadFlags::IGNORE_BONES |
+		ofbx::LoadFlags::IGNORE_PIVOTS |
+//		ofbx::LoadFlags::IGNORE_MATERIALS |
+		ofbx::LoadFlags::IGNORE_POSES |
+		ofbx::LoadFlags::IGNORE_VIDEOS |
+		ofbx::LoadFlags::IGNORE_LIMBS |
+//		ofbx::LoadFlags::IGNORE_MESHES |
+		ofbx::LoadFlags::IGNORE_ANIMATIONS;
 
-// Forward declarations for the export utilities
-void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
-Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles);
-std::vector<std::vector<Vertex>> getUnitedVerticesData(std::vector<glm::vec3>& uniquePositions, std::vector<glm::vec2>& uniqueUVS, std::vector<glm::vec3>& uniqueNormals, std::vector<std::vector<std::vector<glm::vec3>>>& faces);
+    FILE* fp = fopen(path.c_str(), "rb");
 
-std::vector<char> DecompressZlibChar(const std::vector<char>& compressedData, size_t uncompressedSize);
-std::vector<float> DecompressZlibFloat(const std::vector<char>& compressedData, size_t numFloats);
-std::vector<double> DecompressZlibDouble(const std::vector<char>& compressedData, size_t numDoubles);
-std::vector<long long> DecompressZlibLongLong(const std::vector<char>& compressedData, size_t numLongLongs);
-std::vector<int> DecompressZlibInt(const std::vector<char>& compressedData, size_t numInts);
+	if (!fp){
+        std::cout << "Failed to load Fbx file can't open path : " << path << std::endl;
+        return Model();  
+    } 
 
+	fseek(fp, 0, SEEK_END);
+	long file_size = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+	auto* content = new ofbx::u8[file_size];
+	fread(content, 1, file_size, fp);
 
-int _FBX_totalBitsRead = 0;
+	ofbx::IScene* g_scene = ofbx::load((ofbx::u8*)content, file_size, (ofbx::u16)flags);
 
-struct Property {
-    char typeCode;
-    std::vector<char> data;
-};
+    int obj_idx = 0;
+	int indices_offset = 0;
+	int normals_offset = 0;
+	int mesh_count = g_scene->getMeshCount();
 
-struct FbxNode {
-    std::string nodeType;
-    std::vector<Property> properties;
-    std::vector<FbxNode> nestedNodes;
-};
+    Model model;
 
-/*
-    i) Primitive Types
+    std::vector<glm::vec3> _vert_pos;
+    std::vector<glm::vec2> _vert_UV;
+    std::vector<glm::vec3> _vert_normal;
+    std::vector<int> _indices;
 
-        Y: 2 byte signed Integer
-        C: 1 bit boolean (1: true, 0: false) encoded as the LSB of a 1 Byte value.
-        I: 4 byte signed Integer
-        F: 4 byte single-precision IEEE 754 number
-        D: 8 byte double-precision IEEE 754 number
-        L: 8 byte signed Integer
+	for (int i = 0; i < mesh_count; ++i)
+	{
+        Mesh msh;
+        std::vector<Vertex> _vertices;
+
+		fprintf(fp, "o obj%d\ng grp%d\n", i, obj_idx);
+
+		const ofbx::Mesh* mesh = g_scene->getMesh(i);
+		const ofbx::Geometry* geom = mesh->getGeometry();
+		
+        int vertex_count = geom->getVertexCount();
+		const ofbx::Vec3* vertices = geom->getVertices();
+		for (int i = 0; i < vertex_count; ++i)
+		{
+			ofbx::Vec3 v = vertices[i];
+            glm::vec3 _v;
+            _v.x = v.x;
+            _v.y = v.y;
+            _v.z = v.z;
+            _vert_pos.push_back(_v);
+		}
+
+		bool has_normals = geom->getNormals() != nullptr;
+		if (has_normals)
+		{
+			const ofbx::Vec3* normals = geom->getNormals();
+			int count = geom->getIndexCount();
+
+			for (int i = 0; i < count; ++i)
+			{
+				ofbx::Vec3 n = normals[i];
+                glm::vec3 _n;
+                _n.x = n.x;
+                _n.y = n.y;
+                _n.z = n.z;
+                _vert_normal.push_back(_n);
+			}
+		}
+
+		bool has_uvs = geom->getUVs() != nullptr;
+		if (has_uvs)
+		{
+			const ofbx::Vec2* uvs = geom->getUVs();
+			int count = geom->getIndexCount();
+
+			for (int i = 0; i < count; ++i)
+			{
+				ofbx::Vec2 uv = uvs[i];
+                glm::vec2 _uv;
+                _uv.x = uv.x;
+                _uv.y = uv.y;
+                _vert_UV.push_back(_uv);
+			}
+		}
+        
+		const int* faceIndices = geom->getFaceIndices();
+		int index_count = geom->getIndexCount();
+		bool new_face = true;
+		for (int i = 0; i < index_count; ++i)
+		{
+			_indices.push_back(faceIndices[i]);
+		}
+
+		indices_offset += vertex_count;
+		normals_offset += index_count;
+		++obj_idx;
+	}
     
-    For primitive scalar types the Data in the record is exactly the binary representation of the value, in little-endian byte order.
-
-    ii) Array types
-
-        f: Array of 4 byte single-precision IEEE 754 number (float)
-        d: Array of 8 byte double-precision IEEE 754 number (double)
-        l: Array of 8 byte signed Integer (long long)
-        i: Array of 4 byte signed Integer (int)
-        b: Array of 1 byte Booleans (bool)
-*/
-
-/*
-
-    Array types
-
-    Size (Bytes)	Data Type	Name
-    -------------------------------------------
-    4	            Uint32	    ArrayLength
-    4	            Uint32	    Encoding
-    4	            Uint32	    CompressedLength
-    ?	            ?	        Contents
-
-    If Encoding is 0, the Contents is just ArrayLength times the array data type
-    If Encoding is 1, the Contents is a deflate/zip-compressed buffer of length CompressedLength bytes. The buffer can for example be decoded using zlib.
-    Values other than 0,1 for Encoding have not been observed.
-
-
-*/
-
-/*
-    iii) Special types
-
-        S: String
-        R: raw binary data
-
-    Both of these have the following interpretation:
-    
-        Size (Bytes)	Data Type	    Name
-        --------------------------------------
-        4	            Uint32	        Length
-        Length	        byte/char	    Data
-*/
-void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint32_t numProperties) {
-    
-// Loop through the properties
-    for (int i = 0; i < numProperties; i++) {
-        Property prop;
-
-
-        if(!file.read(&prop.typeCode, sizeof(char)))
-            break;
-
-        _FBX_totalBitsRead += sizeof(char);
-
-
-        // Handle each property type accordingly
-        switch (prop.typeCode) {
-
-            //  ---------   PRIMITIVE TYPES   --------- 
-            case 'Y':
-            {
-                //std::cout << 'Y' << std::endl;
-                // Read a 2-byte signed integer
-                int16_t intValue;
-                file.read(reinterpret_cast<char*>(&intValue), sizeof(intValue));
-                _FBX_totalBitsRead += sizeof(intValue);
-                prop.data.emplace_back(intValue);
-
-                // Handle the integer value
-                break;
-            }
-            case 'C':
-            {
-                //std::cout << 'C' << std::endl;
-                // Read a 1-bit boolean
-                uint8_t boolValue;
-                file.read(reinterpret_cast<char*>(&boolValue), sizeof(boolValue));
-                _FBX_totalBitsRead += sizeof(boolValue);
-                prop.data.emplace_back(boolValue);
-                // Handle the boolean value
-                break;
-            }
-            case 'I':
-            {
-                //std::cout << 'I' << std::endl;
-
-                // Read a 4-byte signed integer
-                int32_t intValue;
-                file.read(reinterpret_cast<char*>(&intValue), sizeof(intValue));
-                _FBX_totalBitsRead += sizeof(intValue);
-                prop.data.emplace_back(intValue);
-                // Handle the integer value
-                break;
-            }
-            case 'F':
-            {
-                //std::cout << 'F' << std::endl;
-
-                // Read a 4-byte floating-point value
-                float floatValue;
-                file.read(reinterpret_cast<char*>(&floatValue), sizeof(floatValue));
-                _FBX_totalBitsRead += sizeof(floatValue);
-                prop.data.emplace_back(floatValue);
-                // Handle the floating-point value
-                break;
-            }
-            case 'D':
-            {
-                //std::cout << 'D' << std::endl;
-
-                // Read an 8-byte floating-point value
-                double doubleValue;
-                file.read(reinterpret_cast<char*>(&doubleValue), sizeof(doubleValue));
-                _FBX_totalBitsRead += sizeof(doubleValue);
-                prop.data.emplace_back(doubleValue);
-                // Handle the double value
-                break;
-            }
-            case 'L':
-            {
-                //std::cout << 'L' << std::endl;
-
-                // Read an 8-byte signed integer
-                int64_t longValue;
-                file.read(reinterpret_cast<char*>(&longValue), sizeof(longValue));
-                _FBX_totalBitsRead += sizeof(longValue);
-                prop.data.emplace_back(longValue);
-                // Handle the long value
-                break;
-            }
-
-            // ---------  ARRAY TYPES  ---------
-            case 'f':
-            {
-                //std::cout << 'f' << std::endl;
-                /* FLOAT ARRAY */
-
-                uint32_t arrayLength;
-                file.read(reinterpret_cast<char*>(&arrayLength), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-    	        
-                uint32_t encoding;
-                file.read(reinterpret_cast<char*>(&encoding), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-    	        
-                uint32_t compressedLength;
-                file.read(reinterpret_cast<char*>(&compressedLength), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-
-                if (encoding == 0) {
-
-                    // Contents is ArrayLength times the array data type
-                    std::vector<float> floatArray(arrayLength);
-                    file.read(reinterpret_cast<char*>(floatArray.data()), sizeof(float) * arrayLength);
-                    _FBX_totalBitsRead += sizeof(float) * arrayLength;
-                    // Handle the float array
-                
-                    // Convert the float array to a byte vector
-                    std::vector<char> byteArray(sizeof(float) * arrayLength);
-                    std::memcpy(byteArray.data(), floatArray.data(), sizeof(float) * arrayLength);
-                
-                    // Store the byte vector in the Property struct
-                    prop.data = byteArray;
-                }
-
-                else if (encoding == 1) {
-                    // Contents is a deflate/zip-compressed buffer of length CompressedLength bytes
-                    std::vector<char> compressedData(compressedLength);
-                    file.read(compressedData.data(), compressedLength);
-                    _FBX_totalBitsRead += compressedLength;
-
-                    // Handle the compressed data using zlib
-                    std::vector<float> decompressedData = DecompressZlibFloat(compressedData, sizeof(float) * arrayLength);
-              
-                    // Convert the float array to a byte vector
-                    std::vector<char> byteArray(sizeof(float) * arrayLength);
-                    std::memcpy(byteArray.data(), decompressedData.data(), sizeof(float) * arrayLength);
-                
-                    // Store the byte vector in the Property struct
-                    prop.data = byteArray;
-                }
-                else {
-                    //std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
-                }
-
-                break;
-            }
-            case 'd':
-            {
-                //std::cout << 'd' << std::endl;
-                /*DOUBLE ARRAY*/
-                
-                uint32_t arrayLength;
-                file.read(reinterpret_cast<char*>(&arrayLength), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-    	        
-                uint32_t encoding;
-                file.read(reinterpret_cast<char*>(&encoding), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-    	        
-                uint32_t compressedLength;
-                file.read(reinterpret_cast<char*>(&compressedLength), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-
-                if (encoding == 0) {
-
-                    // Contents is ArrayLength times the array data type
-                    std::vector<double> doubleArray(arrayLength);
-                    file.read(reinterpret_cast<char*>(doubleArray.data()), sizeof(double) * arrayLength);
-                    _FBX_totalBitsRead += sizeof(double) * arrayLength;
-                
-                    // Convert the double array to a byte vector
-                    std::vector<char> byteArray(sizeof(double) * arrayLength);
-                    std::memcpy(byteArray.data(), doubleArray.data(), sizeof(double) * arrayLength);
-                
-                    // Store the byte vector in the Property struct
-                    prop.data = byteArray;
-                }
-
-                else if (encoding == 1) {
-
-                    // Contents is a deflate/zip-compressed buffer of length CompressedLength bytes
-                    std::vector<char> compressedData(compressedLength);
-                    file.read(compressedData.data(), compressedLength);
-                    _FBX_totalBitsRead += compressedLength;
-
-                    std::vector<double> decompressedData = DecompressZlibDouble(compressedData, sizeof(double) * arrayLength);
-
-                    // Convert the double array to a byte vector
-                    std::vector<char> byteArray(sizeof(double) * arrayLength);
-                    std::memcpy(byteArray.data(), decompressedData.data(), sizeof(double) * arrayLength);
-                
-                    // Store the byte vector in the Property struct
-                    prop.data = byteArray;
-               
-                }
-                else {
-                    //std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
-                }
-
-                break;
-            }
-            case 'l':
-            {
-                //std::cout << 'l' << std::endl;
-                /*LONG LONG ARRAY */
-
-                uint32_t arrayLength;
-                file.read(reinterpret_cast<char*>(&arrayLength), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-    	        
-                uint32_t encoding;
-                file.read(reinterpret_cast<char*>(&encoding), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-    	        
-                uint32_t compressedLength;
-                file.read(reinterpret_cast<char*>(&compressedLength), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-
-                if (encoding == 0) {
-
-                    // Contents is ArrayLength times the array data type
-                    std::vector<long long> longlongArray(arrayLength);
-                    file.read(reinterpret_cast<char*>(longlongArray.data()), sizeof(long long) * arrayLength);
-                    _FBX_totalBitsRead += sizeof(long long) * arrayLength;
-                
-                    // Convert the long long array to a byte vector
-                    std::vector<char> byteArray(sizeof(long long) * arrayLength);
-                    std::memcpy(byteArray.data(), longlongArray.data(), sizeof(long long) * arrayLength);
-                
-                    // Store the byte vector in the Property struct
-                    prop.data = byteArray;
-                }
-
-                else if (encoding == 1) {
-                    // Contents is a deflate/zip-compressed buffer of length CompressedLength bytes
-                    std::vector<char> compressedData(compressedLength);
-                    file.read(compressedData.data(), compressedLength);
-                    _FBX_totalBitsRead += compressedLength;
-
-                    std::vector<long long> decompressedData = DecompressZlibLongLong(compressedData, sizeof(long long) * arrayLength); 
-
-                    // Convert the long long array to a byte vector
-                    std::vector<char> byteArray(sizeof(long long) * arrayLength);
-                    std::memcpy(byteArray.data(), decompressedData.data(), sizeof(long long) * arrayLength);
-                
-                    // Store the byte vector in the Property struct
-                    prop.data = byteArray;            
-                }
-                else {
-                    //std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
-                }
-
-                break;
-            }
-            case 'i':
-            {
-                //std::cout << 'i' << std::endl;
-                /*INT ARRAY*/
-
-                uint32_t arrayLength;
-                file.read(reinterpret_cast<char*>(&arrayLength), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-    	        
-                uint32_t encoding;
-                file.read(reinterpret_cast<char*>(&encoding), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-    	        
-                uint32_t compressedLength;
-                file.read(reinterpret_cast<char*>(&compressedLength), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-
-                if (encoding == 0) {
-
-                    // Contents is ArrayLength times the array data type
-                    std::vector<int> intArray(arrayLength);
-                    file.read(reinterpret_cast<char*>(intArray.data()), sizeof(int) * arrayLength);
-                    _FBX_totalBitsRead += sizeof(int) * arrayLength;
-                
-                    // Convert the int array to a byte vector
-                    std::vector<char> byteArray(sizeof(int) * arrayLength);
-                    std::memcpy(byteArray.data(), intArray.data(), sizeof(int) * arrayLength);
-                
-                    // Store the byte vector in the Property struct
-                    prop.data = byteArray;
-                }
-
-                else if (encoding == 1) {
-                    // Contents is a deflate/zip-compressed buffer of length CompressedLength bytes
-                    std::vector<char> compressedData(compressedLength);
-                    file.read(compressedData.data(), compressedLength);
-                    _FBX_totalBitsRead += compressedLength;
-
-                    std::vector<int> decompressedData = DecompressZlibInt(compressedData, sizeof(int) * arrayLength);       
-
-                    // Convert the int array to a byte vector
-                    std::vector<char> byteArray(sizeof(int) * arrayLength);
-                    std::memcpy(byteArray.data(), decompressedData.data(), sizeof(int) * arrayLength);
-                
-                    // Store the byte vector in the Property struct
-                    prop.data = byteArray;         
-                }
-                else {
-                    //std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
-                }
-
-                break;
-            }
-            case 'b':
-            {
-                //std::cout << 'b' << std::endl;
-                /*BOOL ARRAY*/
-                
-                uint32_t arrayLength;
-                file.read(reinterpret_cast<char*>(&arrayLength), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-    	        
-                uint32_t encoding;
-                file.read(reinterpret_cast<char*>(&encoding), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-    	        
-                uint32_t compressedLength;
-                file.read(reinterpret_cast<char*>(&compressedLength), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-
-                if (encoding == 0) {
-
-                    // Contents is ArrayLength times the array data type
-                    std::vector<bool> boolArray(arrayLength);
-                    boolArray.push_back(0);
-                    file.read(reinterpret_cast<char*>(&boolArray[0]), sizeof(bool) * arrayLength);
-                    _FBX_totalBitsRead += sizeof(bool) * arrayLength;
-                
-                    //// Convert the bool array to a byte vector
-                    std::vector<char> byteArray(sizeof(bool) * arrayLength);
-                    std::memcpy(byteArray.data(), &boolArray[0], sizeof(bool) * arrayLength);
-                
-                    //// Store the byte vector in the Property struct
-                    prop.data = byteArray;
-                }//
-
-                else if (encoding == 1) {
-
-                    // Contents is a deflate/zip-compressed buffer of length CompressedLength bytes
-                    std::vector<char> compressedData(compressedLength);
-                    file.read(compressedData.data(), compressedLength);
-                    _FBX_totalBitsRead += compressedLength;
-
-                    prop.data = DecompressZlibChar(compressedData, sizeof(bool) * arrayLength);                
-                }
-                else {
-                    //std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
-                }
-                
-                break;
-            }
-
-
-            case 'S':
-            case 'R' :
-            {
-                //std::cout << "RS" << std::endl;
-                uint32_t length;
-                file.read(reinterpret_cast<char*>(&length), sizeof(uint32_t));
-                _FBX_totalBitsRead += sizeof(uint32_t);
-                
-                
-                std::vector<char> charArray(length);
-                file.read(reinterpret_cast<char*>(charArray.data()), sizeof(char) * length);
-                _FBX_totalBitsRead += sizeof(char) * length;
-
-                prop.data = charArray;
-
-                break;
-            }
-            
-            default:
-            {
-                // Handle unknown property type
-                break;
-            }
-        }
-
-        if(LIGID_FBX_IMPORTER_PRINT_TEXT_STATE == 2){
-            std::cout << '-';
-            for (size_t i = 0; i < prop.data.size(); i++)
-            {
-                std::cout << prop.data[i];
-            
-                if(i > 20){
-                    std::cout << "More...";
-                    break;
-                }
-            }
-            std::cout << " ( " << prop.data.size() << " ) ";
-            std::cout << " ( " << prop.typeCode << " ) ";
-            std::cout << std::endl;
-        }
-        
-        properties.push_back(prop);
-    }
-}
-
-/*!
-    A Node Structure
-
-    4	        Uint32	EndOffset
-    4	        Uint32	NumProperties
-    4	        Uint32	PropertyListLen
-    1	        Uint8t	NameLen
-    NameLen	    char	Name
-    ?	        ?	    Property[n], for n in 0:PropertyListLen
-    Optional		
-    ?	        ?	    NestedList
-    13	        uint8[]	NULL-record
-*/
-int __ne_c_cc = 0;
-
-void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
-        FbxNode nestedNode; // Move the declaration inside the while loop
-
-        uint32_t endOffset;
-        if(!file.read(reinterpret_cast<char*>(&endOffset), sizeof(uint32_t)))
-            return;
-        _FBX_totalBitsRead += sizeof(uint32_t);
-
-        //162249978
-        
-        uint32_t numProperties;
-        file.read(reinterpret_cast<char*>(&numProperties), sizeof(uint32_t));
-        _FBX_totalBitsRead += sizeof(uint32_t);
-        
-
-        uint32_t propertyListLen;
-        file.read(reinterpret_cast<char*>(&propertyListLen), sizeof(uint32_t));
-        _FBX_totalBitsRead += sizeof(uint32_t);
-
-
-        uint8_t nameLen;
-        file.read(reinterpret_cast<char*>(&nameLen), sizeof(uint8_t));
-        _FBX_totalBitsRead += sizeof(uint8_t);
-
-        // Read nested node name
-        nestedNode.nodeType.resize(nameLen);
-        file.read(nestedNode.nodeType.data(), nameLen);
-        _FBX_totalBitsRead += nameLen;
-
-        for (size_t i = 0; i < __ne_c_cc/2; i++)
-        {
-            //std::cout << '-';
-        }
-        
-        if(LIGID_FBX_IMPORTER_PRINT_TEXT_STATE)
-            std::cout << nestedNode.nodeType << std::endl;
-        
-        //std::cout << numProperties << std::endl;
-
-        // Read nested node properties
-        ReadProperties(file, nestedNode.properties, numProperties);
-
-        //std::cout << endOffset << ' ' << _FBX_totalBitsRead << std::endl;
-
-        char nullRecord[13];
-        
-        // Recursively read nested nodes
-        while(endOffset != file.tellg().seekpos() + 13){
-            __ne_c_cc++;
-            //std::cout << __ne_c_cc << std::endl;
-            //std::cout << endOffset << ' ' << _FBX_totalBitsRead << std::endl;
-            ReadNestedNodes(file, nestedNode.nestedNodes);
-            if(file.eof())
-                break; 
-        }
-
-        
-        file.read(nullRecord, sizeof(nullRecord));
-        _FBX_totalBitsRead += sizeof(nullRecord);
-
-        nestedNodes.push_back(nestedNode);
-        
-        if(__ne_c_cc == 0){
-            //uint64_t endOffset;
-            //while (file.read(reinterpret_cast<char*>(&endOffset), sizeof(uint64_t)))
-            //{
-            //    std::cout << endOffset << std::endl; //1952543855 1952543855 1952543855
-            //}
-            
-        }
-        
-        __ne_c_cc--;
-        //std::cout << __ne_c_cc << std::endl;
-}
-
-void ProcessNodeHierarchy( 
-                            std::vector<FbxNode>& nodes, 
-                            std::vector<glm::vec3>& vertPositions, 
-                            std::vector<glm::vec2>& vertUVs, 
-                            std::vector<glm::vec3>& vertNormals, 
-                            std::vector<int>& polygonVertexIndices, 
-                            std::vector<int>& edges, 
-                            std::vector<int>& uvIndices, 
-                            int depth = 0
-                        ) 
-{
-    for ( auto& node : nodes) {
-        //std::cout << node.nodeType<< std::endl;
-
-        if (true) {
-            std::vector<Vertex> vertices;
-            
-            // Process vertex properties
-            for (auto& prop : node.properties) {
-                if(node.nodeType == "Vertices"){
-                    if (prop.typeCode == 'd') {
-                        size_t arrayLength = prop.data.size() / sizeof(double);
-                        std::vector<double> doubleArray(arrayLength);
-
-                        std::memcpy(doubleArray.data(), prop.data.data(), prop.data.size());
-
-                        for (size_t i = 0; i < doubleArray.size()/3; i++)
-                        {
-                            glm::vec3 vertPos;
-                            if(i * 3 >= doubleArray.size())
-                                break;
-                            vertPos.x = doubleArray[i * 3];
-                            if(i * 3 + 1 >= doubleArray.size())
-                                break;
-                            vertPos.y = doubleArray[i * 3 + 1];
-                            if(i * 3 + 2 >= doubleArray.size())
-                                break;
-                            vertPos.z = doubleArray[i * 3 + 2];
-
-                            vertPositions.push_back(vertPos);                            
-                        }
-                    }
-                }
-                
-                if(node.nodeType == "Normals"){
-                    if (prop.typeCode == 'd') {
-                        size_t arrayLength = prop.data.size() / sizeof(double);
-                        std::vector<double> doubleArray(arrayLength);
-
-                        std::memcpy(doubleArray.data(), prop.data.data(), prop.data.size());
-
-                        for (size_t i = 0; i < doubleArray.size()/3; i++)
-                        {
-                            glm::vec3 vertNormal;
-                            if(i * 3 >= doubleArray.size())
-                                break;
-                            vertNormal.x = doubleArray[i * 3];
-                            if(i * 3 + 1 >= doubleArray.size())
-                                break;
-                            vertNormal.y = doubleArray[i * 3 + 1];
-                            if(i * 3 + 2 >= doubleArray.size())
-                                break;
-                            vertNormal.z = doubleArray[i * 3 + 2];
-
-                            vertNormals.push_back(vertNormal);                            
-                        }
-                    }
-                }
-
-                if(node.nodeType == "UV"){
-                    if (prop.typeCode == 'd') {
-                        size_t arrayLength = prop.data.size() / sizeof(double);
-                        std::vector<double> doubleArray(arrayLength);
-
-                        std::memcpy(doubleArray.data(), prop.data.data(), prop.data.size());
-
-                        for (size_t i = 0; i < doubleArray.size()/2; i++)
-                        {
-                            glm::vec3 vertUV;
-                            
-                            if(i * 2 >= doubleArray.size())
-                                break;
-                            vertUV.x = doubleArray[i * 2];
-                            
-                            if(i * 2 + 1 >= doubleArray.size())
-                                break;
-                            vertUV.y = doubleArray[i * 2 + 1];
-
-                            vertUVs.push_back(vertUV);                            
-                        }
-                    }
-                }
-
-                if(node.nodeType == "PolygonVertexIndex"){
-                    if (prop.typeCode == 'i') {
-                        size_t arrayLength = prop.data.size() / sizeof(int);
-                        std::vector<int> intArray(arrayLength);
-
-                        std::memcpy(intArray.data(), prop.data.data(), prop.data.size());
-
-                        for (size_t i = 0; i < intArray.size(); i++)
-                        {
-                            polygonVertexIndices.push_back(intArray[i]);                            
-                        }
-                    }
-                }
-
-                if(node.nodeType == "Edges"){
-                    if (prop.typeCode == 'i') {
-                        size_t arrayLength = prop.data.size() / sizeof(int);
-                        std::vector<int> intArray(arrayLength);
-
-                        std::memcpy(intArray.data(), prop.data.data(), prop.data.size());
-
-                        for (size_t i = 0; i < intArray.size(); i++)
-                        {
-                            edges.push_back(intArray[i]);                            
-                        }
-                    }
-                }
-
-                if(node.nodeType == "UVIndex"){
-                    if (prop.typeCode == 'i') {
-                        size_t arrayLength = prop.data.size() / sizeof(int);
-                        std::vector<int> intArray(arrayLength);
-
-                        std::memcpy(intArray.data(), prop.data.data(), prop.data.size());
-
-                        for (size_t i = 0; i < intArray.size(); i++)
-                        {
-                            uvIndices.push_back(intArray[i]);                            
-                        }
-                    }
-                }
-
-                /*
-                if (prop.typeCode == 'f' && prop.data.size() == sizeof(float) * 3) {
-                    float* floatData = reinterpret_cast<float*>(prop.data.data());
-                    //vertex.Position = glm::vec3(floatData[0], floatData[1], floatData[2]);
-                }
-
-                else if (prop.typeCode == 'f' && prop.data.size() == sizeof(double) * 3) {
-                    double* doubleData = reinterpret_cast<double*>(prop.data.data());
-                    //vertex.Position = glm::vec3(static_cast<float>(doubleData[0]), static_cast<float>(doubleData[1]), static_cast<float>(doubleData[2]));
-                }
-                else if (prop.typeCode == 'f' && prop.data.size() == sizeof(float) * 2) {
-                    float* floatData = reinterpret_cast<float*>(prop.data.data());
-                    //vertex.TexCoords = glm::vec2(floatData[0], floatData[1]);
-                }
-                else if (prop.typeCode == 'f' && prop.data.size() == sizeof(float) * 3) {
-                    float* floatData = reinterpret_cast<float*>(prop.data.data());
-                    //vertex.Normal = glm::vec3(floatData[0], floatData[1], floatData[2]);
-                }
-                else if (prop.typeCode == 'd' && prop.data.size() == sizeof(double) * 3) {
-                    double* doubleData = reinterpret_cast<double*>(prop.data.data());
-                    //vertex.Normal = glm::vec3(static_cast<float>(doubleData[0]), static_cast<float>(doubleData[1]), static_cast<float>(doubleData[2]));
-                }
-                */
-                // Add additional conditions to handle other property types or fields in the Vertex structure
-            }
-        }
-
-        // Recursively process nested nodes
-        ProcessNodeHierarchy(node.nestedNodes, vertPositions, vertUVs, vertNormals, polygonVertexIndices, edges, uvIndices, depth + 1);
-    }
-}
-
-
-void convertToMesh(
-    const std::vector<glm::vec3>& positions,
-    const std::vector<glm::vec2>& uvs,
-    const std::vector<glm::vec3>& normals,
-    const std::vector<int>& indices,
-    std::vector<unsigned int>& aIndices,
-    std::vector<Vertex>& aVertices
-    )
-{
-    std::vector<Vertex> vertices;
-    std::vector<unsigned int> vertexIndices;
-
-    for (const auto& index : indices)
-    {
-        const auto& position = positions[glm::abs(index) - 1];
-        const auto& uv = uvs[glm::abs(index) - 1];
-        const auto& normal = normals[glm::abs(index) - 1];
-
-        Vertex vertex;
-        vertex.Position = position;
-        vertex.TexCoords = uv;
-        vertex.Normal = normal;
-
-        vertices.push_back(vertex);
-        vertexIndices.push_back(vertices.size() - 1);
-
-        if (index < 0)
-        {
-            vertexIndices.push_back(vertices.size() - 1);
-            vertexIndices.push_back(vertices.size() - 2);
-        }
-    }
-
-    //return { vertices, vertexIndices };
-}
-
-/*
-    HEADER
-
-    Bytes 0 - 20: Kaydara FBX Binary  \x00 (file-magic, with 2 spaces at the end, then a NULL terminator).
-    Bytes 21 - 22: [0x1A, 0x00] (unknown but all observed files show these bytes).
-    Bytes 23 - 26: unsigned int, the version number. 7300 for version 7.3 for example.
-*/
-
-Model FileHandler::readFBXFile(std::string path) {
-    _FBX_totalBitsRead = 0;
-    __ne_c_cc = 0;
-
-    std::ifstream file(path, std::ios::binary);
-
-    std::cout << path << std::endl;
-
-    if (!file.is_open()) {
-        std::cerr << "ERROR : Can't read FBX file. Can't open : " << path << std::endl;
+    if(_vert_pos.size() > 100)
         return Model();
+
+    std::cout << "Positions : " << std::endl;
+    for (size_t i = 0; i < _vert_pos.size(); i++)
+    {
+        std::cout <<  _vert_pos[i].x << ' ' << _vert_pos[i].y << ' ' << _vert_pos[i].z << std::endl;
     }
-
-    // Read header
-    char header[27];
-    file.read(header, sizeof(header));
-    _FBX_totalBitsRead += sizeof(header);
-
-    // Extract the version number
-    uint32_t version = *reinterpret_cast<uint32_t*>(&header[23]);
-
-    // Print the version number
-    ////std::cout << "FBX Version: " << version << std::endl;
-
-    // Read top-level object record
-    FbxNode topLevelObject;
-    ReadNestedNodes(file, topLevelObject.nestedNodes);
-
-    // Read header
-    file.read(header, sizeof(header));
-    _FBX_totalBitsRead += sizeof(header);
-    
-    std::vector<glm::vec3> uniquePositions;
-    std::vector<glm::vec2> uniqueUVS;
-    std::vector<glm::vec3> uniqueNormals;
-    std::vector<std::string> matTitles;
-    std::vector<int> polygonVertexIndices;
-    std::vector<int> edges;
-    std::vector<int> uvIndices;
-
-    // Process the FBX data
-    ProcessNodeHierarchy(topLevelObject.nestedNodes, uniquePositions, uniqueUVS, uniqueNormals, polygonVertexIndices , uvIndices, edges);
-
-    std::cout << 
-                    uniquePositions.size() << ' ' << 
-                    uniqueUVS.size() << ' ' << 
-                    uniqueNormals.size()  << ' ' << 
-                    polygonVertexIndices.size() << ' ' << 
-                    edges.size()  << ' ' << 
-                    uvIndices.size() 
-    << std::endl;
-
-    //1986 2391 7936 7936 7936 3968(7931)
-
-    std::vector< // Material
-                std::vector< // Faces
-                            std::vector< // A face
-                                        glm::vec3>>> faces; // Indices of a vertex
-    std::vector<std::vector<glm::vec3>> _faces;
-    /*
-    std::cout << "Pos : " << std::endl;
-    for (size_t i = 0; i < uniquePositions.size(); i++)
-        std::cout << glm::to_string(uniquePositions[i]) << ' ';
-    std::cout << std::endl;
-    std::cout << std::endl;
     
     std::cout << "UV : " << std::endl;
-    for (size_t i = 0; i < uniqueUVS.size(); i++)
-        std::cout << glm::to_string(uniqueUVS[i]) << ' ';
+    for (size_t i = 0; i < _vert_UV.size(); i++)
+    {
+        std::cout <<  _vert_UV[i].x << ' ' << _vert_UV[i].y  << std::endl;
+    }
     
-    std::cout << std::endl;
-    std::cout << std::endl;
     std::cout << "Normal : " << std::endl;
-    for (size_t i = 0; i < uniqueNormals.size(); i++)
-        std::cout << glm::to_string(uniqueNormals[i]) << ' ';
-
-    std::cout << std::endl;
-    std::cout << std::endl;
+    for (size_t i = 0; i < _vert_normal.size(); i++)
+    {
+        std::cout <<  _vert_normal[i].x << ' ' << _vert_normal[i].y << ' ' << _vert_normal[i].z << std::endl;
+    }
+    
     std::cout << "Indices : " << std::endl;
-    for (size_t i = 0; i < polygonVertexIndices.size(); i++)
-        std::cout << polygonVertexIndices[i] << ' ';
-    
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << "UVIndices : " << std::endl;
-    for (size_t i = 0; i < uvIndices.size(); i++)
-        std::cout << uvIndices[i] << ' ';
-    
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << "Edges : " << std::endl;
-    for (size_t i = 0; i < edges.size(); i++)
-        std::cout << edges[i] << ' ';
-    
-    std::cout << std::endl;
-   */
-
-    /*
-        Plane :
-        Pos : vec3(-1.000000, -1.000000, 0.000000) vec3(1.000000, -1.000000, 0.000000) vec3(-1.000000, 1.000000, 0.000000) vec3(1.000000, 1.000000, 0.000000)
-        TexCoords : vec2(0.000000, 1.000000) vec2(1.000000, 0.000000) vec2(0.000000, 0.000000) vec2(1.000000, 1.000000)
-        Normal : vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000)
-        Indices : 0 1 3 -3
-
-        Triangulated Plane :
-
-        Pos (4) :
-        vec3(-1.000000, -1.000000, 0.000000) vec3(1.000000, -1.000000, 0.000000) vec3(-1.000000, 1.000000, 0.000000) vec3(1.000000, 1.000000, 0.000000)
-
-        UV (4) :
-        vec2(1.000000, 0.000000) vec2(0.000000, 0.000000) vec2(0.000000, 1.000000) vec2(1.000000, 1.000000)
-
-        Normal (6) :
-        vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000)
-
-        Indices :
-        1 2 -1   1 3 -3
-
-        UVIndices :
-        0 1 2  3 4
-
-        Edges :
-        0 2 1 0 3 2
-    */
-
-    //for (size_t i = 0; i < polygonVertexIndices.size(); i++)
-    //{
-    //    if(polygonVertexIndices[i] < 0)
-    //    polygonVertexIndices[i] = abs(polygonVertexIndices[i]);
-    //}
-    
-    for (size_t i = 0; i < polygonVertexIndices.size() / 9; i++)
+    for (size_t i = 0; i < _indices.size(); i++)
     {
-        std::vector<glm::vec3> face;
-
-        glm::vec3 aVert1;
-        aVert1.x = polygonVertexIndices[i * 9];
-        aVert1.y = polygonVertexIndices[i * 9 + 1]; 
-        aVert1.z = polygonVertexIndices[i * 9 + 2]; 
-        face.push_back(aVert1);
-        
-        glm::vec3 aVert2;
-        aVert2.x = polygonVertexIndices[i * 9 + 3];
-        aVert2.y = polygonVertexIndices[i * 9 + 4]; 
-        aVert2.z = polygonVertexIndices[i * 9 + 5]; 
-        face.push_back(aVert2);
-        
-        glm::vec3 aVert3;
-        aVert3.x = polygonVertexIndices[i * 9 + 6];
-        aVert3.y = polygonVertexIndices[i * 9 + 7]; 
-        aVert3.z = polygonVertexIndices[i * 9 + 8]; 
-        face.push_back(aVert3);
-
-        _faces.push_back(face);
-    }
-
-    faces.push_back(_faces);
-    
-    //std::vector<std::vector<Vertex>> unitedVertices = getUnitedVerticesData(uniquePositions, uniqueUVS, uniqueNormals, faces);
-
-    std::vector<std::vector<Vertex>> meshVertices;
-    std::vector<std::vector<unsigned int>> meshIndices;
-    std::vector<Vertex> _meshVertices;
-    std::vector<unsigned int> _meshIndices;
-
-    for (size_t i = 0; i < uniquePositions.size(); i++)
-    {
-        Vertex _vert;
-        _vert.Position = uniquePositions[i];
-        _vert.TexCoords = uniqueUVS[i];
-        _vert.Normal = uniqueNormals[uvIndices[i]];
-    
-        _meshVertices.push_back(_vert);
-    }
-    for (size_t i = 0; i < polygonVertexIndices.size(); i++)
-    {
-        _meshIndices.push_back(abs(polygonVertexIndices[i]));
+        std::cout << _indices[i] << std::endl;
     }
     
-    for (size_t i = 0; i < polygonVertexIndices.size(); i++)
-    {
-        if(polygonVertexIndices[i] < 0)
-            _meshIndices[i]--;
-    }
-    
-    /*
-    std::cout << "AA : " << std::endl;
-    for (size_t i = 0; i < _meshIndices.size(); i++)
-    {
-        std::cout << _meshIndices[i] << ' ';
-    }
-    std::cout << std::endl;
-    */    
-
-    //convertToMesh(uniquePositions,uniqueUVS,uniqueNormals, polygonVertexIndices, _meshIndices, _meshVertices);
-
-    meshVertices.push_back(_meshVertices);
-    meshIndices.push_back(_meshIndices);
-
-    //seperateUnitedVertices(unitedVertices, meshVertices, meshIndices);
-
-    // Close the file
-    file.close();
-
-    return createModel(meshVertices, meshIndices, {});
+    return Model();
 }
-
-
-
-/*
-            SEPERATED
-
-5 5 9 9 9 7
-Pos :
-vec3(-1.000000, -1.000000, 0.000000) vec3(1.000000, -1.000000, 0.000000) vec3(-1.000000, 1.000000, 0.000000) vec3(-0.208482, -0.552366, 1.007192) vec3(-0.211123, -0.559847, 1.005384)    
-
-UV :
-vec2(0.220108, 0.284449) vec2(0.862011, 0.284449) vec2(0.453018, 0.027691) vec2(0.778371, 0.871778) vec2(0.220108, 0.926352)
-
-Normal :
-vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(-0.623704, -0.623704, -0.471155) vec3(-0.623704, -0.623704, -0.471155) vec3(-0.623704, -0.623704, -0.471155) vec3(0.000000, 0.916058, -0.401046) vec3(0.000000, 0.916058, -0.401046) vec3(0.000000, 0.916058, -0.401046)
-
-Indices :
-1 2 -1   2 1 -4   1 0 -5
-
-UVIndices :
-0 1 2 4 5 7 8
-
-Edges :
-1 4 0 4 1 3 1 0 2
-
-
-        UNIT
-
-4 5 9 9 9 6
-Pos :
-vec3(-1.000000, -1.000000, 0.000000) vec3(1.000000, -1.000000, 0.000000) vec3(-1.000000, 1.000000, 0.000000) vec3(-0.209803, -0.556107, 1.006288)
-
-UV :
-vec2(0.220108, 0.284449) vec2(0.862011, 0.284449) vec2(0.778371, 0.871778) vec2(0.453018, 0.027691) vec2(0.220108, 0.926352)
-
-Normal :
-vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(-0.622656, -0.622656, -0.473918) vec3(-0.622656, -0.622656, -0.473918) vec3(-0.622656, -0.622656, -0.473918) vec3(0.000000, 0.914937, -0.403597) vec3(0.000000, 0.914937, -0.403597) vec3(0.000000, 0.914937, -0.403597)
-
-Indices :
-1 2 -1   2 1 -4   1 0 -4
-
-UVIndices :
-0 1 2  4 5 7
-
-Edges :
-1 4 0 4 1 2 1 0 3
-
-*/
