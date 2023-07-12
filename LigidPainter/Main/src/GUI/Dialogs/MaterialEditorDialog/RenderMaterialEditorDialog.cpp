@@ -95,7 +95,7 @@ void MaterialEditorDialog::render
     //Render the material displayer
     materialDisplayer.render(videoScale,mouse,timer,textRenderer,false);
     
-    dialogControl.updateEnd(timer,shaders.buttonShader,0.3f);
+    dialogControl.updateEnd(timer,shaders.buttonShader,0.15f);
 
     //Close the dialog
     if(context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || ((!bgPanel.hover && !barButton.hover) && mouse.LClick) || (barButton.hover && mouse.LDoubleClick))

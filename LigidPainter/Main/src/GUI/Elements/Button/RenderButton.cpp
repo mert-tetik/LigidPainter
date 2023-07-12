@@ -70,9 +70,9 @@ void Button::render(
     
     //Manage the click animation of the button 
     if(keepPressingState)
-        timer.transition(clickState1,clickedMixVal,0.5f); //Change the color by the state of being clicked
+        timer.transition(clickState1,clickedMixVal,0.2f); //Change the color by the state of being clicked
     else
-        timer.transition(false,clickedMixVal,0.5f); //Take the value down repedatedly (since clickedMixVal will be set to 1. when clicking is done)
+        timer.transition(false,clickedMixVal,0.2f); //Take the value down repedatedly (since clickedMixVal will be set to 1. when clicking is done)
     
     //Render the button
     render(resultPos,resultScale,resultRadius,resultOutlineThickness);

@@ -111,5 +111,5 @@ void GreetingDialog::render(LigidWindow originalWindow,ColorPalette colorPalette
     //Set the depth func back to default (less or equal)
     glDepthFunc(GL_LEQUAL);
 
-    dialogControl.updateEnd(timer,buttonShader,1.f);
+    dialogControl.updateEnd(timer,buttonShader,0.15f);
 }

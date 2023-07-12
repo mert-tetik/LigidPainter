@@ -187,5 +187,5 @@ void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalett
         }
     }
 
-    dialogControl.updateEnd(timer,buttonShader,0.3);
+    dialogControl.updateEnd(timer,buttonShader,0.15f);
 }

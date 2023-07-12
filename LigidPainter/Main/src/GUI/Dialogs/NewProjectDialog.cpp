@@ -128,5 +128,5 @@ void NewProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
         this->dialogControl.unActivate();
     }
 
-    dialogControl.updateEnd(timer,buttonShader,0.3f);
+    dialogControl.updateEnd(timer,buttonShader,0.15f);
 }

@@ -101,5 +101,5 @@ void SettingsDialog::render(LigidWindow originalWindow,ColorPalette colorPalette
         dialogControl.unActivate();
     }
 
-    dialogControl.updateEnd(timer,buttonShader,0.3f);   
+    dialogControl.updateEnd(timer,buttonShader,0.15f);   
 }

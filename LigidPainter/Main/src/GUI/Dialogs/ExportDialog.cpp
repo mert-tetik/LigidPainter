@@ -185,5 +185,5 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,M
             this->dialogControl.unActivate();
     }
 
-    dialogControl.updateEnd(timer,buttonShader,0.3f);
+    dialogControl.updateEnd(timer,buttonShader,0.15f);
 }

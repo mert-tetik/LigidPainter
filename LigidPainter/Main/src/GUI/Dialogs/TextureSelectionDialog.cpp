@@ -73,5 +73,5 @@ void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &tim
         selectedTextureIndex = 1000;
     }
 
-    dialogControl.updateEnd(timer,buttonShader,0.3f);
+    dialogControl.updateEnd(timer,buttonShader,0.15f);
 }
