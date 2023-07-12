@@ -39,20 +39,23 @@ Official Web Page : https://ligidtools.com/ligidpainter
 *   1 : Print node titles
 *   2 : Print node titles with the property data
 */
-#define LIGID_FBX_IMPORTER_PRINT_TEXT_STATE 2
+#define LIGID_FBX_IMPORTER_PRINT_TEXT_STATE 0
 
 
-// Forward declarations for the export utilities
+// Forward declarations for the utilities
 Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles);
 void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
 std::vector<std::vector<Vertex>> triangulateFaces(const std::vector<Vertex>& faceData);
 void generateTangentBitangent(std::vector<Vertex>& faceData);
-
 std::vector<char> DecompressZlibChar(const std::vector<char>& compressedData, size_t uncompressedSize);
 std::vector<float> DecompressZlibFloat(const std::vector<char>& compressedData, size_t numFloats);
 std::vector<double> DecompressZlibDouble(const std::vector<char>& compressedData, size_t numDoubles);
 std::vector<long long> DecompressZlibLongLong(const std::vector<char>& compressedData, size_t numLongLongs);
 std::vector<int> DecompressZlibInt(const std::vector<char>& compressedData, size_t numInts);
+
+// Forward declarations for the fbx file processing functions
+void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes);
+void ProcessNodeHierarchy( std::vector<FbxNode>& nodes, std::vector<glm::vec3>& vertPositions, std::vector<glm::vec2>& vertUVs, std::vector<glm::vec3>& vertNormals, std::vector<int>& polygonVertexIndices, std::vector<int>& edges, std::vector<int>& uvIndices, int depth = 0); 
 
 int _FBX_totalBitsRead = 0;
 
@@ -66,6 +69,145 @@ struct FbxNode {
     std::vector<Property> properties;
     std::vector<FbxNode> nestedNodes;
 };
+
+
+/*
+    HEADER
+
+    Bytes 0 - 20: Kaydara FBX Binary  \x00 (file-magic, with 2 spaces at the end, then a NULL terminator).
+    Bytes 21 - 22: [0x1A, 0x00] (unknown but all observed files show these bytes).
+    Bytes 23 - 26: unsigned int, the version number. 7300 for version 7.3 for example.
+*/
+Model FileHandler::readFBXFile(std::string path) {
+    _FBX_totalBitsRead = 0;
+    __ne_c_cc = 0;
+
+    std::ifstream file(path, std::ios::binary);
+
+    std::cout << path << std::endl;
+
+    if (!file.is_open()) {
+        std::cerr << "ERROR : Can't read FBX file. Can't open : " << path << std::endl;
+        return Model();
+    }
+
+    // Read header
+    char header[27];
+    file.read(header, sizeof(header));
+    _FBX_totalBitsRead += sizeof(header);
+
+    // Extract the version number
+    uint32_t version = *reinterpret_cast<uint32_t*>(&header[23]);
+
+    if  ( /*      Supported Versions      */
+            //version != 6000 && 
+            version != 7100 &&
+            version != 7200 &&
+            version != 7300 &&
+            version != 7400 
+            //version != 7500 
+        )
+    {
+        std::cout << "ERROR Reading fbx file : unsupported fbx version : " << version << std::endl;
+        return Model();
+    }
+
+    // Read top-level object record
+    FbxNode topLevelObject;
+    ReadNestedNodes(file, topLevelObject.nestedNodes);
+
+    // Read header
+    file.read(header, sizeof(header));
+    _FBX_totalBitsRead += sizeof(header);
+    
+
+    std::vector<glm::vec3> positions;
+    std::vector<glm::vec2> UVS;
+    std::vector<glm::vec3> normals;
+    std::vector<std::string> matTitles;
+    std::vector<int> polygonVertexIndices;
+    std::vector<int> edges;
+    std::vector<int> uvIndices;
+
+    // Process the FBX data
+    ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges);
+
+
+    
+    std::vector<std::vector<Vertex>> meshVertices;
+    
+    std::vector<std::vector<unsigned int>> meshIndices;
+    std::vector<std::vector<Vertex>> unitedVertices;
+    std::vector<Vertex> _meshVertices;
+    std::vector<unsigned int> _meshIndices;
+
+
+    /* ----------- Stack All The Data ----------- */
+    std::vector<Vertex> _unitedVertices;
+    std::vector<bool> faceHolder;
+    for (size_t i = 0; i < polygonVertexIndices.size(); i++)
+    {
+        int posIndex = polygonVertexIndices[i];
+        int uvIndex = edges[i];
+        
+
+        if(posIndex < 0){
+            posIndex = abs(posIndex) - 1;
+            faceHolder.push_back(1);
+        }
+        else{
+            faceHolder.push_back(0);
+        }
+        
+        if(uvIndex < 0)
+            uvIndex = abs(uvIndex) - 1;
+
+        Vertex vert;
+        vert.Position = positions[posIndex];  
+        vert.TexCoords = UVS[uvIndex];  
+        vert.Normal = normals[i];  
+
+        _unitedVertices.push_back(vert);
+
+    }
+    
+    /* ----------- Triangulate & Generate Tangent For Stacked Data ----------- */
+    std::vector<Vertex> triangulatedUnitedVertices;
+    std::vector<Vertex> face;
+    for (size_t i = 0; i < _unitedVertices.size(); i++)
+    {
+        face.push_back(_unitedVertices[i]);
+
+        // Face ended
+        if(faceHolder[i] == true){
+            std::vector<std::vector<Vertex>> triangulatedFaces = triangulateFaces(face);
+
+            for (size_t fI = 0; fI < triangulatedFaces.size(); fI++)
+            {
+                generateTangentBitangent(triangulatedFaces[fI]);
+                for (size_t vI = 0; vI < triangulatedFaces[fI].size(); vI++)
+                {
+                    triangulatedUnitedVertices.push_back(triangulatedFaces[fI][vI]);
+                }
+            }
+
+            face.clear();
+        }
+    }
+    
+
+    unitedVertices.push_back(triangulatedUnitedVertices);
+
+    seperateUnitedVertices(unitedVertices, meshVertices, meshIndices);
+
+    // Close the file
+    file.close();
+
+    return createModel(meshVertices, meshIndices, {});
+}
+
+
+
 
 /*
     i) Primitive Types
@@ -138,7 +280,6 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
             //  ---------   PRIMITIVE TYPES   --------- 
             case 'Y':
             {
-                //std::cout << 'Y' << std::endl;
                 // Read a 2-byte signed integer
                 int16_t intValue;
                 file.read(reinterpret_cast<char*>(&intValue), sizeof(intValue));
@@ -150,7 +291,6 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
             }
             case 'C':
             {
-                //std::cout << 'C' << std::endl;
                 // Read a 1-bit boolean
                 uint8_t boolValue;
                 file.read(reinterpret_cast<char*>(&boolValue), sizeof(boolValue));
@@ -161,7 +301,6 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
             }
             case 'I':
             {
-                //std::cout << 'I' << std::endl;
 
                 // Read a 4-byte signed integer
                 int32_t intValue;
@@ -173,7 +312,6 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
             }
             case 'F':
             {
-                //std::cout << 'F' << std::endl;
 
                 // Read a 4-byte floating-point value
                 float floatValue;
@@ -185,8 +323,6 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
             }
             case 'D':
             {
-                //std::cout << 'D' << std::endl;
-
                 // Read an 8-byte floating-point value
                 double doubleValue;
                 file.read(reinterpret_cast<char*>(&doubleValue), sizeof(doubleValue));
@@ -197,8 +333,6 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
             }
             case 'L':
             {
-                //std::cout << 'L' << std::endl;
-
                 // Read an 8-byte signed integer
                 int64_t longValue;
                 file.read(reinterpret_cast<char*>(&longValue), sizeof(longValue));
@@ -211,7 +345,6 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
             // ---------  ARRAY TYPES  ---------
             case 'f':
             {
-                //std::cout << 'f' << std::endl;
                 /* FLOAT ARRAY */
 
                 uint32_t arrayLength;
@@ -259,14 +392,13 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
                     prop.data = byteArray;
                 }
                 else {
-                    //std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
+                    std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
                 }
 
                 break;
             }
             case 'd':
             {
-                //std::cout << 'd' << std::endl;
                 /*DOUBLE ARRAY*/
                 
                 uint32_t arrayLength;
@@ -314,14 +446,13 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
                
                 }
                 else {
-                    //std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
+                    std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
                 }
 
                 break;
             }
             case 'l':
             {
-                //std::cout << 'l' << std::endl;
                 /*LONG LONG ARRAY */
 
                 uint32_t arrayLength;
@@ -367,14 +498,13 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
                     prop.data = byteArray;            
                 }
                 else {
-                    //std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
+                    std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
                 }
 
                 break;
             }
             case 'i':
             {
-                //std::cout << 'i' << std::endl;
                 /*INT ARRAY*/
 
                 uint32_t arrayLength;
@@ -420,14 +550,13 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
                     prop.data = byteArray;         
                 }
                 else {
-                    //std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
+                    std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
                 }
 
                 break;
             }
             case 'b':
             {
-                //std::cout << 'b' << std::endl;
                 /*BOOL ARRAY*/
                 
                 uint32_t arrayLength;
@@ -468,7 +597,7 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
                     prop.data = DecompressZlibChar(compressedData, sizeof(bool) * arrayLength);                
                 }
                 else {
-                    //std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
+                    std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
                 }
                 
                 break;
@@ -478,7 +607,6 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
             case 'S':
             case 'R' :
             {
-                //std::cout << "RS" << std::endl;
                 uint32_t length;
                 file.read(reinterpret_cast<char*>(&length), sizeof(uint32_t));
                 _FBX_totalBitsRead += sizeof(uint32_t);
@@ -495,7 +623,7 @@ void ReadProperties(std::ifstream& file, std::vector<Property>& properties, uint
             
             default:
             {
-                // Handle unknown property type
+                //unknown property type
                 break;
             }
         }
@@ -543,8 +671,6 @@ void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
             return;
         _FBX_totalBitsRead += sizeof(uint32_t);
 
-        //162249978
-        
         uint32_t numProperties;
         file.read(reinterpret_cast<char*>(&numProperties), sizeof(uint32_t));
         _FBX_totalBitsRead += sizeof(uint32_t);
@@ -564,50 +690,32 @@ void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
         file.read(nestedNode.nodeType.data(), nameLen);
         _FBX_totalBitsRead += nameLen;
 
-        for (size_t i = 0; i < __ne_c_cc/2; i++)
-        {
-            //std::cout << '-';
-        }
-        
         if(LIGID_FBX_IMPORTER_PRINT_TEXT_STATE)
             std::cout << nestedNode.nodeType << std::endl;
         
-        //std::cout << numProperties << std::endl;
-
         // Read nested node properties
         ReadProperties(file, nestedNode.properties, numProperties);
-
-        //std::cout << endOffset << ' ' << _FBX_totalBitsRead << std::endl;
 
         char nullRecord[13];
         
         // Recursively read nested nodes
         while(endOffset != file.tellg().seekpos() + 13){
             __ne_c_cc++;
-            //std::cout << __ne_c_cc << std::endl;
-            //std::cout << endOffset << ' ' << _FBX_totalBitsRead << std::endl;
             ReadNestedNodes(file, nestedNode.nestedNodes);
             if(file.eof())
                 break; 
         }
 
-        
         file.read(nullRecord, sizeof(nullRecord));
         _FBX_totalBitsRead += sizeof(nullRecord);
 
         nestedNodes.push_back(nestedNode);
         
         if(__ne_c_cc == 0){
-            //uint64_t endOffset;
-            //while (file.read(reinterpret_cast<char*>(&endOffset), sizeof(uint64_t)))
-            //{
-            //    std::cout << endOffset << std::endl; //1952543855 1952543855 1952543855
-            //}
-            
+            //Nested node list ended            
         }
         
         __ne_c_cc--;
-        //std::cout << __ne_c_cc << std::endl;
 }
 
 void ProcessNodeHierarchy( 
@@ -745,30 +853,13 @@ void ProcessNodeHierarchy(
                     }
                 }
 
-                /*
-                if (prop.typeCode == 'f' && prop.data.size() == sizeof(float) * 3) {
-                    float* floatData = reinterpret_cast<float*>(prop.data.data());
-                    //vertex.Position = glm::vec3(floatData[0], floatData[1], floatData[2]);
+                if(node.nodeType == "MappingInformationType"){
+                    if (prop.typeCode == 'S') {
+                        std::string infoStr(prop.data.begin(), prop.data.end());
+                        if(infoStr != "ByPolygonVertex")
+                            std::cout << "WARNING : MappingInformationType is : " << infoStr << "! Results might be unexpected."  << std::endl;
+                    }
                 }
-
-                else if (prop.typeCode == 'f' && prop.data.size() == sizeof(double) * 3) {
-                    double* doubleData = reinterpret_cast<double*>(prop.data.data());
-                    //vertex.Position = glm::vec3(static_cast<float>(doubleData[0]), static_cast<float>(doubleData[1]), static_cast<float>(doubleData[2]));
-                }
-                else if (prop.typeCode == 'f' && prop.data.size() == sizeof(float) * 2) {
-                    float* floatData = reinterpret_cast<float*>(prop.data.data());
-                    //vertex.TexCoords = glm::vec2(floatData[0], floatData[1]);
-                }
-                else if (prop.typeCode == 'f' && prop.data.size() == sizeof(float) * 3) {
-                    float* floatData = reinterpret_cast<float*>(prop.data.data());
-                    //vertex.Normal = glm::vec3(floatData[0], floatData[1], floatData[2]);
-                }
-                else if (prop.typeCode == 'd' && prop.data.size() == sizeof(double) * 3) {
-                    double* doubleData = reinterpret_cast<double*>(prop.data.data());
-                    //vertex.Normal = glm::vec3(static_cast<float>(doubleData[0]), static_cast<float>(doubleData[1]), static_cast<float>(doubleData[2]));
-                }
-                */
-                // Add additional conditions to handle other property types or fields in the Vertex structure
             }
         }
 
@@ -779,250 +870,58 @@ void ProcessNodeHierarchy(
 
 
 
-/*
-    HEADER
-
-    Bytes 0 - 20: Kaydara FBX Binary  \x00 (file-magic, with 2 spaces at the end, then a NULL terminator).
-    Bytes 21 - 22: [0x1A, 0x00] (unknown but all observed files show these bytes).
-    Bytes 23 - 26: unsigned int, the version number. 7300 for version 7.3 for example.
-*/
-Model FileHandler::readFBXFile(std::string path) {
-    _FBX_totalBitsRead = 0;
-    __ne_c_cc = 0;
-
-    std::ifstream file(path, std::ios::binary);
-
-    std::cout << path << std::endl;
-
-    if (!file.is_open()) {
-        std::cerr << "ERROR : Can't read FBX file. Can't open : " << path << std::endl;
-        return Model();
-    }
-
-    // Read header
-    char header[27];
-    file.read(header, sizeof(header));
-    _FBX_totalBitsRead += sizeof(header);
-
-    // Extract the version number
-    uint32_t version = *reinterpret_cast<uint32_t*>(&header[23]);
-
-    // Print the version number
-    //std::cout << "FBX Version: " << version << std::endl;
-
-    // Read top-level object record
-    FbxNode topLevelObject;
-    ReadNestedNodes(file, topLevelObject.nestedNodes);
-
-    // Read header
-    file.read(header, sizeof(header));
-    _FBX_totalBitsRead += sizeof(header);
-    
-    std::vector<glm::vec3> positions;
-    std::vector<glm::vec2> UVS;
-    std::vector<glm::vec3> normals;
-    std::vector<std::string> matTitles;
-    std::vector<int> polygonVertexIndices;
-    std::vector<int> edges;
-    std::vector<int> uvIndices;
-
-
-    // Process the FBX data
-    ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges);
-
-
-    std::cout << 
-                    positions.size() << ' ' << 
-                    UVS.size() << ' ' << 
-                    normals.size()  << ' ' << 
-                    polygonVertexIndices.size() << ' ' << 
-                    edges.size()  << ' ' << 
-                    uvIndices.size() 
-    << std::endl;
-
-    //1986 2391 7936 7936 7936 3968(7931)
-
-    
-    /*
-    std::cout << "Pos : " << std::endl;
-    for (size_t i = 0; i < positions.size(); i++)
-        std::cout << glm::to_string(positions[i]) << ' ';
-    std::cout << std::endl;
-    std::cout << std::endl;
-    
-    std::cout << "UV : " << std::endl;
-    for (size_t i = 0; i < UVS.size(); i++)
-        std::cout << glm::to_string(UVS[i]) << ' ';
-    
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << "Normal : " << std::endl;
-    for (size_t i = 0; i < normals.size(); i++)
-        std::cout << glm::to_string(normals[i]) << ' ';
-
-   
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << "Indices : " << std::endl;
-    for (size_t i = 0; i < polygonVertexIndices.size(); i++)
-        std::cout << polygonVertexIndices[i] << ' ';
-    */
-    /*
-    
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << "UVIndices : " << std::endl;
-    for (size_t i = 0; i < uvIndices.size(); i++)
-        std::cout << uvIndices[i] << ' ';
-    
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << "Edges : " << std::endl;
-    for (size_t i = 0; i < edges.size(); i++)
-        std::cout << edges[i] << ' ';
-    
-    std::cout << std::endl;
-    */
-
-
-    std::vector<std::vector<Vertex>> meshVertices;
-    std::vector<std::vector<unsigned int>> meshIndices;
-    std::vector<std::vector<Vertex>> unitedVertices;
-    std::vector<Vertex> _meshVertices;
-    std::vector<unsigned int> _meshIndices;
-
-    /* Vector calculations here */
-
-
-    std::vector<std::vector<int>> faces;
-    
-    
-
-
-    std::vector<Vertex> _unitedVertices;
-    std::vector<bool> faceHolder;
-
-    for (size_t i = 0; i < polygonVertexIndices.size(); i++)
-    {
-        int posIndex = polygonVertexIndices[i];
-        int uvIndex = edges[i];
-        
-
-        if(posIndex < 0){
-            posIndex = abs(posIndex) - 1;
-            faceHolder.push_back(1);
-        }
-        else{
-            faceHolder.push_back(0);
-        }
-        
-        if(uvIndex < 0)
-            uvIndex = abs(uvIndex) - 1;
-
-        Vertex vert;
-        vert.Position = positions[posIndex];  
-        vert.TexCoords = UVS[uvIndex];  
-        vert.Normal = normals[i];  
-
-        _unitedVertices.push_back(vert);
-
-    }
-    
-    std::vector<Vertex> triangulatedUnitedVertices;
-    std::vector<Vertex> face;
-
-    for (size_t i = 0; i < _unitedVertices.size(); i++)
-    {
-        face.push_back(_unitedVertices[i]);
-
-        // Face ended
-        if(faceHolder[i] == true){
-            std::vector<std::vector<Vertex>> triangulatedFaces = triangulateFaces(face);
-
-            for (size_t fI = 0; fI < triangulatedFaces.size(); fI++)
-            {
-                std::cout << triangulatedFaces[fI].size() << std::endl;
-                
-                generateTangentBitangent(triangulatedFaces[fI]);
-                for (size_t vI = 0; vI < triangulatedFaces[fI].size(); vI++)
-                {
-                    triangulatedUnitedVertices.push_back(triangulatedFaces[fI][vI]);
-                }
-            }
-
-            face.clear();
-        }
-    }
-    
-
-    unitedVertices.push_back(triangulatedUnitedVertices);
-
-
-    seperateUnitedVertices(unitedVertices, meshVertices, meshIndices);
-
-
-    //meshVertices.push_back(_meshVertices);
-    //meshIndices.push_back(_meshIndices);
-
-    // Close the file
-    file.close();
-
-    return createModel(meshVertices, meshIndices, {});
-}
-
-
 
 /*
             SEPERATED
 
-5 5 9 9 9 7
-Pos :
-vec3(-1.000000, -1.000000, 0.000000) vec3(1.000000, -1.000000, 0.000000) vec3(-1.000000, 1.000000, 0.000000) vec3(-0.208482, -0.552366, 1.007192) vec3(-0.211123, -0.559847, 1.005384)    
-
-UV :
-vec2(0.220108, 0.284449) vec2(0.862011, 0.284449) vec2(0.453018, 0.027691) vec2(0.778371, 0.871778) vec2(0.220108, 0.926352)
-
-Normal :
-vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(-0.623704, -0.623704, -0.471155) vec3(-0.623704, -0.623704, -0.471155) vec3(-0.623704, -0.623704, -0.471155) vec3(0.000000, 0.916058, -0.401046) vec3(0.000000, 0.916058, -0.401046) vec3(0.000000, 0.916058, -0.401046)
-
-Indices :
-1 2 -1   2 1 -4   1 0 -5
-
-UVIndices :
-0 1 2 4 5 7 8
-
-Edges :
-1 4 0  4 1 3  1 0 2
+    5 5 9 9 9 7
+    Pos :
+    vec3(-1.000000, -1.000000, 0.000000) vec3(1.000000, -1.000000, 0.000000) vec3(-1.000000, 1.000000, 0.000000) vec3(-0.208482, -0.552366, 1.007192) vec3(-0.211123, -0.559847, 1.005384)    
+    
+    UV :
+    vec2(0.220108, 0.284449) vec2(0.862011, 0.284449) vec2(0.453018, 0.027691) vec2(0.778371, 0.871778) vec2(0.220108, 0.926352)
+    
+    Normal :
+    vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(-0.623704, -0.623704, -0.471155) vec3(-0.623704, -0.623704, -0.471155) vec3(-0.623704, -0.623704, -0.471155) vec3(0.000000, 0.916058, -0.401046) vec3(0.000000, 0.916058, -0.401046) vec3(0.000000, 0.916058, -0.401046)
+    
+    Indices :
+    1 2 -1   2 1 -4   1 0 -5
+    
+    UVIndices :
+    0 1 2 4 5 7 8
+    
+    Edges :
+    1 4 0  4 1 3  1 0 2
 
 
         UNIT
 
-4 5 9 9 9 6
-Pos :
-vec3(-1.000000, -1.000000, 0.000000) vec3(1.000000, -1.000000, 0.000000) vec3(-1.000000, 1.000000, 0.000000) vec3(-0.209803, -0.556107, 1.006288)
+    4 5 9 9 9 6
+    Pos :
+    vec3(-1.000000, -1.000000, 0.000000) vec3(1.000000, -1.000000, 0.000000) vec3(-1.000000, 1.000000, 0.000000) vec3(-0.209803, -0.556107, 1.006288)
 
-UV :
-vec2(0.220108, 0.284449) vec2(0.862011, 0.284449) vec2(0.778371, 0.871778) vec2(0.453018, 0.027691) vec2(0.220108, 0.926352)
+    UV :
+    vec2(0.220108, 0.284449) vec2(0.862011, 0.284449) vec2(0.778371, 0.871778) vec2(0.453018, 0.027691) vec2(0.220108, 0.926352)
 
-Normal :
-vec3(0.000000, 0.000000, 1.000000) 
-vec3(0.000000, 0.000000, 1.000000) 
-vec3(0.000000, 0.000000, 1.000000) 
-vec3(-0.622656, -0.622656, -0.473918) 
-vec3(-0.622656, -0.622656, -0.473918) 
-vec3(-0.622656, -0.622656, -0.473918) 
-vec3(0.000000, 0.914937, -0.403597) 
-vec3(0.000000, 0.914937, -0.403597) 
-vec3(0.000000, 0.914937, -0.403597)
+    Normal :
+    vec3(0.000000, 0.000000, 1.000000) 
+    vec3(0.000000, 0.000000, 1.000000) 
+    vec3(0.000000, 0.000000, 1.000000) 
+    vec3(-0.622656, -0.622656, -0.473918) 
+    vec3(-0.622656, -0.622656, -0.473918) 
+    vec3(-0.622656, -0.622656, -0.473918) 
+    vec3(0.000000, 0.914937, -0.403597) 
+    vec3(0.000000, 0.914937, -0.403597) 
+    vec3(0.000000, 0.914937, -0.403597)
 
-Indices :
-1 2 -1   2 1 -4   1 0 -4
+    Indices :
+    1 2 -1   2 1 -4   1 0 -4
 
-UVIndices :
-0 1 2 4 5 7
+    UVIndices :
+    0 1 2 4 5 7
 
-Edges :
-1 4 0   4 1 2   1 0 3
+    Edges :
+    1 4 0   4 1 2   1 0 3
 
 */
 
@@ -1073,45 +972,45 @@ Edges :
 
 */
 
-    /*
-        PLANE :
-        
-        Pos :
-        vec3(-1.000000, -1.000000, 0.000000) vec3(1.000000, -1.000000, 0.000000) vec3(-1.000000, 1.000000, 0.000000) vec3(1.000000, 1.000000, 0.000000)
+/*
+    PLANE :
+    
+    Pos :
+    vec3(-1.000000, -1.000000, 0.000000) vec3(1.000000, -1.000000, 0.000000) vec3(-1.000000, 1.000000, 0.000000) vec3(1.000000, 1.000000, 0.000000)
 
-        UV :
-        vec2(0.000000, 1.000000) vec2(1.000000, 0.000000) vec2(0.000000, 0.000000) vec2(1.000000, 1.000000)
+    UV :
+    vec2(0.000000, 1.000000) vec2(1.000000, 0.000000) vec2(0.000000, 0.000000) vec2(1.000000, 1.000000)
 
-        Normal :
-        vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000)
+    Normal :
+    vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000)
 
-        Indices :
-        0 1 3 -3
+    Indices :
+    0 1 3 -3
 
-        UVIndices :
-        0 1 2 3
+    UVIndices :
+    0 1 2 3
 
-        Edges :
-        2 1 3 0
+    Edges :
+    2 1 3 0
 
 
-        TRIANGULATED PLANE :
+    TRIANGULATED PLANE :
 
-        Pos :
-        vec3(-1.000000, -1.000000, 0.000000) vec3(1.000000, -1.000000, 0.000000) vec3(-1.000000, 1.000000, 0.000000) vec3(1.000000, 1.000000, 0.000000)
+    Pos :
+    vec3(-1.000000, -1.000000, 0.000000) vec3(1.000000, -1.000000, 0.000000) vec3(-1.000000, 1.000000, 0.000000) vec3(1.000000, 1.000000, 0.000000)
 
-        UV :
-        vec2(1.000000, 0.000000) vec2(0.000000, 0.000000) vec2(0.000000, 1.000000) vec2(1.000000, 1.000000)
+    UV :
+    vec2(1.000000, 0.000000) vec2(0.000000, 0.000000) vec2(0.000000, 1.000000) vec2(1.000000, 1.000000)
 
-        Normal :
-        vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000)
+    Normal :
+    vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000) vec3(0.000000, 0.000000, 1.000000)
 
-        Indices :
-        1 2 -1 1 3 -3
+    Indices :
+    1 2 -1 1 3 -3
 
-        UVIndices :
-        0 1 2 3 4
+    UVIndices :
+    0 1 2 3 4
 
-        Edges :
-        0 2 1 0 3 2
-    */
+    Edges :
+    0 2 1 0 3 2
+*/
