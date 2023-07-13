@@ -16,6 +16,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
     https://code.blender.org/2013/08/fbx-binary-file-format-specification/#binary-file-structure
 
+    TODO : Process objects
+
 */
 
 #include <glm/glm.hpp>
@@ -97,6 +99,9 @@ void parseMeshData(
                         std::vector<std::vector<unsigned int>>& meshIndices
                     )
 {
+    
+    // TODO Seperate unique vertices for each mesh
+
     if (polygonVertexIndices.size() != edges.size())
     {
         std::cout << "ERROR: Reading FBX file. Can't parse mesh data. Sizes of the polygonVertexIndices & the edges are not the same." << std::endl;
@@ -155,6 +160,9 @@ void parseMeshData(
 
             if(!LIGID_FBX_IMPORTER_TRIANGULATE)
                 faceCount = 1;
+
+            if(faceCount < 0)
+                faceCount = 0;
 
             int vStartI = i - faceI + 1;
             for (size_t fI = 0; fI < faceCount; fI++)
