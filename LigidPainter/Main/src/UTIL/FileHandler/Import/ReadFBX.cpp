@@ -49,7 +49,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles);
 void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
 void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2);
-std::vector<std::vector<Vertex>> triangulateFaces(const std::vector<Vertex>& faceData);
 std::vector<char> DecompressZlibChar(const std::vector<char>& compressedData, size_t uncompressedSize);
 std::vector<float> DecompressZlibFloat(const std::vector<char>& compressedData, size_t numFloats);
 std::vector<double> DecompressZlibDouble(const std::vector<char>& compressedData, size_t numDoubles);
@@ -69,140 +68,12 @@ struct FbxNode {
 
 // Forward declarations for the fbx file processing functions
 void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes);
-void ProcessNodeHierarchy( std::vector<FbxNode>& nodes, std::vector<glm::vec3>& vertPositions, std::vector<glm::vec2>& vertUVs, std::vector<glm::vec3>& vertNormals, std::vector<int>& polygonVertexIndices, std::vector<int>& edges, std::vector<int>& uvIndices, std::vector<std::string>& matTitles, std::vector<int>& materials); 
+void ProcessNodeHierarchy(std::vector<FbxNode>& nodes, std::vector<glm::vec3>& vertPositions, std::vector<glm::vec2>& vertUVs, std::vector<glm::vec3>& vertNormals, std::vector<int>& polygonVertexIndices, std::vector<int>& edges, std::vector<int>& uvIndices, std::vector<std::string>& matTitles, std::vector<int>& materials); 
+static void parseFBXMeshData(const std::vector<glm::vec3>& positions, const std::vector<glm::vec2>& UVs, const std::vector<glm::vec3>& normals, const std::vector<int>& polygonVertexIndices, const std::vector<int>& uvIndices, const std::vector<int>& edges, const std::vector<std::string>& matTitles, const std::vector<int>& materials, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
 
 int __node_counter = 0;
 int _FBX_totalBitsRead = 0;
 
-
-int getVertIndex(const std::vector<Vertex> array, const Vertex val){
-    for (size_t i = 0; i < array.size(); i++)
-    {
-        if(array[i].Position == val.Position && array[i].TexCoords == val.TexCoords)
-            return i;
-    }
-    return 0;
-}
-
-
-
-void parseMeshData(
-                        const std::vector<glm::vec3>& positions,
-                        const std::vector<glm::vec2>& UVs,
-                        const std::vector<glm::vec3>& normals,
-                        const std::vector<int>& polygonVertexIndices,
-                        const std::vector<int>& uvIndices,
-                        const std::vector<int>& edges,
-                        const std::vector<std::string>& matTitles,
-                        const std::vector<int>& materials,
-                        std::vector<std::vector<Vertex>>& meshVertices,
-                        std::vector<std::vector<unsigned int>>& meshIndices
-                    )
-{
-    
-    // TODO Seperate unique vertices for each mesh
-
-    if (polygonVertexIndices.size() != edges.size())
-    {
-        std::cout << "ERROR: Reading FBX file. Can't parse mesh data. Sizes of the polygonVertexIndices & the edges are not the same." << std::endl;
-        return;
-    }
-
-    std::vector<Vertex> uniqueVertices;
-    std::vector<unsigned int> indices;
-
-    std::map<int, int> posData;
-
-    for (size_t i = 0; i < uvIndices.size(); i++)
-    {
-        int uvIndex = uvIndices[i];
-
-        int posIndex = polygonVertexIndices[uvIndex];
-        if (posIndex < 0)
-            posIndex = abs(posIndex) - 1;
-
-        int edgeIndex = edges[uvIndex];
-        if (edgeIndex  < 0)
-            edgeIndex  = abs(edgeIndex ) - 1;
-
-        Vertex uniqueVert;
-        uniqueVert.Position = positions[posIndex];
-        uniqueVert.TexCoords = UVs[edgeIndex];
-        uniqueVert.Normal = normals[uvIndex];
-        
-        posData[posIndex] = uniqueVertices.size();
-        uniqueVertices.push_back(uniqueVert);
-    }
-
-    int biggestMatIndex = 0;
-    for (size_t i = 0; i < materials.size(); i++)
-    {
-        if(biggestMatIndex < materials[i])
-            biggestMatIndex = materials[i];
-    }
-
-    for (size_t i = 0; i < biggestMatIndex + 1; i++)
-    {
-        meshVertices.push_back(uniqueVertices);
-        meshIndices.push_back({});
-    }
-    
-
-    int faceI = 0;
-    int faceCounter = 0;
-    for (size_t i = 0; i < polygonVertexIndices.size(); i++)
-    {
-        faceI++;
-    
-        /* Triangulation */
-        if (polygonVertexIndices[i] < 0){
-            int faceCount = faceI - 2;
-
-            if(!LIGID_FBX_IMPORTER_TRIANGULATE)
-                faceCount = 1;
-
-            if(faceCount < 0)
-                faceCount = 0;
-
-            int vStartI = i - faceI + 1;
-            for (size_t fI = 0; fI < faceCount; fI++)
-            {
-                glm::vec3 face;
-                face.x = polygonVertexIndices[vStartI];
-                face.y = polygonVertexIndices[vStartI + 1 + fI];
-                face.z = polygonVertexIndices[vStartI + 2 + fI];
-
-            
-                if (face.x < 0){
-                    face.x = abs(face.x) - 1;
-                }
-                if (face.y < 0){
-                    face.y = abs(face.y) - 1;
-                }
-                if (face.z < 0){
-                    face.z = abs(face.z) - 1;
-                }
-                
-                int materialI;
-                if(materials.size())
-                    materialI = materials[faceCounter];
-                else
-                    materialI = 0;
-
-                meshIndices[materialI].push_back(posData[face.x]);
-                meshIndices[materialI].push_back(posData[face.y]);
-                meshIndices[materialI].push_back(posData[face.z]);
-
-
-                calculateTangentBitangent(meshVertices[materialI][posData[face.x]], meshVertices[materialI][posData[face.y]], meshVertices[materialI][posData[face.z]]);
-            }
-            
-            faceI = 0;
-            faceCounter++;
-        }
-    }
-
-}
 
 /*
     HEADER
@@ -269,7 +140,7 @@ Model FileHandler::readFBXFile(std::string path) {
     std::vector<std::vector<Vertex>> meshVertices;
     std::vector<std::vector<unsigned int>> meshIndices;
 
-    parseMeshData(  
+    parseFBXMeshData(  
                         positions,
                         UVS,
                         normals,
@@ -282,7 +153,13 @@ Model FileHandler::readFBXFile(std::string path) {
                         meshIndices
                     );
 
-    return createModel(meshVertices, meshIndices, matTitles);
+    if(meshVertices.size()){
+        return createModel(meshVertices, meshIndices, matTitles);
+    }
+    else{
+        std::cout << "WARNING! Reading FBX file : No mesh data received" << std::endl;
+        return Model();
+    }
 }
 
 
@@ -966,6 +843,138 @@ void ProcessNodeHierarchy(
     }
 }
 
+
+static void parseFBXMeshData(
+                        const std::vector<glm::vec3>& positions,
+                        const std::vector<glm::vec2>& UVs,
+                        const std::vector<glm::vec3>& normals,
+                        const std::vector<int>& polygonVertexIndices,
+                        const std::vector<int>& uvIndices,
+                        const std::vector<int>& edges,
+                        const std::vector<std::string>& matTitles,
+                        const std::vector<int>& materials,
+                        std::vector<std::vector<Vertex>>& meshVertices,
+                        std::vector<std::vector<unsigned int>>& meshIndices
+                    )
+{
+    
+    // TODO Seperate unique vertices for each mesh
+
+    if (polygonVertexIndices.size() != edges.size())
+    {
+        std::cout << "ERROR: Reading FBX file. Can't parse mesh data. Sizes of the polygonVertexIndices & the edges are not the same." << std::endl;
+        return;
+    }
+
+    std::vector<Vertex> uniqueVertices;
+    std::vector<unsigned int> indices;
+
+    std::map<int, int> posData;
+
+    for (size_t i = 0; i < uvIndices.size(); i++)
+    {
+        int uvIndex = uvIndices[i];
+
+        int posIndex = polygonVertexIndices[uvIndex];
+        if (posIndex < 0)
+            posIndex = abs(posIndex) - 1;
+
+        int edgeIndex = edges[uvIndex];
+        if (edgeIndex  < 0)
+            edgeIndex  = abs(edgeIndex ) - 1;
+
+        Vertex uniqueVert;
+        uniqueVert.Position = positions[posIndex];
+        uniqueVert.TexCoords = UVs[edgeIndex];
+        uniqueVert.Normal = normals[uvIndex];
+        
+        posData[posIndex] = uniqueVertices.size();
+        uniqueVertices.push_back(uniqueVert);
+    }
+
+    int biggestMatIndex = 0;
+    for (size_t i = 0; i < materials.size(); i++)
+    {
+        if(biggestMatIndex < materials[i])
+            biggestMatIndex = materials[i];
+    }
+
+    for (size_t i = 0; i < biggestMatIndex + 1; i++)
+    {
+        meshVertices.push_back(uniqueVertices);
+        meshIndices.push_back({});
+    }
+    
+
+    int faceI = 0;
+    int faceCounter = 0;
+    for (size_t i = 0; i < polygonVertexIndices.size(); i++)
+    {
+        faceI++;
+    
+        /* Triangulation */
+        if (polygonVertexIndices[i] < 0){
+            int faceCount = faceI - 2;
+
+            if(!LIGID_FBX_IMPORTER_TRIANGULATE)
+                faceCount = 1;
+
+            if(faceCount < 0)
+                faceCount = 0;
+
+            int vStartI = i - faceI + 1;
+            for (size_t fI = 0; fI < faceCount; fI++)
+            {
+                glm::vec3 face;
+                face.x = polygonVertexIndices[vStartI];
+                face.y = polygonVertexIndices[vStartI + 1 + fI];
+                face.z = polygonVertexIndices[vStartI + 2 + fI];
+
+            
+                if (face.x < 0){
+                    face.x = abs(face.x) - 1;
+                }
+                if (face.y < 0){
+                    face.y = abs(face.y) - 1;
+                }
+                if (face.z < 0){
+                    face.z = abs(face.z) - 1;
+                }
+                
+                int materialI;
+                if(materials.size())
+                    materialI = materials[faceCounter];
+                else
+                    materialI = 0;
+
+                meshIndices[materialI].push_back(posData[face.x]);
+                meshIndices[materialI].push_back(posData[face.y]);
+                meshIndices[materialI].push_back(posData[face.z]);
+
+                /* Tangent calculations */
+                meshVertices[materialI][posData[face.x]].Tangent = glm::vec3(0); 
+                meshVertices[materialI][posData[face.x]].Bitangent = glm::vec3(0); 
+                meshVertices[materialI][posData[face.y]].Tangent = glm::vec3(0); 
+                meshVertices[materialI][posData[face.y]].Bitangent = glm::vec3(0); 
+                meshVertices[materialI][posData[face.z]].Tangent = glm::vec3(0);
+                meshVertices[materialI][posData[face.z]].Bitangent = glm::vec3(0);
+                calculateTangentBitangent(meshVertices[materialI][posData[face.x]], meshVertices[materialI][posData[face.y]], meshVertices[materialI][posData[face.z]]);
+                
+                /* Normalize tangent values */
+                meshVertices[materialI][posData[face.x]].Tangent = glm::normalize(meshVertices[materialI][posData[face.x]].Tangent); 
+                meshVertices[materialI][posData[face.x]].Bitangent = glm::normalize(meshVertices[materialI][posData[face.x]].Bitangent); 
+                meshVertices[materialI][posData[face.y]].Tangent = glm::normalize(meshVertices[materialI][posData[face.y]].Tangent); 
+                meshVertices[materialI][posData[face.y]].Bitangent = glm::normalize(meshVertices[materialI][posData[face.y]].Bitangent); 
+                meshVertices[materialI][posData[face.z]].Tangent = glm::normalize(meshVertices[materialI][posData[face.z]].Tangent);
+                meshVertices[materialI][posData[face.z]].Bitangent = glm::normalize(meshVertices[materialI][posData[face.z]].Bitangent);
+            }
+            
+            faceI = 0;
+            faceCounter++;
+        }
+    }
+
+}
 
 
 

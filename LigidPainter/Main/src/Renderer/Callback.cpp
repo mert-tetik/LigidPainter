@@ -40,8 +40,6 @@ void Renderer::mouseButtonCallback(
                                         int mods
                                     )
 {
-    std::cout << button  << ' ' << action << ' ' << mods << std::endl;
-    
     //Calculate double click
     if (button == LIGIDGL_MOUSE_BUTTON_LEFT && action == LIGIDGL_PRESS) {
         double currentTime = LigidGL::getTime();

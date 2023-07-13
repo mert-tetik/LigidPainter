@@ -42,9 +42,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 
 // Forward declarations for the utilities
-std::vector<std::vector<Vertex>> triangulateFaces(const std::vector<Vertex>& faceData);
-void generateTangentBitangent(std::vector<Vertex>& faceData);
-std::vector<std::vector<Vertex>> getUnitedVerticesData(std::vector<glm::vec3>& uniquePositions, std::vector<glm::vec2>& uniqueUVS, std::vector<glm::vec3>& uniqueNormals, std::vector<std::vector<std::vector<glm::vec3>>>& faces);
 void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
 Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles);
 void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2);
@@ -90,9 +87,13 @@ Model FileHandler::readOBJFile(std::string path){
 
     parseOBJMeshData(uniquePositions, uniqueUVS, uniqueNormals, matTitles, faces, meshVertices, meshIndices);
 
-    Model model = createModel(meshVertices, meshIndices, matTitles);
-
-    return model;
+    if(meshVertices.size()){
+        return createModel(meshVertices, meshIndices, matTitles);
+    }
+    else{
+        std::cout << "WARNING! Reading FBX file : No mesh data received" << std::endl;
+        return Model();
+    }
 
 }
 
@@ -291,7 +292,22 @@ static void parseOBJMeshData(
 
                 /* Ignore untriangulated vertices */
                 
+                /* Tangent calculations */
+                vert1.Tangent = glm::vec3(0);
+                vert1.Bitangent = glm::vec3(0);
+                vert2.Tangent = glm::vec3(0);
+                vert2.Bitangent = glm::vec3(0);
+                vert3.Tangent = glm::vec3(0);
+                vert3.Bitangent = glm::vec3(0);
                 calculateTangentBitangent(vert1, vert2, vert3);
+
+                /* Normalize tangent values */
+                vert1.Tangent = glm::normalize(vert1.Tangent);
+                vert1.Bitangent = glm::normalize(vert1.Bitangent);
+                vert2.Tangent = glm::normalize(vert2.Tangent);
+                vert2.Bitangent = glm::normalize(vert2.Bitangent);
+                vert3.Tangent = glm::normalize(vert3.Tangent);
+                vert3.Bitangent = glm::normalize(vert3.Bitangent);
 
                 meshIndices[matI].push_back(meshVertices[matI].size());
                 meshVertices[matI].push_back(vert1);  

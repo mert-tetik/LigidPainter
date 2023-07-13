@@ -82,7 +82,7 @@ public:
 
     int frameCounter = 0; //Reset every 1000 frame
 
-    int selectedMaterialIndex = 0; //In the library (to manipulate with )
+    int selectedMaterialIndex = 0; //In the library (to manipulate with)
     
     bool anyContextMenuActive = false;
 
@@ -94,7 +94,6 @@ public:
     glm::mat4 projection; 
 
     ColorPalette colorPalette;
-
 
     //Constructor
     UI();
