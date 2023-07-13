@@ -46,8 +46,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 // Forward declarations for the utilities
 Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles);
 void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
+void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2);
 std::vector<std::vector<Vertex>> triangulateFaces(const std::vector<Vertex>& faceData);
-void generateTangentBitangent(std::vector<Vertex>& faceData);
 std::vector<char> DecompressZlibChar(const std::vector<char>& compressedData, size_t uncompressedSize);
 std::vector<float> DecompressZlibFloat(const std::vector<char>& compressedData, size_t numFloats);
 std::vector<double> DecompressZlibDouble(const std::vector<char>& compressedData, size_t numDoubles);
@@ -81,6 +81,8 @@ int getVertIndex(const std::vector<Vertex> array, const Vertex val){
     }
     return 0;
 }
+
+
 
 void parseMeshData(
                         const std::vector<glm::vec3>& positions,
@@ -127,7 +129,6 @@ void parseMeshData(
         uniqueVertices.push_back(uniqueVert);
     }
 
-    
     int biggestMatIndex = 0;
     for (size_t i = 0; i < materials.size(); i++)
     {
@@ -162,7 +163,7 @@ void parseMeshData(
                 face.x = polygonVertexIndices[vStartI];
                 face.y = polygonVertexIndices[vStartI + 1 + fI];
                 face.z = polygonVertexIndices[vStartI + 2 + fI];
-                
+
             
                 if (face.x < 0){
                     face.x = abs(face.x) - 1;
@@ -183,6 +184,9 @@ void parseMeshData(
                 meshIndices[materialI].push_back(posData[face.x]);
                 meshIndices[materialI].push_back(posData[face.y]);
                 meshIndices[materialI].push_back(posData[face.z]);
+
+
+                calculateTangentBitangent(meshVertices[materialI][posData[face.x]], meshVertices[materialI][posData[face.y]], meshVertices[materialI][posData[face.z]]);
             }
             
             faceI = 0;
