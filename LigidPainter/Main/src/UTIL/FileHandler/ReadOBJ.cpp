@@ -41,16 +41,23 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 
-// Utility function forward declerations
+// Forward declarations for the utilities
 std::vector<std::vector<Vertex>> triangulateFaces(const std::vector<Vertex>& faceData);
 void generateTangentBitangent(std::vector<Vertex>& faceData);
-void getDataFromWavefrontFile( std::ifstream& rf, std::vector<glm::vec3>& uniquePositions, std::vector<glm::vec2>& uniqueUVS, std::vector<glm::vec3>& uniqueNormals, std::vector<std::string>& matTitles, std::vector<std::vector<std::vector<glm::vec3>>>& faces);
 std::vector<std::vector<Vertex>> getUnitedVerticesData(std::vector<glm::vec3>& uniquePositions, std::vector<glm::vec2>& uniqueUVS, std::vector<glm::vec3>& uniqueNormals, std::vector<std::vector<std::vector<glm::vec3>>>& faces);
 void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
 Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles);
+void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2);
+
+// Forward declarations for the obj file processing functions
 static void parseOBJMeshData(std::vector<glm::vec3> uniquePositions,std::vector<glm::vec2> uniqueUVS,std::vector<glm::vec3> uniqueNormals,std::vector<std::string> matTitles,std::vector<std::vector<std::vector<glm::vec3>>> faces,std::vector<std::vector<Vertex>>& meshVertices,std::vector<std::vector<unsigned int>>& meshIndices);
+void getDataFromWavefrontFile( std::ifstream& rf, std::vector<glm::vec3>& uniquePositions, std::vector<glm::vec2>& uniqueUVS, std::vector<glm::vec3>& uniqueNormals, std::vector<std::string>& matTitles, std::vector<std::vector<std::vector<glm::vec3>>>& faces);
+
+
 
 #define LIGID_OBJ_IMPORTER_TRIANGULATE true
+
+
 
 Model FileHandler::readOBJFile(std::string path){
 
@@ -217,7 +224,9 @@ static void parseOBJMeshData(
                                 std::vector<std::vector<unsigned int>>& meshIndices
                             )
 {
+    
     //TODO : Unique vertices
+    
     std::vector<std::vector<std::vector<glm::vec3>>> triangulatedFaces;
 
     if(LIGID_OBJ_IMPORTER_TRIANGULATE){
@@ -228,8 +237,6 @@ static void parseOBJMeshData(
 
                 /* Triangulation */
                 int faceCount = faces[matI][faceI].size() - 2;
-
-                std::cout << "f: " << faceCount << std::endl;
 
                 if(faceCount < 0)
                     faceCount = 0;
@@ -250,7 +257,6 @@ static void parseOBJMeshData(
 
                     triangulatedFaces[matI].push_back(newFace);
 
-                    //calculateTangentBitangent(meshVertices[materialI][posData[face.x]], meshVertices[materialI][posData[face.y]], meshVertices[materialI][posData[face.z]]);
                 }
             }
         }
@@ -266,20 +272,33 @@ static void parseOBJMeshData(
         meshIndices.push_back({});  
         
         for (size_t faceI = 0; faceI < triangulatedFaces[matI].size(); faceI++)
-        {   
-            for (size_t vertI = 0; vertI < triangulatedFaces[matI][faceI].size(); vertI++)
-            {
-                const int posI = triangulatedFaces[matI][faceI][vertI].x;  
-                const int UVI = triangulatedFaces[matI][faceI][vertI].y;  
-                const int normalI = triangulatedFaces[matI][faceI][vertI].z;
+        {
+            /*Ignore lines and points*/
+            if(triangulatedFaces[matI][faceI].size() > 2){
 
-                Vertex vert;
-                vert.Position = uniquePositions[posI - 1];  
-                vert.TexCoords = uniqueUVS[UVI - 1];  
-                vert.Normal = uniqueNormals[normalI - 1];
+                Vertex vert1;
+                vert1.Position = uniquePositions[triangulatedFaces[matI][faceI][0].x - 1];  
+                vert1.TexCoords = uniqueUVS[triangulatedFaces[matI][faceI][0].y - 1];  
+                vert1.Normal = uniqueNormals[triangulatedFaces[matI][faceI][0].z - 1];
+                Vertex vert2;
+                vert2.Position = uniquePositions[triangulatedFaces[matI][faceI][1].x - 1];  
+                vert2.TexCoords = uniqueUVS[triangulatedFaces[matI][faceI][1].y - 1];  
+                vert2.Normal = uniqueNormals[triangulatedFaces[matI][faceI][1].z - 1];
+                Vertex vert3;
+                vert3.Position = uniquePositions[triangulatedFaces[matI][faceI][2].x - 1];  
+                vert3.TexCoords = uniqueUVS[triangulatedFaces[matI][faceI][2].y - 1];  
+                vert3.Normal = uniqueNormals[triangulatedFaces[matI][faceI][2].z - 1];
+
+                /* Ignore untriangulated vertices */
+                
+                calculateTangentBitangent(vert1, vert2, vert3);
 
                 meshIndices[matI].push_back(meshVertices[matI].size());
-                meshVertices[matI].push_back(vert);  
+                meshVertices[matI].push_back(vert1);  
+                meshIndices[matI].push_back(meshVertices[matI].size());
+                meshVertices[matI].push_back(vert2);  
+                meshIndices[matI].push_back(meshVertices[matI].size());
+                meshVertices[matI].push_back(vert3);  
             }
         }
     }
