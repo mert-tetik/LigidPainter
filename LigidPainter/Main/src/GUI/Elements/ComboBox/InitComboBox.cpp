@@ -20,7 +20,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "GUI/Elements.hpp"
+#include "GUI/Elements/Elements.hpp"
 
 #include <string>
 #include <fstream>

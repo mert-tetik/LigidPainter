@@ -32,7 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
-#include "GUI/Elements.hpp"
+#include "GUI/Elements/Elements.hpp"
 
 //Forward declarations
 class ColorPalette;

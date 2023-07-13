@@ -27,8 +27,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-#include "GUI/Elements.hpp"
-#include "GUI/Dialogs.hpp"
+#include "GUI/Elements/Elements.hpp"
+#include "GUI/Dialogs/Dialogs.hpp"
 #include "GUI/Node/Node.hpp"
 
 //Forward decleration

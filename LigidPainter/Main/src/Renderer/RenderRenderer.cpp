@@ -24,7 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "../../thirdparty/include/glm/gtc/type_ptr.hpp"
 #include "../../thirdparty/include/glm/gtx/string_cast.hpp"
 
-#include "GUI/Elements.hpp"
+#include "GUI/Elements/Elements.hpp"
 #include "GUI/GUI.hpp"
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"

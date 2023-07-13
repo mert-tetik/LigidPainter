@@ -22,7 +22,7 @@ These color values are determining the colors of the graphical user interface & 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "GUI/Elements.hpp"
+#include "GUI/Elements/Elements.hpp"
 
 ColorPalette::ColorPalette(){}
 

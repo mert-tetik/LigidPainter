@@ -22,7 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
-#include "GUI/Elements.hpp"
+#include "GUI/Elements/Elements.hpp"
 
 #include <string>
 #include <iostream>

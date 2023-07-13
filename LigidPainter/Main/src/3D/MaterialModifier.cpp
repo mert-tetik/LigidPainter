@@ -25,7 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-#include "GUI/Elements.hpp"
+#include "GUI/Elements/Elements.hpp"
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 

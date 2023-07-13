@@ -140,7 +140,6 @@ void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2) {
     v2.Bitangent += bitangent;
 }
 
-
 std::vector<char> DecompressZlibChar(const std::vector<char>& compressedData, size_t uncompressedSize) {
     
     std::vector<char> uncompressedData(uncompressedSize, 0);
