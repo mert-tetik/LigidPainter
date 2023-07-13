@@ -67,7 +67,7 @@ struct FbxNode {
 
 // Forward declarations for the fbx file processing functions
 void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes);
-void ProcessNodeHierarchy( std::vector<FbxNode>& nodes, std::vector<glm::vec3>& vertPositions, std::vector<glm::vec2>& vertUVs, std::vector<glm::vec3>& vertNormals, std::vector<int>& polygonVertexIndices, std::vector<int>& edges, std::vector<int>& uvIndices, std::vector<std::string> matTitles, std::vector<int> materials); 
+void ProcessNodeHierarchy( std::vector<FbxNode>& nodes, std::vector<glm::vec3>& vertPositions, std::vector<glm::vec2>& vertUVs, std::vector<glm::vec3>& vertNormals, std::vector<int>& polygonVertexIndices, std::vector<int>& edges, std::vector<int>& uvIndices, std::vector<std::string>& matTitles, std::vector<int>& materials); 
 
 int __node_counter = 0;
 int _FBX_totalBitsRead = 0;
@@ -127,14 +127,33 @@ void parseMeshData(
         uniqueVertices.push_back(uniqueVert);
     }
 
+    
+    int biggestMatIndex = 0;
+    for (size_t i = 0; i < materials.size(); i++)
+    {
+        if(biggestMatIndex < materials[i])
+            biggestMatIndex = materials[i];
+    }
+
+    for (size_t i = 0; i < biggestMatIndex + 1; i++)
+    {
+        meshVertices.push_back(uniqueVertices);
+        meshIndices.push_back({});
+    }
+    
+
     int faceI = 0;
+    int faceCounter = 0;
     for (size_t i = 0; i < polygonVertexIndices.size(); i++)
     {
         faceI++;
     
         /* Triangulation */
-        if (polygonVertexIndices[i] < 0 && LIGID_FBX_IMPORTER_TRIANGULATE){
+        if (polygonVertexIndices[i] < 0){
             int faceCount = faceI - 2;
+
+            if(!LIGID_FBX_IMPORTER_TRIANGULATE)
+                faceCount = 1;
 
             int vStartI = i - faceI + 1;
             for (size_t fI = 0; fI < faceCount; fI++)
@@ -155,29 +174,22 @@ void parseMeshData(
                     face.z = abs(face.z) - 1;
                 }
                 
-                
-                indices.push_back(posData[face.x]);
-                indices.push_back(posData[face.y]);
-                indices.push_back(posData[face.z]);
+                int materialI;
+                if(materials.size())
+                    materialI = materials[faceCounter];
+                else
+                    materialI = 0;
+
+                meshIndices[materialI].push_back(posData[face.x]);
+                meshIndices[materialI].push_back(posData[face.y]);
+                meshIndices[materialI].push_back(posData[face.z]);
             }
             
             faceI = 0;
-        }
-    
-        if(!LIGID_FBX_IMPORTER_TRIANGULATE){
-            int posIndex = polygonVertexIndices[i];
-            if (posIndex < 0){
-                posIndex = abs(posIndex) - 1;
-            }
-                
-         
-            indices.push_back(posData[posIndex]);
+            faceCounter++;
         }
     }
 
-    // Push the uniqueVertices and indices to the meshVertices and meshIndices vectors
-    meshVertices.push_back(uniqueVertices);
-    meshIndices.push_back(indices);
 }
 
 /*
@@ -258,7 +270,7 @@ Model FileHandler::readFBXFile(std::string path) {
                         meshIndices
                     );
 
-    return createModel(meshVertices, meshIndices, {});
+    return createModel(meshVertices, meshIndices, matTitles);
 }
 
 
@@ -780,8 +792,8 @@ void ProcessNodeHierarchy(
                             std::vector<int>& polygonVertexIndices, 
                             std::vector<int>& edges, 
                             std::vector<int>& uvIndices,
-                            std::vector<std::string> matTitles,
-                            std::vector<int> materials
+                            std::vector<std::string>& matTitles,
+                            std::vector<int>& materials
                         ) 
 {
     for ( auto& node : nodes) {
@@ -923,11 +935,7 @@ void ProcessNodeHierarchy(
                         std::vector<int> intArray(arrayLength);
 
                         std::memcpy(intArray.data(), prop.data.data(), prop.data.size());
-
-                        for (size_t i = 0; i < intArray.size(); i++)
-                        {
-                            materials.push_back(intArray[i]);                            
-                        }
+                        materials = intArray;                            
                     }
                 }
 
