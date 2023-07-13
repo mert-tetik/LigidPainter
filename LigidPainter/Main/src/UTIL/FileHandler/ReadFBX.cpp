@@ -20,7 +20,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
+#include <glm/gtx/string_cast.hpp>
 
 #include <string>
 #include <vector>
@@ -130,15 +130,49 @@ void parseMeshData(
     int faceI = 0;
     for (size_t i = 0; i < polygonVertexIndices.size(); i++)
     {
-        int posIndex = polygonVertexIndices[i];
-        
-        if (posIndex < 0){
-            posIndex = abs(posIndex) - 1;
-        }
+        faceI++;
+    
+        /* Triangulation */
+        if (polygonVertexIndices[i] < 0 && LIGID_FBX_IMPORTER_TRIANGULATE){
+            int faceCount = faceI - 2;
 
-        indices.push_back(posData[posIndex]);
-        
-        faceI++; 
+            int vStartI = i - faceI + 1;
+            for (size_t fI = 0; fI < faceCount; fI++)
+            {
+                glm::vec3 face;
+                face.x = polygonVertexIndices[vStartI];
+                face.y = polygonVertexIndices[vStartI + 1 + fI];
+                face.z = polygonVertexIndices[vStartI + 2 + fI];
+                
+            
+                if (face.x < 0){
+                    face.x = abs(face.x) - 1;
+                }
+                if (face.y < 0){
+                    face.y = abs(face.y) - 1;
+                }
+                if (face.z < 0){
+                    face.z = abs(face.z) - 1;
+                }
+                
+                
+                indices.push_back(posData[face.x]);
+                indices.push_back(posData[face.y]);
+                indices.push_back(posData[face.z]);
+            }
+            
+            faceI = 0;
+        }
+    
+        if(!LIGID_FBX_IMPORTER_TRIANGULATE){
+            int posIndex = polygonVertexIndices[i];
+            if (posIndex < 0){
+                posIndex = abs(posIndex) - 1;
+            }
+                
+         
+            indices.push_back(posData[posIndex]);
+        }
     }
 
     // Push the uniqueVertices and indices to the meshVertices and meshIndices vectors
