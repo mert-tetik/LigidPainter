@@ -1,11 +1,10 @@
 ﻿# LigidPainter - The only CMakeLists.txt file
 
 
-
 cmake_minimum_required(VERSION 3.8)
 
 # Define the project data
-project(LigidPainter VERSION 1.3)
+project(LigidPainter VERSION 2.0)
 
 # Glob all source files in the LigidPainter directory
 file(GLOB_RECURSE LIGID_SOURCES
@@ -13,8 +12,6 @@ file(GLOB_RECURSE LIGID_SOURCES
    ${PROJECT_SOURCE_DIR}/LigidPainter/*.c
 )
 
-# Disable warnings
-# add_definitions(-w)
 
 # Set C++ standard to C++17
 set(CMAKE_CXX_STANDARD 17)
@@ -22,20 +19,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 
-
-
-
-   
-# Apparently fixes numerous glfw3 linker errors
-#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINKER_FLAGS} -I/usr/local/lib -framework Cocoa -framework IOKit -framework CoreVideo -framework OpenGL -lglfw3")
-
-
-
-
-
 # Define CMAKE_HAS_X
 add_definitions(-DCMAKE_HAS_X)
-
 
 
 if(WIN32)
@@ -72,6 +57,7 @@ install(
             FILES
             ${CMAKE_SOURCE_DIR}/freetype.dll
             ${CMAKE_SOURCE_DIR}/OpenAL32.dll
+            ${CMAKE_SOURCE_DIR}/zlibd.dll
             DESTINATION bin
         )
 
@@ -83,6 +69,10 @@ install(
 
 
 
+# Set the project version
+set(PROJECT_VERSION_MAJOR 2)
+set(PROJECT_VERSION_MINOR 0)
+set(PROJECT_VERSION_PATCH 0)
 
 
 # Set CPack package details
@@ -100,9 +90,9 @@ set(CPACK_PACKAGE_EXECUTABLES Ligid;LigidPainter)
 set(CPACK_CREATE_DESKTOP_LINKS Ligid)
 
 # Set CPack package version
-set(CPACK_PACKAGE_VERSION_MAJOR 1)
-set(CPACK_PACKAGE_VERSION_MINOR 1)
-set(CPACK_PACKAGE_VERSION_PATCH 1)
+set(CPACK_PACKAGE_VERSION_MAJOR 2)
+set(CPACK_PACKAGE_VERSION_MINOR 0)
+set(CPACK_PACKAGE_VERSION_PATCH 0)
 set(CPACK_GENERATOR WIX)
 
 include(CPack)
