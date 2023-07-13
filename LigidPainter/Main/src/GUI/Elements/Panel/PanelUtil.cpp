@@ -143,6 +143,7 @@ void Panel::prepDrawBtnVertically(Element &button,Element &previousButton,float&
     float screenGapY = 50 - scale.y*1.f;
     button.pos.y = elementPos - slideVal * slideRatio;
 }
+
 void Panel::prepDrawBtnHorizontally(Element &button,Element &previousButton,float& elementPos,int btnCounter){
     button.scale.y = scale.y;
     //Move the button on top of the panel

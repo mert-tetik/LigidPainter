@@ -40,6 +40,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 *   2 : Print node titles with the property data
 */
 #define LIGID_FBX_IMPORTER_PRINT_TEXT_STATE 0
+#define LIGID_FBX_IMPORTER_TRIANGULATE true
 
 
 // Forward declarations for the utilities
@@ -72,6 +73,78 @@ int __node_counter = 0;
 int _FBX_totalBitsRead = 0;
 
 
+int getVertIndex(const std::vector<Vertex> array, const Vertex val){
+    for (size_t i = 0; i < array.size(); i++)
+    {
+        if(array[i].Position == val.Position && array[i].TexCoords == val.TexCoords)
+            return i;
+    }
+    return 0;
+}
+
+void parseMeshData(
+                        const std::vector<glm::vec3>& positions,
+                        const std::vector<glm::vec2>& UVs,
+                        const std::vector<glm::vec3>& normals,
+                        const std::vector<int>& polygonVertexIndices,
+                        const std::vector<int>& uvIndices,
+                        const std::vector<int>& edges,
+                        const std::vector<std::string>& matTitles,
+                        const std::vector<int>& materials,
+                        std::vector<std::vector<Vertex>>& meshVertices,
+                        std::vector<std::vector<unsigned int>>& meshIndices
+                    )
+{
+    if (polygonVertexIndices.size() != edges.size())
+    {
+        std::cout << "ERROR: Reading FBX file. Can't parse mesh data. Sizes of the polygonVertexIndices & the edges are not the same." << std::endl;
+        return;
+    }
+
+    std::vector<Vertex> uniqueVertices;
+    std::vector<unsigned int> indices;
+
+    std::map<int, int> posData;
+
+    for (size_t i = 0; i < uvIndices.size(); i++)
+    {
+        int uvIndex = uvIndices[i];
+
+        int posIndex = polygonVertexIndices[uvIndex];
+        if (posIndex < 0)
+            posIndex = abs(posIndex) - 1;
+
+        int edgeIndex = edges[uvIndex];
+        if (edgeIndex  < 0)
+            edgeIndex  = abs(edgeIndex ) - 1;
+
+        Vertex uniqueVert;
+        uniqueVert.Position = positions[posIndex];
+        uniqueVert.TexCoords = UVs[edgeIndex];
+        uniqueVert.Normal = normals[uvIndex];
+        
+        posData[posIndex] = uniqueVertices.size();
+        uniqueVertices.push_back(uniqueVert);
+    }
+
+    int faceI = 0;
+    for (size_t i = 0; i < polygonVertexIndices.size(); i++)
+    {
+        int posIndex = polygonVertexIndices[i];
+        
+        if (posIndex < 0){
+            posIndex = abs(posIndex) - 1;
+        }
+
+        indices.push_back(posData[posIndex]);
+        
+        faceI++; 
+    }
+
+    // Push the uniqueVertices and indices to the meshVertices and meshIndices vectors
+    meshVertices.push_back(uniqueVertices);
+    meshIndices.push_back(indices);
+}
 
 /*
     HEADER
@@ -133,77 +206,23 @@ Model FileHandler::readFBXFile(std::string path) {
     std::vector<int> materials;
 
     // Process the FBX data
-    ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges, matTitles, materials, matTitles, materials);
+    ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges, matTitles, materials);
 
-    
     std::vector<std::vector<Vertex>> meshVertices;
-    
     std::vector<std::vector<unsigned int>> meshIndices;
-    std::vector<std::vector<Vertex>> unitedVertices;
-    std::vector<Vertex> _meshVertices;
-    std::vector<unsigned int> _meshIndices;
 
-
-    /* ----------- Stack All The Data ----------- */
-    std::vector<Vertex> _unitedVertices;
-    std::vector<bool> faceHolder;
-    for (size_t i = 0; i < polygonVertexIndices.size(); i++)
-    {
-        int posIndex = polygonVertexIndices[i];
-        int uvIndex = edges[i];
-        
-
-        if(posIndex < 0){
-            posIndex = abs(posIndex) - 1;
-            faceHolder.push_back(1);
-        }
-        else{
-            faceHolder.push_back(0);
-        }
-        
-        if(uvIndex < 0)
-            uvIndex = abs(uvIndex) - 1;
-
-        Vertex vert;
-        vert.Position = positions[posIndex];  
-        vert.TexCoords = UVS[uvIndex];  
-        vert.Normal = normals[i];  
-
-        _unitedVertices.push_back(vert);
-
-    }
-    
-    /* ----------- Triangulate & Generate Tangent For Stacked Data ----------- */
-    std::vector<Vertex> triangulatedUnitedVertices;
-    std::vector<Vertex> face;
-    for (size_t i = 0; i < _unitedVertices.size(); i++)
-    {
-        face.push_back(_unitedVertices[i]);
-
-        // Face ended
-        if(faceHolder[i] == true){
-            std::vector<std::vector<Vertex>> triangulatedFaces = triangulateFaces(face);
-
-            for (size_t fI = 0; fI < triangulatedFaces.size(); fI++)
-            {
-                generateTangentBitangent(triangulatedFaces[fI]);
-                for (size_t vI = 0; vI < triangulatedFaces[fI].size(); vI++)
-                {
-                    triangulatedUnitedVertices.push_back(triangulatedFaces[fI][vI]);
-                }
-            }
-
-            face.clear();
-        }
-    }
-    
-
-    unitedVertices.push_back(triangulatedUnitedVertices);
-
-    seperateUnitedVertices(unitedVertices, meshVertices, meshIndices);
-
-    // Close the file
-    file.close();
+    parseMeshData(  
+                        positions,
+                        UVS,
+                        normals,
+                        polygonVertexIndices,
+                        uvIndices,
+                        edges,
+                        matTitles,
+                        materials,
+                        meshVertices,
+                        meshIndices
+                    );
 
     return createModel(meshVertices, meshIndices, {});
 }

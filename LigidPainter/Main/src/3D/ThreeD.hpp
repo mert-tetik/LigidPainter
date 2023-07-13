@@ -35,6 +35,11 @@ struct Vertex {
     glm::vec3 Tangent = glm::vec3(0);
     // bitangent
     glm::vec3 Bitangent = glm::vec3(0);
+
+    bool operator==(const Vertex& other) const
+    {
+        return Position == other.Position && TexCoords == other.TexCoords && Normal == other.Normal;
+    }
 };
 
 
