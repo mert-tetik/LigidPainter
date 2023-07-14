@@ -843,7 +843,6 @@ void ProcessNodeHierarchy(
     }
 }
 
-
 static void parseFBXMeshData(
                         const std::vector<glm::vec3>& positions,
                         const std::vector<glm::vec2>& UVs,

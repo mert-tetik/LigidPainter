@@ -53,7 +53,8 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader
 
 std::vector<Section> MaterialModifier::createTextureModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
         
-    return {
+    return 
+    {
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Channels",Texture(),0.f,true)),
             {

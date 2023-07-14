@@ -11,8 +11,6 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
-
-Renderer.h : Renders the whole screen
 */
 
 #ifndef LGDRENDERER_HPP
@@ -33,42 +31,73 @@ Renderer.h : Renders the whole screen
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
 
+struct AppSettings{
+    /*! @brief Set swapInterval(1) if true */
+    bool VSync = false; 
+
+    bool backfaceCulling = false;
+
+    /*! @brief Textures will be generated with that resolution value */
+    int textureRes = 1024; 
+};
+
 class Renderer
 {
 public:
-    Context context; //Holds data related to the window
-    Scene scene; //3D Scene structure
-    Model model; //Loaded 3D Model
-    Model sphereModel; //Sphere 3D Model to display the materials
+    /*! 
+        @brief Holds data related to window 
+        
+        @todo Remove this struct
+    */
+    Context context; 
 
-    //Structure that holds all the shaders
-    //*Define shaders there then init like that shaders.tdModelShader = Shader("a.vert","a.frag");
+
+    Scene scene; //3D Scene structure
+    
+    /*!
+        @brief The only 3D model object.   
+    */
+    Model model;
+    
+    /*!
+        @brief Sphere 3D Model to display the materials, shader balls and stuff
+    */
+    Model sphereModel; 
+
+    /*!
+        @brief Holds all the shaders
+    */
     Shaders shaders; 
 
-    Mouse mouse; //Everything related to the mouse is done via that class
+    /*!
+        @brief Everything related to the mouse is done via that class 
+    */
+    Mouse mouse; 
 
-    Box box; //A class that used render 2D square vertices 
+    /*!
+        @brief Render 2D square 
+    */
+    Box box; 
 
+    /*!
+        @brief The GUI
+    */
     UI userInterface; 
 
-    //Manage time
-    //Commonly used to support the transition effects (to be make sure the transition is done in certain time & not effect by rendering speed)
+    /*!
+        @brief Manage time
+    */
     Timer timer;    
 
-    //Structure that holds the font classes that will be used by the text renderer (TextRenderer.hpp)
     Fonts fonts;
 
     Websites websites;
 
-    //That class is responisble of rendering texts
-    //Constructor takes a font class
-    //You can change the font in the runtime
     TextRenderer textRenderer; 
 
-    //Textures those will be used in UI of the app
     AppTextures appTextures;
 
-    std::vector<Node> meshNodeScene; //Contains app nodes
+    std::vector<Node> meshNodeScene;
 
     Library library;
 
@@ -76,42 +105,41 @@ public:
 
     std::vector<ContextMenu> contextMenus; //0 for textures , 1 for materials, 2 for brushes
 
-    int textureRes = 1024; //Textures will be generated with that resolution
-
     Project project;
 
     Skybox skybox;
 
     Painter painter;
 
-    bool VSync = false; //Set swapInterval(1) if true
-    bool backfaceCulling = false;
-
-
+    AppSettings settings;
 
     //Constructor
     Renderer(glm::vec2 videoScale);
 
     void render();
 private:
+    /*!
+        @brief Let the model.newModelAdded be true for an another cycle
+                Ignore pls
+    */
     bool previousModelNewModelAdded = false;
 
-    //Init.cpp
+
     void initGlad();
     void loadAppTextures();
     void loadShaders();
     void createContextMenus();
 
-    //Stuff
+
     void updateViewMatrix();
     void updateProjectionMatrix();
     void updateViewport();
-    
-    //Rendering stuff
+
+
     void renderSkyBox();
     void set3DUniforms();
 
-    //CALLBACKS
+
     double previousClickTime = 0.0;
     glm::vec2 lastMousePos;//This will be used as "last frame's cursor pos" for the cursor offset 
     

@@ -23,14 +23,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "3D/ThreeD.hpp"
 
-using namespace std;
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, int materialIndex)
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName)
 {
     this->vertices = vertices;
     this->indices = indices;
     this->materialName = materialName;
-    this->materialIndex = materialIndex;
 
     // now that we have all the required data, set the vertex buffers and its attribute pointers.
     setupMesh();
@@ -44,8 +42,9 @@ void Mesh::Draw()
     glBindVertexArray(VAO);
 
     glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
-    glBindBuffer(1,oVBO);
-    glBindVertexArray(oVAO);
+    
+    glBindBuffer(1, 0);
+    glBindVertexArray(0);
     
     // always good practice to set everything back to defaults once configured.
 }

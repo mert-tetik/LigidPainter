@@ -48,7 +48,7 @@ void Renderer::render(){
     updateViewport();
 
     //VSync
-    if(VSync)
+    if(this->settings.VSync)
         LigidGL::setSwapInterval(1); //Enable VSync
     else
         LigidGL::setSwapInterval(0); //Disable VSync
@@ -77,7 +77,7 @@ void Renderer::render(){
         painter.updateTheDepthTexture = false;
     }
 
-    if(backfaceCulling)
+    if(this->settings.backfaceCulling)
         glEnable(GL_CULL_FACE);
     else
         glDisable(GL_CULL_FACE);
@@ -181,11 +181,9 @@ void Renderer::render(){
                             library,
                             meshNodeScene,
                             contextMenus,
-                            textureRes,
+                            settings,
                             project,
                             painter,
-                            VSync,
-                            backfaceCulling,
                             skybox,
                             model
                         );
@@ -207,10 +205,10 @@ void Renderer::render(){
         for (size_t i = 0; i < library.materials.size(); i++)
         {   
             //Update the material after painting
-            library.materials[i].updateMaterial(textureRes, box, context, shaders, sphereModel);
+            library.materials[i].updateMaterial(this->settings.textureRes, box, context, shaders, sphereModel);
         }
         //Update the selected texture after painting
-        painter.updateTexture(library.textures, model, textureRes, scene, userInterface.twoDPaintingPanel, userInterface.projection);
+        painter.updateTexture(library.textures, model, this->settings.textureRes, scene, userInterface.twoDPaintingPanel, userInterface.projection);
         //Refresh the 2D painting texture
         painter.refreshPainting();
 

@@ -29,12 +29,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 
 //Forward declarations
 class ColorPalette;
 class ContextMenu;
+struct AppSettings;
 
 class DialogControl
 {
@@ -107,7 +109,7 @@ class SettingsDialog
 
     //Public member functions    
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,
-                glm::vec2 videoScale,int &textureRes,bool &VSync,bool &backfaceCulling);
+                glm::vec2 videoScale, AppSettings& settings);
  };
 
 

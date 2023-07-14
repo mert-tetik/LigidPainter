@@ -16,7 +16,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 
-    ! THIS SECTION & MODEL.EXPORT IS COMPLETELY USELESS USE THE FILEHANDLER INSTEAD!!!!!!!!!!!!!!!S
+    !  USE THE FILEHANDLER INSTEAD!!!!!!!!!!!!!!!
     
 
 
@@ -132,4 +132,3 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void Model::exportModel(std::string path){
 
 }
-

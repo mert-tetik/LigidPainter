@@ -21,7 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "3D/Material/Material.hpp"
 
-//Front decleration
+//Forward decleration
 struct Section;
 
 struct Vertex {
@@ -45,71 +45,130 @@ struct Vertex {
 
 class Skybox{
 public:
+    /*! @brief Skybox CubeMap OpenGL texture buffer object ID */
     unsigned int ID;
-    unsigned int IDPrefiltered = 0;
-    unsigned int VBO;
-    unsigned int VAO;
-	unsigned int displayingTexture = 0;
-	glm::mat4 transformMatrix = glm::mat4(1);//Used to rotate the skybox
-	float lod = 0.; //Used to blur the skybox
-	glm::vec3 bgColor = glm::vec3(0.1);
-	float opacity = 0.f;
 
-    //Constructor
+    /*! @brief Prefiltered Skybox CubeMap OpenGL texture buffer object ID */
+    unsigned int IDPrefiltered = 0;
+    
+    /*! @brief Displaying texture OpenGL texture buffer object ID (Captures a skybox ball)*/
+	unsigned int displayingTexture = 0;
+	
+    /*! @brief Used to rotate the skybox */
+    glm::mat4 transformMatrix = glm::mat4(1);
+	
+    /*! @brief Used to blur the skybox */
+    float lod = 0.;
+    
+    /*! @brief What color replaces the skybox */
+	glm::vec3 bgColor = glm::vec3(0.1);
+	
+    /*! @brief Mixes the bgColor value and the skybox color value */
+    float opacity = 0.f;
+
+    /*! @brief Default constructor*/
     Skybox();
 
-    //Public member functions    
+    /*! @brief Init @ref VAO & @ref VBO */
     void init();
+
+    /*! 
+        @brief Load skybox cubemap texture 
+        @param path Path to the folder holds the faces of the each cubemap
+
+        The folder must contain these images : 
+        px.png 
+		nx.png
+		ny.png
+		py.png
+		pz.png
+		nz.png
+    */
     void load(std::string path);
+
+    /*!
+        @brief Renders the skybox
+        @param bindTxtr binds the prefiltered texture before rendering if true.
+                        Is set to false when rendering while prefiltering 
+                        the skybox texture ( @ref ID )
+    */
     void draw(bool bindTxtr);
-	unsigned int createPrefilterMap(Shader prefilteringShader,glm::vec2 videoScale);
-	void createDisplayingTxtr(Shader skyboxBall,Model &sphereModel,glm::vec2 windowScale);
+    
+    /*!
+        @brief Creates the @ref IDPrefiltered. (Prefilters the skybox texture ( @ref ID ))
+        @param prefilteringShader Shader used to prefilter skyboxes
+        @param videoScale Primary monitor resolution value
+    */
+	unsigned int createPrefilterMap(Shader prefilteringShader, glm::vec2 videoScale);
+	
+    /*!
+        @brief Creates the @ref displayingTexture. Renders a sphere using skyboxBall 
+                shader and captures it into the displayingTexture.
+        
+        @param skyboxBall Shader used to create the skybox ball. Reflective surface.
+        @param sphereModel The skybox ball 3D Model
+        @param windowScale Resolution of the main window
+    */
+    void createDisplayingTxtr(Shader skyboxBall,Model &sphereModel, glm::vec2 windowScale);
+
+private:
+    /*! @brief Skybox vertex buffer object ID*/
+    unsigned int VBO;
+    
+    /*! @brief Skybox vertex array object ID*/
+    unsigned int VAO;
 };
 
 class Mesh {
 public:
-    // mesh Data
-    std::vector<Vertex>       vertices;
-    std::vector<unsigned int> indices;
-    unsigned int VAO;
-    std::string materialName;
-    int materialIndex;
-    float modelMaterialButtonMixVal = 0.f;
 
-    //Default constructor
+    /*! @brief Vertices of the mesh */
+    std::vector<Vertex>       vertices;
+
+    /*! @brief Indices of the mesh */
+    std::vector<unsigned int> indices;
+    
+    /*! @brief Vertex array object*/
+    unsigned int VAO;
+    
+    /*! @brief Title of the mesh */
+    std::string materialName;
+    
+    /*! Default constructor */
     Mesh(){}
     
-    //Constructor
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName,int materialIndex);
-
+    /*! @brief Generates the buffer objects using the first two parameters */
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName);
+    
+    /*! @brief Renders the mesh*/
     void Draw();
 
 private:
-    // render data 
-    unsigned int VBO, EBO;
-    unsigned int oVBO, oVAO;
 
-    // initializes all the buffer objects/arrays
+    unsigned int VBO, EBO; //Vertex buffer object, element buffer object
+
+    /*! @brief initializes all the buffer objects/arrays */
     void setupMesh();
+
 };
 
 
-
 class Model{
-private:
-
-    std::string directory;
 public:
-    // model data 
+    /*! @brief Meshes of the model */
     std::vector<Mesh>    meshes;
-    std::string filePath;
-    std::string title;
-    unsigned int mVAO;
-    unsigned int mVBO;
 
-    bool newModelAdded = false; //Returns true in the same frame a new model is imported
+    /*! @brief Title of the model*/    
+    std::string title;
+
+    /*! 
+        @brief Is true in the same frame a new model is imported.
+                And is set to false back in the renderer.render  
+    */
+    bool newModelAdded = false; 
 
     //Public member functions
+    
     void Draw();
     void exportModel(std::string path);
     void loadModel(std::string const &path,bool triangulate);

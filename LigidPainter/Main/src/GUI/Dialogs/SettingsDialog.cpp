@@ -21,6 +21,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Renderer.h"
 #include "GUI/GUI.hpp"
 
 #include <string>
@@ -59,8 +60,8 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
     },glm::vec2(15.f),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
 }
 
-void SettingsDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
-                            Library &library,glm::vec2 videoScale,int &textureRes,bool &VSync, bool &backfaceCulling){
+void SettingsDialog::render(LigidWindow originalWindow, ColorPalette colorPalette, Mouse& mouse, Timer timer, TextRenderer &textRenderer,
+                            Library &library, glm::vec2 videoScale, AppSettings& settings){
     
     dialogControl.updateStart(buttonShader);   
 
@@ -68,17 +69,17 @@ void SettingsDialog::render(LigidWindow originalWindow,ColorPalette colorPalette
     int txtrRes = 256;
     for (size_t i = 0; i < panel.sections[0].elements[1].comboBox.texts.size(); i++)
     {
-        if(textureRes == txtrRes)
+        if(settings.textureRes == txtrRes)
             panel.sections[0].elements[1].comboBox.selectedIndex = i;
         
         txtrRes*=2;
     }
 
     //Set the vsync option as the vsync checkbox element
-    VSync = panel.sections[0].elements[2].checkBox.clickState1;
+    settings.VSync = panel.sections[0].elements[2].checkBox.clickState1;
     
     //Set the backface culling option as the backface culling checkbox element
-    backfaceCulling = panel.sections[0].elements[3].checkBox.clickState1;
+    settings.backfaceCulling = panel.sections[0].elements[3].checkBox.clickState1;
 
     //Render the panel    
     panel.render(videoScale,mouse,timer,textRenderer,true);
@@ -87,7 +88,7 @@ void SettingsDialog::render(LigidWindow originalWindow,ColorPalette colorPalette
     for (size_t i = 0; i < panel.sections[0].elements[1].comboBox.hover.size(); i++)
     {
         if(panel.sections[0].elements[1].comboBox.hover[i] && mouse.LClick){
-            textureRes = stoi(panel.sections[0].elements[1].comboBox.texts[panel.sections[0].elements[1].comboBox.selectedIndex]);
+            settings.textureRes = stoi(panel.sections[0].elements[1].comboBox.texts[panel.sections[0].elements[1].comboBox.selectedIndex]);
         }
     }
     

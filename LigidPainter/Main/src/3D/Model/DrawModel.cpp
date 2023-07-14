@@ -36,6 +36,6 @@ void Model::Draw()
     for(unsigned int i = 0; i < meshes.size(); i++){
         meshes[i].Draw();
     }
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBindVertexArray(mVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
