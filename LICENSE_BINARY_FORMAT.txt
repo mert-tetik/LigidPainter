@@ -1,0 +1,37 @@
+LigidPainter Binary Form License Agreement
+
+Version 1.0
+
+PLEASE READ THIS LICENSE AGREEMENT CAREFULLY BEFORE USING THE LIGIDPAINTER BINARY FORM. BY USING THE BINARY FORM, YOU ARE AGREEING TO BE BOUND BY THE TERMS OF THIS LICENSE AGREEMENT.
+
+Definitions
+a. "LigidPainter" refers to the binary form of the software application titled "LigidPainter" developed by Mert Tetik.
+
+b. "Binary Form" refers to the compiled and executable version of the LigidPainter software application.
+
+Grant of License
+Subject to the terms and conditions of this License Agreement, Mert Tetik grants you a worldwide, royalty-free, non-exclusive, perpetual license to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Binary Form of LigidPainter, without restriction.
+
+User Rights and Permissions
+a. You are free to create and distribute any content using the LigidPainter software application, including +18 content, without any limitations or restrictions.
+
+b. You may profit from the content you create using LigidPainter, and you have full rights to license and claim ownership over that content.
+
+c. Users are not required to give credits to Mert Tetik or LigidPainter when using the software application or the content created with it.
+
+d. Users have the freedom to use the files in the "Sources" folder of LigidPainter (such as textures, 3D models etc.) as they see fit.
+
+Ownership and Trademarks
+a. The ownership and intellectual property rights of the LigidPainter software application and its associated trademarks remain the sole property of Mert Tetik.
+
+b. Users cannot claim ownership of the LigidPainter application itself or its associated trademarks.
+
+Limitation of Liability
+IN NO EVENT SHALL MERT TETIK BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THE USE OF THE LIGIDPAINTER BINARY FORM.
+
+Governing Law
+This License Agreement shall be governed by and construed in accordance with the laws of the jurisdiction in which Mert Tetik resides.
+
+By using the LigidPainter Binary Form, you acknowledge that you have read and understood this License Agreement and agree to be bound by its terms and conditions.
+
+© 2023 Mert Tetik. All rights reserved.
