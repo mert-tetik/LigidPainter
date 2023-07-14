@@ -720,6 +720,31 @@ void ProcessNodeHierarchy(
                             vertPositions.push_back(vertPos);                            
                         }
                     }
+                    else if(prop.typeCode == 'f'){
+                        size_t arrayLength = prop.data.size() / sizeof(float);
+                        std::vector<float> floatArray(arrayLength);
+
+                        std::memcpy(floatArray.data(), prop.data.data(), prop.data.size());
+
+                        for (size_t i = 0; i < floatArray.size()/3; i++)
+                        {
+                            glm::vec3 vertPos;
+                            if(i * 3 >= floatArray.size())
+                                break;
+                            vertPos.x = floatArray[i * 3];
+                            if(i * 3 + 1 >= floatArray.size())
+                                break;
+                            vertPos.y = floatArray[i * 3 + 1];
+                            if(i * 3 + 2 >= floatArray.size())
+                                break;
+                            vertPos.z = floatArray[i * 3 + 2];
+
+                            vertPositions.push_back(vertPos);                            
+                        }
+                    }
+                    else{
+                        std::cout << "WARNING! Variable type for the vertices array is not valid : " << prop.typeCode << std::endl;
+                    }
                 }
                 
                 if(node.nodeType == "Normals"){
@@ -745,6 +770,31 @@ void ProcessNodeHierarchy(
                             vertNormals.push_back(vertNormal);                            
                         }
                     }
+                    else if(prop.typeCode == 'f'){
+                        size_t arrayLength = prop.data.size() / sizeof(float);
+                        std::vector<float> floatArray(arrayLength);
+
+                        std::memcpy(floatArray.data(), prop.data.data(), prop.data.size());
+
+                        for (size_t i = 0; i < floatArray.size()/3; i++)
+                        {
+                            glm::vec3 vertNormal;
+                            if(i * 3 >= floatArray.size())
+                                break;
+                            vertNormal.x = floatArray[i * 3];
+                            if(i * 3 + 1 >= floatArray.size())
+                                break;
+                            vertNormal.y = floatArray[i * 3 + 1];
+                            if(i * 3 + 2 >= floatArray.size())
+                                break;
+                            vertNormal.z = floatArray[i * 3 + 2];
+
+                            vertNormals.push_back(vertNormal);                            
+                        }
+                    }
+                    else{
+                        std::cout << "WARNING! Variable type for the normals array is not valid : " << prop.typeCode << std::endl;
+                    }
                 }
 
                 if(node.nodeType == "UV"){
@@ -768,6 +818,30 @@ void ProcessNodeHierarchy(
 
                             vertUVs.push_back(vertUV);                            
                         }
+                    }
+                    else if (prop.typeCode == 'f') {
+                        size_t arrayLength = prop.data.size() / sizeof(float);
+                        std::vector<float> floatArray(arrayLength);
+
+                        std::memcpy(floatArray.data(), prop.data.data(), prop.data.size());
+
+                        for (size_t i = 0; i < floatArray.size()/2; i++)
+                        {
+                            glm::vec3 vertUV;
+                            
+                            if(i * 2 >= floatArray.size())
+                                break;
+                            vertUV.x = floatArray[i * 2];
+                            
+                            if(i * 2 + 1 >= floatArray.size())
+                                break;
+                            vertUV.y = floatArray[i * 2 + 1];
+
+                            vertUVs.push_back(vertUV);                            
+                        }
+                    }
+                    else{
+                        std::cout << "WARNING! Variable type for the texture coordinate array is not valid : " << prop.typeCode << std::endl;
                     }
                 }
 
