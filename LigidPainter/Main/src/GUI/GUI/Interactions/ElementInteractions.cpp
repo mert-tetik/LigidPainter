@@ -80,11 +80,11 @@ void UI::elementInteraction(
 
     this->contextMenuInteraction(contextMenus,mouse,library,meshNodeScene,context,videoScale,timer,textRenderer,project,textureRes, painter);
     
+    updateLibraryPanelDisplayerElements(libraryPanelDisplayer,library,colorPalette,shaders,frameCounter);
+    
     libraryPanelDisplayerInteraction(libraryPanelDisplayer,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,appTextures,frameCounter);
     
     this->libraryPanelLeftInteraction(libraryPanelLeft,library,mouse);
-    
-    updateLibraryPanelDisplayerElements(libraryPanelDisplayer,library,colorPalette,shaders,frameCounter);
 
     paintingPanelInteraction(paintingPanel,mouse,painter,dropper,colorPalette,shaders.buttonShader,appTextures,model, meshNodeScene);
     

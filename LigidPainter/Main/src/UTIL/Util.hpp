@@ -315,7 +315,7 @@ public:
     //OpenGL shader pipeline : .vert -> .tc -> .te -> .geom -> .frag
 
     /// @brief Id of the shader in an OpenGL context
-    unsigned int ID;
+    unsigned int ID = 0;
 
     /// @brief Default constructor (is not used) 
     Shader();

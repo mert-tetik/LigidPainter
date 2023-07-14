@@ -205,7 +205,7 @@ void Renderer::render(){
         for (size_t i = 0; i < library.materials.size(); i++)
         {   
             //Update the material after painting
-            library.materials[i].updateMaterial(this->settings.textureRes, box, context, shaders, sphereModel);
+            library.materials[i].updateMaterial(this->settings.textureRes, box, context, shaders.buttonShader, shaders.tdModelShader, sphereModel);
         }
         //Update the selected texture after painting
         painter.updateTexture(library.textures, model, this->settings.textureRes, scene, userInterface.twoDPaintingPanel, userInterface.projection);
@@ -227,9 +227,6 @@ void Renderer::render(){
     mouse.mouseOffset = glm::vec2(0);
     mouse.mods = 0;
     mouse.mouseScroll = 0;
-
-    //Set library changed to false after updating some stuff after library change
-    library.changed = false;
 
     //Set keyboard states to default
     textRenderer.keyInput = false;

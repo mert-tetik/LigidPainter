@@ -51,9 +51,10 @@ void MaterialEditorDialog::render
                                     Box box,
                                     Context context,
                                     std::vector<ContextMenu> &contextMenus
-                                ){
+                                )
+{
     
-    dialogControl.updateStart(shaders.buttonShader);
+    dialogControl.updateStart(buttonShader);
 
     //Render the panels & material displayer button
     bgPanel.render(videoScale,mouse,timer,textRenderer,         !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
@@ -95,7 +96,7 @@ void MaterialEditorDialog::render
     //Render the material displayer
     materialDisplayer.render(videoScale,mouse,timer,textRenderer,false);
     
-    dialogControl.updateEnd(timer,shaders.buttonShader,0.15f);
+    dialogControl.updateEnd(timer,buttonShader,0.15f);
 
     //Close the dialog
     if(context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || ((!bgPanel.hover && !barButton.hover) && mouse.LClick) || (barButton.hover && mouse.LDoubleClick))
@@ -140,7 +141,7 @@ void MaterialEditorDialog::updateLayerPanel(Material &material,int &textureRes,B
     for (size_t i = 0; i < material.materialModifiers.size(); i++)
     {
         layerPanelSection.elements.push_back(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),colorPalette,shaders.buttonShader,material.materialModifiers[i].title , Texture(), 0.f,true))
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),colorPalette,buttonShader,material.materialModifiers[i].title , Texture(), 0.f,true))
         );
     }
 
@@ -148,7 +149,7 @@ void MaterialEditorDialog::updateLayerPanel(Material &material,int &textureRes,B
     layerPanel.sections.push_back(layerPanelSection);
     
     //Update the material after updating layerPanel
-    material.updateMaterial((float)textureRes, box, context, shaders, sphereModel);
+    material.updateMaterial((float)textureRes, box, context, buttonShader,tdModelShader, sphereModel);
 
     
 }
@@ -199,17 +200,17 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,float textureR
             //If button is clicked update the material
             if(modifiersPanel.sections[secI].elements[elementI].state == 0)
                 if(modifiersPanel.sections[secI].elements[elementI].button.clicked)
-                    material.updateMaterial((float)textureRes, box, context, shaders, sphereModel);
+                    material.updateMaterial((float)textureRes, box, context, buttonShader, tdModelShader,sphereModel);
 
             //If range bar's value changed update the material
             if(modifiersPanel.sections[secI].elements[elementI].state == 1)
                 if(modifiersPanel.sections[secI].elements[elementI].rangeBar.pointerPressed == true)
-                    material.updateMaterial((float)textureRes, box, context, shaders, sphereModel);
+                    material.updateMaterial((float)textureRes, box, context, buttonShader, tdModelShader,sphereModel);
 
             //If checkbox clicked update the material
             if(modifiersPanel.sections[secI].elements[elementI].state == 2)
                 if(modifiersPanel.sections[secI].elements[elementI].checkBox.hover && mouse.LClick == true)
-                    material.updateMaterial((float)textureRes, box, context, shaders, sphereModel);
+                    material.updateMaterial((float)textureRes, box, context, buttonShader, tdModelShader,sphereModel);
         }
     }
 
@@ -252,10 +253,12 @@ void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &t
         if(textureSelectionDialog.selectedTextureIndex != 1000){// If a texture is selected in the texture selection dialog
             
             //Change the texture of the channel button
-            modifiersPanel.sections[0].elements[textureModifierTextureSelectingButtonIndex].button.texture = library.textures[textureSelectionDialog.selectedTextureIndex];
+            if(library.textures.size())
+                modifiersPanel.sections[0].elements[textureModifierTextureSelectingButtonIndex].button.texture = library.textures[textureSelectionDialog.selectedTextureIndex];
             
             //Change the texture of the source modifier's texture 
-            material.materialModifiers[selectedMaterialModifierIndex].sections[0].elements[textureModifierTextureSelectingButtonIndex].button.texture = library.textures[textureSelectionDialog.selectedTextureIndex];
+            if(library.textures.size())
+                material.materialModifiers[selectedMaterialModifierIndex].sections[0].elements[textureModifierTextureSelectingButtonIndex].button.texture = library.textures[textureSelectionDialog.selectedTextureIndex];
             
             //Return to default after a texture is selected
             textureModifierTextureSelectingButtonIndex = 1000;
@@ -263,7 +266,7 @@ void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &t
             textureSelectionDialog.dialogControl.unActivate();
             
             //Update the material after a selection is made
-            material.updateMaterial((float)textureRes, box, context, shaders, sphereModel);
+            material.updateMaterial((float)textureRes, box, context, buttonShader,tdModelShader , sphereModel);
 
         }
     }

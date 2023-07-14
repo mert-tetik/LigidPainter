@@ -80,4 +80,7 @@ void updateLibraryPanelDisplayerElements(
         //Give the section
         libraryPanelDisplayer.sections.push_back(Section(Element(Button()),libSection.elements));
     }
+    
+    //Set library changed to false after updating some stuff after library change
+    library.changed = false;
 }

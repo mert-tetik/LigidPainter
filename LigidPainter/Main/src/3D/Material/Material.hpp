@@ -117,7 +117,7 @@ public:
     void readFile(std::string path,ColorPalette colorPalette ,Shader buttonShader ,AppTextures appTextures, const std::vector<Material> materials);
 
     /// @brief Interpret the @ref materialModifiers and write the shader results to the material channels then update the displaying texture
-    void updateMaterial(float textureRes, Box box, Context context, Shaders shaders, Model sphereModel);
+    void updateMaterial(float textureRes, Box box, Context context, Shader buttonShader, Shader tdModelShader, Model sphereModel);
 
     /// @brief Returns a new material with the same material modifiers and different OpenGL texture objects 
     Material duplicateMaterial(int textureRes);

@@ -32,7 +32,8 @@ void Material::updateMaterial(
                                 float textureRes,
                                 Box box,
                                 Context context,
-                                Shaders shaders,
+                                Shader buttonShader,
+                                Shader tdModelShader,
                                 Model sphereModel
                             ){ 
     //Set the OpenGL viewport to the texture resolution
@@ -165,7 +166,7 @@ void Material::updateMaterial(
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     //Use the 3D model rendering shader
-    shaders.tdModelShader.use();
+    tdModelShader.use();
 
     //Move the camera to the side
     glm::vec3 viewPos = glm::vec3(3.f,0,0);
@@ -181,9 +182,9 @@ void Material::updateMaterial(
                                                 );
 
     //Throw the camera data to the shader
-    shaders.tdModelShader.setVec3("viewPos",viewPos);
-    shaders.tdModelShader.setMat4("view",view);
-    shaders.tdModelShader.setMat4("projection",projectionMatrix);
+    tdModelShader.setVec3("viewPos",viewPos);
+    tdModelShader.setMat4("view",view);
+    tdModelShader.setMat4("projection",projectionMatrix);
     
     //Bind the channels of the material
     glActiveTexture(GL_TEXTURE2);
@@ -209,7 +210,7 @@ void Material::updateMaterial(
     //!Finish (prepeare rendering the GUI)
 
     //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
-    shaders.buttonShader.use();
+    buttonShader.use();
 
     //Bind the default framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER,0);

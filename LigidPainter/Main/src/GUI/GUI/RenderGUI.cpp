@@ -228,9 +228,9 @@ void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRen
     if(settingsDialog.dialogControl.isActive())
         settingsDialog.render(context.window, colorPalette, mouse, timer, textRenderer, library, videoScale, settings);
     
-    if(materialEditorDialog.dialogControl.isActive() && library.materials.size()){
+    if(materialEditorDialog.dialogControl.isActive() && library.materials.size())
         materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex],settings.textureRes,box,context,contextMenus);
-    }
+    
     if(textureSelectionDialog.dialogControl.isActive())
         textureSelectionDialog.render(videoScale,mouse,timer,textRenderer,library);
 }

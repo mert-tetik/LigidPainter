@@ -223,7 +223,8 @@ public:
 class MaterialEditorDialog
 {
 private:
-    Shaders shaders;
+    Shader buttonShader;
+    Shader tdModelShader;
     ColorPalette colorPalette;
     Model sphereModel;
 
@@ -254,7 +255,7 @@ public:
     
     //Constructors
     MaterialEditorDialog();
-    MaterialEditorDialog(Shaders shaders,ColorPalette colorPalette,AppTextures appTextures,Model &sphereModel);
+    MaterialEditorDialog(Shader buttonShader, Shader tdModelShader, ColorPalette colorPalette,AppTextures appTextures,Model &sphereModel);
 
     //Public member functions
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library,
@@ -312,6 +313,8 @@ class ExportDialog
 
 
 //!------------------------------TEXTURE SELECTION DIALOG------------------------------
+
+//TODO : Replace the index with the texture's itself
 
 class TextureSelectionDialog
 {

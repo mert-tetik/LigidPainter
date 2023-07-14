@@ -448,7 +448,6 @@ class Panel
 {
 private:
     float slideRatio = 1.f;
-    Shader shader;
     
     void mouseTracking(Mouse& mouse);
     void resizeThePanel(Mouse &mouse, glm::vec2 videoScale);
@@ -458,6 +457,7 @@ private:
     void drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm::vec2 resultScale,Timer &timer,TextRenderer &textRenderer); //Draws the panel and it's elements
 
 public:
+    Shader shader;
     /*! 
         @brief Sections of the panel 
     

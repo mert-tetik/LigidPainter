@@ -109,8 +109,6 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,M
     //If pressed to the last button of the panel (Export button)
     if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && mouse.LClick){
 
-        
-        ;
 
         int resolution = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
         
@@ -134,7 +132,7 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,M
         for (size_t i = 0; i < materials.size(); i++)
         {
             //Update the material
-            materials[i].updateMaterial(resolution, box, context, shaders, sphereModel);
+            materials[i].updateMaterial(resolution, box, context, buttonShader, shaders.tdModelShader, sphereModel);
 
 
             if(i >= model.meshes.size())

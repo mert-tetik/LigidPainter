@@ -41,7 +41,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             anyContextMenuActive = true;
         
         //CONTEXT MENU BUTTONS
-        if(i == 0 && library.selectedElementIndex == 0 && contextMenus[i].dialogControl.isActive()){ //If texture context menu is active
+        if(i == 0 && library.selectedElementIndex == 0 && contextMenus[i].dialogControl.isActive() && library.textures.size()){ //If texture context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to rename button
                 renamingTextBox.active = true;
                 library.changed = true;
@@ -108,12 +108,10 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 //Delete the nodes using same material
                 for (int nodeI = 0; nodeI < meshNodeScene.size(); nodeI++)
                 {
-                    if(meshNodeScene[nodeI].materialID == library.materials[contextMenus[i].selectedElement].uniqueID){
-                        ;
+                    if(meshNodeScene[nodeI].materialID == library.materials[contextMenus[i].selectedElement].uniqueID && meshNodeScene[nodeI].nodeIndex == MATERIAL_NODE){
                         UTIL::deleteNode(meshNodeScene, nodeI);
                         nodeI--;
                     }
-                        
                 }
                 
                 //Delete the material
