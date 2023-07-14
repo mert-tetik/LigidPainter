@@ -152,7 +152,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
 
     //Load the inputs of the mesh node
     meshNodeScene[0].uploadNewIOs(model, colorPalette);
-
+    
     //Create the projects folder if not exists
     if(!std::filesystem::exists("./Projects")){
         std::filesystem::create_directory("./Projects");
@@ -169,6 +169,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
         std::filesystem::create_directory("./tmp");
     }
 
+    std::cout << "F" << std::endl;
 }
 
 

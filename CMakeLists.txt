@@ -78,7 +78,7 @@ set(PROJECT_VERSION_PATCH 0)
 # Set CPack package details
 set(CPACK_PACKAGE_NAME LigidPainter)  # App name
 set(CPACK_PACKAGE_VENDOR LigidTools)  # Publisher name
-set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE.txt)  # The license
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE_BINARY_FORMAT.txt)  # The license
 set(CPACK_RESOURCE_FILE_WELCOME ${CMAKE_SOURCE_DIR}/Installer/Welcome.txt)  # The welcome text
 set(CPACK_PACKAGE_ICON ${PROJECT_SOURCE_DIR}/LigidPainter/Resources/Icons/logo-1080x.ico)
 set(CPACK_WIX_PRODUCT_ICON ${PROJECT_SOURCE_DIR}/LigidPainter/Resources/Icons/logo-1080x.ico)

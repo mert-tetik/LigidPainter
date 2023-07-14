@@ -45,7 +45,6 @@ MaterialEditorDialog::MaterialEditorDialog
     //Give params to the public class member variables
     this->buttonShader = buttonShader; 
     this->tdModelShader = tdModelShader; 
-    std::cout << "AAAAAAA : " << buttonShader.ID << std::endl;
     this->colorPalette = colorPalette; 
     this->sphereModel = sphereModel; 
     

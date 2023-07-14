@@ -388,7 +388,6 @@ void UI::init
     displayerDialog             = DisplayerDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures,shaders.prefilteringShader,shaders.skyboxBall,sphereModel);
     newProjectDialog            = NewProjectDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
     loadProjectDialog           = LoadProjectDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
-    std::cout << "BBBBBBBB : " << shaders.buttonShader.ID << std::endl;
     materialEditorDialog        = MaterialEditorDialog(shaders.buttonShader, shaders.tdModelShader, colorPalette, appTextures, sphereModel);
     textureSelectionDialog      = TextureSelectionDialog(shaders.buttonShader,colorPalette);
     settingsDialog              = SettingsDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
