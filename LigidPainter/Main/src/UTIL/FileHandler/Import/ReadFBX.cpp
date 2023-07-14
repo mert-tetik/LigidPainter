@@ -137,6 +137,9 @@ Model FileHandler::readFBXFile(std::string path) {
     // Process the FBX data
     ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges, matTitles, materials);
 
+    if(materials.size())
+        std::cout << materials[0] << std::endl;
+
     std::vector<std::vector<Vertex>> meshVertices;
     std::vector<std::vector<unsigned int>> meshIndices;
 
@@ -831,8 +834,9 @@ void ProcessNodeHierarchy(
                 if(node.nodeType == "MappingInformationType"){
                     if (prop.typeCode == 'S') {
                         std::string infoStr(prop.data.begin(), prop.data.end());
-                        if(infoStr != "ByPolygonVertex" && infoStr != "ByPolygon")
-                            std::cout << "WARNING : MappingInformationType is : " << infoStr << "! Results might be unexpected."  << std::endl;
+                        if(infoStr != "ByPolygonVertex" && infoStr != "ByPolygon" && infoStr != "AllSame"){
+                            std::cout << "WARNING : Mapping information type is : " << infoStr << "! Results might be unexpected."  << std::endl;
+                        }
                     }
                 }
             }
@@ -939,10 +943,11 @@ static void parseFBXMeshData(
                 if (face.z < 0){
                     face.z = abs(face.z) - 1;
                 }
-                
                 int materialI;
-                if(materials.size())
+                if(materials.size() && materials.size() != 1)
                     materialI = materials[faceCounter];
+                else if (materials.size() == 1)
+                    materialI = 0;
                 else
                     materialI = 0;
 
