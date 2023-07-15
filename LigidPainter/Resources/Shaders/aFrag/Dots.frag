@@ -26,11 +26,17 @@ out vec4 fragColor;
 uniform vec3 pos;
 uniform vec2 scale;
 
+uniform vec2 dotPos;
+uniform float scroll;
+
 float applyThreshold(float value, float threshold) {
     if (value >= threshold){
         while(value > threshold){
             value -= threshold;
         }
+
+        if(value == 0.)
+            value+=0.1; 
 
         return value; 
     }
@@ -46,10 +52,20 @@ void main(){
 
     vec2 UV = TexCoords * scale + pos.xy;
 
+    UV.x -= dotPos.x;
+    UV.y += dotPos.y;
+    
+    float tScr = applyThreshold(scroll,5);
+
+    if(tScr == 0.)
+        tScr += 0.1;
+
+    UV /= tScr;
+
     vec2 tUV = vec2(applyThreshold(UV.x, dotGap),applyThreshold(UV.y, dotGap));
 
     if(tUV.x <= dotSize && tUV.y <= dotSize)
-        m = 1;
+        m = 1 / 1.5;
 
-    fragColor = vec4(m / 1.5);
+    fragColor = vec4(m);
 }

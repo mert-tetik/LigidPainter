@@ -37,6 +37,11 @@ struct Dropper{
     bool active = false;
 };
 
+struct NodePanel{
+    glm::vec2 position = glm::vec2(0);
+    float scroll = 1.f;
+};
+
 // Forward declared 
 struct AppSettings;
 
@@ -90,6 +95,8 @@ public:
     bool anyContextMenuActive = false;
 
     bool anyDialogActive = false;
+
+    NodePanel nodePanel;
 
     //UI Rendering projection
     //Has the screen resolution

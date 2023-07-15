@@ -140,12 +140,27 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,false);
     
+    if(nodeEditorDisplayer.hover){
+        if(mouse.MPressed){
+            this->nodePanel.position += mouse.mouseOffset;
+        }
+        this->nodePanel.scroll += mouse.mouseScroll/100.f;
+        if(this->nodePanel.scroll <= 0)
+            this->nodePanel.scroll = 0.1;
+        if(this->nodePanel.scroll > 20)
+            this->nodePanel.scroll = 20;
+    }
+
     //
     shaders.dotsShader.use();
 
     shaders.dotsShader.setMat4("projection", this->projection);
     shaders.dotsShader.setVec3("pos", nodeEditorDisplayer.resultPos);
     shaders.dotsShader.setVec2("scale", nodeEditorDisplayer.resultScale);
+    
+    shaders.dotsShader.setVec2("dotPos", this->nodePanel.position);
+    std::cout << this->nodePanel.scroll << std::endl;
+    shaders.dotsShader.setFloat("scroll", this->nodePanel.scroll);
     
     /* Render the circle s*/
     glDrawArrays(GL_TRIANGLES, 0, 6);
