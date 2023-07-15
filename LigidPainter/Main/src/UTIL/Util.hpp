@@ -864,6 +864,7 @@ struct Shaders{
     Shader depth3D;
     Shader textureUpdatingShader;
     Shader twoDPaintingModeAreaShader;
+    Shader circleShader;
 };
 
 struct Websites{

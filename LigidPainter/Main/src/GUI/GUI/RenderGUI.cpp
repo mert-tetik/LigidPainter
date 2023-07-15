@@ -46,11 +46,11 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
 
     //Give projection to the curve shader        
     shaders.connectionCurve.use();
-    shaders.connectionCurve.setMat4("projection",projection); 
+    shaders.connectionCurve.setMat4("projection",this->projection); 
     
     //Give projection to the color picker shader !IS NOT USED RN 
     shaders.colorPicker.use();
-    shaders.colorPicker.setMat4("projection",projection); 
+    shaders.colorPicker.setMat4("projection",this->projection); 
     
     //Use the related shader 
     shaders.buttonShader.use();
@@ -59,7 +59,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
 
 
     //Set the ortho projection     
-    shaders.buttonShader.setMat4("projection",projection); 
+    shaders.buttonShader.setMat4("projection",this->projection); 
 
     //Calculate the total screen gap
     float screenGap = videoScale.x - context.windowScale.x; //Use that value to keep panels on the right side
@@ -85,6 +85,20 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(mouse,painter);
+
+    if(!this->anyPanelHover){
+        shaders.circleShader.use();
+
+        shaders.circleShader.setMat4("projection", this->projection);
+        shaders.circleShader.setVec3("pos", mouse.cursorPos.x, mouse.cursorPos.y, 1);
+        shaders.circleShader.setVec2("scale", glm::vec2(painter.brushProperties.radius));
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        shaders.buttonShader.use();
+    }
 
     //Interactions of the UI elements
     elementInteraction(painter, mouse, library, contextMenus, meshNodeScene, context, videoScale, textRenderer, timer, settings.textureRes, screenGapPerc, model, project);
