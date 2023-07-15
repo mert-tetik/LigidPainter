@@ -420,6 +420,18 @@ void LigidWindow::setCursor(LigidCursor cursor){
 #endif
 }
 
+void LigidWindow::setCursorVisibility(bool visible) {
+    
+    if (visible) {
+        while (ShowCursor(TRUE) < 0) {}
+    }
+    else {
+        while (ShowCursor(FALSE) >= 0) {}
+    }
+
+}
+
+
 void LigidWindow::style(const int styleKey){
     
     int64_t windowStyle = WS_CAPTION;

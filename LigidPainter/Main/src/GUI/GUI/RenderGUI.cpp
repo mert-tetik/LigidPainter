@@ -36,6 +36,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
+/* -- Forward declerations -- */
+
+static void renderBrushCursor(Shader& circleShader, Shader& buttonShader, Painter& painter, Mouse& mouse, glm::mat4 guiProjection, Context& context);
+
 void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &meshNodeScene,
             std::vector<ContextMenu> &contextMenus, AppSettings& settings, Project &project, Painter &painter, Skybox &skybox,Model &model){
     
@@ -86,19 +90,11 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(mouse,painter);
 
-    if(!this->anyPanelHover){
-        shaders.circleShader.use();
-
-        shaders.circleShader.setMat4("projection", this->projection);
-        shaders.circleShader.setVec3("pos", mouse.cursorPos.x, mouse.cursorPos.y, 1);
-        shaders.circleShader.setVec2("scale", glm::vec2(painter.brushProperties.radius));
-
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        glClear(GL_DEPTH_BUFFER_BIT);
-
-        shaders.buttonShader.use();
-    }
+    //Render the brush cursor
+    if(!this->anyPanelHover && !this->anyDialogActive && !this->anyContextMenuActive)
+        renderBrushCursor(shaders.circleShader, shaders.buttonShader, painter, mouse, this->projection, context);
+    else
+        context.window.setCursorVisibility(true);
 
     //Interactions of the UI elements
     elementInteraction(painter, mouse, library, contextMenus, meshNodeScene, context, videoScale, textRenderer, timer, settings.textureRes, screenGapPerc, model, project);
@@ -107,7 +103,6 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
 
     if(frameCounter > 1000)
         frameCounter = 0;
-
     
 }
 
@@ -115,6 +110,27 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
 
 //UTILITY FUNCTIONS
 
+static void renderBrushCursor(Shader& circleShader, Shader& buttonShader, Painter& painter, Mouse& mouse, glm::mat4 guiProjection, Context& context){
+    /* Use the circle shader */
+    circleShader.use();
+
+    /* Set the transform data & the projection */
+    circleShader.setMat4("projection", guiProjection);
+    circleShader.setVec3("pos", mouse.cursorPos.x, mouse.cursorPos.y, 1);
+    circleShader.setVec2("scale", glm::vec2(painter.brushProperties.radius));
+
+    /* Hide the cursor */
+    context.window.setCursorVisibility(false);
+
+    /* Render the circle s*/
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    /* Clear the depth buffer of the current framebuffers*/
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    /* Use the button shader back */
+    buttonShader.use();
+}
 
 void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter, Library &library){
     navigationPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);

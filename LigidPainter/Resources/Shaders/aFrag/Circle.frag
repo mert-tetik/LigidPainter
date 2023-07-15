@@ -15,6 +15,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
     Renders a smooth circle
 
+    ! Source : https://www.shadertoy.com/view/XdlSDs
 */
 
 //OpenGL version used in the app (Major 4 , Minor 0, Profile core)

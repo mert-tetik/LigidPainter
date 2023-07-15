@@ -721,6 +721,11 @@ public:
     *   }
     */
     void setCursor(LigidCursor cursor);
+
+    /*
+        Function to toggle cursor visibility
+    */
+    void setCursorVisibility(bool visible);
     
     /*!
         Returns true if the cursor hovers the title bar
