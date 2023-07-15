@@ -228,6 +228,8 @@ void Renderer::loadShaders(){
     shaders.twoDPaintingModeAreaShader =    Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag"           ,nullptr    ,nullptr,   nullptr      );
     
     shaders.circleShader =                  Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Circle.frag"                    ,nullptr    ,nullptr,   nullptr      );
+    
+    shaders.dotsShader =                    Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Dots.frag"                      ,nullptr    ,nullptr,   nullptr      );
 }
 
 void Renderer::createContextMenus(){

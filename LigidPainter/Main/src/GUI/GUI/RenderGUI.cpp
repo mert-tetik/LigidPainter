@@ -61,7 +61,6 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
 
     shaders.buttonShader.setFloat("properties.groupOpacity", 1.f);
 
-
     //Set the ortho projection     
     shaders.buttonShader.setMat4("projection",this->projection); 
 
@@ -141,6 +140,22 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,false);
     
+    //
+    shaders.dotsShader.use();
+
+    shaders.dotsShader.setMat4("projection", this->projection);
+    shaders.dotsShader.setVec3("pos", nodeEditorDisplayer.resultPos);
+    shaders.dotsShader.setVec2("scale", nodeEditorDisplayer.resultScale);
+    
+    /* Render the circle s*/
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    /* Clear the depth buffer of the current framebuffers*/
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    shaders.buttonShader.use();
+    //
+
     if(!painter.threeDimensionalMode){
         twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,false);
 
