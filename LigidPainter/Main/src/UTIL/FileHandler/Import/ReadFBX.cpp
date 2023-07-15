@@ -961,8 +961,24 @@ static void parseFBXMeshData(
             edgeIndex  = abs(edgeIndex ) - 1;
 
         Vertex uniqueVert;
+        
+        if(posIndex >= positions.size()){
+            std::cout << "ERROR : Reading fbx file. Position index is not valid." << std::endl;
+            return;
+        }
         uniqueVert.Position = positions[posIndex];
+
+        if(edgeIndex >= UVs.size()){
+            std::cout << "ERROR : Reading fbx file. Texture coordinate index is not valid." << std::endl;
+            return;
+        }
         uniqueVert.TexCoords = UVs[edgeIndex];
+        
+
+        if(uvIndex >= normals.size()){
+            std::cout << "ERROR : Reading fbx file. Normal vector index is not valid." << std::endl;
+            return;
+        }
         uniqueVert.Normal = normals[uvIndex];
         
         posData[posIndex] = uniqueVertices.size();
@@ -1003,6 +1019,11 @@ static void parseFBXMeshData(
             for (size_t fI = 0; fI < faceCount; fI++)
             {
                 glm::vec3 face;
+                
+                if(vStartI + 2 + fI >= polygonVertexIndices.size()){
+                    break;
+                }
+
                 face.x = polygonVertexIndices[vStartI];
                 face.y = polygonVertexIndices[vStartI + 1 + fI];
                 face.z = polygonVertexIndices[vStartI + 2 + fI];
