@@ -148,19 +148,23 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
 
             /*Restrict movement*/
             if(this->nodePanel.position.x > 40){
+                this->nodePanel.boundaryState = 0;
                 this->nodePanel.hitBoundaries = true;
                 this->nodePanel.position.x = 40;
             }
             if(this->nodePanel.position.x < -40){
+                this->nodePanel.boundaryState = 1;
                 this->nodePanel.hitBoundaries = true;
                 this->nodePanel.position.x = -40;
             }
             
             if(this->nodePanel.position.y > 40){
+                this->nodePanel.boundaryState = 2;
                 this->nodePanel.hitBoundaries = true;
                 this->nodePanel.position.y = 40;
             }
             if(this->nodePanel.position.y < -40){
+                this->nodePanel.boundaryState = 3;
                 this->nodePanel.hitBoundaries = true;
                 this->nodePanel.position.y = -40;
             }
@@ -168,18 +172,29 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
         }
         else
             this->nodePanel.hitBoundaries = false;
-        
-        if(this->nodePanel.hitBoundaries){
-            float transPower = 1.f - nodePanel.mixVal;
-            if(transPower < 0)
-                transPower = 0;
 
-            this->nodePanel.mixVal += (mouse.mouseOffset.x / 100.f * transPower);
+        /* Calculate boundary animation */        
+        if(this->nodePanel.hitBoundaries){
+
+            glm::vec2 transPower = 1.f - abs(nodePanel.mixVal);
+            
+            if(transPower.x < 0)
+                transPower.x = 0;
+            if(transPower.y < 0)
+                transPower.y = 0;
+
+
+            this->nodePanel.mixVal += (mouse.mouseOffset / 100.f * transPower);
+        
         }
         else{
-            timer.transition(false, this->nodePanel.mixVal, 0.5f);
-            this->nodePanel.mixVal = sin(this->nodePanel.mixVal);
+            timer.transition(false, this->nodePanel.mixVal.x, 0.5f);
+            timer.transition(false, this->nodePanel.mixVal.y, 0.5f);
+            
+            this->nodePanel.mixVal.x = sin(this->nodePanel.mixVal.x);
+            this->nodePanel.mixVal.y = sin(this->nodePanel.mixVal.y);
         }
+
     }
 
     //
@@ -189,7 +204,7 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     shaders.dotsShader.setVec3("pos", nodeEditorDisplayer.resultPos);
     shaders.dotsShader.setVec2("scale", nodeEditorDisplayer.resultScale);
     
-    glm::vec2 dotPos = this->nodePanel.position + glm::vec2(this->nodePanel.mixVal*10.f,0);
+    glm::vec2 dotPos = this->nodePanel.position * glm::vec2(2.f) + this->nodePanel.mixVal*10.f;
     shaders.dotsShader.setVec2("dotPos", dotPos);
     shaders.dotsShader.setFloat("scroll", this->nodePanel.scroll);
     

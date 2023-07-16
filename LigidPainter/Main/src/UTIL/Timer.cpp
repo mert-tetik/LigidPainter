@@ -55,10 +55,20 @@ void Timer::transition(bool state ,float &value,float timeInSeconds){
     //If state is true move value to the 1 gradually
     //timeInSeconds determines how many time will pass since the value hits 1 or reduces back to 0
     //If timeInSeconds == 1.f value 0 will hit the value 1 in one second
-    if (state && value <= 1.0f) {value += 1./(FPS) / timeInSeconds;}
-    else if (!state && value >= 0.0f) {value -= 1./(FPS) / timeInSeconds;}
-    if(value < 0.f)
-    	value = 0.f;
-    if(value > 1.f)
-    	value = 1.f;
+    if(value < 0){
+        if (state && value >= -1.0f) {value -= 1./(FPS) / timeInSeconds;}
+        else if (!state && value >= 0.0f) {value += 1./(FPS) / timeInSeconds;}
+        if(value > 0.f)
+        	value = 0.f;
+        if(value < -1.f)
+        	value = -1.f;
+    }
+    else{
+        if (state && value <= 1.0f) {value += 1./(FPS) / timeInSeconds;}
+        else if (!state && value >= 0.0f) {value -= 1./(FPS) / timeInSeconds;}
+        if(value < 0.f)
+        	value = 0.f;
+        if(value > 1.f)
+        	value = 1.f;
+    }
 }

@@ -34,12 +34,8 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
     //Barriers (In order to prevent the overflow)
     this->cursorOnBarriers = renderBarriers(nodeEditorPanel,mouse);
 
-    //buttonShader.setVec2("groupPos", nodePanelData.position);
-    //buttonShader.setVec2("originPos", nodePanel.resultPos);
-    //buttonShader.setFloat("groupScale", nodePanelData.scroll/10);
-
-    this->nodePanel.additionalPos.x = nodePanelData.position.x + nodePanelData.mixVal;
-    this->nodePanel.additionalPos.y = nodePanelData.position.y - nodeEditorPanel.scale.y * 2;
+    this->nodePanel.additionalPos.x = nodePanelData.position.x + nodePanelData.mixVal.x;
+    this->nodePanel.additionalPos.y = nodePanelData.position.y + nodePanelData.mixVal.y - nodeEditorPanel.scale.y * 2;
 
     //Render the node panel which contains the input buttons and stuff
     nodePanel.render(videoScale,mouse,timer,textRenderer,false);
@@ -180,8 +176,8 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
     barButton.scale = nodePanel.scale;
     barButton.scale.y = 1.5f;
     
-    barButton.pos.x += nodePanelData.position.x + nodePanelData.mixVal;
-    barButton.pos.y = nodePanel.pos.y + nodePanelData.position.y - nodeEditorPanel.scale.y * 2 - nodePanel.scale.y; 
+    barButton.pos.x += nodePanelData.position.x + nodePanelData.mixVal.x;
+    barButton.pos.y = nodePanel.pos.y + nodePanelData.position.y + nodePanelData.mixVal.y - nodeEditorPanel.scale.y * 2 - nodePanel.scale.y; 
     barButton.pos.z += 0.02f;
     //Render the bar button
     barButton.render(videoScale,mouse,timer,textRenderer,!cursorOnBarriers);
