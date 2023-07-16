@@ -38,6 +38,7 @@ Node::Node(){}
 
 Node::Node(int nodeIndex, int materialID, Shader buttonShader, Shader connectionCurveShader, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale){
     
+
     //Get the shaders to the member variables
     this->buttonShader = buttonShader;
     this->connectionCurveShader = connectionCurveShader;
@@ -112,6 +113,10 @@ Node::Node(int nodeIndex, int materialID, Shader buttonShader, Shader connection
         this->barButton.color = glm::vec4(214.f/255.f, 65.f/255.f, 65.f/255.f, 1.f);
     }
     */
+
+    /*Positioning the node*/
+    this->nodePanel.pos.x = 55;
+    this->nodePanel.pos.y = 110.7222;
 
     //Create the elements of the node panel
     createPanelUsingIOs();

@@ -473,6 +473,9 @@ public:
     /*! @brief Position of the panel in the range of 0 - 100*/
     glm::vec3 pos; 
     
+    /*! @brief Is added to the @ref pos in the range of 0 - 100 */
+    glm::vec3 additionalPos = glm::vec3(0); 
+    
     /*! @brief Color of the panel*/
     glm::vec4 color;
     

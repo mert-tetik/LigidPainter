@@ -38,6 +38,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 class ColorPalette;
 class TextRenderer; 
 struct Element;
+struct NodePanel;
 
 
 /// @brief Represents a single node connection
@@ -160,7 +161,7 @@ public:
 
     /// @brief Render the node & manage inputs & outputs 
     /// @param currentNodeIndex which node is rendered (index of the nodeScene)
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &meshNodeScene,int currentNodeIndex);
+    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &meshNodeScene,int currentNodeIndex, NodePanel& nodePanel);
 
     /// @brief Replaces the IOs vector with the new inputs & outputs (+ generates the node panel)  
     void uploadNewIOs(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs);

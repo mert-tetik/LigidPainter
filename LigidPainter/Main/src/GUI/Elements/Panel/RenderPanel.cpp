@@ -32,7 +32,7 @@ void Panel::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &
     
     // Pos value, % of the video scale
     resultPos = glm::vec3( 
-                            UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)), //Don't include the depth
+                            UTIL::getPercent(videoScale,glm::vec2(pos.x + this->additionalPos.x, pos.y + this->additionalPos.y)), //Don't include the depth
                             pos.z //Use the original depth value
                         ); 
     
@@ -158,13 +158,13 @@ void Panel::drawPanel(
     }
 
     //Starting pos
-    float elementPos = calculateElementStartingPosition(this->vertical, this->sections, this->pos, this->scale);
+    float elementPos = calculateElementStartingPosition(this->vertical, this->sections, this->pos + this->additionalPos, this->scale);
 
     //Indexing buttons to position them
     int btnCounter = 0; 
 
     //Render the bar buttons
-    renderBarButtons(this->barButtons, this->pos, this->scale, videoScale, mouse, timer, textRenderer, this->doMouseTracking);
+    renderBarButtons(this->barButtons, this->pos + this->additionalPos, this->scale, videoScale, mouse, timer, textRenderer, this->doMouseTracking);
     
     //Calculate the barbuttons for positioning other elements
     if(barButtons.size())
@@ -202,7 +202,7 @@ void Panel::drawPanel(
                 lastElementScale = sections[sI].elements[i].scale.y; 
                 
                 //Don't render the unshown elements
-                if(this->sections[sI].elements[i].pos.y - this->sections[sI].elements[i].scale.y < (this->pos.y + this->scale.y) && this->sections[sI].elements[i].pos.y + this->sections[sI].elements[i].scale.y > (this->pos.y - this->scale.y)){
+                if(this->sections[sI].elements[i].pos.y - this->sections[sI].elements[i].scale.y < (this->pos.y + this->additionalPos.y + this->scale.y) && this->sections[sI].elements[i].pos.y + this->sections[sI].elements[i].scale.y > (this->pos.y + this->additionalPos.y - this->scale.y)){
                     
                     sections[sI].elements[i].render(videoScale,mouse,timer,textRenderer,doMouseTracking);
                     
@@ -235,17 +235,18 @@ void Panel::drawPanel(
     /* Render the slider of the panel*/
     if(hasSlider){
         
-        sliderButton.pos = pos;
+        sliderButton.pos = pos + this->additionalPos;
         
         if(leftSide.locked)
-            sliderButton.pos.x = pos.x + sliderButton.scale.x + scale.x;
+            sliderButton.pos.x = pos.x + this->additionalPos.x + sliderButton.scale.x + scale.x;
         else
-            sliderButton.pos.x = pos.x - sliderButton.scale.x - scale.x;
-        slideRatio = (elementPos + lastElementScale + (lastElementScale*2.f)) / (pos.y + scale.y);
+            sliderButton.pos.x = pos.x + this->additionalPos.x - sliderButton.scale.x - scale.x;
+        
+        slideRatio = (elementPos + lastElementScale + (lastElementScale*2.f)) / (pos.y + this->additionalPos.y + scale.y);
 
         if(slideRatio > 1 && vertical){
             sliderButton.scale.y = scale.y / slideRatio;
-            sliderButton.pos.y = (pos.y - scale.y) + sliderButton.scale.y + slideVal;  
+            sliderButton.pos.y = (pos.y + this->additionalPos.y - scale.y) + sliderButton.scale.y + slideVal;  
 
             sliderButton.render(videoScale,mouse,timer,textRenderer,doMouseTracking);
 
@@ -257,9 +258,9 @@ void Panel::drawPanel(
             if(slideVal < 0) //If the slider is out of boundaries
                 slideVal = 0; //Get the slide bar back
 
-            if (sliderButton.pos.y + sliderButton.scale.y >= pos.y + scale.y && mouse.mouseOffset.y > 0) {
+            if (sliderButton.pos.y + sliderButton.scale.y >= pos.y + this->additionalPos.y + scale.y && mouse.mouseOffset.y > 0) {
                 // If the slider is out of boundaries
-                slideVal = sliderButton.pos.y - (pos.y - scale.y) - sliderButton.scale.y; // Set slideVal to its maximum value
+                slideVal = sliderButton.pos.y - (pos.y + this->additionalPos.y - scale.y) - sliderButton.scale.y; // Set slideVal to its maximum value
             }
         }
     }

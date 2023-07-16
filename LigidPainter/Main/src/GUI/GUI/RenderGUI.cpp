@@ -143,12 +143,18 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     if(nodeEditorDisplayer.hover){
         if(mouse.MPressed){
             this->nodePanel.position += mouse.mouseOffset;
+            
+            /*Restrict movement*/
+            if(this->nodePanel.position.x > 40)
+                this->nodePanel.position.x = 40;
+            if(this->nodePanel.position.x < -40)
+                this->nodePanel.position.x = -40;
+            
+            if(this->nodePanel.position.y > 40)
+                this->nodePanel.position.y = 40;
+            if(this->nodePanel.position.y < -40)
+                this->nodePanel.position.y = -40;
         }
-        this->nodePanel.scroll += mouse.mouseScroll/100.f;
-        if(this->nodePanel.scroll <= 0)
-            this->nodePanel.scroll = 0.1;
-        if(this->nodePanel.scroll > 20)
-            this->nodePanel.scroll = 20;
     }
 
     //
@@ -159,7 +165,6 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     shaders.dotsShader.setVec2("scale", nodeEditorDisplayer.resultScale);
     
     shaders.dotsShader.setVec2("dotPos", this->nodePanel.position);
-    std::cout << this->nodePanel.scroll << std::endl;
     shaders.dotsShader.setFloat("scroll", this->nodePanel.scroll);
     
     /* Render the circle s*/
@@ -261,8 +266,7 @@ void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRende
             }
         }
 
-
-        meshNodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,meshNodeScene,i);
+        meshNodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,meshNodeScene,i,this->nodePanel);
     }
 }
 

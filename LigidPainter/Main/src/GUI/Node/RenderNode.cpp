@@ -29,14 +29,21 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 
-void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &meshNodeScene,int currentNodeIndex){
+void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &meshNodeScene,int currentNodeIndex, NodePanel& nodePanelData){
     
     //Barriers (In order to prevent the overflow)
     this->cursorOnBarriers = renderBarriers(nodeEditorPanel,mouse);
 
+    //buttonShader.setVec2("groupPos", nodePanelData.position);
+    //buttonShader.setVec2("originPos", nodePanel.resultPos);
+    //buttonShader.setFloat("groupScale", nodePanelData.scroll/10);
+
+    this->nodePanel.additionalPos.x = nodePanelData.position.x;
+    this->nodePanel.additionalPos.y = nodePanelData.position.y - nodeEditorPanel.scale.y * 2;
+
     //Render the node panel which contains the input buttons and stuff
     nodePanel.render(videoScale,mouse,timer,textRenderer,false);
-    
+
     //Auto scaling the node panel compatible with it's elements
     if(nodePanel.sections.size()){
         
@@ -169,10 +176,13 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
 
     //Position the bar button        
     barButton.pos = nodePanel.pos;
+    
     barButton.scale = nodePanel.scale;
     barButton.scale.y = 1.5f;
+    
+    barButton.pos.x += nodePanelData.position.x;
+    barButton.pos.y = nodePanel.pos.y + nodePanelData.position.y - nodeEditorPanel.scale.y * 2 - nodePanel.scale.y; 
     barButton.pos.z += 0.02f;
-    barButton.pos.y = nodePanel.pos.y - nodePanel.scale.y; 
     //Render the bar button
     barButton.render(videoScale,mouse,timer,textRenderer,!cursorOnBarriers);
     
@@ -191,4 +201,7 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
     }
     
     glClear(GL_DEPTH_BUFFER_BIT);
+
+    //buttonShader.setVec2("groupPos", glm::vec2(0));
+    //buttonShader.setFloat("groupScale", 1);
 }

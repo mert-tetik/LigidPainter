@@ -129,8 +129,8 @@ void Panel::prepDrawBtnVertically(Element &button,Element &previousButton,float&
     
     
     //Move the button on top of the panel
-    button.pos = pos;
-    
+    button.pos = pos + this->additionalPos;
+
     button.pos.x -= scale.x;
     button.pos.x += button.scale.x;
     button.pos.x += button.scale.x*2.f * (btnCounter % rowCount);
@@ -147,7 +147,7 @@ void Panel::prepDrawBtnVertically(Element &button,Element &previousButton,float&
 void Panel::prepDrawBtnHorizontally(Element &button,Element &previousButton,float& elementPos,int btnCounter){
     button.scale.y = scale.y;
     //Move the button on top of the panel
-    button.pos = pos;
+    button.pos = pos + this->additionalPos;
     //button.pos.x += sections[sI].elements[0].scale.x;
     if(btnCounter)        
         elementPos += (button.scale.x + previousButton.scale.x) + button.panelOffset;
