@@ -141,19 +141,44 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,false);
     
     if(nodeEditorDisplayer.hover){
+        
         if(mouse.MPressed){
             this->nodePanel.position += mouse.mouseOffset;
             
+
             /*Restrict movement*/
-            if(this->nodePanel.position.x > 40)
+            if(this->nodePanel.position.x > 40){
+                this->nodePanel.hitBoundaries = true;
                 this->nodePanel.position.x = 40;
-            if(this->nodePanel.position.x < -40)
+            }
+            if(this->nodePanel.position.x < -40){
+                this->nodePanel.hitBoundaries = true;
                 this->nodePanel.position.x = -40;
+            }
             
-            if(this->nodePanel.position.y > 40)
+            if(this->nodePanel.position.y > 40){
+                this->nodePanel.hitBoundaries = true;
                 this->nodePanel.position.y = 40;
-            if(this->nodePanel.position.y < -40)
+            }
+            if(this->nodePanel.position.y < -40){
+                this->nodePanel.hitBoundaries = true;
                 this->nodePanel.position.y = -40;
+            }
+
+        }
+        else
+            this->nodePanel.hitBoundaries = false;
+        
+        if(this->nodePanel.hitBoundaries){
+            float transPower = 1.f - nodePanel.mixVal;
+            if(transPower < 0)
+                transPower = 0;
+
+            this->nodePanel.mixVal += (mouse.mouseOffset.x / 100.f * transPower);
+        }
+        else{
+            timer.transition(false, this->nodePanel.mixVal, 0.5f);
+            this->nodePanel.mixVal = sin(this->nodePanel.mixVal);
         }
     }
 
@@ -164,7 +189,8 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     shaders.dotsShader.setVec3("pos", nodeEditorDisplayer.resultPos);
     shaders.dotsShader.setVec2("scale", nodeEditorDisplayer.resultScale);
     
-    shaders.dotsShader.setVec2("dotPos", this->nodePanel.position);
+    glm::vec2 dotPos = this->nodePanel.position + glm::vec2(this->nodePanel.mixVal*10.f,0);
+    shaders.dotsShader.setVec2("dotPos", dotPos);
     shaders.dotsShader.setFloat("scroll", this->nodePanel.scroll);
     
     /* Render the circle s*/

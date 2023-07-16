@@ -40,6 +40,9 @@ struct Dropper{
 struct NodePanel{
     glm::vec2 position = glm::vec2(0);
     float scroll = 1.f;
+    float mixVal = 0.f;
+    bool hitBoundaries = false;
+
 };
 
 // Forward declared 
