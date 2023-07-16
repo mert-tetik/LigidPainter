@@ -3,7 +3,7 @@
  LigidPainter - 3D Model texturing software / Texture generator   
  ---------------------------------------------------------------------------
 
- Copyright (c) 2022-2023, LigidTools 
+ Copyright (c) 2022-2023, Mert Tetik
 
  All rights reserved.
 

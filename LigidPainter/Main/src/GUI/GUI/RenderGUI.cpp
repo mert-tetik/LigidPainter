@@ -3,7 +3,7 @@
 LigidPainter - 3D Model texturing software / Texture generator   
 ---------------------------------------------------------------------------
 
-Copyright (c) 2022-2023, LigidTools 
+Copyright (c) 2022-2023, Mert Tetik
 
 All rights reserved.
 
@@ -197,7 +197,7 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
 
     }
 
-    //
+    //Prep rendering dots
     shaders.dotsShader.use();
 
     shaders.dotsShader.setMat4("projection", this->projection);
@@ -208,7 +208,7 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     shaders.dotsShader.setVec2("dotPos", dotPos);
     shaders.dotsShader.setFloat("scroll", this->nodePanel.scroll);
     
-    /* Render the circle s*/
+    /* Render the dots */
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     /* Clear the depth buffer of the current framebuffers*/

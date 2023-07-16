@@ -3,7 +3,7 @@
 LigidPainter - 3D Model texturing software / Texture generator   
 ---------------------------------------------------------------------------
 
-Copyright (c) 2022-2023, LigidTools 
+Copyright (c) 2022-2023, Mert Tetik
 
 All rights reserved.
 
@@ -68,3 +68,14 @@ std::vector<Section> MaterialModifier::createTextureModifier(ColorPalette colorP
         )
     };
 }
+
+/*
+    Dust modifier : 
+
+    Use perlin noise to filth the background
+
+    + Droplets
+
+    Then apply blur to the droplets
+
+*/

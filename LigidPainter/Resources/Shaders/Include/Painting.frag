@@ -3,7 +3,7 @@
 LigidPainter - 3D Model texturing software / Texture generator   
 ---------------------------------------------------------------------------
 
-Copyright (c) 2022-2023, LigidTools 
+Copyright (c) 2022-2023, Mert Tetik
 
 All rights reserved.
 
@@ -172,8 +172,8 @@ vec3 getSmearedTexture(
         vec2 mUV = TexCoords - float(i) * (intensity) / float(Samples/2) * Direction;
         vec2 pUV = TexCoords + float(i) * (intensity) / float(Samples/2) * Direction;
         
-        blurredColor += texture(txtr,pUV);
-        blurredColor += texture(txtr,mUV);
+        blurredColor += texture(txtr,pUV) / vec4(Samples);
+        blurredColor += texture(txtr,mUV) / vec4(Samples);
     }
     
     blurredColor = blurredColor / float(Samples);    

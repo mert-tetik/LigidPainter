@@ -3,7 +3,7 @@
 LigidPainter - 3D Model texturing software / Texture generator   
 ---------------------------------------------------------------------------
 
-Copyright (c) 2022-2023, LigidTools 
+Copyright (c) 2022-2023, Mert Tetik
 
 All rights reserved.
 
@@ -96,6 +96,13 @@ void Material::updateMaterial(
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
             glGenerateMipmap(GL_TEXTURE_2D);
 
+            //Bind the channel texture to the capture framebuffer
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
+            
+            //Make the background pink (cause why not)
+            glClearColor(1,0,1,1);
+            glClear(GL_COLOR_BUFFER_BIT);
+            
             //Set the uniforms of the modifier's shader
             this->materialModifiers[i].shader.use(); //Use the shader of the modifier
             this->materialModifiers[i].shader.setMat4("projection",projection); //Set the projection
@@ -104,12 +111,6 @@ void Material::updateMaterial(
             this->materialModifiers[i].shader.setInt("theTexture",0); //Set the texture slot
             this->materialModifiers[i].shader.setInt("state",channelI); //Set the texture slot
 
-            //Bind the channel texture to the capture framebuffer
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
-            
-            //Make the background pink (cause why not)
-            glClearColor(1,0,1,1);
-            glClear(GL_COLOR_BUFFER_BIT);
 
             //Bind the texture (bind the channel textures if rendering a texture modifier & bind the result of the previous modifier)
             glActiveTexture(GL_TEXTURE0);
