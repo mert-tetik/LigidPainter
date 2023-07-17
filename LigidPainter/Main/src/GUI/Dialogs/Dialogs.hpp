@@ -236,6 +236,8 @@ private:
     void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Library &library,float textureRes,Box box,Context context);
     void manageContextMenuActions(Library &library, Mouse &mouse, Material &material, int textureRes, Box box, Context context, std::vector<ContextMenu> &contextMenus);
 
+    bool updateTheMaterial = false;
+    bool prevUpdateTheMaterial = false;
 public:
     DialogControl dialogControl;
     glm::vec3 pos = glm::vec3(50.f,50.f,0.8f); ///Position of the dialog

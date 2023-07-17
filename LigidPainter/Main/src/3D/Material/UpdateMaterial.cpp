@@ -38,99 +38,11 @@ void Material::updateMaterial(
                             ){ 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureRes,textureRes);
-    
-    //Set the orthographic projection to the texture resolution
-    glm::mat4 projection = glm::ortho(0.f,(float)textureRes,(float)textureRes,0.f);
-    
-    //Transform values to take the texture in to the middle of the screen and cover it completely
-    glm::vec2 fragScale = glm::vec2((float)textureRes/2.f,(float)textureRes/2.f);
-    glm::vec3 fragPos = glm::vec3((float)textureRes/2.f,(float)textureRes/2.f,1.0f);
-    
+        
     //For every modifier the material has (Output every modifier the material has)
     for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
     {
-        //For all the material channels
-        for (int channelI = 0; channelI < 6; channelI++) 
-        {
-            //Disable the depth test (just in case)
-            glDisable(GL_DEPTH_TEST);
-
-            //That framebuffer will be used to get the results of the shader 
-            unsigned int FBO; 
-            glGenFramebuffers(1,&FBO);
-            glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-        
-            //Get the channel's texture from material
-            unsigned int textureBuffer; //Material's texture
-            if(channelI == 0){
-                textureBuffer = this->albedo.ID;
-            }
-            if(channelI == 1){
-                textureBuffer = this->roughness.ID;
-            }
-            if(channelI == 2){
-                textureBuffer = this->metallic.ID;
-            }
-            if(channelI == 3){
-                textureBuffer = this->normalMap.ID;
-            }
-            if(channelI == 4){
-                textureBuffer = this->heightMap.ID;
-            }
-            if(channelI == 5){
-                textureBuffer = this->ambientOcclusion.ID;
-            }
-            
-            //Bind the channel texture
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D,textureBuffer);
-            
-            //Params for the channel texture
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-            
-            //Refresh the channel texture
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-            glGenerateMipmap(GL_TEXTURE_2D);
-
-            //Bind the channel texture to the capture framebuffer
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
-            
-            //Make the background pink (cause why not)
-            glClearColor(1,0,1,1);
-            glClear(GL_COLOR_BUFFER_BIT);
-            
-            //Set the uniforms of the modifier's shader
-            this->materialModifiers[i].shader.use(); //Use the shader of the modifier
-            this->materialModifiers[i].shader.setMat4("projection",projection); //Set the projection
-            this->materialModifiers[i].shader.setVec2("scale",fragScale); //Set the scale
-            this->materialModifiers[i].shader.setVec3("pos",fragPos); //Set the position
-            this->materialModifiers[i].shader.setInt("theTexture",0); //Set the texture slot
-            this->materialModifiers[i].shader.setInt("state",channelI); //Set the texture slot
-
-
-            //Bind the texture (bind the channel textures if rendering a texture modifier & bind the result of the previous modifier)
-            glActiveTexture(GL_TEXTURE0);
-            
-            //If the modifier is a texture modifier bind the texture from the materialModifier's button element texture
-            if(this->materialModifiers[i].modifierIndex == 0) 
-                glBindTexture(GL_TEXTURE_2D,this->materialModifiers[i].sections[0].elements[channelI].button.texture.ID);
-            //else
-            //  glBindTexture(GL_TEXTURE_2D,previousTexture);
-            
-            //Render the result to the framebuffer
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-            
-            //Just in case 🤫😁🤑 
-            glGenerateMipmap(GL_TEXTURE_2D);
-            
-            //Delete the framebuffer after completing the channel
-            glDeleteFramebuffers(1,&FBO);
-            glEnable(GL_DEPTH_TEST);
-        }
+        this->materialModifiers[i].updateMaterialChannels(*this, textureRes, i);
     }
     
 

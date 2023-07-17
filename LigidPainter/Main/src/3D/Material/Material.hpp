@@ -26,6 +26,7 @@ struct Section;
 //-------------- MATERIAL MODIFIER ------------
 
 #define TEXTURE_MATERIAL_MODIFIER 0
+#define DUST_MATERIAL_MODIFIER 1
 
 class MaterialModifier
 {
@@ -42,12 +43,16 @@ public:
     std::vector<Section> sections;   
     std::string title;
 
+    void (*updateMaterialChannels)(Material &material, int textureResolution, int curModI);
+
     //Constructors
     MaterialModifier();
     MaterialModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures,int modifierIndex);
 
     //Public member functions
     std::vector<Section> createTextureModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    std::vector<Section> createDustModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+
 };
 
 
@@ -56,6 +61,7 @@ public:
 /// When needed material editor uses these material modifiers to attach to the material's material modifiers
 struct AppMaterialModifiers{
     MaterialModifier textureModifier;
+    MaterialModifier dustModifier;
 };
 
 
