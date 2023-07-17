@@ -183,7 +183,8 @@ void Renderer::render(){
                             project,
                             painter,
                             skybox,
-                            model
+                            model,
+                            scene
                         );
 
     //Painting

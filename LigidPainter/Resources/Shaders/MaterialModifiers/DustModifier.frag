@@ -28,11 +28,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #version 400 core
 
 in vec2 TexCoords;
-// in vec3 Normal;
-// in vec3 Pos;
-// in vec3 Tangent;
-// in vec3 Bitangent;
-// in vec4 ProjectedPos;
+in vec3 Normal;
+in vec3 Pos;
+in vec3 Tangent;
+in vec3 Bitangent;
+in vec4 ProjectedPos;
 
 /* Noise */
 uniform float size = 2.0; //best 1.0
@@ -286,10 +286,31 @@ float getScratches(vec2 uv)
 	return col;
 }
 
+vec2 getTextureCoordinates(vec3 position, vec3 tangent) {
+//   vec3 ANPosition = (abs(position));
+  
+//   return vec2(ANPosition.x, (ANPosition.y + ANPosition.z) / 2.f);
+    
+    vec3 bitangent = cross(tangent, position);
+  vec3 normal = cross(bitangent, tangent);
+
+  mat3 TBN = mat3(tangent, bitangent, normal);
+  vec3 transformedPosition = TBN * position;
+
+  vec2 textureCoord;
+  textureCoord.x = 0.5 * transformedPosition.x + 0.5;
+  textureCoord.y = 0.5 * transformedPosition.y + 0.5;
+
+  return textureCoord;
+}
 
 void main()
 {
-    vec2 uv = TexCoords;
+      // Normalize the position
+    vec3 normalizedPosition = normalize(Pos);
+
+    // Scale the normalized position to the range [0, 1]
+    vec2 uv = getTextureCoordinates(Pos, Tangent);
 
     uv *= size;
     
@@ -321,4 +342,3 @@ void main()
 
 	fragColor = vec4(vec3(f.rgb), 1.0);
 }
-

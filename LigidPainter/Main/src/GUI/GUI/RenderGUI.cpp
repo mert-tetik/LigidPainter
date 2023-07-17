@@ -41,7 +41,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 static void renderBrushCursor(Shader& circleShader, Shader& buttonShader, Painter& painter, Mouse& mouse, glm::mat4 guiProjection, Context& context);
 
 void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &meshNodeScene,
-            std::vector<ContextMenu> &contextMenus, AppSettings& settings, Project &project, Painter &painter, Skybox &skybox,Model &model){
+            std::vector<ContextMenu> &contextMenus, AppSettings& settings, Project &project, Painter &painter, Skybox &skybox,Model &model, Scene& scene){
     
     
     //Set pass less or equal
@@ -81,7 +81,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     renderRenamingTextbox(videoScale, mouse, timer, textRenderer, painter, library, context);
     
     //Render the nodes
-    renderNodes(videoScale,mouse,timer,textRenderer,library,meshNodeScene, model, settings.textureRes);
+    renderNodes(videoScale,mouse,timer,textRenderer,library,meshNodeScene, model, settings.textureRes, scene);
     
     //Render the dialogs
     renderDialogs(videoScale, mouse, timer, textRenderer, library, meshNodeScene, context, project, model, skybox, settings, box, contextMenus);
@@ -293,7 +293,7 @@ void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer,
     }
 }
 
-void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &meshNodeScene, Model &model, int textureRes){
+void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &meshNodeScene, Model &model, int textureRes, Scene scene){
     
     for (size_t i = 0; i < meshNodeScene.size(); i++)
     {
@@ -307,7 +307,7 @@ void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRende
             }
         }
 
-        meshNodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,meshNodeScene,i,this->nodePanel, library, model, textureRes);
+        meshNodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,meshNodeScene,i,this->nodePanel, library, model, textureRes, scene);
     }
 }
 

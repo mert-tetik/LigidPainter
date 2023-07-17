@@ -36,11 +36,24 @@ void Material::updateMaterialDisplayingTexture(
                                 Shader tdModelShader,
                                 Model sphereModel
                             ){ 
-                                        
+
+        //Move the camera to the side
+    glm::vec3 viewPos = glm::vec3(3.f,0,0);
+    glm::mat4 view = glm::lookAt(viewPos, 
+                                 glm::vec3(0), 
+                                 glm::vec3(0.0, 1.0, 0.0));
+    //The perspective projection matrix    
+    glm::mat4 projectionMatrix = glm::perspective(
+                                                    glm::radians(90.f), //Fov  
+                                                    1.f,  //Ratio (is 1 since the width & the height is equal to displayRes)
+                                                    100.f,  //Near (the material is pretty close to the camera actually  ) 
+                                                    0.1f    //Far
+                                                );
+
     //For every modifier the material has (Output every modifier the material has)
     for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
     {
-        this->materialModifiers[i].updateMaterialChannels(*this, sphereModel.meshes[0], textureRes, i);
+        this->materialModifiers[i].updateMaterialChannels(*this, sphereModel.meshes[0], textureRes, i, projectionMatrix, view);
     }
     
     //!Update the material displaying texture
@@ -76,19 +89,6 @@ void Material::updateMaterialDisplayingTexture(
     
     //Use the 3D model rendering shader
     tdModelShader.use();
-
-    //Move the camera to the side
-    glm::vec3 viewPos = glm::vec3(3.f,0,0);
-    glm::mat4 view = glm::lookAt(viewPos, 
-                                 glm::vec3(0), 
-                                 glm::vec3(0.0, 1.0, 0.0));
-    //The perspective projection matrix    
-    glm::mat4 projectionMatrix = glm::perspective(
-                                                    glm::radians(90.f), //Fov  
-                                                    1.f,  //Ratio (is 1 since the width & the height is equal to displayRes)
-                                                    100.f,  //Near (the material is pretty close to the camera actually  ) 
-                                                    0.1f    //Far
-                                                );
 
     //Throw the camera data to the shader
     tdModelShader.setVec3("viewPos",viewPos);

@@ -46,7 +46,7 @@ public:
     std::vector<Section> sections;   
     std::string title;
 
-    void (*updateMaterialChannels)(Material &material, Mesh &mesh, int textureResolution, int curModI);
+    void (*updateMaterialChannels)(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
 
     //Constructors
     MaterialModifier();

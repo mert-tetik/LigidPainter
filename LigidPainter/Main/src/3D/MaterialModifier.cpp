@@ -11,6 +11,16 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
+
+    Texture Modifier
+
+    Dust Modifier
+
+    Solid Modifier
+
+    Fabric Modifier
+
+
 */
 
 #include<glad/glad.h>
@@ -38,8 +48,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 MaterialModifier::MaterialModifier(){}
 
-void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
-void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
+void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
 
 MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures,int modifierIndex){
     
@@ -52,7 +62,7 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader
     else if(modifierIndex == DUST_MATERIAL_MODIFIER){
         this->sections = createDustModifier(colorPalette,buttonShader,appTextures);
         this->title = "Dust Modifier";    
-        shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert","LigidPainter/Resources/Shaders/MaterialModifiers/DustModifier.frag",nullptr,nullptr,nullptr);
+        shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/DustModifier.frag",nullptr,nullptr,nullptr);
         this->updateMaterialChannels = dustModifierUpdateMat;
     }
 
@@ -121,7 +131,7 @@ std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPale
     };
 }
 
-void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
+void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -226,7 +236,7 @@ glm::vec2 getDirectionVector(float rotation) {
   return glm::vec2(x, y);
 }
 
-void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
+void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -236,7 +246,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     glViewport(0,0,textureResolution,textureResolution);
 
     //Set the orthographic projection to the texture resolution
-    glm::mat4 projection = glm::ortho(0.f,(float)textureResolution,(float)textureResolution,0.f);
+    glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
 
     //Transform values to take the texture in to the middle of the screen and cover it completely
     glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
@@ -297,9 +307,12 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
-        modifierShader.setMat4("projection",projection); //Set the projection
+        modifierShader.setMat4("orthoProjection",projection); //Set the projection
         modifierShader.setVec2("scale",fragScale); //Set the scale
         modifierShader.setVec3("pos",fragPos); //Set the position
+        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
+        modifierShader.setMat4("view",view); //Set the projection
+
         // modifierShader.shader.setInt("theTexture",0); //Set the texture slot
         // modifierShader.shader.setInt("state",channelI); //Set the texture slot
 
@@ -329,7 +342,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //glBindTexture(GL_TEXTURE_2D,material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.ID);
         
         //Render the result to the framebuffer
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        mesh.Draw();
         
         //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
