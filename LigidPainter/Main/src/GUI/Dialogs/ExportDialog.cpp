@@ -126,18 +126,15 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,M
             return;
         }
         //All the materials connected to the mesh output
-        std::vector<Material> materials = UTIL::getTheMaterialsConnectedToTheMeshNode(meshNodeScene,library,resolution,appTextures);
+        //std::vector<Material> materials = UTIL::getTheMaterialsConnectedToTheMeshNode(meshNodeScene,library,resolution,appTextures);
         
         //Update all the materials connected to the mesh output & export it's textures
-        for (size_t i = 0; i < materials.size(); i++)
+        for (size_t i = 0; i < model.meshes.size(); i++)
         {
             //Update the material
-            materials[i].updateMaterial(resolution, box, context, buttonShader, shaders.tdModelShader, sphereModel);
+            //TODO : EXPORT UPDATED MESH TEXTURES
+            //materials[i].updateMaterial(resolution, box, context, buttonShader, shaders.tdModelShader, sphereModel);
 
-
-            if(i >= model.meshes.size())
-                break;
-            
             std::string materialFolderPath = destPath + UTIL::folderDistinguisher() + model.meshes[i].materialName;
             
             std::filesystem::create_directories(materialFolderPath);
@@ -148,27 +145,27 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,M
                 Texture channelTxtr;
                 
                 if(channelI == 0){
-                    channelTxtr = materials[i].albedo;
+                    channelTxtr = model.meshes[i].albedo;
                     channelTxtr.title = "albedo";
                 }
                 if(channelI == 1){
-                    channelTxtr = materials[i].roughness;
+                    channelTxtr = model.meshes[i].roughness;
                     channelTxtr.title = "roughness";
                 }
                 if(channelI == 2){
-                    channelTxtr = materials[i].metallic;
+                    channelTxtr = model.meshes[i].metallic;
                     channelTxtr.title = "metallic";
                 }
                 if(channelI == 3){
-                    channelTxtr = materials[i].normalMap;
+                    channelTxtr = model.meshes[i].normalMap;
                     channelTxtr.title = "normalMap";
                 }
                 if(channelI == 4){
-                    channelTxtr = materials[i].heightMap;
+                    channelTxtr = model.meshes[i].heightMap;
                     channelTxtr.title = "heightMap";
                 }
                 if(channelI == 5){
-                    channelTxtr = materials[i].ambientOcclusion;
+                    channelTxtr = model.meshes[i].ambientOcclusion;
                     channelTxtr.title = "ambientOcclusion";
                 }
 

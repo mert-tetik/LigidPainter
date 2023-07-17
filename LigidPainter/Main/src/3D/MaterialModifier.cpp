@@ -38,8 +38,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 MaterialModifier::MaterialModifier(){}
 
-void textureModifierUpdateMat(Material &material, int textureResolution, int curModI);
-void dustModifierUpdateMat(Material &material, int textureResolution, int curModI);
+void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
+void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
 
 MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures,int modifierIndex){
     
@@ -121,7 +121,11 @@ std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPale
     };
 }
 
-void textureModifierUpdateMat(Material &material, int textureResolution, int curModI){
+void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
+
+    //Set the OpenGL viewport to the texture resolution
+    glViewport(0,0,textureResolution,textureResolution);
+
     //Set the orthographic projection to the texture resolution
     glm::mat4 projection = glm::ortho(0.f,(float)textureResolution,(float)textureResolution,0.f);
     
@@ -142,22 +146,22 @@ void textureModifierUpdateMat(Material &material, int textureResolution, int cur
         //Get the channel's texture from material
         unsigned int textureBuffer; //Material's texture
         if(channelI == 0){
-            textureBuffer = material.albedo.ID;
+            textureBuffer = mesh.albedo.ID;
         }
         if(channelI == 1){
-            textureBuffer = material.roughness.ID;
+            textureBuffer = mesh.roughness.ID;
         }
         if(channelI == 2){
-            textureBuffer = material.metallic.ID;
+            textureBuffer = mesh.metallic.ID;
         }
         if(channelI == 3){
-            textureBuffer = material.normalMap.ID;
+            textureBuffer = mesh.normalMap.ID;
         }
         if(channelI == 4){
-            textureBuffer = material.heightMap.ID;
+            textureBuffer = mesh.heightMap.ID;
         }
         if(channelI == 5){
-            textureBuffer = material.ambientOcclusion.ID;
+            textureBuffer = mesh.ambientOcclusion.ID;
         }
         
         //Bind the channel texture
@@ -222,11 +226,14 @@ glm::vec2 getDirectionVector(float rotation) {
   return glm::vec2(x, y);
 }
 
-void dustModifierUpdateMat(Material &material, int textureResolution, int curModI){
+void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
     textureResolution = 512;
+
+    //Set the OpenGL viewport to the texture resolution
+    glViewport(0,0,textureResolution,textureResolution);
 
     //Set the orthographic projection to the texture resolution
     glm::mat4 projection = glm::ortho(0.f,(float)textureResolution,(float)textureResolution,0.f);
@@ -248,22 +255,22 @@ void dustModifierUpdateMat(Material &material, int textureResolution, int curMod
         //Get the channel's texture from material
         unsigned int textureBuffer; //Material's texture
         if(channelI == 0){
-            textureBuffer = material.albedo.ID;
+            textureBuffer = mesh.albedo.ID;
         }
         if(channelI == 1){
-            textureBuffer = material.roughness.ID;
+            textureBuffer = mesh.roughness.ID;
         }
         if(channelI == 2){
-            textureBuffer = material.metallic.ID;
+            textureBuffer = mesh.metallic.ID;
         }
         if(channelI == 3){
-            textureBuffer = material.normalMap.ID;
+            textureBuffer = mesh.normalMap.ID;
         }
         if(channelI == 4){
-            textureBuffer = material.heightMap.ID;
+            textureBuffer = mesh.heightMap.ID;
         }
         if(channelI == 5){
-            textureBuffer = material.ambientOcclusion.ID;
+            textureBuffer = mesh.ambientOcclusion.ID;
         }
         
         //Bind the channel texture

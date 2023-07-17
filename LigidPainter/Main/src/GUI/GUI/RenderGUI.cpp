@@ -81,7 +81,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     renderRenamingTextbox(videoScale, mouse, timer, textRenderer, painter, library, context);
     
     //Render the nodes
-    renderNodes(videoScale,mouse,timer,textRenderer,library,meshNodeScene);
+    renderNodes(videoScale,mouse,timer,textRenderer,library,meshNodeScene, model, settings.textureRes);
     
     //Render the dialogs
     renderDialogs(videoScale, mouse, timer, textRenderer, library, meshNodeScene, context, project, model, skybox, settings, box, contextMenus);
@@ -293,7 +293,7 @@ void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer,
     }
 }
 
-void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &meshNodeScene){
+void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &meshNodeScene, Model &model, int textureRes){
     
     for (size_t i = 0; i < meshNodeScene.size(); i++)
     {
@@ -307,7 +307,7 @@ void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRende
             }
         }
 
-        meshNodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,meshNodeScene,i,this->nodePanel);
+        meshNodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,meshNodeScene,i,this->nodePanel, library, model, textureRes);
     }
 }
 

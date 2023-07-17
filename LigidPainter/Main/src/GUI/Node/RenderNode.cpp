@@ -29,8 +29,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 
-void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &meshNodeScene,int currentNodeIndex, NodePanel& nodePanelData){
+void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &meshNodeScene,int currentNodeIndex, NodePanel& nodePanelData, Library &library, Model &model, int textureRes){
     
+
     //Barriers (In order to prevent the overflow)
     this->cursorOnBarriers = renderBarriers(nodeEditorPanel,mouse);
 
@@ -135,6 +136,35 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
 
                         //Create a connection 
                         createConnection(hoveredNodeI,hoveredIOI,currentNodeIndex,i,meshNodeScene);
+
+                        Material material;
+                        for (size_t i = 0; i < library.materials.size(); i++)
+                        {
+                            if(meshNodeScene[hoveredNodeI].nodeIndex == MATERIAL_NODE){
+                                if(meshNodeScene[hoveredNodeI].materialID == library.materials[i].uniqueID)
+                                    material = library.materials[i];
+                            }
+                            else if(meshNodeScene[currentNodeIndex].nodeIndex == MATERIAL_NODE){
+                                if(meshNodeScene[currentNodeIndex].materialID == library.materials[i].uniqueID)
+                                    material = library.materials[i];
+                            }
+                        }
+
+                        int meshI = 0;
+                        if(meshNodeScene[hoveredNodeI].nodeIndex == MATERIAL_NODE){
+                            meshI = hoveredIOI;
+                        }
+                        else if(meshNodeScene[currentNodeIndex].nodeIndex == MATERIAL_NODE){
+                            meshI = i;
+                        }
+
+                        // TODO : Clear textures when node connection is disconnected 
+
+                        //For every modifier the material has (Output every modifier the material has)
+                        for (int i = material.materialModifiers.size() - 1; i >= 0; --i)    
+                        {
+                            material.materialModifiers[i].updateMaterialChannels(material, model.meshes[meshI - 1], textureRes, i);
+                        }
                     }
                 }
             }
@@ -200,4 +230,6 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
 
     //buttonShader.setVec2("groupPos", glm::vec2(0));
     //buttonShader.setFloat("groupScale", 1);
+
+
 }

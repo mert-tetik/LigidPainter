@@ -103,20 +103,23 @@ Node::Node(int nodeIndex, int materialID, Shader buttonShader, Shader connection
     //Create the barbutton
     this->barButton = Button(ELEMENT_STYLE_BASIC,nodePanel.scale,colorPalette,buttonShader,"Node",Texture(),0.f,false);
     
-    /*
     //Coloring & renaming the bar button
     if(nodeIndex == MATERIAL_NODE){
         this->barButton.color = glm::vec4(100.f/255.f, 32.f/255.f, 125.f/255.f, 1.f);
+        
+        /*Positioning the node*/
+        this->nodePanel.pos.x = 40;
+        this->nodePanel.pos.y = 120.7222;
     }
 
     else if(nodeIndex == MESH_NODE){
         this->barButton.color = glm::vec4(214.f/255.f, 65.f/255.f, 65.f/255.f, 1.f);
+        
+        /*Positioning the node*/
+        this->nodePanel.pos.x = 55;
+        this->nodePanel.pos.y = 110.7222;
     }
-    */
 
-    /*Positioning the node*/
-    this->nodePanel.pos.x = 55;
-    this->nodePanel.pos.y = 110.7222;
 
     //Create the elements of the node panel
     createPanelUsingIOs();

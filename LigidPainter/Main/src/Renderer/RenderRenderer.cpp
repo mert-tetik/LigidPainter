@@ -103,54 +103,52 @@ void Renderer::render(){
 
     //Get the nodes connected to the mesh node (output node)
     
-    std::vector<Material> nodeMaterials = UTIL::getTheMaterialsConnectedToTheMeshNode(meshNodeScene,library,0,appTextures); 
-
     //Render each mesh
     for (size_t i = 0; i < model.meshes.size(); i++)
     {
             //Bind the material
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, nodeMaterials[i].albedo.ID);
+            glBindTexture(GL_TEXTURE_2D, model.meshes[i].albedo.ID);
 
             glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, nodeMaterials[i].roughness.ID);
+            glBindTexture(GL_TEXTURE_2D, model.meshes[i].roughness.ID);
             
             glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, nodeMaterials[i].metallic.ID);
+            glBindTexture(GL_TEXTURE_2D, model.meshes[i].metallic.ID);
             
             glActiveTexture(GL_TEXTURE5);
-            glBindTexture(GL_TEXTURE_2D, nodeMaterials[i].normalMap.ID);
+            glBindTexture(GL_TEXTURE_2D, model.meshes[i].normalMap.ID);
             
             glActiveTexture(GL_TEXTURE6);
-            glBindTexture(GL_TEXTURE_2D, nodeMaterials[i].heightMap.ID);
+            glBindTexture(GL_TEXTURE_2D, model.meshes[i].heightMap.ID);
             
             glActiveTexture(GL_TEXTURE7);
-            glBindTexture(GL_TEXTURE_2D, nodeMaterials[i].ambientOcclusion.ID);
+            glBindTexture(GL_TEXTURE_2D, model.meshes[i].ambientOcclusion.ID);
 
         int paintedTxtrStateIndex = 0;
 
         //If painting an albedo texture
-        if(painter.selectedTexture.ID == nodeMaterials[i].albedo.ID)
+        if(painter.selectedTexture.ID == model.meshes[i].albedo.ID)
             paintedTxtrStateIndex = 0;
         
         //If painting an roughness texture
-        if(painter.selectedTexture.ID == nodeMaterials[i].roughness.ID)
+        if(painter.selectedTexture.ID == model.meshes[i].roughness.ID)
             paintedTxtrStateIndex = 1;
 
         //If painting an metallic texture
-        if(painter.selectedTexture.ID == nodeMaterials[i].metallic.ID)
+        if(painter.selectedTexture.ID == model.meshes[i].metallic.ID)
             paintedTxtrStateIndex = 2;
         
         //If painting an normal map texture
-        if(painter.selectedTexture.ID == nodeMaterials[i].normalMap.ID)
+        if(painter.selectedTexture.ID == model.meshes[i].normalMap.ID)
             paintedTxtrStateIndex = 3;
         
         //If painting an ambient occlusion texture
-        if(painter.selectedTexture.ID == nodeMaterials[i].heightMap.ID)
+        if(painter.selectedTexture.ID == model.meshes[i].heightMap.ID)
             paintedTxtrStateIndex = 4;
         
         //If painting an ambient occlusion texture
-        if(painter.selectedTexture.ID == nodeMaterials[i].ambientOcclusion.ID)
+        if(painter.selectedTexture.ID == model.meshes[i].ambientOcclusion.ID)
             paintedTxtrStateIndex = 5;
 
 
@@ -205,7 +203,8 @@ void Renderer::render(){
         for (size_t i = 0; i < library.materials.size(); i++)
         {   
             //Update the material after painting
-            library.materials[i].updateMaterial(this->settings.textureRes, box, context, shaders.buttonShader, shaders.tdModelShader, sphereModel);
+            //TODO : Do smt after painting
+            // library.materials[i].updateMaterial(this->settings.textureRes, box, context, shaders.buttonShader, shaders.tdModelShader, sphereModel);
         }
         //Update the selected texture after painting
         painter.updateTexture(library.textures, model, this->settings.textureRes, scene, userInterface.twoDPaintingPanel, userInterface.projection);

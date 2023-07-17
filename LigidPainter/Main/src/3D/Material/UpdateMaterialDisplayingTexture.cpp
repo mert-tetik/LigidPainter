@@ -28,7 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 
-void Material::updateMaterial(
+void Material::updateMaterialDisplayingTexture(
                                 float textureRes,
                                 Box box,
                                 Context context,
@@ -36,16 +36,12 @@ void Material::updateMaterial(
                                 Shader tdModelShader,
                                 Model sphereModel
                             ){ 
-    //Set the OpenGL viewport to the texture resolution
-    glViewport(0,0,textureRes,textureRes);
-        
+                                        
     //For every modifier the material has (Output every modifier the material has)
     for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
     {
-        this->materialModifiers[i].updateMaterialChannels(*this, textureRes, i);
+        this->materialModifiers[i].updateMaterialChannels(*this, sphereModel.meshes[0], textureRes, i);
     }
-    
-
     
     //!Update the material displaying texture
     
@@ -101,17 +97,17 @@ void Material::updateMaterial(
     
     //Bind the channels of the material
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D,this->albedo.ID);
+    glBindTexture(GL_TEXTURE_2D,sphereModel.meshes[0].albedo.ID);
     glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D,this->roughness.ID);
+    glBindTexture(GL_TEXTURE_2D,sphereModel.meshes[0].roughness.ID);
     glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D,this->metallic.ID);
+    glBindTexture(GL_TEXTURE_2D,sphereModel.meshes[0].metallic.ID);
     glActiveTexture(GL_TEXTURE5);
-    glBindTexture(GL_TEXTURE_2D,this->normalMap.ID);
+    glBindTexture(GL_TEXTURE_2D,sphereModel.meshes[0].normalMap.ID);
     glActiveTexture(GL_TEXTURE6);
-    glBindTexture(GL_TEXTURE_2D,this->heightMap.ID);
+    glBindTexture(GL_TEXTURE_2D,sphereModel.meshes[0].heightMap.ID);
     glActiveTexture(GL_TEXTURE7);
-    glBindTexture(GL_TEXTURE_2D,this->ambientOcclusion.ID);
+    glBindTexture(GL_TEXTURE_2D,sphereModel.meshes[0].ambientOcclusion.ID);
     
 
     //Draw the sphere

@@ -121,6 +121,22 @@ private:
 
 class Mesh {
 public:
+    
+    /*----- Channels of the material -----
+
+        Only manipulated by the material 
+          modifiers and no other stuff
+       (results of the material modifiers)
+      (don't try to equate to another txtr) 
+    
+    */
+
+    Texture albedo;
+    Texture roughness;
+    Texture metallic; 
+    Texture normalMap;
+    Texture heightMap;
+    Texture ambientOcclusion;
 
     /*! @brief Vertices of the mesh */
     std::vector<Vertex>       vertices;

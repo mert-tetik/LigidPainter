@@ -22,6 +22,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 /// @brief Front decleration for the @ref Section structure
 struct Section;
 
+/// @brief Front decleration for the @ref Mesh class
+class Mesh;
+
 
 //-------------- MATERIAL MODIFIER ------------
 
@@ -43,7 +46,7 @@ public:
     std::vector<Section> sections;   
     std::string title;
 
-    void (*updateMaterialChannels)(Material &material, int textureResolution, int curModI);
+    void (*updateMaterialChannels)(Material &material, Mesh &mesh, int textureResolution, int curModI);
 
     //Constructors
     MaterialModifier();
@@ -70,31 +73,9 @@ struct AppMaterialModifiers{
 
 class Material 
 {
-private:
-    /// @brief Util function to init a OpenGL texture buffer
-    /// @param txtr the initialized texture
-    /// @param textureRes resolution of the texture
-    void initTexture(Texture &txtr, int textureRes);
 public:
     /// @brief title of the material (myMaterial_0)
     std::string title;
-
-
-    /*----- Channels of the material -----
-
-        Only manipulated by the material 
-          modifiers and no other stuff
-       (results of the material modifiers)
-      (don't try to equate to another txtr) 
-    
-    */
-
-    Texture albedo;
-    Texture roughness;
-    Texture metallic; 
-    Texture normalMap;
-    Texture heightMap;
-    Texture ambientOcclusion;
 
     /// @brief texture used to render the material to display
     unsigned int displayingTexture;
@@ -123,7 +104,7 @@ public:
     void readFile(std::string path,ColorPalette colorPalette ,Shader buttonShader ,AppTextures appTextures, const std::vector<Material> materials);
 
     /// @brief Interpret the @ref materialModifiers and write the shader results to the material channels then update the displaying texture
-    void updateMaterial(float textureRes, Box box, Context context, Shader buttonShader, Shader tdModelShader, Model sphereModel);
+    void updateMaterialDisplayingTexture(float textureRes, Box box, Context context, Shader buttonShader, Shader tdModelShader, Model sphereModel);
 
     /// @brief Returns a new material with the same material modifiers and different OpenGL texture objects 
     Material duplicateMaterial(int textureRes);
