@@ -15,17 +15,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #version 400 core
 
-vec3 color = vec3(0.9, 0.2,0.05);
-
-float scale = 32.;
-
-float stripeFrequency = 10.;
-float gapFrequency = 30.;
+/* Stripes */
+uniform vec3 color = vec3(0.9, 0.2,0.05);
+uniform float scale = 32.;
+uniform float stripeFrequency = 10.;
+uniform float gapFrequency = 30.;
+uniform int style = 0;
 
 /* Element Properties */
-float wetness = 1.;
-float metallic = 0.;
-float height = 1.;
+uniform float wetness = 1.;
+uniform float metallic = 0.;
+uniform float height = 1.;
 
 /* Channel Properties*/
 uniform int state;
@@ -151,7 +151,14 @@ vec3 getFabric3(vec2 uv){
 void main() {
   vec2 uv = TexCoords * scale;  // Adjust the scale of the fabric texture
 
-  vec3 fabric = getFabric3(uv);
+  vec3 fabric = vec3(0.);
+  
+  if(style == 0)
+    fabric = getFabric1(uv);
+  if(style == 1)
+    fabric = getFabric2(uv);
+  if(style == 2)
+    fabric = getFabric3(uv);
 
   float noi = getNoise(uv);
   

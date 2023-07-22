@@ -247,13 +247,12 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,float textureR
 void MaterialEditorDialog::updateLayerPanelElements(Material &material,int &textureRes,Box &box,Context &context, Mouse& mouse, glm::vec2 videoScale, std::vector<ContextMenu> contextMenus){
     //Update layer panal elements
     if  (
-            layerPanel.barButtons[0].clicked || //Pressed to add modifier button in the layer panel
             dialogControl.firstFrameActivated // Or in the first frame this dialog is activated
         )
     { 
         
-        //If clicked to add modifier button show the modifier selection context menu
-        //material.materialModifiers.insert(material.materialModifiers.begin(),appMaterialModifiers.dustModifier);
+        ////If clicked to add modifier button show the modifier selection context menu
+        ////material.materialModifiers.insert(material.materialModifiers.begin(),appMaterialModifiers.dustModifier);
         
         //Creates layer panel elements from scratch using material.materialModifiers
         updateLayerPanel(material,textureRes,box,context);

@@ -15,29 +15,35 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #version 400 core
 
+/* Colors */
 vec3 woodColor1 = vec3(0.0, 0.0, 0.0);
 vec3 woodColor2 = vec3(0.25, 0.11, 0.04);
 vec3 woodColor3 = vec3(0.52, 0.32, 0.19);
 
-float noiseOffset = 1.;
-
 float scale = 1.;
+
+/* Noise Properties */
+float noiseOffset = 1.;
 float seed = 3000.;
 
-int MAX_OCTAVES = 8;
-float PERSISTENCE = 0.5;
+/* Perlin Properties */
+int maxOctaves = 8;
+float persistance = 0.5;
 
+/* Musgrave Properties */
 float musgraveLacunarity = 2.5;
 float musgraveStrength = 0.75;
 float musgraveNoise = 1.;
 
+/* Base */
 float baseNoiseStrength = 4.6;
 float baseColorSaturation = 1.;
 
+/* FBM Properties */
 float fbmFrequency = 1.0;
 
+/* Element Properties*/
 float woodGamma = 0.6;
-
 float shininess = 1.5;
 float metallic = 0.;
 float height = 0.0;
@@ -107,7 +113,7 @@ float fbm(vec3 p, int octaves, float roughness) {
 float fbmx(vec3 p) {
     vec3 noise = vec3(noise(p + vec3(0.)), noise(p + vec3(1.)), noise(p + vec3(2.)));
     p += noise;
-    return fbm(p, MAX_OCTAVES, PERSISTENCE);
+    return fbm(p, maxOctaves, persistance);
 }
 
 float musgrave(vec3 p, float octaves, float dimension, float lacunarity) {

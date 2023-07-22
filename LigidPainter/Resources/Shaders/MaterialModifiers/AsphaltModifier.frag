@@ -16,29 +16,29 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #version 400 core
 
 /* Colors */
-vec3 asphaltColor = vec3(0.25);
-vec3 asphaltColor2 = vec3(0.23,0.25,0.27);
+uniform vec3 asphaltColor = vec3(0.25);
+uniform vec3 asphaltColor2 = vec3(0.23,0.25,0.27);
 
 /* Dirt */
-float dirtScale = 4.;
-float dirtStrength = 1.;
+uniform float dirtScale = 4.;
+uniform float dirtStrength = 1.;
 
 /* 2nd Color */
-float colorNoiseScale = 5.;
-float colorNoiseStrength = 1.;
+uniform float colorNoiseScale = 5.;
+uniform float colorNoiseStrength = 1.;
 
-/* Noise */
-float noiseStrength = 1.;
+/* Noise */ 
+uniform float noiseStrength = 1.;
 
 /* Element property */
-float wetness = 1.;
-float metallic = 0.;
-float height = -0.2;
+uniform float wetness = 1.;
+uniform float metallic = 0.;
+uniform float height = 1.0;
 
 /* Perlin Noise Properties*/
-const int firstOctave = 3;
-const int octaves = 8;
-const float persistence = 0.7;
+uniform int firstOctave = 3;
+uniform int octaves = 8;
+uniform float persistence = 0.7;
 
 /* Channel Properties*/
 uniform int state;
@@ -131,9 +131,12 @@ float getPerlin(vec2 uv)
 
 void main()
 {
+    vec3 aspColor = asphaltColor; 
+    vec3 aspColor2 = asphaltColor2; 
+    
     if(state != 0){
-        asphaltColor = vec3(0.25);
-        asphaltColor2 = vec3(0.23,0.25,0.27);
+        aspColor = vec3(0.25);
+        aspColor2 = vec3(0.23,0.25,0.27);
     }
     
     // Normalized pixel coordinates (from 0 to 1)
@@ -141,7 +144,7 @@ void main()
     
     float perlin = getPerlin(uv * colorNoiseScale);
 
-    vec3 coloredAsphalt = mix(asphaltColor, asphaltColor2 , perlin * colorNoiseStrength); 
+    vec3 coloredAsphalt = mix(aspColor, aspColor2 , perlin * colorNoiseStrength); 
 
     float noise = gold_noise(uv) * noiseStrength;
 

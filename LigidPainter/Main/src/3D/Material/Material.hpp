@@ -63,6 +63,14 @@ public:
     //Public member functions
     std::vector<Section> createTextureModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
     std::vector<Section> createDustModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    std::vector<Section> createAsphaltModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    std::vector<Section> createFabricModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    std::vector<Section> createMossModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    std::vector<Section> createRustModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    std::vector<Section> createSkinModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    std::vector<Section> createWoodenModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    std::vector<Section> createMarbleModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    std::vector<Section> createSolidModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
 
 };
 

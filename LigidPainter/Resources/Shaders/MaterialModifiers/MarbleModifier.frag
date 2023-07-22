@@ -18,35 +18,32 @@ Official Web Page : https://ligidtools.com/ligidpainter
 // variant of Vorocracks: https://shadertoy.com/view/lsVyRy
 // integrated with cracks here: https://www.shadertoy.com/view/Xd3fRN
 
-vec3 color1 = vec3(0.);
-vec3 color2 = vec3(1.);
-
+/* Marble Properties */
+uniform vec3 color1 = vec3(0.);
+uniform vec3 color2 = vec3(1.);
 float scale = 0.5;
+int checkerState = 1;
 
-float ofs = .5;          // jitter Voronoi centers in -ofs ... 1.+ofs
-    
-//int FAULT = 1;                 // 0: crest 1: fault
-
-float RATIO = 1.;              // stone length/width ratio
-float CRACK_depth = 3.;
-float CRACK_zebra_scale = 1.;  // fractal shape of the fault zebra
-float CRACK_zebra_amp = .67;
-float CRACK_profile = 1.;      // fault vertical shape  1.  .2 
-float CRACK_slope = 50.;       //                      10.  1.4
-float CRACK_width = .0;
-
+/* Crack Properties*/
+float ofs = .5;          // jitter Voronoi centers in -ofs ... 1. + ofs
+float crackDepth = 3.;
+float crackZebraScale = 1.;  // fractal shape of the fault zebra
+float crackZebraAmp = .67;
+float crackProfile = 1.;      // fault vertical shape  1.  .2 
+float crackSlope = 50.;       //                      10.  1.4
+float crackWidth = .0;
 float crackScale = 10.;
 
+/* Noise Properties */
 const int firstOctave = 3;
 const int octaves = 8;
 const float persistence = 0.6;
 float noiseStrength = 0.5;
 
+/* Corners */
 float cornerBlackoutRadius = 0.2;
 float cornerBlackoutStrength = 5.;
 float cornerBlackoutNoiseSize = 8.;
-
-int checkerState = 1;
 
 /* Element Properties */
 float reflectiveness = 1.;
@@ -390,11 +387,13 @@ void main()
     vec3 H0;
     fragColor-=fragColor;
     
+    const float RATIO = 1.;              // stone length/width ratio
+
     // Calculate the cracks
-    for(float i=0.; i<CRACK_depth ; i++) {
+    for(float i=0.; i < crackDepth ; i++) {
         
         vec2 V =  uv / vec2(RATIO,1); // voronoi cell shape
-        vec2 D = CRACK_zebra_amp * fbm22(uv / CRACK_zebra_scale) * CRACK_zebra_scale;
+        vec2 D = crackZebraAmp * fbm22(uv / crackZebraScale) * crackZebraScale;
         
         vec3  H = voronoiB( V + D ); 
        
@@ -402,7 +401,7 @@ void main()
             H0=H;
         
         float d = H.x;                                // distance to cracks
-        d = min( 1., CRACK_slope * pow(max(0., d-CRACK_width), CRACK_profile));
+        d = min( 1., crackSlope * pow(max(0., d - crackWidth), crackProfile));
   
         fragColor += vec4(1.-d) / exp2(i);
         uv *= 1.5 * rot(.37);

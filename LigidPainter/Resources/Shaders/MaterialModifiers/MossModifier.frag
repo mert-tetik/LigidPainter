@@ -16,33 +16,33 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #version 400 core
 
 /* Color */
-vec3 mossColorBack = vec3(0.19, 0.19, 0.13);
-vec3 mossColorFront = vec3(0.21, 0.27 ,0.01); // Front layer
-vec3 dirtColor = vec3(0.27, 0.22, 0.15);
+uniform vec3 mossColorBack = vec3(0.19, 0.19, 0.13);
+uniform vec3 mossColorFront = vec3(0.21, 0.27 ,0.01); // Front layer
+uniform vec3 dirtColor = vec3(0.27, 0.22, 0.15);
 
 /* Droplets */
-float dropletsCount = 10.2;
-float dropletsOpacityJitter = 1.;
-float dropletsSize = 1.5;
+uniform  float dropletsCount = 10.2;
+uniform  float dropletsOpacityJitter = 1.;
+uniform  float dropletsSize = 1.5;
 
 /* Front Layer */
-float frontLayerStrength = 1.;
-float frontLayerScale = 0.5;
+uniform float frontLayerStrength = 1.;
+uniform float frontLayerScale = 0.5;
 
 /* Lighting */
-float lightStrength = 1.;
-float darkeningStrength = 1.;
+uniform float lightStrength = 1.;
+uniform float darkeningStrength = 1.;
 
 /* Noise */
-float noiseStrength = 1.;
+uniform float noiseStrength = 1.;
 
 /* Moss Properties*/
-float scale = 10.;
+uniform float scale = 10.;
 
 /* Element Properties */
-float wetness = 0.4;
-float metallic = 0.0;
-float height = 1.0; // 0 - 1
+uniform float wetness = 0.4;
+uniform float metallic = 0.0;
+uniform float height = 1.0; // 0 - 1
 
 /* Channel Properties*/
 uniform int state;
