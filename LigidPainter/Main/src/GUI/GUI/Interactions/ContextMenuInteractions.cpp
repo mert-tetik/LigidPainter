@@ -311,6 +311,13 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         }
     }
 
+    if(materialEditorDialog.layerPanel.barButtons[0].clicked && materialEditorDialog.dialogControl.isActive()){
+        contextMenus[8].dialogControl.activate();
+        contextMenus[8].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
+        contextMenus[8].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[6].contextPanel.scale.y;
+        contextMenus[8].pos.z = 0.95f;
+    }
+
     for (size_t i = 0; i < meshNodeScene.size(); i++)
     {
         if((meshNodeScene[i].nodePanel.hover || meshNodeScene[i].barButton.hover) && mouse.RClick && !meshNodeScene[i].cursorOnBarriers){

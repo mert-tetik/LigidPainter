@@ -73,6 +73,14 @@ public:
 struct AppMaterialModifiers{
     MaterialModifier textureModifier;
     MaterialModifier dustModifier;
+    MaterialModifier asphaltModifier;
+    MaterialModifier fabricModifier;
+    MaterialModifier marbleModifier;
+    MaterialModifier mossModifier;
+    MaterialModifier rustModifier;
+    MaterialModifier skinModifier;
+    MaterialModifier solidModifier;
+    MaterialModifier woodenModifier;
 };
 
 

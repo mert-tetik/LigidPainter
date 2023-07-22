@@ -91,49 +91,49 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader
         this->sections = createDustModifier(colorPalette,buttonShader,appTextures);
         this->title = "Asphalt Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/AsphaltModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = dustModifierUpdateMat;
+        this->updateMaterialChannels = textureModifierUpdateMat;
     }
     else if(modifierIndex == FABRIC_MATERIAL_MODIFIER){
         this->sections = createDustModifier(colorPalette,buttonShader,appTextures);
         this->title = "Fabric Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/FabricModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = dustModifierUpdateMat;
+        this->updateMaterialChannels = textureModifierUpdateMat;
     }
     else if(modifierIndex == MARBLE_MATERIAL_MODIFIER){
         this->sections = createDustModifier(colorPalette,buttonShader,appTextures);
         this->title = "Marble Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/MarbleModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = dustModifierUpdateMat;
+        this->updateMaterialChannels = textureModifierUpdateMat;
     }
     else if(modifierIndex == MOSS_MATERIAL_MODIFIER){
         this->sections = createDustModifier(colorPalette,buttonShader,appTextures);
         this->title = "Moss Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/MossModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = dustModifierUpdateMat;
+        this->updateMaterialChannels = textureModifierUpdateMat;
     }
     else if(modifierIndex == RUST_MATERIAL_MODIFIER){
         this->sections = createDustModifier(colorPalette,buttonShader,appTextures);
         this->title = "Rust Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/RustModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = dustModifierUpdateMat;
+        this->updateMaterialChannels = textureModifierUpdateMat;
     }
     else if(modifierIndex == SKIN_MATERIAL_MODIFIER){
         this->sections = createDustModifier(colorPalette,buttonShader,appTextures);
         this->title = "Skin Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/DustModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = dustModifierUpdateMat;
+        this->updateMaterialChannels = textureModifierUpdateMat;
     }
     else if(modifierIndex == SOLID_MATERIAL_MODIFIER){
         this->sections = createDustModifier(colorPalette,buttonShader,appTextures);
         this->title = "Solid Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/DustModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = dustModifierUpdateMat;
+        this->updateMaterialChannels = textureModifierUpdateMat;
     }
     else if(modifierIndex == WOODEN_MATERIAL_MODIFIER){
         this->sections = createDustModifier(colorPalette,buttonShader,appTextures);
         this->title = "Wooden Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/DustModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = dustModifierUpdateMat;
+        this->updateMaterialChannels = textureModifierUpdateMat;
     }
 
     this->modifierIndex = modifierIndex;

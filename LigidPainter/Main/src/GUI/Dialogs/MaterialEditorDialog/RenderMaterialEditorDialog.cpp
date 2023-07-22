@@ -64,9 +64,6 @@ void MaterialEditorDialog::render
     modifiersPanel.render(videoScale,mouse,timer,textRenderer,  !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
     barButton.render(videoScale,mouse,timer,textRenderer,       !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
 
-    //Manage actions of the context menus 
-    this->manageContextMenuActions(library, mouse, material, textureRes, box, context, contextMenus);
-    
     //Update the texture, scale & position of the material displayer button
     updateMaterialDisplayerButton(materialDisplayer, material, bgPanel, modifiersPanel, layerPanel);
     
@@ -88,10 +85,12 @@ void MaterialEditorDialog::render
     
     //Check the modifier's panel and update the material if interacted with any of the GUI element (show the texture selection dialog if pressed to a texture modifier's channel button)
     checkModifiersPanel(material,textureRes,box,context,mouse,textureSelectionDialog);
-
+    
+    //Manage actions of the context menus 
+    this->manageContextMenuActions(library, mouse, material, textureRes, box, context, contextMenus);
 
     //Update the layer panel recreate all the modifiers using material.materialModifiers vector & add a new modifier if add is pressed to that vector
-    updateLayerPanelElements(material,textureRes,box,context);
+    updateLayerPanelElements(material, textureRes, box, context, mouse, videoScale, contextMenus);
     
     //If texture selection done
     checkTextureSelectionDialog(textureSelectionDialog,material,library,textureRes,box,context);
@@ -151,7 +150,7 @@ void MaterialEditorDialog::updateLayerPanel(Material &material,int &textureRes,B
     for (size_t i = 0; i < material.materialModifiers.size(); i++)
     {
         layerPanelSection.elements.push_back(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),colorPalette,buttonShader,material.materialModifiers[i].title , Texture(), 0.f,true))
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1.5f), colorPalette,buttonShader, material.materialModifiers[i].title , Texture(), 0.f, true))
         );
     }
 
@@ -160,8 +159,6 @@ void MaterialEditorDialog::updateLayerPanel(Material &material,int &textureRes,B
     
     //Update the material after updating layerPanel
     material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader,tdModelShader, sphereModel);
-
-    
 }
 
 
@@ -247,7 +244,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,float textureR
     */
 }
 
-void MaterialEditorDialog::updateLayerPanelElements(Material &material,int &textureRes,Box &box,Context &context){
+void MaterialEditorDialog::updateLayerPanelElements(Material &material,int &textureRes,Box &box,Context &context, Mouse& mouse, glm::vec2 videoScale, std::vector<ContextMenu> contextMenus){
     //Update layer panal elements
     if  (
             layerPanel.barButtons[0].clicked || //Pressed to add modifier button in the layer panel
@@ -255,9 +252,8 @@ void MaterialEditorDialog::updateLayerPanelElements(Material &material,int &text
         )
     { 
         
-        //If clicked to add modifier button add the texture modifier to the modifiers of the material
-        if(!dialogControl.firstFrameActivated) 
-            material.materialModifiers.insert(material.materialModifiers.begin(),appMaterialModifiers.dustModifier);
+        //If clicked to add modifier button show the modifier selection context menu
+        //material.materialModifiers.insert(material.materialModifiers.begin(),appMaterialModifiers.dustModifier);
         
         //Creates layer panel elements from scratch using material.materialModifiers
         updateLayerPanel(material,textureRes,box,context);
@@ -327,6 +323,71 @@ void MaterialEditorDialog::manageContextMenuActions(Library &library, Mouse &mou
                 dialogControl.firstFrameActivated = true;
                 selectedMaterialModifierIndex++;
             }
+        }
+    }
+
+    if(contextMenus[8].dialogControl.isActive()){ //If material modifier context menu is active
+        
+        //Delete button pressed
+        
+        // Texture Modifier
+        if(contextMenus[8].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
+            material.materialModifiers.push_back(appMaterialModifiers.textureModifier);
+            updateLayerPanel(material,textureRes,box,context);
+        }
+        
+        // Dust Modifier
+        if(contextMenus[8].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){
+            material.materialModifiers.push_back(appMaterialModifiers.dustModifier);
+            updateLayerPanel(material,textureRes,box,context);
+        }
+        
+        // Asphalt Modifier
+        if(contextMenus[8].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){
+            material.materialModifiers.push_back(appMaterialModifiers.asphaltModifier);
+            updateLayerPanel(material,textureRes,box,context);
+        }
+        
+        // Fabric Modifier
+        if(contextMenus[8].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){
+            material.materialModifiers.push_back(appMaterialModifiers.fabricModifier);
+            updateLayerPanel(material,textureRes,box,context);
+        }
+        
+        // Marble Modifier
+        if(contextMenus[8].contextPanel.sections[0].elements[4].button.hover && mouse.LClick){
+            material.materialModifiers.push_back(appMaterialModifiers.marbleModifier);
+            updateLayerPanel(material,textureRes,box,context);
+        }
+        
+        // Moss Modifier
+        if(contextMenus[8].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){
+            material.materialModifiers.push_back(appMaterialModifiers.mossModifier);
+            updateLayerPanel(material,textureRes,box,context);
+        }
+        
+        // Rust Modifier
+        if(contextMenus[8].contextPanel.sections[0].elements[6].button.hover && mouse.LClick){
+            material.materialModifiers.push_back(appMaterialModifiers.rustModifier);
+            updateLayerPanel(material,textureRes,box,context);
+        }
+        
+        // Skin Modifier
+        if(contextMenus[8].contextPanel.sections[0].elements[7].button.hover && mouse.LClick){
+            material.materialModifiers.push_back(appMaterialModifiers.skinModifier);
+            updateLayerPanel(material,textureRes,box,context);
+        }
+        
+        // Solid Modifier
+        if(contextMenus[8].contextPanel.sections[0].elements[8].button.hover && mouse.LClick){
+            material.materialModifiers.push_back(appMaterialModifiers.solidModifier);
+            updateLayerPanel(material,textureRes,box,context);
+        }
+        
+        // Wooden Modifier
+        if(contextMenus[8].contextPanel.sections[0].elements[9].button.hover && mouse.LClick){
+            material.materialModifiers.push_back(appMaterialModifiers.woodenModifier);
+            updateLayerPanel(material,textureRes,box,context);
         }
     }
 }

@@ -251,4 +251,6 @@ void Renderer::createContextMenus(){
     //Nodes
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Delete"})); //Node context menu 7
 
+    //Material editor
+    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Texture Modifier", "Dust Modifier", "Asphalt Modifier", "Fabric Modifier", "Marble Modifier", "Moss Modifier", "Rust Modifier", "Skin Modifier", "Solid Modifier", "Wooden Modifier"}));// Material modifier selection context menu 8                                        
 }

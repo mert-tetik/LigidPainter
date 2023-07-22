@@ -232,7 +232,7 @@ private:
     void updateLayerPanel(Material &material,int &textureRes,Box &box,Context &context);
     void checkLayerPanel(Material &material,Mouse &mouse,std::vector<ContextMenu> &contextMenus,glm::vec2 videoScale);
     void checkModifiersPanel(Material &material,float textureRes,Box box,Context context,Mouse &mouse,TextureSelectionDialog &textureSelectionDialog);
-    void updateLayerPanelElements(Material &material,int &textureRes,Box &box,Context &context);
+    void updateLayerPanelElements(Material &material,int &textureRes,Box &box,Context &context,Mouse& mouse, glm::vec2 videoScale, std::vector<ContextMenu> contextMenus);
     void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Library &library,float textureRes,Box box,Context context);
     void manageContextMenuActions(Library &library, Mouse &mouse, Material &material, int textureRes, Box box, Context context, std::vector<ContextMenu> &contextMenus);
 

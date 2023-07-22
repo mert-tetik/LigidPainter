@@ -108,6 +108,30 @@ MaterialEditorDialog::MaterialEditorDialog
     //Init the dust modifier
     appMaterialModifiers.dustModifier = MaterialModifier(colorPalette, buttonShader, appTextures, DUST_MATERIAL_MODIFIER);
     
+    //Init the asphalt modifier
+    appMaterialModifiers.asphaltModifier = MaterialModifier(colorPalette, buttonShader, appTextures, ASPHALT_MATERIAL_MODIFIER);
+    
+    //Init the fabric modifier
+    appMaterialModifiers.fabricModifier = MaterialModifier(colorPalette, buttonShader, appTextures, FABRIC_MATERIAL_MODIFIER);
+    
+    //Init the marble modifier
+    appMaterialModifiers.marbleModifier = MaterialModifier(colorPalette, buttonShader, appTextures, MARBLE_MATERIAL_MODIFIER);
+    
+    //Init the moss modifier
+    appMaterialModifiers.mossModifier= MaterialModifier(colorPalette, buttonShader, appTextures, MOSS_MATERIAL_MODIFIER);
+    
+    //Init the rust modifier
+    appMaterialModifiers.rustModifier = MaterialModifier(colorPalette, buttonShader, appTextures, RUST_MATERIAL_MODIFIER);
+    
+    //Init the skin modifier
+    appMaterialModifiers.skinModifier = MaterialModifier(colorPalette, buttonShader, appTextures, SKIN_MATERIAL_MODIFIER);
+    
+    //Init the solid modifier
+    appMaterialModifiers.solidModifier = MaterialModifier(colorPalette, buttonShader, appTextures, SOLID_MATERIAL_MODIFIER);
+    
+    //Init the wooden modifier
+    appMaterialModifiers.woodenModifier = MaterialModifier(colorPalette, buttonShader, appTextures, WOODEN_MATERIAL_MODIFIER);
+    
     //Bar button
     this->barButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(bgPanel.scale.x, bgPanel.scale.y / 20), colorPalette, buttonShader, "Material Editor", Texture(), 0.f, false);
     barButton.pos = glm::vec3(bgPanel.pos.x, bgPanel.pos.y - bgPanel.scale.y - barButton.scale.y, bgPanel.pos.z);
