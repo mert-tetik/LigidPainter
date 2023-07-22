@@ -27,13 +27,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #version 400 core
 
-in vec2 TexCoords;
-in vec3 Normal;
-in vec3 Pos;
-in vec3 Tangent;
-in vec3 Bitangent;
-in vec4 ProjectedPos;
-
 /* Noise */
 uniform float size = 2.0; //best 1.0
 uniform float offsetIntensity = 5.0; //best 5.0
@@ -58,11 +51,30 @@ uniform float dropletsCount = 0.1;
 uniform float dropletsOpacityJitter = 1.;
 uniform float dropletsSize = 5.0;
 
-/* Common colors */
+/* Colors */
 vec3 color1 = vec3(1.);
 vec3 color2 = vec3(0.0);
 
-/* Fragment Color */
+/* Element property */
+float wetness = 1.;
+float metallic = 0.;
+float height = -0.2;
+
+/* Channel Properties*/
+uniform int state;
+uniform sampler2D mask;
+uniform sampler2D previousTxtr;
+uniform float opacity;
+
+/* Fragment Inputs */
+in vec2 TexCoords;
+in vec3 Normal;
+in vec3 Pos;
+in vec3 Tangent;
+in vec3 Bitangent;
+in vec4 ProjectedPos;
+
+/* Fragment Output */
 out vec4 fragColor;
 
 
@@ -259,8 +271,6 @@ float getDroplets(vec2 uv){
             }
 
         }
-        
-
     }
     
     return rain;
@@ -341,4 +351,36 @@ void main()
 	f = brightness * f; //adjust brightness
 
 	fragColor = vec4(vec3(f.rgb), 1.0);
+
+    /*Roughness*/
+    if(state == 1){
+        fragColor.rgb = vec3(1. - fragColor.r * wetness);
+    }
+    
+    /*Metallic*/
+    if(state == 2){
+        fragColor.rgb = vec3(fragColor.r * metallic);
+    }
+    
+    /*Normal Map*/
+    if(state == 3){
+    
+    }
+    
+    /*Height*/
+    if(state == 4){
+        fragColor.rgb = mix(vec3(1. - fragColor.r) , vec3(fragColor.r), height);
+    }
+    
+    /*Ambient Occlusion*/
+    if(state == 5){
+        fragColor.rgb = vec3((fragColor.r * 1.5));
+    }
+
+    float alpha = opacity;
+    alpha *= texture(mask, TexCoords).r; 
+    
+    vec3 clrResult = mix(fragColor.rgb, texture(previousTxtr, TexCoords).rgb, alpha);
+
+    fragColor = vec4(clrResult, 1.);
 }
