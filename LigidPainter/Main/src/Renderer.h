@@ -127,7 +127,6 @@ private:
 
     void initGlad();
     void loadAppTextures();
-    void loadShaders();
     void createContextMenus();
 
 
