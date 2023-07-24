@@ -180,11 +180,12 @@ void main()
     if(state == 5){
         fragColor.rgb = vec3((fragColor.r * perlin + 0.8));
     }
-
+/*
     float alpha = opacity;
     alpha *= texture(mask, TexCoords).r; 
     
     vec3 clrResult = mix(fragColor.rgb, texture(previousTxtr, TexCoords).rgb, alpha);
 
     fragColor = vec4(clrResult, 1.);
+*/
 }

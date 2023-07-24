@@ -73,6 +73,13 @@ MaterialModifier::MaterialModifier(){}
 void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
 void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
 void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
 
 MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures,int modifierIndex){
     
@@ -92,37 +99,37 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader
         this->sections = createAsphaltModifier(colorPalette,buttonShader,appTextures);
         this->title = "Asphalt Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/AsphaltModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = textureModifierUpdateMat;
+        this->updateMaterialChannels = asphaltModifierUpdateMat;
     }
     else if(modifierIndex == FABRIC_MATERIAL_MODIFIER){
         this->sections = createFabricModifier(colorPalette,buttonShader,appTextures);
         this->title = "Fabric Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/FabricModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = textureModifierUpdateMat;
+        this->updateMaterialChannels = fabricModifierUpdateMat;
     }
     else if(modifierIndex == MARBLE_MATERIAL_MODIFIER){
         this->sections = createMarbleModifier(colorPalette,buttonShader,appTextures);
         this->title = "Marble Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/MarbleModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = textureModifierUpdateMat;
+        this->updateMaterialChannels = marbleModifierUpdateMat;
     }
     else if(modifierIndex == MOSS_MATERIAL_MODIFIER){
         this->sections = createMossModifier(colorPalette,buttonShader,appTextures);
         this->title = "Moss Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/MossModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = textureModifierUpdateMat;
+        this->updateMaterialChannels = mossModifierUpdateMat;
     }
     else if(modifierIndex == RUST_MATERIAL_MODIFIER){
         this->sections = createRustModifier(colorPalette,buttonShader,appTextures);
         this->title = "Rust Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/RustModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = textureModifierUpdateMat;
+        this->updateMaterialChannels = rustModifierUpdateMat;
     }
     else if(modifierIndex == SKIN_MATERIAL_MODIFIER){
         this->sections = createSkinModifier(colorPalette,buttonShader,appTextures);
         this->title = "Skin Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/SkinModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = textureModifierUpdateMat;
+        this->updateMaterialChannels = skinModifierUpdateMat;
     }
     else if(modifierIndex == SOLID_MATERIAL_MODIFIER){
         this->sections = createSolidModifier(colorPalette,buttonShader,appTextures);
@@ -134,7 +141,7 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader
         this->sections = createWoodenModifier(colorPalette,buttonShader,appTextures);
         this->title = "Wooden Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/WoodenModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = textureModifierUpdateMat;
+        this->updateMaterialChannels = woodenModifierUpdateMat;
     }
 
     this->modifierIndex = modifierIndex;
@@ -197,46 +204,46 @@ std::vector<Section> MaterialModifier::createMarbleModifier(ColorPalette colorPa
             {
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 1", appTextures.greetingDialogImage, 0.f, false),
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 2", appTextures.greetingDialogImage, 0.f, false),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                //Numeric(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Checker State", appTextures.greetingDialogImage, false),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 5.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Checker State", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), //TODO NUMERIC
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Crack Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Offset", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Depth", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Zebra Scale", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Zebra Amp", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Profile", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Slope", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Width", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Scale", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Offset", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 5.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Depth", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 30.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Zebra Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Zebra Amp", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 67.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Profile", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Slope", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 50.f), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Width", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100 //TODO Numeric
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100 //TODO Numeric
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 60.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Corners", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Radius", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Strength", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Noise Size", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Radius", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Noise Size", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 80.f), // /10
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Reflectiveness", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Reflectiveness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 70.f), // /100
             }
         )
     };
@@ -250,18 +257,18 @@ std::vector<Section> MaterialModifier::createFabricModifier(ColorPalette colorPa
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Stripes",Texture(),0.f,true)),
             {
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader, "Color",   appTextures.greetingDialogImage,0.f,false),
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Frequency",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Gap Frequency",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
-                //Numeric(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Style",appTextures.greetingDialogImage,0.f,0,2,0), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,32.f), // 1
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Frequency",appTextures.greetingDialogImage,0.f,0.f,100.f,20.f), // /2
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Gap Frequency",appTextures.greetingDialogImage,0.f,0.f,100.f,60.f), // /2
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Style",appTextures.greetingDialogImage,0.f,0,2,0), // TODO Numeric 
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Element Properties",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wetness",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wetness",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",appTextures.greetingDialogImage,0.f,0.f,100.f,0.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f), // /100
             }
         ),
     };
@@ -282,43 +289,43 @@ std::vector<Section> MaterialModifier::createMossModifier(ColorPalette colorPale
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Droplets", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Count", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Opacity Jitter", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Size", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Count", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Opacity Jitter", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Size", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 15.f), // /10
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Front Layer", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Front Layer Strength", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Front Layer Scale", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Front Layer Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Front Layer Scale", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 50.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Lighting", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Light Strength", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Darkening Strength", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Light Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Darkening Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Moss Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 40.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
             }
         )
     };
@@ -340,45 +347,43 @@ std::vector<Section> MaterialModifier::createRustModifier(ColorPalette colorPale
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Offset", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Seed", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 30.f), // /1
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Perlin Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // TODO NUMERIC
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // TODO NUMERIC
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 60.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "FBM Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Octaves", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Roughness", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Octaves", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // TODO NUMERIC
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Roughness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Rust Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Rust Radius", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Battering Strength", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Rust Radius", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Battering Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200, 100), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
             }
         )
     };
@@ -391,46 +396,46 @@ std::vector<Section> MaterialModifier::createSkinModifier(ColorPalette colorPale
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Droplets", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Count", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Opacity Jitter", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Size", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Count", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Opacity Jitter", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Size", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 15.f), // /10
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Veins", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Veins Scale", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Veins Strength", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Veins Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Veins Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Blushing", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blushing Strength", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blushing Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f), // /10
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Skin Prints", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Prints Scale", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Prints Strength", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Prints Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Prints Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f), // /10
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Skin Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Color Type", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Scale", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Height", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Ambient Occlusion", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Color Type", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // TODO NUMERIC
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Height", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Ambient Occlusion", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
             }
         )
     };
@@ -451,46 +456,46 @@ std::vector<Section> MaterialModifier::createWoodenModifier(ColorPalette colorPa
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Offset", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Seed", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Offset", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Seed", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 30.f), // *100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Perlin Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Max Octaves", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistance", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Max Octaves", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // TODO NUMERIC
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistance", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Musgrave Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Lacunarity", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Strength", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Noise", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Lacunarity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 25.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 75.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Noise", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /10
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Base", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Base Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Base Color Saturation", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 46.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color Saturation", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "FBM Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Frequency", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Frequency", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /10
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wood Gamma", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Shininess", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wood Gamma", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 60.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Shininess", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
             }
         )
     };
@@ -504,43 +509,42 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(ColorPalette colorP
             {
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Color1",              appTextures.greetingDialogImage,0.f,false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Color2",              appTextures.greetingDialogImage,0.f,false),
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Offset Intensity",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Dirt",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Strength",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,40.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Strength",appTextures.greetingDialogImage,0.f,0.f,200.f,100.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"2nd Color",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Noise Scale",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Noise Strength",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Noise Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,50.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Noise Strength",appTextures.greetingDialogImage,0.f,0.f,200.f,100.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Noise",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Strength",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Strength",appTextures.greetingDialogImage,0.f,0.f,200.f,100.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Element Properties",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wetness",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wetness",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",appTextures.greetingDialogImage,0.f,0.f,100.f,0.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Perlin Properties",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"First Octave",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Octaves",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Persistence",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"First Octave",appTextures.greetingDialogImage,0.f,0.f,0.f,10.f), // TODO : NUMERIC 3
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Octaves",appTextures.greetingDialogImage,0.f,0.f,0.f,10.f), // TODO : NUMERIC 8 
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Persistence",appTextures.greetingDialogImage,0.f,0.f,100.f,70.f), // /100
             }
         )
     };
@@ -895,12 +899,908 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         modifierShader.setInt("state",channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[0].elements[channelI * 2 + 1].rangeBar.value / 100.f); //Set the texture slot
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[0].elements[channelI * 2 + 1].rangeBar.value / 100.f); //Set the chammeş opacity
         modifierShader.setVec3( "value" , glm::vec3(
                                                         material.materialModifiers[curModI].sections[0].elements[channelI * 2].button.color.r, 
                                                         material.materialModifiers[curModI].sections[0].elements[channelI * 2].button.color.g, 
                                                         material.materialModifiers[curModI].sections[0].elements[channelI * 2].button.color.b
-                                                    )); //Set the texture slot
+                                                    )); //Set the channel color value
+
+        //TODO : Bind the mask texture
+        glActiveTexture(GL_TEXTURE0);
+        
+        //TODO : Bind the previous texture
+        glActiveTexture(GL_TEXTURE1);
+        
+        //Render the result to the framebuffer
+        mesh.Draw();
+        
+        //Just in case 🤫😁🤑 
+        glGenerateMipmap(GL_TEXTURE_2D);
+        
+        //Delete the framebuffer after completing the channel
+        glDeleteFramebuffers(1,&FBO);
+        glEnable(GL_DEPTH_TEST);
+    }
+}
+
+void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+
+    Shader modifierShader = material.materialModifiers[curModI].shader;
+
+    textureResolution = 512;
+
+    //Set the OpenGL viewport to the texture resolution
+    glViewport(0,0,textureResolution,textureResolution);
+
+    //Set the orthographic projection to the texture resolution
+    glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
+
+    //Transform values to take the texture in to the middle of the screen and cover it completely
+    glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
+    glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //Disable the depth test (just in case)
+    for (int channelI = 0; channelI < 6; channelI++){
+    
+        glDisable(GL_DEPTH_TEST);
+
+        //That framebuffer will be used to get the results of the shader 
+        unsigned int FBO; 
+        glGenFramebuffers(1,&FBO);
+        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    
+        //Get the channel's texture from material
+        unsigned int textureBuffer; //Material's texture
+        if(channelI == 0){
+            textureBuffer = mesh.albedo.ID;
+        }
+        if(channelI == 1){
+            textureBuffer = mesh.roughness.ID;
+        }
+        if(channelI == 2){
+            textureBuffer = mesh.metallic.ID;
+        }
+        if(channelI == 3){
+            textureBuffer = mesh.normalMap.ID;
+        }
+        if(channelI == 4){
+            textureBuffer = mesh.heightMap.ID;
+        }
+        if(channelI == 5){
+            textureBuffer = mesh.ambientOcclusion.ID;
+        }
+        
+        //Bind the channel texture
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,textureBuffer);
+        
+        //Params for the channel texture
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+        
+        //Refresh the channel texture
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        //Bind the channel texture to the capture framebuffer
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
+        
+        //Make the background pink (cause why not)
+        glClearColor(1,0,1,1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        //Set the uniforms of the modifier's shader
+        modifierShader.use(); //Use the shader of the modifier
+        modifierShader.setMat4("orthoProjection",projection); //Set the projection
+        modifierShader.setVec2("scale",fragScale); //Set the scale
+        modifierShader.setVec3("pos",fragPos); //Set the position
+        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
+        modifierShader.setMat4("view",view); //Set the projection
+
+        /* Channel Properties */
+        modifierShader.setInt("state", channelI); //Set the channel state
+        modifierShader.setInt("mask", 0); //Set the mask texture slot
+        modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
+        modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+
+        /* Colors */
+        modifierShader.setVec3("asphaltColor", material.materialModifiers[curModI].sections[0].elements[0].button.color);
+        modifierShader.setVec3("asphaltColor2", material.materialModifiers[curModI].sections[0].elements[1].button.color);
+
+        /* Dirt */
+        modifierShader.setFloat("dirtScale", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 10.f);
+        modifierShader.setFloat("dirtStrength", material.materialModifiers[curModI].sections[1].elements[1].rangeBar.value / 100.f);
+
+        /* 2nd Color */
+        modifierShader.setFloat("colorNoiseScale", material.materialModifiers[curModI].sections[2].elements[0].rangeBar.value / 10.f);
+        modifierShader.setFloat("colorNoiseStrength", material.materialModifiers[curModI].sections[2].elements[1].rangeBar.value / 100.f);
+
+        /* Noise */ 
+        modifierShader.setFloat("noiseStrength", material.materialModifiers[curModI].sections[3].elements[0].rangeBar.value / 100.f);
+
+        /* Element property */
+        modifierShader.setFloat("wetness", material.materialModifiers[curModI].sections[4].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[4].elements[1].rangeBar.value / 100.f);
+        modifierShader.setFloat("height", material.materialModifiers[curModI].sections[4].elements[2].rangeBar.value / 100.f);
+
+        /* Perlin Noise Properties*/
+        modifierShader.setInt("firstOctave", 3);//TODO : Numeric
+        modifierShader.setInt("octaves", 8); //TODO : Numeric
+        modifierShader.setFloat("persistence", material.materialModifiers[curModI].sections[5].elements[2].rangeBar.value / 100.f); 
+
+        //TODO : Bind the mask texture
+        glActiveTexture(GL_TEXTURE0);
+        
+        //TODO : Bind the previous texture
+        glActiveTexture(GL_TEXTURE1);
+        
+        //Render the result to the framebuffer
+        mesh.Draw();
+        
+        //Just in case 🤫😁🤑 
+        glGenerateMipmap(GL_TEXTURE_2D);
+        
+        //Delete the framebuffer after completing the channel
+        glDeleteFramebuffers(1,&FBO);
+        glEnable(GL_DEPTH_TEST);
+    }
+}
+
+void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+
+    Shader modifierShader = material.materialModifiers[curModI].shader;
+
+    textureResolution = 512;
+
+    //Set the OpenGL viewport to the texture resolution
+    glViewport(0,0,textureResolution,textureResolution);
+
+    //Set the orthographic projection to the texture resolution
+    glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
+
+    //Transform values to take the texture in to the middle of the screen and cover it completely
+    glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
+    glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //Disable the depth test (just in case)
+    for (int channelI = 0; channelI < 6; channelI++){
+    
+        glDisable(GL_DEPTH_TEST);
+
+        //That framebuffer will be used to get the results of the shader 
+        unsigned int FBO; 
+        glGenFramebuffers(1,&FBO);
+        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    
+        //Get the channel's texture from material
+        unsigned int textureBuffer; //Material's texture
+        if(channelI == 0){
+            textureBuffer = mesh.albedo.ID;
+        }
+        if(channelI == 1){
+            textureBuffer = mesh.roughness.ID;
+        }
+        if(channelI == 2){
+            textureBuffer = mesh.metallic.ID;
+        }
+        if(channelI == 3){
+            textureBuffer = mesh.normalMap.ID;
+        }
+        if(channelI == 4){
+            textureBuffer = mesh.heightMap.ID;
+        }
+        if(channelI == 5){
+            textureBuffer = mesh.ambientOcclusion.ID;
+        }
+        
+        //Bind the channel texture
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,textureBuffer);
+        
+        //Params for the channel texture
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+        
+        //Refresh the channel texture
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        //Bind the channel texture to the capture framebuffer
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
+        
+        //Make the background pink (cause why not)
+        glClearColor(1,0,1,1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        //Set the uniforms of the modifier's shader
+        modifierShader.use(); //Use the shader of the modifier
+        modifierShader.setMat4("orthoProjection",projection); //Set the projection
+        modifierShader.setVec2("scale",fragScale); //Set the scale
+        modifierShader.setVec3("pos",fragPos); //Set the position
+        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
+        modifierShader.setMat4("view",view); //Set the projection
+
+        /* Channel Properties */
+        modifierShader.setInt("state", channelI); //Set the channel state
+        modifierShader.setInt("mask", 0); //Set the mask texture slot
+        modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
+        modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+
+        /* Stripes */
+        modifierShader.setVec3("color", material.materialModifiers[curModI].sections[0].elements[0].button.color);
+        modifierShader.setFloat("scale", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 1.f);
+        modifierShader.setFloat("stripeFrequency", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 2.f);
+        modifierShader.setFloat("gapFrequency", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 2.f);
+        modifierShader.setFloat("style", 0); //TODO : Numeric
+
+        /* Element property */
+        modifierShader.setFloat("wetness", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[1].elements[1].rangeBar.value / 100.f);
+        modifierShader.setFloat("height", material.materialModifiers[curModI].sections[1].elements[2].rangeBar.value / 100.f);
+
+
+        //TODO : Bind the mask texture
+        glActiveTexture(GL_TEXTURE0);
+        
+        //TODO : Bind the previous texture
+        glActiveTexture(GL_TEXTURE1);
+        
+        //Render the result to the framebuffer
+        mesh.Draw();
+        
+        //Just in case 🤫😁🤑 
+        glGenerateMipmap(GL_TEXTURE_2D);
+        
+        //Delete the framebuffer after completing the channel
+        glDeleteFramebuffers(1,&FBO);
+        glEnable(GL_DEPTH_TEST);
+    }
+}
+
+void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+
+    Shader modifierShader = material.materialModifiers[curModI].shader;
+
+    textureResolution = 512;
+
+    //Set the OpenGL viewport to the texture resolution
+    glViewport(0,0,textureResolution,textureResolution);
+
+    //Set the orthographic projection to the texture resolution
+    glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
+
+    //Transform values to take the texture in to the middle of the screen and cover it completely
+    glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
+    glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //Disable the depth test (just in case)
+    for (int channelI = 0; channelI < 6; channelI++){
+    
+        glDisable(GL_DEPTH_TEST);
+
+        //That framebuffer will be used to get the results of the shader 
+        unsigned int FBO; 
+        glGenFramebuffers(1,&FBO);
+        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    
+        //Get the channel's texture from material
+        unsigned int textureBuffer; //Material's texture
+        if(channelI == 0){
+            textureBuffer = mesh.albedo.ID;
+        }
+        if(channelI == 1){
+            textureBuffer = mesh.roughness.ID;
+        }
+        if(channelI == 2){
+            textureBuffer = mesh.metallic.ID;
+        }
+        if(channelI == 3){
+            textureBuffer = mesh.normalMap.ID;
+        }
+        if(channelI == 4){
+            textureBuffer = mesh.heightMap.ID;
+        }
+        if(channelI == 5){
+            textureBuffer = mesh.ambientOcclusion.ID;
+        }
+        
+        //Bind the channel texture
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,textureBuffer);
+        
+        //Params for the channel texture
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+        
+        //Refresh the channel texture
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        //Bind the channel texture to the capture framebuffer
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
+        
+        //Make the background pink (cause why not)
+        glClearColor(1,0,1,1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        //Set the uniforms of the modifier's shader
+        modifierShader.use(); //Use the shader of the modifier
+        modifierShader.setMat4("orthoProjection",projection); //Set the projection
+        modifierShader.setVec2("scale",fragScale); //Set the scale
+        modifierShader.setVec3("pos",fragPos); //Set the position
+        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
+        modifierShader.setMat4("view",view); //Set the projection
+
+        /* Channel Properties */
+        modifierShader.setInt("state", channelI); //Set the channel state
+        modifierShader.setInt("mask", 0); //Set the mask texture slot
+        modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
+        modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+
+        /* Marble Properties */
+        modifierShader.setVec3("color1", material.materialModifiers[curModI].sections[0].elements[0].button.color);
+        modifierShader.setVec3("color2", material.materialModifiers[curModI].sections[0].elements[1].button.color);
+        modifierShader.setFloat("scale", material.materialModifiers[curModI].sections[0].elements[2].rangeBar.value);
+        modifierShader.setInt("checkerState", 1); //TODO Numeric
+
+        /* Crack Properties*/
+        modifierShader.setFloat("ofs", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 10.f);
+        modifierShader.setFloat("crackDepth", material.materialModifiers[curModI].sections[1].elements[1].rangeBar.value / 10.f);
+        modifierShader.setFloat("crackZebraScale", material.materialModifiers[curModI].sections[1].elements[2].rangeBar.value / 10.f); 
+        modifierShader.setFloat("crackZebraAmp", material.materialModifiers[curModI].sections[1].elements[3].rangeBar.value / 100.f);
+        modifierShader.setFloat("crackProfile", material.materialModifiers[curModI].sections[1].elements[4].rangeBar.value / 10.f);
+        modifierShader.setFloat("crackSlope", material.materialModifiers[curModI].sections[1].elements[5].rangeBar.value / 1.f);
+        modifierShader.setFloat("crackWidth", material.materialModifiers[curModI].sections[1].elements[6].rangeBar.value / 10.f);
+        modifierShader.setFloat("crackScale", material.materialModifiers[curModI].sections[1].elements[7].rangeBar.value / 1.f);
+
+        /* Noise Properties */
+        modifierShader.setInt("firstOctave", 3); //TODO Numeric
+        modifierShader.setInt("octaves", 8); //TODO Numeric
+        modifierShader.setFloat("persistence", material.materialModifiers[curModI].sections[2].elements[2].rangeBar.value / 100.f);
+        modifierShader.setFloat("noiseStrength", material.materialModifiers[curModI].sections[2].elements[3].rangeBar.value / 100.f);
+
+        /* Corners */
+        modifierShader.setFloat("cornerBlackoutRadius", material.materialModifiers[curModI].sections[3].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat("cornerBlackoutStrength", material.materialModifiers[curModI].sections[3].elements[1].rangeBar.value / 10.f);
+        modifierShader.setFloat("cornerBlackoutNoiseSize", material.materialModifiers[curModI].sections[3].elements[2].rangeBar.value / 10.f);
+
+        /* Element property */
+        modifierShader.setFloat("wetness", material.materialModifiers[curModI].sections[4].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[4].elements[1].rangeBar.value / 100.f);
+        modifierShader.setFloat("height", material.materialModifiers[curModI].sections[4].elements[2].rangeBar.value / 100.f);
+
+
+        //TODO : Bind the mask texture
+        glActiveTexture(GL_TEXTURE0);
+        
+        //TODO : Bind the previous texture
+        glActiveTexture(GL_TEXTURE1);
+        
+        //Render the result to the framebuffer
+        mesh.Draw();
+        
+        //Just in case 🤫😁🤑 
+        glGenerateMipmap(GL_TEXTURE_2D);
+        
+        //Delete the framebuffer after completing the channel
+        glDeleteFramebuffers(1,&FBO);
+        glEnable(GL_DEPTH_TEST);
+    }
+}
+
+void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+
+    Shader modifierShader = material.materialModifiers[curModI].shader;
+
+    textureResolution = 512;
+
+    //Set the OpenGL viewport to the texture resolution
+    glViewport(0,0,textureResolution,textureResolution);
+
+    //Set the orthographic projection to the texture resolution
+    glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
+
+    //Transform values to take the texture in to the middle of the screen and cover it completely
+    glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
+    glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //Disable the depth test (just in case)
+    for (int channelI = 0; channelI < 6; channelI++){
+    
+        glDisable(GL_DEPTH_TEST);
+
+        //That framebuffer will be used to get the results of the shader 
+        unsigned int FBO; 
+        glGenFramebuffers(1,&FBO);
+        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    
+        //Get the channel's texture from material
+        unsigned int textureBuffer; //Material's texture
+        if(channelI == 0){
+            textureBuffer = mesh.albedo.ID;
+        }
+        if(channelI == 1){
+            textureBuffer = mesh.roughness.ID;
+        }
+        if(channelI == 2){
+            textureBuffer = mesh.metallic.ID;
+        }
+        if(channelI == 3){
+            textureBuffer = mesh.normalMap.ID;
+        }
+        if(channelI == 4){
+            textureBuffer = mesh.heightMap.ID;
+        }
+        if(channelI == 5){
+            textureBuffer = mesh.ambientOcclusion.ID;
+        }
+        
+        //Bind the channel texture
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,textureBuffer);
+        
+        //Params for the channel texture
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+        
+        //Refresh the channel texture
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        //Bind the channel texture to the capture framebuffer
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
+        
+        //Make the background pink (cause why not)
+        glClearColor(1,0,1,1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        //Set the uniforms of the modifier's shader
+        modifierShader.use(); //Use the shader of the modifier
+        modifierShader.setMat4("orthoProjection",projection); //Set the projection
+        modifierShader.setVec2("scale",fragScale); //Set the scale
+        modifierShader.setVec3("pos",fragPos); //Set the position
+        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
+        modifierShader.setMat4("view",view); //Set the projection
+
+        /* Channel Properties */
+        modifierShader.setInt("state", channelI); //Set the channel state
+        modifierShader.setInt("mask", 0); //Set the mask texture slot
+        modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
+        modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+
+        /* Colors */
+        modifierShader.setVec3("woodColor1", material.materialModifiers[curModI].sections[0].elements[0].button.color);
+        modifierShader.setVec3("woodColor2", material.materialModifiers[curModI].sections[0].elements[1].button.color);
+        modifierShader.setVec3("woodColor3", material.materialModifiers[curModI].sections[0].elements[2].button.color);
+
+        /* Properties */
+        modifierShader.setFloat("scale", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 10.f);
+        modifierShader.setFloat("noiseOffset", material.materialModifiers[curModI].sections[1].elements[1].rangeBar.value / 10.f);
+        modifierShader.setFloat("seed", material.materialModifiers[curModI].sections[1].elements[2].rangeBar.value * 100.f);
+
+        /* Perlin Properties */
+        modifierShader.setInt("maxOctaves", 8); //TODO NUMERIC
+        modifierShader.setFloat("persistance", material.materialModifiers[curModI].sections[2].elements[1].rangeBar.value / 100.f);
+
+        /* Musgrave Properties */
+        modifierShader.setFloat("musgraveLacunarity", material.materialModifiers[curModI].sections[3].elements[0].rangeBar.value / 10.f);
+        modifierShader.setFloat("musgraveStrength", material.materialModifiers[curModI].sections[3].elements[1].rangeBar.value / 100.f);
+        modifierShader.setFloat("musgraveNoise", material.materialModifiers[curModI].sections[3].elements[2].rangeBar.value / 10.f);
+
+        /* Base */
+        modifierShader.setFloat("baseNoiseStrength", material.materialModifiers[curModI].sections[4].elements[0].rangeBar.value / 10.f);
+        modifierShader.setFloat("baseColorSaturation", material.materialModifiers[curModI].sections[4].elements[1].rangeBar.value / 100.f);
+
+        /* FBM Properties */
+        modifierShader.setFloat("fbmFrequency", material.materialModifiers[curModI].sections[5].elements[0].rangeBar.value / 10.f);
+
+        /* Element property */
+        modifierShader.setFloat("woodGamma", material.materialModifiers[curModI].sections[6].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat("wetness", material.materialModifiers[curModI].sections[6].elements[1].rangeBar.value / 100.f);
+        modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[6].elements[2].rangeBar.value / 100.f);
+        modifierShader.setFloat("height", material.materialModifiers[curModI].sections[6].elements[3].rangeBar.value / 100.f);
+
+        //TODO : Bind the mask texture
+        glActiveTexture(GL_TEXTURE0);
+        
+        //TODO : Bind the previous texture
+        glActiveTexture(GL_TEXTURE1);
+        
+        //Render the result to the framebuffer
+        mesh.Draw();
+        
+        //Just in case 🤫😁🤑 
+        glGenerateMipmap(GL_TEXTURE_2D);
+        
+        //Delete the framebuffer after completing the channel
+        glDeleteFramebuffers(1,&FBO);
+        glEnable(GL_DEPTH_TEST);
+    }
+}
+
+void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+
+    Shader modifierShader = material.materialModifiers[curModI].shader;
+
+    textureResolution = 512;
+
+    //Set the OpenGL viewport to the texture resolution
+    glViewport(0,0,textureResolution,textureResolution);
+
+    //Set the orthographic projection to the texture resolution
+    glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
+
+    //Transform values to take the texture in to the middle of the screen and cover it completely
+    glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
+    glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //Disable the depth test (just in case)
+    for (int channelI = 0; channelI < 6; channelI++){
+    
+        glDisable(GL_DEPTH_TEST);
+
+        //That framebuffer will be used to get the results of the shader 
+        unsigned int FBO; 
+        glGenFramebuffers(1,&FBO);
+        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    
+        //Get the channel's texture from material
+        unsigned int textureBuffer; //Material's texture
+        if(channelI == 0){
+            textureBuffer = mesh.albedo.ID;
+        }
+        if(channelI == 1){
+            textureBuffer = mesh.roughness.ID;
+        }
+        if(channelI == 2){
+            textureBuffer = mesh.metallic.ID;
+        }
+        if(channelI == 3){
+            textureBuffer = mesh.normalMap.ID;
+        }
+        if(channelI == 4){
+            textureBuffer = mesh.heightMap.ID;
+        }
+        if(channelI == 5){
+            textureBuffer = mesh.ambientOcclusion.ID;
+        }
+        
+        //Bind the channel texture
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,textureBuffer);
+        
+        //Params for the channel texture
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+        
+        //Refresh the channel texture
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        //Bind the channel texture to the capture framebuffer
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
+        
+        //Make the background pink (cause why not)
+        glClearColor(1,0,1,1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        //Set the uniforms of the modifier's shader
+        modifierShader.use(); //Use the shader of the modifier
+        modifierShader.setMat4("orthoProjection",projection); //Set the projection
+        modifierShader.setVec2("scale",fragScale); //Set the scale
+        modifierShader.setVec3("pos",fragPos); //Set the position
+        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
+        modifierShader.setMat4("view",view); //Set the projection
+
+        /* Channel Properties */
+        modifierShader.setInt("state", channelI); //Set the channel state
+        modifierShader.setInt("mask", 0); //Set the mask texture slot
+        modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
+        modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+
+        /* Color */
+        modifierShader.setVec3("mossColorBack", material.materialModifiers[curModI].sections[0].elements[0].button.color);
+        modifierShader.setVec3("mossColorFront", material.materialModifiers[curModI].sections[0].elements[1].button.color);
+        modifierShader.setVec3("dirtColor", material.materialModifiers[curModI].sections[0].elements[2].button.color);
+
+        /* Droplets */
+        modifierShader.setFloat("dropletsCount", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 1.f);
+        modifierShader.setFloat("dropletsOpacityJitter", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat("dropletsSize", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 10.f);
+
+        /* Front Layer */
+        modifierShader.setFloat("frontLayerStrength", material.materialModifiers[curModI].sections[2].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat("frontLayerScale", material.materialModifiers[curModI].sections[2].elements[0].rangeBar.value / 100.f);
+
+        /* Lighting */
+        modifierShader.setFloat("lightStrength", material.materialModifiers[curModI].sections[3].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat("darkeningStrength", material.materialModifiers[curModI].sections[3].elements[0].rangeBar.value / 100.f);
+
+        /* Noise */
+        modifierShader.setFloat("noiseStrength", material.materialModifiers[curModI].sections[4].elements[0].rangeBar.value / 100.f);
+
+        /* Moss Properties*/
+        modifierShader.setFloat("scale", material.materialModifiers[curModI].sections[5].elements[0].rangeBar.value / 1.f);
+
+        /* Element property */
+        modifierShader.setFloat("wetness", material.materialModifiers[curModI].sections[6].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[6].elements[1].rangeBar.value / 100.f);
+        modifierShader.setFloat("height", material.materialModifiers[curModI].sections[6].elements[2].rangeBar.value / 100.f);
+
+        //TODO : Bind the mask texture
+        glActiveTexture(GL_TEXTURE0);
+        
+        //TODO : Bind the previous texture
+        glActiveTexture(GL_TEXTURE1);
+        
+        //Render the result to the framebuffer
+        mesh.Draw();
+        
+        //Just in case 🤫😁🤑 
+        glGenerateMipmap(GL_TEXTURE_2D);
+        
+        //Delete the framebuffer after completing the channel
+        glDeleteFramebuffers(1,&FBO);
+        glEnable(GL_DEPTH_TEST);
+    }
+}
+
+void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+
+    Shader modifierShader = material.materialModifiers[curModI].shader;
+
+    textureResolution = 512;
+
+    //Set the OpenGL viewport to the texture resolution
+    glViewport(0,0,textureResolution,textureResolution);
+
+    //Set the orthographic projection to the texture resolution
+    glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
+
+    //Transform values to take the texture in to the middle of the screen and cover it completely
+    glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
+    glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //Disable the depth test (just in case)
+    for (int channelI = 0; channelI < 6; channelI++){
+    
+        glDisable(GL_DEPTH_TEST);
+
+        //That framebuffer will be used to get the results of the shader 
+        unsigned int FBO; 
+        glGenFramebuffers(1,&FBO);
+        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    
+        //Get the channel's texture from material
+        unsigned int textureBuffer; //Material's texture
+        if(channelI == 0){
+            textureBuffer = mesh.albedo.ID;
+        }
+        if(channelI == 1){
+            textureBuffer = mesh.roughness.ID;
+        }
+        if(channelI == 2){
+            textureBuffer = mesh.metallic.ID;
+        }
+        if(channelI == 3){
+            textureBuffer = mesh.normalMap.ID;
+        }
+        if(channelI == 4){
+            textureBuffer = mesh.heightMap.ID;
+        }
+        if(channelI == 5){
+            textureBuffer = mesh.ambientOcclusion.ID;
+        }
+        
+        //Bind the channel texture
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,textureBuffer);
+        
+        //Params for the channel texture
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+        
+        //Refresh the channel texture
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        //Bind the channel texture to the capture framebuffer
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
+        
+        //Make the background pink (cause why not)
+        glClearColor(1,0,1,1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        //Set the uniforms of the modifier's shader
+        modifierShader.use(); //Use the shader of the modifier
+        modifierShader.setMat4("orthoProjection",projection); //Set the projection
+        modifierShader.setVec2("scale",fragScale); //Set the scale
+        modifierShader.setVec3("pos",fragPos); //Set the position
+        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
+        modifierShader.setMat4("view",view); //Set the projection
+
+        /* Channel Properties */
+        modifierShader.setInt("state", channelI); //Set the channel state
+        modifierShader.setInt("mask", 0); //Set the mask texture slot
+        modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
+        modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+
+        /* Colors */
+        modifierShader.setVec3("color1", material.materialModifiers[curModI].sections[0].elements[0].button.color);
+        modifierShader.setVec3("color2", material.materialModifiers[curModI].sections[0].elements[1].button.color);
+        modifierShader.setVec3("color3", material.materialModifiers[curModI].sections[0].elements[2].button.color);
+        modifierShader.setVec3("color4", material.materialModifiers[curModI].sections[0].elements[3].button.color);
+
+        /*Properties*/
+        modifierShader.setFloat("scale", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 1.f);
+
+        /* Perlin Properties */
+        modifierShader.setInt("firstOctave", 3); //TODO NUMERIC
+        modifierShader.setInt("octaves", 8); //TODO NUMERIC
+        modifierShader.setFloat("persistence", material.materialModifiers[curModI].sections[2].elements[2].rangeBar.value / 100.f); 
+
+        /* FBM Properties*/
+        modifierShader.setInt("fbmOctaves", 8); //TODO NUMERIC
+        modifierShader.setFloat("fbmRoughness", material.materialModifiers[curModI].sections[3].elements[1].rangeBar.value / 100.f);
+
+        /* Rust Properties */
+        modifierShader.setFloat("rustRadius", material.materialModifiers[curModI].sections[4].elements[0].rangeBar.value / 10.f);
+        modifierShader.setFloat("batteringStrength", material.materialModifiers[curModI].sections[4].elements[1].rangeBar.value / 100.f);
+
+        /* Noise Properties*/
+        modifierShader.setFloat("noiseStrength", material.materialModifiers[curModI].sections[5].elements[0].rangeBar.value / 100.f);
+
+        /* Element property */
+        modifierShader.setFloat("wetness", material.materialModifiers[curModI].sections[6].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[6].elements[1].rangeBar.value / 100.f);
+        modifierShader.setFloat("height", material.materialModifiers[curModI].sections[6].elements[2].rangeBar.value / 100.f);
+
+        //TODO : Bind the mask texture
+        glActiveTexture(GL_TEXTURE0);
+        
+        //TODO : Bind the previous texture
+        glActiveTexture(GL_TEXTURE1);
+        
+        //Render the result to the framebuffer
+        mesh.Draw();
+        
+        //Just in case 🤫😁🤑 
+        glGenerateMipmap(GL_TEXTURE_2D);
+        
+        //Delete the framebuffer after completing the channel
+        glDeleteFramebuffers(1,&FBO);
+        glEnable(GL_DEPTH_TEST);
+    }
+}
+
+void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+
+    Shader modifierShader = material.materialModifiers[curModI].shader;
+
+    textureResolution = 512;
+
+    //Set the OpenGL viewport to the texture resolution
+    glViewport(0,0,textureResolution,textureResolution);
+
+    //Set the orthographic projection to the texture resolution
+    glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
+
+    //Transform values to take the texture in to the middle of the screen and cover it completely
+    glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
+    glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //Disable the depth test (just in case)
+    for (int channelI = 0; channelI < 6; channelI++){
+    
+        glDisable(GL_DEPTH_TEST);
+
+        //That framebuffer will be used to get the results of the shader 
+        unsigned int FBO; 
+        glGenFramebuffers(1,&FBO);
+        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    
+        //Get the channel's texture from material
+        unsigned int textureBuffer; //Material's texture
+        if(channelI == 0){
+            textureBuffer = mesh.albedo.ID;
+        }
+        if(channelI == 1){
+            textureBuffer = mesh.roughness.ID;
+        }
+        if(channelI == 2){
+            textureBuffer = mesh.metallic.ID;
+        }
+        if(channelI == 3){
+            textureBuffer = mesh.normalMap.ID;
+        }
+        if(channelI == 4){
+            textureBuffer = mesh.heightMap.ID;
+        }
+        if(channelI == 5){
+            textureBuffer = mesh.ambientOcclusion.ID;
+        }
+        
+        //Bind the channel texture
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,textureBuffer);
+        
+        //Params for the channel texture
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+        
+        //Refresh the channel texture
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        //Bind the channel texture to the capture framebuffer
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
+        
+        //Make the background pink (cause why not)
+        glClearColor(1,0,1,1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        //Set the uniforms of the modifier's shader
+        modifierShader.use(); //Use the shader of the modifier
+        modifierShader.setMat4("orthoProjection",projection); //Set the projection
+        modifierShader.setVec2("scale",fragScale); //Set the scale
+        modifierShader.setVec3("pos",fragPos); //Set the position
+        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
+        modifierShader.setMat4("view",view); //Set the projection
+
+        /* Channel Properties */
+        modifierShader.setInt("state", channelI); //Set the channel state
+        modifierShader.setInt("mask", 0); //Set the mask texture slot
+        modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
+        modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+
+        /* Droplets */
+        modifierShader.setFloat("dropletsCount", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 1.f);
+        modifierShader.setFloat("dropletsOpacityJitter", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat("dropletsSize", material.materialModifiers[curModI].sections[0].elements[2].rangeBar.value / 10.f);
+
+        /* Veins */
+        modifierShader.setFloat("veinsScale", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 1.f);
+        modifierShader.setFloat("veinsStrength", material.materialModifiers[curModI].sections[1].elements[1].rangeBar.value / 100.f);
+
+        /* Blushing */
+        modifierShader.setFloat("blushingStrength", material.materialModifiers[curModI].sections[2].elements[0].rangeBar.value / 10.f);
+
+        /* Skin Prints */
+        modifierShader.setFloat("skinPrintsScale", material.materialModifiers[curModI].sections[3].elements[0].rangeBar.value / 1.f);
+        modifierShader.setFloat("skinPrintsStrength", material.materialModifiers[curModI].sections[3].elements[1].rangeBar.value / 100.f);
+
+        /* Noise */
+        modifierShader.setFloat("noiseStrength", material.materialModifiers[curModI].sections[4].elements[0].rangeBar.value / 10.f);
+
+        /* Skin Properties*/
+        modifierShader.setInt("skinColorType", 0); //TODO NUMERIC
+        modifierShader.setFloat("skinScale", material.materialModifiers[curModI].sections[5].elements[1].rangeBar.value / 1.f);
+        modifierShader.setFloat("skinWetness", material.materialModifiers[curModI].sections[5].elements[2].rangeBar.value / 100.f);
+        modifierShader.setFloat("skinMetallic", material.materialModifiers[curModI].sections[5].elements[3].rangeBar.value / 100.f);
+        modifierShader.setFloat("skinHeight", material.materialModifiers[curModI].sections[5].elements[4].rangeBar.value / 100.f);
+        modifierShader.setFloat("skinAmbientOcclusion", material.materialModifiers[curModI].sections[5].elements[5].rangeBar.value / 100.f);
 
         //TODO : Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
