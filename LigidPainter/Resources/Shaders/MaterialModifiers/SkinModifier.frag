@@ -11,36 +11,39 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
+
+    TODO : Fix skin height
+
 */
 
 #version 400 core
 
 /* Droplets */
-float dropletsCount = 10.;
-float dropletsOpacityJitter = 1.;
-float dropletsSize = 1.5;
+uniform float dropletsCount = 10.;
+uniform float dropletsOpacityJitter = 1.;
+uniform float dropletsSize = 1.5;
 
 /* Veins */
-float veinsScale = 10.;
-float veinsStrength = 1.;
+uniform float veinsScale = 10.;
+uniform float veinsStrength = 1.;
 
 /* Blushing */
-float blushingStrength = 2.;
+uniform float blushingStrength = 2.;
 
 /* Skin Prints */
-float skinPrintsScale = 10.;
-float skinPrintsStrength = 1.;
+uniform float skinPrintsScale = 10.;
+uniform float skinPrintsStrength = 1.;
 
 /* Noise */
-float noiseStrength = 2.;
+uniform float noiseStrength = 2.;
 
 /* Skin Properties*/
-int skinColorType = 1;
-float skinScale = 10.;
-float skinWetness = 1.;
-float skinMetallic = 0.;
-float skinHeight = 1.; //0 - 2
-float skinAmbientOcclusion = 1.0; 
+uniform int skinColorType = 1;
+uniform float skinScale = 10.;
+uniform float skinWetness = 1.;
+uniform float skinMetallic = 0.;
+uniform float skinHeight = 1.; //0 - 2
+uniform float skinAmbientOcclusion = 1.0; 
 
 /* Channel Properties*/
 uniform int state;

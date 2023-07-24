@@ -16,34 +16,34 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #version 400 core
 
 /* Colors */
-vec3 color1 = vec3(0.65, 0.65, 0.61);
-vec3 color2 = vec3(0.43, 0.4, 0.39);
-vec3 color3 = vec3(0.29, 0.22, 0.17);
-vec3 color4 = vec3(0.49, 0.3, 0.2);
+uniform vec3 color1 = vec3(0.65, 0.65, 0.61);
+uniform vec3 color2 = vec3(0.43, 0.4, 0.39);
+uniform vec3 color3 = vec3(0.29, 0.22, 0.17);
+uniform vec3 color4 = vec3(0.49, 0.3, 0.2);
 
-/**/
-float scale = 30.;
+/*Properties*/
+uniform float scale = 30.;
 
 /* Perlin Properties */
-const int firstOctave = 3;
-const int octaves = 8;
-const float persistence = 0.6;
+uniform int firstOctave = 3;
+uniform int octaves = 8;
+uniform float persistence = 0.6;
 
 /* FBM Properties*/
-int fbmOctaves = 8;
-float fbmRoughness = 0.5;
+uniform int fbmOctaves = 8;
+uniform float fbmRoughness = 0.5;
 
 /* Rust Properties */
-float rustRadius = 2.;
-float batteringStrength = 1.0;
+uniform float rustRadius = 2.;
+uniform float batteringStrength = 1.0;
 
 /* Noise Properties*/
-float noiseStrength = 1.;
+uniform float noiseStrength = 1.;
 
 /* Element Properties */
-float wetness = 1.;
-float metallic = 1.;
-float height = 0.;
+uniform float wetness = 1.;
+uniform float metallic = 1.;
+uniform float height = 0.;
 
 /* Channel Properties*/
 uniform int state;

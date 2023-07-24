@@ -205,7 +205,7 @@ std::vector<Section> MaterialModifier::createMarbleModifier(ColorPalette colorPa
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 1", appTextures.greetingDialogImage, 0.f, false),
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 2", appTextures.greetingDialogImage, 0.f, false),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 5.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Checker State", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), //TODO NUMERIC
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Checker State", appTextures.greetingDialogImage, 0.f, 0, 3, 1),
             }
         ),
         Section(
@@ -224,8 +224,8 @@ std::vector<Section> MaterialModifier::createMarbleModifier(ColorPalette colorPa
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100 //TODO Numeric
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // /100 //TODO Numeric
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", appTextures.greetingDialogImage, 0.f, 0, 8, 3), // /100 
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8), // /100 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 60.f), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f), // /100
             }
@@ -260,7 +260,7 @@ std::vector<Section> MaterialModifier::createFabricModifier(ColorPalette colorPa
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,32.f), // 1
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Frequency",appTextures.greetingDialogImage,0.f,0.f,100.f,20.f), // /2
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Gap Frequency",appTextures.greetingDialogImage,0.f,0.f,100.f,60.f), // /2
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Style",appTextures.greetingDialogImage,0.f,0,2,0), // TODO Numeric 
+                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"Style",appTextures.greetingDialogImage,0.f,0,2,0),  
             }
         ),
         Section(
@@ -353,15 +353,15 @@ std::vector<Section> MaterialModifier::createRustModifier(ColorPalette colorPale
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Perlin Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // TODO NUMERIC
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // TODO NUMERIC
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", appTextures.greetingDialogImage, 0.f, 0, 8, 3), 
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 60.f), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "FBM Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Octaves", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // TODO NUMERIC
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Roughness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f), // /100
             }
         ),
@@ -430,7 +430,7 @@ std::vector<Section> MaterialModifier::createSkinModifier(ColorPalette colorPale
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Skin Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Color Type", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // TODO NUMERIC
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Color Type", appTextures.greetingDialogImage, 0.f, 0, 5, 0), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
@@ -464,7 +464,7 @@ std::vector<Section> MaterialModifier::createWoodenModifier(ColorPalette colorPa
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Perlin Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Max Octaves", appTextures.greetingDialogImage, 0.f, 0.f, 500.f, 500.f), // TODO NUMERIC
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Max Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistance", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f), // /100
             }
         ),
@@ -542,8 +542,8 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(ColorPalette colorP
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Perlin Properties",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"First Octave",appTextures.greetingDialogImage,0.f,0.f,0.f,10.f), // TODO : NUMERIC 3
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Octaves",appTextures.greetingDialogImage,0.f,0.f,0.f,10.f), // TODO : NUMERIC 8 
+                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"First Octave",appTextures.greetingDialogImage,0.f, 0, 8, 3),
+                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"Octaves",appTextures.greetingDialogImage,0.f, 0, 8, 8), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Persistence",appTextures.greetingDialogImage,0.f,0.f,100.f,70.f), // /100
             }
         )
@@ -1028,8 +1028,8 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         modifierShader.setFloat("height", material.materialModifiers[curModI].sections[4].elements[2].rangeBar.value / 100.f);
 
         /* Perlin Noise Properties*/
-        modifierShader.setInt("firstOctave", 3);//TODO : Numeric
-        modifierShader.setInt("octaves", 8); //TODO : Numeric
+        modifierShader.setInt("firstOctave", material.materialModifiers[curModI].sections[5].elements[0].rangeBar.value);
+        modifierShader.setInt("octaves", material.materialModifiers[curModI].sections[5].elements[1].rangeBar.value); 
         modifierShader.setFloat("persistence", material.materialModifiers[curModI].sections[5].elements[2].rangeBar.value / 100.f); 
 
         //TODO : Bind the mask texture
@@ -1135,10 +1135,10 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
 
         /* Stripes */
         modifierShader.setVec3("color", material.materialModifiers[curModI].sections[0].elements[0].button.color);
-        modifierShader.setFloat("scale", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 1.f);
-        modifierShader.setFloat("stripeFrequency", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 2.f);
-        modifierShader.setFloat("gapFrequency", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 2.f);
-        modifierShader.setFloat("style", 0); //TODO : Numeric
+        modifierShader.setFloat("scale", material.materialModifiers[curModI].sections[0].elements[1].rangeBar.value / 1.f);
+        modifierShader.setFloat("stripeFrequency", material.materialModifiers[curModI].sections[0].elements[2].rangeBar.value / 2.f);
+        modifierShader.setFloat("gapFrequency", material.materialModifiers[curModI].sections[0].elements[3].rangeBar.value / 2.f);
+        modifierShader.setFloat("style", material.materialModifiers[curModI].sections[0].elements[4].rangeBar.value);
 
         /* Element property */
         modifierShader.setFloat("wetness", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 100.f);
@@ -1251,7 +1251,7 @@ void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setVec3("color1", material.materialModifiers[curModI].sections[0].elements[0].button.color);
         modifierShader.setVec3("color2", material.materialModifiers[curModI].sections[0].elements[1].button.color);
         modifierShader.setFloat("scale", material.materialModifiers[curModI].sections[0].elements[2].rangeBar.value);
-        modifierShader.setInt("checkerState", 1); //TODO Numeric
+        modifierShader.setInt("checkerState", material.materialModifiers[curModI].sections[0].elements[3].rangeBar.value); 
 
         /* Crack Properties*/
         modifierShader.setFloat("ofs", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 10.f);
@@ -1264,8 +1264,8 @@ void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setFloat("crackScale", material.materialModifiers[curModI].sections[1].elements[7].rangeBar.value / 1.f);
 
         /* Noise Properties */
-        modifierShader.setInt("firstOctave", 3); //TODO Numeric
-        modifierShader.setInt("octaves", 8); //TODO Numeric
+        modifierShader.setInt("firstOctave", material.materialModifiers[curModI].sections[2].elements[0].rangeBar.value); 
+        modifierShader.setInt("octaves", material.materialModifiers[curModI].sections[2].elements[1].rangeBar.value);
         modifierShader.setFloat("persistence", material.materialModifiers[curModI].sections[2].elements[2].rangeBar.value / 100.f);
         modifierShader.setFloat("noiseStrength", material.materialModifiers[curModI].sections[2].elements[3].rangeBar.value / 100.f);
 
@@ -1392,7 +1392,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setFloat("seed", material.materialModifiers[curModI].sections[1].elements[2].rangeBar.value * 100.f);
 
         /* Perlin Properties */
-        modifierShader.setInt("maxOctaves", 8); //TODO NUMERIC
+        modifierShader.setInt("maxOctaves", material.materialModifiers[curModI].sections[2].elements[0].rangeBar.value); 
         modifierShader.setFloat("persistance", material.materialModifiers[curModI].sections[2].elements[1].rangeBar.value / 100.f);
 
         /* Musgrave Properties */
@@ -1654,12 +1654,12 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setFloat("scale", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 1.f);
 
         /* Perlin Properties */
-        modifierShader.setInt("firstOctave", 3); //TODO NUMERIC
-        modifierShader.setInt("octaves", 8); //TODO NUMERIC
+        modifierShader.setInt("firstOctave", material.materialModifiers[curModI].sections[2].elements[0].rangeBar.value); 
+        modifierShader.setInt("octaves", material.materialModifiers[curModI].sections[2].elements[1].rangeBar.value);
         modifierShader.setFloat("persistence", material.materialModifiers[curModI].sections[2].elements[2].rangeBar.value / 100.f); 
 
         /* FBM Properties*/
-        modifierShader.setInt("fbmOctaves", 8); //TODO NUMERIC
+        modifierShader.setInt("fbmOctaves", material.materialModifiers[curModI].sections[3].elements[0].rangeBar.value); 
         modifierShader.setFloat("fbmRoughness", material.materialModifiers[curModI].sections[3].elements[1].rangeBar.value / 100.f);
 
         /* Rust Properties */
@@ -1795,7 +1795,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setFloat("noiseStrength", material.materialModifiers[curModI].sections[4].elements[0].rangeBar.value / 10.f);
 
         /* Skin Properties*/
-        modifierShader.setInt("skinColorType", 0); //TODO NUMERIC
+        modifierShader.setInt("skinColorType", material.materialModifiers[curModI].sections[5].elements[0].rangeBar.value);
         modifierShader.setFloat("skinScale", material.materialModifiers[curModI].sections[5].elements[1].rangeBar.value / 1.f);
         modifierShader.setFloat("skinWetness", material.materialModifiers[curModI].sections[5].elements[2].rangeBar.value / 100.f);
         modifierShader.setFloat("skinMetallic", material.materialModifiers[curModI].sections[5].elements[3].rangeBar.value / 100.f);

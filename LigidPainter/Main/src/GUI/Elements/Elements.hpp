@@ -378,6 +378,11 @@ public:
     float maxValue = 50.f; 
     float value = (maxValue+minValue)/2.f; 
     bool doMouseTracking; 
+    bool isNumeric = false;
+    float leftArrowMixVal = 0.f;
+    float rightArrowMixVal = 0.f;
+    bool leftArrowHover = false;
+    bool rightArrowHover = false;
 
     //Constructors
     RangeBar();

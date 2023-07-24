@@ -21,34 +21,34 @@ Official Web Page : https://ligidtools.com/ligidpainter
 /* Marble Properties */
 uniform vec3 color1 = vec3(0.);
 uniform vec3 color2 = vec3(1.);
-float scale = 0.5;
-int checkerState = 1;
+uniform float scale = 0.5;
+uniform int checkerState = 1;
 
 /* Crack Properties*/
-float ofs = .5;          // jitter Voronoi centers in -ofs ... 1. + ofs
-float crackDepth = 3.;
-float crackZebraScale = 1.;  // fractal shape of the fault zebra
-float crackZebraAmp = .67;
-float crackProfile = 1.;      // fault vertical shape  1.  .2 
-float crackSlope = 50.;       //                      10.  1.4
-float crackWidth = .0;
-float crackScale = 10.;
+uniform float ofs = .5;          // jitter Voronoi centers in -ofs ... 1. + ofs
+uniform float crackDepth = 3.;
+uniform float crackZebraScale = 1.;  // fractal shape of the fault zebra
+uniform float crackZebraAmp = .67;
+uniform float crackProfile = 1.;      // fault vertical shape  1.  .2 
+uniform float crackSlope = 50.;       //                      10.  1.4
+uniform float crackWidth = .0;
+uniform float crackScale = 10.;
 
 /* Noise Properties */
-const int firstOctave = 3;
-const int octaves = 8;
-const float persistence = 0.6;
-float noiseStrength = 0.5;
+uniform int firstOctave = 3;
+uniform int octaves = 8;
+uniform float persistence = 0.6;
+uniform float noiseStrength = 0.5;
 
 /* Corners */
-float cornerBlackoutRadius = 0.2;
-float cornerBlackoutStrength = 5.;
-float cornerBlackoutNoiseSize = 8.;
+uniform float cornerBlackoutRadius = 0.2;
+uniform float cornerBlackoutStrength = 5.;
+uniform float cornerBlackoutNoiseSize = 8.;
 
 /* Element Properties */
-float reflectiveness = 1.;
-float metallic = 0.;
-float height = 0.7;
+uniform float reflectiveness = 1.;
+uniform float metallic = 0.;
+uniform float height = 0.7;
 
 /* Channel Properties*/
 uniform int state;

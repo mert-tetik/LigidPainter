@@ -16,37 +16,37 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #version 400 core
 
 /* Colors */
-vec3 woodColor1 = vec3(0.0, 0.0, 0.0);
-vec3 woodColor2 = vec3(0.25, 0.11, 0.04);
-vec3 woodColor3 = vec3(0.52, 0.32, 0.19);
+uniform vec3 woodColor1 = vec3(0.0, 0.0, 0.0);
+uniform vec3 woodColor2 = vec3(0.25, 0.11, 0.04);
+uniform vec3 woodColor3 = vec3(0.52, 0.32, 0.19);
 
-float scale = 1.;
 
-/* Noise Properties */
-float noiseOffset = 1.;
-float seed = 3000.;
+/* Properties */
+uniform float scale = 1.;
+uniform float noiseOffset = 1.;
+uniform float seed = 3000.;
 
 /* Perlin Properties */
-int maxOctaves = 8;
-float persistance = 0.5;
+uniform int maxOctaves = 8;
+uniform float persistance = 0.5;
 
 /* Musgrave Properties */
-float musgraveLacunarity = 2.5;
-float musgraveStrength = 0.75;
-float musgraveNoise = 1.;
+uniform float musgraveLacunarity = 2.5;
+uniform float musgraveStrength = 0.75;
+uniform float musgraveNoise = 1.;
 
 /* Base */
-float baseNoiseStrength = 4.6;
-float baseColorSaturation = 1.;
+uniform float baseNoiseStrength = 4.6;
+uniform float baseColorSaturation = 1.;
 
 /* FBM Properties */
-float fbmFrequency = 1.0;
+uniform float fbmFrequency = 1.0;
 
 /* Element Properties*/
-float woodGamma = 0.6;
-float shininess = 1.5;
-float metallic = 0.;
-float height = 0.0;
+uniform float woodGamma = 0.6;
+uniform float shininess = 1.5;
+uniform float metallic = 0.;
+uniform float height = 0.0;
 
 /* Channel Properties*/
 uniform int state;
@@ -149,7 +149,7 @@ void main() {
     
     fragColor = vec4(woodGamma, 0.0);
 
-        /* Roughness */
+    /* Roughness */
     if(state == 1){
         fragColor.rgb = vec3(1. - fragColor.r) / shininess;
     }
@@ -165,7 +165,7 @@ void main() {
     
     /* Height Map */
     else if(state == 4){
-        fragColor.rgb = vec3(fragColor.r/5. + height);
+        fragColor.rgb = mix(vec3(1. - fragColor.r) , vec3(fragColor.r), height);
     }
 
     else if(state == 5){

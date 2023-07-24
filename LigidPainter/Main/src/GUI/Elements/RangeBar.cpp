@@ -27,8 +27,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 //Unlike the button class this function takes more parameters to draw individual parts of the range bar 
-void RangeBar::render(glm::vec3 posVal,glm::vec2 scaleVal,float radiusVal,glm::vec4 color1Val, glm::vec4 color2Val,float mixVal,bool outlineExtra,
-            float resultOutlineThickness){
+void RangeBar::render(
+                        glm::vec3 posVal,
+                        glm::vec2 scaleVal,
+                        float radiusVal,
+                        glm::vec4 color1Val, 
+                        glm::vec4 color2Val,
+                        float mixVal,
+                        bool outlineExtra,
+                        float resultOutlineThickness
+                    )
+{
     
     //Set the transform data (used by vertex shader)
     shader.setVec3("pos"    ,     posVal );
@@ -89,8 +98,11 @@ RangeBar::RangeBar(Shader shader,std::string text, glm::vec2 scale, glm::vec4 co
 
 //Style constructor
 RangeBar::RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,Texture texture,float panelOffset,float minValue,float maxValue,float value){
-    //For now there is only 1 style
     
+    if(style == ELEMENT_STYLE_STYLIZED){
+        this->isNumeric = true;
+    }
+
     this->shader = shader;
     this->text = text;
     this->color = colorPalette.secondColor;
@@ -123,8 +135,6 @@ void RangeBar::render(
                         TextRenderer &textRenderer, //TextRenderer that handles text rendering
                         bool doMouseTracking //If there is need to check if mouse hover
                     ){
-    ;
-
     this->doMouseTracking = doMouseTracking;
 
     // pos value % of the video scale
@@ -132,8 +142,10 @@ void RangeBar::render(
                           UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
 
+
     // scale value % of the video scale
     glm::vec2 resultScale = UTIL::getPercent(videoScale,scale);
+    glm::vec2 arrowBtnScale = glm::vec2((resultScale.x - resultScale.x / 1.2f) / 2.f, resultScale.y);  
     resultScale.x /= 1.2f;
         
     // scale value % of the video scale
@@ -149,7 +161,7 @@ void RangeBar::render(
         
     //Check if mouse on top of the slider
     if(doMouseTracking)
-        hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
+        hover = mouse.isMouseHover(resultScale, glm::vec2(resultPos.x,resultPos.y));
     else 
         hover = false;
 
@@ -165,7 +177,15 @@ void RangeBar::render(
     if(pointerPressed){
         //Move the pointer (change the value of the slider)
         mouse.setCursor(mouse.hSlideCursor);// mouse.activeCursor = mouse.pointerCursor
-        value += mouse.mouseOffset.x;
+        if(isNumeric){
+            if(mouse.mouseOffset.x > 0 || (rightArrowHover && mouse.LClick))
+                value++;
+            else if(mouse.mouseOffset.x < 0 || (leftArrowHover && mouse.LClick))
+                value--;
+        }
+        else
+            value += mouse.mouseOffset.x;
+        
         if(value < minValue)
             value = minValue;
         if(value > maxValue)
@@ -182,16 +202,50 @@ void RangeBar::render(
 
     //Render the range bar
     render(resultPos,resultScale,resultRadius,color,color2,hoverMixVal,true,resultOutlineThickness); //Back side
-
-    //Render the pointer
-    render( glm::vec3(resultPos.x + displayValue - resultScale.x/2.f, resultPos.y,resultPos.z),
+    
+        //Render the pointer
+    render( 
+            glm::vec3(resultPos.x + displayValue - resultScale.x/2.f, resultPos.y,resultPos.z),
             glm::vec2(resultScale.x/2.f + displayValue ,resultScale.y),
             resultRadius,
             pointerColor,
             pointerColor2,
             (clickedMixVal+hoverMixVal)/2.f,
             false,
-            resultOutlineThickness); 
+            resultOutlineThickness
+        ); 
+
+    //Render the left arrow
+    render(
+            glm::vec3(resultPos.x - resultScale.x - (arrowBtnScale.x), resultPos.y, resultPos.z), 
+            arrowBtnScale,
+            resultRadius, color, color2, leftArrowMixVal, true, resultOutlineThickness); //Back side
+
+    if(doMouseTracking)
+        leftArrowHover = mouse.isMouseHover(arrowBtnScale, glm::vec2(resultPos.x - resultScale.x - (arrowBtnScale.x), resultPos.y));
+    else 
+        leftArrowHover = false;
+
+    timer.transition(leftArrowHover, leftArrowMixVal,0.2f); 
+
+
+    
+    //Render the right arrow
+    render(
+            glm::vec3(resultPos.x + resultScale.x + (arrowBtnScale.x), resultPos.y, resultPos.z), 
+            arrowBtnScale,
+            resultRadius, color, color2, rightArrowMixVal, true, resultOutlineThickness); //Back side
+    
+    if(doMouseTracking)
+        rightArrowHover = mouse.isMouseHover(arrowBtnScale, glm::vec2(resultPos.x + resultScale.x + (arrowBtnScale.x), resultPos.y));
+    else 
+        rightArrowHover = false;
+
+    timer.transition(rightArrowHover, rightArrowMixVal, 0.2f); 
+
+    if(leftArrowHover || rightArrowHover)
+        mouse.setCursor(mouse.pointerCursor);// mouse.activeCursor = mouse.pointerCursor
+
 
     float resultScaleText = videoScale.x/1920/2*textScale;
 
@@ -202,7 +256,10 @@ void RangeBar::render(
     //Render the text
     std::string textResult; 
     textResult = text;
-    textResult += "(" + std::to_string(value) + ")";
+    if(this->isNumeric)
+        textResult += "(" + std::to_string((int)value) + ")";
+    else
+        textResult += "(" + std::to_string(value) + ")";
     
     textRenderer.loadTextData(
                                 shader,
