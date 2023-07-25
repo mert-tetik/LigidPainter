@@ -59,6 +59,8 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     //Use the related shader 
     shaders.buttonShader.use();
 
+    shaders.buttonShader.setInt("properties.invertTheTexture", false);
+    shaders.buttonShader.setVec2("properties.txtrScale", glm::vec2(1.f));
     shaders.buttonShader.setFloat("properties.groupOpacity", 1.f);
 
     //Set the ortho projection     
@@ -336,8 +338,9 @@ void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRen
     if(materialEditorDialog.dialogControl.isActive() && library.materials.size())
         materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex],settings.textureRes,box,context,contextMenus);
     
-    if(textureSelectionDialog.dialogControl.isActive())
-        textureSelectionDialog.render(videoScale,mouse,timer,textRenderer,library);
+    //if(textureSelectionDialog.dialogControl.isActive())
+        textureSelectionDialog.dialogControl.activate();
+        textureSelectionDialog.render(videoScale, mouse, timer, textRenderer, library, this->projection);
 }
 
 void UI::renderDropper(Mouse &mouse, Painter &painter){

@@ -866,6 +866,34 @@ struct Shaders{
     Shader twoDPaintingModeAreaShader;
     Shader circleShader;
     Shader dotsShader;
+
+    void loadShaders(){
+        this->tdModelShader =                 Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/PBR.frag"                       ,nullptr    ,nullptr,   nullptr      );
+
+        this->depth3D =                       Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/Depth3D.frag"                   ,nullptr    ,nullptr,   nullptr      );
+
+        this->skyboxBall =                    Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/SkyboxBall.frag"                ,nullptr    ,nullptr,   nullptr      );
+
+        this->textureUpdatingShader =         Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag"           ,nullptr    ,nullptr,   nullptr      );
+
+        this->skyboxShader =                  Shader("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert"          ,   "LigidPainter/Resources/Shaders/aFrag/Skybox.frag"                    ,nullptr    ,nullptr,   nullptr      );
+
+        this->prefilteringShader =            Shader("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert"          ,   "LigidPainter/Resources/Shaders/aFrag/PrefilterSkybox.frag"           ,nullptr    ,nullptr,   nullptr      );
+
+        this->buttonShader =                  Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Button.frag"                    ,nullptr    ,nullptr,   nullptr      );
+
+        this->connectionCurve =               Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ConnectionCurve.frag"           ,nullptr    ,nullptr,   nullptr      );
+
+        this->colorPicker =                   Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ColorPicker.frag"               ,nullptr    ,nullptr,   nullptr      );
+
+        this->twoDPainting =                  Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/2DPainting.frag"                ,nullptr    ,nullptr,   nullptr      );
+
+        this->twoDPaintingModeAreaShader =    Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag"           ,nullptr    ,nullptr,   nullptr      );
+
+        this->circleShader =                  Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Circle.frag"                    ,nullptr    ,nullptr,   nullptr      );
+
+        this->dotsShader =                    Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Dots.frag"                      ,nullptr    ,nullptr,   nullptr      );
+    }
 };
 
 struct Websites{

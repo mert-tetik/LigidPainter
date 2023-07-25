@@ -323,12 +323,19 @@ class TextureSelectionDialog
 private:
     ColorPalette colorPalette;
     Shader buttonShader;
+    int selectedTextureMode = 0;
 public:
-    Panel texturePanel;
-    int selectedTextureIndex = 1000; 
+    Panel bgPanel;
+    Panel subPanel;
+    Panel selectedTextureDisplayingPanel;
+    Panel textureSelectingPanel;
+
+    Shader proceduralDisplayerShader;
+
+    int selectedTextureIndex = 0; 
     bool clicked = false; 
     glm::vec3 pos = glm::vec3(50,50,0.95f);
-    glm::vec2 scale = glm::vec2(10); 
+    glm::vec2 scale = glm::vec2(40); 
     DialogControl dialogControl;
 
     //Constructors
@@ -336,7 +343,7 @@ public:
     TextureSelectionDialog(Shader buttonShader,ColorPalette colorPalette);
 
     //Public member functions
-    void render(glm::vec2 videoScale,Mouse &mouse,Timer &timer,TextRenderer &textRenderer,Library library);
+    void render(glm::vec2 videoScale,Mouse &mouse,Timer &timer,TextRenderer &textRenderer,Library library, glm::mat4 guiProjection);
 };
 
 //!------------------------------CONTEXT MENU------------------------------

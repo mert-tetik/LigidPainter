@@ -71,6 +71,12 @@ struct Properties{
 
     //This texture will be rendered if render texture state is set to true
     sampler2D txtr;
+
+    //txtr color will be inverted if set to 1 
+    int invertTheTexture;
+
+    //Scales the texture with that value
+    vec2 txtrScale;
 };
 
 //Rendering states
@@ -128,8 +134,14 @@ void main(){
     //TEXTURE RENDERING MODE
     if(states.renderTexture == 1){
         vec2 uv = TexCoords;
+        uv *= properties.txtrScale;
+        
         fragColor = texture(properties.txtr, uv);
-
+        fragColor.a = texture(properties.txtr, uv).r;
+        
+        if(properties.invertTheTexture == 1)
+            fragColor.rgb = vec3(1.) - fragColor.rgb;
+        
         //Round corners for the texture
         float roundVal = applyRoundCorners(TexCoords);
         if(roundVal < 0.2)

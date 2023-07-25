@@ -105,7 +105,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     loadAppTextures();
 
     //Load shaders
-    loadShaders();
+    shaders.loadShaders();
 
     //Load the sphere model
     model.loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
@@ -202,34 +202,6 @@ void Renderer::loadAppTextures(){
     appTextures.ligidPainterIcon.load("./LigidPainter/Resources/Icons/LigidPainter.png");
     appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
     appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");
-}
-
-void Renderer::loadShaders(){
-    shaders.tdModelShader =                 Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/PBR.frag"                       ,nullptr    ,nullptr,   nullptr      );
-    
-    shaders.depth3D =                       Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/Depth3D.frag"                   ,nullptr    ,nullptr,   nullptr      );
-    
-    shaders.skyboxBall =                    Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/SkyboxBall.frag"                ,nullptr    ,nullptr,   nullptr      );
-    
-    shaders.textureUpdatingShader =         Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag"           ,nullptr    ,nullptr,   nullptr      );
-    
-    shaders.skyboxShader =                  Shader("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert"          ,   "LigidPainter/Resources/Shaders/aFrag/Skybox.frag"                    ,nullptr    ,nullptr,   nullptr      );
-    
-    shaders.prefilteringShader =            Shader("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert"          ,   "LigidPainter/Resources/Shaders/aFrag/PrefilterSkybox.frag"           ,nullptr    ,nullptr,   nullptr      );
-    
-    shaders.buttonShader =                  Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Button.frag"                    ,nullptr    ,nullptr,   nullptr      );
-    
-    shaders.connectionCurve =               Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ConnectionCurve.frag"           ,nullptr    ,nullptr,   nullptr      );
-    
-    shaders.colorPicker =                   Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ColorPicker.frag"               ,nullptr    ,nullptr,   nullptr      );
-    
-    shaders.twoDPainting =                  Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/2DPainting.frag"                ,nullptr    ,nullptr,   nullptr      );
-    
-    shaders.twoDPaintingModeAreaShader =    Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag"           ,nullptr    ,nullptr,   nullptr      );
-    
-    shaders.circleShader =                  Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Circle.frag"                    ,nullptr    ,nullptr,   nullptr      );
-    
-    shaders.dotsShader =                    Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Dots.frag"                      ,nullptr    ,nullptr,   nullptr      );
 }
 
 void Renderer::createContextMenus(){
