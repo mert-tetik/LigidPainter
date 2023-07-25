@@ -1,4 +1,18 @@
-#version 400 core
+/*
+---------------------------------------------------------------------------
+LigidPainter - 3D Model texturing software / Texture generator   
+---------------------------------------------------------------------------
+
+Copyright (c) 2022-2023, Mert Tetik
+
+All rights reserved.
+
+Official GitHub Link : https://github.com/mert-tetik/LigidPainter
+Official Web Page : https://ligidtools.com/ligidpainter
+
+---------------------------------------------------------------------------
+    *Include that file using : #pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Procedural.frag)
+*/
 
 #define PI 3.141592
 
@@ -419,4 +433,55 @@ float randomTrianglePattern(
 
     // Combine random values with the current time to create a cyclical pattern
     return cycle(random(floor(c * 4.0)) * 0.5 );
+}
+
+float getProcedural(vec2 p, int proceduralID){
+    if(proceduralID == 0)
+        return hexagonalPattern(p);
+    if(proceduralID == 1)
+        return hexagonalPattern2(p);
+    if(proceduralID == 2)
+        return hexagonalPattern3(p);
+    if(proceduralID == 3)
+        return hexagonalTruchetPattern(p);
+    if(proceduralID == 4)
+        return checkerPattern(p);
+    if(proceduralID == 5)
+        return trianglePattern(p);
+    if(proceduralID == 6)
+        return rhombPattern1(p);
+    if(proceduralID == 7)
+        return karoPattern(p);
+    if(proceduralID == 8)
+        return gridPattern1(p);
+    if(proceduralID == 9)
+        return gridPattern2(p);
+    if(proceduralID == 10)
+        return squareHolePattern(p);
+    if(proceduralID == 11)
+        return roundSquarePattern(p);
+    if(proceduralID == 12)
+        return sinePattern(p);
+    if(proceduralID == 13)
+        return brickPattern(p);
+    if(proceduralID == 14)
+        return gearPattern(p);
+    if(proceduralID == 15)
+        return layeredCirclePattern(p);
+    if(proceduralID == 16)
+        return starPattern(p);
+    if(proceduralID == 17)
+        return basketPattern1(p);
+    if(proceduralID == 18)
+        return basketPattern2(p);
+    if(proceduralID == 19)
+        return diamondPattern(p);
+    if(proceduralID == 20)
+        return rosettePattern(p);
+    if(proceduralID == 21)
+        return smoothHexPattern(p);
+    if(proceduralID == 22)
+        return smoothSharpSquarePattern(p);
+    if(proceduralID == 23)
+        return randomTrianglePattern(p);
 }

@@ -58,7 +58,7 @@ TextureSelectionDialog::TextureSelectionDialog(Shader buttonShader,ColorPalette 
                                                     true,
                                                     true,
                                                     1.f,
-                                                    15.f,
+                                                    12.f,
                                                     {},
                                                     20.f,
                                                     true
@@ -134,9 +134,17 @@ void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &tim
     //Update the panel elements
     this->textureSelectingPanel.sections.clear();
     std::vector<Element> sectionElements;
-    for (size_t i = 0; i < library.textures.size(); i++)
-    {
-        sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,buttonShader,"texture_0"       , library.textures[i], 0.f,false)));
+    if(this->selectedTextureMode == 0){
+        for (size_t i = 0; i < library.textures.size(); i++)
+        {
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,buttonShader,"texture"       , library.textures[i], 0.f,false)));
+        }
+    }
+    else if(this->selectedTextureMode == 1){
+        for (size_t i = 0; i < 24; i++)
+        {
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),colorPalette,buttonShader,""       , Texture(), 0.f,false)));
+        }
     }
     
     //Push the section elements to the texture panel
@@ -152,6 +160,7 @@ void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &tim
     {
         if(this->subPanel.sections[0].elements[i].button.clickState1 && this->selectedTextureMode != i){
             this->selectedTextureMode = i;
+            this->selectedTextureIndex = 0;
             for (size_t i = 0; i < this->subPanel.sections[0].elements.size(); i++)
                 this->subPanel.sections[0].elements[i].button.clickState1 = false;
         }
@@ -162,7 +171,6 @@ void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &tim
             this->subPanel.sections[0].elements[i].button.clickState1 = false;
     }
     
-
     //Render the panel
     this->bgPanel.render(videoScale,mouse,timer,textRenderer,true);
     
@@ -178,6 +186,8 @@ void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &tim
     if(library.textures.size())
         selectedTextureDisplayingPanel.sections[0].elements[0].button.texture = library.textures[selectedTextureIndex];
 
+    this->textureSelectingPanel.render(videoScale,mouse,timer,textRenderer,true);
+    
     if(this->selectedTextureMode == 0){
         
         buttonShader.setInt("properties.invertTheTexture", this->subPanel.sections[0].elements[3].checkBox.clickState1);
@@ -186,15 +196,26 @@ void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &tim
         buttonShader.setInt("properties.invertTheTexture", false);
         buttonShader.setVec2("properties.txtrScale", glm::vec2(1.f));
         
-        this->textureSelectingPanel.render(videoScale,mouse,timer,textRenderer,true);
     }
     else{
         proceduralDisplayerShader.use();
         proceduralDisplayerShader.setMat4("projection"  ,       guiProjection);
         proceduralDisplayerShader.setVec3("pos"         ,       selectedTextureDisplayingPanel.resultPos);
         proceduralDisplayerShader.setVec2("scale"       ,       glm::vec2(std::min(selectedTextureDisplayingPanel.resultScale.x,selectedTextureDisplayingPanel.resultScale.y)));
+        proceduralDisplayerShader.setInt("proceduralID", selectedTextureIndex);
         glDrawArrays(GL_TRIANGLES, 0, 6);
+    
+        for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
+        {
+            proceduralDisplayerShader.use();
+            proceduralDisplayerShader.setVec3("pos"         ,       this->textureSelectingPanel.sections[0].elements[i].button.resultPos);
+            proceduralDisplayerShader.setVec2("scale"       ,       glm::vec2(std::min(this->textureSelectingPanel.sections[0].elements[i].button.resultScale.x, this->textureSelectingPanel.sections[0].elements[i].button.resultScale.y)));
+            proceduralDisplayerShader.setInt("proceduralID", i);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
+        
         buttonShader.use();
+        
     }
 
     //If pressed any of the texture select the texture
