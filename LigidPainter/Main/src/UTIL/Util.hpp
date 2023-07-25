@@ -257,6 +257,10 @@ public:
     /// @brief OpenGL texture buffer object id
     unsigned int ID = 0; 
 
+    /// @brief Indicates which procedural texture shader function will be used (indexing the getProcedural function in the Shaders/Include/Procedural.frag)
+    ///         -1 : No procedural shader will be used. Use the @ref ID instead.
+    int proceduralID = -1;
+
     /// @brief Title of the texture (myTexture)
     std::string title = "";
 

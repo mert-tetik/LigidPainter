@@ -11,6 +11,14 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
+
+    In button
+    Call the show dialog function - giving this->texture as a parameter
+    If the texture is not procedural and the selected texture is procedural delete the received texture
+    If the texture ID is not valid and the selected texture is not procedural create the texture (if the texture is procedural and the selected texture is not procedural (then update the procedural properties))
+    If the texture is procedural and the selected texture is procedural just adjust the procedural properties
+    If pressed to the select button (texture selected) return true (receivedTexture got modified)
+    If not return false (receivedTexture is the same)
 */
 
 #include<glad/glad.h>
@@ -98,8 +106,8 @@ TextureSelectionDialog::TextureSelectionDialog(Shader buttonShader,ColorPalette 
                                         Button(),
                                         {
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,buttonShader,"Library Textures", Texture(), 5.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,buttonShader,"Procedural Noise Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,buttonShader,"Procedural Pattern Textures", Texture(), 2.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,buttonShader,"Procedural Noise Textures", Texture(), 2.f, true),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette,buttonShader,"Invert", 40.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,buttonShader,"Scale", Texture(), 2.f, 0.f, 10.f, 1.f),
                                             Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),colorPalette,buttonShader,"Select", Texture(), 2.f, false),
@@ -129,6 +137,8 @@ TextureSelectionDialog::TextureSelectionDialog(Shader buttonShader,ColorPalette 
 }
 
 void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &timer,TextRenderer &textRenderer,Library library, glm::mat4 guiProjection){
+    
+    Texture receivedTexture;
     dialogControl.updateStart(buttonShader);
 
     //Update the panel elements
@@ -215,7 +225,6 @@ void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &tim
         }
         
         buttonShader.use();
-        
     }
 
     //If pressed any of the texture select the texture
@@ -226,10 +235,50 @@ void TextureSelectionDialog::render(glm::vec2 videoScale,Mouse &mouse,Timer &tim
         }
     }
 
+    // Pressed to the select button
+    if(this->subPanel.sections[0].elements[5].button.clicked){
+        
+        // If selected from the library
+        if(this->selectedTextureMode == 0){
+            receivedTexture.proceduralID = -1;
+
+            glDeleteTextures(1, &receivedTexture.ID);
+            
+            glGenTextures(1, &receivedTexture.ID);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+
+            //TODO Get pixels of the selected texture
+
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, library.textures[this->selectedTextureIndex].getResolution().x, library.textures[this->selectedTextureIndex].getResolution().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            glGenerateMipmap(GL_TEXTURE_2D);
+        }
+
+        // If procedural pattern selected 
+        if(this->selectedTextureMode == 1 || this->selectedTextureMode == 2){
+            //Update the selected procedural function index
+            receivedTexture.proceduralID = this->selectedTextureIndex;
+            
+            //TODO Set the scale & invert 
+            
+            //Delete the texture
+            glDeleteTextures(1, &receivedTexture.ID);
+            receivedTexture.ID = 0;
+        }
+
+
+        //TODO Return true
+    }
+
     //End the dialog
     if((textRenderer.key == LIGIDGL_KEY_ESCAPE && textRenderer.keyInput) || (!this->bgPanel.hover && mouse.LClick)){
         dialogControl.unActivate();
         selectedTextureIndex = 0;
+        //TODO Return false
     }
 
     dialogControl.updateEnd(timer,buttonShader,0.15f);
