@@ -593,6 +593,60 @@ std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPale
     };
 }
 
+void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& curModI, glm::mat4& perspective, glm::mat4& view, int& channelI, unsigned int& FBO, Texture& currentTexture, Texture& previousTexture){
+    glDisable(GL_DEPTH_TEST);
+
+    //Get the channel's texture from material
+    
+    if(channelI == 0){
+        currentTexture = mesh.albedo;
+    }
+    if(channelI == 1){
+        currentTexture = mesh.roughness;
+    }
+    if(channelI == 2){
+        currentTexture = mesh.metallic;
+    }
+    if(channelI == 3){
+        currentTexture = mesh.normalMap;
+    }
+    if(channelI == 4){
+        currentTexture = mesh.heightMap;
+    }
+    if(channelI == 5){
+        currentTexture = mesh.ambientOcclusion;
+    }
+
+    /* ! Binds another framebuffer ! */
+    Texture previousTexture = currentTexture.duplicateTexture();
+
+    //That framebuffer will be used to get the results of the shader 
+    glGenFramebuffers(1,&FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+
+    //Bind the channel texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
+    
+    //Params for the channel texture
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+    
+    //Refresh the channel texture
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    //Bind the channel texture to the capture framebuffer
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, currentTexture.ID, 0);
+    
+    //Make the background pink (cause why not)
+    glClearColor(1,0,1,1);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
 void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
 
     //Set the OpenGL viewport to the texture resolution
@@ -608,56 +662,11 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
-        glDisable(GL_DEPTH_TEST);
+        unsigned int FBO;
+        Texture currentTexture;
+        Texture previousTexture;
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
 
-        //That framebuffer will be used to get the results of the shader 
-        unsigned int FBO; 
-        glGenFramebuffers(1,&FBO);
-        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    
-        //Get the channel's texture from material
-        unsigned int textureBuffer; //Material's texture
-        if(channelI == 0){
-            textureBuffer = mesh.albedo.ID;
-        }
-        if(channelI == 1){
-            textureBuffer = mesh.roughness.ID;
-        }
-        if(channelI == 2){
-            textureBuffer = mesh.metallic.ID;
-        }
-        if(channelI == 3){
-            textureBuffer = mesh.normalMap.ID;
-        }
-        if(channelI == 4){
-            textureBuffer = mesh.heightMap.ID;
-        }
-        if(channelI == 5){
-            textureBuffer = mesh.ambientOcclusion.ID;
-        }
-        
-        //Bind the channel texture
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,textureBuffer);
-        
-        //Params for the channel texture
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-        
-        //Refresh the channel texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        //Bind the channel texture to the capture framebuffer
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
-        
-        //Make the background pink (cause why not)
-        glClearColor(1,0,1,1);
-        glClear(GL_COLOR_BUFFER_BIT);
-        
         //Set the uniforms of the modifier's shader
         material.materialModifiers[curModI].shader.use(); //Use the shader of the modifier
         material.materialModifiers[curModI].shader.setMat4("projection",projection); //Set the projection
@@ -717,56 +726,10 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
-        glDisable(GL_DEPTH_TEST);
-
-        //That framebuffer will be used to get the results of the shader 
-        unsigned int FBO; 
-        glGenFramebuffers(1,&FBO);
-        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-        
-    
-        //Get the channel's texture from material
-        unsigned int textureBuffer; //Material's texture
-        if(channelI == 0){
-            textureBuffer = mesh.albedo.ID;
-        }
-        if(channelI == 1){
-            textureBuffer = mesh.roughness.ID;
-        }
-        if(channelI == 2){
-            textureBuffer = mesh.metallic.ID;
-        }
-        if(channelI == 3){
-            textureBuffer = mesh.normalMap.ID;
-        }
-        if(channelI == 4){
-            textureBuffer = mesh.heightMap.ID;
-        }
-        if(channelI == 5){
-            textureBuffer = mesh.ambientOcclusion.ID;
-        }
-        
-        //Bind the channel texture
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,textureBuffer);
-        
-        //Params for the channel texture
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-        
-        //Refresh the channel texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        //Bind the channel texture to the capture framebuffer
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
-        
-        //Make the background pink (cause why not)
-        glClearColor(1,0,1,1);
-        glClear(GL_COLOR_BUFFER_BIT);
+        unsigned int FBO;
+        Texture currentTexture;
+        Texture previousTexture;
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -801,11 +764,13 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setFloat("dropletsSize", material.materialModifiers[curModI].sections[2].elements[2].rangeBar.value / 10.f);
         
 
-        //TODO : Bind the mask texture
+        // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
         
-        //TODO : Bind the previous texture
+        //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -838,55 +803,10 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
-        glDisable(GL_DEPTH_TEST);
-
-        //That framebuffer will be used to get the results of the shader 
-        unsigned int FBO; 
-        glGenFramebuffers(1,&FBO);
-        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    
-        //Get the channel's texture from material
-        unsigned int textureBuffer; //Material's texture
-        if(channelI == 0){
-            textureBuffer = mesh.albedo.ID;
-        }
-        if(channelI == 1){
-            textureBuffer = mesh.roughness.ID;
-        }
-        if(channelI == 2){
-            textureBuffer = mesh.metallic.ID;
-        }
-        if(channelI == 3){
-            textureBuffer = mesh.normalMap.ID;
-        }
-        if(channelI == 4){
-            textureBuffer = mesh.heightMap.ID;
-        }
-        if(channelI == 5){
-            textureBuffer = mesh.ambientOcclusion.ID;
-        }
-        
-        //Bind the channel texture
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,textureBuffer);
-        
-        //Params for the channel texture
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-        
-        //Refresh the channel texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        //Bind the channel texture to the capture framebuffer
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
-        
-        //Make the background pink (cause why not)
-        glClearColor(1,0,1,1);
-        glClear(GL_COLOR_BUFFER_BIT);
+        unsigned int FBO;
+        Texture currentTexture;
+        Texture previousTexture;
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -907,11 +827,13 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
                                                         material.materialModifiers[curModI].sections[0].elements[channelI * 2].button.color.b
                                                     )); //Set the channel color value
 
-        //TODO : Bind the mask texture
+        // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
         
-        //TODO : Bind the previous texture
+        //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -944,55 +866,10 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
-        glDisable(GL_DEPTH_TEST);
-
-        //That framebuffer will be used to get the results of the shader 
-        unsigned int FBO; 
-        glGenFramebuffers(1,&FBO);
-        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    
-        //Get the channel's texture from material
-        unsigned int textureBuffer; //Material's texture
-        if(channelI == 0){
-            textureBuffer = mesh.albedo.ID;
-        }
-        if(channelI == 1){
-            textureBuffer = mesh.roughness.ID;
-        }
-        if(channelI == 2){
-            textureBuffer = mesh.metallic.ID;
-        }
-        if(channelI == 3){
-            textureBuffer = mesh.normalMap.ID;
-        }
-        if(channelI == 4){
-            textureBuffer = mesh.heightMap.ID;
-        }
-        if(channelI == 5){
-            textureBuffer = mesh.ambientOcclusion.ID;
-        }
-        
-        //Bind the channel texture
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,textureBuffer);
-        
-        //Params for the channel texture
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-        
-        //Refresh the channel texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        //Bind the channel texture to the capture framebuffer
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
-        
-        //Make the background pink (cause why not)
-        glClearColor(1,0,1,1);
-        glClear(GL_COLOR_BUFFER_BIT);
+        unsigned int FBO;
+        Texture currentTexture;
+        Texture previousTexture;
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -1033,11 +910,13 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         modifierShader.setInt("octaves", material.materialModifiers[curModI].sections[5].elements[1].rangeBar.value); 
         modifierShader.setFloat("persistence", material.materialModifiers[curModI].sections[5].elements[2].rangeBar.value / 100.f); 
 
-        //TODO : Bind the mask texture
+        // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
         
-        //TODO : Bind the previous texture
+        //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1070,55 +949,10 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
-        glDisable(GL_DEPTH_TEST);
-
-        //That framebuffer will be used to get the results of the shader 
-        unsigned int FBO; 
-        glGenFramebuffers(1,&FBO);
-        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    
-        //Get the channel's texture from material
-        unsigned int textureBuffer; //Material's texture
-        if(channelI == 0){
-            textureBuffer = mesh.albedo.ID;
-        }
-        if(channelI == 1){
-            textureBuffer = mesh.roughness.ID;
-        }
-        if(channelI == 2){
-            textureBuffer = mesh.metallic.ID;
-        }
-        if(channelI == 3){
-            textureBuffer = mesh.normalMap.ID;
-        }
-        if(channelI == 4){
-            textureBuffer = mesh.heightMap.ID;
-        }
-        if(channelI == 5){
-            textureBuffer = mesh.ambientOcclusion.ID;
-        }
-        
-        //Bind the channel texture
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,textureBuffer);
-        
-        //Params for the channel texture
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-        
-        //Refresh the channel texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        //Bind the channel texture to the capture framebuffer
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
-        
-        //Make the background pink (cause why not)
-        glClearColor(1,0,1,1);
-        glClear(GL_COLOR_BUFFER_BIT);
+        unsigned int FBO;
+        Texture currentTexture;
+        Texture previousTexture;
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -1147,11 +981,13 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setFloat("height", material.materialModifiers[curModI].sections[1].elements[2].rangeBar.value / 100.f);
 
 
-        //TODO : Bind the mask texture
+        // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
         
-        //TODO : Bind the previous texture
+        //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1184,55 +1020,10 @@ void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
-        glDisable(GL_DEPTH_TEST);
-
-        //That framebuffer will be used to get the results of the shader 
-        unsigned int FBO; 
-        glGenFramebuffers(1,&FBO);
-        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    
-        //Get the channel's texture from material
-        unsigned int textureBuffer; //Material's texture
-        if(channelI == 0){
-            textureBuffer = mesh.albedo.ID;
-        }
-        if(channelI == 1){
-            textureBuffer = mesh.roughness.ID;
-        }
-        if(channelI == 2){
-            textureBuffer = mesh.metallic.ID;
-        }
-        if(channelI == 3){
-            textureBuffer = mesh.normalMap.ID;
-        }
-        if(channelI == 4){
-            textureBuffer = mesh.heightMap.ID;
-        }
-        if(channelI == 5){
-            textureBuffer = mesh.ambientOcclusion.ID;
-        }
-        
-        //Bind the channel texture
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,textureBuffer);
-        
-        //Params for the channel texture
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-        
-        //Refresh the channel texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        //Bind the channel texture to the capture framebuffer
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
-        
-        //Make the background pink (cause why not)
-        glClearColor(1,0,1,1);
-        glClear(GL_COLOR_BUFFER_BIT);
+        unsigned int FBO;
+        Texture currentTexture;
+        Texture previousTexture;
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -1281,11 +1072,13 @@ void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setFloat("height", material.materialModifiers[curModI].sections[4].elements[2].rangeBar.value / 100.f);
 
 
-        //TODO : Bind the mask texture
+        // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
         
-        //TODO : Bind the previous texture
+        //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1318,55 +1111,10 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
-        glDisable(GL_DEPTH_TEST);
-
-        //That framebuffer will be used to get the results of the shader 
-        unsigned int FBO; 
-        glGenFramebuffers(1,&FBO);
-        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    
-        //Get the channel's texture from material
-        unsigned int textureBuffer; //Material's texture
-        if(channelI == 0){
-            textureBuffer = mesh.albedo.ID;
-        }
-        if(channelI == 1){
-            textureBuffer = mesh.roughness.ID;
-        }
-        if(channelI == 2){
-            textureBuffer = mesh.metallic.ID;
-        }
-        if(channelI == 3){
-            textureBuffer = mesh.normalMap.ID;
-        }
-        if(channelI == 4){
-            textureBuffer = mesh.heightMap.ID;
-        }
-        if(channelI == 5){
-            textureBuffer = mesh.ambientOcclusion.ID;
-        }
-        
-        //Bind the channel texture
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,textureBuffer);
-        
-        //Params for the channel texture
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-        
-        //Refresh the channel texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        //Bind the channel texture to the capture framebuffer
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
-        
-        //Make the background pink (cause why not)
-        glClearColor(1,0,1,1);
-        glClear(GL_COLOR_BUFFER_BIT);
+        unsigned int FBO;
+        Texture currentTexture;
+        Texture previousTexture;
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -1414,11 +1162,13 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[6].elements[2].rangeBar.value / 100.f);
         modifierShader.setFloat("height", material.materialModifiers[curModI].sections[6].elements[3].rangeBar.value / 100.f);
 
-        //TODO : Bind the mask texture
+        // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
         
-        //TODO : Bind the previous texture
+        //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1451,55 +1201,10 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
-        glDisable(GL_DEPTH_TEST);
-
-        //That framebuffer will be used to get the results of the shader 
-        unsigned int FBO; 
-        glGenFramebuffers(1,&FBO);
-        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    
-        //Get the channel's texture from material
-        unsigned int textureBuffer; //Material's texture
-        if(channelI == 0){
-            textureBuffer = mesh.albedo.ID;
-        }
-        if(channelI == 1){
-            textureBuffer = mesh.roughness.ID;
-        }
-        if(channelI == 2){
-            textureBuffer = mesh.metallic.ID;
-        }
-        if(channelI == 3){
-            textureBuffer = mesh.normalMap.ID;
-        }
-        if(channelI == 4){
-            textureBuffer = mesh.heightMap.ID;
-        }
-        if(channelI == 5){
-            textureBuffer = mesh.ambientOcclusion.ID;
-        }
-        
-        //Bind the channel texture
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,textureBuffer);
-        
-        //Params for the channel texture
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-        
-        //Refresh the channel texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        //Bind the channel texture to the capture framebuffer
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
-        
-        //Make the background pink (cause why not)
-        glClearColor(1,0,1,1);
-        glClear(GL_COLOR_BUFFER_BIT);
+        unsigned int FBO;
+        Texture currentTexture;
+        Texture previousTexture;
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -1544,11 +1249,13 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[6].elements[1].rangeBar.value / 100.f);
         modifierShader.setFloat("height", material.materialModifiers[curModI].sections[6].elements[2].rangeBar.value / 100.f);
 
-        //TODO : Bind the mask texture
+        // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
         
-        //TODO : Bind the previous texture
+        //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1581,55 +1288,10 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
-        glDisable(GL_DEPTH_TEST);
-
-        //That framebuffer will be used to get the results of the shader 
-        unsigned int FBO; 
-        glGenFramebuffers(1,&FBO);
-        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    
-        //Get the channel's texture from material
-        unsigned int textureBuffer; //Material's texture
-        if(channelI == 0){
-            textureBuffer = mesh.albedo.ID;
-        }
-        if(channelI == 1){
-            textureBuffer = mesh.roughness.ID;
-        }
-        if(channelI == 2){
-            textureBuffer = mesh.metallic.ID;
-        }
-        if(channelI == 3){
-            textureBuffer = mesh.normalMap.ID;
-        }
-        if(channelI == 4){
-            textureBuffer = mesh.heightMap.ID;
-        }
-        if(channelI == 5){
-            textureBuffer = mesh.ambientOcclusion.ID;
-        }
-        
-        //Bind the channel texture
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,textureBuffer);
-        
-        //Params for the channel texture
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-        
-        //Refresh the channel texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        //Bind the channel texture to the capture framebuffer
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
-        
-        //Make the background pink (cause why not)
-        glClearColor(1,0,1,1);
-        glClear(GL_COLOR_BUFFER_BIT);
+        unsigned int FBO;
+        Texture currentTexture;
+        Texture previousTexture;
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -1675,11 +1337,13 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[6].elements[1].rangeBar.value / 100.f);
         modifierShader.setFloat("height", material.materialModifiers[curModI].sections[6].elements[2].rangeBar.value / 100.f);
 
-        //TODO : Bind the mask texture
+        // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
         
-        //TODO : Bind the previous texture
+        //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1712,63 +1376,10 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
-        glDisable(GL_DEPTH_TEST);
-    
-        //Get the channel's texture from material
-        unsigned int textureBuffer; //Material's texture
+        unsigned int FBO;
         Texture currentTexture;
-        if(channelI == 0){
-            currentTexture = mesh.albedo;
-        }
-        if(channelI == 1){
-            currentTexture = mesh.roughness;
-        }
-        if(channelI == 2){
-            currentTexture = mesh.metallic;
-        }
-        if(channelI == 3){
-            currentTexture = mesh.normalMap;
-        }
-        if(channelI == 4){
-            currentTexture = mesh.heightMap;
-        }
-        if(channelI == 5){
-            currentTexture = mesh.ambientOcclusion;
-        }
-
-        textureBuffer = currentTexture.ID;
-
-        /* ! Binds another framebuffer ! */
-        Texture previousTexture = currentTexture.duplicateTexture();
-
-        //That framebuffer will be used to get the results of the shader 
-        unsigned int FBO; 
-        glGenFramebuffers(1,&FBO);
-        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-        
-
-        
-        //Bind the channel texture
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,textureBuffer);
-        
-        //Params for the channel texture
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-        
-        //Refresh the channel texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        //Bind the channel texture to the capture framebuffer
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
-        
-        //Make the background pink (cause why not)
-        glClearColor(1,0,1,1);
-        glClear(GL_COLOR_BUFFER_BIT);
+        Texture previousTexture;
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
