@@ -302,16 +302,17 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
         // Pressed to the select button
         if(this->subPanel.sections[0].elements[5].button.clicked){
             
-            receivedTexture.title = "SelectedTexture";
 
             // If selected from the library
             if(this->selectedTextureMode == 0){
                 receivedTexture.proceduralID = -1;
 
-                glDeleteTextures(1, &receivedTexture.ID);
+                if(receivedTexture.ID == 0 || glIsTexture(receivedTexture.ID) == GL_FALSE){
+                    glGenTextures(1, &receivedTexture.ID);
+                }
 
-                glGenTextures(1, &receivedTexture.ID);
-
+                const int txtrRes = std::max(library.textures[this->selectedTextureIndex].getResolution().x, library.textures[this->selectedTextureIndex].getResolution().y);
+                
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
                 
@@ -321,14 +322,48 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 
-                //TODO Get pixels of the selected texture
-
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, library.textures[this->selectedTextureIndex].getResolution().x, library.textures[this->selectedTextureIndex].getResolution().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, txtrRes, txtrRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
                 glGenerateMipmap(GL_TEXTURE_2D);
+
+                /* Capturing FBO */
+                unsigned int FBO; 
+                glGenFramebuffers(1,&FBO);
+                glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, receivedTexture.ID, 0);
+                glViewport(0, 0, txtrRes, txtrRes);
+
+                glClearColor(1,0,1,1);
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+                glm::mat4 projection = glm::ortho(
+                                                    0.f, 
+                                                    (float)txtrRes, 
+                                                    (float)txtrRes, 
+                                                    0.f
+                                                );
+                                                
+                buttonShader.setMat4("projection"  ,       projection);
+                buttonShader.setVec3("pos"         ,       glm::vec3((float)txtrRes / 2.f, (float)txtrRes / 2.f, 0.9f));
+                buttonShader.setVec2("scale"       ,       glm::vec2((float)txtrRes / 2.f, (float)txtrRes / 2.f));
+                buttonShader.setInt("states.renderTexture",     1    );
+
+                buttonShader.setInt("properties.invertTheTexture", this->subPanel.sections[0].elements[3].checkBox.clickState1);
+                buttonShader.setVec2("properties.txtrScale", glm::vec2(this->subPanel.sections[0].elements[4].rangeBar.value));
+
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, library.textures[this->selectedTextureIndex].ID);
+
+                glDrawArrays(GL_TRIANGLES, 0, 6);                
+
+                buttonShader.setInt("properties.invertTheTexture", false);
+                buttonShader.setVec2("properties.txtrScale", glm::vec2(1.f));
+
+                glDeleteFramebuffers(1, &FBO);
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
             }
 
             // If procedural pattern selected 
-            if(this->selectedTextureMode == 1 || this->selectedTextureMode == 2){
+            else if(this->selectedTextureMode == 1 || this->selectedTextureMode == 2){
                 //Update the selected procedural function index
                 receivedTexture.proceduralID = this->selectedTextureIndex;
 
@@ -342,6 +377,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
 
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
+               
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -372,12 +408,12 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
 
                 buttonShader.use();
 
-                glGenerateMipmap(GL_TEXTURE_2D);
-
                 glDeleteFramebuffers(1, &FBO);
                 glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
             }
+                
+            receivedTexture.title = "SelectedTexture";
 
             break;
         }

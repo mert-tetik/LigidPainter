@@ -1806,6 +1806,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
         //TODO : Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
         
         //TODO : Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
