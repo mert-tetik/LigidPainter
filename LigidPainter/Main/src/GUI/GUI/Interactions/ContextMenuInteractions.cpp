@@ -33,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Library &library,
                                 std::vector<Node> &meshNodeScene,Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,
-                                Project& project, int &textureRes, Painter &painter){
+                                Project& project, int &textureRes, Painter &painter, Shader heightToNormalShader){
     anyContextMenuActive = false; 
     for (size_t i = 0; i < contextMenus.size(); i++)//Check all the contextMenus
     {
@@ -81,7 +81,8 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                                             shaders.connectionCurve,
                                             colorPalette,
                                             appTextures,
-                                            videoScale
+                                            videoScale,
+                                            heightToNormalShader
                                         );
                 materialNode.barButton.text = library.materials[contextMenus[i].selectedElement].title;
                 meshNodeScene.push_back(materialNode); //Add material node

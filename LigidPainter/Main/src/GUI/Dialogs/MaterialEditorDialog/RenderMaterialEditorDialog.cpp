@@ -101,7 +101,7 @@ void MaterialEditorDialog::render
     dialogControl.updateEnd(timer,buttonShader,0.15f);
 
     if(!this->updateTheMaterial && this->prevUpdateTheMaterial){
-        material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader, tdModelShader,sphereModel);
+        material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader, tdModelShader,sphereModel, heightToNormalShader);
     }
     
     this->prevUpdateTheMaterial = this->updateTheMaterial;
@@ -157,7 +157,7 @@ void MaterialEditorDialog::updateLayerPanel(Material &material,int &textureRes,B
     layerPanel.sections.push_back(layerPanelSection);
     
     //Update the material after updating layerPanel
-    material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader,tdModelShader, sphereModel);
+    material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader,tdModelShader, sphereModel, heightToNormalShader);
 }
 
 
@@ -277,7 +277,7 @@ void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &t
             textureSelectionDialog.dialogControl.unActivate();
             
             //Update the material after a selection is made
-            material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader,tdModelShader , sphereModel);
+            material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader,tdModelShader , sphereModel, heightToNormalShader);
 
         }
     }

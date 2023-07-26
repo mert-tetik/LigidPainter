@@ -70,16 +70,16 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 MaterialModifier::MaterialModifier(){}
 
-void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
+void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
+void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
+void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
+void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
+void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
+void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
+void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
+void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
+void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
 
 MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures,int modifierIndex){
     
@@ -618,7 +618,7 @@ void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& cu
     }
 
     /* ! Binds another framebuffer ! */
-    Texture previousTexture = currentTexture.duplicateTexture();
+    previousTexture = currentTexture.duplicateTexture();
 
     //That framebuffer will be used to get the results of the shader 
     glGenFramebuffers(1,&FBO);
@@ -647,7 +647,38 @@ void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& cu
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void generateNormalMap(unsigned int& heightMap, unsigned int& normalMap, Shader heightToNormalMapShader, int textureResolution){
+    unsigned int FBO;
+    glGenFramebuffers(1,&FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, normalMap, 0);
+    glViewport(0, 0, textureResolution, textureResolution);
+
+    glClearColor(0.5,1,0,1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    Box box;
+    box.init();
+    box.bindBuffers();
+    
+    glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
+    heightToNormalMapShader.use();
+    heightToNormalMapShader.setInt("heightMap", 0);
+    heightToNormalMapShader.setMat4("projection"  ,       projection);
+    heightToNormalMapShader.setMat4("projectedPosProjection"  ,       projection);
+    heightToNormalMapShader.setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
+    heightToNormalMapShader.setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, heightMap);
+
+    glDrawArrays(GL_TRIANGLES, 0 , 6);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteFramebuffers(1, &FBO);
+}
+
+void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -674,7 +705,6 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         material.materialModifiers[curModI].shader.setVec3("pos",fragPos); //Set the position
         material.materialModifiers[curModI].shader.setInt("state",channelI); //Set the texture slot
         material.materialModifiers[curModI].shader.setInt("theTexture",0); //Set the texture slot
-
 
         //Bind the texture (bind the channel textures if rendering a texture modifier & bind the result of the previous modifier)
         glActiveTexture(GL_TEXTURE0);
@@ -707,7 +737,7 @@ glm::vec2 getDirectionVector(float rotation) {
   return glm::vec2(x, y);
 }
 
-void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -780,11 +810,17 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Delete the framebuffer after completing the channel
         glDeleteFramebuffers(1,&FBO);
+
+        //Generating the normal map
+        if(channelI == 4){
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+        }
+
         glEnable(GL_DEPTH_TEST);
     }
 }
 
-void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -847,7 +883,7 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
     }
 }
 
-void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -926,11 +962,16 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         
         //Delete the framebuffer after completing the channel
         glDeleteFramebuffers(1,&FBO);
+        
+        //Generating the normal map
+        if(channelI == 4){
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+        }
         glEnable(GL_DEPTH_TEST);
     }
 }
 
-void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -997,11 +1038,16 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         
         //Delete the framebuffer after completing the channel
         glDeleteFramebuffers(1,&FBO);
+        
+        //Generating the normal map
+        if(channelI == 4){
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+        }
         glEnable(GL_DEPTH_TEST);
     }
 }
 
-void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1088,11 +1134,16 @@ void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         
         //Delete the framebuffer after completing the channel
         glDeleteFramebuffers(1,&FBO);
+        
+        //Generating the normal map
+        if(channelI == 4){
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+        }
         glEnable(GL_DEPTH_TEST);
     }
 }
 
-void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1178,11 +1229,16 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         
         //Delete the framebuffer after completing the channel
         glDeleteFramebuffers(1,&FBO);
+        
+        //Generating the normal map
+        if(channelI == 4){
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+        }
         glEnable(GL_DEPTH_TEST);
     }
 }
 
-void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1265,11 +1321,16 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Delete the framebuffer after completing the channel
         glDeleteFramebuffers(1,&FBO);
+        
+        //Generating the normal map
+        if(channelI == 4){
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+        }
         glEnable(GL_DEPTH_TEST);
     }
 }
 
-void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1353,11 +1414,16 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Delete the framebuffer after completing the channel
         glDeleteFramebuffers(1,&FBO);
+        
+        //Generating the normal map
+        if(channelI == 4){
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+        }
         glEnable(GL_DEPTH_TEST);
     }
 }
 
-void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1439,6 +1505,11 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Delete the framebuffer after completing the channel
         glDeleteFramebuffers(1,&FBO);
+        
+        //Generating the normal map
+        if(channelI == 4){
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+        }
         glEnable(GL_DEPTH_TEST);
     }
 }

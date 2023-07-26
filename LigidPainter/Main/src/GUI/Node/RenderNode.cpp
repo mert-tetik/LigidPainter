@@ -163,7 +163,7 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
                         //For every modifier the material has (Output every modifier the material has)
                         for (int i = material.materialModifiers.size() - 1; i >= 0; --i)    
                         {
-                            material.materialModifiers[i].updateMaterialChannels(material, model.meshes[meshI - 1], textureRes, i, scene.projectionMatrix, scene.viewMatrix);
+                            material.materialModifiers[i].updateMaterialChannels(material, model.meshes[meshI - 1], textureRes, i, scene.projectionMatrix, scene.viewMatrix, heightToNormalShader);
                         }
                     }
                 }

@@ -870,6 +870,7 @@ struct Shaders{
     Shader twoDPaintingModeAreaShader;
     Shader circleShader;
     Shader dotsShader;
+    Shader heightToNormalMap;
 
     void loadShaders(){
         this->tdModelShader =                 Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/PBR.frag"                       ,nullptr    ,nullptr,   nullptr      );
@@ -897,6 +898,9 @@ struct Shaders{
         this->circleShader =                  Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Circle.frag"                    ,nullptr    ,nullptr,   nullptr      );
 
         this->dotsShader =                    Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Dots.frag"                      ,nullptr    ,nullptr,   nullptr      );
+        
+        this->heightToNormalMap =             Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/HeightToNormal.frag"            ,nullptr    ,nullptr,   nullptr      );
+    
     }
 };
 

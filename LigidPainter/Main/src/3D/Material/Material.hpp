@@ -56,7 +56,7 @@ public:
 
     Texture maskTexture;
 
-    void (*updateMaterialChannels)(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+    void (*updateMaterialChannels)(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
 
     //Constructors
     MaterialModifier();
@@ -130,7 +130,7 @@ public:
     void readFile(std::string path,ColorPalette colorPalette ,Shader buttonShader ,AppTextures appTextures, const std::vector<Material> materials);
 
     /// @brief Interpret the @ref materialModifiers and write the shader results to the material channels then update the displaying texture
-    void updateMaterialDisplayingTexture(float textureRes, Box box, Context context, Shader buttonShader, Shader tdModelShader, Model sphereModel);
+    void updateMaterialDisplayingTexture(float textureRes, Box box, Context context, Shader buttonShader, Shader tdModelShader, Model sphereModel, Shader heightToNormalShader);
 
     /// @brief Returns a new material with the same material modifiers and different OpenGL texture objects 
     Material duplicateMaterial(int textureRes);

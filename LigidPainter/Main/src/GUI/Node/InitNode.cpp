@@ -36,11 +36,11 @@ NodeConnection::NodeConnection(int nodeIndex,int inputIndex){
 
 Node::Node(){}
 
-Node::Node(int nodeIndex, int materialID, Shader buttonShader, Shader connectionCurveShader, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale){
+Node::Node(int nodeIndex, int materialID, Shader buttonShader, Shader connectionCurveShader, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale, Shader heightToNormalShader){
     
-
     //Get the shaders to the member variables
     this->buttonShader = buttonShader;
+    this->heightToNormalShader = heightToNormalShader;
     this->connectionCurveShader = connectionCurveShader;
 
     //Get the other stuff to the member variables

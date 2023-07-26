@@ -34,7 +34,8 @@ void Material::updateMaterialDisplayingTexture(
                                 Context context,
                                 Shader buttonShader,
                                 Shader tdModelShader,
-                                Model sphereModel
+                                Model sphereModel,
+                                Shader heightToNormalShader
                             ){ 
 
         //Move the camera to the side
@@ -53,7 +54,7 @@ void Material::updateMaterialDisplayingTexture(
     //For every modifier the material has (Output every modifier the material has)
     for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
     {
-        this->materialModifiers[i].updateMaterialChannels(*this, sphereModel.meshes[0], textureRes, i, projectionMatrix, view);
+        this->materialModifiers[i].updateMaterialChannels(*this, sphereModel.meshes[0], textureRes, i, projectionMatrix, view, heightToNormalShader);
     }
     
     //!Update the material displaying texture
