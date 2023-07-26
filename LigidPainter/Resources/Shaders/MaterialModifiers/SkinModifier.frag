@@ -18,6 +18,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #version 400 core
 
+#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Procedural.frag)
+
 /* Droplets */
 uniform float dropletsCount = 10.;
 uniform float dropletsOpacityJitter = 1.;
@@ -50,6 +52,7 @@ uniform int state;
 uniform sampler2D mask;
 uniform sampler2D previousTxtr;
 uniform float opacity;
+uniform int proceduralID;
 
 /* Fragment Inputs */
 in vec2 TexCoords;
@@ -440,11 +443,16 @@ void main()
 
         fragColor.rgb = vec3((fragColor.r + 0.1));
 
-     }
+    }
+
+    float procedural = getProcedural(uv, proceduralID);
 
     float alpha = opacity;
-    alpha *= texture(mask, TexCoords).r; 
-    
+    if(proceduralID == -1)
+        alpha *= texture(mask, TexCoords).r; 
+    else
+        alpha *= procedural; 
+
     vec3 clrResult = mix(fragColor.rgb, texture(previousTxtr, TexCoords).rgb, alpha);
 
     fragColor = vec4(clrResult, 1.);

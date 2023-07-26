@@ -33,6 +33,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
 
+void __getMousePosDataToTheTextureSelection(Mouse& mousePos);
+void __getMouseButtonDataToTheTextureSelection(Mouse& mouseBtn);
+void __getTextRendererDataToTheTextureSelection(TextRenderer& textRenderer);
+
 void Renderer::mouseButtonCallback(
                                         LigidWindow window, 
                                         int button, 
@@ -84,6 +88,8 @@ void Renderer::mouseButtonCallback(
     
     //Mods
     this->mouse.mods = mods;
+
+    __getMouseButtonDataToTheTextureSelection(mouse);
 }
 
 void Renderer::framebufferSizeCallback(
@@ -136,6 +142,8 @@ void Renderer::scrollCallback(
         //Since the 3D model's position in the screen is changed update the painter's depth texture
         this->painter.updateTheDepthTexture = true;
     }
+
+    __getMousePosDataToTheTextureSelection(mouse);
 }
 
 void Renderer::cursorPositionCallback(
@@ -237,6 +245,8 @@ void Renderer::cursorPositionCallback(
     //This will be used as "last frame's cursor pos" for the cursor offset
     this->lastMousePos.x = this->mouse.cursorPos.x;
     this->lastMousePos.y = this->mouse.cursorPos.y;
+
+    __getMousePosDataToTheTextureSelection(mouse);
 }
 
 void Renderer::keyCallback(
@@ -252,4 +262,6 @@ void Renderer::keyCallback(
         this->textRenderer.key = key;
         this->textRenderer.mods = mods;
     }
+
+    __getTextRendererDataToTheTextureSelection(textRenderer);
 }

@@ -251,7 +251,7 @@ public:
     Panel layerPanel; //Modifiers will be displayed in there
     Panel modifiersPanel; //Modifiers will be displayed in there
     Button barButton; //Modifiers will be displayed in there
-    int textureModifierTextureSelectingButtonIndex = 1000; //1000 if none of them is selecting
+    int textureModifierTextureSelectingButtonIndex = 1000; //1000 if none of them is selecting TODO REMOVE THAT
     AppMaterialModifiers appMaterialModifiers;
     int selectedMaterialModifierIndex = 0;
     
@@ -316,7 +316,7 @@ class ExportDialog
 
 //!------------------------------TEXTURE SELECTION DIALOG------------------------------
 
-//TODO : Replace the index with the texture's itself
+void showTextureSelectionDialog(Texture& txtr);
 
 class TextureSelectionDialog
 {
@@ -343,7 +343,7 @@ public:
     TextureSelectionDialog(Shader buttonShader,ColorPalette colorPalette);
 
     //Public member functions
-    void render(glm::vec2 videoScale,Mouse &mouse,Timer &timer,TextRenderer &textRenderer,Library library, glm::mat4 guiProjection);
+    void show(glm::vec2 videoScale,Timer &timer,Library library, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window);
 };
 
 //!------------------------------CONTEXT MENU------------------------------

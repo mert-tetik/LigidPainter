@@ -438,50 +438,53 @@ float randomTrianglePattern(
 float getProcedural(vec2 p, int proceduralID){
     if(proceduralID == 0)
         return hexagonalPattern(p);
-    if(proceduralID == 1)
+    else if(proceduralID == 1)
         return hexagonalPattern2(p);
-    if(proceduralID == 2)
+    else if(proceduralID == 2)
         return hexagonalPattern3(p);
-    if(proceduralID == 3)
+    else if(proceduralID == 3)
         return hexagonalTruchetPattern(p);
-    if(proceduralID == 4)
+    else if(proceduralID == 4)
         return checkerPattern(p);
-    if(proceduralID == 5)
+    else if(proceduralID == 5)
         return trianglePattern(p);
-    if(proceduralID == 6)
+    else if(proceduralID == 6)
         return rhombPattern1(p);
-    if(proceduralID == 7)
+    else if(proceduralID == 7)
         return karoPattern(p);
-    if(proceduralID == 8)
+    else if(proceduralID == 8)
         return gridPattern1(p);
-    if(proceduralID == 9)
+    else if(proceduralID == 9)
         return gridPattern2(p);
-    if(proceduralID == 10)
+    else if(proceduralID == 10)
         return squareHolePattern(p);
-    if(proceduralID == 11)
+    else if(proceduralID == 11)
         return roundSquarePattern(p);
-    if(proceduralID == 12)
+    else if(proceduralID == 12)
         return sinePattern(p);
-    if(proceduralID == 13)
+    else if(proceduralID == 13)
         return brickPattern(p);
-    if(proceduralID == 14)
+    else if(proceduralID == 14)
         return gearPattern(p);
-    if(proceduralID == 15)
+    else if(proceduralID == 15)
         return layeredCirclePattern(p);
-    if(proceduralID == 16)
+    else if(proceduralID == 16)
         return starPattern(p);
-    if(proceduralID == 17)
+    else if(proceduralID == 17)
         return basketPattern1(p);
-    if(proceduralID == 18)
+    else if(proceduralID == 18)
         return basketPattern2(p);
-    if(proceduralID == 19)
+    else if(proceduralID == 19)
         return diamondPattern(p);
-    if(proceduralID == 20)
+    else if(proceduralID == 20)
         return rosettePattern(p);
-    if(proceduralID == 21)
+    else if(proceduralID == 21)
         return smoothHexPattern(p);
-    if(proceduralID == 22)
+    else if(proceduralID == 22)
         return smoothSharpSquarePattern(p);
-    if(proceduralID == 23)
+    else if(proceduralID == 23)
         return randomTrianglePattern(p);
+    else
+        return 1.;
+    
 }

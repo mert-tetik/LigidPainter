@@ -70,7 +70,7 @@ void MaterialEditorDialog::render
     //If texture selection dialog is not active reset the index values used to navigate textures
     if(textureSelectionDialog.dialogControl.isActive() == false){
         textureModifierTextureSelectingButtonIndex = 1000;
-        textureSelectionDialog.selectedTextureIndex = 1000;
+        textureSelectionDialog.selectedTextureIndex = 0;
     }
 
     //Make sure selectedMaterialModifierIndex won't cause any vector out of range error
@@ -149,9 +149,8 @@ void MaterialEditorDialog::updateLayerPanel(Material &material,int &textureRes,B
     //Push the elements one by one from the materialModifiers of the material
     for (size_t i = 0; i < material.materialModifiers.size(); i++)
     {
-        layerPanelSection.elements.push_back(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1.5f), colorPalette,buttonShader, material.materialModifiers[i].title , Texture(), 0.f, true))
-        );
+        Element btn = Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1.5f), colorPalette,buttonShader, material.materialModifiers[i].title , material.materialModifiers[i].maskTexture, 0.f, true));
+        layerPanelSection.elements.push_back(btn);
     }
 
     //Give the section to the layerPanel
@@ -322,6 +321,13 @@ void MaterialEditorDialog::manageContextMenuActions(Library &library, Mouse &mou
                 dialogControl.firstFrameActivated = true;
                 selectedMaterialModifierIndex++;
             }
+        }
+        
+        //Change mask button pressed
+        if(contextMenus[6].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){ 
+            showTextureSelectionDialog(material.materialModifiers[contextMenus[6].selectedElement].maskTexture);
+
+            dialogControl.firstFrameActivated = true;
         }
     }
 

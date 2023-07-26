@@ -218,7 +218,7 @@ void Renderer::createContextMenus(){
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Website" , "YouTube" })); //Help      5
     
     //Material editor
-    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Delete"  , "Move To Top"     , "Move To Bottom"}));// Material modifier context menu 6                                           
+    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Delete"  , "Move To Top"     , "Move To Bottom", "Change Mask"}));// Material modifier context menu 6                                           
     
     //Nodes
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Delete"})); //Node context menu 7

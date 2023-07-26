@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtx/string_cast.hpp>
 
 #include "GUI/Elements/Elements.hpp"
+#include "GUI/Dialogs/Dialogs.hpp"
 
 #include <string>
 #include <iostream>
@@ -41,7 +42,6 @@ void Button::render(
                         bool doMouseTracking
                     ){
     
-    ;
 
     this->doMouseTracking = doMouseTracking;
 
@@ -77,6 +77,10 @@ void Button::render(
     //Render the button
     render(resultPos,resultScale,resultRadius,resultOutlineThickness);
     
+    if(this->clicked && this->textureSelection){
+        showTextureSelectionDialog(this->texture);
+    }
+
     //Render the text and the texture
     renderTextAndTexture(textRenderer,videoScale,resultScaleText);
 }

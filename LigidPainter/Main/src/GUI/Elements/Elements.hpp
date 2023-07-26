@@ -113,6 +113,8 @@ public:
     
     //Thickness value of the button
     float outlineThickness;
+
+    bool textureSelection = false;
     
     glm::vec3 outlineColor;
     glm::vec3 outlineColor2;

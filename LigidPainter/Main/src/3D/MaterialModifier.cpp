@@ -723,6 +723,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         unsigned int FBO; 
         glGenFramebuffers(1,&FBO);
         glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+        
     
         //Get the channel's texture from material
         unsigned int textureBuffer; //Material's texture
@@ -1774,6 +1775,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
         modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+        modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel state
 
         /* Droplets */
         modifierShader.setFloat("dropletsCount", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 1.f);

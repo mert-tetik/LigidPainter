@@ -137,7 +137,6 @@ void main(){
         uv *= properties.txtrScale;
         
         fragColor = texture(properties.txtr, uv);
-        fragColor.a = texture(properties.txtr, uv).r;
         
         if(properties.invertTheTexture == 1)
             fragColor.rgb = vec3(1.) - fragColor.rgb;

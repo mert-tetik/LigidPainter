@@ -36,6 +36,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
+TextureSelectionDialog __texture_selection_dialog;
+Library __library;
+glm::mat4 __projection;
+LigidWindow __window;
+glm::vec2 __videoScale; 
+Timer __timer; 
+
+void showTextureSelectionDialog(Texture& txtr){
+    __texture_selection_dialog.show(__videoScale, __timer, __library, __projection, txtr, __window);
+}
+
 /* -- Forward declerations -- */
 
 static void renderBrushCursor(Shader& circleShader, Shader& buttonShader, Painter& painter, Mouse& mouse, glm::mat4 guiProjection, Context& context);
@@ -43,7 +54,13 @@ static void renderBrushCursor(Shader& circleShader, Shader& buttonShader, Painte
 void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &meshNodeScene,
             std::vector<ContextMenu> &contextMenus, AppSettings& settings, Project &project, Painter &painter, Skybox &skybox,Model &model, Scene& scene){
     
-    
+    __texture_selection_dialog = this->textureSelectionDialog;
+    __library = library;
+    __projection = this->projection;
+    __window = context.window;
+    __videoScale = videoScale; 
+    __timer = timer; 
+
     //Set pass less or equal
     glDepthFunc(GL_LEQUAL);
 
@@ -338,9 +355,6 @@ void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRen
     if(materialEditorDialog.dialogControl.isActive() && library.materials.size())
         materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex],settings.textureRes,box,context,contextMenus);
     
-    //if(textureSelectionDialog.dialogControl.isActive())
-        textureSelectionDialog.dialogControl.activate();
-        textureSelectionDialog.render(videoScale, mouse, timer, textRenderer, library, this->projection);
 }
 
 void UI::renderDropper(Mouse &mouse, Painter &painter){
