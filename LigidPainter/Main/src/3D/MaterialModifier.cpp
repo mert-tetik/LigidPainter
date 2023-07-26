@@ -1713,32 +1713,40 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     for (int channelI = 0; channelI < 6; channelI++){
     
         glDisable(GL_DEPTH_TEST);
+    
+        //Get the channel's texture from material
+        unsigned int textureBuffer; //Material's texture
+        Texture currentTexture;
+        if(channelI == 0){
+            currentTexture = mesh.albedo;
+        }
+        if(channelI == 1){
+            currentTexture = mesh.roughness;
+        }
+        if(channelI == 2){
+            currentTexture = mesh.metallic;
+        }
+        if(channelI == 3){
+            currentTexture = mesh.normalMap;
+        }
+        if(channelI == 4){
+            currentTexture = mesh.heightMap;
+        }
+        if(channelI == 5){
+            currentTexture = mesh.ambientOcclusion;
+        }
+
+        textureBuffer = currentTexture.ID;
+
+        /* ! Binds another framebuffer ! */
+        Texture previousTexture = currentTexture.duplicateTexture();
 
         //That framebuffer will be used to get the results of the shader 
         unsigned int FBO; 
         glGenFramebuffers(1,&FBO);
         glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    
-        //Get the channel's texture from material
-        unsigned int textureBuffer; //Material's texture
-        if(channelI == 0){
-            textureBuffer = mesh.albedo.ID;
-        }
-        if(channelI == 1){
-            textureBuffer = mesh.roughness.ID;
-        }
-        if(channelI == 2){
-            textureBuffer = mesh.metallic.ID;
-        }
-        if(channelI == 3){
-            textureBuffer = mesh.normalMap.ID;
-        }
-        if(channelI == 4){
-            textureBuffer = mesh.heightMap.ID;
-        }
-        if(channelI == 5){
-            textureBuffer = mesh.ambientOcclusion.ID;
-        }
+        
+
         
         //Bind the channel texture
         glActiveTexture(GL_TEXTURE0);
@@ -1774,7 +1782,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+        modifierShader.setFloat( "opacity" , 1.f); //TODO : Set the opacity
         modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel state
 
         /* Droplets */
@@ -1804,12 +1812,13 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setFloat("skinHeight", material.materialModifiers[curModI].sections[5].elements[4].rangeBar.value / 100.f);
         modifierShader.setFloat("skinAmbientOcclusion", material.materialModifiers[curModI].sections[5].elements[5].rangeBar.value / 100.f);
 
-        //TODO : Bind the mask texture
+        // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
         
-        //TODO : Bind the previous texture
+        //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
