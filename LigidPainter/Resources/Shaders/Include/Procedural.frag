@@ -435,6 +435,10 @@ float randomTrianglePattern(
     return cycle(random(floor(c * 4.0)) * 0.5 );
 }
 
+float solidPattern(){
+    return 1.;
+}
+
 float getProcedural(vec2 p, int proceduralID, float scale, int inverted){
     
     p*=scale;
@@ -489,6 +493,8 @@ float getProcedural(vec2 p, int proceduralID, float scale, int inverted){
         res = smoothSharpSquarePattern(p);
     else if(proceduralID == 23)
         res = randomTrianglePattern(p);
+    else if(proceduralID == 24)
+        res = solidPattern();
     else
         res = 1.;
 

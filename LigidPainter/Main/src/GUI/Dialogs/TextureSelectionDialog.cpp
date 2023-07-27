@@ -224,7 +224,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
             }
         }
         else if(this->selectedTextureMode == 1){
-            for (size_t i = 0; i < 24; i++)
+            for (size_t i = 0; i < 25; i++)
             {
                 sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),colorPalette,buttonShader,""       , Texture(), 0.f,false)));
             }
