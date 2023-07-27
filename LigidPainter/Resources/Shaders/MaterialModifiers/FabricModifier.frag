@@ -123,7 +123,7 @@ vec3 getFabric1(vec3 uv){
     
     // Generate a fabric-like pattern using a combination of noise and stripes
     float noise = sin(uv.x * 5.0) * sin(uv.y * 5.0) * 0.2 + 0.8;  // Noise pattern
-    float stripesx = sin(uv.x * stripeFrequency) * 0.5 + 0.5;  // Vertical stripes pattern
+    float stripesx = sin(uv.x + uv.z * stripeFrequency) * 0.5 + 0.5;  // Vertical stripes pattern
     float stripesy = sin(uv.y * gapFrequency) * 0.5 + 0.5;
     //float stripesz = sin(uv.z * stripeFrequency) * 0.5 + 0.5;
   
@@ -139,7 +139,7 @@ vec3 getFabric1(vec3 uv){
 vec3 getFabric2(vec3 uv){
     // Generate a fabric-like pattern using sine waves
     float stripe = sin(uv.y * stripeFrequency) * 0.5 + 0.5;  // Vertical stripe pattern
-    float weave = sin((uv.x + uv.y) * gapFrequency) * 0.5 + 0.5;  // Diagonal weave pattern
+    float weave = sin((uv.x + uv.y + uv.z) * gapFrequency) * 0.5 + 0.5;  // Diagonal weave pattern
 
     // Combine the patterns to create the fabric texture
     vec3 color = vec3(stripe * weave);
