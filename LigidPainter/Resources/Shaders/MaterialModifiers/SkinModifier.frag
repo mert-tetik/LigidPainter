@@ -66,42 +66,42 @@ in vec4 ProjectedPos;
 out vec4 fragColor;
 
 
-float hash(in vec2 p)
+float hash(in vec3 p)
 { 
-      return fract(sin(dot(p.xy, vec2(12.9898,78.233))) * 43758.5453123); 
+    return fract(sin(dot(p.xyz, vec3(12.9898,78.233, 62.485))) * 43758.5453123); 
 }
 
-float hash2D(in vec2 co){
-    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}
-
-
-float dotNoise2D(in float x, in float y, in float fractionalMaxDotSize, in float dDensity)
+float dotNoise2D(in float x, in float y, in float z, in float fractionalMaxDotSize, in float dDensity)
 {
     float integer_x = x - fract(x);
     float fractional_x = x - integer_x;
 
     float integer_y = y - fract(y);
     float fractional_y = y - integer_y;
+    
+    float integer_z = z - fract(z);
+    float fractional_z = z - integer_z;
 
-    if (hash2D(vec2(integer_x+1.0, integer_y +1.0)) > dDensity)
-       {return 0.0;}
+    if (hash(vec3(integer_x + 1.0, integer_y + 1.0, integer_z + 1.0)) > dDensity){
+        return 0.0;
+    }
 
-    float xoffset = (hash2D(vec2(integer_x, integer_y)) -0.5);
-    float yoffset = (hash2D(vec2(integer_x+1.0, integer_y)) - 0.5);
-    float dotSize = 0.5 * fractionalMaxDotSize * max(0.25,hash2D(vec2(integer_x, integer_y+1.0)));
+    float xoffset = (hash(vec3(integer_x, integer_y, integer_z)) -0.5);
+    float yoffset = (hash(vec3(integer_x + 1.0, integer_y, integer_z)) - 0.5);
+    float zoffset = (hash(vec3(integer_x + 1.0, integer_y + 1.0, integer_z)) - 0.5);
+    float dotSize = 0.5 * fractionalMaxDotSize * max(0.25,hash(vec3(integer_x, integer_y+1.0, integer_z + 1.0))); //TODO Change the z axis values
 
-    vec2 truePos = vec2 (0.5 + xoffset * (1.0 - 2.0 * dotSize) , 0.5 + yoffset * (1.0 -2.0 * dotSize));
+    vec3 truePos = vec3(0.5 + xoffset * (1.0 - 2.0 * dotSize) , 0.5 + yoffset * (1.0 -2.0 * dotSize), 0.5 + zoffset * (1.0 - 2.0 * dotSize));
 
-    float distance = length(truePos - vec2(fractional_x, fractional_y));
+    float distance = length(truePos - vec3(fractional_x, fractional_y, fractional_z));
 
     return 1.0 - smoothstep(0.3 * dotSize, 1.0* dotSize, distance);
 
 }
 
-float DotNoise2D(in vec2 coord, in float wavelength, in float fractionalMaxDotSize, in float dDensity)
+float DotNoise2D(in vec3 coord, in float wavelength, in float fractionalMaxDotSize, in float dDensity)
 {
-   return dotNoise2D(coord.x/wavelength, coord.y/wavelength, fractionalMaxDotSize, dDensity);
+   return dotNoise2D(coord.x/wavelength, coord.y/wavelength, coord.z/wavelength, fractionalMaxDotSize, dDensity);
 }
 
 
@@ -109,7 +109,7 @@ float DotNoise2D(in vec2 coord, in float wavelength, in float fractionalMaxDotSi
 
 
 
-float getDroplets(vec2 uv){
+float getDroplets(vec3 uv){
     float splash_speed = 1.;
     float transform = 0.;
     int steps = 5;
@@ -123,7 +123,7 @@ float getDroplets(vec2 uv){
     for(int j = 0; j < steps;j++){
 
         
-        float hash = hash(vec2(float(j),float(j)*1.785));
+        float hash = hash(vec3(float(j),float(j)*1.785, (j)*2.3485));
         float opacity = 1. * hash;
         float opacityGap = opacity - 1.;
         opacity -= opacityGap * opacityJitter;        
@@ -132,13 +132,13 @@ float getDroplets(vec2 uv){
         
             float time_fact = (sin(base_rate + (1.570*float(i))));
             time_fact = smoothstep(0.0,1.0,time_fact);
-            rain+=(DotNoise2D(uv.xy, 0.02 * dropletsSize ,0.5, base_density) * time_fact * (opacity));
+            rain += (DotNoise2D(uv.xyz, 0.02 * dropletsSize ,0.5, base_density) * time_fact * (opacity));
         }
-            
     }
     
     return rain;
 }
+
 
 
 
@@ -258,33 +258,23 @@ float worleyFbm(vec3 p, float freq)
         	 worleyNoise(p*freq*4., freq*4.) * .125;
 }
 
-float getWorleyNoise( vec2 uv )
+float getWorleyNoise( vec3 uv )
 {
     vec4 col = vec4(0.);
     
     float slices = 128.; // number of layers of the 3d texture
     float freq = 4.;
     
-    float pfbm= mix(1., perlinfbm(vec3(uv, floor(slices)/slices), 4., 7), .5);
+    float pfbm= mix(1., perlinfbm(vec3(uv), 4., 7), .5);
     pfbm = abs(pfbm * 2. - 1.); // billowy perlin noise
     
-    col.g += worleyFbm(vec3(uv, floor(slices) / slices), freq);
-    col.b += worleyFbm(vec3(uv, floor(slices) / slices), freq*2.);
-    col.a += worleyFbm(vec3(uv, floor(slices) / slices), freq*4.);
+    col.g += worleyFbm(vec3(uv), freq);
+    col.b += worleyFbm(vec3(uv), freq*2.);
+    col.a += worleyFbm(vec3(uv), freq*4.);
     col.r += remap(pfbm, 0., 1., col.g, 1.); // perlin-worley
     
     return 1. - col.z;
 }
-
-vec3 hash( vec3 x )
-{
-  x = vec3( dot(x,vec3(127.1,311.7, 74.7)),
-            dot(x,vec3(269.5,183.3,246.1)),
-            dot(x,vec3(113.5,271.9,124.6)));
-
-  return fract(sin(x)*43758.5453123);
-}
-
 
 // returns closest, second closest, and cell id
 float getVoronoi( vec3 x )
@@ -328,20 +318,37 @@ vec3 p1; vec3 p2;
 
 const float PHI = 1000.61803398874989484820459; // Φ = Golden Ratio 
 
-float gold_noise(in vec2 xy)
+float gold_noise(in vec3 xyz)
 {
-    return fract(tan(distance(xy*PHI, xy))*xy.x * PHI);
+    return fract(tan(distance(xyz * PHI, xyz)) * xyz.x * PHI);
 }
 
-vec2 rotate(vec2 uv, float a)
+vec3 rotate(vec3 v, vec3 axis, float angle)
 {
-	return vec2(uv.x*cos(a)-uv.y*sin(a),uv.y*cos(a)+uv.x*sin(a));
+    float cosAngle = cos(angle);
+    float sinAngle = sin(angle);
+    float oneMinusCos = 1.0 - cosAngle;
+
+    // Normalize the axis vector
+    axis = normalize(axis);
+
+    float x = v.x;
+    float y = v.y;
+    float z = v.z;
+
+    // Apply the rotation formula
+    vec3 rotatedVec;
+    rotatedVec.x = (cosAngle + axis.x * axis.x * oneMinusCos) * x + (axis.x * axis.y * oneMinusCos - axis.z * sinAngle) * y + (axis.x * axis.z * oneMinusCos + axis.y * sinAngle) * z;
+    rotatedVec.y = (axis.y * axis.x * oneMinusCos + axis.z * sinAngle) * x + (cosAngle + axis.y * axis.y * oneMinusCos) * y + (axis.y * axis.z * oneMinusCos - axis.x * sinAngle) * z;
+    rotatedVec.z = (axis.z * axis.x * oneMinusCos - axis.y * sinAngle) * x + (axis.z * axis.y * oneMinusCos + axis.x * sinAngle) * y + (cosAngle + axis.z * axis.z * oneMinusCos) * z;
+
+    return rotatedVec;
 }
 
 void main()
 {
     // Normalized pixel coordinates (from 0 to 1)
-    vec2 uv = TexCoords;
+    vec3 uv = Pos;
 
     float noise = getWorleyNoise(uv * veinsScale);
     
@@ -378,23 +385,23 @@ void main()
     
     vec3 baseSkin = mix(skinColor, veins, noise/5. * veinsStrength );
     
-    uv = rotate(uv,30.);
+    uv = rotate(uv,vec3(0,1,0),30.);
     noise = getWorleyNoise(uv);
     vec3 beneathSkin = mix(skinColor, veins, noise/5.);
     
-    uv = rotate(uv,40.);
+    uv = rotate(uv,vec3(0,1,0),40.);
     noise = getWorleyNoise(uv);
     beneathSkin = mix(beneathSkin, veins/1.5,noise/5.);
     
-    uv = rotate(uv,60.);
+    uv = rotate(uv,vec3(0,1,0),60.);
     noise = getWorleyNoise(uv);
     beneathSkin = mix(beneathSkin, veins/3.,noise/5.);
     
-    uv = rotate(uv,47.);
+    uv = rotate(uv,vec3(0,1,0),47.);
     noise = getWorleyNoise(uv);
     beneathSkin = mix(beneathSkin, veins/4.,noise/5.);
     
-    float voronoi = getVoronoi(vec3(uv * skinPrintsScale, 0.)) * skinPrintsStrength;
+    float voronoi = getVoronoi(vec3(uv * skinPrintsScale)) * skinPrintsStrength;
     
     vec3 frackledSkin = mix(baseSkin, veins, spots / 5.); 
     
@@ -404,7 +411,7 @@ void main()
     
     vec3 noisedSkin = mix(voronoidSkin, voronoidSkin/1.1, gold_noise(uv) * noiseStrength);
     
-    float voronoi2 = getVoronoi(vec3(uv, 0.));
+    float voronoi2 = getVoronoi(vec3(uv));
 
     // Albedo
     fragColor = vec4(mix(noisedSkin, vec3(0.67, 0.25, 0.6) * skinColor, voronoi2/10. * blushingStrength) ,1.);
@@ -445,7 +452,7 @@ void main()
 
     }
 
-    float procedural = getProcedural(uv, proceduralID);
+    float procedural = getProcedural(TexCoords, proceduralID);
 
     float alpha = opacity;
     if(proceduralID == -1)
