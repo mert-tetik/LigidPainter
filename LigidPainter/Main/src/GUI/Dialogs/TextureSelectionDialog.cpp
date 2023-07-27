@@ -153,10 +153,12 @@ void __getTextRendererDataToTheTextureSelection(TextRenderer& textRenderer){
     __textRenderer = textRenderer;
 }
 
-void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library library, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window){
+void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library library, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window, TextRenderer& textRenderer){
     
     this->dialogControl.activate();
         
+    __textRenderer = textRenderer;
+
     // Get the viewport size
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);

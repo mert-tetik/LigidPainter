@@ -344,7 +344,7 @@ public:
     TextureSelectionDialog(Shader buttonShader,ColorPalette colorPalette);
 
     //Public member functions
-    void show(glm::vec2 videoScale,Timer &timer,Library library, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window);
+    void show(glm::vec2 videoScale,Timer &timer,Library library, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window, TextRenderer& textRenderer);
 };
 
 //!------------------------------CONTEXT MENU------------------------------

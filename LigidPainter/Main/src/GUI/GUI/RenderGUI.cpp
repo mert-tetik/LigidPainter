@@ -38,13 +38,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 TextureSelectionDialog __texture_selection_dialog;
 Library __library;
+TextRenderer __render_gui_textRenderer;
 glm::mat4 __projection;
 LigidWindow __window;
 glm::vec2 __videoScale; 
 Timer __timer; 
 
 void showTextureSelectionDialog(Texture& txtr){
-    __texture_selection_dialog.show(__videoScale, __timer, __library, __projection, txtr, __window);
+    __texture_selection_dialog.show(__videoScale, __timer, __library, __projection, txtr, __window, __render_gui_textRenderer);
 }
 
 /* -- Forward declerations -- */
@@ -60,6 +61,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     __window = context.window;
     __videoScale = videoScale; 
     __timer = timer; 
+    __render_gui_textRenderer = textRenderer; 
 
     //Set pass less or equal
     glDepthFunc(GL_LEQUAL);
