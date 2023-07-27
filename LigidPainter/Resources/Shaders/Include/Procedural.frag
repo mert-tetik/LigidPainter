@@ -435,56 +435,65 @@ float randomTrianglePattern(
     return cycle(random(floor(c * 4.0)) * 0.5 );
 }
 
-float getProcedural(vec2 p, int proceduralID){
-    if(proceduralID == 0)
-        return hexagonalPattern(p);
-    else if(proceduralID == 1)
-        return hexagonalPattern2(p);
-    else if(proceduralID == 2)
-        return hexagonalPattern3(p);
-    else if(proceduralID == 3)
-        return hexagonalTruchetPattern(p);
-    else if(proceduralID == 4)
-        return checkerPattern(p);
-    else if(proceduralID == 5)
-        return trianglePattern(p);
-    else if(proceduralID == 6)
-        return rhombPattern1(p);
-    else if(proceduralID == 7)
-        return karoPattern(p);
-    else if(proceduralID == 8)
-        return gridPattern1(p);
-    else if(proceduralID == 9)
-        return gridPattern2(p);
-    else if(proceduralID == 10)
-        return squareHolePattern(p);
-    else if(proceduralID == 11)
-        return roundSquarePattern(p);
-    else if(proceduralID == 12)
-        return sinePattern(p);
-    else if(proceduralID == 13)
-        return brickPattern(p);
-    else if(proceduralID == 14)
-        return gearPattern(p);
-    else if(proceduralID == 15)
-        return layeredCirclePattern(p);
-    else if(proceduralID == 16)
-        return starPattern(p);
-    else if(proceduralID == 17)
-        return basketPattern1(p);
-    else if(proceduralID == 18)
-        return basketPattern2(p);
-    else if(proceduralID == 19)
-        return diamondPattern(p);
-    else if(proceduralID == 20)
-        return rosettePattern(p);
-    else if(proceduralID == 21)
-        return smoothHexPattern(p);
-    else if(proceduralID == 22)
-        return smoothSharpSquarePattern(p);
-    else if(proceduralID == 23)
-        return randomTrianglePattern(p);
-    else
-        return 1.;
+float getProcedural(vec2 p, int proceduralID, float scale, int inverted){
     
+    p*=scale;
+    
+    float res = 0.;
+
+    if(proceduralID == 0)
+        res = hexagonalPattern(p);
+    else if(proceduralID == 1)
+        res = hexagonalPattern2(p);
+    else if(proceduralID == 2)
+        res = hexagonalPattern3(p);
+    else if(proceduralID == 3)
+        res = hexagonalTruchetPattern(p);
+    else if(proceduralID == 4)
+        res = checkerPattern(p);
+    else if(proceduralID == 5)
+        res = trianglePattern(p);
+    else if(proceduralID == 6)
+        res = rhombPattern1(p);
+    else if(proceduralID == 7)
+        res = karoPattern(p);
+    else if(proceduralID == 8)
+        res = gridPattern1(p);
+    else if(proceduralID == 9)
+        res = gridPattern2(p);
+    else if(proceduralID == 10)
+        res = squareHolePattern(p);
+    else if(proceduralID == 11)
+        res = roundSquarePattern(p);
+    else if(proceduralID == 12)
+        res = sinePattern(p);
+    else if(proceduralID == 13)
+        res = brickPattern(p);
+    else if(proceduralID == 14)
+        res = gearPattern(p);
+    else if(proceduralID == 15)
+        res = layeredCirclePattern(p);
+    else if(proceduralID == 16)
+        res = starPattern(p);
+    else if(proceduralID == 17)
+        res = basketPattern1(p);
+    else if(proceduralID == 18)
+        res = basketPattern2(p);
+    else if(proceduralID == 19)
+        res = diamondPattern(p);
+    else if(proceduralID == 20)
+        res = rosettePattern(p);
+    else if(proceduralID == 21)
+        res = smoothHexPattern(p);
+    else if(proceduralID == 22)
+        res = smoothSharpSquarePattern(p);
+    else if(proceduralID == 23)
+        res = randomTrianglePattern(p);
+    else
+        res = 1.;
+
+    if(inverted == 0)
+        return res;   
+    else
+        return 1. - res;   
 }

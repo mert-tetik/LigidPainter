@@ -260,6 +260,8 @@ public:
     /// @brief Indicates which procedural texture shader function will be used (indexing the getProcedural function in the Shaders/Include/Procedural.frag)
     ///         -1 : No procedural shader will be used. Use the @ref ID instead.
     int proceduralID = -1;
+    float proceduralScale = 1.f;
+    int proceduralnverted = 0;
 
     /// @brief Title of the texture (myTexture)
     std::string title = "";
@@ -616,6 +618,7 @@ public:
     glm::vec2 cursorPos = glm::vec2(0);
     glm::vec2 mouseOffset;
 	int mods = 0;
+	int action = 0;
 	bool LClick = false; //Left click - button 0
 	bool RClick = false; //Right click - button 1
 	bool MClick = false; //Middle click - button 2

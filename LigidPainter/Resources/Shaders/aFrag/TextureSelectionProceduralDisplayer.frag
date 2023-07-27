@@ -7,7 +7,9 @@ in vec2 TexCoords;
 out vec4 fragColor;
 
 uniform int proceduralID;
+uniform float proceduralScale;
+uniform int proceduralInverted;
 
 void main(){
-    fragColor = vec4(vec3(getProcedural(TexCoords, proceduralID)), 1.);
+    fragColor = vec4(vec3(getProcedural(TexCoords, proceduralID, proceduralScale, proceduralInverted)), 1.);
 } 

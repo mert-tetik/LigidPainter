@@ -185,6 +185,13 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
         __mouse.cursorPos = __mouse_pos.cursorPos;
         __mouse.mouseOffset = __mouse_pos.mouseOffset;
 
+        if(__mouse.action == 0){
+            __mouse.LClick = false;
+            __mouse.RClick = false;
+            __mouse.MClick = false;
+        }
+
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glActiveTexture(GL_TEXTURE0);
@@ -277,6 +284,8 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
             proceduralDisplayerShader.setVec3("pos"         ,       selectedTextureDisplayingPanel.resultPos);
             proceduralDisplayerShader.setVec2("scale"       ,       glm::vec2(std::min(selectedTextureDisplayingPanel.resultScale.x,selectedTextureDisplayingPanel.resultScale.y)));
             proceduralDisplayerShader.setInt("proceduralID", selectedTextureIndex);
+            proceduralDisplayerShader.setFloat("proceduralScale", this->subPanel.sections[0].elements[4].rangeBar.value);
+            proceduralDisplayerShader.setInt("proceduralInverted", this->subPanel.sections[0].elements[3].checkBox.clickState1);
             glDrawArrays(GL_TRIANGLES, 0, 6);
 
             for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
@@ -285,6 +294,8 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
                 proceduralDisplayerShader.setVec3("pos"         ,       this->textureSelectingPanel.sections[0].elements[i].button.resultPos);
                 proceduralDisplayerShader.setVec2("scale"       ,       glm::vec2(std::min(this->textureSelectingPanel.sections[0].elements[i].button.resultScale.x, this->textureSelectingPanel.sections[0].elements[i].button.resultScale.y)));
                 proceduralDisplayerShader.setInt("proceduralID", i);
+                proceduralDisplayerShader.setFloat("proceduralScale", 1.f);
+                proceduralDisplayerShader.setInt("proceduralInverted", 0);
                 glDrawArrays(GL_TRIANGLES, 0, 6);
             }
 
@@ -342,6 +353,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
                                                     0.f
                                                 );
                                                 
+                                                
                 buttonShader.setMat4("projection"  ,       projection);
                 buttonShader.setVec3("pos"         ,       glm::vec3((float)txtrRes / 2.f, (float)txtrRes / 2.f, 0.9f));
                 buttonShader.setVec2("scale"       ,       glm::vec2((float)txtrRes / 2.f, (float)txtrRes / 2.f));
@@ -366,6 +378,8 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
             else if(this->selectedTextureMode == 1 || this->selectedTextureMode == 2){
                 //Update the selected procedural function index
                 receivedTexture.proceduralID = this->selectedTextureIndex;
+                receivedTexture.proceduralScale = this->subPanel.sections[0].elements[4].rangeBar.value;
+                receivedTexture.proceduralnverted = this->subPanel.sections[0].elements[3].checkBox.clickState1;
 
                 //TODO Set the scale & invert 
                 // The texture is not generated
@@ -404,6 +418,9 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
                 proceduralDisplayerShader.setVec3("pos"         ,       glm::vec3((float)displayRes / 2.f, (float)displayRes / 2.f,0.9f));
                 proceduralDisplayerShader.setVec2("scale"       ,       glm::vec2((float)displayRes / 2.f));
                 proceduralDisplayerShader.setInt("proceduralID" , selectedTextureIndex);
+                proceduralDisplayerShader.setFloat("proceduralScale", this->subPanel.sections[0].elements[4].rangeBar.value);
+                proceduralDisplayerShader.setInt("proceduralInverted", this->subPanel.sections[0].elements[3].checkBox.clickState1);
+                
                 glDrawArrays(GL_TRIANGLES, 0, 6);
 
                 buttonShader.use();
@@ -419,7 +436,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
         }
 
         //End the dialog
-        if((__textRenderer.key == LIGIDGL_KEY_ESCAPE && __textRenderer.keyInput) || (!this->bgPanel.hover && __mouse.LClick)){
+        if((window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && __mouse.LClick)){
             dialogControl.unActivate();
             selectedTextureIndex = 0;
             break;
@@ -437,6 +454,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
         __mouse_pos.mouseOffset = glm::vec2(0);
         __mouse_button.mods = 0;
         __mouse_button.mouseScroll = 0;
+        __mouse_button.action = 0;
 
         //Set keyboard states to default
         __textRenderer.keyInput = false;

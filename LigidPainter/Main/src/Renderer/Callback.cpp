@@ -88,6 +88,7 @@ void Renderer::mouseButtonCallback(
     
     //Mods
     this->mouse.mods = mods;
+    this->mouse.action = action;
 
     __getMouseButtonDataToTheTextureSelection(mouse);
 }

@@ -337,61 +337,61 @@ void MaterialEditorDialog::manageContextMenuActions(Library &library, Mouse &mou
         
         // Texture Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
-            material.materialModifiers.push_back(appMaterialModifiers.textureModifier);
+            material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.textureModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
         
         // Dust Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){
-            material.materialModifiers.push_back(appMaterialModifiers.dustModifier);
+            material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.dustModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
         
         // Asphalt Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){
-            material.materialModifiers.push_back(appMaterialModifiers.asphaltModifier);
+            material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.asphaltModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
         
         // Fabric Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){
-            material.materialModifiers.push_back(appMaterialModifiers.fabricModifier);
+            material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.fabricModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
         
         // Marble Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[4].button.hover && mouse.LClick){
-            material.materialModifiers.push_back(appMaterialModifiers.marbleModifier);
+            material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.marbleModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
         
         // Moss Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){
-            material.materialModifiers.push_back(appMaterialModifiers.mossModifier);
+            material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.mossModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
         
         // Rust Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[6].button.hover && mouse.LClick){
-            material.materialModifiers.push_back(appMaterialModifiers.rustModifier);
+            material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.rustModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
         
         // Skin Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[7].button.hover && mouse.LClick){
-            material.materialModifiers.push_back(appMaterialModifiers.skinModifier);
+            material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.skinModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
         
         // Solid Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[8].button.hover && mouse.LClick){
-            material.materialModifiers.push_back(appMaterialModifiers.solidModifier);
+            material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.solidModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
         
         // Wooden Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[9].button.hover && mouse.LClick){
-            material.materialModifiers.push_back(appMaterialModifiers.woodenModifier);
+            material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.woodenModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
     }

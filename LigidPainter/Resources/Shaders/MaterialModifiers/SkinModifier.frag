@@ -53,6 +53,8 @@ uniform sampler2D mask;
 uniform sampler2D previousTxtr;
 uniform float opacity;
 uniform int proceduralID;
+uniform float proceduralScale;
+uniform int proceduralInverted;
 
 /* Fragment Inputs */
 in vec2 TexCoords;
@@ -452,7 +454,7 @@ void main()
 
     }
 
-    float procedural = getProcedural(TexCoords, proceduralID);
+    float procedural = getProcedural(TexCoords, proceduralID, proceduralScale, proceduralInverted);
 
     float alpha = opacity;
     if(proceduralID == -1)
@@ -460,7 +462,7 @@ void main()
     else
         alpha *= procedural; 
 
-    vec3 clrResult = mix(fragColor.rgb, texture(previousTxtr, TexCoords).rgb, alpha);
+    vec3 clrResult = mix(texture(previousTxtr, TexCoords).rgb, fragColor.rgb, alpha);
 
     fragColor = vec4(clrResult, 1.);
 }

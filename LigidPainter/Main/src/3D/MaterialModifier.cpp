@@ -923,7 +923,10 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1001,7 +1004,10 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1092,7 +1098,10 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1177,7 +1186,10 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1282,7 +1294,10 @@ void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1386,7 +1401,10 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1487,7 +1505,10 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1589,7 +1610,10 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1654,7 +1678,9 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
         modifierShader.setFloat( "opacity" , 1.f); //TODO : Set the opacity
-        modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel state
+        modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
+        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
+        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
 
         /* Droplets */
         modifierShader.setFloat("dropletsCount", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 1.f);
@@ -1689,7 +1715,10 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
