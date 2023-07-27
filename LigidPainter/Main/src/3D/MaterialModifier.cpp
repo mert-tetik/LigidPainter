@@ -150,7 +150,7 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader
 
 std::vector<Section> MaterialModifier::createTextureModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
         
-    return 
+    std::vector<Section> sections =  
     {
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Channels",Texture(),0.f,true)),
@@ -164,11 +164,13 @@ std::vector<Section> MaterialModifier::createTextureModifier(ColorPalette colorP
             }
         )
     };
+
+    return sections;
 }
 
 std::vector<Section> MaterialModifier::createSolidModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
         
-    return 
+    std::vector<Section> sections =  
     {
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Channels",Texture(),0.f,true)),
@@ -193,11 +195,20 @@ std::vector<Section> MaterialModifier::createSolidModifier(ColorPalette colorPal
             }
         )
     };
+
+    sections[0].elements[0].button.colorSelection = true;
+    sections[0].elements[2].button.colorSelection = true;
+    sections[0].elements[4].button.colorSelection = true;
+    sections[0].elements[6].button.colorSelection = true;
+    sections[0].elements[8].button.colorSelection = true;
+    sections[0].elements[10].button.colorSelection = true;
+
+    return sections;
 }
 
 std::vector<Section> MaterialModifier::createMarbleModifier(ColorPalette colorPalette, Shader buttonShader, AppTextures appTextures)
 {
-    return 
+    std::vector<Section> sections =  
     {
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Marble Properties", Texture(), 0.f, true)),
@@ -247,11 +258,19 @@ std::vector<Section> MaterialModifier::createMarbleModifier(ColorPalette colorPa
             }
         )
     };
+
+    sections[0].elements[0].button.colorSelection = true;
+    sections[0].elements[1].button.colorSelection = true;
+
+    sections[0].elements[0].button.color = glm::vec4(glm::vec3(0.f), 1.f);
+    sections[0].elements[1].button.color = glm::vec4(glm::vec3(1.f), 1.f);
+
+    return sections;
 }
 
 
 std::vector<Section> MaterialModifier::createFabricModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
-    return 
+    std::vector<Section> sections =  
     {
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Stripes",Texture(),0.f,true)),
@@ -272,11 +291,17 @@ std::vector<Section> MaterialModifier::createFabricModifier(ColorPalette colorPa
             }
         ),
     };
+
+    sections[0].elements[0].button.colorSelection = true;
+
+    sections[0].elements[0].button.color = glm::vec4(glm::vec3(0.79f, 0.79f, 0.73f), 1.f);
+
+    return sections;
 } 
 
 std::vector<Section> MaterialModifier::createMossModifier(ColorPalette colorPalette, Shader buttonShader, AppTextures appTextures)
 {
-    return 
+    std::vector<Section> sections =  
     {
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Color", Texture(), 0.f, true)),
@@ -329,11 +354,22 @@ std::vector<Section> MaterialModifier::createMossModifier(ColorPalette colorPale
             }
         )
     };
+
+    sections[0].elements[0].button.colorSelection = true;
+    sections[0].elements[1].button.colorSelection = true;
+    sections[0].elements[2].button.colorSelection = true;
+
+    sections[0].elements[0].button.color = glm::vec4(glm::vec3(0.19f, 0.19f, 0.13f), 1.f);
+    sections[0].elements[1].button.color = glm::vec4(glm::vec3(0.21f, 0.27f, 0.01f), 1.f);
+    sections[0].elements[2].button.color = glm::vec4(glm::vec3(0.27f, 0.22f, 0.15f), 1.f);
+    
+
+    return sections;
 }
 
 std::vector<Section> MaterialModifier::createRustModifier(ColorPalette colorPalette, Shader buttonShader, AppTextures appTextures)
 {
-    return 
+    std::vector<Section> sections =  
     {
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Colors", Texture(), 0.f, true)),
@@ -387,11 +423,24 @@ std::vector<Section> MaterialModifier::createRustModifier(ColorPalette colorPale
             }
         )
     };
+    
+    sections[0].elements[0].button.colorSelection = true;
+    sections[0].elements[1].button.colorSelection = true;
+    sections[0].elements[2].button.colorSelection = true;
+    sections[0].elements[3].button.colorSelection = true;
+
+    sections[0].elements[0].button.color = glm::vec4(glm::vec3(0.65f, 0.65f, 0.61f), 1.f);
+    sections[0].elements[1].button.color = glm::vec4(glm::vec3(0.43f, 0.4f, 0.39f), 1.f);
+    sections[0].elements[2].button.color = glm::vec4(glm::vec3(0.29f, 0.22f, 0.17f), 1.f);
+    sections[0].elements[3].button.color = glm::vec4(glm::vec3(0.49f, 0.3f, 0.2f), 1.f);
+    
+
+    return sections;
 }
 
 std::vector<Section> MaterialModifier::createSkinModifier(ColorPalette colorPalette, Shader buttonShader, AppTextures appTextures)
 {
-    return 
+    std::vector<Section> sections =  
     {
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Droplets", Texture(), 0.f, true)),
@@ -439,11 +488,13 @@ std::vector<Section> MaterialModifier::createSkinModifier(ColorPalette colorPale
             }
         )
     };
+
+    return sections;
 }
 
 std::vector<Section> MaterialModifier::createWoodenModifier(ColorPalette colorPalette, Shader buttonShader, AppTextures appTextures)
 {
-    return 
+    std::vector<Section> sections =  
     {
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Colors", Texture(), 0.f, true)),
@@ -499,10 +550,21 @@ std::vector<Section> MaterialModifier::createWoodenModifier(ColorPalette colorPa
             }
         )
     };
+
+    sections[0].elements[0].button.colorSelection = true;
+    sections[0].elements[1].button.colorSelection = true;
+    sections[0].elements[2].button.colorSelection = true;
+
+    sections[0].elements[0].button.color = glm::vec4(glm::vec3(0.f), 1.f);
+    sections[0].elements[1].button.color = glm::vec4(glm::vec3(0.25f, 0.11f, 0.04f), 1.f);
+    sections[0].elements[2].button.color = glm::vec4(glm::vec3(0.52f, 0.32f, 0.19f), 1.f);
+
+
+    return sections;
 }
 
 std::vector<Section> MaterialModifier::createAsphaltModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
-    return 
+    std::vector<Section> sections =  
     {
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Color",Texture(),0.f,true)),
@@ -548,11 +610,18 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(ColorPalette colorP
             }
         )
     };
+    sections[0].elements[0].button.colorSelection = true;
+    sections[0].elements[1].button.colorSelection = true;
+    
+    sections[0].elements[0].button.color = glm::vec4(glm::vec3(0.25f), 1.f);
+    sections[0].elements[1].button.color = glm::vec4(glm::vec3(0.23f, 0.25f, 0.27f), 1.f);
+    
+    return sections;
 }
 
 std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
 
-    return 
+    std::vector<Section> sections =  
     {
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Noise",Texture(),0.f,true)),
@@ -591,6 +660,8 @@ std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPale
             }
         ),
     };
+
+    return sections;
 }
 
 void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& curModI, glm::mat4& perspective, glm::mat4& view, int& channelI, unsigned int& FBO, Texture& currentTexture, Texture& previousTexture){

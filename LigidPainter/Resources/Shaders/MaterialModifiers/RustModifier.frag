@@ -257,12 +257,16 @@ float restriction(float value, float rest){
 }
 
 void main() {
-    
+    vec3 aColor1 = color1;    
+    vec3 aColor2 = color2;    
+    vec3 aColor3 = color3;
+    vec3 aColor4 = color4;
+
     if(state != 0){
-        color1 = vec3(0.0); //Metal
-        color2 = vec3(0.2); //Damaged Metal
-        color3 = vec3(0.8); //Brown Color
-        color4 = vec3(1.0); //Rust Color
+        aColor1 = vec3(0.0); //Metal
+        aColor2 = vec3(0.2); //Damaged Metal
+        aColor3 = vec3(0.8); //Brown Color
+        aColor4 = vec3(1.0); //Rust Color
     }
 
     vec2 p = TexCoords * scale;
@@ -279,13 +283,13 @@ void main() {
     if(noise1 < 0.7)
         noise1 -= 0.7 - noise1;
     
-    result = mix(color1, color2, noise1 * perlin * batteringStrength);
-    result = mix(result, color2, (voronoi * perlin) / 4.);
+    result = mix(aColor1, aColor2, noise1 * perlin * batteringStrength);
+    result = mix(result, aColor2, (voronoi * perlin) / 4.);
 
     float noise2 = rustyNoise;
     noise2 = restriction(noise2, 0.8);
         
-    result = mix(result, color3, noise2 * perlin * voronoi * batteringStrength);
+    result = mix(result, aColor3, noise2 * perlin * voronoi * batteringStrength);
    
     float noise3 = rustyNoise;
     noise3 = restriction(noise3, rustRadius);
@@ -293,8 +297,8 @@ void main() {
     float noise4 = rustyNoise2;
     noise4 = restriction(noise4, rustRadius);
         
-    result = mix(result, color4, noise3 * voronoi2);
-    result = mix(result, color4, noise4);
+    result = mix(result, aColor4, noise3 * voronoi2);
+    result = mix(result, aColor4, noise4);
 
     float rustAc;
     if(state != 2)
@@ -309,13 +313,13 @@ void main() {
     if(noise5 < 0.)
         noise5 = 0.;
         
-    result = mix(result, color4, noise5);
+    result = mix(result, aColor4, noise5);
     
     voronoi2 = restriction(voronoi2, 0.9);
     
-    result = mix(result, color3, voronoi2 * perlin * noise3);
+    result = mix(result, aColor3, voronoi2 * perlin * noise3);
     
-    result = mix(result, color3, voronoi2/4.);
+    result = mix(result, aColor3, voronoi2/4.);
 
     float goldNoise = gold_noise(p);
     

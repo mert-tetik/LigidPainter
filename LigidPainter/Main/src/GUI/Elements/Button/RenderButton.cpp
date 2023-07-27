@@ -24,6 +24,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 #include "GUI/Dialogs/Dialogs.hpp"
 
+#include "tinyfiledialogs.h"
+
 #include <string>
 #include <iostream>
 #include <vector>
@@ -77,8 +79,20 @@ void Button::render(
     //Render the button
     render(resultPos,resultScale,resultRadius,resultOutlineThickness);
     
-    if(this->clicked && this->textureSelection){
-        showTextureSelectionDialog(this->texture);
+    if(this->clicked){
+        if(this->textureSelection)
+            showTextureSelectionDialog(this->texture);
+        if(this->colorSelection){
+            unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
+            const char* hex0Val = "#000000";
+            auto check = tinyfd_colorChooser("Select a color",hex0Val,defRGB,defRGB);
+            if(check){
+                Color clr(check);
+                this->color.r = clr.getRGB_normalized().r;
+                this->color.g = clr.getRGB_normalized().g;
+                this->color.b = clr.getRGB_normalized().b;
+            }        
+        }
     }
 
     //Render the text and the texture

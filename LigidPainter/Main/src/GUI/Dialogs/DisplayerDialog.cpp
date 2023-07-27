@@ -162,11 +162,12 @@ void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalett
         unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
         const char* hex0Val = "#000000";
         auto check = tinyfd_colorChooser("Select a color",hex0Val,defRGB,defRGB);
-        Color clr(check);
 
         //If a color is selected change the color of the skybox bgcolor (than the bg color element's color will be set to skybox bgcolor)
-        if(check)
+        if(check){
+            Color clr(check);
             skybox.bgColor = clr.getRGB_normalized();
+        }
     }
     
     //Change the transform matrix of the skybox (rotate it using the rotation range bar element)

@@ -16,9 +16,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #version 400 core
 
 /* Color */
-uniform vec3 mossColorBack = vec3(0.19, 0.19, 0.13);
-uniform vec3 mossColorFront = vec3(0.21, 0.27 ,0.01); // Front layer
-uniform vec3 dirtColor = vec3(0.27, 0.22, 0.15);
+uniform vec3 mossColorBack = vec3(0.19,0.19,0.13);
+uniform vec3 mossColorFront = vec3(0.21,0.27,0.01); // Front layer
+uniform vec3 dirtColor = vec3(0.27,0.22,0.15);
 
 /* Droplets */
 uniform  float dropletsCount = 10.2;
@@ -402,10 +402,14 @@ float getDroplets(vec2 uv){
 
 void main()
 {
+    vec3 aMossColorBack = mossColorBack;
+    vec3 aMossColorFront = mossColorFront;
+    vec3 aDirtColor = dirtColor;
+
     if(state != 0){
-        mossColorBack = vec3(0.2, 0.2 ,0.01);
-        mossColorFront = vec3(0.21, 0.27 ,0.01); // Front layer
-        dirtColor = vec3(0.27, 0.22, 0.15);
+        aMossColorBack = vec3(0.2, 0.2 ,0.01);
+        aMossColorFront = vec3(0.21, 0.27 ,0.01); // Front layer
+        aDirtColor = vec3(0.27, 0.22, 0.15);
     }
 
     // Normalized pixel coordinates (from 0 to 1)
@@ -414,21 +418,21 @@ void main()
 
     float worley = getWorleyNoise(uv);
     
-    vec3 baseColor = mix(mossColorBack, mossColorBack/1.2, worley);
+    vec3 baseColor = mix(aMossColorBack, aMossColorBack/1.2, worley);
     
     float voronoi = getVoronoi(uv / 5.);
-    baseColor = mix(baseColor, dirtColor, voronoi*2.);
+    baseColor = mix(baseColor, aDirtColor, voronoi*2.);
 
     for(int i = 0; i < 4; i++){
         worley = getWorleyNoise(rotate(uv, 35. * float(i)));
-        baseColor = mix(baseColor, mossColorBack, worley);
+        baseColor = mix(baseColor, aMossColorBack, worley);
     }
     
     worley = getWorleyNoise(rotate(uv * frontLayerScale, 95.));
     float worley2 = getWorleyNoise(rotate(uv / 2. + 0.1, 95.));
 
-    vec3 absColor = mix(baseColor, mossColorFront/2., worley * frontLayerStrength);
-    absColor = mix(absColor, mossColorFront, worley2/2.);
+    vec3 absColor = mix(baseColor, aMossColorFront/2., worley * frontLayerStrength);
+    absColor = mix(absColor, aMossColorFront, worley2/2.);
 
     float perlin = getPerlin(uv / 5.);
     float perlin2 = getPerlin(uv + 0.2);

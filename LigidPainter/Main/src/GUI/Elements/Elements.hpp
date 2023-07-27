@@ -115,6 +115,7 @@ public:
     float outlineThickness;
 
     bool textureSelection = false;
+    bool colorSelection = false;
     
     glm::vec3 outlineColor;
     glm::vec3 outlineColor2;
