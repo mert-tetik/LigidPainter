@@ -347,6 +347,43 @@ vec3 rotate(vec3 v, vec3 axis, float angle)
     return rotatedVec;
 }
 
+
+vec2 getTextureCoordinates(vec3 position, vec3 tangent) {
+//   vec3 ANPosition = (abs(position));
+  
+//   return vec2(ANPosition.x, (ANPosition.y + ANPosition.z) / 2.f);
+    
+    vec3 bitangent = cross(tangent, position);
+  vec3 normal = cross(bitangent, tangent);
+
+  mat3 TBN = mat3(tangent, bitangent, normal);
+  vec3 transformedPosition = TBN * position;
+
+  vec2 textureCoord;
+  textureCoord.x = 0.5 * transformedPosition.x + 0.5;
+  textureCoord.y = 0.5 * transformedPosition.y + 0.5;
+
+  return textureCoord;
+}
+
+float antAbs(float val){
+    if(val > 0)
+        return val * -1;
+    else
+        return val;
+}
+
+float secondBiggestValue(vec3 v)
+{
+    float maxValue = max(v.x, max(v.y, v.z));
+    float minValue = min(v.x, min(v.y, v.z));
+    return v.x + v.y + v.z - maxValue - minValue;
+}
+float maxValue(vec3 v)
+{
+    return max(max((v.x), (v.y)), (v.z));
+}
+
 void main()
 {
     // Normalized pixel coordinates (from 0 to 1)
@@ -453,8 +490,21 @@ void main()
         fragColor.rgb = vec3((fragColor.r + 0.1));
 
     }
+    vec2 tUV;
+    
+    if(Pos.x > Pos.z)
+        tUV = vec2(Pos.x + Pos.y, Pos.z );
+    else
+        tUV = vec2(Pos.x , Pos.z + Pos.y);
 
-    float procedural = getProcedural(TexCoords, proceduralID, proceduralScale, proceduralInverted);
+    /*
+    tUV.x = maxValue((abs(Pos)));
+    tUV.y = secondBiggestValue((abs(Pos))); 
+    */
+    
+    tUV = abs(tUV);
+
+    float procedural = getProcedural(tUV, Pos, proceduralID, proceduralScale, proceduralInverted);
 
     float alpha = opacity;
     if(proceduralID == -1)

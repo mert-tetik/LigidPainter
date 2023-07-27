@@ -64,7 +64,6 @@ float hexagonalPattern2(
     float d = abs(max(pos.x*2.5 + pos.y, pos.y*3.0) - 1.0);
     return smoothstep(0.30, gridThickness, d);
 }
-
 /* 2
 ---------------------------------------------------------
     Returns hexagonal grid pattern with 3 colors
@@ -439,9 +438,10 @@ float solidPattern(){
     return 1.;
 }
 
-float getProcedural(vec2 p, int proceduralID, float scale, int inverted){
+float getProcedural(vec2 p, vec3 pos, int proceduralID, float scale, int inverted){
     
     p*=scale;
+    pos*=scale;
     
     float res = 0.;
 
