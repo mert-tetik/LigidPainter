@@ -23,10 +23,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "3D/ThreeD.hpp"
 
-static void initTexture(Texture &txtr,int textureRes){
+static void initTexture(unsigned int &txtr,int textureRes){
     glActiveTexture(GL_TEXTURE0);
-    glGenTextures(1,&txtr.ID);
-    glBindTexture(GL_TEXTURE_2D,txtr.ID);
+    glGenTextures(1,&txtr);
+    glBindTexture(GL_TEXTURE_2D,txtr);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -38,15 +38,39 @@ static void initTexture(Texture &txtr,int textureRes){
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
+void Mesh::generateUVMask(Shader uvMaskShader){
+    const int resolution = 1024;
+    
+    initTexture(this->uvMask, resolution);
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName)
+    unsigned int FBO;
+    glGenFramebuffers(1,&FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->uvMask, 0);
+    glViewport(0, 0, resolution, resolution);
+
+    glClearColor(0, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    uvMaskShader.use();
+    uvMaskShader.setVec4("color", glm::vec4(1.));
+    //TODO Flip???
+    uvMaskShader.setMat4("orthoProjection", glm::ortho(0.f, 1.f, 0.f, 1.f));
+
+    this->Draw();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteFramebuffers(1, &FBO);
+}
+
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, Shader uvMaskShader)
 {
-    initTexture(albedo,1024);
-    initTexture(roughness,1024);
-    initTexture(metallic,1024);
-    initTexture(normalMap,1024);
-    initTexture(heightMap,1024);
-    initTexture(ambientOcclusion,1024);
+    initTexture(albedo.ID, 1024);
+    initTexture(roughness.ID, 1024);
+    initTexture(metallic.ID, 1024);
+    initTexture(normalMap.ID, 1024);
+    initTexture(heightMap.ID, 1024);
+    initTexture(ambientOcclusion.ID, 1024);
 
     this->vertices = vertices;
     this->indices = indices;
@@ -54,6 +78,8 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
 
     // now that we have all the required data, set the vertex buffers and its attribute pointers.
     setupMesh();
+
+    generateUVMask(uvMaskShader);
 }
 
 // Render the mesh

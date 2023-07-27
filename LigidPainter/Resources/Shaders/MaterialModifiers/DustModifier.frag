@@ -93,7 +93,6 @@ vec2 rotate(vec2 uv, float a)
 }
 
 
-
 //  -------------- SCRATCHES UTILITIES --------------
 
 void pR(inout vec2 p, float a)

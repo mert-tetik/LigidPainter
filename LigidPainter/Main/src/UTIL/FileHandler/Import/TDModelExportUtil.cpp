@@ -91,6 +91,8 @@ void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, st
 Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles){
     Model model;
 
+    Shader uvMaskShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "./LigidPainter/Resources/Shaders/aFrag/Color.frag", nullptr, nullptr, nullptr);
+
     for (int i = 0; i < meshVertices.size(); i++)
     {
         std::string matTitle;
@@ -104,8 +106,10 @@ Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std
         else
             matTitle = "DefaultMat";
 
-        model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], matTitle));
+        model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], matTitle, uvMaskShader));
     }
+
+    glDeleteProgram(uvMaskShader.ID);
 
     model.newModelAdded = true;
 

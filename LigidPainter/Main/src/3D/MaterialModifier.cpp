@@ -749,6 +749,60 @@ void generateNormalMap(unsigned int& heightMap, unsigned int& normalMap, Shader 
     glDeleteFramebuffers(1, &FBO);
 }
 
+void removeSeams(Mesh& mesh, unsigned int texture, int textureResolution, Shader boundaryExpandingShader){
+    
+    /*! Binds another framebuffer !*/
+    Texture textureObject = Texture(texture);
+    unsigned int textureCopy = textureObject.duplicateTexture();
+    
+    unsigned int FBO;
+    glGenFramebuffers(1,&FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+    glViewport(0, 0, textureResolution, textureResolution);
+
+    glClearColor(0.5,1,0,1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    Box box;
+    box.init();
+    box.bindBuffers();
+    
+    glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
+    boundaryExpandingShader.use();
+    boundaryExpandingShader.setMat4("projection"  ,       projection);
+    boundaryExpandingShader.setMat4("projectedPosProjection"  ,       projection);
+    boundaryExpandingShader.setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
+    boundaryExpandingShader.setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
+
+    boundaryExpandingShader.setInt("whiteUVTexture", 0);
+    boundaryExpandingShader.setInt("originalTexture", 1);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mesh.uvMask);
+    
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, textureCopy);
+
+    glDrawArrays(GL_TRIANGLES, 0 , 6);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteFramebuffers(1, &FBO);
+    glDeleteTextures(1, &textureCopy);
+}
+
+glm::vec2 getDirectionVector(float rotation) {
+  // Convert rotation from degrees to radians
+  float radians = glm::radians(rotation);
+
+  // Calculate the x and y components of the direction vector
+  float x = glm::cos(radians);
+  float y = glm::sin(radians);
+
+  return glm::vec2(x, y);
+}
+
+
 void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
 
     //Set the OpenGL viewport to the texture resolution
@@ -760,6 +814,9 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     //Transform values to take the texture in to the middle of the screen and cover it completely
     glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //TODO Don't create the shader in the modifier function
+    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
@@ -793,19 +850,11 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         glDeleteFramebuffers(1,&FBO);
         glEnable(GL_DEPTH_TEST);
 
-
+        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        glDeleteTextures(1, &previousTexture.ID);
     }
-}
 
-glm::vec2 getDirectionVector(float rotation) {
-  // Convert rotation from degrees to radians
-  float radians = glm::radians(rotation);
-
-  // Calculate the x and y components of the direction vector
-  float x = glm::cos(radians);
-  float y = glm::sin(radians);
-
-  return glm::vec2(x, y);
+    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
 void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
@@ -823,6 +872,9 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //Transform values to take the texture in to the middle of the screen and cover it completely
     glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //TODO Don't create the shader in the modifier function
+    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
@@ -885,10 +937,16 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
 
         glEnable(GL_DEPTH_TEST);
+
+        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        glDeleteTextures(1, &previousTexture.ID);
     }
+
+    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
 void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
@@ -906,6 +964,9 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
     //Transform values to take the texture in to the middle of the screen and cover it completely
     glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //TODO Don't create the shader in the modifier function
+    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
@@ -951,7 +1012,12 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         //Delete the framebuffer after completing the channel
         glDeleteFramebuffers(1,&FBO);
         glEnable(GL_DEPTH_TEST);
+
+        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        glDeleteTextures(1, &previousTexture.ID);
     }
+
+    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
 void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
@@ -969,6 +1035,9 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     //Transform values to take the texture in to the middle of the screen and cover it completely
     glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //TODO Don't create the shader in the modifier function
+    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
@@ -1037,9 +1106,15 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
+
+        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        glDeleteTextures(1, &previousTexture.ID);
     }
+
+    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
 void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
@@ -1057,6 +1132,9 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     //Transform values to take the texture in to the middle of the screen and cover it completely
     glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //TODO Don't create the shader in the modifier function
+    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
@@ -1113,9 +1191,15 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
+
+        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        glDeleteTextures(1, &previousTexture.ID);
     }
+
+    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
 void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
@@ -1133,6 +1217,9 @@ void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     //Transform values to take the texture in to the middle of the screen and cover it completely
     glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //TODO Don't create the shader in the modifier function
+    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
@@ -1209,9 +1296,15 @@ void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
+
+        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        glDeleteTextures(1, &previousTexture.ID);
     }
+
+    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
 void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
@@ -1229,6 +1322,9 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     //Transform values to take the texture in to the middle of the screen and cover it completely
     glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //TODO Don't create the shader in the modifier function
+    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
@@ -1304,9 +1400,15 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
+
+        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        glDeleteTextures(1, &previousTexture.ID);
     }
+
+    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
 void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
@@ -1324,6 +1426,9 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //Transform values to take the texture in to the middle of the screen and cover it completely
     glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //TODO Don't create the shader in the modifier function
+    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
@@ -1396,9 +1501,15 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
+
+        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        glDeleteTextures(1, &previousTexture.ID);
     }
+
+    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
 void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
@@ -1416,6 +1527,9 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //Transform values to take the texture in to the middle of the screen and cover it completely
     glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //TODO Don't create the shader in the modifier function
+    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
@@ -1489,9 +1603,15 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
+
+        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        glDeleteTextures(1, &previousTexture.ID);
     }
+
+    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
 void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
@@ -1509,6 +1629,9 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //Transform values to take the texture in to the middle of the screen and cover it completely
     glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
+
+    //TODO Don't create the shader in the modifier function
+    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
@@ -1580,7 +1703,13 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
+
+        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        glDeleteTextures(1, &previousTexture.ID);
     }
+
+    glDeleteProgram(boundaryExpandingShader.ID);
 }

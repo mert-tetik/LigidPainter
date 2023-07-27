@@ -94,7 +94,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     library.uniqueNameControl();
 
     //Render the panels
-    renderPanels(videoScale, mouse, timer, textRenderer, painter, library);
+    renderPanels(videoScale, mouse, timer, textRenderer, painter, library, model);
 
     //Render renaming textbox
     renderRenamingTextbox(videoScale, mouse, timer, textRenderer, painter, library, context);
@@ -150,7 +150,7 @@ static void renderBrushCursor(Shader& circleShader, Shader& buttonShader, Painte
     buttonShader.use();
 }
 
-void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter, Library &library){
+void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter, Library &library, Model& model){
     navigationPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     windowPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     paintingPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
@@ -261,7 +261,7 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
         //* Bind the textures
         //painted texture
         glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
+        glBindTexture(GL_TEXTURE_2D, model.meshes[0].uvMask);
         
         //paintingTexture 
         glActiveTexture(GL_TEXTURE6);

@@ -138,6 +138,8 @@ public:
     Texture heightMap;
     Texture ambientOcclusion;
 
+    unsigned int uvMask;
+
     /*! @brief Vertices of the mesh */
     std::vector<Vertex>       vertices;
 
@@ -154,7 +156,7 @@ public:
     Mesh(){}
     
     /*! @brief Generates the buffer objects using the first two parameters */
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, Shader uvMaskShader);
     
     /*! @brief Renders the mesh*/
     void Draw();
@@ -166,6 +168,7 @@ private:
     /*! @brief initializes all the buffer objects/arrays */
     void setupMesh();
 
+    void generateUVMask(Shader uvMaskShader);
 };
 
 
