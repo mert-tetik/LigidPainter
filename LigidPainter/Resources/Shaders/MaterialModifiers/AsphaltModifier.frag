@@ -60,72 +60,84 @@ out vec4 fragColor;
 
 const float PHI = 1000.61803398874989484820459; // Φ = Golden Ratio 
 
-float gold_noise(vec2 xy)
+float gold_noise(vec3 xyz)
 {
-      return fract(tan(distance(xy*PHI, xy))*xy.x *PHI);
+    return fract(tan(distance(xyz * PHI, xyz)) * xyz.x *PHI);
 }
 
-float noise(int x,int y)
-{   
+float noise(int x, int y, int z)
+{
     float fx = float(x);
     float fy = float(y);
+    float fz = float(z);
     
-    return 2.0 * fract(sin(dot(vec2(fx, fy) ,vec2(12.9898,78.233))) * 43758.5453) - 1.0;
+    return 2.0 * fract(sin(dot(vec3(fx, fy, fz), vec3(12.9898, 78.233, 45.543))) * 43758.5453) - 1.0;
 }
 
-float smoothNoise(int x,int y)
+float smoothNoise(int x, int y, int z)
 {
-    return noise(x,y)/4.0+(noise(x+1,y)+noise(x-1,y)+noise(x,y+1)+noise(x,y-1))/8.0+(noise(x+1,y+1)+noise(x+1,y-1)+noise(x-1,y+1)+noise(x-1,y-1))/16.0;
+    return noise(x, y, z) / 4.0 +
+           (noise(x + 1, y, z) + noise(x - 1, y, z) + noise(x, y + 1, z) + noise(x, y - 1, z)) / 8.0 +
+           (noise(x + 1, y + 1, z) + noise(x + 1, y - 1, z) + noise(x - 1, y + 1, z) + noise(x - 1, y - 1, z)) / 16.0;
 }
 
-float COSInterpolation(float x,float y,float n)
+float COSInterpolation(float x, float y, float n)
 {
-    float r = n*3.1415926;
-    float f = (1.0-cos(r))*0.5;
-    return x*(1.0-f)+y*f;
-    
+    float r = n * 3.1415926;
+    float f = (1.0 - cos(r)) * 0.5;
+    return x * (1.0 - f) + y * f;
 }
 
-float InterpolationNoise(float x, float y)
+float InterpolationNoise(float x, float y, float z)
 {
     int ix = int(x);
     int iy = int(y);
-    float fracx = x-float(int(x));
-    float fracy = y-float(int(y));
+    int iz = int(z);
+    float fracx = x - float(ix);
+    float fracy = y - float(iy);
+    float fracz = z - float(iz);
     
-    float v1 = smoothNoise(ix,iy);
-    float v2 = smoothNoise(ix+1,iy);
-    float v3 = smoothNoise(ix,iy+1);
-    float v4 = smoothNoise(ix+1,iy+1);
+    float v1 = smoothNoise(ix, iy, iz);
+    float v2 = smoothNoise(ix + 1, iy, iz);
+    float v3 = smoothNoise(ix, iy + 1, iz);
+    float v4 = smoothNoise(ix + 1, iy + 1, iz);
+    float v5 = smoothNoise(ix, iy, iz + 1);
+    float v6 = smoothNoise(ix + 1, iy, iz + 1);
+    float v7 = smoothNoise(ix, iy + 1, iz + 1);
+    float v8 = smoothNoise(ix + 1, iy + 1, iz + 1);
     
-   	float i1 = COSInterpolation(v1,v2,fracx);
-    float i2 = COSInterpolation(v3,v4,fracx);
+    float i1 = COSInterpolation(v1, v2, fracx);
+    float i2 = COSInterpolation(v3, v4, fracx);
+    float i3 = COSInterpolation(v5, v6, fracx);
+    float i4 = COSInterpolation(v7, v8, fracx);
     
-    return COSInterpolation(i1,i2,fracy);
+    float j1 = COSInterpolation(i1, i2, fracy);
+    float j2 = COSInterpolation(i3, i4, fracy);
     
+    return COSInterpolation(j1, j2, fracz);
 }
 
-float PerlinNoise2D(float x,float y)
+float PerlinNoise3D(float x, float y, float z)
 {
     float sum = 0.0;
-    float frequency =0.0;
+    float frequency = 0.0;
     float amplitude = 0.0;
-    for(int i=firstOctave;i<octaves + firstOctave;i++)
+    for (int i = firstOctave; i < octaves + firstOctave; i++)
     {
-        frequency = pow(2.0,float(i));
-        amplitude = pow(persistence,float(i));
-        sum = sum + InterpolationNoise(x*frequency,y*frequency)*amplitude;
+        frequency = pow(2.0, float(i));
+        amplitude = pow(persistence, float(i));
+        sum += InterpolationNoise(x * frequency, y * frequency, z * frequency) * amplitude;
     }
     
     return sum;
 }
 
-float getPerlin(vec2 uv)
+float getPerlin(vec3 vertexPosition)
 {
-   
-    float x = uv.x;
-    float y = uv.y;
-    float noise = 0.3 + 0.7 * PerlinNoise2D(x, y);
+    float x = vertexPosition.x;
+    float y = vertexPosition.y;
+    float z = vertexPosition.z;
+    float noise = 0.3 + 0.7 * PerlinNoise3D(x, y, z);
     return noise;
 }
 
@@ -142,15 +154,15 @@ void main()
     // Normalized pixel coordinates (from 0 to 1)
     vec2 uv = TexCoords;
     
-    float perlin = getPerlin(uv * colorNoiseScale);
+    float perlin = getPerlin(Pos);
 
     vec3 coloredAsphalt = mix(aspColor, aspColor2 , perlin * colorNoiseStrength); 
 
-    float noise = gold_noise(uv) * noiseStrength;
+    float noise = gold_noise(Pos) * noiseStrength;
 
     vec3 noisedAsphalt = mix(coloredAsphalt, coloredAsphalt/2., noise); 
     
-    perlin = getPerlin(uv * dirtScale);
+    perlin = getPerlin(Pos);
     
     vec3 dirtyAsphalt = mix(noisedAsphalt / dirtStrength, noisedAsphalt * 2., perlin);
     
