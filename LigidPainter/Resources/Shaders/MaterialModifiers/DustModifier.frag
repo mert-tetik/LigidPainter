@@ -78,37 +78,46 @@ in vec4 ProjectedPos;
 out vec4 fragColor;
 
 
-float hash(in vec2 p)
+float hash(in vec3 p)
 { 
-      return fract(sin(dot(p.xy, vec2(12.9898,78.233))) * 43758.5453123); 
+    return fract(sin(dot(p.xyz, vec3(12.9898, 78.233, 34.8454))) * 43758.5453123); 
 }
 
-float hash2D(in vec2 co){
-    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}
-
-vec2 rotate(vec2 uv, float a)
+vec3 rotate(vec3 v, vec3 axis, float angle)
 {
-	return vec2(uv.x*cos(a)-uv.y*sin(a),uv.y*cos(a)+uv.x*sin(a));
+    float cosAngle = cos(angle);
+    float sinAngle = sin(angle);
+    float oneMinusCos = 1.0 - cosAngle;
+
+    // Normalize the axis vector
+    axis = normalize(axis);
+
+    float x = v.x;
+    float y = v.y;
+    float z = v.z;
+
+    // Apply the rotation formula
+    vec3 rotatedVec;
+    rotatedVec.x = (cosAngle + axis.x * axis.x * oneMinusCos) * x + (axis.x * axis.y * oneMinusCos - axis.z * sinAngle) * y + (axis.x * axis.z * oneMinusCos + axis.y * sinAngle) * z;
+    rotatedVec.y = (axis.y * axis.x * oneMinusCos + axis.z * sinAngle) * x + (cosAngle + axis.y * axis.y * oneMinusCos) * y + (axis.y * axis.z * oneMinusCos - axis.x * sinAngle) * z;
+    rotatedVec.z = (axis.z * axis.x * oneMinusCos - axis.y * sinAngle) * x + (axis.z * axis.y * oneMinusCos + axis.x * sinAngle) * y + (cosAngle + axis.z * axis.z * oneMinusCos) * z;
+
+    return rotatedVec;
 }
 
+//TODO BLUR SAMPLE 1 IF STRENGTH IS SET TO 0
 
 //  -------------- SCRATCHES UTILITIES --------------
 
-void pR(inout vec2 p, float a)
-{
-    float sa = sin(a);
-    float ca = cos(a);
-    p *= mat2(ca, sa, -sa, ca);
-}
-
-float scratch(vec2 uv, vec2 seed)
+//TODO 3D SCRATCH
+float scratch(vec3 uv, vec3 seed)
 {
     seed.x = floor(sin(seed.x * 51024.0) * 3104.0);
     seed.y = floor(sin(seed.y * 1324.0) * 554.0);
+    seed.z = floor(sin(seed.z * 4848.0) * 2411.0);
  
     uv = uv * 2.0 - 1.0;
-    pR(uv, seed.x + seed.y);
+    rotate(uv, vec3(0,1,0), seed.x + seed.y);
     uv += sin(seed.x - seed.y);
     uv = clamp(uv * 0.5 + 0.5, 0.0, 1.0);
     
@@ -119,45 +128,50 @@ float scratch(vec2 uv, vec2 seed)
     return clamp(((1.0 - pow(uv.y, 2.0)) * uv.y) * 2.5 * x, 0.0, 1.0);
 }
 
-float layer(vec2 uv, vec2 frequency, vec2 offset, float angle)
+float layer(vec3 uv, vec3 frequency, vec3 offset, float angle)
 {
-    pR(uv, angle);
+    rotate(uv, vec3(0,1,0) ,angle);
     uv = uv * frequency + offset;
     return scratch(fract(uv), floor(uv));
 }
 
-float scratches(vec2 uv)
+float scratches(vec3 uv)
 {
-    uv *= scratchesScale;
-    vec2 frequency = scratchesBaseFrequency;
+    uv *= vec3(scratchesScale,scratchesScale.x);
+    vec3 frequency = vec3(scratchesBaseFrequency, scratchesBaseFrequency.x);
     float scratches = 0.0;
     for(int i = 0; i < scratchesLayers; ++i)
     {
         float fi = float(i);
-    	scratches = max(scratches, layer(uv, frequency, vec2(fi, fi), fi * 3145.0)); // Nicer blending, thanks Shane!
-        frequency += scratchesFrequencyStep;
+    	scratches = max(scratches, layer(uv, frequency, vec3(fi, fi, fi), fi * 3145.0)); // Nicer blending, thanks Shane!
+        frequency += vec3(scratchesFrequencyStep, scratchesFrequencyStep.x);
     }
     return clamp(scratches, 0.0, 1.0); // Saturate for AA to work better
 }
 
 //  -------------- NOISE UTILITIES --------------
 
-float noise (in vec2 p)
+float noise(in vec3 p)
 {
-  vec2 i = floor(p);
-  vec2 f = fract(p);
+    vec3 i = floor(p);
+    vec3 xf = fract(p);
 
-  float a = hash(i);
-  float b = hash(i + vec2(1.0, 0.0));
-  float c = hash(i + vec2(0.0, 1.0));
-  float d = hash(i + vec2(1.0, 1.0));
+    float a = hash(i);
+    float b = hash(i + vec3(1.0, 0.0, 0.0));
+    float c = hash(i + vec3(0.0, 1.0, 0.0));
+    float d = hash(i + vec3(1.0, 1.0, 0.0));
+    float e = hash(i + vec3(0.0, 0.0, 1.0));
+    float f = hash(i + vec3(1.0, 0.0, 1.0));
+    float g = hash(i + vec3(0.0, 1.0, 1.0));
+    float h = hash(i + vec3(1.0, 1.0, 1.0));
 
-  vec2 u = f * f * (3.0 - 2.0 * f);
-
-  return mix(a, b, u.x) + (c - a)* u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+    vec3 u = xf * xf * (3.0 - 2.0 * xf);
+    return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y +
+           (e - a) * u.z * (1.0 - u.x) + (f - b) * u.x * u.z + (g - a) * u.y * u.z +
+           (h - a) * u.x * u.y * u.z;
 }
 
-float fbm(in vec2 p)
+float fbm(in vec3 p)
 {
   float value = 0.0;
   float amplitude = 1.0;
@@ -173,13 +187,13 @@ float fbm(in vec2 p)
   return value;
 }
 
-vec4 mainNoise(vec2 uv)
+vec4 mainNoise(vec3 uv)
 {
     vec4 blurredColor = vec4(0.0);  
     for (int i=0; i<=blurSamples/2; i++)
     {
-        vec2 mUV = uv - float(i) * (blurIntensity) / float(blurSamples/2) * blurDirection;
-        vec2 pUV = uv + float(i) * (blurIntensity) / float(blurSamples/2) * blurDirection;
+        vec3 mUV = uv - float(i) * (blurIntensity) / float(blurSamples/2) * vec3(blurDirection,0.);
+        vec3 pUV = uv + float(i) * (blurIntensity) / float(blurSamples/2) * vec3(blurDirection,0.);
         
         blurredColor += vec4( fbm(pUV + (fbm(pUV) * offsetIntensity) ) ) / vec4(blurSamples);
         blurredColor += vec4( fbm(mUV + (fbm(mUV) * offsetIntensity) ) ) / vec4(blurSamples);
@@ -194,32 +208,37 @@ vec4 mainNoise(vec2 uv)
 //  -------------- DROPLETS UTILITIES --------------
 
 
-float dotNoise2D(in float x, in float y, in float fractionalMaxDotSize, in float dDensity)
+float dotNoise2D(in float x, in float y, in float z, in float fractionalMaxDotSize, in float dDensity)
 {
     float integer_x = x - fract(x);
     float fractional_x = x - integer_x;
 
     float integer_y = y - fract(y);
     float fractional_y = y - integer_y;
+    
+    float integer_z = z - fract(z);
+    float fractional_z = z - integer_z;
 
-    if (hash2D(vec2(integer_x+1.0, integer_y +1.0)) > dDensity)
-       {return 0.0;}
+    if (hash(vec3(integer_x + 1.0, integer_y + 1.0, integer_z + 1.0)) > dDensity){
+        return 0.0;
+    }
 
-    float xoffset = (hash2D(vec2(integer_x, integer_y)) -0.5);
-    float yoffset = (hash2D(vec2(integer_x+1.0, integer_y)) - 0.5);
-    float dotSize = 0.5 * fractionalMaxDotSize * max(0.25,hash2D(vec2(integer_x, integer_y+1.0)));
+    float xoffset = (hash(vec3(integer_x, integer_y, integer_z)) -0.5);
+    float yoffset = (hash(vec3(integer_x + 1.0, integer_y, integer_z)) - 0.5);
+    float zoffset = (hash(vec3(integer_x + 1.0, integer_y + 1.0, integer_z)) - 0.5);
+    float dotSize = 0.5 * fractionalMaxDotSize * max(0.25,hash(vec3(integer_x, integer_y+1.0, integer_z + 1.0))); //TODO Change the z axis values
 
-    vec2 truePos = vec2 (0.5 + xoffset * (1.0 - 2.0 * dotSize) , 0.5 + yoffset * (1.0 -2.0 * dotSize));
+    vec3 truePos = vec3(0.5 + xoffset * (1.0 - 2.0 * dotSize) , 0.5 + yoffset * (1.0 -2.0 * dotSize), 0.5 + zoffset * (1.0 - 2.0 * dotSize));
 
-    float distance = length(truePos - vec2(fractional_x, fractional_y));
+    float distance = length(truePos - vec3(fractional_x, fractional_y, fractional_z));
 
     return 1.0 - smoothstep(0.3 * dotSize, 1.0* dotSize, distance);
 
 }
 
-float DotNoise2D(in vec2 coord, in float wavelength, in float fractionalMaxDotSize, in float dDensity)
+float DotNoise2D(in vec3 coord, in float wavelength, in float fractionalMaxDotSize, in float dDensity)
 {
-   return dotNoise2D(coord.x/wavelength, coord.y/wavelength, fractionalMaxDotSize, dDensity);
+   return dotNoise2D(coord.x/wavelength, coord.y/wavelength, coord.z/wavelength, fractionalMaxDotSize, dDensity);
 }
 
 
@@ -227,7 +246,7 @@ float DotNoise2D(in vec2 coord, in float wavelength, in float fractionalMaxDotSi
 
 
 
-float getDroplets(vec2 uv){
+float getDroplets(vec3 uv){
     float splash_speed = 1.;
     float transform = 0.;
     int steps = 10;
@@ -239,34 +258,33 @@ float getDroplets(vec2 uv){
     float opacityJitter = 1. - dropletsOpacityJitter;
 
     for(int j = 0; j < steps;j++){
-
         
-        float hash = hash(vec2(float(j),float(j)*1.785));
+        float hash = hash(vec3(float(j),float(j)*1.785, float(j)*3.464));
         float opacity = 1. * hash;
         float opacityGap = opacity - 1.;
         opacity -= opacityGap * opacityJitter;        
         
         for (int i=0; i<=blurSamples/2; i++)
         {
-            vec2 mUV = uv - float(i) * (blurIntensity) / float(blurSamples/2) * blurDirection;
-            vec2 pUV = uv + float(i) * (blurIntensity) / float(blurSamples/2) * blurDirection;
+            vec3 mUV = uv - float(i) * (blurIntensity) / float(blurSamples/2) * vec3(blurDirection, 0.);
+            vec3 pUV = uv + float(i) * (blurIntensity) / float(blurSamples/2) * vec3(blurDirection, 0.);
         
-            vec2 transformedTexCoord = mUV + vec2(0.25 * float(j), 0.35 * float(j)) + vec2(transform); 
+            vec3 transformedTexCoord = mUV + vec3(0.25 * float(j), 0.35 * float(j), 0.45 * float(j)) + vec3(transform); 
             
             for(int i = 0; i < 4;i++){
         
                 float time_fact = (sin(base_rate + (1.570*float(i))));
                 time_fact = smoothstep(0.0,1.0,time_fact);
-                rain+=(DotNoise2D(transformedTexCoord.xy, 0.02 * dropletsSize ,0.5, base_density) * time_fact * (opacity)) / float(blurSamples);
+                rain += (DotNoise2D(transformedTexCoord, 0.02 * dropletsSize ,0.5, base_density) * time_fact * (opacity)) / float(blurSamples);
             }
             
-            transformedTexCoord = pUV + vec2(0.25 * float(j), 0.35 * float(j)) + vec2(transform); 
+            transformedTexCoord = pUV + vec3(0.25 * float(j), 0.35 * float(j), 0.45 * float(j)) + vec3(transform); 
            
             for(int i = 0; i < 4;i++){
         
                 float time_fact = (sin(base_rate + (1.570*float(i))));
                 time_fact = smoothstep(0.0,1.0,time_fact);
-                rain+=(DotNoise2D(transformedTexCoord.xy, 0.02 * dropletsSize ,0.5, base_density) * time_fact * (opacity)) / float(blurSamples);
+                rain+=(DotNoise2D(transformedTexCoord.xyz, 0.02 * dropletsSize ,0.5, base_density) * time_fact * (opacity)) / float(blurSamples);
             }
 
         }
@@ -276,42 +294,26 @@ float getDroplets(vec2 uv){
 }
 
 
-float getScratches(vec2 uv)
+float getScratches(vec3 uv)
 {  
     // using AA by Shane:
     // https://www.shadertoy.com/view/4d3SWf
     const float AA = 4.; // Antialias level. Set to 1 for a standard, aliased scene.
     const int AA2 = int(AA*AA);
     float col = 0.0;
-    vec2 pix = 2.0/vec2(1024)/AA; // or iResolution.xy
+    vec3 pix = 2.0/vec3(1024)/AA; // or iResolution.xy
     for (int i=0; i<AA2; i++){ 
 
         float k = float(i);
-        vec2 uvOffs = uv + vec2(floor(k/AA), mod(k, AA)) * pix;
+        vec3 uvOffs = uv + vec3(floor(k/AA), mod(k, AA), 0.) * pix;
         col += scratches(uvOffs);
     }
+    
     col /= (AA*AA);
 	
 	return col;
 }
 
-vec2 getTextureCoordinates(vec3 position, vec3 tangent) {
-//   vec3 ANPosition = (abs(position));
-  
-//   return vec2(ANPosition.x, (ANPosition.y + ANPosition.z) / 2.f);
-    
-    vec3 bitangent = cross(tangent, position);
-  vec3 normal = cross(bitangent, tangent);
-
-  mat3 TBN = mat3(tangent, bitangent, normal);
-  vec3 transformedPosition = TBN * position;
-
-  vec2 textureCoord;
-  textureCoord.x = 0.5 * transformedPosition.x + 0.5;
-  textureCoord.y = 0.5 * transformedPosition.y + 0.5;
-
-  return textureCoord;
-}
 
 void main()
 {
@@ -319,9 +321,7 @@ void main()
     vec3 normalizedPosition = normalize(Pos);
 
     // Scale the normalized position to the range [0, 1]
-    vec2 uv = getTextureCoordinates(Pos, Tangent);
-
-    uv *= size;
+    vec3 uv = Pos;
     
 	vec4 f = vec4(0.0);
     
@@ -334,10 +334,10 @@ void main()
           float maskValue = noiseWeights[i] * mainNoise(noiseParams[i] * uv).r; 
           f.a += maskValue;
           f.rgb += colorValues[i] * maskValue;
-          uv = rotate(uv, radians(rotation * noiseAngleOffsets[i]));
+          uv = rotate(uv, vec3(0,1,0), radians(rotation * noiseAngleOffsets[i]));
     }
     
-    uv = rotate(uv, radians(rotation * noiseAngleOffsets[0]));
+    uv = rotate(uv, vec3(0,1,0), radians(rotation * noiseAngleOffsets[0]));
     float maskValue = noiseWeights[0] * mainNoise(noiseParams[0] * uv).r; 
     
     f.rgb += getDroplets(uv);

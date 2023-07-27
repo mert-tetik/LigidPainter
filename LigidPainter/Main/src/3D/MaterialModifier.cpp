@@ -1163,7 +1163,7 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setFloat("scale", material.materialModifiers[curModI].sections[0].elements[1].rangeBar.value / 1.f);
         modifierShader.setFloat("stripeFrequency", material.materialModifiers[curModI].sections[0].elements[2].rangeBar.value / 2.f);
         modifierShader.setFloat("gapFrequency", material.materialModifiers[curModI].sections[0].elements[3].rangeBar.value / 2.f);
-        modifierShader.setFloat("style", material.materialModifiers[curModI].sections[0].elements[4].rangeBar.value);
+        modifierShader.setInt("style", material.materialModifiers[curModI].sections[0].elements[4].rangeBar.value);
 
         /* Element property */
         modifierShader.setFloat("wetness", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 100.f);
