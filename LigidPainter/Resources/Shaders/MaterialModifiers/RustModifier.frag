@@ -62,64 +62,60 @@ in vec4 ProjectedPos;
 /* Fragment Output*/
 out vec4 fragColor;
 
-float hash(vec2 p) {
-    p = fract(p * vec2(5.3983, 5.4427));
+float hash(vec3 p) {
+    p = fract(p * vec3(5.3983, 5.4427, 5.5191));
     p += dot(p, p + 47.57);
     return fract(p.x * p.y);
 }
 
-float noise(vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    
-    // Smoothstep interpolation
-    vec2 u = f * f * (3.0 - 2.0 * f);
-    
-    float n00 = hash(i);
-    float n01 = hash(i + vec2(0.0, 1.0));
-    float n10 = hash(i + vec2(1.0, 0.0));
-    float n11 = hash(i + vec2(1.0, 1.0));
-    
-    // Bilinear interpolation
-    return mix(
-        mix(n00, n10, u.x),
-        mix(n01, n11, u.x),
-        u.y
-    );
-}
-
-// Fractional Brownian Motion (FBM) noise function
-// roughness: (0.0, 1.0], default: 0.5
-// octaves: number of noise octaves to combine
-float fbm(vec2 p) {
-    float amplitude = 1.0;
-    float frequency = 1.0;
-    float total = 0.0;
-    float maxTotal = 0.0;
-    
-    for (int i = 0; i < fbmOctaves; ++i) {
-        total += amplitude * noise(p * frequency);
-        maxTotal += amplitude;
-        
-        frequency *= 2.0;
-        amplitude *= fbmRoughness;
-    }
-    
-    return total / maxTotal;
-}
-
-vec2 fbm2D( in vec2 p )
+float noise(in vec3 p)
 {
-    return vec2( fbm(p.xy), fbm(p.yx) );
+    vec3 i = floor(p);
+    vec3 xf = fract(p);
+
+    float a = hash(i);
+    float b = hash(i + vec3(1.0, 0.0, 0.0));
+    float c = hash(i + vec3(0.0, 1.0, 0.0));
+    float d = hash(i + vec3(1.0, 1.0, 0.0));
+    float e = hash(i + vec3(0.0, 0.0, 1.0));
+    float f = hash(i + vec3(1.0, 0.0, 1.0));
+    float g = hash(i + vec3(0.0, 1.0, 1.0));
+    float h = hash(i + vec3(1.0, 1.0, 1.0));
+
+    vec3 u = xf * xf * (3.0 - 2.0 * xf);
+    return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y +
+           (e - a) * u.z * (1.0 - u.x) + (f - b) * u.x * u.z + (g - a) * u.y * u.z +
+           (h - a) * u.x * u.y * u.z;
+}
+
+float fbm(in vec3 p)
+{
+  float value = 0.0;
+  float amplitude = 1.0;
+  float frequency = 2.;
+
+  for (int i = 0; i < 16; i++)
+  {
+    value += amplitude * noise(p);
+    p *= 3.;
+    amplitude *= .5;
+  }
+    
+  return value;
+}
+
+vec3 fbm3D( in vec3 p )
+{
+    return vec3( fbm(p.xyz), fbm(p.yxz) , fbm(p.zyx));
 }
 
 // Rusty metal texture mapping
-float mapRustyMetalTexture(vec2 p) {   
+float mapRustyMetalTexture(vec3 p) {   
     // Combining multiple layers of FBM
-    vec2 fbm_0 = 4.0*(p + fbm2D(4.0*p));
-    vec2 fbm_1 = p + fbm2D(fbm_0);
-    vec2 fbm_2 = fbm2D(fbm_1);
-    float f = dot(fbm_2 , vec2(1.0,0.0) );
+    vec3 fbm_0 = 4.0*(p + fbm3D(4.0*p));
+    vec3 fbm_1 = p + fbm3D(fbm_0);
+    vec3 fbm_2 = fbm3D(fbm_1);
+    float f = dot(fbm_2 , vec3(1.0,0.0,1.0) );
     return f;
 }
 
@@ -128,126 +124,280 @@ float mapRustyMetalTexture(vec2 p) {
 //https://www.shadertoy.com/view/Mls3RS
 //
 //And it is a better realization I think
-float noise(int x,int y)
-{   
+float noise(int x, int y, int z)
+{
     float fx = float(x);
     float fy = float(y);
+    float fz = float(z);
     
-    return 2.0 * fract(sin(dot(vec2(fx, fy) ,vec2(12.9898,78.233))) * 43758.5453) - 1.0;
+    return 2.0 * fract(sin(dot(vec3(fx, fy, fz), vec3(12.9898, 78.233, 45.543))) * 43758.5453) - 1.0;
 }
 
-float smoothNoise(int x,int y)
+float smoothNoise(int x, int y, int z)
 {
-    return noise(x,y)/4.0+(noise(x+1,y)+noise(x-1,y)+noise(x,y+1)+noise(x,y-1))/8.0+(noise(x+1,y+1)+noise(x+1,y-1)+noise(x-1,y+1)+noise(x-1,y-1))/16.0;
+    return noise(x, y, z) / 4.0 +
+           (noise(x + 1, y, z) + noise(x - 1, y, z) + noise(x, y + 1, z) + noise(x, y - 1, z)) / 8.0 +
+           (noise(x + 1, y + 1, z) + noise(x + 1, y - 1, z) + noise(x - 1, y + 1, z) + noise(x - 1, y - 1, z)) / 16.0;
 }
 
-float COSInterpolation(float x,float y,float n)
+float COSInterpolation(float x, float y, float n)
 {
-    float r = n*3.1415926;
-    float f = (1.0-cos(r))*0.5;
-    return x*(1.0-f)+y*f;
-    
+    float r = n * 3.1415926;
+    float f = (1.0 - cos(r)) * 0.5;
+    return x * (1.0 - f) + y * f;
 }
 
-float InterpolationNoise(float x, float y)
+float InterpolationNoise(float x, float y, float z)
 {
     int ix = int(x);
     int iy = int(y);
-    float fracx = x-float(int(x));
-    float fracy = y-float(int(y));
+    int iz = int(z);
+    float fracx = x - float(ix);
+    float fracy = y - float(iy);
+    float fracz = z - float(iz);
     
-    float v1 = smoothNoise(ix,iy);
-    float v2 = smoothNoise(ix+1,iy);
-    float v3 = smoothNoise(ix,iy+1);
-    float v4 = smoothNoise(ix+1,iy+1);
+    float v1 = smoothNoise(ix, iy, iz);
+    float v2 = smoothNoise(ix + 1, iy, iz);
+    float v3 = smoothNoise(ix, iy + 1, iz);
+    float v4 = smoothNoise(ix + 1, iy + 1, iz);
+    float v5 = smoothNoise(ix, iy, iz + 1);
+    float v6 = smoothNoise(ix + 1, iy, iz + 1);
+    float v7 = smoothNoise(ix, iy + 1, iz + 1);
+    float v8 = smoothNoise(ix + 1, iy + 1, iz + 1);
     
-   	float i1 = COSInterpolation(v1,v2,fracx);
-    float i2 = COSInterpolation(v3,v4,fracx);
+    float i1 = COSInterpolation(v1, v2, fracx);
+    float i2 = COSInterpolation(v3, v4, fracx);
+    float i3 = COSInterpolation(v5, v6, fracx);
+    float i4 = COSInterpolation(v7, v8, fracx);
     
-    return COSInterpolation(i1,i2,fracy);
+    float j1 = COSInterpolation(i1, i2, fracy);
+    float j2 = COSInterpolation(i3, i4, fracy);
     
+    return COSInterpolation(j1, j2, fracz);
 }
 
-float PerlinNoise2D(float x,float y)
+float PerlinNoise3D(float x, float y, float z)
 {
     float sum = 0.0;
-    float frequency =0.0;
+    float frequency = 0.0;
     float amplitude = 0.0;
-    for(int i=firstOctave;i<octaves + firstOctave;i++)
+    for (int i = firstOctave; i < octaves + firstOctave; i++)
     {
-        frequency = pow(2.0,float(i));
-        amplitude = pow(persistence,float(i));
-        sum = sum + InterpolationNoise(x*frequency,y*frequency)*amplitude;
+        frequency = pow(2.0, float(i));
+        amplitude = pow(persistence, float(i));
+        sum += InterpolationNoise(x * frequency, y * frequency, z * frequency) * amplitude;
     }
     
     return sum;
 }
 
-float getPerlin(vec2 uv)
+float getPerlin(vec3 vertexPosition)
 {
-   
-    float x = uv.x;
-    float y = uv.y;
-	//fragColor = vec4(noise(x,y),noise(x,y),noise(x,y),1);
-    float noise = 0.3+0.7*PerlinNoise2D(x,y);
+    float x = vertexPosition.x;
+    float y = vertexPosition.y;
+    float z = vertexPosition.z;
+    float noise = 0.3 + 0.7 * PerlinNoise3D(x, y, z);
     return noise;
 }
 
-vec3 hash3( vec2 p )
+// Hash by David_Hoskins
+#define UI0 1597334673U
+#define UI1 3812015801U
+#define UI2 uvec2(UI0, UI1)
+#define UI3 uvec3(UI0, UI1, 2798796415U)
+#define UIF (1.0 / float(0xffffffffU))
+
+vec3 hash33(vec3 p)
 {
-    vec3 q = vec3( dot(p,vec2(127.1,311.7)), 
-				   dot(p,vec2(269.5,183.3)), 
-				   dot(p,vec2(419.2,371.9)) );
-	return fract(sin(q)*43758.5453);
+	uvec3 q = uvec3(ivec3(p)) * UI3;
+	q = (q.x ^ q.y ^ q.z)*UI3;
+	return -1. + 2. * vec3(q) * UIF;
 }
 
-float voronoise( in vec2 p, float u, float v )
+float remap(float x, float a, float b, float c, float d)
 {
-	float k = 1.0+63.0*pow(1.0-v,6.0);
+    return (((x - a) / (b - a)) * (d - c)) + c;
+}
 
-    vec2 i = floor(p);
-    vec2 f = fract(p);
+// Gradient noise by iq (modified to be tileable)
+float gradientNoise(vec3 x, float freq)
+{
+    // grid
+    vec3 p = floor(x);
+    vec3 w = fract(x);
     
-	vec2 a = vec2(0.0,0.0);
-    for( int y=-2; y<=2; y++ )
-    for( int x=-2; x<=2; x++ )
+    // quintic interpolant
+    vec3 u = w * w * w * (w * (w * 6. - 15.) + 10.);
+
+    
+    // gradients
+    vec3 ga = hash33(mod(p + vec3(0., 0., 0.), freq));
+    vec3 gb = hash33(mod(p + vec3(1., 0., 0.), freq));
+    vec3 gc = hash33(mod(p + vec3(0., 1., 0.), freq));
+    vec3 gd = hash33(mod(p + vec3(1., 1., 0.), freq));
+    vec3 ge = hash33(mod(p + vec3(0., 0., 1.), freq));
+    vec3 gf = hash33(mod(p + vec3(1., 0., 1.), freq));
+    vec3 gg = hash33(mod(p + vec3(0., 1., 1.), freq));
+    vec3 gh = hash33(mod(p + vec3(1., 1., 1.), freq));
+    
+    // projections
+    float va = dot(ga, w - vec3(0., 0., 0.));
+    float vb = dot(gb, w - vec3(1., 0., 0.));
+    float vc = dot(gc, w - vec3(0., 1., 0.));
+    float vd = dot(gd, w - vec3(1., 1., 0.));
+    float ve = dot(ge, w - vec3(0., 0., 1.));
+    float vf = dot(gf, w - vec3(1., 0., 1.));
+    float vg = dot(gg, w - vec3(0., 1., 1.));
+    float vh = dot(gh, w - vec3(1., 1., 1.));
+	
+    // interpolation
+    return va + 
+           u.x * (vb - va) + 
+           u.y * (vc - va) + 
+           u.z * (ve - va) + 
+           u.x * u.y * (va - vb - vc + vd) + 
+           u.y * u.z * (va - vc - ve + vg) + 
+           u.z * u.x * (va - vb - ve + vf) + 
+           u.x * u.y * u.z * (-va + vb + vc - vd + ve - vf - vg + vh);
+}
+
+// Tileable 3D worley noise
+float worleyNoise(vec3 uv, float freq)
+{    
+    vec3 id = floor(uv);
+    vec3 p = fract(uv);
+    
+    float minDist = 10000.;
+    for (float x = -1.; x <= 1.; ++x)
     {
-        vec2  g = vec2( x, y );
-		vec3  o = hash3( i + g )*vec3(u,u,1.0);
-		vec2  d = g - f + o.xy;
-		float w = pow( 1.0-smoothstep(0.0,1.414,length(d)), k );
-		a += vec2(o.z*w,w);
+        for(float y = -1.; y <= 1.; ++y)
+        {
+            for(float z = -1.; z <= 1.; ++z)
+            {
+                vec3 offset = vec3(x, y, z);
+            	vec3 h = hash33(mod(id + offset, vec3(freq))) * .5 + .5;
+    			h += offset;
+            	vec3 d = p - h;
+           		minDist = min(minDist, dot(d, d));
+            }
+        }
     }
-	
-    return a.x/a.y;
+    
+    // inverted worley noise
+    return 1. - minDist;
 }
 
-float getVoronoi( vec2 uv )
+// Fbm for Perlin noise based on iq's blog
+float perlinfbm(vec3 p, float freq, int octaves)
 {
-
-    vec2 p = vec2(0.6);
+    float G = exp2(-.85);
+    float amp = 1.;
+    float noise = 0.;
+    for (int i = 0; i < octaves; ++i)
+    {
+        noise += amp * gradientNoise(p * freq, freq);
+        freq *= 2.;
+        amp *= G;
+    }
     
-	
-	p = p*p*(3.0-2.0*p);
-	p = p*p*(3.0-2.0*p);
-	p = p*p*(3.0-2.0*p);
-	
-	return voronoise( 24.0*uv, p.x, p.y );
+    return noise;
+}
 
+// Tileable Worley fbm inspired by Andrew Schneider's Real-Time Volumetric Cloudscapes
+// chapter in GPU Pro 7.
+float worleyFbm(vec3 p, float freq)
+{
+    return worleyNoise(p*freq, freq) * .625 +
+        	 worleyNoise(p*freq*2., freq*2.) * .25 +
+        	 worleyNoise(p*freq*4., freq*4.) * .125;
+}
+
+float getWorleyNoise( vec3 uv )
+{
+    vec4 col = vec4(0.);
+    
+    float slices = 128.; // number of layers of the 3d texture
+    float freq = 4.;
+    
+    float pfbm= mix(1., perlinfbm(vec3(uv), 4., 7), .5);
+    pfbm = abs(pfbm * 2. - 1.); // billowy perlin noise
+    
+    col.g += worleyFbm(vec3(uv), freq);
+    col.b += worleyFbm(vec3(uv), freq*2.);
+    col.a += worleyFbm(vec3(uv), freq*4.);
+    col.r += remap(pfbm, 0., 1., col.g, 1.); // perlin-worley
+    
+    return 1. - col.z;
+}
+
+// returns closest, second closest, and cell id
+float getVoronoi( vec3 x )
+{
+vec3 p1; vec3 p2;
+
+  vec3 p = floor( x );
+  vec3 f = fract( x );
+
+  float id = 0.0;
+  vec2 res = vec2( 100.0 );
+  
+  p1 = vec3(1000.);
+  p2 = p1;
+  
+  for( int k=-1; k<=1; k++ )
+    for( int j=-1; j<=1; j++ )
+      for( int i=-1; i<=1; i++ )
+        {
+          // b is cell with integer coordinates
+          vec3 b = vec3( float(i), float(j), float(k) );
+          vec3 r = vec3( b ) - f + hash( p + b );
+          float d = dot( r, r );
+
+          if( d < res.x )
+            {
+              id = dot( p+b, vec3(1.0,57.0,113.0 ) );
+              res = vec2( d, res.x );
+              p2 = p1;
+              p1 = r;
+            }
+          else if( d < res.y )
+            {
+              res.y = d;
+              p2 = r;
+            }
+        }
+
+  return res.r;
 }
 
 const float PHI = 1000.61803398874989484820459; // Φ = Golden Ratio 
 
-float gold_noise(vec2 xy)
+float gold_noise(vec3 xyz)
 {
-      return fract(tan(distance(xy*PHI, xy))*xy.x *PHI);
+    return fract(tan(distance(xyz * PHI, xyz)) * xyz.x *PHI);
 }
 
-vec2 rotate(vec2 uv, float a)
+vec3 rotate(vec3 v, vec3 axis, float angle)
 {
-	return vec2(uv.x*cos(a)-uv.y*sin(a),uv.y*cos(a)+uv.x*sin(a));
-}
+    float cosAngle = cos(angle);
+    float sinAngle = sin(angle);
+    float oneMinusCos = 1.0 - cosAngle;
 
+    // Normalize the axis vector
+    axis = normalize(axis);
+
+    float x = v.x;
+    float y = v.y;
+    float z = v.z;
+
+    // Apply the rotation formula
+    vec3 rotatedVec;
+    rotatedVec.x = (cosAngle + axis.x * axis.x * oneMinusCos) * x + (axis.x * axis.y * oneMinusCos - axis.z * sinAngle) * y + (axis.x * axis.z * oneMinusCos + axis.y * sinAngle) * z;
+    rotatedVec.y = (axis.y * axis.x * oneMinusCos + axis.z * sinAngle) * x + (cosAngle + axis.y * axis.y * oneMinusCos) * y + (axis.y * axis.z * oneMinusCos - axis.x * sinAngle) * z;
+    rotatedVec.z = (axis.z * axis.x * oneMinusCos - axis.y * sinAngle) * x + (axis.z * axis.y * oneMinusCos + axis.x * sinAngle) * y + (cosAngle + axis.z * axis.z * oneMinusCos) * z;
+
+    return rotatedVec;
+}
 float restriction(float value, float rest){
     if(value < rest)
         value -= rest - value;
@@ -269,11 +419,11 @@ void main() {
         aColor4 = vec3(1.0); //Rust Color
     }
 
-    vec2 p = TexCoords * scale;
+    vec3 p = Pos * scale;
     
     float rustyNoise = mapRustyMetalTexture(p) * 1.3;
     float rustyNoise2 = mapRustyMetalTexture(p*4.);
-    float rustyNoise3 = mapRustyMetalTexture(rotate(p, 30.));
+    float rustyNoise3 = mapRustyMetalTexture(rotate(p, vec3(0,1,0), 30.));
     vec3 result = vec3(0);
     float perlin = getPerlin(p)*2.;
     float voronoi = getVoronoi(p/5.);
