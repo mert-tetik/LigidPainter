@@ -1,68 +1,15 @@
-/*
----------------------------------------------------------------------------
-LigidPainter - 3D Model texturing software / Texture generator   
----------------------------------------------------------------------------
-
-Copyright (c) 2022-2023, Mert Tetik
-
-All rights reserved.
-
-Official GitHub Link : https://github.com/mert-tetik/LigidPainter
-Official Web Page : https://ligidtools.com/ligidpainter
-
----------------------------------------------------------------------------
-*/
-
-#version 400 core
-
-/* Colors */
-uniform vec3 woodColor1 = vec3(0.0, 0.0, 0.0);
-uniform vec3 woodColor2 = vec3(0.25, 0.11, 0.04);
-uniform vec3 woodColor3 = vec3(0.52, 0.32, 0.19);
-
-
-/* Properties */
-uniform float scale = 1.;
-uniform float noiseOffset = 1.;
-uniform float seed = 3000.;
 
 /* Perlin Properties */
-uniform int maxOctaves = 8;
-uniform float persistance = 0.5;
+int maxOctaves = 8;
+float persistance = 0.5;
 
-/* Musgrave Properties */
-uniform float musgraveLacunarity = 2.5;
-uniform float musgraveStrength = 0.75;
-uniform float musgraveNoise = 1.;
+float noiseOffset = 1.;
 
-/* Base */
-uniform float baseNoiseStrength = 4.6;
-uniform float baseColorSaturation = 1.;
+float fbmFrequency = 1.0;
 
-/* FBM Properties */
-uniform float fbmFrequency = 1.0;
+float musgraveNoise = 1.;
 
-/* Element Properties*/
-uniform float woodGamma = 0.6;
-uniform float shininess = 1.5;
-uniform float metallic = 0.;
-uniform float height = 0.0;
-
-/* Channel Properties*/
-uniform int state;
-uniform sampler2D mask;
-uniform sampler2D previousTxtr;
-uniform float opacity;
-
-in vec2 TexCoords;
-in vec3 Normal;
-in vec3 Pos;
-in vec3 Tangent;
-in vec3 Bitangent;
-in vec4 ProjectedPos;
-
-out vec4 fragColor;
-
+float seed = 3000.;
 
 float hash(float n) {
     return fract(sin(n) * seed);
@@ -131,51 +78,12 @@ float musgrave(vec3 p, float octaves, float dimension, float lacunarity) {
     return sum;
 }
 
-vec3 getWood(vec3 p) {
-    
-    float n1 = fbmx(p * vec3(8., 1., 1.));
-    
-    float n2 = mix(musgrave(vec3(n1 * baseNoiseStrength), 8.0, 0.0, musgraveLacunarity), n1 * baseColorSaturation, musgraveStrength);
-    
-    return mix(mix(woodColor1, woodColor2, n1), woodColor3, n2);
-}
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    // Normalized pixel coordinates (from 0 to 1)
+    vec2 uv = fragCoord;
 
-void main() {
-    //TODO Use the scale
-    vec3 woodColor = getWood(Pos);
-    
-    float gammaVal = 1. - woodGamma;
-    vec3 woodGamma = pow(woodColor, vec3(gammaVal));
-    
-    fragColor = vec4(woodGamma, 0.0);
+    float val = musgrave(fbmx(vec3(fragCoord,0.)) * vec3(8., 1., 1.), 8., 0., 2.5);
 
-    /* Roughness */
-    if(state == 1){
-        fragColor.rgb = vec3(1. - fragColor.r) / shininess;
-    }
-    
-    /* Metallic */
-    else if(state == 2){
-        fragColor.rgb = vec3(fragColor.r) * metallic;
-    }
-    
-    else if(state == 3){
-    
-    }
-    
-    /* Height Map */
-    else if(state == 4){
-        fragColor.rgb = mix(vec3(1. - fragColor.r) , vec3(fragColor.r), height);
-    }
-
-    else if(state == 5){
-        fragColor.rgb = vec3(abs(fragColor.r)/ 4. + 0.8);
-    }
-
-    float alpha = opacity;
-    alpha *= texture(mask, TexCoords).r; 
-    
-    vec3 clrResult = mix(fragColor.rgb, texture(previousTxtr, TexCoords).rgb, alpha);
-
-    fragColor = vec4(clrResult, 1.);
+    fragColor = vec4(vec3(val),1.0);
 }

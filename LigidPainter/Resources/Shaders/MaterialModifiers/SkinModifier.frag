@@ -337,7 +337,7 @@ vec3 rotate(vec3 v, vec3 axis, float angle)
     float x = v.x;
     float y = v.y;
     float z = v.z;
-
+5
     // Apply the rotation formula
     vec3 rotatedVec;
     rotatedVec.x = (cosAngle + axis.x * axis.x * oneMinusCos) * x + (axis.x * axis.y * oneMinusCos - axis.z * sinAngle) * y + (axis.x * axis.z * oneMinusCos + axis.y * sinAngle) * z;

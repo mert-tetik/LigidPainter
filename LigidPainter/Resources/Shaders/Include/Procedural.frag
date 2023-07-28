@@ -16,8 +16,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #define PI 3.141592
 
-/* --------------------------------------------------------- NOISE FUNCTIONS ---------------------------------------------------------*/
-
 /* --------------------------------------------------------- PATTERN FUNCTIONS --------------------------------------------------------- */
 
 #define RandomSign sign(cos(1234.*cos(h.x+9.*h.y)));  // random -1 or 1
@@ -434,14 +432,303 @@ float randomTrianglePattern(
     return cycle(random(floor(c * 4.0)) * 0.5 );
 }
 
+/* 24
+---------------------------------------------------------
+    Returns solid white
+---------------------------------------------------------
+*/
 float solidPattern(){
     return 1.;
 }
 
+
+
+
+
+/* --------------------------------------------------------- NOISE FUNCTIONS ---------------------------------------------------------*/
+
+
+
+
+//https://www.shadertoy.com/view/4sfGzS
+float innerHash(vec3 p)  // replace this by something better
+{
+    p  = fract( p*0.3183099+.1 );
+	p *= 17.0;
+    return fract( p.x*p.y*p.z*(p.x+p.y+p.z) );
+}
+//TODO REPLACE NOISE FUNCTIONS WITH THAT
+
+float innerNoise2D( in vec3 x )
+{
+    vec3 i = floor(x);
+    vec3 f = fract(x);
+    f = f*f*(3.0-2.0*f);
+	
+    return mix(mix(mix( innerHash(i+vec3(0,0,0)), 
+                        innerHash(i+vec3(1,0,0)),f.x),
+                   mix( innerHash(i+vec3(0,1,0)), 
+                        innerHash(i+vec3(1,1,0)),f.x),f.y),
+               mix(mix( innerHash(i+vec3(0,0,1)), 
+                        innerHash(i+vec3(1,0,1)),f.x),
+                   mix( innerHash(i+vec3(0,1,1)), 
+                        innerHash(i+vec3(1,1,1)),f.x),f.y),f.z);
+}
+
+float innerFbm(vec3 p, int octaves, float roughness) {
+    
+    float freq = 1.;
+    
+    float amplitude = 1.0;
+    
+    float total = 0.0;
+    float maxTotal = 0.0;
+    
+    for (int i = 0; i < octaves; ++i) {
+        total += amplitude * innerNoise2D(p * freq);
+        maxTotal += amplitude;
+        
+        freq *= 2.0;
+        amplitude *= roughness;
+    }
+    
+    return total / maxTotal;
+}
+
+float innerFbmX(vec3 p, int maxOctaves, float persistance) {
+    vec3 noise = vec3(innerNoise2D(p + vec3(0.)), innerNoise2D(p + vec3(1.)), innerNoise2D(p + vec3(2.)));
+    p += noise;
+    return innerFbm(p, maxOctaves, persistance);
+}
+
+float innerMusgrave(vec3 p, float octaves, float dimension, float lacunarity) {
+    float sum = 0.0;
+    float amp = 1.0;
+    float m = pow(lacunarity, -dimension);
+    
+    while (octaves-- > 0.0) {
+        float n = innerNoise2D(p) * 2.0 - 1.0;
+        sum += n * amp;
+        amp *= m * 1.;
+        p *= lacunarity;
+    }
+    
+    return sum;
+}
+
+
+
+// Hash by David_Hoskins
+#define UI0 1597334673U
+#define UI1 3812015801U
+#define UI2 uvec2(UI0, UI1)
+#define UI3 uvec3(UI0, UI1, 2798796415U)
+#define UIF (1.0 / float(0xffffffffU))
+vec3 innerHash33(vec3 p)
+{
+	uvec3 q = uvec3(ivec3(p)) * UI3;
+	q = (q.x ^ q.y ^ q.z)*UI3;
+	return -1. + 2. * vec3(q) * UIF;
+}
+
+// Gradient noise by iq (modified to be tileable)
+float innerGradientNoise(vec3 x, float freq)
+{
+    // grid
+    vec3 p = floor(x);
+    vec3 w = fract(x);
+    
+    // quintic interpolant
+    vec3 u = w * w * w * (w * (w * 6. - 15.) + 10.);
+
+    
+    // gradients
+    vec3 ga = innerHash33(mod(p + vec3(0., 0., 0.), freq));
+    vec3 gb = innerHash33(mod(p + vec3(1., 0., 0.), freq));
+    vec3 gc = innerHash33(mod(p + vec3(0., 1., 0.), freq));
+    vec3 gd = innerHash33(mod(p + vec3(1., 1., 0.), freq));
+    vec3 ge = innerHash33(mod(p + vec3(0., 0., 1.), freq));
+    vec3 gf = innerHash33(mod(p + vec3(1., 0., 1.), freq));
+    vec3 gg = innerHash33(mod(p + vec3(0., 1., 1.), freq));
+    vec3 gh = innerHash33(mod(p + vec3(1., 1., 1.), freq));
+    
+    // projections
+    float va = dot(ga, w - vec3(0., 0., 0.));
+    float vb = dot(gb, w - vec3(1., 0., 0.));
+    float vc = dot(gc, w - vec3(0., 1., 0.));
+    float vd = dot(gd, w - vec3(1., 1., 0.));
+    float ve = dot(ge, w - vec3(0., 0., 1.));
+    float vf = dot(gf, w - vec3(1., 0., 1.));
+    float vg = dot(gg, w - vec3(0., 1., 1.));
+    float vh = dot(gh, w - vec3(1., 1., 1.));
+	
+    // interpolation
+    return va + 
+           u.x * (vb - va) + 
+           u.y * (vc - va) + 
+           u.z * (ve - va) + 
+           u.x * u.y * (va - vb - vc + vd) + 
+           u.y * u.z * (va - vc - ve + vg) + 
+           u.z * u.x * (va - vb - ve + vf) + 
+           u.x * u.y * u.z * (-va + vb + vc - vd + ve - vf - vg + vh);
+}
+
+// Tileable 3D worley noise
+float innerWorleyNoise(vec3 uv, float freq)
+{    
+    vec3 id = floor(uv);
+    vec3 p = fract(uv);
+    
+    float minDist = 10000.;
+    for (float x = -1.; x <= 1.; ++x)
+    {
+        for(float y = -1.; y <= 1.; ++y)
+        {
+            for(float z = -1.; z <= 1.; ++z)
+            {
+                vec3 offset = vec3(x, y, z);
+            	vec3 h = innerHash33(mod(id + offset, vec3(freq))) * .5 + .5;
+    			h += offset;
+            	vec3 d = p - h;
+           		minDist = min(minDist, dot(d, d));
+            }
+        }
+    }
+    
+    // inverted worley noise
+    return 1. - minDist;
+}
+
+// Fbm for Perlin noise based on iq's blog
+float innerPerlinfbm(vec3 p, float freq, int octaves)
+{
+    float G = exp2(-.85);
+    float amp = 1.;
+    float noise = 0.;
+    for (int i = 0; i < octaves; ++i)
+    {
+        noise += amp * innerGradientNoise(p * freq, freq);
+        freq *= 2.;
+        amp *= G;
+    }
+    
+    return noise;
+}
+
+// Tileable Worley innerFbm inspired by Andrew Schneider's Real-Time Volumetric Cloudscapes
+// chapter in GPU Pro 7.
+float innerWorleyFbm(vec3 p, float freq)
+{
+    return innerWorleyNoise(p*freq, freq) * .625 +
+        	 innerWorleyNoise(p*freq*2., freq*2.) * .25 +
+        	 innerWorleyNoise(p*freq*4., freq*4.) * .125;
+}
+
+//0
+float basicNoiseA(vec3 uv){
+    return innerNoise2D(uv);
+}
+
+//1
+float basicStretchedNoiseA(vec3 uv){
+    return innerNoise2D(vec3(uv.x, uv.y*5., uv.z));
+}
+
+//2
+float fbmNoiseA(vec3 uv){
+    int maxOctaves = 8;
+    float persistance = 0.5;
+    return innerFbm(uv, maxOctaves, persistance);
+} 
+
+//3
+float fbmHightPersistanceNoiseA(vec3 uv){
+    int maxOctaves = 8;
+    float persistance = 1.;
+    return innerFbm(uv, maxOctaves, persistance);
+} 
+
+//4
+float fbmLowOctaveNoiseA(vec3 uv){
+    int maxOctaves = 2;
+    float persistance = 0.5;
+    return innerFbm(uv, maxOctaves, persistance);
+} 
+
+//5
+float fbmWaveNoiseA(vec3 uv){
+    int maxOctaves = 8;
+    float persistance = 0.5;
+    return innerFbmX(uv, maxOctaves, persistance);
+}
+
+//6
+float fbmWaveLowPersistanceNoiseA(vec3 uv){
+    int maxOctaves = 8;
+    float persistance = 0.2;
+    return innerFbmX(uv, maxOctaves, persistance);
+}
+
+//7
+float fbmWaveHighPersistanceNoiseA(vec3 uv){
+    int maxOctaves = 8;
+    float persistance = 1.;
+    return innerFbmX(uv, maxOctaves, persistance);
+}
+
+//8
+float musgraveDefNoiseA(vec3 uv){
+    //octave, dimension, lacunarity
+    return innerMusgrave(uv, 8., 0. ,2.5);
+}
+
+//9
+float musgraveHighDimensionalNoiseA(vec3 uv){
+    //octave, dimension, lacunarity
+    return innerMusgrave(uv, 8., 1. ,2.5);
+}
+
+//10
+float gradientDefNoiseA(vec3 uv){
+    return innerGradientNoise(uv, 20.);
+}
+
+//11
+float innerWorleyNoiseA(vec3 uv){
+    return innerWorleyFbm(uv / 10., 20.);
+}
+
+//12
+float worleyPatternalNoiseA(vec3 uv){
+    return innerWorleyFbm(uv / 2. , 2.);
+}
+
+//13
+float circularPerlinNoiseA(vec3 uv){
+    return innerPerlinfbm(uv / 4. , 20., 8);
+}
+
+//14
+float voronoiNoiseA(vec3 uv){
+    return innerWorleyNoise(uv, 2.);
+}
+
+//15
+float voronoiDeeperNoiseA(vec3 uv){
+    return innerWorleyNoise(uv, 20.);
+}
+
+//16
+float staticNoiseA(vec3 uv){
+    const float PHI = 1000.61803398874989484820459; // Φ = Golden Ratio 
+    return fract(tan(distance(uv * PHI, uv)) * uv.x * PHI);
+}
+
 float getProcedural(vec2 p, vec3 pos, int proceduralID, float scale, int inverted){
     
-    p*=scale;
-    pos*=scale;
+    p *= scale;
+    pos = normalize((pos));
+    pos *= scale;
     
     float res = 0.;
 
@@ -495,11 +782,51 @@ float getProcedural(vec2 p, vec3 pos, int proceduralID, float scale, int inverte
         res = randomTrianglePattern(p);
     else if(proceduralID == 24)
         res = solidPattern();
+    else if(proceduralID == 25)
+        res = basicNoiseA(pos);
+    else if(proceduralID == 26)
+        res = basicStretchedNoiseA(pos);
+    else if(proceduralID == 27)
+        res = fbmNoiseA(pos);
+    else if(proceduralID == 28)
+        res = fbmHightPersistanceNoiseA(pos);
+    else if(proceduralID == 29)
+        res = fbmLowOctaveNoiseA(pos);
+    else if(proceduralID == 30)
+        res = fbmWaveNoiseA(pos);
+    else if(proceduralID == 31)
+        res = fbmWaveLowPersistanceNoiseA(pos);
+    else if(proceduralID == 32)
+        res = fbmWaveHighPersistanceNoiseA(pos);
+    else if(proceduralID == 33)
+        res = musgraveDefNoiseA(pos);
+    else if(proceduralID == 34)
+        res = musgraveHighDimensionalNoiseA(pos);
+    else if(proceduralID == 35)
+        res = gradientDefNoiseA(pos);
+    else if(proceduralID == 36)
+        res = innerWorleyNoiseA(pos);
+    else if(proceduralID == 37)
+        res = worleyPatternalNoiseA(pos);
+    else if(proceduralID == 38)
+        res = circularPerlinNoiseA(pos);
+    else if(proceduralID == 39)
+        res = voronoiNoiseA(pos);
+    else if(proceduralID == 40)
+        res = voronoiDeeperNoiseA(pos);
+    else if(proceduralID == 41)
+        res = staticNoiseA(pos);
     else
         res = 1.;
 
+    if(res > 1.)
+        res = 1.;
+    
+    if(res < 0.)
+        res = 0.;
+
     if(inverted == 0)
-        return res;   
+        return abs(res);   
     else
-        return 1. - res;   
+        return abs(1. - res);   
 }

@@ -111,7 +111,7 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader
     if(modifierIndex == TEXTURE_MATERIAL_MODIFIER){
         this->sections = createTextureModifier(colorPalette,buttonShader,appTextures);
         this->title = "Texture Modifier";    
-        shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert","LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",nullptr,nullptr,nullptr);
+        shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",nullptr,nullptr,nullptr);
         this->updateMaterialChannels = textureModifierUpdateMat;
     }
     else if(modifierIndex == DUST_MATERIAL_MODIFIER){
@@ -225,6 +225,7 @@ std::vector<Section> MaterialModifier::createSolidModifier(ColorPalette colorPal
     sections[0].elements[2].button.colorSelection = true;
     sections[0].elements[4].button.colorSelection = true;
     sections[0].elements[6].button.colorSelection = true;
+    sections[0].elements[6].button.color = glm::vec4(0.5f,0.5f,1.f,1.f);
     sections[0].elements[8].button.colorSelection = true;
     sections[0].elements[10].button.colorSelection = true;
 
@@ -834,7 +835,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     glViewport(0,0,textureResolution,textureResolution);
 
     //Set the orthographic projection to the texture resolution
-    glm::mat4 projection = glm::ortho(0.f,(float)textureResolution,(float)textureResolution,0.f);
+    glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
     
     //Transform values to take the texture in to the middle of the screen and cover it completely
     glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
@@ -853,9 +854,11 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
 
         //Set the uniforms of the modifier's shader
         material.materialModifiers[curModI].shader.use(); //Use the shader of the modifier
-        material.materialModifiers[curModI].shader.setMat4("projection",projection); //Set the projection
-        material.materialModifiers[curModI].shader.setVec2("scale",fragScale); //Set the scale
-        material.materialModifiers[curModI].shader.setVec3("pos",fragPos); //Set the position
+        material.materialModifiers[curModI].shader.setMat4("orthoProjection",projection); //Set the projection
+        material.materialModifiers[curModI].shader.setMat4("perspectiveProjection",perspective); //Set the projection
+        material.materialModifiers[curModI].shader.setMat4("view",view); //Set the projection        material.materialModifiers[curModI].shader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
+        material.materialModifiers[curModI].shader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
+        material.materialModifiers[curModI].shader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural material.materialModifiers[curModI].
         material.materialModifiers[curModI].shader.setInt("state",channelI); //Set the texture slot
         material.materialModifiers[curModI].shader.setInt("theTexture",0); //Set the texture slot
 
@@ -866,7 +869,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         glBindTexture(GL_TEXTURE_2D,material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.ID);
         
         //Render the result to the framebuffer
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        mesh.Draw();
         
         //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -912,12 +915,15 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
         modifierShader.setMat4("orthoProjection",projection); //Set the projection
-        modifierShader.setVec2("scale",fragScale); //Set the scale
-        modifierShader.setVec3("pos",fragPos); //Set the position
         modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
         modifierShader.setMat4("view",view); //Set the projection
+        modifierShader.setVec2("scale",fragScale); //Set the scale
+        modifierShader.setVec3("pos",fragPos); //Set the position
 
         /* Channel Properties */
+                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
+        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
+        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1013,10 +1019,13 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
+                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
+        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
+        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state",channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[0].elements[channelI * 2 + 1].rangeBar.value / 100.f); //Set the chammeş opacity
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[0].elements[channelI * 2 + 1].rangeBar.value / 100.f); //Set the channel opacity
         modifierShader.setVec3( "value" , glm::vec3(
                                                         material.materialModifiers[curModI].sections[0].elements[channelI * 2].button.color.r, 
                                                         material.materialModifiers[curModI].sections[0].elements[channelI * 2].button.color.g, 
@@ -1087,6 +1096,9 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
+                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
+        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
+        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1187,6 +1199,9 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
+                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
+        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
+        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1275,6 +1290,9 @@ void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
+                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
+        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
+        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1383,6 +1401,9 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
+                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
+        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
+        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1490,6 +1511,9 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
+                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
+        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
+        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1594,6 +1618,9 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
+                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
+        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
+        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1699,13 +1726,13 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
+        modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
+        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
+        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
         modifierShader.setFloat( "opacity" , 1.f); //TODO : Set the opacity
-        modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
-        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
-        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
 
         /* Droplets */
         modifierShader.setFloat("dropletsCount", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 1.f);

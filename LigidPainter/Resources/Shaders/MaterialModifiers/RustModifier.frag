@@ -15,6 +15,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #version 400 core
 
+#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Procedural.frag)
+
 /* Colors */
 uniform vec3 color1 = vec3(0.65, 0.65, 0.61);
 uniform vec3 color2 = vec3(0.43, 0.4, 0.39);
@@ -50,6 +52,9 @@ uniform int state;
 uniform sampler2D mask;
 uniform sampler2D previousTxtr;
 uniform float opacity;
+uniform int proceduralID;
+uniform float proceduralScale;
+uniform int proceduralInverted;
 
 /* Fragment Inputs */
 in vec2 TexCoords;
@@ -502,11 +507,21 @@ void main() {
     if(state == 5){
         fragColor.rgb = vec3(1. - fragColor.r + 0.3);
     }
+    vec2 tUV;
+    
+    if(Pos.x > Pos.z)
+        tUV = vec2(Pos.x + Pos.y, Pos.z );
+    else
+        tUV = vec2(Pos.x , Pos.z + Pos.y);
+    float procedural = getProcedural(tUV, Pos, proceduralID, proceduralScale, proceduralInverted);
 
     float alpha = opacity;
-    alpha *= texture(mask, TexCoords).r; 
+    if(proceduralID == -1)
+        alpha *= texture(mask, TexCoords).r; 
+    else
+        alpha *= procedural; 
     
-    vec3 clrResult = mix(fragColor.rgb, texture(previousTxtr, TexCoords).rgb, alpha);
+    vec3 clrResult = mix(texture(previousTxtr, TexCoords).rgb, fragColor.rgb, alpha);
 
     fragColor = vec4(clrResult, 1.);
 }

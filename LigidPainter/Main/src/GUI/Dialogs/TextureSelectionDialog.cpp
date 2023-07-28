@@ -34,6 +34,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+#define MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE 25
+#define MAX_PROCEDURAL_NOISE_TEXTURE_SIZE 17
+
 TextureSelectionDialog::TextureSelectionDialog(){}
 
 TextureSelectionDialog::TextureSelectionDialog(Shader buttonShader,ColorPalette colorPalette){
@@ -224,7 +227,13 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
             }
         }
         else if(this->selectedTextureMode == 1){
-            for (size_t i = 0; i < 25; i++)
+            for (size_t i = 0; i < MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE; i++)
+            {
+                sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),colorPalette,buttonShader,""       , Texture(), 0.f,false)));
+            }
+        }
+        else if(this->selectedTextureMode == 2){
+            for (size_t i = 0; i < MAX_PROCEDURAL_NOISE_TEXTURE_SIZE; i++)
             {
                 sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),colorPalette,buttonShader,""       , Texture(), 0.f,false)));
             }
@@ -285,7 +294,10 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
             proceduralDisplayerShader.setMat4("projection"  ,       guiProjection);
             proceduralDisplayerShader.setVec3("pos"         ,       selectedTextureDisplayingPanel.resultPos);
             proceduralDisplayerShader.setVec2("scale"       ,       glm::vec2(std::min(selectedTextureDisplayingPanel.resultScale.x,selectedTextureDisplayingPanel.resultScale.y)));
-            proceduralDisplayerShader.setInt("proceduralID", selectedTextureIndex);
+            if(this->selectedTextureMode == 1)
+                proceduralDisplayerShader.setInt("proceduralID", selectedTextureIndex);
+            else
+                proceduralDisplayerShader.setInt("proceduralID", selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE);
             proceduralDisplayerShader.setFloat("proceduralScale", this->subPanel.sections[0].elements[4].rangeBar.value);
             proceduralDisplayerShader.setInt("proceduralInverted", this->subPanel.sections[0].elements[3].checkBox.clickState1);
             glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -295,7 +307,12 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
                 proceduralDisplayerShader.use();
                 proceduralDisplayerShader.setVec3("pos"         ,       this->textureSelectingPanel.sections[0].elements[i].button.resultPos);
                 proceduralDisplayerShader.setVec2("scale"       ,       glm::vec2(std::min(this->textureSelectingPanel.sections[0].elements[i].button.resultScale.x, this->textureSelectingPanel.sections[0].elements[i].button.resultScale.y)));
-                proceduralDisplayerShader.setInt("proceduralID", i);
+                
+                if(this->selectedTextureMode == 1)
+                    proceduralDisplayerShader.setInt("proceduralID", i);
+                else
+                    proceduralDisplayerShader.setInt("proceduralID", i + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE);
+
                 proceduralDisplayerShader.setFloat("proceduralScale", 1.f);
                 proceduralDisplayerShader.setInt("proceduralInverted", 0);
                 glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -379,7 +396,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
             // If procedural pattern selected 
             else if(this->selectedTextureMode == 1 || this->selectedTextureMode == 2){
                 //Update the selected procedural function index
-                receivedTexture.proceduralID = this->selectedTextureIndex;
+                receivedTexture.proceduralID = this->selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE;
                 receivedTexture.proceduralScale = this->subPanel.sections[0].elements[4].rangeBar.value;
                 receivedTexture.proceduralnverted = this->subPanel.sections[0].elements[3].checkBox.clickState1;
 
@@ -419,7 +436,12 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
                 proceduralDisplayerShader.setMat4("projection"  ,       projection);
                 proceduralDisplayerShader.setVec3("pos"         ,       glm::vec3((float)displayRes / 2.f, (float)displayRes / 2.f,0.9f));
                 proceduralDisplayerShader.setVec2("scale"       ,       glm::vec2((float)displayRes / 2.f));
-                proceduralDisplayerShader.setInt("proceduralID" , selectedTextureIndex);
+                
+                if(this->selectedTextureMode == 1)
+                    proceduralDisplayerShader.setInt("proceduralID", selectedTextureIndex);
+                else
+                    proceduralDisplayerShader.setInt("proceduralID", selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE);                
+                
                 proceduralDisplayerShader.setFloat("proceduralScale", this->subPanel.sections[0].elements[4].rangeBar.value);
                 proceduralDisplayerShader.setInt("proceduralInverted", this->subPanel.sections[0].elements[3].checkBox.clickState1);
                 
