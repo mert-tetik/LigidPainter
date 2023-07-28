@@ -337,7 +337,7 @@ vec3 rotate(vec3 v, vec3 axis, float angle)
     float x = v.x;
     float y = v.y;
     float z = v.z;
-5
+
     // Apply the rotation formula
     vec3 rotatedVec;
     rotatedVec.x = (cosAngle + axis.x * axis.x * oneMinusCos) * x + (axis.x * axis.y * oneMinusCos - axis.z * sinAngle) * y + (axis.x * axis.z * oneMinusCos + axis.y * sinAngle) * z;
@@ -345,25 +345,6 @@ vec3 rotate(vec3 v, vec3 axis, float angle)
     rotatedVec.z = (axis.z * axis.x * oneMinusCos - axis.y * sinAngle) * x + (axis.z * axis.y * oneMinusCos + axis.x * sinAngle) * y + (cosAngle + axis.z * axis.z * oneMinusCos) * z;
 
     return rotatedVec;
-}
-
-
-vec2 getTextureCoordinates(vec3 position, vec3 tangent) {
-//   vec3 ANPosition = (abs(position));
-  
-//   return vec2(ANPosition.x, (ANPosition.y + ANPosition.z) / 2.f);
-    
-    vec3 bitangent = cross(tangent, position);
-  vec3 normal = cross(bitangent, tangent);
-
-  mat3 TBN = mat3(tangent, bitangent, normal);
-  vec3 transformedPosition = TBN * position;
-
-  vec2 textureCoord;
-  textureCoord.x = 0.5 * transformedPosition.x + 0.5;
-  textureCoord.y = 0.5 * transformedPosition.y + 0.5;
-
-  return textureCoord;
 }
 
 float antAbs(float val){
@@ -490,21 +471,9 @@ void main()
         fragColor.rgb = vec3((fragColor.r + 0.1));
 
     }
-    vec2 tUV;
-    
-    if(Pos.x > Pos.z)
-        tUV = vec2(Pos.x + Pos.y, Pos.z );
-    else
-        tUV = vec2(Pos.x , Pos.z + Pos.y);
 
-    /*
-    tUV.x = maxValue((abs(Pos)));
-    tUV.y = secondBiggestValue((abs(Pos))); 
-    */
     
-    tUV = abs(tUV);
-
-    float procedural = getProcedural(tUV, Pos, proceduralID, proceduralScale, proceduralInverted);
+    float procedural = getProcedural(Pos, proceduralID, proceduralScale, proceduralInverted);
 
     float alpha = opacity;
     if(proceduralID == -1)

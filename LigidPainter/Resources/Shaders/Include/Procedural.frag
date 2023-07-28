@@ -351,6 +351,7 @@ float diamondPattern(
 ---------------------------------------------------------
 */
 #define D(U) .004/abs(length(mod(U,d+d)-d)-d.x)
+
 float rosettePattern(
                         vec2 p
                     )
@@ -724,62 +725,76 @@ float staticNoiseA(vec3 uv){
     return fract(tan(distance(uv * PHI, uv)) * uv.x * PHI);
 }
 
-float getProcedural(vec2 p, vec3 pos, int proceduralID, float scale, int inverted){
+float getProcedural(vec3 pos, int proceduralID, float scale, int inverted){
     
-    p *= scale;
-    pos = normalize((pos));
+    vec2 uv;
+    if(pos.x > pos.z)
+        uv = vec2(pos.x + pos.y, pos.z );
+    else
+        uv = vec2(pos.x , pos.z + pos.y);
+
+    uv *= scale;
+
+    /*
+    uv.x = maxValue((abs(Pos)));
+    uv.y = secondBiggestValue((abs(Pos))); 
+    */
+    
+    uv = abs(uv);
+    
+    //pos = normalize((pos));
     pos *= scale;
     
     float res = 0.;
 
     if(proceduralID == 0)
-        res = hexagonalPattern(p);
+        res = hexagonalPattern(uv);
     else if(proceduralID == 1)
-        res = hexagonalPattern2(p);
+        res = hexagonalPattern2(uv);
     else if(proceduralID == 2)
-        res = hexagonalPattern3(p);
+        res = hexagonalPattern3(uv);
     else if(proceduralID == 3)
-        res = hexagonalTruchetPattern(p);
+        res = hexagonalTruchetPattern(uv);
     else if(proceduralID == 4)
-        res = checkerPattern(p);
+        res = checkerPattern(uv);
     else if(proceduralID == 5)
-        res = trianglePattern(p);
+        res = trianglePattern(uv);
     else if(proceduralID == 6)
-        res = rhombPattern1(p);
+        res = rhombPattern1(uv);
     else if(proceduralID == 7)
-        res = karoPattern(p);
+        res = karoPattern(uv);
     else if(proceduralID == 8)
-        res = gridPattern1(p);
+        res = gridPattern1(uv);
     else if(proceduralID == 9)
-        res = gridPattern2(p);
+        res = gridPattern2(uv);
     else if(proceduralID == 10)
-        res = squareHolePattern(p);
+        res = squareHolePattern(uv);
     else if(proceduralID == 11)
-        res = roundSquarePattern(p);
+        res = roundSquarePattern(uv);
     else if(proceduralID == 12)
-        res = sinePattern(p);
+        res = sinePattern(uv);
     else if(proceduralID == 13)
-        res = brickPattern(p);
+        res = brickPattern(uv);
     else if(proceduralID == 14)
-        res = gearPattern(p);
+        res = gearPattern(uv);
     else if(proceduralID == 15)
-        res = layeredCirclePattern(p);
+        res = layeredCirclePattern(uv);
     else if(proceduralID == 16)
-        res = starPattern(p);
+        res = starPattern(uv);
     else if(proceduralID == 17)
-        res = basketPattern1(p);
+        res = basketPattern1(uv);
     else if(proceduralID == 18)
-        res = basketPattern2(p);
+        res = basketPattern2(uv);
     else if(proceduralID == 19)
-        res = diamondPattern(p);
+        res = diamondPattern(uv);
     else if(proceduralID == 20)
-        res = rosettePattern(p);
+        res = rosettePattern(uv);
     else if(proceduralID == 21)
-        res = smoothHexPattern(p);
+        res = smoothHexPattern(uv);
     else if(proceduralID == 22)
-        res = smoothSharpSquarePattern(p);
+        res = smoothSharpSquarePattern(uv);
     else if(proceduralID == 23)
-        res = randomTrianglePattern(p);
+        res = randomTrianglePattern(uv);
     else if(proceduralID == 24)
         res = solidPattern();
     else if(proceduralID == 25)

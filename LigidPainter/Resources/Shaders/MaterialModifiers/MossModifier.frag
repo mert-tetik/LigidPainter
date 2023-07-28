@@ -524,13 +524,8 @@ void main()
     else if(state == 5){
         fragColor.rgb = mix(vec3(0.9 - fragColor.r ) , vec3(1. - fragColor.r), worley * frontLayerStrength);
     }
-    vec2 tUV;
-    
-    if(Pos.x > Pos.z)
-        tUV = vec2(Pos.x + Pos.y, Pos.z );
-    else
-        tUV = vec2(Pos.x , Pos.z + Pos.y);
-    float procedural = getProcedural(tUV, Pos, proceduralID, proceduralScale, proceduralInverted);
+
+    float procedural = getProcedural(Pos, proceduralID, proceduralScale, proceduralInverted);
 
     float alpha = opacity;
     if(proceduralID == -1)

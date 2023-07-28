@@ -106,24 +106,42 @@ void Renderer::render(){
     //Render each mesh
     for (size_t i = 0; i < model.meshes.size(); i++)
     {
-            //Bind the material
-            glActiveTexture(GL_TEXTURE2);
+        //Bind the material
+        glActiveTexture(GL_TEXTURE2);
+        if(meshNodeScene[0].IOs[i].connections.size())
             glBindTexture(GL_TEXTURE_2D, model.meshes[i].albedo.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
 
-            glActiveTexture(GL_TEXTURE3);
+        glActiveTexture(GL_TEXTURE3);
+        if(meshNodeScene[0].IOs[i].connections.size())
             glBindTexture(GL_TEXTURE_2D, model.meshes[i].roughness.ID);
-            
-            glActiveTexture(GL_TEXTURE4);
+        else
+            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+        
+        glActiveTexture(GL_TEXTURE4);
+        if(meshNodeScene[0].IOs[i].connections.size())
             glBindTexture(GL_TEXTURE_2D, model.meshes[i].metallic.ID);
-            
-            glActiveTexture(GL_TEXTURE5);
+        else
+            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+        
+        glActiveTexture(GL_TEXTURE5);
+        if(meshNodeScene[0].IOs[i].connections.size())
             glBindTexture(GL_TEXTURE_2D, model.meshes[i].normalMap.ID);
-            
-            glActiveTexture(GL_TEXTURE6);
+        else
+            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+        
+        glActiveTexture(GL_TEXTURE6);
+        if(meshNodeScene[0].IOs[i].connections.size())
             glBindTexture(GL_TEXTURE_2D, model.meshes[i].heightMap.ID);
-            
-            glActiveTexture(GL_TEXTURE7);
+        else
+            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+        
+        glActiveTexture(GL_TEXTURE7);
+        if(meshNodeScene[0].IOs[i].connections.size())
             glBindTexture(GL_TEXTURE_2D, model.meshes[i].ambientOcclusion.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
 
         int paintedTxtrStateIndex = 0;
 

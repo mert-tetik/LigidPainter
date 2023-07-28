@@ -39,14 +39,8 @@ in vec4 ProjectedPos;
 out vec4 fragColor;
 
 void main(){
-    
-    vec2 tUV;
-    
-    if(Pos.x > Pos.z)
-        tUV = vec2(Pos.x + Pos.y, Pos.z );
-    else
-        tUV = vec2(Pos.x , Pos.z + Pos.y);
-    float procedural = getProcedural(tUV, Pos, proceduralID, proceduralScale, proceduralInverted);
+
+    float procedural = getProcedural(Pos, proceduralID, proceduralScale, proceduralInverted);
 
     float alpha = opacity;
     if(proceduralID == -1)

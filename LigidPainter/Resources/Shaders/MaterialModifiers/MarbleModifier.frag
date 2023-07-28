@@ -398,9 +398,9 @@ void main()
     for(float i=0.; i < crackDepth ; i++) {
         
         vec2 V =  uv / vec2(RATIO,1); // voronoi cell shape
-        vec2 D = crackZebraAmp * fbm22(uv / crackZebraScale) * crackZebraScale;
+        vec2 aD = crackZebraAmp * fbm22(uv / crackZebraScale) * crackZebraScale;
         
-        vec3  H = voronoiB( V + D ); 
+        vec3  H = voronoiB( V + aD ); 
        
         if (i==0.) 
             H0=H;
@@ -474,13 +474,8 @@ void main()
         if(fragColor.r > 1.)
             fragColor.r = 1.;
     }
-    vec2 tUV;
-    
-    if(Pos.x > Pos.z)
-        tUV = vec2(Pos.x + Pos.y, Pos.z );
-    else
-        tUV = vec2(Pos.x , Pos.z + Pos.y);
-    float procedural = getProcedural(tUV, Pos, proceduralID, proceduralScale, proceduralInverted);
+
+    float procedural = getProcedural( Pos, proceduralID, proceduralScale, proceduralInverted);
 
     float alpha = opacity;
     if(proceduralID == -1)

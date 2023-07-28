@@ -198,14 +198,8 @@ void main()
         fragColor.rgb = vec3((fragColor.r * perlin + 0.8));
     }
     
-    vec2 tUV;
     
-    if(Pos.x > Pos.z)
-        tUV = vec2(Pos.x + Pos.y, Pos.z );
-    else
-        tUV = vec2(Pos.x , Pos.z + Pos.y);
-    
-    float procedural = getProcedural(tUV, Pos, proceduralID, proceduralScale, proceduralInverted);
+    float procedural = getProcedural(Pos, proceduralID, proceduralScale, proceduralInverted);
 
     float alpha = opacity;
     if(proceduralID == -1)
