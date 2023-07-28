@@ -39,7 +39,8 @@ in vec4 ProjectedPos;
 out vec4 fragColor;
 
 void main(){
-        vec2 tUV;
+    
+    vec2 tUV;
     
     if(Pos.x > Pos.z)
         tUV = vec2(Pos.x + Pos.y, Pos.z );
@@ -52,7 +53,7 @@ void main(){
         alpha *= texture(mask, TexCoords).r; 
     else
         alpha *= procedural; 
-    vec3 clrResult = mix(texture(previousTxtr, TexCoords).rgb, fragColor.rgb, alpha);
+    vec3 clrResult = mix(texture(previousTxtr, TexCoords).rgb, value, alpha);
 
     fragColor = vec4(clrResult, 1.);
 }
