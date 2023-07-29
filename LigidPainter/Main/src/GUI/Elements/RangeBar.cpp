@@ -171,7 +171,7 @@ void RangeBar::render(
     if(hover) //Set the cursor as horizontal slide if hover
         mouse.setCursor(mouse.hSlideCursor);// mouse.activeCursor = mouse.pointerCursor
 
-    if(hover && mouse.LClick){ //If clicked to the pointer
+    if(hover && !leftArrowHover && !rightArrowHover && mouse.LClick){ //If clicked to the pointer
         //Set pointer as pressed
         pointerPressed = true;
     }
