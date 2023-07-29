@@ -415,7 +415,15 @@ struct Element{
 
     LigidWindow window;
     
-    int state; //Decide which element will be used 0 = button 
+    /*!
+        @brief Decide which GUI element will be used 
+        0 = button 
+        1 = rangebar
+        2 = checbox 
+        3 = combobox 
+        4 = textbox
+    */
+    int state; 
     
     //Those variables will be transported to the element
     //  - Manipulated & used by the panel

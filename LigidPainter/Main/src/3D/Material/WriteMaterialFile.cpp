@@ -65,9 +65,36 @@ void Material::writeFile(std::string path){
         //!Modifiers
         uint64_t materialModifierSize = materialModifiers.size();
         wf.write(reinterpret_cast<char*>(   &materialModifierSize     ),sizeof(uint64_t));
-        
+         
         for (size_t i = 0; i < materialModifierSize; i++)
         {
+            // -- Mask texture --
+            wf.write(reinterpret_cast<char*>(&this->materialModifiers[i].maskTexture.proceduralID), sizeof(int));
+            
+            //Write the texture
+            if(this->materialModifiers[i].maskTexture.proceduralID == -1){
+                //Get the resolution of the texture from the panel of the modifier
+                uint64_t txtrWidth = this->materialModifiers[i].maskTexture.getResolution().x;
+                uint64_t txtrHeight = this->materialModifiers[i].maskTexture.getResolution().y;
+                
+                //Write the texture resolution data
+                wf.write(reinterpret_cast<char*>(   &txtrWidth     ),sizeof(uint64_t));
+                wf.write(reinterpret_cast<char*>(   &txtrHeight     ),sizeof(uint64_t));
+
+                //Get pixels of the texture
+                char* pixels = new char[txtrWidth * txtrHeight * 4];
+                this->materialModifiers[i].maskTexture.getData(pixels);
+
+                //Write the texture data
+                wf.write(pixels , txtrWidth * txtrHeight * 4 * sizeof(char));
+
+                delete[] pixels;
+            }
+            else{
+                //Write the procedural texture properties
+                wf.write(reinterpret_cast<char*>(&this->materialModifiers[i].maskTexture.proceduralnverted), sizeof(int));
+                wf.write(reinterpret_cast<char*>(&this->materialModifiers[i].maskTexture.proceduralScale), sizeof(float));
+            }
 
             size_t materialModifierModifierIndex = materialModifiers[i].modifierIndex;
             wf.write(reinterpret_cast<char*>(   &materialModifierModifierIndex     ),sizeof(uint64_t));
@@ -91,6 +118,33 @@ void Material::writeFile(std::string path){
                     wf.write(pixels , txtrWidth * txtrHeight * 4 * sizeof(char));
 
                     delete[] pixels;
+                }
+                
+                //Write the opacity values
+                for (size_t channelI = 0; channelI < 6; channelI++) {
+                    wf.write(reinterpret_cast<char*>(   &this->materialModifiers[i].sections[1].elements[channelI].rangeBar.value     ), sizeof(float));
+                }
+            }
+            else{
+                uint64_t sectionSize = this->materialModifiers[i].sections.size();
+                wf.write(reinterpret_cast<char*>(sectionSize), sizeof(uint64_t));
+                for (size_t secI = 0; secI < sectionSize; secI++)
+                {
+                    uint64_t elementSize = this->materialModifiers[i].sections[secI].elements.size();
+                    wf.write(reinterpret_cast<char*>(elementSize), sizeof(uint64_t));
+                    for (size_t eI = 0; eI < elementSize; eI++)
+                    {
+                        //Is rangeBar
+                        if(this->materialModifiers[i].sections[secI].elements[eI].state == 1)
+                            wf.write(reinterpret_cast<char*>(   &this->materialModifiers[i].sections[secI].elements[eI].rangeBar.value     ), sizeof(float));
+                        
+                        //Is button
+                        else if(this->materialModifiers[i].sections[secI].elements[eI].state == 0){
+                            wf.write(reinterpret_cast<char*>(   &this->materialModifiers[i].sections[secI].elements[eI].button.color.r     ), sizeof(float));
+                            wf.write(reinterpret_cast<char*>(   &this->materialModifiers[i].sections[secI].elements[eI].button.color.g     ), sizeof(float));
+                            wf.write(reinterpret_cast<char*>(   &this->materialModifiers[i].sections[secI].elements[eI].button.color.b     ), sizeof(float));
+                        }
+                    }
                 }
             }
         }
