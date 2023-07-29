@@ -260,6 +260,7 @@ public:
 	bool caps = false;
 	int key = 0;
 	int mods = 0;
+    int action = 0;
 
     //Text data
     Shader textDataShader;

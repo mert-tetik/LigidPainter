@@ -26,10 +26,13 @@ uniform int state;
 uniform sampler2D mask;
 uniform sampler2D previousTxtr;
 uniform float opacity;
-uniform sampler2D theTexture;
 uniform int proceduralID;
 uniform float proceduralScale;
 uniform int proceduralInverted;
+uniform sampler2D theTexture;
+uniform int theTextureProceduralID;
+uniform float theTextureProceduralScale;
+uniform int theTextureProceduralInverted;
 
 out vec4 fragColor;
 
@@ -38,9 +41,14 @@ void getImage(sampler2D txtr,out vec4 result){
 }
 
 void main(){
-    fragColor = texture(theTexture,TexCoords);
     
-    float procedural = getProcedural(Pos, proceduralID, proceduralScale, proceduralInverted);
+    float procedural = getProcedural(Pos, theTextureProceduralID, theTextureProceduralScale, theTextureProceduralInverted);
+    if(proceduralID == -1)
+        fragColor = texture(theTexture,TexCoords);
+    else
+        fragColor = vec4(vec3(procedural), 1.);
+    
+    procedural = getProcedural(Pos, proceduralID, proceduralScale, proceduralInverted);
 
     float alpha = opacity;
     if(proceduralID == -1)

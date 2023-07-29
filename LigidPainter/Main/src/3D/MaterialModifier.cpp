@@ -970,7 +970,9 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         material.materialModifiers[curModI].shader.setInt("mask", 1); //Set the texture slot
         material.materialModifiers[curModI].shader.setInt("previousTxtr", 2); //Set the texture slot
         material.materialModifiers[curModI].shader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
-        
+        material.materialModifiers[curModI].shader.setInt("theTextureProceduralID", material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.proceduralID); //Set the channel procedural 
+        material.materialModifiers[curModI].shader.setFloat("theTextureProceduralScale", material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.proceduralScale); //Set the channel procedural 
+        material.materialModifiers[curModI].shader.setInt("theTextureProceduralInverted", material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.proceduralnverted); //Set the channel procedural material.materialModifiers[curModI].
 
         //Bind the texture (bind the channel textures if rendering a texture modifier & bind the result of the previous modifier)
         glActiveTexture(GL_TEXTURE0);

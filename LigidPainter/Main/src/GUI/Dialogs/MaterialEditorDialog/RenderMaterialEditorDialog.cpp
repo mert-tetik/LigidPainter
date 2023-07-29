@@ -38,6 +38,9 @@ void updateMaterialDisplayerButton(Button &materialDisplayer, Material &material
     materialDisplayer.pos.x = modifiersPanel.pos.x - modifiersPanel.scale.x - materialDisplayer.scale.x;
 }
 
+bool __materialEditorDialogESCPressed = false;
+bool __materialEditorDialogESCFirstFramePressed = false;
+
 void MaterialEditorDialog::render
                                 (
                                     glm::vec2 videoScale,
@@ -59,10 +62,10 @@ void MaterialEditorDialog::render
 
 
     //Render the panels & material displayer button
-    bgPanel.render(videoScale,mouse,timer,textRenderer,         !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
-    layerPanel.render(videoScale,mouse,timer,textRenderer,      !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
-    modifiersPanel.render(videoScale,mouse,timer,textRenderer,  !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
-    barButton.render(videoScale,mouse,timer,textRenderer,       !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive()));
+    bgPanel.render(videoScale,mouse,timer,textRenderer,         !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
+    layerPanel.render(videoScale,mouse,timer,textRenderer,      !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
+    modifiersPanel.render(videoScale,mouse,timer,textRenderer,  !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
+    barButton.render(videoScale,mouse,timer,textRenderer,       !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
 
     //Update the texture, scale & position of the material displayer button
     updateMaterialDisplayerButton(materialDisplayer, material, bgPanel, modifiersPanel, layerPanel);
@@ -107,11 +110,25 @@ void MaterialEditorDialog::render
     this->prevUpdateTheMaterial = this->updateTheMaterial;
     this->updateTheMaterial = false;
 
-    //Close the dialog
-    if(context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || ((!bgPanel.hover && !barButton.hover) && mouse.LClick) || (barButton.hover && mouse.LDoubleClick))
-        if(!textureSelectionDialog.dialogControl.isActive())
-            deactivate(textureSelectionDialog);
 
+    if(context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS){
+        if(!__materialEditorDialogESCPressed)
+            __materialEditorDialogESCFirstFramePressed = true;
+        __materialEditorDialogESCPressed = true;
+    }
+    else{
+        __materialEditorDialogESCPressed = false;
+    } 
+
+
+    //Close the dialog
+    if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover) && mouse.LClick) || (barButton.hover && mouse.LDoubleClick)){
+        if(!wasTextureSelectionDialogActive() && !contextMenus[6].dialogControl.isActive() && !contextMenus[8].dialogControl.isActive())
+            this->deactivate(textureSelectionDialog);
+
+    }
+
+    __materialEditorDialogESCFirstFramePressed = false; 
 }
 
 

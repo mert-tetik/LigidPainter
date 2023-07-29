@@ -58,7 +58,7 @@ void DialogControl::unActivate(){
 }
 
 bool DialogControl::isActive(){
-    if(!active && mixVal > 0.1f)
+    if(mixVal > 0.1f)
         return true;
     
     return active;

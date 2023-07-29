@@ -43,9 +43,15 @@ glm::mat4 __projection;
 LigidWindow __window;
 glm::vec2 __videoScale; 
 Timer __timer; 
+bool __wasTextureSelectionDialogActive = false;
 
 void showTextureSelectionDialog(Texture& txtr){
     __texture_selection_dialog.show(__videoScale, __timer, __library, __projection, txtr, __window, __render_gui_textRenderer);
+    __wasTextureSelectionDialogActive = true;
+}
+
+bool wasTextureSelectionDialogActive(){
+    return __wasTextureSelectionDialogActive;
 }
 
 /* -- Forward declerations -- */
@@ -123,6 +129,8 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
 
     if(frameCounter > 1000)
         frameCounter = 0;
+
+    __wasTextureSelectionDialogActive = false;
     
 }
 

@@ -318,6 +318,7 @@ class ExportDialog
 //!------------------------------TEXTURE SELECTION DIALOG------------------------------
 
 void showTextureSelectionDialog(Texture& txtr);
+bool wasTextureSelectionDialogActive();
 
 class TextureSelectionDialog
 {

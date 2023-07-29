@@ -396,7 +396,10 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
             // If procedural pattern selected 
             else if(this->selectedTextureMode == 1 || this->selectedTextureMode == 2){
                 //Update the selected procedural function index
-                receivedTexture.proceduralID = this->selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE;
+                if(this->selectedTextureMode == 1)
+                    receivedTexture.proceduralID = this->selectedTextureIndex;
+                else
+                    receivedTexture.proceduralID = this->selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE;
                 receivedTexture.proceduralScale = this->subPanel.sections[0].elements[4].rangeBar.value;
                 receivedTexture.proceduralnverted = this->subPanel.sections[0].elements[3].checkBox.clickState1;
 
@@ -456,16 +459,18 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
                 
             receivedTexture.title = "SelectedTexture";
 
-            break;
+            dialogControl.unActivate();
         }
 
         //End the dialog
         if((window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && __mouse.LClick)){
             dialogControl.unActivate();
             selectedTextureIndex = 0;
-            break;
         }
 
+        if(!this->dialogControl.isActive())
+            break;
+            
         dialogControl.updateEnd(timer,buttonShader,0.15f);
 
         window.swapBuffers();

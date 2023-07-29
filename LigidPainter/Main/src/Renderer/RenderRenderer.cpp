@@ -251,6 +251,7 @@ void Renderer::render(){
     //Set keyboard states to default
     textRenderer.keyInput = false;
     textRenderer.mods = 0;
+    textRenderer.action = 0;
 
     //Let the model.newModelAdded be true for an another cycle
     if(previousModelNewModelAdded == true)

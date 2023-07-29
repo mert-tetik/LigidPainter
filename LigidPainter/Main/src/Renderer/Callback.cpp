@@ -262,6 +262,7 @@ void Renderer::keyCallback(
         this->textRenderer.keyInput = true;
         this->textRenderer.key = key;
         this->textRenderer.mods = mods;
+        this->textRenderer.action = action;
     }
 
     __getTextRendererDataToTheTextureSelection(textRenderer);
