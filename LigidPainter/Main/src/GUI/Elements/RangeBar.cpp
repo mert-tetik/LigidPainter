@@ -244,6 +244,9 @@ void RangeBar::render(
             this->value--;
         else
             this->value -= (this->maxValue - this->minValue)/100.f * 10.f;
+    
+        if(this->value < minValue)
+            this->value = minValue;
     }
     
     //Render the right arrow
@@ -269,6 +272,9 @@ void RangeBar::render(
             this->value++;
         else
             this->value += (this->maxValue - this->minValue)/100.f * 10.f;
+
+        if(this->value > maxValue)
+            this->value = maxValue;
     }
 
     if(leftArrowHover || rightArrowHover)

@@ -91,7 +91,6 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader
 
     // Create a 1x1 pixel white texture for the procedural texture displaying
     unsigned char whitePixel[] = { 255, 255, 255, 255 }; // 1 pixel, RGBA format (white)
-
     glGenTextures(1, &this->maskTexture.ID);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, this->maskTexture.ID);
