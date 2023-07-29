@@ -341,7 +341,7 @@ public:
 
     //Constructors
     TextureSelectionDialog();
-    TextureSelectionDialog(Shader buttonShader,ColorPalette colorPalette);
+    TextureSelectionDialog(Shader buttonShader, ColorPalette colorPalette, AppTextures appTextures);
 
     //Public member functions
     void show(glm::vec2 videoScale,Timer &timer,Library library, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window, TextRenderer& textRenderer);

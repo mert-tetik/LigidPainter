@@ -354,6 +354,7 @@ class RangeBar
 {
 private:
     void render(glm::vec3 posVal,glm::vec2 scaleVal,float radiusVal,glm::vec4 color1Val, glm::vec4 color2Val,float mixVal,bool outlineExtra,float resultOutlineThickness);
+    AppTextures appTextures;
 public:
     Shader shader;
     bool pointerPressed = false;
@@ -383,7 +384,9 @@ public:
     bool doMouseTracking; 
     bool isNumeric = false;
     float leftArrowMixVal = 0.f;
+    float leftArrowClickedMixVal = 0.f;
     float rightArrowMixVal = 0.f;
+    float rightArrowClickedMixVal = 0.f;
     bool leftArrowHover = false;
     bool rightArrowHover = false;
 
@@ -393,7 +396,7 @@ public:
              bool outlineExtra,glm::vec3 outlineColor,glm::vec3 outlineColor2, float radius,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,
              float textScale,float panelOffset,float outlineThickness,float minValue,float maxValue,float value);
     RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,Texture texture,float panelOffset,
-             float minValue,float maxValue,float value);
+             float minValue,float maxValue,float value,AppTextures appTextures);
 
     /// @brief Public member function to render the text box
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);

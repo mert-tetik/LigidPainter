@@ -194,6 +194,8 @@ void Renderer::loadAppTextures(){
     appTextures.dropperIcon.load("./LigidPainter/Resources/Icons/Dropper.png");
     appTextures.colorIcon.load("./LigidPainter/Resources/Icons/Color.png");
     appTextures.brushIcon.load("./LigidPainter/Resources/Icons/Brush.png");
+    appTextures.arrowR.load("./LigidPainter/Resources/Icons/ArrowR.png");
+    appTextures.arrowL.load("./LigidPainter/Resources/Icons/ArrowL.png");
     appTextures.threeDIcon.load("./LigidPainter/Resources/Icons/3D.png");
     appTextures.twoDIcon.load("./LigidPainter/Resources/Icons/2D.png");
     appTextures.exportIcon.load("./LigidPainter/Resources/Icons/Export.png");

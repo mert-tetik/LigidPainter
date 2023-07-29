@@ -201,22 +201,22 @@ std::vector<Section> MaterialModifier::createSolidModifier(ColorPalette colorPal
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Channels",Texture(),0.f,true)),
             {
                 Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Albedo",              Texture(), 0.f, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
                 
                 Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Roughness",           Texture(), 0.f, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
                 
                 Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",            Texture(), 0.f, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
                 
                 Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Normal Map",          Texture(), 0.f, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
                 
                 Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height map",          Texture(), 0.f, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
                 
                 Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Ambient Occlusion",   Texture(), 0.f, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f) // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f , appTextures) // /100
             }
         )
     };
@@ -241,46 +241,46 @@ std::vector<Section> MaterialModifier::createMarbleModifier(ColorPalette colorPa
             {
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 1", appTextures.greetingDialogImage, 0.f, false),
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 2", appTextures.greetingDialogImage, 0.f, false),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 5.f), // /10
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Checker State", appTextures.greetingDialogImage, 0.f, 0, 3, 1),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 5.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Checker State", appTextures.greetingDialogImage, 0.f, 0, 3, 1, appTextures),
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Crack Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Offset", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 5.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Depth", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 30.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Zebra Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Zebra Amp", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 67.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Profile", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Slope", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 50.f), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Width", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Offset", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 5.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Depth", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 30.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Zebra Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Zebra Amp", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 67.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Profile", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Slope", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 50.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Width", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /1
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", appTextures.greetingDialogImage, 0.f, 0, 8, 3), // /100 
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8), // /100 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 60.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", appTextures.greetingDialogImage, 0.f, 0, 8, 3, appTextures), // /100 
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8, appTextures), // /100 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 60.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Corners", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Radius", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Noise Size", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 80.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Radius", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Noise Size", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 80.f, appTextures), // /10
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Reflectiveness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 70.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Reflectiveness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 70.f, appTextures), // /100
             }
         )
     };
@@ -302,18 +302,18 @@ std::vector<Section> MaterialModifier::createFabricModifier(ColorPalette colorPa
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Stripes",Texture(),0.f,true)),
             {
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader, "Color",   appTextures.greetingDialogImage,0.f,false),
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,32.f), // 1
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Frequency",appTextures.greetingDialogImage,0.f,0.f,100.f,20.f), // /2
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Gap Frequency",appTextures.greetingDialogImage,0.f,0.f,100.f,60.f), // /2
-                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"Style",appTextures.greetingDialogImage,0.f,0,2,0),  
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,32.f, appTextures), // 1
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Frequency",appTextures.greetingDialogImage,0.f,0.f,100.f,20.f, appTextures), // /2
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Gap Frequency",appTextures.greetingDialogImage,0.f,0.f,100.f,60.f, appTextures), // /2
+                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"Style",appTextures.greetingDialogImage,0.f,0,2,0,appTextures),  
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Element Properties",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wetness",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",appTextures.greetingDialogImage,0.f,0.f,100.f,0.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wetness",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",appTextures.greetingDialogImage,0.f,0.f,100.f,0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f, appTextures), // /100
             }
         ),
     };
@@ -340,43 +340,43 @@ std::vector<Section> MaterialModifier::createMossModifier(ColorPalette colorPale
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Droplets", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Count", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Opacity Jitter", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Size", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 15.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Count", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Opacity Jitter", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Size", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 15.f, appTextures), // /10
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Front Layer", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Front Layer Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Front Layer Scale", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 50.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Front Layer Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Front Layer Scale", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 50.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Lighting", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Light Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Darkening Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Light Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Darkening Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Moss Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /1
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 40.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 40.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
             }
         )
     };
@@ -409,43 +409,43 @@ std::vector<Section> MaterialModifier::createRustModifier(ColorPalette colorPale
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 30.f), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 30.f, appTextures), // /1
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Perlin Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", appTextures.greetingDialogImage, 0.f, 0, 8, 3), 
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8), 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 60.f), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", appTextures.greetingDialogImage, 0.f, 0, 8, 3 , appTextures), 
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 60.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "FBM Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8), 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Roughness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Roughness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Rust Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Rust Radius", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Battering Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200, 100), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Rust Radius", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Battering Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200, 100, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
             }
         )
     };
@@ -471,46 +471,46 @@ std::vector<Section> MaterialModifier::createSkinModifier(ColorPalette colorPale
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Droplets", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Count", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Opacity Jitter", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Size", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 15.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Count", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Opacity Jitter", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Size", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 15.f, appTextures), // /10
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Veins", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Veins Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Veins Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Veins Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Veins Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Blushing", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blushing Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blushing Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f, appTextures), // /10
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Skin Prints", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Prints Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Prints Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Prints Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Prints Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f, appTextures), // /10
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Skin Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Color Type", appTextures.greetingDialogImage, 0.f, 0, 5, 0), 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Height", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Ambient Occlusion", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Color Type", appTextures.greetingDialogImage, 0.f, 0, 5, 0 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Height", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Ambient Occlusion", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
             }
         )
     };
@@ -533,46 +533,46 @@ std::vector<Section> MaterialModifier::createWoodenModifier(ColorPalette colorPa
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Offset", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Seed", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 30.f), // *100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Offset", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Seed", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 30.f, appTextures), // *100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Perlin Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Max Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8), 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistance", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Max Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistance", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Musgrave Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Lacunarity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 25.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 75.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Noise", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Lacunarity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 25.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 75.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Noise", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /10
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Base", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 46.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color Saturation", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 46.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color Saturation", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "FBM Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Frequency", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Frequency", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /10
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(), 0.f, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wood Gamma", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 60.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Shininess", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wood Gamma", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 60.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Shininess", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
             }
         )
     };
@@ -602,37 +602,37 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(ColorPalette colorP
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Dirt",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,40.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Strength",appTextures.greetingDialogImage,0.f,0.f,200.f,100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,40.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Strength",appTextures.greetingDialogImage,0.f,0.f,200.f,100.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"2nd Color",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Noise Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,50.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Noise Strength",appTextures.greetingDialogImage,0.f,0.f,200.f,100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Noise Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,50.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Noise Strength",appTextures.greetingDialogImage,0.f,0.f,200.f,100.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Noise",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Strength",appTextures.greetingDialogImage,0.f,0.f,200.f,100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Strength",appTextures.greetingDialogImage,0.f,0.f,200.f,100.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Element Properties",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wetness",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",appTextures.greetingDialogImage,0.f,0.f,100.f,0.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wetness",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",appTextures.greetingDialogImage,0.f,0.f,100.f,0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f, appTextures), // /100
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Perlin Properties",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"First Octave",appTextures.greetingDialogImage,0.f, 0, 8, 3),
-                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"Octaves",appTextures.greetingDialogImage,0.f, 0, 8, 8), 
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Persistence",appTextures.greetingDialogImage,0.f,0.f,100.f,70.f), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"First Octave",appTextures.greetingDialogImage,0.f, 0, 8, 3 , appTextures),
+                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"Octaves",appTextures.greetingDialogImage,0.f, 0, 8, 8 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Persistence",appTextures.greetingDialogImage,0.f,0.f,100.f,70.f, appTextures), // /100
             }
         )
     };
@@ -652,37 +652,37 @@ std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPale
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Noise",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Size",appTextures.greetingDialogImage,0.f,0.f,100.f,20.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Offset Intensity",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Rotation",appTextures.greetingDialogImage,0.f,0.f,360.f,360.f), // /1
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Brightness",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Size",appTextures.greetingDialogImage,0.f,0.f,100.f,20.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Offset Intensity",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Rotation",appTextures.greetingDialogImage,0.f,0.f,360.f,360.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Brightness",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f, appTextures), // /100
             }
         ),
         
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Blur",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Intensity",appTextures.greetingDialogImage,0.f,0.f,100.f,0.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Direction",appTextures.greetingDialogImage,0.f,0.f,360.f,0.f), // /1
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Intensity",appTextures.greetingDialogImage,0.f,0.f,100.f,0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Direction",appTextures.greetingDialogImage,0.f,0.f,360.f,0.f, appTextures), // /1
             }
         ),
         
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Scratches",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wavyness",appTextures.greetingDialogImage,0.f,0.f,100.f,10.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,30.f), // /10
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Base Frequency",appTextures.greetingDialogImage,0.f,0.f,100.f,50.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"FrequencyStep",appTextures.greetingDialogImage,0.f,0.f,100.f,25.f), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wavyness",appTextures.greetingDialogImage,0.f,0.f,100.f,10.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,30.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Base Frequency",appTextures.greetingDialogImage,0.f,0.f,100.f,50.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"FrequencyStep",appTextures.greetingDialogImage,0.f,0.f,100.f,25.f, appTextures), // /100
             }
         ),
 
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Droplets",Texture(),0.f,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Count",appTextures.greetingDialogImage,0.f,0.f,100.f,10.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"OpacityJitter",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Size",appTextures.greetingDialogImage,0.f,0.f,100.f,50.f), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Count",appTextures.greetingDialogImage,0.f,0.f,100.f,10.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"OpacityJitter",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Size",appTextures.greetingDialogImage,0.f,0.f,100.f,50.f, appTextures), // /10
             }
         ),
     };

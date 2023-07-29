@@ -39,7 +39,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 TextureSelectionDialog::TextureSelectionDialog(){}
 
-TextureSelectionDialog::TextureSelectionDialog(Shader buttonShader,ColorPalette colorPalette){
+TextureSelectionDialog::TextureSelectionDialog(Shader buttonShader,ColorPalette colorPalette,AppTextures appTextures){
     this->colorPalette = colorPalette;
     this->buttonShader = buttonShader;
     
@@ -112,7 +112,7 @@ TextureSelectionDialog::TextureSelectionDialog(Shader buttonShader,ColorPalette 
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,buttonShader,"Procedural Pattern Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,buttonShader,"Procedural Noise Textures", Texture(), 2.f, true),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette,buttonShader,"Invert", 40.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,buttonShader,"Scale", Texture(), 2.f, 0.f, 10.f, 1.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,buttonShader,"Scale", Texture(), 2.f, 0.f, 10.f, 1.f, appTextures),
                                             Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),colorPalette,buttonShader,"Select", Texture(), 2.f, false),
                                         }
                                     )

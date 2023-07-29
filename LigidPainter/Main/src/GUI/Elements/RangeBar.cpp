@@ -97,7 +97,7 @@ RangeBar::RangeBar(Shader shader,std::string text, glm::vec2 scale, glm::vec4 co
 }
 
 //Style constructor
-RangeBar::RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,Texture texture,float panelOffset,float minValue,float maxValue,float value){
+RangeBar::RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,Texture texture,float panelOffset,float minValue,float maxValue,float value, AppTextures appTextures){
     
     if(style == ELEMENT_STYLE_STYLIZED){
         this->isNumeric = true;
@@ -126,6 +126,8 @@ RangeBar::RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,Shader sh
     this->minValue = minValue;
     this->maxValue = maxValue;
     this->value = value;
+    
+    this->appTextures = appTextures;
 }
 
 void RangeBar::render(
@@ -145,7 +147,7 @@ void RangeBar::render(
 
     // scale value % of the video scale
     glm::vec2 resultScale = UTIL::getPercent(videoScale,scale);
-    glm::vec2 arrowBtnScale = glm::vec2((resultScale.x - resultScale.x / 1.2f) / 2.f, resultScale.y);  
+    glm::vec2 arrowBtnScale = glm::vec2(resultScale.y, resultScale.y);  
     resultScale.x /= 1.2f;
         
     // scale value % of the video scale
@@ -199,7 +201,7 @@ void RangeBar::render(
     //Handle transition animation
     timer.transition(hover,hoverMixVal,0.2f); 
     timer.transition(pointerPressed,clickedMixVal,0.2f); 
-
+    
     //Render the range bar
     render(resultPos,resultScale,resultRadius,color,color2,hoverMixVal,true,resultOutlineThickness); //Back side
     
@@ -215,36 +217,65 @@ void RangeBar::render(
             resultOutlineThickness
         ); 
 
+    shader.setInt("states.renderTexture"  ,     1    );
+    shader.setInt("properties.txtr"  ,     0    );
+
+
     //Render the left arrow
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, appTextures.arrowL.ID);
     render(
-            glm::vec3(resultPos.x - resultScale.x - (arrowBtnScale.x), resultPos.y, resultPos.z), 
-            arrowBtnScale,
-            resultRadius, color, color2, leftArrowMixVal, true, resultOutlineThickness); //Back side
+            glm::vec3(resultPos.x - resultScale.x + (arrowBtnScale.x), resultPos.y, resultPos.z), 
+            arrowBtnScale * (0.6f + (leftArrowMixVal + leftArrowClickedMixVal) / 10.f),
+            resultRadius, color, color2, 0.f, true, resultOutlineThickness); //Back side
 
     if(doMouseTracking)
-        leftArrowHover = mouse.isMouseHover(arrowBtnScale, glm::vec2(resultPos.x - resultScale.x - (arrowBtnScale.x), resultPos.y));
+        leftArrowHover = mouse.isMouseHover(arrowBtnScale, glm::vec2(resultPos.x - resultScale.x + (arrowBtnScale.x), resultPos.y));
     else 
         leftArrowHover = false;
 
     timer.transition(leftArrowHover, leftArrowMixVal,0.2f); 
+    timer.transition(false, leftArrowClickedMixVal,0.2f); 
 
-
+    if(leftArrowHover && mouse.LClick){
+        leftArrowClickedMixVal = 1.f;
+        if(this->isNumeric)
+            this->value--;
+        else
+            this->value -= (this->maxValue - this->minValue)/100.f * 10.f;
+    }
     
     //Render the right arrow
+    
+    glBindTexture(GL_TEXTURE_2D, appTextures.arrowR.ID);
     render(
-            glm::vec3(resultPos.x + resultScale.x + (arrowBtnScale.x), resultPos.y, resultPos.z), 
-            arrowBtnScale,
-            resultRadius, color, color2, rightArrowMixVal, true, resultOutlineThickness); //Back side
+            glm::vec3(resultPos.x + resultScale.x - (arrowBtnScale.x), resultPos.y, resultPos.z), 
+            arrowBtnScale * (0.6f + (rightArrowMixVal + rightArrowClickedMixVal) / 10.f),
+            resultRadius, color, color2, 0.f, true, resultOutlineThickness); //Back side
     
     if(doMouseTracking)
-        rightArrowHover = mouse.isMouseHover(arrowBtnScale, glm::vec2(resultPos.x + resultScale.x + (arrowBtnScale.x), resultPos.y));
+        rightArrowHover = mouse.isMouseHover(arrowBtnScale, glm::vec2(resultPos.x + resultScale.x - (arrowBtnScale.x), resultPos.y));
     else 
         rightArrowHover = false;
 
     timer.transition(rightArrowHover, rightArrowMixVal, 0.2f); 
+    timer.transition(false, rightArrowClickedMixVal, 0.2f); 
+
+    if(rightArrowHover && mouse.LClick){
+        rightArrowClickedMixVal = 1.f;
+
+        if(this->isNumeric)
+            this->value++;
+        else
+            this->value += (this->maxValue - this->minValue)/100.f * 10.f;
+    }
 
     if(leftArrowHover || rightArrowHover)
         mouse.setCursor(mouse.pointerCursor);// mouse.activeCursor = mouse.pointerCursor
+
+    shader.setInt("states.renderTexture"  ,     0    );
+
 
 
     float resultScaleText = videoScale.x/1920/2*textScale;

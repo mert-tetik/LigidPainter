@@ -923,6 +923,8 @@ struct AppTextures{
     Texture dropperIcon;
     Texture colorIcon;
     Texture brushIcon;
+    Texture arrowR;
+    Texture arrowL;
     Texture threeDIcon;
     Texture twoDIcon;
     Texture exportIcon;

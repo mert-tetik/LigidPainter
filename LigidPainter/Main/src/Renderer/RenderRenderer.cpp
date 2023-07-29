@@ -145,6 +145,8 @@ void Renderer::render(){
 
         int paintedTxtrStateIndex = 0;
 
+        /* 
+        TODO REWRITE THAT
         //If painting an albedo texture
         if(painter.selectedTexture.ID == model.meshes[i].albedo.ID)
             paintedTxtrStateIndex = 0;
@@ -168,7 +170,7 @@ void Renderer::render(){
         //If painting an ambient occlusion texture
         if(painter.selectedTexture.ID == model.meshes[i].ambientOcclusion.ID)
             paintedTxtrStateIndex = 5;
-
+        */
 
         shaders.tdModelShader.setInt("paintedTxtrStateIndex", paintedTxtrStateIndex);
         
