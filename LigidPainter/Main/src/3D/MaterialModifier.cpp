@@ -186,6 +186,17 @@ std::vector<Section> MaterialModifier::createTextureModifier(ColorPalette colorP
                 Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height map",          appTextures.greetingDialogImage,0.f,false)),
                 Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Ambient Occlusion",   appTextures.greetingDialogImage,0.f,false))
             }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+            }
         )
     };
 
@@ -281,6 +292,17 @@ std::vector<Section> MaterialModifier::createMarbleModifier(ColorPalette colorPa
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 70.f, appTextures), // /100
             }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+            }
         )
     };
 
@@ -315,6 +337,17 @@ std::vector<Section> MaterialModifier::createFabricModifier(ColorPalette colorPa
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f, appTextures), // /100
             }
         ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+            }
+        )
     };
 
     sections[0].elements[0].button.colorSelection = true;
@@ -376,6 +409,17 @@ std::vector<Section> MaterialModifier::createMossModifier(ColorPalette colorPale
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 40.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+            }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
             }
         )
     };
@@ -446,6 +490,17 @@ std::vector<Section> MaterialModifier::createRustModifier(ColorPalette colorPale
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
             }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+            }
         )
     };
     
@@ -511,6 +566,17 @@ std::vector<Section> MaterialModifier::createSkinModifier(ColorPalette colorPale
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Height", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Ambient Occlusion", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
             }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+            }
         )
     };
 
@@ -573,6 +639,17 @@ std::vector<Section> MaterialModifier::createWoodenModifier(ColorPalette colorPa
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
             }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+            }
         )
     };
 
@@ -633,6 +710,17 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(ColorPalette colorP
                 RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"Octaves",appTextures.greetingDialogImage,0.f, 0, 8, 8 , appTextures), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Persistence",appTextures.greetingDialogImage,0.f,0.f,100.f,70.f, appTextures), // /100
             }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+            }
         )
     };
     sections[0].elements[0].button.colorSelection = true;
@@ -684,6 +772,17 @@ std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPale
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Size",appTextures.greetingDialogImage,0.f,0.f,100.f,50.f, appTextures), // /10
             }
         ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+            }
+        )
     };
 
     return sections;
@@ -855,18 +954,33 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         material.materialModifiers[curModI].shader.use(); //Use the shader of the modifier
         material.materialModifiers[curModI].shader.setMat4("orthoProjection",projection); //Set the projection
         material.materialModifiers[curModI].shader.setMat4("perspectiveProjection",perspective); //Set the projection
-        material.materialModifiers[curModI].shader.setMat4("view",view); //Set the projection        material.materialModifiers[curModI].shader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
+        material.materialModifiers[curModI].shader.setMat4("view",view); //Set the projection        
+        material.materialModifiers[curModI].shader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
         material.materialModifiers[curModI].shader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
         material.materialModifiers[curModI].shader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural material.materialModifiers[curModI].
         material.materialModifiers[curModI].shader.setInt("state",channelI); //Set the texture slot
         material.materialModifiers[curModI].shader.setInt("theTexture",0); //Set the texture slot
+        material.materialModifiers[curModI].shader.setInt("mask", 1); //Set the texture slot
+        material.materialModifiers[curModI].shader.setInt("previousTxtr", 2); //Set the texture slot
+        material.materialModifiers[curModI].shader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
+        
 
         //Bind the texture (bind the channel textures if rendering a texture modifier & bind the result of the previous modifier)
         glActiveTexture(GL_TEXTURE0);
-
         //Bind the texture from the materialModifier's button element texture
         glBindTexture(GL_TEXTURE_2D,material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.ID);
+
+        // Bind the mask texture
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
         
+        //Bind the previous texture
+        glActiveTexture(GL_TEXTURE1);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
+
         //Render the result to the framebuffer
         mesh.Draw();
         
@@ -926,7 +1040,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt("state", channelI); //Set the state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , 1.); // TODO : Set the opacity
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); // TODO : Set the opacity
 
         /* Noise */
         modifierShader.setFloat("size", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 10.f); 
@@ -1101,7 +1215,7 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
 
         /* Colors */
         modifierShader.setVec3("asphaltColor", material.materialModifiers[curModI].sections[0].elements[0].button.color);
@@ -1204,7 +1318,7 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
 
         /* Stripes */
         modifierShader.setVec3("color", material.materialModifiers[curModI].sections[0].elements[0].button.color);
@@ -1295,7 +1409,7 @@ void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
 
         /* Marble Properties */
         modifierShader.setVec3("color1", material.materialModifiers[curModI].sections[0].elements[0].button.color);
@@ -1406,7 +1520,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
 
         /* Colors */
         modifierShader.setVec3("woodColor1", material.materialModifiers[curModI].sections[0].elements[0].button.color);
@@ -1516,7 +1630,7 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
 
         /* Color */
         modifierShader.setVec3("mossColorBack", material.materialModifiers[curModI].sections[0].elements[0].button.color);
@@ -1623,7 +1737,7 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , 1.); //TODO : Set the opacity
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
 
         /* Colors */
         modifierShader.setVec3("color1", material.materialModifiers[curModI].sections[0].elements[0].button.color);
@@ -1731,7 +1845,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , 1.f); //TODO : Set the opacity
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
 
         /* Droplets */
         modifierShader.setFloat("dropletsCount", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 1.f);
