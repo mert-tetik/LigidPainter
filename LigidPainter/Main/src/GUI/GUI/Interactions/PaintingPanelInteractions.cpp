@@ -160,5 +160,26 @@ void paintingPanelInteraction(
         if(i == painter.selectedMeshIndex)
             paintingPanel.sections[3].elements[i].button.clickState1 = true;
     }
+
+
+    //Check all the mesh buttons if they are pressed
+    for (size_t i = 0; i < paintingPanel.sections[4].elements.size(); i++) 
+    {
+        if(paintingPanel.sections[4].elements[i].button.hover && mouse.LClick){//If any button element is pressed
+            if(painter.selectedPaintingChannelIndex != i){
+                paintingPanel.sections[4].elements[painter.selectedPaintingChannelIndex].button.clickState1 = false;
+                painter.selectedPaintingChannelIndex = i;
+                painter.selectedTexture = paintingPanel.sections[4].elements[painter.selectedPaintingChannelIndex].button.texture;
+                break;
+            }
+        } 
+    }
+
+    //Set the selected mesh button as selected 
+    for (size_t i = 0; i < paintingPanel.sections[4].elements.size(); i++)
+    {
+        if(i == painter.selectedPaintingChannelIndex)
+            paintingPanel.sections[4].elements[i].button.clickState1 = true;
+    }
     
 }

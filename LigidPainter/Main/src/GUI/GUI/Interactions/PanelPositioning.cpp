@@ -65,6 +65,9 @@ void UI::panelPositioning(
     paintingModesPanel.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + paintingModesPanel.scale.x + 1;
     paintingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + paintingModesPanel.scale.y;
 
+    displayingModesPanel.pos.x = paintingPanel.pos.x - paintingPanel.scale.x - displayingModesPanel.scale.x - 0.5f;
+    displayingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + displayingModesPanel.scale.y;
+
     selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
     if(library.textures.size())
         selectedTextureDisplayer.sections[0].elements[0].button.texture = painter.selectedTexture;

@@ -194,14 +194,18 @@ float fbm(in vec3 p)
 
 vec4 mainNoise(vec3 uv)
 {
-    vec4 blurredColor = vec4(0.0);  
-    for (int i=0; i<=blurSamples/2; i++)
+    int samples = blurSamples;
+    if(blurIntensity == 0)
+        samples = 2;
+
+    vec4 blurredColor = vec4(1.0);  
+    for (int i=0; i<=samples/2; i++)
     {
-        vec3 mUV = uv - float(i) * (blurIntensity) / float(blurSamples/2) * vec3(blurDirection,0.);
-        vec3 pUV = uv + float(i) * (blurIntensity) / float(blurSamples/2) * vec3(blurDirection,0.);
+        vec3 mUV = uv - float(i) * (blurIntensity) / float(samples/2) * vec3(blurDirection,0.);
+        vec3 pUV = uv + float(i) * (blurIntensity) / float(samples/2) * vec3(blurDirection,0.);
         
-        blurredColor += vec4( fbm(pUV + (fbm(pUV) * offsetIntensity) ) ) / vec4(blurSamples);
-        blurredColor += vec4( fbm(mUV + (fbm(mUV) * offsetIntensity) ) ) / vec4(blurSamples);
+        blurredColor += vec4( fbm(pUV + (fbm(pUV) * offsetIntensity) ) ) / vec4(samples);
+        blurredColor += vec4( fbm(mUV + (fbm(mUV) * offsetIntensity) ) ) / vec4(samples);
 
     }
     
@@ -269,10 +273,13 @@ float getDroplets(vec3 uv){
         float opacityGap = opacity - 1.;
         opacity -= opacityGap * opacityJitter;        
         
-        for (int i=0; i<=blurSamples/2; i++)
+        int samples = blurSamples;
+        if(blurIntensity == 0)
+            samples = 2;
+        for (int i=0; i<=samples/2; i++)
         {
-            vec3 mUV = uv - float(i) * (blurIntensity) / float(blurSamples/2) * vec3(blurDirection, 0.);
-            vec3 pUV = uv + float(i) * (blurIntensity) / float(blurSamples/2) * vec3(blurDirection, 0.);
+            vec3 mUV = uv - float(i) * (blurIntensity) / float(samples/2) * vec3(blurDirection, 0.);
+            vec3 pUV = uv + float(i) * (blurIntensity) / float(samples/2) * vec3(blurDirection, 0.);
         
             vec3 transformedTexCoord = mUV + vec3(0.25 * float(j), 0.35 * float(j), 0.45 * float(j)) + vec3(transform); 
             
@@ -280,7 +287,7 @@ float getDroplets(vec3 uv){
         
                 float time_fact = (sin(base_rate + (1.570*float(i))));
                 time_fact = smoothstep(0.0,1.0,time_fact);
-                rain += (DotNoise2D(transformedTexCoord, 0.02 * dropletsSize ,0.5, base_density) * time_fact * (opacity)) / float(blurSamples);
+                rain += (DotNoise2D(transformedTexCoord, 0.02 * dropletsSize ,0.5, base_density) * time_fact * (opacity)) / float(samples);
             }
             
             transformedTexCoord = pUV + vec3(0.25 * float(j), 0.35 * float(j), 0.45 * float(j)) + vec3(transform); 
@@ -289,7 +296,7 @@ float getDroplets(vec3 uv){
         
                 float time_fact = (sin(base_rate + (1.570*float(i))));
                 time_fact = smoothstep(0.0,1.0,time_fact);
-                rain+=(DotNoise2D(transformedTexCoord.xyz, 0.02 * dropletsSize ,0.5, base_density) * time_fact * (opacity)) / float(blurSamples);
+                rain+=(DotNoise2D(transformedTexCoord.xyz, 0.02 * dropletsSize ,0.5, base_density) * time_fact * (opacity)) / float(samples);
             }
 
         }

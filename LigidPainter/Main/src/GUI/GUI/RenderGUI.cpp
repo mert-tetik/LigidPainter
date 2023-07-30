@@ -69,6 +69,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     __timer = timer; 
     __render_gui_textRenderer = textRenderer; 
 
+
     //Set pass less or equal
     glDepthFunc(GL_LEQUAL);
 
@@ -164,6 +165,7 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     navigationPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     windowPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     paintingPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    
     libraryPanelLeft.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
@@ -287,6 +289,7 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     }
 
     paintingModesPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    displayingModesPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
 }
 
 void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter, Library &library, Context &context){

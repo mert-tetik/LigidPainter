@@ -183,9 +183,20 @@ void UI::init
                                 Section(
                                     Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Meshes"  , appTextures.modifierIcon, 3.f,true)),
                                     {   
-                                    
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette,shaders.buttonShader, "DefaultMeshButton"  , appTextures.greetingDialogImage, 1.f,true)),//4
                                     }
                                 ),
+                                Section(
+                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Painting Channels"  , appTextures.modifierIcon, 3.f,true)),
+                                    {   
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette,shaders.buttonShader, "Albedo Texture"  , appTextures.greetingDialogImage, 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette,shaders.buttonShader, "Roughness Texture"  , appTextures.greetingDialogImage, 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette,shaders.buttonShader, "Metallic Texture"  , appTextures.greetingDialogImage, 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette,shaders.buttonShader, "Normal Map Texture"  , appTextures.greetingDialogImage, 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette,shaders.buttonShader, "Height Map Texture"  , appTextures.greetingDialogImage, 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette,shaders.buttonShader, "Ambient Occlusion Texture"  , appTextures.greetingDialogImage, 1.f,true)),//4
+                                    }
+                                )
                             },
                             
                             glm::vec2(8,48), //Initial scale value
@@ -375,6 +386,36 @@ void UI::init
                             false,
                             true,
                             false,
+                            1.f,
+                            1,
+                            {},
+                            20.f,
+                            false
+                        );
+    
+    //Init the displaying modes panel
+    displayingModesPanel = Panel(
+                            shaders.buttonShader,
+                            colorPalette,
+                            {
+                                Section(
+                                    Element(Button()),
+                                    {   
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,shaders.buttonShader, "Nodes"          , appTextures.brushIcon,        0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,shaders.buttonShader, "Painting"        , appTextures.softenIcon,       0.f,true)),
+                                    }
+                                )
+                            },
+                            
+                            glm::vec2(2 ,1), //Initial scale value
+                            glm::vec3(50 ,50 ,0.1f),  //Initial position value
+                            colorPalette.mainColor, //Color of the panel
+                            colorPalette.thirdColor, //Color of the panel
+                            false,
+                            true,
+                            true,
+                            true,
+                            true,
                             1.f,
                             1,
                             {},

@@ -130,9 +130,9 @@ static void renderBarButtons(std::vector<Button> &barButtons, glm::vec3 pos, glm
 void Panel::renderTheHeader(int sectionI,float &elementPos, int &btnCounter, glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer){
     //Prepare the transform data of the button    
     if(this->vertical)
-        this->prepDrawBtnVertically(sections[sectionI].header,sections[std::max(sectionI-1,0)].elements[sections[std::max(sectionI-1,0)].elements.size()-1],elementPos,btnCounter);
+        this->prepDrawBtnVertically(sections[sectionI].header,sections[std::max(sectionI,0)].elements[sections[std::max(sectionI,0)].elements.size()-1],elementPos,btnCounter);
     else
-        this->prepDrawBtnHorizontally(sections[sectionI].header,sections[std::max(sectionI-1,0)].elements[sections[std::max(sectionI-1,0)].elements.size()-1],elementPos,btnCounter);
+        this->prepDrawBtnHorizontally(sections[sectionI].header,sections[std::max(sectionI,0)].elements[sections[std::max(sectionI,0)].elements.size()-1],elementPos,btnCounter);
     //Draw the button
     this->sections[sectionI].header.render(videoScale, mouse, timer, textRenderer, this->doMouseTracking);
     btnCounter++; //Indexing buttons to position them

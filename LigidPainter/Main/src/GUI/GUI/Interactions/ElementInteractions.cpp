@@ -38,7 +38,7 @@ void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &paint
 void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog);
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Painter &painter);
 void nodeInteraction(Model &model, std::vector<Node> &meshNodeScene,Shaders shaders,ColorPalette colorPalette,glm::vec2 videoScale);
-
+void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter);
 
 void UI::elementInteraction(
                                 Painter &painter,
@@ -91,6 +91,9 @@ void UI::elementInteraction(
     windowPanelInteraction(windowPanel, mouse, painter, settingsDialog, displayerDialog,exportDialog);
 
     paintingModesPanelInteraction(paintingModesPanel,painter);
+
+    displayingModesPanelInteraction(displayingModesPanel, painter);
+
 
     nodeInteraction(model,meshNodeScene,shaders,colorPalette,videoScale);
     

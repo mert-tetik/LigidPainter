@@ -476,6 +476,9 @@ public:
 
     /// @brief which color value is selected (1 , 2 or 3)
     int selectedColorIndex = 0;
+
+    /// @brief indicates which material channel will be painted. 0 : albedo, 1 : roughness, 2 : metallic, 3 : normal map, 4 : height map, 5 : ambient occlusion map
+    int selectedPaintingChannelIndex = 0;
     
     /// @brief Is paintingTexture16f if smearBrush used, paintingTexture8 if not
     unsigned int paintingTexture;  
@@ -499,6 +502,13 @@ public:
     * 2 : Smear brush 
     */
     int selectedPaintingModeIndex = 0;
+
+    /*!
+    *   @brief Indicates how to display the 3D model
+    *   0 : Use nodes (no painting)
+    *   1 : Use painting channels (painting mode)
+    */
+    int selectedDisplayingModeIndex = 0;
     
     /// @brief Indicates which mesh (material) (out of the model class) is selected.
     /// Set by the user using GUI elements (paintingPanel)

@@ -106,73 +106,74 @@ void Renderer::render(){
     //Render each mesh
     for (size_t i = 0; i < model.meshes.size(); i++)
     {
-        //Bind the material
+        
+        /* Albedo */
         glActiveTexture(GL_TEXTURE2);
-        if(meshNodeScene[0].IOs[i].connections.size())
-            glBindTexture(GL_TEXTURE_2D, model.meshes[i].albedo.ID);
-        else
-            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+        if(painter.selectedDisplayingModeIndex == 0){
+            if(meshNodeScene[0].IOs[i].connections.size())
+                glBindTexture(GL_TEXTURE_2D, model.meshes[i].albedo.ID);
+            else
+                glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+            }
+        else if(painter.selectedDisplayingModeIndex == 1)
+            glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[4].elements[0].button.texture.ID);
 
+        /* Roughness */
         glActiveTexture(GL_TEXTURE3);
-        if(meshNodeScene[0].IOs[i].connections.size())
-            glBindTexture(GL_TEXTURE_2D, model.meshes[i].roughness.ID);
-        else
-            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
-        
+        if(painter.selectedDisplayingModeIndex == 0){
+            if(meshNodeScene[0].IOs[i].connections.size())
+                glBindTexture(GL_TEXTURE_2D, model.meshes[i].roughness.ID);
+            else
+                glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+        }
+        else if(painter.selectedDisplayingModeIndex == 1)
+            glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[4].elements[1].button.texture.ID);
+
+        /* Metallic*/
         glActiveTexture(GL_TEXTURE4);
-        if(meshNodeScene[0].IOs[i].connections.size())
-            glBindTexture(GL_TEXTURE_2D, model.meshes[i].metallic.ID);
-        else
-            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
-        
+        if(painter.selectedDisplayingModeIndex == 0){
+            if(meshNodeScene[0].IOs[i].connections.size())
+                glBindTexture(GL_TEXTURE_2D, model.meshes[i].metallic.ID);
+            else
+                glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+        }
+        else if(painter.selectedDisplayingModeIndex == 1)
+            glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[4].elements[2].button.texture.ID);
+
+        /* Normal Map*/
         glActiveTexture(GL_TEXTURE5);
-        if(meshNodeScene[0].IOs[i].connections.size())
-            glBindTexture(GL_TEXTURE_2D, model.meshes[i].normalMap.ID);
-        else
-            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
-        
+        if(painter.selectedDisplayingModeIndex == 0){
+            if(meshNodeScene[0].IOs[i].connections.size())
+                glBindTexture(GL_TEXTURE_2D, model.meshes[i].normalMap.ID);
+            else
+                glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+        }
+        else if(painter.selectedDisplayingModeIndex == 1)
+            glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[4].elements[3].button.texture.ID);
+
+        /* Height Map*/
         glActiveTexture(GL_TEXTURE6);
-        if(meshNodeScene[0].IOs[i].connections.size())
-            glBindTexture(GL_TEXTURE_2D, model.meshes[i].heightMap.ID);
-        else
-            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
-        
+        if(painter.selectedDisplayingModeIndex == 0){
+            if(meshNodeScene[0].IOs[i].connections.size())
+                glBindTexture(GL_TEXTURE_2D, model.meshes[i].heightMap.ID);
+            else
+                glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+        }
+        else if(painter.selectedDisplayingModeIndex == 1)
+            glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[4].elements[4].button.texture.ID);
+
+        /* Ambient Occlusion*/
         glActiveTexture(GL_TEXTURE7);
-        if(meshNodeScene[0].IOs[i].connections.size())
-            glBindTexture(GL_TEXTURE_2D, model.meshes[i].ambientOcclusion.ID);
-        else
-            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+        if(painter.selectedDisplayingModeIndex == 0){
+            if(meshNodeScene[0].IOs[i].connections.size())
+                glBindTexture(GL_TEXTURE_2D, model.meshes[i].ambientOcclusion.ID);
+            else
+                glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+        }
+        else if(painter.selectedDisplayingModeIndex == 1)
+            glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[4].elements[5].button.texture.ID);
 
-        int paintedTxtrStateIndex = 0;
-
-        /* 
-        TODO REWRITE THAT
-        //If painting an albedo texture
-        if(painter.selectedTexture.ID == model.meshes[i].albedo.ID)
-            paintedTxtrStateIndex = 0;
-        
-        //If painting an roughness texture
-        if(painter.selectedTexture.ID == model.meshes[i].roughness.ID)
-            paintedTxtrStateIndex = 1;
-
-        //If painting an metallic texture
-        if(painter.selectedTexture.ID == model.meshes[i].metallic.ID)
-            paintedTxtrStateIndex = 2;
-        
-        //If painting an normal map texture
-        if(painter.selectedTexture.ID == model.meshes[i].normalMap.ID)
-            paintedTxtrStateIndex = 3;
-        
-        //If painting an ambient occlusion texture
-        if(painter.selectedTexture.ID == model.meshes[i].heightMap.ID)
-            paintedTxtrStateIndex = 4;
-        
-        //If painting an ambient occlusion texture
-        if(painter.selectedTexture.ID == model.meshes[i].ambientOcclusion.ID)
-            paintedTxtrStateIndex = 5;
-        */
-
-        shaders.tdModelShader.setInt("paintedTxtrStateIndex", paintedTxtrStateIndex);
+        shaders.tdModelShader.setInt("paintedTxtrStateIndex", painter.selectedPaintingChannelIndex);
         
         //Draw the mesh
         model.meshes[i].Draw();

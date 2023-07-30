@@ -56,8 +56,10 @@ void libraryPanelDisplayerInteraction(
                     paintingPanel.sections[2].elements[4].button.texture = libraryPanelDisplayer.sections[0].elements[i].button.texture; //Select a brush texture
                     paintingPanel.sections[2].elements[4].button.clickState1 = false;
                 } 
-                else
+                else{
                     painter.selectedTexture = library.textures[i]; //Select the texture 
+                    paintingPanel.sections[4].elements[painter.selectedPaintingChannelIndex].button.texture = painter.selectedTexture;
+                }
             } //If any texture button element is pressed
         
             if(library.textures[i].ID == painter.selectedTexture.ID) //Highlight the selected texture

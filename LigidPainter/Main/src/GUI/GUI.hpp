@@ -74,7 +74,8 @@ public:
     Panel selectedTextureDisplayer; 
     Panel twoDPaintingPanel; 
     Panel paintingModesPanel; 
-    
+    Panel displayingModesPanel; 
+
     bool anyPanelHover = false;
 
     Dropper dropper;
