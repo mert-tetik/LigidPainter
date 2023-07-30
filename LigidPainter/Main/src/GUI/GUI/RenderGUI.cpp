@@ -122,7 +122,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     renderDropper(mouse,painter);
 
     //Render the brush cursor
-    if(!this->anyPanelHover && !this->anyDialogActive && !this->anyContextMenuActive)
+    if(!this->anyPanelHover && !this->anyDialogActive && !this->anyContextMenuActive && painter.selectedDisplayingModeIndex == 1)
         renderBrushCursor(shaders.circleShader, shaders.buttonShader, painter, mouse, this->projection, context);
     else
         context.window.setCursorVisibility(true);

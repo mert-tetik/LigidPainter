@@ -209,7 +209,7 @@ void Renderer::render(){
                         );
 
     //Painting
-    if(mouse.LPressed && !userInterface.anyContextMenuActive && !userInterface.anyPanelHover && !userInterface.anyDialogActive){ //If mouse hover 3D viewport and left mouse button pressed
+    if(mouse.LPressed && !userInterface.anyContextMenuActive && !userInterface.anyPanelHover && !userInterface.anyDialogActive && painter.selectedDisplayingModeIndex == 1){ //If mouse hover 3D viewport and left mouse button pressed
         //Paint
         painter.doPaint(    
                             mouse,
