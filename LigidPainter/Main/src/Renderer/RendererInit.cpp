@@ -227,4 +227,7 @@ void Renderer::createContextMenus(){
 
     //Material editor
     contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Texture Modifier", "Dust Modifier", "Asphalt Modifier", "Fabric Modifier", "Marble Modifier", "Moss Modifier", "Rust Modifier", "Skin Modifier", "Solid Modifier", "Wooden Modifier"}));// Material modifier selection context menu 8                                        
+    
+    //Node panel
+    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Add Material ID Node", "Add Material Mask Node"}));// Mesh node scene panel context menu 9                                        
 }

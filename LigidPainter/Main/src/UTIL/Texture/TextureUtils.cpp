@@ -117,17 +117,17 @@ std::vector<glm::vec3> Texture::getMaterialIDPalette(){
     glBindTexture(GL_TEXTURE_2D,ID);
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
-    bool detectedWhite = false; 
-    bool detectedRed = false; 
-    bool detectedGreen = false; 
-    bool detectedBlue = false; 
-    bool detectedPink = false; 
-    bool detectedYellow = false; 
-    bool detectedOrange = false; 
-    bool detectedCyan = false; 
-    bool detectedBlack = false;
+    int detectedWhite = false; 
+    int detectedRed = false; 
+    int detectedGreen = false; 
+    int detectedBlue = false; 
+    int detectedPink = false; 
+    int detectedYellow = false; 
+    int detectedOrange = false; 
+    int detectedCyan = false; 
+    int detectedBlack = false;
 
-    const int precision = 20; // in pixel
+    const int precision = 1; // in pixel
 
     for (size_t i = 0; i < txtrWidth * txtrHeight / precision; i++)
     {
@@ -141,13 +141,11 @@ std::vector<glm::vec3> Texture::getMaterialIDPalette(){
         glm::vec3 HSV = clr.getHSV();
 
         float h = HSV.r;
-        float s = HSV.g;
+        float s = HSV.g * 100.f;
         float v = HSV.b;
 
         // Define ranges for each color
-        const double hue_range = 30.0;
-        const double sat_range = 0.2;
-        const double val_range = 0.2;
+        const double hue_range = 5.0;
 
         // HSV values for each color
         const double white_h = 0.0;
@@ -159,53 +157,51 @@ std::vector<glm::vec3> Texture::getMaterialIDPalette(){
         const double orange_h = 30.0;
         const double cyan_h = 180.0;
 
-        // Check if the HSV values match any of the colors
-        if (s < sat_range && v > (1.0 - val_range)) {
-            if (std::abs(h - white_h) <= hue_range)
-                 detectedWhite = true;
+        if(s < 5 && v > 90)
+            detectedWhite++;
+        else if(s < 5 && v < 10)
+            detectedBlack++;
+        else{
+            if(h < 15 || h > 345)
+                detectedRed++;
+            else if(h > 265 && h <= 345)
+                detectedPink++;
+            else if(h > 205 && h <= 265)
+                detectedBlue++;
+            else if(h > 175 && h <= 205)
+                detectedCyan++;
+            else if(h > 70 && h <= 175)
+                detectedGreen++;
+            else if(h > 55 && h <= 70) 
+                detectedYellow++;
+            else 
+                detectedOrange++;
         } 
-        else if (v > (1.0 - val_range)) {
-            if (std::abs(h - red_h) <= hue_range)
-                 detectedRed = true;
-            else if (std::abs(h - green_h) <= hue_range)
-                 detectedGreen = true;
-            else if (std::abs(h - blue_h) <= hue_range)
-                 detectedBlue = true;
-        } 
-        else if (std::abs(h - pink_h) <= hue_range)
-             detectedPink = true;
-        else if (std::abs(h - yellow_h) <= hue_range)
-             detectedYellow = true;
-        else if (std::abs(h - orange_h) <= hue_range)
-             detectedOrange = true;
-        else if (std::abs(h - cyan_h) <= hue_range)
-             detectedCyan = true;
-
-        // If no match black is detected
-        detectedBlack = true;
     }
 
     delete[] pixels;
 
     std::vector<glm::vec3> res;
 
-    if(detectedWhite)
+    // To be accepted the color has to occupy at least 0.5% of the texture
+
+    if(detectedWhite > (txtrWidth * txtrHeight) / 100.f * 0.5f)
         res.push_back(glm::vec3(1.f,1.f,1.f));
-    if(detectedRed)
+    if(detectedRed > (txtrWidth * txtrHeight) / 100.f * 0.5f)
         res.push_back(glm::vec3(1.f,0.f,0.f));
-    if(detectedGreen)
+    if(detectedGreen > (txtrWidth * txtrHeight) / 100.f * 0.5f)
         res.push_back(glm::vec3(0.f,1.f,0.f));
-    if(detectedBlue)
+    if(detectedBlue > (txtrWidth * txtrHeight) / 100.f * 0.5f)
         res.push_back(glm::vec3(0.f,0.f,1.f));
-    if(detectedPink)
+    if(detectedPink > (txtrWidth * txtrHeight) / 100.f * 0.5f)
         res.push_back(glm::vec3(1.f,0.f,1.f));
-    if(detectedYellow)
+    if(detectedYellow > (txtrWidth * txtrHeight) / 100.f * 0.5f)
         res.push_back(glm::vec3(1.f,1.f,0.f));
-    if(detectedOrange)
+    if(detectedOrange > (txtrWidth * txtrHeight) / 100.f * 0.5f)
         res.push_back(glm::vec3(1.f,0.5f,0.f));
-    if(detectedCyan)
+    if(detectedCyan > (txtrWidth * txtrHeight) / 100.f * 0.5f)
         res.push_back(glm::vec3(0.f,1.f,1.f));
-    if(detectedBlack)
+    if(detectedBlack > (txtrWidth * txtrHeight) / 100.f * 0.5f)
         res.push_back(glm::vec3(0.f,0.f,0.f));
 
     return res;

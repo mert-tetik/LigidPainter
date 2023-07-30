@@ -40,6 +40,7 @@ Node::Node(int nodeIndex, int materialID, Shader buttonShader, Shader connection
     
     //Get the shaders to the member variables
     this->buttonShader = buttonShader;
+    this->colorPalette = colorPalette;
     this->heightToNormalShader = heightToNormalShader;
     this->connectionCurveShader = connectionCurveShader;
 
@@ -70,6 +71,14 @@ Node::Node(int nodeIndex, int materialID, Shader buttonShader, Shader connection
     else if(nodeIndex == MESH_NODE){
         //Insert the inputs later
     }
+    else if(nodeIndex == MATERIAL_ID_NODE){
+            inputs =    {
+                NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),colorPalette,buttonShader,"Input1",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,1),
+            };
+            inputs[0].element.button.textureSelection = true;
+    }
+    else
+        std::cout << "WARNING : Unknown node type is requested : " << nodeIndex << std::endl;
 
     //Add inputs & outputs to the IOs vector
     this->addVectors(this->IOs, inputs);

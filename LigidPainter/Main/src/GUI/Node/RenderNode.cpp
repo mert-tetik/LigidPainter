@@ -29,7 +29,20 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 
-void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &meshNodeScene,int currentNodeIndex, NodePanel& nodePanelData, Library &library, Model &model, int textureRes, Scene scene){
+void Node::render(  glm::vec2 videoScale,
+                    Mouse& mouse,
+                    Timer &timer,
+                    TextRenderer &textRenderer,
+                    Panel nodeEditorPanel,
+                    std::vector<Node> &meshNodeScene,
+                    int currentNodeIndex,
+                    NodePanel& nodePanelData,
+                    Library &library,
+                    Model &model,
+                    int textureRes,
+                    Scene scene
+                )
+{
     
 
     //Barriers (In order to prevent the overflow)
@@ -39,7 +52,24 @@ void Node::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &t
     this->nodePanel.additionalPos.y = nodePanelData.position.y + nodePanelData.mixVal.y - nodeEditorPanel.scale.y * 2;
 
     //Render the node panel which contains the input buttons and stuff
-    nodePanel.render(videoScale,mouse,timer,textRenderer,false);
+    nodePanel.render(videoScale,mouse,timer,textRenderer, this->nodeIndex == MATERIAL_ID_NODE || this->nodeIndex == MATERIAL_MASK_NODE);
+
+    if(nodePanel.sections[0].elements[0].button.clicked){
+        std::vector<NodeIO> inputs;
+        std::vector<glm::vec3> palette;
+        palette = nodePanel.sections[0].elements[0].button.texture.getMaterialIDPalette();
+        
+        inputs.push_back(NodeIO("Input1", nodePanel.sections[0].elements[0].button, colorPalette.mainColor,colorPalette,buttonShader,videoScale,1));
+
+        for (size_t i = 0; i < palette.size(); i++)
+        {
+            inputs.push_back(NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, buttonShader,"Input1", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,2));
+            inputs[inputs.size() - 1].element.button.color = glm::vec4(palette[i], 1.f);
+        }
+        
+        this->uploadNewIOs(inputs, {});
+    }
+
 
     //Auto scaling the node panel compatible with it's elements
     if(nodePanel.sections.size()){

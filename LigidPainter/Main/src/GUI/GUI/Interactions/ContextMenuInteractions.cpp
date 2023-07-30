@@ -208,13 +208,19 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             
             //Delete the node
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick && contextMenus[i].selectedElement){
-
-                ;
                 UTIL::deleteNode(meshNodeScene,contextMenus[i].selectedElement);                
-
             }
         
         }
+
+        if(i == 9 && contextMenus[i].dialogControl.isActive()){//If node scene context menu is active
+            //Add material ID node button pressed
+            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
+                meshNodeScene.push_back(Node(MATERIAL_ID_NODE, 0, shaders.buttonShader, shaders.connectionCurve, colorPalette, appTextures, videoScale, shaders.heightToNormalMap));
+                meshNodeScene[meshNodeScene.size()-1].nodePanel.pos = meshNodeScene[0].nodePanel.pos;
+            
+            }
+        } 
 
 
         if (   //Conditions to turn any context menu off
@@ -319,8 +325,12 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         contextMenus[8].pos.z = 0.95f;
     }
 
+    bool anyNodeHover = false;
     for (size_t i = 0; i < meshNodeScene.size(); i++)
     {
+        if((meshNodeScene[i].nodePanel.hover || meshNodeScene[i].barButton.hover))
+            anyNodeHover = true;
+
         if((meshNodeScene[i].nodePanel.hover || meshNodeScene[i].barButton.hover) && mouse.RClick && !meshNodeScene[i].cursorOnBarriers){
             contextMenus[7].dialogControl.activate();
             contextMenus[7].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
@@ -330,4 +340,11 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         }
     }
     
+    if((this->nodeEditorDisplayer.hover && !anyNodeHover) && mouse.RClick){
+        contextMenus[9].dialogControl.activate();
+        contextMenus[9].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
+        contextMenus[9].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[7].contextPanel.scale.y;
+        contextMenus[9].pos.z = 0.95f;
+        contextMenus[9].selectedElement = 0;
+    }
 }

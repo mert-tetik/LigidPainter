@@ -80,6 +80,8 @@ public:
 
 //!------------------------------NODE-----------------------------
 
+#define MATERIAL_MASK_NODE 3
+#define MATERIAL_ID_NODE 2
 #define MATERIAL_NODE 1
 #define MESH_NODE 0
 
@@ -95,6 +97,8 @@ private:
 
     /// @brief The button shader used for rendering GUI elements
     Shader buttonShader;  
+    
+    ColorPalette colorPalette;  
     
     /// @brief The height map to normal map shader used for processing the materials
     Shader heightToNormalShader;  
