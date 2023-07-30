@@ -249,9 +249,21 @@ namespace LigidGL{
 struct LigidCursor
 {
 public:
+
+    /*! 
+        @brief Is set in the create cursor function
+        -1 : other cursor
+        0 : arrow cursor
+        1 : pointer cursor
+        2 : vertical arrow cursor
+        3 : horizontal arrow cursor
+    */
+    int cursorType = -1;
+
     /// @brief Function to create a custom cursor
     /// @param cursorPixelData Size must be cursorWidth * cursorHeight * 4 
-    void createCursor(int cursorWidth, int cursorHeight, int cursorHotspotX, int cursorHotspotY, unsigned char* cursorPixelData);
+    /// @param cursorType -1 : other cursor, 0 : arrow cursor, 1 : pointer cursor, 2 : vertical arrow cursor, 3 : horizontal arrow cursor
+    void createCursor(int cursorWidth, int cursorHeight, int cursorHotspotX, int cursorHotspotY, unsigned char* cursorPixelData, int cursorType);
 
     // Platform-specific 
     #if defined(_WIN32) || defined(_WIN64)

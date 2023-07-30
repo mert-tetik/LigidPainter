@@ -52,6 +52,17 @@ void Panel::mouseTracking(Mouse& mouse){
         bottomSide.hover = false;
         topSide.hover = false;
     }
+
+    if(mouse.isCursorPointer()){
+        leftSide.hover = false;
+        leftSide.pressed = false;
+        rightSide.hover = false;
+        rightSide.pressed = false;
+        bottomSide.hover = false;
+        bottomSide.pressed = false;
+        topSide.hover = false;
+        topSide.pressed = false;
+    }
     
     hover = hover || leftSide.hover || rightSide.hover || bottomSide.hover || topSide.hover;
     
@@ -78,6 +89,7 @@ void Panel::mouseTracking(Mouse& mouse){
         topSide.pressed = true;
     if(!mouse.LPressed) //Corner released
         topSide.pressed = false;
+    
     //Change the cursor
     if(leftSide.hover || leftSide.pressed || rightSide.hover || rightSide.pressed)
         mouse.setCursor(mouse.hSlideCursor);
@@ -154,3 +166,4 @@ void Panel::prepDrawBtnHorizontally(Element &button,Element &previousButton,floa
     button.pos.z += 0.01f;
     button.pos.x = elementPos;
 }
+

@@ -61,20 +61,20 @@ void Mouse::loadCursors(){
 	unsigned char* pixels;
 
 	pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/PointerIcon.png", cursorScaleX, cursorScaleY, channel , 4, false); //rgba 0 
-	pointerCursor.createCursor(cursorScaleX, cursorScaleY, 15, 0, pixels);
+	pointerCursor.createCursor(cursorScaleX, cursorScaleY, 15, 0, pixels, 1);
 	activeCursor = pointerCursor;
 	//stbi_image_free(pixels);
 
 	pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/DefaultIcon.png", cursorScaleX, cursorScaleY, channel , 4,false);
-	defaultCursor.createCursor(cursorScaleX, cursorScaleY, 7,0 , pixels);
+	defaultCursor.createCursor(cursorScaleX, cursorScaleY, 7,0 , pixels, 0);
 	//stbi_image_free(pixels);
 
 	pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/hSlideCursor.png", cursorScaleX, cursorScaleY, channel , 4,false); //rgba 0 
-	hSlideCursor.createCursor(cursorScaleX, cursorScaleY, 15, 0, pixels);
+	hSlideCursor.createCursor(cursorScaleX, cursorScaleY, 15, 0, pixels, 3);
 	//stbi_image_free(pixels);
 	
 	pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/vSlideCursor.png", cursorScaleX, cursorScaleY, channel , 4,false); //rgba 0 
-	vSlideCursor.createCursor(cursorScaleX, cursorScaleY, 15, 0, pixels);
+	vSlideCursor.createCursor(cursorScaleX, cursorScaleY, 15, 0, pixels, 2);
 	//stbi_image_free(pixels);
 }
 
@@ -87,6 +87,7 @@ void Mouse::setCursor(LigidCursor cursor){
 /// @brief Was called at the end of the renderer.render (every frame)
 void Mouse::updateCursor(){//Call that every frame after rendering the UI elements
 	this->window.setCursor(activeCursor);
+	cursorTypeGotSet = activeCursor.cursorType;
 	activeCursor = defaultCursor;
 }
 
@@ -116,4 +117,8 @@ bool Mouse::isMouseHover(glm::vec2 scale, glm::vec2 pos) {
     }
 
     return false;
+}
+
+bool Mouse::isCursorPointer(){
+	return this->cursorTypeGotSet == 1; 
 }

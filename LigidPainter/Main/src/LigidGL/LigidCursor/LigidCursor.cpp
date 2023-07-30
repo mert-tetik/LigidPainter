@@ -38,7 +38,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #endif
 
-void LigidCursor::createCursor(int cursorWidth, int cursorHeight, int cursorHotspotX, int cursorHotspotY, unsigned char* cursorPixelData) {
+void LigidCursor::createCursor(int cursorWidth, int cursorHeight, int cursorHotspotX, int cursorHotspotY, unsigned char* cursorPixelData, int cursorType) {
+    
+    //Set the cursor type
+    this->cursorType = cursorType;
+
 #if defined(_WIN32) || defined(_WIN64)
     // Calculate the number of bytes per row in the cursorPixelData
     int bytesPerRow = cursorWidth * 4;

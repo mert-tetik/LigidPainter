@@ -644,10 +644,13 @@ public:
 	LigidCursor activeCursor; //updateCursor sets that cursor as the cursor
     LigidWindow window;
 
+    int cursorTypeGotSet = 0;
+
     Mouse();
     Mouse(LigidWindow window);
 
 	void loadCursors();
+    bool isCursorPointer();
 	void setCursor(LigidCursor cursor);
 	void updateCursor();
     bool isMouseHover(glm::vec2 scale, glm::vec2 position);
