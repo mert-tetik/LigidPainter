@@ -311,6 +311,9 @@ public:
     
     /// @brief Read the tmp file of the texture from the tmp folder and delete the readen file
     void readTMP();
+
+    std::vector<glm::vec3> getMaterialIDPalette();
+
 };
 
 

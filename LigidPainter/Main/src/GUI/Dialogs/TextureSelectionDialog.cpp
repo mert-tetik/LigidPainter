@@ -456,6 +456,8 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
                 glDeleteFramebuffers(1, &FBO);
 
             }
+
+            receivedTexture.getMaterialIDPalette();
                 
             receivedTexture.title = "SelectedTexture";
 
