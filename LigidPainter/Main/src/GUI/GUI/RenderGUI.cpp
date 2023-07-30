@@ -44,10 +44,13 @@ LigidWindow __window;
 glm::vec2 __videoScale; 
 Timer __timer; 
 bool __wasTextureSelectionDialogActive = false;
+glm::ivec2 __windowSize;
 
 void showTextureSelectionDialog(Texture& txtr){
     __texture_selection_dialog.show(__videoScale, __timer, __library, __projection, txtr, __window, __render_gui_textRenderer);
     __wasTextureSelectionDialogActive = true;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0,0,__windowSize.x,__windowSize.y);
 }
 
 bool wasTextureSelectionDialogActive(){
@@ -68,6 +71,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     __videoScale = videoScale; 
     __timer = timer; 
     __render_gui_textRenderer = textRenderer; 
+    __windowSize = context.windowScale;
 
 
     //Set pass less or equal
