@@ -147,16 +147,6 @@ std::vector<glm::vec3> Texture::getMaterialIDPalette(){
         // Define ranges for each color
         const double hue_range = 5.0;
 
-        // HSV values for each color
-        const double white_h = 0.0;
-        const double red_h = 0.0;
-        const double green_h = 120.0;
-        const double blue_h = 240.0;
-        const double pink_h = 300.0;
-        const double yellow_h = 60.0;
-        const double orange_h = 30.0;
-        const double cyan_h = 180.0;
-
         if(s < 5 && v > 90)
             detectedWhite++;
         else if(s < 5 && v < 10)

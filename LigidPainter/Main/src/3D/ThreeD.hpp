@@ -146,9 +146,6 @@ public:
     /*! @brief Indices of the mesh */
     std::vector<unsigned int> indices;
     
-    /*! @brief Vertex array object*/
-    unsigned int VAO;
-    
     /*! @brief Title of the mesh */
     std::string materialName;
     
@@ -161,10 +158,9 @@ public:
     /*! @brief Renders the mesh*/
     void Draw();
 
+    unsigned int VBO, EBO, VAO; //Vertex buffer object, element buffer object
+
 private:
-
-    unsigned int VBO, EBO; //Vertex buffer object, element buffer object
-
     /*! @brief initializes all the buffer objects/arrays */
     void setupMesh();
 

@@ -73,7 +73,7 @@ Node::Node(int nodeIndex, int materialID, Shader buttonShader, Shader connection
     }
     else if(nodeIndex == MATERIAL_ID_NODE){
             inputs =    {
-                NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),colorPalette,buttonShader,"Input1",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,1),
+                NodeIO("Put a Texture",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),colorPalette,buttonShader,"Put a Texture",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,1),
             };
             inputs[0].element.button.textureSelection = true;
     }
