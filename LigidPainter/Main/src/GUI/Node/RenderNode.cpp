@@ -56,7 +56,7 @@ void Node::render(  glm::vec2 videoScale,
     //Render the node panel which contains the input buttons and stuff
     nodePanel.render(videoScale,mouse,timer,textRenderer, this->nodeIndex == MATERIAL_ID_NODE || this->nodeIndex == MATERIAL_MASK_NODE);
 
-    if(nodePanel.sections[0].elements[0].button.clicked){
+    if(nodePanel.sections[0].elements[0].button.clicked && this->nodeIndex == MATERIAL_ID_NODE){
         std::vector<NodeIO> inputs;
         std::vector<NodeIO> outputs;
         std::vector<glm::vec3> palette;

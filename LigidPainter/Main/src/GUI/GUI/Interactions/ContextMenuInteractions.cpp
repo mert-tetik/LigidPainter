@@ -218,7 +218,11 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
                 meshNodeScene.push_back(Node(MATERIAL_ID_NODE, 0, shaders.buttonShader, shaders.connectionCurve, colorPalette, appTextures, videoScale, shaders.heightToNormalMap));
                 meshNodeScene[meshNodeScene.size()-1].nodePanel.pos = meshNodeScene[0].nodePanel.pos;
-            
+            }
+            //Add material mask node button pressed
+            else if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){
+                meshNodeScene.push_back(Node(MATERIAL_MASK_NODE, 0, shaders.buttonShader, shaders.connectionCurve, colorPalette, appTextures, videoScale, shaders.heightToNormalMap));
+                meshNodeScene[meshNodeScene.size()-1].nodePanel.pos = meshNodeScene[0].nodePanel.pos;
             }
         } 
 

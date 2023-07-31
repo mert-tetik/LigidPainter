@@ -527,6 +527,110 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
         //Return mesh by masking the retrieved meshes
         return msh;
     }
+    else if(node.nodeIndex == MATERIAL_MASK_NODE){
+        
+        Mesh blackMesh = UTIL::processNode(nodeScene[node.IOs[2].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, scene, textureRes);
+        Mesh whiteMesh = UTIL::processNode(nodeScene[node.IOs[3].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, scene, textureRes);
+
+        Shader maskingShader = Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/GrayScaleMasking.frag" ,nullptr, nullptr, nullptr);
+
+        maskingShader.use();
+        maskingShader.setMat4("projection", glm::ortho(0.f,1.f,0.f,1.f));
+        maskingShader.setMat4("projectedPosProjection", glm::ortho(0.f,1.f,0.f,1.f));
+        maskingShader.setVec3("pos", glm::vec3(0.5f));
+        maskingShader.setVec2("scale", glm::vec2(0.5f));
+
+        maskingShader.setFloat("offset", node.IOs[1].element.rangeBar.value / 100.f);
+
+        maskingShader.setInt("maskTexture", 0);
+        maskingShader.setInt("texture_black", 1);
+        maskingShader.setInt("texture_white", 2);
+        
+        // Bind the mask
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, node.nodePanel.sections[0].elements[0].button.texture.ID);
+
+        for (size_t channelI = 0; channelI < 6; channelI++)
+        {
+            /* Black */
+            glActiveTexture(GL_TEXTURE1);
+            if(channelI == 0)
+                glBindTexture(GL_TEXTURE_2D, blackMesh.albedo.ID);
+            if(channelI == 1)
+                glBindTexture(GL_TEXTURE_2D, blackMesh.roughness.ID);
+            if(channelI == 2)
+                glBindTexture(GL_TEXTURE_2D, blackMesh.metallic.ID);
+            if(channelI == 3)
+                glBindTexture(GL_TEXTURE_2D, blackMesh.normalMap.ID);
+            if(channelI == 4)
+                glBindTexture(GL_TEXTURE_2D, blackMesh.heightMap.ID);
+            if(channelI == 5)
+                glBindTexture(GL_TEXTURE_2D, blackMesh.ambientOcclusion.ID);
+            
+            /* White */
+            glActiveTexture(GL_TEXTURE2);
+            if(channelI == 0)
+                glBindTexture(GL_TEXTURE_2D, whiteMesh.albedo.ID);
+            if(channelI == 1)
+                glBindTexture(GL_TEXTURE_2D, whiteMesh.roughness.ID);
+            if(channelI == 2)
+                glBindTexture(GL_TEXTURE_2D, whiteMesh.metallic.ID);
+            if(channelI == 3)
+                glBindTexture(GL_TEXTURE_2D, whiteMesh.normalMap.ID);
+            if(channelI == 4)
+                glBindTexture(GL_TEXTURE_2D, whiteMesh.heightMap.ID);
+            if(channelI == 5)
+                glBindTexture(GL_TEXTURE_2D, whiteMesh.ambientOcclusion.ID);
+            
+            unsigned int mshID;
+
+            if(channelI == 0)
+                mshID = msh.albedo.ID;
+            if(channelI == 1)
+                mshID = msh.roughness.ID;
+            if(channelI == 2)
+                mshID = msh.metallic.ID;
+            if(channelI == 3)
+                mshID = msh.normalMap.ID;
+            if(channelI == 4)
+                mshID = msh.heightMap.ID;
+            if(channelI == 5)
+                mshID = msh.ambientOcclusion.ID;
+            
+            unsigned int FBO;
+            glGenFramebuffers(1,&FBO);
+            glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mshID, 0);
+            glViewport(0, 0, textureRes, textureRes);
+            
+            glClearColor(0.5,1,0,1);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            glDrawArrays(GL_TRIANGLES, 0 , 6);
+            
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glDeleteFramebuffers(0, &FBO);
+        }
+        
+        // DELETE ALL THE MESH CHANNEL TEXTURES
+        glDeleteTextures(1, &blackMesh.albedo.ID);
+        glDeleteTextures(1, &blackMesh.roughness.ID);
+        glDeleteTextures(1, &blackMesh.metallic.ID);
+        glDeleteTextures(1, &blackMesh.normalMap.ID);
+        glDeleteTextures(1, &blackMesh.heightMap.ID);
+        glDeleteTextures(1, &blackMesh.ambientOcclusion.ID);
+        
+        /* White */
+        glDeleteTextures(1, &whiteMesh.albedo.ID);
+        glDeleteTextures(1, &whiteMesh.roughness.ID);
+        glDeleteTextures(1, &whiteMesh.metallic.ID);
+        glDeleteTextures(1, &whiteMesh.normalMap.ID);
+        glDeleteTextures(1, &whiteMesh.heightMap.ID);
+        glDeleteTextures(1, &whiteMesh.ambientOcclusion.ID);
+
+        //Return masked node
+        return msh;
+    }
     else if(node.nodeIndex == MATERIAL_NODE){
         std::cout << "JJ" << std::endl;
         

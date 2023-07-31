@@ -71,6 +71,19 @@ Node::Node(int nodeIndex, int materialID, Shader buttonShader, Shader connection
     else if(nodeIndex == MESH_NODE){
         //Insert the inputs later
     }
+    else if(nodeIndex == MATERIAL_MASK_NODE){
+        inputs =    {
+            NodeIO("Put a Texture",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),colorPalette,buttonShader,"Put a Texture",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,1),
+            NodeIO("Offset",Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,buttonShader,"Offset",Texture(),2.f,0.f,100.f,50.f, appTextures)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,1),
+            NodeIO("Black Side",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,buttonShader,"Black Side",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,0),
+            NodeIO("White Side",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,buttonShader,"White Side",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,0),
+        };
+        outputs.push_back(NodeIO("Output",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, buttonShader,"Output", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,2));
+        inputs[0].element.button.textureSelection = true;
+        
+        inputs[2].element.button.color = glm::vec4(glm::vec3(0.f), 1.f);
+        inputs[3].element.button.color = glm::vec4(1.f);
+    }
     else if(nodeIndex == MATERIAL_ID_NODE){
             inputs =    {
                 NodeIO("Put a Texture",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),colorPalette,buttonShader,"Put a Texture",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,1),
