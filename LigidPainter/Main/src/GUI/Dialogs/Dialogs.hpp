@@ -312,7 +312,7 @@ class ExportDialog
     //Public member functions
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
                 Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model,MaterialEditorDialog &materialEditorDialog
-                ,std::vector<Node> &meshNodeScene, Model sphereModel);
+                ,std::vector<Node> &meshNodeScene, Model sphereModel,Scene scene);
  };
 
 

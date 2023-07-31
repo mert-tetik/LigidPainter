@@ -135,6 +135,7 @@ void Node::render(  glm::vec2 videoScale,
                     }
                     
                     clearConnections(currentNodeIndex,i,meshNodeScene);
+                    UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
 
                 }
 
@@ -186,52 +187,13 @@ void Node::render(  glm::vec2 videoScale,
                             }
                         }
 
-                        /*
-                        int meshI = 0;
-                        if(meshNodeScene[hoveredNodeI].nodeIndex == MATERIAL_NODE){
-                            meshI = hoveredIOI;
-                        }
-                        else if(meshNodeScene[currentNodeIndex].nodeIndex == MATERIAL_NODE){
-                            meshI = i;
-                        }
-                        */
-                        
-                        // TODO : Clear textures when node connection is disconnected 
-                        if(meshNodeScene[hoveredNodeI].nodeIndex == MESH_NODE || meshNodeScene[currentNodeIndex].nodeIndex == MESH_NODE){
-                            std::vector<Node> pipeline;
-                            if(meshNodeScene[hoveredNodeI].nodeIndex == MESH_NODE){ //The hovered node is a mesh node (another node to the mesh node)
-                                Mesh retMesh = UTIL::processNode(meshNodeScene[currentNodeIndex], meshNodeScene, library, model.meshes[hoveredIOI], heightToNormalShader, scene, textureRes);
-                                model.meshes[hoveredIOI].albedo.ID = retMesh.albedo.ID; 
-                                model.meshes[hoveredIOI].roughness.ID = retMesh.roughness.ID; 
-                                model.meshes[hoveredIOI].metallic.ID = retMesh.metallic.ID; 
-                                model.meshes[hoveredIOI].normalMap.ID = retMesh.normalMap.ID; 
-                                model.meshes[hoveredIOI].heightMap.ID = retMesh.heightMap.ID; 
-                                model.meshes[hoveredIOI].ambientOcclusion.ID = retMesh.ambientOcclusion.ID; 
-
-                                //TODO Delete old textures
-                            }
-                            else if(meshNodeScene[currentNodeIndex].nodeIndex == MESH_NODE){ //The node's itself is mesh node (mesh node to another) 
-                                Mesh retMesh = UTIL::processNode(meshNodeScene[hoveredNodeI], meshNodeScene, library, model.meshes[i], heightToNormalShader, scene, textureRes);
-                                model.meshes[i].albedo.ID = retMesh.albedo.ID; 
-                                model.meshes[i].roughness.ID = retMesh.roughness.ID; 
-                                model.meshes[i].metallic.ID = retMesh.metallic.ID; 
-                                model.meshes[i].normalMap.ID = retMesh.normalMap.ID; 
-                                model.meshes[i].heightMap.ID = retMesh.heightMap.ID; 
-                                model.meshes[i].ambientOcclusion.ID = retMesh.ambientOcclusion.ID; 
-                                
-                                //TODO Delete old textures
-                            }
-
-                            
+                        if(meshNodeScene[hoveredNodeI].nodeIndex == MESH_NODE){ //The hovered node is a mesh node (another node to the mesh node)
+                            UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
                         }
 
-                        /*
-                        //For every modifier the material has (Output every modifier the material has)
-                        for (int i = material.materialModifiers.size() - 1; i >= 0; --i)    
-                        {
-                            material.materialModifiers[i].updateMaterialChannels(material, model.meshes[meshI - 1], textureRes, i, scene.projectionMatrix, scene.viewMatrix, heightToNormalShader);
+                        else if(meshNodeScene[currentNodeIndex].nodeIndex == MESH_NODE){ //The node's itself is mesh node (mesh node to another) 
+                            UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
                         }
-                        */
                     }
                 }
             }

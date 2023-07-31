@@ -552,28 +552,85 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
     return msh;
 }
 
-void UTIL::updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library, Shader heightToNormalShader, Scene scene, int textureRes){
-    for (size_t nodeI = 0; nodeI < meshNodeScene.size(); nodeI++)
+std::vector<int> findNodeIndexConnectedToMesh(std::vector<Node> meshNodeScene, int i){
+    
+    std::vector<int> res;
+
+    for (size_t IOI = 0; IOI < meshNodeScene[i].IOs.size(); IOI++)
     {
-        for (size_t IOI = 0; IOI < meshNodeScene[nodeI].IOs.size(); IOI++)
-        {
-            if(meshNodeScene[nodeI].IOs[IOI].state == 2){
-                for (size_t conI = 0; conI < meshNodeScene[nodeI].IOs[IOI].connections.size(); conI++)
-                {
-                    if(meshNodeScene[nodeI].IOs[IOI].connections[conI].nodeIndex == 0){
-                        Mesh retMesh = UTIL::processNode(meshNodeScene[nodeI], meshNodeScene, library, model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex], heightToNormalShader, scene, textureRes);
-                        model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].albedo.ID = retMesh.albedo.ID; 
-                        model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].roughness.ID = retMesh.roughness.ID; 
-                        model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].metallic.ID = retMesh.metallic.ID; 
-                        model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].normalMap.ID = retMesh.normalMap.ID; 
-                        model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].heightMap.ID = retMesh.heightMap.ID; 
-                        model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].ambientOcclusion.ID = retMesh.ambientOcclusion.ID;
-                    
-                        //TODO : Delete previous textures
+        if(meshNodeScene[i].IOs[IOI].state == 2){
+            for (size_t conI = 0; conI < meshNodeScene[i].IOs[conI].connections.size(); conI++)
+            {
+                if(meshNodeScene[i].IOs[IOI].connections[conI].nodeIndex == 0){
+                    res.push_back(i);
+                }
+                else{
+                    std::vector<int> rec = findNodeIndexConnectedToMesh(meshNodeScene,meshNodeScene[i].IOs[IOI].connections[conI].nodeIndex);
+                    for (size_t i = 0; i < rec.size(); i++)
+                    {
+                        res.push_back(rec[i]);
                     }
                 }
             }
         }
+    }
+    
+    return res;
+}
+
+void UTIL::updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library, Shader heightToNormalShader, Scene scene, int textureRes, int updateNodeI){
+    if(updateNodeI == -1){
+        for (size_t nodeI = 0; nodeI < meshNodeScene.size(); nodeI++)
+        {
+            for (size_t IOI = 0; IOI < meshNodeScene[nodeI].IOs.size(); IOI++)
+            {
+                if(meshNodeScene[nodeI].IOs[IOI].state == 2){
+                    for (size_t conI = 0; conI < meshNodeScene[nodeI].IOs[IOI].connections.size(); conI++)
+                    {
+                        if(meshNodeScene[nodeI].IOs[IOI].connections[conI].nodeIndex == 0){
+                            Mesh retMesh = UTIL::processNode(meshNodeScene[nodeI], meshNodeScene, library, model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex], heightToNormalShader, scene, textureRes);
+                            model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].albedo.ID = retMesh.albedo.ID; 
+                            model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].roughness.ID = retMesh.roughness.ID; 
+                            model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].metallic.ID = retMesh.metallic.ID; 
+                            model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].normalMap.ID = retMesh.normalMap.ID; 
+                            model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].heightMap.ID = retMesh.heightMap.ID; 
+                            model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].ambientOcclusion.ID = retMesh.ambientOcclusion.ID;
+
+                            //TODO : Delete previous textures
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else{
+        std::vector<int> indices = findNodeIndexConnectedToMesh(meshNodeScene, updateNodeI);
+
+        for (size_t i = 0; i < indices.size(); i++)
+        {
+            for (size_t IOI = 0; IOI < meshNodeScene[indices[i]].IOs.size(); IOI++)
+            {
+                if(meshNodeScene[indices[i]].IOs[IOI].state == 2){
+                    for (size_t conI = 0; conI < meshNodeScene[indices[i]].IOs[IOI].connections.size(); conI++)
+                    {
+                        if(meshNodeScene[indices[i]].IOs[IOI].connections[conI].nodeIndex == 0){
+                            Mesh retMesh = UTIL::processNode(meshNodeScene[indices[i]], meshNodeScene, library, model.meshes[meshNodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex], heightToNormalShader, scene, textureRes);
+                            model.meshes[meshNodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].albedo.ID = retMesh.albedo.ID; 
+                            model.meshes[meshNodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].roughness.ID = retMesh.roughness.ID; 
+                            model.meshes[meshNodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].metallic.ID = retMesh.metallic.ID; 
+                            model.meshes[meshNodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].normalMap.ID = retMesh.normalMap.ID; 
+                            model.meshes[meshNodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].heightMap.ID = retMesh.heightMap.ID; 
+                            model.meshes[meshNodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].ambientOcclusion.ID = retMesh.ambientOcclusion.ID;
+
+                            //TODO : Delete previous textures
+                        }
+                    }
+                }
+            }
+        }
+        
+
+        //TODO : Delete previous textures   
     }
 }
 

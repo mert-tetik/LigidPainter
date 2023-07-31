@@ -62,6 +62,6 @@ void nodeInteraction(
         //Update all the connections
         UTIL::updateAllTheNodeConnections(meshNodeScene);
     
-        UTIL::updateNodeResults(meshNodeScene, model, library, shaders.heightToNormalMap, scene, textureRes);
+        UTIL::updateNodeResults(meshNodeScene, model, library, shaders.heightToNormalMap, scene, textureRes, -1);
     }
 }
