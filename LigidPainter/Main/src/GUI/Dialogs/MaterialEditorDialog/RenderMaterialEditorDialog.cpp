@@ -53,7 +53,10 @@ void MaterialEditorDialog::render
                                     int textureRes,
                                     Box box,
                                     Context context,
-                                    std::vector<ContextMenu> &contextMenus
+                                    std::vector<ContextMenu> &contextMenus,
+                                    std::vector<Node>& meshNodeScene,
+                                    Model& model,
+                                    Scene scene
                                 )
 {
     
@@ -123,8 +126,10 @@ void MaterialEditorDialog::render
 
     //Close the dialog
     if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover) && mouse.LClick) || (barButton.hover && mouse.LDoubleClick)){
-        if(!wasTextureSelectionDialogActive() && !contextMenus[6].dialogControl.isActive() && !contextMenus[8].dialogControl.isActive())
+        if(!wasTextureSelectionDialogActive() && !contextMenus[6].dialogControl.isActive() && !contextMenus[8].dialogControl.isActive()){
+            UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes);
             this->deactivate(textureSelectionDialog);
+        }
 
     }
 

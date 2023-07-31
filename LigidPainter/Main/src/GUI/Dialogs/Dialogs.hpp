@@ -262,7 +262,8 @@ public:
 
     //Public member functions
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library,
-        Material &material, int textureRes,Box box,Context context,std::vector<ContextMenu> &contextMenus);
+                Material &material, int textureRes,Box box,Context context,std::vector<ContextMenu> &contextMenus,std::vector<Node>& meshNodeScene,Model& model,
+                Scene scene);
     void activate();
     void deactivate(TextureSelectionDialog &textureSelectionDialog);
 };
