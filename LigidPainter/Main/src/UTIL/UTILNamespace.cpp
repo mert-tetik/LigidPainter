@@ -250,7 +250,7 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
                 //An input can only have one connection unlike the outputs
                 
                 //TODO : If input has no connections
-                retrievedMeshes[cToS(node.IOs[i].element.button.color)] = processNode(nodeScene[node.IOs[i].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, scene, textureRes);
+                retrievedMeshes[cToS(node.IOs[i].element.button.color)] = UTIL::processNode(nodeScene[node.IOs[i].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, scene, textureRes);
             }
         }
         std::cout << "DD" << std::endl;

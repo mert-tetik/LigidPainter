@@ -37,7 +37,10 @@ void nodeInteraction(
                         std::vector<Node> &meshNodeScene,
                         Shaders shaders,
                         ColorPalette colorPalette,
-                        glm::vec2 videoScale
+                        glm::vec2 videoScale,
+                        Library library, 
+                        Scene scene, 
+                        int textureRes
                     )
 {
     
@@ -58,5 +61,7 @@ void nodeInteraction(
         
         //Update all the connections
         UTIL::updateAllTheNodeConnections(meshNodeScene);
+    
+        UTIL::updateNodeResults(meshNodeScene, model, library, shaders.heightToNormalMap, scene, textureRes);
     }
 }

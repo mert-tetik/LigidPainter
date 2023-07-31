@@ -37,7 +37,7 @@ void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, Library &
 void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &painter, Dropper &dropper,ColorPalette colorPalette,Shader buttonShader, AppTextures appTextures, Model &model, std::vector<Node> &meshNodeScene);
 void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog);
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Painter &painter);
-void nodeInteraction(Model &model, std::vector<Node> &meshNodeScene,Shaders shaders,ColorPalette colorPalette,glm::vec2 videoScale);
+void nodeInteraction(Model &model, std::vector<Node> &meshNodeScene,Shaders shaders,ColorPalette colorPalette,glm::vec2 videoScale, Library library, Scene scene, int textureRes);
 void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter);
 
 void UI::elementInteraction(
@@ -53,7 +53,8 @@ void UI::elementInteraction(
                                 int &textureRes,
                                 float screenGapPerc,
                                 Model &model, 
-                                Project& project
+                                Project& project,
+                                Scene scene
                             )
 {
     //!Dialog & panel state
@@ -95,7 +96,7 @@ void UI::elementInteraction(
     displayingModesPanelInteraction(displayingModesPanel, painter);
 
 
-    nodeInteraction(model,meshNodeScene,shaders,colorPalette,videoScale);
+    nodeInteraction(model,meshNodeScene,shaders,colorPalette,videoScale, library, scene, textureRes);
     
     this->panelPositioning(screenGapPerc,library,painter);
 }

@@ -55,6 +55,11 @@ class Node;
 struct Scene;
 /// @brief forward declared Panel class
 class Panel;
+/// @brief forward declared Mesh class
+class Mesh;
+/// @brief forward declared Shader class
+class Shader;
+
 
 /// @brief Global utility functions to help to do stuff
 namespace UTIL{
@@ -171,7 +176,7 @@ namespace UTIL{
     Mesh processNode(Node &node, std::vector<Node> &nodeScene, Library library, Mesh& mesh, Shader heightToNormalShader, Scene scene, int textureRes);
 
     /// @brief Updates the result textures of the every input of the mesh node
-    void updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library, Shader heightToNormalShader, Scene scene, int textureRes){
+    void updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library, Shader heightToNormalShader, Scene scene, int textureRes);
 }
 
 
