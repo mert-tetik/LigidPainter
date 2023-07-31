@@ -166,6 +166,416 @@ void UTIL::deleteNode(std::vector<Node>& meshNodeScene, int index){
         meshNodeScene.erase(meshNodeScene.begin() + index);
     }
 }
+static void initTexture(unsigned int &txtr, int textureRes){
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1,&txtr);
+    glBindTexture(GL_TEXTURE_2D,txtr);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glGenerateMipmap(GL_TEXTURE_2D);
+}
+
+std::string cToS(glm::vec4 clr){
+    if(clr == glm::vec4(1.,1.,1.,1.))
+        return "white";
+    if(clr == glm::vec4(0.,0.,0.,1.))
+        return "black";
+    if(clr == glm::vec4(1.,0.,0.,1.))
+        return "red";
+    if(clr == glm::vec4(1.,1.,0.,1.))
+        return "yellow";
+    if(clr == glm::vec4(1.,0.5,0.,1.))
+        return "orange";
+    if(clr == glm::vec4(0.,1.,0.,1.))
+        return "green";
+    if(clr == glm::vec4(0.,1.,1.,1.))
+        return "cyan";
+    if(clr == glm::vec4(0.,0.,1.,1.))
+        return "blue";
+    if(clr == glm::vec4(1.,0.,1.,1.))
+        return "pink";
+
+    return "other";
+}
+
+Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library, Mesh& mesh, Shader heightToNormalShader, Scene scene, int textureRes){
+    
+    std::cout << glGetError() << std::endl;
+    
+    std::cout << "AA" << std::endl;
+    Mesh msh = mesh;
+    initTexture(msh.albedo.ID, textureRes);
+    initTexture(msh.roughness.ID, textureRes);
+    initTexture(msh.metallic.ID, textureRes);
+    initTexture(msh.normalMap.ID, textureRes);
+    initTexture(msh.heightMap.ID, textureRes);
+    initTexture(msh.ambientOcclusion.ID, textureRes);
+
+    std::cout << "BB" << std::endl;
+    if(node.nodeIndex == MATERIAL_ID_NODE){
+        
+        Box box;
+        box.init();
+        box.bindBuffers();
+        
+        // Load the id masking shader
+        Shader idMaskingShader = Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/MaterialID.frag" ,nullptr, nullptr, nullptr);
+        
+        bool detectedWhite = false; 
+        bool detectedRed = false; 
+        bool detectedGreen = false; 
+        bool detectedBlue = false; 
+        bool detectedPink = false; 
+        bool detectedYellow = false; 
+        bool detectedOrange = false; 
+        bool detectedCyan = false; 
+        bool detectedBlack = false;
+        
+        std::cout << "CC" << std::endl;
+        
+        std::map<std::string, Mesh> retrievedMeshes;
+        for (size_t i = 0; i < node.IOs.size(); i++)
+        {
+            // 0 : input
+            // 1 : input without connections 
+            // 2 : output
+            // 3 : output without connections 
+            if(node.IOs[i].state == 0){
+                //An input can only have one connection unlike the outputs
+                
+                //TODO : If input has no connections
+                retrievedMeshes[cToS(node.IOs[i].element.button.color)] = processNode(nodeScene[node.IOs[i].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, scene, textureRes);
+            }
+        }
+        std::cout << "DD" << std::endl;
+
+        idMaskingShader.use();
+        idMaskingShader.setMat4("projection", glm::ortho(0.f,1.f,0.f,1.f));
+        idMaskingShader.setMat4("projectedPosProjection", glm::ortho(0.f,1.f,0.f,1.f));
+        idMaskingShader.setVec3("pos", glm::vec3(0.5f));
+        idMaskingShader.setVec2("scale", glm::vec2(0.5f));
+
+        idMaskingShader.setInt("IDTexture", 0);
+        idMaskingShader.setInt("texture_black", 1);
+        idMaskingShader.setInt("texture_white", 2);
+        idMaskingShader.setInt("texture_red", 3);
+        idMaskingShader.setInt("texture_green", 4);
+        idMaskingShader.setInt("texture_blue", 5);
+        idMaskingShader.setInt("texture_yellow", 6);
+        idMaskingShader.setInt("texture_orange", 7);
+        idMaskingShader.setInt("texture_cyan", 8);
+        idMaskingShader.setInt("texture_pink", 9);
+
+        // Bind the id mask
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, node.IOs[0].element.button.texture.ID);
+        
+        std::cout << "EE" << std::endl;
+        for (size_t channelI = 0; channelI < 6; channelI++)
+        {
+            
+            /* Black */
+            glActiveTexture(GL_TEXTURE1);
+            if(channelI == 0)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 0.f , 1.f))].albedo.ID);
+            if(channelI == 1)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 0.f , 1.f))].roughness.ID);
+            if(channelI == 2)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 0.f , 1.f))].metallic.ID);
+            if(channelI == 3)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 0.f , 1.f))].normalMap.ID);
+            if(channelI == 4)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 0.f , 1.f))].heightMap.ID);
+            if(channelI == 5)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 0.f , 1.f))].ambientOcclusion.ID);
+            
+            /* White */
+            glActiveTexture(GL_TEXTURE2);
+            if(channelI == 0)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 1.f , 1.f))].albedo.ID);
+            if(channelI == 1)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 1.f , 1.f))].roughness.ID);
+            if(channelI == 2)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 1.f , 1.f))].metallic.ID);
+            if(channelI == 3)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 1.f , 1.f))].normalMap.ID);
+            if(channelI == 4)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 1.f , 1.f))].heightMap.ID);
+            if(channelI == 5)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 1.f , 1.f))].ambientOcclusion.ID);
+            
+            /* Red */
+            glActiveTexture(GL_TEXTURE3);
+            if(channelI == 0)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 0.f , 1.f))].albedo.ID);
+            if(channelI == 1)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 0.f , 1.f))].roughness.ID);
+            if(channelI == 2)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 0.f , 1.f))].metallic.ID);
+            if(channelI == 3)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 0.f , 1.f))].normalMap.ID);
+            if(channelI == 4)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 0.f , 1.f))].heightMap.ID);
+            if(channelI == 5)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 0.f , 1.f))].ambientOcclusion.ID);
+            
+            /* Green */
+            glActiveTexture(GL_TEXTURE4);
+            if(channelI == 0)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 0.f , 1.f))].albedo.ID);
+            if(channelI == 1)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 0.f , 1.f))].roughness.ID);
+            if(channelI == 2)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 0.f , 1.f))].metallic.ID);
+            if(channelI == 3)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 0.f , 1.f))].normalMap.ID);
+            if(channelI == 4)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 0.f , 1.f))].heightMap.ID);
+            if(channelI == 5)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 0.f , 1.f))].ambientOcclusion.ID);
+            
+            /* Blue */
+            glActiveTexture(GL_TEXTURE5);
+            if(channelI == 0)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 1.f , 1.f))].albedo.ID);
+            if(channelI == 1)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 1.f , 1.f))].roughness.ID);
+            if(channelI == 2)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 1.f , 1.f))].metallic.ID);
+            if(channelI == 3)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 1.f , 1.f))].normalMap.ID);
+            if(channelI == 4)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 1.f , 1.f))].heightMap.ID);
+            if(channelI == 5)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 1.f , 1.f))].ambientOcclusion.ID);
+            
+            /* Yellow */
+            glActiveTexture(GL_TEXTURE6);
+            if(channelI == 0)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 0.f , 1.f))].albedo.ID);
+            if(channelI == 1)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 0.f , 1.f))].roughness.ID);
+            if(channelI == 2)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 0.f , 1.f))].metallic.ID);
+            if(channelI == 3)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 0.f , 1.f))].normalMap.ID);
+            if(channelI == 4)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 0.f , 1.f))].heightMap.ID);
+            if(channelI == 5)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 0.f , 1.f))].ambientOcclusion.ID);
+            
+            /* Orange */
+            glActiveTexture(GL_TEXTURE7);
+            if(channelI == 0)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.5f, 0.f , 1.f))].albedo.ID);
+            if(channelI == 1)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.5f, 0.f , 1.f))].roughness.ID);
+            if(channelI == 2)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.5f, 0.f , 1.f))].metallic.ID);
+            if(channelI == 3)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.5f, 0.f , 1.f))].normalMap.ID);
+            if(channelI == 4)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.5f, 0.f , 1.f))].heightMap.ID);
+            if(channelI == 5)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.5f, 0.f , 1.f))].ambientOcclusion.ID);
+            
+            /* Cyan */
+            glActiveTexture(GL_TEXTURE8);
+            if(channelI == 0)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 1.f , 1.f))].albedo.ID);
+            if(channelI == 1)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 1.f , 1.f))].roughness.ID);
+            if(channelI == 2)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 1.f , 1.f))].metallic.ID);
+            if(channelI == 3)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 1.f , 1.f))].normalMap.ID);
+            if(channelI == 4)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 1.f , 1.f))].heightMap.ID);
+            if(channelI == 5)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 1.f , 1.f))].ambientOcclusion.ID);
+            
+            /* Pink */
+            glActiveTexture(GL_TEXTURE9);
+            if(channelI == 0)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))].albedo.ID);
+            if(channelI == 1)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))].roughness.ID);
+            if(channelI == 2)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))].metallic.ID);
+            if(channelI == 3)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))].normalMap.ID);
+            if(channelI == 4)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))].heightMap.ID);
+            if(channelI == 5)
+                glBindTexture(GL_TEXTURE_2D, retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))].ambientOcclusion.ID);
+        
+            unsigned int mshID;
+
+            if(channelI == 0)
+                mshID = msh.albedo.ID;
+            if(channelI == 1)
+                mshID = msh.roughness.ID;
+            if(channelI == 2)
+                mshID = msh.metallic.ID;
+            if(channelI == 3)
+                mshID = msh.normalMap.ID;
+            if(channelI == 4)
+                mshID = msh.heightMap.ID;
+            if(channelI == 5)
+                mshID = msh.ambientOcclusion.ID;
+            
+            std::cout << "FF : " << mshID << std::endl;
+            
+            unsigned int FBO;
+            glGenFramebuffers(1,&FBO);
+            glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mshID, 0);
+            glViewport(0, 0, textureRes, textureRes);
+            
+            glClearColor(0.5,1,0,1);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            glDrawArrays(GL_TRIANGLES, 0 , 6);
+            
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glDeleteFramebuffers(0, &FBO);
+        }
+
+        std::cout << "GG" << std::endl;
+
+
+        // DELETE ALL THE MESH CHANNEL TEXTURES
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 0.f , 1.f))].albedo.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 0.f , 1.f))].roughness.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 0.f , 1.f))].metallic.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 0.f , 1.f))].normalMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 0.f , 1.f))].heightMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 0.f , 1.f))].ambientOcclusion.ID);
+        
+        /* White */
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 1.f , 1.f))].albedo.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 1.f , 1.f))].roughness.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 1.f , 1.f))].metallic.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 1.f , 1.f))].normalMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 1.f , 1.f))].heightMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 1.f , 1.f))].ambientOcclusion.ID);
+        
+        /* Red */
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 0.f , 1.f))].albedo.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 0.f , 1.f))].roughness.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 0.f , 1.f))].metallic.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 0.f , 1.f))].normalMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 0.f , 1.f))].heightMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 0.f , 1.f))].ambientOcclusion.ID);
+        
+        /* Green */
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 0.f , 1.f))].albedo.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 0.f , 1.f))].roughness.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 0.f , 1.f))].metallic.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 0.f , 1.f))].normalMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 0.f , 1.f))].heightMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 0.f , 1.f))].ambientOcclusion.ID);
+        
+        /* Blue */
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 1.f , 1.f))].albedo.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 1.f , 1.f))].roughness.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 1.f , 1.f))].metallic.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 1.f , 1.f))].normalMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 1.f , 1.f))].heightMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 0.f, 1.f , 1.f))].ambientOcclusion.ID);
+        
+        /* Yellow */
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 0.f , 1.f))].albedo.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 0.f , 1.f))].roughness.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 0.f , 1.f))].metallic.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 0.f , 1.f))].normalMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 0.f , 1.f))].heightMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 1.f, 0.f , 1.f))].ambientOcclusion.ID);
+        
+        /* Orange */
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.5f, 0.f , 1.f))].albedo.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.5f, 0.f , 1.f))].roughness.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.5f, 0.f , 1.f))].metallic.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.5f, 0.f , 1.f))].normalMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.5f, 0.f , 1.f))].heightMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.5f, 0.f , 1.f))].ambientOcclusion.ID);
+        
+        /* Cyan */
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 1.f , 1.f))].albedo.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 1.f , 1.f))].roughness.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 1.f , 1.f))].metallic.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 1.f , 1.f))].normalMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 1.f , 1.f))].heightMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(0.f, 1.f, 1.f , 1.f))].ambientOcclusion.ID);
+        
+        /* Pink */
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))].albedo.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))].roughness.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))].metallic.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))].normalMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))].heightMap.ID);
+        glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))].ambientOcclusion.ID);
+            
+        std::cout << "HH" << std::endl;
+
+        //Return mesh by masking the retrieved meshes
+        return msh;
+    }
+    else if(node.nodeIndex == MATERIAL_NODE){
+        std::cout << "JJ" << std::endl;
+        
+        Material material;
+        for (size_t i = 0; i < library.materials.size(); i++)
+        {
+            if(node.materialID == library.materials[i].uniqueID)
+                material = library.materials[i];
+        }
+        
+        std::cout << "KK" << std::endl;
+        for (int i = material.materialModifiers.size() - 1; i >= 0; --i)    
+        {
+            material.materialModifiers[i].updateMaterialChannels(material, msh, textureRes, i, scene.projectionMatrix, scene.viewMatrix, heightToNormalShader);
+        }
+
+        std::cout << "LL" << std::endl;
+        
+        //Return mesh by creating using material modifiers
+        return msh;
+    }
+
+    return msh;
+}
+
+void UTIL::updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library, Shader heightToNormalShader, Scene scene, int textureRes){
+    for (size_t nodeI = 0; nodeI < meshNodeScene.size(); nodeI++)
+    {
+        for (size_t IOI = 0; IOI < meshNodeScene[nodeI].IOs.size(); IOI++)
+        {
+            if(meshNodeScene[nodeI].IOs[IOI].state == 2){
+                for (size_t conI = 0; conI < meshNodeScene[nodeI].IOs[IOI].connections.size(); conI++)
+                {
+                    if(meshNodeScene[nodeI].IOs[IOI].connections[conI].nodeIndex == 0){
+                        Mesh retMesh = UTIL::processNode(meshNodeScene[nodeI], meshNodeScene, library, model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex], heightToNormalShader, scene, textureRes);
+                        model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].albedo.ID = retMesh.albedo.ID; 
+                        model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].roughness.ID = retMesh.roughness.ID; 
+                        model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].metallic.ID = retMesh.metallic.ID; 
+                        model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].normalMap.ID = retMesh.normalMap.ID; 
+                        model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].heightMap.ID = retMesh.heightMap.ID; 
+                        model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].ambientOcclusion.ID = retMesh.ambientOcclusion.ID;
+                    
+                        //TODO : Delete previous textures
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 std::string UTIL::rmvPath(std::string startingPath, std::string fullPath) 

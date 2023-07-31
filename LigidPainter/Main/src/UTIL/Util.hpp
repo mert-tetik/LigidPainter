@@ -167,6 +167,11 @@ namespace UTIL{
     /// @param meshNodeScene 
     /// @param index remove the meshNodeScene[index]
     void deleteNode(std::vector<Node>& meshNodeScene, int index);
+
+    Mesh processNode(Node &node, std::vector<Node> &nodeScene, Library library, Mesh& mesh, Shader heightToNormalShader, Scene scene, int textureRes);
+
+    /// @brief Updates the result textures of the every input of the mesh node
+    void updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library, Shader heightToNormalShader, Scene scene, int textureRes){
 }
 
 
