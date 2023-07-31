@@ -1011,7 +1011,6 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
-    textureResolution = 512;
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -1109,7 +1108,6 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
-    textureResolution = 512;
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -1186,7 +1184,6 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
-    textureResolution = 512;
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -1289,7 +1286,6 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
-    textureResolution = 512;
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -1380,7 +1376,6 @@ void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
-    textureResolution = 512;
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -1491,7 +1486,6 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
-    textureResolution = 512;
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -1601,7 +1595,6 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
-    textureResolution = 512;
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -1708,7 +1701,6 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
-    textureResolution = 512;
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -1816,7 +1808,6 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
-    textureResolution = 512;
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
