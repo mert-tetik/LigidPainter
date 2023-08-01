@@ -249,8 +249,17 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
             if(node.IOs[i].state == 0){
                 //An input can only have one connection unlike the outputs
                 
-                //TODO : If input has no connections
-                retrievedMeshes[cToS(node.IOs[i].element.button.color)] = UTIL::processNode(nodeScene[node.IOs[i].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, scene, textureRes);
+                if(node.IOs[i].connections.size())
+                    retrievedMeshes[cToS(node.IOs[i].element.button.color)] = UTIL::processNode(nodeScene[node.IOs[i].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, scene, textureRes);
+                else{
+                    retrievedMeshes[cToS(node.IOs[i].element.button.color)] = Mesh();
+                    initTexture(retrievedMeshes[cToS(node.IOs[i].element.button.color)].albedo.ID, 100);
+                    initTexture(retrievedMeshes[cToS(node.IOs[i].element.button.color)].roughness.ID, 100);
+                    initTexture(retrievedMeshes[cToS(node.IOs[i].element.button.color)].metallic.ID, 100);
+                    initTexture(retrievedMeshes[cToS(node.IOs[i].element.button.color)].normalMap.ID, 100);
+                    initTexture(retrievedMeshes[cToS(node.IOs[i].element.button.color)].heightMap.ID, 100);
+                    initTexture(retrievedMeshes[cToS(node.IOs[i].element.button.color)].ambientOcclusion.ID, 100);
+                }
             }
         }
         std::cout << "DD" << std::endl;
@@ -522,15 +531,33 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
         glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))].heightMap.ID);
         glDeleteTextures(1, &retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))].ambientOcclusion.ID);
             
-        std::cout << "HH" << std::endl;
-
         //Return mesh by masking the retrieved meshes
         return msh;
     }
     else if(node.nodeIndex == MATERIAL_MASK_NODE){
         
-        Mesh blackMesh = UTIL::processNode(nodeScene[node.IOs[2].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, scene, textureRes);
-        Mesh whiteMesh = UTIL::processNode(nodeScene[node.IOs[3].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, scene, textureRes);
+        Mesh blackMesh;
+        if(node.IOs[2].connections.size())
+            blackMesh = UTIL::processNode(nodeScene[node.IOs[2].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, scene, textureRes);
+        else{
+            initTexture(blackMesh.albedo.ID, 100);
+            initTexture(blackMesh.roughness.ID, 100);
+            initTexture(blackMesh.metallic.ID, 100);
+            initTexture(blackMesh.normalMap.ID, 100);
+            initTexture(blackMesh.heightMap.ID, 100);
+            initTexture(blackMesh.ambientOcclusion.ID, 100);
+        }
+        Mesh whiteMesh;
+        if(node.IOs[2].connections.size()) 
+            whiteMesh = UTIL::processNode(nodeScene[node.IOs[3].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, scene, textureRes);
+        else{
+            initTexture(whiteMesh.albedo.ID, 100);
+            initTexture(whiteMesh.roughness.ID, 100);
+            initTexture(whiteMesh.metallic.ID, 100);
+            initTexture(whiteMesh.normalMap.ID, 100);
+            initTexture(whiteMesh.heightMap.ID, 100);
+            initTexture(whiteMesh.ambientOcclusion.ID, 100);
+        }
 
         Shader maskingShader = Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/GrayScaleMasking.frag" ,nullptr, nullptr, nullptr);
 
