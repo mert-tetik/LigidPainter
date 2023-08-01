@@ -277,7 +277,7 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
         //* Bind the textures
         //painted texture
         glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, model.meshes[0].uvMask);
+        glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
         
         //paintingTexture 
         glActiveTexture(GL_TEXTURE6);
