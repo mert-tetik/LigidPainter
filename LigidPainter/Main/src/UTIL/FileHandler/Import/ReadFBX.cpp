@@ -41,7 +41,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 *   1 : Print node titles
 *   2 : Print node titles with the property data
 */
-#define LIGID_FBX_IMPORTER_PRINT_TEXT_STATE 0
+#define LIGID_FBX_IMPORTER_PRINT_TEXT_STATE 2
 #define LIGID_FBX_IMPORTER_TRIANGULATE true
 
 

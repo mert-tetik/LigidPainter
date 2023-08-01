@@ -168,7 +168,7 @@ void Node::render(  glm::vec2 videoScale,
                     getHoveredInputs(hoveredNodeI,hoveredIOI,meshNodeScene);
 
                     //A IO circle is hovered
-                    if(hoveredNodeI != 1000 && hoveredIOI != 1000){
+                    if(hoveredNodeI != 1000 && hoveredIOI != 1000 && hoveredNodeI != currentNodeIndex){ 
                         
                         //Delete the previous connection if an input IO is connected
                         if(IOs[i].state == 0)

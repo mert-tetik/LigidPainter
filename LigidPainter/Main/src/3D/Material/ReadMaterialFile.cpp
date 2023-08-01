@@ -75,11 +75,39 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
         
         for (size_t i = 0; i < materialModifierSize; i++)
         {
-
             size_t materialModifierModifierIndex;
             rf.read(reinterpret_cast<char*>(   &materialModifierModifierIndex     ),sizeof(uint64_t));
             
             MaterialModifier modifier(colorPalette , buttonShader , appTextures , materialModifierModifierIndex);
+
+            // -- Mask texture --
+            rf.read(reinterpret_cast<char*>(&modifier.maskTexture.proceduralID), sizeof(int));
+            
+            //Write the texture
+            if(modifier.maskTexture.proceduralID == -1){
+                //Get the resolution of the texture from the panel of the modifier
+                uint64_t txtrWidth;
+                uint64_t txtrHeight;
+                
+                //Write the texture resolution data
+                rf.read(reinterpret_cast<char*>(   &txtrWidth     ),sizeof(uint64_t));
+                rf.read(reinterpret_cast<char*>(   &txtrHeight     ),sizeof(uint64_t));
+
+                //Get pixels of the texture
+                char* pixels = new char[txtrWidth * txtrHeight * 4];
+
+                //Write the texture data
+                rf.read(pixels , txtrWidth * txtrHeight * 4 * sizeof(char));
+                
+                modifier.maskTexture = Texture(pixels,txtrWidth,txtrHeight);
+
+                delete[] pixels;
+            }
+            else{
+                //Write the procedural texture properties
+                rf.read(reinterpret_cast<char*>(&modifier.maskTexture.proceduralnverted), sizeof(int));
+                rf.read(reinterpret_cast<char*>(&modifier.maskTexture.proceduralScale), sizeof(float));
+            }
 
             if(materialModifierModifierIndex == TEXTURE_MATERIAL_MODIFIER){ //Is a texture modifier
                 for (size_t channelI = 0; channelI < 6; channelI++) //For each material channel (albedo, roughness, metallic, normal map, etc.)
@@ -102,6 +130,33 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
                     modifier.sections[0].elements[channelI].button.texture = Texture(pixels,txtrWidth,txtrHeight);
 
                     delete[] pixels;
+                }
+
+                //Write the opacity values
+                for (size_t channelI = 0; channelI < 6; channelI++) {
+                    rf.read(reinterpret_cast<char*>(&modifier.sections[1].elements[channelI].rangeBar.value), sizeof(float));
+                }
+            }
+            else{
+                uint64_t sectionSize;
+                rf.read(reinterpret_cast<char*>(sectionSize), sizeof(uint64_t));
+                for (size_t secI = 0; secI < sectionSize; secI++)
+                {
+                    uint64_t elementSize;
+                    rf.read(reinterpret_cast<char*>(elementSize), sizeof(uint64_t));
+                    for (size_t eI = 0; eI < elementSize; eI++)
+                    {
+                        //Is rangeBar
+                        if(modifier.sections[secI].elements[eI].state == 1)
+                            rf.read(reinterpret_cast<char*>(   &modifier.sections[secI].elements[eI].rangeBar.value     ), sizeof(float));
+                        
+                        //Is button
+                        else if(modifier.sections[secI].elements[eI].state == 0){
+                            rf.read(reinterpret_cast<char*>(   &modifier.sections[secI].elements[eI].button.color.r     ), sizeof(float));
+                            rf.read(reinterpret_cast<char*>(   &modifier.sections[secI].elements[eI].button.color.g     ), sizeof(float));
+                            rf.read(reinterpret_cast<char*>(   &modifier.sections[secI].elements[eI].button.color.b     ), sizeof(float));
+                        }
+                    }
                 }
             }
 

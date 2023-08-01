@@ -68,6 +68,9 @@ void Material::writeFile(std::string path){
          
         for (size_t i = 0; i < materialModifierSize; i++)
         {
+            size_t materialModifierModifierIndex = materialModifiers[i].modifierIndex;
+            wf.write(reinterpret_cast<char*>(   &materialModifierModifierIndex     ),sizeof(uint64_t));
+            
             // -- Mask texture --
             wf.write(reinterpret_cast<char*>(&this->materialModifiers[i].maskTexture.proceduralID), sizeof(int));
             
@@ -96,8 +99,6 @@ void Material::writeFile(std::string path){
                 wf.write(reinterpret_cast<char*>(&this->materialModifiers[i].maskTexture.proceduralScale), sizeof(float));
             }
 
-            size_t materialModifierModifierIndex = materialModifiers[i].modifierIndex;
-            wf.write(reinterpret_cast<char*>(   &materialModifierModifierIndex     ),sizeof(uint64_t));
 
             if(materialModifierModifierIndex == TEXTURE_MATERIAL_MODIFIER){ //Is a texture modifier
                 for (size_t channelI = 0; channelI < 6; channelI++) //For each material channel (albedo, roughness, metallic, normal map, etc.)
