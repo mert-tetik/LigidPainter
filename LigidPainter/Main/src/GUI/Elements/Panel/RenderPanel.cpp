@@ -236,6 +236,7 @@ void Panel::drawPanel(
     if(hasSlider){
         
         sliderButton.pos = pos + this->additionalPos;
+
         
         if(leftSide.locked)
             sliderButton.pos.x = pos.x + this->additionalPos.x + sliderButton.scale.x + scale.x;
@@ -252,13 +253,20 @@ void Panel::drawPanel(
 
             if(sliderButton.clickState1){ //Pressed
                 //Move the slidebar
-                slideVal += mouse.mouseOffset.y/videoScale.y*100.f;
+                slideVal += mouse.mouseOffset.y / videoScale.y*100.f;
             } 
+            if(this->hover){
+                if(mouse.mouseScroll > 100)
+                    mouse.mouseScroll = 100;
+                if(mouse.mouseScroll < -100)
+                    mouse.mouseScroll = -100;
+                slideVal -= mouse.mouseScroll / videoScale.y * 100.f;
+            }
 
             if(slideVal < 0) //If the slider is out of boundaries
                 slideVal = 0; //Get the slide bar back
 
-            if (sliderButton.pos.y + sliderButton.scale.y >= pos.y + this->additionalPos.y + scale.y && mouse.mouseOffset.y > 0) {
+            if (sliderButton.pos.y + sliderButton.scale.y >= pos.y + this->additionalPos.y + scale.y && (mouse.mouseOffset.y > 0 || mouse.mouseScroll < 0)) {
                 // If the slider is out of boundaries
                 slideVal = sliderButton.pos.y - (pos.y + this->additionalPos.y - scale.y) - sliderButton.scale.y; // Set slideVal to its maximum value
             }

@@ -64,10 +64,10 @@ DisplayerDialog::DisplayerDialog(
                     Element(Button()),
                     {
                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),colorPalette,buttonShader, ""  , appTextures.greetingDialogImage, 1.f,true)),
-                        Element(RangeBar(0,glm::vec2(2,1),colorPalette,buttonShader, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f, appTextures)), 
-                        Element(RangeBar(0,glm::vec2(2,1),colorPalette,buttonShader, "Blur"  , Texture(), 1.f,0.f,100.f,0.f, appTextures)), 
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette,buttonShader, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f, appTextures)), 
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette,buttonShader, "Blur"  , Texture(), 1.f,0.f,100.f,0.f, appTextures)), 
 
-                        Element(RangeBar(0,glm::vec2(2,1),colorPalette,buttonShader, "Opacity"  , Texture(), 1.f,0.f,100.f,0.f, appTextures)), 
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette,buttonShader, "Opacity"  , Texture(), 1.f,0.f,100.f,0.f, appTextures)), 
                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,buttonShader, "Color"  , Texture(), 1.f, false)),
                     }
                 )

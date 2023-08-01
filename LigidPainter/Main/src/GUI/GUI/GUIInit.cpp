@@ -160,13 +160,13 @@ void UI::init
                                 //Section(
                                 //    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Soften"  , appTextures.softenIcon, 3.f,true)),
                                 //    {   
-                                //        Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Quality (samples)"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette,shaders.buttonShader, "Quality (samples)"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                 //    }
                                 //),
                                 //Section(
                                 //    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Smear"  , appTextures.smearIcon, 3.f,true)),
                                 //    {   
-                                //        Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Quality (samples)"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette,shaders.buttonShader, "Quality (samples)"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                 //    }
                                 //),
                                 //Section(
@@ -175,9 +175,9 @@ void UI::init
                                 //        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Box"  , appTextures.TDModelIcon, 1.f,false)),
                                 //        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Gradient"  , 1.f)),
                                 //        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Depth Test"  , 1.f)),
-                                //        Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Lasso"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                //        Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Polygonal Lasso"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                //        Element(RangeBar(0,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Circle"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette,shaders.buttonShader, "Lasso"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette,shaders.buttonShader, "Polygonal Lasso"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette,shaders.buttonShader, "Circle"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
                                 //    }
                                 //),
                                 Section(

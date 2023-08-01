@@ -937,28 +937,41 @@ static void parseFBXMeshData(
     
     // TODO Seperate unique vertices for each mesh
 
+    // Give an error if the polygonVertexIndices array & edges array are the same
     if (polygonVertexIndices.size() != edges.size())
     {
         std::cout << "ERROR: Reading FBX file. Can't parse mesh data. Sizes of the polygonVertexIndices & the edges are not the same." << std::endl;
         return;
     }
 
+    //Contains the unique vertex values generated
     std::vector<Vertex> uniqueVertices;
-    std::vector<unsigned int> indices;
 
-    std::map<int, int> posData;
+    // polygonVertexIndices index, uniqueVertices array index 
+    std::map<std::pair<int,int>, int> posData;
 
-    for (size_t i = 0; i < uvIndices.size(); i++)
+    // Mapping the indices
+    for (size_t i = 0; i < polygonVertexIndices.size(); i++)
     {
-        int uvIndex = uvIndices[i];
+        
+        /*
+            uvIndices array contains the necessary indices
+            for matching the texture coordinates & the vertex
+            position data without repeating
 
-        int posIndex = polygonVertexIndices[uvIndex];
+            goes like : 0, 1, 2, 3, 5, 8, 9
+        */
+        // int uvIndex = uvIndices[i];
+
+        // Get the index of the position
+        int posIndex = polygonVertexIndices[i];
         if (posIndex < 0)
             posIndex = abs(posIndex) - 1;
 
-        int edgeIndex = edges[uvIndex];
+        // Get the index of the texture coordinate
+        int edgeIndex = edges[i];
         if (edgeIndex  < 0)
-            edgeIndex  = abs(edgeIndex ) - 1;
+            edgeIndex  = abs(edgeIndex) - 1;
 
         Vertex uniqueVert;
         
@@ -974,17 +987,17 @@ static void parseFBXMeshData(
         }
         uniqueVert.TexCoords = UVs[edgeIndex];
         
-
-        if(uvIndex >= normals.size()){
+        if(i >= normals.size()){
             std::cout << "ERROR : Reading fbx file. Normal vector index is not valid." << std::endl;
             return;
         }
-        uniqueVert.Normal = normals[uvIndex];
+        uniqueVert.Normal = normals[i];
         
-        posData[posIndex] = uniqueVertices.size();
+        posData[std::make_pair(polygonVertexIndices[i], edges[i])] = uniqueVertices.size();
         uniqueVertices.push_back(uniqueVert);
     }
 
+    //Get the biggest material index
     int biggestMatIndex = 0;
     for (size_t i = 0; i < materials.size(); i++)
     {
@@ -992,6 +1005,8 @@ static void parseFBXMeshData(
             biggestMatIndex = materials[i];
     }
 
+    //Generate meshes
+    //Pass all the unique vertex values to each mesh
     for (size_t i = 0; i < biggestMatIndex + 1; i++)
     {
         meshVertices.push_back(uniqueVertices);
@@ -1003,8 +1018,9 @@ static void parseFBXMeshData(
     int faceCounter = 0;
     for (size_t i = 0; i < polygonVertexIndices.size(); i++)
     {
+        
         faceI++;
-    
+        
         /* Triangulation */
         if (polygonVertexIndices[i] < 0){
             int faceCount = faceI - 2;
@@ -1018,26 +1034,21 @@ static void parseFBXMeshData(
             int vStartI = i - faceI + 1;
             for (size_t fI = 0; fI < faceCount; fI++)
             {
-                glm::vec3 face;
+                glm::ivec3 facePos;
+                glm::ivec3 faceEdge;
                 
-                if(vStartI + 2 + fI >= polygonVertexIndices.size()){
+                if(vStartI + 2 + fI >= edges.size()){
                     break;
                 }
 
-                face.x = polygonVertexIndices[vStartI];
-                face.y = polygonVertexIndices[vStartI + 1 + fI];
-                face.z = polygonVertexIndices[vStartI + 2 + fI];
+                facePos.x = polygonVertexIndices[vStartI];
+                facePos.y = polygonVertexIndices[vStartI + 1 + fI];
+                facePos.z = polygonVertexIndices[vStartI + 2 + fI];
+                
+                faceEdge.x = edges[vStartI];
+                faceEdge.y = edges[vStartI + 1 + fI];
+                faceEdge.z = edges[vStartI + 2 + fI];
 
-            
-                if (face.x < 0){
-                    face.x = abs(face.x) - 1;
-                }
-                if (face.y < 0){
-                    face.y = abs(face.y) - 1;
-                }
-                if (face.z < 0){
-                    face.z = abs(face.z) - 1;
-                }
                 int materialI;
                 if(materials.size() && materials.size() != 1)
                     materialI = materials[faceCounter];
@@ -1046,33 +1057,32 @@ static void parseFBXMeshData(
                 else
                     materialI = 0;
 
-                meshIndices[materialI].push_back(posData[face.x]);
-                meshIndices[materialI].push_back(posData[face.y]);
-                meshIndices[materialI].push_back(posData[face.z]);
+                meshIndices[materialI].push_back(posData[std::make_pair(facePos.x, faceEdge.x)]);
+                meshIndices[materialI].push_back(posData[std::make_pair(facePos.y, faceEdge.y)]);
+                meshIndices[materialI].push_back(posData[std::make_pair(facePos.z, faceEdge.z)]);
 
                 /* Tangent calculations */
-                meshVertices[materialI][posData[face.x]].Tangent = glm::vec3(0); 
-                meshVertices[materialI][posData[face.x]].Bitangent = glm::vec3(0); 
-                meshVertices[materialI][posData[face.y]].Tangent = glm::vec3(0); 
-                meshVertices[materialI][posData[face.y]].Bitangent = glm::vec3(0); 
-                meshVertices[materialI][posData[face.z]].Tangent = glm::vec3(0);
-                meshVertices[materialI][posData[face.z]].Bitangent = glm::vec3(0);
-                calculateTangentBitangent(meshVertices[materialI][posData[face.x]], meshVertices[materialI][posData[face.y]], meshVertices[materialI][posData[face.z]]);
+                meshVertices[materialI][posData[std::make_pair(facePos.x, faceEdge.x)]].Tangent = glm::vec3(0); 
+                meshVertices[materialI][posData[std::make_pair(facePos.x, faceEdge.x)]].Bitangent = glm::vec3(0); 
+                meshVertices[materialI][posData[std::make_pair(facePos.y, faceEdge.y)]].Tangent = glm::vec3(0); 
+                meshVertices[materialI][posData[std::make_pair(facePos.y, faceEdge.y)]].Bitangent = glm::vec3(0); 
+                meshVertices[materialI][posData[std::make_pair(facePos.z, faceEdge.z)]].Tangent = glm::vec3(0);
+                meshVertices[materialI][posData[std::make_pair(facePos.z, faceEdge.z)]].Bitangent = glm::vec3(0);
+                calculateTangentBitangent(meshVertices[materialI][posData[std::make_pair(facePos.x, faceEdge.x)]], meshVertices[materialI][posData[std::make_pair(facePos.y, faceEdge.y)]], meshVertices[materialI][posData[std::make_pair(facePos.z, faceEdge.z)]]);
                 
                 /* Normalize tangent values */
-                meshVertices[materialI][posData[face.x]].Tangent = glm::normalize(meshVertices[materialI][posData[face.x]].Tangent); 
-                meshVertices[materialI][posData[face.x]].Bitangent = glm::normalize(meshVertices[materialI][posData[face.x]].Bitangent); 
-                meshVertices[materialI][posData[face.y]].Tangent = glm::normalize(meshVertices[materialI][posData[face.y]].Tangent); 
-                meshVertices[materialI][posData[face.y]].Bitangent = glm::normalize(meshVertices[materialI][posData[face.y]].Bitangent); 
-                meshVertices[materialI][posData[face.z]].Tangent = glm::normalize(meshVertices[materialI][posData[face.z]].Tangent);
-                meshVertices[materialI][posData[face.z]].Bitangent = glm::normalize(meshVertices[materialI][posData[face.z]].Bitangent);
+                meshVertices[materialI][posData[std::make_pair(facePos.x, faceEdge.x)]].Tangent = glm::normalize(meshVertices[materialI][posData[std::make_pair(facePos.x, faceEdge.x)]].Tangent); 
+                meshVertices[materialI][posData[std::make_pair(facePos.x, faceEdge.x)]].Bitangent = glm::normalize(meshVertices[materialI][posData[std::make_pair(facePos.x, faceEdge.x)]].Bitangent); 
+                meshVertices[materialI][posData[std::make_pair(facePos.y, faceEdge.y)]].Tangent = glm::normalize(meshVertices[materialI][posData[std::make_pair(facePos.y, faceEdge.y)]].Tangent); 
+                meshVertices[materialI][posData[std::make_pair(facePos.y, faceEdge.y)]].Bitangent = glm::normalize(meshVertices[materialI][posData[std::make_pair(facePos.y, faceEdge.y)]].Bitangent); 
+                meshVertices[materialI][posData[std::make_pair(facePos.z, faceEdge.z)]].Tangent = glm::normalize(meshVertices[materialI][posData[std::make_pair(facePos.z, faceEdge.z)]].Tangent);
+                meshVertices[materialI][posData[std::make_pair(facePos.z, faceEdge.z)]].Bitangent = glm::normalize(meshVertices[materialI][posData[std::make_pair(facePos.z, faceEdge.z)]].Bitangent);
             }
             
             faceI = 0;
             faceCounter++;
         }
     }
-
 }
 
 
