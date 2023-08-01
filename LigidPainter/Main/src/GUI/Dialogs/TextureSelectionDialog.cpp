@@ -362,7 +362,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, receivedTexture.ID, 0);
                 glViewport(0, 0, txtrRes, txtrRes);
 
-                glClearColor(1,1,1,1);
+                glClearColor(0,0,0,0);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
                 glm::mat4 projection = glm::ortho(
@@ -430,7 +430,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, receivedTexture.ID, 0);
                 glViewport(0, 0, displayRes, displayRes);
 
-                glClearColor(1,1,1,1);
+                glClearColor(0,0,0,0);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
                 /* Displaying texture */

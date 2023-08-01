@@ -43,8 +43,8 @@ void getImage(sampler2D txtr,out vec4 result){
 void main(){
     
     float procedural = getProcedural(Pos, theTextureProceduralID, theTextureProceduralScale, theTextureProceduralInverted);
-    if(proceduralID == -1)
-        fragColor = texture(theTexture,TexCoords);
+    if(theTextureProceduralID == -1)
+        fragColor = texture(theTexture, TexCoords);
     else
         fragColor = vec4(vec3(procedural), 1.);
     
@@ -56,7 +56,7 @@ void main(){
     else
         alpha *= procedural; 
     
-    vec3 clrResult = mix(texture(previousTxtr, TexCoords).rgb, fragColor.rgb, alpha);
+    vec3 clrResult = mix(texture(previousTxtr, TexCoords).rgb, fragColor.rgb, alpha * fragColor.a);
 
     fragColor = vec4(clrResult, 1.);
 }
