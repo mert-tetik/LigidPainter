@@ -32,12 +32,11 @@ class Mesh;
 #define DUST_MATERIAL_MODIFIER 1
 #define ASPHALT_MATERIAL_MODIFIER 2
 #define FABRIC_MATERIAL_MODIFIER 3
-#define MARBLE_MATERIAL_MODIFIER 4
-#define MOSS_MATERIAL_MODIFIER 5
-#define RUST_MATERIAL_MODIFIER 6
-#define SKIN_MATERIAL_MODIFIER 7
-#define SOLID_MATERIAL_MODIFIER 8
-#define WOODEN_MATERIAL_MODIFIER 9
+#define MOSS_MATERIAL_MODIFIER 4
+#define RUST_MATERIAL_MODIFIER 5
+#define SKIN_MATERIAL_MODIFIER 6
+#define SOLID_MATERIAL_MODIFIER 7
+#define WOODEN_MATERIAL_MODIFIER 8
 
 class MaterialModifier
 {
@@ -71,7 +70,6 @@ public:
     std::vector<Section> createRustModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
     std::vector<Section> createSkinModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
     std::vector<Section> createWoodenModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
-    std::vector<Section> createMarbleModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
     std::vector<Section> createSolidModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
 
 };
@@ -85,7 +83,6 @@ struct AppMaterialModifiers{
     MaterialModifier dustModifier;
     MaterialModifier asphaltModifier;
     MaterialModifier fabricModifier;
-    MaterialModifier marbleModifier;
     MaterialModifier mossModifier;
     MaterialModifier rustModifier;
     MaterialModifier skinModifier;

@@ -75,7 +75,6 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
 void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
 void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
-void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
 void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
 void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
 void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
@@ -130,12 +129,6 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader
         this->title = "Fabric Modifier";    
         shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/FabricModifier.frag",nullptr,nullptr,nullptr);
         this->updateMaterialChannels = fabricModifierUpdateMat;
-    }
-    else if(modifierIndex == MARBLE_MATERIAL_MODIFIER){
-        this->sections = createMarbleModifier(colorPalette,buttonShader,appTextures);
-        this->title = "Marble Modifier";    
-        shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/MarbleModifier.frag",nullptr,nullptr,nullptr);
-        this->updateMaterialChannels = marbleModifierUpdateMat;
     }
     else if(modifierIndex == MOSS_MATERIAL_MODIFIER){
         this->sections = createMossModifier(colorPalette,buttonShader,appTextures);
@@ -249,80 +242,6 @@ std::vector<Section> MaterialModifier::createSolidModifier(ColorPalette colorPal
 
     return sections;
 }
-
-std::vector<Section> MaterialModifier::createMarbleModifier(ColorPalette colorPalette, Shader buttonShader, AppTextures appTextures)
-{
-    std::vector<Section> sections =  
-    {
-        Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Marble Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
-            {
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 1", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 2", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 5.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Checker State", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 3, 1, appTextures),
-            }
-        ),
-        Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Crack Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
-            {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 5.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Depth", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 30.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Zebra Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Zebra Amp", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 67.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Profile", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Slope", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 50.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Width", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
-            }
-        ),
-        Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
-            {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 3, appTextures), // /100 
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8, appTextures), // /100 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 60.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 50.f, appTextures), // /100
-            }
-        ),
-        Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Corners", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
-            {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Radius", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 20.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 50.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Noise Size", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 80.f, appTextures), // /10
-            }
-        ),
-        Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
-            {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Reflectiveness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 70.f, appTextures), // /100
-            }
-        ),
-        Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
-            {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-            }
-        )
-    };
-
-    sections[0].elements[0].button.colorSelection = true;
-    sections[0].elements[1].button.colorSelection = true;
-
-    sections[0].elements[0].button.color = glm::vec4(glm::vec3(0.f), 1.f);
-    sections[0].elements[1].button.color = glm::vec4(glm::vec3(1.f), 1.f);
-
-    return sections;
-}
-
 
 std::vector<Section> MaterialModifier::createFabricModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
     std::vector<Section> sections =  
@@ -1372,115 +1291,6 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void marbleModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
-
-    Shader modifierShader = material.materialModifiers[curModI].shader;
-
-
-    //Set the OpenGL viewport to the texture resolution
-    glViewport(0,0,textureResolution,textureResolution);
-
-    //Set the orthographic projection to the texture resolution
-    glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
-
-    //Transform values to take the texture in to the middle of the screen and cover it completely
-    glm::vec2 fragScale = glm::vec2((float)textureResolution/2.f,(float)textureResolution/2.f);
-    glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
-
-    //TODO Don't create the shader in the modifier function
-    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
-
-    //Disable the depth test (just in case)
-    for (int channelI = 0; channelI < 6; channelI++){
-    
-        unsigned int FBO;
-        Texture currentTexture;
-        Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
-        
-        //Set the uniforms of the modifier's shader
-        modifierShader.use(); //Use the shader of the modifier
-        modifierShader.setMat4("orthoProjection",projection); //Set the projection
-        modifierShader.setVec2("scale",fragScale); //Set the scale
-        modifierShader.setVec3("pos",fragPos); //Set the position
-        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
-        modifierShader.setMat4("view",view); //Set the projection
-
-        /* Channel Properties */
-                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
-        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
-        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
-        modifierShader.setInt("state", channelI); //Set the channel state
-        modifierShader.setInt("mask", 0); //Set the mask texture slot
-        modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
-
-        /* Marble Properties */
-        modifierShader.setVec3("color1", material.materialModifiers[curModI].sections[0].elements[0].button.color);
-        modifierShader.setVec3("color2", material.materialModifiers[curModI].sections[0].elements[1].button.color);
-        modifierShader.setFloat("scale", material.materialModifiers[curModI].sections[0].elements[2].rangeBar.value);
-        modifierShader.setInt("checkerState", material.materialModifiers[curModI].sections[0].elements[3].rangeBar.value); 
-
-        /* Crack Properties*/
-        modifierShader.setFloat("ofs", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 10.f);
-        modifierShader.setFloat("crackDepth", material.materialModifiers[curModI].sections[1].elements[1].rangeBar.value / 10.f);
-        modifierShader.setFloat("crackZebraScale", material.materialModifiers[curModI].sections[1].elements[2].rangeBar.value / 10.f); 
-        modifierShader.setFloat("crackZebraAmp", material.materialModifiers[curModI].sections[1].elements[3].rangeBar.value / 100.f);
-        modifierShader.setFloat("crackProfile", material.materialModifiers[curModI].sections[1].elements[4].rangeBar.value / 10.f);
-        modifierShader.setFloat("crackSlope", material.materialModifiers[curModI].sections[1].elements[5].rangeBar.value / 1.f);
-        modifierShader.setFloat("crackWidth", material.materialModifiers[curModI].sections[1].elements[6].rangeBar.value / 10.f);
-        modifierShader.setFloat("crackScale", material.materialModifiers[curModI].sections[1].elements[7].rangeBar.value / 1.f);
-
-        /* Noise Properties */
-        modifierShader.setInt("firstOctave", material.materialModifiers[curModI].sections[2].elements[0].rangeBar.value); 
-        modifierShader.setInt("octaves", material.materialModifiers[curModI].sections[2].elements[1].rangeBar.value);
-        modifierShader.setFloat("persistence", material.materialModifiers[curModI].sections[2].elements[2].rangeBar.value / 100.f);
-        modifierShader.setFloat("noiseStrength", material.materialModifiers[curModI].sections[2].elements[3].rangeBar.value / 100.f);
-
-        /* Corners */
-        modifierShader.setFloat("cornerBlackoutRadius", material.materialModifiers[curModI].sections[3].elements[0].rangeBar.value / 100.f);
-        modifierShader.setFloat("cornerBlackoutStrength", material.materialModifiers[curModI].sections[3].elements[1].rangeBar.value / 10.f);
-        modifierShader.setFloat("cornerBlackoutNoiseSize", material.materialModifiers[curModI].sections[3].elements[2].rangeBar.value / 10.f);
-
-        /* Element property */
-        modifierShader.setFloat("wetness", material.materialModifiers[curModI].sections[4].elements[0].rangeBar.value / 100.f);
-        modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[4].elements[1].rangeBar.value / 100.f);
-        modifierShader.setFloat("height", material.materialModifiers[curModI].sections[4].elements[2].rangeBar.value / 100.f);
-
-
-        // Bind the mask texture
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
-        
-        //Bind the previous texture
-        glActiveTexture(GL_TEXTURE1);
-        if(curModI != material.materialModifiers.size()-1)
-            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
-        else
-            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
-        
-        //Render the result to the framebuffer
-        mesh.Draw();
-        
-        //Just in case 🤫😁🤑 
-        glGenerateMipmap(GL_TEXTURE_2D);
-        
-        //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1,&FBO);
-        
-        //Generating the normal map
-        if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
-            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
-        }
-        glEnable(GL_DEPTH_TEST);
-
-        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
-        glDeleteTextures(1, &previousTexture.ID);
-    }
-
-    glDeleteProgram(boundaryExpandingShader.ID);
-}
 
 void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
 

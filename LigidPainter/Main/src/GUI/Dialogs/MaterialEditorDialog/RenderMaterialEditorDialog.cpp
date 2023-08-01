@@ -381,38 +381,32 @@ void MaterialEditorDialog::manageContextMenuActions(Library &library, Mouse &mou
             updateLayerPanel(material,textureRes,box,context);
         }
         
-        // Marble Modifier
-        if(contextMenus[8].contextPanel.sections[0].elements[4].button.hover && mouse.LClick){
-            material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.marbleModifier);
-            updateLayerPanel(material,textureRes,box,context);
-        }
-        
         // Moss Modifier
-        if(contextMenus[8].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){
+        if(contextMenus[8].contextPanel.sections[0].elements[4].button.hover && mouse.LClick){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.mossModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
         
         // Rust Modifier
-        if(contextMenus[8].contextPanel.sections[0].elements[6].button.hover && mouse.LClick){
+        if(contextMenus[8].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.rustModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
         
         // Skin Modifier
-        if(contextMenus[8].contextPanel.sections[0].elements[7].button.hover && mouse.LClick){
+        if(contextMenus[8].contextPanel.sections[0].elements[6].button.hover && mouse.LClick){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.skinModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
         
         // Solid Modifier
-        if(contextMenus[8].contextPanel.sections[0].elements[8].button.hover && mouse.LClick){
+        if(contextMenus[8].contextPanel.sections[0].elements[7].button.hover && mouse.LClick){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.solidModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
         
         // Wooden Modifier
-        if(contextMenus[8].contextPanel.sections[0].elements[9].button.hover && mouse.LClick){
+        if(contextMenus[8].contextPanel.sections[0].elements[8].button.hover && mouse.LClick){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.woodenModifier);
             updateLayerPanel(material,textureRes,box,context);
         }
