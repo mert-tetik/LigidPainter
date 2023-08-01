@@ -239,12 +239,7 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
     initTexture(msh.heightMap.ID, textureRes);
     initTexture(msh.ambientOcclusion.ID, textureRes);
 
-    if(node.nodeIndex == MATERIAL_ID_NODE){
-        
-        Box box;
-        box.init();
-        box.bindBuffers();
-        
+    if(node.nodeIndex == MATERIAL_ID_NODE){        
         // Load the id masking shader
         Shader idMaskingShader = Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/MaterialID.frag" ,nullptr, nullptr, nullptr);
         
@@ -300,10 +295,53 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
         idMaskingShader.setInt("texture_cyan", 8);
         idMaskingShader.setInt("texture_pink", 9);
 
+        unsigned int proceduralTxtr = 0;
+        
         // Bind the id mask
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, node.IOs[0].element.button.texture.ID);
-        
+        if(node.IOs[0].element.button.texture.proceduralID == -1){
+            glBindTexture(GL_TEXTURE_2D, node.IOs[0].element.button.texture.ID);
+        }
+        else{
+            Shader procedural2DShader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/To2DProcedural.frag" ,nullptr, nullptr, nullptr);
+
+            procedural2DShader.use();
+
+            procedural2DShader.setInt("proceduralID", node.IOs[0].element.button.texture.proceduralID);
+            procedural2DShader.setFloat("proceduralScale", node.IOs[0].element.button.texture.proceduralScale);
+            procedural2DShader.setInt("proceduralInverted", node.IOs[0].element.button.texture.proceduralnverted);
+            
+            procedural2DShader.setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
+            procedural2DShader.setMat4("perspectiveProjection", scene.projectionMatrix);
+            procedural2DShader.setMat4("view", scene.viewMatrix);
+
+            initTexture(proceduralTxtr, textureRes);
+
+            unsigned int FBO;
+            glGenFramebuffers(1,&FBO);
+            glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, proceduralTxtr, 0);
+            glViewport(0, 0, textureRes, textureRes);
+            
+            glClearColor(0,0,0,0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            mesh.Draw();
+
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glDeleteFramebuffers(0, &FBO);
+
+            idMaskingShader.use();
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, proceduralTxtr);
+        } 
+
+                
+        Box box;
+        box.init();
+        box.bindBuffers();
+
         for (size_t channelI = 0; channelI < 6; channelI++)
         {
             
@@ -402,6 +440,9 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
         /* Pink */
         deleteMaterialChannels(retrievedMeshes[cToS(glm::vec4(1.f, 0.f, 1.f , 1.f))]);
             
+        if(proceduralTxtr != 0)
+            glDeleteTextures(1, &proceduralTxtr);
+        
         //Return mesh by masking the retrieved meshes
         return msh;
     }
@@ -444,9 +485,50 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
         maskingShader.setInt("texture_black", 1);
         maskingShader.setInt("texture_white", 2);
         
+        unsigned int proceduralTxtr = 0;
+        
         // Bind the mask
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, node.nodePanel.sections[0].elements[0].button.texture.ID);
+        if(node.nodePanel.sections[0].elements[0].button.texture.proceduralID == -1)
+            glBindTexture(GL_TEXTURE_2D, node.nodePanel.sections[0].elements[0].button.texture.ID);
+        else{
+            Shader procedural2DShader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/To2DProcedural.frag" ,nullptr, nullptr, nullptr);
+
+            procedural2DShader.use();
+
+            procedural2DShader.setInt("proceduralID", node.nodePanel.sections[0].elements[0].button.texture.proceduralID);
+            procedural2DShader.setFloat("proceduralScale", node.nodePanel.sections[0].elements[0].button.texture.proceduralScale);
+            procedural2DShader.setInt("proceduralInverted", node.nodePanel.sections[0].elements[0].button.texture.proceduralnverted);
+            
+            procedural2DShader.setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
+            procedural2DShader.setMat4("perspectiveProjection", scene.projectionMatrix);
+            procedural2DShader.setMat4("view", scene.viewMatrix);
+
+            initTexture(proceduralTxtr, textureRes);
+
+            unsigned int FBO;
+            glGenFramebuffers(1,&FBO);
+            glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, proceduralTxtr, 0);
+            glViewport(0, 0, textureRes, textureRes);
+            
+            glClearColor(0,0,0,0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            mesh.Draw();
+
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glDeleteFramebuffers(0, &FBO);
+
+            maskingShader.use();
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, proceduralTxtr);
+        } 
+                
+        Box box;
+        box.init();
+        box.bindBuffers();
 
         for (size_t channelI = 0; channelI < 6; channelI++)
         {
@@ -493,6 +575,9 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
         
         /* White */
         deleteMaterialChannels(whiteMesh);
+
+        if(proceduralTxtr != 0)
+            glDeleteTextures(1, &proceduralTxtr);
 
         //Return masked node
         return msh;
@@ -546,6 +631,11 @@ std::vector<int> findNodeIndexConnectedToMesh(std::vector<Node> meshNodeScene, i
 }
 
 void UTIL::updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library, Shader heightToNormalShader, Scene scene, int textureRes, int updateNodeI){
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    int viewportWidth = viewport[2];
+    int viewportHeight = viewport[3];
+    
     if(updateNodeI == -1){
         for (size_t nodeI = 0; nodeI < meshNodeScene.size(); nodeI++)
         {
@@ -603,6 +693,8 @@ void UTIL::updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Lib
 
         //TODO : Delete previous textures   
     }
+
+    glViewport(0, 0, viewportWidth, viewportHeight);
 }
 
 
