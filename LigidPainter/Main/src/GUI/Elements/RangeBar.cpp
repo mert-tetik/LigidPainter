@@ -304,7 +304,7 @@ void RangeBar::render(
     textRenderer.loadTextData(
                                 shader,
                                 textResult,
-                                glm::vec3(resultPos.x,resultPos.y,1),
+                                glm::vec3(resultPos.x,resultPos.y,resultPos.z+0.001f),
                                 false,
                                 resultScaleText,
                                 resultPos.x - resultScale.x,
