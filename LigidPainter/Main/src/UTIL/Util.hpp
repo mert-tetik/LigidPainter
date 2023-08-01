@@ -574,11 +574,10 @@ public:
     *        Use this right before the @ref refreshPainting  
     * @param textures textures in the library 
     * @param model the 3D model
-    * @param textureRes texture resolution : 512, 1024, 2048, 4096
     * @param scene structure contains matrices related to 3D model rendering & cam pos
     * @param twoDPaintingPanel if the painting mode is 2D use this panel's transform data 
     */
-    void updateTexture(std::vector<Texture> &textures, Model &model,int textureRes, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho);
+    void updateTexture(std::vector<Texture> &textures, Model &model, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho);
     
 
     /*!

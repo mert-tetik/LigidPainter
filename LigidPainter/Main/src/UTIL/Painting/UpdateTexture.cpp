@@ -32,13 +32,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 
-static void captureTxtrToSourceTxtr(unsigned int &captureTexture, int textureRes, unsigned int &selectedTextureID){
+static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 textureRes, unsigned int &selectedTextureID){
     //Bind the capture texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,captureTexture);
     
     //Get the pixels of the capture texture
-    char* pixels = new char[textureRes * textureRes * 4];
+    char* pixels = new char[textureRes.x * textureRes.y * 4];
     glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
     
     //Bind the source texture (painted texture)
@@ -52,7 +52,7 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, int textureRes
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 
     //Insert capture texture's pixels to the source texture
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_BYTE, pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes.x, textureRes.y, 0, GL_RGBA, GL_BYTE, pixels);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     delete[] pixels; //Remove the capture texture's pixels out of the memory
@@ -60,8 +60,10 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, int textureRes
 }
 
 
-void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int textureRes, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho){
+void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho){
     
+    glm::ivec2 textureRes = this->selectedTexture.getResolution();
+
     //Write the tmp file of the selected texture before updating the texture (for undo)
     selectedTexture.writeTMP();
     
@@ -81,7 +83,7 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 
     //Allocate memory for capture texture
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes.x, textureRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     //Create the framebuffer
@@ -94,7 +96,7 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model,int tex
     glBindTexture(GL_TEXTURE_2D, selectedTexture.ID);
 
     //Set the viewport to the resolution of the texture
-    glViewport(0,0,textureRes,textureRes);
+    glViewport(0,0,textureRes.x,textureRes.y);
     
     //Since the UV is between 0 - 1
     glm::mat4 orthoProjection = glm::ortho(0.f,1.f,0.f,1.f);

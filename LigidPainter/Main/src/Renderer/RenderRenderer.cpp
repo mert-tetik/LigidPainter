@@ -229,7 +229,7 @@ void Renderer::render(){
             // library.materials[i].updateMaterial(this->settings.textureRes, box, context, shaders.buttonShader, shaders.tdModelShader, sphereModel);
         }
         //Update the selected texture after painting
-        painter.updateTexture(library.textures, model, this->settings.textureRes, scene, userInterface.twoDPaintingPanel, userInterface.projection);
+        painter.updateTexture(library.textures, model, scene, userInterface.twoDPaintingPanel, userInterface.projection);
         //Refresh the 2D painting texture
         painter.refreshPainting();
 
