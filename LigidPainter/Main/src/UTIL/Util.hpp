@@ -956,6 +956,8 @@ struct AppTextures{
     Texture areaPaintingIcon;
     Texture gearIcon;
     Texture ligidPainterIcon;
+    Texture nodeDisplayingMode;
+    Texture paintingDisplayingMode;
     
     //--Textures
     Texture greetingDialogImage;  
