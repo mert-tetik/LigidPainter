@@ -536,3 +536,21 @@ bool LigidWindow::isCursorOnResizingArea() {
     // Check if the cursor is within any of the resizing areas
     return PtInRect(&rcBottomRight, ptCursor) || PtInRect(&rcBottom, ptCursor) || PtInRect(&rcRight, ptCursor) || PtInRect(&rcLeft, ptCursor);
 }
+
+bool LigidWindow::setWindowIcon(const wchar_t* iconPath) {
+    HICON hIcon = (HICON)LoadImage(NULL, iconPath, IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+    if (!hIcon) {
+        // Failed to load the icon file
+        return false;
+    }
+
+    // Send the WM_SETICON message to set the icon for both big and small icons
+    SendMessage(this->window, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+    SendMessage(this->window, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+
+    // The window procedure will manage the icon's lifetime,
+    // so we can release our local reference to the icon.
+    //DestroyIcon(hIcon);
+
+    return true;
+}

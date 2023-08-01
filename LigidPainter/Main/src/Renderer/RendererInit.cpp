@@ -44,6 +44,9 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     //Show the created window
     context.window.show();
 
+    if(!context.window.setWindowIcon(L"./LigidPainter/Resources/Icons/logo-1080x.ico"))
+        std::cout << "ERROR : Can't change the icon of the window" << std::endl;
+
     context.window.setWindowUserPointer(this);
 
     auto cursorPosFunc = [](LigidWindow w, double x, double y)

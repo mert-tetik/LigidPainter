@@ -734,20 +734,26 @@ public:
     */
     void setCursor(LigidCursor cursor);
 
-    /*
-        Function to toggle cursor visibility
+    /*!
+        @brief Function to toggle cursor visibility
     */
     void setCursorVisibility(bool visible);
     
     /*!
-        Returns true if the cursor hovers the title bar
+        @brief Returns true if the cursor hovers the title bar
     */
     bool isCursorOnTitleBar();
     
     /*!
-        Returns true if the cursor hovers the resizing area
+        @brief Returns true if the cursor hovers the resizing area
     */
     bool isCursorOnResizingArea();
+
+    /*!
+        @brief Changes to icon displayed in the window title bar 
+        @param iconPath path to the icon texture (*.ico)
+    */
+    bool setWindowIcon(const wchar_t* iconPath);
 
     void* getWindowUserPointer();
 
