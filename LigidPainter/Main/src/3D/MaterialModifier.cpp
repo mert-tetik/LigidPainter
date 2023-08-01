@@ -844,8 +844,7 @@ void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& cu
     //Bind the channel texture to the capture framebuffer
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, currentTexture.ID, 0);
     
-    //Make the background pink (cause why not)
-    glClearColor(1,0,1,1);
+    glClearColor(0,0,0,1);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -856,7 +855,7 @@ void generateNormalMap(unsigned int& heightMap, unsigned int& normalMap, Shader 
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, normalMap, 0);
     glViewport(0, 0, textureResolution, textureResolution);
 
-    glClearColor(0.5,1,0,1);
+    glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     Box box;
@@ -892,7 +891,7 @@ void removeSeams(Mesh& mesh, unsigned int texture, int textureResolution, Shader
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
     glViewport(0, 0, textureResolution, textureResolution);
 
-    glClearColor(0.5,1,0,1);
+    glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     Box box;

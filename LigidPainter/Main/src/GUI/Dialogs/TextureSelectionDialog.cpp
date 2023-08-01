@@ -170,8 +170,8 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
 
     glm::ivec2 windowSize = glm::ivec2(viewportWidth, viewportHeight);
 
-    unsigned char* pixels = new unsigned char[windowSize.x * windowSize.y * 4];
-    glReadPixels(0, 0, windowSize.x, windowSize.y, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    GLfloat* pixels = new GLfloat[windowSize.x * windowSize.y * 4];
+    glReadPixels(0, 0, windowSize.x, windowSize.y, GL_RGBA, GL_FLOAT, pixels);
 
     unsigned int bgTexture;
     glGenTextures(1, &bgTexture);
@@ -179,7 +179,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, bgTexture);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, windowSize.x, windowSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, pixels);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     while (!window.shouldClose())
