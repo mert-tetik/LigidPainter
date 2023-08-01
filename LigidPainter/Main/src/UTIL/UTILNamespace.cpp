@@ -402,7 +402,7 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mshID, 0);
             glViewport(0, 0, textureRes, textureRes);
             
-            glClearColor(0.5,1,0,1);
+            glClearColor(0,0,0,0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             glDrawArrays(GL_TRIANGLES, 0 , 6);
@@ -561,7 +561,7 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mshID, 0);
             glViewport(0, 0, textureRes, textureRes);
             
-            glClearColor(0.5,1,0,1);
+            glClearColor(0,0,0,0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             glDrawArrays(GL_TRIANGLES, 0 , 6);

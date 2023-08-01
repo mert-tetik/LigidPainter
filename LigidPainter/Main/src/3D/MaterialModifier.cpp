@@ -171,31 +171,32 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader
     this->modifierIndex = modifierIndex;
 }
 
+#define MATERIAL_MODIFIERS_ELEMENT_OFFSET 2.5f
 
 std::vector<Section> MaterialModifier::createTextureModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
         
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Channels",Texture(),0.f,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Channels",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Albedo",              Texture(),0.f,false)),
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Roughness",           Texture(),0.f,false)),
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",            Texture(),0.f,false)),
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Normal map",          Texture(),0.f,false)),
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height map",          Texture(),0.f,false)),
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Ambient Occlusion",   Texture(),0.f,false))
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Albedo",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Roughness",           Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",            Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Normal map",          Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height map",          Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Ambient Occlusion",   Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false))
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(), 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(), 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(), 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(), 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(), 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(), 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         )
     };
@@ -215,25 +216,25 @@ std::vector<Section> MaterialModifier::createSolidModifier(ColorPalette colorPal
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Channels",Texture(),0.f,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Channels",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Albedo",              Texture(), 0.f, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Albedo",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Roughness",           Texture(), 0.f, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Roughness",           Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",            Texture(), 0.f, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",            Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Normal Map",          Texture(), 0.f, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Normal Map",          Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height map",          Texture(), 0.f, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height map",          Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Ambient Occlusion",   Texture(), 0.f, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f , appTextures) // /100
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Ambient Occlusion",   Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f , appTextures) // /100
             }
         )
     };
@@ -254,61 +255,61 @@ std::vector<Section> MaterialModifier::createMarbleModifier(ColorPalette colorPa
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Marble Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Marble Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 1", appTextures.greetingDialogImage, 0.f, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 2", appTextures.greetingDialogImage, 0.f, false),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 5.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Checker State", appTextures.greetingDialogImage, 0.f, 0, 3, 1, appTextures),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 1", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 2", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 5.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Checker State", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 3, 1, appTextures),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Crack Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Crack Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Offset", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 5.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Depth", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 30.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Zebra Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Zebra Amp", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 67.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Profile", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Slope", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 50.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Width", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 5.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Depth", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 30.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Zebra Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Zebra Amp", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 67.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Profile", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Slope", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 50.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Width", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Crack Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", appTextures.greetingDialogImage, 0.f, 0, 8, 3, appTextures), // /100 
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8, appTextures), // /100 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 60.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 3, appTextures), // /100 
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8, appTextures), // /100 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 60.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 50.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Corners", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Corners", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Radius", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Noise Size", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 80.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Radius", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 20.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 50.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blackout Noise Size", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 80.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Reflectiveness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 70.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Reflectiveness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 70.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         )
     };
@@ -327,32 +328,32 @@ std::vector<Section> MaterialModifier::createFabricModifier(ColorPalette colorPa
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Stripes",Texture(),0.f,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Stripes",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader, "Color",   appTextures.greetingDialogImage,0.f,false),
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,32.f, appTextures), // 1
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Frequency",appTextures.greetingDialogImage,0.f,0.f,100.f,20.f, appTextures), // /2
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Gap Frequency",appTextures.greetingDialogImage,0.f,0.f,100.f,60.f, appTextures), // /2
-                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"Style",appTextures.greetingDialogImage,0.f,0,2,0,appTextures),  
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader, "Color",   Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,32.f, appTextures), // 1
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Frequency",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,20.f, appTextures), // /2
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Gap Frequency",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,60.f, appTextures), // /2
+                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"Style",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0,2,0,appTextures),  
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Element Properties",Texture(),0.f,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Element Properties",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wetness",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",appTextures.greetingDialogImage,0.f,0.f,100.f,0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wetness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         )
     };
@@ -369,64 +370,64 @@ std::vector<Section> MaterialModifier::createMossModifier(ColorPalette colorPale
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Color", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Color", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Moss Color Back", appTextures.greetingDialogImage, 0.f, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Moss Color Front", appTextures.greetingDialogImage, 0.f, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Dirt Color", appTextures.greetingDialogImage, 0.f, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Moss Color Back", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Moss Color Front", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Dirt Color", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Droplets", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Droplets", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Count", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Opacity Jitter", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Size", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 15.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Count", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Opacity Jitter", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Size", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 15.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Front Layer", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Front Layer", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Front Layer Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Front Layer Scale", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 50.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Front Layer Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Front Layer Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 50.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Lighting", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Lighting", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Light Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Darkening Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Light Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Darkening Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Moss Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Moss Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 40.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 40.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         )
     };
@@ -448,65 +449,65 @@ std::vector<Section> MaterialModifier::createRustModifier(ColorPalette colorPale
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Colors", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Colors", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 1", appTextures.greetingDialogImage, 0.f, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 2", appTextures.greetingDialogImage, 0.f, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 3", appTextures.greetingDialogImage, 0.f, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 4", appTextures.greetingDialogImage, 0.f, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 1", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 2", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 3", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 4", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 30.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 30.f, appTextures), // /1
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Perlin Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Perlin Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", appTextures.greetingDialogImage, 0.f, 0, 8, 3 , appTextures), 
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8 , appTextures), 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 60.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 3 , appTextures), 
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 60.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "FBM Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "FBM Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8 , appTextures), 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Roughness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Roughness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 50.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Rust Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Rust Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Rust Radius", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Battering Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200, 100, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Rust Radius", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 20.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Battering Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200, 100, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         )
     };
@@ -530,59 +531,59 @@ std::vector<Section> MaterialModifier::createSkinModifier(ColorPalette colorPale
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Droplets", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Droplets", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Count", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Opacity Jitter", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Size", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 15.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Count", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Opacity Jitter", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Size", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 15.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Veins", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Veins", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Veins Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Veins Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Veins Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Veins Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Blushing", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Blushing", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blushing Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blushing Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 20.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Skin Prints", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Skin Prints", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Prints Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Prints Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Prints Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Prints Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 20.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 20.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Skin Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Skin Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Color Type", appTextures.greetingDialogImage, 0.f, 0, 5, 0 , appTextures), 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Wetness", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Height", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Ambient Occlusion", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Color Type", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 5, 0 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Wetness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Ambient Occlusion", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         )
     };
@@ -595,67 +596,67 @@ std::vector<Section> MaterialModifier::createWoodenModifier(ColorPalette colorPa
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Colors", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Colors", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 1", appTextures.greetingDialogImage, 0.f, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 2", appTextures.greetingDialogImage, 0.f, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 3", appTextures.greetingDialogImage, 0.f, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 1", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 2", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 3", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Offset", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Seed", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 30.f, appTextures), // *100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Seed", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 30.f, appTextures), // *100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Perlin Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Perlin Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Max Octaves", appTextures.greetingDialogImage, 0.f, 0, 8, 8 , appTextures), 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistance", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 50.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Max Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistance", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 50.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Musgrave Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Musgrave Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Lacunarity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 25.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Strength", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 75.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Noise", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Lacunarity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 25.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 75.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Noise", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Base", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Base", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 46.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color Saturation", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 46.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color Saturation", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "FBM Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "FBM Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Frequency", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 10.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Frequency", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wood Gamma", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 60.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Shininess", appTextures.greetingDialogImage, 0.f, 0.f, 200.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wood Gamma", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 60.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Shininess", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         )
     };
@@ -676,57 +677,57 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(ColorPalette colorP
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Color",Texture(),0.f,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Color",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Color1",              appTextures.greetingDialogImage,0.f,false),
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Color2",              appTextures.greetingDialogImage,0.f,false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Color1",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Color2",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Dirt",Texture(),0.f,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Dirt",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,40.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Strength",appTextures.greetingDialogImage,0.f,0.f,200.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,40.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Strength",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,200.f,100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"2nd Color",Texture(),0.f,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"2nd Color",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Noise Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,50.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Noise Strength",appTextures.greetingDialogImage,0.f,0.f,200.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Noise Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,50.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Noise Strength",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,200.f,100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Noise",Texture(),0.f,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Noise",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Strength",appTextures.greetingDialogImage,0.f,0.f,200.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Strength",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,200.f,100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Element Properties",Texture(),0.f,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Element Properties",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wetness",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",appTextures.greetingDialogImage,0.f,0.f,100.f,0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wetness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Perlin Properties",Texture(),0.f,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Perlin Properties",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"First Octave",appTextures.greetingDialogImage,0.f, 0, 8, 3 , appTextures),
-                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"Octaves",appTextures.greetingDialogImage,0.f, 0, 8, 8 , appTextures), 
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Persistence",appTextures.greetingDialogImage,0.f,0.f,100.f,70.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"First Octave",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 3 , appTextures),
+                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"Octaves",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Persistence",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,70.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         )
     };
@@ -744,50 +745,50 @@ std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPale
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Noise",Texture(),0.f,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Noise",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Size",appTextures.greetingDialogImage,0.f,0.f,100.f,20.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Offset Intensity",appTextures.greetingDialogImage,0.f,0.f,500.f,500.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Rotation",appTextures.greetingDialogImage,0.f,0.f,360.f,360.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Brightness",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Size",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,20.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Offset Intensity",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,500.f,500.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Rotation",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,360.f,360.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Brightness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
             }
         ),
         
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Blur",Texture(),0.f,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Blur",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Intensity",appTextures.greetingDialogImage,0.f,0.f,100.f,0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Direction",appTextures.greetingDialogImage,0.f,0.f,360.f,0.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Intensity",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Direction",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,360.f,0.f, appTextures), // /1
             }
         ),
         
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Scratches",Texture(),0.f,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Scratches",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wavyness",appTextures.greetingDialogImage,0.f,0.f,100.f,10.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",appTextures.greetingDialogImage,0.f,0.f,100.f,30.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Base Frequency",appTextures.greetingDialogImage,0.f,0.f,100.f,50.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"FrequencyStep",appTextures.greetingDialogImage,0.f,0.f,100.f,25.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wavyness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,10.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,30.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Base Frequency",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,50.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"FrequencyStep",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,25.f, appTextures), // /100
             }
         ),
 
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Droplets",Texture(),0.f,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Droplets",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Count",appTextures.greetingDialogImage,0.f,0.f,100.f,10.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"OpacityJitter",appTextures.greetingDialogImage,0.f,0.f,100.f,100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Size",appTextures.greetingDialogImage,0.f,0.f,100.f,50.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Count",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,10.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"OpacityJitter",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Size",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,50.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(), 0.f, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", appTextures.greetingDialogImage, 0.f, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         )
     };

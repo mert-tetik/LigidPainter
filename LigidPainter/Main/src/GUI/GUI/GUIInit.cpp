@@ -134,25 +134,25 @@ void UI::init
                                 Section(
                                     Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Brush"  , appTextures.brushIcon, 3.f,true)),
                                     {   
-                                        Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Radius    "  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f,appTextures)),
-                                        Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Opacity   "  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f,appTextures)),
-                                        Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Hardness  "  , appTextures.TDModelIcon, 1.f,-100.f,100.f,0.f,appTextures)),
-                                        Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Spacing   "  , appTextures.TDModelIcon, 1.f,0.f,100.f,0.f,appTextures)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette,shaders.buttonShader, "Radius    "  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f,appTextures)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette,shaders.buttonShader, "Opacity   "  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f,appTextures)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette,shaders.buttonShader, "Hardness  "  , appTextures.TDModelIcon, 1.f,-100.f,100.f,0.f,appTextures)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette,shaders.buttonShader, "Spacing   "  , appTextures.TDModelIcon, 1.f,0.f,100.f,0.f,appTextures)),
                                     }
                                 ),
                                 Section(
                                     Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),colorPalette,shaders.buttonShader, "More"  , appTextures.modifierIcon, 1.f,true)),
                                     {   
-                                        Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Size Jitter"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)), //0
-                                        Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Fade"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)),//1
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette,shaders.buttonShader, "Size Jitter"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)), //0
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette,shaders.buttonShader, "Fade"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)),//1
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Sin Wave Pattern"  , 1.f)),//2
-                                        Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Scatter"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)),//3
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette,shaders.buttonShader, "Scatter"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)),//3
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette,shaders.buttonShader, "Texture"  , Texture(), 1.f, false)),//4
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Remove"  , Texture(), 0.f,false)),//5
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,shaders.buttonShader, "Individual Texture"  , 1.f)),//6
-                                        Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f,appTextures)), //7
-                                        Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Rotation Jitter"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)), //8
-                                        Element(RangeBar(0,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Alpha Jitter"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)), //9
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette,shaders.buttonShader, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f,appTextures)), //7
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette,shaders.buttonShader, "Rotation Jitter"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)), //8
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette,shaders.buttonShader, "Alpha Jitter"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)), //9
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Create New Brush"  , Texture(), 2.f,false)),//10
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),colorPalette,shaders.buttonShader, "Export"  , Texture(), 0.5f,false)),//11
                                     }
