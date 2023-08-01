@@ -194,7 +194,10 @@ void RangeBar::render(
             value = maxValue;
     }
 
+    this->valueDoneChanging = false;
     if(!mouse.LPressed){ //If left click is released
+        if(pointerPressed)
+            this->valueDoneChanging = true;
         pointerPressed = false;
     }
 

@@ -254,6 +254,7 @@ private:
 
     glm::vec2 videoScale;
     Timer timer; //Timer of the text renderer (used for animation of the insertion point cursor)
+
 public:
     Font font;
 	bool keyInput = false;
@@ -390,6 +391,7 @@ public:
     float rightArrowClickedMixVal = 0.f;
     bool leftArrowHover = false;
     bool rightArrowHover = false;
+    bool valueDoneChanging = false;
 
     //Constructors
     RangeBar();

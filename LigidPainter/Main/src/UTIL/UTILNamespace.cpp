@@ -567,7 +567,7 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
         maskingShader.setVec3("pos", glm::vec3(0.5f));
         maskingShader.setVec2("scale", glm::vec2(0.5f));
 
-        maskingShader.setFloat("offset", node.IOs[1].element.rangeBar.value / 100.f);
+        maskingShader.setFloat("offset", node.nodePanel.sections[0].elements[1].rangeBar.value / 100.f);
 
         maskingShader.setInt("maskTexture", 0);
         maskingShader.setInt("texture_black", 1);

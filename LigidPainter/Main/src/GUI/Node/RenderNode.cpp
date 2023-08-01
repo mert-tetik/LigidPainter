@@ -56,23 +56,33 @@ void Node::render(  glm::vec2 videoScale,
     //Render the node panel which contains the input buttons and stuff
     nodePanel.render(videoScale,mouse,timer,textRenderer, this->nodeIndex == MATERIAL_ID_NODE || this->nodeIndex == MATERIAL_MASK_NODE);
 
-    if(nodePanel.sections[0].elements[0].button.clicked && this->nodeIndex == MATERIAL_ID_NODE){
-        std::vector<NodeIO> inputs;
-        std::vector<NodeIO> outputs;
-        std::vector<glm::vec3> palette;
-        palette = nodePanel.sections[0].elements[0].button.texture.getMaterialIDPalette();
-        
-        inputs.push_back(NodeIO("Texture", nodePanel.sections[0].elements[0].button, colorPalette.mainColor,colorPalette,buttonShader,videoScale,1));
+    if(nodePanel.sections[0].elements[0].button.clicked){
+            if(this->nodeIndex == MATERIAL_ID_NODE){
+            std::vector<NodeIO> inputs;
+            std::vector<NodeIO> outputs;
+            std::vector<glm::vec3> palette;
+            palette = nodePanel.sections[0].elements[0].button.texture.getMaterialIDPalette();
 
-        for (size_t i = 0; i < palette.size(); i++)
-        {
-            inputs.push_back(NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, buttonShader,"Input1", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,0));
-            inputs[inputs.size() - 1].element.button.color = glm::vec4(palette[i], 1.f);
+            inputs.push_back(NodeIO("Texture", nodePanel.sections[0].elements[0].button, colorPalette.mainColor,colorPalette,buttonShader,videoScale,1));
+
+            for (size_t i = 0; i < palette.size(); i++)
+            {
+                inputs.push_back(NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, buttonShader,"Input1", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,0));
+                inputs[inputs.size() - 1].element.button.color = glm::vec4(palette[i], 1.f);
+            }
+
+            outputs.push_back(NodeIO("Output",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, buttonShader,"Output", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,2));
+
+            this->uploadNewIOs(inputs, outputs);
         }
 
-        outputs.push_back(NodeIO("Output",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, buttonShader,"Output", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,2));
-        
-        this->uploadNewIOs(inputs, outputs);
+        UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
+    }
+
+    if(this->nodeIndex == MATERIAL_MASK_NODE){
+        if(nodePanel.sections[0].elements[1].rangeBar.valueDoneChanging){
+            UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
+        }
     }
 
 
