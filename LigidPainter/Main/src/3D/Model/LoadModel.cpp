@@ -50,7 +50,8 @@ void Model::loadModel(std::string const &path,bool triangulate)
     else{
         /* Print error message */
         std::cout << 
-        "ERROR : Can't read 3D model file. LigidPainter does not have a valid importer for the file format : " << 
-        UTIL::toLowercase(UTIL::getFileExtension(path)) << std::endl;
+            "ERROR : Can't read 3D model file. LigidPainter does not have a valid importer for the file format : " << 
+            UTIL::toLowercase(UTIL::getFileExtension(path)) << 
+        std::endl;
     }
 }

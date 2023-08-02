@@ -91,8 +91,6 @@ Model FileHandler::readFBXFile(std::string path) {
 
     std::ifstream file(path, std::ios::binary);
 
-    std::cout << path << std::endl;
-
     if (!file.is_open()) {
         std::cerr << "ERROR : Can't read FBX file. Can't open : " << path << std::endl;
         return Model();
@@ -665,19 +663,13 @@ bool ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
             
             __node_counter++;
             if(file.eof()){
-                std::cout << 'a';
-
                 break; 
             }
             else if(__node_counter > 400)
                 break;
             
-            std::cout << 'a';
             if(!ReadNestedNodes(file, nestedNode.nestedNodes)){
             }
-            std::cout << 'b';
-            //if(endOffset > 200000)
-            //    return false;
             //if(endOffset == 0)
             //    break; 
             if(file.eof())
