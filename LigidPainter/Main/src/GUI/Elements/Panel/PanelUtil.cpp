@@ -65,6 +65,8 @@ void Panel::mouseTracking(Mouse& mouse){
     }
     
     hover = hover || leftSide.hover || rightSide.hover || bottomSide.hover || topSide.hover;
+
+    resizingDone = (leftSide.pressed || rightSide.pressed || bottomSide.pressed || topSide.pressed);
     
     //Keep the left corner in the pressed state from the left click to left mouse button release
     if(leftSide.hover && mouse.LClick) //Clicked to the corner

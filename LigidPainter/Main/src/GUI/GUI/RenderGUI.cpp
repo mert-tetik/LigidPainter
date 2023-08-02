@@ -107,7 +107,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     library.uniqueNameControl();
 
     //Render the panels
-    renderPanels(videoScale, mouse, timer, textRenderer, painter, library, model);
+    renderPanels(videoScale, mouse, timer, textRenderer, painter, library, model, screenGapPerc);
 
     //Render renaming textbox
     renderRenamingTextbox(videoScale, mouse, timer, textRenderer, painter, library, context);
@@ -165,15 +165,43 @@ static void renderBrushCursor(Shader& circleShader, Shader& buttonShader, Painte
     buttonShader.use();
 }
 
-void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter, Library &library, Model& model){
+void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter, Library &library, Model& model, float screenGapPerc){
     navigationPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    if(navigationPanel.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, library, painter);
+    }
     windowPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    if(windowPanel.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, library, painter);
+    }
     paintingPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    if(paintingPanel.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, library, painter);
+    }
     
     libraryPanelLeft.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    if(libraryPanelLeft.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, library, painter);
+    }
     libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    if(libraryPanelDisplayer.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, library, painter);
+    }
     nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    if(nodeEditorDisplayer.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, library, painter);
+    }
     selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,false);
+    if(selectedTextureDisplayer.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, library, painter);
+    }
     
     if(nodeEditorDisplayer.hover){
         
@@ -254,6 +282,10 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
 
     if(!painter.threeDimensionalMode){
         twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,false);
+        if(twoDPaintingPanel.resizingDone){
+            for (size_t i = 0; i < 5; i++)
+                this->panelPositioning(screenGapPerc, library, painter);
+        }
 
         //Render the painting texture
         shaders.twoDPaintingModeAreaShader.use();
@@ -293,7 +325,15 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     }
 
     paintingModesPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    if(paintingModesPanel.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, library, painter);
+    }
     displayingModesPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    if(displayingModesPanel.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, library, painter);
+    }
 }
 
 void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter, Library &library, Context &context){

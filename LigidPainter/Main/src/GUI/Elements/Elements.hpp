@@ -532,6 +532,8 @@ public:
     */
     bool clearDepthBuffer = true;
 
+    bool resizingDone = false;
+
     /*-- Sides of the panel --*/
 
     PanelSide leftSide;
