@@ -123,7 +123,7 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
     this->textBtn3.pos.z = 0.9f;
     this->textBtn3.textScale = 0.7f;
     
-    this->textBtn4 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"Please create a project folder if you don't have access to a project folder",Texture(),0.f,false);
+    this->textBtn4 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"Please create a project folder if you don't have access to one",Texture(),0.f,false);
     this->textBtn4.color = glm::vec4(0);
     this->textBtn4.pos.x = 30;
     this->textBtn4.pos.y = 54;
