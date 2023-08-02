@@ -1,0 +1,7142 @@
+FBXHeaderExtension
+FBXHeaderVersion
+-Ù ( 1 )  ( I )
+FBXVersion
+-× ( 1 )  ( I )
+EncryptionType
+- ( 1 )  ( I )
+CreationTimeStamp
+Version
+-× ( 1 )  ( I )
+Year
+-Õ ( 1 )  ( I )
+Month
+ ( 1 )  ( I )
+Day
+-▼ ( 1 )  ( I )
+Hour
+- ( 1 )  ( I )
+Minute
+-8 ( 1 )  ( I )
+Second
+-; ( 1 )  ( I )
+Millisecond
+-┤ ( 1 )  ( I )
+
+Creator
+-Blender (stable FBX IOMore... ( 47 )  ( S )
+SceneInfo
+-GlobalInfo☺SceneInfo ( 21 )  ( S )
+-UserData ( 8 )  ( S )
+Type
+-UserData ( 8 )  ( S )
+Version
+-d ( 1 )  ( I )
+MetaData
+Version
+-d ( 1 )  ( I )
+Title
+- ( 0 )  ( S )
+Subject
+- ( 0 )  ( S )
+Author
+- ( 0 )  ( S )
+Keywords
+- ( 0 )  ( S )
+Revision
+- ( 0 )  ( S )
+Comment
+- ( 0 )  ( S )
+
+Properties70
+P
+-DocumentUrl ( 11 )  ( S )
+-KString ( 7 )  ( S )
+-Url ( 3 )  ( S )
+- ( 0 )  ( S )
+-/foobar.fbx ( 11 )  ( S ) 
+P
+-SrcDocumentUrl ( 14 )  ( S )
+-KString ( 7 )  ( S )
+-Url ( 3 )  ( S )
+- ( 0 )  ( S )
+-/foobar.fbx ( 11 )  ( S )
+P
+-Original ( 8 )  ( S )
+-Compound ( 8 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+P
+-Original|ApplicationVeMore... ( 26 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-Blender Foundation ( 18 )  ( S ) 
+P
+-Original|ApplicationNaMore... ( 24 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-Blender (stable FBX IOMore... ( 23 )  ( S )
+P
+-Original|ApplicationVeMore... ( 27 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-2.90.0 Alpha ( 12 )  ( S )
+P
+-Original|DateTime_GMT ( 21 )  ( S )
+-DateTime ( 8 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-01/01/1970 00:00:00.00More... ( 23 )  ( S ) 
+P
+-Original|FileName ( 17 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-/foobar.fbx ( 11 )  ( S )
+P
+-LastSaved ( 9 )  ( S )
+-Compound ( 8 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+P
+-LastSaved|ApplicationVMore... ( 27 )  ( S )
+-KString ( 7 )  ( S ) 
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-Blender Foundation ( 18 )  ( S )
+P
+-LastSaved|ApplicationNMore... ( 25 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-Blender (stable FBX IOMore... ( 23 )  ( S )
+P
+-LastSaved|ApplicationVMore... ( 28 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-2.90.0 Alpha ( 12 )  ( S )
+P
+-LastSaved|DateTime_GMTMore... ( 22 )  ( S ) 
+-DateTime ( 8 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-01/01/1970 00:00:00.00More... ( 23 )  ( S )
+
+
+
+FileId
+-(│*ÙÂ$╠┬┐╚░*®+³± ( 16 )  ( R )
+CreationTime
+-1970-01-01 10:00:00:00More... ( 23 )  ( S )
+Creator
+-Blender (stable FBX IOMore... ( 47 )  ( S )
+GlobalSettings
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-UpAxis ( 6 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-UpAxisSign ( 10 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-FrontAxis ( 9 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-☻ ( 1 )  ( I )
+P
+-FrontAxisSign ( 13 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S ) 
+-☺ ( 1 )  ( I )
+P
+-CoordAxis ( 9 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-CoordAxisSign ( 13 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-OriginalUpAxis ( 14 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-  ( 1 )  ( I )
+P
+-OriginalUpAxisSign ( 18 )  ( S )
+-int ( 3 )  ( S ) 
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-UnitScaleFactor ( 15 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-d ( 1 )  ( D )
+P
+-OriginalUnitScaleFactoMore... ( 23 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-d ( 1 )  ( D )
+P
+-AmbientColor ( 12 )  ( S )
+-ColorRGB ( 8 )  ( S )
+-Color ( 5 )  ( S )
+- ( 0 )  ( S ) 
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultCamera ( 13 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-Producer Perspective ( 20 )  ( S )
+P
+-TimeMode ( 8 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-♂ ( 1 )  ( I )
+P
+-TimeSpanStart ( 13 )  ( S )
+-KTime ( 5 )  ( S )
+-Time ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( L )
+P
+-TimeSpanStop ( 12 )  ( S ) 
+-KTime ( 5 )  ( S )
+-Time ( 4 )  ( S )
+- ( 0 )  ( S )
+-░ ( 1 )  ( L )
+P
+-CustomFrameRate ( 15 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-↑ ( 1 )  ( D )
+
+
+Documents
+Count
+-☺ ( 1 )  ( I )
+Document
+-E ( 1 )  ( L )
+-Scene ( 5 )  ( S )
+-Scene ( 5 )  ( S )
+Properties70
+P
+-SourceObject ( 12 )  ( S )
+-object ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+P
+-ActiveAnimStackName ( 19 )  ( S ) 
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+
+RootNode
+- ( 1 )  ( L )
+
+
+References
+
+Definitions
+Version
+-d ( 1 )  ( I )
+Count
+-ı ( 1 )  ( I )
+ObjectType
+-GlobalSettings ( 14 )  ( S )
+Count
+-☺ ( 1 )  ( I )
+
+ObjectType
+-NodeAttribute ( 13 )  ( S )
+Count
+-R ( 1 )  ( I )
+
+ObjectType
+-Geometry ( 8 )  ( S )
+Count
+-8 ( 1 )  ( I )
+PropertyTemplate
+-FbxMesh ( 7 )  ( S ) 
+Properties70
+P
+-Color ( 5 )  ( S )
+-ColorRGB ( 8 )  ( S )
+-Color ( 5 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-BBoxMin ( 7 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-BBoxMax ( 7 )  ( S )
+-Vector3D ( 8 )  ( S ) 
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Primary Visibility ( 18 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-Casts Shadows ( 13 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-Receive Shadows ( 15 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+
+
+ObjectType
+-Model ( 5 )  ( S )
+Count
+-S ( 1 )  ( I )
+PropertyTemplate
+-FbxNode ( 7 )  ( S )
+Properties70
+P
+-QuaternionInterpolate ( 21 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationOffset ( 14 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-RotationPivot ( 13 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-ScalingOffset ( 13 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-ScalingPivot ( 12 )  ( S ) 
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-TranslationActive ( 17 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-TranslationMin ( 14 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-TranslationMax ( 14 )  ( S )
+-Vector3D ( 8 )  ( S ) 
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-TranslationMinX ( 15 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-TranslationMinY ( 15 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-TranslationMinZ ( 15 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-TranslationMaxX ( 15 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-TranslationMaxY ( 15 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-TranslationMaxZ ( 15 )  ( S )
+-bool ( 4 )  ( S ) 
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationOrder ( 13 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationSpaceForLimitOMore... ( 25 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationStiffnessX ( 18 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-RotationStiffnessY ( 18 )  ( S ) 
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-RotationStiffnessZ ( 18 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-AxisLen ( 7 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-
+ ( 1 )  ( D )
+P
+-PreRotation ( 11 )  ( S ) 
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-PostRotation ( 12 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-RotationActive ( 14 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationMin ( 11 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S ) 
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-RotationMax ( 11 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-RotationMinX ( 12 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationMinY ( 12 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationMinZ ( 12 )  ( S ) 
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationMaxX ( 12 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationMaxY ( 12 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationMaxZ ( 12 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S ) 
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ScalingActive ( 13 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ScalingMin ( 10 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-ScalingMax ( 10 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D ) 
+P
+-ScalingMinX ( 11 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ScalingMinY ( 11 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ScalingMinZ ( 11 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ScalingMaxX ( 11 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ScalingMaxY ( 11 )  ( S ) 
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ScalingMaxZ ( 11 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-GeometricTranslation ( 20 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-GeometricRotation ( 17 )  ( S )
+-Vector3D ( 8 )  ( S ) 
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-GeometricScaling ( 16 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-MinDampRangeX ( 13 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MinDampRangeY ( 13 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S ) 
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MinDampRangeZ ( 13 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MaxDampRangeX ( 13 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MaxDampRangeY ( 13 )  ( S )
+-double ( 6 )  ( S ) 
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MaxDampRangeZ ( 13 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MinDampStrengthX ( 16 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D ) 
+P
+-MinDampStrengthY ( 16 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MinDampStrengthZ ( 16 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MaxDampStrengthX ( 16 )  ( S )
+-double ( 6 )  ( S ) 
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MaxDampStrengthY ( 16 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MaxDampStrengthZ ( 16 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D ) 
+P
+-PreferedAngleX ( 14 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-PreferedAngleY ( 14 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-PreferedAngleZ ( 14 )  ( S ) 
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-LookAtProperty ( 14 )  ( S )
+-object ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+P
+-UpVectorProperty ( 16 )  ( S )
+-object ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+P
+-Show ( 4 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-NegativePercentShapeSuMore... ( 27 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-  ( 1 )  ( I )
+P
+-Freeze ( 6 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-LODBox ( 6 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S ) 
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-Visibility ( 10 )  ( S ) 
+-Visibility ( 10 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+P
+-Visibility InheritanceMore... ( 22 )  ( S )
+-Visibility InheritanceMore... ( 22 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+
+
+ObjectType
+-Pose ( 4 )  ( S )
+Count
+-☺ ( 1 )  ( I )
+
+ObjectType
+-Deformer ( 8 )  ( S )
+Count
+-è ( 1 )  ( I )
+
+ObjectType
+-Material ( 8 )  ( S )
+Count
+-♀ ( 1 )  ( I )
+PropertyTemplate
+-FbxSurfacePhong ( 15 )  ( S ) 
+Properties70
+P
+-ShadingModel ( 12 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-Phong ( 5 )  ( S )
+P
+-MultiLayer ( 10 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-EmissiveColor ( 13 )  ( S )
+-Color ( 5 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-EmissiveFactor ( 14 )  ( S )
+-Number ( 6 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+P
+-AmbientColor ( 12 )  ( S )
+-Color ( 5 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-AmbientFactor ( 13 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+P
+-DiffuseColor ( 12 )  ( S )
+-Color ( 5 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+P
+-DiffuseFactor ( 13 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+P
+-TransparentColor ( 16 )  ( S )
+-Color ( 5 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-TransparencyFactor ( 18 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Opacity ( 7 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S ) 
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+P
+-NormalMap ( 9 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Bump ( 4 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-BumpFactor ( 10 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( D ) 
+P
+-DisplacementColor ( 17 )  ( S )
+-ColorRGB ( 8 )  ( S )
+-Color ( 5 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DisplacementFactor ( 18 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( D )
+P
+-VectorDisplacementColoMore... ( 23 )  ( S )
+-ColorRGB ( 8 )  ( S )
+-Color ( 5 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+P
+-VectorDisplacementFactMore... ( 24 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( D )
+P
+-SpecularColor ( 13 )  ( S )
+-Color ( 5 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-SpecularFactor ( 14 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+P
+-Shininess ( 9 )  ( S )
+-Number ( 6 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-¶ ( 1 )  ( D )
+P
+-ShininessExponent ( 17 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-¶ ( 1 )  ( D )
+P
+-ReflectionColor ( 15 )  ( S )
+-Color ( 5 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-ReflectionFactor ( 16 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+
+
+
+ObjectType
+-Texture ( 7 )  ( S ) 
+Count
+-♀ ( 1 )  ( I )
+PropertyTemplate
+-FbxFileTexture ( 14 )  ( S )
+Properties70
+P
+-TextureTypeUse ( 14 )  ( S ) 
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-AlphaSource ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☻ ( 1 )  ( I )
+P
+-Texture alpha ( 13 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( D )
+P
+-PremultiplyAlpha ( 16 )  ( S ) 
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-CurrentTextureBlendModMore... ( 23 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-CurrentMappingType ( 18 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-UVSet ( 5 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-default ( 7 )  ( S )
+P
+-WrapModeU ( 9 )  ( S ) 
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-WrapModeV ( 9 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-UVSwap ( 6 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-Translation ( 11 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Rotation ( 8 )  ( S ) 
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Scaling ( 7 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-TextureRotationPivot ( 20 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-TextureScalingPivot ( 19 )  ( S ) 
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-UseMaterial ( 11 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-UseMipMap ( 9 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+
+
+
+ObjectType
+-Video ( 5 )  ( S )
+Count
+-♀ ( 1 )  ( I )
+PropertyTemplate
+-FbxVideo ( 8 )  ( S ) 
+Properties70
+P
+-Width ( 5 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-Height ( 6 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-Path ( 4 )  ( S )
+-KString ( 7 )  ( S )
+-Url ( 3 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+P
+-AccessMode ( 10 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-StartFrame ( 10 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-StopFrame ( 9 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-Offset ( 6 )  ( S )
+-KTime ( 5 )  ( S )
+-Time ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( L )
+P
+-PlaySpeed ( 9 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-FreeRunning ( 11 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-Loop ( 4 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InterlaceMode ( 13 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ImageSequence ( 13 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ImageSequenceOffset ( 19 )  ( S ) 
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-FrameRate ( 9 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-LastFrame ( 9 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+
+
+
+
+Objects
+NodeAttribute
+-¢ ( 1 )  ( L )
+-Armature☺NodeAttributMore... ( 23 )  ( S )
+-Null ( 4 )  ( S ) 
+TypeFlags
+-Null ( 4 )  ( S )
+Properties70
+P
+-Color ( 5 )  ( S )
+-ColorRGB ( 8 )  ( S )
+-Color ( 5 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Size ( 4 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-d ( 1 )  ( D )
+P
+-Look ( 4 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+
+Geometry
+-¯ ( 1 )  ( L )
+-Hair001.baked☺GeometrMore... ( 23 )  ( S ) 
+-Mesh ( 4 )  ( S )
+Properties70
+P
+-Face.M_F00_000_00_Fcl_More... ( 33 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 31 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 29 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 29 )  ( S )
+-Number ( 6 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 32 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 35 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 31 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 29 )  ( S ) 
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 29 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 32 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 35 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S ) 
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 31 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 31 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 33 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 33 )  ( S ) 
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 29 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 29 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 31 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S ) 
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 31 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 32 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 35 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 32 )  ( S )
+-Number ( 6 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 35 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 40 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 31 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 28 )  ( S ) 
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 30 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 31 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 33 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S ) 
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 29 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 29 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 32 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 35 )  ( S ) 
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 34 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 36 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 36 )  ( S )
+-Number ( 6 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 27 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 27 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 27 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S ) 
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 27 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 27 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 29 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 30 )  ( S ) 
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 34 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 33 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 30 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S ) 
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 34 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 33 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 30 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 33 )  ( S ) 
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 34 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 30 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 33 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S ) 
+- ( 1 )  ( D )
+P
+-Face.M_F00_000_00_Fcl_More... ( 34 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+P
+-EyeExtra_01.M_F00_000_More... ( 36 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+
+GeometryVersion
+-| ( 1 )  ( I )
+Vertices
+-┼0c┐@¥┬Ş┐ S╗More... ( 398328 )  ( d ) 
+PolygonVertexIndex
+-☻☺    ☻♥■ More... ( 275256 )  ( i )
+Edges
+-☺☻♥♦♠More... ( 156720 )  ( i ) 
+LayerElementNormal
+- ( 1 )  ( I )
+Version
+-e ( 1 )  ( I )
+Name
+- ( 0 )  ( S )
+MappingInformationType
+-ByPolygonVertex ( 15 )  ( S )
+ReferenceInformationType
+-Direct ( 6 )  ( S )
+Normals
+-á§Í?Çè^Ì?á▒ìMore... ( 1651536 )  ( d ) 
+
+LayerElementUV
+- ( 1 )  ( I )
+Version
+-e ( 1 )  ( I )
+Name
+-UVMap ( 5 )  ( S )
+MappingInformationType
+-ByPolygonVertex ( 15 )  ( S )
+ReferenceInformationType
+-IndexToDirect ( 13 )  ( S )
+UV
+qº?L8£?ü¨More... ( 265552 )  ( d )
+UVIndex
+-█→Ô8↔▬█→<4Ô8More... ( 275256 )  ( i ) 
+
+LayerElementMaterial
+- ( 1 )  ( I )
+Version
+-e ( 1 )  ( I )
+Name
+- ( 0 )  ( S )
+MappingInformationType
+-ByPolygon ( 9 )  ( S )
+ReferenceInformationType
+-IndexToDirect ( 13 )  ( S )
+Materials
+-More... ( 91752 )  ( i )
+
+Layer
+- ( 1 )  ( I )
+Version
+-d ( 1 )  ( I )
+LayerElement
+Type
+-LayerElementNormal ( 18 )  ( S )
+TypedIndex
+- ( 1 )  ( I )
+
+LayerElement
+Type
+-LayerElementUV ( 14 )  ( S )
+TypedIndex
+- ( 1 )  ( I ) 
+
+LayerElement
+Type
+-LayerElementMaterial ( 20 )  ( S )
+TypedIndex
+- ( 1 )  ( I )
+
+
+
+Geometry
+-õ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 43 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-Ã$╔$╦$╠$¤$º$More... ( 968 )  ( i )
+Vertices
+-`ç║¥t3┐ëMore... ( 5808 )  ( d )
+Normals
+-More... ( 5808 )  ( d )
+
+Geometry
+-▼ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 41 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-Æ$û$Ö$Ü$ø$Ø$More... ( 2864 )  ( i )
+Vertices
+¶.┐└ò ┐4More... ( 17184 )  ( d )
+Normals
+-More... ( 17184 )  ( d )
+
+Geometry
+-Ë ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 39 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 5028 )  ( i )
+Vertices
+-á«®ü?K¬q?ŞMore... ( 30168 )  ( d )
+Normals
+-More... ( 30168 )  ( d ) 
+
+Geometry
+-æ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 39 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 5152 )  ( i )
+Vertices
+-@Mgz?:|ü?ÀMore... ( 30912 )  ( d )
+Normals
+-More... ( 30912 )  ( d )
+
+Geometry
+-­ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 42 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 4972 )  ( i )
+Vertices
+-éb┐└Û<┐<More... ( 29832 )  ( d )
+Normals
+-More... ( 29832 )  ( d )
+
+Geometry
+-v ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 45 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 4980 )  ( i )
+Vertices
+-└l#w?(◄⌂?└âMore... ( 29880 )  ( d )
+Normals
+-More... ( 29880 )  ( d )
+
+Geometry
+-▄ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 41 )  ( S )
+-Shape ( 5 )  ( S ) 
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-t'x'y'|'}'~'More... ( 560 )  ( i )
+Vertices
+-└┘$?↑Ú¥░More... ( 3360 )  ( d )
+Normals
+-More... ( 3360 )  ( d )
+
+Geometry
+-╚ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 39 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-´'­'±''¾'¶'More... ( 440 )  ( i )
+Vertices
+-╚♠I?8ñU┐░áMore... ( 2640 )  ( d )
+Normals
+-More... ( 2640 )  ( d )
+
+Geometry
+-┘ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 39 )  ( S ) 
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-´'­'±''¾'¶'More... ( 440 )  ( i )
+Vertices
+-►PL┐ dI┐@┴More... ( 2640 )  ( d )
+Normals
+-More... ( 2640 )  ( d )
+
+Geometry
+-. ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 42 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-´'­'±''¾'¶'More... ( 440 )  ( i )
+Vertices
+-¶☻X?­³U?└²More... ( 2640 )  ( d )
+Normals
+-More... ( 2640 )  ( d ) 
+
+Geometry
+ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 45 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-´'­'±''¾'¶'More... ( 440 )  ( i )
+Vertices
+-X▼S? ¶L┐­ÁMore... ( 2640 )  ( d )
+Normals
+-More... ( 2640 )  ( d )
+
+Geometry
+-× ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 41 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-↔ore... ( 1488 )  ( i ) 
+Vertices
+-►¦>r♠?ÇMore... ( 8928 )  ( d )
+Normals
+-More... ( 8928 )  ( d )
+
+Geometry
+-T ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 41 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+&♫&►&◄&‼&More... ( 2644 )  ( i )
+Vertices
+-Çñ♥♣┐@ÎMore... ( 15864 )  ( d )
+Normals
+-More... ( 15864 )  ( d )
+
+Geometry
+-▀ ( 1 )  ( L ) 
+-Face.M_F00_000_00_Fcl_More... ( 43 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 3888 )  ( i )
+Vertices
+-Ç▓☻c?─-i?¶More... ( 23328 )  ( d )
+Normals
+-More... ( 23328 )  ( d )
+
+Geometry
+-G ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 43 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+&♫&►&◄&‼&More... ( 1328 )  ( i )
+Vertices
+-Çñ♥♣┐@ÎMore... ( 7968 )  ( d )
+Normals
+-More... ( 7968 )  ( d )
+
+Geometry
+-Ş ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 39 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+&♫&►&◄&‼&More... ( 2480 )  ( i )
+Vertices
+-└ª‼┐[♣┐@→More... ( 14880 )  ( d )
+Normals
+-More... ( 14880 )  ( d )
+
+Geometry
+-♠ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 39 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+&♫&►&◄&‼&More... ( 2696 )  ( i )
+Vertices
+-­â0┐@╠!┐ºòMore... ( 16176 )  ( d )
+Normals
+-More... ( 16176 )  ( d )
+
+Geometry
+-> ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 41 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-1&2&3&5&6&8&More... ( 1352 )  ( i )
+Vertices
+-­â0?@╠!┐­òMore... ( 8112 )  ( d ) 
+Normals
+-More... ( 8112 )  ( d )
+
+Geometry
+-² ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 41 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+&♫&►&◄&‼&More... ( 1352 )  ( i )
+Vertices
+-­â0┐@╠!┐ºòMore... ( 8112 )  ( d )
+Normals
+-More... ( 8112 )  ( d ) 
+
+Geometry
+-¶ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 42 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+&♫&►&◄&‼&More... ( 2504 )  ( i )
+Vertices
+-Ç┐♂┐õ²¥°More... ( 15024 )  ( d )
+Normals
+-More... ( 15024 )  ( d )
+
+Geometry
+-y ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 45 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-↔ore... ( 2376 )  ( i )
+Vertices
+-?(Õ>
+More... ( 14256 )  ( d )
+Normals
+-More... ( 14256 )  ( d )
+
+Geometry
+-w ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 42 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+&♫&↕&‼&¶&More... ( 1880 )  ( i )
+Vertices
+-¼±> ┤¥More... ( 11280 )  ( d )
+Normals
+-More... ( 11280 )  ( d )
+
+Geometry
+-Ã ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 45 )  ( S ) 
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-](^(_(`(a(b(More... ( 976 )  ( i )
+Vertices
+-$ic?`şwÑ?`┌More... ( 5856 )  ( d )
+Normals
+-More... ( 5856 )  ( d )
+
+Geometry
+-◄ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 50 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-Î(Ï(┘(┌(█(▄(More... ( 488 )  ( i )
+Vertices
+-¶õa┐Ç↔╬Ä?Ç     More... ( 2928 )  ( d )
+Normals
+-More... ( 2928 )  ( d )
+
+Geometry
+-♀ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 41 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+&♫&☼&►&More... ( 4048 )  ( i )
+Vertices
+-áKx┐¯_x┐°©More... ( 24288 )  ( d )
+Normals
+-More... ( 24288 )  ( d )
+
+Geometry
+-q ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 38 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 2028 )  ( i ) 
+Vertices
+-(>0 U┐0►More... ( 12168 )  ( d )
+Normals
+-More... ( 12168 )  ( d )
+
+Geometry
+-ñ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 40 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 2068 )  ( i )
+Vertices
+-(¥╠o|?PxMore... ( 12408 )  ( d )
+Normals
+-More... ( 12408 )  ( d )
+
+Geometry
+-ß ( 1 )  ( L ) 
+-Face.M_F00_000_00_Fcl_More... ( 41 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-Æ$û$Ö$Ü$ø$Ø$More... ( 1144 )  ( i )
+Vertices
+¶.┐└ò ┐4More... ( 6864 )  ( d )
+Normals
+-More... ( 6864 )  ( d )
+
+Geometry
+-a ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 43 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-Ã$╔$╦$╠$¤$º$More... ( 968 )  ( i ) 
+Vertices
+-`ç║¥t3┐ëMore... ( 5808 )  ( d )
+Normals
+-More... ( 5808 )  ( d )
+
+Geometry
+ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 39 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 2228 )  ( i )
+Vertices
+-á«®ü?K¬q?ŞMore... ( 13368 )  ( d )
+Normals
+-More... ( 13368 )  ( d )
+
+Geometry
+-y ( 1 )  ( L ) 
+-Face.M_F00_000_00_Fcl_More... ( 39 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 2224 )  ( i )
+Vertices
+-@Mgz?:|ü?ÀMore... ( 13344 )  ( d )
+Normals
+-More... ( 13344 )  ( d )
+
+Geometry
+-· ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 42 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I ) 
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 2028 )  ( i )
+Vertices
+-éb┐└Û<┐<More... ( 12168 )  ( d )
+Normals
+-More... ( 12168 )  ( d )
+
+Geometry
+-> ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 45 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 2284 )  ( i )
+Vertices
+-└l#w?(◄⌂?└âMore... ( 13704 )  ( d ) 
+Normals
+-More... ( 13704 )  ( d )
+
+Geometry
+-T ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 44 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-▀$Ó$µ$■$ $☺%More... ( 48 )  ( i )
+Vertices
+-└©9?►╔>@More... ( 288 )  ( d )
+Normals
+-More... ( 288 )  ( d ) 
+
+Geometry
+-z ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 46 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-■$ $☺%m+p+q+More... ( 24 )  ( i )
+Vertices
+-xÕ4?@┴¥More... ( 144 )  ( d )
+Normals
+-More... ( 144 )  ( d )
+
+Geometry
+-o ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 46 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-▀$Ó$µ$>+?+@+More... ( 24 )  ( i ) 
+Vertices
+-└©9?►╔>@More... ( 144 )  ( d )
+Normals
+-More... ( 144 )  ( d )
+
+Geometry
+-9 ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 37 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 1988 )  ( i )
+Vertices
+-►¥Ï¾\┐↑More... ( 11928 )  ( d )
+Normals
+-More... ( 11928 )  ( d ) 
+
+Geometry
+-ß ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 37 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 1928 )  ( i )
+Vertices
+-@=øv?`ëT?Ç┐More... ( 11568 )  ( d )
+Normals
+-More... ( 11568 )  ( d )
+
+Geometry
+-▲ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 37 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 2000 )  ( i ) 
+Vertices
+-@¶÷x┐╬û{┐'More... ( 12000 )  ( d )
+Normals
+-More... ( 12000 )  ( d )
+
+Geometry
+-} ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 37 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 2064 )  ( i )
+Vertices
+- ; Ç?→Îg?ÇÚMore... ( 12384 )  ( d )
+Normals
+-More... ( 12384 )  ( d ) 
+
+Geometry
+-S ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 37 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-ë$è$ï$î$ı$Ä$More... ( 2028 )  ( i )
+Vertices
+-ÓáÇ?│]s?cMore... ( 12168 )  ( d )
+Normals
+-More... ( 12168 )  ( d )
+
+Geometry
+-Q ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 39 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I ) 
+Indexes
+--%.%/%0%1%2%More... ( 640 )  ( i )
+Vertices
+- Äxò┐Ç⌂á¬?ÇMMore... ( 3840 )  ( d )
+Normals
+-More... ( 3840 )  ( d )
+
+Geometry
+-ş ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 40 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-3%5%6%:%;%<%More... ( 296 )  ( i )
+Vertices
+-ªÖR?╚Ï\┐Ç¬More... ( 1776 )  ( d )
+Normals
+-More... ( 1776 )  ( d )
+
+Geometry
+-& ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 44 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-U%W%Y%\%^%_%More... ( 152 )  ( i )
+Vertices
+-º¢Á♫?░More... ( 912 )  ( d )
+Normals
+-More... ( 912 )  ( d )
+
+Geometry
+-s ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 43 )  ( S ) 
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-3%5%6%:%;%<%More... ( 144 )  ( i )
+Vertices
+-ªÖR?╚Ï\┐Ç¬More... ( 864 )  ( d )
+Normals
+-More... ( 864 )  ( d )
+
+Geometry
+-Ñ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 40 )  ( S )
+-Shape ( 5 )  ( S ) 
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-1%3%5%6%8%:%More... ( 360 )  ( i )
+Vertices
+-ÇúPf┐░↓J┐XMore... ( 2160 )  ( d )
+Normals
+-More... ( 2160 )  ( d )
+
+Geometry
+-ï ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 44 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-U%W%Y%\%^%_%More... ( 168 )  ( i )
+Vertices
+-º¢Á♫?░More... ( 1008 )  ( d )
+Normals
+-More... ( 1008 )  ( d )
+
+Geometry
+-· ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 43 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-1%3%5%6%:%;%More... ( 168 )  ( i )
+Vertices
+-ÇúPf┐░↓J┐XMore... ( 1008 )  ( d )
+Normals
+-More... ( 1008 )  ( d )
+
+Geometry
+-ú ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 40 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-@%B%]%|%É%æ%More... ( 32 )  ( i )
+Vertices
+-↑¥`‼G?á¡More... ( 192 )  ( d )
+Normals
+-More... ( 192 )  ( d )
+
+Geometry
+-5 ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 43 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-@%B%É%æ% ( 16 )  ( i )
+Vertices
+-↑¥`‼G?á¡More... ( 96 )  ( d )
+Normals
+-More... ( 96 )  ( d )
+
+Geometry
+-▄ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 44 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I ) 
+Indexes
+-]%|%¡%╠% ( 16 )  ( i )
+Vertices
+-∟>@╣R┐@zMore... ( 96 )  ( d )
+Normals
+-More... ( 96 )  ( d )
+
+Geometry
+-╦ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 40 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-/%0%1%3%4%6%More... ( 448 )  ( i )
+Vertices
+- >░ÔS┐ More... ( 2688 )  ( d )
+Normals
+-More... ( 2688 )  ( d )
+
+Geometry
+-5 ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 43 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-/%0%1%3%4%6%More... ( 224 )  ( i )
+Vertices
+- >░ÔS┐ More... ( 1344 )  ( d )
+Normals
+-More... ( 1344 )  ( d )
+
+Geometry
+-» ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 44 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-U%X%Z%\%]%^%More... ( 224 )  ( i )
+Vertices
+-♂¥ÓáN?@«More... ( 1344 )  ( d )
+Normals
+-More... ( 1344 )  ( d )
+
+Geometry
+-Ô ( 1 )  ( L ) 
+-EyeExtra_01.M_F00_000_More... ( 46 )  ( S )
+-Shape ( 5 )  ( S )
+Properties70
+
+Version
+-d ( 1 )  ( I )
+Indexes
+-],^,_,`,a,b,More... ( 200 )  ( i )
+Vertices
+-@S±è? ▬→ú┐á More... ( 1200 )  ( d )
+Normals
+-More... ( 1200 )  ( d )
+
+Pose
+-ä ( 1 )  ( L )
+-Hair001.baked☺Pose ( 19 )  ( S )
+-BindPose ( 8 )  ( S )
+Type
+-BindPose ( 8 )  ( S )
+Version
+-d ( 1 )  ( I ) 
+NbPoseNodes
+-☺ ( 1 )  ( I )
+PoseNode
+Node
+-@ ( 1 )  ( L )
+Matrix
+-­?More... ( 128 )  ( d )
+
+
+Deformer
+-T ( 1 )  ( L )
+-Hair001.baked☺DeformeMore... ( 23 )  ( S )
+-BlendShape ( 10 )  ( S )
+Version
+-d ( 1 )  ( I )
+
+Deformer
+-¥ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 46 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 1936 )  ( d ) 
+
+Deformer
+-d ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 44 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 5728 )  ( d )
+
+Deformer
+-à ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 42 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D ) 
+FullWeights
+-Y@Y@More... ( 10056 )  ( d )
+
+Deformer
+-µ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 42 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 10304 )  ( d )
+
+Deformer
+-ô ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 45 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 9944 )  ( d )
+
+Deformer
+-╔ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 48 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 9960 )  ( d )
+
+Deformer
+-ô ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 44 )  ( S )
+-BlendShapeChannel ( 17 )  ( S ) 
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 1120 )  ( d )
+
+Deformer
+-░ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 42 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 880 )  ( d )
+
+Deformer
+-⌂ ( 1 )  ( L ) 
+-Face.M_F00_000_00_Fcl_More... ( 42 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 880 )  ( d )
+
+Deformer
+-´ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 45 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 880 )  ( d ) 
+
+Deformer
+-n ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 48 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 880 )  ( d )
+
+Deformer
+-U ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 44 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I ) 
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 2976 )  ( d )
+
+Deformer
+-D ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 44 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 5288 )  ( d )
+
+Deformer
+-° ( 1 )  ( L ) 
+-Face.M_F00_000_00_Fcl_More... ( 46 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 7776 )  ( d )
+
+Deformer
+-§ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 46 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 2656 )  ( d )
+
+Deformer
+-U ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 42 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 4960 )  ( d )
+
+Deformer
+-┼ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 42 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 5392 )  ( d )
+
+Deformer
+-1 ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 44 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 2704 )  ( d )
+
+Deformer
+-w ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 44 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 2704 )  ( d ) 
+
+Deformer
+-ñ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 45 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 5008 )  ( d )
+
+Deformer
+-% ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 48 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 4752 )  ( d )
+
+Deformer
+-6 ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 45 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 3760 )  ( d )
+
+Deformer
+-C ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 48 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 1952 )  ( d )
+
+Deformer
+-> ( 1 )  ( L ) 
+-Face.M_F00_000_00_Fcl_More... ( 53 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 976 )  ( d )
+
+Deformer
+-É ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 44 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 8096 )  ( d )
+
+Deformer
+-É ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 41 )  ( S ) 
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 4056 )  ( d )
+
+Deformer
+-K ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 43 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 4136 )  ( d )
+
+Deformer
+-J ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 44 )  ( S ) 
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 2288 )  ( d )
+
+Deformer
+-╬ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 46 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 1936 )  ( d )
+
+Deformer
+- ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 42 )  ( S ) 
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 4456 )  ( d )
+
+Deformer
+-2 ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 42 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 4448 )  ( d )
+
+Deformer
+-8 ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 45 )  ( S )
+-BlendShapeChannel ( 17 )  ( S ) 
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 4056 )  ( d )
+
+Deformer
+-Ú ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 48 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 4568 )  ( d )
+
+Deformer
+-. ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 47 )  ( S ) 
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 96 )  ( d )
+
+Deformer
+-Q ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 49 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 48 )  ( d ) 
+
+Deformer
+-¥ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 49 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 48 )  ( d )
+
+Deformer
+-1 ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 40 )  ( S )
+-BlendShapeChannel ( 17 )  ( S ) 
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 3976 )  ( d )
+
+Deformer
+-P ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 40 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 3856 )  ( d ) 
+
+Deformer
+-B ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 40 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 4000 )  ( d )
+
+Deformer
+-│ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 40 )  ( S )
+-BlendShapeChannel ( 17 )  ( S ) 
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 4128 )  ( d )
+
+Deformer
+-÷ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 40 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 4056 )  ( d )
+
+Deformer
+-o ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 42 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 1280 )  ( d )
+
+Deformer
+-ğ ( 1 )  ( L ) 
+-Face.M_F00_000_00_Fcl_More... ( 43 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 592 )  ( d )
+
+Deformer
+-╬ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 47 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 304 )  ( d ) 
+
+Deformer
+-a ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 46 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 288 )  ( d )
+
+Deformer
+-µ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 43 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 720 )  ( d )
+
+Deformer
+-÷ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 47 )  ( S ) 
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 336 )  ( d )
+
+Deformer
+-) ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 46 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D ) 
+FullWeights
+-Y@Y@More... ( 336 )  ( d )
+
+Deformer
+-¯ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 43 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 64 )  ( d )
+
+Deformer
+-↓ ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 46 )  ( S ) 
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 32 )  ( d )
+
+Deformer
+-        ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 47 )  ( S )
+-BlendShapeChannel ( 17 )  ( S ) 
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 32 )  ( d )
+
+Deformer
+-Ô ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 43 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 896 )  ( d )
+
+Deformer
+-I ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 46 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 448 )  ( d )
+
+Deformer
+-Ş ( 1 )  ( L )
+-Face.M_F00_000_00_Fcl_More... ( 47 )  ( S )
+-BlendShapeChannel ( 17 )  ( S ) 
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 448 )  ( d )
+
+Deformer
+-I ( 1 )  ( L )
+-EyeExtra_01.M_F00_000_More... ( 49 )  ( S )
+-BlendShapeChannel ( 17 )  ( S )
+Version
+-d ( 1 )  ( I )
+DeformPercent
+- ( 1 )  ( D )
+FullWeights
+-Y@Y@More... ( 400 )  ( d )
+
+Model
+-> ( 1 )  ( L )
+-Armature☺Model ( 15 )  ( S )
+-Null ( 4 )  ( S ) 
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-Ğ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S ) 
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-@ ( 1 )  ( L )
+-Body☺Model ( 11 )  ( S )
+-Mesh ( 4 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-Ğ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C ) 
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-% ( 1 )  ( L )
+-Hips☺Model ( 11 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-Z ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I ) 
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-Ë ( 1 )  ( L )
+-Spine☺Model ( 12 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-♠ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S ) 
+
+Model
+-µ ( 1 )  ( L )
+-Chest☺Model ( 12 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-¯ ( 1 )  ( D )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I ) 
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-ë ( 1 )  ( L )
+-Breast_L☺Model ( 15 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-Ø ( 1 )  ( D )
+-i ( 1 )  ( D )
+-° ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S ) 
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-ê ( 1 )  ( L )
+-J_Sec_L_Bust2☺Model ( 20 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-ê ( 1 )  ( L )
+-Breast_R☺Model ( 15 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-Ø ( 1 )  ( D )
+-ù ( 1 )  ( D )
+ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S ) 
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-û ( 1 )  ( L )
+-J_Sec_R_Bust2☺Model ( 20 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S ) 
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-  ( 1 )  ( L )
+-Neck☺Model ( 11 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-↕ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S ) 
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-ø ( 1 )  ( L )
+-Head☺Model ( 11 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-¨ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S ) 
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-Ö ( 1 )  ( L )
+-Eye_L☺Model ( 12 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S ) 
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-‼ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S ) 
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-D ( 1 )  ( L )
+-Eye_R☺Model ( 12 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S ) 
+-Lcl Rotation ( 12 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-‼ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S ) 
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-⌂ ( 1 )  ( L )
+-HairJoint_e7d28e69_662More... ( 53 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-X ( 1 )  ( D )
+-▀ ( 1 )  ( D )
+- )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S ) 
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-ä ( 1 )  ( L )
+-HairJoint_bd3d74cd_25cMore... ( 53 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I ) 
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-Û ( 1 )  ( D )
+-ÿ ( 1 )  ( D )
+-→ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-b ( 1 )  ( L )
+-HairJoint_072bb29a_135More... ( 53 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S ) 
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-İ ( 1 )  ( L )
+-HairJoint_7a62315d_abeMore... ( 53 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-® ( 1 )  ( D )
+-· ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-É ( 1 )  ( L )
+-HairJoint_a9eb6651_9b0More... ( 53 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I ) 
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-F ( 1 )  ( L )
+-HairJoint_a6e7e603_7eaMore... ( 53 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-Q ( 1 )  ( D )
+-♦ ( 1 )  ( D )
+-³ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S ) 
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-S ( 1 )  ( L )
+-HairJoint_7e3d21ed_7f0More... ( 53 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S ) 
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-b ( 1 )  ( L )
+-HairJoint_075310cc_2c5More... ( 53 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I ) 
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-Q ( 1 )  ( D )
+-¹ ( 1 )  ( D )
+-♦ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S ) 
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-? ( 1 )  ( L )
+-HairJoint_bb44c057_ba1More... ( 53 )  ( S )
+-LimbNode ( 8 )  ( S ) 
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S ) 
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S ) 
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-) ( 1 )  ( L )
+-HairJoint_bdda9c05_5e1More... ( 53 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-X ( 1 )  ( D )
+-" ( 1 )  ( D )
+-õ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S ) 
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-" ( 1 )  ( L )
+-HairJoint_57e03dad_29dMore... ( 53 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+-§ ( 1 )  ( D )
+-Ó ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S ) 
+
+Model
+-Á ( 1 )  ( L )
+-HairJoint_b38a18db_210More... ( 53 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C ) 
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-à ( 1 )  ( L )
+-Left shoulder☺Model ( 20 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-ü ( 1 )  ( D )
+-Ñ ( 1 )  ( D )
+- )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S ) 
+
+Model
+-♀ ( 1 )  ( L )
+-Left arm☺Model ( 15 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+-☻ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S ) 
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-↔ ( 1 )  ( L )
+-Left elbow☺Model ( 17 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☻ ( 1 )  ( D )
+-☻ ( 1 )  ( D )
+-³ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S ) 
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-b ( 1 )  ( L )
+-Left wrist☺Model ( 17 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-♦ ( 1 )  ( D )
+-♦ ( 1 )  ( D )
+-♥ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S ) 
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-Ì ( 1 )  ( L )
+-IndexFinger1_L☺Model ( 21 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S ) 
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-² ( 1 )  ( D )
+-³ ( 1 )  ( D )
+-¨ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I ) 
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-; ( 1 )  ( L )
+-IndexFinger2_L☺Model ( 21 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-  ( 1 )  ( D ) 
+-  ( 1 )  ( D )
+-☻ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I ) 
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-P ( 1 )  ( L )
+-IndexFinger3_L☺Model ( 21 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-ğ ( 1 )  ( L ) 
+-J_Bip_L_Index3_End☺MoMore... ( 25 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S ) 
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-c ( 1 )  ( L )
+-LittleFinger1_L☺ModelMore... ( 22 )  ( S ) 
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-³ ( 1 )  ( D )
+-³ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S ) 
+
+Model
+-‼ ( 1 )  ( L )
+-LittleFinger2_L☺ModelMore... ( 22 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☻ ( 1 )  ( D )
+-☻ ( 1 )  ( D )
+-♥ ( 1 )  ( D ) 
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I ) 
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-J ( 1 )  ( L )
+-LittleFinger3_L☺ModelMore... ( 22 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-  ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S ) 
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-↨ ( 1 )  ( L )
+-J_Bip_L_Little3_End☺MMore... ( 26 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I ) 
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S ) 
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-) ( 1 )  ( L )
+-MiddleFinger1_L☺ModelMore... ( 22 )  ( S ) 
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S ) 
+-¹ ( 1 )  ( D )
+-· ( 1 )  ( D )
+-■ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I ) 
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-Ó ( 1 )  ( L )
+-MiddleFinger2_L☺ModelMore... ( 22 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S ) 
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-² ( 1 )  ( D )
+-³ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S ) 
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-| ( 1 )  ( L )
+-MiddleFinger3_L☺ModelMore... ( 22 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☻ ( 1 )  ( D )
+-☻ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S ) 
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-g ( 1 )  ( L )
+-J_Bip_L_Middle3_End☺MMore... ( 26 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S ) 
+
+Model
+-' ( 1 )  ( L )
+-RingFinger1_L☺Model ( 20 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-¹ ( 1 )  ( D )
+-³ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S ) 
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I ) 
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-. ( 1 )  ( L )
+-RingFinger2_L☺Model ( 20 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S ) 
+-A ( 1 )  ( S )
+-☻ ( 1 )  ( D )
+-☻ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I ) 
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-4 ( 1 )  ( L )
+-RingFinger3_L☺Model ( 20 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S ) 
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-  ( 1 )  ( D )
+-  ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D ) 
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-E ( 1 )  ( L ) 
+-J_Bip_L_Ring3_End☺ModMore... ( 24 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-  ( 1 )  ( L )
+-Thumb0_L☺Model ( 15 )  ( S ) 
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-² ( 1 )  ( D )
+-¾ ( 1 )  ( D )
+-È ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S ) 
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-q ( 1 )  ( L )
+-Thumb1_L☺Model ( 15 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S ) 
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-♦ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I ) 
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-Ç ( 1 )  ( L )
+-Thumb2_L☺Model ( 15 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-³ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-8 ( 1 )  ( L )
+-J_Bip_L_Thumb3_End☺MoMore... ( 25 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D ) 
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-U ( 1 )  ( L )
+-Right shoulder☺Model ( 21 )  ( S ) 
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-ü ( 1 )  ( D )
+-[ ( 1 )  ( D )
+-Õ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S ) 
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-Y ( 1 )  ( L )
+-Right arm☺Model ( 16 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S ) 
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+-¨ ( 1 )  ( D )
+-■ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S ) 
+
+Model
+-G ( 1 )  ( L )
+-Right elbow☺Model ( 18 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☻ ( 1 )  ( D )
+-■ ( 1 )  ( D )
+-♦ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-. ( 1 )  ( L )
+-Right wrist☺Model ( 18 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S ) 
+-A ( 1 )  ( S )
+-♦ ( 1 )  ( D )
+-³ ( 1 )  ( D )
+-² ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S ) 
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-ğ ( 1 )  ( L )
+-IndexFinger1_R☺Model ( 21 )  ( S ) 
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-² ( 1 )  ( D )
+-♦ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S ) 
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I ) 
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-Û ( 1 )  ( L )
+-IndexFinger2_R☺Model ( 21 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S ) 
+-A ( 1 )  ( S )
+-  ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-■ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-« ( 1 )  ( L )
+-IndexFinger3_R☺Model ( 21 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+-  ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S ) 
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-╩ ( 1 )  ( L )
+-J_Bip_R_Index3_End☺MoMore... ( 25 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-» ( 1 )  ( L )
+-LittleFinger1_R☺ModelMore... ( 22 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S ) 
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-³ ( 1 )  ( D )
+-♦ ( 1 )  ( D )
+-  ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S ) 
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-Ø ( 1 )  ( L )
+-LittleFinger2_R☺ModelMore... ( 22 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☻ ( 1 )  ( D )
+-■ ( 1 )  ( D )
+-² ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S ) 
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-O ( 1 )  ( L )
+-LittleFinger3_R☺ModelMore... ( 22 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-  ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S ) 
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S ) 
+
+Model
+-Õ ( 1 )  ( L )
+-J_Bip_R_Little3_End☺MMore... ( 26 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-b ( 1 )  ( L )
+-MiddleFinger1_R☺ModelMore... ( 22 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-¹ ( 1 )  ( D )
+-♠ ( 1 )  ( D )
+-☻ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I ) 
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-h ( 1 )  ( L )
+-MiddleFinger2_R☺ModelMore... ( 22 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-² ( 1 )  ( D ) 
+-♦ ( 1 )  ( D )
+-  ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S ) 
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-┴ ( 1 )  ( L )
+-MiddleFinger3_R☺ModelMore... ( 22 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S ) 
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☻ ( 1 )  ( D )
+-■ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I ) 
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-û ( 1 )  ( L )
+-J_Bip_R_Middle3_End☺MMore... ( 26 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S ) 
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S ) 
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I ) 
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C ) 
+Culling
+-CullingOff ( 10 )  ( S ) 
+
+Model
+-ª ( 1 )  ( L )
+-RingFinger1_R☺Model ( 20 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I ) 
+Properties70
+P
+-Lcl Translation ( 15 )  ( S ) 
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-¹ ( 1 )  ( D ) 
+-♦ ( 1 )  ( D ) 
+-  ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S ) 
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-´ ( 1 )  ( L )
+-RingFinger2_R☺Model ( 20 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☻ ( 1 )  ( D )
+-■ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I ) 
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+- ( 1 )  ( L )
+-RingFinger3_R☺Model ( 20 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I ) 
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-  ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-  ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S ) 
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-ó ( 1 )  ( L )
+-J_Bip_R_Ring3_End☺ModMore... ( 24 )  ( S ) 
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S ) 
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-+ ( 1 )  ( L )
+-Thumb0_R☺Model ( 15 )  ( S ) 
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S ) 
+-A ( 1 )  ( S )
+-² ( 1 )  ( D )
+ ( 1 )  ( D )
+-, ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I ) 
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-, ( 1 )  ( L )
+-Thumb1_R☺Model ( 15 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+-  ( 1 )  ( D )
+-³ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I ) 
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-Z ( 1 )  ( L )
+-Thumb2_R☺Model ( 15 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D ) 
+-  ( 1 )  ( D )
+-♦ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I ) 
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-0 ( 1 )  ( L )
+-J_Bip_R_Thumb3_End☺MoMore... ( 25 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-¾ ( 1 )  ( L )
+-Left leg☺Model ( 15 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-N ( 1 )  ( D )
+-♥ ( 1 )  ( D )
+-² ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D ) 
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-# ( 1 )  ( L )
+-Left knee☺Model ( 16 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S ) 
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-  ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S ) 
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-& ( 1 )  ( L )
+-Left ankle☺Model ( 17 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S ) 
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-┴ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-² ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S ) 
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-V ( 1 )  ( L )
+-Left toe☺Model ( 15 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S ) 
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-õ ( 1 )  ( D )
+-◄ ( 1 )  ( D )
+-÷ ( 1 )  ( D ) 
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I ) 
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+Model
+-¦ ( 1 )  ( L )
+-J_Bip_L_ToeBase_End☺MMore... ( 26 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S ) 
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S ) 
+
+Model
+-V ( 1 )  ( L )
+-Right leg☺Model ( 16 )  ( S )
+-LimbNode ( 8 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-N ( 1 )  ( D )
+-² ( 1 )  ( D )
+-♥ ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType (

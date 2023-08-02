@@ -129,10 +129,12 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
             FileHandler::writeOBJFile(UTIL::removeExtension(modelPath) + ".obj",TDModel);
         }
 
+        if(TDModel.meshes.size())
+            library.addModel(TDModel);
+        else
+            std::cout << "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << std::endl;
 
-        library.addModel(TDModel);
     }
-
 
     if(library.TDModels.size())
         model = library.TDModels[0];

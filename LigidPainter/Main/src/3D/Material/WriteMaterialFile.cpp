@@ -75,29 +75,26 @@ void Material::writeFile(std::string path){
             wf.write(reinterpret_cast<char*>(&this->materialModifiers[i].maskTexture.proceduralID), sizeof(int));
             
             //Write the texture
-            if(this->materialModifiers[i].maskTexture.proceduralID == -1){
-                //Get the resolution of the texture from the panel of the modifier
-                uint64_t txtrWidth = this->materialModifiers[i].maskTexture.getResolution().x;
-                uint64_t txtrHeight = this->materialModifiers[i].maskTexture.getResolution().y;
-                
-                //Write the texture resolution data
-                wf.write(reinterpret_cast<char*>(   &txtrWidth     ),sizeof(uint64_t));
-                wf.write(reinterpret_cast<char*>(   &txtrHeight     ),sizeof(uint64_t));
+            //Get the resolution of the texture from the panel of the modifier
+            uint64_t txtrWidth = this->materialModifiers[i].maskTexture.getResolution().x;
+            uint64_t txtrHeight = this->materialModifiers[i].maskTexture.getResolution().y;
+            
+            //Write the texture resolution data
+            wf.write(reinterpret_cast<char*>(   &txtrWidth     ),sizeof(uint64_t));
+            wf.write(reinterpret_cast<char*>(   &txtrHeight     ),sizeof(uint64_t));
 
-                //Get pixels of the texture
-                char* pixels = new char[txtrWidth * txtrHeight * 4];
-                this->materialModifiers[i].maskTexture.getData(pixels);
+            //Get pixels of the texture
+            char* pixels = new char[txtrWidth * txtrHeight * 4];
+            this->materialModifiers[i].maskTexture.getData(pixels);
 
-                //Write the texture data
-                wf.write(pixels , txtrWidth * txtrHeight * 4 * sizeof(char));
+            //Write the texture data
+            wf.write(pixels , txtrWidth * txtrHeight * 4 * sizeof(char));
 
-                delete[] pixels;
-            }
-            else{
-                //Write the procedural texture properties
-                wf.write(reinterpret_cast<char*>(&this->materialModifiers[i].maskTexture.proceduralnverted), sizeof(int));
-                wf.write(reinterpret_cast<char*>(&this->materialModifiers[i].maskTexture.proceduralScale), sizeof(float));
-            }
+            delete[] pixels;
+            
+            //Write the procedural texture properties
+            wf.write(reinterpret_cast<char*>(&this->materialModifiers[i].maskTexture.proceduralnverted), sizeof(int));
+            wf.write(reinterpret_cast<char*>(&this->materialModifiers[i].maskTexture.proceduralScale), sizeof(float));
 
 
             if(materialModifierModifierIndex == TEXTURE_MATERIAL_MODIFIER){ //Is a texture modifier

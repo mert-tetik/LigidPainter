@@ -103,7 +103,10 @@ void libraryPanelDisplayerInteraction(
             if(test.size()){
                 Model tdModel;
                 tdModel.loadModel(test, true);
-                library.addModel(tdModel);
+                if(tdModel.meshes.size())
+                    library.addModel(tdModel);
+                else
+                    std::cout << "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << std::endl;
             }
             
         }
@@ -147,7 +150,10 @@ void libraryPanelDisplayerInteraction(
             if(test.size()){
                 Model tdModel;
                 tdModel.loadModel(test,true);
-                library.addModel(tdModel);
+                if(tdModel.meshes.size())
+                    library.addModel(tdModel);
+                else
+                    std::cout << "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << std::endl;
             }
         }
     }

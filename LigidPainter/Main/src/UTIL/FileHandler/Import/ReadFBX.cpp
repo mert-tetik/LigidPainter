@@ -41,7 +41,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 *   1 : Print node titles
 *   2 : Print node titles with the property data
 */
-#define LIGID_FBX_IMPORTER_PRINT_TEXT_STATE 2
+#define LIGID_FBX_IMPORTER_PRINT_TEXT_STATE 0
 #define LIGID_FBX_IMPORTER_TRIANGULATE true
 
 
@@ -67,13 +67,14 @@ struct FbxNode {
 };
 
 // Forward declarations for the fbx file processing functions
-void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes);
+bool ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes);
 void ProcessNodeHierarchy(std::vector<FbxNode>& nodes, std::vector<glm::vec3>& vertPositions, std::vector<glm::vec2>& vertUVs, std::vector<glm::vec3>& vertNormals, std::vector<int>& polygonVertexIndices, std::vector<int>& edges, std::vector<int>& uvIndices, std::vector<std::string>& matTitles, std::vector<int>& materials); 
 static void parseFBXMeshData(const std::vector<glm::vec3>& positions, const std::vector<glm::vec2>& UVs, const std::vector<glm::vec3>& normals, const std::vector<int>& polygonVertexIndices, const std::vector<int>& uvIndices, const std::vector<int>& edges, const std::vector<std::string>& matTitles, const std::vector<int>& materials, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
 
 int __node_counter = 0;
 int _FBX_totalBitsRead = 0;
-
+bool processingMesh = false;
+bool processingShape = false;
 
 /*
     HEADER
@@ -85,6 +86,8 @@ int _FBX_totalBitsRead = 0;
 Model FileHandler::readFBXFile(std::string path) {
     _FBX_totalBitsRead = 0;
     __node_counter = 0;
+    processingMesh = false;
+
 
     std::ifstream file(path, std::ios::binary);
 
@@ -120,10 +123,10 @@ Model FileHandler::readFBXFile(std::string path) {
     FbxNode topLevelObject;
     ReadNestedNodes(file, topLevelObject.nestedNodes);
 
+
     // Read header
-    file.read(header, sizeof(header));
-    _FBX_totalBitsRead += sizeof(header);
-    
+    //file.read(header, sizeof(header));
+    //_FBX_totalBitsRead += sizeof(header);
 
     std::vector<glm::vec3> positions;
     std::vector<glm::vec2> UVS;
@@ -137,8 +140,10 @@ Model FileHandler::readFBXFile(std::string path) {
     // Process the FBX data
     ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges, matTitles, materials);
 
-    if(materials.size())
-        std::cout << materials[0] << std::endl;
+    if(!positions.size() || !edges.size() || !polygonVertexIndices.size() || !uvIndices.size()){
+        std::cout << "ERROR : Processing the fbx node hierarchy : Can't detect enough vertex data to create a mesh" << std::endl;
+        return Model();
+    }
 
     std::vector<std::vector<Vertex>> meshVertices;
     std::vector<std::vector<unsigned int>> meshIndices;
@@ -227,8 +232,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
         FbxProperty prop;
 
 
-        if(!file.read(&prop.typeCode, sizeof(char)))
-            break;
+        if(!file.read(&prop.typeCode, sizeof(char))){break;}
 
         _FBX_totalBitsRead += sizeof(char);
 
@@ -621,23 +625,21 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
     13	        uint8[]	NULL-record
 */
 
-void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
+bool ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
+        
         FbxNode nestedNode; // Move the declaration inside the while loop
 
         uint32_t endOffset;
-        if(!file.read(reinterpret_cast<char*>(&endOffset), sizeof(uint32_t)))
-            return;
+        if(!file.read(reinterpret_cast<char*>(&endOffset), sizeof(uint32_t))){}
         _FBX_totalBitsRead += sizeof(uint32_t);
 
         uint32_t numProperties;
         file.read(reinterpret_cast<char*>(&numProperties), sizeof(uint32_t));
         _FBX_totalBitsRead += sizeof(uint32_t);
         
-
         uint32_t propertyListLen;
         file.read(reinterpret_cast<char*>(&propertyListLen), sizeof(uint32_t));
         _FBX_totalBitsRead += sizeof(uint32_t);
-
 
         uint8_t nameLen;
         file.read(reinterpret_cast<char*>(&nameLen), sizeof(uint8_t));
@@ -650,18 +652,37 @@ void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
 
         if(LIGID_FBX_IMPORTER_PRINT_TEXT_STATE)
             std::cout << nestedNode.nodeType << std::endl;
-        
         // Read nested node properties
         ReadProperties(file, nestedNode.properties, numProperties);
 
         char nullRecord[13];
-        
+
+        // std::cout << endOffset << ' ';
+
         // Recursively read nested nodes
-        while(endOffset != file.tellg().seekpos() + 13){
+        //while(endOffset != file.tellg().seekpos() + 13){
+        while(true){
+            
             __node_counter++;
-            ReadNestedNodes(file, nestedNode.nestedNodes);
+            if(file.eof()){
+                std::cout << 'a';
+
+                break; 
+            }
+            else if(__node_counter > 400)
+                break;
+            
+            std::cout << 'a';
+            if(!ReadNestedNodes(file, nestedNode.nestedNodes)){
+            }
+            std::cout << 'b';
+            //if(endOffset > 200000)
+            //    return false;
+            //if(endOffset == 0)
+            //    break; 
             if(file.eof())
                 break; 
+
         }
 
         file.read(nullRecord, sizeof(nullRecord));
@@ -674,6 +695,8 @@ void ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
         }
         
         __node_counter--;
+    
+    return true;
 }
 
 void ProcessNodeHierarchy( 
@@ -697,7 +720,7 @@ void ProcessNodeHierarchy(
             // Process vertex properties
             for (auto& prop : node.properties) {
                 
-                if(node.nodeType == "Vertices"){
+                if(node.nodeType == "Vertices" && processingMesh){
                     if (prop.typeCode == 'd') {
                         size_t arrayLength = prop.data.size() / sizeof(double);
                         std::vector<double> doubleArray(arrayLength);
@@ -747,7 +770,7 @@ void ProcessNodeHierarchy(
                     }
                 }
                 
-                if(node.nodeType == "Normals"){
+                if(node.nodeType == "Normals" && processingMesh){
                     if (prop.typeCode == 'd') {
                         size_t arrayLength = prop.data.size() / sizeof(double);
                         std::vector<double> doubleArray(arrayLength);
@@ -797,7 +820,7 @@ void ProcessNodeHierarchy(
                     }
                 }
 
-                if(node.nodeType == "UV"){
+                if(node.nodeType == "UV" && processingMesh){
                     if (prop.typeCode == 'd') {
                         size_t arrayLength = prop.data.size() / sizeof(double);
                         std::vector<double> doubleArray(arrayLength);
@@ -845,7 +868,7 @@ void ProcessNodeHierarchy(
                     }
                 }
 
-                if(node.nodeType == "PolygonVertexIndex"){
+                if(node.nodeType == "PolygonVertexIndex" && processingMesh){
                     if (prop.typeCode == 'i') {
                         size_t arrayLength = prop.data.size() / sizeof(int);
                         std::vector<int> intArray(arrayLength);
@@ -859,7 +882,7 @@ void ProcessNodeHierarchy(
                     }
                 }
 
-                if(node.nodeType == "Edges"){
+                if(node.nodeType == "Edges" && processingMesh){
                     if (prop.typeCode == 'i') {
                         size_t arrayLength = prop.data.size() / sizeof(int);
                         std::vector<int> intArray(arrayLength);
@@ -873,7 +896,7 @@ void ProcessNodeHierarchy(
                     }
                 }
 
-                if(node.nodeType == "UVIndex"){
+                if(node.nodeType == "UVIndex" && processingMesh){
                     if (prop.typeCode == 'i') {
                         size_t arrayLength = prop.data.size() / sizeof(int);
                         std::vector<int> intArray(arrayLength);
@@ -887,7 +910,7 @@ void ProcessNodeHierarchy(
                     }
                 }
 
-                if(node.nodeType == "Material"){
+                if(node.nodeType == "Material" && processingMesh){
                     if (prop.typeCode == 'S') {
                         std::string infoStr(prop.data.begin(), prop.data.end());
 
@@ -895,7 +918,7 @@ void ProcessNodeHierarchy(
                     }
                 }
                 
-                if(node.nodeType == "Materials"){
+                if(node.nodeType == "Materials" && processingMesh){
                     if (prop.typeCode == 'i') {
                         size_t arrayLength = prop.data.size() / sizeof(int);
                         std::vector<int> intArray(arrayLength);
@@ -905,11 +928,26 @@ void ProcessNodeHierarchy(
                     }
                 }
 
-                if(node.nodeType == "MappingInformationType"){
+                if(node.nodeType == "MappingInformationType" && processingMesh){
                     if (prop.typeCode == 'S') {
                         std::string infoStr(prop.data.begin(), prop.data.end());
                         if(infoStr != "ByPolygonVertex" && infoStr != "ByPolygon" && infoStr != "AllSame"){
                             std::cout << "WARNING : Mapping information type is : " << infoStr << "! Results might be unexpected."  << std::endl;
+                        }
+                    }
+                }
+
+                if(node.nodeType == "Geometry"){
+                    if (prop.typeCode == 'S') {
+                        for (size_t i = 0; i < node.properties.size(); i++)
+                        {
+                            if(node.properties[i].typeCode == 'S'){
+                                std::string infoStr(node.properties[i].data.begin(), node.properties[i].data.end());
+                                if(infoStr == "Mesh")
+                                    processingMesh = true;
+                                else if(infoStr == "Shape")
+                                    processingShape = true;
+                            }
                         }
                     }
                 }
