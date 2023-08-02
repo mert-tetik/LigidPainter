@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include <gl/GL.h>
 #include <stdbool.h>
+#include <cstdint>
 
 #include <Windows.h>
 

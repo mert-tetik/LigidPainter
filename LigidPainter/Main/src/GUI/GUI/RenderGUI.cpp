@@ -346,19 +346,19 @@ void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer,
         //The first frame renamingTextBox is closed 
         if(!renamingTextBoxClosed){
             if(context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_RELEASE){
-                if(renamingIndices.x == 0)
+                if(renamingIndices.x == 0 && renamingIndices.y < library.textures.size())
                     library.textures[renamingIndices.y].title = renamingTextBox.text;
-                else if(renamingIndices.x == 1)
+                else if(renamingIndices.x == 1 && renamingIndices.y < library.materials.size())
                     library.materials[renamingIndices.y].title = renamingTextBox.text;
-                else if(renamingIndices.x == 2)
+                else if(renamingIndices.x == 2 && renamingIndices.y < library.brushes.size())
                     library.brushes[renamingIndices.y].title = renamingTextBox.text;
             }
             else{
-                if(renamingIndices.x == 0)
+                if(renamingIndices.x == 0 && renamingIndices.y < library.textures.size())
                     library.textures[renamingIndices.y].title = lastTitleBeforeRenaming;
-                else if(renamingIndices.x == 1)
+                else if(renamingIndices.x == 1 && renamingIndices.y < library.materials.size())
                     library.materials[renamingIndices.y].title = lastTitleBeforeRenaming;
-                else if(renamingIndices.x == 2)
+                else if(renamingIndices.x == 2 && renamingIndices.y < library.brushes.size())
                     library.brushes[renamingIndices.y].title = lastTitleBeforeRenaming;
             }
 

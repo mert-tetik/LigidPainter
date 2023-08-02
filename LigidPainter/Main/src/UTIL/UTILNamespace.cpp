@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <sstream>
 #include <cstdlib>
 #include <filesystem>
+#include <algorithm>
 
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"

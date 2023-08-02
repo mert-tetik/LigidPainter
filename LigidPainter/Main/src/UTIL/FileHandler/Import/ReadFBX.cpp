@@ -519,7 +519,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
             case 'b':
             {
                 /*BOOL ARRAY*/
-                
+                /*
                 uint32_t arrayLength;
                 file.read(reinterpret_cast<char*>(&arrayLength), sizeof(uint32_t));
                 _FBX_totalBitsRead += sizeof(uint32_t);
@@ -560,6 +560,9 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                 else {
                     std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
                 }
+                */
+
+                std::cout << "WARNING! : Reading fbx file : Boolean array type detected. LigidPainter can't handle boolean array types." << std::endl;
                 
                 break;
             }
@@ -669,7 +672,9 @@ bool ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
                 break;
             
             if(!ReadNestedNodes(file, nestedNode.nestedNodes)){
+                
             }
+            
             //if(endOffset == 0)
             //    break; 
             if(file.eof())

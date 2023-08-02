@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include <GL/GL.h>
 #include <GL/GLU.h>
+#include <cstdint>
 
 
 #if defined(_WIN32) || defined(_WIN64)

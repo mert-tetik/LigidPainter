@@ -400,14 +400,14 @@ private:
     */
     void (*scrollCallback)(LigidWindow,double, double);
 
-    void LigidWindow::_setProcFunctions(
-                                        LigidWindow __procLigidWindow,
-                                        void (*__procMousePosCallback)(LigidWindow,double, double),
-                                        void (*__procMouseButtonCallback)(LigidWindow,int, int, int),
-                                        void (*__procKeyCallback)(LigidWindow,int, int, int),
-                                        void (*__procWindowSizeCallback)(LigidWindow,int, int),
-                                        void (*__procScrollCallback)(LigidWindow,double, double)
-                                    );
+    void _setProcFunctions(
+                            LigidWindow __procLigidWindow,
+                            void (*__procMousePosCallback)(LigidWindow,double, double),
+                            void (*__procMouseButtonCallback)(LigidWindow,int, int, int),
+                            void (*__procKeyCallback)(LigidWindow,int, int, int),
+                            void (*__procWindowSizeCallback)(LigidWindow,int, int),
+                            void (*__procScrollCallback)(LigidWindow,double, double)
+                        );
 
 public:
     /*! 

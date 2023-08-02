@@ -48,7 +48,7 @@ void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2);
 
 // Forward declarations for the obj file processing functions
 static void parseOBJMeshData(std::vector<glm::vec3> uniquePositions,std::vector<glm::vec2> uniqueUVS,std::vector<glm::vec3> uniqueNormals,std::vector<std::string> matTitles,std::vector<std::vector<std::vector<glm::vec3>>> faces,std::vector<std::vector<Vertex>>& meshVertices,std::vector<std::vector<unsigned int>>& meshIndices);
-void getDataFromWavefrontFile( std::ifstream& rf, std::vector<glm::vec3>& uniquePositions, std::vector<glm::vec2>& uniqueUVS, std::vector<glm::vec3>& uniqueNormals, std::vector<std::string>& matTitles, std::vector<std::vector<std::vector<glm::vec3>>>& faces);
+static void getDataFromWavefrontFile( std::ifstream& rf, std::vector<glm::vec3>& uniquePositions, std::vector<glm::vec2>& uniqueUVS, std::vector<glm::vec3>& uniqueNormals, std::vector<std::string>& matTitles, std::vector<std::vector<std::vector<glm::vec3>>>& faces);
 
 
 
