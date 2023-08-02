@@ -219,11 +219,23 @@ HGLRC init_opengl(HDC real_dc)
 
     HGLRC gl33_context = wglCreateContextAttribsARB(real_dc, 0, gl33_attribs);
     if (!gl33_context) {
-        fatal_error("Failed to create OpenGL 3.3 context.");
+        std::cout << "Failed to create OpenGL 4.0 context. Your GPU might not be compatible with the OpenGL version 4.0" << std::endl;
+        std::cout << "Trying to create the OpenGL context without the attributes." << std::endl;
+    
+        gl33_context = wglCreateContext(real_dc);
+
+        if(!gl33_context)
+            fatal_error(
+                        R"(
+                        Failed to create the OpenGL context without the attributes. 
+                        LigidPainter uses the higher versions of the OpenGL specification. 
+                        Upgrading your GPU might solve the problem.
+                        )"
+                    );
     }
 
     if (!wglMakeCurrent(real_dc, gl33_context)) {
-        fatal_error("Failed to activate OpenGL 3.3 rendering context.");
+        fatal_error("Failed to activate OpenGL 4.0 rendering context.");
     }
 
     return gl33_context;

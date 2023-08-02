@@ -55,9 +55,27 @@ install(TARGETS Ligid)
 
 install(
             FILES
-            ${CMAKE_SOURCE_DIR}/freetype.dll
-            ${CMAKE_SOURCE_DIR}/OpenAL32.dll
-            ${CMAKE_SOURCE_DIR}/zlibd.dll
+            "${CMAKE_SOURCE_DIR}/freetype.dll"
+            "${CMAKE_SOURCE_DIR}/OpenAL32.dll"
+            "${CMAKE_SOURCE_DIR}/zlibd.dll"
+            "C:/compiling/mingw64/bin/libstdc++-6.dll"
+            "C:/compiling/mingw64/bin/libwinpthread-1.dll"
+            "C:/compiling/mingw64/bin/libgcc_s_seh-1.dll"
+            "C:/compiling/mingw64/bin/libatomic-1.dll"
+            "C:/compiling/mingw64/bin/libgfortran-5.dll"
+            "C:/compiling/mingw64/bin/libgomp-1.dll"
+            "C:/compiling/mingw64/bin/libquadmath-0.dll"
+            "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.28.29325/debug_nonredist/x64/Microsoft.VC142.DebugCRT/concrt140d.dll"
+            "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.28.29325/debug_nonredist/x64/Microsoft.VC142.DebugCRT/msvcp140_1d.dll"
+            "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.28.29325/debug_nonredist/x64/Microsoft.VC142.DebugCRT/msvcp140_2d.dll"
+            "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.28.29325/debug_nonredist/x64/Microsoft.VC142.DebugCRT/msvcp140d.dll"
+            "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.28.29325/debug_nonredist/x64/Microsoft.VC142.DebugCRT/msvcp140d_codecvt_ids.dll"
+            "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.28.29325/debug_nonredist/x64/Microsoft.VC142.DebugCRT/vccorlib140d.dll"
+            "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.28.29325/debug_nonredist/x64/Microsoft.VC142.DebugCRT/vcruntime140_1d.dll"
+            "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.28.29325/debug_nonredist/x64/Microsoft.VC142.DebugCRT/vcruntime140d.dll"
+            "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.28.29325/debug_nonredist/x64/Microsoft.VC142.DebugCRT/vcruntime140d.dll"
+            "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.28.29325/debug_nonredist/x64/Microsoft.VC142.DebugCRT/vcruntime140d.dll"
+            "C:/Program Files (x86)/Windows Kits/10/Redist/10.0.18362.0/ucrt/DLLs/x64/ucrtbase.dll"
             DESTINATION bin
         )
 
