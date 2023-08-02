@@ -94,7 +94,7 @@ void writemeshNodeSceneData(std::ofstream &wf, std::vector<Node> meshNodeScene){
     //For each node
     for (size_t i = 0; i < nodeSize; i++)
     {
-        //Write the node index, (MATERIAL_NODE , MESH_NODE)
+        //Write the node index, (MATERIAL_NODE , MESH_NODE ..)
         wf.write(reinterpret_cast<char*>(   &meshNodeScene[i].nodeIndex    ), sizeof(int));
         
         //Write the material ID

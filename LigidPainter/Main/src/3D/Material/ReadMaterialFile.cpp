@@ -84,30 +84,26 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
             rf.read(reinterpret_cast<char*>(&modifier.maskTexture.proceduralID), sizeof(int));
             
             //Write the texture
-            if(modifier.maskTexture.proceduralID == -1){
-                //Get the resolution of the texture from the panel of the modifier
-                uint64_t txtrWidth;
-                uint64_t txtrHeight;
-                
-                //Write the texture resolution data
-                rf.read(reinterpret_cast<char*>(   &txtrWidth     ),sizeof(uint64_t));
-                rf.read(reinterpret_cast<char*>(   &txtrHeight     ),sizeof(uint64_t));
+            //Get the resolution of the texture from the panel of the modifier
+            uint64_t txtrWidth;
+            uint64_t txtrHeight;
+            
+            //Write the texture resolution data
+            rf.read(reinterpret_cast<char*>(   &txtrWidth     ),sizeof(uint64_t));
+            rf.read(reinterpret_cast<char*>(   &txtrHeight     ),sizeof(uint64_t));
 
-                //Get pixels of the texture
-                char* pixels = new char[txtrWidth * txtrHeight * 4];
+            //Get pixels of the texture
+            char* pixels = new char[txtrWidth * txtrHeight * 4];
 
-                //Write the texture data
-                rf.read(pixels , txtrWidth * txtrHeight * 4 * sizeof(char));
-                
-                modifier.maskTexture = Texture(pixels,txtrWidth,txtrHeight);
+            //Write the texture data
+            rf.read(pixels , txtrWidth * txtrHeight * 4 * sizeof(char));
+            
+            modifier.maskTexture = Texture(pixels,txtrWidth,txtrHeight);
 
-                delete[] pixels;
-            }
-            else{
-                //Write the procedural texture properties
-                rf.read(reinterpret_cast<char*>(&modifier.maskTexture.proceduralnverted), sizeof(int));
-                rf.read(reinterpret_cast<char*>(&modifier.maskTexture.proceduralScale), sizeof(float));
-            }
+            delete[] pixels;
+            //Write the procedural texture properties
+            rf.read(reinterpret_cast<char*>(&modifier.maskTexture.proceduralnverted), sizeof(int));
+            rf.read(reinterpret_cast<char*>(&modifier.maskTexture.proceduralScale), sizeof(float));
 
             if(materialModifierModifierIndex == TEXTURE_MATERIAL_MODIFIER){ //Is a texture modifier
                 for (size_t channelI = 0; channelI < 6; channelI++) //For each material channel (albedo, roughness, metallic, normal map, etc.)
