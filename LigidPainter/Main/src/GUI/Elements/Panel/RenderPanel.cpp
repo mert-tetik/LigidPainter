@@ -236,7 +236,6 @@ void Panel::drawPanel(
     if(hasSlider){
         
         sliderButton.pos = pos + this->additionalPos;
-
         
         if(leftSide.locked)
             sliderButton.pos.x = pos.x + this->additionalPos.x + sliderButton.scale.x + scale.x;
@@ -271,6 +270,8 @@ void Panel::drawPanel(
                 slideVal = sliderButton.pos.y - (pos.y + this->additionalPos.y - scale.y) - sliderButton.scale.y; // Set slideVal to its maximum value
             }
         }
+        else 
+            this->slideVal = 0.f; 
     }
     
     
