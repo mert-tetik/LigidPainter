@@ -241,6 +241,15 @@ namespace LigidGL{
     */
     void* getProcAddress(const char *name);
 
+    /*!
+    *   @brief Returns true if the app has the admin privileges
+    */
+    bool isAdmin();
+
+    /*!
+    *   @brief Forces your app to close
+    */
+    void forceClose();
 };
 
 

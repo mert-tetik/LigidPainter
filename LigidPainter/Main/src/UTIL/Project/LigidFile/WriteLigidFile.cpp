@@ -41,8 +41,6 @@ void writemeshNodeSceneData(std::ofstream &wf, std::vector<Node> meshNodeScene);
 
 void Project::writeLigidFile(const std::vector<Node> meshNodeScene, int textureRes){
     
-
-
     std::ofstream wf;
     
     if(std::filesystem::exists(this->ligidFilePath()))

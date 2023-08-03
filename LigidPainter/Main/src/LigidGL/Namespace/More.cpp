@@ -68,3 +68,21 @@ void* LigidGL::getProcAddress(const char *name)
 
   return p;
 }
+
+bool LigidGL::isAdmin(){
+    BOOL isAdmin = FALSE;
+    SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
+    PSID AdministratorsGroup;
+    if (AllocateAndInitializeSid(&NtAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID,
+        DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &AdministratorsGroup)) {
+        if (!CheckTokenMembership(NULL, AdministratorsGroup, &isAdmin)) {
+            isAdmin = FALSE;
+        }
+        FreeSid(AdministratorsGroup);
+    }
+    return isAdmin == TRUE;
+}
+
+void LigidGL::forceClose(){
+    ExitProcess(0);
+}

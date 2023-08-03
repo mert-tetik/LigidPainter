@@ -34,9 +34,19 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Renderer.h"
 
 #include "LigidGL/LigidGL.hpp"
+
+#include "tinyfiledialogs.h"
+
 typedef const char* (WINAPI* PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC hdc);
 
 Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
+
+    if(!LigidGL::isAdmin()){
+        int res = tinyfd_messageBox("Warning!", "LigidPainter has no admin priviliges (run the app as administrator)! std::filesystem might cause a crash. Do you want to proceed?", "yesno", "warning", 0);
+        if(res == 0){
+            LigidGL::forceClose();
+        }
+    }
 
     //Create the window and make it's OpenGL context current    
     context.window.createWindow(videoScale.x, videoScale.y, L"LigidPainter");
@@ -155,7 +165,6 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
 
     //Load the inputs of the mesh node
     meshNodeScene[0].uploadNewIOs(model, colorPalette);
-    
 
     //Create the projects folder if not exists
     if(!std::filesystem::exists("./Projects")){
