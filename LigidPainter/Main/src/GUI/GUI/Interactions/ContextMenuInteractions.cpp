@@ -118,6 +118,11 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 //Delete the material
                 library.eraseMaterial(contextMenus[i].selectedElement);
             }
+            if(contextMenus[i].contextPanel.sections[0].elements[6].button.hover && mouse.LClick){//Clicked to export button
+                std::string exportingPath = showFileSystemObjectSelectionDialog("Export the lgdmaterial file", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false,FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_EXPORT_FILE);
+                if(exportingPath.size())
+                    library.materials[contextMenus[i].selectedElement].writeFile(exportingPath);
+            }
         }
         if(i == 2 && library.selectedElementIndex == 2 && contextMenus[i].dialogControl.isActive()){ //If brush context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to use brush button

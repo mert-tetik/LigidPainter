@@ -67,7 +67,7 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
     for (size_t i = 0; i < library.materials.size(); i++)
     {
         //Export material
-        library.materials[i].writeFile(materialFolderPath);
+        library.materials[i].writeFile(materialFolderPath + library.materials[i].title + ".lgdmaterial");
     }
 
 

@@ -77,6 +77,7 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
         {
             size_t materialModifierModifierIndex;
             rf.read(reinterpret_cast<char*>(   &materialModifierModifierIndex     ),sizeof(uint64_t));
+            std::cout << "Material Index : " << materialModifierModifierIndex << std::endl;
             
             MaterialModifier modifier(colorPalette , buttonShader , appTextures , materialModifierModifierIndex);
 
