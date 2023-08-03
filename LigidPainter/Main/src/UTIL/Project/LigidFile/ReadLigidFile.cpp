@@ -144,9 +144,9 @@ void readmeshNodeSceneData(std::ifstream &rf, std::vector<Node> &meshNodeScene, 
                 rf.read(reinterpret_cast<char*>(   &inputIndex    )    , sizeof(int));
                 rf.read(reinterpret_cast<char*>(   &nodeIndex     )    , sizeof(int));
             
-                // NodeConnection connection(nodeIndex,inputIndex);
+                //NodeConnection connection(nodeIndex,inputIndex);
 
-                // node.IOs[IOI].connections.push_back(connection);
+                //node.IOs[IOI].connections.push_back(connection);
             }
         }
 

@@ -43,6 +43,7 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
         return;
     }
     
+    std::cout << "A" << std::endl;
     //!Textures
     std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";
 
@@ -53,9 +54,10 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
     for (size_t i = 0; i < library.textures.size(); i++)
     {
         //Export texture
-        library.textures[i].exportTexture(textureFolderPath,"PNG");
+        library.textures[i].exportTexture(textureFolderPath, "PNG");
     }
     
+    std::cout << "B" << std::endl;
     
     //!Materials
     std::string materialFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Materials";
@@ -70,6 +72,7 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
         library.materials[i].writeFile(materialFolderPath + library.materials[i].title + ".lgdmaterial");
     }
 
+    std::cout << "C" << std::endl;
 
     //!Brushes
     std::string brushFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Brushes";
@@ -84,6 +87,7 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
         library.brushes[i].saveFile(brushFolderPath);
     }
     
+    std::cout << "D" << std::endl;
     
     //!3D Models
     std::string tdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels";
@@ -98,5 +102,9 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
         FileHandler::writeOBJFile(tdModelFolderPath + library.TDModels[i].title + ".obj", library.TDModels[i]);
     }
 
+    std::cout << "E" << std::endl;
+
     writeLigidFile(meshNodeScene, textureRes);
+    
+    std::cout << "F" << std::endl;
 }

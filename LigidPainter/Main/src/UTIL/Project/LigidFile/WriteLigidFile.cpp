@@ -40,10 +40,21 @@ void writemeshNodeSceneData(std::ofstream &wf, std::vector<Node> meshNodeScene);
 
 
 void Project::writeLigidFile(const std::vector<Node> meshNodeScene, int textureRes){
-    std::ofstream wf(this->ligidFilePath(), std::ios::out | std::ios::binary);
-		
+    
+
+
+    std::ofstream wf;
+    
+    if(std::filesystem::exists(this->ligidFilePath()))
+        wf = std::ofstream(this->ligidFilePath(), std::ios::out | std::ios::binary);
+    else{
+        std::string dist = "";
+        dist.push_back(UTIL::folderDistinguisher());
+        wf = std::ofstream(this->folderPath + dist + (std::string)this->projectName() + ".ligid", std::ios::out | std::ios::binary);
+    }
+
     if(!wf) {
-        std::cout << "ERROR WHILE WRITING LIGID FILE! Cannot open file : " << this->ligidFilePath() << std::endl;
+        std::cout << "ERROR! : Writing ligid file." << std::endl;
         return;
     }
 
