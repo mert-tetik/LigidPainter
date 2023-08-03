@@ -152,11 +152,12 @@ class LoadProjectDialog
     Box box;
     Shader buttonShader;
     AppTextures appTextures;
+    AppMaterialModifiers appMaterialModifiers;
     DialogControl dialogControl;
 
     //Constructors
     LoadProjectDialog();
-    LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers);
     
     //Public member functions
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
@@ -276,6 +277,7 @@ class NewProjectDialog
  {
  private:
     AppTextures appTextures;
+    AppMaterialModifiers appMaterialModifiers;
  public:
     Panel panel;
     Box box;
@@ -284,7 +286,7 @@ class NewProjectDialog
 
     //Constructors
     NewProjectDialog();
-    NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers);
 
     //Public member functions
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,

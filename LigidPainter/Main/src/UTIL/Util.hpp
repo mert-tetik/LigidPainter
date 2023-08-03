@@ -59,6 +59,8 @@ class Panel;
 class Mesh;
 /// @brief forward declared Shader class
 class Shader;
+/// @brief forward declared AppMaterialModifiers struct
+struct AppMaterialModifiers;
 
 
 /// @brief Global utility functions to help to do stuff
@@ -416,7 +418,8 @@ public:
     /// @param meshNodeScene The main meshNodeScene which has the mesh node
     /// @return 
     bool loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,
-                    ColorPalette colorPalette,int &textureRes,std::vector<Node> &meshNodeScene, glm::vec2 videoScale);
+                    ColorPalette colorPalette,int &textureRes,std::vector<Node> &meshNodeScene, glm::vec2 videoScale,
+                    AppMaterialModifiers& appMaterialModifiers);
 
     /// @brief Used to save as
     /// @param dstPath where to duplicate

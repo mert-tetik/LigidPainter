@@ -80,19 +80,17 @@ void Material::writeFile(std::string path){
             wf.write(reinterpret_cast<char*>(   &materialModifiers[i].maskTexture.proceduralnverted     ), sizeof(int));
             wf.write(reinterpret_cast<char*>(   &materialModifiers[i].maskTexture.proceduralScale     ), sizeof(float));
 
-            if(materialModifiers[i].maskTexture.proceduralID == -1){
-                int32_t textureWidth = materialModifiers[i].maskTexture.getResolution().x;
-                wf.write(reinterpret_cast<char*>(   &textureWidth     ), sizeof(int32_t));
+            int32_t textureWidth = materialModifiers[i].maskTexture.getResolution().x;
+            wf.write(reinterpret_cast<char*>(   &textureWidth     ), sizeof(int32_t));
 
-                int32_t textureHeight = materialModifiers[i].maskTexture.getResolution().y;
-                wf.write(reinterpret_cast<char*>(   &textureHeight     ), sizeof(int32_t));
+            int32_t textureHeight = materialModifiers[i].maskTexture.getResolution().y;
+            wf.write(reinterpret_cast<char*>(   &textureHeight     ), sizeof(int32_t));
 
-                char* pixels = new char[textureWidth * textureHeight * 4];
-                materialModifiers[i].maskTexture.getData(pixels);
-                wf.write(pixels, textureWidth * textureHeight * 4 * sizeof(char));
-            
-                delete[] pixels;
-            }
+            char* pixels = new char[textureWidth * textureHeight * 4];
+            materialModifiers[i].maskTexture.getData(pixels);
+            wf.write(pixels, textureWidth * textureHeight * 4 * sizeof(char));
+        
+            delete[] pixels;
 
             uint32_t propertySize = 0;
             std::vector<std::string> propTitles;
@@ -132,7 +130,7 @@ void Material::writeFile(std::string path){
                 {
                     wf.write(reinterpret_cast<char*>(   &propTitles[i][charI]     ), sizeof(char));
                 }
-                
+
                 //Is a rangebar
                 if(propElements[i].state == 1){
                     char valueType = 'f';

@@ -32,7 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 //Forward declarations for the interaction functions defined in the Interactions directory 
-void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse, Panel &paintingPanel, Painter &painter, Library &library, Model &model, ColorPalette& colorPalette, Shaders &shaders, int &textureRes,NewTextureDialog &newTextureDialog,AppTextures &appTextures,int frameCounter);
+void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse, Panel &paintingPanel, Painter &painter, Library &library, Model &model, ColorPalette& colorPalette, Shaders &shaders, int &textureRes,NewTextureDialog &newTextureDialog,AppTextures &appTextures, AppMaterialModifiers& appMaterialModifiers, int frameCounter);
 void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, Library &library, ColorPalette& colorPalette, Shaders &shaders,int frameCounter);
 void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &painter, Dropper &dropper,ColorPalette colorPalette,Shader buttonShader, AppTextures appTextures, Model &model, std::vector<Node> &meshNodeScene);
 void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog);
@@ -54,7 +54,8 @@ void UI::elementInteraction(
                                 float screenGapPerc,
                                 Model &model, 
                                 Project& project,
-                                Scene scene
+                                Scene scene,
+                                AppMaterialModifiers& appMaterialModifiers
                             )
 {
     //!Dialog & panel state
@@ -83,7 +84,7 @@ void UI::elementInteraction(
     
     updateLibraryPanelDisplayerElements(libraryPanelDisplayer,library,colorPalette,shaders,frameCounter);
     
-    libraryPanelDisplayerInteraction(libraryPanelDisplayer,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,appTextures,frameCounter);
+    libraryPanelDisplayerInteraction(libraryPanelDisplayer,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,appTextures, appMaterialModifiers,frameCounter);
     
     this->libraryPanelLeftInteraction(libraryPanelLeft,library,mouse);
 

@@ -33,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette, 
-                          int& textureRes, std::vector<Node> &meshNodeScene, glm::vec2 videoScale){
+                          int& textureRes, std::vector<Node> &meshNodeScene, glm::vec2 videoScale, AppMaterialModifiers& appMaterialModifiers){
 
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
@@ -92,7 +92,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         std::string materialPath = entry.path().string();
 
         Material material(textureRes, "", 0);;
-        material.readFile(materialPath,colorPalette,shaders.buttonShader,appTextures, AppMaterialModifiers(), library.materials);
+        material.readFile(materialPath,colorPalette,shaders.buttonShader,appTextures, appMaterialModifiers, library.materials);
 
         library.addMaterial(material);
     }

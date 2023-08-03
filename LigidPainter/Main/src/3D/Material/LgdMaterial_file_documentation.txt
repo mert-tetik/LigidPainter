@@ -16,11 +16,10 @@ Modifier Data
                                                                                     32 bits (signed integer) procedural ID -> 
                                                                                     32 bits (signed integer) is procedural inverted ->
                                                                                     32 bits (single-precision IEEE 754 number) procedural scale ->
-                                                                                    if(procedural ID == -1)(
-                                                                                                                32 bits (signed integer) texture width ->
-                                                                                                                32 bits (signed integer) texture height ->
-                                                                                                                texture width * texture height * 4 * sizeof(byte) bits (unsigned byte) texture data -> 
-                                                                                                            )
+                                                                                    
+                                                                                    32 bits (signed integer) texture width ->
+                                                                                    32 bits (signed integer) texture height ->
+                                                                                    texture width * texture height * 4 * sizeof(byte) bits (unsigned byte) texture data -> 
                                                                                     
                                                                                     (--Modifier data--)
 

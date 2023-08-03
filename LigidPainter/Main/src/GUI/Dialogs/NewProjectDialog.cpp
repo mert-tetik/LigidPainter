@@ -33,11 +33,12 @@
 
 NewProjectDialog::NewProjectDialog(){}
 
-NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers){
     
     //Take the parameters to the class member variables 
     this->buttonShader = buttonShader;
     this->appTextures = appTextures;
+    this->appMaterialModifiers = appMaterialModifiers;
     
     //Create the panel
     this->panel = Panel(
@@ -111,7 +112,7 @@ void NewProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
                                     std::stoi(panel.sections[0].elements[3].comboBox.texts[panel.sections[0].elements[3].comboBox.selectedIndex])
                                  ))
         {
-            project.loadProject(project.ligidFilePath(), library, shaders, model, appTextures, colorPalette, textureRes, meshNodeScene, videoScale);
+            project.loadProject(project.ligidFilePath(), library, shaders, model, appTextures, colorPalette, textureRes, meshNodeScene, videoScale, appMaterialModifiers);
             
             startScreen = false;
 

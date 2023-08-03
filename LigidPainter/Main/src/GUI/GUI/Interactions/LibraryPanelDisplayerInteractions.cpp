@@ -43,6 +43,7 @@ void libraryPanelDisplayerInteraction(
                                         int &textureRes,
                                         NewTextureDialog &newTextureDialog,
                                         AppTextures &appTextures,
+                                        AppMaterialModifiers &appMaterialModifiers,
                                         int frameCounter
                                     )
 {
@@ -127,7 +128,7 @@ void libraryPanelDisplayerInteraction(
             if(test.size()){
                 
                 Material importedMaterial(textureRes, "", 0);
-                importedMaterial.readFile(test,colorPalette,shaders.buttonShader,appTextures, AppMaterialModifiers(), library.materials);
+                importedMaterial.readFile(test,colorPalette,shaders.buttonShader,appTextures, appMaterialModifiers, library.materials);
                 library.addMaterial(importedMaterial);
             }
         }

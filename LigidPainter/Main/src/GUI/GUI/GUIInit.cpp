@@ -427,10 +427,10 @@ void UI::init
     greetingDialog              = GreetingDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
     newTextureDialog            = NewTextureDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
     displayerDialog             = DisplayerDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures,shaders.prefilteringShader,shaders.skyboxBall,sphereModel);
-    newProjectDialog            = NewProjectDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
-    loadProjectDialog           = LoadProjectDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
     materialEditorDialog        = MaterialEditorDialog(shaders.buttonShader, shaders.heightToNormalMap, shaders.tdModelShader, colorPalette, appTextures, sphereModel);
     textureSelectionDialog      = TextureSelectionDialog(shaders.buttonShader,colorPalette,appTextures);
+    loadProjectDialog           = LoadProjectDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures, materialEditorDialog.appMaterialModifiers);
+    newProjectDialog            = NewProjectDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures,materialEditorDialog.appMaterialModifiers);
     settingsDialog              = SettingsDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
     exportDialog                = ExportDialog(context,videoScale,colorPalette,shaders.buttonShader,appTextures);
 

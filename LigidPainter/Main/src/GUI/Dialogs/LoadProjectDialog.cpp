@@ -33,11 +33,12 @@
 
 LoadProjectDialog::LoadProjectDialog(){}
 
-LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers){
     
     //Take the parameters to the class member variables 
     this->buttonShader = buttonShader;
     this->appTextures = appTextures;
+    this->appMaterialModifiers = appMaterialModifiers;
 
     //Create the bg panel
     this->bgPanel = Panel(
@@ -156,7 +157,7 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
         if(test.size()){
             
             //Load the project
-            if(project.loadProject(test,library,shaders,model,appTextures,colorPalette,textureRes,meshNodeScene, videoScale)){
+            if(project.loadProject(test,library,shaders,model,appTextures,colorPalette,textureRes,meshNodeScene, videoScale, appMaterialModifiers)){
                 
                 startScreen = false;
                 
@@ -222,7 +223,7 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
             std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
             
             //Load the project
-            if(project.loadProject(ligidFilePath,library,shaders,model,appTextures,colorPalette,textureRes,meshNodeScene,videoScale)){
+            if(project.loadProject(ligidFilePath,library,shaders,model,appTextures,colorPalette,textureRes,meshNodeScene,videoScale, appMaterialModifiers)){
                 
                 startScreen = false;
                 
