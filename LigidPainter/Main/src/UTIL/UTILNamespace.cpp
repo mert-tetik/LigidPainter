@@ -149,8 +149,13 @@ void UTIL::updateAllTheNodeConnections(std::vector<Node> &meshNodeScene){
 
 void UTIL::deleteNode(std::vector<Node>& meshNodeScene, int index){
 	//If the deleted node is a material node
-    if(meshNodeScene[index].nodeIndex == MATERIAL_NODE){
+    if(meshNodeScene[index].nodeIndex != MESH_NODE){
         
+        if(meshNodeScene[index].nodeIndex == MATERIAL_ID_NODE | MATERIAL_MASK_NODE){
+            if(meshNodeScene[index].nodePanel.sections[0].elements[0].button.texture.ID != 0)
+                glDeleteTextures(1, &meshNodeScene[index].nodePanel.sections[0].elements[0].button.texture.ID);
+        }
+
         //Remove the related input connections
         for (size_t IOI = 0; IOI < meshNodeScene[index].IOs.size(); IOI++)
         {

@@ -124,7 +124,7 @@ public:
     void writeFile(std::string path);
 
     /// @brief Read a lgdmaterial file and write the data to the class 
-    void readFile(std::string path,ColorPalette colorPalette ,Shader buttonShader ,AppTextures appTextures, const std::vector<Material> materials);
+    void readFile(std::string path,ColorPalette colorPalette ,Shader buttonShader ,AppTextures appTextures, AppMaterialModifiers appMaterialModifiers, const std::vector<Material> materials);
 
     /// @brief Interpret the @ref materialModifiers and write the shader results to the material channels then update the displaying texture
     void updateMaterialDisplayingTexture(float textureRes, Box box, Context context, Shader buttonShader, Shader tdModelShader, Model sphereModel, Shader heightToNormalShader);

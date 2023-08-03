@@ -92,7 +92,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         std::string materialPath = entry.path().string();
 
         Material material(textureRes, "", 0);;
-        material.readFile(materialPath,colorPalette,shaders.buttonShader,appTextures, library.materials);
+        material.readFile(materialPath,colorPalette,shaders.buttonShader,appTextures, AppMaterialModifiers(), library.materials);
 
         library.addMaterial(material);
     }

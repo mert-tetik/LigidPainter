@@ -337,7 +337,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
             if(this->selectedTextureMode == 0){
                 receivedTexture.proceduralID = -1;
 
-                if(library.textures.size() >= this->selectedTextureIndex){
+                if(library.textures.size() <= this->selectedTextureIndex){
                     std::cout << "ERROR : Invalid selected texture index! No texture selected" << std::endl;
                 }
                 else{

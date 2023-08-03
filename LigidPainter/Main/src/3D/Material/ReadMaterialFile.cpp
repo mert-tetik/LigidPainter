@@ -28,6 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <filesystem>
 
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
@@ -148,7 +149,7 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
                         propTitles.push_back(modifier.sections[sI].header.button.text + "-" + modifier.sections[sI].elements[eI].rangeBar.text);
                     else{
                         std::cout << "ERROR : Unknown GUI element type : " << modifier.sections[sI].elements[eI].state << ". Failed to write the material file" << std::endl;
-                        wf.close();
+                        rf.close();
                         
                         if(std::filesystem::exists(path))
                             std::filesystem::remove(path);
