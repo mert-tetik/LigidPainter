@@ -33,11 +33,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
 
-void Material::readFile(std::string path,ColorPalette colorPalette ,Shader buttonShader ,AppTextures appTextures, const std::vector<Material> materials){
+void Material::readFile(std::string path,ColorPalette colorPalette ,Shader buttonShader ,AppTextures appTextures, AppMaterialModifiers appMaterialModifiers, const std::vector<Material> materials){
     if(path.size()){
         std::ifstream rf(path, std::ios::out | std::ios::binary);
         
-        ;
         title = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());
         title = UTIL::removeExtension(title);
         
@@ -48,117 +47,148 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
         
         //!HEADER
         
-        //!Description
-        uint64_t h1 = 0xBBF2367A; 
-        uint64_t h2 = 0xBB58BC66; 
-        uint64_t h3 = 0xBBACB786; 
+        //Description 
+        uint64_t h1; 
+        uint64_t h2; 
+        uint64_t h3; 
+        uint64_t r1 = 0x5A7D0C809A22F3B7; 
+        uint64_t r2 = 0xE8F691BE0D45C23A; 
+        uint64_t r3 = 0x3FD8A9657B101E8C; 
+        rf.read(reinterpret_cast<char*>(   &h1    ),sizeof(uint64_t));
+        rf.read(reinterpret_cast<char*>(   &h2    ),sizeof(uint64_t));
+        rf.read(reinterpret_cast<char*>(   &h3    ),sizeof(uint64_t));
         
-        uint64_t ch1; 
-        uint64_t ch2; 
-        uint64_t ch3; 
-
-        rf.read(reinterpret_cast<char*>(   &ch1    ),sizeof(uint64_t));
-        rf.read(reinterpret_cast<char*>(   &ch2    ),sizeof(uint64_t));
-        rf.read(reinterpret_cast<char*>(   &ch3    ),sizeof(uint64_t));
-        
-        if(ch1 != h1 || ch2 != h2 || ch3 != h3){
-            std::cout << "ERROR This is not a material file : " << path << std::endl;
+        if(h1 != r1 || h2 != r2 || h3 != r3){
+            std::cout << "ERROR WHILE READING MATERIAL FILE! Description header is not correct." << std::endl;
             return;
         }
 
-        //!ID
-        rf.read(reinterpret_cast<char*>(   &this->uniqueID    ),sizeof(int));
+        //Version number(
+        uint32_t versionNumber = 0x000007D0; //2000 
+        rf.read(reinterpret_cast<char*>(   &versionNumber    ), sizeof(uint32_t));
+        
+        if(versionNumber != 0x000007D0){
+            std::cout << "WARNING! : Material version number was : " << versionNumber << ". Results might be unexpected." << std::endl; 
+        }
+
+        //ID
+        rf.read(reinterpret_cast<char*>(   &this->uniqueID    ), sizeof(int));
 
         //!Modifiers
+
+        //Read the material modifier size
         uint64_t materialModifierSize;
-        rf.read(reinterpret_cast<char*>(   &materialModifierSize     ),sizeof(uint64_t));
-        
+        rf.read(reinterpret_cast<char*>(   &materialModifierSize     ), sizeof(uint64_t));
+
         for (size_t i = 0; i < materialModifierSize; i++)
         {
-            size_t materialModifierModifierIndex;
-            rf.read(reinterpret_cast<char*>(   &materialModifierModifierIndex     ),sizeof(uint64_t));
-            std::cout << "Material Index : " << materialModifierModifierIndex << std::endl;
+
+            int modifierIndex = NULL;
+            //Modifier index
+            rf.read(reinterpret_cast<char*>(   &modifierIndex     ), sizeof(int));
             
-            MaterialModifier modifier(colorPalette , buttonShader , appTextures , materialModifierModifierIndex);
-
-            // -- Mask texture --
-            rf.read(reinterpret_cast<char*>(&modifier.maskTexture.proceduralID), sizeof(int));
+            MaterialModifier modifier;
             
-            //Write the texture
-            //Get the resolution of the texture from the panel of the modifier
-            uint64_t txtrWidth;
-            uint64_t txtrHeight;
-            
-            //Write the texture resolution data
-            rf.read(reinterpret_cast<char*>(   &txtrWidth     ),sizeof(uint64_t));
-            rf.read(reinterpret_cast<char*>(   &txtrHeight     ),sizeof(uint64_t));
-
-            //Get pixels of the texture
-            char* pixels = new char[txtrWidth * txtrHeight * 4];
-
-            //Write the texture data
-            rf.read(pixels , txtrWidth * txtrHeight * 4 * sizeof(char));
-            
-            modifier.maskTexture = Texture(pixels,txtrWidth,txtrHeight);
-
-            delete[] pixels;
-            //Write the procedural texture properties
-            rf.read(reinterpret_cast<char*>(&modifier.maskTexture.proceduralnverted), sizeof(int));
-            rf.read(reinterpret_cast<char*>(&modifier.maskTexture.proceduralScale), sizeof(float));
-
-            if(materialModifierModifierIndex == TEXTURE_MATERIAL_MODIFIER){ //Is a texture modifier
-                for (size_t channelI = 0; channelI < 6; channelI++) //For each material channel (albedo, roughness, metallic, normal map, etc.)
-                {
-                    //Get the resolution of the texture from the panel of the modifier
-                    uint64_t txtrWidth;
-                    uint64_t txtrHeight;
-                    
-                    //Read the texture resolution data
-                    rf.read(reinterpret_cast<char*> (       &txtrWidth          )       ,sizeof(uint64_t));
-                    rf.read(reinterpret_cast<char*> (       &txtrHeight         )       ,sizeof(uint64_t));
-    
-                    //Get pixels of the texture
-                    char* pixels = new char[txtrWidth * txtrHeight * 4];
-
-                    //Read the texture data
-                    rf.read(pixels , txtrWidth * txtrHeight * 4 * sizeof(char));
-
-                    //Give the texture to the panel of the modifier
-                    modifier.sections[0].elements[channelI].button.texture = Texture(pixels,txtrWidth,txtrHeight);
-
-                    delete[] pixels;
-                }
-
-                //Write the opacity values
-                for (size_t channelI = 0; channelI < 6; channelI++) {
-                    rf.read(reinterpret_cast<char*>(&modifier.sections[1].elements[channelI].rangeBar.value), sizeof(float));
-                }
-            }
+            if(modifierIndex == 0)
+                modifier = appMaterialModifiers.textureModifier;
+            else if(modifierIndex == 1)
+                modifier = appMaterialModifiers.dustModifier;
+            else if(modifierIndex == 2)
+                modifier = appMaterialModifiers.asphaltModifier;
+            else if(modifierIndex == 3)
+                modifier = appMaterialModifiers.fabricModifier;
+            else if(modifierIndex == 4)
+                modifier = appMaterialModifiers.mossModifier;
+            else if(modifierIndex == 5)
+                modifier = appMaterialModifiers.rustModifier;
+            else if(modifierIndex == 6)
+                modifier = appMaterialModifiers.skinModifier;
+            else if(modifierIndex == 7)
+                modifier = appMaterialModifiers.solidModifier;
+            else if(modifierIndex == 8)
+                modifier = appMaterialModifiers.woodenModifier;
             else{
-                uint64_t sectionSize;
-                rf.read(reinterpret_cast<char*>(sectionSize), sizeof(uint64_t));
-                for (size_t secI = 0; secI < sectionSize; secI++)
+                std::cout << "ERROR : Reading material file : Unknown modifier index." << std::endl;
+            }
+ 
+            //Mask texture
+            rf.read(reinterpret_cast<char*>(   &modifier.maskTexture.proceduralID     ), sizeof(int));
+            rf.read(reinterpret_cast<char*>(   &modifier.maskTexture.proceduralnverted     ), sizeof(int));
+            rf.read(reinterpret_cast<char*>(   &modifier.maskTexture.proceduralScale     ), sizeof(float));
+
+            if(modifier.maskTexture.proceduralID == -1){
+                int32_t textureWidth = modifier.maskTexture.getResolution().x;
+                rf.read(reinterpret_cast<char*>(   &textureWidth     ), sizeof(int32_t));
+
+                int32_t textureHeight = modifier.maskTexture.getResolution().y;
+                rf.read(reinterpret_cast<char*>(   &textureHeight     ), sizeof(int32_t));
+
+                char* pixels = new char[textureWidth * textureHeight * 4];
+                rf.read(pixels, textureWidth * textureHeight * 4 * sizeof(char));
+            
+                modifier.maskTexture = Texture(pixels, textureWidth, textureHeight);
+
+                delete[] pixels;
+            }
+
+            uint32_t propertySize = 0;
+            std::vector<std::string> propTitles;
+            std::vector<Element> propElements;
+
+            for (size_t sI = 0; sI < modifier.sections.size(); sI++)
+            {
+                propertySize += modifier.sections[sI].elements.size();
+                for (size_t eI = 0; eI < modifier.sections[sI].elements.size(); eI++)
                 {
-                    uint64_t elementSize;
-                    rf.read(reinterpret_cast<char*>(elementSize), sizeof(uint64_t));
-                    for (size_t eI = 0; eI < elementSize; eI++)
-                    {
-                        //Is rangeBar
-                        if(modifier.sections[secI].elements[eI].state == 1)
-                            rf.read(reinterpret_cast<char*>(   &modifier.sections[secI].elements[eI].rangeBar.value     ), sizeof(float));
+                    propElements.push_back(modifier.sections[sI].elements[eI]);
+                    
+                    if(modifier.sections[sI].elements[eI].state == 0)
+                        propTitles.push_back(modifier.sections[sI].header.button.text + "-" + modifier.sections[sI].elements[eI].button.text);
+                    else if(modifier.sections[sI].elements[eI].state == 1)
+                        propTitles.push_back(modifier.sections[sI].header.button.text + "-" + modifier.sections[sI].elements[eI].rangeBar.text);
+                    else{
+                        std::cout << "ERROR : Unknown GUI element type : " << modifier.sections[sI].elements[eI].state << ". Failed to write the material file" << std::endl;
+                        wf.close();
                         
-                        //Is button
-                        else if(modifier.sections[secI].elements[eI].state == 0){
-                            rf.read(reinterpret_cast<char*>(   &modifier.sections[secI].elements[eI].button.color.r     ), sizeof(float));
-                            rf.read(reinterpret_cast<char*>(   &modifier.sections[secI].elements[eI].button.color.g     ), sizeof(float));
-                            rf.read(reinterpret_cast<char*>(   &modifier.sections[secI].elements[eI].button.color.b     ), sizeof(float));
-                        }
+                        if(std::filesystem::exists(path))
+                            std::filesystem::remove(path);
+
+                        return;
                     }
                 }
             }
+            
+            rf.read(reinterpret_cast<char*>(   &propertySize     ), sizeof(uint32_t));
 
-            this->materialModifiers.push_back(modifier);
-        }
+            for (size_t i = 0; i < propertySize; i++)
+            {
+                uint32_t titleSize = propTitles[i].size();
+                rf.read(reinterpret_cast<char*>(   &titleSize     ), sizeof(uint32_t));
+                
+                for (size_t charI = 0; charI < titleSize; charI++)
+                {
+                    rf.read(reinterpret_cast<char*>(   &propTitles[i][charI]     ), sizeof(char));
+                }
+                
+                //Is a rangebar
+                if(propElements[i].state == 1){
+                    char valueType = 'f';
+                    rf.read(reinterpret_cast<char*>(   &valueType     ), sizeof(char));
+                
+                    rf.read(reinterpret_cast<char*>(   &propElements[i].rangeBar.value     ), sizeof(float));
+                }
+                
+                //Is a button
+                if(propElements[i].state == 0){
+                    char valueType = '3';
+                    rf.read(reinterpret_cast<char*>(   &valueType     ), sizeof(char));
+                    
+                    rf.read(reinterpret_cast<char*>(   &propElements[i].button.color.r     ), sizeof(float));
+                    rf.read(reinterpret_cast<char*>(   &propElements[i].button.color.g     ), sizeof(float));
+                    rf.read(reinterpret_cast<char*>(   &propElements[i].button.color.b     ), sizeof(float));
+                }
+            }
+        }    
     }
 
     //Check if there is already a material with the same ID
