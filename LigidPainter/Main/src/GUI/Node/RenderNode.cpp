@@ -168,41 +168,41 @@ void Node::render(  glm::vec2 videoScale,
                     getHoveredInputs(hoveredNodeI,hoveredIOI,meshNodeScene);
 
                     //A IO circle is hovered
-                    if(hoveredNodeI != 1000 && hoveredIOI != 1000 && hoveredNodeI != currentNodeIndex){ 
-                        
-                        //Delete the previous connection if an input IO is connected
-                        if(IOs[i].state == 0)
-                            clearConnections(currentNodeIndex,i,meshNodeScene);
+                    if(hoveredNodeI != 1000 && hoveredIOI != 1000 && hoveredNodeI != currentNodeIndex){
+                        if((meshNodeScene[hoveredNodeI].IOs[hoveredIOI].state == 0 && IOs[i].state == 2) || (meshNodeScene[hoveredNodeI].IOs[hoveredIOI].state == 2 && IOs[i].state == 0)){
+                            //Delete the previous connection if an input IO is connected
+                            if(IOs[i].state == 0)
+                                clearConnections(currentNodeIndex,i,meshNodeScene);
 
-                        //If the circle hovered already has a connection & is an input
-                        if(doHaveConnection(hoveredNodeI,hoveredNodeI,meshNodeScene) && getStateData(hoveredNodeI,hoveredNodeI,meshNodeScene) == 0){
-                           //Than remove the connections of the circle hovered
-                            clearConnections(hoveredNodeI,hoveredIOI,meshNodeScene);
-                        }
-
-                        
-                        //Create a connection 
-                        createConnection(hoveredNodeI,hoveredIOI,currentNodeIndex,i,meshNodeScene);
-
-                        Material material;
-                        for (size_t i = 0; i < library.materials.size(); i++)
-                        {
-                            if(meshNodeScene[hoveredNodeI].nodeIndex == MATERIAL_NODE){
-                                if(meshNodeScene[hoveredNodeI].materialID == library.materials[i].uniqueID)
-                                    material = library.materials[i];
+                            //If the circle hovered already has a connection & is an input
+                            if(doHaveConnection(hoveredNodeI,hoveredNodeI,meshNodeScene) && getStateData(hoveredNodeI,hoveredNodeI,meshNodeScene) == 0){
+                            //Than remove the connections of the circle hovered
+                                clearConnections(hoveredNodeI,hoveredIOI,meshNodeScene);
                             }
-                            else if(meshNodeScene[currentNodeIndex].nodeIndex == MATERIAL_NODE){
-                                if(meshNodeScene[currentNodeIndex].materialID == library.materials[i].uniqueID)
-                                    material = library.materials[i];
+
+                            //Create a connection 
+                            createConnection(hoveredNodeI,hoveredIOI,currentNodeIndex,i,meshNodeScene);
+
+                            Material material;
+                            for (size_t i = 0; i < library.materials.size(); i++)
+                            {
+                                if(meshNodeScene[hoveredNodeI].nodeIndex == MATERIAL_NODE){
+                                    if(meshNodeScene[hoveredNodeI].materialID == library.materials[i].uniqueID)
+                                        material = library.materials[i];
+                                }
+                                else if(meshNodeScene[currentNodeIndex].nodeIndex == MATERIAL_NODE){
+                                    if(meshNodeScene[currentNodeIndex].materialID == library.materials[i].uniqueID)
+                                        material = library.materials[i];
+                                }
                             }
-                        }
 
-                        if(meshNodeScene[hoveredNodeI].nodeIndex == MESH_NODE){ //The hovered node is a mesh node (another node to the mesh node)
-                            UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
-                        }
+                            if(meshNodeScene[hoveredNodeI].nodeIndex == MESH_NODE){ //The hovered node is a mesh node (another node to the mesh node)
+                                UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
+                            }
 
-                        else if(meshNodeScene[currentNodeIndex].nodeIndex == MESH_NODE){ //The node's itself is mesh node (mesh node to another) 
-                            UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
+                            else if(meshNodeScene[currentNodeIndex].nodeIndex == MESH_NODE){ //The node's itself is mesh node (mesh node to another) 
+                                UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
+                            }
                         }
                     }
                 }
