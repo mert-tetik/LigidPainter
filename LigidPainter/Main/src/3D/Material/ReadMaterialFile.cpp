@@ -190,7 +190,7 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
                                 elementI = iii;
                             }
                         }
-                        else if(valueType == '3'){
+                        else if(valueType == '3' || valueType == 't'){
                             if(modifier.sections[ii].header.button.text == sectionTitle && modifier.sections[ii].elements[iii].button.text == elementTitle){
                                 secI = ii;
                                 elementI = iii;
@@ -201,6 +201,7 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
                 
                 float valF;
                 glm::vec3 val3;
+                Texture valT;
 
                 //Is a rangebar
                 if(valueType == 'f'){
@@ -212,6 +213,31 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
                     rf.read(reinterpret_cast<char*>(   &val3.r     ), sizeof(float));
                     rf.read(reinterpret_cast<char*>(   &val3.g     ), sizeof(float));
                     rf.read(reinterpret_cast<char*>(   &val3.b     ), sizeof(float));
+                }
+                
+                else if(valueType == 't'){
+                    int proceduralID;
+                    int proceduralInvert;
+                    float proceduralScale;
+                    rf.read(reinterpret_cast<char*>(   &proceduralID     ), sizeof(int));
+                    rf.read(reinterpret_cast<char*>(   &proceduralInvert     ), sizeof(int));
+                    rf.read(reinterpret_cast<char*>(   &proceduralScale     ), sizeof(float));
+
+                    int32_t textureWidth = valT.getResolution().x;
+                    rf.read(reinterpret_cast<char*>(   &textureWidth     ), sizeof(int32_t));
+
+                    int32_t textureHeight = valT.getResolution().y;
+                    rf.read(reinterpret_cast<char*>(   &textureHeight     ), sizeof(int32_t));
+
+                    char* pixels = new char[textureWidth * textureHeight * 4];
+                    rf.read(pixels, textureWidth * textureHeight * 4 * sizeof(char));
+                
+                    valT = Texture(pixels, textureWidth, textureHeight);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                    valT.proceduralID = proceduralID;
+                    valT.proceduralnverted = proceduralInvert;
+                    valT.proceduralScale = proceduralScale;
                 }
                 else {
                     std::cout << "ERROR! : Reading material file : Unknown value type" << std::endl;
@@ -225,6 +251,9 @@ void Material::readFile(std::string path,ColorPalette colorPalette ,Shader butto
                         modifier.sections[secI].elements[elementI].button.color.r = val3.r;
                         modifier.sections[secI].elements[elementI].button.color.g = val3.g;
                         modifier.sections[secI].elements[elementI].button.color.b = val3.b;
+                    }
+                    if(valueType == 't'){
+                        modifier.sections[secI].elements[elementI].button.texture = valT;
                     }
                 }
                 else{

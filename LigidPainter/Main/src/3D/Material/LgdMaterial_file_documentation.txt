@@ -34,6 +34,10 @@ Modifier Data
                                                                                                                 32 bits (single-precision IEEE 754 number) property value
                                                                                                             else if(value type == '3')
                                                                                                                 3 times (32 bits (single-precision IEEE 754 number) property value)
+                                                                                                            else if(value type == 't')
+                                                                                                                32 bits (signed integer) texture width ->
+                                                                                                                32 bits (signed integer) texture height ->
+                                                                                                                texture width * texture height * 4 * sizeof(byte) bits (unsigned byte) texture data -> 
                                                                                                         )
                                                                                 )
 

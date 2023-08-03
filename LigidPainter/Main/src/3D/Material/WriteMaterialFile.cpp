@@ -121,32 +121,54 @@ void Material::writeFile(std::string path){
             
             wf.write(reinterpret_cast<char*>(   &propertySize     ), sizeof(uint32_t));
 
-            for (size_t i = 0; i < propertySize; i++)
+            for (size_t pI = 0; pI < propertySize; pI++)
             {
-                uint32_t titleSize = propTitles[i].size();
+                uint32_t titleSize = propTitles[pI].size();
                 wf.write(reinterpret_cast<char*>(   &titleSize     ), sizeof(uint32_t));
                 
                 for (size_t charI = 0; charI < titleSize; charI++)
                 {
-                    wf.write(reinterpret_cast<char*>(   &propTitles[i][charI]     ), sizeof(char));
+                    wf.write(reinterpret_cast<char*>(   &propTitles[pI][charI]     ), sizeof(char));
                 }
 
                 //Is a rangebar
-                if(propElements[i].state == 1){
+                if(propElements[pI].state == 1){
                     char valueType = 'f';
                     wf.write(reinterpret_cast<char*>(   &valueType     ), sizeof(char));
                 
-                    wf.write(reinterpret_cast<char*>(   &propElements[i].rangeBar.value     ), sizeof(float));
+                    wf.write(reinterpret_cast<char*>(   &propElements[pI].rangeBar.value     ), sizeof(float));
                 }
                 
                 //Is a button
-                if(propElements[i].state == 0){
-                    char valueType = '3';
-                    wf.write(reinterpret_cast<char*>(   &valueType     ), sizeof(char));
+                if(propElements[pI].state == 0){
+                    if(materialModifiers[i].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
+                        char valueType = 't';
+                        wf.write(reinterpret_cast<char*>(   &valueType     ), sizeof(char));
+
+                        wf.write(reinterpret_cast<char*>(   &propElements[pI].button.texture.proceduralID     ), sizeof(int));
+                        wf.write(reinterpret_cast<char*>(   &propElements[pI].button.texture.proceduralnverted     ), sizeof(int));
+                        wf.write(reinterpret_cast<char*>(   &propElements[pI].button.texture.proceduralScale     ), sizeof(float));
+
+                        int32_t textureWidth = propElements[pI].button.texture.getResolution().x;
+                        wf.write(reinterpret_cast<char*>(   &textureWidth     ), sizeof(int32_t));
+
+                        int32_t textureHeight = propElements[pI].button.texture.getResolution().y;
+                        wf.write(reinterpret_cast<char*>(   &textureHeight     ), sizeof(int32_t));
+
+                        char* pixels = new char[textureWidth * textureHeight * 4];
+                        propElements[pI].button.texture.getData(pixels);
+                        wf.write(pixels, textureWidth * textureHeight * 4 * sizeof(char));
                     
-                    wf.write(reinterpret_cast<char*>(   &propElements[i].button.color.r     ), sizeof(float));
-                    wf.write(reinterpret_cast<char*>(   &propElements[i].button.color.g     ), sizeof(float));
-                    wf.write(reinterpret_cast<char*>(   &propElements[i].button.color.b     ), sizeof(float));
+                        delete[] pixels;
+                    }
+                    else{
+                        char valueType = '3';
+                        wf.write(reinterpret_cast<char*>(   &valueType     ), sizeof(char));
+
+                        wf.write(reinterpret_cast<char*>(   &propElements[pI].button.color.r     ), sizeof(float));
+                        wf.write(reinterpret_cast<char*>(   &propElements[pI].button.color.g     ), sizeof(float));
+                        wf.write(reinterpret_cast<char*>(   &propElements[pI].button.color.b     ), sizeof(float));
+                    }
                 }
             }
         }        
