@@ -123,7 +123,7 @@ void paintingPanelInteraction(
                             "brush_1",
                             painter.brushProperties.brushTexture
                         );
-        exportBrush.saveFile("");
+        FileHandler::writeLGDBRUSHFile("", exportBrush);
     }
 
     //Update the meshes section of the painting panel if a new model is added

@@ -43,7 +43,6 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
         return;
     }
     
-    std::cout << "A" << std::endl;
     //!Textures
     std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";
 
@@ -57,7 +56,6 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
         library.textures[i].exportTexture(textureFolderPath, "PNG");
     }
     
-    std::cout << "B" << std::endl;
     
     //!Materials
     std::string materialFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Materials";
@@ -69,10 +67,9 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
     for (size_t i = 0; i < library.materials.size(); i++)
     {
         //Export material
-        library.materials[i].writeFile(materialFolderPath + library.materials[i].title + ".lgdmaterial");
+        FileHandler::writeLGDMATERIALFile(materialFolderPath + UTIL::folderDistinguisher() + library.materials[i].title + ".lgdmaterial", library.materials[i]);
     }
 
-    std::cout << "C" << std::endl;
 
     //!Brushes
     std::string brushFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Brushes";
@@ -84,10 +81,9 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
     for (size_t i = 0; i < library.brushes.size(); i++)
     {
         //Export brush
-        library.brushes[i].saveFile(brushFolderPath);
+        FileHandler::writeLGDBRUSHFile(brushFolderPath, library.brushes[i]);
     }
     
-    std::cout << "D" << std::endl;
     
     //!3D Models
     std::string tdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels";
@@ -99,12 +95,9 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
     for (size_t i = 0; i < library.TDModels.size(); i++)
     {
         //Export 3D model
-        FileHandler::writeOBJFile(tdModelFolderPath + library.TDModels[i].title + ".obj", library.TDModels[i]);
+        FileHandler::writeOBJFile(tdModelFolderPath + UTIL::folderDistinguisher() + library.TDModels[i].title + ".obj", library.TDModels[i]);
     }
 
-    std::cout << "E" << std::endl;
 
     writeLigidFile(meshNodeScene, textureRes);
-    
-    std::cout << "F" << std::endl;
 }

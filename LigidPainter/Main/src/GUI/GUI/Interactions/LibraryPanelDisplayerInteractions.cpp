@@ -126,10 +126,9 @@ void libraryPanelDisplayerInteraction(
             std::string test = showFileSystemObjectSelectionDialog("Select a material file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
             if(test.size()){
-                
                 Material importedMaterial(textureRes, "", 0);
-                importedMaterial.readFile(test,colorPalette,shaders.buttonShader,appTextures, appMaterialModifiers, library.materials);
-                library.addMaterial(importedMaterial);
+                if(FileHandler::readLGDMATERIALFile(test, importedMaterial, colorPalette, shaders.buttonShader, appTextures, appMaterialModifiers, library.materials))
+                    library.addMaterial(importedMaterial);
             }
         }
         if(library.selectedElementIndex == 2){ //Brushes
@@ -138,9 +137,10 @@ void libraryPanelDisplayerInteraction(
 
             if(test.size()){
                 Brush importedBrush;
-                importedBrush.readFile(test);
-                importedBrush.updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
-                library.addBrush(importedBrush);
+                if(FileHandler::readLGDBRUSHFile(test,importedBrush)){
+                    importedBrush.updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
+                    library.addBrush(importedBrush);
+                }
             }
             
         }

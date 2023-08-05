@@ -92,9 +92,9 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         std::string materialPath = entry.path().string();
 
         Material material(textureRes, "", 0);;
-        material.readFile(materialPath,colorPalette,shaders.buttonShader,appTextures, appMaterialModifiers, library.materials);
-
-        library.addMaterial(material);
+        if(FileHandler::readLGDMATERIALFile(materialPath, material, colorPalette, shaders.buttonShader, appTextures, appMaterialModifiers, library.materials))
+            library.addMaterial(material);
+    
     }
     
     //Load the brushes
@@ -103,11 +103,10 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         std::string brushPath = entry.path().string();
 
         Brush brush;
-        brush.readFile(brushPath);
-        brush.updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
-
-
-        library.addBrush(brush);
+        if(FileHandler::readLGDBRUSHFile(brushPath, brush)){
+            brush.updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
+            library.addBrush(brush);
+        }
     }
     
     //Load the tdmodels
@@ -138,6 +137,8 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
 
     if(library.TDModels.size())
         model = library.TDModels[0];
+    else
+        model.loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true);
 
     return true;
 }

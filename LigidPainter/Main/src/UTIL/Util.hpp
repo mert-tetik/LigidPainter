@@ -738,13 +738,6 @@ public:
           float alphaJitter, bool individualTexture, bool sinWavePattern, 
           std::string title, Texture texture);
 
-    /// @brief Writes the brush data to the given path
-    /// @param path folder path
-    void saveFile(std::string path);
-
-    /// @brief Reads the brush data from given *.lgdbrush file path
-    void readFile(std::string path);
-
     /// @brief Updates the displaying texture using brush properties.
     void updateDisplayTexture(Shader paintingShader, Shader buttonShader);
 
@@ -975,7 +968,15 @@ struct Fonts{
 namespace FileHandler{
     bool writeOBJFile(std::string path, Model model);
     Model readOBJFile(std::string path);
+    
     Model readFBXFile(std::string path);
+    
+    bool readLGDMATERIALFile(std::string path, Material& material, ColorPalette colorPalette, Shader buttonShader, AppTextures appTextures, 
+                             AppMaterialModifiers appMaterialModifiers, const std::vector<Material> materials);
+    bool writeLGDMATERIALFile(std::string path, Material &material);
+    
+    bool writeLGDBRUSHFile(std::string path, Brush brush);
+    bool readLGDBRUSHFile(std::string path, Brush& brush);
 }
 
 

@@ -117,7 +117,7 @@ void Material::updateMaterialDisplayingTexture(
     //Just in case (Is not necessary (probably (I guess))) !!Actually I'm 100% sure that's not necessary but u know. Just in case. lol
     glGenerateMipmap(GL_TEXTURE_2D);
     
-    //!Finish (prepeare rendering the GUI)
+    //!Finish (prepare rendering the GUI)
 
     //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
     buttonShader.use();

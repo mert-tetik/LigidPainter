@@ -136,6 +136,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
         frameCounter = 0;
 
     __wasTextureSelectionDialogActive = false;
+
     
 }
 

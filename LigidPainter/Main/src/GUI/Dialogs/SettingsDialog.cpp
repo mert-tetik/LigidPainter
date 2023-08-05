@@ -83,7 +83,7 @@ void SettingsDialog::render(LigidWindow originalWindow, ColorPalette colorPalett
 
     //Render the panel    
     panel.render(videoScale,mouse,timer,textRenderer,true);
-    
+
     //If pressed to any of the combo box element change the texture res
     for (size_t i = 0; i < panel.sections[0].elements[1].comboBox.hover.size(); i++)
     {
