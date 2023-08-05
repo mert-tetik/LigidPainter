@@ -52,3 +52,21 @@ Texture::Texture(char* pixels, int w, int h){
 	
     glGenerateMipmap(GL_TEXTURE_2D);
 }
+
+Texture::Texture(char* pixels, int w, int h, unsigned int filterParam){
+    glActiveTexture(GL_TEXTURE0);
+    
+    glGenTextures(1,&ID);
+
+    glBindTexture(GL_TEXTURE_2D, ID);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterParam);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_BYTE, pixels);
+	
+    glGenerateMipmap(GL_TEXTURE_2D);
+}

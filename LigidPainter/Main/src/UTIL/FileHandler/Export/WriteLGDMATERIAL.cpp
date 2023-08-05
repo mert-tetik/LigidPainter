@@ -75,8 +75,8 @@ bool FileHandler::writeLGDMATERIALFile(
         uint64_t h2 = 0xE8F691BE0D45C23A; 
         uint64_t h3 = 0x3FD8A9657B101E8C; 
         LGDMATERIAL_WRITEBITS(h1, uint64_t, "Description 1st");
-        LGDMATERIAL_WRITEBITS(h1, uint64_t, "Description 2nd");
-        LGDMATERIAL_WRITEBITS(h1, uint64_t, "Description 3rd");
+        LGDMATERIAL_WRITEBITS(h2, uint64_t, "Description 2nd");
+        LGDMATERIAL_WRITEBITS(h3, uint64_t, "Description 3rd");
         
         //Version number
         uint32_t versionNumber = 0x000007D0; //2000 

@@ -152,8 +152,14 @@ void main()
     vec3 aspColor2 = asphaltColor2; 
     
     if(state != 0){
-        aspColor = vec3(0.25);
-        aspColor2 = vec3(0.23,0.25,0.27);
+        if(state == 5){
+            aspColor = vec3(0.25);
+            aspColor2 = vec3(0.23,0.25,0.27);
+        }
+        else{
+            aspColor = vec3(0.);
+            aspColor2 = vec3(1.);
+        }
     }
     
     // Normalized pixel coordinates (from 0 to 1)

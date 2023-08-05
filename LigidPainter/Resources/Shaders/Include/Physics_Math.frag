@@ -276,7 +276,7 @@ vec3 getPBR
     // Initialize the outgoing radiance (Lo)
     vec3 Lo = vec3(0.0);
 
-    const int lightSourceCount = 0;
+    const int lightSourceCount = 2;
 
     // Calculate lighting for each light source
     for (int i = 0; i < lightSourceCount; ++i) {

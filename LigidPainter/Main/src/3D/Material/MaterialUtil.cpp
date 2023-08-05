@@ -36,6 +36,13 @@ Material Material::duplicateMaterial(int textureRes){
     Material duplicatedMat(textureRes, this->title + "_copied", 0);
 
     duplicatedMat.materialModifiers = this->materialModifiers;
+    
+    char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
+
+    for (size_t i = 0; i < duplicatedMat.materialModifiers.size(); i++)
+    {
+        duplicatedMat.materialModifiers[i].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
+    }
 
     return duplicatedMat;
 }

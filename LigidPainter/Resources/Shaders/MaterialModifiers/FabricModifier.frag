@@ -19,6 +19,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 /* Stripes */
 uniform vec3 color = vec3(0.9, 0.2,0.05);
+
 uniform float scale = 32.;
 uniform float stripeFrequency = 10.;
 uniform float gapFrequency = 30.;

@@ -142,7 +142,16 @@ vec3 getWood(vec3 p) {
     
     float n2 = mix(musgrave(vec3(n1 * baseNoiseStrength), 8.0, 0.0, musgraveLacunarity), n1 * baseColorSaturation, musgraveStrength);
     
-    return mix(mix(woodColor1, woodColor2, n1), woodColor3, n2);
+    vec3 woodClr1 = woodColor1;
+    vec3 woodClr2 = woodColor2;
+    vec3 woodClr3 = woodColor3;
+    if(state != 0){
+        woodClr1 = vec3(0.0, 0.0, 0.0);
+        woodClr2 = vec3(0.25, 0.11, 0.04);
+        woodClr3 = vec3(0.52, 0.32, 0.19);
+    }
+
+    return mix(mix(woodClr1, woodClr2, n1), woodClr3, n2);
 }
 
 void main() {

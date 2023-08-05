@@ -293,6 +293,8 @@ public:
     /// @param w width
     /// @param h height
     Texture(char* pixels, int w, int h);
+    
+    Texture(char* pixels, int w, int h, unsigned int filterParam);
 
     /// @brief Load a texture by importing the texture in the given path via STBI
     void load(const char* path);

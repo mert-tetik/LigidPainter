@@ -123,7 +123,6 @@ void MaterialEditorDialog::render
         __materialEditorDialogESCPressed = false;
     } 
 
-
     //Close the dialog
     if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover) && mouse.LClick) || (barButton.hover && mouse.LDoubleClick)){
         if(!wasTextureSelectionDialogActive() && !contextMenus[6].dialogControl.isActive() && !contextMenus[8].dialogControl.isActive()){
@@ -192,14 +191,10 @@ void MaterialEditorDialog::checkLayerPanel(Material &material, Mouse &mouse, std
                 if(selectedMaterialModifierIndex != i){ //If the clicked button is not selected 
                     layerPanel.sections[0].elements[selectedMaterialModifierIndex].button.clickState1 = false; //Unselect the selected one
                     selectedMaterialModifierIndex = i; //Select the clicked button
+                    if(material.materialModifiers.size()){
+                        modifiersPanel.sections = material.materialModifiers[selectedMaterialModifierIndex].sections;
+                    }
                     break; 
-                }
-            }
-
-            //If clicked to a mofifier button
-            if(layerPanel.sections[0].elements[i].button.hover && mouse.LClick){
-                if(material.materialModifiers.size()){
-                    modifiersPanel.sections = material.materialModifiers[selectedMaterialModifierIndex].sections;
                 }
             }
 
@@ -217,7 +212,12 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,float textureR
     
     //Clear the modifiers panel as the panel starts
     if(dialogControl.firstFrameActivated){
-        modifiersPanel.sections.clear();
+        if(!material.materialModifiers.size())
+            modifiersPanel.sections.clear();
+        else 
+            modifiersPanel.sections = material.materialModifiers[0].sections;
+        
+        this->selectedMaterialModifierIndex = 0;
     }
     //Update the material if interacted with modifier's panel
     for (size_t secI = 0; secI < modifiersPanel.sections.size(); secI++)
@@ -310,7 +310,8 @@ void MaterialEditorDialog::manageContextMenuActions(Library &library, Mouse &mou
     if(contextMenus[6].dialogControl.isActive()){ //If material modifier context menu is active
         
         //Delete button pressed
-        if(contextMenus[6].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){ 
+        if(contextMenus[6].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
+            glDeleteTextures(1, &material.materialModifiers[contextMenus[6].selectedElement].maskTexture.ID); 
             material.materialModifiers.erase(material.materialModifiers.begin() + contextMenus[6].selectedElement);
             dialogControl.firstFrameActivated = true;
             selectedMaterialModifierIndex = 0;
@@ -355,60 +356,96 @@ void MaterialEditorDialog::manageContextMenuActions(Library &library, Mouse &mou
 
     if(contextMenus[8].dialogControl.isActive()){ //If material modifier context menu is active
         
-        //Delete button pressed
+        char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
         
         // Texture Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.textureModifier);
+            material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
+            material.materialModifiers[0].maskTexture.proceduralID = 24;
             updateLayerPanel(material,textureRes,box,context);
+            modifiersPanel.sections = material.materialModifiers[0].sections;
+            selectedMaterialModifierIndex = 0;
         }
         
         // Dust Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.dustModifier);
+            material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
+            material.materialModifiers[0].maskTexture.proceduralID = 24;
             updateLayerPanel(material,textureRes,box,context);
+            modifiersPanel.sections = material.materialModifiers[0].sections;
+            selectedMaterialModifierIndex = 0;
         }
         
         // Asphalt Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.asphaltModifier);
+            material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
+            material.materialModifiers[0].maskTexture.proceduralID = 24;
             updateLayerPanel(material,textureRes,box,context);
+            modifiersPanel.sections = material.materialModifiers[0].sections;
+            selectedMaterialModifierIndex = 0;
         }
         
         // Fabric Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.fabricModifier);
+            material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
+            material.materialModifiers[0].maskTexture.proceduralID = 24;
             updateLayerPanel(material,textureRes,box,context);
+            modifiersPanel.sections = material.materialModifiers[0].sections;
+            selectedMaterialModifierIndex = 0;
         }
         
         // Moss Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[4].button.hover && mouse.LClick){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.mossModifier);
+            material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
+            material.materialModifiers[0].maskTexture.proceduralID = 24;
             updateLayerPanel(material,textureRes,box,context);
+            modifiersPanel.sections = material.materialModifiers[0].sections;
+            selectedMaterialModifierIndex = 0;
         }
         
         // Rust Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.rustModifier);
+            material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
+            material.materialModifiers[0].maskTexture.proceduralID = 24;
             updateLayerPanel(material,textureRes,box,context);
+            modifiersPanel.sections = material.materialModifiers[0].sections;
+            selectedMaterialModifierIndex = 0;
         }
         
         // Skin Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[6].button.hover && mouse.LClick){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.skinModifier);
+            material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
+            material.materialModifiers[0].maskTexture.proceduralID = 24;
             updateLayerPanel(material,textureRes,box,context);
+            modifiersPanel.sections = material.materialModifiers[0].sections;
+            selectedMaterialModifierIndex = 0;
         }
         
         // Solid Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[7].button.hover && mouse.LClick){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.solidModifier);
+            material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
+            material.materialModifiers[0].maskTexture.proceduralID = 24;
             updateLayerPanel(material,textureRes,box,context);
+            modifiersPanel.sections = material.materialModifiers[0].sections;
+            selectedMaterialModifierIndex = 0;
         }
         
         // Wooden Modifier
         if(contextMenus[8].contextPanel.sections[0].elements[8].button.hover && mouse.LClick){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.woodenModifier);
+            material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
+            material.materialModifiers[0].maskTexture.proceduralID = 24;
             updateLayerPanel(material,textureRes,box,context);
+            modifiersPanel.sections = material.materialModifiers[0].sections;
+            selectedMaterialModifierIndex = 0;
         }
     }
 }

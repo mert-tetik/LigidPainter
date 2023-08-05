@@ -130,6 +130,8 @@ bool FileHandler::readLGDMATERIALFile(
                 return false;
             }
 
+            
+
             int proceduralID;
             int proceduralInvert;
             float proceduralScale;

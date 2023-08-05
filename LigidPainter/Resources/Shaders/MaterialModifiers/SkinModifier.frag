@@ -378,30 +378,34 @@ void main()
     
     vec3 skinColor = vec3(0);
     
-    if(skinColorType == 0){
-        veins = vec3(0.9, 0.1, 0.01);
+    if(state == 0){
+        if(skinColorType == 0){
+            veins = vec3(0.9, 0.1, 0.01);
+            skinColor = vec3(0.96, 0.76, 0.61);
+        }
+        if(skinColorType == 1){
+            veins = vec3(0.9, 0.1, 0.01);
+            skinColor = vec3(0.91, 0.71, 0.56);
+        }
+        if(skinColorType == 2){
+            veins = vec3(0.75, 0.1, 0.01);
+            skinColor = vec3(0.82, 0.62, 0.49);
+        }
+        if(skinColorType == 3){
+            veins = vec3(0.6, 0.1, 0.01);
+            skinColor = vec3(0.74, 0.47, 0.32);
+        }
+        if(skinColorType == 4){
+            veins = vec3(0.52, 0.1, 0.01);
+            skinColor = vec3(0.65, 0.36, 0.17);
+        }    
+        if(skinColorType == 5){
+            veins = vec3(0.3, 0.04, 0.01);
+            skinColor = vec3(0.23, 0.12, 0.11);
+        }    
+    }
+    else    
         skinColor = vec3(0.96, 0.76, 0.61);
-    }
-    if(skinColorType == 1){
-        veins = vec3(0.9, 0.1, 0.01);
-        skinColor = vec3(0.91, 0.71, 0.56);
-    }
-    if(skinColorType == 2){
-        veins = vec3(0.75, 0.1, 0.01);
-        skinColor = vec3(0.82, 0.62, 0.49);
-    }
-    if(skinColorType == 3){
-        veins = vec3(0.6, 0.1, 0.01);
-        skinColor = vec3(0.74, 0.47, 0.32);
-    }
-    if(skinColorType == 4){
-        veins = vec3(0.52, 0.1, 0.01);
-        skinColor = vec3(0.65, 0.36, 0.17);
-    }    
-    if(skinColorType == 5){
-        veins = vec3(0.3, 0.04, 0.01);
-        skinColor = vec3(0.23, 0.12, 0.11);
-    }    
     
     vec3 baseSkin = mix(skinColor, veins, noise/5. * veinsStrength );
     
