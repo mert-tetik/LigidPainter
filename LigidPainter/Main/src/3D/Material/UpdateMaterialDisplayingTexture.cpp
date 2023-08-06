@@ -47,8 +47,8 @@ void Material::updateMaterialDisplayingTexture(
     
     //The perspective projection matrix    
     glm::mat4 projectionMatrix = glm::perspective(
-                                                    glm::radians(45.f), //Fov  
-                                                    1.f,  //Ratio (is 1 since the width & the height is equal to displayRes)
+                                                    glm::radians(35.f), //Fov  
+                                                    -1.f,  //Ratio (is 1 since the width & the height is equal to displayRes)
                                                     100.f,  //Near (the material is pretty close to the camera actually  ) 
                                                     0.1f    //Far
                                                 );
