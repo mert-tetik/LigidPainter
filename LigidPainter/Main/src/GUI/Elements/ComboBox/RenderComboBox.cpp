@@ -136,18 +136,13 @@ void ComboBox::render(
         
         //If clicked to the element
         if(hover[i] && mouse.LClick){
-            if(i != 0){
-                if(clickedMixVal[0] > 0.8f){
-                    //Mouse left button pressed on top of the button
-                    pressed = !pressed;
-                    selectedIndex = i;
-                }
+            if(clickedMixVal[0] > 0.8f){
+                //Mouse left button pressed on top of the button
+                selectedIndex = i;
+                pressed = false;
             }
-            else{
-                if(selectedIndex != 0)
-                    selectedIndex = i;
-                pressed = !pressed;
-            }
+            else if(clickedMixVal[0] < 0.2f)
+                pressed = true;
         }
 
         //Element hover animation
