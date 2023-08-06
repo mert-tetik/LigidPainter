@@ -828,6 +828,7 @@ struct Camera{
     glm::vec3 originPos = glm::vec3(0,0,0);
     float radius = 10.f; 
 };
+
 struct Scene{
     glm::mat4 projectionMatrix;
     glm::mat4 viewMatrix;

@@ -162,6 +162,8 @@ void Renderer::cursorPositionCallback(
     this->mouse.mouseOffset.y = this->mouse.cursorPos.y - lastMousePos.y;
 
     const float sensitivity = 0.2f; //Mouse sensivity (Increase the value to go brrrrrbrbrbrb) (effects the 3D model)
+    
+    Camera* cam = &this->scene.camera;
 
     if ((
             this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS) && //If pressed to right mouse button
@@ -175,18 +177,19 @@ void Renderer::cursorPositionCallback(
         // Calculate half the sensitivity for later use
         const float half_sensitivity = sensitivity / 2.0f;
 
+
         // Calculate sine and cosine of yaw and pitch angles in radians
-        const float sin_yaw = sin(glm::radians(this->scene.camera.yaw));
-        const float cos_yaw = cos(glm::radians(this->scene.camera.yaw));
-        const float sin_pitch = sin(glm::radians(this->scene.camera.pitch));
-        const float cos_pitch = cos(glm::radians(this->scene.camera.pitch));
+        const float sin_yaw = sin(glm::radians(cam->yaw));
+        const float cos_yaw = cos(glm::radians(cam->yaw));
+        const float sin_pitch = sin(glm::radians(cam->pitch));
+        const float cos_pitch = cos(glm::radians(cam->pitch));
 
         // Calculate the x and z offsets based on yaw angle, mouse movement, sensitivity, and half sensitivity
         float x_offset = sin_yaw * this->mouse.mouseOffset.x * sensitivity * half_sensitivity;
         float z_offset = cos_yaw * this->mouse.mouseOffset.x * sensitivity * half_sensitivity;
 
         // Check if pitch is greater than 60 degrees or less than -60 degrees
-        if (this->scene.camera.pitch > 60.0f || this->scene.camera.pitch < -60.0f) {
+        if (cam->pitch > 60.0f || cam->pitch < -60.0f) {
             
             // Add additional x and z offsets based on yaw, pitch, mouse movement, sensitivity, and half sensitivity
             x_offset += cos_yaw * sin_pitch * this->mouse.mouseOffset.y * sensitivity * half_sensitivity;
@@ -197,16 +200,16 @@ void Renderer::cursorPositionCallback(
         const float y_offset = cos_pitch * this->mouse.mouseOffset.y * sensitivity * half_sensitivity;
 
         // Update camera's x position and origin position by subtracting x offset
-        this->scene.camera.cameraPos.x -= x_offset;
-        this->scene.camera.originPos.x -= x_offset;
+        cam->cameraPos.x -= x_offset;
+        cam->originPos.x -= x_offset;
 
         // Update camera's z position and origin position by adding z offset
-        this->scene.camera.cameraPos.z += z_offset;
-        this->scene.camera.originPos.z += z_offset;
+        cam->cameraPos.z += z_offset;
+        cam->originPos.z += z_offset;
 
         // Update camera's y position and origin position by adding y offset
-        this->scene.camera.cameraPos.y += y_offset;
-        this->scene.camera.originPos.y += y_offset;
+        cam->cameraPos.y += y_offset;
+        cam->originPos.y += y_offset;
 
         //Since the 3D model's position in the screen is changed update the painter's depth texture
         this->painter.updateTheDepthTexture = true;
@@ -215,25 +218,28 @@ void Renderer::cursorPositionCallback(
 
     else if (
                 this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
-                !this->userInterface.anyDialogActive && //If there is no active dialog (don't move the camera if a dialog is active)
+                (!this->userInterface.anyDialogActive || //If there is no active dialog (don't move the camera if a dialog is active)
+                this->userInterface.materialEditorDialog.dialogControl.isActive()) &&
                 !this->userInterface.anyPanelHover  //Don't move the camera if cursor hover a panel
             ) 
     { 
-        
-        this->scene.camera.yaw += this->mouse.mouseOffset.x * sensitivity;
-        this->scene.camera.pitch -= this->mouse.mouseOffset.y * sensitivity;
+        if(this->userInterface.materialEditorDialog.dialogControl.isActive())
+            cam = &this->userInterface.materialEditorDialog.displayerCamera;
+
+        cam->yaw += this->mouse.mouseOffset.x * sensitivity;
+        cam->pitch -= this->mouse.mouseOffset.y * sensitivity;
 
         //Disable 90+ degrees rotations in y axis
-        if (this->scene.camera.pitch > 89.0f)
-            this->scene.camera.pitch = 89.0f;
-        if (this->scene.camera.pitch < -89.0f)
-            this->scene.camera.pitch = -89.0f;
+        if (cam->pitch > 89.0f)
+            cam->pitch = 89.0f;
+        if (cam->pitch < -89.0f)
+            cam->pitch = -89.0f;
 
         //Helical Movement
         //Rotates the Camera in 3 axis using yaw, pitch & radius values
-        this->scene.camera.cameraPos.y = sin(glm::radians(this->scene.camera.pitch)) * -this->scene.camera.radius + this->scene.camera.originPos.y;
-        this->scene.camera.cameraPos.x = cos(glm::radians(this->scene.camera.yaw)) * cos(glm::radians(this->scene.camera.pitch)) * this->scene.camera.radius + this->scene.camera.originPos.x;
-        this->scene.camera.cameraPos.z = sin(glm::radians(this->scene.camera.yaw)) * cos(glm::radians(this->scene.camera.pitch)) * this->scene.camera.radius + this->scene.camera.originPos.z;
+        cam->cameraPos.y = sin(glm::radians(cam->pitch)) * -cam->radius + cam->originPos.y;
+        cam->cameraPos.x = cos(glm::radians(cam->yaw)) * cos(glm::radians(cam->pitch)) * cam->radius + cam->originPos.x;
+        cam->cameraPos.z = sin(glm::radians(cam->yaw)) * cos(glm::radians(cam->pitch)) * cam->radius + cam->originPos.z;
         
         //Since the 3D model's position in the screen is changed update the painter's depth texture
         this->painter.updateTheDepthTexture = true;

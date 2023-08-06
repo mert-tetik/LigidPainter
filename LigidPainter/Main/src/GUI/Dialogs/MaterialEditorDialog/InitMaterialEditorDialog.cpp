@@ -42,7 +42,9 @@ MaterialEditorDialog::MaterialEditorDialog
                                             Model &sphereModel
                                         )
 {
-    
+    this->displayerCamera.cameraPos = glm::vec3(0,0,-6.f);
+    this->displayerCamera.radius = 6.f;
+
     //Give params to the public class member variables
     this->buttonShader = buttonShader; 
     this->heightToNormalShader = heightToNormalShader; 

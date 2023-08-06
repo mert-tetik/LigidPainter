@@ -102,6 +102,9 @@ public:
 
     /// @brief texture used to render the material to display
     unsigned int displayingTexture;
+
+    /// @brief Framebuffer object used to render the material to display
+    unsigned int displayingFBO;
     
     /// @brief Unique id to distinguish the materials & connect them to the nodes 
     int uniqueID;
@@ -120,7 +123,7 @@ public:
     Material(int textureRes,std::string title,int ID);
 
     /// @brief Interpret the @ref materialModifiers and write the shader results to the material channels then update the displaying texture
-    void updateMaterialDisplayingTexture(float textureRes, Box box, Context context, Shader buttonShader, Shader tdModelShader, Model sphereModel, Shader heightToNormalShader);
+    void updateMaterialDisplayingTexture(float textureRes, Box box, Context context, Shader buttonShader, Shader tdModelShader, Model sphereModel, Shader heightToNormalShader, bool updateMaterial, Camera matCam);
 
     /// @brief Returns a new material with the same material modifiers and different OpenGL texture objects 
     Material duplicateMaterial(int textureRes);

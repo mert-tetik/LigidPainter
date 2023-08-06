@@ -241,32 +241,34 @@ private:
     bool updateTheMaterial = false;
     bool prevUpdateTheMaterial = false;
 public:
-    DialogControl dialogControl;
-    glm::vec3 pos = glm::vec3(50.f,50.f,0.8f); ///Position of the dialog
-    glm::vec2 scale = glm::vec2(40,40); ///Scale of the dialog
-    glm::vec3 posLayer = glm::vec3(20.f,50.f,0.8f); ///Position of the layer panel
-    glm::vec2 scaleLayer = glm::vec2(10,40); ///Scale of the layer panel
-    glm::vec3 posModifier = glm::vec3(80.f,50.f,0.8f); ///Position of the layer panel
-    glm::vec2 scaleModifier = glm::vec2(10,40); ///Scale of the layer panel
-    Button materialDisplayer; //That buttons displays the material with a texture
-    Panel bgPanel; //To cover the bg
-    Panel layerPanel; //Modifiers will be displayed in there
-    Panel modifiersPanel; //Modifiers will be displayed in there
-    Button barButton; //Modifiers will be displayed in there
-    int textureModifierTextureSelectingButtonIndex = 1000; //1000 if none of them is selecting TODO REMOVE THAT
-    AppMaterialModifiers appMaterialModifiers;
-    int selectedMaterialModifierIndex = 0;
-    
-    //Constructors
-    MaterialEditorDialog();
-    MaterialEditorDialog(Shader buttonShader, Shader heightToNormalShader, Shader tdModelShader, ColorPalette colorPalette,AppTextures appTextures,Model &sphereModel);
+   DialogControl dialogControl;
+   glm::vec3 pos = glm::vec3(50.f,50.f,0.8f); ///Position of the dialog
+   glm::vec2 scale = glm::vec2(40,40); ///Scale of the dialog
+   glm::vec3 posLayer = glm::vec3(20.f,50.f,0.8f); ///Position of the layer panel
+   glm::vec2 scaleLayer = glm::vec2(10,40); ///Scale of the layer panel
+   glm::vec3 posModifier = glm::vec3(80.f,50.f,0.8f); ///Position of the layer panel
+   glm::vec2 scaleModifier = glm::vec2(10,40); ///Scale of the layer panel
+   Button materialDisplayer; //That buttons displays the material with a texture
+   Panel bgPanel; //To cover the bg
+   Panel layerPanel; //Modifiers will be displayed in there
+   Panel modifiersPanel; //Modifiers will be displayed in there
+   Button barButton; //Modifiers will be displayed in there
+   int textureModifierTextureSelectingButtonIndex = 1000; //1000 if none of them is selecting TODO REMOVE THAT
+   AppMaterialModifiers appMaterialModifiers;
+   int selectedMaterialModifierIndex = 0;
 
-    //Public member functions
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library,
-                Material &material, int textureRes,Box box,Context context,std::vector<ContextMenu> &contextMenus,std::vector<Node>& meshNodeScene,Model& model,
-                Scene scene);
-    void activate();
-    void deactivate(TextureSelectionDialog &textureSelectionDialog);
+   Camera displayerCamera;
+    
+   //Constructors
+   MaterialEditorDialog();
+   MaterialEditorDialog(Shader buttonShader, Shader heightToNormalShader, Shader tdModelShader, ColorPalette colorPalette,AppTextures appTextures,Model &sphereModel);
+
+   //Public member functions
+   void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library,
+               Material &material, int textureRes,Box box,Context context,std::vector<ContextMenu> &contextMenus,std::vector<Node>& meshNodeScene,Model& model,
+               Scene scene);
+   void activate();
+   void deactivate(TextureSelectionDialog &textureSelectionDialog);
 };
 
 

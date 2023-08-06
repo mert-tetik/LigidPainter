@@ -35,34 +35,35 @@ void Material::updateMaterialDisplayingTexture(
                                 Shader buttonShader,
                                 Shader tdModelShader,
                                 Model sphereModel,
-                                Shader heightToNormalShader
+                                Shader heightToNormalShader,
+                                bool updateMaterial,
+                                Camera matCam
                             ){ 
 
         //Move the camera to the side
-    glm::vec3 viewPos = glm::vec3(3.f,0,0);
-    glm::mat4 view = glm::lookAt(viewPos, 
+    glm::mat4 view = glm::lookAt(matCam.cameraPos, 
                                  glm::vec3(0), 
                                  glm::vec3(0.0, 1.0, 0.0));
+    
     //The perspective projection matrix    
     glm::mat4 projectionMatrix = glm::perspective(
-                                                    glm::radians(90.f), //Fov  
+                                                    glm::radians(45.f), //Fov  
                                                     1.f,  //Ratio (is 1 since the width & the height is equal to displayRes)
                                                     100.f,  //Near (the material is pretty close to the camera actually  ) 
                                                     0.1f    //Far
                                                 );
 
-    //For every modifier the material has (Output every modifier the material has)
-    for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
-    {
-        this->materialModifiers[i].updateMaterialChannels(*this, sphereModel.meshes[0], textureRes, i, projectionMatrix, view, heightToNormalShader);
+    if(updateMaterial){
+        //For every modifier the material has (Output every modifier the material has)
+        for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
+        {
+            this->materialModifiers[i].updateMaterialChannels(*this, sphereModel.meshes[0], textureRes, i, projectionMatrix, view, heightToNormalShader);
+        }
     }
     
     //!Update the material displaying texture
     
-    //Capturing framebuffer
-    unsigned int FBO; 
-    glGenFramebuffers(1,&FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, this->displayingFBO);
     
     //Resolution of the material displaying texture
     const int displayRes = 2048;
@@ -70,20 +71,6 @@ void Material::updateMaterialDisplayingTexture(
     //Set the OpenGL viewport to the resolution of the material displaying texture
     glViewport(0,0,displayRes,displayRes);
 
-    //Render buffer to render the sphere 3D model (for depth testing)
-    unsigned int RBO;
-	glGenRenderbuffers(1,&RBO);
-	glBindRenderbuffer(GL_RENDERBUFFER,RBO);
-	
-    //Set the renderbuffer to store depth
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, displayRes, displayRes);
-	
-    //Give the renderbuffer to the framebuffer
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
-    
-    //Bind the displaying texture of the material to the capture framebuffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->displayingTexture, 0);
-    
     //Clear the capture framebuffer (displaying texture) with alpha zero color
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -92,7 +79,7 @@ void Material::updateMaterialDisplayingTexture(
     tdModelShader.use();
 
     //Throw the camera data to the shader
-    tdModelShader.setVec3("viewPos",viewPos);
+    tdModelShader.setVec3("viewPos",matCam.cameraPos);
     tdModelShader.setMat4("view",view);
     tdModelShader.setMat4("projection",projectionMatrix);
     
@@ -125,9 +112,6 @@ void Material::updateMaterialDisplayingTexture(
     //Bind the default framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER,0);
     
-    //Our work is done with that capture framebuffer (delete it)
-    glDeleteFramebuffers(1,&FBO);
-
     //Set the OpenGL viewport to default
     glViewport(0,0,context.windowScale.x,context.windowScale.y);
 }
