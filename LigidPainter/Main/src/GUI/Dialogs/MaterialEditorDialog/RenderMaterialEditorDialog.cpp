@@ -41,6 +41,8 @@ void updateMaterialDisplayerButton(Button &materialDisplayer, Material &material
 bool __materialEditorDialogESCPressed = false;
 bool __materialEditorDialogESCFirstFramePressed = false;
 
+bool __lastDisplayModeComboBoxPressed = false;
+
 void MaterialEditorDialog::render
                                 (
                                     glm::vec2 videoScale,
@@ -101,11 +103,16 @@ void MaterialEditorDialog::render
 
     //Render the material displayer
     materialDisplayer.render(videoScale,mouse,timer,textRenderer,false);
+
+    this->displayModeComboBox.pos = layerPanel.pos;
+    this->displayModeComboBox.pos.y -= materialDisplayer.scale.y + this->displayModeComboBox.scale.y;
+    this->displayModeComboBox.pos.x += layerPanel.scale.x + materialDisplayer.scale.x;
+    this->displayModeComboBox.render(videoScale, mouse, timer, textRenderer, true, context.window);
     
     dialogControl.updateEnd(timer,buttonShader,0.15f);
 
     if(!this->updateTheMaterial && this->prevUpdateTheMaterial){
-        material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader, tdModelShader,sphereModel, heightToNormalShader, true, this->displayerCamera);
+        material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader, tdModelShader,sphereModel, heightToNormalShader, true, this->displayerCamera, this->displayModeComboBox.selectedIndex);
     }
     
     this->prevUpdateTheMaterial = this->updateTheMaterial;
@@ -132,8 +139,10 @@ void MaterialEditorDialog::render
 
     __materialEditorDialogESCFirstFramePressed = false; 
 
-    if(!contextMenus[6].dialogControl.isActive() && !contextMenus[8].dialogControl.isActive() && context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS)
-        material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader,tdModelShader , sphereModel, heightToNormalShader, false, this->displayerCamera);
+    if((!contextMenus[6].dialogControl.isActive() && !contextMenus[8].dialogControl.isActive() && context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS) || __lastDisplayModeComboBoxPressed)
+        material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader,tdModelShader , sphereModel, heightToNormalShader, false, this->displayerCamera, this->displayModeComboBox.selectedIndex);
+
+    __lastDisplayModeComboBoxPressed = this->displayModeComboBox.pressed;
 }
 
 
@@ -179,7 +188,7 @@ void MaterialEditorDialog::updateLayerPanel(Material &material,int &textureRes,B
     layerPanel.sections.push_back(layerPanelSection);
     
     //Update the material after updating layerPanel
-    material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader,tdModelShader, sphereModel, heightToNormalShader, true,this->displayerCamera);
+    material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader,tdModelShader, sphereModel, heightToNormalShader, true,this->displayerCamera, this->displayModeComboBox.selectedIndex);
 }
 
 
@@ -300,7 +309,7 @@ void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &t
             textureSelectionDialog.dialogControl.unActivate();
             
             //Update the material after a selection is made
-            material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader,tdModelShader , sphereModel, heightToNormalShader, true,this->displayerCamera);
+            material.updateMaterialDisplayingTexture((float)textureRes, box, context, buttonShader,tdModelShader , sphereModel, heightToNormalShader, true,this->displayerCamera, this->displayModeComboBox.selectedIndex);
 
         }
     }

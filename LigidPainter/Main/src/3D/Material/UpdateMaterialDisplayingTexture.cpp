@@ -37,7 +37,8 @@ void Material::updateMaterialDisplayingTexture(
                                 Model sphereModel,
                                 Shader heightToNormalShader,
                                 bool updateMaterial,
-                                Camera matCam
+                                Camera matCam,
+                                int displayingMode
                             ){ 
 
         //Move the camera to the side
@@ -79,6 +80,7 @@ void Material::updateMaterialDisplayingTexture(
     tdModelShader.use();
 
     //Throw the camera data to the shader
+    tdModelShader.setInt("displayingMode", displayingMode);
     tdModelShader.setVec3("viewPos",matCam.cameraPos);
     tdModelShader.setMat4("view",view);
     tdModelShader.setMat4("projection",projectionMatrix);
@@ -97,9 +99,10 @@ void Material::updateMaterialDisplayingTexture(
     glActiveTexture(GL_TEXTURE7);
     glBindTexture(GL_TEXTURE_2D,sphereModel.meshes[0].ambientOcclusion.ID);
     
-
     //Draw the sphere
     sphereModel.Draw();
+    
+    tdModelShader.setInt("displayingMode", 0);
     
     //Just in case (Is not necessary (probably (I guess))) !!Actually I'm 100% sure that's not necessary but u know. Just in case. lol
     glGenerateMipmap(GL_TEXTURE_2D);

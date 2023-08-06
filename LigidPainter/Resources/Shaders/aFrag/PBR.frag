@@ -31,6 +31,7 @@ uniform sampler2D albedoTxtr; //Albedo
 uniform sampler2D roughnessTxtr; //Roughness
 uniform sampler2D metallicTxtr; //Metallic
 uniform sampler2D normalMapTxtr; //Normal Map
+uniform sampler2D heightMapTxtr; //Ambient occlusion (ao)
 uniform sampler2D ambientOcclusionTxtr; //Ambient occlusion (ao)
 
 //Contains the brush strokes
@@ -58,8 +59,11 @@ uniform float paintingOpacity;
 //Selected color for painting
 uniform vec3 paintingColor;
 
+uniform int displayingMode = 0; 
+
 //Fragment shader output
 out vec4 fragColor;
+
 
 
 void main() {
@@ -69,6 +73,7 @@ void main() {
     float roughness;
     float metallic;
     vec3 normal;
+    float height;
     float ao;
 
     // Brush value (mask) (painting texture) 
@@ -101,6 +106,12 @@ void main() {
     else
         normal = texture(normalMapTxtr,TexCoords).rgb;
     
+    //Get Height
+    if(paintedTxtrStateIndex == 4)
+        height = getBrushedTexture(heightMapTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).r;
+    else
+        height = texture(heightMapTxtr,TexCoords).r;
+    
 
     //Get Ambient Occlusion
     if(paintedTxtrStateIndex == 5)
@@ -109,12 +120,24 @@ void main() {
         ao = texture(ambientOcclusionTxtr,TexCoords).r;
 
 
-
     vec3 pbrResult = getPBR(
                                 albedo, roughness, metallic, normal, ao, 
                                 Pos, Normal, Tangent, Bitangent, 
                                 skybox, prefilterMap, viewPos
                             );
+
+    if(displayingMode == 1)
+        pbrResult = albedo;
+    if(displayingMode == 2)
+        pbrResult = vec3(roughness);
+    if(displayingMode == 3)
+        pbrResult = vec3(metallic);
+    if(displayingMode == 4)
+        pbrResult = normal;
+    if(displayingMode == 5)
+        pbrResult = vec3(height);
+    if(displayingMode == 6)
+        pbrResult = vec3(ao);
 
     fragColor = vec4(
                         pbrResult, 

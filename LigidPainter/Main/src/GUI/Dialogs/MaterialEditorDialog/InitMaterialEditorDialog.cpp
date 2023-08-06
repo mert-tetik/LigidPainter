@@ -51,6 +51,8 @@ MaterialEditorDialog::MaterialEditorDialog
     this->tdModelShader = tdModelShader; 
     this->colorPalette = colorPalette; 
     this->sphereModel = sphereModel; 
+
+    this->displayModeComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(7.f,2.f), colorPalette, buttonShader, {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Height", "Ambient Occlusion"}, "Displaying Mode", 0.f);
     
     //Back side of the dialog
     bgPanel = Panel
@@ -79,7 +81,7 @@ MaterialEditorDialog::MaterialEditorDialog
         1.f,
         1.f,
         {},
-        20.f,
+        10.f,
         false
     );
 
@@ -88,7 +90,7 @@ MaterialEditorDialog::MaterialEditorDialog
                             {
                                 Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),colorPalette, buttonShader, "Add"        , Texture(), 0.f, false)
                             },
-                            20.f,
+                            10.f,
                             true
                       );
     
@@ -97,7 +99,7 @@ MaterialEditorDialog::MaterialEditorDialog
                             {
                             
                             },
-                            20.f,
+                            10.f,
                             true
                       );
 
