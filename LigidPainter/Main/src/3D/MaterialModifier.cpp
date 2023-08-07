@@ -799,6 +799,47 @@ void generateNormalMap(unsigned int& heightMap, unsigned int& normalMap, Shader 
     glDeleteFramebuffers(1, &FBO);
 }
 
+static void blurTheTexture(unsigned int& txtr, int textureResolution){
+    
+    Shader blurShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/SinglePassBlur.frag", nullptr, nullptr, nullptr);
+    
+    Texture textureObject = Texture(txtr);
+    unsigned int textureCopy = textureObject.duplicateTexture();
+
+    unsigned int FBO;
+    glGenFramebuffers(1,&FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr, 0);
+    glViewport(0, 0, textureResolution, textureResolution);
+
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    Box box;
+    box.init();
+    box.bindBuffers();
+    
+    glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
+    blurShader.use();
+    blurShader.setInt("txtr", 0);
+    blurShader.setVec2("txtrRes", glm::vec2(textureResolution));
+    blurShader.setMat4("projection"  ,       projection);
+    blurShader.setMat4("projectedPosProjection"  ,       projection);
+    blurShader.setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
+    blurShader.setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureCopy);
+
+    glDrawArrays(GL_TRIANGLES, 0 , 6);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    glDeleteFramebuffers(1, &FBO);
+    glDeleteProgram(blurShader.ID);
+    glDeleteTextures(1, &textureCopy);
+}
+
 void removeSeams(Mesh& mesh, unsigned int texture, int textureResolution, Shader boundaryExpandingShader){
     
     /*! Binds another framebuffer !*/
@@ -1011,6 +1052,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            blurTheTexture(mesh.heightMap.ID, textureResolution);
             removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
 
@@ -1390,6 +1432,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            blurTheTexture(mesh.heightMap.ID, textureResolution);
             removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
@@ -1496,6 +1539,7 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            blurTheTexture(mesh.heightMap.ID, textureResolution);
             removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
@@ -1603,6 +1647,7 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            blurTheTexture(mesh.heightMap.ID, textureResolution);
             removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
@@ -1707,6 +1752,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            blurTheTexture(mesh.heightMap.ID, textureResolution);
             removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
