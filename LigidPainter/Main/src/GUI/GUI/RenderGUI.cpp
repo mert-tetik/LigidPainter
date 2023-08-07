@@ -286,6 +286,8 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
         glm::vec2 destScale = glm::vec2(glm::vec2(painter.selectedTexture.getResolution()));
         glm::vec2 prevScale = destScale * this->twoDPaintingSceneScroll;
         float scrVal = mouse.mouseScroll / videoScale.y * 4.f;
+        if(!this->twoDPaintingPanel.hover)
+            scrVal = 0.f;
 
         //Calculate the scroll value
         if(this->twoDPaintingSceneScroll > 1.f)
@@ -300,7 +302,7 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
             this->twoDPaintingSceneScroll = 0;
 
         //Calculate the position value        
-        if(mouse.MPressed)
+        if(mouse.MPressed && this->twoDPaintingPanel.hover)
             this->twoDPaintingScenePos += mouse.mouseOffset;
         //(Zoom into the cursor)
         glm::vec2 scaleGap = prevScale - destScale * this->twoDPaintingSceneScroll;
