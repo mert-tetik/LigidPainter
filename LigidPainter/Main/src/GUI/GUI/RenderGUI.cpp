@@ -282,11 +282,60 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     //
 
     if(!painter.threeDimensionalMode){
+        
+        glm::vec2 destScale = glm::vec2(glm::vec2(painter.selectedTexture.getResolution()));
+        glm::vec2 prevScale = destScale * this->twoDPaintingSceneScroll;
+        float scrVal = mouse.mouseScroll / videoScale.y * 4.f;
+
+        //Calculate the scroll value
+        if(this->twoDPaintingSceneScroll > 1.f)
+            this->twoDPaintingSceneScroll += scrVal;
+        else{
+            if(scrVal < 0)
+                this->twoDPaintingSceneScroll -= twoDPaintingSceneScroll / 4.f;
+            if(scrVal > 0)
+                this->twoDPaintingSceneScroll += twoDPaintingSceneScroll / 4.f;
+        } 
+        if(this->twoDPaintingSceneScroll < 0)
+            this->twoDPaintingSceneScroll = 0;
+
+        //Calculate the position value        
+        if(mouse.MPressed)
+            this->twoDPaintingScenePos += mouse.mouseOffset;
+        //(Zoom into the cursor)
+        glm::vec2 scaleGap = prevScale - destScale * this->twoDPaintingSceneScroll;
+        this->twoDPaintingScenePos += (scaleGap) * (((mouse.cursorPos - glm::vec2(twoDPaintingPanel.sections[0].elements[0].button.resultPos.x + this->twoDPaintingScenePos.x, twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + this->twoDPaintingScenePos.y)) + 0.00001f) / (prevScale + 0.00001f));
+
+        //Render the 2D painting panel
         twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,false);
         if(twoDPaintingPanel.resizingDone){
             for (size_t i = 0; i < 5; i++)
                 this->panelPositioning(screenGapPerc, library, painter);
         }
+
+        //Bottom Barrier
+        shaders.buttonShader.setVec3("pos", glm::vec3(twoDPaintingPanel.resultPos.x,   twoDPaintingPanel.resultPos.y + twoDPaintingPanel.resultScale.y + 5000,   1.f)); 
+        shaders.buttonShader.setVec2("scale", glm::vec2(5000));
+        shaders.buttonShader.setFloat("properties.radius", 0.f); 
+        shaders.buttonShader.setInt("outlineExtra" , false); 
+        shaders.buttonShader.setVec4("properties.color", glm::vec4(0)); //Invisible
+        shaders.buttonShader.setVec3("properties.outline.color", glm::vec4(0)); //Invisible
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        //Top Barrier
+        shaders.buttonShader.setVec3("pos", glm::vec3(twoDPaintingPanel.resultPos.x,   twoDPaintingPanel.resultPos.y - twoDPaintingPanel.resultScale.y - 5000,   1.f));
+        shaders.buttonShader.setVec2("scale", glm::vec2(5000));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
+        //Left Barrier
+        shaders.buttonShader.setVec3("pos", glm::vec3(twoDPaintingPanel.resultPos.x  - twoDPaintingPanel.resultScale.x  - 5000,   twoDPaintingPanel.resultPos.y,   1.f));
+        shaders.buttonShader.setVec2("scale", glm::vec2(5000));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
+        //Right Barrier
+        shaders.buttonShader.setVec3("pos", glm::vec3(twoDPaintingPanel.resultPos.x  + twoDPaintingPanel.resultScale.x  + 5000,   twoDPaintingPanel.resultPos.y,   1.f));
+        shaders.buttonShader.setVec2("scale", glm::vec2(5000));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         //Render the painting texture
         shaders.twoDPaintingModeAreaShader.use();
@@ -299,13 +348,16 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
         shaders.twoDPaintingModeAreaShader.setFloat("paintingOpacity", painter.brushProperties.opacity / 100.f);
         shaders.twoDPaintingModeAreaShader.setVec3("paintingColor", painter.getSelectedColor().getRGB_normalized());
 
-        glm::vec2 destScale = glm::vec2(glm::min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y));
-
         //*Vertex
         shaders.twoDPaintingModeAreaShader.setMat4("projectedPosProjection", this->projection);
         shaders.twoDPaintingModeAreaShader.setMat4("projection", this->projection);
-        shaders.twoDPaintingModeAreaShader.setVec3("pos", twoDPaintingPanel.sections[0].elements[0].button.resultPos);
-        shaders.twoDPaintingModeAreaShader.setVec2("scale", destScale);
+        shaders.twoDPaintingModeAreaShader.setVec3("pos", glm::vec3(
+                                                                        twoDPaintingPanel.sections[0].elements[0].button.resultPos.x + this->twoDPaintingScenePos.x,
+                                                                        twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + this->twoDPaintingScenePos.y,
+                                                                        twoDPaintingPanel.sections[0].elements[0].button.resultPos.z
+                                                                    )
+                                                    );
+        shaders.twoDPaintingModeAreaShader.setVec2("scale", destScale * this->twoDPaintingSceneScroll);
 
         //* Bind the textures
         //painted texture

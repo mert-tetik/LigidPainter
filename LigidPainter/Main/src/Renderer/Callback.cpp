@@ -119,7 +119,7 @@ void Renderer::scrollCallback(
     //Update the scroll value of the mouse class
     this->mouse.mouseScroll = yoffset;
     
-    if(!this->userInterface.anyDialogActive && !this->userInterface.anyPanelHover )
+    if(!this->userInterface.anyDialogActive && !this->userInterface.anyPanelHover && this->painter.threeDimensionalMode)
     {
         //The distance between the camera & center 
         float originCameraDistance = glm::distance(this->scene.camera.originPos,this->scene.camera.cameraPos)/10;

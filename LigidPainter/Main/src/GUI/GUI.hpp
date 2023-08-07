@@ -93,6 +93,9 @@ public:
     SettingsDialog settingsDialog;
     DisplayerDialog displayerDialog;
 
+    float twoDPaintingSceneScroll = 2.f;
+    glm::vec2 twoDPaintingScenePos = glm::vec2(0.f);
+
     int frameCounter = 0; 
 
     int selectedMaterialIndex = 0; //In the library (to manipulate with)

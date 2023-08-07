@@ -339,7 +339,7 @@ void UI::init
                                 Section(
                                     Element(Button()),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5.5f),colorPalette,shaders.buttonShader,""        , appTextures.greetingDialogImage, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5.5f),colorPalette,shaders.buttonShader,""        , Texture(), 0.f,false)),
                                     }
                                 )
                             },
