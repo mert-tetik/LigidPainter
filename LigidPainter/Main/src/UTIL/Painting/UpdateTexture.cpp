@@ -60,7 +60,7 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 tex
 }
 
 
-void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho){
+void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos){
     
     glm::ivec2 textureRes = this->selectedTexture.getResolution();
 
@@ -101,13 +101,13 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene 
     //Since the UV is between 0 - 1
     glm::mat4 orthoProjection = glm::ortho(0.f,1.f,0.f,1.f);
     
-    glm::vec2 destScale = glm::vec2(glm::min(twoDPaintingPanel.sections[0].elements[0].button.resultScale.x,twoDPaintingPanel.sections[0].elements[0].button.resultScale.y));
+    glm::vec2 destScale = glm::vec2(glm::vec2(this->selectedTexture.getResolution()));
 
     glm::mat4 twoDProjection = glm::ortho(
-                                            twoDPaintingPanel.sections[0].elements[0].button.resultPos.x - destScale.x,
-                                            twoDPaintingPanel.sections[0].elements[0].button.resultPos.x + destScale.x,
-                                            twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + destScale.y,
-                                            twoDPaintingPanel.sections[0].elements[0].button.resultPos.y - destScale.y
+                                            twoDPaintingPanel.sections[0].elements[0].button.resultPos.x + twoDScenePos.x - destScale.x  * twoDSceneScroll,
+                                            twoDPaintingPanel.sections[0].elements[0].button.resultPos.x + twoDScenePos.x + destScale.x  * twoDSceneScroll,
+                                            twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + twoDScenePos.y + destScale.y  * twoDSceneScroll,
+                                            twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + twoDScenePos.y - destScale.y  * twoDSceneScroll
                                         );
     
     if(threeDimensionalMode){
@@ -160,12 +160,11 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene 
         twoDPaintingModeAreaShader.setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
         twoDPaintingModeAreaShader.setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
 
-
         //*Vertex
         twoDPaintingModeAreaShader.setMat4("projectedPosProjection", windowOrtho);
         twoDPaintingModeAreaShader.setMat4("projection", twoDProjection);
-        twoDPaintingModeAreaShader.setVec3("pos", twoDPaintingPanel.sections[0].elements[0].button.resultPos);
-        twoDPaintingModeAreaShader.setVec2("scale", destScale);
+        twoDPaintingModeAreaShader.setVec3("pos", twoDPaintingPanel.sections[0].elements[0].button.resultPos + glm::vec3(twoDScenePos, 0.f));
+        twoDPaintingModeAreaShader.setVec2("scale", destScale * twoDSceneScroll);
 
         //* Bind the textures
         //painted texture

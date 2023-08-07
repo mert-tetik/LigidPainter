@@ -582,7 +582,7 @@ public:
     * @param scene structure contains matrices related to 3D model rendering & cam pos
     * @param twoDPaintingPanel if the painting mode is 2D use this panel's transform data 
     */
-    void updateTexture(std::vector<Texture> &textures, Model &model, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho);
+    void updateTexture(std::vector<Texture> &textures, Model &model, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos);
     
 
     /*!
