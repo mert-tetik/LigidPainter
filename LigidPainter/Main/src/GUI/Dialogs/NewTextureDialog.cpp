@@ -76,15 +76,6 @@ void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
     textureRes = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
 
     dialogControl.updateStart(buttonShader);
-
-    //End the dialog
-    if((panel.sections[0].elements[3].button.hover && mouse.LClick) || context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && mouse.LClick)){
-        if(!panel.sections[0].elements[2].comboBox.pressed){
-            panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
-            panel.sections[0].elements[1].textBox.text = "NewTexture";
-            dialogControl.unActivate();
-        }
-    }
     
     //Show the color picker dialog if clicked to the color button
     if(panel.sections[0].elements[0].button.hover && mouse.LClick){
@@ -138,6 +129,15 @@ void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
         
         //Send the created texture to the library
         library.addTexture(txtr);
+    }
+
+    //End the dialog
+    if((panel.sections[0].elements[3].button.hover && mouse.LClick) || context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && mouse.LClick)){
+        if(!panel.sections[0].elements[2].comboBox.pressed){
+            panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
+            panel.sections[0].elements[1].textBox.text = "NewTexture";
+            dialogControl.unActivate();
+        }
     }
 
     //Render the panel
