@@ -39,8 +39,8 @@ void ComboBox::render(
                         LigidWindow window //To take the key inputs
                     ){
     
-    //The utilities class
-    ;
+    if(this->pressed)
+        glDepthFunc(GL_ALWAYS);
     
     //Take the doMouseTracking param to the public class member variable
     this->doMouseTracking = doMouseTracking;
@@ -182,6 +182,9 @@ void ComboBox::render(
         if(i == 0 && !pressed && clickedMixVal[0] < 0.2f)
             break;
     }
+    
+    if(this->pressed)
+        glDepthFunc(GL_LEQUAL);
     
     //Unpress
     if((!hover[0] && mouse.LClick) || window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS){

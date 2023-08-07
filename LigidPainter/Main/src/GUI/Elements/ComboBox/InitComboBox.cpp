@@ -65,7 +65,7 @@ ComboBox::ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader sh
     this->panelOffset = panelOffset;
     
     if(style == ELEMENT_STYLE_BASIC){
-        this->bgColor = colorPalette.mainColor;
+        this->bgColor = colorPalette.secondColor;
         this->color = colorPalette.oppositeColor;
         this->color2 = colorPalette.themeColor;
         this->textColor = colorPalette.oppositeColor;
