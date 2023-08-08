@@ -131,7 +131,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     box.init();
     
     //Load the default skybox
-    skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky2"); //Skybox's itself
+    skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky6"); //Skybox's itself
     skybox.createPrefilterMap(shaders.prefilteringShader,videoScale); //Create prefiltered skybox
     skybox.createDisplayingTxtr(shaders.skyboxBall,sphereModel,context.windowScale); //Create displaying texture
     
