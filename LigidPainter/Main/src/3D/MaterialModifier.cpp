@@ -993,7 +993,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         material.materialModifiers[curModI].shader.setInt("previousTxtr", 2); //Set the texture slot
         material.materialModifiers[curModI].shader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
         material.materialModifiers[curModI].shader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
-        material.materialModifiers[curModI].shader.setInt( "depthTxtr" , 2);
+        material.materialModifiers[curModI].shader.setInt( "depthTxtr" , 3);
         material.materialModifiers[curModI].shader.setInt("theTextureProceduralID", material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.proceduralID); //Set the channel procedural 
         material.materialModifiers[curModI].shader.setFloat("theTextureProceduralScale", material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.proceduralScale); //Set the channel procedural 
         material.materialModifiers[curModI].shader.setInt("theTextureProceduralInverted", material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.proceduralnverted); //Set the channel procedural material.materialModifiers[curModI].
@@ -1013,6 +1013,12 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
             glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
         else
             glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
+        
+        glActiveTexture(GL_TEXTURE3);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, 0);
 
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1102,12 +1108,11 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
 
-        //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
         if(curModI != material.materialModifiers.size()-1)
-            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
         else
-            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, 0);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1115,10 +1120,6 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
             glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
         else
             glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
-        
-        glActiveTexture(GL_TEXTURE2);
-        if(curModI != 0)
-            glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI - 1].maskTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1204,9 +1205,9 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
         if(curModI != material.materialModifiers.size()-1)
-            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
         else
-            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, 0);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1215,10 +1216,6 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         else
             glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
 
-        glActiveTexture(GL_TEXTURE2);
-        if(curModI != material.materialModifiers.size()-1)
-            glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
-        
         //Render the result to the framebuffer
         mesh.Draw();
         
@@ -1316,9 +1313,9 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
         if(curModI != material.materialModifiers.size()-1)
-            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
         else
-            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, 0);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1418,9 +1415,9 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
         if(curModI != material.materialModifiers.size()-1)
-            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
         else
-            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, 0);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1540,9 +1537,9 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
         if(curModI != material.materialModifiers.size()-1)
-            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
         else
-            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, 0);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1659,9 +1656,9 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
         if(curModI != material.materialModifiers.size()-1)
-            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
         else
-            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, 0);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1779,9 +1776,9 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
         if(curModI != material.materialModifiers.size()-1)
-            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
         else
-            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, 0);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1896,9 +1893,9 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
         if(curModI != material.materialModifiers.size()-1)
-            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
         else
-            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, 0);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
