@@ -193,9 +193,9 @@ std::vector<Section> MaterialModifier::createTextureModifier(ColorPalette colorP
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
             }
         )
     };
@@ -237,9 +237,10 @@ std::vector<Section> MaterialModifier::createSolidModifier(ColorPalette colorPal
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
         )
     };
@@ -288,9 +289,9 @@ std::vector<Section> MaterialModifier::createFabricModifier(ColorPalette colorPa
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
             }
         )
     };
@@ -368,9 +369,10 @@ std::vector<Section> MaterialModifier::createMossModifier(ColorPalette colorPale
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
         )
     };
@@ -454,9 +456,10 @@ std::vector<Section> MaterialModifier::createRustModifier(ColorPalette colorPale
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
         )
     };
@@ -536,9 +539,10 @@ std::vector<Section> MaterialModifier::createSkinModifier(ColorPalette colorPale
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
         )
     };
@@ -615,9 +619,10 @@ std::vector<Section> MaterialModifier::createWoodenModifier(ColorPalette colorPa
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
         )
     };
@@ -692,9 +697,9 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(ColorPalette colorP
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
             }
         )
     };
@@ -759,9 +764,10 @@ std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPale
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
         )
     };
@@ -1133,7 +1139,8 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
-            blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
+            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
+                blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
 
@@ -1560,7 +1567,8 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
-            blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
+            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
+                blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
@@ -1679,7 +1687,8 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
-            blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
+            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
+                blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
@@ -1799,7 +1808,8 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
-            blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
+            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
+                blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
@@ -1916,7 +1926,8 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
-            blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
+            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
+                blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
