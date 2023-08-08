@@ -11,5 +11,8 @@ uniform float proceduralScale;
 uniform int proceduralInverted;
 
 void main(){
-    fragColor = vec4(vec3(getProcedural(vec3(TexCoords.x, 0., TexCoords.y), proceduralID, proceduralScale, proceduralInverted)), 1.);
+    if(proceduralID > 28)
+        fragColor = vec4(vec3(getProcedural(vec3(TexCoords.x, TexCoords.y, TexCoords.y), proceduralID, proceduralScale, proceduralInverted)), 1.);
+    else
+        fragColor = vec4(vec3(getProcedural(vec3(TexCoords.x, 0., TexCoords.y), proceduralID, proceduralScale, proceduralInverted)), 1.);
 } 
