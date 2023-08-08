@@ -833,7 +833,7 @@ void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& cu
 void generateNormalMap(unsigned int& heightMap, unsigned int& normalMap, Shader heightToNormalMapShader, int textureResolution){
     unsigned int FBO;
     glGenFramebuffers(1,&FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, FBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, normalMap, 0);
     glViewport(0, 0, textureResolution, textureResolution);
 

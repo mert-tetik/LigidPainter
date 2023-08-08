@@ -31,11 +31,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void updateMaterialDisplayerButton(Button &materialDisplayer, Material &material, Panel &bgPanel, Panel &modifiersPanel, Panel &layerPanel){
     //Update material displayer button
     materialDisplayer.texture = Texture(material.displayingTexture);
-    materialDisplayer.pos = bgPanel.pos;
+    materialDisplayer.pos = bgPanel.pos + bgPanel.additionalPos;
     materialDisplayer.scale = glm::vec2(35.f); 
-    materialDisplayer.scale.x = (modifiersPanel.pos.x - modifiersPanel.scale.x) - (layerPanel.pos.x + layerPanel.scale.x); 
+    materialDisplayer.scale.x = (modifiersPanel.pos.x + modifiersPanel.additionalPos.x - modifiersPanel.scale.x) - (layerPanel.pos.x + layerPanel.additionalPos.x + layerPanel.scale.x); 
     materialDisplayer.scale.x /= 2.f;
-    materialDisplayer.pos.x = modifiersPanel.pos.x - modifiersPanel.scale.x - materialDisplayer.scale.x;
+    materialDisplayer.pos.x = modifiersPanel.pos.x + modifiersPanel.additionalPos.x - modifiersPanel.scale.x - materialDisplayer.scale.x;
 }
 
 bool __materialEditorDialogESCPressed = false;
@@ -69,6 +69,13 @@ void MaterialEditorDialog::render
     layerPanel.render(videoScale,mouse,timer,textRenderer,      !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
     modifiersPanel.render(videoScale,mouse,timer,textRenderer,  !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
     barButton.render(videoScale,mouse,timer,textRenderer,       !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
+
+    barButton.pos.x = bgPanel.pos.x + bgPanel.additionalPos.x;
+    barButton.pos.y = bgPanel.pos.y + bgPanel.additionalPos.y - bgPanel.scale.y - barButton.scale.y;
+
+    bgPanel.additionalPos = -glm::vec3((videoScale - glm::vec2(context.windowScale)) / videoScale * 50.f ,0);
+    layerPanel.additionalPos = -glm::vec3((videoScale - glm::vec2(context.windowScale)) / videoScale * 50.f ,0);
+    modifiersPanel.additionalPos = -glm::vec3((videoScale - glm::vec2(context.windowScale)) / videoScale * 50.f ,0);
 
     //Update the texture, scale & position of the material displayer button
     updateMaterialDisplayerButton(materialDisplayer, material, bgPanel, modifiersPanel, layerPanel);
@@ -104,7 +111,7 @@ void MaterialEditorDialog::render
     //Render the material displayer
     materialDisplayer.render(videoScale,mouse,timer,textRenderer,false);
 
-    this->displayModeComboBox.pos = layerPanel.pos;
+    this->displayModeComboBox.pos = layerPanel.pos + layerPanel.additionalPos;
     this->displayModeComboBox.pos.y -= materialDisplayer.scale.y + this->displayModeComboBox.scale.y;
     this->displayModeComboBox.pos.x += layerPanel.scale.x + materialDisplayer.scale.x;
     this->displayModeComboBox.render(videoScale, mouse, timer, textRenderer, true, context.window);
@@ -229,6 +236,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,float textureR
         
         this->selectedMaterialModifierIndex = 0;
     }
+    
     //Update the material if interacted with modifier's panel
     for (size_t secI = 0; secI < modifiersPanel.sections.size(); secI++)
     {
