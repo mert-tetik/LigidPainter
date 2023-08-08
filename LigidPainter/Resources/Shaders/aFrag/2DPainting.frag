@@ -88,11 +88,8 @@ void strokeBlendUniColor(
 }
 
 
-float calculateBrushTexture(vec2 pos,float radius){
+float calculateBrushTexture(vec2 pos,float radius,vec2 uv){
    
-    //The uv value
-    vec2 uv = TexCoords;
-
     //Positioning the brush position
     uv -= (pos/videoScale);
 
@@ -183,7 +180,7 @@ void main()
     float ratio = videoScale.x/videoScale.y;
  
     //Expand the uv value to match with the monitor ratio
-    vec2 uv = vec2(TexCoords.x*ratio,TexCoords.y);
+    vec2 uv = vec2(TexCoords.x,TexCoords.y);
     
     //Brush hardness value
     float hardnessV = min(brush.hardness,1.0);
@@ -205,11 +202,9 @@ void main()
         
         //Calculate the position jitter
         vec2 pos = calculatePosValue(random2, positions[i]);
-        //Calculate the ratio
-        pos.x *= ratio;
-        
+
         //Get the brush texture value (the brush texture scaled and moved to the cursor (outside of the boundaries are black))
-        float txtr = calculateBrushTexture(pos,radius);
+        float txtr = calculateBrushTexture(pos,radius,uv);
         
         //Calculate the alpha value on the white color
         vec4 src = vec4(1);
