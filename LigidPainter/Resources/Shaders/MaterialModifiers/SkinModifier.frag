@@ -55,6 +55,8 @@ uniform float opacity;
 uniform int proceduralID;
 uniform float proceduralScale;
 uniform int proceduralInverted;
+uniform float depthValue;
+uniform sampler2D depthTxtr;
 
 /* Fragment Inputs */
 in vec2 TexCoords;
@@ -484,6 +486,10 @@ void main()
         alpha *= texture(mask, TexCoords).r; 
     else
         alpha *= procedural; 
+
+    float dpth = texture(depthTxtr, TexCoords).r; 
+    if(depthValue < dpth)
+        alpha *= 0;
 
     vec3 clrResult = mix(texture(previousTxtr, TexCoords).rgb, fragColor.rgb, alpha);
 

@@ -33,6 +33,8 @@ uniform sampler2D theTexture;
 uniform int theTextureProceduralID;
 uniform float theTextureProceduralScale;
 uniform int theTextureProceduralInverted;
+uniform float depthValue;
+uniform sampler2D depthTxtr;
 
 out vec4 fragColor;
 
@@ -56,6 +58,10 @@ void main(){
     else
         alpha *= procedural; 
     
+    float dpth = texture(depthTxtr, TexCoords).r; 
+    if(depthValue < dpth)
+        alpha *= 0;
+
     vec3 clrResult = mix(texture(previousTxtr, TexCoords).rgb, fragColor.rgb, alpha * fragColor.a);
 
     fragColor = vec4(clrResult, 1.);

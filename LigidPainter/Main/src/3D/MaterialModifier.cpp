@@ -191,6 +191,12 @@ std::vector<Section> MaterialModifier::createTextureModifier(ColorPalette colorP
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+            }
         )
     };
 
@@ -228,6 +234,12 @@ std::vector<Section> MaterialModifier::createSolidModifier(ColorPalette colorPal
                 
                 Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Ambient Occlusion",   Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f , appTextures) // /100
+            }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
             }
         )
     };
@@ -273,6 +285,12 @@ std::vector<Section> MaterialModifier::createFabricModifier(ColorPalette colorPa
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+            }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
             }
         )
     };
@@ -347,6 +365,12 @@ std::vector<Section> MaterialModifier::createMossModifier(ColorPalette colorPale
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+            }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
             }
         )
     };
@@ -428,6 +452,12 @@ std::vector<Section> MaterialModifier::createRustModifier(ColorPalette colorPale
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+            }
         )
     };
     
@@ -504,6 +534,12 @@ std::vector<Section> MaterialModifier::createSkinModifier(ColorPalette colorPale
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+            }
         )
     };
 
@@ -577,6 +613,12 @@ std::vector<Section> MaterialModifier::createWoodenModifier(ColorPalette colorPa
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+            }
         )
     };
 
@@ -648,6 +690,12 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(ColorPalette colorP
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+            }
         )
     };
     sections[0].elements[0].button.colorSelection = true;
@@ -709,13 +757,19 @@ std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPale
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures)
+            }
         )
     };
 
     return sections;
 }
 
-void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& curModI, glm::mat4& perspective, glm::mat4& view, int& channelI, unsigned int& FBO, Texture& currentTexture, Texture& previousTexture){
+void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& curModI, glm::mat4& perspective, glm::mat4& view, int& channelI, unsigned int& FBO, Texture& currentTexture, Texture& previousTexture, Texture& prevDepth){
     glDisable(GL_DEPTH_TEST);
 
     //Get the channel's texture from material
@@ -738,6 +792,8 @@ void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& cu
     if(channelI == 5){
         currentTexture = mesh.ambientOcclusion;
     }
+
+    prevDepth = mesh.heightMap.duplicateTexture();
 
     /* ! Binds another framebuffer ! */
     previousTexture = currentTexture.duplicateTexture();
@@ -913,13 +969,15 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     //TODO Don't create the shader in the modifier function
     Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
+    Texture prevDepthTexture;
+    prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
 
         //Set the uniforms of the modifier's shader
         material.materialModifiers[curModI].shader.use(); //Use the shader of the modifier
@@ -933,7 +991,9 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         material.materialModifiers[curModI].shader.setInt("theTexture",0); //Set the texture slot
         material.materialModifiers[curModI].shader.setInt("mask", 1); //Set the texture slot
         material.materialModifiers[curModI].shader.setInt("previousTxtr", 2); //Set the texture slot
-        material.materialModifiers[curModI].shader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
+        material.materialModifiers[curModI].shader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
+        material.materialModifiers[curModI].shader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        material.materialModifiers[curModI].shader.setInt( "depthTxtr" , 2);
         material.materialModifiers[curModI].shader.setInt("theTextureProceduralID", material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.proceduralID); //Set the channel procedural 
         material.materialModifiers[curModI].shader.setFloat("theTextureProceduralScale", material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.proceduralScale); //Set the channel procedural 
         material.materialModifiers[curModI].shader.setInt("theTextureProceduralInverted", material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.proceduralnverted); //Set the channel procedural material.materialModifiers[curModI].
@@ -946,8 +1006,8 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
-        
-        //Bind the previous texture
+
+        //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
         if(curModI != material.materialModifiers.size()-1)
             glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
@@ -967,6 +1027,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
+    glDeleteTextures(1, &prevDepthTexture.ID);
 
     glDeleteProgram(boundaryExpandingShader.ID);
 }
@@ -989,13 +1050,15 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //TODO Don't create the shader in the modifier function
     Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
+    Texture prevDepthTexture;
+    prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -1006,13 +1069,15 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setVec3("pos",fragPos); //Set the position
 
         /* Channel Properties */
-                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
+        modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
         modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
         modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); // TODO : Set the opacity
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f);
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f);
+        modifierShader.setInt( "depthTxtr" , 2);
 
         /* Noise */
         modifierShader.setFloat("size", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 10.f); 
@@ -1036,6 +1101,13 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+
+        //Bind the previous height texture      
+        glActiveTexture(GL_TEXTURE2);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1043,6 +1115,10 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
             glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
         else
             glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
+        
+        glActiveTexture(GL_TEXTURE2);
+        if(curModI != 0)
+            glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI - 1].maskTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1065,6 +1141,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
+    glDeleteTextures(1, &prevDepthTexture.ID);
 
     glDeleteProgram(boundaryExpandingShader.ID);
 }
@@ -1072,7 +1149,6 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
-
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -1087,13 +1163,15 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
     //TODO Don't create the shader in the modifier function
     Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
+    Texture prevDepthTexture;
+    prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -1104,13 +1182,15 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
-                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
+        modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
         modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
         modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state",channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
         modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[0].elements[channelI * 2 + 1].rangeBar.value / 100.f); //Set the channel opacity
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setInt( "depthTxtr" , 2); //Set the channel opacity
         modifierShader.setVec3( "value" , glm::vec3(
                                                         material.materialModifiers[curModI].sections[0].elements[channelI * 2].button.color.r, 
                                                         material.materialModifiers[curModI].sections[0].elements[channelI * 2].button.color.g, 
@@ -1120,6 +1200,13 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+
+        //Bind the previous height texture      
+        glActiveTexture(GL_TEXTURE2);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1127,6 +1214,10 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
             glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
         else
             glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
+
+        glActiveTexture(GL_TEXTURE2);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
         
         //Render the result to the framebuffer
         mesh.Draw();
@@ -1141,6 +1232,7 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
+    glDeleteTextures(1, &prevDepthTexture.ID);
 
     glDeleteProgram(boundaryExpandingShader.ID);
 }
@@ -1163,13 +1255,15 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     //TODO Don't create the shader in the modifier function
     Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
+    Texture prevDepthTexture;
+    prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -1186,7 +1280,9 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setInt( "depthTxtr" , 2);
 
         /* Colors */
         modifierShader.setVec3("asphaltColor", material.materialModifiers[curModI].sections[0].elements[0].button.color);
@@ -1216,6 +1312,13 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+
+        //Bind the previous height texture      
+        glActiveTexture(GL_TEXTURE2);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1243,6 +1346,7 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
+    glDeleteTextures(1, &prevDepthTexture.ID);
 
     glDeleteProgram(boundaryExpandingShader.ID);
 }
@@ -1265,13 +1369,15 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     //TODO Don't create the shader in the modifier function
     Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
+    Texture prevDepthTexture;
+    prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -1288,7 +1394,9 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setInt( "depthTxtr" , 2);
 
         /* Stripes */
         modifierShader.setVec3("color", material.materialModifiers[curModI].sections[0].elements[0].button.color);
@@ -1306,6 +1414,13 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+
+        //Bind the previous height texture      
+        glActiveTexture(GL_TEXTURE2);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1333,6 +1448,7 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
+    glDeleteTextures(1, &prevDepthTexture.ID);
 
     glDeleteProgram(boundaryExpandingShader.ID);
 }
@@ -1356,13 +1472,15 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     //TODO Don't create the shader in the modifier function
     Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
+    Texture prevDepthTexture;
+    prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -1379,7 +1497,9 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setInt( "depthTxtr" , 2);
 
         /* Colors */
         modifierShader.setVec3("woodColor1", material.materialModifiers[curModI].sections[0].elements[0].button.color);
@@ -1416,6 +1536,13 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+
+        //Bind the previous height texture      
+        glActiveTexture(GL_TEXTURE2);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1444,6 +1571,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
+    glDeleteTextures(1, &prevDepthTexture.ID);
 
     glDeleteProgram(boundaryExpandingShader.ID);
 }
@@ -1466,13 +1594,15 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //TODO Don't create the shader in the modifier function
     Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
+    Texture prevDepthTexture;
+    prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -1489,7 +1619,9 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setInt( "depthTxtr" , 2);
 
         /* Color */
         modifierShader.setVec3("mossColorBack", material.materialModifiers[curModI].sections[0].elements[0].button.color);
@@ -1523,6 +1655,13 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+
+        //Bind the previous height texture      
+        glActiveTexture(GL_TEXTURE2);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1551,6 +1690,7 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
+    glDeleteTextures(1, &prevDepthTexture.ID);
 
     glDeleteProgram(boundaryExpandingShader.ID);
 }
@@ -1573,13 +1713,15 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //TODO Don't create the shader in the modifier function
     Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
+    Texture prevDepthTexture;
+    prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -1596,7 +1738,9 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setInt( "depthTxtr" , 2);
 
         /* Colors */
         modifierShader.setVec3("color1", material.materialModifiers[curModI].sections[0].elements[0].button.color);
@@ -1631,6 +1775,13 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+
+        //Bind the previous height texture      
+        glActiveTexture(GL_TEXTURE2);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1659,6 +1810,7 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
+    glDeleteTextures(1, &prevDepthTexture.ID);
 
     glDeleteProgram(boundaryExpandingShader.ID);
 }
@@ -1681,13 +1833,15 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //TODO Don't create the shader in the modifier function
     Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
+    Texture prevDepthTexture;
+    prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture);
+        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
@@ -1704,7 +1858,9 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setInt( "depthTxtr" , 2);
 
         /* Droplets */
         modifierShader.setFloat("dropletsCount", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 1.f);
@@ -1736,6 +1892,13 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+
+        //Bind the previous height texture      
+        glActiveTexture(GL_TEXTURE2);
+        if(curModI != material.materialModifiers.size()-1)
+            glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Bind the previous texture
         glActiveTexture(GL_TEXTURE1);
@@ -1764,6 +1927,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
+    glDeleteTextures(1, &prevDepthTexture.ID);
 
     glDeleteProgram(boundaryExpandingShader.ID);
 }
