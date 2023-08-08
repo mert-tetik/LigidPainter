@@ -229,13 +229,45 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,float textureR
     
     //Clear the modifiers panel as the panel starts
     if(dialogControl.firstFrameActivated){
+        for (size_t modI = 0; modI < material.materialModifiers.size(); modI++)
+        {
+            for (size_t secI = 0; secI < material.materialModifiers[modI].sections.size(); secI++)
+            {
+                for (size_t elementI = 0; elementI < material.materialModifiers[modI].sections[secI].elements.size(); elementI++)
+                {
+                    //If button is clicked update the material
+                    if(material.materialModifiers[modI].sections[secI].elements[elementI].state == 0)
+                        if(material.materialModifiers[modI].sections[secI].elements[elementI].button.clicked){
+                            this->updateTheMaterial = true;
+                            material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].button = material.materialModifiers[modI].sections[secI].elements[elementI].button; 
+                        }
+
+                    //If range bar's value changed update the material
+                    if(material.materialModifiers[modI].sections[secI].elements[elementI].state == 1)
+                        if(material.materialModifiers[modI].sections[secI].elements[elementI].rangeBar.pointerPressed == true){
+                            this->updateTheMaterial = true;
+                            material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].rangeBar = material.materialModifiers[modI].sections[secI].elements[elementI].rangeBar; 
+                        }
+
+                    //If checkbox clicked update the material
+                    if(material.materialModifiers[modI].sections[secI].elements[elementI].state == 2)
+                        if(material.materialModifiers[modI].sections[secI].elements[elementI].checkBox.hover && mouse.LClick == true){
+                            this->updateTheMaterial = true;
+                            material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].checkBox = material.materialModifiers[modI].sections[secI].elements[elementI].checkBox; 
+                        }
+                }
+            }
+        }
+        
         if(!material.materialModifiers.size())
             modifiersPanel.sections.clear();
         else 
             modifiersPanel.sections = material.materialModifiers[0].sections;
         
         this->selectedMaterialModifierIndex = 0;
+
     }
+    
     
     //Update the material if interacted with modifier's panel
     for (size_t secI = 0; secI < modifiersPanel.sections.size(); secI++)
