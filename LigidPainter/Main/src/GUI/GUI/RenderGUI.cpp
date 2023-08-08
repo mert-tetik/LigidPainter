@@ -298,8 +298,8 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
             if(scrVal > 0)
                 this->twoDPaintingSceneScroll += twoDPaintingSceneScroll / 4.f;
         } 
-        if(this->twoDPaintingSceneScroll < 0)
-            this->twoDPaintingSceneScroll = 0;
+        if(this->twoDPaintingSceneScroll < 0.02)
+            this->twoDPaintingSceneScroll = 0.02;
 
         //Calculate the position value        
         if(mouse.MPressed && this->twoDPaintingPanel.hover)
@@ -307,6 +307,18 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
         //(Zoom into the cursor)
         glm::vec2 scaleGap = prevScale - destScale * this->twoDPaintingSceneScroll;
         this->twoDPaintingScenePos += (scaleGap) * (((mouse.cursorPos - glm::vec2(twoDPaintingPanel.sections[0].elements[0].button.resultPos.x + this->twoDPaintingScenePos.x, twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + this->twoDPaintingScenePos.y)) + 0.00001f) / (prevScale + 0.00001f));
+
+        if(this->twoDPaintingScenePos.x > destScale.x * this->twoDPaintingSceneScroll)
+            this->twoDPaintingScenePos.x = destScale.x * this->twoDPaintingSceneScroll;
+        if(this->twoDPaintingScenePos.x < -destScale.x * this->twoDPaintingSceneScroll)
+            this->twoDPaintingScenePos.x = -destScale.x * this->twoDPaintingSceneScroll;
+        
+        if(this->twoDPaintingScenePos.y > destScale.y * this->twoDPaintingSceneScroll)
+            this->twoDPaintingScenePos.y = destScale.y * this->twoDPaintingSceneScroll;
+        if(this->twoDPaintingScenePos.y < -destScale.y * this->twoDPaintingSceneScroll)
+            this->twoDPaintingScenePos.y = -destScale.y * this->twoDPaintingSceneScroll;
+        
+
 
         //Render the 2D painting panel
         twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,false);
