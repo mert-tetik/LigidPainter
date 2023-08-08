@@ -244,6 +244,14 @@ void Renderer::render(){
     mouse.LClick = false;
     mouse.RClick = false;
     mouse.MClick = false;
+    
+    if(!this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_LEFT))
+        mouse.LPressed = false;
+    if(!this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT))
+        mouse.RPressed = false;
+    if(!this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_MIDDLE))
+        mouse.MPressed = false;
+
     mouse.LDoubleClick = false;
     mouse.mouseOffset = glm::vec2(0);
     mouse.mods = 0;
