@@ -380,11 +380,17 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
         
         //paintingTexture 
         glActiveTexture(GL_TEXTURE6);
-        glBindTexture(GL_TEXTURE_2D, painter.paintingTexture);
-        
+        if(painter.selectedDisplayingModeIndex == 0)
+            glBindTexture(GL_TEXTURE_2D, 0);
+        else
+            glBindTexture(GL_TEXTURE_2D, painter.paintingTexture);
+
         //depthTexture 
         glActiveTexture(GL_TEXTURE7);
-        glBindTexture(GL_TEXTURE_2D, painter.depthTexture);
+        if(painter.selectedDisplayingModeIndex == 0)
+            glBindTexture(GL_TEXTURE_2D, 0);
+        else
+            glBindTexture(GL_TEXTURE_2D, painter.depthTexture);
 
         glDrawArrays(GL_TRIANGLES,0,6);
 
