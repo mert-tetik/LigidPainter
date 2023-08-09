@@ -128,7 +128,7 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,M
         }
         //All the materials connected to the mesh output
         
-        UTIL::updateNodeResults(meshNodeScene, model, library, shaders.heightToNormalMap, scene, resolution, -1);
+        UTIL::updateNodeResults(meshNodeScene, model, library, shaders.heightToNormalMap, shaders.boundaryExpandingShader, scene, resolution, -1);
         
         //Update all the materials connected to the mesh output & export it's textures
         for (size_t i = 0; i < model.meshes.size(); i++)

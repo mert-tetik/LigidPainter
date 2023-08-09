@@ -177,10 +177,10 @@ namespace UTIL{
     /// @param index remove the meshNodeScene[index]
     void deleteNode(std::vector<Node>& meshNodeScene, int index);
 
-    Mesh processNode(Node &node, std::vector<Node> &nodeScene, Library library, Mesh& mesh, Shader heightToNormalShader, Scene scene, int textureRes);
+    Mesh processNode(Node &node, std::vector<Node> &nodeScene, Library library, Mesh& mesh, Shader heightToNormalShader, Shader boundaryExpandingShader, Scene scene, int textureRes);
 
     /// @brief Updates the result textures of the every input of the mesh node
-    void updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library, Shader heightToNormalShader, Scene scene, int textureRes, int updateNodeI);
+    void updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library, Shader heightToNormalShader, Shader boundaryExpandingShader, Scene scene, int textureRes, int updateNodeI);
 }
 
 
@@ -330,6 +330,8 @@ public:
 
     std::vector<glm::vec3> getMaterialIDPalette();
 
+    void removeSeams(Mesh& mesh, int textureResolution, Shader boundaryExpandingShader);
+    void removeSeams(Mesh& mesh, glm::ivec2 textureResolution, Shader boundaryExpandingShader);
 };
 
 
@@ -559,7 +561,7 @@ public:
     * @param depth3DShader depth shader
     * @param textureUpdatingShader texture updating shader
     */
-    void initPainter(glm::vec2 videoScale, Shader paintingShader, Shader buttonShader, Shader tdModelShader, Shader depth3DShader, Shader textureUpdatingShader, Shader twoDPaintingModeAreaShader);
+    void initPainter(glm::vec2 videoScale, Shader paintingShader, Shader buttonShader, Shader tdModelShader, Shader depth3DShader, Shader textureUpdatingShader, Shader twoDPaintingModeAreaShader, Shader boundaryExpandingShader);
     
     /*! 
     * @brief do painting (paint 2D). Called every frame if painting conditions are set. 
@@ -615,6 +617,7 @@ private:
     Shader depth3DShader;
     Shader textureUpdatingShader;
     Shader twoDPaintingModeAreaShader;
+    Shader boundaryExpandingShader;
 
     /// @brief renderbuffer object used to depth test (used to create the depth texture)
     unsigned int depthRBO; 
@@ -900,6 +903,7 @@ struct Shaders{
     Shader circleShader;
     Shader dotsShader;
     Shader heightToNormalMap;
+    Shader boundaryExpandingShader;
 
     void loadShaders(){
         this->tdModelShader =                 Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/PBR.frag"                       ,nullptr    ,nullptr,   nullptr      );
@@ -930,6 +934,8 @@ struct Shaders{
         
         this->heightToNormalMap =             Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/HeightToNormal.frag"            ,nullptr    ,nullptr,   nullptr      );
     
+        this->boundaryExpandingShader       = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
+
     }
 };
 

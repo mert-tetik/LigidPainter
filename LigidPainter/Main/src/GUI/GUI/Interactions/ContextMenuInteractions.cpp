@@ -82,7 +82,8 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                                             colorPalette,
                                             appTextures,
                                             videoScale,
-                                            heightToNormalShader
+                                            heightToNormalShader,
+                                            shaders.boundaryExpandingShader
                                         );
                 materialNode.barButton.text = library.materials[contextMenus[i].selectedElement].title;
                 meshNodeScene.push_back(materialNode); //Add material node
@@ -221,12 +222,12 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         if(i == 9 && contextMenus[i].dialogControl.isActive()){//If node scene context menu is active
             //Add material ID node button pressed
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
-                meshNodeScene.push_back(Node(MATERIAL_ID_NODE, 0, shaders.buttonShader, shaders.connectionCurve, colorPalette, appTextures, videoScale, shaders.heightToNormalMap));
+                meshNodeScene.push_back(Node(MATERIAL_ID_NODE, 0, shaders.buttonShader, shaders.connectionCurve, colorPalette, appTextures, videoScale, shaders.heightToNormalMap, shaders.boundaryExpandingShader));
                 meshNodeScene[meshNodeScene.size()-1].nodePanel.pos = meshNodeScene[0].nodePanel.pos;
             }
             //Add material mask node button pressed
             else if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){
-                meshNodeScene.push_back(Node(MATERIAL_MASK_NODE, 0, shaders.buttonShader, shaders.connectionCurve, colorPalette, appTextures, videoScale, shaders.heightToNormalMap));
+                meshNodeScene.push_back(Node(MATERIAL_MASK_NODE, 0, shaders.buttonShader, shaders.connectionCurve, colorPalette, appTextures, videoScale, shaders.heightToNormalMap, shaders.boundaryExpandingShader));
                 meshNodeScene[meshNodeScene.size()-1].nodePanel.pos = meshNodeScene[0].nodePanel.pos;
             }
         } 

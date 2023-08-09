@@ -36,6 +36,7 @@ MaterialEditorDialog::MaterialEditorDialog
                                         (
                                             Shader buttonShader,
                                             Shader heightToNormalShader,
+                                            Shader boundaryExpandingShader,
                                             Shader tdModelShader,
                                             ColorPalette colorPalette,
                                             AppTextures appTextures,
@@ -48,6 +49,7 @@ MaterialEditorDialog::MaterialEditorDialog
     //Give params to the public class member variables
     this->buttonShader = buttonShader; 
     this->heightToNormalShader = heightToNormalShader; 
+    this->boundaryExpandingShader = boundaryExpandingShader; 
     this->tdModelShader = tdModelShader; 
     this->colorPalette = colorPalette; 
     this->sphereModel = sphereModel; 

@@ -28,6 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "UTIL/Util.hpp"
+#include "3D/ThreeD.hpp"
 
 unsigned char* Texture::getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip){
     stbi_set_flip_vertically_on_load(flip);
@@ -196,4 +197,88 @@ std::vector<glm::vec3> Texture::getMaterialIDPalette(){
 
     return res;
     
+}
+
+void Texture::removeSeams(Mesh& mesh, int textureResolution, Shader boundaryExpandingShader){
+    
+    /*! Binds another framebuffer !*/
+    Texture textureObject = Texture(this->ID);
+    unsigned int textureCopy = textureObject.duplicateTexture();
+    
+    unsigned int FBO;
+    glGenFramebuffers(1,&FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->ID, 0);
+    glViewport(0, 0, textureResolution, textureResolution);
+
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    Box box;
+    box.init();
+    box.bindBuffers();
+    
+    glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
+    boundaryExpandingShader.use();
+    boundaryExpandingShader.setMat4("projection"  ,       projection);
+    boundaryExpandingShader.setMat4("projectedPosProjection"  ,       projection);
+    boundaryExpandingShader.setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
+    boundaryExpandingShader.setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
+
+    boundaryExpandingShader.setInt("whiteUVTexture", 0);
+    boundaryExpandingShader.setInt("originalTexture", 1);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mesh.uvMask);
+    
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, textureCopy);
+
+    glDrawArrays(GL_TRIANGLES, 0 , 6);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteFramebuffers(1, &FBO);
+    glDeleteTextures(1, &textureCopy);
+}
+
+void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution, Shader boundaryExpandingShader){
+    
+    /*! Binds another framebuffer !*/
+    Texture textureObject = Texture(this->ID);
+    unsigned int textureCopy = textureObject.duplicateTexture();
+    
+    unsigned int FBO;
+    glGenFramebuffers(1,&FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->ID, 0);
+    glViewport(0, 0, textureResolution.x, textureResolution.y);
+
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    Box box;
+    box.init();
+    box.bindBuffers();
+    
+    glm::mat4 projection = glm::ortho(0.f, (float)textureResolution.x, (float)textureResolution.y, 0.f); 
+    boundaryExpandingShader.use();
+    boundaryExpandingShader.setMat4("projection"  ,       projection);
+    boundaryExpandingShader.setMat4("projectedPosProjection"  ,       projection);
+    boundaryExpandingShader.setVec3("pos"         ,       glm::vec3((float)textureResolution.x / 2.f, (float)textureResolution.y / 2.f, 0.9f));
+    boundaryExpandingShader.setVec2("scale"       ,       glm::vec2((float)textureResolution.x / 2.f, (float)textureResolution.y / 2.f));
+
+    boundaryExpandingShader.setInt("whiteUVTexture", 0);
+    boundaryExpandingShader.setInt("originalTexture", 1);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mesh.uvMask);
+    
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, textureCopy);
+
+    glDrawArrays(GL_TRIANGLES, 0 , 6);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteFramebuffers(1, &FBO);
+    glDeleteTextures(1, &textureCopy);
 }

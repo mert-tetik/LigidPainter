@@ -36,6 +36,7 @@ void Material::updateMaterialDisplayingTexture(
                                 Shader tdModelShader,
                                 Model sphereModel,
                                 Shader heightToNormalShader,
+                                Shader boundaryExpandingShader,
                                 bool updateMaterial,
                                 Camera matCam,
                                 int displayingMode
@@ -58,7 +59,7 @@ void Material::updateMaterialDisplayingTexture(
         //For every modifier the material has (Output every modifier the material has)
         for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
         {
-            this->materialModifiers[i].updateMaterialChannels(*this, sphereModel.meshes[0], textureRes, i, projectionMatrix, view, heightToNormalShader);
+            this->materialModifiers[i].updateMaterialChannels(*this, sphereModel.meshes[0], textureRes, i, projectionMatrix, view, heightToNormalShader, boundaryExpandingShader);
         }
     }
     

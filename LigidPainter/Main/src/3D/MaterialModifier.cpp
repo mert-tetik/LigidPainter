@@ -70,15 +70,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 MaterialModifier::MaterialModifier(){}
 
-void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
-void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
-void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
-void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
-void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
-void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
-void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
-void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
-void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader);
+void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
+void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
+void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
+void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
+void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
+void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
+void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
+void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
+void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
 
 MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures,int modifierIndex){
     
@@ -906,48 +906,6 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     glDeleteTextures(1, &textureCopy);
 }
 
-void removeSeams(Mesh& mesh, unsigned int texture, int textureResolution, Shader boundaryExpandingShader){
-    
-    /*! Binds another framebuffer !*/
-    Texture textureObject = Texture(texture);
-    unsigned int textureCopy = textureObject.duplicateTexture();
-    
-    unsigned int FBO;
-    glGenFramebuffers(1,&FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-    glViewport(0, 0, textureResolution, textureResolution);
-
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    Box box;
-    box.init();
-    box.bindBuffers();
-    
-    glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
-    boundaryExpandingShader.use();
-    boundaryExpandingShader.setMat4("projection"  ,       projection);
-    boundaryExpandingShader.setMat4("projectedPosProjection"  ,       projection);
-    boundaryExpandingShader.setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
-    boundaryExpandingShader.setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
-
-    boundaryExpandingShader.setInt("whiteUVTexture", 0);
-    boundaryExpandingShader.setInt("originalTexture", 1);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, mesh.uvMask);
-    
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, textureCopy);
-
-    glDrawArrays(GL_TRIANGLES, 0 , 6);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glDeleteFramebuffers(1, &FBO);
-    glDeleteTextures(1, &textureCopy);
-}
-
 glm::vec2 getDirectionVector(float rotation) {
   // Convert rotation from degrees to radians
   float radians = glm::radians(rotation);
@@ -960,7 +918,7 @@ glm::vec2 getDirectionVector(float rotation) {
 }
 
 
-void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
+void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -973,7 +931,6 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
 
     //TODO Don't create the shader in the modifier function
-    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
@@ -1036,7 +993,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         glDeleteFramebuffers(1,&FBO);
         glEnable(GL_DEPTH_TEST);
 
-        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1044,7 +1001,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
+void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1060,7 +1017,6 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
 
     //TODO Don't create the shader in the modifier function
-    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
@@ -1141,12 +1097,12 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
-            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
+            mesh.normalMap.removeSeams(mesh, textureResolution, boundaryExpandingShader);
         }
 
         glEnable(GL_DEPTH_TEST);
 
-        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1154,7 +1110,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
+void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1169,7 +1125,6 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
 
     //TODO Don't create the shader in the modifier function
-    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
@@ -1233,7 +1188,7 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         glDeleteFramebuffers(1,&FBO);
         glEnable(GL_DEPTH_TEST);
 
-        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1241,7 +1196,7 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
     glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
+void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1257,7 +1212,6 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
 
     //TODO Don't create the shader in the modifier function
-    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
@@ -1343,11 +1297,11 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
-            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
+            mesh.normalMap.removeSeams(mesh, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
 
-        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1355,7 +1309,7 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
+void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1371,7 +1325,6 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
 
     //TODO Don't create the shader in the modifier function
-    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
@@ -1445,11 +1398,11 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         //Generating the normal map
         if(channelI == 4){
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
-            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
+            mesh.normalMap.removeSeams(mesh, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
 
-        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1458,7 +1411,7 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
 }
 
 
-void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
+void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1474,7 +1427,6 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
 
     //TODO Don't create the shader in the modifier function
-    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
@@ -1569,11 +1521,11 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
-            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
+            mesh.normalMap.removeSeams(mesh, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
 
-        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1581,7 +1533,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
+void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1597,7 +1549,6 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
 
     //TODO Don't create the shader in the modifier function
-    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
@@ -1689,11 +1640,11 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
-            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
+            mesh.normalMap.removeSeams(mesh, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
 
-        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1701,7 +1652,7 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
+void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1717,7 +1668,6 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
 
     //TODO Don't create the shader in the modifier function
-    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
@@ -1810,11 +1760,11 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
-            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
+            mesh.normalMap.removeSeams(mesh, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
 
-        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1822,7 +1772,7 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader){
+void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1838,7 +1788,6 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     glm::vec3 fragPos = glm::vec3((float)textureResolution/2.f,(float)textureResolution/2.f,1.0f);
 
     //TODO Don't create the shader in the modifier function
-    Shader boundaryExpandingShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
 
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
@@ -1928,11 +1877,11 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
             generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
-            removeSeams(mesh, mesh.normalMap.ID, textureResolution, boundaryExpandingShader);
+            mesh.normalMap.removeSeams(mesh, textureResolution, boundaryExpandingShader);
         }
         glEnable(GL_DEPTH_TEST);
 
-        removeSeams(mesh, currentTexture.ID, textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);

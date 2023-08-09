@@ -226,6 +226,7 @@ class MaterialEditorDialog
 private:
     Shader buttonShader;
     Shader heightToNormalShader;
+    Shader boundaryExpandingShader;
     Shader tdModelShader;
     ColorPalette colorPalette;
     Model sphereModel;
@@ -262,7 +263,7 @@ public:
     
    //Constructors
    MaterialEditorDialog();
-   MaterialEditorDialog(Shader buttonShader, Shader heightToNormalShader, Shader tdModelShader, ColorPalette colorPalette,AppTextures appTextures,Model &sphereModel);
+   MaterialEditorDialog(Shader buttonShader, Shader heightToNormalShader, Shader boundaryExpandingShader, Shader tdModelShader, ColorPalette colorPalette,AppTextures appTextures,Model &sphereModel);
 
    //Public member functions
    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library,

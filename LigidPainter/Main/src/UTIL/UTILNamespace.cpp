@@ -234,9 +234,7 @@ static void deleteMaterialChannels(Mesh &mesh){
     glDeleteTextures(1, &mesh.ambientOcclusion.ID);
 }
 
-Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library, Mesh& mesh, Shader heightToNormalShader, Scene scene, int textureRes){
-    
-    
+Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library, Mesh& mesh, Shader heightToNormalShader, Shader boundaryExpandingShader, Scene scene, int textureRes){
     Mesh msh = mesh;
     initTexture(msh.albedo.ID, textureRes);
     initTexture(msh.roughness.ID, textureRes);
@@ -271,7 +269,7 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
                 //An input can only have one connection unlike the outputs
                 
                 if(node.IOs[i].connections.size())
-                    retrievedMeshes[cToS(node.IOs[i].element.button.color)] = UTIL::processNode(nodeScene[node.IOs[i].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, scene, textureRes);
+                    retrievedMeshes[cToS(node.IOs[i].element.button.color)] = UTIL::processNode(nodeScene[node.IOs[i].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, boundaryExpandingShader, scene, textureRes);
                 else{
                     retrievedMeshes[cToS(node.IOs[i].element.button.color)] = Mesh();
                     initTexture(retrievedMeshes[cToS(node.IOs[i].element.button.color)].albedo.ID, 100);
@@ -456,7 +454,7 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
         
         Mesh blackMesh;
         if(node.IOs[2].connections.size())
-            blackMesh = UTIL::processNode(nodeScene[node.IOs[2].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, scene, textureRes);
+            blackMesh = UTIL::processNode(nodeScene[node.IOs[2].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, boundaryExpandingShader, scene, textureRes);
         else{
             initTexture(blackMesh.albedo.ID, 100);
             initTexture(blackMesh.roughness.ID, 100);
@@ -467,7 +465,7 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
         }
         Mesh whiteMesh;
         if(node.IOs[2].connections.size()) 
-            whiteMesh = UTIL::processNode(nodeScene[node.IOs[3].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, scene, textureRes);
+            whiteMesh = UTIL::processNode(nodeScene[node.IOs[3].connections[0].nodeIndex], nodeScene, library, mesh, heightToNormalShader, boundaryExpandingShader, scene, textureRes);
         else{
             initTexture(whiteMesh.albedo.ID, 100);
             initTexture(whiteMesh.roughness.ID, 100);
@@ -599,7 +597,7 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
         
         for (int i = material.materialModifiers.size() - 1; i >= 0; --i)    
         {
-            material.materialModifiers[i].updateMaterialChannels(material, msh, textureRes, i, scene.projectionMatrix, scene.viewMatrix, heightToNormalShader);
+            material.materialModifiers[i].updateMaterialChannels(material, msh, textureRes, i, scene.projectionMatrix, scene.viewMatrix, heightToNormalShader, boundaryExpandingShader);
         }
 
         
@@ -636,7 +634,7 @@ std::vector<int> findNodeIndexConnectedToMesh(std::vector<Node> meshNodeScene, i
     return res;
 }
 
-void UTIL::updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library, Shader heightToNormalShader, Scene scene, int textureRes, int updateNodeI){
+void UTIL::updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library, Shader heightToNormalShader, Shader boundaryExpandingShader,  Scene scene, int textureRes, int updateNodeI){
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     int viewportWidth = viewport[2];
@@ -651,7 +649,7 @@ void UTIL::updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Lib
                     for (size_t conI = 0; conI < meshNodeScene[nodeI].IOs[IOI].connections.size(); conI++)
                     {
                         if(meshNodeScene[nodeI].IOs[IOI].connections[conI].nodeIndex == 0){
-                            Mesh retMesh = UTIL::processNode(meshNodeScene[nodeI], meshNodeScene, library, model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex], heightToNormalShader, scene, textureRes);
+                            Mesh retMesh = UTIL::processNode(meshNodeScene[nodeI], meshNodeScene, library, model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex], heightToNormalShader, boundaryExpandingShader, scene, textureRes);
                             
                             deleteMaterialChannels(model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex]);
                             
@@ -679,7 +677,7 @@ void UTIL::updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Lib
                     for (size_t conI = 0; conI < meshNodeScene[indices[i]].IOs[IOI].connections.size(); conI++)
                     {
                         if(meshNodeScene[indices[i]].IOs[IOI].connections[conI].nodeIndex == 0){
-                            Mesh retMesh = UTIL::processNode(meshNodeScene[indices[i]], meshNodeScene, library, model.meshes[meshNodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex], heightToNormalShader, scene, textureRes);
+                            Mesh retMesh = UTIL::processNode(meshNodeScene[indices[i]], meshNodeScene, library, model.meshes[meshNodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex], heightToNormalShader, boundaryExpandingShader, scene, textureRes);
                             
                             deleteMaterialChannels(model.meshes[meshNodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex]);
                             

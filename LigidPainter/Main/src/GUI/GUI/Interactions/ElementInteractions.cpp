@@ -38,7 +38,7 @@ void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &paint
 void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog);
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Painter &painter);
 void nodeInteraction(Model &model, std::vector<Node> &meshNodeScene,Shaders shaders,ColorPalette colorPalette,glm::vec2 videoScale, Library library, Scene scene, int textureRes);
-void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter, std::vector<Node> &meshNodeScene, Model &model, Library library, Shader heightToNormalShader, Scene scene, int textureRes);
+void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter, std::vector<Node> &meshNodeScene, Model &model, Library library, Shader heightToNormalShader, Shader boundaryExpandingShader, Scene scene, int textureRes);
 
 void UI::elementInteraction(
                                 Painter &painter,
@@ -94,7 +94,7 @@ void UI::elementInteraction(
 
     paintingModesPanelInteraction(paintingModesPanel,painter);
 
-    displayingModesPanelInteraction(displayingModesPanel, painter, meshNodeScene, model, library, shaders.heightToNormalMap, scene, textureRes);
+    displayingModesPanelInteraction(displayingModesPanel, painter, meshNodeScene, model, library, shaders.heightToNormalMap, shaders.boundaryExpandingShader, scene, textureRes);
 
     nodeInteraction(model,meshNodeScene,shaders,colorPalette,videoScale, library, scene, textureRes);
     

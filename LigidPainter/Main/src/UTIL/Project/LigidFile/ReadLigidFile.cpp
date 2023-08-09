@@ -116,7 +116,8 @@ void readmeshNodeSceneData(std::ifstream &rf, std::vector<Node> &meshNodeScene, 
                             colorPalette,
                             appTextures,
                             videoScale,
-                            shaders.heightToNormalMap
+                            shaders.heightToNormalMap,
+                            shaders.boundaryExpandingShader
                         );
 
         //Read the material ID 

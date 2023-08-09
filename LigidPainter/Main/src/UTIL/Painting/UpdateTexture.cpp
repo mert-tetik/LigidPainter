@@ -113,7 +113,7 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene 
                                             twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + twoDScenePos.y - destScale.y  * twoDSceneScroll
                                         );
     
-    if(threeDimensionalMode){
+    if(this->threeDimensionalMode){
 
         buttonShader.use();
         
@@ -165,7 +165,7 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene 
 
         //Draw the UV of the selected model
         if(selectedMeshIndex < model.meshes.size())
-            model.meshes[selectedMeshIndex].Draw(); 
+            model.meshes[selectedMeshIndex].Draw();         
     }
     else{
 
@@ -209,6 +209,9 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene 
     
     //Copy capture texture into the source texture (painted texture)
     captureTxtrToSourceTxtr(captureTexture,textureRes,selectedTexture.ID);
+
+    if(this->threeDimensionalMode)
+        this->selectedTexture.removeSeams(model.meshes[selectedMeshIndex], textureRes, boundaryExpandingShader);
 }
 
 

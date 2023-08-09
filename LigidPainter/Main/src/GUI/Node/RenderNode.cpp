@@ -76,12 +76,12 @@ void Node::render(  glm::vec2 videoScale,
             this->uploadNewIOs(inputs, outputs);
         }
 
-        UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
+        UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, boundaryExpandingShader, scene, textureRes, -1);
     }
 
     if(this->nodeIndex == MATERIAL_MASK_NODE){
         if(nodePanel.sections[0].elements[1].rangeBar.valueDoneChanging){
-            UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
+            UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, boundaryExpandingShader, scene, textureRes, -1);
         }
     }
 
@@ -145,7 +145,7 @@ void Node::render(  glm::vec2 videoScale,
                     }
                     
                     clearConnections(currentNodeIndex,i,meshNodeScene);
-                    UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
+                    UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, boundaryExpandingShader, scene, textureRes, -1);
 
                 }
 
@@ -197,11 +197,11 @@ void Node::render(  glm::vec2 videoScale,
                             }
 
                             if(meshNodeScene[hoveredNodeI].nodeIndex == MESH_NODE){ //The hovered node is a mesh node (another node to the mesh node)
-                                UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
+                                UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, boundaryExpandingShader, scene, textureRes, -1);
                             }
 
                             else if(meshNodeScene[currentNodeIndex].nodeIndex == MESH_NODE){ //The node's itself is mesh node (mesh node to another) 
-                                UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
+                                UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, boundaryExpandingShader, scene, textureRes, -1);
                             }
                         }
                     }
