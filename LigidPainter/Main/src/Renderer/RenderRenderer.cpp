@@ -181,6 +181,9 @@ void Renderer::render(){
             glActiveTexture(GL_TEXTURE2);
             glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
         }
+        else{
+            shaders.tdModelShader.setInt("displayingMode", 0);
+        }
 
         //Draw the mesh
         model.meshes[i].Draw();
