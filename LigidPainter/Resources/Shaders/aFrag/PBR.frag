@@ -120,12 +120,15 @@ void main() {
         ao = texture(ambientOcclusionTxtr,TexCoords).r;
 
 
-    vec3 pbrResult = getPBR(
+    vec3 pbrResult;
+
+
+    if(displayingMode == 0)
+        pbrResult = getPBR(
                                 albedo, roughness, metallic, normal, ao, 
                                 Pos, Normal, Tangent, Bitangent, 
                                 skybox, prefilterMap, viewPos
                             );
-
     if(displayingMode == 1)
         pbrResult = albedo;
     if(displayingMode == 2)
