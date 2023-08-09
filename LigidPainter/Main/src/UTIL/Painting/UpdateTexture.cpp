@@ -62,7 +62,7 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 tex
 
 void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos){
     
-    glm::ivec2 textureRes = this->selectedTexture.getResolution();
+    glm::vec2 textureRes = this->selectedTexture.getResolution();
 
     //Write the tmp file of the selected texture before updating the texture (for undo)
     selectedTexture.writeTMP();
@@ -90,6 +90,9 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene 
     glGenFramebuffers(1,&captureFBO);
     glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, captureTexture, 0);
+
+    glClearColor(1,0,1,1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     //Bind the selected texture (painted texture) to the albedo channel (to paint over that texture)
     glActiveTexture(GL_TEXTURE2);
@@ -111,7 +114,24 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene 
                                         );
     
     if(threeDimensionalMode){
+
+        buttonShader.use();
         
+        buttonShader.setMat4("projection", glm::ortho(0.f, textureRes.x, textureRes.y, 0.f));
+        buttonShader.setVec3("pos", glm::vec3(textureRes.x  / 2.f, textureRes.y / 2.f, 0.1));
+        buttonShader.setVec2("scale", glm::vec2(textureRes / 2.f));
+        buttonShader.setFloat("properties.colorMixVal", 0.f);
+        buttonShader.setInt("states.renderTexture",     1    );
+        buttonShader.setVec2("properties.txtrScale", glm::vec2(1.f));
+        buttonShader.setInt("properties.txtr",     0    );
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, this->selectedTexture.ID);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        buttonShader.setInt("states.renderTexture"  ,     0    );
+
         textureUpdatingShader.use();
 
         //*Fragment
