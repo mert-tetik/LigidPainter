@@ -403,11 +403,12 @@ void UI::init
                                     {   
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,shaders.buttonShader, "Nodes"          , appTextures.nodeDisplayingMode,        0.f,true)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,shaders.buttonShader, "Painting"        , appTextures.paintingDisplayingMode,       0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,shaders.buttonShader, "Solid Painting"        , appTextures.paintingDisplayingMode,       0.f,true)),
                                     }
                                 )
                             },
                             
-                            glm::vec2(2 ,1), //Initial scale value
+                            glm::vec2(3 ,1), //Initial scale value
                             glm::vec3(50 ,50 ,0.1f),  //Initial position value
                             colorPalette.mainColor, //Color of the panel
                             colorPalette.thirdColor, //Color of the panel

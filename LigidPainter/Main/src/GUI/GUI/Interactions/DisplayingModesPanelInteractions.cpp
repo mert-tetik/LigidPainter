@@ -33,7 +33,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void displayingModesPanelInteraction(
                                     Panel &displayingModesPanel, 
-                                    Painter &painter
+                                    Painter &painter,
+                                    std::vector<Node> &meshNodeScene, 
+                                    Model &model, 
+                                    Library library, 
+                                    Shader heightToNormalShader, 
+                                    Scene scene, 
+                                    int textureRes
                                 )
 {
     //!PAINTING MODES PANEL
@@ -43,9 +49,12 @@ void displayingModesPanelInteraction(
             if(painter.selectedDisplayingModeIndex != i){
                 displayingModesPanel.sections[0].elements[painter.selectedDisplayingModeIndex].button.clickState1 = false;
                 painter.selectedDisplayingModeIndex = i;
+                if(painter.selectedDisplayingModeIndex == 0)
+                    UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, scene, textureRes, -1);
                 break;
             }
         }
+
         if(painter.selectedDisplayingModeIndex == i){
             displayingModesPanel.sections[0].elements[painter.selectedDisplayingModeIndex].button.clickState1 = true;
         }

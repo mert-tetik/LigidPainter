@@ -175,6 +175,13 @@ void Renderer::render(){
 
         shaders.tdModelShader.setInt("paintedTxtrStateIndex", painter.selectedPaintingChannelIndex);
         
+        if(painter.selectedDisplayingModeIndex == 2){
+            shaders.tdModelShader.setInt("paintedTxtrStateIndex", 0);
+            shaders.tdModelShader.setInt("displayingMode", 1);
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
+        }
+
         //Draw the mesh
         model.meshes[i].Draw();
     }
@@ -209,7 +216,7 @@ void Renderer::render(){
                         );
 
     //Painting
-    if(mouse.LPressed && !userInterface.anyContextMenuActive && !userInterface.anyPanelHover && !userInterface.anyDialogActive && painter.selectedDisplayingModeIndex == 1){ //If mouse hover 3D viewport and left mouse button pressed
+    if(mouse.LPressed && !userInterface.anyContextMenuActive && !userInterface.anyPanelHover && !userInterface.anyDialogActive && (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2)){ //If mouse hover 3D viewport and left mouse button pressed
         //Paint
         painter.doPaint(    
                             mouse,
