@@ -215,6 +215,7 @@ void Renderer::loadAppTextures(){
     appTextures.gearIcon.load("./LigidPainter/Resources/Icons/Gear.png");
     appTextures.nodeDisplayingMode.load("./LigidPainter/Resources/Icons/NodeDisplayingMode.png");
     appTextures.paintingDisplayingMode.load("./LigidPainter/Resources/Icons/PaintingDisplayingMode.png");
+    appTextures.solidPaintingDisplayingMode.load("./LigidPainter/Resources/Icons/SolidPaintingDisplayingMode.png");
     appTextures.ligidPainterIcon.load("./LigidPainter/Resources/Icons/LigidPainter.png");
     appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
     appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");

@@ -403,7 +403,7 @@ void UI::init
                                     {   
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,shaders.buttonShader, "Nodes"          , appTextures.nodeDisplayingMode,        0.f,true)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,shaders.buttonShader, "Painting"        , appTextures.paintingDisplayingMode,       0.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,shaders.buttonShader, "Solid Painting"        , appTextures.paintingDisplayingMode,       0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,shaders.buttonShader, "Solid Painting"        , appTextures.solidPaintingDisplayingMode,       0.f,true)),
                                     }
                                 )
                             },
