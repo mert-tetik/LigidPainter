@@ -41,7 +41,7 @@ static void set3DShaderSideUniforms(Shader tdModelShader,int selectedColorIndex,
 
 
 
-void Painter::doPaint(Mouse mouse, glm::mat4 windowOrtho, std::vector<Texture> textures){
+void Painter::doPaint(Mouse mouse, glm::mat4 windowOrtho, std::vector<Texture> textures, Context context){
 
     glm::vec2 firstCursorPos = mouse.cursorPos;
     
@@ -73,7 +73,7 @@ void Painter::doPaint(Mouse mouse, glm::mat4 windowOrtho, std::vector<Texture> t
     paintingShader.use();
 
     //Set uniforms of the painting shader (scale, pos, projection, videoScale, mouseOffset, frame)
-    setShaderUniforms(paintingShader,windowOrtho,videoScale,frameCounter,mouse);
+    setShaderUniforms(paintingShader,windowOrtho,context.windowScale,frameCounter,mouse);
 
     //Set brush properties
     setBrushProperties(paintingShader, this->brushProperties);

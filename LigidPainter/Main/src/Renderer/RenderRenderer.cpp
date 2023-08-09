@@ -221,7 +221,8 @@ void Renderer::render(){
         painter.doPaint(    
                             mouse,
                             userInterface.projection,
-                            library.textures
+                            library.textures,
+                            this->context
                         );
 
     }

@@ -61,6 +61,8 @@ class Mesh;
 class Shader;
 /// @brief forward declared AppMaterialModifiers struct
 struct AppMaterialModifiers;
+/// @brief forward declared Context struct
+struct Context;
 
 
 /// @brief Global utility functions to help to do stuff
@@ -566,7 +568,7 @@ public:
     * @param windowOrtho orthographics projection matrix created with window size value.
     * @param textures textures in the library
     */
-    void doPaint(Mouse mouse,glm::mat4 windowOrtho,std::vector<Texture> textures);
+    void doPaint(Mouse mouse,glm::mat4 windowOrtho,std::vector<Texture> textures, Context context);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)
