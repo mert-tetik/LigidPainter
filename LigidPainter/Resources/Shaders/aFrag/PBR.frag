@@ -61,9 +61,10 @@ uniform vec3 paintingColor;
 
 uniform int displayingMode = 0; 
 
+uniform float opacity;
+
 //Fragment shader output
 out vec4 fragColor;
-
 
 
 void main() {
@@ -144,6 +145,6 @@ void main() {
 
     fragColor = vec4(
                         pbrResult, 
-                        1.
+                        opacity
                     );
 }

@@ -184,10 +184,20 @@ void Renderer::render(){
         else{
             shaders.tdModelShader.setInt("displayingMode", 0);
         }
+        
+        if(painter.selectedDisplayingModeIndex == 2 | 1){
+            if(painter.selectedMeshIndex == i)
+                shaders.tdModelShader.setFloat("opacity", 1.f);
+            else
+                shaders.tdModelShader.setFloat("opacity", 0.2f);
+        }
+        else
+            shaders.tdModelShader.setFloat("opacity", 1.f);
 
         //Draw the mesh
         model.meshes[i].Draw();
     }
+    shaders.tdModelShader.setFloat("opacity", 1.f);
 
 
     //Clear the depth buffer before rendering the UI elements (prevent coliding)
