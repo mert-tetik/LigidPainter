@@ -88,7 +88,7 @@ void strokeBlendUniColor(
 }
 
 
-float calculateBrushTexture(vec2 pos,float radius,vec2 uv){
+float calculateBrushTexture(vec2 pos, vec2 radius,vec2 uv){
    
     //Positioning the brush position
     uv -= (pos/videoScale);
@@ -97,12 +97,12 @@ float calculateBrushTexture(vec2 pos,float radius,vec2 uv){
     radius *= 2.;
     
     //Move the texture to the cursor
-    uv.x += radius/videoScale.x/2.;
-    uv.y += radius/videoScale.y/2.;
+    uv.x += radius.x/videoScale.x;
+    uv.y += radius.y/videoScale.y;
 
     //Scale the texture value
-    uv.x /= radius/videoScale.x;
-    uv.y /= radius/videoScale.y;
+    uv.x /= radius.x/videoScale.x;
+    uv.y /= radius.y/videoScale.y;
     uv.x /= videoScale.x/videoScale.y;
 
     //Calculate the rotation value jitter 
@@ -174,6 +174,23 @@ float calculateOpacityValue(float random){
     return opacity;
 }
 
+float drawSquare(vec2 uv, vec2 position, vec2 scale)
+{
+    // Determine the pixel position in normalized coordinates
+    vec2 pixelPos = uv;
+
+    // Calculate the color based on pixel position
+    float color = 0.; // White square color by default
+    if (all(lessThan(abs(pixelPos - position), vec2(scale * 0.5))))
+    {
+        color = 1.; // Red square color if within the square's bounds
+    }
+
+    // Output the color
+    return color;
+}
+
+
 void main()
 {   
     //The monitor ratio
@@ -204,7 +221,7 @@ void main()
         vec2 pos = calculatePosValue(random2, positions[i]);
 
         //Get the brush texture value (the brush texture scaled and moved to the cursor (outside of the boundaries are black))
-        float txtr = calculateBrushTexture(pos,radius,uv);
+        float txtr = calculateBrushTexture(pos,vec2(radius / ratio,radius),uv);
         
         //Calculate the alpha value on the white color
         vec4 src = vec4(1);
@@ -220,12 +237,15 @@ void main()
                                     dist
                                 );
             
-            //Add the inverted texture data
-            src.a *= 1. -txtr;
+            //Add the texture data
+            src.a *= txtr;
         }
 
         //If the texture is used individually then equate the alpha value to the texture value        
         else{
+            //Calculate the square
+            src.a = drawSquare(uv * videoScale, pos, vec2(radius) * vec2(2., ratio));
+
             src.a *= txtr;
         }
 
