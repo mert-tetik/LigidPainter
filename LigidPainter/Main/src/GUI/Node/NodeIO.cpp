@@ -26,12 +26,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-NodeIO::NodeIO(std::string title ,Element element,glm::vec4 color,ColorPalette colorPalette,Shader buttonShader,glm::vec2 videoScale, int state){
+NodeIO::NodeIO(std::string title ,Element element,glm::vec4 color,ColorPalette colorPalette,glm::vec2 videoScale, int state){
     this->title = title;
     this->element = element;
     this->color = color;
     this->state = state;
     
-    IOCircle = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(videoScale.y,videoScale.x)/glm::vec2(videoScale.y*2.5f),colorPalette,buttonShader,"",Texture(),0.f,false);
+    IOCircle = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(videoScale.y,videoScale.x)/glm::vec2(videoScale.y*2.5f),colorPalette,"",Texture(),0.f,false);
     IOCircle.radius = 0.25f;
 }

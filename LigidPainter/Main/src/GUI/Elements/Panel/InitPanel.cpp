@@ -32,7 +32,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 Panel::Panel(){}
 
 Panel::Panel(
-                Shader shader,
                 ColorPalette colorPalette,
                 std::vector<Section> sections,
                 glm::vec2 scale,
@@ -52,7 +51,6 @@ Panel::Panel(
             )
     {
     
-    this->shader = shader;
     this->vertical = vertical;
     this->scale = scale;
     this->color = color;
@@ -67,7 +65,7 @@ Panel::Panel(
     this->rowCount = rowCount; 
     this->maxScaleVal = maxScaleVal; 
     this->barButtons = barButtons; 
-    this->sliderButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(0.25f,20),colorPalette,shader,"",Texture(),0.f,false);
+    this->sliderButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(0.25f,20), colorPalette, "", Texture(), 0.f, false);
     this->sliderButton.color = colorPalette.mainColor;
     this->sliderButton.color2 = colorPalette.themeColor;
     this->sliderButton.radius = 0.25f;

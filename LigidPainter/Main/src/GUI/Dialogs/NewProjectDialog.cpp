@@ -33,16 +33,14 @@
 
 NewProjectDialog::NewProjectDialog(){}
 
-NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers){
+NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers){
     
     //Take the parameters to the class member variables 
-    this->buttonShader = buttonShader;
     this->appTextures = appTextures;
     this->appMaterialModifiers = appMaterialModifiers;
     
     //Create the panel
     this->panel = Panel(
-                            buttonShader,
                             colorPalette,
                             {
                                 Section(
@@ -50,11 +48,11 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
                                     {
                                         //Project settings
 
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"New Project",Texture(),0.f,false)), 
-                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"MyProject",2.f,false),context.window),
-                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"./Projects",2.f,true),context.window),
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"New Project",Texture(),0.f,false)), 
+                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"MyProject",2.f,false),context.window),
+                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"./Projects",2.f,true),context.window),
                                         
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,
+                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,
                                         {
                                             "256",
                                             "512",
@@ -63,11 +61,11 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
                                             "4096"
                                         },"Texture Resolution",4.f),context.window),
 
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Large",2.f)),
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Medium",0.f)),
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Small",0.f)),
-                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"3D Model",2.f,2),context.window),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(4,2),colorPalette,buttonShader,"Create",Texture(),2.f,false))
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Large",2.f)),
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Medium",0.f)),
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Small",0.f)),
+                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"3D Model",2.f,2),context.window),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(4,2),colorPalette,"Create",Texture(),2.f,false))
                                     }
                                 )
                             },
@@ -93,10 +91,10 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
 }
 
 void NewProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
-                                glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,Shaders shaders,
+                                glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,
                                 Model &model, int &textureRes, std::vector<Node> &meshNodeScene ){
     
-    dialogControl.updateStart(buttonShader);
+    dialogControl.updateStart();
 
     //Render the panel
     panel.render(videoScale,mouse,timer,textRenderer,dialogControl.isComplete());
@@ -112,7 +110,7 @@ void NewProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
                                     std::stoi(panel.sections[0].elements[3].comboBox.texts[panel.sections[0].elements[3].comboBox.selectedIndex])
                                  ))
         {
-            project.loadProject(project.ligidFilePath(), library, shaders, model, appTextures, colorPalette, textureRes, meshNodeScene, videoScale, appMaterialModifiers);
+            project.loadProject(project.ligidFilePath(), library, model, appTextures, colorPalette, textureRes, meshNodeScene, videoScale, appMaterialModifiers);
             
             startScreen = false;
 
@@ -129,5 +127,5 @@ void NewProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
         this->dialogControl.unActivate();
     }
 
-    dialogControl.updateEnd(timer,buttonShader,0.15f);
+    dialogControl.updateEnd(timer,0.15f);
 }

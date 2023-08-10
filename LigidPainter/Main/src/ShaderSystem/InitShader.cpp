@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 
 #include "UTIL/Util.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 ///@brief Default constructor 
 Shader::Shader(){}

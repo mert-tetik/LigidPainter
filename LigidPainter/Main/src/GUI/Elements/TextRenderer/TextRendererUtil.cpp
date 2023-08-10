@@ -29,6 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Elements/Elements.hpp"
 #include "UTIL/Util.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 /// @brief 
 /// @return position gap between the text start pos and ending pos  
@@ -136,10 +137,8 @@ glm::vec3 TextRenderer::positionTheText(){
 
 
 /// @brief Actual rendering
-/// @param shader 
 /// @param pos 
 void TextRenderer::renderLeftToRight(
-                                        Shader shader,
                                         glm::vec3 pos
                                     ){
 
@@ -178,8 +177,8 @@ void TextRenderer::renderLeftToRight(
 			float h = ch.Size.y * textDataScale;
 
 			//Set the transform values
-			shader.setVec2("scale",glm::vec2(w/1.7,h/1.7));
-			shader.setVec3("pos",glm::vec3(xpos + w/1.7,ypos - (h/1.7) + this->videoScale.y / 210, textDataPos.z));
+			ShaderSystem::buttonShader().setVec2("scale",glm::vec2(w/1.7,h/1.7));
+			ShaderSystem::buttonShader().setVec3("pos",glm::vec3(xpos + w/1.7,ypos - (h/1.7) + this->videoScale.y / 210, textDataPos.z));
  
 			//Draw the char
 			glBindTexture(GL_TEXTURE_2D,ch.TextureID);
@@ -194,18 +193,17 @@ void TextRenderer::renderLeftToRight(
 }
 
 /// @brief Is not used rn
-/// @param shader 
 /// @param pos 
-void TextRenderer::renderRightToLeft(Shader shader, glm::vec3 pos){
+void TextRenderer::renderRightToLeft(glm::vec3 pos){
 	//Is not used rn
 }
 
 
-void TextRenderer::rndrTxt(Shader shader, int textPosCharIndex){
+void TextRenderer::rndrTxt(int textPosCharIndex){
 	glActiveTexture(GL_TEXTURE0);
 	
-	shader.setInt("properties.txtr",0);
-	shader.setInt("states.renderText",1);
+	ShaderSystem::buttonShader().setInt("properties.txtr",0);
+	ShaderSystem::buttonShader().setInt("states.renderText",1);
 
 	glm::vec3 textPos = positionTheText();
 
@@ -213,16 +211,16 @@ void TextRenderer::rndrTxt(Shader shader, int textPosCharIndex){
 	int counter = 0;
 
 	if(textDataAlignment == 2) //If the text has a right to left alignment
-		renderRightToLeft(shader,textPos);
+		renderRightToLeft(textPos);
 	else
-		renderLeftToRight(shader,textPos);
+		renderLeftToRight(textPos);
 
-	shader.setInt("states.renderText",0);
+	ShaderSystem::buttonShader().setInt("states.renderText",0);
 }
 
 
 
-void TextRenderer::renderInsertionPointCursor(Shader shader, int &textPosCharIndex){
+void TextRenderer::renderInsertionPointCursor(int &textPosCharIndex){
     
 	float activeCharPos;
 	float activeChar2Pos;
@@ -246,15 +244,15 @@ void TextRenderer::renderInsertionPointCursor(Shader shader, int &textPosCharInd
 		glm::vec3 ipcPos; 
 		
 		//Set the transform values
-		shader.setFloat("properties.radius",     0    );
-		shader.setInt("properties.outline.state" ,     0     ); 
+		ShaderSystem::buttonShader().setFloat("properties.radius",     0    );
+		ShaderSystem::buttonShader().setInt("properties.outline.state" ,     0     ); 
 
 		//Scale of the insertion point cursor
-		shader.setVec2("scale", glm::vec2(5 * textDataScale,35 * textDataScale));
+		ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5 * textDataScale,35 * textDataScale));
 		
 		//Pos of the point cursor position
 		ipcPos = glm::vec3(activeCharPos + 5 * textDataScale,textDataPos.y,textDataPos.z);
-		shader.setVec3("pos",ipcPos);
+		ShaderSystem::buttonShader().setVec3("pos",ipcPos);
 
 		//Move the text if the insertion point cursor is forcing from the boundaries
 		if(ipcPos.x < textDataMinX && key == LIGIDGL_KEY_LEFT-256 && textDataActiveChar > -1)
@@ -268,12 +266,12 @@ void TextRenderer::renderInsertionPointCursor(Shader shader, int &textPosCharInd
 			
 			//Scale & the pos of the multiselection insertion point cursor 
 			if(textDataActiveChar == textDataText.size()){
-				shader.setVec2("scale",glm::vec2((textEndingPos - activeChar2Pos)/2.f,35 * textDataScale));
-				shader.setVec3("pos",glm::vec3(textEndingPos - ((textEndingPos - activeChar2Pos)/2.f) , textDataPos.y , textDataPos.z));
+				ShaderSystem::buttonShader().setVec2("scale",glm::vec2((textEndingPos - activeChar2Pos)/2.f,35 * textDataScale));
+				ShaderSystem::buttonShader().setVec3("pos",glm::vec3(textEndingPos - ((textEndingPos - activeChar2Pos)/2.f) , textDataPos.y , textDataPos.z));
 			}
 			else{
-				shader.setVec2("scale",glm::vec2((activeCharPos - activeChar2Pos)/2.f,35 * textDataScale));
-				shader.setVec3("pos",glm::vec3(activeCharPos - ((activeCharPos - activeChar2Pos)/2.f),textDataPos.y,textDataPos.z));
+				ShaderSystem::buttonShader().setVec2("scale",glm::vec2((activeCharPos - activeChar2Pos)/2.f,35 * textDataScale));
+				ShaderSystem::buttonShader().setVec3("pos",glm::vec3(activeCharPos - ((activeCharPos - activeChar2Pos)/2.f),textDataPos.y,textDataPos.z));
 			}
 
 			//Render the multiselection insertion point cursor 

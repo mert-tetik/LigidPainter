@@ -63,25 +63,25 @@ void Node::render(  glm::vec2 videoScale,
             std::vector<glm::vec3> palette;
             palette = nodePanel.sections[0].elements[0].button.texture.getMaterialIDPalette();
 
-            inputs.push_back(NodeIO("Texture", nodePanel.sections[0].elements[0].button, colorPalette.mainColor,colorPalette,buttonShader,videoScale,1));
+            inputs.push_back(NodeIO("Texture", nodePanel.sections[0].elements[0].button, colorPalette.mainColor,colorPalette,videoScale,1));
 
             for (size_t i = 0; i < palette.size(); i++)
             {
-                inputs.push_back(NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, buttonShader,"Input1", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,0));
+                inputs.push_back(NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, "Input1", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,videoScale,0));
                 inputs[inputs.size() - 1].element.button.color = glm::vec4(palette[i], 1.f);
             }
 
-            outputs.push_back(NodeIO("Output",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, buttonShader,"Output", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,2));
+            outputs.push_back(NodeIO("Output",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, "Output", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,videoScale,2));
 
             this->uploadNewIOs(inputs, outputs);
         }
 
-        UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, boundaryExpandingShader, scene, textureRes, -1);
+        UTIL::updateNodeResults(meshNodeScene, model, library, scene, textureRes, -1);
     }
 
     if(this->nodeIndex == MATERIAL_MASK_NODE){
         if(nodePanel.sections[0].elements[1].rangeBar.valueDoneChanging){
-            UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, boundaryExpandingShader, scene, textureRes, -1);
+            UTIL::updateNodeResults(meshNodeScene, model, library, scene, textureRes, -1);
         }
     }
 
@@ -145,7 +145,7 @@ void Node::render(  glm::vec2 videoScale,
                     }
                     
                     clearConnections(currentNodeIndex,i,meshNodeScene);
-                    UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, boundaryExpandingShader, scene, textureRes, -1);
+                    UTIL::updateNodeResults(meshNodeScene, model, library, scene, textureRes, -1);
 
                 }
 
@@ -197,11 +197,11 @@ void Node::render(  glm::vec2 videoScale,
                             }
 
                             if(meshNodeScene[hoveredNodeI].nodeIndex == MESH_NODE){ //The hovered node is a mesh node (another node to the mesh node)
-                                UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, boundaryExpandingShader, scene, textureRes, -1);
+                                UTIL::updateNodeResults(meshNodeScene, model, library, scene, textureRes, -1);
                             }
 
                             else if(meshNodeScene[currentNodeIndex].nodeIndex == MESH_NODE){ //The node's itself is mesh node (mesh node to another) 
-                                UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, boundaryExpandingShader, scene, textureRes, -1);
+                                UTIL::updateNodeResults(meshNodeScene, model, library, scene, textureRes, -1);
                             }
                         }
                     }

@@ -32,10 +32,9 @@
 
 ExportDialog::ExportDialog(){}
 
-ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures){
     
     //Take the parameters to the class member variables 
-    this->buttonShader = buttonShader;
     this->appTextures = appTextures;
     this->context = context;
 
@@ -43,18 +42,17 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
 
     //Create the panel
     this->panel = Panel(
-                            buttonShader,
                             colorPalette,
                             {
                                 Section(
                                     Element(Button()),
                                     {
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Export",Texture(),0.f,false)), 
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Export",Texture(),0.f,false)), 
                                         
                                         //Project settings
-                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"Select A Path",2.f,true),context.window),
+                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"Select A Path",2.f,true),context.window),
                                         
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,
+                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,
                                         {
                                             "256",
                                             "512",
@@ -63,7 +61,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                                             "4096"
                                         },"Texture Resolution",4.f),context.window),
                                         
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,
+                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,
                                         {
                                             "PNG", 
                                             "JPEG", 
@@ -71,7 +69,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                                             "TGA"
                                         },"File Format",4.f),context.window),
 
-                                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,buttonShader,"Export",Texture(),5.f,false))
+                                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,"Export",Texture(),5.f,false))
                                     }
                                 )
                             },
@@ -98,11 +96,11 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
 }
 
 void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
-                          glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,
+                          glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,
                           Model &model,MaterialEditorDialog &materialEditorDialog,std::vector<Node> &meshNodeScene,Model sphereModel,
                           Scene scene){
     
-    dialogControl.updateStart(buttonShader);
+    dialogControl.updateStart();
 
     //Render the panel
     panel.render(videoScale,mouse,timer,textRenderer,true);
@@ -128,7 +126,7 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,M
         }
         //All the materials connected to the mesh output
         
-        UTIL::updateNodeResults(meshNodeScene, model, library, shaders.heightToNormalMap, shaders.boundaryExpandingShader, scene, resolution, -1);
+        UTIL::updateNodeResults(meshNodeScene, model, library, scene, resolution, -1);
         
         //Update all the materials connected to the mesh output & export it's textures
         for (size_t i = 0; i < model.meshes.size(); i++)
@@ -179,5 +177,5 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,M
             this->dialogControl.unActivate();
     }
 
-    dialogControl.updateEnd(timer,buttonShader,0.15f);
+    dialogControl.updateEnd(timer,0.15f);
 }

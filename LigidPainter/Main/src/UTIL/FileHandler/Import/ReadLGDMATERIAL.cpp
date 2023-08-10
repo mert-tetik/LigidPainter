@@ -46,7 +46,7 @@ bool FileHandler::readLGDMATERIALFile(
                                         std::string path, 
                                         Material& material, 
                                         ColorPalette colorPalette,
-                                        Shader buttonShader,
+                                        
                                         AppTextures appTextures, 
                                         AppMaterialModifiers appMaterialModifiers,
                                         const std::vector<Material> materials

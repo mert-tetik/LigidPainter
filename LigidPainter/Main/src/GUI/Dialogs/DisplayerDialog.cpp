@@ -40,35 +40,29 @@ DisplayerDialog::DisplayerDialog(
                                     Context context, //Window and stuff
                                     glm::vec2 videoScale, //Monitor resolution
                                     ColorPalette colorPalette, //LigidPainter's theme
-                                    Shader buttonShader, //Button shader
+                                     //Button shader
                                     AppTextures appTextures, //Textures used in GUI
-                                    Shader prefilteringShader, 
-                                    Shader skyboxBallShader,
                                     Model &sphereModel //Skybox's displaying texture is rendered using this sphere model
                                 ){
                                     
     //Take the parameters to the class member variables
-    this->buttonShader = buttonShader;
     this->context = context;
-    this->prefilteringShader = prefilteringShader;
-    this->skyboxBallShader = skyboxBallShader;
     this->sphereModel = sphereModel;
     
     //Create the panel
     this->panel = Panel(
-        buttonShader,
         colorPalette,
         {
             {
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),colorPalette,buttonShader, ""  , appTextures.greetingDialogImage, 1.f,true)),
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette,buttonShader, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f, appTextures)), 
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette,buttonShader, "Blur"  , Texture(), 1.f,0.f,100.f,0.f, appTextures)), 
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),colorPalette, ""  , appTextures.greetingDialogImage, 1.f,true)),
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f, appTextures)), 
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Blur"  , Texture(), 1.f,0.f,100.f,0.f, appTextures)), 
 
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette,buttonShader, "Opacity"  , Texture(), 1.f,0.f,100.f,0.f, appTextures)), 
-                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,buttonShader, "Color"  , Texture(), 1.f, false)),
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Opacity"  , Texture(), 1.f,0.f,100.f,0.f, appTextures)), 
+                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Color"  , Texture(), 1.f, false)),
                     }
                 )
             }
@@ -94,7 +88,7 @@ DisplayerDialog::DisplayerDialog(
     {
         //Create the button
         Element btn;
-        btn = Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,buttonShader,""    ,Texture(), 0.f,false));
+        btn = Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,""    ,Texture(), 0.f,false));
         
         //Unique color for the button (color represents the skybox)
         if(i == 0)
@@ -118,7 +112,7 @@ DisplayerDialog::DisplayerDialog(
 void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
             Library &library,glm::vec2 videoScale,Skybox &skybox){
     
-    dialogControl.updateStart(buttonShader);
+    dialogControl.updateStart();
 
     //Render the panel
     panel.render(videoScale,mouse,timer,textRenderer,true);
@@ -145,8 +139,8 @@ void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalett
             //If pressed to the skybox load the pressed skybox
             if(skyboxes[i].button.hover && mouse.LClick){
                 skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky" + std::to_string(i+1));
-                skybox.createPrefilterMap(prefilteringShader,videoScale);
-                skybox.createDisplayingTxtr(skyboxBallShader,sphereModel,context.windowScale);
+                skybox.createPrefilterMap(videoScale);
+                skybox.createDisplayingTxtr(sphereModel, context.windowScale);
 
                 //Unpress the skybox displayer
                 panel.sections[0].elements[0].button.clickState1 = false;
@@ -188,5 +182,5 @@ void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalett
         }
     }
 
-    dialogControl.updateEnd(timer,buttonShader,0.15f);
+    dialogControl.updateEnd(timer,0.15f);
 }

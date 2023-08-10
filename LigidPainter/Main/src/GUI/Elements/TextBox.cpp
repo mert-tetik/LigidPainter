@@ -20,6 +20,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 #include <iostream>
 #include <string>
@@ -29,38 +30,37 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void TextBox::render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadius,float resultOutlineThickness){
     
     //Set the transform data (used by vertex shader)
-    shader.setVec3("pos"    ,     resultPos );
-    shader.setVec2("scale"  ,     resultScale);
+    ShaderSystem::buttonShader().setVec3("pos"    ,     resultPos );
+    ShaderSystem::buttonShader().setVec2("scale"  ,     resultScale);
         
-    shader.setVec4("properties.color"  ,     color * glm::vec4(glm::vec3(1. - (1.f*(hoverMixVal/2.f))),1.f)     ); //Button pressing color
+    ShaderSystem::buttonShader().setVec4("properties.color"  ,     color * glm::vec4(glm::vec3(1. - (1.f*(hoverMixVal/2.f))),1.f)     ); //Button pressing color
     
-    shader.setVec4("properties.color2"  ,     color2     ); //Second color that is used by hover or click animations
+    ShaderSystem::buttonShader().setVec4("properties.color2"  ,     color2     ); //Second color that is used by hover or click animations
     
     if(animationStyle == 1) //If hover or clicked change the color of the button
-        shader.setFloat("properties.colorMixVal"  ,     (clickedMixVal + hoverMixVal)/2.f   );
+        ShaderSystem::buttonShader().setFloat("properties.colorMixVal"  ,     (clickedMixVal + hoverMixVal)/2.f   );
     else //If clicked change the color of the button
-        shader.setFloat("properties.colorMixVal"  ,     (clickedMixVal)   );
+        ShaderSystem::buttonShader().setFloat("properties.colorMixVal"  ,     (clickedMixVal)   );
     //Properties
-    shader.setFloat("properties.radius",     resultRadius    );
+    ShaderSystem::buttonShader().setFloat("properties.radius",     resultRadius    );
     
-    shader.setInt("properties.outline.state" ,     1      ); 
+    ShaderSystem::buttonShader().setInt("properties.outline.state" ,     1      ); 
     //Outline extra color (affected by the colorMixVal)
-    shader.setVec3("properties.outline.color" ,     outlineColor     );  
-    shader.setVec3("properties.outline.color2" ,     outlineColor2     );   
+    ShaderSystem::buttonShader().setVec3("properties.outline.color" ,     outlineColor     );  
+    ShaderSystem::buttonShader().setVec3("properties.outline.color2" ,     outlineColor2     );   
     if(animationStyle == 0) //Increase the thicness of the button if hover
-        shader.setFloat("properties.outline.thickness" ,    resultOutlineThickness + clickedMixVal*2.f ); 
+        ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness + clickedMixVal*2.f ); 
     else  //Set the thickness value of the button
-        shader.setFloat("properties.outline.thickness" ,    resultOutlineThickness); 
+        ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness); 
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 TextBox::TextBox(){}
 
-TextBox::TextBox(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
+TextBox::TextBox(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
        float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2,int openSelectFolderDialog){
     
-    this->shader = shader;
     this->text = text;
     this->color = color;
     this->color2 = color2;
@@ -78,8 +78,7 @@ TextBox::TextBox(Shader shader,std::string text, glm::vec2 scale, glm::vec4 colo
 }
 
 //Style constructor
-TextBox::TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,float panelOffset,int openSelectFolderDialog){
-    this->shader = shader;
+TextBox::TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,float panelOffset,int openSelectFolderDialog){
     this->text = text;
     this->scale = scale;
     this->panelOffset = panelOffset;
@@ -186,13 +185,12 @@ void TextBox::render(
     render(resultPos,resultScale,resultRadius,resultOutlineThickness);
 
     //Color of the text
-    shader.setVec4("properties.color"  ,     textColor     );
-    shader.setVec4("properties.color2"  ,     textColor2     );
+    ShaderSystem::buttonShader().setVec4("properties.color"  ,     textColor     );
+    ShaderSystem::buttonShader().setVec4("properties.color2"  ,     textColor2     );
     
     //Render the text
 
     textRenderer.loadTextData(  
-                                shader,
                                 text,
                                 glm::vec3(resultPos.x - resultScale.x / 1.1,resultPos.y,resultPos.z),
                                 false,
@@ -206,5 +204,5 @@ void TextBox::render(
                                 textPosCharIndex
                             );
 
-    textRenderer.renderText(shader,textPosCharIndex,textColor2);
+    textRenderer.renderText(textPosCharIndex,textColor2);
 }

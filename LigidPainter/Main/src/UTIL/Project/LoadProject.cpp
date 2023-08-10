@@ -32,7 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,ColorPalette colorPalette, 
+bool Project::loadProject(std::string ligidFilePath,Library &library,Model &model,AppTextures appTextures,ColorPalette colorPalette, 
                           int& textureRes, std::vector<Node> &meshNodeScene, glm::vec2 videoScale, AppMaterialModifiers& appMaterialModifiers){
 
     //Return if the ligidFilePath doesn't exists
@@ -46,7 +46,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
     time_t lastOpenedDate;
     
 
-    if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate, meshNodeScene, textureRes, shaders, colorPalette, appTextures, videoScale)){
+    if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate, meshNodeScene, textureRes, colorPalette, appTextures, videoScale)){
         std::cout << "ERROR CAN'T READ THE LIGID FILE : " << ligidFilePath << ". The file is might not be a ligid file." << std::endl;
 
         return false;
@@ -92,7 +92,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
         std::string materialPath = entry.path().string();
 
         Material material(textureRes, "", 0);;
-        if(FileHandler::readLGDMATERIALFile(materialPath, material, colorPalette, shaders.buttonShader, appTextures, appMaterialModifiers, library.materials))
+        if(FileHandler::readLGDMATERIALFile(materialPath, material, colorPalette, appTextures, appMaterialModifiers, library.materials))
             library.addMaterial(material);
     
     }
@@ -104,7 +104,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Shaders sha
 
         Brush brush;
         if(FileHandler::readLGDBRUSHFile(brushPath, brush)){
-            brush.updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
+            brush.updateDisplayTexture();
             library.addBrush(brush);
         }
     }

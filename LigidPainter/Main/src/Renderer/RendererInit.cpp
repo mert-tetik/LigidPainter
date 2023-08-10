@@ -30,6 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 #include "GUI/GUI.hpp"
 #include "UTIL/Util.hpp"
+#include "ShaderSystem/Shader.hpp"
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
 
@@ -118,7 +119,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     loadAppTextures();
 
     //Load shaders
-    shaders.loadShaders();
+    ShaderSystem::initShaderSystem();
 
     //Load the sphere model
     model.loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
@@ -132,8 +133,8 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     
     //Load the default skybox
     skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky6"); //Skybox's itself
-    skybox.createPrefilterMap(shaders.prefilteringShader,videoScale); //Create prefiltered skybox
-    skybox.createDisplayingTxtr(shaders.skyboxBall,sphereModel,context.windowScale); //Create displaying texture
+    skybox.createPrefilterMap(videoScale); //Create prefiltered skybox
+    skybox.createDisplayingTxtr(sphereModel, context.windowScale); //Create displaying texture
     
     //Load the fonts
     fonts.Arial.loadFont("./LigidPainter/Resources/Fonts/Arial.ttf");
@@ -149,7 +150,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     websites.youTube        =   Website("https://www.youtube.com/channel/UCMVLfsYsd5WAKEWsgM7fjtA");
 
     //Init the userinterface
-    userInterface.init(shaders,context,appTextures,websites,videoScale,sphereModel);
+    userInterface.init(context, appTextures, websites, videoScale, sphereModel);
 
     //Init mouse class
     mouse = Mouse(context.window);
@@ -158,10 +159,10 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     mouse.loadCursors();
 
     //Init the painter
-    painter.initPainter(videoScale, shaders.twoDPainting, shaders.buttonShader, shaders.tdModelShader, shaders.depth3D, shaders.textureUpdatingShader, shaders.twoDPaintingModeAreaShader, shaders.boundaryExpandingShader);
+    painter.initPainter(videoScale);
 
     //Create the mesh node
-    meshNodeScene.push_back(Node(MESH_NODE, 0, shaders.buttonShader, shaders.connectionCurve, colorPalette, appTextures, videoScale, shaders.heightToNormalMap, shaders.boundaryExpandingShader));
+    meshNodeScene.push_back(Node(MESH_NODE, 0, colorPalette, appTextures, videoScale));
 
     //Load the inputs of the mesh node
     meshNodeScene[0].uploadNewIOs(model, colorPalette);
@@ -225,24 +226,24 @@ void Renderer::createContextMenus(){
 
     //!Create context menus                                                   0            1                  2               3                     4           5  
     //Library panel
-    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Rename"  , "Duplicate"       , "Copy Path"   , "Delete"})); //Textures  0
-    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Edit"    , "Add To Scene"    , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete",   "Export"}));    //Materials 1
-    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Use"     , "Apply Current"   , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete"}));    //Brushes   2
+    contextMenus.push_back(ContextMenu(colorPalette,{"Rename"  , "Duplicate"       , "Copy Path"   , "Delete"})); //Textures  0
+    contextMenus.push_back(ContextMenu(colorPalette,{"Edit"    , "Add To Scene"    , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete",   "Export"}));    //Materials 1
+    contextMenus.push_back(ContextMenu(colorPalette,{"Use"     , "Apply Current"   , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete"}));    //Brushes   2
     
     //Menu Bar (navigation panel)
-    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Save"    , "Save as"         , "Create new"  , "Load new"    ,    "Copy Path", "File Explorer"})); //Project   3 
-    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Undo"    , "Redo"    })); //Painting  4
-    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Website" , "YouTube" })); //Help      5
+    contextMenus.push_back(ContextMenu(colorPalette,{"Save"    , "Save as"         , "Create new"  , "Load new"    ,    "Copy Path", "File Explorer"})); //Project   3 
+    contextMenus.push_back(ContextMenu(colorPalette,{"Undo"    , "Redo"    })); //Painting  4
+    contextMenus.push_back(ContextMenu(colorPalette,{"Website" , "YouTube" })); //Help      5
     
     //Material editor
-    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Delete"  , "Move To Top"     , "Move To Bottom", "Change Mask"}));// Material modifier context menu 6                                           
+    contextMenus.push_back(ContextMenu(colorPalette,{"Delete"  , "Move To Top"     , "Move To Bottom", "Change Mask"}));// Material modifier context menu 6                                           
     
     //Nodes
-    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Delete"})); //Node context menu 7
+    contextMenus.push_back(ContextMenu(colorPalette,{"Delete"})); //Node context menu 7
 
     //Material editor
-    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Texture Modifier", "Dust Modifier", "Asphalt Modifier", "Fabric Modifier", "Moss Modifier", "Rust Modifier", "Skin Modifier", "Solid Modifier", "Wooden Modifier"}));// Material modifier selection context menu 8                                        
+    contextMenus.push_back(ContextMenu(colorPalette,{"Texture Modifier", "Dust Modifier", "Asphalt Modifier", "Fabric Modifier", "Moss Modifier", "Rust Modifier", "Skin Modifier", "Solid Modifier", "Wooden Modifier"}));// Material modifier selection context menu 8                                        
     
     //Node panel
-    contextMenus.push_back(ContextMenu(shaders.buttonShader,colorPalette,{"Add Material ID Node", "Add Material Mask Node"}));// Mesh node scene panel context menu 9                                        
+    contextMenus.push_back(ContextMenu(colorPalette,{"Add Material ID Node", "Add Material Mask Node"}));// Mesh node scene panel context menu 9                                        
 }

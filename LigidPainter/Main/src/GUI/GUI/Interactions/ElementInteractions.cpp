@@ -32,13 +32,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 //Forward declarations for the interaction functions defined in the Interactions directory 
-void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse, Panel &paintingPanel, Painter &painter, Library &library, Model &model, ColorPalette& colorPalette, Shaders &shaders, int &textureRes,NewTextureDialog &newTextureDialog,AppTextures &appTextures, AppMaterialModifiers& appMaterialModifiers, int frameCounter);
-void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, Library &library, ColorPalette& colorPalette, Shaders &shaders,int frameCounter);
-void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &painter, Dropper &dropper,ColorPalette colorPalette,Shader buttonShader, AppTextures appTextures, Model &model, std::vector<Node> &meshNodeScene);
+void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse, Panel &paintingPanel, Painter &painter, Library &library, Model &model, ColorPalette& colorPalette, int &textureRes,NewTextureDialog &newTextureDialog,AppTextures &appTextures, AppMaterialModifiers& appMaterialModifiers, int frameCounter);
+void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, Library &library, ColorPalette& colorPalette, int frameCounter);
+void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &painter, Dropper &dropper,ColorPalette colorPalette, AppTextures appTextures, Model &model, std::vector<Node> &meshNodeScene);
 void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog);
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Painter &painter);
-void nodeInteraction(Model &model, std::vector<Node> &meshNodeScene,Shaders shaders,ColorPalette colorPalette,glm::vec2 videoScale, Library library, Scene scene, int textureRes);
-void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter, std::vector<Node> &meshNodeScene, Model &model, Library library, Shader heightToNormalShader, Shader boundaryExpandingShader, Scene scene, int textureRes);
+void nodeInteraction(Model &model, std::vector<Node> &meshNodeScene,ColorPalette colorPalette,glm::vec2 videoScale, Library library, Scene scene, int textureRes);
+void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter, std::vector<Node> &meshNodeScene, Model &model, Library library,   Scene scene, int textureRes);
 
 void UI::elementInteraction(
                                 Painter &painter,
@@ -80,23 +80,23 @@ void UI::elementInteraction(
                     selectedTextureDisplayer.hover      || 
                     paintingModesPanel.hover;
 
-    this->contextMenuInteraction(contextMenus,mouse,library,meshNodeScene,context,videoScale,timer,textRenderer,project,textureRes, painter, shaders.heightToNormalMap);
+    this->contextMenuInteraction(contextMenus,mouse,library,meshNodeScene,context,videoScale,timer,textRenderer,project,textureRes, painter);
     
-    updateLibraryPanelDisplayerElements(libraryPanelDisplayer,library,colorPalette,shaders,frameCounter);
+    updateLibraryPanelDisplayerElements(libraryPanelDisplayer,library,colorPalette,frameCounter);
     
-    libraryPanelDisplayerInteraction(libraryPanelDisplayer,mouse,paintingPanel,painter,library,model,colorPalette,shaders,textureRes,newTextureDialog,appTextures, appMaterialModifiers,frameCounter);
+    libraryPanelDisplayerInteraction(libraryPanelDisplayer,mouse,paintingPanel,painter,library,model,colorPalette,textureRes,newTextureDialog,appTextures, appMaterialModifiers,frameCounter);
     
     this->libraryPanelLeftInteraction(libraryPanelLeft,library,mouse);
 
-    paintingPanelInteraction(paintingPanel,mouse,painter,dropper,colorPalette,shaders.buttonShader,appTextures,model, meshNodeScene);
+    paintingPanelInteraction(paintingPanel,mouse,painter,dropper,colorPalette,appTextures,model, meshNodeScene);
     
     windowPanelInteraction(windowPanel, mouse, painter, settingsDialog, displayerDialog,exportDialog);
 
     paintingModesPanelInteraction(paintingModesPanel,painter);
 
-    displayingModesPanelInteraction(displayingModesPanel, painter, meshNodeScene, model, library, shaders.heightToNormalMap, shaders.boundaryExpandingShader, scene, textureRes);
+    displayingModesPanelInteraction(displayingModesPanel, painter, meshNodeScene, model, library, scene, textureRes);
 
-    nodeInteraction(model,meshNodeScene,shaders,colorPalette,videoScale, library, scene, textureRes);
+    nodeInteraction(model,meshNodeScene,colorPalette,videoScale, library, scene, textureRes);
     
     this->panelPositioning(screenGapPerc,library,painter);
 }

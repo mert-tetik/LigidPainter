@@ -31,8 +31,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include "UTIL/Util.hpp"
+#include "ShaderSystem/Shader.hpp"
 
-void Brush::updateDisplayTexture(Shader paintingShader, Shader buttonShader){
+void Brush::updateDisplayTexture(){
     
     int frameCounter = 0;
     
@@ -69,46 +70,46 @@ void Brush::updateDisplayTexture(Shader paintingShader, Shader buttonShader){
 
     glViewport(0,0,videoScale.x,videoScale.y);
     
-    paintingShader.use();
+    ShaderSystem::twoDPainting().use();
 
     glm::vec2 scale = videoScale / glm::vec2(2);
     glm::vec3 pos = glm::vec3(videoScale / glm::vec2(2),1.f);
     glm::mat4 projection = glm::ortho(0.f,videoScale.x,0.f,videoScale.y);
-    paintingShader.setVec2("scale", scale); //Cover the screen
-    paintingShader.setVec3("pos", pos); //Cover the screen
-    paintingShader.setMat4("projection", projection); //Cover the screen
+    ShaderSystem::twoDPainting().setVec2("scale", scale); //Cover the screen
+    ShaderSystem::twoDPainting().setVec3("pos", pos); //Cover the screen
+    ShaderSystem::twoDPainting().setMat4("projection", projection); //Cover the screen
 
     //Set properties
-    paintingShader.setFloat("brush.hardness", 1.f);
-    paintingShader.setFloat("brush.sizeJitter", sizeJitter);
-    paintingShader.setFloat("brush.scatter", scatter);
-    paintingShader.setFloat("brush.fade", fade);
-    paintingShader.setFloat("brush.rotation", rotation);
-    paintingShader.setFloat("brush.rotationJitter", rotationJitter);
-    paintingShader.setFloat("brush.alphaJitter", alphaJitter);
-    paintingShader.setInt("brush.individualTexture", individualTexture);
-    paintingShader.setInt("brush.sinWavePattern", sinWavePattern);
-    paintingShader.setFloat("brush.txtr", 0);
+    ShaderSystem::twoDPainting().setFloat("brush.hardness", 1.f);
+    ShaderSystem::twoDPainting().setFloat("brush.sizeJitter", sizeJitter);
+    ShaderSystem::twoDPainting().setFloat("brush.scatter", scatter);
+    ShaderSystem::twoDPainting().setFloat("brush.fade", fade);
+    ShaderSystem::twoDPainting().setFloat("brush.rotation", rotation);
+    ShaderSystem::twoDPainting().setFloat("brush.rotationJitter", rotationJitter);
+    ShaderSystem::twoDPainting().setFloat("brush.alphaJitter", alphaJitter);
+    ShaderSystem::twoDPainting().setInt("brush.individualTexture", individualTexture);
+    ShaderSystem::twoDPainting().setInt("brush.sinWavePattern", sinWavePattern);
+    ShaderSystem::twoDPainting().setFloat("brush.txtr", 0);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,texture.ID);
 
-    paintingShader.setVec2("videoScale", videoScale); 
+    ShaderSystem::twoDPainting().setVec2("videoScale", videoScale); 
 
     //Create the stroke
     for (size_t i = 0; i < wave.size(); i++)
     {
-        paintingShader.setInt("frame", frameCounter);
+        ShaderSystem::twoDPainting().setInt("frame", frameCounter);
         
-        paintingShader.setFloat("brush.radius", frameCounter/7.5f);
+        ShaderSystem::twoDPainting().setFloat("brush.radius", frameCounter/7.5f);
         //Stroke positions
         std::vector<glm::vec2> holdLocations;
         holdLocations.push_back(glm::vec2(frameCounter + 10,wave[i]));
-        paintingShader.setInt("posCount",holdLocations.size());
+        ShaderSystem::twoDPainting().setInt("posCount",holdLocations.size());
         for (int i = 0; i < holdLocations.size(); i++)
         {
             std::string target = "positions[" + std::to_string(i) + "]";
-            paintingShader.setVec2(target,holdLocations[i]);
+            ShaderSystem::twoDPainting().setVec2(target,holdLocations[i]);
         }
 
         glDepthFunc(GL_ALWAYS);
@@ -128,7 +129,7 @@ void Brush::updateDisplayTexture(Shader paintingShader, Shader buttonShader){
     
     //Finish
     glBindFramebuffer(GL_FRAMEBUFFER,0);
-    buttonShader.use();
+    ShaderSystem::buttonShader().use();
 
     glDeleteFramebuffers(1,&captureFBO);
 }

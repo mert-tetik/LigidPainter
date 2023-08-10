@@ -74,10 +74,6 @@ private:
     bool renderTheTexture(glm::vec3 resultPos,glm::vec2 resultScale,float resultScaleText,glm::vec2 videoScale,TextRenderer &textRenderer,float &textureRadius);
     void manageMouseActivity(Mouse &mouse);
     void renderTextAndTexture(TextRenderer &textRenderer, glm::vec2 videoScale, float resultScaleText);
-    
-    //This shader (buttonShader) is used to render the button
-    Shader shader;
-
 public:
     //Pressed to the button
     //Returns true if a button is pressed
@@ -139,10 +135,10 @@ public:
 
     //Constructors 
     Button();
-    Button(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, 
+    Button(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, 
            int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,float textScale,float panelOffset,
            bool outlineExtra,glm::vec3 outlineColor,glm::vec3 outlineColor2,float outlineThickness,bool keepPressingState);
-    Button(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,Texture texture,float panelOffset,bool keepPressingState);
+    Button(int style, glm::vec2 scale, ColorPalette colorPalette, std::string text, Texture texture, float panelOffset, bool keepPressingState);
 
     //Public member functions
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
@@ -159,7 +155,6 @@ private:
     /// @brief Renders a box using button shader
     void render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadius,float resultOutlineThickness);
 public:
-    Shader shader;
     bool active = false;
     float panelOffset = 0.f; 
     std::string text; 
@@ -186,9 +181,9 @@ public:
 
     //Constructors
     TextBox();
-    TextBox(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
+    TextBox(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
             float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2,int openSelectFolderDialog);
-    TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,float panelOffset,int openSelectFolderDialog);
+    TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,float panelOffset,int openSelectFolderDialog);
     
     /// @brief Public member function to render the text box
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking,LigidWindow window);
@@ -205,7 +200,6 @@ private:
     void render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadius,float resultOutlineThickness,float aClickedMixVal,
                 float aHoverMixVal,bool outline,glm::vec4 aColor);
 public:
-    Shader shader;
     float panelOffset = 0.f; 
     std::vector<std::string> texts; 
     std::string text;
@@ -228,10 +222,10 @@ public:
     
     //Constructors
     ComboBox();
-    ComboBox(Shader shader,std::vector<std::string> texts, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 textColor,glm::vec4 textColor2,
+    ComboBox(std::vector<std::string> texts, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 textColor,glm::vec4 textColor2,
            float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2);
 
-    ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::vector<std::string> texts,std::string text,float panelOffset);
+    ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::vector<std::string> texts,std::string text,float panelOffset);
 
     //Public member functions
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking,LigidWindow window);
@@ -247,10 +241,10 @@ public:
 class TextRenderer
 {
 private:
-    void renderLeftToRight(Shader shader,glm::vec3 pos);
-    void renderRightToLeft(Shader shader,glm::vec3 pos);
-    void rndrTxt(Shader shader, int textPosCharIndex);
-    void renderInsertionPointCursor(Shader shader, int &textPosCharIndex);
+    void renderLeftToRight(glm::vec3 pos);
+    void renderRightToLeft(glm::vec3 pos);
+    void rndrTxt(int textPosCharIndex);
+    void renderInsertionPointCursor(int &textPosCharIndex);
 
     glm::vec2 videoScale;
     Timer timer; //Timer of the text renderer (used for animation of the insertion point cursor)
@@ -264,7 +258,6 @@ public:
     int action = 0;
 
     //Text data
-    Shader textDataShader;
     std::string textDataText;
     glm::vec3 textDataPos;
     bool textDataMultipleLines;
@@ -290,16 +283,16 @@ public:
     glm::vec3 positionTheText();
 
 
-    void loadTextData(Shader shader, std::string text, glm::vec3 pos, bool multipleLines, 
+    void loadTextData(std::string text, glm::vec3 pos, bool multipleLines, 
                       float scale, float minX,float maxX, int alignment);
     
-    void loadTextData(Shader shader, std::string text, glm::vec3 pos, bool multipleLines, 
+    void loadTextData(std::string text, glm::vec3 pos, bool multipleLines, 
                       float scale, float minX,float maxX, int alignment,bool active,
                       int activeChar, int activeChar2, int textPosCharIndex);
 
-    void renderText(Shader shader);
+    void renderText();
     
-    void renderText(Shader shader,int &textPosCharIndex,glm::vec4 textColor);
+    void renderText(int &textPosCharIndex,glm::vec4 textColor);
 
 	void processTextInput(std::string &text,LigidWindow window,int &activeChar,int &activeChar2,int &textPosCharIndex);
 };
@@ -317,7 +310,6 @@ private:
     void manageMouseActivity(Mouse &mouse, glm::vec2 resultScale, glm::vec3 resultPos);
 
 public:
-    Shader shader;
     bool clickState1 = false;
     float panelOffset = 0.f;
     std::string text;
@@ -338,9 +330,9 @@ public:
 
     //Constructors 
     CheckBox();
-    CheckBox(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
+    CheckBox(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
              float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2);
-    CheckBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,float panelOffset);
+    CheckBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,float panelOffset);
 
     //Public member functions
     void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
@@ -358,7 +350,6 @@ private:
     void render(glm::vec3 posVal,glm::vec2 scaleVal,float radiusVal,glm::vec4 color1Val, glm::vec4 color2Val,float mixVal,bool outlineExtra,float resultOutlineThickness);
     AppTextures appTextures;
 public:
-    Shader shader;
     bool pointerPressed = false;
     float panelOffset = 0.f; 
     std::string text; 
@@ -395,10 +386,10 @@ public:
 
     //Constructors
     RangeBar();
-    RangeBar(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 pointerColor,glm::vec4 pointerColor2,
+    RangeBar(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 pointerColor,glm::vec4 pointerColor2,
              bool outlineExtra,glm::vec3 outlineColor,glm::vec3 outlineColor2, float radius,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,
              float textScale,float panelOffset,float outlineThickness,float minValue,float maxValue,float value);
-    RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,Texture texture,float panelOffset,
+    RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,Texture texture,float panelOffset,
              float minValue,float maxValue,float value,AppTextures appTextures);
 
     /// @brief Public member function to render the text box
@@ -479,7 +470,6 @@ private:
     void drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm::vec2 resultScale,Timer &timer,TextRenderer &textRenderer); //Draws the panel and it's elements
 
 public:
-    Shader shader;
     /*! 
         @brief Sections of the panel 
     
@@ -595,7 +585,7 @@ public:
         @param maxScaleVal 
         @param hasSlider 
     */
-    Panel(Shader shader,ColorPalette colorPalette,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,
+    Panel(ColorPalette colorPalette,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,
           bool vertical,bool lockL,bool lockR,bool lockB,bool lockT,float outlineThickness,int rowCount,std::vector<Button> barButtons,float maxScaleVal,
           bool hasSlider);
 

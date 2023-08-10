@@ -28,6 +28,7 @@ Box.hpp : Is used to render a single 2D square.
 #include <vector>
 
 #include "UTIL/Util.hpp"
+#include "ShaderSystem/Shader.hpp"
     
 Box::Box(){}
 
@@ -80,10 +81,10 @@ void Box::unbindBuffers(){
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Box::draw(Shader shader,glm::vec3 pos,glm::vec2 scale){
+void Box::draw(glm::vec3 pos,glm::vec2 scale){
     
-    shader.setVec3("pos",pos);
-    shader.setVec2("scale",scale);
+    ShaderSystem::buttonShader().setVec3("pos",pos);
+    ShaderSystem::buttonShader().setVec2("scale",scale);
 
     //Bind vertex objects
     glBindVertexArray(VAO);

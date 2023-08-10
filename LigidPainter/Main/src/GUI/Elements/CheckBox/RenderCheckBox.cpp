@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/Elements/Elements.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 #include <string>
 #include <iostream>
@@ -86,12 +87,11 @@ void CheckBox::render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRender
     render(resultPos,resultScale,resultRadius,resultOutlineThickness);
     
     //Set the color of the text 
-    shader.setVec4("properties.color"  ,     textColor     );
-    shader.setVec4("properties.color2"  ,     textColor2     );
+    ShaderSystem::buttonShader().setVec4("properties.color"  ,     textColor     );
+    ShaderSystem::buttonShader().setVec4("properties.color2"  ,     textColor2     );
 
     //Render the text
     textRenderer.loadTextData(
-                                shader,
                                 text,
                                 glm::vec3(resultTextPos.x,resultTextPos.y,resultTextPos.z + 0.02f),
                                 false,
@@ -101,5 +101,5 @@ void CheckBox::render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRender
                                 TEXTRENDERER_ALIGNMENT_MID
                              );
 
-    textRenderer.renderText(shader);
+    textRenderer.renderText();
 }

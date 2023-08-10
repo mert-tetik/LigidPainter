@@ -96,20 +96,18 @@ public:
     
     /*!
         @brief Creates the @ref IDPrefiltered. (Prefilters the skybox texture ( @ref ID ))
-        @param prefilteringShader Shader used to prefilter skyboxes
         @param videoScale Primary monitor resolution value
     */
-	unsigned int createPrefilterMap(Shader prefilteringShader, glm::vec2 videoScale);
+	unsigned int createPrefilterMap(glm::vec2 videoScale);
 	
     /*!
         @brief Creates the @ref displayingTexture. Renders a sphere using skyboxBall 
                 shader and captures it into the displayingTexture.
         
-        @param skyboxBall Shader used to create the skybox ball. Reflective surface.
         @param sphereModel The skybox ball 3D Model
         @param windowScale Resolution of the main window
     */
-    void createDisplayingTxtr(Shader skyboxBall,Model &sphereModel, glm::vec2 windowScale);
+    void createDisplayingTxtr(Model &sphereModel, glm::vec2 windowScale);
 
 private:
     /*! @brief Skybox vertex buffer object ID*/
@@ -153,7 +151,7 @@ public:
     Mesh(){}
     
     /*! @brief Generates the buffer objects using the first two parameters */
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, Shader uvMaskShader);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName);
     
     /*! @brief Renders the mesh*/
     void Draw();
@@ -164,7 +162,7 @@ private:
     /*! @brief initializes all the buffer objects/arrays */
     void setupMesh();
 
-    void generateUVMask(Shader uvMaskShader);
+    void generateUVMask();
 };
 
 

@@ -32,16 +32,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 void displayingModesPanelInteraction(
-                                    Panel &displayingModesPanel, 
-                                    Painter &painter,
-                                    std::vector<Node> &meshNodeScene, 
-                                    Model &model, 
-                                    Library library, 
-                                    Shader heightToNormalShader, 
-                                    Shader boundaryExpandingShader,
-                                    Scene scene, 
-                                    int textureRes
-                                )
+                                        Panel &displayingModesPanel, 
+                                        Painter &painter,
+                                        std::vector<Node> &meshNodeScene, 
+                                        Model &model, 
+                                        Library library, 
+                                        Scene scene, 
+                                        int textureRes
+                                    )
 {
     //!PAINTING MODES PANEL
     for (size_t i = 0; i < displayingModesPanel.sections[0].elements.size(); i++)
@@ -51,7 +49,7 @@ void displayingModesPanelInteraction(
                 displayingModesPanel.sections[0].elements[painter.selectedDisplayingModeIndex].button.clickState1 = false;
                 painter.selectedDisplayingModeIndex = i;
                 if(painter.selectedDisplayingModeIndex == 0)
-                    UTIL::updateNodeResults(meshNodeScene, model, library, heightToNormalShader, boundaryExpandingShader, scene, textureRes, -1);
+                    UTIL::updateNodeResults(meshNodeScene, model, library, scene, textureRes, -1);
                 break;
             }
         }

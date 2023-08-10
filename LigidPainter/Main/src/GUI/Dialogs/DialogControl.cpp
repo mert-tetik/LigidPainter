@@ -21,8 +21,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
-
 #include "3D/ThreeD.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 #include <string>
 #include <iostream>
@@ -36,16 +36,16 @@ DialogControl::DialogControl(bool active){
     this->active = active;
 }
 
-void DialogControl::updateStart(Shader buttonShader){
-    buttonShader.setFloat("properties.groupOpacity", mixVal);
+void DialogControl::updateStart(){
+    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", mixVal);
 }
 
-void DialogControl::updateEnd(Timer timer,Shader buttonShader,float transitionDuration){
+void DialogControl::updateEnd(Timer timer,float transitionDuration){
     
     timer.transition(active,mixVal,transitionDuration);
     firstFrameActivated = false;
 
-    buttonShader.setFloat("properties.groupOpacity", 1.);
+    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.);
 }
 
 void DialogControl::activate(){

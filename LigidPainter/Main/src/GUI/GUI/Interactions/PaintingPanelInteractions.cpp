@@ -37,7 +37,6 @@ void paintingPanelInteraction(
                                 Painter &painter, 
                                 Dropper &dropper,
                                 ColorPalette colorPalette,
-                                Shader buttonShader, 
                                 AppTextures appTextures, 
                                 Model &model, 
                                 std::vector<Node> &meshNodeScene
@@ -135,7 +134,7 @@ void paintingPanelInteraction(
         for (size_t i = 0; i < model.meshes.size(); i++)
         {
 
-            Element meshButton = Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),colorPalette,buttonShader, model.meshes[i].materialName , Texture(), 0.f,true));
+            Element meshButton = Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),colorPalette, model.meshes[i].materialName , Texture(), 0.f,true));
 
             paintingPanel.sections[3].elements.push_back(meshButton);
         

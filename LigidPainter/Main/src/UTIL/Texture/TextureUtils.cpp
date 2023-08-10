@@ -29,6 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 unsigned char* Texture::getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip){
     stbi_set_flip_vertically_on_load(flip);
@@ -199,7 +200,7 @@ std::vector<glm::vec3> Texture::getMaterialIDPalette(){
     
 }
 
-void Texture::removeSeams(Mesh& mesh, int textureResolution, Shader boundaryExpandingShader){
+void Texture::removeSeams(Mesh& mesh, int textureResolution){
     
     /*! Binds another framebuffer !*/
     Texture textureObject = Texture(this->ID);
@@ -219,14 +220,14 @@ void Texture::removeSeams(Mesh& mesh, int textureResolution, Shader boundaryExpa
     box.bindBuffers();
     
     glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
-    boundaryExpandingShader.use();
-    boundaryExpandingShader.setMat4("projection"  ,       projection);
-    boundaryExpandingShader.setMat4("projectedPosProjection"  ,       projection);
-    boundaryExpandingShader.setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
-    boundaryExpandingShader.setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
+    ShaderSystem::boundaryExpandingShader().use();
+    ShaderSystem::boundaryExpandingShader().setMat4("projection"  ,       projection);
+    ShaderSystem::boundaryExpandingShader().setMat4("projectedPosProjection"  ,       projection);
+    ShaderSystem::boundaryExpandingShader().setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
+    ShaderSystem::boundaryExpandingShader().setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
 
-    boundaryExpandingShader.setInt("whiteUVTexture", 0);
-    boundaryExpandingShader.setInt("originalTexture", 1);
+    ShaderSystem::boundaryExpandingShader().setInt("whiteUVTexture", 0);
+    ShaderSystem::boundaryExpandingShader().setInt("originalTexture", 1);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mesh.uvMask);
@@ -241,7 +242,7 @@ void Texture::removeSeams(Mesh& mesh, int textureResolution, Shader boundaryExpa
     glDeleteTextures(1, &textureCopy);
 }
 
-void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution, Shader boundaryExpandingShader){
+void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
     
     /*! Binds another framebuffer !*/
     Texture textureObject = Texture(this->ID);
@@ -261,14 +262,14 @@ void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution, Shader bound
     box.bindBuffers();
     
     glm::mat4 projection = glm::ortho(0.f, (float)textureResolution.x, (float)textureResolution.y, 0.f); 
-    boundaryExpandingShader.use();
-    boundaryExpandingShader.setMat4("projection"  ,       projection);
-    boundaryExpandingShader.setMat4("projectedPosProjection"  ,       projection);
-    boundaryExpandingShader.setVec3("pos"         ,       glm::vec3((float)textureResolution.x / 2.f, (float)textureResolution.y / 2.f, 0.9f));
-    boundaryExpandingShader.setVec2("scale"       ,       glm::vec2((float)textureResolution.x / 2.f, (float)textureResolution.y / 2.f));
+    ShaderSystem::boundaryExpandingShader().use();
+    ShaderSystem::boundaryExpandingShader().setMat4("projection"  ,       projection);
+    ShaderSystem::boundaryExpandingShader().setMat4("projectedPosProjection"  ,       projection);
+    ShaderSystem::boundaryExpandingShader().setVec3("pos"         ,       glm::vec3((float)textureResolution.x / 2.f, (float)textureResolution.y / 2.f, 0.9f));
+    ShaderSystem::boundaryExpandingShader().setVec2("scale"       ,       glm::vec2((float)textureResolution.x / 2.f, (float)textureResolution.y / 2.f));
 
-    boundaryExpandingShader.setInt("whiteUVTexture", 0);
-    boundaryExpandingShader.setInt("originalTexture", 1);
+    ShaderSystem::boundaryExpandingShader().setInt("whiteUVTexture", 0);
+    ShaderSystem::boundaryExpandingShader().setInt("originalTexture", 1);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mesh.uvMask);

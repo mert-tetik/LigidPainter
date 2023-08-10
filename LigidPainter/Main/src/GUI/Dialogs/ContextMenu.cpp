@@ -28,13 +28,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 ContextMenu::ContextMenu(){}
 
-ContextMenu::ContextMenu(Shader buttonShader,ColorPalette colorPalette,std::vector<std::string> elements){
+ContextMenu::ContextMenu(ColorPalette colorPalette,std::vector<std::string> elements){
     
-    this->buttonShader = buttonShader;
-
     //Create the context panel
     contextPanel = Panel(
-        buttonShader,
         colorPalette,
         {
             //Sections
@@ -59,7 +56,7 @@ ContextMenu::ContextMenu(Shader buttonShader,ColorPalette colorPalette,std::vect
     Section section;
     for (size_t i = 0; i < elements.size(); i++)
     {
-        section.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,buttonShader,elements[i],Texture(),0.f,false)));
+        section.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1,1), colorPalette, elements[i], Texture(), 0.f, false)));
     }
     
     contextPanel.sections.push_back(section);
@@ -67,7 +64,7 @@ ContextMenu::ContextMenu(Shader buttonShader,ColorPalette colorPalette,std::vect
 }
 
 void ContextMenu::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer){
-    dialogControl.updateStart(buttonShader);
+    dialogControl.updateStart();
     
     //Update the position of the context panel
     contextPanel.pos = pos;
@@ -75,5 +72,5 @@ void ContextMenu::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRend
     //Render the context panel
     contextPanel.render(videoScale,mouse,timer,textRenderer,true);
     
-    dialogControl.updateEnd(timer,buttonShader,0.15f);
+    dialogControl.updateEnd(timer, 0.15f);
 }

@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 #include <string>
 #include <iostream>
@@ -115,39 +116,39 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene 
     
     if(this->threeDimensionalMode){
 
-        buttonShader.use();
+        ShaderSystem::buttonShader().use();
         
-        buttonShader.setMat4("projection", glm::ortho(0.f, textureRes.x, textureRes.y, 0.f));
-        buttonShader.setVec3("pos", glm::vec3(textureRes.x  / 2.f, textureRes.y / 2.f, 0.1));
-        buttonShader.setVec2("scale", glm::vec2(textureRes / 2.f));
-        buttonShader.setFloat("properties.colorMixVal", 0.f);
-        buttonShader.setInt("states.renderTexture",     1    );
-        buttonShader.setVec2("properties.txtrScale", glm::vec2(1.f));
-        buttonShader.setInt("properties.txtr",     0    );
+        ShaderSystem::buttonShader().setMat4("projection", glm::ortho(0.f, textureRes.x, textureRes.y, 0.f));
+        ShaderSystem::buttonShader().setVec3("pos", glm::vec3(textureRes.x  / 2.f, textureRes.y / 2.f, 0.1));
+        ShaderSystem::buttonShader().setVec2("scale", glm::vec2(textureRes / 2.f));
+        ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
+        ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
+        ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
+        ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->selectedTexture.ID);
         
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        buttonShader.setInt("states.renderTexture"  ,     0    );
+        ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
 
-        textureUpdatingShader.use();
+        ShaderSystem::textureUpdatingShader().use();
 
         //*Fragment
-        textureUpdatingShader.setInt("doDepthTest", 1);
-        textureUpdatingShader.setInt("txtr", 5);
-        textureUpdatingShader.setInt("paintingTexture", 6);
-        textureUpdatingShader.setInt("depthTexture", 7);
-        textureUpdatingShader.setInt("brushModeState", this->selectedPaintingModeIndex);
-        textureUpdatingShader.setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
-        textureUpdatingShader.setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
+        ShaderSystem::textureUpdatingShader().setInt("doDepthTest", 1);
+        ShaderSystem::textureUpdatingShader().setInt("txtr", 5);
+        ShaderSystem::textureUpdatingShader().setInt("paintingTexture", 6);
+        ShaderSystem::textureUpdatingShader().setInt("depthTexture", 7);
+        ShaderSystem::textureUpdatingShader().setInt("brushModeState", this->selectedPaintingModeIndex);
+        ShaderSystem::textureUpdatingShader().setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
+        ShaderSystem::textureUpdatingShader().setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
 
 
         //*Vertex
-        textureUpdatingShader.setMat4("orthoProjection", orthoProjection);
-        textureUpdatingShader.setMat4("perspectiveProjection", scene.projectionMatrix);
-        textureUpdatingShader.setMat4("view", scene.viewMatrix);
+        ShaderSystem::textureUpdatingShader().setMat4("orthoProjection", orthoProjection);
+        ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", scene.projectionMatrix);
+        ShaderSystem::textureUpdatingShader().setMat4("view", scene.viewMatrix);
 
 
         //* Bind the textures
@@ -169,22 +170,22 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene 
     }
     else{
 
-        twoDPaintingModeAreaShader.use();
+        ShaderSystem::twoDPaintingModeAreaShader().use();
 
         //*Fragment
-        twoDPaintingModeAreaShader.setInt("doDepthTest", 0);
-        twoDPaintingModeAreaShader.setInt("txtr", 5);
-        twoDPaintingModeAreaShader.setInt("paintingTexture", 6);
-        twoDPaintingModeAreaShader.setInt("depthTexture", 7);
-        twoDPaintingModeAreaShader.setInt("brushModeState", this->selectedPaintingModeIndex);
-        twoDPaintingModeAreaShader.setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
-        twoDPaintingModeAreaShader.setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("doDepthTest", 0);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("txtr", 5);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingTexture", 6);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("depthTexture", 7);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("brushModeState", this->selectedPaintingModeIndex);
+        ShaderSystem::twoDPaintingModeAreaShader().setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
+        ShaderSystem::twoDPaintingModeAreaShader().setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
 
         //*Vertex
-        twoDPaintingModeAreaShader.setMat4("projectedPosProjection", windowOrtho);
-        twoDPaintingModeAreaShader.setMat4("projection", twoDProjection);
-        twoDPaintingModeAreaShader.setVec3("pos", twoDPaintingPanel.sections[0].elements[0].button.resultPos + glm::vec3(twoDScenePos, 0.f));
-        twoDPaintingModeAreaShader.setVec2("scale", destScale * twoDSceneScroll);
+        ShaderSystem::twoDPaintingModeAreaShader().setMat4("projectedPosProjection", windowOrtho);
+        ShaderSystem::twoDPaintingModeAreaShader().setMat4("projection", twoDProjection);
+        ShaderSystem::twoDPaintingModeAreaShader().setVec3("pos", twoDPaintingPanel.sections[0].elements[0].button.resultPos + glm::vec3(twoDScenePos, 0.f));
+        ShaderSystem::twoDPaintingModeAreaShader().setVec2("scale", destScale * twoDSceneScroll);
 
         //* Bind the textures
         //painted texture
@@ -211,7 +212,7 @@ void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene 
     captureTxtrToSourceTxtr(captureTexture,textureRes,selectedTexture.ID);
 
     if(this->threeDimensionalMode)
-        this->selectedTexture.removeSeams(model.meshes[selectedMeshIndex], textureRes, boundaryExpandingShader);
+        this->selectedTexture.removeSeams(model.meshes[selectedMeshIndex], textureRes);
 }
 
 

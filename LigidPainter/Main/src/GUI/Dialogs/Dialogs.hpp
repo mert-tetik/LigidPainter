@@ -49,8 +49,8 @@ public:
     DialogControl();
     DialogControl(bool active);
     
-    void updateStart(Shader buttonShader);
-    void updateEnd(Timer timer,Shader buttonShader,float transitionDuration);
+    void updateStart();
+    void updateEnd(Timer timer,float transitionDuration);
     void activate();
     void unActivate();
     bool isActive();
@@ -100,12 +100,11 @@ class SettingsDialog
     Context context;
  public:
     Panel panel;
-    Shader buttonShader;
     DialogControl dialogControl;
 
     //Constructor
     SettingsDialog();
-    SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures);
 
     //Public member functions    
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,
@@ -124,11 +123,11 @@ class NewTextureDialog
      
      Panel panel;
      NewTextureDialog();
-     Shader buttonShader;
+     
      DialogControl dialogControl;
 
     //Constructor
-    NewTextureDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    NewTextureDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures);
     
     //Public member function
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
@@ -150,18 +149,18 @@ class LoadProjectDialog
     Button textBtn3;
     Button textBtn4;
     Box box;
-    Shader buttonShader;
+    
     AppTextures appTextures;
     AppMaterialModifiers appMaterialModifiers;
     DialogControl dialogControl;
 
     //Constructors
     LoadProjectDialog();
-    LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers);
+    LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers);
     
     //Public member functions
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
-                Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,Shaders shaders,Model &model,int &textureRes,std::vector<Node> &meshNodeScene);
+                Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,Model &model,int &textureRes,std::vector<Node> &meshNodeScene);
  };
 
 
@@ -172,19 +171,16 @@ class DisplayerDialog
  {
  private:
     Context context;
-    Shader prefilteringShader;
-    Shader skyboxBallShader;
     Model sphereModel;
  public:
     Panel panel;
-    Shader buttonShader;
+    
     DialogControl dialogControl;
     std::vector<Element> skyboxes;
 
     //Constructors
     DisplayerDialog();
-    DisplayerDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures,
-                    Shader prefilteringShader,Shader skyboxBallShader,Model &sphereModel);
+    DisplayerDialog(Context context, glm::vec2 videoScale, ColorPalette colorPalette, AppTextures appTextures, Model &sphereModel);
     
     //Public member functions
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
@@ -203,7 +199,7 @@ public:
    Button textureDisplayerButton;
    Button textButton1;
    Panel bgPanel;
-   Shader buttonShader;
+   
    Box box;
    DialogControl dialogControl;
 
@@ -211,7 +207,7 @@ public:
    
    //Constructors
    GreetingDialog();
-   GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+   GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures);
    
    //Public member functions
    void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
@@ -224,23 +220,20 @@ public:
 class MaterialEditorDialog
 {
 private:
-    Shader buttonShader;
-    Shader heightToNormalShader;
-    Shader boundaryExpandingShader;
-    Shader tdModelShader;
-    ColorPalette colorPalette;
-    Model sphereModel;
+    
+   ColorPalette colorPalette;
+   Model sphereModel;
 
-    //Private member functions
-    void updateLayerPanel(Material &material,int &textureRes,Box &box,Context &context);
-    void checkLayerPanel(Material &material,Mouse &mouse,std::vector<ContextMenu> &contextMenus,glm::vec2 videoScale);
-    void checkModifiersPanel(Material &material,float textureRes,Box box,Context context,Mouse &mouse,TextureSelectionDialog &textureSelectionDialog);
-    void updateLayerPanelElements(Material &material,int &textureRes,Box &box,Context &context,Mouse& mouse, glm::vec2 videoScale, std::vector<ContextMenu> contextMenus);
-    void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Library &library,float textureRes,Box box,Context context);
-    void manageContextMenuActions(Library &library, Mouse &mouse, Material &material, int textureRes, Box box, Context context, std::vector<ContextMenu> &contextMenus);
+   //Private member functions
+   void updateLayerPanel(Material &material,int &textureRes,Box &box,Context &context);
+   void checkLayerPanel(Material &material,Mouse &mouse,std::vector<ContextMenu> &contextMenus,glm::vec2 videoScale);
+   void checkModifiersPanel(Material &material,float textureRes,Box box,Context context,Mouse &mouse,TextureSelectionDialog &textureSelectionDialog);
+   void updateLayerPanelElements(Material &material,int &textureRes,Box &box,Context &context,Mouse& mouse, glm::vec2 videoScale, std::vector<ContextMenu> contextMenus);
+   void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Library &library,float textureRes,Box box,Context context);
+   void manageContextMenuActions(Library &library, Mouse &mouse, Material &material, int textureRes, Box box, Context context, std::vector<ContextMenu> &contextMenus);
 
-    bool updateTheMaterial = false;
-    bool prevUpdateTheMaterial = false;
+   bool updateTheMaterial = false;
+   bool prevUpdateTheMaterial = false;
 public:
    DialogControl dialogControl;
    glm::vec3 pos = glm::vec3(50.f,50.f,0.8f); ///Position of the dialog
@@ -263,7 +256,7 @@ public:
     
    //Constructors
    MaterialEditorDialog();
-   MaterialEditorDialog(Shader buttonShader, Shader heightToNormalShader, Shader boundaryExpandingShader, Shader tdModelShader, ColorPalette colorPalette,AppTextures appTextures,Model &sphereModel);
+   MaterialEditorDialog(ColorPalette colorPalette, AppTextures appTextures, Model &sphereModel);
 
    //Public member functions
    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,Library &library,
@@ -285,16 +278,16 @@ class NewProjectDialog
  public:
     Panel panel;
     Box box;
-    Shader buttonShader;
+    
     DialogControl dialogControl;
 
     //Constructors
     NewProjectDialog();
-    NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers);
+    NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers);
 
     //Public member functions
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
-                Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,Shaders shaders,Model &model,int &textureRes,std::vector<Node> &meshNodeScene);
+                Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,Model &model,int &textureRes,std::vector<Node> &meshNodeScene);
  };
 
 
@@ -308,16 +301,16 @@ class ExportDialog
  public:
     Panel panel;
     Box box;
-    Shader buttonShader;
+    
     DialogControl dialogControl;
 
     //Constructors
     ExportDialog();
-    ExportDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    ExportDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures);
 
     //Public member functions
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
-                Project &project,bool &greetingDialogActive,Library &library,Shaders shaders,Model &model,MaterialEditorDialog &materialEditorDialog
+                Project &project,bool &greetingDialogActive,Library &library,Model &model,MaterialEditorDialog &materialEditorDialog
                 ,std::vector<Node> &meshNodeScene, Model sphereModel,Scene scene);
  };
 
@@ -331,28 +324,26 @@ class TextureSelectionDialog
 {
 private:
     ColorPalette colorPalette;
-    Shader buttonShader;
+    
     int selectedTextureMode = 0;
 public:
-    Panel bgPanel;
-    Panel subPanel;
-    Panel selectedTextureDisplayingPanel;
-    Panel textureSelectingPanel;
+   Panel bgPanel;
+   Panel subPanel;
+   Panel selectedTextureDisplayingPanel;
+   Panel textureSelectingPanel;
 
-    Shader proceduralDisplayerShader;
+   int selectedTextureIndex = 0; 
+   bool clicked = false; 
+   glm::vec3 pos = glm::vec3(50,50,0.95f);
+   glm::vec2 scale = glm::vec2(40); 
+   DialogControl dialogControl;
 
-    int selectedTextureIndex = 0; 
-    bool clicked = false; 
-    glm::vec3 pos = glm::vec3(50,50,0.95f);
-    glm::vec2 scale = glm::vec2(40); 
-    DialogControl dialogControl;
+   //Constructors
+   TextureSelectionDialog();
+   TextureSelectionDialog( ColorPalette colorPalette, AppTextures appTextures);
 
-    //Constructors
-    TextureSelectionDialog();
-    TextureSelectionDialog(Shader buttonShader, ColorPalette colorPalette, AppTextures appTextures);
-
-    //Public member functions
-    void show(glm::vec2 videoScale,Timer &timer,Library library, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window, TextRenderer& textRenderer);
+   //Public member functions
+   void show(glm::vec2 videoScale,Timer &timer,Library library, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window, TextRenderer& textRenderer);
 };
 
 //!------------------------------CONTEXT MENU------------------------------
@@ -361,7 +352,7 @@ public:
 class ContextMenu
 {
 private:
-    Shader buttonShader;
+    
 public:
     Panel contextPanel;
     glm::vec3 pos;
@@ -370,7 +361,7 @@ public:
     
     //Constructors
     ContextMenu();
-    ContextMenu(Shader buttonShader,ColorPalette colorPalette,std::vector<std::string> elements);
+    ContextMenu(ColorPalette colorPalette,std::vector<std::string> elements);
     
     /// @brief Public member function to render the context menu
     void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer);

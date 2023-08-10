@@ -38,19 +38,10 @@ Painter::Painter(){
     
 }
 
-void Painter::initPainter(glm::vec2 videoScale, Shader paintingShader, Shader buttonShader, Shader tdModelShader,Shader depth3DShader, Shader textureUpdatingShader, Shader twoDPaintingModeAreaShader, Shader boundaryExpandingShader){
+void Painter::initPainter(glm::vec2 videoScale){
     
     //Send the parameters to the member variables
     this->videoScale = videoScale;
-    this->paintingShader = paintingShader;
-    this->buttonShader = buttonShader;
-    this->tdModelShader = tdModelShader;
-    this->depth3DShader = depth3DShader;
-    this->textureUpdatingShader = textureUpdatingShader;
-    this->twoDPaintingModeAreaShader = twoDPaintingModeAreaShader;
-    this->boundaryExpandingShader = boundaryExpandingShader;
-    
-
     
     //--------- init paintingTexture8 --------- 
     glActiveTexture(GL_TEXTURE0);

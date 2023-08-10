@@ -33,22 +33,20 @@
 
 LoadProjectDialog::LoadProjectDialog(){}
 
-LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers){
+LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers){
     
     //Take the parameters to the class member variables 
-    this->buttonShader = buttonShader;
     this->appTextures = appTextures;
     this->appMaterialModifiers = appMaterialModifiers;
 
     //Create the bg panel
     this->bgPanel = Panel(
-                            buttonShader,
                             colorPalette,
                             {
                                 Section(
                                     Element(Button()),
                                     {
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Load Project",Texture(),0.f,false)), 
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Load Project",Texture(),0.f,false)), 
                                     }
                                 )
                             },
@@ -70,7 +68,7 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
 
     //Create the projects panel                        
     this->projectsPanel = Panel(
-                            buttonShader,
+                            
                             colorPalette,
                             {
                             },
@@ -97,11 +95,11 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
     this->bgPanel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
     
     //The load a project button
-    this->loadButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,buttonShader,"Load",Texture(),0.f,false);
+    this->loadButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,"Load",Texture(),0.f,false);
     this->loadButton.pos.x = 30;
     this->loadButton.pos.y = 35;
     this->loadButton.pos.z = 0.9f;
-    this->textBtn1 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"Load a *.ligid file",Texture(),0.f,false);
+    this->textBtn1 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,"Load a *.ligid file",Texture(),0.f,false);
     this->textBtn1.color = glm::vec4(0);
     this->textBtn1.pos.x = 30;
     this->textBtn1.pos.y = 30;
@@ -110,21 +108,21 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
     
     //Texts
 
-    this->textBtn2 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"The *.ligid file is a binary file located",Texture(),0.f,false);
+    this->textBtn2 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,"The *.ligid file is a binary file located",Texture(),0.f,false);
     this->textBtn2.color = glm::vec4(0);
     this->textBtn2.pos.x = 30;
     this->textBtn2.pos.y = 45;
     this->textBtn2.pos.z = 0.9f;
     this->textBtn2.textScale = 0.7f;
     
-    this->textBtn3 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"in a project folder capable of contain project data.",Texture(),0.f,false);
+    this->textBtn3 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,"in a project folder capable of contain project data.",Texture(),0.f,false);
     this->textBtn3.color = glm::vec4(0);
     this->textBtn3.pos.x = 30;
     this->textBtn3.pos.y = 48;
     this->textBtn3.pos.z = 0.9f;
     this->textBtn3.textScale = 0.7f;
     
-    this->textBtn4 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"Please create a project folder if you don't have access to one",Texture(),0.f,false);
+    this->textBtn4 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,"Please create a project folder if you don't have access to one",Texture(),0.f,false);
     this->textBtn4.color = glm::vec4(0);
     this->textBtn4.pos.x = 30;
     this->textBtn4.pos.y = 54;
@@ -134,9 +132,9 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
 
 void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
                                 glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,
-                                Shaders shaders,Model &model,int &textureRes,std::vector<Node> &meshNodeScene ){
+                                Model &model,int &textureRes,std::vector<Node> &meshNodeScene ){
     
-    dialogControl.updateStart(buttonShader);
+    dialogControl.updateStart();
 
     //Render panels
     bgPanel.render(videoScale,mouse,timer,textRenderer,dialogControl.isComplete());
@@ -157,7 +155,7 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
         if(test.size()){
             
             //Load the project
-            if(project.loadProject(test,library,shaders,model,appTextures,colorPalette,textureRes,meshNodeScene, videoScale, appMaterialModifiers)){
+            if(project.loadProject(test,library,model,appTextures,colorPalette,textureRes,meshNodeScene, videoScale, appMaterialModifiers)){
                 
                 startScreen = false;
                 
@@ -190,7 +188,7 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
         std::string projectPath = entry.path().string();
         
         //Create the button for the project path
-        Button btn = Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,projectPath,Texture(),0.f,false);
+        Button btn = Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,projectPath,Texture(),0.f,false);
         
         //Scale the button in x axis
         btn.scale.x = projectsPanel.scale.x;
@@ -223,7 +221,7 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
             std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
             
             //Load the project
-            if(project.loadProject(ligidFilePath,library,shaders,model,appTextures,colorPalette,textureRes,meshNodeScene,videoScale, appMaterialModifiers)){
+            if(project.loadProject(ligidFilePath,library, model, appTextures, colorPalette, textureRes, meshNodeScene, videoScale, appMaterialModifiers)){
                 
                 startScreen = false;
                 
@@ -253,5 +251,5 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
     
     }
 
-    dialogControl.updateEnd(timer,buttonShader,0.15f);
+    dialogControl.updateEnd(timer,0.15f);
 }

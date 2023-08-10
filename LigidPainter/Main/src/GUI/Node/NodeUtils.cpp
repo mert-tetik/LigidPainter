@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
 #include "GUI/Elements/Elements.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 #include <string>
 #include <iostream>
@@ -39,23 +40,23 @@ void Node::drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nod
                                     ,0.9f); 
     // scale value % of the video scale
     glm::vec2 resultScale = UTIL::getPercent(videoScale,scale);
-    connectionCurveShader.use();
+    ShaderSystem::connectionCurve().use();
     nodeEditorPanel.resultPos.x = videoScale.x/2.f;
     nodeEditorPanel.resultPos.y = videoScale.y/2.f;
     nodeEditorPanel.resultScale.x = videoScale.x/2.f;
     nodeEditorPanel.resultScale.y = videoScale.y/2.f;
     
-    connectionCurveShader.setVec3("pos",       nodeEditorPanel.resultPos);
-    connectionCurveShader.setVec2("scale",     nodeEditorPanel.resultScale);
+    ShaderSystem::connectionCurve().setVec3("pos",       nodeEditorPanel.resultPos);
+    ShaderSystem::connectionCurve().setVec2("scale",     nodeEditorPanel.resultScale);
     
-    connectionCurveShader.setInt("direction",       direction);
+    ShaderSystem::connectionCurve().setInt("direction",       direction);
     
-    connectionCurveShader.setVec2("startPos",       src);
-    connectionCurveShader.setVec2("destPos",       dest);
-    connectionCurveShader.setVec2("percScale",       nodeEditorPanel.scale);
+    ShaderSystem::connectionCurve().setVec2("startPos",       src);
+    ShaderSystem::connectionCurve().setVec2("destPos",       dest);
+    ShaderSystem::connectionCurve().setVec2("percScale",       nodeEditorPanel.scale);
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    buttonShader.use();
+    ShaderSystem::buttonShader().use();
 }
 
 
@@ -196,14 +197,14 @@ bool Node::renderBarriers(Panel &nodeEditorPanel,Mouse &mouse){
     //Barriers are covering outside of the node editor panel
     bool cursorOnBarriers = false;
     //Bottom
-    buttonShader.setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y + nodeEditorPanel.resultScale.y + 5000,1.f)); //To the bottom
-    buttonShader.setVec2("scale",     glm::vec2(5000));
-    buttonShader.setFloat("properties.radius",     0.f   ); 
-    buttonShader.setInt("outlineExtra" ,    false     ); 
-    buttonShader.setVec4("properties.color",     glm::vec4(0)   ); //Invisible
-    buttonShader.setVec4("properties.color2",     glm::vec4(0)   ); //Invisible
-    buttonShader.setFloat("properties.colorMixVal"  ,   0.f );
-    buttonShader.setVec3("properties.outline.color" ,    glm::vec4(0)     ); //Invisible
+    ShaderSystem::buttonShader().setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y + nodeEditorPanel.resultScale.y + 5000,1.f)); //To the bottom
+    ShaderSystem::buttonShader().setVec2("scale",     glm::vec2(5000));
+    ShaderSystem::buttonShader().setFloat("properties.radius",     0.f   ); 
+    ShaderSystem::buttonShader().setInt("outlineExtra" ,    false     ); 
+    ShaderSystem::buttonShader().setVec4("properties.color",     glm::vec4(0)   ); //Invisible
+    ShaderSystem::buttonShader().setVec4("properties.color2",     glm::vec4(0)   ); //Invisible
+    ShaderSystem::buttonShader().setFloat("properties.colorMixVal"  ,   0.f );
+    ShaderSystem::buttonShader().setVec3("properties.outline.color" ,    glm::vec4(0)     ); //Invisible
     
     if(mouse.isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y + nodeEditorPanel.resultScale.y + 5000,1.f))){
         cursorOnBarriers = true;
@@ -212,24 +213,24 @@ bool Node::renderBarriers(Panel &nodeEditorPanel,Mouse &mouse){
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
     //Top
-    buttonShader.setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y - nodeEditorPanel.resultScale.y - 5000,1.f)); //To the Top
-    buttonShader.setVec2("scale",     glm::vec2(5000));
+    ShaderSystem::buttonShader().setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y - nodeEditorPanel.resultScale.y - 5000,1.f)); //To the Top
+    ShaderSystem::buttonShader().setVec2("scale",     glm::vec2(5000));
     if(mouse.isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y - nodeEditorPanel.resultScale.y - 5000,1.f))){
         cursorOnBarriers = true;
     }
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
     //Left
-    buttonShader.setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x - nodeEditorPanel.resultScale.x - 5000,nodeEditorPanel.resultPos.y,1.f));
-    buttonShader.setVec2("scale",     glm::vec2(5000));
+    ShaderSystem::buttonShader().setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x - nodeEditorPanel.resultScale.x - 5000,nodeEditorPanel.resultPos.y,1.f));
+    ShaderSystem::buttonShader().setVec2("scale",     glm::vec2(5000));
     if(mouse.isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x - nodeEditorPanel.resultScale.x - 5000,nodeEditorPanel.resultPos.y,1.f))){
         cursorOnBarriers = true;
     }
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
     //Right
-    buttonShader.setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x + nodeEditorPanel.resultScale.x + 5000,nodeEditorPanel.resultPos.y,1.f));
-    buttonShader.setVec2("scale",     glm::vec2(5000));
+    ShaderSystem::buttonShader().setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x + nodeEditorPanel.resultScale.x + 5000,nodeEditorPanel.resultPos.y,1.f));
+    ShaderSystem::buttonShader().setVec2("scale",     glm::vec2(5000));
     if(mouse.isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x + nodeEditorPanel.resultScale.x + 5000,nodeEditorPanel.resultPos.y,1.f)))
         cursorOnBarriers = true;
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -275,7 +276,7 @@ void Node::uploadNewIOs(Model &model, ColorPalette colorPalette){
     std::vector <NodeIO> meshOutputNodeInputElements;
     for (size_t i = 0; i < model.meshes.size(); i++)
     {
-        meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,buttonShader,model.meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,buttonShader,videoScale,0));
+        meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,model.meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,videoScale,0));
     }
 
     //Clear the IOs vector

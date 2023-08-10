@@ -29,21 +29,20 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Elements/Elements.hpp"
 #include "UTIL/Util.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 /// @brief renders the text
-/// @param shader 
-void TextRenderer::renderText(Shader shader){
-	rndrTxt(shader,0);
+void TextRenderer::renderText(){
+	rndrTxt(0);
 }
 
 /// @brief text rendering for the textbox
-/// @param shader 
 /// @param textPosCharIndex 
-void TextRenderer::renderText(Shader shader,int &textPosCharIndex, glm::vec4 textColor){
+void TextRenderer::renderText(int &textPosCharIndex, glm::vec4 textColor){
 	//If the active char is not equal to the active char 2 the chars between them will be selected
 
 	//Get the position of the chars from the text (w axis will contain the position of the char at the index of activeChar2)
-	rndrTxt(shader,textPosCharIndex);
+	rndrTxt(textPosCharIndex);
 	
 	//If textbox is active update the timer
 	if(textDataActive){
@@ -55,8 +54,8 @@ void TextRenderer::renderText(Shader shader,int &textPosCharIndex, glm::vec4 tex
 
 	//Change the alpha value of the insertion pointer cursor 
 	textColor.a = 0.5;
-    shader.setVec4("properties.color2"  ,     textColor    );
+    ShaderSystem::buttonShader().setVec4("properties.color2"  ,     textColor    );
 
 	//Render the insertion pointer cursor
-	renderInsertionPointCursor(shader,textPosCharIndex);
+	renderInsertionPointCursor(textPosCharIndex);
 }

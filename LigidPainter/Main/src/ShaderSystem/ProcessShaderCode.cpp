@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 
 #include "UTIL/Util.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 //forward decleration for the util function
 std::string readTheWord(std::string text, size_t &i);

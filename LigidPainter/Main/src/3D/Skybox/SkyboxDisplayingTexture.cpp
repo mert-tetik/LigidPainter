@@ -29,14 +29,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
+#include "ShaderSystem/Shader.hpp"
 
-
-void Skybox::createDisplayingTxtr(Shader skyboxBall,Model &sphereModel,glm::vec2 windowScale){
-		//Update the material texture
-
+void Skybox::createDisplayingTxtr(Model &sphereModel, glm::vec2 windowScale){
 	glActiveTexture(GL_TEXTURE0);
 	if(displayingTexture == 0)
-	glGenTextures(1,&displayingTexture);
+		glGenTextures(1,&displayingTexture);
 	glBindTexture(GL_TEXTURE_2D,displayingTexture);
 	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -65,7 +63,7 @@ void Skybox::createDisplayingTxtr(Shader skyboxBall,Model &sphereModel,glm::vec2
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	skyboxBall.use();
+	ShaderSystem::skyboxBall().use();
 	glm::mat4 view = glm::lookAt(glm::vec3(3.f,0,0), 
 									glm::vec3(0), 
 									glm::vec3(0.0, 1.0, 0.0));
@@ -78,23 +76,22 @@ void Skybox::createDisplayingTxtr(Shader skyboxBall,Model &sphereModel,glm::vec2
 										0.1f);
 
 
-	skyboxBall.setVec3("viewPos",viewPos);
-	skyboxBall.setMat4("view",view);
-	skyboxBall.setMat4("projection",projectionMatrix);
+	ShaderSystem::skyboxBall().setVec3("viewPos",viewPos);
+	ShaderSystem::skyboxBall().setMat4("view",view);
+	ShaderSystem::skyboxBall().setMat4("projection",projectionMatrix);
 
-	// skyboxBall.setInt("useTransformUniforms",0);
+	//ShaderSystem::skyboxBall().setInt("useTransformUniforms",0);
 
 	glm::mat4 modelMatrix = glm::mat4(1);
-	skyboxBall.setMat4("modelMatrix",modelMatrix);
+	ShaderSystem::skyboxBall().setMat4("modelMatrix",modelMatrix);
 	
-	skyboxBall.setInt("skybox",0);
+	ShaderSystem::skyboxBall().setInt("skybox",0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,ID);
 	
 	sphereModel.Draw();
 	
 	glGenerateMipmap(GL_TEXTURE_2D);
-	
 
 	//Finish
 	//buttonShader.use();

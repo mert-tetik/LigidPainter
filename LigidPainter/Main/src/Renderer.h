@@ -65,11 +65,6 @@ public:
     Model sphereModel; 
 
     /*!
-        @brief Holds all the shaders
-    */
-    Shaders shaders; 
-
-    /*!
         @brief Everything related to the mouse is done via that class 
     */
     Mouse mouse; 

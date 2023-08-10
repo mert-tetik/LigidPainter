@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtx/string_cast.hpp>
 
 #include "GUI/Elements/Elements.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 #include <string>
 #include <iostream>
@@ -44,50 +45,50 @@ void Button::render(
                     ){
     
     //Set the transform data (used by vertex shader)
-    shader.setVec3("pos"    ,     resultPos );
-    shader.setVec2("scale"  ,     resultScale);
+    ShaderSystem::buttonShader().setVec3("pos"    ,     resultPos );
+    ShaderSystem::buttonShader().setVec2("scale"  ,     resultScale);
     
     if(clickState1)//If button is pressed
-        shader.setVec4("properties.color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
+        ShaderSystem::buttonShader().setVec4("properties.color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
     else
-        shader.setVec4("properties.color"  ,     color     ); //Default button color
+        ShaderSystem::buttonShader().setVec4("properties.color"  ,     color     ); //Default button color
     
 
-    shader.setVec4("properties.color2"  ,     color2     ); //Second color that is used by hover or click animations
+    ShaderSystem::buttonShader().setVec4("properties.color2"  ,     color2     ); //Second color that is used by hover or click animations
     
 
     if(animationStyle == 1) //If hover or clicked change the color of the button
-        shader.setFloat("properties.colorMixVal"  ,     (clickedMixVal + hoverMixVal)/2.f   );
+        ShaderSystem::buttonShader().setFloat("properties.colorMixVal"  ,     (clickedMixVal + hoverMixVal)/2.f   );
     else if(animationStyle == 2) //If hover or clicked change the color of the button
-        shader.setFloat("properties.colorMixVal"  ,     (hover/2.f)   );
+        ShaderSystem::buttonShader().setFloat("properties.colorMixVal"  ,     (hover/2.f)   );
     else //If clicked change the color of the button
-        shader.setFloat("properties.colorMixVal"  ,     (clickedMixVal)   );
+        ShaderSystem::buttonShader().setFloat("properties.colorMixVal"  ,     (clickedMixVal)   );
 
 
-    shader.setFloat("properties.radius",     resultRadius    );
+    ShaderSystem::buttonShader().setFloat("properties.radius",     resultRadius    );
 
 
     if(outline)
-        shader.setInt("properties.outline.state" ,     1      ); 
+        ShaderSystem::buttonShader().setInt("properties.outline.state" ,     1      ); 
     else if(outlineExtra)
-        shader.setInt("properties.outline.state" ,     2      ); 
+        ShaderSystem::buttonShader().setInt("properties.outline.state" ,     2      ); 
     else
-        shader.setInt("properties.outline.state" ,    0      ); 
+        ShaderSystem::buttonShader().setInt("properties.outline.state" ,    0      ); 
     
 
     //Outline extra color (affected by the colorMixVal)
-    shader.setVec3("properties.outline.color" ,     outlineColor     );  
+    ShaderSystem::buttonShader().setVec3("properties.outline.color" ,     outlineColor     );  
     
     
-    shader.setVec3("properties.outline.color2" ,     outlineColor2     );   
+    ShaderSystem::buttonShader().setVec3("properties.outline.color2" ,     outlineColor2     );   
 
 
     if(animationStyle == 0) //Increase the thicness of the button if hover
-        shader.setFloat("properties.outline.thickness" ,    resultOutlineThickness + hoverMixVal*2.f ); 
+        ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness + hoverMixVal*2.f ); 
     else if(animationStyle == 2)
-        shader.setFloat("properties.outline.thickness" ,    resultOutlineThickness + clickedMixVal*2.f ); 
+        ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness + clickedMixVal*2.f ); 
     else  //Set the thickness value of the button
-        shader.setFloat("properties.outline.thickness" ,    resultOutlineThickness); 
+        ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness); 
    
     
     //Render
@@ -114,8 +115,8 @@ bool Button::renderTheTexture(
                                 float &textureRadius
                             ){
         
-    shader.setVec4("properties.color"  ,     glm::vec4(0)     );
-    shader.setVec4("properties.color2"  ,     glm::vec4(0)     );
+    ShaderSystem::buttonShader().setVec4("properties.color"  ,     glm::vec4(0)     );
+    ShaderSystem::buttonShader().setVec4("properties.color2"  ,     glm::vec4(0)     );
 
 
     //Render the texture
@@ -158,12 +159,12 @@ bool Button::renderTheTexture(
         resultPosTexture.z += 0.02f; 
 
         //Tell the button shader to render the texture
-        shader.setInt("states.renderTexture"  ,     1    );
-        shader.setInt("properties.txtr"  ,     0    );
+        ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     1    );
+        ShaderSystem::buttonShader().setInt("properties.txtr"  ,     0    );
 
         //Set transform data of the texture
-        shader.setVec3("pos"    ,     resultPosTexture);
-        shader.setVec2("scale"  ,     resultScaleTexture);
+        ShaderSystem::buttonShader().setVec3("pos"    ,     resultPosTexture);
+        ShaderSystem::buttonShader().setVec2("scale"  ,     resultScaleTexture);
         
         //Bind the texture to the slot 0
         glActiveTexture(GL_TEXTURE0);
@@ -173,7 +174,7 @@ bool Button::renderTheTexture(
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
         //Tell the button shader to rendering the texture is done
-        shader.setInt("states.renderTexture"  ,     0    );
+        ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
     }
 
     return renderTheText;
@@ -236,7 +237,6 @@ void Button::renderTextAndTexture(
     //Load the text data
     if(textAlignLeft)
         textRenderer.loadTextData(  
-                                    shader,
                                     text,
                                     glm::vec3(resultPos.x - resultScale.x,resultPos.y,resultPos.z),
                                     false,
@@ -247,7 +247,6 @@ void Button::renderTextAndTexture(
                                   );
     else
         textRenderer.loadTextData(  
-                                    shader,
                                     text,
                                     glm::vec3(resultPos.x,resultPos.y,resultPos.z),
                                     false,
@@ -263,10 +262,10 @@ void Button::renderTextAndTexture(
     
     //Render the text
     if(renderTheText){
-        shader.setVec4("properties.color"  ,     textColor     );
-        shader.setVec4("properties.color2"  ,     textColor2     );
+        ShaderSystem::buttonShader().setVec4("properties.color"  ,     textColor     );
+        ShaderSystem::buttonShader().setVec4("properties.color2"  ,     textColor2     );
         
-        textRenderer.renderText(shader);
+        textRenderer.renderText();
     }
 }
 

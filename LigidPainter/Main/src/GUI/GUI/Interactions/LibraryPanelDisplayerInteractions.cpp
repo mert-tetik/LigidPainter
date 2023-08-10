@@ -39,7 +39,6 @@ void libraryPanelDisplayerInteraction(
                                         Library &library, 
                                         Model &model, 
                                         ColorPalette& colorPalette, 
-                                        Shaders &shaders, 
                                         int &textureRes,
                                         NewTextureDialog &newTextureDialog,
                                         AppTextures &appTextures,
@@ -95,7 +94,7 @@ void libraryPanelDisplayerInteraction(
                                             )
                                     );
             
-            library.brushes[library.brushes.size()-1].updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
+            library.brushes[library.brushes.size()-1].updateDisplayTexture();
             
         }
         if(library.selectedElementIndex == 3){ //3D Models
@@ -127,7 +126,7 @@ void libraryPanelDisplayerInteraction(
 
             if(test.size()){
                 Material importedMaterial(textureRes, "", 0);
-                if(FileHandler::readLGDMATERIALFile(test, importedMaterial, colorPalette, shaders.buttonShader, appTextures, appMaterialModifiers, library.materials))
+                if(FileHandler::readLGDMATERIALFile(test, importedMaterial, colorPalette, appTextures, appMaterialModifiers, library.materials))
                     library.addMaterial(importedMaterial);
             }
         }
@@ -138,7 +137,7 @@ void libraryPanelDisplayerInteraction(
             if(test.size()){
                 Brush importedBrush;
                 if(FileHandler::readLGDBRUSHFile(test,importedBrush)){
-                    importedBrush.updateDisplayTexture(shaders.twoDPainting,shaders.buttonShader);
+                    importedBrush.updateDisplayTexture();
                     library.addBrush(importedBrush);
                 }
             }

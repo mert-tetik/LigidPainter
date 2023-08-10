@@ -57,8 +57,6 @@ struct Scene;
 class Panel;
 /// @brief forward declared Mesh class
 class Mesh;
-/// @brief forward declared Shader class
-class Shader;
 /// @brief forward declared AppMaterialModifiers struct
 struct AppMaterialModifiers;
 /// @brief forward declared Context struct
@@ -177,10 +175,10 @@ namespace UTIL{
     /// @param index remove the meshNodeScene[index]
     void deleteNode(std::vector<Node>& meshNodeScene, int index);
 
-    Mesh processNode(Node &node, std::vector<Node> &nodeScene, Library library, Mesh& mesh, Shader heightToNormalShader, Shader boundaryExpandingShader, Scene scene, int textureRes);
+    Mesh processNode(Node &node, std::vector<Node> &nodeScene, Library library, Mesh& mesh,   Scene scene, int textureRes);
 
     /// @brief Updates the result textures of the every input of the mesh node
-    void updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library, Shader heightToNormalShader, Shader boundaryExpandingShader, Scene scene, int textureRes, int updateNodeI);
+    void updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library,   Scene scene, int textureRes, int updateNodeI);
 }
 
 
@@ -330,63 +328,9 @@ public:
 
     std::vector<glm::vec3> getMaterialIDPalette();
 
-    void removeSeams(Mesh& mesh, int textureResolution, Shader boundaryExpandingShader);
-    void removeSeams(Mesh& mesh, glm::ivec2 textureResolution, Shader boundaryExpandingShader);
+    void removeSeams(Mesh& mesh, int textureResolution);
+    void removeSeams(Mesh& mesh, glm::ivec2 textureResolution);
 };
-
-
-/// @brief Manages shader programs
-class Shader
-{
-public:
-    //OpenGL shader pipeline : .vert -> .tc -> .te -> .geom -> .frag
-
-    /// @brief Id of the shader in an OpenGL context
-    unsigned int ID = 0;
-
-    /// @brief Default constructor (is not used) 
-    Shader();
-
-    /// @brief Create the shader program compiling the shader code in the given paths (give nullptr if the shader is not used)
-    /// @param vertexPath Vertex shader file (.vert file)
-    /// @param fragmentPath Fragment shader file (.frag file)
-    /// @param geometryPath Geometry shader file (.geom file)
-    /// @param tessControlPath Tessellation control shader file (.tc file)
-    /// @param tessEvalPath Tessellation evaluation shader file (.te file)
-    Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath, const char* tessControlPath, const char* tessEvalPath);
-
-    /// @brief replace the #pragma LIGID_INCLUDE with the code in the given path (LIGID_INCLUDE(givenPath))
-    /// @param code the code
-    void processShaderCode(std::string &code);
-
-    /// @brief use the shader program 
-    void use();
-    
-    // Utility uniform functions
-    
-    void setBool(const std::string &name, bool value);
-    void setInt(const std::string &name, int value);
-    void setFloat(const std::string &name, float value);
-    void setVec2(const std::string &name, const glm::vec2 &value);
-    void setVec2(const std::string &name, float x, float y);
-    void setVec3(const std::string &name, const glm::vec3 &value);
-    void setVec3(const std::string &name, float x, float y, float z);
-    void setVec4(const std::string &name, const glm::vec4 &value);
-    void setVec4(const std::string &name, float x, float y, float z, float w);
-    void setMat2(const std::string &name, const glm::mat2 &mat);
-    void setMat3(const std::string &name, const glm::mat3 &mat);
-    void setMat4(const std::string &name, const glm::mat4 &mat);
-    
-
-private:
-    /// @brief Checks if an error is occured (print the error msg to the terminal)
-    /// @param shader shader id
-    /// @param type indicate if compiling a .frag file, .tc file or .vert file etc. (to print to the terminal) 
-    void checkCompileErrors(GLuint shader, std::string type);
-};
-
-
-
 
 class Project
 {
@@ -416,14 +360,13 @@ public:
     /// @brief load an existing project using ligid file path
     /// @param ligidFilePath path to the ligid file
     /// @param library library structure (holds the textures / materials / brushes & TDModels)
-    /// @param shaders shaders structure (holds all the shader programs)
     /// @param model The 3D models
     /// @param appTextures appTextures structure (holds all the textures used by the GUI)
     /// @param colorPalette colorPalette class (color theme of the ligidpainter)
     /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
     /// @param meshNodeScene The main meshNodeScene which has the mesh node
     /// @return 
-    bool loadProject(std::string ligidFilePath,Library &library,Shaders shaders,Model &model,AppTextures appTextures,
+    bool loadProject(std::string ligidFilePath,Library &library,Model &model,AppTextures appTextures,
                     ColorPalette colorPalette,int &textureRes,std::vector<Node> &meshNodeScene, glm::vec2 videoScale,
                     AppMaterialModifiers& appMaterialModifiers);
 
@@ -447,7 +390,7 @@ public:
     /// @param meshNodeScene 
     /// @param textureRes 
     /// @return True if success
-    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,std::vector<Node> &meshNodeScene,  int& textureRes, Shaders shaders, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
+    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,std::vector<Node> &meshNodeScene,  int& textureRes,  ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
     
     /// @brief Write ligid file to the project folder
     /// @param meshNodeScene 
@@ -561,7 +504,7 @@ public:
     * @param depth3DShader depth shader
     * @param textureUpdatingShader texture updating shader
     */
-    void initPainter(glm::vec2 videoScale, Shader paintingShader, Shader buttonShader, Shader tdModelShader, Shader depth3DShader, Shader textureUpdatingShader, Shader twoDPaintingModeAreaShader, Shader boundaryExpandingShader);
+    void initPainter(glm::vec2 videoScale);
     
     /*! 
     * @brief do painting (paint 2D). Called every frame if painting conditions are set. 
@@ -607,17 +550,6 @@ private:
     
     /// @brief primary monitor resolution data
     glm::vec2 videoScale;
-
-
-    //Shaders used by the painter class
-
-    Shader paintingShader;
-    Shader buttonShader;
-    Shader tdModelShader;
-    Shader depth3DShader;
-    Shader textureUpdatingShader;
-    Shader twoDPaintingModeAreaShader;
-    Shader boundaryExpandingShader;
 
     /// @brief renderbuffer object used to depth test (used to create the depth texture)
     unsigned int depthRBO; 
@@ -746,13 +678,13 @@ public:
           std::string title, Texture texture);
 
     /// @brief Updates the displaying texture using brush properties.
-    void updateDisplayTexture(Shader paintingShader, Shader buttonShader);
+    void updateDisplayTexture();
 
     /// @brief move brush properties to the painting panel
     void useBrush(Panel &paintingPanel);
 
     /// @brief move painting panel brush properties to the class's brush properties
-    void applyToBrush(Panel &paintingPanel, Shaders shaders);
+    void applyToBrush(Panel &paintingPanel);
 };
 
 /// @brief handles 2D square vertex objects.
@@ -798,7 +730,7 @@ public:
     void unbindBuffers();
     
     /// @brief Draw the square (is not used) 
-    void draw(Shader shader,glm::vec3 pos,glm::vec2 scale);
+    void draw(glm::vec3 pos, glm::vec2 scale);
 };
 
 
@@ -888,56 +820,6 @@ struct Context{
     LigidWindow window;
     glm::ivec2 windowScale;
 };
-struct Shaders{
-    Shader tdModelShader;
-    Shader skyboxShader;
-    Shader skyboxBall;
-    Shader buttonShader;
-    Shader prefilteringShader;
-    Shader connectionCurve;
-    Shader colorPicker;
-    Shader twoDPainting;
-    Shader depth3D;
-    Shader textureUpdatingShader;
-    Shader twoDPaintingModeAreaShader;
-    Shader circleShader;
-    Shader dotsShader;
-    Shader heightToNormalMap;
-    Shader boundaryExpandingShader;
-
-    void loadShaders(){
-        this->tdModelShader =                 Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/PBR.frag"                       ,nullptr    ,nullptr,   nullptr      );
-
-        this->depth3D =                       Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/Depth3D.frag"                   ,nullptr    ,nullptr,   nullptr      );
-
-        this->skyboxBall =                    Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/SkyboxBall.frag"                ,nullptr    ,nullptr,   nullptr      );
-
-        this->textureUpdatingShader =         Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag"           ,nullptr    ,nullptr,   nullptr      );
-
-        this->skyboxShader =                  Shader("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert"          ,   "LigidPainter/Resources/Shaders/aFrag/Skybox.frag"                    ,nullptr    ,nullptr,   nullptr      );
-
-        this->prefilteringShader =            Shader("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert"          ,   "LigidPainter/Resources/Shaders/aFrag/PrefilterSkybox.frag"           ,nullptr    ,nullptr,   nullptr      );
-
-        this->buttonShader =                  Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Button.frag"                    ,nullptr    ,nullptr,   nullptr      );
-
-        this->connectionCurve =               Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ConnectionCurve.frag"           ,nullptr    ,nullptr,   nullptr      );
-
-        this->colorPicker =                   Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/ColorPicker.frag"               ,nullptr    ,nullptr,   nullptr      );
-
-        this->twoDPainting =                  Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/2DPainting.frag"                ,nullptr    ,nullptr,   nullptr      );
-
-        this->twoDPaintingModeAreaShader =    Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag"           ,nullptr    ,nullptr,   nullptr      );
-
-        this->circleShader =                  Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Circle.frag"                    ,nullptr    ,nullptr,   nullptr      );
-
-        this->dotsShader =                    Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/Dots.frag"                      ,nullptr    ,nullptr,   nullptr      );
-        
-        this->heightToNormalMap =             Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/HeightToNormal.frag"            ,nullptr    ,nullptr,   nullptr      );
-    
-        this->boundaryExpandingShader       = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag", nullptr, nullptr, nullptr);
-
-    }
-};
 
 struct Websites{
     Website ligidTools;
@@ -983,7 +865,7 @@ namespace FileHandler{
     
     Model readFBXFile(std::string path);
     
-    bool readLGDMATERIALFile(std::string path, Material& material, ColorPalette colorPalette, Shader buttonShader, AppTextures appTextures, 
+    bool readLGDMATERIALFile(std::string path, Material& material, ColorPalette colorPalette,  AppTextures appTextures, 
                              AppMaterialModifiers appMaterialModifiers, const std::vector<Material> materials);
     bool writeLGDMATERIALFile(std::string path, Material &material);
     

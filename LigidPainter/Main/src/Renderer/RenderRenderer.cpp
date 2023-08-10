@@ -29,6 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
+#include "ShaderSystem/Shader.hpp"
 
 bool _ligid_renderer_render_first_frame = true;
 
@@ -83,7 +84,7 @@ void Renderer::render(){
         glDisable(GL_CULL_FACE);
 
     //3D Model    
-    shaders.tdModelShader.use();
+    ShaderSystem::tdModelShader().use();
 
     //Bind the skybox
     glActiveTexture(GL_TEXTURE0);
@@ -173,31 +174,31 @@ void Renderer::render(){
         else if(painter.selectedDisplayingModeIndex == 1)
             glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[4].elements[5].button.texture.ID);
 
-        shaders.tdModelShader.setInt("paintedTxtrStateIndex", painter.selectedPaintingChannelIndex);
+        ShaderSystem::tdModelShader().setInt("paintedTxtrStateIndex", painter.selectedPaintingChannelIndex);
         
         if(painter.selectedDisplayingModeIndex == 2){
-            shaders.tdModelShader.setInt("paintedTxtrStateIndex", 0);
-            shaders.tdModelShader.setInt("displayingMode", 1);
+            ShaderSystem::tdModelShader().setInt("paintedTxtrStateIndex", 0);
+            ShaderSystem::tdModelShader().setInt("displayingMode", 1);
             glActiveTexture(GL_TEXTURE2);
             glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
         }
         else{
-            shaders.tdModelShader.setInt("displayingMode", 0);
+            ShaderSystem::tdModelShader().setInt("displayingMode", 0);
         }
         
         if(painter.selectedDisplayingModeIndex == 2 | 1){
             if(painter.selectedMeshIndex == i)
-                shaders.tdModelShader.setFloat("opacity", 1.f);
+                ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
             else
-                shaders.tdModelShader.setFloat("opacity", 0.2f);
+                ShaderSystem::tdModelShader().setFloat("opacity", 0.2f);
         }
         else
-            shaders.tdModelShader.setFloat("opacity", 1.f);
+            ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
 
         //Draw the mesh
         model.meshes[i].Draw();
     }
-    shaders.tdModelShader.setFloat("opacity", 1.f);
+    ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
 
 
     //Clear the depth buffer before rendering the UI elements (prevent coliding)
@@ -328,33 +329,33 @@ void Renderer::updateViewport(){
 void Renderer::set3DUniforms(){
     
     //3D Model Shader
-    shaders.tdModelShader.use();
-    //shaders.tdModelShader.setInt("render2D", 0);
-    shaders.tdModelShader.setInt("skybox",0);
-    shaders.tdModelShader.setInt("prefilterMap",1);
-    shaders.tdModelShader.setInt("albedoTxtr",2);
-    shaders.tdModelShader.setInt("roughnessTxtr",3);
-    shaders.tdModelShader.setInt("metallicTxtr",4);
-    shaders.tdModelShader.setInt("normalMapTxtr",5);
-    shaders.tdModelShader.setInt("heightMapTxtr",6);
-    shaders.tdModelShader.setInt("ambientOcclusionTxtr",7);
-    shaders.tdModelShader.setInt("paintingTexture",8);
-    shaders.tdModelShader.setInt("depthTexture",9);
-    shaders.tdModelShader.setVec3("viewPos",scene.camera.cameraPos);
-    shaders.tdModelShader.setMat4("view",scene.viewMatrix);
-    shaders.tdModelShader.setMat4("projection",scene.projectionMatrix);
+    ShaderSystem::tdModelShader().use();
+    //ShaderSystem::tdModelShader().setInt("render2D", 0);
+    ShaderSystem::tdModelShader().setInt("skybox",0);
+    ShaderSystem::tdModelShader().setInt("prefilterMap",1);
+    ShaderSystem::tdModelShader().setInt("albedoTxtr",2);
+    ShaderSystem::tdModelShader().setInt("roughnessTxtr",3);
+    ShaderSystem::tdModelShader().setInt("metallicTxtr",4);
+    ShaderSystem::tdModelShader().setInt("normalMapTxtr",5);
+    ShaderSystem::tdModelShader().setInt("heightMapTxtr",6);
+    ShaderSystem::tdModelShader().setInt("ambientOcclusionTxtr",7);
+    ShaderSystem::tdModelShader().setInt("paintingTexture",8);
+    ShaderSystem::tdModelShader().setInt("depthTexture",9);
+    ShaderSystem::tdModelShader().setVec3("viewPos",scene.camera.cameraPos);
+    ShaderSystem::tdModelShader().setMat4("view",scene.viewMatrix);
+    ShaderSystem::tdModelShader().setMat4("projection",scene.projectionMatrix);
     glm::mat4 modelMatrix = glm::mat4(1);
-    shaders.tdModelShader.setMat4("modelMatrix",modelMatrix);
+    ShaderSystem::tdModelShader().setMat4("modelMatrix",modelMatrix);
 
     //Shader (used to render the model with depth)
-    shaders.depth3D.use();
-    shaders.depth3D.setMat4("view",scene.viewMatrix);
-    shaders.depth3D.setMat4("projection",scene.projectionMatrix);
+    ShaderSystem::depth3D().use();
+    ShaderSystem::depth3D().setMat4("view",scene.viewMatrix);
+    ShaderSystem::depth3D().setMat4("projection",scene.projectionMatrix);
 
     //Skybox ball shader 
-    shaders.skyboxBall.use();
-    shaders.skyboxBall.setMat4("view",scene.viewMatrix);
-    shaders.skyboxBall.setMat4("projection",scene.projectionMatrix);
+    ShaderSystem::skyboxBall().use();
+    ShaderSystem::skyboxBall().setMat4("view",scene.viewMatrix);
+    ShaderSystem::skyboxBall().setMat4("projection",scene.projectionMatrix);
 
 }
 
@@ -368,14 +369,14 @@ void Renderer::set3DUniforms(){
 void Renderer::renderSkyBox(){
     
     //Skybox shader
-    shaders.skyboxShader.use();
-    shaders.skyboxShader.setMat4("view",scene.viewMatrix);
-    shaders.skyboxShader.setMat4("projection",scene.projectionMatrix);
-    shaders.skyboxShader.setMat4("transformMatrix",skybox.transformMatrix);
-    shaders.skyboxShader.setFloat("lod",skybox.lod);
-    shaders.skyboxShader.setVec3("bgColor",skybox.bgColor);
-    shaders.skyboxShader.setFloat("opacity",skybox.opacity);
-    shaders.skyboxShader.setInt("skybox",0);
+    ShaderSystem::skyboxShader().use();
+    ShaderSystem::skyboxShader().setMat4("view",scene.viewMatrix);
+    ShaderSystem::skyboxShader().setMat4("projection",scene.projectionMatrix);
+    ShaderSystem::skyboxShader().setMat4("transformMatrix",skybox.transformMatrix);
+    ShaderSystem::skyboxShader().setFloat("lod",skybox.lod);
+    ShaderSystem::skyboxShader().setVec3("bgColor",skybox.bgColor);
+    ShaderSystem::skyboxShader().setFloat("opacity",skybox.opacity);
+    ShaderSystem::skyboxShader().setInt("skybox",0);
     
     //Render the skybox
     skybox.draw(true);

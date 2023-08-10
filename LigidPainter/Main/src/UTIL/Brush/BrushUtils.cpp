@@ -42,7 +42,7 @@ void Brush::useBrush(Panel &paintingPanel){
     paintingPanel.sections[2].elements[2].checkBox.clickState1  =   this->sinWavePattern;
 }
 
-void Brush::applyToBrush(Panel &paintingPanel, Shaders shaders){
+void Brush::applyToBrush(Panel &paintingPanel){
     this->sizeJitter         =   paintingPanel.sections[2].elements[0].rangeBar.value;          
     this->scatter            =   paintingPanel.sections[2].elements[3].rangeBar.value;          
     this->fade               =   paintingPanel.sections[2].elements[1].rangeBar.value;          
@@ -52,5 +52,5 @@ void Brush::applyToBrush(Panel &paintingPanel, Shaders shaders){
     this->individualTexture  =   paintingPanel.sections[2].elements[6].checkBox.clickState1;    
     this->sinWavePattern     =   paintingPanel.sections[2].elements[2].checkBox.clickState1;    
 
-    updateDisplayTexture(shaders.twoDPainting, shaders.buttonShader);
+    updateDisplayTexture();
 }

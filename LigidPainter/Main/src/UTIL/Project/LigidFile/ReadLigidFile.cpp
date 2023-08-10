@@ -33,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 //forward declerations of the util functions
-void readmeshNodeSceneData(std::ifstream &rf, std::vector<Node> &meshNodeScene, Shaders shaders, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
+void readmeshNodeSceneData(std::ifstream &rf, std::vector<Node> &meshNodeScene,  ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
 
 bool Project::readLigidFile(
                                 std::string path,
@@ -41,7 +41,7 @@ bool Project::readLigidFile(
                                 time_t &lastOpenedDate, 
                                 std::vector<Node> &meshNodeScene, 
                                 int& textureRes,
-                                Shaders shaders, 
+                                 
                                 ColorPalette colorPalette, 
                                 AppTextures appTextures, 
                                 glm::vec2 videoScale
@@ -81,7 +81,7 @@ bool Project::readLigidFile(
         rf.read(reinterpret_cast<char*>(   &lastOpenedDate    ),sizeof(time_t));
 
         //!meshNodeScene
-        readmeshNodeSceneData(rf, meshNodeScene, shaders, colorPalette, appTextures, videoScale);
+        readmeshNodeSceneData(rf, meshNodeScene, colorPalette, appTextures, videoScale);
 
         //!Texture resolution
         rf.read(reinterpret_cast<char*>(   &textureRes    ),sizeof(int));
@@ -91,7 +91,7 @@ bool Project::readLigidFile(
 }
 
 
-void readmeshNodeSceneData(std::ifstream &rf, std::vector<Node> &meshNodeScene, Shaders shaders, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale){
+void readmeshNodeSceneData(std::ifstream &rf, std::vector<Node> &meshNodeScene,  ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale){
     
     //Read the node size
     uint64_t nodeSize;
@@ -111,13 +111,9 @@ void readmeshNodeSceneData(std::ifstream &rf, std::vector<Node> &meshNodeScene, 
         Node node = Node(
                             nodeIndex, 
                             0,
-                            shaders.buttonShader,
-                            shaders.connectionCurve,
                             colorPalette,
                             appTextures,
-                            videoScale,
-                            shaders.heightToNormalMap,
-                            shaders.boundaryExpandingShader
+                            videoScale
                         );
 
         //Read the material ID 

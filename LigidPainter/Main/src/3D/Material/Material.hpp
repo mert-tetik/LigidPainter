@@ -18,13 +18,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define LGD_MATERIAL_HPP
 
 #include "UTIL/Util.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 /// @brief Front decleration for the @ref Section structure
 struct Section;
 
 /// @brief Front decleration for the @ref Mesh class
 class Mesh;
-
 
 //-------------- MATERIAL MODIFIER ------------
 
@@ -55,22 +55,22 @@ public:
 
     Texture maskTexture;
 
-    void (*updateMaterialChannels)(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
+    void (*updateMaterialChannels)(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
 
     //Constructors
     MaterialModifier();
-    MaterialModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures,int modifierIndex);
+    MaterialModifier(ColorPalette colorPalette,AppTextures appTextures,int modifierIndex);
 
     //Public member functions
-    std::vector<Section> createTextureModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
-    std::vector<Section> createDustModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
-    std::vector<Section> createAsphaltModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
-    std::vector<Section> createFabricModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
-    std::vector<Section> createMossModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
-    std::vector<Section> createRustModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
-    std::vector<Section> createSkinModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
-    std::vector<Section> createWoodenModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
-    std::vector<Section> createSolidModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures);
+    std::vector<Section> createTextureModifier(ColorPalette colorPalette,AppTextures appTextures);
+    std::vector<Section> createDustModifier(ColorPalette colorPalette,AppTextures appTextures);
+    std::vector<Section> createAsphaltModifier(ColorPalette colorPalette,AppTextures appTextures);
+    std::vector<Section> createFabricModifier(ColorPalette colorPalette,AppTextures appTextures);
+    std::vector<Section> createMossModifier(ColorPalette colorPalette,AppTextures appTextures);
+    std::vector<Section> createRustModifier(ColorPalette colorPalette,AppTextures appTextures);
+    std::vector<Section> createSkinModifier(ColorPalette colorPalette,AppTextures appTextures);
+    std::vector<Section> createWoodenModifier(ColorPalette colorPalette,AppTextures appTextures);
+    std::vector<Section> createSolidModifier(ColorPalette colorPalette,AppTextures appTextures);
 
 };
 
@@ -123,7 +123,7 @@ public:
     Material(int textureRes,std::string title,int ID);
 
     /// @brief Interpret the @ref materialModifiers and write the shader results to the material channels then update the displaying texture
-    void updateMaterialDisplayingTexture(float textureRes, Box box, Context context, Shader buttonShader, Shader tdModelShader, Model sphereModel, Shader heightToNormalShader, Shader boundaryExpandingShader, bool updateMaterial, Camera matCam, int displayingMode);
+    void updateMaterialDisplayingTexture(float textureRes, Box box, Context context, Model sphereModel,   bool updateMaterial, Camera matCam, int displayingMode);
 
     /// @brief Returns a new material with the same material modifiers and different OpenGL texture objects 
     Material duplicateMaterial(int textureRes);

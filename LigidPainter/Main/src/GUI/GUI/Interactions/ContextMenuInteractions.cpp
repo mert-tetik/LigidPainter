@@ -33,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Library &library,
                                 std::vector<Node> &meshNodeScene,Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,
-                                Project& project, int &textureRes, Painter &painter, Shader heightToNormalShader){
+                                Project& project, int &textureRes, Painter &painter){
     anyContextMenuActive = false; 
     for (size_t i = 0; i < contextMenus.size(); i++)//Check all the contextMenus
     {
@@ -77,13 +77,9 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 Node materialNode = Node(
                                             MATERIAL_NODE, 
                                             library.materials[contextMenus[i].selectedElement].uniqueID,
-                                            shaders.buttonShader,
-                                            shaders.connectionCurve,
                                             colorPalette,
                                             appTextures,
-                                            videoScale,
-                                            heightToNormalShader,
-                                            shaders.boundaryExpandingShader
+                                            videoScale
                                         );
                 materialNode.barButton.text = library.materials[contextMenus[i].selectedElement].title;
                 meshNodeScene.push_back(materialNode); //Add material node
@@ -133,7 +129,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
             if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){//Clicked to apply brush settings
 
-                library.brushes[contextMenus[i].selectedElement].applyToBrush(paintingPanel, shaders);
+                library.brushes[contextMenus[i].selectedElement].applyToBrush(paintingPanel);
 
             }
             if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to rename button
@@ -222,12 +218,12 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         if(i == 9 && contextMenus[i].dialogControl.isActive()){//If node scene context menu is active
             //Add material ID node button pressed
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
-                meshNodeScene.push_back(Node(MATERIAL_ID_NODE, 0, shaders.buttonShader, shaders.connectionCurve, colorPalette, appTextures, videoScale, shaders.heightToNormalMap, shaders.boundaryExpandingShader));
+                meshNodeScene.push_back(Node(MATERIAL_ID_NODE, 0, colorPalette, appTextures, videoScale));
                 meshNodeScene[meshNodeScene.size()-1].nodePanel.pos = meshNodeScene[0].nodePanel.pos;
             }
             //Add material mask node button pressed
             else if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){
-                meshNodeScene.push_back(Node(MATERIAL_MASK_NODE, 0, shaders.buttonShader, shaders.connectionCurve, colorPalette, appTextures, videoScale, shaders.heightToNormalMap, shaders.boundaryExpandingShader));
+                meshNodeScene.push_back(Node(MATERIAL_MASK_NODE, 0, colorPalette, appTextures, videoScale));
                 meshNodeScene[meshNodeScene.size()-1].nodePanel.pos = meshNodeScene[0].nodePanel.pos;
             }
         } 

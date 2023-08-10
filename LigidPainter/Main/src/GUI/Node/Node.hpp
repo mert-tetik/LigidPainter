@@ -75,7 +75,7 @@ public:
     int state;
 
     //Constructor
-    NodeIO(std::string title ,Element element,glm::vec4 color,ColorPalette colorPalette,Shader buttonShader,glm::vec2 videoScale,int state);
+    NodeIO(std::string title ,Element element,glm::vec4 color,ColorPalette colorPalette,glm::vec2 videoScale,int state);
 };
 
 //!------------------------------NODE-----------------------------
@@ -96,18 +96,10 @@ private:
     glm::vec2 videoScale;
 
     /// @brief The button shader used for rendering GUI elements
-    Shader buttonShader;  
+      
     
     ColorPalette colorPalette;  
     
-    /// @brief The height map to normal map shader used for processing the materials
-    Shader heightToNormalShader;  
-    
-    Shader boundaryExpandingShader;  
-
-    /// @brief Curve shader used to render node connection curves
-    Shader connectionCurveShader;  
-
     //-------------------- UTILITY FUNCTIONS --------------------
 
     bool renderBarriers(Panel &nodeEditorPanel,Mouse &mouse);
@@ -166,7 +158,7 @@ public:
     * @param appTextures textures used by the LigidPainter
     * @param videoScale primary monitor resolution value
     */
-    Node(int nodeIndex, int materialID, Shader buttonShader, Shader connectionCurveShader, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale, Shader heightToNormalShader, Shader boundaryExpandingShader);
+    Node(int nodeIndex, int materialID, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
 
     /// @brief Render the node & manage inputs & outputs 
     /// @param currentNodeIndex which node is rendered (index of the nodeScene)

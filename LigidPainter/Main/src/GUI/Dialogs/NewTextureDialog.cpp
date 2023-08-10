@@ -30,23 +30,21 @@
 #include "tinyfiledialogs.h"
 
 NewTextureDialog::NewTextureDialog(){}
-NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures){
     this->context = context;
-    this->buttonShader = buttonShader;
     
     //Create the panel
     this->panel = Panel(
-        buttonShader,
         colorPalette,
         {
             {
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,buttonShader, "Color"  , Texture(), 1.f, false)),
-                        Element(TextBox(0,glm::vec2(4,2),colorPalette,buttonShader,"NewTexture",1.f,false),context.window),
-                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2), colorPalette, buttonShader, {"256", "512", "1024", "2048", "4096"} , "Resolution", 1.f), context.window),
-                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2), colorPalette,buttonShader, "Create"  , Texture(), 4.f, true))
+                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Color"  , Texture(), 1.f, false)),
+                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"NewTexture",1.f,false),context.window),
+                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2), colorPalette,  {"256", "512", "1024", "2048", "4096"} , "Resolution", 1.f), context.window),
+                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2), colorPalette, "Create"  , Texture(), 4.f, true))
                     }
                 )
             }
@@ -75,7 +73,7 @@ void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
     
     textureRes = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
 
-    dialogControl.updateStart(buttonShader);
+    dialogControl.updateStart();
     
     //Show the color picker dialog if clicked to the color button
     if(panel.sections[0].elements[0].button.hover && mouse.LClick){
@@ -146,5 +144,5 @@ void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
     //Invert the text color of the color button
     panel.sections[0].elements[0].button.textColor = glm::vec4(glm::vec3(1.) - glm::vec3(panel.sections[0].elements[0].button.color),1);
 
-    dialogControl.updateEnd(timer,buttonShader,0.15f);
+    dialogControl.updateEnd(timer,0.15f);
 }

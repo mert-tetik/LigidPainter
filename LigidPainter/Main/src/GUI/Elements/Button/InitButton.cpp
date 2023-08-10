@@ -49,7 +49,6 @@ Button::Button(){}
 /// @param outlineThickness 
 /// @param keepPressingState 
 Button::Button(
-                    Shader shader,
                     std::string text, 
                     glm::vec2 scale, 
                     glm::vec4 color, 
@@ -69,7 +68,6 @@ Button::Button(
                     bool keepPressingState
                 ){
 
-    this->shader = shader;
     this->text = text;
     this->color = color;
     this->color2 = color2;
@@ -103,14 +101,12 @@ Button::Button(
                     int style,
                     glm::vec2 scale,
                     ColorPalette colorPalette,
-                    Shader shader,
                     std::string text,
                     Texture texture,
                     float panelOffset,
                     bool keepPressingState
                 ){
 
-    this->shader = shader;
     this->text = text;
     this->scale = scale;
     this->texture = texture;

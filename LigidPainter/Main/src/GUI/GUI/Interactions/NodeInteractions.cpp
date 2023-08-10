@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void nodeInteraction(
                         Model &model, 
                         std::vector<Node> &meshNodeScene,
-                        Shaders shaders,
+                        
                         ColorPalette colorPalette,
                         glm::vec2 videoScale,
                         Library library, 
@@ -62,6 +62,6 @@ void nodeInteraction(
         //Update all the connections
         UTIL::updateAllTheNodeConnections(meshNodeScene);
     
-        UTIL::updateNodeResults(meshNodeScene, model, library, shaders.heightToNormalMap, shaders.boundaryExpandingShader, scene, textureRes, -1);
+        UTIL::updateNodeResults(meshNodeScene, model, library, scene, textureRes, -1);
     }
 }

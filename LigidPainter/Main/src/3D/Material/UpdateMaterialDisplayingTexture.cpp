@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 #include <string>
 #include <iostream>
@@ -29,20 +30,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 void Material::updateMaterialDisplayingTexture(
-                                float textureRes,
-                                Box box,
-                                Context context,
-                                Shader buttonShader,
-                                Shader tdModelShader,
-                                Model sphereModel,
-                                Shader heightToNormalShader,
-                                Shader boundaryExpandingShader,
-                                bool updateMaterial,
-                                Camera matCam,
-                                int displayingMode
-                            ){ 
+                                                float textureRes,
+                                                Box box,
+                                                Context context,
+                                                Model sphereModel,
+                                                bool updateMaterial,
+                                                Camera matCam,
+                                                int displayingMode
+                                            )
+{ 
 
-        //Move the camera to the side
+    //Move the camera to the side
     glm::mat4 view = glm::lookAt(matCam.cameraPos, 
                                  glm::vec3(0), 
                                  glm::vec3(0.0, 1.0, 0.0));
@@ -54,12 +52,15 @@ void Material::updateMaterialDisplayingTexture(
                                                     100.f,  //Near (the material is pretty close to the camera actually  ) 
                                                     0.1f    //Far
                                                 );
-
-    if(updateMaterial){
+    
+    //Generates the material channels from scratch if the updateMaterial boolean set to true 
+    if(updateMaterial)
+    {
         //For every modifier the material has (Output every modifier the material has)
+        //TODO : Material - update material function
         for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
         {
-            this->materialModifiers[i].updateMaterialChannels(*this, sphereModel.meshes[0], textureRes, i, projectionMatrix, view, heightToNormalShader, boundaryExpandingShader);
+            this->materialModifiers[i].updateMaterialChannels(*this, sphereModel.meshes[0], textureRes, i, projectionMatrix, view);
         }
     }
     
@@ -78,13 +79,13 @@ void Material::updateMaterialDisplayingTexture(
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     //Use the 3D model rendering shader
-    tdModelShader.use();
+    ShaderSystem::tdModelShader().use();
 
     //Throw the camera data to the shader
-    tdModelShader.setInt("displayingMode", displayingMode);
-    tdModelShader.setVec3("viewPos",matCam.cameraPos);
-    tdModelShader.setMat4("view",view);
-    tdModelShader.setMat4("projection",projectionMatrix);
+    ShaderSystem::tdModelShader().setInt("displayingMode", displayingMode);
+    ShaderSystem::tdModelShader().setVec3("viewPos",matCam.cameraPos);
+    ShaderSystem::tdModelShader().setMat4("view",view);
+    ShaderSystem::tdModelShader().setMat4("projection",projectionMatrix);
     
     //Bind the channels of the material
     glActiveTexture(GL_TEXTURE2);
@@ -103,7 +104,7 @@ void Material::updateMaterialDisplayingTexture(
     //Draw the sphere
     sphereModel.Draw();
     
-    tdModelShader.setInt("displayingMode", 0);
+    ShaderSystem::tdModelShader().setInt("displayingMode", 0);
     
     //Just in case (Is not necessary (probably (I guess))) !!Actually I'm 100% sure that's not necessary but u know. Just in case. lol
     glGenerateMipmap(GL_TEXTURE_2D);
@@ -111,7 +112,7 @@ void Material::updateMaterialDisplayingTexture(
     //!Finish (prepare rendering the GUI)
 
     //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
-    buttonShader.use();
+    ShaderSystem::buttonShader().use();
 
     //Bind the default framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER,0);

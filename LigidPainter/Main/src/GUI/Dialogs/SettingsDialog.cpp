@@ -30,19 +30,18 @@
 
 SettingsDialog::SettingsDialog(){}
 
-SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures){
     this->context = context;
-    this->buttonShader = buttonShader;
     
     //Create the panel
-    this->panel = Panel(buttonShader,colorPalette,{
+    this->panel = Panel(colorPalette,{
         {
             Section(
                 Element(Button()),
                 {
-                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,"Settings",Texture(),0.f,false)), 
+                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Settings",Texture(),0.f,false)), 
 
-                    Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,buttonShader,
+                    Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,
                     {
                         "256",
                         "512",
@@ -51,9 +50,9 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
                         "4096"
                     },"Texture Resolution",4.f),context.window),
                     
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,buttonShader, "VSync"  , 2.f)),
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "VSync"  , 2.f)),
                     
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette,buttonShader, "Backface Culling"  , 2.f)),
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Backface Culling"  , 2.f)),
                 }
             )
         }
@@ -63,7 +62,7 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
 void SettingsDialog::render(LigidWindow originalWindow, ColorPalette colorPalette, Mouse& mouse, Timer timer, TextRenderer &textRenderer,
                             Library &library, glm::vec2 videoScale, AppSettings& settings){
     
-    dialogControl.updateStart(buttonShader);   
+    dialogControl.updateStart();   
 
     //Set the combo box selected index as the textureRes
     int txtrRes = 256;
@@ -102,5 +101,5 @@ void SettingsDialog::render(LigidWindow originalWindow, ColorPalette colorPalett
         dialogControl.unActivate();
     }
 
-    dialogControl.updateEnd(timer,buttonShader,0.15f);   
+    dialogControl.updateEnd(timer,0.15f);   
 }

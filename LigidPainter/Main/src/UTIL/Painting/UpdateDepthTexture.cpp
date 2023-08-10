@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 #include <string>
 #include <fstream>
@@ -55,12 +56,12 @@ void Painter::updateDepthTexture(Model &model, glm::vec2 windowScale){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     //Use the depth 3D shader
-    depth3DShader.use();
+    ShaderSystem::depth3D().use();
     //Since that shader is using the same vertex shader with 3d model shader
 
     //Set the model matrix
     glm::mat4 modelMatrix = glm::mat4(1);
-    depth3DShader.setMat4("modelMatrix",modelMatrix);
+    ShaderSystem::depth3D().setMat4("modelMatrix",modelMatrix);
 
     //Draw the selected mesh in 3D
     if(selectedMeshIndex < model.meshes.size())
@@ -69,7 +70,7 @@ void Painter::updateDepthTexture(Model &model, glm::vec2 windowScale){
     //!Finished
 
     //Set back to default shader
-    buttonShader.use();
+    ShaderSystem::buttonShader().use();
 
     //Delete the capture framebuffer
     glDeleteFramebuffers(1,&captureFBO);

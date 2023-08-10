@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "3D/ThreeD.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 static void initTexture(unsigned int &txtr,int textureRes){
     glActiveTexture(GL_TEXTURE0);
@@ -38,7 +39,7 @@ static void initTexture(unsigned int &txtr,int textureRes){
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-void Mesh::generateUVMask(Shader uvMaskShader){
+void Mesh::generateUVMask(){
     const int resolution = 1024;
     
     initTexture(this->uvMask, resolution);
@@ -52,10 +53,9 @@ void Mesh::generateUVMask(Shader uvMaskShader){
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    uvMaskShader.use();
-    uvMaskShader.setVec4("color", glm::vec4(1.));
-    //TODO Flip???
-    uvMaskShader.setMat4("orthoProjection", glm::ortho(0.f, 1.f, 0.f, 1.f));
+    ShaderSystem::uvMaskShader().use();
+    ShaderSystem::uvMaskShader().setVec4("color", glm::vec4(1.));
+    ShaderSystem::uvMaskShader().setMat4("orthoProjection", glm::ortho(0.f, 1.f, 0.f, 1.f));
 
     this->Draw();
 
@@ -63,7 +63,7 @@ void Mesh::generateUVMask(Shader uvMaskShader){
     glDeleteFramebuffers(1, &FBO);
 }
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, Shader uvMaskShader)
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName)
 {
     initTexture(albedo.ID, 1024);
     initTexture(roughness.ID, 1024);
@@ -79,7 +79,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
     // now that we have all the required data, set the vertex buffers and its attribute pointers.
     setupMesh();
 
-    generateUVMask(uvMaskShader);
+    generateUVMask();
 }
 
 // Render the mesh

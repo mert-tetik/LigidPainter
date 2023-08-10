@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/Elements/Elements.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 #include <string>
 #include <fstream>
@@ -92,7 +93,6 @@ void ComboBox::render(
     
     //Render the combobox title
     textRenderer.loadTextData(
-                                shader,
                                 text,
                                 glm::vec3(resultPos.x ,resultPos.y - resultScale.y,resultPos.z+0.002f),
                                 false,
@@ -104,12 +104,12 @@ void ComboBox::render(
     
     //Set the color of the title
     if(pressed)//If button is pressed
-        shader.setVec4("properties.color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
+        ShaderSystem::buttonShader().setVec4("properties.color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
     else
-        shader.setVec4("properties.color"  ,     color     ); //Default button color
-    shader.setVec4("properties.color2"  ,     color2     ); //Second color that is used by hover or click animations
+        ShaderSystem::buttonShader().setVec4("properties.color"  ,     color     ); //Default button color
+    ShaderSystem::buttonShader().setVec4("properties.color2"  ,     color2     ); //Second color that is used by hover or click animations
 
-    textRenderer.renderText(shader);
+    textRenderer.renderText();
 
     //Render the title barrier
     glm::vec2 textBoxScale = resultScale;
@@ -165,7 +165,6 @@ void ComboBox::render(
 
         //Render the text
         textRenderer.loadTextData(
-                                    shader,
                                     boxText,
                                     glm::vec3(resultPos.x,resultPos.y,resultPos.z + 0.02f),
                                     false,
@@ -175,7 +174,7 @@ void ComboBox::render(
                                     TEXTRENDERER_ALIGNMENT_MID
                                 );
         glDisable(GL_DEPTH_TEST);
-        textRenderer.renderText(shader);
+        textRenderer.renderText();
         glEnable(GL_DEPTH_TEST);
 
         //Just render the first element if not pressed

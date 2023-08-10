@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/Elements/Elements.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 #include <string>
 #include <iostream>
@@ -47,38 +48,38 @@ void Panel::render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &
 
 }
 
-static void drawThePanel(Shader shader, glm::vec3 pos, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, float outlineThickness){
+static void drawThePanel(glm::vec3 pos, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, float outlineThickness){
     
-    shader.setVec3  ("pos", pos);
-    shader.setVec2  ("scale", scale);
-    shader.setVec4  ("properties.color", color);
-    shader.setVec4  ("properties.color2", color);
-    shader.setFloat ("properties.colorMixVal", 0.f);
+    ShaderSystem::buttonShader().setVec3  ("pos", pos);
+    ShaderSystem::buttonShader().setVec2  ("scale", scale);
+    ShaderSystem::buttonShader().setVec4  ("properties.color", color);
+    ShaderSystem::buttonShader().setVec4  ("properties.color2", color);
+    ShaderSystem::buttonShader().setFloat ("properties.colorMixVal", 0.f);
     
-    shader.setFloat ("properties.radius", 10.f);
-    shader.setInt   ("properties.outline.state", 2);
-    shader.setInt   ("outlineExtra", true); 
-    shader.setVec3  ("properties.outline.color" , color2); 
-    shader.setVec3  ("properties.outline.color2" , color2); 
-    shader.setFloat ("properties.outline.thickness" , outlineThickness);
+    ShaderSystem::buttonShader().setFloat ("properties.radius", 10.f);
+    ShaderSystem::buttonShader().setInt   ("properties.outline.state", 2);
+    ShaderSystem::buttonShader().setInt   ("outlineExtra", true); 
+    ShaderSystem::buttonShader().setVec3  ("properties.outline.color" , color2); 
+    ShaderSystem::buttonShader().setVec3  ("properties.outline.color2" , color2); 
+    ShaderSystem::buttonShader().setFloat ("properties.outline.thickness" , outlineThickness);
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-static void drawTheBarriers(Shader shader, glm::vec3 resultPos, glm::vec2 resultScale){
+static void drawTheBarriers(glm::vec3 resultPos, glm::vec2 resultScale){
     
     //Bottom
-    shader.setVec3("pos", glm::vec3(resultPos.x,   resultPos.y + resultScale.y + 5000,   1.f)); 
-    shader.setVec2("scale", glm::vec2(5000));
-    shader.setFloat("properties.radius", 0.f); 
-    shader.setInt("outlineExtra" , false); 
-    shader.setVec4("properties.color", glm::vec4(0)); //Invisible
-    shader.setVec3("properties.outline.color", glm::vec4(0)); //Invisible
+    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x,   resultPos.y + resultScale.y + 5000,   1.f)); 
+    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
+    ShaderSystem::buttonShader().setFloat("properties.radius", 0.f); 
+    ShaderSystem::buttonShader().setInt("outlineExtra" , false); 
+    ShaderSystem::buttonShader().setVec4("properties.color", glm::vec4(0)); //Invisible
+    ShaderSystem::buttonShader().setVec3("properties.outline.color", glm::vec4(0)); //Invisible
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
     //Top
-    shader.setVec3("pos", glm::vec3(resultPos.x,   resultPos.y - resultScale.y - 5000,   1.f));
-    shader.setVec2("scale", glm::vec2(5000));
+    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x,   resultPos.y - resultScale.y - 5000,   1.f));
+    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
 }
@@ -149,12 +150,12 @@ void Panel::drawPanel(
 {
 
     //Draw the panel's itself
-    drawThePanel(this->shader, resultPos, resultScale, this->color, this->color2, this->outlineThickness);
+    drawThePanel(resultPos, resultScale, this->color, this->color2, this->outlineThickness);
 
     /*Render the barriers if the depth texture of the framebuffer will be refreshed at the end of the panel rendering process*/
     if(clearDepthBuffer)
     {
-        drawTheBarriers(shader, resultPos, resultScale);
+        drawTheBarriers(resultPos, resultScale);
     }
 
     //Starting pos
@@ -210,10 +211,9 @@ void Panel::drawPanel(
                     if(isLibraryDisplayer){
                         glm::vec4 textColor = glm::vec4(1) - sections[sI].elements[i].button.color;
                         textColor.a = 1.;
-                        shader.setVec4("properties.color"  ,    textColor      ); //Default button color
+                        ShaderSystem::buttonShader().setVec4("properties.color"  ,    textColor      ); //Default button color
 
                         textRenderer.loadTextData(
-                                                    shader,
                                                     sections[sI].elements[i].button.text,
                                                     glm::vec3(sections[sI].elements[i].button.resultPos.x,sections[sI].elements[i].button.resultPos.y + sections[sI].elements[i].button.resultScale.y/1.4f,sections[sI].elements[i].button.resultPos.z),
                                                     false,
@@ -223,7 +223,7 @@ void Panel::drawPanel(
                                                     TEXTRENDERER_ALIGNMENT_MID
                                                 );
 
-                        textRenderer.renderText(shader);
+                        textRenderer.renderText();
                     }
                 }
                 btnCounter++; //Indexing buttons to position them

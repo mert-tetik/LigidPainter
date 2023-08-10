@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/Elements/Elements.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 #include <string>
 #include <iostream>
@@ -40,25 +41,25 @@ void RangeBar::render(
 {
     
     //Set the transform data (used by vertex shader)
-    shader.setVec3("pos"    ,     posVal );
-    shader.setVec2("scale"  ,     scaleVal);
+    ShaderSystem::buttonShader().setVec3("pos"    ,     posVal );
+    ShaderSystem::buttonShader().setVec2("scale"  ,     scaleVal);
     
-    shader.setVec4("properties.color"  ,     color1Val     ); //Default button color
-    shader.setVec4("properties.color2"  ,     color2Val     ); //Second color that is used by hover or click animations
+    ShaderSystem::buttonShader().setVec4("properties.color"  ,     color1Val     ); //Default button color
+    ShaderSystem::buttonShader().setVec4("properties.color2"  ,     color2Val     ); //Second color that is used by hover or click animations
     
-    shader.setFloat("properties.colorMixVal"  ,     mixVal   );
+    ShaderSystem::buttonShader().setFloat("properties.colorMixVal"  ,     mixVal   );
     //Properties
-    shader.setFloat("properties.radius",     radiusVal    );
+    ShaderSystem::buttonShader().setFloat("properties.radius",     radiusVal    );
     
     if(outlineExtra)
-        shader.setInt("properties.outline.state" ,     2      ); //Outline is not used 
+        ShaderSystem::buttonShader().setInt("properties.outline.state" ,     2      ); //Outline is not used 
     else
-        shader.setInt("properties.outline.state" ,     0      ); //Outline is not used 
+        ShaderSystem::buttonShader().setInt("properties.outline.state" ,     0      ); //Outline is not used 
     
     //Outline extra color (affected by the colorMixVal)
-    shader.setVec3("properties.outline.color" ,     outlineColor     );  
-    shader.setVec3("properties.outline.color2" ,     outlineColor2     );  
-    shader.setFloat("properties.outline.thickness" ,    resultOutlineThickness);
+    ShaderSystem::buttonShader().setVec3("properties.outline.color" ,     outlineColor     );  
+    ShaderSystem::buttonShader().setVec3("properties.outline.color2" ,     outlineColor2     );  
+    ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness);
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
@@ -68,13 +69,12 @@ RangeBar::RangeBar(){
 
 }
 
-RangeBar::RangeBar(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 pointerColor,glm::vec4 pointerColor2,bool outlineExtra,glm::vec3 outlineColor,
+RangeBar::RangeBar(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 pointerColor,glm::vec4 pointerColor2,bool outlineExtra,glm::vec3 outlineColor,
          glm::vec3 outlineColor2, float radius,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,float textScale,float panelOffset,float outlineThickness,float minValue,float maxValue
          ,float value){
     //animationStyle determines what type of mouse hover or click animation will be used
     //0 = Change thickness for mousehover
     //1 = Change color for mousehover
-    this->shader = shader;
     this->text = text;
     this->color = color;
     this->color2 = color2;
@@ -97,13 +97,12 @@ RangeBar::RangeBar(Shader shader,std::string text, glm::vec2 scale, glm::vec4 co
 }
 
 //Style constructor
-RangeBar::RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,Texture texture,float panelOffset,float minValue,float maxValue,float value, AppTextures appTextures){
+RangeBar::RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,Texture texture,float panelOffset,float minValue,float maxValue,float value, AppTextures appTextures){
     
     if(style == ELEMENT_STYLE_STYLIZED){
         this->isNumeric = true;
     }
 
-    this->shader = shader;
     this->text = text;
     this->color = colorPalette.secondColor;
     this->color2 = colorPalette.mainColor;
@@ -220,8 +219,8 @@ void RangeBar::render(
             resultOutlineThickness
         ); 
 
-    shader.setInt("states.renderTexture"  ,     1    );
-    shader.setInt("properties.txtr"  ,     0    );
+    ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     1    );
+    ShaderSystem::buttonShader().setInt("properties.txtr"  ,     0    );
 
 
     //Render the left arrow
@@ -283,15 +282,15 @@ void RangeBar::render(
     if(leftArrowHover || rightArrowHover)
         mouse.setCursor(mouse.pointerCursor);// mouse.activeCursor = mouse.pointerCursor
 
-    shader.setInt("states.renderTexture"  ,     0    );
+    ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
 
 
 
     float resultScaleText = videoScale.x/1920/2*textScale;
 
     //Set color of the text
-    shader.setVec4("properties.color"  ,     textColor     );
-    shader.setVec4("properties.color2"  ,     textColor2     );
+    ShaderSystem::buttonShader().setVec4("properties.color"  ,     textColor     );
+    ShaderSystem::buttonShader().setVec4("properties.color2"  ,     textColor2     );
         
     //Render the text
     std::string textResult; 
@@ -302,7 +301,6 @@ void RangeBar::render(
         textResult += "(" + std::to_string(value) + ")";
     
     textRenderer.loadTextData(
-                                shader,
                                 textResult,
                                 glm::vec3(resultPos.x,resultPos.y,resultPos.z+0.001f),
                                 false,
@@ -312,5 +310,5 @@ void RangeBar::render(
                                 TEXTRENDERER_ALIGNMENT_MID
                              );
 
-    textRenderer.renderText(shader);
+    textRenderer.renderText();
 }

@@ -33,10 +33,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 ComboBox::ComboBox(){}
 
 //Manual constructor
-ComboBox::ComboBox(Shader shader,std::vector<std::string> texts, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 textColor,glm::vec4 textColor2,
+ComboBox::ComboBox(std::vector<std::string> texts, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 textColor,glm::vec4 textColor2,
         float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2){
     
-    this->shader = shader;
     this->texts = texts;
     this->color = color;
     this->color2 = color2;
@@ -57,8 +56,7 @@ ComboBox::ComboBox(Shader shader,std::vector<std::string> texts, glm::vec2 scale
 }
 
 //Style constructor
-ComboBox::ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::vector<std::string> texts,std::string text,float panelOffset){
-    this->shader = shader;
+ComboBox::ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::vector<std::string> texts,std::string text,float panelOffset){
     this->texts = texts;
     this->text = text;
     this->scale = scale;

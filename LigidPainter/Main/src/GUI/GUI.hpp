@@ -51,7 +51,6 @@ struct AppSettings;
 
 class UI{
 private:
-    Shaders shaders; 
 	AppTextures appTextures;
     Model sphereModel;
     Websites websites;
@@ -118,7 +117,7 @@ public:
     UI();
 
     /*! @brief Initialized all the GUI elements. Creates the panels & stuff. And takes the parameters to the member variables. */
-    void init(Shaders shaders,Context context,AppTextures appTextures,Websites websites,glm::vec2 videoScale,Model &sphereModel);
+    void init(Context context,AppTextures appTextures,Websites websites,glm::vec2 videoScale,Model &sphereModel);
     
     /*! @brief Renders all the GUI */
     void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &meshNodeScene,
@@ -139,7 +138,7 @@ private:
 
     void renderDropper(Mouse &mouse,Painter &painter);
 
-    void contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Library &library,std::vector<Node> &meshNodeScene,Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,Project& project,int &textureRes, Painter &painter, Shader heightToNormalShader);
+    void contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Library &library,std::vector<Node> &meshNodeScene,Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,Project& project,int &textureRes, Painter &painter);
 
     void libraryPanelLeftInteraction(Panel &libraryPanelLeft, Library &library,Mouse &mouse);
 

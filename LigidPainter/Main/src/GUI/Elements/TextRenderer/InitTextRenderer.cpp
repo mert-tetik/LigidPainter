@@ -56,7 +56,6 @@ TextRenderer::TextRenderer(Font font,glm::vec2 videoScale){
 /// @param maxX Text boundaries max position in y axis
 /// @param alignment TEXTRENDERER_ALIGNMENT_LEFT , TEXTRENDERER_ALIGNMENT_MID or TEXTRENDERER_ALIGNMENT_RIGHT
 void TextRenderer::loadTextData(
-                                    Shader shader, 
                                     std::string text, 
                                     glm::vec3 pos, 
                                     bool multipleLines, 
@@ -66,7 +65,6 @@ void TextRenderer::loadTextData(
                                     int alignment
                                 )
 {
-	this->textDataShader = shader;
 	this->textDataText = text;
 	this->textDataPos = pos;
 	this->textDataMultipleLines = multipleLines; 
@@ -94,7 +92,6 @@ void TextRenderer::loadTextData(
 /// @param activeChar2 if not the same with the activeChar than the chars between the activeChar and activeChar2 will be multiselected
 /// @param textPosCharIndex variable that moves the text when overflowed
 void TextRenderer::loadTextData(
-                                    Shader shader, 
                                     std::string text, 
                                     glm::vec3 pos, 
                                     bool multipleLines, 
@@ -108,7 +105,6 @@ void TextRenderer::loadTextData(
                                     int textPosCharIndex
                                 )
 {
-	this->textDataShader = shader;
 	this->textDataText = text;
 	this->textDataPos = pos;
 	this->textDataMultipleLines = multipleLines; 

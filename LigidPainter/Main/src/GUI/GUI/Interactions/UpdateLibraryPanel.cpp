@@ -35,7 +35,6 @@ void updateLibraryPanelDisplayerElements(
                                             Panel &libraryPanelDisplayer, 
                                             Library &library, 
                                             ColorPalette& colorPalette, 
-                                            Shaders &shaders,
                                             int frameCounter
                                         )
 {
@@ -53,28 +52,28 @@ void updateLibraryPanelDisplayerElements(
             for (size_t i = 0; i < library.textures.size(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.textures[i].title       , library.textures[i], 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette, library.textures[i].title       , library.textures[i], 0.f,false))) ;
             }
         }
         else if(library.selectedElementIndex == 1){ //Update materials
             for (size_t i = 0; i < library.materials.size(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.materials[i].title       , Texture(library.materials[i].displayingTexture), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette, library.materials[i].title       , Texture(library.materials[i].displayingTexture), 0.f,false))) ;
             }
         }
         else if(library.selectedElementIndex == 2){ //Update materials
             for (size_t i = 0; i < library.brushes.size(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.brushes[i].title       , Texture(library.brushes[i].displayingTexture), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette, library.brushes[i].title       , Texture(library.brushes[i].displayingTexture), 0.f,false))) ;
             }
         }
         else if(library.selectedElementIndex == 3){ //Update tdmodels
             for (size_t i = 0; i < library.TDModels.size(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette,shaders.buttonShader,library.TDModels[i].title       , Texture(), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette, library.TDModels[i].title       , Texture(), 0.f,false))) ;
             }
         }
         //Give the section

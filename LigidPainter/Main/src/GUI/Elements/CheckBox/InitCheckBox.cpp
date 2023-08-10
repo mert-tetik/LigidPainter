@@ -29,10 +29,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 CheckBox::CheckBox(){}
 
 //Manual constructor
-CheckBox::CheckBox(Shader shader,std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
+CheckBox::CheckBox(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
         float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2){
     
-    this->shader = shader;
     this->text = text;
     this->color = color;
     this->color2 = color2;
@@ -47,8 +46,7 @@ CheckBox::CheckBox(Shader shader,std::string text, glm::vec2 scale, glm::vec4 co
 }
 
 //Style constructor
-CheckBox::CheckBox(int style,glm::vec2 scale,ColorPalette colorPalette,Shader shader,std::string text,float panelOffset){
-    this->shader = shader;
+CheckBox::CheckBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,float panelOffset){
     this->text = text;
     this->scale = scale;
     this->panelOffset = panelOffset;

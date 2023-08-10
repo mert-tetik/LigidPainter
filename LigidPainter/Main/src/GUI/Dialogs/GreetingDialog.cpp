@@ -29,12 +29,10 @@
 
 GreetingDialog::GreetingDialog(){}
 
-GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures){
     
-    this->buttonShader = buttonShader;
-
     //First text button
-    this->textButton1 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,buttonShader,"Welcome To The LigidPainter",Texture(),0.f,false);
+    this->textButton1 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2), colorPalette, "Welcome To The LigidPainter",Texture(),0.f,false);
     this->textButton1.color = glm::vec4(0);
     this->textButton1.pos.x = 40;
     this->textButton1.pos.y = 40;
@@ -42,7 +40,7 @@ GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette
     this->textButton1.textScale = 1.0f;
     
     //Load project button
-    this->loadProjectButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,buttonShader,"Load",Texture(),0.f,false);
+    this->loadProjectButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2), colorPalette, "Load",Texture(),0.f,false);
     this->loadProjectButton.pos.x = 45;
     this->loadProjectButton.pos.y = 58;
     this->loadProjectButton.pos.z = 0.9f;
@@ -51,7 +49,7 @@ GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette
     this->loadProjectButton.textColor = glm::vec4(1);
     
     //Create project button
-    this->createProjectButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,buttonShader,"Create",Texture(),0.f,false);
+    this->createProjectButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2), colorPalette, "Create",Texture(),0.f,false);
     this->createProjectButton.pos.x = 55;
     this->createProjectButton.pos.y = 58;
     this->createProjectButton.pos.z = 0.9f;
@@ -60,7 +58,7 @@ GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette
     this->createProjectButton.textColor = glm::vec4(1);
     
     //Decoration texture displayer button
-    this->textureDisplayerButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(30,30),colorPalette,buttonShader,"",appTextures.greetingDialogImage,0.f,false);
+    this->textureDisplayerButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(30,30), colorPalette, "",appTextures.greetingDialogImage,0.f,false);
     this->textureDisplayerButton.pos.x = 50;
     this->textureDisplayerButton.pos.y = 50;
     this->textureDisplayerButton.pos.z = 0.8f;
@@ -70,7 +68,7 @@ GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette
     this->textureDisplayerButton.outlineColor2 = glm::vec4(0);
     
     //Background panel
-    this->bgPanel = Panel(buttonShader,colorPalette,{},glm::vec2(20),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,false,true,true,true,true,1.f,1.f,{},0.25f,false);
+    this->bgPanel = Panel(colorPalette,{},glm::vec2(20),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,false,true,true,true,true,1.f,1.f,{},0.25f,false);
 
     bgPanel.scale.x = textureDisplayerButton.scale.x;
 
@@ -79,7 +77,7 @@ GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette
 
 void GreetingDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale, NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog){
 
-    dialogControl.updateStart(buttonShader);
+    dialogControl.updateStart();
 
     //Render elements 
     
@@ -111,5 +109,5 @@ void GreetingDialog::render(LigidWindow originalWindow,ColorPalette colorPalette
     //Set the depth func back to default (less or equal)
     glDepthFunc(GL_LEQUAL);
 
-    dialogControl.updateEnd(timer,buttonShader,0.15f);
+    dialogControl.updateEnd(timer,0.15f);
 }

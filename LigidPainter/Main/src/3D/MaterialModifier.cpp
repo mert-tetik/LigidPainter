@@ -60,6 +60,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
+#include "ShaderSystem/Shader.hpp"
 
 //0 = albedo
 //1 = roughness
@@ -70,17 +71,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 MaterialModifier::MaterialModifier(){}
 
-void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
-void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
-void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
-void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
-void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
-void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
-void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
-void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
-void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader);
+void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
 
-MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures,int modifierIndex){
+MaterialModifier::MaterialModifier(ColorPalette colorPalette, AppTextures appTextures, int modifierIndex){
     
     /* Init the mask texture */
     this->maskTexture.proceduralID = 24; //Solid white
@@ -105,59 +106,58 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-
     if(modifierIndex == TEXTURE_MATERIAL_MODIFIER){
-        this->sections = createTextureModifier(colorPalette,buttonShader,appTextures);
+        this->sections = createTextureModifier(colorPalette,appTextures);
         this->title = "Texture Modifier";    
-        shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",nullptr,nullptr,nullptr);
+        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",nullptr,nullptr,nullptr);
         this->updateMaterialChannels = textureModifierUpdateMat;
     }
     else if(modifierIndex == DUST_MATERIAL_MODIFIER){
-        this->sections = createDustModifier(colorPalette,buttonShader,appTextures);
+        this->sections = createDustModifier(colorPalette,appTextures);
         this->title = "Dust Modifier";    
-        shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/DustModifier.frag",nullptr,nullptr,nullptr);
+        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/DustModifier.frag",nullptr,nullptr,nullptr);
         this->updateMaterialChannels = dustModifierUpdateMat;
     }
     else if(modifierIndex == ASPHALT_MATERIAL_MODIFIER){
-        this->sections = createAsphaltModifier(colorPalette,buttonShader,appTextures);
+        this->sections = createAsphaltModifier(colorPalette,appTextures);
         this->title = "Asphalt Modifier";    
-        shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/AsphaltModifier.frag",nullptr,nullptr,nullptr);
+        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/AsphaltModifier.frag",nullptr,nullptr,nullptr);
         this->updateMaterialChannels = asphaltModifierUpdateMat;
     }
     else if(modifierIndex == FABRIC_MATERIAL_MODIFIER){
-        this->sections = createFabricModifier(colorPalette,buttonShader,appTextures);
+        this->sections = createFabricModifier(colorPalette,appTextures);
         this->title = "Fabric Modifier";    
-        shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/FabricModifier.frag",nullptr,nullptr,nullptr);
+        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/FabricModifier.frag",nullptr,nullptr,nullptr);
         this->updateMaterialChannels = fabricModifierUpdateMat;
     }
     else if(modifierIndex == MOSS_MATERIAL_MODIFIER){
-        this->sections = createMossModifier(colorPalette,buttonShader,appTextures);
+        this->sections = createMossModifier(colorPalette,appTextures);
         this->title = "Moss Modifier";    
-        shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/MossModifier.frag",nullptr,nullptr,nullptr);
+        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/MossModifier.frag",nullptr,nullptr,nullptr);
         this->updateMaterialChannels = mossModifierUpdateMat;
     }
     else if(modifierIndex == RUST_MATERIAL_MODIFIER){
-        this->sections = createRustModifier(colorPalette,buttonShader,appTextures);
+        this->sections = createRustModifier(colorPalette,appTextures);
         this->title = "Rust Modifier";    
-        shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/RustModifier.frag",nullptr,nullptr,nullptr);
+        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/RustModifier.frag",nullptr,nullptr,nullptr);
         this->updateMaterialChannels = rustModifierUpdateMat;
     }
     else if(modifierIndex == SKIN_MATERIAL_MODIFIER){
-        this->sections = createSkinModifier(colorPalette,buttonShader,appTextures);
+        this->sections = createSkinModifier(colorPalette,appTextures);
         this->title = "Skin Modifier";    
-        shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/SkinModifier.frag",nullptr,nullptr,nullptr);
+        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/SkinModifier.frag",nullptr,nullptr,nullptr);
         this->updateMaterialChannels = skinModifierUpdateMat;
     }
     else if(modifierIndex == SOLID_MATERIAL_MODIFIER){
-        this->sections = createSolidModifier(colorPalette,buttonShader,appTextures);
+        this->sections = createSolidModifier(colorPalette,appTextures);
         this->title = "Solid Modifier";    
-        shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/SolidModifier.frag",nullptr,nullptr,nullptr);
+        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/SolidModifier.frag",nullptr,nullptr,nullptr);
         this->updateMaterialChannels = solidModifierUpdateMat;
     }
     else if(modifierIndex == WOODEN_MATERIAL_MODIFIER){
-        this->sections = createWoodenModifier(colorPalette,buttonShader,appTextures);
+        this->sections = createWoodenModifier(colorPalette,appTextures);
         this->title = "Wooden Modifier";    
-        shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/WoodenModifier.frag",nullptr,nullptr,nullptr);
+        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/WoodenModifier.frag",nullptr,nullptr,nullptr);
         this->updateMaterialChannels = woodenModifierUpdateMat;
     }
 
@@ -166,36 +166,36 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette,Shader buttonShader
 
 #define MATERIAL_MODIFIERS_ELEMENT_OFFSET 2.5f
 
-std::vector<Section> MaterialModifier::createTextureModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+std::vector<Section> MaterialModifier::createTextureModifier(ColorPalette colorPalette, AppTextures appTextures){
         
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Channels",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Channels",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Albedo",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Roughness",           Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",            Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Normal map",          Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height map",          Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Ambient Occlusion",   Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false))
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Albedo",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Roughness",           Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Metallic",            Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Normal map",          Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Height map",          Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Ambient Occlusion",   Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false))
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
             }
         )
     };
@@ -210,37 +210,37 @@ std::vector<Section> MaterialModifier::createTextureModifier(ColorPalette colorP
     return sections;
 }
 
-std::vector<Section> MaterialModifier::createSolidModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+std::vector<Section> MaterialModifier::createSolidModifier(ColorPalette colorPalette, AppTextures appTextures){
         
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Channels",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Channels",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Albedo",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Albedo",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Roughness",           Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Roughness",           Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",            Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Metallic",            Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Normal Map",          Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Normal Map",          Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height map",          Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Height map",          Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
                 
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Ambient Occlusion",   Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f , appTextures) // /100
+                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Ambient Occlusion",   Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f , appTextures) // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
         )
     };
@@ -256,42 +256,42 @@ std::vector<Section> MaterialModifier::createSolidModifier(ColorPalette colorPal
     return sections;
 }
 
-std::vector<Section> MaterialModifier::createFabricModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+std::vector<Section> MaterialModifier::createFabricModifier(ColorPalette colorPalette, AppTextures appTextures){
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Stripes",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Stripes",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader, "Color",   Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,32.f, appTextures), // 1
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Frequency",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,20.f, appTextures), // /2
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Gap Frequency",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,60.f, appTextures), // /2
-                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"Style",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0,2,0,appTextures),  
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette, "Color",   Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,32.f, appTextures), // 1
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Frequency",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,20.f, appTextures), // /2
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Gap Frequency",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,60.f, appTextures), // /2
+                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,"Style",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0,2,0,appTextures),  
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Element Properties",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Element Properties",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wetness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Wetness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Metallic",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Height",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
             }
         )
     };
@@ -303,76 +303,76 @@ std::vector<Section> MaterialModifier::createFabricModifier(ColorPalette colorPa
     return sections;
 } 
 
-std::vector<Section> MaterialModifier::createMossModifier(ColorPalette colorPalette, Shader buttonShader, AppTextures appTextures)
+std::vector<Section> MaterialModifier::createMossModifier(ColorPalette colorPalette,  AppTextures appTextures)
 {
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Color", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Color", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Moss Color Back", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Moss Color Front", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Dirt Color", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Moss Color Back", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Moss Color Front", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Dirt Color", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Droplets", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Droplets", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Count", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Opacity Jitter", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Size", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 15.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Droplets Count", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Droplets Opacity Jitter", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Droplets Size", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 15.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Front Layer", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Front Layer", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Front Layer Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Front Layer Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 50.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Front Layer Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Front Layer Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 50.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Lighting", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Lighting", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Light Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Darkening Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Light Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Darkening Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Noise", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Moss Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Moss Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 40.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Wetness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 40.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
         )
     };
@@ -389,77 +389,77 @@ std::vector<Section> MaterialModifier::createMossModifier(ColorPalette colorPale
     return sections;
 }
 
-std::vector<Section> MaterialModifier::createRustModifier(ColorPalette colorPalette, Shader buttonShader, AppTextures appTextures)
+std::vector<Section> MaterialModifier::createRustModifier(ColorPalette colorPalette,  AppTextures appTextures)
 {
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Colors", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Colors", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 1", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 2", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 3", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 4", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Color 1", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Color 2", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Color 3", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Color 4", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 30.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 30.f, appTextures), // /1
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Perlin Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Perlin Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "First Octave", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 3 , appTextures), 
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 , appTextures), 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistence", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 60.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, "First Octave", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 3 , appTextures), 
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, "Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Persistence", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 60.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "FBM Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "FBM Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 , appTextures), 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Roughness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 50.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, "FBM Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "FBM Roughness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 50.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Rust Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Rust Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Rust Radius", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 20.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Battering Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200, 100, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Rust Radius", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 20.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Battering Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200, 100, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Noise Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wetness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Wetness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
         )
     };
@@ -478,71 +478,71 @@ std::vector<Section> MaterialModifier::createRustModifier(ColorPalette colorPale
     return sections;
 }
 
-std::vector<Section> MaterialModifier::createSkinModifier(ColorPalette colorPalette, Shader buttonShader, AppTextures appTextures)
+std::vector<Section> MaterialModifier::createSkinModifier(ColorPalette colorPalette,  AppTextures appTextures)
 {
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Droplets", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Droplets", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Count", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Opacity Jitter", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Droplets Size", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 15.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Droplets Count", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Droplets Opacity Jitter", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Droplets Size", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 15.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Veins", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Veins", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Veins Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Veins Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Veins Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Veins Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Blushing", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Blushing", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Blushing Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 20.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Blushing Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 20.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Skin Prints", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Skin Prints", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Prints Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Prints Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Skin Prints Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Skin Prints Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Noise", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Noise", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 20.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 20.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Skin Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Skin Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Color Type", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 5, 0 , appTextures), 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Wetness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Skin Ambient Occlusion", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, "Skin Color Type", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 5, 0 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Skin Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Skin Wetness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Skin Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Skin Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Skin Ambient Occlusion", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
         )
     };
@@ -550,79 +550,79 @@ std::vector<Section> MaterialModifier::createSkinModifier(ColorPalette colorPale
     return sections;
 }
 
-std::vector<Section> MaterialModifier::createWoodenModifier(ColorPalette colorPalette, Shader buttonShader, AppTextures appTextures)
+std::vector<Section> MaterialModifier::createWoodenModifier(ColorPalette colorPalette,  AppTextures appTextures)
 {
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Colors", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Colors", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 1", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 2", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
-                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color 3", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Color 1", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Color 2", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Color 3", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Seed", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 30.f, appTextures), // *100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Noise Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Noise Seed", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 30.f, appTextures), // *100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Perlin Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Perlin Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Max Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 , appTextures), 
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Persistance", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 50.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, "Max Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Persistance", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 50.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Musgrave Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Musgrave Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Lacunarity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 25.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 75.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Musgrave Noise", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Musgrave Lacunarity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 25.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Musgrave Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 75.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Musgrave Noise", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Base", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Base", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 46.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Color Saturation", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 46.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Color Saturation", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "FBM Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "FBM Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "FBM Frequency", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "FBM Frequency", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Wood Gamma", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 60.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Shininess", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Wood Gamma", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 60.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Shininess", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 200.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 0.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
         )
     };
@@ -639,67 +639,67 @@ std::vector<Section> MaterialModifier::createWoodenModifier(ColorPalette colorPa
     return sections;
 }
 
-std::vector<Section> MaterialModifier::createAsphaltModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+std::vector<Section> MaterialModifier::createAsphaltModifier(ColorPalette colorPalette,AppTextures appTextures){
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Color",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Color",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Color1",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Color2",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Color1",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Color2",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Dirt",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Dirt",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,40.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Strength",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,200.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,40.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Strength",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,200.f,100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"2nd Color",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"2nd Color",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Noise Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,50.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Noise Strength",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,200.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Noise Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,50.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Noise Strength",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,200.f,100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Noise",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Noise",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Strength",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,200.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Strength",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,200.f,100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Element Properties",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Element Properties",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wetness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Metallic",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Height",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Wetness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Metallic",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Height",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Perlin Properties",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Perlin Properties",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"First Octave",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 3 , appTextures),
-                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,buttonShader,"Octaves",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 , appTextures), 
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Persistence",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,70.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,"First Octave",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 3 , appTextures),
+                RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),colorPalette,"Octaves",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 , appTextures), 
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Persistence",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,70.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
             }
         )
     };
@@ -712,62 +712,62 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(ColorPalette colorP
     return sections;
 }
 
-std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPalette,Shader buttonShader,AppTextures appTextures){
+std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPalette,AppTextures appTextures){
 
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Noise",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Noise",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Size",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,20.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Offset Intensity",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,500.f,500.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Rotation",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,360.f,360.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Brightness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Size",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,20.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Offset Intensity",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,500.f,500.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Rotation",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,360.f,360.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Brightness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
             }
         ),
         
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Blur",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Blur",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Intensity",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,0.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Direction",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,360.f,0.f, appTextures), // /1
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Intensity",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Direction",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,360.f,0.f, appTextures), // /1
             }
         ),
         
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Scratches",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Scratches",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Wavyness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,10.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,30.f, appTextures), // /10
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Base Frequency",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,50.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"FrequencyStep",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,25.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Wavyness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,10.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,30.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Base Frequency",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,50.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"FrequencyStep",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,25.f, appTextures), // /100
             }
         ),
 
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,buttonShader,"Droplets",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Droplets",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Count",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,10.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"OpacityJitter",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,buttonShader,"Size",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,50.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Count",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,10.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"OpacityJitter",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Size",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,50.f, appTextures), // /10
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, buttonShader, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, buttonShader, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures), // /100
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, buttonShader, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), colorPalette, "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f, appTextures),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), colorPalette, "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
         )
     };
@@ -830,7 +830,7 @@ void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& cu
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void generateNormalMap(unsigned int& heightMap, unsigned int& normalMap, Shader heightToNormalMapShader, int textureResolution){
+void generateNormalMap(unsigned int& heightMap, unsigned int& normalMap, int textureResolution){
     unsigned int FBO;
     glGenFramebuffers(1,&FBO);
     glBindFramebuffer(GL_FRAMEBUFFER, FBO);
@@ -845,12 +845,12 @@ void generateNormalMap(unsigned int& heightMap, unsigned int& normalMap, Shader 
     box.bindBuffers();
     
     glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
-    heightToNormalMapShader.use();
-    heightToNormalMapShader.setInt("heightMap", 0);
-    heightToNormalMapShader.setMat4("projection"  ,       projection);
-    heightToNormalMapShader.setMat4("projectedPosProjection"  ,       projection);
-    heightToNormalMapShader.setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
-    heightToNormalMapShader.setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
+    ShaderSystem::heightToNormalMap().use();
+    ShaderSystem::heightToNormalMap().setInt("heightMap", 0);
+    ShaderSystem::heightToNormalMap().setMat4("projection"  ,       projection);
+    ShaderSystem::heightToNormalMap().setMat4("projectedPosProjection"  ,       projection);
+    ShaderSystem::heightToNormalMap().setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
+    ShaderSystem::heightToNormalMap().setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, heightMap);
@@ -862,8 +862,6 @@ void generateNormalMap(unsigned int& heightMap, unsigned int& normalMap, Shader 
 }
 
 static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution){
-    
-    Shader blurShader = Shader("./LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "./LigidPainter/Resources/Shaders/aFrag/SinglePassBlur.frag", nullptr, nullptr, nullptr);
     
     Texture textureObject = Texture(txtr);
     unsigned int textureCopy = textureObject.duplicateTexture();
@@ -882,14 +880,14 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     box.bindBuffers();
     
     glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
-    blurShader.use();
-    blurShader.setInt("txtr", 0);
-    blurShader.setInt("uvMask", 1);
-    blurShader.setVec2("txtrRes", glm::vec2(textureResolution));
-    blurShader.setMat4("projection"  ,       projection);
-    blurShader.setMat4("projectedPosProjection"  ,       projection);
-    blurShader.setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
-    blurShader.setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
+    ShaderSystem::bluringShader().use();
+    ShaderSystem::bluringShader().setInt("txtr", 0);
+    ShaderSystem::bluringShader().setInt("uvMask", 1);
+    ShaderSystem::bluringShader().setVec2("txtrRes", glm::vec2(textureResolution));
+    ShaderSystem::bluringShader().setMat4("projection"  ,       projection);
+    ShaderSystem::bluringShader().setMat4("projectedPosProjection"  ,       projection);
+    ShaderSystem::bluringShader().setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
+    ShaderSystem::bluringShader().setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureCopy);
@@ -902,7 +900,6 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
     glDeleteFramebuffers(1, &FBO);
-    glDeleteProgram(blurShader.ID);
     glDeleteTextures(1, &textureCopy);
 }
 
@@ -918,7 +915,7 @@ glm::vec2 getDirectionVector(float rotation) {
 }
 
 
-void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
+void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -993,18 +990,16 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         glDeleteFramebuffers(1,&FBO);
         glEnable(GL_DEPTH_TEST);
 
-        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
 
-    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
+void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
-
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -1094,23 +1089,22 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
         //Generating the normal map
         if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
-            mesh.normalMap.removeSeams(mesh, textureResolution, boundaryExpandingShader);
+            mesh.normalMap.removeSeams(mesh, textureResolution);
         }
 
         glEnable(GL_DEPTH_TEST);
 
-        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
 
-    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
+void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1188,15 +1182,14 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         glDeleteFramebuffers(1,&FBO);
         glEnable(GL_DEPTH_TEST);
 
-        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
 
-    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
+void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1296,20 +1289,19 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         
         //Generating the normal map
         if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
-            mesh.normalMap.removeSeams(mesh, textureResolution, boundaryExpandingShader);
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, textureResolution);
+            mesh.normalMap.removeSeams(mesh, textureResolution);
         }
         glEnable(GL_DEPTH_TEST);
 
-        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
 
-    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
+void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1397,21 +1389,20 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         
         //Generating the normal map
         if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
-            mesh.normalMap.removeSeams(mesh, textureResolution, boundaryExpandingShader);
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, textureResolution);
+            mesh.normalMap.removeSeams(mesh, textureResolution);
         }
         glEnable(GL_DEPTH_TEST);
 
-        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
 
-    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
 
-void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
+void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1518,22 +1509,21 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         
         //Generating the normal map
         if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
-            mesh.normalMap.removeSeams(mesh, textureResolution, boundaryExpandingShader);
+            mesh.normalMap.removeSeams(mesh, textureResolution);
         }
         glEnable(GL_DEPTH_TEST);
 
-        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
 
-    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
+void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1637,22 +1627,21 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Generating the normal map
         if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
-            mesh.normalMap.removeSeams(mesh, textureResolution, boundaryExpandingShader);
+            mesh.normalMap.removeSeams(mesh, textureResolution);
         }
         glEnable(GL_DEPTH_TEST);
 
-        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
 
-    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
+void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1757,26 +1746,24 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Generating the normal map
         if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
-            mesh.normalMap.removeSeams(mesh, textureResolution, boundaryExpandingShader);
+            mesh.normalMap.removeSeams(mesh, textureResolution);
         }
         glEnable(GL_DEPTH_TEST);
 
-        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
 
-    glDeleteProgram(boundaryExpandingShader.ID);
 }
 
-void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view, Shader heightToNormalShader, Shader boundaryExpandingShader){
+void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
-
-
+    
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
 
@@ -1874,17 +1861,16 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Generating the normal map
         if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, heightToNormalShader, textureResolution);
+            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
-            mesh.normalMap.removeSeams(mesh, textureResolution, boundaryExpandingShader);
+            mesh.normalMap.removeSeams(mesh, textureResolution);
         }
         glEnable(GL_DEPTH_TEST);
 
-        currentTexture.removeSeams(mesh,textureResolution, boundaryExpandingShader);
+        currentTexture.removeSeams(mesh,textureResolution);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
 
-    glDeleteProgram(boundaryExpandingShader.ID);
 }
