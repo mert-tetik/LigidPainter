@@ -121,7 +121,7 @@ RangeBar::RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,std::stri
     
     this->outlineColor = colorPalette.thirdColor;
     this->outlineColor2 = colorPalette.themeColor;
-    this->outlineThickness = 2.f;
+    this->outlineThickness = 2.4f;
     this->minValue = minValue;
     this->maxValue = maxValue;
     this->value = value;

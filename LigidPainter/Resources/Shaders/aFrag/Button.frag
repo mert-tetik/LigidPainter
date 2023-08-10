@@ -116,7 +116,7 @@ float applyOutline(vec2 uv)
     b = 1. - b;
 
     //Fade of the outline (greater the value is smoother outline becomes)
-    float fade = 1.115;
+    float fade = 1.225;
 
     //Outline
     float outV = (smoothstep(0.0, fade, 1. - b));

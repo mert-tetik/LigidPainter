@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.8)
 
 # Define the project data
-project(LigidPainter VERSION 2.0.2)
+project(LigidPainter VERSION 2.1.0)
 
 # Glob all source files in the LigidPainter directory
 file(GLOB_RECURSE LIGID_SOURCES
@@ -12,16 +12,13 @@ file(GLOB_RECURSE LIGID_SOURCES
    ${PROJECT_SOURCE_DIR}/LigidPainter/*.c
 )
 
-
 # Set C++ standard to C++17
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-
 # Define CMAKE_HAS_X
 add_definitions(-DCMAKE_HAS_X)
-
 
 if(WIN32)
     # Add Windows-specific configurations
@@ -43,12 +40,8 @@ else()
 
 endif(WIN32)
 
-
-
 # Set the character set to Unicode
 target_compile_definitions(Ligid PRIVATE UNICODE _UNICODE)
-
-
 
 # Installer
 install(TARGETS Ligid)
@@ -85,13 +78,10 @@ install(
             DESTINATION bin/LigidPainter
         )
 
-
-
 # Set the project version
 set(PROJECT_VERSION_MAJOR 2)
-set(PROJECT_VERSION_MINOR 0)
-set(PROJECT_VERSION_PATCH 2)
-
+set(PROJECT_VERSION_MINOR 1)
+set(PROJECT_VERSION_PATCH 0)
 
 # Set CPack package details
 set(CPACK_PACKAGE_NAME LigidPainter)  # App name
@@ -109,14 +99,11 @@ set(CPACK_CREATE_DESKTOP_LINKS Ligid)
 
 # Set CPack package version
 set(CPACK_PACKAGE_VERSION_MAJOR 2)
-set(CPACK_PACKAGE_VERSION_MINOR 0)
-set(CPACK_PACKAGE_VERSION_PATCH 2)
+set(CPACK_PACKAGE_VERSION_MINOR 1)
+set(CPACK_PACKAGE_VERSION_PATCH 0)
 set(CPACK_GENERATOR WIX)
 
 include(CPack)
-
-
-
 
 # Cross compiling
 #set(CMAKE_SYSTEM_NAME Darwin)
@@ -134,7 +121,6 @@ include(CPack)
 # set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13 CACHE STRING "Minimum macOS version to target")
 
 find_package(OpenGL REQUIRED)
-
 
 # Add include directories for Ligid target
 target_include_directories(Ligid PRIVATE ${PROJECT_SOURCE_DIR}/LigidPainter/Main/thirdparty/include/)

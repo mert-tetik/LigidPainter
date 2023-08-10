@@ -237,24 +237,15 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,float textureR
                 {
                     //If button is clicked update the material
                     if(material.materialModifiers[modI].sections[secI].elements[elementI].state == 0)
-                        if(material.materialModifiers[modI].sections[secI].elements[elementI].button.clicked){
-                            this->updateTheMaterial = true;
-                            material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].button = material.materialModifiers[modI].sections[secI].elements[elementI].button; 
-                        }
+                        material.materialModifiers[modI].sections[secI].elements[elementI].button.clicked = false;
 
                     //If range bar's value changed update the material
                     if(material.materialModifiers[modI].sections[secI].elements[elementI].state == 1)
-                        if(material.materialModifiers[modI].sections[secI].elements[elementI].rangeBar.pointerPressed == true){
-                            this->updateTheMaterial = true;
-                            material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].rangeBar = material.materialModifiers[modI].sections[secI].elements[elementI].rangeBar; 
-                        }
+                        material.materialModifiers[modI].sections[secI].elements[elementI].rangeBar.pointerPressed = false;
 
                     //If checkbox clicked update the material
                     if(material.materialModifiers[modI].sections[secI].elements[elementI].state == 2)
-                        if(material.materialModifiers[modI].sections[secI].elements[elementI].checkBox.hover && mouse.LClick == true){
-                            this->updateTheMaterial = true;
-                            material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].checkBox = material.materialModifiers[modI].sections[secI].elements[elementI].checkBox; 
-                        }
+                        material.materialModifiers[modI].sections[secI].elements[elementI].checkBox.hover = false;
                 }
             }
         }

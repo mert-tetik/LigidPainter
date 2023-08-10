@@ -58,9 +58,9 @@ vec3 color1 = vec3(1.);
 vec3 color2 = vec3(0.0);
 
 /* Element property */
-float wetness = 1.;
-float metallic = 0.;
-float height = -0.2;
+uniform float wetness = 1.;
+uniform float metallic = 0.;
+uniform float height = -0.2;
 
 /* Channel Properties*/
 uniform int state;
@@ -112,11 +112,8 @@ vec3 rotate(vec3 v, vec3 axis, float angle)
     return rotatedVec;
 }
 
-//TODO BLUR SAMPLE 1 IF STRENGTH IS SET TO 0
-
 //  -------------- SCRATCHES UTILITIES --------------
 
-//TODO 3D SCRATCH
 float scratch(vec3 uv, vec3 seed)
 {
     seed.x = floor(sin(seed.x * 51024.0) * 3104.0);
@@ -124,14 +121,18 @@ float scratch(vec3 uv, vec3 seed)
     seed.z = floor(sin(seed.z * 4848.0) * 2411.0);
  
     uv = uv * 2.0 - 1.0;
-    rotate(uv, vec3(0,1,0), seed.x + seed.y);
-    uv += sin(seed.x - seed.y);
+    
+    rotate(uv, vec3(0,1,0), seed.x + seed.y + seed.z);
+    
+    uv += sin(seed.x + seed.z - seed.y);
+    
     uv = clamp(uv * 0.5 + 0.5, 0.0, 1.0);
     
     float s1 = sin(seed.x + uv.y * 3.1415) * scratchesWavyness;
     float s2 = sin(seed.y + uv.y * 3.1415) * scratchesWavyness;
+    float s3 = sin(seed.z + uv.z * 3.1415) * scratchesWavyness;
     
-    float x = sign(0.01 - abs(uv.x - 0.5 + s2 + s1));
+    float x = sign(0.01 - abs(uv.x - 0.5 + s3 + s2 + s1));
     return clamp(((1.0 - pow(uv.y, 2.0)) * uv.y) * 2.5 * x, 0.0, 1.0);
 }
 
@@ -335,7 +336,7 @@ void main()
     vec3 normalizedPosition = normalize(Pos);
 
     // Scale the normalized position to the range [0, 1]
-    vec3 uv = Pos;
+    vec3 uv = Pos * size;
     
 	vec4 f = vec4(0.0);
     

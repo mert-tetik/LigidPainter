@@ -117,7 +117,7 @@ Button::Button(
         this->color = colorPalette.oppositeColor;
         this->color2 = colorPalette.themeColor;
         this->outline = true;
-        this->radius = 0.4f;
+        this->radius = 0.5f;
         this->animationStyle = 0;
         this->textColor = colorPalette.oppositeColor;
         this->textColor2 = colorPalette.themeColor;
@@ -125,7 +125,7 @@ Button::Button(
         this->outlineExtra = false;
         this->outlineColor = {};
         this->outlineColor2 = {};
-        this->outlineThickness = 2.f;
+        this->outlineThickness = 3.f;
     }
     if(style == ELEMENT_STYLE_SOLID){
         this->color = colorPalette.secondColor;

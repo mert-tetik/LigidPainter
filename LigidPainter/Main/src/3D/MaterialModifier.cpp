@@ -719,10 +719,10 @@ std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPale
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Noise",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Size",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,20.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Size",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,10.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Offset Intensity",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,500.f,500.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Rotation",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,360.f,360.f, appTextures), // /1
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Brightness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Brightness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,17.f, appTextures), // /100
             }
         ),
         
@@ -738,7 +738,7 @@ std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPale
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Scratches",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Wavyness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,10.f, appTextures), // /100
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,30.f, appTextures), // /10
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,200.f,100.f, appTextures), // /5
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Base Frequency",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,50.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"FrequencyStep",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,25.f, appTextures), // /100
             }
@@ -750,6 +750,14 @@ std::vector<Section> MaterialModifier::createDustModifier(ColorPalette colorPale
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Count",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,10.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"OpacityJitter",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Size",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,50.f, appTextures), // /10
+            }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette,"Element Properties",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Wetness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Metallic",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,0.f, appTextures), // /100
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),colorPalette,"Height",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,100.f,100.f, appTextures), // /100
             }
         ),
         Section(
@@ -1043,7 +1051,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt( "depthTxtr" , 2);
 
         /* Noise */
-        modifierShader.setFloat("size", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 10.f); 
+        modifierShader.setFloat("size", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value / 100.f); 
         modifierShader.setFloat("offsetIntensity", material.materialModifiers[curModI].sections[0].elements[1].rangeBar.value / 10.f); 
         modifierShader.setFloat("rotation", material.materialModifiers[curModI].sections[0].elements[2].rangeBar.value); 
         modifierShader.setFloat("brightness", material.materialModifiers[curModI].sections[0].elements[3].rangeBar.value / 100.f); 
@@ -1052,13 +1060,18 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setVec2("blurDirection", getDirectionVector(material.materialModifiers[curModI].sections[1].elements[1].rangeBar.value));
         /* Scratches */
         modifierShader.setFloat("scratchesWavyness", material.materialModifiers[curModI].sections[2].elements[0].rangeBar.value / 100.f); 
-        modifierShader.setVec2("scratchesScale", glm::vec2(material.materialModifiers[curModI].sections[2].elements[1].rangeBar.value / 10.f));
+        modifierShader.setVec2("scratchesScale", glm::vec2(material.materialModifiers[curModI].sections[2].elements[1].rangeBar.value / 5.f));
         modifierShader.setVec2("scratchesBaseFrequency", glm::vec2(material.materialModifiers[curModI].sections[2].elements[2].rangeBar.value / 100.f));
         modifierShader.setVec2("scratchesFrequencyStep", glm::vec2(material.materialModifiers[curModI].sections[2].elements[3].rangeBar.value / 100.f));
         /* Droplets */
-        modifierShader.setFloat("dropletsCount", material.materialModifiers[curModI].sections[2].elements[0].rangeBar.value / 100.f); 
-        modifierShader.setFloat("dropletsOpacityJitter", material.materialModifiers[curModI].sections[2].elements[1].rangeBar.value / 100.f);
-        modifierShader.setFloat("dropletsSize", material.materialModifiers[curModI].sections[2].elements[2].rangeBar.value / 10.f);
+        modifierShader.setFloat("dropletsCount", material.materialModifiers[curModI].sections[3].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setFloat("dropletsOpacityJitter", material.materialModifiers[curModI].sections[3].elements[1].rangeBar.value / 100.f);
+        modifierShader.setFloat("dropletsSize", material.materialModifiers[curModI].sections[3].elements[2].rangeBar.value / 10.f);
+
+        /* Element property */
+        modifierShader.setFloat("wetness", material.materialModifiers[curModI].sections[4].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[4].elements[1].rangeBar.value / 100.f);
+        modifierShader.setFloat("height", material.materialModifiers[curModI].sections[4].elements[2].rangeBar.value / 100.f);
         
 
         // Bind the mask texture
@@ -1476,7 +1489,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
 
         /* Element property */
         modifierShader.setFloat("woodGamma", material.materialModifiers[curModI].sections[6].elements[0].rangeBar.value / 100.f);
-        modifierShader.setFloat("wetness", material.materialModifiers[curModI].sections[6].elements[1].rangeBar.value / 100.f);
+        modifierShader.setFloat("shininess", material.materialModifiers[curModI].sections[6].elements[1].rangeBar.value / 100.f);
         modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[6].elements[2].rangeBar.value / 100.f);
         modifierShader.setFloat("height", material.materialModifiers[curModI].sections[6].elements[3].rangeBar.value / 100.f);
 

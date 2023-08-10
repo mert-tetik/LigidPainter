@@ -73,7 +73,7 @@ void ComboBox::render(
     float resultScaleText = videoScale.x/1920/2*textScale;
     
     //Thickness in the screen coordinates
-    float resultOutlineThickness = videoScale.x/1920/2 * (2.f);//2.f = outline thickness
+    float resultOutlineThickness = videoScale.x/1920/2 * (3.3f);//3.3f = outline thickness
 
     //Background position in the screen coordinates (background that covers the back when the combobox is pressed) (beneath the elements)
     glm::vec3 bgResultPos = glm::vec3( 
