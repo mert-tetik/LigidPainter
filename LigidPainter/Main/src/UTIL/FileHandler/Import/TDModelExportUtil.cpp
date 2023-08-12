@@ -104,6 +104,12 @@ Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std
         else
             matTitle = "DefaultMat";
 
+        //Make the material/mesh title/name unique
+        std::vector<std::string> meshTitles;
+        for (size_t i = 0; i < model.meshes.size(); i++)
+            meshTitles.push_back(model.meshes[i].materialName);
+        UTIL::uniqueName(matTitle, meshTitles);
+
         model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], matTitle));
     }
 
