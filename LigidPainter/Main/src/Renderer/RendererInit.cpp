@@ -169,18 +169,23 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
 
     //Create the projects folder if not exists
     if(!std::filesystem::exists("./Projects")){
-        std::filesystem::create_directory("./Projects");
+        if(!std::filesystem::create_directory("./Projects"))
+            std::cout << "ERROR : Creating projects folder." << std::endl;
     }
     
     //If the tmp directory doesn't exist then create 
     if(!std::filesystem::exists("./tmp")){
-        std::filesystem::create_directory("./tmp");
+        if(!std::filesystem::create_directory("./tmp"))
+            std::cout << "ERROR : Creating tmp folder." << std::endl;
     }
 
     //If the tmp directory exists empty the folder
     else{
-        std::filesystem::remove_all("./tmp");
-        std::filesystem::create_directory("./tmp");
+        if(!std::filesystem::remove_all("./tmp"))
+            std::cout << "ERROR : Deleting tmp folder. (after deleting)" << std::endl;
+        if(!std::filesystem::create_directory("./tmp"))
+            std::cout << "ERROR : Creating tmp folder. (after deleting)" << std::endl;
+
     }
 }
 

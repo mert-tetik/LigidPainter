@@ -137,14 +137,12 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,M
             std::vector<std::string> filesInTheFolder;
             for (const auto& entry : std::filesystem::directory_iterator(destPath)) {
                 filesInTheFolder.push_back(entry.path().string());
-                std::cout << entry.path().string() << std::endl;
             }            
             
-            std::cout << "materialFolderPath : " << materialFolderPath << std::endl;
             UTIL::uniqueName(materialFolderPath, filesInTheFolder);
-            std::cout << "materialFolderPath2 : " << materialFolderPath << std::endl;
 
-            std::filesystem::create_directories(materialFolderPath);
+            if(!std::filesystem::create_directories(materialFolderPath))
+                std::cout << "ERROR : Exporting. Can't create folder in the location : " << materialFolderPath << std::endl;
 
             //For all the channels
             for (size_t channelI = 0; channelI < 6; channelI++)

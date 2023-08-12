@@ -33,8 +33,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void Texture::writeTMP(){
     //If the tmp directory doesn't exist then create it
     if(!std::filesystem::exists("./tmp")){
-        std::filesystem::create_directories("./tmp");
-    }
+        if(!std::filesystem::create_directories("./tmp"))
+            std::cout << "ERROR : Writing TMP file : Creating tmp folder." << std::endl;     }
 
     //Unique generated name for the tmp file (doesn't include the extension)
     std::string tmpTitle = generateTMPTitle();

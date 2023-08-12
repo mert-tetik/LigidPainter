@@ -800,17 +800,15 @@ void UTIL::duplicateFolder(const std::string src, const std::string dest){
         std::string dst = dest + UTIL::folderDistinguisher() + UTIL::rmvPath(src, file);
         
         //If a folder then create a folder
-        if(std::filesystem::is_directory(file)){
-            
-            std::filesystem::create_directories(dst);
-        
+        if(!std::filesystem::is_directory(file)){
+            if(!std::filesystem::create_directories(dst))
+                std::cout << "ERROR : Duplicating folder : " << src << " to " << dest << ". Couldn't create : " << dst <<std::endl;
         }
 
         //If a file then duplicate the file
         else{
-
-            std::filesystem::copy_file(file, dst);
-
+            if(!std::filesystem::copy_file(file, dst))
+                std::cout << "ERROR : Duplicating folder : " << src << " to " << dest << ". Copying file : " file << " to " << dst << std::endl;
         }
     }
 }
