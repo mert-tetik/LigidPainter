@@ -26,11 +26,11 @@ struct Section;
 
 struct Vertex {
     // position
-    glm::vec3 Position;
+    glm::vec3 Position = glm::vec3(0.f);
     // texCoords
-    glm::vec2 TexCoords;
+    glm::vec2 TexCoords = glm::vec2(0.f);
     // normal
-    glm::vec3 Normal;
+    glm::vec3 Normal = glm::vec3(0.f);
     // tangent
     glm::vec3 Tangent = glm::vec3(0);
     // bitangent

@@ -32,6 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <fstream>
 #include <sstream>
 
+
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
@@ -46,7 +47,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 // Forward declarations for the utilities
+#ifndef CREATEMODELUTIL
+#define CREATEMODELUTIL
 Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles);
+#endif
 void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
 void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2);
 std::vector<char> DecompressZlibChar(const std::vector<char>& compressedData, size_t uncompressedSize);
@@ -67,12 +71,13 @@ struct FbxNode {
 };
 
 // Forward declarations for the fbx file processing functions
-bool ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes);
-void ProcessNodeHierarchy(std::vector<FbxNode>& nodes, std::vector<glm::vec3>& vertPositions, std::vector<glm::vec2>& vertUVs, std::vector<glm::vec3>& vertNormals, std::vector<int>& polygonVertexIndices, std::vector<int>& edges, std::vector<int>& uvIndices, std::vector<std::string>& matTitles, std::vector<int>& materials); 
+bool ReadNestedNodes(std::ifstream& file, const std::string fileName, std::vector<FbxNode>& nestedNodes);
+void ProcessNodeHierarchy(std::vector<FbxNode>& nodes, std::vector<std::vector<glm::vec3>>& vertPositions, std::vector<std::vector<glm::vec2>>& vertUVs, std::vector<std::vector<glm::vec3>>& vertNormals, std::vector<std::vector<int>>& polygonVertexIndices, std::vector<std::vector<int>>& edges, std::vector<std::vector<int>>& uvIndices,std::vector<std::string>& matTitles,std::vector<std::vector<int>>& materials); 
 static void parseFBXMeshData(const std::vector<glm::vec3>& positions, const std::vector<glm::vec2>& UVs, const std::vector<glm::vec3>& normals, const std::vector<int>& polygonVertexIndices, const std::vector<int>& uvIndices, const std::vector<int>& edges, const std::vector<std::string>& matTitles, const std::vector<int>& materials, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
 
 int __node_counter = 0;
 int _FBX_totalBitsRead = 0;
+int objectI = -1;
 bool processingMesh = false;
 bool processingShape = false;
 
@@ -86,6 +91,7 @@ bool processingShape = false;
 Model FileHandler::readFBXFile(std::string path) {
     _FBX_totalBitsRead = 0;
     __node_counter = 0;
+    objectI = -1;
     processingMesh = false;
 
 
@@ -119,21 +125,25 @@ Model FileHandler::readFBXFile(std::string path) {
 
     // Read top-level object record
     FbxNode topLevelObject;
-    ReadNestedNodes(file, topLevelObject.nestedNodes);
+    for (size_t i = 0; i < 10; i++)
+    {
+        ReadNestedNodes(file, path, topLevelObject.nestedNodes);
+    }
+        
 
 
     // Read header
     //file.read(header, sizeof(header));
     //_FBX_totalBitsRead += sizeof(header);
 
-    std::vector<glm::vec3> positions;
-    std::vector<glm::vec2> UVS;
-    std::vector<glm::vec3> normals;
+    std::vector<std::vector<glm::vec3>> positions;
+    std::vector<std::vector<glm::vec2>> UVS;
+    std::vector<std::vector<glm::vec3>> normals;
     std::vector<std::string> matTitles;
-    std::vector<int> polygonVertexIndices;
-    std::vector<int> edges;
-    std::vector<int> uvIndices;
-    std::vector<int> materials;
+    std::vector<std::vector<int>> polygonVertexIndices;
+    std::vector<std::vector<int>> edges;
+    std::vector<std::vector<int>> uvIndices;
+    std::vector<std::vector<int>> materials;
 
     // Process the FBX data
     ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges, matTitles, materials);
@@ -146,18 +156,50 @@ Model FileHandler::readFBXFile(std::string path) {
     std::vector<std::vector<Vertex>> meshVertices;
     std::vector<std::vector<unsigned int>> meshIndices;
 
-    parseFBXMeshData(  
-                        positions,
-                        UVS,
-                        normals,
-                        polygonVertexIndices,
-                        uvIndices,
-                        edges,
-                        matTitles,
-                        materials,
-                        meshVertices,
-                        meshIndices
-                    );
+    if(!matTitles.size())
+        matTitles.push_back("FirstDefMat");
+
+    for (size_t i = 0; i < matTitles.size(); i++)
+    {
+        meshVertices.push_back({});
+        meshIndices.push_back({});
+    }
+    
+
+    for (size_t i = 0; i < objectI + 1; i++)
+    {
+        std::vector<std::vector<Vertex>> in_meshVertices;
+        std::vector<std::vector<unsigned int>> in_meshIndices;
+        parseFBXMeshData(  
+                            positions[i],
+                            UVS[i],
+                            normals[i],
+                            polygonVertexIndices[i],
+                            uvIndices[i],
+                            edges[i],
+                            matTitles,
+                            materials[i],
+                            in_meshVertices,
+                            in_meshIndices
+                        );
+
+        for (size_t i = 0; i < in_meshIndices.size(); i++)
+        {
+            for (size_t ii = 0; ii < in_meshIndices[i].size(); ii++)
+            {
+                meshIndices[i].push_back(in_meshIndices[i][ii] + meshVertices[i].size());
+            }
+        }
+        for (size_t i = 0; i < in_meshVertices.size(); i++)
+        {
+            for (size_t ii = 0; ii < in_meshVertices[i].size(); ii++)
+            {
+                meshVertices[i].push_back(in_meshVertices[i][ii]);
+            }
+        }
+    }
+    
+
 
     if(meshVertices.size()){
         return createModel(meshVertices, meshIndices, matTitles);
@@ -223,14 +265,14 @@ Model FileHandler::readFBXFile(std::string path) {
         4	            Uint32	        Length
         Length	        byte/char	    Data
 */
-void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, uint32_t numProperties) {
+void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, uint32_t numProperties, uint32_t propertyListLen) {
     
 // Loop through the properties
     for (int i = 0; i < numProperties; i++) {
         FbxProperty prop;
 
 
-        if(!file.read(&prop.typeCode, sizeof(char))){break;}
+        if(!file.read(&prop.typeCode, sizeof(char))){}
 
         _FBX_totalBitsRead += sizeof(char);
 
@@ -253,7 +295,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
             case 'C':
             {
                 // Read a 1-bit boolean
-                uint8_t boolValue;
+                bool boolValue;
                 file.read(reinterpret_cast<char*>(&boolValue), sizeof(boolValue));
                 _FBX_totalBitsRead += sizeof(boolValue);
                 prop.data.emplace_back(boolValue);
@@ -626,13 +668,25 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
     13	        uint8[]	NULL-record
 */
 
-bool ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
+uint32_t __lastEndOffset = 0;
+
+bool ReadNestedNodes(std::ifstream& file, const std::string fileName, std::vector<FbxNode>& nestedNodes) {
         
         FbxNode nestedNode; // Move the declaration inside the while loop
 
         uint32_t endOffset;
         if(!file.read(reinterpret_cast<char*>(&endOffset), sizeof(uint32_t))){}
         _FBX_totalBitsRead += sizeof(uint32_t);
+
+        if(endOffset)
+            __lastEndOffset = endOffset; 
+        else{
+            std::uintmax_t fileSize = std::filesystem::file_size(fileName);
+
+            //endOffset = 105559;
+        }
+
+
 
         uint32_t numProperties;
         file.read(reinterpret_cast<char*>(&numProperties), sizeof(uint32_t));
@@ -654,36 +708,34 @@ bool ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
         if(LIGID_FBX_IMPORTER_PRINT_TEXT_STATE)
             std::cout << nestedNode.nodeType << std::endl;
         // Read nested node properties
-        ReadProperties(file, nestedNode.properties, numProperties);
-
-        char nullRecord[13];
-
-        // std::cout << endOffset << ' ';
+        ReadProperties(file, nestedNode.properties, numProperties, propertyListLen);
 
         // Recursively read nested nodes
-        //while(endOffset != file.tellg().seekpos() + 13){
-        while(true){
+        while(endOffset != _FBX_totalBitsRead && endOffset != 0){
+        //while(true){
             
             __node_counter++;
-            if(file.eof()){
-                break; 
-            }
-            else if(__node_counter > 400)
-                break;
+            //if(file.eof()){
+            //    break; 
+            //}
+            //else if(__node_counter > 5000)
+            //    break;
             
-            if(!ReadNestedNodes(file, nestedNode.nestedNodes)){
+            if(!ReadNestedNodes(file, fileName, nestedNode.nestedNodes)){
                 
             }
             
             //if(endOffset == 0)
             //    break; 
-            if(file.eof())
-                break; 
+            //if(file.eof())
+            //    break; 
 
         }
 
-        file.read(nullRecord, sizeof(nullRecord));
-        _FBX_totalBitsRead += sizeof(nullRecord);
+        //if(endOffset){
+        //    file.read(nullRecord, 13 * sizeof(char));
+        //    _FBX_totalBitsRead += 13 * sizeof(char);
+        //}
 
         nestedNodes.push_back(nestedNode);
         
@@ -698,21 +750,20 @@ bool ReadNestedNodes(std::ifstream& file, std::vector<FbxNode>& nestedNodes) {
 
 void ProcessNodeHierarchy( 
                             std::vector<FbxNode>& nodes, 
-                            std::vector<glm::vec3>& vertPositions, 
-                            std::vector<glm::vec2>& vertUVs, 
-                            std::vector<glm::vec3>& vertNormals, 
-                            std::vector<int>& polygonVertexIndices, 
-                            std::vector<int>& edges, 
-                            std::vector<int>& uvIndices,
+                            std::vector<std::vector<glm::vec3>>& vertPositions, 
+                            std::vector<std::vector<glm::vec2>>& vertUVs, 
+                            std::vector<std::vector<glm::vec3>>& vertNormals, 
+                            std::vector<std::vector<int>>& polygonVertexIndices, 
+                            std::vector<std::vector<int>>& edges, 
+                            std::vector<std::vector<int>>& uvIndices,
                             std::vector<std::string>& matTitles,
-                            std::vector<int>& materials
+                            std::vector<std::vector<int>>& materials
                         ) 
 {
     for ( auto& node : nodes) {
         //std::cout << node.nodeType<< std::endl;
 
         if (true) {
-            std::vector<Vertex> vertices;
             
             // Process vertex properties
             for (auto& prop : node.properties) {
@@ -737,7 +788,7 @@ void ProcessNodeHierarchy(
                                 break;
                             vertPos.z = doubleArray[i * 3 + 2];
 
-                            vertPositions.push_back(vertPos);                            
+                            vertPositions[objectI].push_back(vertPos);                            
                         }
                     }
                     else if(prop.typeCode == 'f'){
@@ -759,7 +810,7 @@ void ProcessNodeHierarchy(
                                 break;
                             vertPos.z = floatArray[i * 3 + 2];
 
-                            vertPositions.push_back(vertPos);                            
+                            vertPositions[objectI].push_back(vertPos);                            
                         }
                     }
                     else{
@@ -787,7 +838,7 @@ void ProcessNodeHierarchy(
                                 break;
                             vertNormal.z = doubleArray[i * 3 + 2];
 
-                            vertNormals.push_back(vertNormal);                            
+                            vertNormals[objectI].push_back(vertNormal);                            
                         }
                     }
                     else if(prop.typeCode == 'f'){
@@ -809,7 +860,7 @@ void ProcessNodeHierarchy(
                                 break;
                             vertNormal.z = floatArray[i * 3 + 2];
 
-                            vertNormals.push_back(vertNormal);                            
+                            vertNormals[objectI].push_back(vertNormal);                            
                         }
                     }
                     else{
@@ -836,7 +887,7 @@ void ProcessNodeHierarchy(
                                 break;
                             vertUV.y = doubleArray[i * 2 + 1];
 
-                            vertUVs.push_back(vertUV);                            
+                            vertUVs[objectI].push_back(vertUV);                            
                         }
                     }
                     else if (prop.typeCode == 'f') {
@@ -857,7 +908,7 @@ void ProcessNodeHierarchy(
                                 break;
                             vertUV.y = floatArray[i * 2 + 1];
 
-                            vertUVs.push_back(vertUV);                            
+                            vertUVs[objectI].push_back(vertUV);                            
                         }
                     }
                     else{
@@ -874,7 +925,7 @@ void ProcessNodeHierarchy(
 
                         for (size_t i = 0; i < intArray.size(); i++)
                         {
-                            polygonVertexIndices.push_back(intArray[i]);                            
+                            polygonVertexIndices[objectI].push_back(intArray[i]);                            
                         }
                     }
                 }
@@ -888,7 +939,7 @@ void ProcessNodeHierarchy(
 
                         for (size_t i = 0; i < intArray.size(); i++)
                         {
-                            edges.push_back(intArray[i]);                            
+                            edges[objectI].push_back(intArray[i]);                            
                         }
                     }
                 }
@@ -902,12 +953,12 @@ void ProcessNodeHierarchy(
 
                         for (size_t i = 0; i < intArray.size(); i++)
                         {
-                            uvIndices.push_back(intArray[i]);                            
+                            uvIndices[objectI].push_back(intArray[i]);                            
                         }
                     }
                 }
 
-                if(node.nodeType == "Material" && processingMesh){
+                if(node.nodeType == "Material"){
                     if (prop.typeCode == 'S') {
                         std::string infoStr(prop.data.begin(), prop.data.end());
 
@@ -921,7 +972,7 @@ void ProcessNodeHierarchy(
                         std::vector<int> intArray(arrayLength);
 
                         std::memcpy(intArray.data(), prop.data.data(), prop.data.size());
-                        materials = intArray;                            
+                        materials[objectI] = intArray;                            
                     }
                 }
 
@@ -934,18 +985,31 @@ void ProcessNodeHierarchy(
                     }
                 }
 
+                if(node.nodeType == "ObjectType" && processingMesh){
+                    if (prop.typeCode == 'S') {
+                        std::string infoStr(prop.data.begin(), prop.data.end());
+                        if(infoStr != "Geometry"){
+                            std::cout << "WARNING : Object type is  : " << infoStr << "! Results might be unexpected."  << std::endl;
+                        }
+                    }
+                }
+
                 if(node.nodeType == "Geometry"){
                     if (prop.typeCode == 'S') {
-                        for (size_t i = 0; i < node.properties.size(); i++)
-                        {
-                            if(node.properties[i].typeCode == 'S'){
-                                std::string infoStr(node.properties[i].data.begin(), node.properties[i].data.end());
-                                if(infoStr == "Mesh")
-                                    processingMesh = true;
-                                else if(infoStr == "Shape")
-                                    processingShape = true;
-                            }
+                        std::string infoStr(prop.data.begin(), prop.data.end());
+                        if(infoStr == "Mesh"){
+                            objectI++;   
+                            vertPositions.push_back({}); 
+                            vertUVs.push_back({}); 
+                            vertNormals.push_back({}); 
+                            polygonVertexIndices.push_back({}); 
+                            edges.push_back({}); 
+                            uvIndices.push_back({});
+                            materials.push_back({});
+                            processingMesh = true;
                         }
+                        else if(infoStr == "Shape")
+                            processingShape = true;
                     }
                 }
             }
@@ -969,26 +1033,35 @@ static void parseFBXMeshData(
                         std::vector<std::vector<unsigned int>>& meshIndices
                     )
 {
-    
+
+
     // TODO Seperate unique vertices for each mesh
 
+    //Contains the unique vertex values generated
+    std::vector<Vertex> uniqueVertices;
+
+    // polygonVertexIndices index, uniqueVertices array index 
+    std::vector<std::map<std::pair<int,int>, int>> posData;
+
     // Give an error if the polygonVertexIndices array & edges array are the same
+    /**/
+    
     if (polygonVertexIndices.size() != edges.size())
     {
         std::cout << "ERROR: Reading FBX file. Can't parse mesh data. Sizes of the polygonVertexIndices & the edges are not the same." << std::endl;
         return;
     }
 
-    //Contains the unique vertex values generated
-    std::vector<Vertex> uniqueVertices;
-
-    // polygonVertexIndices index, uniqueVertices array index 
-    std::map<std::pair<int,int>, int> posData;
-
+    for (size_t i = 0; i < matTitles.size(); i++)
+    {
+        posData.push_back({});
+        meshVertices.push_back({});
+        meshIndices.push_back({});
+    }
     // Mapping the indices
+    int faceCounter = 0;
     for (size_t i = 0; i < polygonVertexIndices.size(); i++)
     {
-        
         /*
             uvIndices array contains the necessary indices
             for matching the texture coordinates & the vertex
@@ -1000,8 +1073,9 @@ static void parseFBXMeshData(
 
         // Get the index of the position
         int posIndex = polygonVertexIndices[i];
-        if (posIndex < 0)
+        if (posIndex < 0){
             posIndex = abs(posIndex) - 1;
+        }
 
         // Get the index of the texture coordinate
         int edgeIndex = edges[i];
@@ -1027,30 +1101,25 @@ static void parseFBXMeshData(
             return;
         }
         uniqueVert.Normal = normals[i];
+
+        int materialI;
+        if(materials.size() && materials.size() != 1 && faceCounter < materials.size())
+            materialI = materials[faceCounter];
+        else if (materials.size() == 1)
+            materialI = 0;
+        else
+            materialI = 0;
         
-        posData[std::make_pair(polygonVertexIndices[i], edges[i])] = uniqueVertices.size();
-        uniqueVertices.push_back(uniqueVert);
-    }
+        posData[materialI][std::make_pair(polygonVertexIndices[i], edges[i])] = meshVertices[materialI].size();
+        meshVertices[materialI].push_back(uniqueVert);
 
-    //Get the biggest material index
-    int biggestMatIndex = 0;
-    for (size_t i = 0; i < materials.size(); i++)
-    {
-        if(biggestMatIndex < materials[i])
-            biggestMatIndex = materials[i];
-    }
-
-    //Generate meshes
-    //Pass all the unique vertex values to each mesh
-    for (size_t i = 0; i < biggestMatIndex + 1; i++)
-    {
-        meshVertices.push_back(uniqueVertices);
-        meshIndices.push_back({});
+        if(polygonVertexIndices[i] < 0)
+            faceCounter++;
     }
     
 
     int faceI = 0;
-    int faceCounter = 0;
+    faceCounter = 0;
     for (size_t i = 0; i < polygonVertexIndices.size(); i++)
     {
         
@@ -1092,26 +1161,26 @@ static void parseFBXMeshData(
                 else
                     materialI = 0;
 
-                meshIndices[materialI].push_back(posData[std::make_pair(facePos.x, faceEdge.x)]);
-                meshIndices[materialI].push_back(posData[std::make_pair(facePos.y, faceEdge.y)]);
-                meshIndices[materialI].push_back(posData[std::make_pair(facePos.z, faceEdge.z)]);
+                meshIndices[materialI].push_back(posData[materialI][std::make_pair(facePos.x, faceEdge.x)]);
+                meshIndices[materialI].push_back(posData[materialI][std::make_pair(facePos.y, faceEdge.y)]);
+                meshIndices[materialI].push_back(posData[materialI][std::make_pair(facePos.z, faceEdge.z)]);
 
                 /* Tangent calculations */
-                meshVertices[materialI][posData[std::make_pair(facePos.x, faceEdge.x)]].Tangent = glm::vec3(0); 
-                meshVertices[materialI][posData[std::make_pair(facePos.x, faceEdge.x)]].Bitangent = glm::vec3(0); 
-                meshVertices[materialI][posData[std::make_pair(facePos.y, faceEdge.y)]].Tangent = glm::vec3(0); 
-                meshVertices[materialI][posData[std::make_pair(facePos.y, faceEdge.y)]].Bitangent = glm::vec3(0); 
-                meshVertices[materialI][posData[std::make_pair(facePos.z, faceEdge.z)]].Tangent = glm::vec3(0);
-                meshVertices[materialI][posData[std::make_pair(facePos.z, faceEdge.z)]].Bitangent = glm::vec3(0);
-                calculateTangentBitangent(meshVertices[materialI][posData[std::make_pair(facePos.x, faceEdge.x)]], meshVertices[materialI][posData[std::make_pair(facePos.y, faceEdge.y)]], meshVertices[materialI][posData[std::make_pair(facePos.z, faceEdge.z)]]);
+                meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]].Tangent = glm::vec3(0); 
+                meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]].Bitangent = glm::vec3(0); 
+                meshVertices[materialI][posData[materialI][std::make_pair(facePos.y, faceEdge.y)]].Tangent = glm::vec3(0); 
+                meshVertices[materialI][posData[materialI][std::make_pair(facePos.y, faceEdge.y)]].Bitangent = glm::vec3(0); 
+                meshVertices[materialI][posData[materialI][std::make_pair(facePos.z, faceEdge.z)]].Tangent = glm::vec3(0);
+                meshVertices[materialI][posData[materialI][std::make_pair(facePos.z, faceEdge.z)]].Bitangent = glm::vec3(0);
+                calculateTangentBitangent(meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]], meshVertices[materialI][posData[materialI][std::make_pair(facePos.y, faceEdge.y)]], meshVertices[materialI][posData[materialI][std::make_pair(facePos.z, faceEdge.z)]]);
                 
                 /* Normalize tangent values */
-                meshVertices[materialI][posData[std::make_pair(facePos.x, faceEdge.x)]].Tangent = glm::normalize(meshVertices[materialI][posData[std::make_pair(facePos.x, faceEdge.x)]].Tangent); 
-                meshVertices[materialI][posData[std::make_pair(facePos.x, faceEdge.x)]].Bitangent = glm::normalize(meshVertices[materialI][posData[std::make_pair(facePos.x, faceEdge.x)]].Bitangent); 
-                meshVertices[materialI][posData[std::make_pair(facePos.y, faceEdge.y)]].Tangent = glm::normalize(meshVertices[materialI][posData[std::make_pair(facePos.y, faceEdge.y)]].Tangent); 
-                meshVertices[materialI][posData[std::make_pair(facePos.y, faceEdge.y)]].Bitangent = glm::normalize(meshVertices[materialI][posData[std::make_pair(facePos.y, faceEdge.y)]].Bitangent); 
-                meshVertices[materialI][posData[std::make_pair(facePos.z, faceEdge.z)]].Tangent = glm::normalize(meshVertices[materialI][posData[std::make_pair(facePos.z, faceEdge.z)]].Tangent);
-                meshVertices[materialI][posData[std::make_pair(facePos.z, faceEdge.z)]].Bitangent = glm::normalize(meshVertices[materialI][posData[std::make_pair(facePos.z, faceEdge.z)]].Bitangent);
+                meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]].Tangent = glm::normalize(meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]].Tangent); 
+                meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]].Bitangent = glm::normalize(meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]].Bitangent); 
+                meshVertices[materialI][posData[materialI][std::make_pair(facePos.y, faceEdge.y)]].Tangent = glm::normalize(meshVertices[materialI][posData[materialI][std::make_pair(facePos.y, faceEdge.y)]].Tangent); 
+                meshVertices[materialI][posData[materialI][std::make_pair(facePos.y, faceEdge.y)]].Bitangent = glm::normalize(meshVertices[materialI][posData[materialI][std::make_pair(facePos.y, faceEdge.y)]].Bitangent); 
+                meshVertices[materialI][posData[materialI][std::make_pair(facePos.z, faceEdge.z)]].Tangent = glm::normalize(meshVertices[materialI][posData[materialI][std::make_pair(facePos.z, faceEdge.z)]].Tangent);
+                meshVertices[materialI][posData[materialI][std::make_pair(facePos.z, faceEdge.z)]].Bitangent = glm::normalize(meshVertices[materialI][posData[materialI][std::make_pair(facePos.z, faceEdge.z)]].Bitangent);
             }
             
             faceI = 0;

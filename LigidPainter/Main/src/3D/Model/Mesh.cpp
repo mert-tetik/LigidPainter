@@ -100,6 +100,12 @@ void Mesh::Draw()
 // initializes all the buffer objects/arrays
 void Mesh::setupMesh()
 {
+    if(!vertices.size())
+        vertices.push_back(Vertex());
+
+    if(!indices.size())
+        indices.push_back(0);
+
     // create buffers/arrays
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);

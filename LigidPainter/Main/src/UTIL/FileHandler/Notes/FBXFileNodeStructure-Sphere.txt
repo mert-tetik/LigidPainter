@@ -1,0 +1,926 @@
+FBXHeaderExtension
+FBXHeaderVersion
+-Ù ( 1 )  ( I )
+FBXVersion
+-× ( 1 )  ( I )
+EncryptionType
+- ( 1 )  ( I )
+CreationTimeStamp
+Version
+-× ( 1 )  ( I )
+Year
+-µ ( 1 )  ( I )
+Month
+-♀ ( 1 )  ( I )
+Day
+-◄ ( 1 )  ( I )
+Hour
+-▬ ( 1 )  ( I )
+Minute
+-6 ( 1 )  ( I )
+Second
+-" ( 1 )  ( I )
+Millisecond
+-8 ( 1 )  ( I )
+
+Creator
+-Blender (stable FBX IOMore... ( 40 )  ( S )
+SceneInfo
+-GlobalInfo☺SceneInfo ( 21 )  ( S )
+-UserData ( 8 )  ( S )
+Type
+-UserData ( 8 )  ( S )
+Version
+-d ( 1 )  ( I )
+MetaData
+Version
+-d ( 1 )  ( I )
+Title
+- ( 0 )  ( S )
+Subject
+- ( 0 )  ( S )
+Author
+- ( 0 )  ( S )
+Keywords
+- ( 0 )  ( S )
+Revision
+- ( 0 )  ( S )
+Comment
+- ( 0 )  ( S )
+
+Properties70
+P
+-DocumentUrl ( 11 )  ( S )
+-KString ( 7 )  ( S )
+-Url ( 3 )  ( S )
+- ( 0 )  ( S )
+-/foobar.fbx ( 11 )  ( S )
+P
+-SrcDocumentUrl ( 14 )  ( S )
+-KString ( 7 )  ( S )
+-Url ( 3 )  ( S )
+- ( 0 )  ( S )
+-/foobar.fbx ( 11 )  ( S )
+P
+-Original ( 8 )  ( S )
+-Compound ( 8 )  ( S ) 
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+P
+-Original|ApplicationVeMore... ( 26 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-Blender Foundation ( 18 )  ( S )
+P
+-Original|ApplicationNaMore... ( 24 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-Blender (stable FBX IOMore... ( 23 )  ( S )
+P
+-Original|ApplicationVeMore... ( 27 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-3.1.2 ( 5 )  ( S )
+P
+-Original|DateTime_GMT ( 21 )  ( S )
+-DateTime ( 8 )  ( S ) 
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-01/01/1970 00:00:00.00More... ( 23 )  ( S )
+P
+-Original|FileName ( 17 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-/foobar.fbx ( 11 )  ( S )
+P
+-LastSaved ( 9 )  ( S )
+-Compound ( 8 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+P
+-LastSaved|ApplicationVMore... ( 27 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-Blender Foundation ( 18 )  ( S )
+P
+-LastSaved|ApplicationNMore... ( 25 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-Blender (stable FBX IOMore... ( 23 )  ( S ) 
+P
+-LastSaved|ApplicationVMore... ( 28 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-3.1.2 ( 5 )  ( S )
+P
+-LastSaved|DateTime_GMTMore... ( 22 )  ( S )
+-DateTime ( 8 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-01/01/1970 00:00:00.00More... ( 23 )  ( S )
+P
+-Original|ApplicationNaMore... ( 30 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+
+
+
+FileId
+-(│*ÙÂ$╠┬┐╚░*®+³± ( 16 )  ( R )
+CreationTime
+-1970-01-01 10:00:00:00More... ( 23 )  ( S )
+Creator
+-Blender (stable FBX IOMore... ( 40 )  ( S ) 
+GlobalSettings
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-UpAxis ( 6 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-UpAxisSign ( 10 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-FrontAxis ( 9 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-☻ ( 1 )  ( I )
+P
+-FrontAxisSign ( 13 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-CoordAxis ( 9 )  ( S ) 
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-CoordAxisSign ( 13 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-OriginalUpAxis ( 14 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-  ( 1 )  ( I )
+P
+-OriginalUpAxisSign ( 18 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-UnitScaleFactor ( 15 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S ) 
+-☺ ( 1 )  ( D )
+P
+-OriginalUnitScaleFactoMore... ( 23 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( D )
+P
+-AmbientColor ( 12 )  ( S )
+-ColorRGB ( 8 )  ( S )
+-Color ( 5 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-DefaultCamera ( 13 )  ( S )
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-Producer Perspective ( 20 )  ( S )
+P
+-TimeMode ( 8 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-♂ ( 1 )  ( I )
+P
+-TimeSpanStart ( 13 )  ( S ) 
+-KTime ( 5 )  ( S )
+-Time ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( L )
+P
+-TimeSpanStop ( 12 )  ( S )
+-KTime ( 5 )  ( S )
+-Time ( 4 )  ( S )
+- ( 0 )  ( S )
+-░ ( 1 )  ( L )
+P
+-CustomFrameRate ( 15 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-↑ ( 1 )  ( D )
+
+
+Documents
+Count
+-☺ ( 1 )  ( I )
+Document
+-· ( 1 )  ( L )
+-Scene ( 5 )  ( S )
+-Scene ( 5 )  ( S )
+Properties70
+P
+-SourceObject ( 12 )  ( S )
+-object ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+P
+-ActiveAnimStackName ( 19 )  ( S ) 
+-KString ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+
+RootNode
+- ( 1 )  ( L )
+
+
+References
+
+Definitions
+Version
+-d ( 1 )  ( I )
+Count
+-♥ ( 1 )  ( I )
+ObjectType
+-GlobalSettings ( 14 )  ( S )
+Count
+-☺ ( 1 )  ( I )
+
+ObjectType
+-Geometry ( 8 )  ( S )
+Count
+-☺ ( 1 )  ( I )
+PropertyTemplate
+-FbxMesh ( 7 )  ( S )
+Properties70
+P
+-Color ( 5 )  ( S )
+-ColorRGB ( 8 )  ( S )
+-Color ( 5 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-BBoxMin ( 7 )  ( S ) 
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-BBoxMax ( 7 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Primary Visibility ( 18 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-Casts Shadows ( 13 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-Receive Shadows ( 15 )  ( S )
+-bool ( 4 )  ( S ) 
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+
+
+ObjectType
+-Model ( 5 )  ( S )
+Count
+-☺ ( 1 )  ( I )
+PropertyTemplate
+-FbxNode ( 7 )  ( S )
+Properties70
+P
+-QuaternionInterpolate ( 21 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationOffset ( 14 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-RotationPivot ( 13 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D ) 
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-ScalingOffset ( 13 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-ScalingPivot ( 12 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-TranslationActive ( 17 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-TranslationMin ( 14 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S ) 
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-TranslationMax ( 14 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-TranslationMinX ( 15 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-TranslationMinY ( 15 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-TranslationMinZ ( 15 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I ) 
+P
+-TranslationMaxX ( 15 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-TranslationMaxY ( 15 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-TranslationMaxZ ( 15 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationOrder ( 13 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationSpaceForLimitOMore... ( 25 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I ) 
+P
+-RotationStiffnessX ( 18 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-RotationStiffnessY ( 18 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-RotationStiffnessZ ( 18 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-AxisLen ( 7 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+-
+ ( 1 )  ( D )
+P
+-PreRotation ( 11 )  ( S )
+-Vector3D ( 8 )  ( S ) 
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-PostRotation ( 12 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-RotationActive ( 14 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationMin ( 11 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-RotationMax ( 11 )  ( S ) 
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-RotationMinX ( 12 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationMinY ( 12 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationMinZ ( 12 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationMaxX ( 12 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationMaxY ( 12 )  ( S ) 
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-RotationMaxZ ( 12 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ScalingActive ( 13 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ScalingMin ( 10 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-ScalingMax ( 10 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-ScalingMinX ( 11 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ScalingMinY ( 11 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ScalingMinZ ( 11 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ScalingMaxX ( 11 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S ) 
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ScalingMaxY ( 11 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-ScalingMaxZ ( 11 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-GeometricTranslation ( 20 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-GeometricRotation ( 17 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D ) 
+P
+-GeometricScaling ( 16 )  ( S )
+-Vector3D ( 8 )  ( S )
+-Vector ( 6 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D )
+P
+-MinDampRangeX ( 13 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MinDampRangeY ( 13 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MinDampRangeZ ( 13 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MaxDampRangeX ( 13 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S ) 
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MaxDampRangeY ( 13 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MaxDampRangeZ ( 13 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MinDampStrengthX ( 16 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MinDampStrengthY ( 16 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D ) 
+P
+-MinDampStrengthZ ( 16 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MaxDampStrengthX ( 16 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MaxDampStrengthY ( 16 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-MaxDampStrengthZ ( 16 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-PreferedAngleX ( 14 )  ( S ) 
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-PreferedAngleY ( 14 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-PreferedAngleZ ( 14 )  ( S )
+-double ( 6 )  ( S )
+-Number ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( D )
+P
+-LookAtProperty ( 14 )  ( S )
+-object ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+P
+-UpVectorProperty ( 16 )  ( S ) 
+-object ( 6 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+P
+-Show ( 4 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-NegativePercentShapeSuMore... ( 27 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+-  ( 1 )  ( I )
+P
+-Freeze ( 6 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-LODBox ( 6 )  ( S )
+-bool ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-Lcl Translation ( 15 )  ( S )
+-Lcl Translation ( 15 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+-☺ ( 1 )  ( D ) 
+-☺ ( 1 )  ( D )
+P
+-Visibility ( 10 )  ( S )
+-Visibility ( 10 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-☺ ( 1 )  ( D )
+P
+-Visibility InheritanceMore... ( 22 )  ( S )
+-Visibility InheritanceMore... ( 22 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+
+
+
+Objects
+Geometry
+-3 ( 1 )  ( L )
+-Mesh☺Geometry ( 14 )  ( S )
+-Mesh ( 4 )  ( S )
+Properties70
+
+GeometryVersion
+-| ( 1 )  ( I )
+Vertices
+- %>áòæ╔?@M)More... ( 47664 )  ( d )
+PolygonVertexIndex
+-▀☺u♣┬♣ç·  u♣   More... ( 31744 )  ( i ) 
+Edges
+-☺☻♥♦♣More... ( 15872 )  ( i )
+LayerElementNormal
+- ( 1 )  ( I )
+Version
+-e ( 1 )  ( I )
+Name
+- ( 0 )  ( S )
+MappingInformationType
+-ByPolygonVertex ( 15 )  ( S )
+ReferenceInformationType
+-Direct ( 6 )  ( S )
+Normals
+-á)óú¥▄╚Ï?└╚ÇMore... ( 190464 )  ( d )
+
+LayerElementUV
+- ( 1 )  ( I )
+Version
+-e ( 1 )  ( I )
+Name
+-UVMap ( 5 )  ( S )
+MappingInformationType
+-ByPolygonVertex ( 15 )  ( S )
+ReferenceInformationType
+-IndexToDirect ( 13 )  ( S )
+UV
+-­?ì?@☺More... ( 38256 )  ( d ) 
+UVIndex
+-O♥Ğ♥→☻6☻More... ( 31744 )  ( i )
+
+Layer
+- ( 1 )  ( I )
+Version
+-d ( 1 )  ( I )
+LayerElement
+Type
+-LayerElementNormal ( 18 )  ( S )
+TypedIndex
+- ( 1 )  ( I )
+
+LayerElement
+Type
+-LayerElementUV ( 14 )  ( S )
+TypedIndex
+- ( 1 )  ( I )
+
+
+
+Model
+-→ ( 1 )  ( L )
+-Sphere☺Model ( 13 )  ( S )
+-Mesh ( 4 )  ( S )
+Version
+-× ( 1 )  ( I )
+Properties70
+P
+-Lcl Rotation ( 12 )  ( S )
+-Lcl Rotation ( 12 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-Ğ ( 1 )  ( D )
+- ( 1 )  ( D )
+- ( 1 )  ( D )
+P
+-Lcl Scaling ( 11 )  ( S )
+-Lcl Scaling ( 11 )  ( S )
+- ( 0 )  ( S )
+-A ( 1 )  ( S )
+-d ( 1 )  ( D )
+-d ( 1 )  ( D )
+-d ( 1 )  ( D )
+P
+-DefaultAttributeIndex ( 21 )  ( S )
+-int ( 3 )  ( S )
+-Integer ( 7 )  ( S )
+- ( 0 )  ( S )
+- ( 1 )  ( I )
+P
+-InheritType ( 11 )  ( S )
+-enum ( 4 )  ( S )
+- ( 0 )  ( S )
+- ( 0 )  ( S )
+-☺ ( 1 )  ( I )
+
+MultiLayer
+- ( 1 )  ( I )
+MultiTake
+- ( 1 )  ( I )
+Shading
+-☺ ( 1 )  ( C )
+Culling
+-CullingOff ( 10 )  ( S )
+
+
+Connections
+C
+-OO ( 2 )  ( S )
+-→ ( 1 )  ( L )
+- ( 1 )  ( L )
+C
+-OO ( 2 )  ( S ) 
+-3 ( 1 )  ( L )
+-→ ( 1 )  ( L )
+
+Takes
+Current
+- ( 0 )  ( S )

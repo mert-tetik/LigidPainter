@@ -43,7 +43,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 // Forward declarations for the utilities
 void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
+#ifndef CREATEMODELUTIL
+#define CREATEMODELUTIL
 Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles);
+#endif
 void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2);
 
 // Forward declarations for the obj file processing functions
