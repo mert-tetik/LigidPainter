@@ -814,3 +814,32 @@ void UTIL::duplicateFolder(const std::string src, const std::string dest){
         }
     }
 }
+
+bool UTIL::uniqueName(std::string &s, std::vector<std::string> sArray){
+    bool isTheSame = false;
+    for (size_t i = 0; i < sArray.size(); i++)
+    {
+        if(sArray[i] == s){
+            isTheSame = true;
+        }
+    }
+
+    if(isTheSame){
+        for (size_t i = 0; i < 1000; i++)
+        {
+            bool matched = false;
+            for (size_t txtrI = 0; txtrI < sArray.size(); txtrI++)
+            {
+                if(sArray[txtrI] == s + '(' + std::to_string(i) + ')'){
+                    matched = true;
+                }
+            }
+            if(!matched){
+                s += '(' + std::to_string(i) + ')';
+                break;
+            }
+        }
+    }
+    
+    return isTheSame;
+}

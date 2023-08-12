@@ -134,6 +134,16 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,M
 
             std::string materialFolderPath = destPath + UTIL::folderDistinguisher() + model.meshes[i].materialName;
             
+            std::vector<std::string> filesInTheFolder;
+            for (const auto& entry : std::filesystem::directory_iterator(destPath)) {
+                filesInTheFolder.push_back(entry.path().string());
+                std::cout << entry.path().string() << std::endl;
+            }            
+            
+            std::cout << "materialFolderPath : " << materialFolderPath << std::endl;
+            UTIL::uniqueName(materialFolderPath, filesInTheFolder);
+            std::cout << "materialFolderPath2 : " << materialFolderPath << std::endl;
+
             std::filesystem::create_directories(materialFolderPath);
 
             //For all the channels

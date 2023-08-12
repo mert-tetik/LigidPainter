@@ -20,35 +20,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <string>
 
-
-void Library::uniqueName(std::string &s,std::vector<std::string> sArray){
-    bool isTheSame = false;
-    for (size_t i = 0; i < sArray.size(); i++)
-    {
-        if(sArray[i] == s){
-            isTheSame = true;
-            this->changed = true;
-        }
-    }
-
-    if(isTheSame){
-        for (size_t i = 0; i < 1000; i++)
-        {
-            bool matched = false;
-            for (size_t txtrI = 0; txtrI < sArray.size(); txtrI++)
-            {
-                if(sArray[txtrI] == s + '(' + std::to_string(i) + ')'){
-                    matched = true;
-                }
-            }
-            if(!matched){
-                s += '(' + std::to_string(i) + ')';
-                break;
-            }
-        }
-    }
-}
-
 void Library::uniqueNameControl(){
     for (int i = textures.size()-1; i >= 0; i--)
     {
@@ -59,7 +30,9 @@ void Library::uniqueNameControl(){
                 texturesStr.push_back(textures[istr].title);
         }
 
-        uniqueName(textures[i].title,texturesStr);    
+        if(UTIL::uniqueName(textures[i].title,texturesStr)){
+            this->changed = true;
+        }    
     }
 
     for (int i = materials.size()-1; i >= 0; i--)
@@ -71,7 +44,9 @@ void Library::uniqueNameControl(){
                 materialsStr.push_back(materials[istr].title);
         }
 
-        uniqueName(materials[i].title,materialsStr);    
+        if(UTIL::uniqueName(materials[i].title,materialsStr)){
+            this->changed = true;
+        }    
     }
 
     for (int i = brushes.size()-1; i >= 0; i--)
@@ -83,7 +58,9 @@ void Library::uniqueNameControl(){
                 brushesStr.push_back(brushes[istr].title);
         }
 
-        uniqueName(brushes[i].title,brushesStr);    
+        if(UTIL::uniqueName(brushes[i].title,brushesStr)){
+            this->changed = true;
+        }    
     }
     
     for (int i = TDModels.size()-1; i >= 0; i--)
@@ -95,7 +72,9 @@ void Library::uniqueNameControl(){
                 TDModelsStr.push_back(TDModels[istr].title);
         }
 
-        uniqueName(TDModels[i].title,TDModelsStr);    
+        if(UTIL::uniqueName(TDModels[i].title,TDModelsStr)){
+            this->changed = true;
+        }    
     }
 }
 
